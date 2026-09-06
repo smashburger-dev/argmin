@@ -39,6 +39,18 @@
         "stretch"
       ],
       "instances": 192
+    },
+    "aggregate-majority-rule-count": {
+      "cases": [
+        "majority-baseline-errors"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "27d561f48e63deaef537ba0e257bf6a3989814775f94175b0f94665d12809a15"
     }
   }
 }

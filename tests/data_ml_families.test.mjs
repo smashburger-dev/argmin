@@ -5,14 +5,21 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   DATA_ML_FAMILY_SPECS,
+  generateAggregateMajorityRuleCountFamily,
   generateCountRemainingRowsFamily,
   generateMseGradientClosedFormFamily,
   generateFormulaRatioPercentMetricFamily,
+  solveAggregateMajorityRuleCount,
   solveCountRemainingRows,
   solveMseGradientClosedForm,
   solveFormulaRatioPercentMetric,
 } from '../assets/js/core/data_ml_families.mjs';
-import { genCompleteRows, genDedupRows, genMseGradient } from '../assets/js/core/data_ml_generators.mjs';
+import {
+  genBaselineCorrect,
+  genCompleteRows,
+  genDedupRows,
+  genMseGradient,
+} from '../assets/js/core/data_ml_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 
@@ -21,15 +28,24 @@ const traceDoc = JSON.parse(readFileSync(join(root, 'content/families/trace-libr
 const traceAssignmentDoc = JSON.parse(readFileSync(join(root, 'content/families/trace-assignment-state.json'), 'utf8'));
 const gradientUpdateDoc = JSON.parse(readFileSync(join(root, 'content/families/optimize-gradient-update-rule.json'), 'utf8'));
 const mseGradientDoc = JSON.parse(readFileSync(join(root, 'content/families/optimize-mse-gradient-closed-form.json'), 'utf8'));
+const taskTypeDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-task-type.json'), 'utf8'));
+const splitDoc = JSON.parse(readFileSync(join(root, 'content/families/reproduce-seeded-split.json'), 'utf8'));
+const metricsDoc = JSON.parse(readFileSync(join(root, 'content/families/fit-predict-metrics.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
 registerStaticCases(mseGradientDoc.familyId, mseGradientDoc.cases);
+registerStaticCases(taskTypeDoc.familyId, taskTypeDoc.cases);
+registerStaticCases(splitDoc.familyId, splitDoc.cases);
+registerStaticCases(metricsDoc.familyId, metricsDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
   gradientUpdateDoc,
   mseGradientDoc,
+  taskTypeDoc,
+  splitDoc,
+  metricsDoc,
   JSON.parse(readFileSync(join(root, 'content/families/classify-confounding.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8')),
@@ -183,6 +199,70 @@ test('MSE gradient static case enforces profile and competency override', () => 
     ),
     /Unbekanntes Profil/,
   );
+});
+
+test('majority baseline family preserves seeded generation and profile predicates', () => {
+  const spec = DATA_ML_FAMILY_SPECS[3];
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({ seed, caseId: 'majority-baseline-errors', difficulty });
+      const counts = [...generated.parameters.counts].sort((a, b) => b - a);
+      assert.equal(
+        generated.expected.value,
+        counts.reduce((sum, count) => sum + count, 0) - counts[0],
+      );
+      assert.equal(
+        solveAggregateMajorityRuleCount(generated.parameters).value,
+        generated.expected.value,
+      );
+      if (difficulty === 'intro') assert.ok(counts[0] >= 2 * counts[1]);
+      if (difficulty === 'stretch') assert.ok(counts[0] - counts[1] <= 10);
+    }
+  }
+  assert.equal(
+    generateAggregateMajorityRuleCountFamily({
+      seed: 9001,
+      caseId: 'majority-baseline-errors',
+      difficulty: 'core',
+    }).expected.value,
+    genBaselineCorrect(9001).expected,
+  );
+  assert.equal(
+    generateAggregateMajorityRuleCountFamily({
+      seed: 9001,
+      caseId: 'majority-baseline-errors',
+      difficulty: 'core',
+    }).expected.value,
+    149,
+  );
+});
+
+test('majority baseline family corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateAggregateMajorityRuleCountFamily({
+        seed,
+        caseId: 'majority-baseline-errors',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['aggregate-majority-rule-count'].digest);
+});
+
+test('sklearn trace case grades and exposes the ML-baseline competency override', async () => {
+  const instance = EXERCISE_FAMILIES.instantiate(
+    'trace-library-api-output',
+    0,
+    'core',
+    'sklearn-split-no-shuffle',
+  );
+  assert.deepEqual(instance.competencyIds, ['c-ml-baseline', 'c-python-reading']);
+  assert.equal((await EXERCISE_FAMILIES.grade(instance, '[7, 8, 9]')).correct, true);
+  assert.equal((await EXERCISE_FAMILIES.grade(instance, '[0, 1, 2]')).correct, false);
 });
 
 test('gradient trace static case grades through the real registry path', async () => {

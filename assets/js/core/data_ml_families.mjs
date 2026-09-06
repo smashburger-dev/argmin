@@ -8,6 +8,7 @@ import {
   genCompleteRows,
   genConditionalCount,
   genDedupRows,
+  genBaselineCorrect,
   genMseGradient,
 } from './data_ml_generators.mjs';
 
@@ -30,6 +31,20 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'mse-gradient-wrt-w') {
     if (difficulty === 'intro') return (parameters) => parameters.n === 2;
     if (difficulty === 'stretch') return (parameters) => parameters.n === 4;
+  }
+  if (caseId === 'majority-baseline-errors') {
+    if (difficulty === 'intro') {
+      return (parameters) => {
+        const counts = [...parameters.counts].sort((a, b) => b - a);
+        return counts[0] >= 2 * counts[1];
+      };
+    }
+    if (difficulty === 'stretch') {
+      return (parameters) => {
+        const counts = [...parameters.counts].sort((a, b) => b - a);
+        return counts[0] - counts[1] <= 10;
+      };
+    }
   }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
@@ -90,6 +105,14 @@ const FAMILY_DEFINITIONS = {
           0,
         ),
       };
+    },
+  },
+  'aggregate-majority-rule-count': {
+    cases: {
+      'majority-baseline-errors': { generator: genBaselineCorrect },
+    },
+    solve(parameters) {
+      return { value: parameters.counts.reduce((sum, count) => sum + count, 0) - Math.max(...parameters.counts) };
     },
   },
 };
@@ -159,6 +182,14 @@ export function generateMseGradientClosedFormFamily({ seed, caseId, difficulty }
   return generateDataMlFamily('optimize-mse-gradient-closed-form', { seed, caseId, difficulty });
 }
 
+export function solveAggregateMajorityRuleCount(parameters) {
+  return FAMILY_DEFINITIONS['aggregate-majority-rule-count'].solve(parameters);
+}
+
+export function generateAggregateMajorityRuleCountFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('aggregate-majority-rule-count', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -175,6 +206,10 @@ const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
     propertyTest: false,
     competencyIds: ['c-grad-regression', 'c-numpy-basics'],
   },
+];
+
+const AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES = [
+  { caseId: 'majority-baseline-errors', sourceLineage: ['w09-e2'] },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -219,6 +254,20 @@ export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
   activityType: 'numeric',
 };
 
+export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
+  familyId: 'aggregate-majority-rule-count',
+  familyGroup: 'aggregate-count',
+  summary: 'Berechnet die Fehlerzahl einer Majority-Baseline aus Klassenhäufigkeiten.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-ml-baseline'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
 export const DATA_ML_FAMILY_SPECS = [
   {
     ...COUNT_REMAINING_ROWS_CONTRACT,
@@ -234,5 +283,10 @@ export const DATA_ML_FAMILY_SPECS = [
     ...MSE_GRADIENT_CLOSED_FORM_CONTRACT,
     generate: generateMseGradientClosedFormFamily,
     solve: solveMseGradientClosedForm,
+  },
+  {
+    ...AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT,
+    generate: generateAggregateMajorityRuleCountFamily,
+    solve: solveAggregateMajorityRuleCount,
   },
 ];

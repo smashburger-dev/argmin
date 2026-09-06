@@ -4,7 +4,7 @@
   "contract": {
     "familyId": "trace-library-api-output",
     "familyGroup": "trace-state",
-    "summary": "Liest die Ausgabe einer dokumentierten Bibliotheksoperation und zählt bereinigte und fehlende Zeilen.",
+    "summary": "Sagt die exakte Ausgabe eines dokumentierten Bibliotheks-Snippets (pandas, NumPy, scikit-learn) voraus.",
     "taskArchetype": "predict-output",
     "authorityMode": "static",
     "masteryEligible": true,
@@ -15,6 +15,10 @@
       },
       {
         "caseId": "numpy-median-histogram-corrcoef",
+        "propertyTest": false
+      },
+      {
+        "caseId": "sklearn-split-no-shuffle",
         "propertyTest": false
       }
     ],
@@ -116,6 +120,55 @@
         "Bin-Kanten links und rechts inklusiv gelesen",
         "corrcoef-Matrix statt Eintrag [0, 1] weiterverwendet",
         "Median bei gerader Anzahl als einzelner Wert statt Mittel der mittleren beiden"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "sklearn-split-no-shuffle",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w09-e3"
+      ],
+      "competencyIds": [
+        "c-ml-baseline",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "from sklearn.model_selection import train_test_split\nX = [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9]]\nX_train, X_test = train_test_split(X, test_size=0.25,\n                                   random_state=0, shuffle=False)\nprint([x[0] for x in X_test])"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "[7, 8, 9]"
+      },
+      "prompt": "sklearn lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: scikit-learn läuft im Browser nicht — hier zählt API-Reading für <code>train_test_split</code>.",
+      "fullSolution": "n = 10, Testanteil ceil(0,25 · 10) = 3. Mit <code>shuffle=False</code> wird nicht gemischt: die letzten 3 Zeilen [7], [8], [9] bilden <code>X_test</code>. Der Listenausdruck gibt die erste Spalte jeder Testzeile aus: <code>[7, 8, 9]</code>.",
+      "hints": [
+        "test_size=0.25 bei 10 Zeilen: der Testanteil wird aufgerundet (ceil(0,25 · 10) = 3 Zeilen). Mit shuffle=False bleibt die Reihenfolge erhalten.",
+        "Mit shuffle=False geht der letzte Block in den Test. Die Ausgabe ist Python-Listennotation der ersten Spalte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output === '[0, 1, 2]'",
+          "then": "Das ist der erste Block. Ohne Shuffling bildet der letzte Block den Test — und der Testanteil wird aufgerundet."
+        },
+        {
+          "if": "output === '[0, 1, 2, 3, 4, 5, 6]'",
+          "then": "Das ist die Trainingsmenge. Gesucht ist der Test-Teil (kleiner, am Ende)."
+        },
+        {
+          "if": "output === '[2, 3, 4]'",
+          "then": "Die Blockgrenze ist falsch: ceil(0,25 · 10) = 3 Zeilen, nicht 2 — und ohne Shuffling liegt der Testblock am Ende."
+        }
+      ],
+      "typicalErrors": [
+        "Testanteil abrunden statt aufzurunden",
+        "mit shuffle=False den ersten Block als Test annehmen",
+        "vergessen, dass die innere Liste entpackt wird (x[0])"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"
