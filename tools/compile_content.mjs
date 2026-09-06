@@ -618,6 +618,7 @@ function buildFamilyActivities(learningModules, families) {
       );
       const familyDocument = familyDocuments.get(placement.familyId);
       const familyTitle = familyDocument?.contract?.summary || family.summary;
+      const staticCase = familyDocument?.cases?.some((entry) => entry.caseId === placement.caseId);
       const title = instance.title
         || (familyTitle ? `${familyTitle} · ${placement.caseId}` : stripPromptMarkup(instance.prompt));
       activities.push({
@@ -631,7 +632,7 @@ function buildFamilyActivities(learningModules, families) {
         competencyIds: [...(instance.competencyIds || [])],
         estimatedMinutes: placement.estimatedMinutes ?? 8,
         masteryEligible: instance.masteryEligible === true,
-        seeded: family.authorityMode === 'seeded',
+        seeded: !staticCase && family.authorityMode === 'seeded',
         moduleId: module.moduleId,
         lessonId: placement.lessonId ?? null,
       });
