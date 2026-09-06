@@ -9,6 +9,7 @@ import {
   genConditionalCount,
   genDedupRows,
   genBaselineCorrect,
+  genEnsembleAccuracy,
   genConfusionCount,
   genCvSpread,
   genSubgroupGapPp,
@@ -59,6 +60,10 @@ function profileAccepts(caseId, difficulty) {
         return counts[0] - counts[1] <= 10;
       };
     }
+  }
+  if (caseId === 'ensemble-majority-output-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.direction === 'count';
+    if (difficulty === 'stretch') return (parameters) => parameters.direction === 'percent';
   }
   if (caseId === 'mse-from-residuals') {
     if (difficulty === 'intro') return (parameters) => parameters.n <= 3;
@@ -176,8 +181,22 @@ const FAMILY_DEFINITIONS = {
   'aggregate-majority-rule-count': {
     cases: {
       'majority-baseline-errors': { generator: genBaselineCorrect },
+      'ensemble-majority-output-count': {
+        generator: genEnsembleAccuracy,
+        competencyIds: ['c-ml-ensembles'],
+      },
     },
     solve(parameters) {
+      if (parameters.caseId === 'ensemble-majority-output-count') {
+        const ones = parameters.votes[0].reduce(
+          (count, _, index) => count
+            + (parameters.votes[0][index] + parameters.votes[1][index] + parameters.votes[2][index] >= 2 ? 1 : 0),
+          0,
+        );
+        return {
+          value: parameters.direction === 'count' ? ones : ones * (100 / parameters.n),
+        };
+      }
       return { value: parameters.counts.reduce((sum, count) => sum + count, 0) - Math.max(...parameters.counts) };
     },
   },
@@ -338,6 +357,7 @@ const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
 
 const AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES = [
   { caseId: 'majority-baseline-errors', sourceLineage: ['w09-e2'] },
+  { caseId: 'ensemble-majority-output-count', sourceLineage: ['w15-e2'], competencyIds: ['c-ml-ensembles'] },
 ];
 
 const FORMULA_QUADRATIC_ERROR_CASE_TYPES = [
@@ -401,7 +421,7 @@ export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
 export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
   familyId: 'aggregate-majority-rule-count',
   familyGroup: 'aggregate-count',
-  summary: 'Berechnet die Fehlerzahl einer Majority-Baseline aus Klassenhäufigkeiten.',
+  summary: 'Zählt Vorkommen über Vorhersage- oder Labelmengen, wendet die Mehrheitsregel an und gibt die erfragte Anzahl oder den Anteil an.',
   taskArchetype: 'numeric-exact',
   authorityMode: 'seeded',
   masteryEligible: true,
