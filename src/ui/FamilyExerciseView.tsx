@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
-import { EXERCISE_FAMILIES, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
-import { loadFamilyCases } from '../adapters/content-repository';
+import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
 import { AnswerControls } from './AnswerControls';
 import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
@@ -30,6 +31,8 @@ function parseFamilyRef(ref: string): {
       : (() => { throw new Error(`Seed ungültig: ${seedPart}`); })();
   return { familyId, caseId, seed, difficulty };
 }
+
+configureExerciseFamilies(loadFamilyIndex());
 
 export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
   const [answer, setAnswer] = useState<unknown>(null);
@@ -60,7 +63,8 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
     if (!parsed) return () => { active = false; };
     void (async () => {
       try {
-        await loadFamilyCases(parsed.familyId);
+        const body = await loadFamilyCases(parsed.familyId);
+        if (body) registerStaticCases(parsed.familyId, body.cases);
         const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
         if (!active) return;
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');

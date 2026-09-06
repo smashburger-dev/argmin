@@ -1,8 +1,6 @@
 import contentIndex from '@content-index';
 import { exerciseChunks, familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
 import type { CatalogData, ExerciseSummary, LearningModule, Lesson, LegacyWeekSummary, ReviewRecord, SourceSummary, ToolCard } from '../app/types';
-import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
-import { configureExerciseFamilies } from '../../assets/js/domain/exercise_registry.mjs';
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
@@ -39,6 +37,7 @@ interface SectionIndex {
 
 type LessonBody = { lessonId: string; blocks: Lesson['blocks'] };
 type ExerciseBody = Partial<ExerciseSummary> & { definitionId: string };
+type FamilyCases = { familyId: string; cases: Array<Record<string, unknown>> };
 
 const EMPTY_EXERCISE_BODY = {
   parameters: {},
@@ -71,11 +70,10 @@ export class ContentUnavailableError extends Error {
 }
 
 const index = contentIndex as unknown as CompiledIndex;
-configureExerciseFamilies(index.families);
 
 const lessonCache = new Map<string, Lesson>();
 const exerciseCache = new Map<string, ExerciseSummary>();
-const familyCache = new Map<string, unknown>();
+const familyCache = new Map<string, FamilyCases>();
 const pending = new Map<string, Promise<unknown>>();
 
 function loadOnce<T>(key: string, run: () => Promise<T>): Promise<T> {
@@ -135,15 +133,18 @@ export function loadCatalog(): CatalogData {
   };
 }
 
-export async function loadFamilyCases(familyId: string): Promise<unknown | null> {
+export function loadFamilyIndex() {
+  return index.families;
+}
+
+export async function loadFamilyCases(familyId: string): Promise<FamilyCases | null> {
   const cached = familyCache.get(familyId);
   if (cached) return cached;
   const loader = familyChunks[familyId];
   if (!loader) return null;
   const body = await loadOnce(`family:${familyId}`, () => loader()) as {
-    default: { familyId: string; cases: Array<Record<string, unknown>> };
+    default: FamilyCases;
   };
-  registerStaticCases(familyId, body.default.cases);
   familyCache.set(familyId, body.default);
   return body.default;
 }
