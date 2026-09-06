@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-linalg-numpy-shape-contracts",
+  "version": 1,
+  "locale": "de",
+  "title": "NumPy-Arrays mit Shape-Verträgen",
+  "description": "Normalisierung, Dimensionsverträge und sichere Matrixoperationen in NumPy verbinden.",
+  "competencyIds": [
+    "c-numpy-basics"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-numpy-shape-contracts"
+  ],
+  "placements": [
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-01-matvec-contract-order",
+      "role": "curated",
+      "familyId": "construct-matvec-shape-contract",
+      "caseId": "matvec-contract-order",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 8,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-02-matvec-code-reference",
+      "role": "curated",
+      "familyId": "construct-matvec-shape-contract",
+      "caseId": "matvec-code-reference",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 12,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-03-synthesis-three-contracts",
+      "role": "curated",
+      "familyId": "construct-linalg-contract-synthesis",
+      "caseId": "synthesis-three-contracts",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 20,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-04-formula-scalar-product-practice",
+      "role": "practice-space",
+      "familyId": "formula-scalar-product",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-05-formula-det2-independence-practice",
+      "role": "practice-space",
+      "familyId": "formula-det2-independence",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-linalg-numpy-shape-contracts-06-transform-system-2x2-elimination-practice",
+      "role": "practice-space",
+      "familyId": "transform-system-2x2-elimination",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

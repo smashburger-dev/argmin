@@ -128,6 +128,9 @@ export function solveTraceAssignment(parameters) {
   if (parameters.caseId === 'stage-runner-error-states') {
     return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
   }
+  if (parameters.caseId === 'column-picture-trace') {
+    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
+  }
   if (parameters.caseId === 'overclaim-scanner-trace') {
     return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
   }
@@ -186,6 +189,7 @@ export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
     || caseId === 'metric-name-normalize-trace'
     || caseId === 'stage-runner-error-states'
     || caseId === 'overclaim-scanner-trace'
+    || caseId === 'column-picture-trace'
   ) {
     const body = staticCaseBody('trace-assignment-state', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
@@ -236,6 +240,11 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
       caseId: 'tree-majority-vote-trace',
       propertyTest: false,
       competencyIds: ['c-ml-ensembles', 'c-python-reading'],
+    },
+    {
+      caseId: 'column-picture-trace',
+      propertyTest: false,
+      competencyIds: ['c-linalg-matrices', 'c-python-reading'],
     },
     {
       caseId: 'rng-stream-reseed-trace',

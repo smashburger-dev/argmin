@@ -716,6 +716,51 @@
       },
       "activityType": "predict-output",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "column-picture-trace",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e15"
+      ],
+      "competencyIds": [
+        "c-linalg-matrices",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "spalte1 = (2, 1)\nspalte2 = (1, 3)\nx = (1, 2)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]",
+        "variables": [
+          {
+            "name": "b0",
+            "value": 4
+          },
+          {
+            "name": "b1",
+            "value": 7
+          }
+        ]
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Spaltenbild von Hand getracet: Was haben <code>b0</code> und <code>b1</code> nach Ablauf des Codes für Werte? Das ist genau $b = A\\,x$ mit $A=(\\text{spalte1}\\,|\\,\\text{spalte2})$.",
+      "fullSolution": "b0 = 1·2 + 2·1 = 4 und b1 = 1·1 + 2·3 = 7 — also b = (4, 7), exakt das Spaltenbild $b = x_1 a_1 + x_2 a_2$.",
+      "hints": [
+        "Was leistet jeder Koeffizient von x — welche Spalte gewichtet er, und welche Komponente?",
+        "b0 = 1·(erste Komponente von spalte1) + 2·(erste Komponente von spalte2); für b1 entsprechend die zweiten Komponenten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:b0+value:b1",
+          "then": "Prüfe die Indizes: b0 nutzt die jeweils ERSTEN Komponenten beider Spalten, b1 die jeweils zweiten."
+        }
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
     }
   ]
 }

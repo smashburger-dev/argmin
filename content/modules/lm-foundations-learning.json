@@ -17,7 +17,19 @@
   "lessonIds": [
     "l-foundations-learning"
   ],
-  "placements": [],
+  "placements": [
+    {
+      "placementId": "p-foundations-learning-error-journal-next-test",
+      "role": "curated",
+      "familyId": "classify-error-hypothesis",
+      "caseId": "error-journal-next-test",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-learning",
+      "masteryEligible": true
+    }
+  ],
   "projectIds": [],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"

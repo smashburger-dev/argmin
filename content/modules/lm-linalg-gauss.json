@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-linalg-gauss",
+  "version": 1,
+  "locale": "de",
+  "title": "Gauß-Elimination als prüfbarer Vertrag",
+  "description": "Erlaubte Zeilenoperationen, Pivotstruktur und Rang sicher lesen und anwenden.",
+  "competencyIds": [
+    "c-linalg-gauss"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-linalg-gauss"
+  ],
+  "placements": [
+    {
+      "placementId": "p-linalg-gauss-01-valid-operation-rhs",
+      "role": "curated",
+      "familyId": "classify-row-operation-validity",
+      "caseId": "valid-operation-rhs",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-gauss",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-gauss-02-row-operation-choice-contract",
+      "role": "curated",
+      "familyId": "classify-row-operation-validity",
+      "caseId": "row-operation-choice-contract",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-linalg-gauss",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-gauss-03-rank-3x3-staircase",
+      "role": "curated",
+      "familyId": "transform-rank-dependence-rowops",
+      "caseId": "rank-3x3-staircase",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-gauss",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-gauss-04-echelon-read-rank-case",
+      "role": "curated",
+      "familyId": "classify-rank-solution-case",
+      "caseId": "echelon-read-rank-case",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-gauss",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-gauss-05-rank-system-authored",
+      "role": "curated",
+      "familyId": "classify-rank-solution-case",
+      "caseId": "rank-system-authored",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 10,
+      "lessonId": "l-linalg-gauss",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-gauss-06-transform-system-2x2-elimination-practice",
+      "role": "practice-space",
+      "familyId": "transform-system-2x2-elimination",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

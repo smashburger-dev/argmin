@@ -46,10 +46,6 @@
         "w01-e9",
         "w01-e10",
         "w01-e11",
-        "f-algebra-equivalence-01",
-        "f-algebra-debug-01",
-        "f-algebra-both-sides-01",
-        "f-algebra-final-boss-01",
         "f-control-choice-01",
         "f-control-trace-01",
         "f-control-parsons-01",
@@ -63,8 +59,7 @@
         "f-testing-choice-01",
         "f-git-choice-01",
         "f-git-parsons-01",
-        "f-git-merge-debug-01",
-        "f-meta-error-log-01"
+        "f-git-merge-debug-01"
       ],
       "projectIds": [
         "p-foundations-data-checker"
@@ -214,11 +209,8 @@
         "l-numpy-shape-contracts"
       ],
       "exerciseDefinitionIds": [
-        "f-linalg-column-choice-01",
         "f-linalg-column-vector-01",
         "f-linalg-shape-debug-01",
-        "f-linalg-rank-system-debug-01",
-        "f-gauss-operation-choice-01",
         "f-linalg-final-boss-01",
         "w05-e1",
         "w05-e2",

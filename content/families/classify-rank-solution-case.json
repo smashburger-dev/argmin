@@ -60,6 +60,67 @@
       ],
       "prompt": "Das System in $x,y,z$ steht in Zeilenstufenform: \\[\\begin{array}{rrr|r}1&0&2&3\\\\0&1&-1&2\\\\0&0&0&0\\end{array}\\] Was folgt für Rang, freie Variable und Lösungsfall?",
       "fullSolution": "Zwei Pivotzeilen, also Rang 2. Drei Variablen minus Rang 2: $z$ ist frei, unendlich viele Lösungen. Die Nullzeile liest sich als $0=0$, nicht als Widerspruch."
+    },
+    {
+      "caseId": "rank-system-authored",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-linalg-rank-system-debug-01"
+      ],
+      "competencyIds": [
+        "c-linalg-systems",
+        "c-linalg-gauss",
+        "c-linalg-independence"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "rank-two-free"
+      },
+      "choices": [
+        {
+          "id": "rank-two-free",
+          "text": "Rang 2, eine freie Variable und unendlich viele Lösungen",
+          "correct": true
+        },
+        {
+          "id": "rank-three-unique",
+          "text": "Rang 3 und genau eine Lösung",
+          "correct": false
+        },
+        {
+          "id": "contradiction",
+          "text": "Keine Lösung, weil die letzte Zeile nur Nullen enthält",
+          "correct": false
+        },
+        {
+          "id": "rank-zero",
+          "text": "Rang 0, weil eine Nullzeile vorkommt",
+          "correct": false
+        }
+      ],
+      "prompt": "Nach korrekter Gauß-Elimination eines Systems mit drei Variablen entsteht $\\left(\\begin{array}{ccc|c}1&0&2&3\\\\0&1&-1&4\\\\0&0&0&0\\end{array}\\right)$. Welche Diagnose ist vollständig korrekt?",
+      "fullSolution": "Es gibt zwei Pivotpositionen, also Rang 2. Bei drei Variablen bleibt eine Variable frei. Die Nullzeile bedeutet $0=0$ und erzeugt keinen Widerspruch; daher gibt es unendlich viele Lösungen.",
+      "hints": [
+        "Zähle die Pivotzeilen, nicht die Gesamtzahl der Zeilen.",
+        "Eine Zeile $0=0$ ist kein Widerspruch; vergleiche Pivotzahl und Variablenzahl."
+      ],
+      "feedbackRules": [
+        {
+          "if": "contradiction",
+          "then": "Ein Widerspruch hätte rechts einen von null verschiedenen Wert, zum Beispiel $0=4$."
+        }
+      ],
+      "typicalErrors": [
+        "Nullzeile als Widerspruch lesen",
+        "Rang mit Zeilenzahl verwechseln",
+        "freie Variable übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
     }
   ]
 }
