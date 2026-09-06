@@ -33,8 +33,17 @@ test('every static case instantiates at its profile', () => {
 
 test('wrong static profiles fail closed', () => {
   for (const doc of docs.filter((item) => item.contract)) {
+    const family = families.get(doc.familyId);
     for (const item of doc.cases) {
-      const wrong = ['intro', 'core', 'stretch', 'challenge'].find((profile) => profile !== item.difficultyProfile);
+      const wrong = family.difficultyProfiles.find((profile) => profile !== item.difficultyProfile);
+      if (!wrong) {
+        const unavailable = item.difficultyProfile === 'intro' ? 'core' : 'intro';
+        assert.throws(
+          () => families.instantiate(doc.familyId, 0, unavailable, item.caseId),
+          new RegExp(`Unbekanntes Profil ${unavailable}`),
+        );
+        continue;
+      }
       assert.throws(
         () => families.instantiate(doc.familyId, 0, wrong, item.caseId),
         new RegExp(`Unbekanntes Profil ${wrong} für Fall ${item.caseId}`),
@@ -84,6 +93,17 @@ test('intro choice cases are not mastery eligible', () => {
     if (doc.contract?.taskArchetype !== 'choice-diagnose') continue;
     for (const item of doc.cases) {
       if (item.difficultyProfile === 'intro') assert.equal(item.masteryEligible, false);
+    }
+  }
+});
+
+test('manual-rubric cases are not mastery eligible', () => {
+  for (const doc of docs) {
+    for (const item of doc.cases) {
+      if (item.graderId !== 'manual-rubric') continue;
+      assert.equal(item.masteryEligible, false);
+      const instance = families.instantiate(doc.familyId, 0, item.difficultyProfile, item.caseId);
+      assert.equal(instance.masteryEligible, false);
     }
   }
 });

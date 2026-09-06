@@ -51,7 +51,7 @@ export function solveScalarProduct(parameters) {
 export function generateScalarProductFamily({ seed, caseId, difficulty }) {
   if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3'].includes(caseId)) {
     const body = staticCaseBody('formula-scalar-product', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
   if (caseId !== 'matmul-entry-seeded') throw new Error(`Unbekannter Fall ${caseId}`);
@@ -163,7 +163,7 @@ export function solveSystem2x2(parameters) {
 export function generateSystem2x2Family({ seed, caseId, difficulty }) {
   if (['system-w05-e11', 'system-w05-e6'].includes(caseId)) {
     const body = staticCaseBody('transform-system-2x2-elimination', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
   if (caseId !== 'system-seeded-2x2') throw new Error(`Unbekannter Fall ${caseId}`);
@@ -221,7 +221,7 @@ export function solveShapeContract(parameters) {
 export function generateShapeContractFamily({ seed, caseId, difficulty }) {
   if (caseId === 'shapes-w18-broadcast-axes') {
     const body = staticCaseBody('validate-shape-contract', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
   if (caseId !== 'shapes-seeded-predict') throw new Error(`Unbekannter Fall ${caseId}`);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
-import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { EXERCISE_FAMILIES, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
-import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
+import { loadFamilyCases } from '../adapters/content-repository';
 import { AnswerControls } from './AnswerControls';
 import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
@@ -42,7 +42,7 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
   const [masteryNote, setMasteryNote] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
-  const [instance, setInstance] = useState<any>(null);
+  const [instance, setInstance] = useState<ReturnType<typeof EXERCISE_FAMILIES.instantiate> | null>(null);
   const [summary, setSummary] = useState('');
 
   let parsed: ReturnType<typeof parseFamilyRef> | null = null;
@@ -60,7 +60,6 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
     if (!parsed) return () => { active = false; };
     void (async () => {
       try {
-        configureExerciseFamilies(loadFamilyIndex());
         await loadFamilyCases(parsed.familyId);
         const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
         if (!active) return;

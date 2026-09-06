@@ -144,7 +144,7 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
   const tier = profileTier(difficulty);
   if (caseId === 'two-step-fixed-instance') {
     const body = staticCaseBody('transform-linear-equation-isolate', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
   if (caseId === 'two-step-seeded-retrieval') {
@@ -1351,7 +1351,7 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
   assertProfile(difficulty);
   if (caseId === 'elif-chain-five-outcomes') {
     const body = staticCaseBody('validate-test-design-coverage', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
   if (caseId === 'nested-if-decision-tree') {

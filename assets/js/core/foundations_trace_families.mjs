@@ -212,7 +212,7 @@ export function generateTraceCallCompositionFamily({ seed, caseId, difficulty })
   requireTraceProfile(difficulty);
   if (caseId === 'two-functions-one-print') {
     const body = staticCaseBody('trace-call-composition', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
   if (caseId !== 'both-orders-linear-functions') throw new Error(`Unbekannter Fall ${caseId}`);

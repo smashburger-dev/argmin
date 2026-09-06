@@ -159,7 +159,7 @@
     {
       "caseId": "product-definition-rationale",
       "difficultyProfile": "core",
-      "masteryEligible": true,
+      "masteryEligible": false,
       "sourceLineage": [
         "w05-e9"
       ],
