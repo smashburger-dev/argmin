@@ -248,10 +248,6 @@ const FAMILY_DEFINITIONS = {
         generator: genAllowedActionCount,
         competencyIds: ['c-genai-prototype'],
       },
-      'allowed-action-count': {
-        generator: genAllowedActionCount,
-        competencyIds: ['c-genai-prototype'],
-      },
     },
     solve(parameters) {
       if (parameters.caseId === 'compare-systems-metric') {
@@ -271,15 +267,6 @@ const FAMILY_DEFINITIONS = {
         return {
           value: (100 * parameters.lambda1)
             / (parameters.lambda1 + parameters.lambda2 + parameters.lambda3),
-        };
-      }
-      if (parameters.caseId === 'allowed-action-count') {
-        return {
-          value: parameters.shape === 'allowed'
-            ? parameters.allowed
-            : parameters.shape === 'denied'
-              ? parameters.denied
-              : (100 * parameters.allowed) / parameters.total,
         };
       }
       if (parameters.caseId === 'allowed-action-count') {
@@ -358,18 +345,6 @@ const FAMILY_DEFINITIONS = {
       'threshold-under-asymmetric-cost': {},
       'sigmoid-predict-numpy': {},
       'confusion-cost-report': {},
-      'answer-filter-precision-recall-f1': {
-        generator: genF1orPrecision,
-        competencyIds: ['c-genai-eval'],
-      },
-      'injection-filter-counts': {
-        generator: genInjectionFlagCount,
-        competencyIds: ['c-genai-security'],
-      },
-      'subgroup-rate-gap-permille': {
-        generator: genSubgroupCost,
-        competencyIds: ['c-research-responsible'],
-      },
       'metric-code-output-trace': {},
       'confusion-from-rows': {},
       'contains-injection-rules': {},
@@ -409,26 +384,6 @@ const FAMILY_DEFINITIONS = {
       }
       if (parameters.caseId === 'subgroup-rate-gap-permille') {
         return { value: subgroupRatePerMille(parameters.a, parameters.b, parameters.kind) };
-      }
-      if (parameters.caseId === 'answer-filter-precision-recall-f1') {
-        if (parameters.shape === 'precision') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fp) };
-        if (parameters.shape === 'recall') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
-        return { value: (200 * parameters.tp) / (2 * parameters.tp + parameters.fp + parameters.fn) };
-      }
-      if (parameters.caseId === 'injection-filter-counts') {
-        if (parameters.shape === 'missed') return { value: parameters.fn };
-        if (parameters.shape === 'false-alarms') return { value: parameters.fp };
-        if (parameters.shape === 'caught-percent') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
-        return { value: parameters.tn };
-      }
-      if (parameters.caseId === 'subgroup-rate-gap-permille') {
-        return {
-          value: subgroupRatePerMille(
-            parameters.gruppeA,
-            parameters.gruppeB,
-            parameters.shape === 'fpr-diff' ? 'fpr' : 'selrate',
-          ),
-        };
       }
       return staticExpected('aggregate-confusion-metric', parameters);
     },
@@ -544,10 +499,6 @@ const FAMILY_DEFINITIONS = {
         generator: genCardAudit,
         competencyIds: ['c-research-cards'],
       },
-      'card-audit-missing-count': {
-        generator: genCardAudit,
-        competencyIds: ['c-research-cards'],
-      },
     },
     solve(parameters) {
       if (parameters.caseId === 'greedy-step-stat') {
@@ -562,13 +513,6 @@ const FAMILY_DEFINITIONS = {
       }
       if (parameters.caseId === 'card-audit-missing-count') {
         return { value: countCardDefects(parameters.karten, parameters.pflichtfelder) };
-      }
-      if (parameters.caseId === 'card-audit-missing-count') {
-        const required = {
-          data: ['name', 'zweck', 'herkunft', 'lizenz', 'n_beispiele'],
-          model: ['name', 'zweck', 'version', 'trainingsdaten', 'metrik', 'schwellenwert', 'bekannte_grenzen'],
-        };
-        return { value: countCardDefects(parameters.cards, required) };
       }
       if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
       if (parameters.variant === 'relative-percent') {
