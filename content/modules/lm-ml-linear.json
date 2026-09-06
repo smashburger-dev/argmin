@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-linear",
+  "version": 1,
+  "locale": "de",
+  "title": "Lineare Regression: Fit, Fehlermaße und Residuenanalyse",
+  "description": "Lerne lineare Modelle zu fitten, Fehlermaße zu berechnen und Residuen systematisch zu analysieren.",
+  "competencyIds": [
+    "c-ml-linear"
+  ],
+  "requires": [
+    "c-ml-baseline",
+    "c-grad-regression"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-linear"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-linear-rmse",
+      "role": "curated",
+      "familyId": "formula-quadratic-error-metric",
+      "caseId": "rmse-unit-from-mse",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-linear-mse-residuals",
+      "role": "curated",
+      "familyId": "formula-quadratic-error-metric",
+      "caseId": "mse-from-residuals",
+      "seed": 10001,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-linear-r2",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "r2-explained-share",
+      "seed": 10002,
+      "difficulty": "core",
+      "estimatedMinutes": 7,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-linear-fit",
+      "role": "curated",
+      "familyId": "fit-predict-metrics",
+      "caseId": "linear-fit-lstsq",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 30,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-linear-report",
+      "role": "curated",
+      "familyId": "fit-predict-metrics",
+      "caseId": "regression-report",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-linear-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-quadratic-error-metric",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
