@@ -11,6 +11,7 @@ import {
   genBaselineCorrect,
   genConfusionCount,
   genCvSpread,
+  genSubgroupGapPp,
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
@@ -31,6 +32,10 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'conditional-count-percent') {
     if (difficulty === 'intro') return (parameters) => parameters.direction === 'count';
     if (difficulty === 'stretch') return (parameters) => parameters.direction === 'percent';
+  }
+  if (caseId === 'subgroup-error-gap-pp') {
+    if (difficulty === 'intro') return (parameters) => parameters.n === 100;
+    if (difficulty === 'stretch') return (parameters) => parameters.n === 20 || parameters.n === 25;
   }
   if (caseId === 'mse-gradient-wrt-w') {
     if (difficulty === 'intro') return (parameters) => parameters.n === 2;
@@ -107,8 +112,15 @@ const FAMILY_DEFINITIONS = {
         generator: genR2Share,
         competencyIds: ['c-ml-linear'],
       },
+      'subgroup-error-gap-pp': {
+        generator: genSubgroupGapPp,
+        competencyIds: ['c-ml-erroranalysis'],
+      },
     },
     solve(parameters) {
+      if (parameters.caseId === 'subgroup-error-gap-pp') {
+        return { value: (100 * Math.abs(parameters.e1 - parameters.e2)) / parameters.n };
+      }
       if (parameters.caseId === 'r2-explained-share') {
         return { value: 100 - (100 * parameters.ssRes) / parameters.ssTot };
       }
@@ -298,6 +310,7 @@ const COUNT_REMAINING_ROWS_CASE_TYPES = [
 const FORMULA_RATIO_PERCENT_CASE_TYPES = [
   { caseId: 'conditional-count-percent', sourceLineage: ['w07-e2'], competencyIds: ['c-eda-viz'] },
   { caseId: 'r2-explained-share', sourceLineage: ['w10-e3'], competencyIds: ['c-ml-linear'] },
+  { caseId: 'subgroup-error-gap-pp', sourceLineage: ['w13-e2'], competencyIds: ['c-ml-erroranalysis'] },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
