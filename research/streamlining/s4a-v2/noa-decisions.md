@@ -230,3 +230,9 @@ Quelle: Noa, schriftlich, nach Gegenreview.
   verschobenen/gelöschten Code gekoppelte Tests fallen mit.
 - Schema `exercise-family` erlaubt jetzt einen Falltyp
   (Runtime-Regel seit S4C).
+
+## 2026-09-06: S4D8 W06 Datenbereinigung (umgesetzt)
+
+Erstes Data/ML-Modul `lm-data-cleaning` nach E1–E6: 4 Familien (1 seeded,
+3 statisch als JSON), 6 Fälle, `w06.json` bleibt. Details:
+`docs/session-2026-09-06-s4d8-data-cleaning.md`.
