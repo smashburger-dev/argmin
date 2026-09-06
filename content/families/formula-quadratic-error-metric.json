@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-quadratic-error-metric",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "rmse-unit-from-mse",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w10-e1"
+      ],
+      "competencyIds": [
+        "c-ml-linear"
+      ],
+      "parameters": {
+        "mse": 25,
+        "unit": "Euro"
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "RMSE = 25 — MSE und RMSE sind beide Fehlermaße und unterscheiden sich nur im Namen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "RMSE = 5, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (Euro).",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "RMSE = 5, ist aber einheitenlos, weil sich beim Wurzelziehen die Einheit herauskürzt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Aus dem MSE allein lässt sich der RMSE nicht berechnen — man braucht die einzelnen Residuen.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Regressionsmodell für Reparaturkosten (Ziel in Euro) hat auf dem Testset MSE = 25. Welche Aussage über den RMSE ist korrekt?",
+      "fullSolution": "RMSE = √MSE = √25 = 5. MSE 25 hat die Einheit Euro², die Wurzel bringt den Wert zurück auf Euro — der typische Fehler liegt also in der Größenordnung von 5 Euro.",
+      "hints": [
+        "MSE mittelt quadrierte Fehler; die Wurzel macht die Quadrierung rückgängig.",
+        "Welche Einheit trägt der RMSE, wenn das Ziel in Euro gemessen wird?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Quadratwurzel fehlt: RMSE = √MSE. Nur der RMSE liegt in der Zieleinheit."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Wert 5 stimmt, aber die Einheit bleibt: Wurzel aus Euro² ist Euro — gerade deshalb interpretiert man RMSE, nicht MSE."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "RMSE = √MSE — der MSE-Wert reicht, die einzelnen Residuen sind dafür nicht nötig."
+        }
+      ],
+      "typicalErrors": [
+        "Wurzel beim Übergang MSE → RMSE vergessen",
+        "die Einheiten von MSE (quadratisch) und RMSE (Zieleinheit) verwechseln",
+        "glauben, RMSE brauche die Einzelfehler"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

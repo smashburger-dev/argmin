@@ -7,8 +7,10 @@ import {
   DATA_ML_FAMILY_SPECS,
   generateAggregateMajorityRuleCountFamily,
   generateCountRemainingRowsFamily,
+  generateFormulaQuadraticErrorMetricFamily,
   generateMseGradientClosedFormFamily,
   generateFormulaRatioPercentMetricFamily,
+  solveFormulaQuadraticErrorMetric,
   solveAggregateMajorityRuleCount,
   solveCountRemainingRows,
   solveMseGradientClosedForm,
@@ -18,7 +20,9 @@ import {
   genBaselineCorrect,
   genCompleteRows,
   genDedupRows,
+  genMseFromResiduals,
   genMseGradient,
+  genR2Share,
 } from '../assets/js/core/data_ml_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
@@ -31,6 +35,7 @@ const mseGradientDoc = JSON.parse(readFileSync(join(root, 'content/families/opti
 const taskTypeDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-task-type.json'), 'utf8'));
 const splitDoc = JSON.parse(readFileSync(join(root, 'content/families/reproduce-seeded-split.json'), 'utf8'));
 const metricsDoc = JSON.parse(readFileSync(join(root, 'content/families/fit-predict-metrics.json'), 'utf8'));
+const quadraticErrorDoc = JSON.parse(readFileSync(join(root, 'content/families/formula-quadratic-error-metric.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -38,6 +43,7 @@ registerStaticCases(mseGradientDoc.familyId, mseGradientDoc.cases);
 registerStaticCases(taskTypeDoc.familyId, taskTypeDoc.cases);
 registerStaticCases(splitDoc.familyId, splitDoc.cases);
 registerStaticCases(metricsDoc.familyId, metricsDoc.cases);
+registerStaticCases(quadraticErrorDoc.familyId, quadraticErrorDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -46,6 +52,7 @@ const familyDocs = [
   taskTypeDoc,
   splitDoc,
   metricsDoc,
+  quadraticErrorDoc,
   JSON.parse(readFileSync(join(root, 'content/families/classify-confounding.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8')),
@@ -251,6 +258,145 @@ test('majority baseline family corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['aggregate-majority-rule-count'].digest);
+});
+
+test('quadratic error family preserves seeded generation, profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS[4];
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({ seed, caseId: 'mse-from-residuals', difficulty });
+      assert.equal(
+        generated.expected.value,
+        generated.parameters.residuals.reduce((sum, residual) => sum + residual ** 2, 0) / generated.parameters.n,
+      );
+      assert.equal(
+        solveFormulaQuadraticErrorMetric(generated.parameters).value,
+        generated.expected.value,
+      );
+      if (difficulty === 'intro') assert.ok(generated.parameters.n <= 3);
+      if (difficulty === 'stretch') assert.ok(generated.parameters.n >= 5);
+    }
+  }
+  assert.equal(
+    generateFormulaQuadraticErrorMetricFamily({
+      seed: 10001,
+      caseId: 'mse-from-residuals',
+      difficulty: 'core',
+    }).expected.value,
+    genMseFromResiduals(10001).expected,
+  );
+  assert.equal(
+    generateFormulaQuadraticErrorMetricFamily({
+      seed: 10001,
+      caseId: 'mse-from-residuals',
+      difficulty: 'core',
+    }).expected.value,
+    31,
+  );
+});
+
+test('R2 family case preserves seeded generation, profiles and solver', () => {
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = DATA_ML_FAMILY_SPECS[1].generate({
+        seed,
+        caseId: 'r2-explained-share',
+        difficulty,
+      });
+      assert.equal(
+        generated.expected.value,
+        100 - (100 * generated.parameters.ssRes) / generated.parameters.ssTot,
+      );
+      assert.equal(
+        solveFormulaRatioPercentMetric(generated.parameters).value,
+        generated.expected.value,
+      );
+      if (difficulty === 'intro') assert.equal(generated.parameters.phrasing, 'r2');
+      if (difficulty === 'stretch') assert.equal(generated.parameters.phrasing, 'context');
+    }
+  }
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 10002,
+      caseId: 'r2-explained-share',
+      difficulty: 'core',
+    }).expected.value,
+    genR2Share(10002).expected,
+  );
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 10002,
+      caseId: 'r2-explained-share',
+      difficulty: 'core',
+    }).expected.value,
+    84,
+  );
+});
+
+test('W10 seeded family corpora match their fixtures', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  for (const [fixtureId, generate, caseId] of [
+    [
+      'formula-quadratic-error-metric',
+      generateFormulaQuadraticErrorMetricFamily,
+      'mse-from-residuals',
+    ],
+    [
+      'formula-ratio-percent-metric-r2',
+      generateFormulaRatioPercentMetricFamily,
+      'r2-explained-share',
+    ],
+  ]) {
+    const instances = [];
+    for (const difficulty of profiles) {
+      for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+        instances.push(generate({ seed, caseId, difficulty }));
+      }
+    }
+    const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+    assert.equal(digest, fixture.families[fixtureId].digest);
+  }
+});
+
+test('W10 static cases enforce profiles and competency overrides', () => {
+  const rmse = EXERCISE_FAMILIES.instantiate(
+    'formula-quadratic-error-metric',
+    0,
+    'intro',
+    'rmse-unit-from-mse',
+  );
+  assert.equal(rmse.masteryEligible, false);
+  assert.deepEqual(rmse.competencyIds, ['c-ml-linear']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'formula-quadratic-error-metric',
+      0,
+      'core',
+      'rmse-unit-from-mse',
+    ),
+    /Unbekanntes Profil/,
+  );
+  const r2 = EXERCISE_FAMILIES.instantiate(
+    'formula-ratio-percent-metric',
+    10002,
+    'core',
+    'r2-explained-share',
+  );
+  assert.deepEqual(r2.competencyIds, ['c-ml-linear']);
+  const fit = EXERCISE_FAMILIES.instantiate(
+    'fit-predict-metrics',
+    0,
+    'core',
+    'linear-fit-lstsq',
+  );
+  assert.deepEqual(fit.competencyIds, ['c-ml-linear', 'c-numpy-basics']);
+  const report = EXERCISE_FAMILIES.instantiate(
+    'fit-predict-metrics',
+    0,
+    'stretch',
+    'regression-report',
+  );
+  assert.deepEqual(report.competencyIds, ['c-ml-linear']);
 });
 
 test('sklearn trace case grades and exposes the ML-baseline competency override', async () => {

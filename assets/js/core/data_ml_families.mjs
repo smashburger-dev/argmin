@@ -9,7 +9,9 @@ import {
   genConditionalCount,
   genDedupRows,
   genBaselineCorrect,
+  genMseFromResiduals,
   genMseGradient,
+  genR2Share,
 } from './data_ml_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
@@ -45,6 +47,14 @@ function profileAccepts(caseId, difficulty) {
         return counts[0] - counts[1] <= 10;
       };
     }
+  }
+  if (caseId === 'mse-from-residuals') {
+    if (difficulty === 'intro') return (parameters) => parameters.n <= 3;
+    if (difficulty === 'stretch') return (parameters) => parameters.n >= 5;
+  }
+  if (caseId === 'r2-explained-share') {
+    if (difficulty === 'intro') return (parameters) => parameters.phrasing === 'r2';
+    if (difficulty === 'stretch') return (parameters) => parameters.phrasing === 'context';
   }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
@@ -83,8 +93,15 @@ const FAMILY_DEFINITIONS = {
         generator: genConditionalCount,
         competencyIds: ['c-eda-viz'],
       },
+      'r2-explained-share': {
+        generator: genR2Share,
+        competencyIds: ['c-ml-linear'],
+      },
     },
     solve(parameters) {
+      if (parameters.caseId === 'r2-explained-share') {
+        return { value: 100 - (100 * parameters.ssRes) / parameters.ssTot };
+      }
       if (parameters.direction === 'count') return { value: (parameters.nA * parameters.p) / parameters.q };
       return { value: (100 * parameters.c) / parameters.n };
     },
@@ -104,6 +121,20 @@ const FAMILY_DEFINITIONS = {
           (sum, [x, y]) => sum + x * (w * x + b - y),
           0,
         ),
+      };
+    },
+  },
+  'formula-quadratic-error-metric': {
+    cases: {
+      'rmse-unit-from-mse': {},
+      'mse-from-residuals': { generator: genMseFromResiduals },
+    },
+    solve(parameters) {
+      if (parameters.caseId === 'rmse-unit-from-mse') {
+        return staticExpected('formula-quadratic-error-metric', parameters);
+      }
+      return {
+        value: parameters.residuals.reduce((sum, residual) => sum + residual ** 2, 0) / parameters.n,
       };
     },
   },
@@ -182,6 +213,14 @@ export function generateMseGradientClosedFormFamily({ seed, caseId, difficulty }
   return generateDataMlFamily('optimize-mse-gradient-closed-form', { seed, caseId, difficulty });
 }
 
+export function solveFormulaQuadraticErrorMetric(parameters) {
+  return FAMILY_DEFINITIONS['formula-quadratic-error-metric'].solve(parameters);
+}
+
+export function generateFormulaQuadraticErrorMetricFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('formula-quadratic-error-metric', { seed, caseId, difficulty });
+}
+
 export function solveAggregateMajorityRuleCount(parameters) {
   return FAMILY_DEFINITIONS['aggregate-majority-rule-count'].solve(parameters);
 }
@@ -197,6 +236,7 @@ const COUNT_REMAINING_ROWS_CASE_TYPES = [
 
 const FORMULA_RATIO_PERCENT_CASE_TYPES = [
   { caseId: 'conditional-count-percent', sourceLineage: ['w07-e2'], competencyIds: ['c-eda-viz'] },
+  { caseId: 'r2-explained-share', sourceLineage: ['w10-e3'], competencyIds: ['c-ml-linear'] },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
@@ -210,6 +250,11 @@ const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
 
 const AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES = [
   { caseId: 'majority-baseline-errors', sourceLineage: ['w09-e2'] },
+];
+
+const FORMULA_QUADRATIC_ERROR_CASE_TYPES = [
+  { caseId: 'rmse-unit-from-mse', propertyTest: false },
+  { caseId: 'mse-from-residuals', sourceLineage: ['w10-e2'] },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -229,7 +274,7 @@ export const COUNT_REMAINING_ROWS_CONTRACT = {
 export const FORMULA_RATIO_PERCENT_CONTRACT = {
   familyId: 'formula-ratio-percent-metric',
   familyGroup: 'formula-apply',
-  summary: 'Wendet bedingte Anteile als Anzahl oder Prozentwert auf EDA-Daten an.',
+  summary: 'Wendet Verhältnis- und Prozentmetriken (bedingte Anteile, R²) als geschlossene Formel auf gezählte Größen an.',
   taskArchetype: 'numeric-exact',
   authorityMode: 'seeded',
   masteryEligible: true,
@@ -268,6 +313,20 @@ export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
   activityType: 'numeric',
 };
 
+export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
+  familyId: 'formula-quadratic-error-metric',
+  familyGroup: 'formula-apply',
+  summary: 'Berechnet quadratische Fehlermaße und ordnet ihre Einheit korrekt ein.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: FORMULA_QUADRATIC_ERROR_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-ml-linear'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
 export const DATA_ML_FAMILY_SPECS = [
   {
     ...COUNT_REMAINING_ROWS_CONTRACT,
@@ -288,5 +347,10 @@ export const DATA_ML_FAMILY_SPECS = [
     ...AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT,
     generate: generateAggregateMajorityRuleCountFamily,
     solve: solveAggregateMajorityRuleCount,
+  },
+  {
+    ...FORMULA_QUADRATIC_ERROR_CONTRACT,
+    generate: generateFormulaQuadraticErrorMetricFamily,
+    solve: solveFormulaQuadraticErrorMetric,
   },
 ];
