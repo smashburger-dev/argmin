@@ -17,6 +17,7 @@ import {
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
+  genPcaVariancePercent,
 } from './data_ml_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
@@ -81,6 +82,10 @@ function profileAccepts(caseId, difficulty) {
     if (difficulty === 'intro') return (parameters) => parameters.k === 4;
     if (difficulty === 'stretch') return (parameters) => parameters.k === 10;
   }
+  if (caseId === 'pca-explained-variance-percent') {
+    if (difficulty === 'intro') return (parameters) => parameters.total === 50;
+    if (difficulty === 'stretch') return (parameters) => parameters.total === 25;
+  }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
 
@@ -130,6 +135,10 @@ const FAMILY_DEFINITIONS = {
         generator: genShrinkagePercent,
         competencyIds: ['c-ml-regularization'],
       },
+      'pca-explained-variance-percent': {
+        generator: genPcaVariancePercent,
+        competencyIds: ['c-ml-svm-pca'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'ridge-shrinkage-percent') {
@@ -141,6 +150,12 @@ const FAMILY_DEFINITIONS = {
       }
       if (parameters.caseId === 'r2-explained-share') {
         return { value: 100 - (100 * parameters.ssRes) / parameters.ssTot };
+      }
+      if (parameters.caseId === 'pca-explained-variance-percent') {
+        return {
+          value: (100 * parameters.lambda1)
+            / (parameters.lambda1 + parameters.lambda2 + parameters.lambda3),
+        };
       }
       if (parameters.direction === 'count') return { value: (parameters.nA * parameters.p) / parameters.q };
       return { value: (100 * parameters.c) / parameters.n };
@@ -344,6 +359,7 @@ const FORMULA_RATIO_PERCENT_CASE_TYPES = [
   { caseId: 'r2-explained-share', sourceLineage: ['w10-e3'], competencyIds: ['c-ml-linear'] },
   { caseId: 'subgroup-error-gap-pp', sourceLineage: ['w13-e2'], competencyIds: ['c-ml-erroranalysis'] },
   { caseId: 'ridge-shrinkage-percent', sourceLineage: ['w14-e2'], competencyIds: ['c-ml-regularization'] },
+  { caseId: 'pca-explained-variance-percent', sourceLineage: ['w16-e2'], competencyIds: ['c-ml-svm-pca'] },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-supervision-scaling",
+  "contract": {
+    "familyId": "classify-supervision-scaling",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Verfahren der Überwachungsebene zu (überwacht gegen unüberwacht) und begründet den gemeinsamen Skalierungsbedarf über Distanzen bzw. Varianzen.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "supervised-vs-unsupervised-scaling",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-ml-svm-pca"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "supervised-vs-unsupervised-scaling",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w16-e3"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Zuordnung Skalen und Aufsicht: Du hast SVM (Klassifikation mit Labels), PCA (Richtungen größter Varianz) und k-Means (Clustering). Welche Aussage über die drei Verfahren ist korrekt?",
+      "fullSolution": "SVM ist überwacht (Labels), PCA und k-Means unüberwacht. Alle drei reagieren auf Merkmals-Skalen: SVM und k-Means über Distanzen, PCA über Varianzen — deshalb vorher standardisieren (Statistiken nur aus dem Trainingsteil).",
+      "hints": [
+        "Überwacht heißt: Es gibt eine Zielvariable (Labels), aus der gelernt wird. Welche der drei Verfahren benutzt Labels?",
+        "k ist ein Hyperparameter wie λ in Woche 14 — das Vorgeben von k ist kein Label."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "„Lernen aus Daten“ macht ein Verfahren nicht überwacht — ohne Zielvariable ist es unüberwacht (PCA, k-Means)."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "k vorzugeben ist Hyperparameter-Wahl wie λ bei Ridge — k-Means nutzt während des Laufens keine Labels."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Genau umgekehrt: SVM braucht Labels; und Abstandsbasierte wie SVM und k-Means brauchen Skalen am dringendsten."
+        }
+      ],
+      "typicalErrors": [
+        "Hyperparameter (k) mit Labels verwechseln",
+        "Skalierungsbedarf nur bei einem Verfahren vermuten",
+        "PCA wegen „Komponenten“ als überwacht einstufen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

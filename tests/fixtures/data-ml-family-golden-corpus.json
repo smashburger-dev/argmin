@@ -135,6 +135,18 @@
       ],
       "instances": 192,
       "digest": "f7e9a9e3f91b1a4e568cbbc6d74ff84c04bcccc0d8387f729e9b7ea85c5a42c6"
+    },
+    "formula-ratio-percent-metric-pca": {
+      "cases": [
+        "pca-explained-variance-percent"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "e3b843e7473bcee2fcb3e95b60dab73d6e5ed3c8a21e4066f772d4bf43ef6a08"
     }
   }
 }

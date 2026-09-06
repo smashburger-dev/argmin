@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-svm-margin",
+  "contract": {
+    "familyId": "classify-svm-margin",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Margin-Aussagen der Hard-Margin-SVM der geometrischen Definition (Korridorbreite 2/||w||, Stützvektoren als Randpunkte) zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "hard-margin-width",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-svm-pca"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "hard-margin-width",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w16-e1"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Konzept-Check SVM: Was beschreibt der Margin einer Hard-Margin-SVM im zweidimensionalen Fall? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Der Margin ist die Breite des Korridors um die Trenngerade, in dem kein Trainingspunkt liegt. Als kleinste-Norm-Formulierung: minimiere ||w||², der Margin ist 2/||w||. Die Punkte auf dem Rand sind die Stützvektoren.",
+      "hints": [
+        "Denk an die geometrische Vorstellung: Um die Trenngerade liegt ein leerer Streifen.",
+        "Die SVM minimiert die Norm des Normalenvektors der Trenngeraden — überlege, wie diese Norm mit der Breite des leeren Korridors zusammenhängt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der Punktabstand ist nicht der Margin — der Korridor wird von der Geraden aus gemessen, nicht von Punkt zu Punkt."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Stützvektoren liegen am Korriderrand und definieren die Lösung — der Margin selbst ist aber eine Breite, keine Anzahl."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Margin ist eine geometrische Größe des Modells, keine Performanzmetrik."
+        }
+      ],
+      "typicalErrors": [
+        "Margin mit Punktabstand oder Klassengenauigkeit verwechseln",
+        "Zusammenhang kleines ||w|| und großer Margin umkehren",
+        "Stützvektoren als alle Trainingspunkte verstehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Den Abstand zwischen den beiden klassennächsten Punkten der Klassen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Anzahl der Stützvektoren, die die Trenngerade definieren.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Genauigkeit des Klassifikators auf den Trainingsdaten.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Breite des Korridors um die Trenngerade, den kein Trainingspunkt durchquert; sie beträgt 2/||w|| — kleines ||w|| heißt großer Margin.",
+          "correct": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-svm-pca",
+  "version": 1,
+  "locale": "de",
+  "title": "Margins, PCA und k-Means: Abstände ohne Ambiguität",
+  "description": "Lerne Margin-Geometrie, PCA und k-Means mit deterministischen Formeln, Eigenwerten und skalierten Daten anzuwenden.",
+  "competencyIds": [
+    "c-ml-svm-pca"
+  ],
+  "requires": [
+    "c-ml-cv",
+    "c-linalg-independence"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-svm-pca"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-svm-pca-margin",
+      "role": "curated",
+      "familyId": "classify-svm-margin",
+      "caseId": "hard-margin-width",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-svm-pca",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-svm-pca-variance",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "pca-explained-variance-percent",
+      "seed": 16001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-svm-pca",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-svm-pca-supervision",
+      "role": "curated",
+      "familyId": "classify-supervision-scaling",
+      "caseId": "supervised-vs-unsupervised-scaling",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-svm-pca",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-svm-pca-eigh",
+      "role": "curated",
+      "familyId": "fit-pca-kmeans-pipeline",
+      "caseId": "pca-eigh-projection",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-ml-svm-pca",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-svm-pca-standardize",
+      "role": "curated",
+      "familyId": "fit-pca-kmeans-pipeline",
+      "caseId": "standardize-pca-kmeans",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 45,
+      "lessonId": "l-ml-svm-pca",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-svm-pca-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "pca-explained-variance-percent",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
