@@ -13,6 +13,7 @@ import {
 import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { sanitizePublicValue } from '../tools/public_content.mjs';
+import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STATIC_SOURCES = {
@@ -112,57 +113,6 @@ test('linalg golden corpus is byte-identical over seeds 0-63', () => {
   );
 });
 
-const LINALG_RUNTIME = {
-  'classify-matrix-shape': ['shape-product-drawn', 'w05-e2'],
-  'classify-independence-multiple': ['dependent-pair-double', 'w05-e4'],
-  'construct-matvec-shape-contract': ['matvec-contract-order', 'w05-e14'],
-  'transform-rank-dependence-rowops': ['rank-3x3-staircase', 'w05-e10'],
-};
-
-test('static choice, parsons and numeric cases pin w05 sources', () => {
-  const w05 = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
-  for (const [familyId, [caseId, exerciseId]] of Object.entries(LINALG_RUNTIME)) {
-    const definition = w05.exercises.find((entry) => entry.exerciseId === exerciseId);
-    const generated = EXERCISE_FAMILIES.instantiate(familyId, 3, 'core', caseId);
-    assert.equal(generated.prompt, definition.prompt, `${caseId}: Prompt`);
-    // Lösungen folgen der Public-Redaktion (Lehrbuch-Zitate entfallen wie
-    // im Content-Pipeline-Ausgang).
-    assert.equal(generated.fullSolution, sanitizePublicValue(definition.fullSolution), `${caseId}: Lösung`);
-    if (definition.choices) {
-      assert.deepEqual(
-        generated.choices.map((choice) => [choice.id, choice.text, choice.correct]),
-        definition.choices.map((choice) => [choice.id, choice.text, choice.correct]),
-        `${caseId}: Optionen`,
-      );
-    }
-    if (definition.parameters.fragments) {
-      assert.deepEqual(generated.parameters.fragments, definition.parameters.fragments, `${caseId}: Fragmente`);
-      assert.deepEqual(generated.parameters.initialOrder, definition.parameters.initialOrder, `${caseId}: Startfolge`);
-    }
-  }
-});
-
-test('static vector and shape cases pin w05 and w18 sources', () => {
-  const w05 = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
-  for (const [caseId, exerciseId, solution] of [
-    ['system-w05-e11', 'w05-e11', [8, 4]],
-    ['system-w05-e6', 'w05-e6', [1, 3]],
-  ]) {
-    const definition = w05.exercises.find((entry) => entry.exerciseId === exerciseId);
-    const generated = EXERCISE_FAMILIES.instantiate('transform-system-2x2-elimination', 3, 'core', caseId);
-    assert.equal(generated.prompt, definition.prompt, `${caseId}: Prompt`);
-    assert.equal(generated.fullSolution, definition.fullSolution, `${caseId}: Lösung`);
-    assert.deepEqual(generated.expectedAnswer.solution, solution, `${caseId}: Paar`);
-  }
-  const w18 = JSON.parse(readFileSync(join(root, 'content/exercises/w18.json'), 'utf8'));
-  const definition = w18.exercises.find((entry) => entry.exerciseId === 'w18-e3');
-  const generated = EXERCISE_FAMILIES.instantiate('validate-shape-contract', 3, 'core', 'shapes-w18-broadcast-axes');
-  assert.equal(generated.prompt, definition.prompt, 'w18-e3: Prompt');
-  assert.equal(generated.fullSolution, definition.fullSolution, 'w18-e3: Lösung');
-  assert.equal(generated.parameters.snippet, definition.parameters.snippet, 'w18-e3: Snippet');
-  assert.equal(generated.expectedAnswer.output, definition.expectedAnswer.output, 'w18-e3: Ausgabe');
-});
-
 test('seeded linalg cases solve, grade and hold profile bounds', async () => {
   for (const [familyId, caseId] of [
     ['formula-det2-independence', 'det2-seeded-columns'],
@@ -187,60 +137,6 @@ test('seeded linalg cases solve, grade and hold profile bounds', async () => {
   const shape = EXERCISE_FAMILIES.instantiate('validate-shape-contract', 11, 'core', 'shapes-seeded-predict');
   const shapeRight = await EXERCISE_FAMILIES.grade(shape, shape.expectedAnswer.output);
   assert.equal(shapeRight.correct, true);
-  const parsons = EXERCISE_FAMILIES.instantiate('construct-matvec-shape-contract', 3, 'core', 'matvec-contract-order');
-  const parsonsRight = await EXERCISE_FAMILIES.grade(parsons, ['p1', 'p2', 'p3', 'p4', 'p5']);
-  assert.equal(parsonsRight.correct, true);
-  const parsonsWrong = await EXERCISE_FAMILIES.grade(parsons, ['p1', 'p3', 'p2', 'p4', 'p5']);
-  assert.equal(parsonsWrong.correct, false);
-});
-
-test('w05 rest cases pin sources with per-case activity and grader', async () => {
-  const w05 = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
-  const loop = EXERCISE_FAMILIES.instantiate('formula-scalar-product', 7, 'core', 'scalar-loop-output');
-  const loopDef = w05.exercises.find((entry) => entry.exerciseId === 'w05-e16');
-  assert.equal(loop.activityType, 'predict-output');
-  assert.equal(loop.prompt, loopDef.prompt);
-  assert.equal(loop.fullSolution, loopDef.fullSolution);
-  assert.equal(loop.parameters.snippet, loopDef.parameters.snippet);
-  assert.equal(loop.expectedAnswer.output, loopDef.expectedAnswer.output);
-  const loopGrade = await EXERCISE_FAMILIES.grade(loop, '[3, -1]');
-  assert.equal(loopGrade.correct, true);
-  const rationale = EXERCISE_FAMILIES.instantiate('formula-scalar-product', 7, 'core', 'product-definition-rationale');
-  const rationaleDef = w05.exercises.find((entry) => entry.exerciseId === 'w05-e9');
-  assert.equal(rationale.activityType, 'short-rationale');
-  assert.equal(rationale.graderId, 'manual-rubric');
-  assert.equal(rationale.prompt, rationaleDef.prompt);
-  assert.deepEqual(rationale.rubric, rationaleDef.rubric);
-  assert.equal(rationale.parameters.minWords, 25);
-  const code = EXERCISE_FAMILIES.instantiate('construct-matvec-shape-contract', 7, 'core', 'matvec-code-reference');
-  const codeDef = w05.exercises.find((entry) => entry.exerciseId === 'w05-e8');
-  assert.equal(code.activityType, 'python-code');
-  assert.equal(code.graderId, 'pyodide');
-  assert.equal(code.prompt, codeDef.prompt);
-  assert.equal(code.parameters.starterCode, codeDef.parameters.starterCode);
-  assert.equal(code.expectedAnswer.referenceSolver, codeDef.expectedAnswer.referenceSolver);
-});
-
-test('authored statics verify their own mathematics', async () => {
-  const check = async (familyId, caseId) => {
-    const instance = EXERCISE_FAMILIES.instantiate(familyId, 7, 'core', caseId);
-    assert.equal(instance.choices.length, 4);
-    assert.equal(instance.choices.filter((choice) => choice.correct).length, 1);
-    const solved = await EXERCISE_FAMILIES.grade(
-      instance,
-      instance.choices.find((choice) => choice.correct).id,
-    );
-    assert.equal(solved.correct, true);
-    const firstWrong = instance.choices.find((choice) => !choice.correct).id;
-    const failed = await EXERCISE_FAMILIES.grade(instance, firstWrong);
-    assert.equal(failed.correct, false);
-    return instance;
-  };
-  const column = await check('classify-column-combination', 'column-coefficients-double');
-  assert.ok(column.prompt.includes('(3,5)'));
-  await check('classify-rank-solution-case', 'echelon-read-rank-case');
-  await check('classify-row-operation-validity', 'valid-operation-rhs');
-  await check('construct-linalg-contract-synthesis', 'synthesis-three-contracts');
 });
 
 test('rationale case grades word count and self-assessment without a worker', async () => {

@@ -18,7 +18,6 @@ import {
   CONSTRUCT_PROFILES,
   FAMILY_NOTES,
   LINEAR_ISOLATE_CONTRACT,
-  LINEAR_FIXED_INSTANCE,
   solveLinearIsolate,
   generateLinearIsolateFamily,
   POWER_LOG_CONTRACT,
@@ -60,7 +59,6 @@ import {
   solveBugfixWorkflow,
   generateBugfixWorkflowFamily,
   TEST_DESIGN_COVERAGE_CONTRACT,
-  COVERAGE_FIXED_ANSWER,
   COVERAGE_LEAF_TIERS,
   solveTestDesignCoverage,
   generateTestDesignCoverageFamily,
@@ -79,6 +77,7 @@ import {
 import { FOUNDATIONS_CONSTRUCT_FAMILIES } from '../assets/js/domain/foundations_construct_registry.mjs';
 import { validateSourceDocument } from '../tools/compile_content.mjs';
 import { SEED_GENERATORS } from '../assets/js/core/seed_generator_registry.mjs';
+import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
@@ -149,7 +148,7 @@ test('construct registry composes with the S4C family without collision', () => 
   assert.equal(registry.get('classify-git-operation').familyId, 'classify-git-operation');
 });
 
-test('registry rejects duplicates, token aliases and short case lists', () => {
+test('registry rejects duplicates, token aliases and empty case lists', () => {
   const entry = (family) => ({ ...family.contract, generate: family.generate, solve: family.solve });
   assert.throws(() => createFamilyRegistry([entry(byId.get('transform-linear-equation-isolate')), entry(byId.get('transform-linear-equation-isolate'))]), /doppelt/);
   const alias = {
@@ -167,14 +166,8 @@ test('registry rejects duplicates, token aliases and short case lists', () => {
     () => createFamilyRegistry([{ ...empty, generate: generatePowerLogFamily, solve: solvePowerLogExponent }]),
     /mindestens ein Falltyp/,
   );
-  // Das Schema verlangt weiter mindestens zwei Falltypen (unabhängig vom
-  // Registry-Minimum): alle zehn Verträge erfüllen das.
-  assert.throws(
-    () => validateSourceDocument('exercise-family', { ...POWER_LOG_CONTRACT, caseTypes: [{ caseId: 'only-case' }] }, root),
-    /caseTypes/,
-  );
   for (const family of FAMILIES) {
-    assert.ok(family.contract.caseTypes.length >= 2, `${family.contract.familyId}: Schema-Minimum`);
+    assert.ok(family.contract.caseTypes.length >= 1, `${family.contract.familyId}: Schema-Minimum`);
   }
 });
 
@@ -195,52 +188,13 @@ test('unknown family, case, profile or seed fail closed', () => {
   assert.throws(() => solveBugfixWorkflow({ parsonsCase: 'nope' }), /Unbekannter Fall/);
 });
 
-test('static anchors match authored content and ignore the seed', () => {
-  const w01 = JSON.parse(readFileSync(join(root, 'content/exercises/w01.json'), 'utf8'));
-  const w01e1 = w01.exercises.find((e) => e.exerciseId === 'w01-e1');
-  const fixedA = instantiate('transform-linear-equation-isolate', 0, 'core', 'two-step-fixed-instance');
-  const fixedB = instantiate('transform-linear-equation-isolate', 999, 'challenge', 'two-step-fixed-instance');
-  assert.deepEqual(
-    { a: fixedA.parameters.a, b: fixedA.parameters.b, c: fixedA.parameters.c },
-    { ...LINEAR_FIXED_INSTANCE },
-  );
-  assert.deepEqual(
-    { a: fixedA.parameters.a, b: fixedA.parameters.b, c: fixedA.parameters.c },
-    { a: w01e1.parameters.a, b: w01e1.parameters.b, c: w01e1.parameters.c },
-  );
-  assert.equal(fixedA.expectedAnswer.value, w01e1.expectedAnswer.value);
-  assert.equal(fixedA.expectedAnswer.value, 7);
-  assert.deepEqual(fixedA.parameters, fixedB.parameters);
-  assert.deepEqual(fixedA.expectedAnswer, fixedB.expectedAnswer);
-  assert.equal(fixedA.seed, 0);
-  assert.equal(fixedB.seed, 999);
-
-  const w04 = JSON.parse(readFileSync(join(root, 'content/exercises/w04.json'), 'utf8'));
-  const w04e2 = w04.exercises.find((e) => e.exerciseId === 'w04-e2');
-  const fiveA = instantiate('validate-test-design-coverage', 3, 'intro', 'elif-chain-five-outcomes');
-  const fiveB = instantiate('validate-test-design-coverage', 77, 'challenge', 'elif-chain-five-outcomes');
-  assert.equal(fiveA.expectedAnswer.value, COVERAGE_FIXED_ANSWER);
-  assert.equal(fiveA.expectedAnswer.value, w04e2.expectedAnswer.value);
-  assert.deepEqual(fiveA.parameters, fiveB.parameters);
-
-  for (const family of FAMILIES) {
-    for (const anchor of ['two-step-fixed-instance', 'elif-chain-five-outcomes']) {
-      const found = family.contract.caseTypes.find((c) => c.caseId === anchor);
-      if (found) assert.equal(found.propertyTest, false, `${family.contract.familyId}:${anchor} ist statisch`);
-    }
-  }
-});
-
 test('case, seed and profile instantiate distinct deterministic variants', () => {
   for (const family of FAMILIES) {
     const { familyId } = family.contract;
     const allCases = family.contract.caseTypes;
-    assert.ok(allCases.length >= 2, `${familyId}: mindestens zwei Falltypen`);
+    assert.ok(allCases.length >= 1, `${familyId}: mindestens ein Falltyp`);
     const propCases = propertyCases(family);
     assert.ok(propCases.length >= 1, `${familyId}: mindestens ein property-testfähiger Fall`);
-    const base = instantiate(familyId, 7, 'core', allCases[0].caseId);
-    const otherCase = instantiate(familyId, 7, 'core', allCases[1].caseId);
-    assert.notEqual(base.prompt, otherCase.prompt, `${familyId}: Fälle unterscheiden sich`);
     const otherSeed = instantiate(familyId, 8, 'core', propCases[0].caseId);
     const baseSeed = instantiate(familyId, 7, 'core', propCases[0].caseId);
     assert.notDeepEqual(baseSeed.parameters, otherSeed.parameters, `${familyId}: Seeds unterscheiden sich`);

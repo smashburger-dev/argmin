@@ -40,9 +40,20 @@ test('split index plus bodies plus sections rebuild every lesson and definition 
   // Top-level catalog data must survive the split untouched — heavy route
   // sections ride in their own sidecar chunks and reattach field-exact.
   for (const key of Object.keys(publicBundle)) {
-    if (key === 'lessons' || key === 'exerciseDefinitions' || SECTION_KEYS.includes(key)) continue;
+    if (key === 'lessons' || key === 'exerciseDefinitions' || key === 'families' || SECTION_KEYS.includes(key)) continue;
     assert.deepEqual(publicSplit.index[key], publicBundle[key], `index field ${key} differs from the compiled bundle`);
   }
+  assert.deepEqual(
+    publicSplit.index.families,
+    publicBundle.families.map((family) => ({
+      familyId: family.familyId,
+      contract: family.contract,
+      cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible }) => ({
+        caseId, difficultyProfile, masteryEligible,
+      })),
+    })),
+    'family index differs from the compiled bundle metadata',
+  );
   for (const key of SECTION_KEYS) {
     assert.equal(publicSplit.index[key], undefined, `heavy section ${key} must not ship in the index`);
     assert.deepEqual(publicSplit.sections[Object.entries({ roadmap: 'legacyProjection', sources: 'sources', tools: 'tools', reviews: 'reviews' }).find(([, field]) => field === key)?.[0]][key],
@@ -116,11 +127,12 @@ test('written split artifacts match chunks.ts registration exactly and stay insi
     const importPaths = [...chunksSource.matchAll(/import\((['"])(.+?)\1\)/g)].map((match) => match[2]);
     const lessonImports = [...chunksSource.matchAll(/import\('\.\/lessons\/([^']+)\.json'\)/g)].map((match) => match[1]);
     const exerciseImports = [...chunksSource.matchAll(/import\('\.\/exercises\/([^']+)\.json'\)/g)].map((match) => match[1]);
+    const familyImports = [...chunksSource.matchAll(/import\('\.\/families\/([^']+)\.json'\)/g)].map((match) => match[1]);
     const sectionImports = [...chunksSource.matchAll(/import\('\.\/sections\/([^']+)\.json'\)/g)].map((match) => match[1]);
-    assert.equal(importPaths.length, publicBundle.lessons.length + publicBundle.exerciseDefinitions.length + sectionImports.length,
-      'chunks.ts must register exactly one import per lesson, per exercise and per route section');
+    assert.equal(importPaths.length, publicBundle.lessons.length + publicBundle.exerciseDefinitions.length + publicBundle.families.length + sectionImports.length,
+      'chunks.ts must register exactly one import per lesson, exercise, family and route section');
     assert.deepEqual(sectionImports.sort(), ['reviews', 'roadmap', 'sources', 'tools'], 'the four route sections must be registered');
-    const safePath = /^\.\/(?:lessons|exercises|sections)\/[A-Za-z0-9][A-Za-z0-9._-]{0,96}\.json$/;
+    const safePath = /^\.\/(?:lessons|exercises|families|sections)\/[A-Za-z0-9][A-Za-z0-9._-]{0,96}\.json$/;
     for (const path of importPaths) {
       assert.match(path, safePath, `chunk path ${path} is not a safe relative split path`);
       assert.ok(!path.includes('..') && !path.startsWith('/') && !path.includes('//') && !/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(path),
@@ -131,6 +143,7 @@ test('written split artifacts match chunks.ts registration exactly and stay insi
     // Registry equals the bundle ids in both directions.
     const registeredLessons = new Set(lessonImports);
     const registeredExercises = new Set(exerciseImports);
+    const registeredFamilies = new Set(familyImports);
     assert.deepEqual(
       [...registeredLessons].sort(),
       publicBundle.lessons.map((lesson) => lesson.lessonId).sort(),
@@ -141,12 +154,19 @@ test('written split artifacts match chunks.ts registration exactly and stay insi
       publicBundle.exerciseDefinitions.map((exercise) => exercise.definitionId).sort(),
       'chunks.ts exercise registry differs from the bundle definition ids',
     );
+    assert.deepEqual(
+      [...registeredFamilies].sort(),
+      publicBundle.families.map((family) => family.familyId).sort(),
+      'chunks.ts family registry differs from the bundle family ids',
+    );
 
     // No orphan chunk files: everything written is registered.
     const diskLessons = readdirSync(join(splitDir, 'lessons')).map((file) => file.replace(/\.json$/, ''));
     const diskExercises = readdirSync(join(splitDir, 'exercises')).map((file) => file.replace(/\.json$/, ''));
+    const diskFamilies = readdirSync(join(splitDir, 'families')).map((file) => file.replace(/\.json$/, ''));
     assert.deepEqual(diskLessons.filter((id) => !registeredLessons.has(id)), [], 'unregistered lesson chunk files on disk');
     assert.deepEqual(diskExercises.filter((id) => !registeredExercises.has(id)), [], 'unregistered exercise chunk files on disk');
+    assert.deepEqual(diskFamilies.filter((id) => !registeredFamilies.has(id)), [], 'unregistered family chunk files on disk');
     const diskSections = readdirSync(join(splitDir, 'sections')).map((file) => file.replace(/\.json$/, ''));
     assert.deepEqual(diskSections.filter((id) => !new Set(sectionImports).has(id)), [], 'unregistered section chunk files on disk');
 
@@ -165,6 +185,10 @@ test('written split artifacts match chunks.ts registration exactly and stay insi
     for (const { id, body } of publicSplit.exerciseBodies) {
       assert.deepEqual(JSON.parse(readFileSync(join(splitDir, 'exercises', `${id}.json`), 'utf8')), body,
         `written exercise chunk ${id} differs from buildSplitArtifacts output`);
+    }
+    for (const { id, body } of publicSplit.familyBodies) {
+      assert.deepEqual(JSON.parse(readFileSync(join(splitDir, 'families', `${id}.json`), 'utf8')), body,
+        `written family chunk ${id} differs from buildSplitArtifacts output`);
     }
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -192,6 +216,11 @@ test('repo .content-build/public/split is current against a fresh compile when p
     const path = join(splitDir, 'lessons', `${id}.json`);
     assert.ok(existsSync(path), `stale public split: lesson chunk ${id} missing`);
     assert.deepEqual(JSON.parse(readFileSync(path, 'utf8')), body, `stale public split: lesson chunk ${id} differs`);
+  }
+  for (const { id, body } of publicSplit.familyBodies) {
+    const path = join(splitDir, 'families', `${id}.json`);
+    assert.ok(existsSync(path), `stale public split: family chunk ${id} missing`);
+    assert.deepEqual(JSON.parse(readFileSync(path, 'utf8')), body, `stale public split: family chunk ${id} differs`);
   }
 });
 

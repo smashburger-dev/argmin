@@ -105,7 +105,7 @@ test('open-core export recompiles from filtered sources without private content'
     assert.equal(child.status, 0, child.stdout + child.stderr);
     const childTests = runInExport(target, ['--test', 'tests/generator_registry.test.mjs', 'tests/w31_w39_generators.test.mjs']);
     assert.equal(childTests.status, 0, childTests.stdout + childTests.stderr);
-    const testCount = /ℹ tests (\d+)/.exec(childTests.stdout)?.[1];
+    const testCount = /(?:ℹ|#) tests (\d+)/.exec(childTests.stdout)?.[1];
     assert.ok(Number(testCount) > 0, childTests.stdout + childTests.stderr);
     const bundle = compileContent({ projectRoot: target, profile: 'public' });
     const expectedCounts = expectedPublicCounts(target);

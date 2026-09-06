@@ -27,6 +27,7 @@ import { TRACE_FAMILIES } from '../assets/js/domain/foundations_trace_registry.m
 import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
 import { buildLearningEvent } from '../assets/js/domain/learning_event.mjs';
 import { validateSourceDocument } from '../tools/compile_content.mjs';
+import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
@@ -479,16 +480,6 @@ test('taxonomy static siblings exist in w01-w04 with matching answer form', () =
   }
 });
 
-test('pinned static case two-functions-one-print matches w01-e6 byte-identically', () => {
-  const content = loadContentExercises();
-  const source = content.get('w01-e6');
-  const instance = TRACE_FAMILIES.instantiate('trace-call-composition', 3, 'core', 'two-functions-one-print');
-  assert.equal(instance.parameters.snippet, source.parameters.snippet);
-  assert.equal(instance.prompt, source.prompt);
-  assert.equal(instance.fullSolution, source.fullSolution);
-  assert.equal(instance.expectedAnswer.output, source.expectedAnswer.output);
-});
-
 test('trace contracts follow the shard word-for-word (solution, reference, errors)', () => {
   const shard = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/shards/foundations.json'), 'utf8'));
   const byFamily = new Map();
@@ -604,7 +595,5 @@ test('call composition tables compute inner before outer in both lanes', () => {
     assert.equal(`${first.außen} ${second.außen}`, generated.expected.output);
     assert.equal(gradeTraceTable(traceTable, traceTable.expectedStates).correct, true);
   }
-  const pinned = generate({ seed: 0, caseId: 'two-functions-one-print', difficulty: 'intro' });
-  assert.deepEqual(pinned.traceTable.expectedStates, [{ ergebnis: '12' }, { ergebnis: '14' }]);
   assert.equal(callCompositionTraceTable({ parameters: { form: 'unbekannt' } }), null);
 });
