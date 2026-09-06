@@ -54,6 +54,108 @@
       },
       "activityType": "python-code",
       "graderId": "pyodide"
+    },
+    {
+      "caseId": "protocol-validator",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w31-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\n\n\ndef validate_protocol(p):\n    \"\"\"Sortierte Verletzung-Codes; leere Liste heisst gueltig.\"\"\"\n    ...\n\n",
+        "tests": "P = {\"frage\": \"Steigt der Anteil?\", \"uv\": \"chunkgroesse\", \"dv\": \"anteil\", \"metrik\": \"recall@5\", \"baseline\": \"w30-lauf\", \"abbruchregel\": \"zwei laeufe ohne aenderung\", \"datum_prereg\": \"2026-05-12\", \"datum_hauptlauf\": \"2026-07-17\"}\n__check('gueltiges protokoll', validate_protocol(P) == [])\nQ = dict(P)\nQ.pop(\"metrik\")\nQ[\"baseline\"] = \"   \"\n__check('fehlende und leere felder', validate_protocol(Q) == [\"baseline-fehlt\", \"metrik-fehlt\"])\nR = dict(P)\nR[\"datum_hauptlauf\"] = \"2026-05-12\"\n__check('gleiches datum -> reihenfolge', validate_protocol(R) == [\"datum-reihenfolge\"])\nS = dict(P)\nS[\"datum_prereg\"] = \"2026-07-17\"\nS[\"datum_hauptlauf\"] = \"2026-05-12\"\n__check('vertauschte daten -> reihenfolge', validate_protocol(S) == [\"datum-reihenfolge\"])\nT = {}\n__check('leeres protokoll', validate_protocol(T) == sorted(f + \"-fehlt\" for f in PFLICHT))\nU = dict(P)\nU.pop(\"datum_hauptlauf\")\n__check('fehlendes datum loest nur feldcode', validate_protocol(U) == [\"datum_hauptlauf-fehlt\"])\nprint(\"ok w31-e5\")"
+      },
+      "competencyIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\n\n\ndef validate_protocol(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)"
+      },
+      "prompt": "Implementiere den Protokoll-Validator. <code>validate_protocol(p)</code> erhält ein Protokoll-Dict und liefert eine sortierte Liste von Verletzung-Codes: Für jedes Pflichtfeld (frage, uv, dv, metrik, baseline, abbruchregel, datum_prereg, datum_hauptlauf) fehlt oder leer (nur Whitespace) → <code>&lt;feld&gt;-fehlt</code>. Sind beide Datums vorhanden und nicht leer, aber <code>datum_prereg</code> nicht kleiner als <code>datum_hauptlauf</code> (ISO-Zeichenfolgenvergleich), zusätzlich <code>datum-reihenfolge</code>. Leere Liste heißt gültig. Der Testcode prüft exakte Listen.",
+      "fullSolution": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\n\n\ndef validate_protocol(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n\n# gueltig -> [], defekt -> ['baseline-fehlt', 'metrik-fehlt'], reihenfolgebruch -> ['datum-reihenfolge'] (lokal python3-verifiziert)",
+      "hints": [
+        "None und nur-Whitespace sind beide \"fehlend\": wert ist None or str(wert).strip() == \"\".",
+        "Die Datumsreihenfolge wird nur geprüft, wenn beide Werte vorhanden und nicht leer sind — ISO-Zeichenfolgen vergleichen sich direkt mit <."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-wrong",
+          "then": "Die Codes werden sortiert zurückgegeben (sorted), nicht in Pflichtfeld-Reihenfolge — die Tests vergleichen exakte Listen."
+        },
+        {
+          "if": "whitespace-counts",
+          "then": "Ein Feld mit \"   \" ist leer: strip() vor dem Vergleich, sonst zählt es fälschlich als ausgefüllt."
+        },
+        {
+          "if": "date-checked-when-missing",
+          "then": "Fehlt eines der Datums, darf datum-reihenfolge nicht zusätzlich ausgelöst werden — der Feld-Code reicht."
+        }
+      ],
+      "typicalErrors": [
+        "Whitespace-only-Felder als ausgefüllt gewertet",
+        "datum-reihenfolge auch bei fehlenden Datums ausgelöst",
+        "unsortierte Rückgabe"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "validate-card-fields",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w32-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def validate_card(card, required):\n    \"\"\"Sortierte Liste fehlender oder leerer Pflichtfelder.\"\"\"\n    ...\n\ndef splits_ok(card):\n    \"\"\"True iff train/dev/test Zahlen sind und die Summe etwa 1.0 ergibt.\"\"\"\n    ...\n\ndef is_semver(wert):\n    \"\"\"True genau fuer drei durch Punkte getrennte Ziffernbloecke.\"\"\"\n    ...\n\n",
+        "tests": "__check('fehlende und leere felder sortiert', validate_card({\"name\": \"faq\", \"zweck\": \"\", \"lizenz\": \"cc-by\"}, [\"name\", \"zweck\", \"herkunft\", \"lizenz\"]) == [\"herkunft\", \"zweck\"])\n__check('vollstaendige karte', validate_card({\"name\": \"faq\", \"zweck\": \"sup\", \"lizenz\": \"cc-by\"}, [\"name\", \"zweck\", \"lizenz\"]) == [])\n__check('whitespace zaehlt als leer', validate_card({\"name\": \"faq\", \"zweck\": \"   \"}, [\"name\", \"zweck\"]) == [\"zweck\"])\n__check('splits summieren auf eins', splits_ok({\"split_train\": 0.8, \"split_dev\": 0.1, \"split_test\": 0.1}) is True)\n__check('splits zu gross', splits_ok({\"split_train\": 0.8, \"split_dev\": 0.1, \"split_test\": 0.2}) is False)\n__check('split-schluessel fehlt', splits_ok({\"split_train\": 0.8, \"split_dev\": 0.1}) is False)\n__check('string-splits sind keine zahlen', splits_ok({\"split_train\": \"0.8\", \"split_dev\": \"0.1\", \"split_test\": \"0.1\"}) is False)\n__check('toleranz 1e-9', splits_ok({\"split_train\": 0.8, \"split_dev\": 0.1, \"split_test\": 0.10000000001}) is True)\n__check('semver korrekt', is_semver(\"1.2.0\") is True and is_semver(\"12.0.3\") is True)\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n__check('semver mit praefix', is_semver(\"v1.2.0\") is False)\n__check('semver mit buchstabe', is_semver(\"1.2.x\") is False)\nprint(\"ok w32-e4\")"
+      },
+      "competencyIds": [
+        "c-research-cards",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def validate_card(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n\n\ndef splits_ok(card):\n    werte = []\n    for schluessel in (\"split_train\", \"split_dev\", \"split_test\"):\n        wert = card.get(schluessel)\n        if not isinstance(wert, (int, float)):\n            return False\n        werte.append(float(wert))\n    return abs(sum(werte) - 1.0) <= 1e-9\n\n\ndef is_semver(wert):\n    teile = str(wert).split(\".\")\n    if len(teile) != 3:\n        return False\n    return all(t.isdigit() for t in teile)"
+      },
+      "prompt": "Implementiere den Karten-Feldvalidator. <code>validate_card(card, required)</code> → alphabetisch sortierte Liste der Pflichtfelder, die fehlen oder leer sind (None oder nur Whitespace). <code>splits_ok(card)</code> → <code>True</code> genau wenn die Schlüssel split_train, split_dev und split_test alle Zahlen sind und ihre Summe höchstens 1e-9 von 1,0 entfernt ist. <code>is_semver(wert)</code> → <code>True</code> genau für drei durch Punkte getrennte Ziffernblöcke (X.Y.Z). Der Testcode bringt Karten und Werte mit.",
+      "fullSolution": "def validate_card(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n\n\ndef splits_ok(card):\n    werte = []\n    for schluessel in (\"split_train\", \"split_dev\", \"split_test\"):\n        wert = card.get(schluessel)\n        if not isinstance(wert, (int, float)):\n            return False\n        werte.append(float(wert))\n    return abs(sum(werte) - 1.0) <= 1e-9\n\n\ndef is_semver(wert):\n    teile = str(wert).split(\".\")\n    if len(teile) != 3:\n        return False\n    return all(t.isdigit() for t in teile)\n\n# alle Fixtur-Urteile der Tests werden reproduziert (lokal python3-verifiziert)",
+      "hints": [
+        "validate_card nutzt card.get(feld) — None und strip()==\"\" sind beide leer; Rückgabe alphabetisch sortiert.",
+        "splits_ok prüft isinstance(wert, (int, float)) je Schlüssel vor der Summe; is_semver splitet an Punkten und verlangt genau drei isdigit-Blöcke."
+      ],
+      "feedbackRules": [
+        {
+          "if": "bool-vs-is",
+          "then": "splits_ok und is_semver liefern echte booleans — die Tests prüfen mit is True / is False."
+        },
+        {
+          "if": "string-splits-accepted",
+          "then": "Strings wie \"0.8\" sind keine Zahlen: isinstance-Prüfung vor der Summe, sonst summierst du Zeichenketten oder brichst ab."
+        },
+        {
+          "if": "semver-edge",
+          "then": "\"1.2.x\" und \"v1.2.0\" sind keine Semver: t.isdigit() scheitert an \"x\" beziehungsweise am Präfix im Block."
+        }
+      ],
+      "typicalErrors": [
+        "Whitespace-Felder als ausgefüllt gewertet",
+        "Split-Strings als Zahlen akzeptiert",
+        "Semver ohne Ziffernblock-Prüfung"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
     }
   ]
 }

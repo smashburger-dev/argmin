@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-text-normalize-match",
+  "contract": {
+    "familyId": "validate-text-normalize-match",
+    "familyGroup": "validate-contract",
+    "summary": "Normalisiert Text und prüft danach den Übereinstimmungsvertrag.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "text-normalize-match",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-research-question",
+      "c-python-functions"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "text-normalize-match",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w31-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    \"\"\"True iff Metrik und Vergleich als Teilstring enthalten sind und kein absolutes Wort vorkommt.\"\"\"\n    ...\n\ndef extract_variables(hypothese):\n    \"\"\"{'uv': .., 'dv': ..} aus einer Je-desto-Form; sonst ValueError('keine Je-desto-Form').\"\"\"\n    ...\n\n",
+        "tests": "__check('metrik und vergleich -> testable', is_testable(\"Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgroesse verdoppelt wird?\") is True)\n__check('ohne metrik nicht testable', is_testable(\"Fuehlt sich die bearbeitung schneller an?\") is False)\n__check('absolute behauptung verworfen', is_testable(\"Ist die neue Version generell besser geeignet?\") is False)\n__check('optimal verworfen trotz metrik', is_testable(\"Warum ist die recall@5-Quote optimal?\") is False)\n__check('dauer und vergleich -> testable', is_testable(\"Ist die dauer der nutzung höher als vorher ohne kennzahl?\") is True)\n__check('grossbuchstaben egal', is_testable(\"Sinkt die Quote der ablehnungen?\") is True)\n__check('metrik allein genuegt nicht', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\n__check('uv und dv zerlegt', extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\") == {\"uv\": \"die chunkgröße\", \"dv\": \"der anteil korrekter antworten\"})\n__check('richtung wird abgeschnitten', extract_variables(\"Je kleiner das Modell, desto geringer die kosten je lauf\") == {\"uv\": \"das modell\", \"dv\": \"die kosten je lauf\"})\n__check('punkt am ende entfernt', extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten.\") == {\"uv\": \"die chunkgröße\", \"dv\": \"der anteil korrekter antworten\"})\ntry:\n    extract_variables(\"Die Chunkgröße beeinflusst die Quote.\")\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('keine je-desto-form -> ValueError', True)\nprint(\"ok w31-e4\")"
+      },
+      "competencyIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}"
+      },
+      "prompt": "Implementiere die Prüfbarkeit von Forschungsfragen. <code>is_testable(frage)</code> liefert <code>True</code> genau dann, wenn die Kleinbuchstaben-Fassung der Frage mindestens eine Metrik aus METRIKEN als Teilstring enthält, mindestens ein Vergleichswort aus VERGLEICHE enthält und KEIN absolutes Wort aus ABSOLUTE enthält (Reihenfolge: absolute Wörter verwerfen zuerst, dann Metrik, dann Vergleich). <code>extract_variables(hypothese)</code> zerlegt eine Je-desto-Hypothese: Text strippen und Punkt am Ende entfernen, an <code>&quot;, desto &quot;</code> in genau zwei Teile splitten, der vordere Teil muss mit <code>Je </code> beginnen — sonst <code>ValueError(\"keine Je-desto-Form\")</code>; UV = Wörter des vorderen Teils ab Index 2, DV = Wörter des hinteren Teils ab Index 1, beide kleingeschrieben und mit einfachen Leerzeichen verbunden. Der Testcode bringt eigene Fragen und Hypothesen mit.",
+      "fullSolution": "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\n# alle Fixtur-Urteile der Tests werden reproduziert (lokal python3-verifiziert)",
+      "hints": [
+        "is_testable arbeitet auf frage.lower() und prüft Teilstrings mit any(...) — erst ABSOLUTE (sofort False), dann METRIKEN, dann VERGLEICHE.",
+        "extract_variables: split(\", desto \") muss genau zwei Teile liefern und der vordere mit \"Je \" beginnen; Wörter ab Index 2 beziehungsweise 1, dann .lower()."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-wrong",
+          "then": "Die Prüfreihenfolge ist Teil des Vertrags: Ein absolutes Wort verwirft die Frage sofort, egal welche Metrik sonst vorkommt."
+        },
+        {
+          "if": "case-sensitive",
+          "then": "„Steigt“ enthält „steigt“ nur nach Kleinbuchstaben-Normalisierung — erst frage.lower(), dann Teilstringsuche."
+        },
+        {
+          "if": "valueerror-missing",
+          "then": "Hypothesen ohne Je-desto-Form müssen ValueError('keine Je-desto-Form') auslösen, nicht None oder einen leeren Typ zurückgeben."
+        }
+      ],
+      "typicalErrors": [
+        "Prüfreihenfolge vertauscht (Metrik vor absoluten Wörtern)",
+        "Groß-/Kleinschreibung nicht normalisiert",
+        "ValueError für ungeeignete Hypothesen vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
