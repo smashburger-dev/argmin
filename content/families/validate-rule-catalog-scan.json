@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-rule-catalog-scan",
+  "contract": {
+    "familyId": "validate-rule-catalog-scan",
+    "familyGroup": "validate-contract",
+    "summary": "Wendet einen festen Regel- oder Musterkatalog auf Datensaetze an und meldet die Treffer als sortierte, duplikatfreie Codes oder Verstossstrings.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "card-secret-scan",
+        "propertyTest": false
+      },
+      {
+        "caseId": "cross-card-consistency",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-research-cards",
+      "c-genai-security"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "card-secret-scan",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w32-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import re\n\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\bbearer\\s+[a-z0-9._-]{16,}\"),\n]\n\n\ndef scan_secrets(card):\n    \"\"\"Sortierte 'feld:code'-Liste fuer String-Werte mit Geheimnis-Muster.\"\"\"\n    ...\n\ndef check_consistency(card, protocol):\n    \"\"\"Sortierte Abweichungs-Codes zwischen Karte und Protokoll.\"\"\"\n    ...\n\n",
+        "tests": "__check('saubere karte ohne befunde', scan_secrets({\"zweck\": \"antworten fuer support\", \"kontakt\": \"team-support\"}) == [])\n__check('api-schluessel und token im selben feld', scan_secrets({\"zweck\": \"nutzt api-schluessel: sk-beispiel12345678\", \"notiz\": \"bearer abcdefghijklmnopqrst\"}) == [\"notiz:bearer\", \"zweck:api-schluessel\", \"zweck:token\"])\n__check('zu kurzes token ist kein befund', scan_secrets({\"grenze\": \"kein echter zugriff, nur schema sk-kurz\"}) == [])\n__check('nicht-strings werden uebersprungen', scan_secrets({\"n_beispiele\": 1200, \"split_train\": 0.8}) == [])\nP = {\"datensatz\": \"faq-korpus\", \"metrik\": \"recall@5\", \"n_beispiele\": 1200}\n__check('konsistente karte', check_consistency({\"name\": \"faq-korpus\", \"metrik\": \"recall@5\", \"n_beispiele\": 1200}, P) == [])\n__check('name und metrik weichen ab', check_consistency({\"name\": \"faq-korpus-v2\", \"metrik\": \"token-f1\", \"n_beispiele\": 1200}, P) == [\"datensatz-abweichung\", \"metrik-abweichung\"])\n__check('umfang weicht ab', check_consistency({\"name\": \"faq-korpus\", \"metrik\": \"recall@5\", \"n_beispiele\": 1400}, P) == [\"umfang-abweichung\"])\n__check('fehlende felder sind keine abweichung', check_consistency({\"name\": \"faq-korpus\"}, P) == [\"metrik-abweichung\", \"umfang-abweichung\"])\nprint(\"ok w32-e5\")"
+      },
+      "competencyIds": [
+        "c-research-cards",
+        "c-genai-security"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import re\n\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\bbearer\\s+[a-z0-9._-]{16,}\"),\n]\n\n\ndef scan_secrets(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\n\n\ndef check_consistency(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)"
+      },
+      "prompt": "Implementiere Konsistenzprüfung und Geheimnis-Scan. <code>GEHEIMNIS_MUSTER</code> (im Startercode vorgegeben) ordnet drei Codes Regexen zu: api-schluessel, token, bearer. <code>scan_secrets(card)</code> durchsucht jeden String-Wert der Karte mit <code>re.search</code> und liefert die alphabetisch sortierte Liste <code>feld:code</code> für alle Treffer (mehrere Treffer pro Feld erlaubt). <code>check_consistency(card, protocol)</code> liefert sortierte Codes: <code>datensatz-abweichung</code> (card.name != protocol.datensatz), <code>metrik-abweichung</code> (card.metrik != protocol.metrik), <code>umfang-abweichung</code> (card.n_beispiele != protocol.n_beispiele). Der Testcode bringt Karten, Protokolle und Geheimnis-Fixtures mit.",
+      "fullSolution": "import re\n\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\bbearer\\s+[a-z0-9._-]{16,}\"),\n]\n\n\ndef scan_secrets(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\n\n\ndef check_consistency(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n\n# Geheimnis-Fixture 'api-schluessel: sk-beispiel12345678' -> zwei Befunde, bearer -> einer (lokal python3-verifiziert)",
+      "hints": [
+        "scan_secrets iteriert card.items(), überspringt Nicht-Strings (isinstance) und prüft jedes Muster mit re.search — Groß-/Kleinschreibung steckt in (?i).",
+        "check_consistency vergleicht mit .get(): Fehlt ein Feld auf beiden Seiten, ist None == None keine Abweichung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "crash-on-numbers",
+          "then": "re.search auf Zahlen wirft TypeError — Nicht-Strings vorher mit isinstance überspringen."
+        },
+        {
+          "if": "case-sensitive-scan",
+          "then": "Die Muster tragen (?i): \"API-Key\" muss genauso treffen wie \"api-key\" — kein eigenen lower()-Bau nötig, aber auch nicht schädlich."
+        },
+        {
+          "if": "missing-field-abweichung",
+          "then": "Eine Abweichung liegt nur bei ungleichen vorhandenen Werten vor — None gegen None ist konsistent, None gegen einen Wert ist eine Abweichung."
+        }
+      ],
+      "typicalErrors": [
+        "Nicht-String-Werte nicht übersprungen (TypeError)",
+        "Großschreibung nicht berücksichtigt",
+        "fehlende Felder als Abweichung gewertet"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "cross-card-consistency",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w32-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\n\n\ndef cross_card_consistency(datacard, modelcard, systemcard, protocol):\n    \"\"\"Sortierte, eindeutige Widerspruchsliste ueber alle Karten und das Protokoll.\"\"\"\n    ...\n\n",
+        "tests": "DC = {\"name\": \"faq-korpus\", \"zweck\": \"support-antworten\", \"herkunft\": \"forum-export\", \"lizenz\": \"cc-by-vier\", \"n_beispiele\": 1200, \"bekannte_luecken\": \"injektions-fixture enthalten\", \"metrik\": \"recall@5\"}\nMC = {\"name\": \"rag-stub\", \"zweck\": \"antwortvorschlag\", \"version\": \"1.2.0\", \"trainingsdaten\": \"faq-korpus\", \"metrik\": \"recall@5\", \"schwellenwert\": 0.75, \"bekannte_grenzen\": \"kein echtes sprachmodell\"}\nSC = {\"modell\": \"rag-stub\", \"metrik\": \"recall@5\", \"schwelle\": 0.75, \"kontrolle\": \"injektions-detektor\"}\nPR = {\"datensatz\": \"faq-korpus\", \"metrik\": \"recall@5\", \"n_beispiele\": 1200}\n__check('konsistentes quartett', cross_card_consistency(DC, MC, SC, PR) == [])\nMC2 = dict(MC)\nMC2[\"metrik\"] = \"token-f1\"\nMC2.pop(\"version\")\n__check('metrik unstimmig und feld fehlt', cross_card_consistency(DC, MC2, SC, PR) == [\"metrik-unstimmig\", \"modelcard.version-fehlt\"])\nSC2 = dict(SC)\nSC2[\"schwelle\"] = 0.6\nSC2[\"modell\"] = \"rag-stub-v2\"\n__check('modell und schwelle unstimmig', cross_card_consistency(DC, MC, SC2, PR) == [\"modell-unstimmig\", \"schwelle-unstimmig\"])\nDC3 = dict(DC)\nDC3[\"n_beispiele\"] = 1400\nDC3[\"name\"] = \"faq-korpus-v2\"\n__check('datensatz und umfang unstimmig', cross_card_consistency(DC3, MC, SC, PR) == [\"datensatz-unstimmig\", \"umfang-unstimmig\"])\n__check('leeres pflichtfeld zaehlt als fehlt', cross_card_consistency(dict(DC, lizenz=\"\"), MC, SC, PR) == [\"datacard.lizenz-fehlt\"])\nprint(\"ok w32-e6\")"
+      },
+      "competencyIds": [
+        "c-research-cards",
+        "c-genai-security"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\n\n\ndef cross_card_consistency(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))"
+      },
+      "prompt": "Final Boss Cross-Card-Audit: Implementiere <code>cross_card_consistency(datacard, modelcard, systemcard, protocol)</code>. Die Pflichtlisten im Startercode geben die Felder je Karte vor. Rückgabe: alphabetisch sortierte, eindeutige Widerspruchsliste mit diesen Codes: <code>datensatz-unstimmig</code> (die Werte datacard.name, modelcard.trainingsdaten, protocol.datensatz sind nicht alle gleich), <code>metrik-unstimmig</code> (datacard.metrik, modelcard.metrik, systemcard.metrik, protocol.metrik nicht alle gleich), <code>modell-unstimmig</code> (modelcard.name != systemcard.modell), <code>schwelle-unstimmig</code> (modelcard.schwellenwert != systemcard.schwelle), <code>umfang-unstimmig</code> (datacard.n_beispiele != protocol.n_beispiele) sowie <code>&lt;karte&gt;.&lt;feld&gt;-fehlt</code> für jedes fehlende oder leere Pflichtfeld (karten: datacard, modelcard, systemcard). Der Testcode bringt ein konsistentes Quartett und drei abweichende Varianten mit.",
+      "fullSolution": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\n\n\ndef cross_card_consistency(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n\n# konsistentes Quartett -> [], abweichende Varianten -> exakte Codemengen (lokal python3-verifiziert)",
+      "hints": [
+        "Set-Größen vergleichen: len({a, b, c}) > 1 heißt, nicht alle Werte stimmen überein — das deckt datensatz- und metrik-unstimmig ab.",
+        "Die fehlt-Codes laufen über die drei Pflichtlisten mit kartenpräfix; Rückgabe sortiert und ohne Duplikate (sorted(set(...)))."
+      ],
+      "feedbackRules": [
+        {
+          "if": "pairwise-only",
+          "then": "Stimmigkeit heißt: ALLE beteiligten Werte gleich — ein Set-Vergleich fängt auch den Fall ab, dass zwei Karten gleich sind und die dritte abweicht."
+        },
+        {
+          "if": "duplicates-in-result",
+          "then": "Ein Feld kann mehrere Ursachen haben — die Ergebnisliste ist eindeutig (set) und alphabetisch sortiert."
+        },
+        {
+          "if": "missing-fields-ignored",
+          "then": "Fehlende oder leere Pflichtfelder erzeugen eigene karte.feld-fehlt-Codes, auch wenn die übrigen Werte konsistent sind."
+        }
+      ],
+      "typicalErrors": [
+        "nur paarweise verglichen statt aller Werte zugleich",
+        "fehlende Pflichtfelder nicht als eigenen Code geführt",
+        "Duplikate in der Ergebnisliste"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-stub-prototype-contract",
+  "contract": {
+    "familyId": "construct-stub-prototype-contract",
+    "familyGroup": "construct-program",
+    "summary": "Implementiert den Stub-Prototyp-Kern ohne LLM: Term-Normalisierung, Dokument- und Satzwahl mit Index-Tie-Break, ehrlicher Fehlstring plus Fixtur-Metriken.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "stub-prototype-contract",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-genai-prototype",
+      "c-python-functions"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "stub-prototype-contract",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w30-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import re\n\nNO_HIT = \"kein treffer\"\n\n\ndef _norm(text):\n    \"\"\"Kleinbuchstaben, Umlaute bleiben, Satzzeichen raus, Whitespace zusammenziehen.\"\"\"\n    ...\n\ndef _terms(text):\n    \"\"\"Inhaltsbegriffe: normierte Woerter mit Laenge >= 4, keine Ziffern.\"\"\"\n    ...\n\ndef _rank_docs(query, docs):\n    \"\"\"(order, scores): Score = Anzahl gemeinsamer Begriffe; Gleichstand -> kleiner Index.\"\"\"\n    ...\n\ndef build_prototype(config):\n    \"\"\"{'answer': funktion, 'metrics': funktion} Stub-Generator plus Fixtur-Metrik.\"\"\"\n    ...\n\n",
+        "tests": "CONFIG4 = {\n    \"docs\": [\n        \"Die Lieferzeit beträgt drei Werktage. Der Versand erfolgt mit DHL.\",\n        \"Das Widerrufsrecht endet nach vierzehn Tagen. Danach ist keine Rückgabe mehr möglich.\",\n        \"Rabattcodes gelten nur im Sommer. Eine Kombination mit anderen Aktionen ist ausgeschlossen.\",\n        \"Die Garantie deckt Herstellungsfehler. Sturzschäden sind ausgenommen.\",\n    ],\n    \"queries\": [\n        {\"query\": \"Wie lange beträgt die Lieferzeit?\", \"relevant\": [0]},\n        {\"query\": \"Was deckt die Garantie?\", \"relevant\": [3]},\n        {\"query\": \"Wann endet das Widerrufsrecht?\", \"relevant\": [1]},\n        {\"query\": \"Bis wann läuft der Rabatt?\", \"relevant\": [2]},\n    ],\n    \"k\": 1,\n}\nproto4 = build_prototype(CONFIG4)\n__check('stub-antwort lieferzeit', proto4[\"answer\"](\"Wie lange beträgt die Lieferzeit?\") == \"Die Lieferzeit beträgt drei Werktage\")\n__check('stub-antwort garantie', proto4[\"answer\"](\"Was deckt die Garantie?\") == \"Die Garantie deckt Herstellungsfehler\")\n__check('stub-antwort zweiter satz', proto4[\"answer\"](\"Wie erfolgt der Versand?\") == \"Der Versand erfolgt mit DHL\")\n__check('kein treffer ehrlich', proto4[\"answer\"](\"Bis wann läuft der Rabatt?\") == NO_HIT)\n__check('kein treffer bei wirrwarr', proto4[\"answer\"](\"xyzzy plugh\") == NO_HIT)\nm4 = proto4[\"metrics\"]()\n__check('recall_at_k wert', abs(m4[\"recall_at_k\"] - 0.75) < 1e-12)\n__check('answered zaehlung', m4[\"answered\"] == 3)\n__check('antwort deterministisch', proto4[\"answer\"](\"Wie lange beträgt die Lieferzeit?\") == proto4[\"answer\"](\"Wie lange beträgt die Lieferzeit?\"))"
+      },
+      "competencyIds": [
+        "c-genai-prototype",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import re\n\nNO_HIT = \"kein treffer\"\n\ndef _norm(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return \" \".join(stripped.split())\n\ndef _terms(text):\n    return {w for w in _norm(text).split() if len(w) >= 4 and not w.isdigit()}\n\ndef _rank_docs(query, docs):\n    q_terms = _terms(query)\n    scores = [len(q_terms & _terms(doc)) for doc in docs]\n    order = sorted(range(len(docs)), key=lambda i: (-scores[i], i))\n    return order, scores\n\ndef build_prototype(config):\n    docs = config[\"docs\"]\n    k = config[\"k\"]\n    queries = config[\"queries\"]\n\n    def answer(query):\n        order, scores = _rank_docs(query, docs)\n        if not order or scores[order[0]] == 0:\n            return NO_HIT\n        best = order[0]\n        sentences = [s.strip() for s in docs[best].split(\".\") if s.strip()]\n        q_terms = _terms(query)\n        for sentence in sentences:\n            if q_terms & _terms(sentence):\n                return sentence\n        return sentences[0]\n\n    def metrics():\n        recalls = []\n        answered = 0\n        for item in queries:\n            order, scores = _rank_docs(item[\"query\"], docs)\n            if order and scores[order[0]] > 0:\n                answered += 1\n            relevant = set(item[\"relevant\"])\n            recalls.append(len(set(order[:k]) & relevant) / len(relevant))\n        return {\"recall_at_k\": sum(recalls) / len(recalls), \"answered\": answered}\n\n    return {\"answer\": answer, \"metrics\": metrics}\n\n# metrics() -> {'recall_at_k': 0.75, 'answered': 3}; 'Bis wann läuft der Rabatt?' -> kein treffer (Rabatt vs. Rabattcodes)"
+      },
+      "prompt": "Baue den Prototyp-Kern: <code>build_prototype(config)</code> liefert <code>{\"answer\": f, \"metrics\": f}</code>. config: <code>docs</code> (Liste deutscher Sätze), <code>queries</code> (Liste <code>{\"query\", \"relevant\"}</code>), <code>k</code>. Retrieval-Vertrag: Begriffe = kleingeschriebene Wörter mit Länge ≥ 4 ohne Ziffern (Satzzeichen entfernt, Umlaute bleiben); Score = Anzahl gemeinsamer Begriffe, Gleichstand → kleinerer Index. <code>answer(query)</code> (Stub-Generator, kein LLM): bestes Dokument, daraus der erste Satz (Punkt-getrennt, ohne Satzzeichen), der einen Anfragebegriff enthält; kein Treffer → der konstante String <code>\"kein treffer\"</code>. <code>metrics()</code>: <code>{\"recall_at_k\": mittelwert über queries, \"answered\": anzahl mit Treffer}</code>, recall = |top-k ∩ relevant| / |relevant|. Alles deterministisch. Der Testcode bringt die Fixtur-Config mit.",
+      "fullSolution": "import re\n\nNO_HIT = \"kein treffer\"\n\ndef _norm(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return \" \".join(stripped.split())\n\ndef _terms(text):\n    return {w for w in _norm(text).split() if len(w) >= 4 and not w.isdigit()}\n\ndef _rank_docs(query, docs):\n    q_terms = _terms(query)\n    scores = [len(q_terms & _terms(doc)) for doc in docs]\n    order = sorted(range(len(docs)), key=lambda i: (-scores[i], i))\n    return order, scores\n\ndef build_prototype(config):\n    docs = config[\"docs\"]\n    k = config[\"k\"]\n    queries = config[\"queries\"]\n\n    def answer(query):\n        order, scores = _rank_docs(query, docs)\n        if not order or scores[order[0]] == 0:\n            return NO_HIT\n        best = order[0]\n        sentences = [s.strip() for s in docs[best].split(\".\") if s.strip()]\n        q_terms = _terms(query)\n        for sentence in sentences:\n            if q_terms & _terms(sentence):\n                return sentence\n        return sentences[0]\n\n    def metrics():\n        recalls = []\n        answered = 0\n        for item in queries:\n            order, scores = _rank_docs(item[\"query\"], docs)\n            if order and scores[order[0]] > 0:\n                answered += 1\n            relevant = set(item[\"relevant\"])\n            recalls.append(len(set(order[:k]) & relevant) / len(relevant))\n        return {\"recall_at_k\": sum(recalls) / len(recalls), \"answered\": answered}\n\n    return {\"answer\": answer, \"metrics\": metrics}\n\n# metrics() -> {'recall_at_k': 0.75, 'answered': 3}; 'Bis wann läuft der Rabatt?' -> kein treffer (Rabatt vs. Rabattcodes)",
+      "hints": [
+        "Normalisierung einmal zentral (_norm, _terms) bauen und für Anfrage, Dokumente und Sätze wiederverwenden.",
+        "answer wählt DOKUMENT nach Score, dann SATZ nach Anfragebegriff — zwei getrennte Schritte, beide mit festem Tie-Break."
+      ],
+      "feedbackRules": [
+        {
+          "if": "hallucinating-stub",
+          "then": "Der Stub darf nur Sätze aus dem besten Dokument zurückgeben — nichts formulieren, nichts zusammenfassen; kein Treffer heißt kein treffer."
+        },
+        {
+          "if": "first-sentence-always",
+          "then": "Gesucht ist der erste Satz MIT Anfragebegriff, nicht pauschal Satz 1 — sonst schlägt der Versand-Test fehl."
+        },
+        {
+          "if": "short-words-counted",
+          "then": "Begriffe haben Länge ≥ 4 und keine Ziffern — kurze Füllwörter dürfen Rankings nicht tragen."
+        }
+      ],
+      "typicalErrors": [
+        "Stub formuliert frei statt zu kopieren",
+        "Dokument- und Satz-Auswahl in einem Schritt vermischt",
+        "kein treffer durch erfundenen Satz ersetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

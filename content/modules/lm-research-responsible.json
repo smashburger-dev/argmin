@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-research-responsible",
+  "version": 1,
+  "locale": "de",
+  "title": "Responsible AI: Subgruppenmetriken, Schwellenwerte unter Paritätsband, Betriebskosten",
+  "description": "False-Positive-Raten und Auswahlraten pro Subgruppe berechnen und Differenzen exakt in Tausendsteln ausweisen Schwellenwerte nach der festen Reihenfolge Paritätsband zuerst, dann F1, wählen und Betriebskosten je 1.000 Anfragen deterministisch berechnen Risiken mit RPN priorisieren und den Responsible-Bericht nur mit Subgruppen, Parität, Kosten und Restrisiko zustande bringen",
+  "competencyIds": [
+    "c-research-responsible"
+  ],
+  "requires": [
+    "c-genai-security",
+    "c-research-cards"
+  ],
+  "trackIds": [
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-responsible-ai"
+  ],
+  "placements": [
+    {
+      "placementId": "p-research-responsible-1",
+      "role": "curated",
+      "familyId": "classify-fairness-aggregation",
+      "caseId": "fairness-aggregation",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-responsible-ai",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-research-responsible-2",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "subgroup-rate-gap-permille",
+      "seed": 3311,
+      "difficulty": "core",
+      "estimatedMinutes": 9,
+      "lessonId": "l-responsible-ai",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-responsible-3",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "rpn-priority-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 7,
+      "lessonId": "l-responsible-ai",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-responsible-4",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "fairness-metric-compare",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-responsible-ai",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-responsible-5",
+      "role": "curated",
+      "familyId": "aggregate-parity-threshold-selection",
+      "caseId": "parity-threshold-selection",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 27,
+      "lessonId": "l-responsible-ai",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-responsible-6",
+      "role": "curated",
+      "familyId": "validate-report-guard-compose",
+      "caseId": "report-guard-compose",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 40,
+      "lessonId": "l-responsible-ai",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-responsible-practice",
+      "role": "practice-space",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "subgroup-rate-gap-permille",
+      "seed": 3311,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-responsible-ai"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

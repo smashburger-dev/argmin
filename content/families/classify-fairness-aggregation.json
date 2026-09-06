@@ -89,6 +89,74 @@
       },
       "activityType": "single-choice",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "fairness-aggregation",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w33-e1"
+      ],
+      "parameters": {
+        "thema": "Subgruppenmetriken begründen"
+      },
+      "competencyIds": [
+        "c-research-responsible"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Weil die Gesamtgenauigkeit falsch gerechnet ist und durch Subgruppenwerte ersetzt werden muss.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Weil es eine formale Anforderung ist, ohne dass sich an den Messwerten etwas ändert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Weil eine gute Gesamtkennzahl große FPR-Unterschiede zwischen Gruppen verstecken kann — ungleiche Behandlung wird nur getrennt sichtbar.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Weil nur ein Sprachmodell die Fairness einer Gruppe verlässlich bewerten kann.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Detektor erreicht über alle Fälle gemessen eine Genauigkeit von 0,9. Warum berichtet Responsible AI zusätzlich die False-Positive-Raten pro Gruppe?",
+      "fullSolution": "Gesamtmetriken können Subgruppenungleichheit vollständig verstecken: Zwei Gruppen mit FPR 0,25 und 0,10 können zusammen eine gute Gesamtkennzahl liefern, während harmlose Fälle der einen Gruppe mehr als doppelt so oft fälschlich blockiert werden. Der getrennte Ausweis macht das messbar und deterministisch nachrechenbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Über alle Fälle gemittelte Kennzahlen können sehr unterschiedliche Verteilungen in Teilgruppen haben — was bleibt unsichtbar?",
+        "FPR ist der Anteil harmloser Fälle, die fälschlich verworfen werden; zwei Gruppen können hier stark abweichen, obwohl die Gesamtkennzahl gut aussieht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Gesamtgenauigkeit wird durch Subgruppenausweis nicht ersetzt, sondern ergänzt — beide zusammen sind die ehrliche Berichtsform."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Subgruppenausweis ist keine Formalie: Eine FPR-Differenz kann bei gleicher Gesamtkennzahl eine erhebliche Ungleichbehandlung anzeigen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Umgekehrt: Ein Sprachmodell als Bewerter wäre selbst fehleranfällig und nicht deterministisch — die Raten sind exakt berechenbar."
+        }
+      ],
+      "typicalErrors": [
+        "Gesamtgenauigkeit als Fairheitsbeweis genommen",
+        "Subgruppenmetriken als optionalen Zusatz statt Pflicht verstanden"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
     }
   ]
 }

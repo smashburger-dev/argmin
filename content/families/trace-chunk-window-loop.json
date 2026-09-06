@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-chunk-window-loop",
+  "contract": {
+    "familyId": "trace-chunk-window-loop",
+    "familyGroup": "trace-state",
+    "summary": "Verfolgt eine Fenster-Chunking-Schleife mit Schrittweite size − overlap und sagt Fensterzahl und verkürztes Restfenster als Ausgabezeilen voraus.",
+    "taskArchetype": "output-predict-lines",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "chunk-window-loop",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-genai-rag",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "chunk-window-loop",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w27-e3"
+      ],
+      "parameters": {
+        "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\n\ntext = \"abcdefgh\"\nprint(len(chunk(text, 4, 2)))\nprint(chunk(text, 4, 2)[-1])"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "4\ngh"
+      },
+      "prompt": "Chunking lesen und vorhersagen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Das Fenster startet bei 0 und wandert um <code>size - overlap</code> weiter, solange <code>start &lt; len(text)</code>.",
+      "fullSolution": "Starts: 0, 2, 4, 6 (jeweils &lt; 8), also 4 Fenster: abcd, cdef, efgh, gh. Ausgabe: <code>4</code> und <code>gh</code>. Die Fensterzahl ist ⌈8/2⌉ = 4.",
+      "hints": [
+        "Schrittweite ist 4 − 2 = 2. Liste die Startindizes auf: 0, 2, 4, 6 — wo endet die Schleife und warum?",
+        "Prüfe den letzten Start einzeln: text[start:start+s] kann kürzer als s sein, wenn das Fenster über das Textende hinausläuft — was bleibt in der Liste?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Anzahl der Fenster, dann das letzte Fenster als String."
+        },
+        {
+          "if": "first-line-wrong",
+          "then": "Starts sind 0, 2, 4, 6 (alle &lt; 8) → 4 Fenster. Die Schrittweite ist 4 − 2 = 2, nicht 4."
+        }
+      ],
+      "typicalErrors": [
+        "Schrittweite ohne Overlap gerechnet (8//4 statt ⌈8/2⌉)",
+        "Starts bis 8 einschließlich gezählt",
+        "das letzte Fenster auf volle Größe aufgefüllt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

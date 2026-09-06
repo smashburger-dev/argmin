@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-rag-stage",
+  "contract": {
+    "familyId": "classify-rag-stage",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Verarbeitungsschritt der passenden RAG-Stage zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "rag-stage-separation",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-genai-rag"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "rag-stage-separation",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w27-e1"
+      ],
+      "parameters": {
+        "thema": "Retrieval getrennt von Generierung"
+      },
+      "competencyIds": [
+        "c-genai-rag"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Bei RAG werden Antworten immer wörtlich aus den Dokumenten kopiert, ein Modell ist nie nötig.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Für generierte Antworten existieren keine Evaluationsmetriken, deshalb misst man nur das Retrieval.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Retrieval ist deterministisch und offline gegen ein Golden Set messbar; die Antwortgenerierung eines echten Modells läuft hier nicht und wird getrennt bewertet — so bleiben Retrieval- und Antwortfehler unterscheidbar.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Die Antwortgenerierung ist in RAG-Systemen technisch unmöglich.",
+          "correct": false
+        }
+      ],
+      "prompt": "Diese Plattform misst in Woche 27 nur das Retrieval — die Antwortgenerierung eines echten Sprachmodells läuft bewusst nicht im Browser. Was ist der Kerngrund für diese Trennung?",
+      "fullSolution": "Retrieval ist deterministisch, läuft offline und ist mit Recall@k/MRR gegen ein Golden Set messbar. Antwortgenerierung bräuchte ein echtes Modell — sie wird separat über Fixtures und lokale Projekte geprüft. Nur die Trennung macht Fehlerursachen zuordenbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was ist an einer Retrieval-Stufe deterministisch und offline messbar — und was bräuchte eine echte Antwortgenerierung?",
+        "Die Trennung erlaubt, Fehlerursachen zuzuordnen: Waren die Dokumente nicht dabei, oder wurde aus ihnen falsch geformt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'd'",
+          "then": "Generierung ist nicht unmöglich — sie läuft nur nicht hier. Der Grund ist Messbarkeit und Ehrlichkeit, keine technische Unmöglichkeit."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Echtes RAG formuliert Antworten neu; nur der Stub-Prototyp von Woche 30 kopiert Sätze. Kopieren wäre zudem keine Generierung."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Auch für Antworten existieren deterministische Metriken (Woche 28) — nur die Ausführung eines echten Generators fehlt im Browser."
+        }
+      ],
+      "typicalErrors": [
+        "Generierung und Retrieval als eine ununterscheidbare Blackbox behandelt",
+        "geglaubt, Antworten müssten aus Retrieval kopiert werden",
+        "Messbarkeit nur auf einer Seite der Pipeline gesehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

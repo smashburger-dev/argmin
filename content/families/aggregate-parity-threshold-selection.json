@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-parity-threshold-selection",
+  "contract": {
+    "familyId": "aggregate-parity-threshold-selection",
+    "familyGroup": "aggregate-count",
+    "summary": "Waehlt aus einer Kandidatentabelle unter harter Nebenbedingung (Paritaetsband) den besten Metrikwert mit deterministischem Tie-Break und beziffert Kosten.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "parity-threshold-selection",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-research-responsible",
+      "c-genai-eval"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "parity-threshold-selection",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w33-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def threshold_sweep(kandidaten, band):\n    \"\"'Paritaetsband zuerst, dann bestes f1, Gleichstand -> kleinere schwelle'; None ohne Kandidat im Band.\"\"\"\n    ...\n\ndef cost_table(token_in, token_out, preis_in_mio, preis_out_mio):\n    \"\"\"Kosten in EUR je 1.000.000 Token-Skala, auf 4 Dezimalstellen gerundet.\"\"\"\n    ...\n\n",
+        "tests": "KAND = [\n    {\"schwelle\": 0.4, \"selrate\": {\"a\": 0.9, \"b\": 0.5}, \"f1\": 0.84},\n    {\"schwelle\": 0.5, \"selrate\": {\"a\": 0.8, \"b\": 0.6}, \"f1\": 0.81},\n    {\"schwelle\": 0.6, \"selrate\": {\"a\": 0.7, \"b\": 0.65}, \"f1\": 0.78},\n    {\"schwelle\": 0.7, \"selrate\": {\"a\": 0.66, \"b\": 0.64}, \"f1\": 0.78},\n]\n__check('weites band waehlt bestes f1', threshold_sweep(KAND, 0.2) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('enges band mit gleichstand -> kleinere schwelle', threshold_sweep(KAND, 0.05) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('sehr enges band -> nur ein kandidat', threshold_sweep(KAND, 0.03) == {\"schwelle\": 0.7, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('kein kandidat im band -> None', threshold_sweep(KAND, 0.02) is None)\n__check('paritaet schlaegt besseres f1', threshold_sweep([\n    {\"schwelle\": 0.5, \"selrate\": {\"a\": 0.8, \"b\": 0.6}, \"f1\": 0.81},\n    {\"schwelle\": 0.6, \"selrate\": {\"a\": 0.7, \"b\": 0.65}, \"f1\": 0.78},\n], 0.06) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\nk = cost_table(120000, 30000, 0.5, 2.0)\n__check('input-kosten', k[\"input_eur\"] == 0.06)\n__check('output-kosten', k[\"output_eur\"] == 0.06)\n__check('gesamt-kosten', k[\"gesamt_eur\"] == 0.12)\n__check('halbe last', cost_table(60000, 15000, 0.5, 2.0) == {\"input_eur\": 0.03, \"output_eur\": 0.03, \"gesamt_eur\": 0.06})\nprint(\"ok w33-e5\")"
+      },
+      "competencyIds": [
+        "c-research-responsible",
+        "c-genai-eval"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def threshold_sweep(kandidaten, band):\n    im_band = [k for k in kandidaten if abs(k[\"selrate\"][\"a\"] - k[\"selrate\"][\"b\"]) <= band]\n    if not im_band:\n        return None\n    best = im_band[0]\n    for k in im_band:\n        if k[\"f1\"] > best[\"f1\"] or (k[\"f1\"] == best[\"f1\"] and k[\"schwelle\"] < best[\"schwelle\"]):\n            best = k\n    return {\"schwelle\": best[\"schwelle\"], \"f1\": best[\"f1\"], \"paritaet_ok\": True}\n\n\ndef cost_table(token_in, token_out, preis_in_mio, preis_out_mio):\n    input_eur = token_in / 1_000_000 * preis_in_mio\n    output_eur = token_out / 1_000_000 * preis_out_mio\n    return {\"input_eur\": round(input_eur, 4), \"output_eur\": round(output_eur, 4), \"gesamt_eur\": round(input_eur + output_eur, 4)}"
+      },
+      "prompt": "Implementiere Schwellenwahl und Kostenrechnung. <code>threshold_sweep(kandidaten, band)</code>: kandidaten ist eine Liste von <code>{\"schwelle\": .., \"selrate\": {\"a\": .., \"b\": ..}, \"f1\": ..}</code>. Zuerst alle Kandidaten behalten, deren Auswahlraten-Differenz höchstens das Band ist; gibt es keine, <code>None</code>. Unter diesen den mit dem besten f1 wählen; bei Gleichstand den mit der kleineren schwelle. Rückgabe <code>{\"schwelle\": .., \"f1\": .., \"paritaet_ok\": True}</code>. <code>cost_table(token_in, token_out, preis_in_mio, preis_out_mio)</code>: Kosten in EUR für token_in Input- und token_out Output-Token zu preis_in_mio beziehungsweise preis_out_mio EUR je 1.000.000 Token; Rückgabe <code>{\"input_eur\": .., \"output_eur\": .., \"gesamt_eur\": ..}</code>, jeweils auf 4 Dezimalstellen gerundet. Der Testcode bringt Kandidatenlisten und Preisbeispiele mit.",
+      "fullSolution": "def threshold_sweep(kandidaten, band):\n    im_band = [k for k in kandidaten if abs(k[\"selrate\"][\"a\"] - k[\"selrate\"][\"b\"]) <= band]\n    if not im_band:\n        return None\n    best = im_band[0]\n    for k in im_band:\n        if k[\"f1\"] > best[\"f1\"] or (k[\"f1\"] == best[\"f1\"] and k[\"schwelle\"] < best[\"schwelle\"]):\n            best = k\n    return {\"schwelle\": best[\"schwelle\"], \"f1\": best[\"f1\"], \"paritaet_ok\": True}\n\n\ndef cost_table(token_in, token_out, preis_in_mio, preis_out_mio):\n    input_eur = token_in / 1_000_000 * preis_in_mio\n    output_eur = token_out / 1_000_000 * preis_out_mio\n    return {\"input_eur\": round(input_eur, 4), \"output_eur\": round(output_eur, 4), \"gesamt_eur\": round(input_eur + output_eur, 4)}\n\n# 120000/30000 Token zu 0.5/2.0 EUR je Mio -> 0.06 + 0.06 = 0.12 EUR (lokal python3-verifiziert)",
+      "hints": [
+        "Erst filtern (Differenz der Auswahlraten <= band), dann unter den verbliebenen Kandidaten das beste f1 suchen — nicht umgekehrt.",
+        "cost_table: token/1_000_000 mal Preis; alle drei Werte einzeln auf 4 Stellen runden, gesamt aus der Summe der ungerundeten Werte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "f1-first",
+          "then": "Der Kandidat mit f1 0.84 liegt außerhalb des Bands — Paritätsband zuerst, dann Qualität; sonst dreht die Funktion die ethische Reihenfolge um."
+        },
+        {
+          "if": "tie-wrong",
+          "then": "Bei gleichem f1 gewinnt die kleinere schwelle — zwei Kandidaten mit f1 0.78 dürfen nicht von der Listenposition abhängen."
+        },
+        {
+          "if": "cost-rounding",
+          "then": "gesamt_eur rundet die Summe der ungerundeten Einzelwerte — die Summe der gerundeten Werte kann abweichen."
+        }
+      ],
+      "typicalErrors": [
+        "bestes f1 vor dem Paritätsfilter gewählt",
+        "Gleichstand über Listenposition statt kleinere Schwelle aufgelöst",
+        "Kosten aus gerundeten Einzelwerten summiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

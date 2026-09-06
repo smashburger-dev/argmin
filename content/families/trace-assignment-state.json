@@ -449,6 +449,174 @@
       },
       "activityType": "code-trace",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "card-check-variable-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w32-e3"
+      ],
+      "parameters": {
+        "snippet": "card = {\"name\": \"faq-korpus\", \"zweck\": \"support\", \"split_train\": 0.8, \"split_dev\": 0.1, \"split_test\": 0.1}\npflicht = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\"]\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt",
+        "variables": [
+          {
+            "name": "n_fehlt",
+            "value": 3
+          },
+          {
+            "name": "promille",
+            "value": 1000
+          },
+          {
+            "name": "felder",
+            "value": 8
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-research-cards",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Code lesen und die Endwerte der Variablen angeben: Eine Kartenprüfung zählt fehlende Pflichtfelder und prüft die Split-Summe. Was stehen für <code>n_fehlt</code>, <code>promille</code> und <code>felder</code> am Ende?",
+      "fullSolution": "n_fehlt = 3 (herkunft, lizenz, n_beispiele fehlen als Schlüssel). summe = round(0.8 + 0.1 + 0.1, 3) = 1.0 → promille = 1000. felder = len(card) + n_fehlt = 5 + 3 = 8.",
+      "hints": [
+        "n_fehlt zählt die Pflichtfelder, die als Schlüssel nicht im Dict stehen — herkunft, lizenz und n_beispiele.",
+        "Die drei split_-Schlüssel summieren sich auf 1,0; promille ist der Anteil in Tausendsteln als ganze Zahl."
+      ],
+      "feedbackRules": [
+        {
+          "if": "n_fehlt-wrong",
+          "then": "f not in card prüft Schlüssel-Existenz: herkunft, lizenz, n_beispiele fehlen → drei Felder."
+        },
+        {
+          "if": "promille-wrong",
+          "then": "0.8 + 0.1 + 0.1 = 1.0 (nach round auf 3 Stellen) → 1.0 · 1000 = 1000 Tausendstel."
+        },
+        {
+          "if": "felder-wrong",
+          "then": "len(card) = 5 erfasste Schlüssel plus 3 fehlende Pflichtfelder = 8."
+        }
+      ],
+      "typicalErrors": [
+        "Leerstring- und fehlende Schlüssel verwechselt (hier steht kein leerer Wert)",
+        "Summe vor dem Runden weiterverwendet",
+        "len(card) ohne die fehlenden Felder gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "rpn-priority-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w33-e3"
+      ],
+      "parameters": {
+        "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(4, 2, 2)\nr2 = rpn(5, 3, 1)\nr3 = rpn(3, 1, 2)\nhoechste = max(r1, r2, r3)",
+        "variables": [
+          {
+            "name": "r1",
+            "value": 16
+          },
+          {
+            "name": "r2",
+            "value": 15
+          },
+          {
+            "name": "r3",
+            "value": 6
+          },
+          {
+            "name": "hoechste",
+            "value": 16
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-research-responsible",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Code lesen und die Endwerte angeben: Eine RPN-Priorisierung (Risiko · Prävalenz · Kontrolle) wird für drei Risikoeinträge eines Registers durchgerechnet. Was stehen für <code>r1</code>, <code>r2</code>, <code>r3</code> und <code>hoechste</code> am Ende?",
+      "fullSolution": "r1 = 4 · 2 · 2 = 16, r2 = 5 · 3 · 1 = 15, r3 = 3 · 1 · 2 = 6, hoechste = max(16, 15, 6) = 16.",
+      "hints": [
+        "Jeder Wert ist das Produkt dreier kleiner Zahlen.",
+        "Eintrag zwei hat die hoechste Einzelzahl, aber die niedrigste Kontrollstufe."
+      ],
+      "feedbackRules": [
+        {
+          "if": "r2-wrong",
+          "then": "r2 = 5 · 3 · 1 = 15 — die Kontrollstufe 1 drückt das Produkt trotz hoher Prävalenz."
+        },
+        {
+          "if": "hoechste-wrong",
+          "then": "max(16, 15, 6) = 16 — das Datenleck bleibt oberster Eintrag, knapp vor der Injektion."
+        }
+      ],
+      "typicalErrors": [
+        "Produkte in falscher Reihenfolge zugeteilt",
+        "max auf die Eingabewerte statt die RPN-Werte angewandt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "metric-name-normalize-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w31-e3"
+      ],
+      "parameters": {
+        "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\ne = extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner die Überlappung, desto geringer die recall@5-Quote\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])"
+      },
+      "competencyIds": [
+        "c-research-question",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "die chunkgröße\nder anteil korrekter antworten\ndie überlappung\ndie recall@5-quote"
+      },
+      "prompt": "Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Funktion zerlegt eine Je-desto-Hypothese in unabhängige Variable (UV) und abhängige Variable (DV).",
+      "fullSolution": "Erster Aufruf: vorderer = „Je größer die Chunkgröße“ → [2:] = „die Chunkgröße“ → <code>die chunkgröße</code>; hinterer = „höher der Anteil korrekter Antworten“ → [1:] = <code>der anteil korrekter antworten</code>. Zweiter Aufruf entsprechend <code>die überlappung</code> und <code>die recall@5-quote</code>.",
+      "hints": [
+        "vorderer.split()[2:] lässt „Je“ und das erste Wort (die Richtung wie „größer“) weg — der Rest ist die UV.",
+        "hinterer.split()[1:] lässt das erste Wort nach „desto“ (die Richtung) weg; alles wird kleingeschrieben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "direction-included",
+          "then": "Die Richtungsadjektive („größer“, „geringer“) gehören nicht zu UV oder DV — split()[2:] beziehungsweise split()[1:] schneiden sie ab."
+        },
+        {
+          "if": "case-wrong",
+          "then": "Beide Variable werden mit .lower() kleingeschrieben — „Chunkgröße“ wird zu „chunkgröße“."
+        }
+      ],
+      "typicalErrors": [
+        "Richtungsadjektiv mit in die Variable aufgenommen",
+        "Groß-/Kleinschreibung nicht mitgerechnet",
+        "den Punkt am Satzende mit in die DV übernommen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
     }
   ]
 }

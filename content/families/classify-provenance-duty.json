@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-provenance-duty",
+  "contract": {
+    "familyId": "classify-provenance-duty",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Verwendung der passenden Provenance-Pflichtklasse zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "provenance-duty",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-research-cards"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "provenance-duty",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w32-e1"
+      ],
+      "parameters": {
+        "thema": "Karten als Vertrag"
+      },
+      "competencyIds": [
+        "c-research-cards"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das System in positives Licht rücken, damit es übernommen wird.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Provenienz, Zweck, Evaluationsrahmen und Grenzen so erfassen, dass Vollständigkeit und Konsistenz deterministisch prüfbar sind.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Kennzahlen ersetzen: Wer die Karte liest, braucht keine Messung mehr.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein Formular, das niemand liest und das keine Konsequenzen hat.",
+          "correct": false
+        }
+      ],
+      "prompt": "Was ist der zentrale Zweck der Pflichtfelder in Daten- und Modellkarten dieser Plattform?",
+      "fullSolution": "Pflichtfelder machen Provenienz, Verwendungszweck, Evaluationsrahmen und bekannte Grenzen maschinenlesbar nachvollziehbar: Ein Audit kann fehlende oder leere Felder zählen und Karten gegen das Protokoll abgleichen — Karten sind ein prüfbarer Vertrag, kein Marketingtext. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Karten richten sich an Menschen, die das System später weiterentwickeln oder bewerten — was brauchen sie, um Herkunft, Zweck und Grenzen zu prüfen?",
+        "Ein Vertrag ist prüfbar: Felder sind vorhanden und sagend oder der Mangel ist feststellbar."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Marketing verschönert; Pflichtfelder sollen im Gegenteil auch unangenehme Grenzen und Lücken feststellbar machen."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Blick in die Karten ist gerade dazu da, Kennzahlen auf Herkunft und Grenzen zurückzuführen — sie sind kein Ersatz für Messung."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Karten sind Abnahme- und Auditgrundlage, kein Formular ohne Prüffunktion — ihr Wert entsteht durch Vollständigkeit und Konsistenz."
+        }
+      ],
+      "typicalErrors": [
+        "Karten als Zierdokument statt Prüfgrundlage verstanden",
+        "Vollständigkeit mit positiver Darstellung verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

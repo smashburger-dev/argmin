@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-rule-cascade-priority",
+  "contract": {
+    "familyId": "classify-rule-cascade-priority",
+    "familyGroup": "classify-concept",
+    "summary": "Wendet eine geordnete Regel- oder Policy-Kaskade an, in der die erste passende Regel gewinnt und der Default- beziehungsweise Unbekannt-Fall konservativ am Ende greift.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "error-taxonomy-classify",
+        "propertyTest": false
+      },
+      {
+        "caseId": "permission-policy-check",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-genai-eval",
+      "c-python-functions",
+      "c-genai-security",
+      "c-testing-debugging"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "error-taxonomy-classify",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w28-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import re\n\n\ndef classify(record, rules):\n    \"\"\"Wendet das Regelwerk (Liste mit 'kind'/'label', letzte Regel 'default') in fester Reihenfolge an.\"\"\"\n    ...\n\ndef citation_precision(cited, gold_sources):\n    \"\"\"Anteil zulaessiger Zitate an allen Zitaten; leere Liste -> 0.0.\"\"\"\n    ...\n\n",
+        "tests": "RULES_FULL = [\n    {\"label\": \"formatfehler\", \"kind\": \"empty-answer\"},\n    {\"label\": \"quellos\", \"kind\": \"no-citations\"},\n    {\"label\": \"off-topic\", \"kind\": \"no-shared-terms\"},\n    {\"label\": \"halluziniert\", \"kind\": \"unknown-citation\"},\n    {\"label\": \"falsch-faktisch\", \"kind\": \"foreign-number\"},\n    {\"label\": \"unvollständig\", \"kind\": \"missing-gold-number\"},\n    {\"label\": \"unvollständig\", \"kind\": \"default\"},\n]\nSOURCES = [\"faq-3\", \"faq-7\", \"vertrag-1\"]\nR = [\n    {\"answer\": \"Die Lieferzeit beträgt 3 Werktage.\", \"gold\": \"Die Lieferzeit beträgt 3 Werktage ab Versand.\", \"citations\": [\"faq-3\"], \"sources\": SOURCES},\n    {\"answer\": \"   \", \"gold\": \"Die Frist beträgt 14 Tage.\", \"citations\": [\"faq-7\"], \"sources\": SOURCES},\n    {\"answer\": \"Die Lieferzeit beträgt 3 Werktage.\", \"gold\": \"Die Lieferzeit beträgt 3 Werktage.\", \"citations\": [], \"sources\": SOURCES},\n    {\"answer\": \"Der Kuchen schmeckt nach Zitrone.\", \"gold\": \"Die Lieferzeit beträgt 3 Werktage.\", \"citations\": [\"faq-3\"], \"sources\": SOURCES},\n    {\"answer\": \"Die Lieferzeit beträgt 3 Werktage.\", \"gold\": \"Die Lieferzeit beträgt 3 Werktage.\", \"citations\": [\"faq-3\", \"blog-x\"], \"sources\": SOURCES},\n    {\"answer\": \"Die Lieferzeit beträgt 9 Werktage.\", \"gold\": \"Die Lieferzeit beträgt 3 Werktage.\", \"citations\": [\"faq-3\"], \"sources\": SOURCES},\n    {\"answer\": \"Die Frist endet nach 14 Tagen.\", \"gold\": \"Die Frist endet nach 30 Tagen.\", \"citations\": [\"faq-3\"], \"sources\": SOURCES},\n    {\"answer\": \"Die Frist endet nach 30 Tagen.\", \"gold\": \"Die Frist endet nach 30 Tagen.\", \"citations\": [\"faq-3\"], \"sources\": SOURCES},\n]\n__check('leer -> formatfehler', classify(R[1], RULES_FULL) == \"formatfehler\")\n__check('ohne beleg -> quellos', classify(R[2], RULES_FULL) == \"quellos\")\n__check('am thema vorbei -> off-topic', classify(R[3], RULES_FULL) == \"off-topic\")\n__check('erfundener beleg -> halluziniert', classify(R[4], RULES_FULL) == \"halluziniert\")\n__check('fremde zahl -> falsch-faktisch', classify(R[5], RULES_FULL) == \"falsch-faktisch\")\n__check('widersprechende zahl -> falsch-faktisch', classify(R[6], RULES_FULL) == \"falsch-faktisch\")\n__check('alles belegt -> unvollstaendig als default', classify(R[7], RULES_FULL) == \"unvollständig\")\n__check('gold-zahl fehlt -> unvollstaendig', classify(R[0], RULES_FULL) == \"unvollständig\")\n__check('regelreihenfolge: leer schlaegt alles', classify({\"answer\": \"   \", \"gold\": \"x\", \"citations\": [], \"sources\": SOURCES}, RULES_FULL) == \"formatfehler\")\n__check('citation precision voll', citation_precision([\"faq-3\", \"faq-7\"], SOURCES) == 1.0)\n__check('citation precision halb', citation_precision([\"faq-3\", \"blog-x\"], SOURCES) == 0.5)\n__check('citation precision leer', citation_precision([], SOURCES) == 0.0)"
+      },
+      "competencyIds": [
+        "c-genai-eval",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import re\n\ndef _words(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return stripped.split()\n\ndef _content_words(text):\n    return {w for w in _words(text) if len(w) >= 4 and not w.isdigit()}\n\ndef _numbers(text):\n    return set(re.findall(r\"\\d+\", text))\n\ndef classify(record, rules):\n    answer = record.get(\"answer\", \"\")\n    gold = record.get(\"gold\", \"\")\n    citations = record.get(\"citations\", [])\n    sources = record.get(\"sources\", [])\n    for rule in rules:\n        kind = rule.get(\"kind\")\n        label = rule[\"label\"]\n        if kind == \"default\":\n            return label\n        if kind == \"empty-answer\" and answer.strip() == \"\":\n            return label\n        if kind == \"no-citations\" and len(citations) == 0:\n            return label\n        if kind == \"no-shared-terms\" and not (_content_words(answer) & _content_words(gold)):\n            return label\n        if kind == \"unknown-citation\" and any(c not in sources for c in citations):\n            return label\n        if kind == \"foreign-number\" and (_numbers(answer) - _numbers(gold)):\n            return label\n        if kind == \"missing-gold-number\" and (_numbers(gold) - _numbers(answer)):\n            return label\n    return rules[-1][\"label\"]\n\ndef citation_precision(cited, gold_sources):\n    if not cited:\n        return 0.0\n    return sum(1 for c in cited if c in gold_sources) / len(cited)"
+      },
+      "prompt": "Implementiere die Regelklassifikation der Fehlertaxonomie. <code>classify(record, rules)</code> erhält ein Record-Dictionary mit <code>answer</code>, <code>gold</code>, <code>citations</code>, <code>sources</code> und ein Regelwerk: geordnete Liste von <code>{\"label\": ..., \"kind\": ...}</code>, dessen letzte Regel <code>\"default\"</code> ist. Erste passende Regel gewinnt. Regel-Kind semantics: <code>empty-answer</code> (Antwort nur Whitespace), <code>no-citations</code> (leere Belegliste), <code>no-shared-terms</code> (kein gemeinsamer Inhaltsbegriff — Wörter mit Länge ≥ 4, keine Ziffern, nach Kleinbuchstaben-/Satzzeichen-Normalisierung), <code>unknown-citation</code> (Beleg außerhalb von sources), <code>foreign-number</code> (Zahl in der Antwort, die nicht unter den Gold-Zahlen), <code>missing-gold-number</code> (Gold-Zahl fehlt in der Antwort), <code>default</code> (trifft immer zu). <code>citation_precision(cited, gold_sources)</code> = Anteil zulässiger Zitate (leere Liste → 0.0). Der Testcode bringt eigene Regelwerke und gelabelte Fixtures mit.",
+      "fullSolution": "import re\n\ndef _words(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return stripped.split()\n\ndef _content_words(text):\n    return {w for w in _words(text) if len(w) >= 4 and not w.isdigit()}\n\ndef _numbers(text):\n    return set(re.findall(r\"\\d+\", text))\n\ndef classify(record, rules):\n    answer = record.get(\"answer\", \"\")\n    gold = record.get(\"gold\", \"\")\n    citations = record.get(\"citations\", [])\n    sources = record.get(\"sources\", [])\n    for rule in rules:\n        kind = rule.get(\"kind\")\n        label = rule[\"label\"]\n        if kind == \"default\":\n            return label\n        if kind == \"empty-answer\" and answer.strip() == \"\":\n            return label\n        if kind == \"no-citations\" and len(citations) == 0:\n            return label\n        if kind == \"no-shared-terms\" and not (_content_words(answer) & _content_words(gold)):\n            return label\n        if kind == \"unknown-citation\" and any(c not in sources for c in citations):\n            return label\n        if kind == \"foreign-number\" and (_numbers(answer) - _numbers(gold)):\n            return label\n        if kind == \"missing-gold-number\" and (_numbers(gold) - _numbers(answer)):\n            return label\n    return rules[-1][\"label\"]\n\ndef citation_precision(cited, gold_sources):\n    if not cited:\n        return 0.0\n    return sum(1 for c in cited if c in gold_sources) / len(cited)\n\n# alle Fixtur-Labels der Tests werden reproduziert (lokal python3-verifiziert)",
+      "hints": [
+        "Baue zwei Hilfsmengen: Inhaltsbegriffe (len ≥ 4, keine Ziffern) und Zahlmengen (re.findall über Ziffern) für Antwort und Gold.",
+        "Iteriere die Regeln in Listenneihung; jede Regel prüft genau ihr kind — die default-Regel schließt die Kaskade ab."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-wrong",
+          "then": "Die Reihenfolge des Regelwerks ist Teil des Vertrags — leere Antwort schlägt z. B. quellos, egal was sonst fehlt."
+        },
+        {
+          "if": "content-words-too-short",
+          "then": "Nur Wörter mit Länge ≥ 4 zählen als Inhaltsbegriffe — kurze Füllwörter wie „die“ dürfen off-topic nicht verhindern."
+        },
+        {
+          "if": "default-unreachable",
+          "then": "Die default-Regel darf nur am Ende stehen und immer greifen — ein Regelsystem kann Vollständigkeit nicht beweisen, der Default bleibt konservativ unvollständig."
+        }
+      ],
+      "typicalErrors": [
+        "Regelreihenfolge nicht eingehalten",
+        "Zahlen als Wörter statt Ziffern verglichen",
+        "default-Label weggelassen oder vor andere Regeln gezogen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "permission-policy-check",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w29-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def check_permissions(tool_calls, policy):\n    \"\"\"Liste von {'index', 'tool', 'verdict', 'reason'} in Aufrufreihenfolge; reason None bei erlaubt.\"\"\"\n    ...\n\n",
+        "tests": "POLICY = {\n    \"allowed\": [\"suche\", \"lese\"],\n    \"restricted\": {\"schreibe\": [\"notizen\"]},\n    \"forbidden\": [\"mail\", \"loesche\"],\n}\nCALLS = [\n    {\"tool\": \"suche\", \"arg\": \"lieferzeit\"},\n    {\"tool\": \"schreibe\", \"arg\": \"notizen\"},\n    {\"tool\": \"schreibe\", \"arg\": \"system\"},\n    {\"tool\": \"mail\", \"arg\": \"example.invalid\"},\n    {\"tool\": \"hook\", \"arg\": \"irgendwas\"},\n    {\"tool\": \"lese\", \"arg\": \"faq-3\"},\n]\nres = check_permissions(CALLS, POLICY)\n__check('erlaubte garantie', res[0] == {\"index\": 0, \"tool\": \"suche\", \"verdict\": \"allowed\", \"reason\": None})\n__check('eingeschraenktes argument ok', res[1][\"verdict\"] == \"allowed\" and res[1][\"reason\"] is None)\n__check('eingeschraenktes argument abgelehnt', res[2] == {\"index\": 2, \"tool\": \"schreibe\", \"verdict\": \"denied\", \"reason\": \"arg-not-allowed\"})\n__check('verboten bleibt verboten', res[3] == {\"index\": 3, \"tool\": \"mail\", \"verdict\": \"denied\", \"reason\": \"tool-forbidden\"})\n__check('unbekannt abgelehnt', res[4] == {\"index\": 4, \"tool\": \"hook\", \"verdict\": \"denied\", \"reason\": \"tool-unknown\"})\n__check('reihenfolge erhalten', [r[\"index\"] for r in res] == list(range(6)))\n__check('least privilege zaehlung', sum(1 for r in res if r[\"verdict\"] == \"allowed\") == 3)\n__check('leere aufrufe', check_permissions([], POLICY) == [])\n__check('alles verboten policy', all(r[\"verdict\"] == \"denied\" for r in check_permissions([{\"tool\": \"lese\", \"arg\": \"x\"}], {\"allowed\": [], \"restricted\": {}, \"forbidden\": [\"lese\"]})))"
+      },
+      "competencyIds": [
+        "c-genai-security",
+        "c-testing-debugging"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def check_permissions(tool_calls, policy):\n    results = []\n    for i, call in enumerate(tool_calls):\n        tool = call[\"tool\"]\n        arg = call.get(\"arg\")\n        if tool in policy[\"forbidden\"]:\n            results.append({\"index\": i, \"tool\": tool, \"verdict\": \"denied\", \"reason\": \"tool-forbidden\"})\n        elif tool in policy.get(\"restricted\", {}):\n            if arg in policy[\"restricted\"][tool]:\n                results.append({\"index\": i, \"tool\": tool, \"verdict\": \"allowed\", \"reason\": None})\n            else:\n                results.append({\"index\": i, \"tool\": tool, \"verdict\": \"denied\", \"reason\": \"arg-not-allowed\"})\n        elif tool in policy[\"allowed\"]:\n            results.append({\"index\": i, \"tool\": tool, \"verdict\": \"allowed\", \"reason\": None})\n        else:\n            results.append({\"index\": i, \"tool\": tool, \"verdict\": \"denied\", \"reason\": \"tool-unknown\"})\n    return results\n\n# CALLS/POLICY aus dem Test: 3x allowed, arg-not-allowed, tool-forbidden, tool-unknown"
+      },
+      "prompt": "Least Privilege als Code: Implementiere <code>check_permissions(tool_calls, policy)</code>. tool_calls: Liste von <code>{\"tool\": str, \"arg\": ...}</code>. policy: <code>{\"allowed\": [..], \"restricted\": {tool: [erlaubte Argumente]}, \"forbidden\": [..]}</code>. Rückgabe in Aufrufreihenfolge: <code>{\"index\": i, \"tool\": .., \"verdict\": \"allowed\"|\"denied\", \"reason\": None|\"tool-forbidden\"|\"arg-not-allowed\"|\"tool-unknown\"}</code>. Entscheidungsreihenfolge: forbidden schlägt alles; restricted prüft das Argument gegen seine Allowlist; allowed erlaubt; alles andere ist tool-unknown und abgelehnt. Der Testcode prüft jede Entscheidungsart, die Reihenfolge und Grenzfälle.",
+      "fullSolution": "def check_permissions(tool_calls, policy):\n    results = []\n    for i, call in enumerate(tool_calls):\n        tool = call[\"tool\"]\n        arg = call.get(\"arg\")\n        if tool in policy[\"forbidden\"]:\n            results.append({\"index\": i, \"tool\": tool, \"verdict\": \"denied\", \"reason\": \"tool-forbidden\"})\n        elif tool in policy.get(\"restricted\", {}):\n            if arg in policy[\"restricted\"][tool]:\n                results.append({\"index\": i, \"tool\": tool, \"verdict\": \"allowed\", \"reason\": None})\n            else:\n                results.append({\"index\": i, \"tool\": tool, \"verdict\": \"denied\", \"reason\": \"arg-not-allowed\"})\n        elif tool in policy[\"allowed\"]:\n            results.append({\"index\": i, \"tool\": tool, \"verdict\": \"allowed\", \"reason\": None})\n        else:\n            results.append({\"index\": i, \"tool\": tool, \"verdict\": \"denied\", \"reason\": \"tool-unknown\"})\n    return results\n\n# CALLS/POLICY aus dem Test: 3x allowed, arg-not-allowed, tool-forbidden, tool-unknown",
+      "hints": [
+        "Prüfe in der Reihenfolge forbidden → restricted → allowed → unbekannt; nur so bleibt die Entscheidung bei überlappenden Policies eindeutig.",
+        "Jeder Eintrag trägt index und tool, erlaubte Aufrufe reason None — nachvollziehbare Fehler brauchen Grundangaben, erlaubte nicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "unknown-allowed",
+          "then": "Nicht in der Policy genannte Werkzeuge müssen abgelehnt werden (tool-unknown) — Allowlist heißt: unbekannt ist verboten."
+        },
+        {
+          "if": "restricted-arg-ignored",
+          "then": "Ein eingeschränktes Werkzeug ist nur mit Argument aus seiner Allowlist erlaubt — sonst arg-not-allowed."
+        },
+        {
+          "if": "order-lost",
+          "then": "Die Ergebnisliste folgt der Aufrufreihenfolge; index muss der Position im Eingabeliste entsprechen."
+        }
+      ],
+      "typicalErrors": [
+        "unbekannte Werkzeuge stillschweigend erlaubt",
+        "Argument-Allowlist für restricted Tools ignoriert",
+        "Ergebnisreihenfolge sortiert statt eingehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
