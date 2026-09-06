@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-dl-tensors",
+  "version": 1,
+  "locale": "de",
+  "title": "Tensoren, Layer und Dimensionsverträge",
+  "description": "Lerne Tensorformen, Broadcasting und Forward-Verträge in linearen und tiefen Layerketten anzuwenden.",
+  "competencyIds": [
+    "c-dl-tensors"
+  ],
+  "requires": [
+    "c-numpy-basics",
+    "c-linalg-matrices"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "mathematical-foundations"
+  ],
+  "lessonIds": [
+    "l-dl-tensors"
+  ],
+  "placements": [
+    {
+      "placementId": "p-dl-tensors-param",
+      "role": "curated",
+      "familyId": "formula-count-from-construction",
+      "caseId": "linear-param-count",
+      "seed": 1802,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-tensors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-tensors-shape",
+      "role": "curated",
+      "familyId": "validate-shape-contract",
+      "caseId": "shapes-w18-broadcast-axes",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-tensors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-tensors-forward-linear",
+      "role": "curated",
+      "familyId": "fit-forward-layer-chain-contract",
+      "caseId": "linear-forward-contract",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 20,
+      "lessonId": "l-dl-tensors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-tensors-forward-mlp",
+      "role": "curated",
+      "familyId": "fit-forward-layer-chain-contract",
+      "caseId": "mlp-forward-relu",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-dl-tensors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-tensors-forward-deep",
+      "role": "curated",
+      "familyId": "fit-forward-layer-chain-contract",
+      "caseId": "deep-forward-chain",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-dl-tensors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-tensors-practice",
+      "role": "practice-space",
+      "familyId": "formula-count-from-construction",
+      "caseId": "linear-param-count",
+      "seed": 1802,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-dl-tensors"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
