@@ -66,7 +66,11 @@ export function buildWeeklyLearningPlan(catalog: CatalogData, progress: Progress
     return {
       ...rest,
       // Reviews open a fresh instance for generator-backed exercises (ADR-0015).
-      route: dueAt && exercise?.generatorId ? freshReviewRoute(baseRoute, exercise.generatorId, `${item.activityId}:${dueAt}`) : baseRoute,
+      route: dueAt && exercise?.familyId && exercise.seeded
+        ? `#/family/${exercise.familyId}/${exercise.caseId}/-/${exercise.difficulty ?? 'core'}`
+        : dueAt && exercise?.generatorId
+          ? freshReviewRoute(baseRoute, exercise.generatorId, `${item.activityId}:${dueAt}`)
+          : baseRoute,
       title: lesson?.title || exercise?.title || project?.title || item.activityId,
       ...(dueAt ? { reviewDueAt: dueAt } : {}),
     };

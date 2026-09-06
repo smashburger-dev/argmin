@@ -65,7 +65,7 @@ export interface ExerciseSummary {
   referenceSolverId: string | null;
   competencyIds: string[];
   estimatedMinutes: number;
-  difficulty: number;
+  difficulty: number | string;
   deterministicSeed: number;
   masteryEligible: boolean;
   active: boolean;
@@ -84,6 +84,10 @@ export interface ExerciseSummary {
   testedSeedCount: number;
   starterCode?: string;
   packages?: string[];
+  familyId?: string;
+  caseId?: string;
+  seed?: number;
+  seeded?: boolean;
 }
 
 export interface LessonBlock {

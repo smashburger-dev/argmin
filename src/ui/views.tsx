@@ -328,7 +328,7 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
   const recommendations = buildFoundationsDiagnosis(catalog, progress).slice(0, 4);
   const labels = new Map(catalog.competencies.map((item) => [item.competencyId, item]));
   const typeLabels = { review: 'Kompetenz-Frische fällig', lesson: 'Kompetenz stärken', diagnostic: 'Evidence fehlt' };
-  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'w01-e1');
+  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'transform-linear-equation-isolate:two-step-fixed-instance');
   return (
     <section class="view" aria-labelledby="diagnostic-title">
       <header class="view-header"><p class="eyebrow">Formative Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>

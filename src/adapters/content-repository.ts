@@ -20,6 +20,21 @@ interface CompiledIndex {
   projects: CatalogData['projects'];
   learningModules?: LearningModule[];
   exerciseDefinitions: Array<Partial<ExerciseSummary> & Pick<ExerciseSummary, 'definitionId' | 'competencyIds' | 'activityType' | 'estimatedMinutes' | 'difficulty' | 'graderId'>>;
+  familyActivities: Array<{
+    definitionId: string;
+    familyId: string;
+    caseId: string;
+    seed: number;
+    difficulty: string;
+    title: string;
+    activityType: string;
+    competencyIds: string[];
+    estimatedMinutes: number;
+    masteryEligible: boolean;
+    seeded: boolean;
+    moduleId: string;
+    lessonId: string | null;
+  }>;
   families: Array<{
     familyId: string;
     contract: Record<string, unknown> | null;
@@ -118,6 +133,44 @@ function toExerciseSummary(exercise: CompiledIndex['exerciseDefinitions'][number
   } as ExerciseSummary;
 }
 
+function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): ExerciseSummary {
+  return {
+    definitionId: activity.definitionId,
+    version: 1,
+    title: activity.title,
+    prompt: activity.title,
+    activityType: activity.activityType,
+    graderId: 'family',
+    generatorId: null,
+    referenceSolverId: null,
+    competencyIds: activity.competencyIds,
+    estimatedMinutes: activity.estimatedMinutes,
+    difficulty: activity.difficulty,
+    deterministicSeed: activity.seed,
+    masteryEligible: activity.masteryEligible,
+    active: true,
+    releaseStatus: 'draft',
+    legacyWeekId: null,
+    parameters: {},
+    choices: [],
+    expectedAnswer: {},
+    tolerancePolicy: {},
+    hints: [],
+    feedbackRules: [],
+    fullSolution: '',
+    workedExample: null,
+    rubric: null,
+    typicalErrors: null,
+    testedSeedCount: 0,
+    starterCode: undefined,
+    packages: [],
+    familyId: activity.familyId,
+    caseId: activity.caseId,
+    seed: activity.seed,
+    seeded: activity.seeded,
+  };
+}
+
 export function loadCatalog(): CatalogData {
   return {
     catalogId: index.catalogId,
@@ -127,7 +180,7 @@ export function loadCatalog(): CatalogData {
     milestones: index.milestones,
     learningModules: index.learningModules ?? [],
     lessons: index.lessons,
-    exercises: index.exerciseDefinitions.map(toExerciseSummary),
+    exercises: index.familyActivities.map(toFamilySummary),
     explanations: index.explanations,
     projects: index.projects,
   };

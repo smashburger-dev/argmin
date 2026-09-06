@@ -14,7 +14,7 @@ import { buildLegacyMap } from './migrate_legacy_content.mjs';
 import { createPublicLegacyContent, sanitizePublicValue } from './public_content.mjs';
 import { renderMarkdown } from './markdown_content.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
-import { assertFamilyPlacement, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
+import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
   assertModuleBindings,
@@ -507,6 +507,7 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     definitions,
     projects,
   }));
+  const familyActivities = buildFamilyActivities(learningModules, families);
   const expectedMap = buildLegacyMap(projectRoot);
   const storedMap = readJson(join(contentRoot, 'legacy/exercise-competency-map.json'));
   if (JSON.stringify(storedMap) !== JSON.stringify(expectedMap)) throw new Error('Legacy-Mapping ist veraltet; tools/migrate_legacy_content.mjs ausführen');
@@ -534,6 +535,7 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     reviews,
     lessons,
     exerciseDefinitions: definitions,
+    familyActivities,
     explanations,
     projects,
     learningModules,
@@ -586,6 +588,59 @@ function promptSnippet(prompt, maxLength = 110) {
   return `${cut.slice(0, boundary > 40 ? boundary : maxLength)} …`;
 }
 
+function stripPromptMarkup(prompt, maxLength = 80) {
+  const text = String(prompt || '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (text.length <= maxLength) return text;
+  const cut = text.slice(0, maxLength);
+  const boundary = cut.lastIndexOf(' ');
+  return `${cut.slice(0, boundary > 30 ? boundary : maxLength)} …`;
+}
+
+function buildFamilyActivities(learningModules, families) {
+  const familyDocuments = new Map(families.map((family) => [family.familyId, family]));
+  const activities = [];
+  const seen = new Set();
+  for (const module of learningModules || []) {
+    for (const placement of module.placements || []) {
+      if (placement.role !== 'curated' || !placement.familyId || !placement.caseId) continue;
+      const definitionId = `${placement.familyId}:${placement.caseId}`;
+      if (seen.has(definitionId)) continue;
+      const family = EXERCISE_FAMILIES.get(placement.familyId);
+      if (!family) throw new Error(`Unbekannte Familie ${placement.familyId}`);
+      const instance = EXERCISE_FAMILIES.instantiate(
+        placement.familyId,
+        placement.seed ?? 0,
+        placement.difficulty,
+        placement.caseId,
+      );
+      const familyDocument = familyDocuments.get(placement.familyId);
+      const familyTitle = familyDocument?.contract?.summary || family.summary;
+      const title = instance.title
+        || (familyTitle ? `${familyTitle} · ${placement.caseId}` : stripPromptMarkup(instance.prompt));
+      activities.push({
+        definitionId,
+        familyId: placement.familyId,
+        caseId: placement.caseId,
+        seed: placement.seed ?? 0,
+        difficulty: placement.difficulty,
+        title,
+        activityType: instance.kind ?? instance.activityType,
+        competencyIds: [...(instance.competencyIds || [])],
+        estimatedMinutes: placement.estimatedMinutes ?? 8,
+        masteryEligible: instance.masteryEligible === true,
+        seeded: family.authorityMode === 'seeded',
+        moduleId: module.moduleId,
+        lessonId: placement.lessonId ?? null,
+      });
+      seen.add(definitionId);
+    }
+  }
+  return activities;
+}
+
 // Route-scoped index sections: four heavy sections ship as sidecar chunks
 // loaded through sectionChunks, keeping them out of the initial bundle.
 const SECTION_FIELDS = {
@@ -606,6 +661,7 @@ export function buildSplitArtifacts(bundle) {
       summary.promptSnippet = promptSnippet(exercise.prompt);
       return summary;
     }),
+    familyActivities: bundle.familyActivities,
     families: bundle.families.map((family) => ({
       familyId: family.familyId,
       contract: family.contract,
