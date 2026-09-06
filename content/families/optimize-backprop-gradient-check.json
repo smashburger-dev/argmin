@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-backprop-gradient-check",
+  "contract": {
+    "familyId": "optimize-backprop-gradient-check",
+    "familyGroup": "optimize-update",
+    "summary": "Leitet die Gradienten eines Layers bzw. MLP mit MSE im Rückwärtslauf her und validiert sie gegen die zentrale numerische Differenz.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "linear-mse-gradients",
+        "propertyTest": false
+      },
+      {
+        "caseId": "mlp-backprop-relu-mse",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-autograd",
+      "c-dl-tensors"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "linear-mse-gradients",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e4"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef linear_mse_forward(X, W, b):\n    \"\"\"Return X @ W + b (shapes: X (n, d), W (d, k), b (k,)).\"\"\"\n    ...\n\n\ndef linear_mse_backward(X, W, b, y):\n    \"\"\"Return (dW, db) for L = mean((X @ W + b - y) ** 2) over all n*k entries.\n\n    Derive the gradients yourself: write the residual r = prediction - y,\n    apply the chain rule to the squared mean, and check each gradient shape\n    (dW (d, k), db (k,)) against the forward contract before returning.\n    \"\"\"\n    ...\n",
+        "tests": "X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [0.0, -1.0]])\nW = np.array([[0.5], [-1.0]])\nb = np.array([0.25])\ny = np.array([[1.0], [-2.0], [3.0], [0.5]])\npred = linear_mse_forward(X, W, b)\n__check('Forward', np.allclose(pred, X @ W + b))\ndW, db = linear_mse_backward(X, W, b, y)\nr = X @ W + b - y\n__check('dW analytisch', np.allclose(dW, 2.0 / 4.0 * X.T @ r))\n__check('db analytisch', np.allclose(db, 2.0 / 4.0 * r.sum(axis=0)))\n\n\ndef loss_of_W(Wx):\n    return float(np.mean((linear_mse_forward(X, Wx, b) - y) ** 2))\n\n\ndef loss_of_b(bx):\n    return float(np.mean((linear_mse_forward(X, W, bx) - y) ** 2))\n\n\nh = 1e-5\nok_w = True\nfor i in range(W.shape[0]):\n    for j in range(W.shape[1]):\n        Wp = W.copy(); Wp[i, j] += h\n        Wm = W.copy(); Wm[i, j] -= h\n        num = (loss_of_W(Wp) - loss_of_W(Wm)) / (2 * h)\n        ok_w = ok_w and abs(num - dW[i, j]) < 1e-6\n__check('dW numerisch (zentrale Differenz)', ok_w)\nok_b = True\nfor j in range(b.shape[0]):\n    bp = b.copy(); bp[j] += h\n    bm = b.copy(); bm[j] -= h\n    num = (loss_of_b(bp) - loss_of_b(bm)) / (2 * h)\n    ok_b = ok_b and abs(num - db[j]) < 1e-6\n__check('db numerisch (zentrale Differenz)', ok_b)\nX2 = np.array([[2.0, 0.0, -1.0], [1.0, 1.0, 1.0]])\nW2 = np.array([[1.0, -1.0], [0.5, 2.0], [-2.0, 0.0]])\nb2 = np.array([0.0, 1.0])\ny2 = np.array([[0.0, 0.0], [1.0, -1.0]])\ndW2, db2 = linear_mse_backward(X2, W2, b2, y2)\nr2 = X2 @ W2 + b2 - y2\n__check('n*k-Faktor bei k=2', np.allclose(dW2, 2.0 / 4.0 * X2.T @ r2) and np.allclose(db2, 2.0 / 4.0 * r2.sum(axis=0)))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef linear_mse_forward(X, W, b):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    return X @ W + b\n\ndef linear_mse_backward(X, W, b, y):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    y = np.asarray(y, dtype=float)\n    r = X @ W + b - y\n    factor = 2.0 / r.size\n    return factor * X.T @ r, factor * r.sum(axis=0)"
+      },
+      "prompt": "Herleiten statt nachschlagen: Implementiere die Gradienten eines linearen Layers mit MSE. <code>linear_mse_forward(X, W, b)</code> gibt $XW + b$ zurück ($X \\in \\mathbb{R}^{n \\times d}$, $W \\in \\mathbb{R}^{d \\times k}$, $b \\in \\mathbb{R}^{k}$). <code>linear_mse_backward(X, W, b, y)</code> gibt $(\\partial L / \\partial W,\\ \\partial L / \\partial b)$ zurück für $L = \\mathrm{mean}\\big((XW + b - y)^2\\big)$, gemittelt über alle $n \\cdot k$ Einträge. Der Test berechnet die Referenz per zentraler numerischer Differenz aus <em>deinem</em> <code>linear_mse_forward</code> (float64, $h = 10^{-5}$) und verlangt Übereinstimmung innerhalb $10^{-6}$.",
+      "fullSolution": "import numpy as np\n\ndef linear_mse_forward(X, W, b):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    return X @ W + b\n\ndef linear_mse_backward(X, W, b, y):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    y = np.asarray(y, dtype=float)\n    r = X @ W + b - y\n    factor = 2.0 / r.size\n    return factor * X.T @ r, factor * r.sum(axis=0)\n\n# Die zentrale Differenz im Test bestätigt beide Gradienten auf 1e-6",
+      "hints": [
+        "Schreibe zuerst die Residuenmatrix r = X @ W + b − y mit Form (n, k). Die Kettenregel auf den quadrierten Mittelwert liefert einen skalaren Faktor — leite ihn her, statt ihn zu raten.",
+        "Kontrolliere über die Formen: dW muss (d, k) und db muss (k,) haben. Welcher Eingang muss transponiert werden, damit X.T @ … die Form (d, k) liefert — und über welche Achse summiert der Bias-Gradient?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "factor-2n-wrong",
+          "then": "Gemittelt wird über alle n·k Einträge: der Faktor ist 2/(n·k), nicht 2/n und nicht 1/n."
+        },
+        {
+          "if": "db-as-scalar",
+          "then": "db ist ein Vektor der Form (k,): Summation nur über axis=0, nicht über alles."
+        },
+        {
+          "if": "residual-sign-flipped",
+          "then": "r = Vorhersage − Ziel; mit y − Vorhersage dreht sich das Vorzeichen beider Gradienten."
+        }
+      ],
+      "typicalErrors": [
+        "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt",
+        "db als Skalar statt Vektor summiert",
+        "Residuen mit umgekehrtem Vorzeichen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "mlp-backprop-relu-mse",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e5"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-dl-tensors"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    \"\"\"Return (H, y_hat): H = relu(X @ W1 + b1), y_hat = H @ W2 + b2.\"\"\"\n    ...\n\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    \"\"\"Return (dW1, db1, dW2, db2) for L = mean((y_hat - y) ** 2).\n\n    Walk the chain rule backwards through the output layer, the ReLU mask,\n    and the hidden layer. Verify each gradient shape (dW1 (d, h), db1 (h,),\n    dW2 (h, k), db2 (k,)) against the forward contract before returning.\n    \"\"\"\n    ...\n",
+        "tests": "rng = np.random.default_rng(1905)\nX = np.array([[2.0, -1.0, 1.0], [1.0, 2.0, -2.0], [-2.0, 1.5, 2.0], [1.0, -1.0, -1.0], [2.0, 2.0, 2.0]])\nW1 = np.array([[0.8, -0.5, 0.6, -0.4], [0.3, 1.1, -0.7, 0.5], [-0.6, 0.4, 0.9, 0.7]])\nb1 = np.array([0.3, -0.2, 0.1, 0.4])\nW2 = np.array([[1.2, -0.6], [0.4, 0.8], [-0.9, 0.3], [0.2, -1.1]])\nb2 = np.array([0.1, -0.3])\ny = rng.normal(size=(5, 2))\nH, y_hat = mlp_forward(X, W1, b1, W2, b2)\nH_ref = np.maximum(0.0, X @ W1 + b1)\n__check('Forward H', np.allclose(H, H_ref))\n__check('Forward y_hat', np.allclose(y_hat, H_ref @ W2 + b2))\npre = X @ W1 + b1\n__check('Testdaten knickfrei', np.all(np.abs(pre) > 0.05))\ndW1, db1, dW2, db2 = mlp_backward(X, W1, b1, W2, b2, y)\n\n\ndef loss_at(W1x=None, b1x=None, W2x=None, b2x=None):\n    _, out = mlp_forward(X, W1x if W1x is not None else W1, b1x if b1x is not None else b1, W2x if W2x is not None else W2, b2x if b2x is not None else b2)\n    return float(np.mean((out - y) ** 2))\n\n\nh = 1e-5\nok1 = True\nfor i in range(W1.shape[0]):\n    for j in range(W1.shape[1]):\n        Wp = W1.copy(); Wp[i, j] += h\n        Wm = W1.copy(); Wm[i, j] -= h\n        ok1 = ok1 and abs((loss_at(W1x=Wp) - loss_at(W1x=Wm)) / (2 * h) - dW1[i, j]) < 1e-6\n__check('dW1 numerisch', ok1)\nokb1 = True\nfor j in range(b1.shape[0]):\n    bp = b1.copy(); bp[j] += h\n    bm = b1.copy(); bm[j] -= h\n    okb1 = okb1 and abs((loss_at(b1x=bp) - loss_at(b1x=bm)) / (2 * h) - db1[j]) < 1e-6\n__check('db1 numerisch', okb1)\nok2 = True\nfor i in range(W2.shape[0]):\n    for j in range(W2.shape[1]):\n        Wp = W2.copy(); Wp[i, j] += h\n        Wm = W2.copy(); Wm[i, j] -= h\n        ok2 = ok2 and abs((loss_at(W2x=Wp) - loss_at(W2x=Wm)) / (2 * h) - dW2[i, j]) < 1e-6\n__check('dW2 numerisch', ok2)\nokb2 = True\nfor j in range(b2.shape[0]):\n    bp = b2.copy(); bp[j] += h\n    bm = b2.copy(); bm[j] -= h\n    okb2 = okb2 and abs((loss_at(b2x=bp) - loss_at(b2x=bm)) / (2 * h) - db2[j]) < 1e-6\n__check('db2 numerisch', okb2)\n__check('Formen', dW1.shape == W1.shape and db1.shape == b1.shape and dW2.shape == W2.shape and db2.shape == b2.shape)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    y = np.asarray(y, dtype=float)\n    hidden, out = mlp_forward(X, W1, b1, W2, b2)\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    return dW1, db1, dW2, db2"
+      },
+      "prompt": "Das volle Programm: Backpropagation für ein 2-Layer-MLP mit ReLU und MSE. <code>mlp_forward(X, W1, b1, W2, b2)</code> gibt $(H, \\hat{y})$ zurück mit $H = \\mathrm{ReLU}(XW_1 + b_1)$, $\\hat{y} = HW_2 + b_2$. <code>mlp_backward(X, W1, b1, W2, b2, y)</code> gibt <code>(dW1, db1, dW2, db2)</code> zurück für $L = \\mathrm{mean}((\\hat{y} - y)^2)$ über alle Einträge. Der Test prüft alle vier Gradienten Eintrag für Eintrag gegen die zentrale numerische Differenz aus <em>deinem</em> <code>mlp_forward</code> ($h = 10^{-5}$, float64, Toleranz $10^{-6}$; die Testeingaben sind knickfrei gewählt).",
+      "fullSolution": "import numpy as np\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    y = np.asarray(y, dtype=float)\n    hidden, out = mlp_forward(X, W1, b1, W2, b2)\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    return dW1, db1, dW2, db2\n\n# Alle vier Gradienten stimmen mit der zentralen Differenz auf < 1e-6 ueberein",
+      "hints": [
+        "Erst forward: H und ŷ brauchst du für die Rückwärtsrechnung wieder. Der Ausgabefehler startet als delta2 aus dem quadrierten Mittelwert über die m Ausgabeeinträge — Faktor selbst herleiten.",
+        "Durch ReLU zurück: Der lokale Gradient ist 1, wo die Aktivierung positiv war, sonst 0 — als Maske (H > 0) multiplizierbar. Wie delta1 weiter zu dW1 und db1 führt, folgt aus demselben Transpositions-/Summenvertrag wie in der Vorwoche."
+      ],
+      "feedbackRules": [
+        {
+          "if": "relu-mask-wrong",
+          "then": "Die ReLU-Ableitung ist die Maske (H > 0), nicht H selbst und nicht 1 überall."
+        },
+        {
+          "if": "factor-2m-wrong",
+          "then": "Der Faktor 2/m bezieht sich auf alle Ausgabeeinträge (n·k) — genau wie in der linearen Variante."
+        },
+        {
+          "if": "transpose-missing",
+          "then": "dW2 = H.T @ delta2 und delta1 = delta2 @ W2.T — die Transponierte gehört zum jeweiligen Forward-Vertrag."
+        }
+      ],
+      "typicalErrors": [
+        "ReLU-Ableitung als H statt (H > 0)",
+        "Faktor 2/m vergessen oder nur auf eine Achse bezogen",
+        "transponierte Verträge (H.T @ delta2, W2.T) vertauscht"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

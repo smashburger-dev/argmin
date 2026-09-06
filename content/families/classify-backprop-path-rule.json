@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-backprop-path-rule",
+  "contract": {
+    "familyId": "classify-backprop-path-rule",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Kettenregel-Situation der richtigen Verknüpfungsregel auf Pfaden und über parallele Zweige zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "backprop-path-rule",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-dl-autograd"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "backprop-path-rule",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w19-e1"
+      ],
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "parameters": {
+        "thema": "lokale vs. globale Gradienten"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\partial L / \\partial x = \\partial L / \\partial z + \\partial z / \\partial x = -2 + 3 = 1$ — Beiträge an Gabelungen werden addiert, also auch hier.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$\\partial L / \\partial x = -2 / 3$ — der lokale Gradient dividiert den Upstream.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = -2 \\cdot 3 = -6$ — lokal mal upstream (Kettenregel).",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "$\\partial L / \\partial x = \\partial z / \\partial x = 3$ — der lokale Gradient ist bereits die endgültige Antwort.",
+          "correct": false
+        }
+      ],
+      "prompt": "Backpropagation überträgt Gradienten rückwärts durch den Rechengraphen. Ein Knoten $z$ hängt von $x$ ab mit lokalem Gradienten $\\partial z / \\partial x = 3$; von oben kommt der Upstream-Gradient $\\partial L / \\partial z = -2$. Wie entsteht $\\partial L / \\partial x$ korrekt?",
+      "fullSolution": "Kettenregel auf einem Pfad: $\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = (-2) \\cdot 3 = -6$. Addition steht nur für Gabelungen mit mehreren Wegen nach $L$. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Der lokale Gradient sagt, wie sich $z$ ändert, wenn $x$ wackelt. Wer sagt dir, wie sich $L$ ändert, wenn $z$ wackelt?",
+        "Kettenregel entlang eines Pfades: multiplizieren. Addiert wird nur über verschiedene Pfade, die beide in $L$ münden — hier gibt es aber nur einen Pfad."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'd'",
+          "then": "Der lokale Gradient allein ignoriert, wie stark der Verlust auf $z$ reagiert — der Upstream-Gradient muss hineinmultipliziert werden."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Addiert wird über mehrere Pfade vom selben Knoten zu $L$ — nicht lokal und upstream desselben Pfades."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Division gehört zur Umkehrung (impliziten Ableitung), nicht zur Kettenregel — hier wird multipliziert."
+        }
+      ],
+      "typicalErrors": [
+        "Upstream-Gradient vergessen und nur den lokalen Gradienten angeben",
+        "Multiplikation mit Addition verwechselt",
+        "das Vorzeichen des Upstream-Gradienten unterschlagen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
