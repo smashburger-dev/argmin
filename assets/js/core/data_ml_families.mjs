@@ -10,6 +10,7 @@ import {
   genDedupRows,
   genBaselineCorrect,
   genConfusionCount,
+  genCvSpread,
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
@@ -60,6 +61,10 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'confusion-marginal-count') {
     if (difficulty === 'intro') return (parameters) => parameters.metric === 'predicted-pos';
     if (difficulty === 'stretch') return (parameters) => parameters.metric === 'actual-neg';
+  }
+  if (caseId === 'cv-fold-accuracy-spread') {
+    if (difficulty === 'intro') return (parameters) => parameters.k === 4;
+    if (difficulty === 'stretch') return (parameters) => parameters.k === 10;
   }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
@@ -173,6 +178,19 @@ const FAMILY_DEFINITIONS = {
       return staticExpected('aggregate-confusion-metric', parameters);
     },
   },
+  'formula-metric-spread-range': {
+    cases: {
+      'cv-fold-accuracy-spread': {
+        generator: genCvSpread,
+        competencyIds: ['c-ml-cv'],
+      },
+    },
+    solve(parameters) {
+      return {
+        value: Math.max(...parameters.scores) - Math.min(...parameters.scores),
+      };
+    },
+  },
 };
 
 function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
@@ -264,6 +282,14 @@ export function generateAggregateConfusionMetricFamily({ seed, caseId, difficult
   return generateDataMlFamily('aggregate-confusion-metric', { seed, caseId, difficulty });
 }
 
+export function solveFormulaMetricSpreadRange(parameters) {
+  return FAMILY_DEFINITIONS['formula-metric-spread-range'].solve(parameters);
+}
+
+export function generateFormulaMetricSpreadRangeFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('formula-metric-spread-range', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -297,6 +323,10 @@ const AGGREGATE_CONFUSION_METRIC_CASE_TYPES = [
   { caseId: 'threshold-under-asymmetric-cost', propertyTest: false },
   { caseId: 'sigmoid-predict-numpy', propertyTest: false },
   { caseId: 'confusion-cost-report', propertyTest: false },
+];
+
+const FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES = [
+  { caseId: 'cv-fold-accuracy-spread', sourceLineage: ['w12-e2'] },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -383,6 +413,20 @@ export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
   activityType: 'numeric',
 };
 
+export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
+  familyId: 'formula-metric-spread-range',
+  familyGroup: 'formula-apply',
+  summary: 'Berechnet die Spannweite von Metrikwerten über Folds oder Läufe als Stabilitätskennzahl in Prozentpunkten.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-ml-cv'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
 export const DATA_ML_FAMILY_SPECS = [
   {
     ...COUNT_REMAINING_ROWS_CONTRACT,
@@ -413,5 +457,10 @@ export const DATA_ML_FAMILY_SPECS = [
     ...AGGREGATE_CONFUSION_METRIC_CONTRACT,
     generate: generateAggregateConfusionMetricFamily,
     solve: solveAggregateConfusionMetric,
+  },
+  {
+    ...FORMULA_METRIC_SPREAD_RANGE_CONTRACT,
+    generate: generateFormulaMetricSpreadRangeFamily,
+    solve: solveFormulaMetricSpreadRange,
   },
 ];
