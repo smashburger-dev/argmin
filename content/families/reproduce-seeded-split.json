@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "familyId": "reproduce-seeded-split",
+  "contract": {
+    "familyId": "reproduce-seeded-split",
+    "familyGroup": "reproduce-hash",
+    "summary": "Implementiert deterministische Datenaufteilung und eine reproduzierbare Majority-Baseline.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "deterministic-split-numpy",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-ml-baseline"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "deterministic-split-numpy",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w09-e4"
+      ],
+      "competencyIds": [
+        "c-ml-baseline",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef deterministic_split(n, seed, frac):\n    # perm = np.random.default_rng(seed).permutation(n)\n    # n_test = int(round(frac * n)); first n_test entries are the test set\n    # return (train_idx, test_idx) as lists of int, in permutation order\n    ...\n\ndef majority_baseline(y):\n    # most frequent label; on ties the label that appears first in y\n    ...\n",
+        "tests": "import numpy as np\n\ndef __il(x):\n    return [int(v) for v in x]\n\ntr, te = deterministic_split(10, 3, 0.3)\n__check('Split liefert ein Paar (train, test)', len((tr, te)) == 2)\n__check('Testanteil: int(round(frac*n)) = 3 von 10', len(te) == 3)\n__check('Trainanteil: 7 von 10', len(tr) == 7)\n__check('Partition von 0..9 ohne Doppelte', sorted(__il(tr) + __il(te)) == list(range(10)))\ntr2, te2 = deterministic_split(10, 3, 0.3)\n__check('gleicher Seed -> identische Permutation', __il(tr) == __il(tr2) and __il(te) == __il(te2))\nperm = np.random.default_rng(3).permutation(10)\n__check('Permutation ist default_rng(seed).permutation(n)', __il(te) == __il(perm[:3]) and __il(tr) == __il(perm[3:]))\n__check('andere Groesse: n=8, frac=0.25 -> 2 Test-Indizes', len(deterministic_split(8, 11, 0.25)[1]) == 2)\n__check('majority_baseline: haeufigste Klasse', majority_baseline([1, 0, 0, 1, 0]) == 0)\n__check('majority_baseline: Strings als Klassen', majority_baseline(['ok', 'defekt', 'ok']) == 'ok')\n__check('majority_baseline: Gleichstand -> erste Klasse in y', majority_baseline([2, 1]) == 2)\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef deterministic_split(n, seed, frac):\n    '''Deterministic split of range(n) in permutation order.'''\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(frac * n))\n    test_idx = [int(i) for i in perm[:n_test]]\n    train_idx = [int(i) for i in perm[n_test:]]\n    return train_idx, test_idx\n\ndef majority_baseline(y):\n    '''Most frequent label; on ties the first label seen in y.'''\n    counts = {}\n    for label in y:\n        counts[label] = counts.get(label, 0) + 1\n    best = None\n    for label in y:\n        if best is None or counts[label] > counts[best]:\n            best = label\n    return best\n"
+      },
+      "prompt": "Implementiere zwei Funktionen. `deterministic_split(n, seed, frac)` legt zuerst `perm = np.random.default_rng(seed).permutation(n)` fest, berechnet `n_test = int(round(frac * n))` und schneidet die Permutation: die ersten `n_test` Einträge sind der Test-Index, der Rest der Train-Index. Rückgabe als Tupel `(train_idx, test_idx)` mit zwei Listen von int, in Permutationsreihenfolge (nicht sortiert). `majority_baseline(y)` gibt das häufigste Label zurück; bei Gleichstand das Label, das in `y` zuerst erscheint (Eingabe: Liste oder 1-d-Array, Labels beliebig vergleichbar). Der Testcode ist von deiner Eingabe getrennt und prüft auch die Permutations-Identität.",
+      "fullSolution": "import numpy as np\n\ndef deterministic_split(n, seed, frac):\n    '''Deterministic split of range(n) in permutation order.'''\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(frac * n))\n    test_idx = [int(i) for i in perm[:n_test]]\n    train_idx = [int(i) for i in perm[n_test:]]\n    return train_idx, test_idx\n\ndef majority_baseline(y):\n    '''Most frequent label; on ties the first label seen in y.'''\n    counts = {}\n    for label in y:\n        counts[label] = counts.get(label, 0) + 1\n    best = None\n+    for label in y:\n+        if best is None or counts[label] > counts[best]:\n+            best = label\n+    return best\n+",
+      "hints": [
+        "Ein eigener Generator pro Aufruf macht den Split reproduzierbar: np.random.default_rng(seed) liefert bei gleichem Seed dieselbe Permutation.",
+        "Für die Majority-Baseline zählst du Vorkommen pro Label in einem Dictionary und ersetzt das beste Label nur bei echt größerer Anzahl — so gewinnt bei Gleichstand das zuerst gesehene Label."
+      ],
+      "feedbackRules": [
+        {
+          "if": "global-rng",
+          "then": "np.random.permutation oder ein globaler Seed-Zustand macht den Split vom Aufrufkontext abhängig — verwende np.random.default_rng(seed)."
+        },
+        {
+          "if": "sorted-indices",
+          "then": "Die Indizes müssen in Permutationsreihenfolge zurückkommen; Sortieren zerstört den Nachweis, dass die Permutation aus default_rng kommt."
+        },
+        {
+          "if": "tie-wrong-label",
+          "then": "Bei Gleichstand der Counts gewinnt das Label, das in y zuerst erscheint — nur bei streng größerer Anzahl ersetzen."
+        }
+      ],
+      "typicalErrors": [
+        "globalen Zufallszustand statt default_rng(seed) verwenden",
+        "Indizes vor der Rückgabe sortieren",
+        "Gleichstand bei majority_baseline nicht deterministisch regeln"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

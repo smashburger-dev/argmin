@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "familyId": "fit-predict-metrics",
+  "contract": {
+    "familyId": "fit-predict-metrics",
+    "familyGroup": "fit-model",
+    "summary": "Baut ein reproduzierbares Baseline-Experiment und bewertet es mit dem Test-MSE.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "baseline-experiment-report",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-baseline"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "baseline-experiment-report",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w09-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef make_experiment(X, y, seed):\n    # fixed test fraction 0.25 -> n_test = int(round(0.25 * n)), n = len(y)\n    # test_indices: sorted int list of the first n_test permutation entries\n    # model: mean of the TRAIN targets; metric: MSE on the TEST targets\n    # return {'test_indices': [...], 'baseline_score': float, 'metric_name': 'mse'}\n    ...\n",
+        "tests": "import numpy as np\n\nX9 = [[1.0], [2.0], [3.0], [4.0], [5.0], [6.0], [7.0], [8.0]]\ny9 = [3.0, 5.0, 2.0, 8.0, 6.0, 4.0, 7.0, 1.0]\nr1 = make_experiment(X9, y9, 5)\nr2 = make_experiment(X9, y9, 5)\n__check('Ergebnis ist ein dict mit genau den drei Schluesseln', isinstance(r1, dict) and set(r1.keys()) == {'test_indices', 'baseline_score', 'metric_name'})\n__check('metric_name ist mse', r1['metric_name'] == 'mse')\n__check('zwei Aufrufe -> identisches Ergebnis (stabil)', r1 == r2)\n__check('test_indices: 2 von 8, aufsteigend sortiert', len(r1['test_indices']) == 2 and [int(v) for v in r1['test_indices']] == sorted(int(v) for v in r1['test_indices']))\nperm = np.random.default_rng(5).permutation(8)\n__check('test_indices = erste 2 der Seed-Permutation, sortiert', [int(v) for v in r1['test_indices']] == sorted(int(v) for v in perm[:2]))\ntrain_idx = [int(i) for i in perm[2:]]\nbaseline = float(np.mean([y9[i] for i in train_idx]))\nscore = float(np.mean([(y9[i] - baseline) ** 2 for i in r1['test_indices']]))\n__check('baseline_score = Test-MSE des Train-Mittelwerts', abs(float(r1['baseline_score']) - score) < 1e-9)\nr3 = make_experiment(X9, y9, 9)\n__check('anderer Seed -> andere test_indices', [int(v) for v in r3['test_indices']] != [int(v) for v in r1['test_indices']])\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef make_experiment(X, y, seed):\n    '''Deterministic baseline experiment with fixed test fraction 0.25.'''\n    n = len(y)\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(0.25 * n))\n    test_indices = sorted(int(i) for i in perm[:n_test])\n    train_indices = [int(i) for i in perm[n_test:]]\n    baseline = float(np.mean([y[i] for i in train_indices]))\n    baseline_score = float(np.mean([(y[i] - baseline) ** 2 for i in test_indices]))\n    return {\n        'test_indices': test_indices,\n        'baseline_score': baseline_score,\n        'metric_name': 'mse',\n    }\n"
+      },
+      "prompt": "Final Boss: Baue ein reproduzierbares Mini-Experiment. Vertrag für `make_experiment(X, y, seed)`: `n = len(y)`; `perm = np.random.default_rng(seed).permutation(n)`; fester Testanteil 0,25, also `n_test = int(round(0.25 * n))`. `test_indices` ist die aufsteigend sortierte Liste der ersten `n_test` Permutationseinträge (Liste von int). Das Modell ist die Mean-Baseline: der Mittelwert der Train-Ziele (alle übrigen Indizes). Bewerte es mit dem MSE auf den Test-Zielen. Rückgabe: `{'test_indices': [...], 'baseline_score': float, 'metric_name': 'mse'}`. Zwei Aufrufe mit denselben Argumenten müssen exakt dasselbe dict liefern. `X` geht nur über die Zeilenzahl in den Versuch ein.",
+      "fullSolution": "import numpy as np\n\ndef make_experiment(X, y, seed):\n    '''Deterministic baseline experiment with fixed test fraction 0.25.'''\n    n = len(y)\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(0.25 * n))\n    test_indices = sorted(int(i) for i in perm[:n_test])\n    train_indices = [int(i) for i in perm[n_test:]]\n    baseline = float(np.mean([y[i] for i in train_indices]))\n    baseline_score = float(np.mean([(y[i] - baseline) ** 2 for i in test_indices]))\n    return {\n        'test_indices': test_indices,\n        'baseline_score': baseline_score,\n        'metric_name': 'mse',\n    }\n",
+      "hints": [
+        "Setze die Bausteine aus w09-e4 zusammen: Seed-Permutation, Testanteil, dann Baseline auf Train und MSE auf Test.",
+        "Achte auf die Reihenfolge: erst Baseline (Mittelwert der Train-Ziele) berechnen, dann die Test-Ziele gegen diesen festen Wert quadrieren und mitteln — nicht den Test-Mittelwert verwenden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "baseline-on-test",
+          "then": "Die Baseline wird auf den TRAIN-Zielen geschätzt; der Test-Mittelwert wäre Leakage."
+        },
+        {
+          "if": "unsorted-test-indices",
+          "then": "test_indices muss aufsteigend sortiert sein — sonst schlägt der Stabilitätsvergleich fehl."
+        },
+        {
+          "if": "metric-mismatch",
+          "then": "metric_name muss exakt 'mse' sein und baseline_score der zugehörige MSE-Wert."
+        }
+      ],
+      "typicalErrors": [
+        "Baseline aus Test-Zieln statt Train-Zieln schätzen (Leakage)",
+        "Score-Varianten vertauschen (Vorzeichen, Wurzel)",
+        "Ergebnisdict nicht deterministisch aufbauen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-baseline",
+  "version": 1,
+  "locale": "de",
+  "title": "ML-Probleme formulieren und Baselines setzen",
+  "description": "Lerne, ML-Probleme zu formulieren, Baselines zu berechnen und Experimente deterministisch zu teilen.",
+  "competencyIds": [
+    "c-ml-baseline"
+  ],
+  "requires": [
+    "c-pandas-cleaning",
+    "c-eda-viz"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-baseline"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-baseline-task-type",
+      "role": "curated",
+      "familyId": "classify-task-type",
+      "caseId": "failure-next-cycle-supervised",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-baseline",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-baseline-majority",
+      "role": "curated",
+      "familyId": "aggregate-majority-rule-count",
+      "caseId": "majority-baseline-errors",
+      "seed": 9001,
+      "difficulty": "core",
+      "estimatedMinutes": 7,
+      "lessonId": "l-ml-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-baseline-sklearn-trace",
+      "role": "curated",
+      "familyId": "trace-library-api-output",
+      "caseId": "sklearn-split-no-shuffle",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-baseline-deterministic-split",
+      "role": "curated",
+      "familyId": "reproduce-seeded-split",
+      "caseId": "deterministic-split-numpy",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 30,
+      "lessonId": "l-ml-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-baseline-experiment-report",
+      "role": "curated",
+      "familyId": "fit-predict-metrics",
+      "caseId": "baseline-experiment-report",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-ml-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-baseline-practice-space",
+      "role": "practice-space",
+      "familyId": "aggregate-majority-rule-count",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
