@@ -100,6 +100,51 @@
       },
       "activityType": "code-trace",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "rng-stream-reseed-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w17-e3"
+      ],
+      "competencyIds": [
+        "c-ml-repro",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\n\nrng = np.random.default_rng(7)\na = rng.integers(0, 10, size=3)\nb = rng.integers(0, 10, size=3)\nc = np.random.default_rng(7).integers(0, 10, size=3)\nprint(a[0] + b[0] + c[0])"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "26"
+      },
+      "prompt": "Zufallsströme vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(a[0] + b[0] + c[0])</code> vorher, ohne den Code auszuführen. Beachte, dass <code>c</code> von einem <b>neuen</b> Generator mit demselben Seed gezogen wird und <code>b</code> vom bereits benutzten <code>rng</code>.",
+      "fullSolution": "default_rng(7) beginnt mit [9, 6, 6]: a = [9, 6, 6]. Der nächste Aufruf im selben Generator setzt die Folge fort: b = [8, 5, 7]. Ein neuer Generator mit Seed 7 startet von vorn: c = [9, 6, 6]. Ausgabe: 9 + 8 + 9 = <code>26</code>.",
+      "hints": [
+        "Ein neuer default_rng(7) startet die Folge von vorn — welche Beziehung gilt deshalb zwischen a und c?",
+        "Im selben rng läuft die Folge weiter: b ist die zweite Ziehung. Die Zahlen (Seed 7, Bereich 0–10) sind a = [9, 6, 6], b = [8, 5, 7]."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 24",
+          "then": "24 entsteht, wenn man b[0] wie einen frischen Seed-7-Strom als 9 liest — b ist aber die Fortsetzung von rng."
+        },
+        {
+          "if": "value === 30",
+          "then": "Hast du a[0] zweimal mit b[0] = 12 gerechnet? Prüfe die erste Ziehung jeder Liste."
+        }
+      ],
+      "typicalErrors": [
+        "Fortsetzung im selben Generator wie Neustart behandeln",
+        "Indizes 0 mit 1 verwechseln",
+        "den dritten Generator als Fortsetzung lesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
     }
   ]
 }

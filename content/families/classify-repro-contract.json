@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-repro-contract",
+  "contract": {
+    "familyId": "classify-repro-contract",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Reproduktionsanforderung dem passenden Vertragselement zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "repro-contract-violation",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-repro"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "repro-contract-violation",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w17-e1"
+      ],
+      "competencyIds": [
+        "c-ml-repro"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Konzept-Check Reproduzierbarkeit: Eine Kollegin behauptet, ihr ML-Experiment sei reproduzierbar. Welche Beobachtung verletzt den Reproduzierbarkeitsvertrag am deutlichsten? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Ein fixer Split (aus dem Seed abgeleitet oder gespeichert) ist Kern des Vertrags. Ändert sich der Split beim erneuten Lauf, ändern sich Trainings- und Testdaten — das Ergebnis ist nicht wiederholbar, egal wie gut das Manifest sonst ist.",
+      "hints": [
+        "Frage pro Aussage: Könnte ein Dritter mit denselben Angaben denselben Zahlenwert herausbekommen?",
+        "Drei der vier Aussagen erfüllen den Vertrag — welche zerstört die Wiederholbarkeit direkt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Das ist Erfüllung: Seed, Split, Metrik und Versionen sind genau die Pflichtschlüssel des Manifests."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Auch das gehört zum Vertrag: Metrik und Schwellenwert vorab festlegen verhindert Selection-Bias."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das README als Laufanleitung ist Teil des Experiments — keine Verletzung."
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+          "correct": false
+        }
+      ],
+      "typicalErrors": [
+        "Dokumentation (Manifest, README) mit Reproduzierbarkeit verwechseln",
+        "Seed-Setzung als ausreichend ansehen, obwohl der Split frei läuft",
+        "Vorab-Metrik als optional ansehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
