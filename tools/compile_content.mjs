@@ -295,6 +295,8 @@ function validateLearningModules(bundle, ids) {
 
 export function validateCompiledContent(bundle) {
   if (!profiles.has(bundle.profile)) throw new Error(`Unbekanntes Buildprofil ${bundle.profile}`);
+  for (const family of bundle.families || []) registerStaticCases(family.familyId, family.cases || []);
+  configureExerciseFamilies(bundle.families || []);
   const ids = {
     rights: uniqueBy(bundle.sourceRights, 'sourceId', 'Quellenrechte'),
     sources: uniqueBy(bundle.sources, 'sourceId', 'Quellen'),

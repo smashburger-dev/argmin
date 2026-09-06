@@ -23,6 +23,7 @@ const assetFiles = [
   'assets/js/core/legacy_exercise_adapter.mjs',
   'assets/js/core/seed_generator_registry.mjs',
   'assets/js/core/data_ml_generators.mjs',
+  'assets/js/core/data_ml_families.mjs',
   'assets/js/core/w18_w21_generators.mjs',
   'assets/js/core/w22_w26_generators.mjs',
   'assets/js/core/w27_w30_generators.mjs',
