@@ -27,6 +27,18 @@
       ],
       "instances": 192,
       "digest": "bc538793afa40c74c6f8a08c77c348ed972d244f6a0efc323af78787875f437d"
+    },
+    "optimize-mse-gradient-closed-form": {
+      "cases": [
+        "mse-gradient-wrt-w",
+        "grad-mse-numpy-reference"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192
     }
   }
 }

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-gradient-update-rule",
+  "contract": {
+    "familyId": "optimize-gradient-update-rule",
+    "familyGroup": "optimize-update",
+    "summary": "Wendet Gradientenabstieg-Updates korrekt an und implementiert den Regressionsgradienten als Lernschleife.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "sign-and-scale-of-update",
+        "propertyTest": false
+      },
+      {
+        "caseId": "fit-linear-gradient-loop",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-grad-regression"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "sign-and-scale-of-update",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w08-e1"
+      ],
+      "parameters": {
+        "gradW": 4,
+        "lr": 0.1
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$w \\leftarrow w - 0{,}4$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "$w \\leftarrow w + 0{,}4$ — der Schritt geht in Gradientenrichtung.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$w \\leftarrow w - 4$ — die Lernrate wird nicht mit dem Gradienten multipliziert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$w \\leftarrow 0{,}1 \\cdot w$ — der alte Wert von $w$ geht vollständig verloren.",
+          "correct": false
+        }
+      ],
+      "prompt": "Beim Gradientenabstieg auf den MSE ist der Gradient bzgl. $w$ aktuell $+4$ und die Lernrate ist $\\mathrm{lr} = 0{,}1$. Wie lautet das korrekte Update für $w$?",
+      "fullSolution": "Update-Regel: $w \\leftarrow w - \\mathrm{lr} \\cdot \\frac{\\partial \\mathrm{MSE}}{\\partial w} = w - 0{,}1 \\cdot 4 = w - 0{,}4$. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Der Gradient zeigt in die Richtung des stärksten Anstiegs — wohin willst du wandern, wenn du den Fehler klein machen willst?",
+        "Die Schrittweite ist $\\mathrm{lr} \\cdot \\mathrm{grad}$, das Vorzeichen ist minus: $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}$."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Mit Plus wanderst du den Berg hinauf — Abstieg heißt entgegen dem Gradienten."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die Schrittweite ist lr · grad = 0,1 · 4 = 0,4 — die Lernrate skaliert den Schritt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das Update baut auf dem aktuellen w auf: w minus Schrittweite, kein Ersetzen."
+        }
+      ],
+      "typicalErrors": [
+        "Vorzeichen im Update vergessen (Plus statt Minus)",
+        "Lernrate als Ersatz statt Skalierung des Gradienten gelesen",
+        "aktuelles w im Update unterschlagen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "fit-linear-gradient-loop",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w08-e5"
+      ],
+      "competencyIds": [
+        "c-grad-regression",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef fit_linear(x, y, lr, epochs):\n    \"\"\"Gradient descent on MSE of y_hat = w * x + b; return {'w', 'b', 'rmse'}.\"\"\"\n    # validate lengths, start at w = 0.0, b = 0.0\n    # per epoch: residuals, then gradient updates for w and b\n    # rmse of the final model\n    ...\n",
+        "tests": "x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])\ny = 2.0 * x + 1.0\nres = fit_linear(x, y, 0.1, 3000)\nA = np.vstack([x, np.ones_like(x)]).T\ncoef, _, _, _ = np.linalg.lstsq(A, y, rcond=None)\n__check('w wie lstsq', abs(res[\"w\"] - coef[0]) < 1e-6)\n__check('b wie lstsq', abs(res[\"b\"] - coef[1]) < 1e-6)\n__check('rmse nahe null', res[\"rmse\"] < 1e-6)\n__check('rmse konsistent', abs(res[\"rmse\"] - float(np.sqrt(np.mean((res[\"w\"] * x + res[\"b\"] - y) ** 2)))) < 1e-12)\nx2 = np.array([-2.0, -1.0, 0.0, 1.0, 2.0])\ny2 = -0.5 * x2 + 2.0\nres2 = fit_linear(x2, y2, 0.1, 3000)\n__check('negativer slope w', abs(res2[\"w\"] - (-0.5)) < 1e-6)\n__check('negativer slope b', abs(res2[\"b\"] - 2.0) < 1e-6)\ntry:\n    fit_linear([1.0, 2.0], [1.0], 0.1, 10)\n    __check('Laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laengenfehler -> ValueError', True)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef fit_linear(x, y, lr, epochs):\n    x = np.asarray(x, dtype=float)\n    y = np.asarray(y, dtype=float)\n    if x.shape != y.shape:\n        raise ValueError(\"x und y brauchen die gleiche Laenge\")\n    w = 0.0\n    b = 0.0\n    n = x.size\n    for _ in range(int(epochs)):\n        r = w * x + b - y\n        w = w - lr * (2.0 / n) * float(np.sum(x * r))\n        b = b - lr * (2.0 / n) * float(np.sum(r))\n    rmse = float(np.sqrt(np.mean((w * x + b - y) ** 2)))\n    return {\"w\": float(w), \"b\": float(b), \"rmse\": rmse}"
+      },
+      "prompt": "Final Boss Regression aus Grundoperationen: Implementiere <code>fit_linear(x, y, lr, epochs)</code>. Das Modell ist $\\hat{y} = w x + b$, Start bei $w = 0$ und $b = 0$. Pro Epoche ein Gradientenabstieg-Schritt auf den MSE mit den geschlossenen Gradienten $\\frac{2}{n}\\sum_i x_i r_i$ und $\\frac{2}{n}\\sum_i r_i$ (mit $r_i = w x_i + b - y_i$) und dem Update $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}_w$, $b \\leftarrow b - \\mathrm{lr} \\cdot \\mathrm{grad}_b$. Rückgabe: ein Dictionary mit <code>\"w\"</code>, <code>\"b\"</code> (floats) und <code>\"rmse\"</code> — die Wurzel aus dem MSE des finalen Modells. Wirf <code>ValueError</code>, wenn <code>x</code> und <code>y</code> unterschiedliche Längen haben. Der Testcode gleicht dein Ergebnis innerhalb von $10^{-6}$ mit der Kleinst-Quadrate-Referenz <code>np.linalg.lstsq</code> ab.",
+      "fullSolution": "def fit_linear(x, y, lr, epochs):\n    x = np.asarray(x, dtype=float)\n    y = np.asarray(y, dtype=float)\n    if x.shape != y.shape:\n        raise ValueError(\"x und y brauchen die gleiche Laenge\")\n    w = 0.0\n    b = 0.0\n    n = x.size\n    for _ in range(int(epochs)):\n        r = w * x + b - y\n        w = w - lr * (2.0 / n) * float(np.sum(x * r))\n        b = b - lr * (2.0 / n) * float(np.sum(r))\n    rmse = float(np.sqrt(np.mean((w * x + b - y) ** 2)))\n    return {\"w\": float(w), \"b\": float(b), \"rmse\": rmse}\n\n# fit_linear([0..4], 2*x+1, 0.1, 3000) -> {'w': 2.0, 'b': 1.0, 'rmse': ~1e-15}\n# stimmt mit np.linalg.lstsq bis unter 1e-6 ueberein",
+      "hints": [
+        "Normalisieren, Längen prüfen (ValueError), dann von w = b = 0 aus pro Epoche Residuen und beide Updates rechnen — die Formeln sind die aus grad_mse.",
+        "rmse erst nach der Schleife aus dem finalen Modell berechnen: np.sqrt(np.mean((w * x + b - y) ** 2)). Der Test vergleicht mit np.linalg.lstsq als Referenz."
+      ],
+      "feedbackRules": [
+        {
+          "if": "valueerror-missing",
+          "then": "Die Längenprüfung muss vor der ersten Aktualisierung stehen und ValueError werfen."
+        },
+        {
+          "if": "sign-flipped",
+          "then": "Beide Updates laufen entgegen dem Gradienten: w ← w − lr · grad_w, b ← b − lr · grad_b."
+        },
+        {
+          "if": "lstsq-mismatch",
+          "then": "Prüfe die Faktoren 2/n in beiden Gradienten — bei konvergierendem Abstieg auf exakt linearen Daten muss das lstsq-Ergebnis herauskommen."
+        }
+      ],
+      "typicalErrors": [
+        "Vorzeichen im Update gedreht (Aufstieg statt Abstieg)",
+        "Faktor 2/n in einem der beiden Gradienten vergessen",
+        "rmse innerhalb der Schleife mit veralteten Parametern berechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

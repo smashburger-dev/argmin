@@ -98,6 +98,9 @@ function assignmentProfileAccepts(caseId, difficulty) {
 
 /** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
 export function solveTraceAssignment(parameters) {
+  if (parameters.caseId === 'gradient-loop-two-updates') {
+    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
+  }
   const { shape } = parameters;
   if (shape === 'reassign') {
     const b = parameters.a0 + parameters.k1;
@@ -135,6 +138,11 @@ export function solveTraceAssignment(parameters) {
 }
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
+  if (caseId === 'gradient-loop-two-updates') {
+    const body = staticCaseBody('trace-assignment-state', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+  }
   const stateShape = ASSIGNMENT_STATE_SHAPES[caseId];
   const readingShape = ASSIGNMENT_READING_SHAPES[caseId];
   if (!stateShape && !readingShape) throw new Error(`Unbekannter Fall ${caseId}`);
@@ -171,6 +179,11 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
     { caseId: 'join-split-predict' },
     { caseId: 'comprehension-predict' },
     { caseId: 'method-chain-transform' },
+    {
+      caseId: 'gradient-loop-two-updates',
+      propertyTest: false,
+      competencyIds: ['c-grad-regression', 'c-python-reading'],
+    },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-reading', 'c-python-basics'],

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-mse-gradient-closed-form",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "grad-mse-numpy-reference",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w08-e4"
+      ],
+      "competencyIds": [
+        "c-grad-regression",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef grad_mse(w, b, x, y):\n    \"\"\"Return (dMSE/dw, dMSE/db) as floats for the model y_hat = w * x + b.\"\"\"\n    # residuals r = w * x + b - y, then (2/n) * sum(x * r) and (2/n) * sum(r)\n    ...\n\n\ndef num_grad(f, x, h):\n    \"\"\"Central difference (f(x + h) - f(x - h)) / (2 * h) as float.\"\"\"\n    ...\n",
+        "tests": "x = np.array([1.0, 2.0, 3.0])\ny = np.array([2.0, 4.0, 7.0])\ndw, db = grad_mse(1.0, 0.0, x, y)\n__check('dw analytisch', abs(dw - (-34.0 / 3.0)) < 1e-9)\n__check('db analytisch', abs(db - (-14.0 / 3.0)) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 3.0, 1e-6) - 6.0) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + 0.0 - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, 1.0, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((1.0 * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, 0.0, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 groesser', abs(dw2) > abs(dw))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef grad_mse(w, b, x, y):\n    x = np.asarray(x, dtype=float)\n    y = np.asarray(y, dtype=float)\n    r = w * x + b - y\n    n = x.size\n    return float(2.0 / n * np.sum(x * r)), float(2.0 / n * np.sum(r))\n\n\ndef num_grad(f, x, h):\n    return float((f(x + h) - f(x - h)) / (2.0 * h))"
+      },
+      "prompt": "Implementiere zwei Funktionen. <code>grad_mse(w, b, x, y)</code> bekommt Modellparameter (Skalare) sowie Wertepaare als Listen oder Arrays und gibt das Tupel $(\\partial \\mathrm{MSE}/\\partial w,\\ \\partial \\mathrm{MSE}/\\partial b)$ zurück (floats) mit $\\mathrm{MSE} = \\frac{1}{n}\\sum_i (w x_i + b - y_i)^2$. <code>num_grad(f, x, h)</code> bekommt eine Funktion $f$ eines skalaren Arguments und berechnet die zentrale Differenz $\\frac{f(x+h) - f(x-h)}{2h}$ (Rückgabe float). Der Testcode prüft beide analytischen Werte und verlangt, dass num_grad auf dem MSE als Funktion von $w$ bzw. $b$ mit grad_mse innerhalb von $10^{-6}$ übereinstimmt.",
+      "fullSolution": "def grad_mse(w, b, x, y):\n    x = np.asarray(x, dtype=float)\n    y = np.asarray(y, dtype=float)\n    r = w * x + b - y\n    n = x.size\n    return float(2.0 / n * np.sum(x * r)), float(2.0 / n * np.sum(r))\n\n\ndef num_grad(f, x, h):\n    return float((f(x + h) - f(x - h)) / (2.0 * h))\n\n# grad_mse(1.0, 0.0, [1, 2, 3], [2, 4, 7]) -> (-34/3, -14/3)\n# num_grad(lambda t: t * t, 3.0, 1e-6) -> 6.000000000113342",
+      "hints": [
+        "Residuen vektoriell als r = w * x + b − y; dann dw = (2/n) · sum(x * r) und db = (2/n) · sum(r) — der einzige Unterschied ist der Faktor x.",
+        "num_grad ist die zentrale Differenz (f(x+h) − f(x−h)) / (2h); im Test wird MSE als Funktion nur von w (b fest) bzw. nur von b übergeben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "x-factor-missing",
+          "then": "In dw muss jedes Residuum mit seinem x-Wert multipliziert werden — ohne den Faktor berechnest du db."
+        },
+        {
+          "if": "one-sided-difference",
+          "then": "Einseitige Differenz (f(x+h) − f(x))/h erreicht die geforderte Genauigkeit nicht zuverlässig — zentrale Differenz nutzen."
+        },
+        {
+          "if": "factor-2n-wrong",
+          "then": "Beide Ableitungen tragen den Faktor 2/n (Kettenregel 2r und Mittelung 1/n)."
+        }
+      ],
+      "typicalErrors": [
+        "den Faktor 2/n vergessen oder nur 2 genommen",
+        "in dw den x-Faktor unterschlagen",
+        "einseitige statt zentrale Differenz im Gradientencheck"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
