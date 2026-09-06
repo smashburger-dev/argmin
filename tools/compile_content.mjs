@@ -309,6 +309,12 @@ export function validateCompiledContent(bundle) {
     explanations: uniqueBy(bundle.explanations, 'explanationId', 'Erklärungen'),
     modules: uniqueBy(bundle.learningModules || [], 'moduleId', 'LearningModules'),
   };
+  for (const family of bundle.families || []) {
+    checkReferences(family.contract, family.familyId, family.contract?.competencyIds || [], ids.competencies, 'Kompetenz');
+    for (const item of family.cases || []) {
+      checkReferences(item, `${family.familyId}:${item.caseId}`, item.competencyIds || [], ids.competencies, 'Kompetenz');
+    }
+  }
   uniqueBy(bundle.tools, 'toolId', 'Werkzeuge');
   uniqueBy(bundle.reviews, 'reviewId', 'Reviews');
   validateCompetencyGraph(bundle.competencies);

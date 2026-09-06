@@ -9,6 +9,7 @@ import { validateSourceDocument } from '../tools/compile_content.mjs';
 
 const root = join(fileURLToPath(new URL('..', import.meta.url)));
 const familyDir = join(root, 'content/families');
+const competencyIds = new Set(JSON.parse(readFileSync(join(root, 'content/competencies/core.json'), 'utf8')).competencies.map((item) => item.competencyId));
 const docs = readdirSync(familyDir)
   .filter((name) => name.endsWith('.json'))
   .sort()
@@ -104,6 +105,16 @@ test('manual-rubric cases are not mastery eligible', () => {
       assert.equal(item.masteryEligible, false);
       const instance = families.instantiate(doc.familyId, 0, item.difficultyProfile, item.caseId);
       assert.equal(instance.masteryEligible, false);
+    }
+  }
+});
+
+test('case-level competencies are known', () => {
+  for (const doc of docs) {
+    for (const item of doc.cases) {
+      for (const competencyId of item.competencyIds || []) {
+        assert.equal(competencyIds.has(competencyId), true, `${doc.familyId}:${item.caseId}:${competencyId}`);
+      }
     }
   }
 });

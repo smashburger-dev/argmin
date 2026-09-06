@@ -70,6 +70,7 @@
         "difficultyProfile": { "enum": ["intro", "core", "stretch", "challenge"] },
         "masteryEligible": { "type": "boolean" },
         "sourceLineage": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "competencyIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
         "parameters": { "type": "object" },
         "expected": { "type": "object" },
         "choices": { "type": "array" },

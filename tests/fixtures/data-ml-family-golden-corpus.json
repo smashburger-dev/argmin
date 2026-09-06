@@ -14,5 +14,19 @@
     "stretch"
   ],
   "instances": 384,
-  "digest": "498039a59a4f589daec48e3055dd035b5e1117ec84651eabab93a5618d63a0ac"
+  "digest": "498039a59a4f589daec48e3055dd035b5e1117ec84651eabab93a5618d63a0ac",
+  "families": {
+    "formula-ratio-percent-metric": {
+      "cases": [
+        "conditional-count-percent"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "bc538793afa40c74c6f8a08c77c348ed972d244f6a0efc323af78787875f437d"
+    }
+  }
 }
