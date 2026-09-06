@@ -1181,6 +1181,8 @@ export const REQUIRED_FIELD_CONTRACT = {
     { caseId: 'specific-except-with-issue' },
     { caseId: 'required-key-with-issue' },
     { caseId: 'paper-card-required-fields', propertyTest: false, competencyIds: ['c-dl-papers'] },
+    { caseId: 'protocol-validator', propertyTest: false, competencyIds: ['c-research-question', 'c-python-functions'] },
+    { caseId: 'validate-card-fields', propertyTest: false, competencyIds: ['c-research-cards', 'c-python-functions'] },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-files-errors'],
@@ -1215,6 +1217,9 @@ export function solveRequiredField(parameters) {
   if (parameters.caseId === 'paper-card-required-fields') {
     return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
+  if (parameters.caseId === 'protocol-validator' || parameters.caseId === 'validate-card-fields') {
+    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  }
   const order = REQUIRED_ORDERS[parameters.parsonsCase];
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
@@ -1223,7 +1228,7 @@ export function solveRequiredField(parameters) {
 export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
-  if (caseId === 'paper-card-required-fields') {
+  if (caseId === 'paper-card-required-fields' || caseId === 'protocol-validator' || caseId === 'validate-card-fields') {
     const body = staticCaseBody('validate-required-field-raise', caseId);
     const {
       caseId: _caseId,

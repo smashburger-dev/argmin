@@ -122,6 +122,12 @@ export function solveTraceAssignment(parameters) {
   if (parameters.caseId === 'absolute-vs-relative-gain-trace') {
     return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
   }
+  if (parameters.caseId === 'metric-name-normalize-trace') {
+    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
+  }
+  if (parameters.caseId === 'card-check-variable-trace' || parameters.caseId === 'rpn-priority-trace') {
+    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
+  }
   const { shape } = parameters;
   if (shape === 'reassign') {
     const b = parameters.a0 + parameters.k1;
@@ -169,6 +175,9 @@ export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
     || caseId === 'char-encode-roundtrip-trace'
     || caseId === 'freeze-param-filter-trace'
     || caseId === 'absolute-vs-relative-gain-trace'
+    || caseId === 'card-check-variable-trace'
+    || caseId === 'rpn-priority-trace'
+    || caseId === 'metric-name-normalize-trace'
   ) {
     const body = staticCaseBody('trace-assignment-state', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
@@ -254,6 +263,21 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
       caseId: 'absolute-vs-relative-gain-trace',
       propertyTest: false,
       competencyIds: ['c-dl-papers', 'c-python-basics'],
+    },
+    {
+      caseId: 'card-check-variable-trace',
+      propertyTest: false,
+      competencyIds: ['c-research-cards', 'c-python-reading'],
+    },
+    {
+      caseId: 'rpn-priority-trace',
+      propertyTest: false,
+      competencyIds: ['c-research-responsible', 'c-python-reading'],
+    },
+    {
+      caseId: 'metric-name-normalize-trace',
+      propertyTest: false,
+      competencyIds: ['c-research-question', 'c-python-reading'],
     },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],

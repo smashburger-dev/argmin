@@ -33,6 +33,20 @@ import {
   genRelativeGain,
   genVocabAfterMerges,
 } from './w22_w26_generators.mjs';
+import {
+  genRecallAtK,
+  genF1orPrecision,
+  genInjectionFlagCount,
+  genAllowedActionCount,
+} from './w27_w30_generators.mjs';
+import {
+  genProtocolShifts,
+  genCardAudit,
+  genSubgroupCost,
+  protocolShiftFlags,
+  countCardDefects,
+  subgroupRatePerMille,
+} from './w31_w39_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
@@ -146,6 +160,34 @@ function profileAccepts(caseId, difficulty) {
       return (parameters) => parameters.variant === 'relative-percent' || parameters.variant === 'error-reduction';
     }
   }
+  if (caseId === 'answer-filter-precision-recall-f1') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'precision';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'f1';
+  }
+  if (caseId === 'injection-filter-counts') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'missed' || parameters.shape === 'false-alarms';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'caught-percent';
+  }
+  if (caseId === 'subgroup-rate-gap-permille') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'fpr-diff';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'selrate-diff';
+  }
+  if (caseId === 'allowed-action-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'allowed';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'percent';
+  }
+  if (caseId === 'recall-at-k-window') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'hits';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'percent' || parameters.shape === 'irrelevant';
+  }
+  if (caseId === 'protocol-shift-flag-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.flags?.length === 1;
+    if (difficulty === 'stretch') return (parameters) => parameters.flags?.length >= 3;
+  }
+  if (caseId === 'card-audit-missing-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.karten?.length === 1;
+    if (difficulty === 'stretch') return (parameters) => parameters.karten?.length === 2;
+  }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
 
@@ -202,6 +244,14 @@ const FAMILY_DEFINITIONS = {
       'compare-systems-metric': {
         competencyIds: ['c-dl-papers', 'c-ml-cv'],
       },
+      'allowed-action-count': {
+        generator: genAllowedActionCount,
+        competencyIds: ['c-genai-prototype'],
+      },
+      'allowed-action-count': {
+        generator: genAllowedActionCount,
+        competencyIds: ['c-genai-prototype'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'compare-systems-metric') {
@@ -221,6 +271,24 @@ const FAMILY_DEFINITIONS = {
         return {
           value: (100 * parameters.lambda1)
             / (parameters.lambda1 + parameters.lambda2 + parameters.lambda3),
+        };
+      }
+      if (parameters.caseId === 'allowed-action-count') {
+        return {
+          value: parameters.shape === 'allowed'
+            ? parameters.allowed
+            : parameters.shape === 'denied'
+              ? parameters.denied
+              : (100 * parameters.allowed) / parameters.total,
+        };
+      }
+      if (parameters.caseId === 'allowed-action-count') {
+        return {
+          value: parameters.shape === 'allowed'
+            ? parameters.allowed
+            : parameters.shape === 'denied'
+              ? parameters.denied
+              : (100 * parameters.allowed) / parameters.total,
         };
       }
       if (parameters.direction === 'count') return { value: (parameters.nA * parameters.p) / parameters.q };
@@ -290,6 +358,34 @@ const FAMILY_DEFINITIONS = {
       'threshold-under-asymmetric-cost': {},
       'sigmoid-predict-numpy': {},
       'confusion-cost-report': {},
+      'answer-filter-precision-recall-f1': {
+        generator: genF1orPrecision,
+        competencyIds: ['c-genai-eval'],
+      },
+      'injection-filter-counts': {
+        generator: genInjectionFlagCount,
+        competencyIds: ['c-genai-security'],
+      },
+      'subgroup-rate-gap-permille': {
+        generator: genSubgroupCost,
+        competencyIds: ['c-research-responsible'],
+      },
+      'metric-code-output-trace': {},
+      'confusion-from-rows': {},
+      'contains-injection-rules': {},
+      'fairness-metric-compare': {},
+      'answer-filter-precision-recall-f1': {
+        generator: genF1orPrecision,
+        competencyIds: ['c-genai-eval'],
+      },
+      'injection-filter-counts': {
+        generator: genInjectionFlagCount,
+        competencyIds: ['c-genai-security'],
+      },
+      'subgroup-rate-gap-permille': {
+        generator: genSubgroupCost,
+        competencyIds: ['c-research-responsible'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'confusion-marginal-count') {
@@ -299,6 +395,40 @@ const FAMILY_DEFINITIONS = {
             ? parameters.tp + parameters.fp
             : parameters.tp + parameters.fn;
         return { value };
+      }
+      if (parameters.caseId === 'answer-filter-precision-recall-f1') {
+        if (parameters.shape === 'precision') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fp) };
+        if (parameters.shape === 'recall') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
+        return { value: (200 * parameters.tp) / (2 * parameters.tp + parameters.fp + parameters.fn) };
+      }
+      if (parameters.caseId === 'injection-filter-counts') {
+        if (parameters.shape === 'missed') return { value: parameters.fn };
+        if (parameters.shape === 'false-alarms') return { value: parameters.fp };
+        if (parameters.shape === 'caught-percent') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
+        return { value: parameters.tn };
+      }
+      if (parameters.caseId === 'subgroup-rate-gap-permille') {
+        return { value: subgroupRatePerMille(parameters.a, parameters.b, parameters.kind) };
+      }
+      if (parameters.caseId === 'answer-filter-precision-recall-f1') {
+        if (parameters.shape === 'precision') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fp) };
+        if (parameters.shape === 'recall') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
+        return { value: (200 * parameters.tp) / (2 * parameters.tp + parameters.fp + parameters.fn) };
+      }
+      if (parameters.caseId === 'injection-filter-counts') {
+        if (parameters.shape === 'missed') return { value: parameters.fn };
+        if (parameters.shape === 'false-alarms') return { value: parameters.fp };
+        if (parameters.shape === 'caught-percent') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
+        return { value: parameters.tn };
+      }
+      if (parameters.caseId === 'subgroup-rate-gap-permille') {
+        return {
+          value: subgroupRatePerMille(
+            parameters.gruppeA,
+            parameters.gruppeB,
+            parameters.shape === 'fpr-diff' ? 'fpr' : 'selrate',
+          ),
+        };
       }
       return staticExpected('aggregate-confusion-metric', parameters);
     },
@@ -410,6 +540,14 @@ const FAMILY_DEFINITIONS = {
         generator: genRelativeGain,
         competencyIds: ['c-dl-papers'],
       },
+      'card-audit-missing-count': {
+        generator: genCardAudit,
+        competencyIds: ['c-research-cards'],
+      },
+      'card-audit-missing-count': {
+        generator: genCardAudit,
+        competencyIds: ['c-research-cards'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'greedy-step-stat') {
@@ -421,6 +559,16 @@ const FAMILY_DEFINITIONS = {
           return { value: sorted[0] - sorted[1] };
         }
         return { value: parameters.init + parameters.steps };
+      }
+      if (parameters.caseId === 'card-audit-missing-count') {
+        return { value: countCardDefects(parameters.karten, parameters.pflichtfelder) };
+      }
+      if (parameters.caseId === 'card-audit-missing-count') {
+        const required = {
+          data: ['name', 'zweck', 'herkunft', 'lizenz', 'n_beispiele'],
+          model: ['name', 'zweck', 'version', 'trainingsdaten', 'metrik', 'schwellenwert', 'bekannte_grenzen'],
+        };
+        return { value: countCardDefects(parameters.cards, required) };
       }
       if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
       if (parameters.variant === 'relative-percent') {
@@ -448,6 +596,35 @@ const FAMILY_DEFINITIONS = {
         value: parameters.branchA[0] * parameters.branchA[1]
           + parameters.branchB[0] * parameters.branchB[1],
       };
+    },
+  },
+  'aggregate-topk-relevance-arithmetic': {
+    cases: {
+      'recall-at-k-window': {
+        generator: genRecallAtK,
+        competencyIds: ['c-genai-rag'],
+      },
+    },
+    solve(parameters) {
+      if (parameters.shape === 'hits') return { value: parameters.hits };
+      if (parameters.shape === 'percent') return { value: (100 * parameters.hits) / parameters.relevantTotal };
+      if (parameters.shape === 'missing') return { value: parameters.relevantTotal - parameters.hits };
+      return { value: parameters.k - parameters.hits };
+    },
+  },
+  'validate-goalshift-flag-rules': {
+    cases: {
+      'protocol-shift-flag-count': {
+        generator: genProtocolShifts,
+        competencyIds: ['c-research-question'],
+      },
+      'detect-goal-shift': {},
+    },
+    solve(parameters) {
+      if (parameters.caseId === 'detect-goal-shift') {
+        return staticExpected('validate-goalshift-flag-rules', parameters);
+      }
+      return { value: protocolShiftFlags(parameters.versionen.a, parameters.versionen.b).length };
     },
   },
 };
@@ -573,6 +750,22 @@ export function generateFormulaStatFromTableFamily({ seed, caseId, difficulty })
   return generateDataMlFamily('formula-stat-from-table', { seed, caseId, difficulty });
 }
 
+export function solveAggregateTopkRelevanceArithmetic(parameters) {
+  return FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve(parameters);
+}
+
+export function generateAggregateTopkRelevanceArithmeticFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('aggregate-topk-relevance-arithmetic', { seed, caseId, difficulty });
+}
+
+export function solveValidateGoalshiftFlagRules(parameters) {
+  return FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve(parameters);
+}
+
+export function generateValidateGoalshiftFlagRulesFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('validate-goalshift-flag-rules', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -590,6 +783,7 @@ const FORMULA_RATIO_PERCENT_CASE_TYPES = [
     sourceLineage: ['w26-e4'],
     competencyIds: ['c-dl-papers', 'c-ml-cv'],
   },
+  { caseId: 'allowed-action-count', sourceLineage: ['w30-e2'], competencyIds: ['c-genai-prototype'] },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
@@ -616,6 +810,13 @@ const AGGREGATE_CONFUSION_METRIC_CASE_TYPES = [
   { caseId: 'threshold-under-asymmetric-cost', propertyTest: false },
   { caseId: 'sigmoid-predict-numpy', propertyTest: false },
   { caseId: 'confusion-cost-report', propertyTest: false },
+  { caseId: 'answer-filter-precision-recall-f1', sourceLineage: ['w28-e2'], competencyIds: ['c-genai-eval'] },
+  { caseId: 'injection-filter-counts', sourceLineage: ['w29-e2'], competencyIds: ['c-genai-security'] },
+  { caseId: 'subgroup-rate-gap-permille', sourceLineage: ['w33-e2'], competencyIds: ['c-research-responsible'] },
+  { caseId: 'metric-code-output-trace', propertyTest: false },
+  { caseId: 'confusion-from-rows', propertyTest: false },
+  { caseId: 'contains-injection-rules', propertyTest: false },
+  { caseId: 'fairness-metric-compare', propertyTest: false },
 ];
 
 const FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES = [
@@ -638,6 +839,21 @@ const FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES = [
 const FORMULA_STAT_FROM_TABLE_CASE_TYPES = [
   { caseId: 'greedy-step-stat', sourceLineage: ['w24-e2'], competencyIds: ['c-dl-inference'] },
   { caseId: 'paper-gain-from-counts', sourceLineage: ['w26-e2'], competencyIds: ['c-dl-papers'] },
+  { caseId: 'card-audit-missing-count', sourceLineage: ['w32-e2'], competencyIds: ['c-research-cards'] },
+];
+
+const AGGREGATE_TOPK_RELEVANCE_CASE_TYPES = [
+  { caseId: 'recall-at-k-window', sourceLineage: ['w27-e2'], competencyIds: ['c-genai-rag'] },
+];
+
+const VALIDATE_GOALSHIFT_CASE_TYPES = [
+  { caseId: 'protocol-shift-flag-count', sourceLineage: ['w31-e2'], competencyIds: ['c-research-question'] },
+  {
+    caseId: 'detect-goal-shift',
+    propertyTest: false,
+    sourceLineage: ['w31-e6'],
+    competencyIds: ['c-research-question', 'c-python-functions'],
+  },
 ];
 
 const OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES = [
@@ -723,7 +939,7 @@ export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
   masteryEligible: true,
   caseTypes: AGGREGATE_CONFUSION_METRIC_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-ml-logistic'],
+  competencyIds: ['c-ml-logistic', 'c-genai-eval', 'c-genai-security', 'c-research-responsible'],
   graderId: 'deterministic',
   activityType: 'numeric',
 };
@@ -772,7 +988,35 @@ export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
   masteryEligible: true,
   caseTypes: FORMULA_STAT_FROM_TABLE_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-dl-inference', 'c-dl-papers'],
+  competencyIds: ['c-dl-inference', 'c-dl-papers', 'c-research-cards'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
+export const AGGREGATE_TOPK_RELEVANCE_CONTRACT = {
+  familyId: 'aggregate-topk-relevance-arithmetic',
+  familyGroup: 'aggregate-count',
+  summary: 'Berechnet Recall@k, fehlende relevante Dokumente oder irrelevante Treffer aus Rankingfenstern.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: AGGREGATE_TOPK_RELEVANCE_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-genai-rag'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
+export const VALIDATE_GOALSHIFT_CONTRACT = {
+  familyId: 'validate-goalshift-flag-rules',
+  familyGroup: 'validate-contract',
+  summary: 'Zählt protokollierte Änderungen zwischen Versionen und prüft Goal-Shift-Detektoren.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: VALIDATE_GOALSHIFT_CASE_TYPES,
+  difficultyProfiles: [...DATA_ML_DIFFICULTY_PROFILES, 'challenge'],
+  competencyIds: ['c-research-question', 'c-python-functions'],
   graderId: 'deterministic',
   activityType: 'numeric',
 };
@@ -841,5 +1085,15 @@ export const DATA_ML_FAMILY_SPECS = [
     ...OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT,
     generate: generateOptimizeBackpropPathSumFamily,
     solve: solveOptimizeBackpropPathSum,
+  },
+  {
+    ...AGGREGATE_TOPK_RELEVANCE_CONTRACT,
+    generate: ({ seed, caseId, difficulty }) => generateDataMlFamily('aggregate-topk-relevance-arithmetic', { seed, caseId, difficulty }),
+    solve: (parameters) => FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve(parameters),
+  },
+  {
+    ...VALIDATE_GOALSHIFT_CONTRACT,
+    generate: ({ seed, caseId, difficulty }) => generateDataMlFamily('validate-goalshift-flag-rules', { seed, caseId, difficulty }),
+    solve: (parameters) => FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve(parameters),
   },
 ];
