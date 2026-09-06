@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-dropout-regime",
+  "contract": {
+    "familyId": "classify-dropout-regime",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Dropout-Konfiguration ihrem Wirkungsregime zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "dropout-regime",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-dl-regularization"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "dropout-regime",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w21-e1"
+      ],
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "parameters": {
+        "thema": "Dropout in Training vs. Inference"
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Keine Maske, keine Skalierung: Die Aktivierungen fließen unangetastet — die Skalierung mit $1/p$ im Training hat den Erwartungswert bereits angepasst.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Es wird eine neue Maske gezogen und mit $1/p$ skaliert — Inference dropout genauso wie im Training.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Keine Maske, aber Multiplikation mit $p$: Die Skalierung verschiebt sich von $1/p$ im Training auf $p$ in der Inference.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Alle Aktivierungen werden auf $0$ gesetzt, deren Neuron im Training jemals gedroppt wurden — die Maske bleibt dauerhaft.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Netz nutzt invertiertes Dropout in jeder Trainingsepoche: Behaltenswahrscheinlichkeit $p$, erhaltene Aktivierungen werden mit $1/p$ skaliert. Wie behandelt das Netz dieselbe Schicht im Inference-Pass (Vorhersage nach dem Training)?",
+      "fullSolution": "Invertiertes Dropout skaliert im Training die erhaltenen Aktivierungen mit $1/p$, sodass der Erwartungswert über die Masken dem unskalierten Wert entspricht. Die Inference rechnet daher ohne Maske und ohne Skalierung — deterministisch und erwartungstreu. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was soll im Erwartungswert herauskommen: eine Vorhersage, die zur Trainingszeit-Skala passt. Wer hat die Skalenanpassung schon übernommen?",
+        "Invertierte Skalierung heißt gerade: die Anpassung passiert IM Training (Faktor $1/p$ auf Erhaltene), nicht zur Laufzeit der Vorhersage."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Zur Vorhersage wird deterministisch gerechnet — eine frische Zufallsmaske würde die Vorhersage bei jedem Aufruf ändern."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Multiplikation mit p würde die Aktivierungen im Mittel um Faktor p² verkleinern — die Erwartungstreue käme aus dem Ruder."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Maske wird pro Schritt neu gezogen; kein Neuron ist dauerhaft tot außer durch andere Mechanismen (z. B. tote ReLU)."
+        }
+      ],
+      "typicalErrors": [
+        "Maske auch zur Vorhersage angewendet",
+        "Skalierung zur falschen Zeit (Inference mit p statt Training mit 1/p)",
+        "Maske als dauerhafte Löschung gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

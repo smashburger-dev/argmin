@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-dl-regularization",
+  "version": 1,
+  "locale": "de",
+  "title": "Regularisierung, faire Ablation, Save/Load",
+  "description": "Lerne Dropout, Weight Decay, faire Ablationen und Early Stopping reproduzierbar umzusetzen.",
+  "competencyIds": [
+    "c-dl-regularization"
+  ],
+  "requires": [
+    "c-dl-training",
+    "c-ml-cv"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "mathematical-foundations"
+  ],
+  "lessonIds": [
+    "l-dl-regularization"
+  ],
+  "placements": [
+    {
+      "placementId": "p-dl-regularization-classify",
+      "role": "curated",
+      "familyId": "classify-dropout-regime",
+      "caseId": "dropout-regime",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-dl-regularization",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-dl-regularization-dropout",
+      "role": "curated",
+      "familyId": "formula-count-from-construction",
+      "caseId": "dropout-mask-kept-count",
+      "seed": 2102,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-regularization-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "fixed-dropout-mask-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-regularization-primitive",
+      "role": "curated",
+      "familyId": "optimize-training-primitive-contract",
+      "caseId": "dropout-weight-decay-primitives",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 20,
+      "lessonId": "l-dl-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-regularization-early",
+      "role": "curated",
+      "familyId": "fit-early-stopping-roundtrip",
+      "caseId": "early-stopping-roundtrip",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-dl-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-regularization-decay",
+      "role": "curated",
+      "familyId": "fit-weight-decay-ablation",
+      "caseId": "weight-decay-ablation",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-dl-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-regularization-practice",
+      "role": "practice-space",
+      "familyId": "formula-count-from-construction",
+      "caseId": "dropout-mask-kept-count",
+      "seed": 2102,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-dl-regularization"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
