@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-required-field-raise",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "paper-card-required-fields",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w26-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "REQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\n\n\ndef review_paper_card(card):\n    \"\"\"Structural review: missing text fields and claims without supporting numbers.\"\"\"\n    # card must be a dict, claims must be a list -> ValueError otherwise\n    # missing_fields: empty/missing text fields in REQUIRED_FIELDS order\n    # a claim is supported iff evidence has numeric baseline/system (no bool)\n    # and system > baseline; collect indices of unsupported claims\n    ...\n",
+        "tests": "GOOD = {\n    \"frage\": \"Ersetzt Attention allein Rekurrenz?\",\n    \"methode\": \"Encoder-Decoder nur mit Attention\",\n    \"datensatz\": \"WMT 2014 EN-DE / EN-FR\",\n    \"ergebnis\": \"28.4 BLEU EN-DE\",\n    \"limitation\": \"nur Übersetzung und Parsing\",\n    \"claims\": [\n        {\"claim\": \"GLUE steigt\", \"evidence\": {\"baseline\": 72.8, \"system\": 80.5}},\n        {\"claim\": \"F1 steigt\", \"evidence\": {\"baseline\": 68.0, \"system\": 74.0}},\n    ],\n}\n__check('vollstaendige Karte leer', review_paper_card(GOOD) == {\"missing_fields\": [], \"unsupported_claims\": []})\nBAD = dict(GOOD)\nBAD = {**GOOD, \"methode\": \"   \", \"limitation\": \"\", \"claims\": GOOD[\"claims\"] + [\n    {\"claim\": \"bleibt gleich\", \"evidence\": {\"baseline\": 80.5, \"system\": 80.5}},\n    {\"claim\": \"verschlechtert\", \"evidence\": {\"baseline\": 90.0, \"system\": 80.0}},\n]}\nout = review_paper_card(BAD)\n__check('fehlende Felder kanonisch', out[\"missing_fields\"] == [\"methode\", \"limitation\"])\n__check('ungestuetzte Claims nach Index', out[\"unsupported_claims\"] == [2, 3])\nNOEV = {**GOOD, \"claims\": [{\"claim\": \"ohne Zahlen\"}]}\n__check('Claim ohne Evidenz ungestuetzt', review_paper_card(NOEV)[\"unsupported_claims\"] == [0])\nEMPTY = {\"frage\": \"F\", \"methode\": \"M\", \"datensatz\": \"D\", \"ergebnis\": \"E\"}\n__check('ohne claims akzeptiert', review_paper_card(EMPTY) == {\"missing_fields\": [\"limitation\"], \"unsupported_claims\": []})\ntry:\n    review_paper_card({\"claims\": \"keine Liste\"})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('claims Typ geprueft -> ValueError', True)\ntry:\n    review_paper_card([\"kein\", \"dict\"])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('card Typ geprueft -> ValueError', True)\n__check('bool ist keine Zahl', review_paper_card({**GOOD, \"claims\": [{\"claim\": \"x\", \"evidence\": {\"baseline\": False, \"system\": True}}]})[\"unsupported_claims\"] == [0])"
+      },
+      "competencyIds": [
+        "c-dl-papers"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "REQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\n\ndef review_paper_card(card):\n    \"\"\"Structural review: missing text fields and claims without supporting numbers.\"\"\"\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n"
+      },
+      "prompt": "Paper-Karten strukturell prüfen: Implementiere <code>review_paper_card(card)</code>. Eingabe: ein Dictionary mit den fünf Textfeldern <code>\"frage\"</code>, <code>\"methode\"</code>, <code>\"datensatz\"</code>, <code>\"ergebnis\"</code>, <code>\"limitation\"</code> und einer Liste <code>\"claims\"</code>; jeder Claim ist <code>{\"claim\": ..., \"evidence\": {\"baseline\": Zahl, \"system\": Zahl}}</code>. Rückgabe: <code>{\"missing_fields\": [...], \"unsupported_claims\": [...])</code>. Regeln: Fehlende oder leere (auch nur-Leerzeichen) Textfelder landen in <code>missing_fields</code> — in der kanonischen Reihenfolge frage, methode, datensatz, ergebnis, limitation; ein Claim ist genau dann gestützt, wenn beide Zahlen vorhanden sind (echte Zahlen, <code>bool</code> zählt nicht) und <code>system &gt; baseline</code> gilt (higher-is-better-Metrik); alle anderen landen mit ihrem Index in <code>unsupported_claims</code>. <code>card</code> muss ein Dictionary sein, <code>claims</code> (falls vorhanden) eine Liste — sonst <code>ValueError</code>; fehlende <code>claims</code> gelten als leere Liste. Der Testcode prüft eine vollständige Karte, Defekte, Claims ohne Zahlen und Typfehler.",
+      "fullSolution": "REQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\n\ndef review_paper_card(card):\n    \"\"\"Structural review: missing text fields and claims without supporting numbers.\"\"\"\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n# review_paper_card(GOOD) -> {\"missing_fields\": [], \"unsupported_claims\": []}\n# Die Testkarte GOOD enthaelt Evidenz (72.8 -> 80.5, 68.0 -> 74.0);\n# Gleichstand und Verschlechterung landen als Indizes in unsupported_claims.",
+      "hints": [
+        "Die fünf Textfelder in kanonischer Reihenfolge prüfen: nur nicht-leere Strings zählen.",
+        "Claims defensiv lesen: evidence fehlt, ist kein dict, enthält bool oder keine Zahlen — alles ungestützt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-ignored",
+          "then": "missing_fields folgt der festen Reihenfolge frage, methode, datensatz, ergebnis, limitation."
+        },
+        {
+          "if": "bool-accepted",
+          "then": "True/False sind keine Bewertungszahlen — isinstance(x, bool) muss ausgeschlossen werden."
+        },
+        {
+          "if": "equal-supported",
+          "then": "system > baseline ist die Stützungsbedingung; Gleichstand oder Verschlechterung stützt keinen Claim."
+        }
+      ],
+      "typicalErrors": [
+        "kanonische Feldreihenfolge missachtet",
+        "bool als Zahl akzeptiert",
+        "Gleichstand als gestützt gewertet"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-ratio-percent-metric",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "compare-systems-metric",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w26-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def compare_systems(rows):\n    \"\"\"Baseline vs system correctness counts from (baseline_ok, system_ok) rows.\"\"\"\n    # validate each row (exactly 2 entries, else ValueError)\n    # count correct predictions per system, delta = system - baseline\n    # relative_percent = int(round(100 * delta / baseline)) or 0 if baseline == 0\n    ...\n",
+        "tests": "ROWS = [(True, True), (True, False), (False, True), (False, False), (True, True), (False, True)]\nr = compare_systems(ROWS)\n__check('n', r[\"n\"] == 6)\n__check('baseline korrekt', r[\"baseline_correct\"] == 3)\n__check('system korrekt', r[\"system_correct\"] == 4)\n__check('delta korrekt', r[\"delta_correct\"] == 1)\n__check('relativ ganzzahlig', r[\"relative_percent\"] == 33)\nr2 = compare_systems([(True, True), (True, True), (True, True), (True, True)])\n__check('alles richtig: delta 0', r2[\"delta_correct\"] == 0 and r2[\"relative_percent\"] == 0)\nr3 = compare_systems([(False, False), (False, True), (False, True), (False, False), (False, True), (False, True), (False, True), (False, True)])\n__check('baseline null: relativ definiert als 0', r3[\"baseline_correct\"] == 0 and r3[\"relative_percent\"] == 0 and r3[\"delta_correct\"] == 6 and r3[\"system_correct\"] == 6)\nr4 = compare_systems([(True, False), (True, False)])\n__check('verschaerfung negativ', r4[\"delta_correct\"] == -2 and r4[\"relative_percent\"] == -100)\nr5 = compare_systems([])\n__check('leere Liste', r5[\"n\"] == 0 and r5[\"relative_percent\"] == 0)\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n__check('glue-Zahlen stimmen', compare_systems([(False, True)] * 25 + [(True, True)] * 15 + [(True, False)] * 10) == {\"n\": 50, \"baseline_correct\": 25, \"system_correct\": 40, \"delta_correct\": 15, \"relative_percent\": 60})"
+      },
+      "competencyIds": [
+        "c-dl-papers",
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def compare_systems(rows):\n    \"\"\"Baseline vs system correctness counts from (baseline_ok, system_ok) rows.\"\"\"\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError(\"jede Zeile braucht zwei Eintraege\")\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system,\n            \"delta_correct\": delta, \"relative_percent\": relative}\n"
+      },
+      "prompt": "Metrik aus Zeilenlisten: Implementiere <code>compare_systems(rows)</code>. Eingabe: Liste von Tupeln <code>(baseline_ok, system_ok)</code> mit booleschen Korrektheitsmarken je Testbeispiel. Rückgabe: ein Dictionary mit <code>\"n\"</code>, <code>\"baseline_correct\"</code>, <code>\"system_correct\"</code>, <code>\"delta_correct\"</code> (Differenz der korrekten Anzahlen) und <code>\"relative_percent\"</code> — die relative Verbesserung als <code>int(round(100·delta/baseline))</code>; ist <code>baseline_correct</code> gleich 0, ist der relative Wert per Definition 0 (kein Bezugswert). Zeilen, die keine 2 Elemente haben, werfen <code>ValueError</code>. Der Testcode prüft eine Paper-artige Zeilenliste, Grenzfälle (leer, alles richtig, Baseline 0, Verschlechterung) und die Fehlerbehandlung.",
+      "fullSolution": "def compare_systems(rows):\n    \"\"\"Baseline vs system correctness counts from (baseline_ok, system_ok) rows.\"\"\"\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError(\"jede Zeile braucht zwei Eintraege\")\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system,\n            \"delta_correct\": delta, \"relative_percent\": relative}\n# compare_systems([(True, True), (True, False), (False, True), (False, False),\n#                    (True, True), (False, True)])\n# -> {\"n\": 6, \"baseline_correct\": 3, \"system_correct\": 4,\n#     \"delta_correct\": 1, \"relative_percent\": 33}",
+      "hints": [
+        "Zwei Zähler in einem Durchlauf über die Zeilen; delta = system − baseline kann negativ sein.",
+        "relative_percent nur bei baseline > 0 berechnen und auf int runden — sonst 0."
+      ],
+      "feedbackRules": [
+        {
+          "if": "relative-unrounded",
+          "then": "relative_percent ist eine ganze Zahl: int(round(100·delta/baseline))."
+        },
+        {
+          "if": "zero-baseline-crash",
+          "then": "baseline_correct == 0 ist per Definition relative_percent = 0 — keine Division durch null."
+        },
+        {
+          "if": "row-schema-unchecked",
+          "then": "Zeilen mit anderer Länge als 2 werfen ValueError."
+        }
+      ],
+      "typicalErrors": [
+        "relative Verbesserung nicht gerundet bzw. als float",
+        "Division durch null bei Baseline 0",
+        "Zeilenform ungeprüft"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

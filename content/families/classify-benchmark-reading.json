@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-benchmark-reading",
+  "contract": {
+    "familyId": "classify-benchmark-reading",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Benchmark-Befund der richtigen Lesart zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "benchmark-absolute-gain",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-dl-papers"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "benchmark-absolute-gain",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w26-e1"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-papers"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "GLUE stieg von 7,7 % auf 80,5 % — die Baseline steht in der Klammer.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "GLUE stieg auf 80,5 % — ein absoluter Zuwachs von 7,7 Punkten (nicht 7,7 % relativ, was rechnerisch etwa 10,6 % wären).",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "GLUE stieg um 7,7 % relativ auf 80,5 % — „point absolute“ heißt Prozent relativ.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "GLUE erreichte 80,5 Punkte und damit 7,7 % der möglichen 100 % — der Zuwachs ist nicht angegeben.",
+          "correct": false
+        }
+      ],
+      "prompt": "Das BERT-Abstract meldet: „pushing the GLUE score to 80.5% (7.7% point absolute improvement)“. Welche Weitererzählung des Ergebnisses ist korrekt?",
+      "fullSolution": "„7.7% point absolute“ heißt +7,7 Punkte auf der GLUE-Skala (72,8 → 80,5). Relativ wären das rund 10,6 % — die absolute Punkte-Lesart ist hier die im Abstract gemeinte. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "„point absolute improvement“ benennt die Maßeinheit des Zuwachses: Punkte der Metrik, nicht Prozent der Baseline.",
+        "Zur Kontrolle die relative Lesart durchrechnen: 7,7 Punkte auf 72,8 Baseline sind deutlich mehr als 7,7 %."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'c'",
+          "then": "„absolute“ Punkte sind keine relative Prozentangabe — 7,7 % relativ wären nur ~5,6 Punkte auf der 72,8er-Baseline gewesen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Klammer nennt den Zuwachs gegenüber dem bisherigen Bestwert, nicht einen Anteil der Skala."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "In der Klammer steht die Verbesserung, nicht der alte Wert; die Baseline ist 80,5 − 7,7 = 72,8."
+        }
+      ],
+      "typicalErrors": [
+        "absolut (Punkte) mit relativ (%) verwechselt",
+        "Baseline aus Klammer statt Differenz gelesen",
+        "Einheit der Metrik ignoriert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
