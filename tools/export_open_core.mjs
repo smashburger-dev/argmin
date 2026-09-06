@@ -6,6 +6,7 @@ import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compileContent, writeSplitArtifacts } from './compile_content.mjs';
 import { buildCoverageArtifacts } from './build_coverage_matrix.mjs';
+import { catalogRoot, discoverJson } from './content_roots.mjs';
 import { expectedPublicCounts } from '../tests/helpers/content_counts.mjs';
 import { projectReleaseFiles } from './project_release_files.mjs';
 

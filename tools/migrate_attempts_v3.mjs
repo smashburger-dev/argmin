@@ -21,12 +21,10 @@ const payload = JSON.parse(readFileSync(input, 'utf8'));
 if (!payload || typeof payload !== 'object' || !payload.data) {
   throw new Error('Importpayload ungültig');
 }
-const map = JSON.parse(readFileSync(new URL('../content/legacy/exercise-competency-map.json', import.meta.url), 'utf8'));
-const competencyIdsByExercise = new Map(map.exercises.map((item) => [item.exerciseId, item.competencyIds]));
 const migrated = migratePayloadToV3(payload, {
   installationId: optionValue('--installation-id', 'offline-import'),
   contentVersion: 'pre-v3',
-  competencyIdsByExercise,
+  competencyIdsByExercise: new Map(),
   nowIso: payload.exportedAt || new Date().toISOString(),
 });
 const validation = validateImportPayload(migrated);
