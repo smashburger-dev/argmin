@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-learning",
+  "version": 1,
+  "locale": "de",
+  "title": "Fehler in nächste Handlungen übersetzen",
+  "description": "Meta-Lektion ohne Aufgaben: Fehlerjournal führen und daraus die nächste Handlung ableiten.",
+  "competencyIds": [
+    "c-meta-learning"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-learning"
+  ],
+  "placements": [],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

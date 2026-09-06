@@ -1,0 +1,69 @@
+{
+  "definitionId": "f-git-next-action-01",
+  "version": 1,
+  "locale": "de",
+  "title": "Git-Zustand erkennen, nächsten Schritt wählen",
+  "competencyIds": [
+    "c-git-basics"
+  ],
+  "activityType": "single-choice",
+  "graderId": "deterministic",
+  "generatorId": "genGitNextAction",
+  "referenceSolverId": null,
+  "deterministicSeed": 3901,
+  "prompt": "Situation: Du hast Dateien mit git add vorgemerkt. Nun willst du genau die vorgemerkten Änderungen prüfen, bevor du committest.\n\nWelcher Schritt passt jetzt am besten?",
+  "parameters": {
+    "seedGenerator": "genGitNextAction",
+    "caseId": "diff-staged",
+    "caseIndex": 1
+  },
+  "choices": [
+    {
+      "id": "a",
+      "text": "git diff",
+      "correct": false
+    },
+    {
+      "id": "b",
+      "text": "git log",
+      "correct": false
+    },
+    {
+      "id": "c",
+      "text": "git clone",
+      "correct": false
+    },
+    {
+      "id": "d",
+      "text": "git diff --staged",
+      "correct": true
+    }
+  ],
+  "expectedAnswer": {
+    "kind": "seeded-choice",
+    "generator": "genGitNextAction",
+    "defaultSeed": 3901,
+    "defaultChoice": "d"
+  },
+  "tolerancePolicy": {
+    "mode": "exact"
+  },
+  "hints": [
+    "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+    "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+  ],
+  "feedbackRules": [],
+  "fullSolution": "Richtig: git diff --staged. git diff --staged vergleicht den Staging-Bereich mit dem letzten Commit; git diff (ohne Flag) zeigt dagegen nur unstagede Änderungen.",
+  "difficulty": 2,
+  "estimatedMinutes": 6,
+  "sourceLineage": {
+    "statement": "eigenständig entwickelt (Seed-Generator genGitNextAction)",
+    "seed": 3901
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 2000,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w03"
+}

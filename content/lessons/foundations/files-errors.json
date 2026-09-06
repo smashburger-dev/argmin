@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-files-errors",
+  "version": 2,
+  "locale": "de",
+  "title": "Dateien lesen und Fehler begrenzen",
+  "objectives": ["Dateien mit einem Kontextmanager öffnen", "Parsingfehler von Dateifehlern unterscheiden", "Fehler dort behandeln, wo eine sinnvolle Entscheidung möglich ist"],
+  "competencyIds": ["c-python-files-errors"],
+  "requires": ["c-python-functions", "c-python-collections"],
+  "estimatedMinutes": 45,
+  "blocks": [{ "blockId": "files-errors-core", "type": "project-step", "contentRef": "lessons/foundations/files-errors.md" }],
+  "sourceRefs": [
+    { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 7 und 8: Input and Output; Errors and Exceptions" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

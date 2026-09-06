@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w31",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w31-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-research-question"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3101,
+      "masteryEligible": false,
+      "prompt": "Vier Formulierungen einer Forschungsfrage für den RAG-Prototypen sind im Umlauf. Welche ist im Sinne des Forschungsprotokolls prüfbar (feste Metrik, fester Vergleich, falsifizierbare Vorhersage)?",
+      "parameters": {
+        "thema": "Prüfbare Forschungsfrage erkennen"
+      },
+      "expectedAnswer": {
+        "correctChoice": "a"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Prüfbar heißt: Es gibt eine feste Metrik und einen festen Vergleich — und es könnte einen Messwert geben, der die Vermutung widerlegt.",
+        "Absolute Behauptungen, Gefühlsfragen und Fragen, die ihr Ergebnis bereits voraussetzen, sind keine prüfbaren Forschungsfragen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "„insgesamt besser geeignet“ nennt keine Metrik und keinen Vergleich — die Frage kann durch keinen Messwert widerlegt werden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Gefühlsfragen messen keine feste Metrik; ohne Operationalisierung (was wird wie gezählt) bleibt keine falsifizierbare Vorhersage."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Frage setzt das Ergebnis („besser“) bereits voraus und enthält mit „einfach besser“ eine absolute Behauptung — nicht prüfbar."
+        }
+      ],
+      "fullSolution": "Nur Variante a nennt eine feste Metrik (Anteil korrekt beantworteter Fixtur-Fragen als recall@5-Endpunkt), einen gezielten Vergleich (Chunkgröße 200 gegen 400) und ist widerlegbar: Bleibt der Anteil gleich oder sinkt er, ist die Vermutung falsifiziert. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)",
+        "falsifizierbar mit interessant verwechselt",
+        "Metrik und Vergleich für denselben Begriff gehalten"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "COS Preregistration — Forschungsplan vor der Erhebung festlegen; SEP-Popper-Eintrag Falsifizierbarkeit als Abgrenzungskriterium (nur Lektüre); Prüfbarkeitsregeln eigenständig für Fixtur-Prototypen formuliert",
+        "statement": "eigenständig entwickelt",
+        "seed": 3101
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de",
+      "choices": [
+        {
+          "id": "a",
+          "text": "„Steigt der Anteil korrekt beantworteter Fixtur-Fragen (recall@5 als fester Endpunkt), wenn die Chunkgröße von 200 auf 400 Zeichen verdoppelt wird?“",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "„Ist das System insgesamt besser geeignet als die alte Version?“",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "„Wie fühlen sich Nutzende bei kürzeren Antworten im Vergleich zu langen?“",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "„Warum sind kleinere Chunks einfach besser für alle Anfragen?“",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "exerciseId": "w31-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-research-question"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3111,
+      "masteryEligible": true,
+      "prompt": "Zwei Versionen eines Forschungsprotokolls für den RAG-Prototypen liegen vor. Version A (preregistriert): Metrik „zitat-praezision“, Erfolgsschwelle „0,7“, primärer Endpunkt „zitattreue“, sekundäre Endpunkte „antwortquote“ und „bearbeitungszeit“, Subgruppen „bestandskunden“, „desktop“ und „wochenende“, Preregistrierung 2026-05-12, Hauptlauf ab 2026-07-17. Version B (nach Beginn des Hauptlaufs geändert): Metrik „token-f1“, Erfolgsschwelle „0,75“, primärer Endpunkt „ablehnungsquote“, sekundäre Endpunkte „zitattreue“, „antwortquote“ und „bearbeitungszeit“, Subgruppen „bestandskunden“, „desktop“ und „wochenende“, Preregistrierung 2026-05-12, Hauptlauf ab 2026-07-17. Wie viele der vier Goal-Shift-Flags (metrik_geaendert, schwelle_geaendert, primaer_demoted, subgruppe_nach_freeze) lösen beim Vergleich von Version A nach Version B aus?",
+      "parameters": {
+        "seedGenerator": "genProtocolShifts"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genProtocolShifts",
+        "defaultSeed": 3111,
+        "defaultExpected": 3
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Prüfe die vier Flags einzeln: Metrik gleich?, Erfolgsschwelle gleich?, rutscht der alte primäre Endpunkt in die sekundären Endpunkte?, kommt eine neue Subgruppe dazu?",
+        "Nur geänderte Werte zählen — Datum, Preregistrierung und unveränderte Subgruppen lösen kein Flag aus."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 4",
+          "then": "Vier Flags bedeuten, dass jedes Feld abweicht — prüfe besonders subgruppe_nach_freeze: Eine unveränderte Subgruppenliste löst dieses Flag nicht."
+        },
+        {
+          "if": "value === 2",
+          "then": "Zwei changes gezählt? Vermutlich fehlt primaer_demoted: Der frühere primäre Endpunkt „zitattreue“ steht in Version B bei den sekundären Endpunkten."
+        },
+        {
+          "if": "value === 1",
+          "then": "Ein Flag reicht nur für eine einzige Abweichung — hier weichen Metrik, Schwelle und Endpunktrolle gleichzeitig ab."
+        }
+      ],
+      "fullSolution": "Vergleiche Feld für Feld: Metrik (metrik_geaendert bei Abweichung), Erfolgsschwelle (schwelle_geaendert), primärer Endpunkt (primaer_demoted, wenn der alte primäre Endpunkt in Version B unter den sekundären auftaucht) und Subgruppen (subgruppe_nach_freeze, wenn Version B eine Gruppe enthält, die Version A nicht hatte). Die Anzahl der ausgelösten Flags ist die Antwort. Mit „Neue Zahlen“ erscheint eine neue Protokollpaarung mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "subgruppe_nach_freeze falsch herum geprüft (entfernte statt ergänzte Gruppen gezählt)",
+        "primaer_demoted über den neuen statt des alten primären Endpunkts geprüft",
+        "unveränderte Datumsangaben als Veränderung gewertet"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "COS Preregistration — Festlegung von Metrik und Analyseplan vor dem Hauptlauf; Goal-Shift-Katalog (metrik, schwelle, primaer demoted, subgruppe nach freeze) eigenständig als deterministische Prüfung formuliert",
+        "statement": "eigenständig entwickelt",
+        "seed": 3111
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w31-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-research-question",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3113,
+      "masteryEligible": true,
+      "prompt": "Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Funktion zerlegt eine Je-desto-Hypothese in unabhängige Variable (UV) und abhängige Variable (DV).",
+      "parameters": {
+        "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\ne = extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner die Überlappung, desto geringer die recall@5-Quote\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "die chunkgröße\nder anteil korrekter antworten\ndie überlappung\ndie recall@5-quote"
+      },
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "hints": [
+        "vorderer.split()[2:] lässt „Je“ und das erste Wort (die Richtung wie „größer“) weg — der Rest ist die UV.",
+        "hinterer.split()[1:] lässt das erste Wort nach „desto“ (die Richtung) weg; alles wird kleingeschrieben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "direction-included",
+          "then": "Die Richtungsadjektive („größer“, „geringer“) gehören nicht zu UV oder DV — split()[2:] beziehungsweise split()[1:] schneiden sie ab."
+        },
+        {
+          "if": "case-wrong",
+          "then": "Beide Variable werden mit .lower() kleingeschrieben — „Chunkgröße“ wird zu „chunkgröße“."
+        }
+      ],
+      "fullSolution": "Erster Aufruf: vorderer = „Je größer die Chunkgröße“ → [2:] = „die Chunkgröße“ → <code>die chunkgröße</code>; hinterer = „höher der Anteil korrekter Antworten“ → [1:] = <code>der anteil korrekter antworten</code>. Zweiter Aufruf entsprechend <code>die überlappung</code> und <code>die recall@5-quote</code>.",
+      "typicalErrors": [
+        "Richtungsadjektiv mit in die Variable aufgenommen",
+        "Groß-/Kleinschreibung nicht mitgerechnet",
+        "den Punkt am Satzende mit in die DV übernommen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Jhangiani, Research Methods in Psychology — Operationalisierung von Hypothesen in Variablen (nur Lektüre); Je-desto-Zerlegung als deterministisches Parsen eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3113
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (lokale Ausführung)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w31-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3114,
+      "masteryEligible": true,
+      "prompt": "Implementiere die Prüfbarkeit von Forschungsfragen. <code>is_testable(frage)</code> liefert <code>True</code> genau dann, wenn die Kleinbuchstaben-Fassung der Frage mindestens eine Metrik aus METRIKEN als Teilstring enthält, mindestens ein Vergleichswort aus VERGLEICHE enthält und KEIN absolutes Wort aus ABSOLUTE enthält (Reihenfolge: absolute Wörter verwerfen zuerst, dann Metrik, dann Vergleich). <code>extract_variables(hypothese)</code> zerlegt eine Je-desto-Hypothese: Text strippen und Punkt am Ende entfernen, an <code>&quot;, desto &quot;</code> in genau zwei Teile splitten, der vordere Teil muss mit <code>Je </code> beginnen — sonst <code>ValueError(\"keine Je-desto-Form\")</code>; UV = Wörter des vorderen Teils ab Index 2, DV = Wörter des hinteren Teils ab Index 1, beide kleingeschrieben und mit einfachen Leerzeichen verbunden. Der Testcode bringt eigene Fragen und Hypothesen mit.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    \"\"\"True iff Metrik und Vergleich als Teilstring enthalten sind und kein absolutes Wort vorkommt.\"\"\"\n    ...\n\ndef extract_variables(hypothese):\n    \"\"\"{'uv': .., 'dv': ..} aus einer Je-desto-Form; sonst ValueError('keine Je-desto-Form').\"\"\"\n    ...\n\n",
+        "tests": "__check('metrik und vergleich -> testable', is_testable(\"Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgroesse verdoppelt wird?\") is True)\n__check('ohne metrik nicht testable', is_testable(\"Fuehlt sich die bearbeitung schneller an?\") is False)\n__check('absolute behauptung verworfen', is_testable(\"Ist die neue Version generell besser geeignet?\") is False)\n__check('optimal verworfen trotz metrik', is_testable(\"Warum ist die recall@5-Quote optimal?\") is False)\n__check('dauer und vergleich -> testable', is_testable(\"Ist die dauer der nutzung höher als vorher ohne kennzahl?\") is True)\n__check('grossbuchstaben egal', is_testable(\"Sinkt die Quote der ablehnungen?\") is True)\n__check('metrik allein genuegt nicht', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\n__check('uv und dv zerlegt', extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\") == {\"uv\": \"die chunkgröße\", \"dv\": \"der anteil korrekter antworten\"})\n__check('richtung wird abgeschnitten', extract_variables(\"Je kleiner das Modell, desto geringer die kosten je lauf\") == {\"uv\": \"das modell\", \"dv\": \"die kosten je lauf\"})\n__check('punkt am ende entfernt', extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten.\") == {\"uv\": \"die chunkgröße\", \"dv\": \"der anteil korrekter antworten\"})\ntry:\n    extract_variables(\"Die Chunkgröße beeinflusst die Quote.\")\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('keine je-desto-form -> ValueError', True)\nprint(\"ok w31-e4\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "is_testable arbeitet auf frage.lower() und prüft Teilstrings mit any(...) — erst ABSOLUTE (sofort False), dann METRIKEN, dann VERGLEICHE.",
+        "extract_variables: split(\", desto \") muss genau zwei Teile liefern und der vordere mit \"Je \" beginnen; Wörter ab Index 2 beziehungsweise 1, dann .lower()."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-wrong",
+          "then": "Die Prüfreihenfolge ist Teil des Vertrags: Ein absolutes Wort verwirft die Frage sofort, egal welche Metrik sonst vorkommt."
+        },
+        {
+          "if": "case-sensitive",
+          "then": "„Steigt“ enthält „steigt“ nur nach Kleinbuchstaben-Normalisierung — erst frage.lower(), dann Teilstringsuche."
+        },
+        {
+          "if": "valueerror-missing",
+          "then": "Hypothesen ohne Je-desto-Form müssen ValueError('keine Je-desto-Form') auslösen, nicht None oder einen leeren Typ zurückgeben."
+        }
+      ],
+      "fullSolution": "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\n# alle Fixtur-Urteile der Tests werden reproduziert (lokal python3-verifiziert)",
+      "typicalErrors": [
+        "Prüfreihenfolge vertauscht (Metrik vor absoluten Wörtern)",
+        "Groß-/Kleinschreibung nicht normalisiert",
+        "ValueError für ungeeignete Hypothesen vergessen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "SEP-Popper-Eintrag Falsifizierbarkeit (nur Lektüre); Teilstring-Regelwerk für Prüfbarkeit und Je-desto-Zerlegung eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3114
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w31-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3115,
+      "masteryEligible": true,
+      "prompt": "Implementiere den Protokoll-Validator. <code>validate_protocol(p)</code> erhält ein Protokoll-Dict und liefert eine sortierte Liste von Verletzung-Codes: Für jedes Pflichtfeld (frage, uv, dv, metrik, baseline, abbruchregel, datum_prereg, datum_hauptlauf) fehlt oder leer (nur Whitespace) → <code>&lt;feld&gt;-fehlt</code>. Sind beide Datums vorhanden und nicht leer, aber <code>datum_prereg</code> nicht kleiner als <code>datum_hauptlauf</code> (ISO-Zeichenfolgenvergleich), zusätzlich <code>datum-reihenfolge</code>. Leere Liste heißt gültig. Der Testcode prüft exakte Listen.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\n\n\ndef validate_protocol(p):\n    \"\"\"Sortierte Verletzung-Codes; leere Liste heisst gueltig.\"\"\"\n    ...\n\n",
+        "tests": "P = {\"frage\": \"Steigt der Anteil?\", \"uv\": \"chunkgroesse\", \"dv\": \"anteil\", \"metrik\": \"recall@5\", \"baseline\": \"w30-lauf\", \"abbruchregel\": \"zwei laeufe ohne aenderung\", \"datum_prereg\": \"2026-05-12\", \"datum_hauptlauf\": \"2026-07-17\"}\n__check('gueltiges protokoll', validate_protocol(P) == [])\nQ = dict(P)\nQ.pop(\"metrik\")\nQ[\"baseline\"] = \"   \"\n__check('fehlende und leere felder', validate_protocol(Q) == [\"baseline-fehlt\", \"metrik-fehlt\"])\nR = dict(P)\nR[\"datum_hauptlauf\"] = \"2026-05-12\"\n__check('gleiches datum -> reihenfolge', validate_protocol(R) == [\"datum-reihenfolge\"])\nS = dict(P)\nS[\"datum_prereg\"] = \"2026-07-17\"\nS[\"datum_hauptlauf\"] = \"2026-05-12\"\n__check('vertauschte daten -> reihenfolge', validate_protocol(S) == [\"datum-reihenfolge\"])\nT = {}\n__check('leeres protokoll', validate_protocol(T) == sorted(f + \"-fehlt\" for f in PFLICHT))\nU = dict(P)\nU.pop(\"datum_hauptlauf\")\n__check('fehlendes datum loest nur feldcode', validate_protocol(U) == [\"datum_hauptlauf-fehlt\"])\nprint(\"ok w31-e5\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\n\n\ndef validate_protocol(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "None und nur-Whitespace sind beide \"fehlend\": wert ist None or str(wert).strip() == \"\".",
+        "Die Datumsreihenfolge wird nur geprüft, wenn beide Werte vorhanden und nicht leer sind — ISO-Zeichenfolgen vergleichen sich direkt mit <."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-wrong",
+          "then": "Die Codes werden sortiert zurückgegeben (sorted), nicht in Pflichtfeld-Reihenfolge — die Tests vergleichen exakte Listen."
+        },
+        {
+          "if": "whitespace-counts",
+          "then": "Ein Feld mit \"   \" ist leer: strip() vor dem Vergleich, sonst zählt es fälschlich als ausgefüllt."
+        },
+        {
+          "if": "date-checked-when-missing",
+          "then": "Fehlt eines der Datums, darf datum-reihenfolge nicht zusätzlich ausgelöst werden — der Feld-Code reicht."
+        }
+      ],
+      "fullSolution": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\n\n\ndef validate_protocol(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n\n# gueltig -> [], defekt -> ['baseline-fehlt', 'metrik-fehlt'], reihenfolgebruch -> ['datum-reihenfolge'] (lokal python3-verifiziert)",
+      "typicalErrors": [
+        "Whitespace-only-Felder als ausgefüllt gewertet",
+        "datum-reihenfolge auch bei fehlenden Datums ausgelöst",
+        "unsortierte Rückgabe"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 26,
+      "sourceLineage": {
+        "concept": "COS Preregistration — Pflichtangaben des Forschungsplans und Zeitpunkt vor der Erhebung; Feld-/Datumskatalog eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3115
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w31-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3116,
+      "masteryEligible": true,
+      "prompt": "Final Boss Goal-Shift-Detektor: Implementiere <code>detect_goal_shift(v1, v2)</code> für zwei Protokoll-Versionen mit den Feldern metrik, schwelle, primaer, sekundaer (Liste) und subgruppen (Liste). Rückgabe ist die alphabetisch sortierte Liste der ausgelösten Flags: <code>metrik_geaendert</code> (v1.metrik != v2.metrik), <code>schwelle_geaendert</code> (v1.schwelle != v2.schwelle), <code>primaer_demoted</code> (v1.primaer kommt in v2.sekundaer vor), <code>subgruppe_nach_freeze</code> (v2.subgruppen enthält eine Gruppe, die v1.subgruppen nicht enthält). Fehlende Felder gelten als leer beziehungsweise leere Liste. Der Testcode bringt drei Protokollpaarungen inklusive einer unveränderten Kopie mit.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "def detect_goal_shift(v1, v2):\n    \"\"\"Alphabetisch sortierte Liste der ausgeloesten Goal-Shift-Flags.\"\"\"\n    ...\n\n",
+        "tests": "A = {\"metrik\": \"recall@5\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\"]}\n__check('identische version -> keine flags', detect_goal_shift(A, dict(A)) == [])\n__check('nur metrik', detect_goal_shift(A, {\"metrik\": \"token-f1\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\"]}) == [\"metrik_geaendert\"])\n__check('schwelle und primaer demoted', detect_goal_shift(A, {\"metrik\": \"recall@5\", \"schwelle\": 0.6, \"primaer\": \"zitattreue\", \"sekundaer\": [\"antwortquote\", \"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\"]}) == [\"primaer_demoted\", \"schwelle_geaendert\"])\n__check('nur subgruppe nach freeze', detect_goal_shift(A, {\"metrik\": \"recall@5\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\", \"wochenende\"]}) == [\"subgruppe_nach_freeze\"])\n__check('alle vier flags sortiert', detect_goal_shift(A, {\"metrik\": \"token-f1\", \"schwelle\": 0.6, \"primaer\": \"zitattreue\", \"sekundaer\": [\"antwortquote\", \"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\", \"wochenende\"]}) == [\"metrik_geaendert\", \"primaer_demoted\", \"schwelle_geaendert\", \"subgruppe_nach_freeze\"])\n__check('entfernte subgruppe ist kein flag', detect_goal_shift(A, {\"metrik\": \"recall@5\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\"]}) == [])\n__check('fehlende felder gelten als leer', detect_goal_shift({}, {\"metrik\": \"token-f1\"}) == [\"metrik_geaendert\"])\nprint(\"ok w31-e6\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def detect_goal_shift(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "primaer_demoted prüft den alten primären Endpunkt gegen die sekundaer-Liste der NEUEN Version — nicht umgekehrt.",
+        "subgruppe_nach_freeze zählt nur ergänzte Gruppen in v2; entfernte Gruppen lösen das Flag nicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "direction-wrong",
+          "then": "Die Richtungen sind Teil des Vertrags: primaer_demoted über v1.primaer in v2.sekundaer, subgruppe_nach_freeze über neue Gruppen in v2."
+        },
+        {
+          "if": "unsorted",
+          "then": "Die Rückgabe ist alphabetisch sortiert — ['metrik_geaendert', 'primaer_demoted', 'schwelle_geaendert', 'subgruppe_nach_freeze']."
+        },
+        {
+          "if": "missing-field-crash",
+          "then": "Fehlende Felder müssen über .get(...) mit leerer Liste als Default gelesen werden, nicht mit []-Indexierung abstürzen."
+        }
+      ],
+      "fullSolution": "def detect_goal_shift(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n\n# identische Version -> [], alle vier Aenderungen -> sortierte Viererliste (lokal python3-verifiziert)",
+      "typicalErrors": [
+        "Vergleichsrichtung von primaer_demoted und subgruppe_nach_freeze vertauscht",
+        "entfernte Subgruppen fälschlich als Flag gewertet",
+        "bei fehlenden Feldern abgestürzt statt Default zu verwenden"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 40,
+      "sourceLineage": {
+        "concept": "NeurIPS-Paper-Checklist — Baselines und Metrikberichte konsistent halten (nur Lektüre); Goal-Shift-Katalog als deterministischer Vierflaggen-Vergleich eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3116
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

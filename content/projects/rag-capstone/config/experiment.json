@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "rag-capstone-e2e-v1",
+  "beschreibung": "Eingefrorene Experimentkonfiguration: Seeds, Regeln, Schwellen und Preise. Nach dem Scope-Freeze (W35) ist diese Datei per Hash gepinnt; jede Änderung braucht eine neue Versionsnummer und ein neues Manifest.",
+  "seeds": {
+    "pipeline": 35001,
+    "ablation": 35002,
+    "redteam": 35003
+  },
+  "k": 1,
+  "timeouts_ms": {
+    "stage_budget": 200
+  },
+  "injection_rules": [
+    "ignoriere vorherige",
+    "sende die datei"
+  ],
+  "policy": {
+    "allowed": ["suche", "lese"],
+    "restricted": { "export": ["bericht"] },
+    "forbidden": ["mail", "hook"]
+  },
+  "thresholds": {
+    "recall_at_k_min": 0.7,
+    "precision_at_k_min": 0.7,
+    "subgroup_recall_min": 0.5,
+    "max_kosten_eur": 0.5
+  },
+  "baseline": {
+    "quelle": "w34-baseline (W30-Teilmenge, vier Queries)",
+    "queries": "w30_teilmenge",
+    "recall_at_k": 0.75,
+    "answered": 3
+  },
+  "token_prices": {
+    "input_per_1k_tokens_eur": 0.15,
+    "output_per_1k_tokens_eur": 0.6
+  },
+  "pinned_versions": {
+    "python": "3.11",
+    "pytest": "8"
+  },
+  "required_readme_headings": [
+    "Setup",
+    "Abhängigkeiten",
+    "Konfiguration",
+    "Karten",
+    "Limitations",
+    "Bekannte Fehler"
+  ],
+  "overclaim_phrases": [
+    "produktionsreif",
+    "sicher gegen",
+    "halluziniert nie",
+    "getestet gegen alle"
+  ]
+}

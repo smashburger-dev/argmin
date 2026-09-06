@@ -1,0 +1,41 @@
+# Zweite unabhaengige Zweitpruefung w37-e1
+
+Auftrag aus family-model Abschnitt 10 Punkt 4. Dies ist die zweite unabhaengige Pruefung, gelesen gegen die erste in reviews/research-capstone-review.md, Abschnitt Erste unabhaengige Zweitpruefung w37-e1. Stand nach Block C aus block-c-decisions.md Punkt 9. Geprueft am Shard, nicht an der Prosa.
+
+Stand: w37-e1 ist atomic-case, familyId classify-freeze-scope, persistence merge-map-required mit mergeInto classify-freeze-purpose, humanReview und zwei uncertainties auf requires-noa-decision. Die Familie classify-freeze-purpose existiert in canonical-families.json nicht. Die familyId und das mergeInto widersprechen einander.
+
+## 1. v1-Merge w34-e1 plus w37-e1: zu Recht verworfen
+
+Ziel des v1-Vorschlags aus inputs/research-capstone-v1.json: Familie capstone-golden-freeze-begruendung mit Faellen integritaets-begruendung und optimierungsfreeze-begruendung.
+
+Prozedurtest, nicht bestanden. w34-e1 verlangt das Mechanik-Argument aus content/exercises/w34.json: kanonische Serialisierung, Reihenfolge-Invarianz plus Aenderungssensitivitaet, correctChoice d. w37-e1 verlangt das Zeit-Argument aus content/exercises/w37.json: dieselbe Pruefung nach jeder Optimierung, Vergleichbarkeit ueber Zeit, correctChoice a. Keine Schablone mit Platzhaltern fuehrt durch beide. Wer die w34-Schablone auf w37 anwendet, prueft Serialisierungsparameter, die w37 nie nennt. Wer die w37-Schablone auf w34 anwendet, verliert genau die Unterscheidung, die w34 mit drei Distraktoren testet. Die erste Pruefung nennt das grenzwertig bestanden. Das ist zu grosszuegig. Eine gemeinsame Warum-Schablone auf Vergleichbarkeit traegt nur die Oberflaeche, nicht den Loesungsweg.
+
+Referenzmodelltest, nicht bestanden. Hier stimme ich der ersten Pruefung zu. Das Konzeptsystem der Hash-Semantiken aus dem Shard-Eintrag w34-e1 loest w37-e1 nicht aus Fallparametern allein, und die Freeze-Disziplin ueber Zeit loest w34-e1 nicht. Die Variation ist programmatisch verschieden, nicht parametrisch. v1 solverContract bestaetigt das: expected-answer mit correctChoice d plus Invarianz-Vertrag gegen correctChoice a plus Stabilitaets-Vertrag.
+
+Diagnosetest, nicht bestanden. Zustimmung zur ersten Pruefung, mit Schaerfung. w34-Fehlerachsen aus content/exercises/w34.json: Verschluesselung, Verhinderung, Metrikquelle. w37-Fehlerachsen aus content/exercises/w37.json: Performance, Urheberrecht, Leseschutz. Disjunkt. Eine Merge-Familie braeuchte die Vereinigung als mengen-identische Hypothesen und wuerde jedem Mitglied eine Achse aufzwingen, die seine Quelle nie prueft. Dass beide den choice-diagnose-Grader teilen, aendert nichts. Die Grammatik ist grob, die Diagnose ist verschieden.
+
+Kompetenzbruch, gegeben. w34-e1 primary c-research-capstone aus content/exercises/w34.json, w37-e1 c-capstone-pipeline plus coEvidence c-genai-security aus content/exercises/w37.json. domains research gegen ai-engineering plus generative-ai laut content/competencies/core.json. Lektionsbruch, gegeben. l-capstone-baseline gegen l-capstone-pipeline laut shards/research-capstone.json. Urteil: Verwerfung richtig. Der Merge scheitert an allen drei Tests, nicht nur an zweien.
+
+## 2. Merge-Ziel
+
+Fehlerachsen im Vergleich. w37-e1 aus content/exercises/w37.json: b Performance gegen Messbarkeit, c Urheberrecht gegen Vergleichbarkeit, d Leseschutz gegen Erkennbarkeit. Alle drei fragen nach dem Motiv des Freeze. w35-e1 aus content/exercises/w35.json: b nur Code pinnen gegen bewegliches Messziel, c Erwartungen neu festlegen gegen Unvergleichbarkeit, d README gegen pruefbare Manifest-Hashes. Alle drei fragen nach dem Inhalt des Freeze. Kein Distraktor von w35 passt auf w37 und umgekehrt.
+
+Option i, Singleton classify-freeze-purpose mit Hypothese Freeze-Motiv falsch zugeordnet. Prozedur besteht: solutionPath Freeze-Zweck anhand Evaluationsvertrag ueber Zeit begruenden traegt w37 allein. Referenz besteht: Evaluationsvertrag ueber Zeit loest w37 aus Fallparametern. Diagnose besteht: eine Hypothese deckt alle drei Regeln, keine tote Achse. Kompetenz und Lektion bleiben sauber. Kosten: eine Familie mehr im fragmentierten System mit 131 Familien. family-model Abschnitt 4 legitimiert Klassifikations-Singletons mit eigenem Konzeptsystem ausdruecklich. Die Kosten sind echt, aber kleiner als eine verwaesserte Familie.
+
+Option ii, classify-freeze-scope um die Motiv-Achse erweitern. Scheitert an allen drei Tests als echte Familie. Prozedur: Aufzaehlen aus shards/research-capstone.json, Eintrag w35-e1, gegen Begruenden aus Eintrag w37-e1. Keine gemeinsame Schablone. Referenz: Scope-Zustaende gegen Evaluationsvertrag ueber Zeit. Verschiedene Konzeptsysteme. Diagnose: formal mengen-identisch nur per Dekret. w35-Regeln feuern nie auf der Motiv-Achse, w37-Regeln nie auf der Scope-Achse. Das ist derselbe Vereinigungsfehler wie beim v1-Merge, nur kleiner. Die erste Pruefung bot ii als gleichwertige Alternative an. Das war falsch. ii ist keine gueltige Familie nach Abschnitt 4, sondern Themenaehnlichkeit am Wort Freeze. Wer ii will, schreibt faktisch eine neue Familie und klebt die alte ID darauf. Das verletzt die Namens- und Ableitungsregel aus Abschnitt 5.
+
+Option iii, drittes Ziel. Geprueft und verworfen. iii-a, w37 zu classify-hash-semantics: scheitert wie der v1-Merge, nur einseitig. iii-b, Sammelfamilie w34 plus w35 plus w37: vereint drei Konzeptsysteme, scheitert maximal. iii-c, familyId freeze-scope als final bestaetigen und mergeInto streichen: behauptet, Scope-Grenze falsch gezogen aus canonical-families.json decke die Motiv-Regeln. Keine einzige w37-Regel beschreibt eine falsch gezogene Scope-Grenze. Schlimmste Option. iii-d, Composite oder retire: family-model Abschnitt 3 verlangt einen echten Mehrteiler. Keiner liegt vor. Es gibt kein drittes Ziel, das die Tests besteht.
+
+## 3. mergeInto und Noa-Quartett
+
+mergeInto: Ort korrekt, Inhalt derzeit defekt. Der Zeiger steht in persistence an w37-e1 in shards/research-capstone.json, Konvention wie w05-e11 und w17-e2. Aber das Ziel classify-freeze-purpose fehlt in canonical-families.json. Ein Zeiger auf eine Prosa-ID ist kein konkretes mergeInto nach Abschnitt 8. Dazu der Widerspruch: familyId behauptet freeze-scope, mergeInto verspricht purpose. Der Shard behauptet Mitgliedschaft und Austritt zugleich. Block C hat den Zeiger umgeschrieben aus block-c-decisions.md Punkt 9, ohne familyId, Registry-Vertrag und Evidence-Prosa nachzuziehen. Das Prueflisten-Bestanden aus der ersten Pruefung gilt fuer diesen Zustand nicht mehr.
+
+Noa-Quartett: formal vollstaendig, inhaltlich veraltet. humanReview an w37-e1 in shards/research-capstone.json traegt required true, zwei Gruende, disposition requires-noa-decision mit owner, decision, evidence, latestGate Domainmigration S4D7. Beide uncertainties und der w34-e1-Spiegel tragen je owner, decision, evidence, latestGate. Aber die humanReview-Evidence nennt als mergeInto-Ziel noch classify-freeze-scope als Fall neben w35-e1. Das widerspricht dem umgeschriebenen persistence.mergeInto. Und die decisions formulieren nur Merge gegen Split der v1-Frage. Die Folgefrage aus Finding F2, also Singleton gegen Erweiterung gegen Status quo, steht in keiner decision. Noa soll ueber i gegen ii entscheiden, der Entscheidungsstext fragt aber nur nach v1-Merge gegen Split. Das muss nachgezogen werden, sonst entscheidet Noa ueber die falsche Frage. Die Ersatzevidenz fuer c-genai-security ist dagegen korrekt adressiert und bleibt Entscheidungsbestandteil.
+
+## Empfehlung
+
+Empfehlung i, Singleton classify-freeze-purpose als neue Familie mit Hypothese Freeze-Motiv falsch zugeordnet, w37-e1 dorthin verschieben, Registry adoptieren, w34-e1-Spiegel mitentscheiden.
+
+Begruendung in einem Satz: Nur i deckt alle drei w37-Regeln mit einer Hypothese ohne fremde Achse und haelt Kompetenz, Lektion und Diagnose sauber.
+
+Dissens zur ersten Pruefung in drei Punkten. Erstens, der v1-Merge scheitert an drei Tests, nicht an zweien, weil der Prozedurtest klar faellt. Zweitens, der w34-e1-Spiegel erledigt sich nicht von selbst, beide Noa-Entscheide bleiben pflichtig bis Noa sie faellt. Drittens, ii ist keine gleichwertige Alternative, sondern ein Vertragsbruch per Vereinigung, und der Block-C-Zustand mit dangling mergeInto plus widersprechender familyId ist derzeit nicht beschlussfaehig.

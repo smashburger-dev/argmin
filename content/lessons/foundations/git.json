@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-git",
+  "version": 2,
+  "locale": "de",
+  "title": "Git als überprüfbares Arbeitsprotokoll",
+  "objectives": ["Status und Diff vor einem Commit lesen", "einen kleinen inhaltlich geschlossenen Commit erstellen", "Branch und Merge von Codekorrektheit unterscheiden"],
+  "competencyIds": ["c-git-basics"],
+  "requires": ["c-meta-learning"],
+  "estimatedMinutes": 30,
+  "blocks": [{ "blockId": "git-core", "type": "project-step", "contentRef": "lessons/foundations/git.md" }],
+  "sourceRefs": [
+    { "sourceId": "pro-git-book", "role": "practice", "locator": "Kapitel 2 und 3: Git Basics; Git Branching" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

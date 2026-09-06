@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-genai-rag",
+  "version": 1,
+  "locale": "de",
+  "title": "RAG: Retrieval messbar machen — getrennt von der Antwortbildung",
+  "objectives": [
+    "Dokumente deterministisch chunken (Größe, Overlap, Fensterarithmetik) und einen Inverted-Index mit gepinnter Normalisierung aufbauen",
+    "Retrieval als eigene, messbare Stufe behandeln: top-k, Recall@k und MRR gegen ein festes Golden Set",
+    "eine deterministische Retrieval-Baseline (Bag-of-Words-Kosinus bzw. TF-IDF) in reinem Python/NumPy implementieren und die Antwortbildung bewusst als Stub/Fixtur halten"
+  ],
+  "competencyIds": [
+    "c-genai-rag"
+  ],
+  "requires": [
+    "c-dl-inference",
+    "c-python-files-errors"
+  ],
+  "estimatedMinutes": 75,
+  "blocks": [
+    {
+      "blockId": "genai-rag-core",
+      "type": "worked-example",
+      "contentRef": "lessons/genai-systems/rag-retrieval.md"
+    },
+    {
+      "blockId": "genai-rag-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/genai-systems/rag-retrieval-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "arxiv-rag-2020",
+      "role": "primary",
+      "locator": "Lewis et al. 2020, Retrieval-Augmented Generation — nur Verlinkung und Zitation"
+    },
+    {
+      "sourceId": "iir-book-ch8",
+      "role": "reference",
+      "locator": "Kap. 8 Evaluation in IR — Metrik-Formeln als eigene Mathematik dargestellt"
+    },
+    {
+      "sourceId": "craswell-mrr-2009",
+      "role": "reference",
+      "locator": "Mean Reciprocal Rank (Enzyklopädieeintrag) — nur Zitation"
+    },
+    {
+      "sourceId": "numpy-docs",
+      "role": "practice",
+      "locator": "NumPy absolute basics — Vektorisierung der TF-IDF-Matrix"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

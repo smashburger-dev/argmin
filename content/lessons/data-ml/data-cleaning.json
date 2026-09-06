@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-data-cleaning",
+  "version": 1,
+  "locale": "de",
+  "title": "Datenbereinigung tabellarischer Daten",
+  "objectives": [
+    "tabellarische Daten als Zeilenlisten mit Schema- und Datentyp-Vertrag lesen und prüfen",
+    "fehlende Werte, Sentinel-Werte und Duplikate erkennen und korrekt behandeln",
+    "einen Datenqualitätsvertrag für eine Tabelle formulieren und durchsetzen"
+  ],
+  "competencyIds": ["c-pandas-cleaning"],
+  "requires": ["c-numpy-basics", "c-python-collections", "c-python-files-errors"],
+  "estimatedMinutes": 55,
+  "blocks": [
+    { "blockId": "data-cleaning-core", "type": "worked-example", "contentRef": "lessons/data-ml/data-cleaning.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "pandas-docs", "role": "practice", "locator": "User Guide — Missing data / Duplicates Sektionen; nur Lektüre, pandas läuft nicht im Browser" },
+    { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel csv — Lesen und Schreiben von Tabellendaten" },
+    { "sourceId": "numpy-docs", "role": "remedial", "locator": "absolute basics: arrays aus Zeilenlisten" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

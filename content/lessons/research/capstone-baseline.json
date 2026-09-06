@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-capstone-baseline",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Baseline: Golden Set mit Hash, getrennte Fehlerliste, Doppel-Lauf, verweigernder Bericht",
+  "objectives": [
+    "ein Golden Set kanonisch serialisieren, mit sha256 hashfixieren und Reihenfolge-Invarianz sowie Änderungssensitivität prüfen",
+    "ein Fehler-Ledger nach Retrieval- und Antwortfehlern trennen und bereinigte gegen naive Genauigkeit exakt gegenüberstellen",
+    "eine Baseline mit Doppel-Lauf-Assert reproduzierbar machen und den Bericht ohne Protokoll-Metrik, Karten und Fehlerliste verweigern"
+  ],
+  "competencyIds": [
+    "c-research-capstone"
+  ],
+  "requires": [
+    "c-genai-prototype",
+    "c-research-responsible"
+  ],
+  "estimatedMinutes": 75,
+  "blocks": [
+    {
+      "blockId": "capstone-baseline-core",
+      "type": "worked-example",
+      "contentRef": "lessons/research/capstone-baseline.md"
+    },
+    {
+      "blockId": "capstone-baseline-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/research/capstone-baseline-checkpoint.md"
+    },
+    {
+      "blockId": "capstone-baseline-apply",
+      "type": "exercise",
+      "contentRef": "lessons/research/capstone-baseline.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "helm-leaderboard",
+      "role": "primary",
+      "locator": "HELM Leaderboard — Szenarien und Metriken als festes Evaluationsraster"
+    },
+    {
+      "sourceId": "helm-paper",
+      "role": "primary",
+      "locator": "Holistic Evaluation of Language Models — feste Szenarien, Metriken und Vergleichbarkeit (nur Lektüre)"
+    },
+    {
+      "sourceId": "lm-evaluation-harness",
+      "role": "practice",
+      "locator": "LM Evaluation Harness — README/Dokumentation zu reproduzierbaren Evaluationsläufen mit Task-Definitionen"
+    },
+    {
+      "sourceId": "acm-artifact-badging",
+      "role": "practice",
+      "locator": "ACM Resulting Artifact Review and Badging — Available/Functional/Reusable als Stufen nachprüfbarer Artefakte (nur Lektüre)"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

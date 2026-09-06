@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-tf-inference",
+  "version": 1,
+  "locale": "de",
+  "title": "Reproduzierbare Toy-Modell-Inferenz",
+  "objectives": [
+    "die Pipeline Tokenisierung, Forward-Pass mit gestellten Fixtur-Gewichten, Logits und Greedy-Decoding als deterministische Kette beschreiben",
+    "Greedy Decoding mit argmax, max_len und eos einschließlich der Kopier- und Stoppverträge implementieren",
+    "Determinismus durch feste Seeds und Doppelaufruf-Tests nachweisen und die Grenze zur echten LLM-Inferenz benennen"
+  ],
+  "competencyIds": [
+    "c-dl-inference"
+  ],
+  "requires": [
+    "c-dl-attention",
+    "c-dl-tokenizer"
+  ],
+  "estimatedMinutes": 80,
+  "blocks": [
+    {
+      "blockId": "tf-inference-core",
+      "type": "worked-example",
+      "contentRef": "lessons/transformer-llm/tf-inference.md"
+    },
+    {
+      "blockId": "tf-inference-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/transformer-llm/tf-inference-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "karpathy-nanogpt",
+      "role": "primary",
+      "locator": "nanoGPT — minimale Trainings-/Inferenz-Pipeline (Lektüre)"
+    },
+    {
+      "sourceId": "hf-transformers-docs",
+      "role": "reference",
+      "locator": "Generation Strategies — Greedy Decoding"
+    },
+    {
+      "sourceId": "numpy-docs",
+      "role": "practice",
+      "locator": "numpy.argmax — Achsenvertrag"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-collections",
+  "version": 1,
+  "locale": "de",
+  "title": "Datenstrukturen nach Aufgabe wählen",
+  "description": "Listen, Sets und Dicts unterscheiden und ihre Zustandsänderung Schritt für Schritt verfolgen.",
+  "competencyIds": [
+    "c-python-collections"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-collections"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-collections-dedup-and-intersection",
+      "role": "curated",
+      "familyId": "classify-set-operation-semantics",
+      "caseId": "dedup-and-intersection",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-collections",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-collections-classify-set-operation-semantics-p",
+      "role": "practice-space",
+      "familyId": "classify-set-operation-semantics",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-collections-membership-set-for-dedup",
+      "role": "curated",
+      "familyId": "classify-python-collection-choice",
+      "caseId": "membership-set-for-dedup",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-collections",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-collections-classify-python-collection-choice-",
+      "role": "practice-space",
+      "familyId": "classify-python-collection-choice",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-collections-list-copy-steps",
+      "role": "curated",
+      "familyId": "trace-collection-state",
+      "caseId": "list-copy-steps",
+      "seed": 5,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-collections",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-collections-list-alias-steps",
+      "role": "curated",
+      "familyId": "trace-collection-state",
+      "caseId": "list-alias-steps",
+      "seed": 13,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-collections",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-collections-trace-collection-state-practice",
+      "role": "practice-space",
+      "familyId": "trace-collection-state",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-collections-dict-start-key-steps",
+      "role": "curated",
+      "familyId": "trace-dict-state-update",
+      "caseId": "dict-start-key-steps",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-collections",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-collections-trace-dict-state-update-practice",
+      "role": "practice-space",
+      "familyId": "trace-dict-state-update",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

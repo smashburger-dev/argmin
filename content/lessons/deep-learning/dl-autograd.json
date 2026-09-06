@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-dl-autograd",
+  "version": 1,
+  "locale": "de",
+  "title": "Backpropagation als Kettenregel im Rechengraph",
+  "objectives": [
+    "Rechengraphen lesen und lokale von globalen Gradienten unterscheiden",
+    "die Kettenregel über Pfade und Gabelungen anwenden (Produkt entlang eines Pfades, Summe über Pfade)",
+    "manuelle Backpropagation für ein 2-Layer-MLP mit ReLU und MSE in NumPy implementieren",
+    "analytische Gradienten mit der zentralen numerischen Differenz gegenprüfen (float64, $h = 10^{-5}$)",
+    "Framework-Autograd (torch.autograd) als Lese- und Vorhersagekompetenz einordnen — kein Framework läuft im Browser"
+  ],
+  "competencyIds": ["c-dl-autograd"],
+  "requires": ["c-dl-tensors", "c-grad-regression"],
+  "estimatedMinutes": 85,
+  "blocks": [
+    {
+      "blockId": "dl-autograd-core",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-autograd.md"
+    },
+    {
+      "blockId": "dl-autograd-checkpoint",
+      "type": "checkpoint",
+      "contentRef": "lessons/deep-learning/dl-autograd-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    { "sourceId": "karpathy-micrograd", "role": "primary", "locator": "micrograd — Backprop als Graph-Durchlauf (MIT, nur Lektüre)" },
+    { "sourceId": "dlbook-goodfellow", "role": "reference", "locator": "Ch 6.5 — Backpropagation und Kettenregel (nur Lektüre)" },
+    { "sourceId": "karpathy-zero-to-hero", "role": "practice", "locator": "Lecture 2/4 — manuelles Backprop für ein MLP (nur Lektüre)" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

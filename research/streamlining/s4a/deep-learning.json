@@ -1,0 +1,2545 @@
+{
+  "analysisSchemaVersion": "s4a-taxonomy-v1",
+  "shardId": "deep-learning",
+  "scope": {
+    "label": "Deep Learning",
+    "weekIds": [
+      "w18",
+      "w19",
+      "w20",
+      "w21"
+    ],
+    "definitionRoots": [],
+    "expectedEntryCount": 24
+  },
+  "entries": [
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w18.json",
+      "sourceId": "w18-e1",
+      "currentDefinitionId": "w18-e1",
+      "legacyWeekId": "w18",
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "lessonIds": [
+        "l-dl-tensors"
+      ],
+      "learningObjective": "Die lernende Person bestimmen die Ergebnisform von XW + b aus Batch-, Feature- und Bias-Dimension und begruenden, welche Dimension die Multiplikation aufspannt und wie der Bias broadcastet.",
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 1,
+      "proposedFamilyId": "deep-learning-shape-contracts-matmul-rule",
+      "proposedCaseType": "matmul-bias-broadcast-choice",
+      "proposedDifficultyProfile": "basic-recall",
+      "answerContract": {
+        "kind": "single-choice-id",
+        "inputShape": "ein Choice-Identifier (a bis d)",
+        "comparison": "exakter Choice-Vergleich gegen expectedAnswer.correctChoice",
+        "tolerance": null
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.correctChoice legt die korrekte Option fest; der deterministic-Grader vergleicht die gewaehlte Choice-ID direkt.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradeChoice wertet das correct-Flag deterministisch aus",
+          "tests/w18_w21_content.test.mjs — verlangt genau eine korrekte Choice je Wochenpaket"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Konzeptfrage mit eigenem Diagnosewert (Broadcasting als formneutral gelesen); als unique klassifiziert und in die kanonische Definitionsstruktur zu migrieren, weil sie c-dl-tensors basic abdeckt.",
+      "preservedDidacticContent": {
+        "solutionPath": "Ergebnisform einer Matrizenmultiplikation ist (Zeilen links, Spalten rechts); die innere Dimension 8 wird aufgespannt, der Bias (16,) wird zeilenweise broadcastet und aendert die Form nicht — Ergebnis (32, 16).",
+        "errorPatterns": [
+          "Form der Gewichtsmatrix statt des Ergebnisses angegeben",
+          "Bias als formgebend statt nur broadcastet gelesen",
+          "passende innere Dimensionen faelschlich fuer unzulaessig gehalten"
+        ],
+        "representation": "Mathematische Shape-Notation mit LaTeX in vier textlichen Choice-Optionen.",
+        "transferDemand": "Regel (m,n) @ (n,k) -> (m,k) auf neue Dimensionszahlen und auf die Frage uebertragen, ob Broadcasting eine Achse erzeugt.",
+        "difficultyRationale": "Tier 1: ein einziger Dimensionsvertrag, keine Rechnung, vier eng beieinanderliegende Distraktoren.",
+        "uniqueElements": [
+          "Bias-Broadcast als eigene Distraktor-Familie",
+          "Batch-Dimension bleibt aussen — typische Verwechslung mit der Gewichtsmatrixform"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w18-e1",
+        "requiredAction": "Attempt-Definition-ID w18-e1 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w18.json",
+          "pointer": "/exercises/0",
+          "note": "Prompt, Choices, expectedAnswer.correctChoice='b' und drei choice-Regeln im Quellfeld."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-tensors.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 1-2 der Lektion (Formen als Vertrag, Broadcasting-Regeln) decken genau diese Konzeptfrage ab."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradeChoice",
+          "note": "Deterministic-Grader wertet das correct-Flag und die choice-Regeln der feedbackRules voll aus."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w18.json",
+      "sourceId": "w18-e2",
+      "currentDefinitionId": "w18-e2",
+      "legacyWeekId": "w18",
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "lessonIds": [
+        "l-dl-tensors"
+      ],
+      "learningObjective": "Die lernende Person berechnet die Parameterdifferenz zweier MLPs, die sich nur in der versteckten Breite unterscheiden, und beruecksichtigt Bias- und mitwachsende Ausgabeschicht.",
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "generatorId": "genLinearParamCount",
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-parameter-counting-arithmetic",
+      "proposedCaseType": "hidden-width-delta-two-mlps",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "seeded-integer",
+        "inputShape": "ganzzahliger Skalar",
+        "comparison": "exakter Integervergleich gegen den generierten Erwartungswert",
+        "tolerance": "exact-integer"
+      },
+      "solverContract": {
+        "kind": "seed-generator",
+        "authoritative": true,
+        "contract": "genLinearParamCount(seed) erzeugt Prompt, Parameter und erwartete Ganzzahl (drei Varianten single/mlp/compare); der numerische Grader vergleicht exakt.",
+        "testEvidence": [
+          "tests/w18_w21_generators.test.mjs — 2000 Seeds, >= 20 verschiedene Erwartungswerte, Antwort nie im Prompt",
+          "tests/fixtures/generator-golden-corpus.json — Goldwert fuer Seed 1802 (77)",
+          "assets/js/core/legacy_exercise_adapter.mjs — resolveSeedGenerator instanziiert den Generator zum deterministicSeed"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Generatorgetriebene Uebung mit breitem Antwortraum und drei gezielten Distraktor-Feedbackregeln; als unique einstufen und migrieren, da der Loesungsweg (Differenzformel mit Bias) eigenstaendig ist.",
+      "preservedDidacticContent": {
+        "solutionPath": "Parameter pro Schicht d·h + h aufsummieren; die Differenz zweier Netze, die sich nur in h unterscheiden, ist (hB − hA) · (d + 1 + out), weil die Ausgabeschicht mitwaechst.",
+        "errorPatterns": [
+          "Bias-Parameter weglassen und nur d·h zaehlen",
+          "nur die versteckte Schicht zaehlen und die mitwachsende Ausgabeschicht vergessen",
+          "Differenz der Neuronenzahlen statt der Parameterdifferenz angeben"
+        ],
+        "representation": "Verbale Netzbeschreibung mit Zahlen; Antwort als ganzzahliger Skalar.",
+        "transferDemand": "Die Differenzformel (hB − hA) · (d + 1 + out) auf neue Instanzwerte des Generators uebertragen statt Schicht fuer Schicht zu zaehlen.",
+        "difficultyRationale": "Tier 2: zweischichtige Summation mit Bias-Falle, aber geschlossene Formel und exakte Ganzzahl.",
+        "uniqueElements": [
+          "Differenz zweier Netze statt Absolutzaehlung",
+          "Ausgabeschicht waechst mit der Hidden-Breite mit",
+          "Feedbackregeln auf drei konkrete Fehlwerte (70, 66, 7) gemuenzt"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w18-e2",
+        "requiredAction": "Attempt-Definition-ID w18-e2 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w18.json",
+          "pointer": "/exercises/1",
+          "note": "expectedAnswer.kind seeded-integer mit generator genLinearParamCount, defaultExpected 77, exact-integer-Toleranz."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-tensors.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 3 (Parameterzahl inklusive Bias berechnen) traegt die Aufgabe direkt."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/diagnoseNumeric",
+          "note": "Numerischer Grader ist ganzzahlexakt und konsumiert die value-Regeln der feedbackRules voll."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/w18_w21_generators.mjs",
+          "pointer": "/genLinearParamCount",
+          "note": "Seeded-Generator erzeugt Prompt, Parameter und erwartete Ganzzahl; breiter Antwortraum per Test erzwungen."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w18.json",
+      "sourceId": "w18-e3",
+      "currentDefinitionId": "w18-e3",
+      "legacyWeekId": "w18",
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-numpy-basics"
+      ],
+      "lessonIds": [
+        "l-dl-tensors"
+      ],
+      "learningObjective": "Die lernende Person sagt die Ausgaben eines NumPy-Programms (Matmul-Shape, Broadcast-Shape, ndim-Ausgaben) zeilenweise vorher, ohne den Code auszufuehren.",
+      "activityType": "predict-output",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-shape-tracing-predict-run",
+      "proposedCaseType": "matmul-broadcast-ndim-stdout",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "output-lines",
+        "inputShape": "mehrzeiliger Text als vorhergesagte Standardausgabe",
+        "comparison": "zeilenweiser Vergleich nach Whitespace-Normalisierung",
+        "tolerance": "whitespace-normalized"
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.output haelt die exakte stdout-Folge '(4, 5)\\n(4, 5)\\n2 2 1'; der Grader normalisiert Whitespace und listRepr-Abstaende.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradePredictOutput vergleicht normalizeOutput(expected) mit normalizeOutput(raw)",
+          "content/exercises/w18.json — validationStatus 'python3-verified (lokale Ausführung)'"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "partially-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Predict-Output mit statischem Snippet und drei gezielten Diagnoseregeln; migrate, weil der PRIMM-Lesetyp im kanonischen Modell als eigener activityType erhalten bleibt.",
+      "preservedDidacticContent": {
+        "solutionPath": "(4,3) @ (3,5) spannt die 3 auf -> (4, 5); H + b broadcastet (5,) als (1, 5) auf vier Zeilen, Form bleibt (4, 5); ndim zaehlt Achsen: 2, 2, 1.",
+        "errorPatterns": [
+          "Spaltenzahl des linken Operanden ins Ergebnis uebernommen",
+          "Broadcasting als formaendernd statt nur wiederholend gelesen",
+          "ndim mit der Elementzahl verwechselt"
+        ],
+        "representation": "NumPy-Snippet mit drei print-Zeilen; Antwort als mehrzeiliger Text.",
+        "transferDemand": "Shape- und Broadcastregeln auf ein neues Programm uebertragen, das nicht nur Zahlen, sondern Achsenzahlen abfragt.",
+        "difficultyRationale": "Tier 2: drei Ausgaben, zwei Regeln (Matmul-Aufspannen, Broadcasting) muessen kombiniert werden.",
+        "uniqueElements": [
+          "ndim-Ausgabe als dritte Zeile",
+          "Broadcasting eines (5,)-Vektors auf 4 Zeilen",
+          "Predict-Run ohne Ausfuehrung"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w18-e3",
+        "requiredAction": "Attempt-Definition-ID w18-e3 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "predict-output-Familien der Wochen 18-21 unterscheiden sich im fachlichen Kern, nicht nur im Text.",
+          "resolution": "Familie am Loesungsweg (Matmul-Aufspannen plus Broadcasting plus ndim) festgemacht; Abgleich im S4A-Review."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w18.json",
+          "pointer": "/exercises/2",
+          "note": "parameters.snippet und expectedAnswer.output sind die entscheidenden Quellfelder (Index 2)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-tensors.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 1-2 (Formen als Vertrag, Broadcasting) plus NumPy-Vorwissen aus c-numpy-basics."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePredictOutput",
+          "note": "Ausgabe wird whitespace-normalisiert verglichen; nur die Regel element-count-mismatch wird konsumiert."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Vergleich mit w20-e3 und w21-e3: gleiches predict-output-Geruest, aber anderer Kern (Matmul/Broadcast statt Aufrunden/SGD bzw. Boolean-Maske) — bewusst keine Sammelfamilie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "lessonCandidates": [
+        {
+          "lessonId": "l-numpy-shape-contracts",
+          "confidence": "medium",
+          "reason": "Boolean-/Shape-Vertraege der NumPy-Lektion decken den Broadcasting- und ndim-Anteil; die Matmul-Kette kommt aus l-dl-tensors."
+        }
+      ],
+      "comparisonSourceIds": [
+        "w20-e3",
+        "w21-e3"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w18.json",
+      "sourceId": "w18-e4",
+      "currentDefinitionId": "w18-e4",
+      "legacyWeekId": "w18",
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-numpy-basics"
+      ],
+      "lessonIds": [
+        "l-dl-tensors"
+      ],
+      "learningObjective": "Die lernende Person implementiert linear_forward mit expliziten Dimensionsvertraegen (ValueError vor der Rechnung) und param_count inklusive Bias und laesst beide gegen Referenz- und Zufallsinstanzen pruefen.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-linear-forward-contract-numpy",
+      "proposedCaseType": "single-layer-valueerror-contract",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen linear_forward(X, W, b) und param_count(W, b)",
+        "comparison": "assert-basierte __check-Tests gegen X @ W + b, Formen und ValueError-Vertraege",
+        "tolerance": "tests (np.allclose bzw. exakte Vertragspruefung)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver enthaelt eine vollstaendige Referenzloesung; der Test prueft bekannte Instanzen, drei unbekannte Zufallsinstanzen (Seed 1804) gegen X @ W + b und fuenf Vertragsverletzungen.",
+        "testEvidence": [
+          "content/exercises/w18.json /exercises/3 parameters.tests — Referenz- und Zufallsinstanzen inkl. ValueError-Faellen",
+          "assets/js/core/graders.js — gradePython: Tests als Python-String nach Lernendencode, __check, Timeout 60 s",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Grader-Contract und numpy-Whitelist verifiziert"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Erste Python-Implementierungsaufgabe der DL-Strecke mit Vertragspruefung vor der Rechnung; migrate, weil der pyodide-Vertrag (Tests + Referenzsolver) im kanonischen Modell 1:1 erhaltbar ist.",
+      "preservedDidacticContent": {
+        "solutionPath": "np.asarray, dann fuenf Vertraege (ndim und zwei Formgleichungen) vor jeder Rechnung pruefen, X @ W + b zurueckgeben; param_count = W.size + b.size als int.",
+        "errorPatterns": [
+          "Vertraege erst nach der Berechnung pruefen",
+          "b.ndim == 2 mit Broadcast still akzeptieren",
+          "param_count ohne Bias oder als float"
+        ],
+        "representation": "Python-Startercode mit Docstring-Vertrag plus pyodide-Testsuite mit __check.",
+        "transferDemand": "Vertragsdenken (fail-closed vor der Rechnung) von einer bekannten Instanz auf unbekannte Zufallsinstanzen uebertragen.",
+        "difficultyRationale": "Tier 2: bekannte Struktur, aber erstmals Fehlervertraege statt nur Werte.",
+        "uniqueElements": [
+          "ValueError vor jeder Rechnung als expliziter Vertrag",
+          "param_count als Zweitfunktion im selben Vertrag",
+          "unbekannte Instanzen per __rnd mit festem Seed"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w18-e4",
+        "requiredAction": "Attempt-Definition-ID w18-e4 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w18-e4 bis w18-e6 teilen die Vertragsdisziplin, unterscheiden sich aber in Algorithmus und Kettenpruefung.",
+          "resolution": "Drei Familien (linear / 2-Layer-ReLU / beliebig tief) vorgeschlagen; Granularitaet im Review bestaetigen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w18.json",
+          "pointer": "/exercises/3",
+          "note": "parameters.starterCode, parameters.tests und expectedAnswer.referenceSolver definieren den kompletten pyodide-Vertrag (Index 3)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-tensors.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 4 (Formalverletzungen erkennen und abweisen) und Lernziel 3 (Layer als Matmul) decken die Aufgabe ab."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w18-e5 und w18-e6: gleiche Vertragsdisziplin, aber anderer Kernloesungsweg (ein Layer vs. zwei Schichten mit ReLU vs. beliebige Tiefe mit Kettenvertraegen) — deshalb drei Familien, keine Sammelfamilie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w18-e5",
+        "w18-e6"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w18.json",
+      "sourceId": "w18-e5",
+      "currentDefinitionId": "w18-e5",
+      "legacyWeekId": "w18",
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-linalg-matrices"
+      ],
+      "lessonIds": [
+        "l-dl-tensors"
+      ],
+      "learningObjective": "Die lernende Person implementiert den Forward-Pass eines 2-Layer-MLP mit ReLU inklusive Hidden-Dimension-Vertrag gegen W2 und zaehlt die Parameterzahl ueber Schichtpaare inklusive aller Bias-Vektoren.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 3,
+      "proposedFamilyId": "deep-learning-mlp-forward-relu-contract",
+      "proposedCaseType": "two-layer-relu-forward-paramcount",
+      "proposedDifficultyProfile": "advanced-transfer",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen mlp_forward(X, W1, b1, W2, b2) und mlp_param_count(layer_sizes)",
+        "comparison": "assert-basierte __check-Tests gegen NumPy-Referenz (np.maximum, Matmul-Kette) und ValueError-Vertraege",
+        "tolerance": "tests (np.allclose gegen Referenz)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver enthaelt Forward mit ReLU-Maske np.maximum(0.0, ...) und Parameternaehlung zip(sizes[:-1], sizes[1:]); Tests rechnen bekannte und drei unbekannte Instanzen (Seed 1805) gegen direkte NumPy-Referenzen nach.",
+        "testEvidence": [
+          "content/exercises/w18.json /exercises/4 parameters.tests — Referenz H_ref = np.maximum(0, X @ W1 + b1)",
+          "tests/w18_w21_content.test.mjs — Feld- und Vertragspruefung fuer python-code-Aufgaben",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Browseruebungen W18 mit numpy-Paket"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Erste Verkettung zweier Layer mit Aktivierung und Hidden-Vertrag; migrate, weil ReLU-Maske und Hidden-Vertrag einen eigenen Kernloesungsweg gegenueber dem linearen Layer und dem beliebigen Deep-Forward bilden.",
+      "preservedDidacticContent": {
+        "solutionPath": "Alle fuenf Vertraege pruefen (inkl. W1.shape[1] == W2.shape[0]), dann H = np.maximum(0, XW1 + b1) und y_hat = HW2 + b2; mlp_param_count summiert d·h + h ueber zip(sizes[:-1], sizes[1:]).",
+        "errorPatterns": [
+          "np.max statt np.maximum fuer ReLU",
+          "Hidden-Dimension nicht gegen W2 geprueft",
+          "Bias in der Parameterzaehlung vergessen"
+        ],
+        "representation": "Python-Code mit Tupelrueckgabe (H, y_hat) und Vertragspruefungen vor der Rechnung.",
+        "transferDemand": "Vertragsmuster der Vorwoche auf eine Kettenstruktur uebertragen: die Hidden-Dimension muss durchgereicht und gegen W2 geprueft werden.",
+        "difficultyRationale": "Tier 3: zwei Layer, ReLU-Klemme, Hidden-Kettenvertrag und Summenformel in einer Funktion.",
+        "uniqueElements": [
+          "ReLU zwischen zwei linearen Layern",
+          "H-Form gegen W2 als eigene Pruefung",
+          "param_count ueber Schichtpaare statt Einzellayer"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w18-e5",
+        "requiredAction": "Attempt-Definition-ID w18-e5 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w18.json",
+          "pointer": "/exercises/4",
+          "note": "Prompt und Tests fordern explizit den Hidden-Vertrag gegen W2 und die ReLU-Klemmung (Index 4)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-tensors.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 1 und 4 (Formen als Vertrag, Formalverletzungen) plus ReLU-Forward aus der Lektionsquelle karpathy-zero-to-hero."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w18-e4 (ein Layer, keine Aktivierung) und w18-e6 (beliebige Tiefe, Listenvertraege): eigener Kernloesungsweg, eigene Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w18-e4",
+        "w18-e6"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w18.json",
+      "sourceId": "w18-e6",
+      "currentDefinitionId": "w18-e6",
+      "legacyWeekId": "w18",
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-linalg-matrices"
+      ],
+      "lessonIds": [
+        "l-dl-tensors"
+      ],
+      "learningObjective": "Die lernende Person verallgemeinert den MLP-Forward auf beliebig viele Schichten: Struktur- und Kettenvertraege (inklusive Lueckenlaenge) vor der Rechnung pruefen, ReLU nur auf versteckten Schichten ziehen und alle Parameter zaehlen.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 4,
+      "proposedFamilyId": "deep-learning-deep-forward-chain-contracts",
+      "proposedCaseType": "arbitrary-depth-list-contracts",
+      "proposedDifficultyProfile": "final-boss-synthesis",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen deep_forward(X, weights, biases) und deep_param_count(weights, biases)",
+        "comparison": "assert-basierte __check-Tests gegen Schleifen-Referenz ueber Tiefen 1 bis 4 plus ValueError-Vertraege",
+        "tolerance": "tests (np.allclose gegen Schleifen-Referenz)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver prueft in zwei Phasen (Struktur, Kette) und verkettet mit ReLU nur fuer i < L - 1; der Test definiert eine eigene Schleifen-Referenz und faehrt Tiefen 1 bis 4 mit Seed 1806.",
+        "testEvidence": [
+          "content/exercises/w18.json /exercises/5 parameters.tests — Schleifen-Referenz __reference und Vertraege inkl. Lueckenlaenge",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Final-Boss-Synthese als pyodide-Aufgabe vorgesehen"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Final Boss verketteter Vertraege ueber beliebige Tiefe; migrate als eigene Familie, weil Kettenvertraege zwischen benachbarten Matrizen und die Tiefe-1-Sonderregel ueber die 2-Layer-Familie hinausgehen.",
+      "preservedDidacticContent": {
+        "solutionPath": "Zwei Pruefphasen (Struktur: Laengen/ndim; Kette X->W1->b1->W2->...), dann Schleife mit ReLU nur wenn i < L - 1; deep_param_count summiert W.size + b.size ueber alle Schichten.",
+        "errorPatterns": [
+          "ReLU auch auf der Ausgabeschicht",
+          "Kettenvertraege zwischen benachbarten Matrizen nicht geprueft",
+          "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
+        ],
+        "representation": "Python-Code ueber Listen von Gewichtsmatriken und Bias-Vektoren mit zweiphasiger Vertragspruefung.",
+        "transferDemand": "Vertragspruefung von festen Signaturen auf beliebige Tiefen verallgemeinern und Indexlogik (letzte Schicht linear) selbst ableiten.",
+        "difficultyRationale": "Tier 4: Struktur-, Ketten- und Sonderfallpruefung plus Schleife mit Indexentscheidung in einer Funktion.",
+        "uniqueElements": [
+          "Beliebige Tiefe mit Listenvertraegen",
+          "Tiefe 1 muss linear bleiben (kein ReLU)",
+          "Lueckenlaenge len(weights) != len(biases) als Strukturfehler"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w18-e6",
+        "requiredAction": "Attempt-Definition-ID w18-e6 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w18-e5 ist unklar, ob Kettenvertraege als eigene Familie oder als Ausbaustufe des MLP-Forward gefuehrt werden sollen.",
+          "resolution": "Entscheidung dem S4A-Review vorlegen; bis dahin getrennte Familie wegen Listenvertraegen und Tiefen-Generalisierung."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w18.json",
+          "pointer": "/exercises/5",
+          "note": "Prompt listet alle Vertraege inklusive Nachbar- und Lueckenpruefung; Tests fahren Tiefen 1 bis 4 gegen eine Schleifenreferenz (Index 5)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-tensors.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 4 (Formalverletzungen abweisen) wird hier auf beliebig tiefe Architekturen verallgemeinert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": true,
+      "humanReviewReasons": [
+        "Final-Boss buendelt Forward-Kette, Vertraege und Parameterzaehlung — bei der Extraktion in kanonische Definitionen ist zu pruefen, ob Teilfaehigkeiten (Vertragspruefung vs. Schleife) in eigene Definitionen aufgespalten werden."
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w19.json",
+      "sourceId": "w19-e1",
+      "currentDefinitionId": "w19-e1",
+      "legacyWeekId": "w19",
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "lessonIds": [
+        "l-dl-autograd"
+      ],
+      "learningObjective": "Die lernende Person unterscheidet lokale und Upstream-Gradienten und begruendet, dass die Kettenregel auf einem Pfad multipliziert statt addiert.",
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 1,
+      "proposedFamilyId": "deep-learning-backprop-chainrule-recall",
+      "proposedCaseType": "single-path-local-times-upstream-choice",
+      "proposedDifficultyProfile": "basic-recall",
+      "answerContract": {
+        "kind": "single-choice-id",
+        "inputShape": "ein Choice-Identifier (a bis d)",
+        "comparison": "exakter Choice-Vergleich gegen expectedAnswer.correctChoice",
+        "tolerance": null
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.correctChoice = 'c' (lokaler Gradient mal Upstream); der deterministic-Grader vergleicht die Choice-ID.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradeChoice wertet correct-Flag und choice-Regeln aus",
+          "tests/w18_w21_content.test.mjs — genau eine korrekte Choice je Wochenpaket erzwungen"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Konzeptfrage zur Kettenregel mit drei klassischen Fehlmodellen (Addition, Division, lokaler Gradient allein); migrate als unique, weil sie das Grundvokabular von c-dl-autograd sichert.",
+      "preservedDidacticContent": {
+        "solutionPath": "Kettenregel auf einem Pfad: dL/dx = dL/dz · dz/dx = (−2) · 3 = −6; addiert wird nur ueber mehrere Pfade zu L, hier gibt es nur einen Pfad.",
+        "errorPatterns": [
+          "Upstream-Gradient vergessen und nur den lokalen Gradienten angeben",
+          "Multiplikation mit Addition verwechselt",
+          "Vorzeichen des Upstream-Gradienten unterschlagen"
+        ],
+        "representation": "Rechengraph-Ausschnitt mit lokalem und Upstream-Gradienten als LaTeX-Choices.",
+        "transferDemand": "Kettenregel-Multiplikation entlang eines Pfades von der Addition ueber Gabelungen unterscheiden und auf neue Zahlen uebertragen.",
+        "difficultyRationale": "Tier 1: ein Pfad, ein Produkt; Distraktoren repraesentieren die drei klassischen Fehlmodelle.",
+        "uniqueElements": [
+          "lokaler Gradient mal Upstream als Kernunterscheidung",
+          "Addition nur ueber Pfade — bewusster Distraktor a"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w19-e1",
+        "requiredAction": "Attempt-Definition-ID w19-e1 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w19.json",
+          "pointer": "/exercises/0",
+          "note": "Choices a-d mit korrekter Option c und drei choice-Diagnoseregeln (Index 0)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-autograd.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 1 der Lektion (lokale vs. globale Gradienten) ist deckungsgleich mit der Konzeptfrage."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradeChoice",
+          "note": "Deterministic-Grader wertet das correct-Flag und die choice-Regeln der feedbackRules voll aus."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w19.json",
+      "sourceId": "w19-e2",
+      "currentDefinitionId": "w19-e2",
+      "legacyWeekId": "w19",
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "lessonIds": [
+        "l-dl-autograd"
+      ],
+      "learningObjective": "Die lernende Person berechnet den Gesamtgradienten eines Knotens mit zwei parallelen Kettenregel-Pfaden als Summe der Pfadprodukte und haelt Vorzeichen fest.",
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "generatorId": "genBackpropChain",
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-backprop-branch-sum",
+      "proposedCaseType": "two-branch-path-products",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "seeded-integer",
+        "inputShape": "ganzzahliger Skalar",
+        "comparison": "exakter Integervergleich gegen den generierten Erwartungswert",
+        "tolerance": "exact-integer"
+      },
+      "solverContract": {
+        "kind": "seed-generator",
+        "authoritative": true,
+        "contract": "genBackpropChain(seed) erzeugt Zweiggradienten, Prompt und erwartete Ganzzahl; Upstream ist 1, Beitraege werden je Pfad multipliziert und addiert.",
+        "testEvidence": [
+          "tests/w18_w21_generators.test.mjs — 2000 Seeds, >= 20 verschiedene Erwartungswerte",
+          "tests/fixtures/generator-golden-corpus.json — Goldwert fuer Seed 1902 (−3)",
+          "assets/js/core/w18_w21_generators.mjs /genBackpropChain — drei Prompt-Varianten je Familie"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Zweigsummen-Instanz der Kettenregel mit eigenem Fehlerbild (Produkt statt Summe der Zweige); migrate als eigene Familie neben der Ein-Pfad-Konzeptfrage.",
+      "preservedDidacticContent": {
+        "solutionPath": "Je Zweig Produkt der lokalen Gradienten (Upstream 1), dann Summe der Zweigbeitraege: gA1·gA2 + gB1·gB2.",
+        "errorPatterns": [
+          "nur einen Zweig beitragen lassen",
+          "Zweigprodukte multipliziert statt addiert",
+          "Vorzeichen eines lokalen Gradienten verloren"
+        ],
+        "representation": "Verbale Rechengraph-Beschreibung mit lokalen Gradienten; Antwort als ganzzahliger Skalar.",
+        "transferDemand": "Pfadregel (Produkt entlang, Summe ueber Pfade) auf neue Zweigzahlen und Vorzeichenkombinationen uebertragen.",
+        "difficultyRationale": "Tier 2: zwei Pfade, Vorzeichenhandling, aber kleine Ganzzahlen.",
+        "uniqueElements": [
+          "zwei parallele Pfade mit additivem Beitritt",
+          "negative lokale Gradienten",
+          "Feedbackregeln auf 3, −6 und −18 gemuenzt"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w19-e2",
+        "requiredAction": "Attempt-Definition-ID w19-e2 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w19.json",
+          "pointer": "/exercises/1",
+          "note": "expectedAnswer.kind seeded-integer mit generator genBackpropChain, defaultExpected −3 (Index 1)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-autograd.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 2 (Kettenregel ueber Pfade und Gabelungen) traegt die Aufgabe direkt."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/diagnoseNumeric",
+          "note": "Numerischer Grader ist ganzzahlexakt und konsumiert die value-Regeln der feedbackRules voll."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/w18_w21_generators.mjs",
+          "pointer": "/genBackpropChain",
+          "note": "Seeded-Generator erzeugt Prompt, Parameter und erwartete Ganzzahl; breiter Antwortraum per Test erzwungen."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w19.json",
+      "sourceId": "w19-e3",
+      "currentDefinitionId": "w19-e3",
+      "legacyWeekId": "w19",
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-python-reading"
+      ],
+      "lessonIds": [
+        "l-dl-autograd"
+      ],
+      "learningObjective": "Die lernende Person verfolgt einen manuellen Backward-Schritt mit SGD-Update im Programmablauf und traegt die vier resultierenden Variablenwerte (Gradienten und aktualisierte Parameter) ein.",
+      "activityType": "code-trace",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-manual-backward-step-trace",
+      "proposedCaseType": "sgd-update-sign-trace",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "variable-values",
+        "inputShape": "vier ganzzahlige Variablenwerte (grad_w, w, grad_b, b)",
+        "comparison": "exakter Integervergleich je Variable",
+        "tolerance": "exact-integer"
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.kind variable-values mit parameters.variables = [(grad_w, −12), (w, 10), (grad_b, 6), (b, −2)]; der Grader vergleicht je Variable exakt.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradeCodeTrace vergleicht Variablenwerte exakt und konsumiert value:-Regeln",
+          "content/exercises/w19.json — validationStatus 'python3-verified (lokale Ausführung)'"
+        ]
+      },
+      "feedbackRuleCount": 2,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Code-Trace verbindet Kettenregel und Update-Vorzeichen in einem deterministischen Lesetyp; migrate, weil variable-values ein eigener Answer-Contract im kanonischen Modell ist.",
+      "preservedDidacticContent": {
+        "solutionPath": "grad_w = Upstream · lokal = 6 · (−2) = −12; w = 4 − 0,5 · (−12) = 10; grad_b = Upstream · 1 = 6; b = 1 − 0,5 · 6 = −2.",
+        "errorPatterns": [
+          "Vorzeichen im Update gedreht (Abstieg statt Aufstieg)",
+          "lokalen Gradienten ohne Upstream verwendet",
+          "Bias-Gradient als 0 statt Upstream · 1 gelesen"
+        ],
+        "representation": "Vierzeiliges Python-Snippet mit Kommentaren; Antwort als vier ganzzahlige Variablenwerte.",
+        "transferDemand": "Kettenregel und Update-Vorzeichen auf neue Gradienten- und Lernratenwerte uebertragen.",
+        "difficultyRationale": "Tier 2: vier Werte, aber nur zwei Regeln (Kettenregel, Update-Vorzeichen).",
+        "uniqueElements": [
+          "Update-Vorzeichen als eigene Fehlerquelle",
+          "Bias mit lokalem Gradienten 1",
+          "Kombination Trace plus SGD-Update"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w19-e3",
+        "requiredAction": "Attempt-Definition-ID w19-e3 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w19.json",
+          "pointer": "/exercises/2",
+          "note": "parameters.snippet und parameters.variables mit den vier Sollwerten sind die Quellevidenz (Index 2)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-autograd.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 3 (manuelle Backpropagation implementieren) und Lernziel 1 (lokale vs. globale Gradienten)."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradeCodeTrace",
+          "note": "Variablenwerte exakt-ganzzahlig; Regeln vom Muster value:a+value:b werden voll konsumiert."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w19-e1/e2: Trace kombiniert Kettenregel mit SGD-Update-Vorzeichen — eigener Loesungsweg, eigene Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w19-e1",
+        "w19-e2"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w19.json",
+      "sourceId": "w19-e4",
+      "currentDefinitionId": "w19-e4",
+      "legacyWeekId": "w19",
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "lessonIds": [
+        "l-dl-autograd"
+      ],
+      "learningObjective": "Die lernende Person leitet die Gradienten eines linearen Layers mit MSE analytisch her (Faktor 2/(n·k), Transposition, Achsensumme) und laesst sie gegen die zentrale numerische Differenz des eigenen Forwards pruefen.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-analytic-gradients-linear-mse",
+      "proposedCaseType": "linear-layer-mse-central-difference",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen linear_mse_forward(X, W, b) und linear_mse_backward(X, W, b, y)",
+        "comparison": "analytische Gradienten gegen Formelreferenz und zentrale numerische Differenz (float64, h=1e-5, Toleranz 1e-6)",
+        "tolerance": "tests (abs-Differenz < 1e-6)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver liefert dW = (2/(n·k)) Xᵀ r und db = (2/(n·k)) Σ_axis=0 r; der Test berechnet die numerische Differenz aus dem Lernenden-Forward (float64, h=1e-5).",
+        "testEvidence": [
+          "content/exercises/w19.json /exercises/3 parameters.tests — zentrale Differenz aus dem Lernenden-Forward, Toleranz 1e-6",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Autograd ehrlich (Variante b): numerischer Check im Test aus dem Lernenden-Forward",
+          "assets/js/core/graders.js — gradePython fuehrt die Tests im pyodide-Worker aus"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Analytische Gradienten eines linearen Layers mit numerischem Gegencheck nach ADR-0013; migrate als eigene Familie, weil der Loesungsweg (Residuum, Faktor 2/(n·k), Transposition) ohne ReLU-Maske auskommt und sich klar vom MLP-Backprop abgrenzt.",
+      "preservedDidacticContent": {
+        "solutionPath": "r = XW + b − y schreiben, Kettenregel auf den quadrierten Mittelwert anwenden (Faktor 2/(n·k)), dW = (2/(n·k)) Xᵀ r und db = (2/(n·k)) Σ_axis=0 r herleiten und per Formencheck validieren.",
+        "errorPatterns": [
+          "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt",
+          "db als Skalar statt Vektor summiert",
+          "Residuen mit umgekehrtem Vorzeichen"
+        ],
+        "representation": "Python-Code mit analytischer Herleitung; Gegenbeweis durch zentrale Differenz im Test.",
+        "transferDemand": "Kettenregel auf den quadrierten Mittelwert selbst anwenden und den Skalarfaktor ueber die Mittelung ueber alle n·k Eintraege ableiten.",
+        "difficultyRationale": "Tier 2: ein Layer, aber Herleitung des Mittlungsfaktors und Formencheck statt Nachschlagen.",
+        "uniqueElements": [
+          "Mittlung ueber alle n·k Eintraege (Faktor 2/(n·k))",
+          "numerischer Check aus dem Lernenden-Forward (ADR-0013)",
+          "db als Achsensumme statt Skalar"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w19-e4",
+        "requiredAction": "Attempt-Definition-ID w19-e4 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w19-e4 und w19-e5 teilen MSE-Residuen und zentralen Check, unterscheiden sich aber in Algorithmus (linear vs. ReLU-Backprop).",
+          "resolution": "Getrennte Familien vorgeschlagen, um keine verschiedenen Gradientenalgorithmen zu verbergen; im Review bestaetigen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w19.json",
+          "pointer": "/exercises/3",
+          "note": "Prompt fordert Mittelung ueber alle n·k Eintraege; Tests pruefen analytisch UND numerisch (Index 3)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-autograd.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 4 der Lektion (analytische Gradienten mit zentraler Differenz gegenpruefen) traegt die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w19-e5 (MLP mit ReLU-Maske, vier Gradienten) und w20-e5 (Trainingsschleife statt Einzelgradienten): verschiedene Gradientenalgorithmen, keine gemeinsame Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w19-e5",
+        "w20-e5"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w19.json",
+      "sourceId": "w19-e5",
+      "currentDefinitionId": "w19-e5",
+      "legacyWeekId": "w19",
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-dl-tensors"
+      ],
+      "lessonIds": [
+        "l-dl-autograd"
+      ],
+      "learningObjective": "Die lernende Person implementiert die vollstaendige Backpropagation eines 2-Layer-MLP mit ReLU und MSE (vier Gradienten) und validiert jeden Eintrag gegen die zentrale numerische Differenz des eigenen Forwards.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 3,
+      "proposedFamilyId": "deep-learning-mlp-backprop-relu-mask",
+      "proposedCaseType": "two-layer-four-gradients-numeric-check",
+      "proposedDifficultyProfile": "advanced-transfer",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen mlp_forward(X, W1, b1, W2, b2) und mlp_backward(X, W1, b1, W2, b2, y)",
+        "comparison": "vier Gradienten eintragweise gegen zentrale Differenz aus dem Lernenden-Forward (h=1e-5, float64, Toleranz 1e-6)",
+        "tolerance": "tests (1e-6 gegen numerische Differenz, knickfreie Eingaben)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver fuehrt delta2 = (2/m)(ŷ − y), dW2 = Hᵀ delta2, delta1 = (delta2 W2ᵀ) · (H > 0) aus; der Test prueft alle vier Gradienten per zentraler Differenz aus dem Lernenden-Forward.",
+        "testEvidence": [
+          "content/exercises/w19.json /exercises/4 parameters.tests — eintragweise zentrale Differenz fuer alle vier Gradienten",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Variante b: analytische Gradienten, numerischer Check im Test, knickfreie Eingaben",
+          "tests/w18_w21_content.test.mjs — Vertragspruefung der python-code-Felder"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Vier Gradienten durch Ausgabeschicht, ReLU-Maske und Hidden-Schicht; migrate als eigene Familie, weil ReLU-Maske und Transpositionsvertraege einen anderen Algorithmus als der lineare Layer (w19-e4) und der Trainings-Schritt (w19-e6) bilden.",
+      "preservedDidacticContent": {
+        "solutionPath": "delta2 = (2/m)(ŷ − y), dW2 = Hᵀ delta2, db2 = Spaltensumme; delta1 = (delta2 W2ᵀ) · (H > 0), dW1 = Xᵀ delta1, db1 = Achsensumme — alle vier Gradienten mit Formencheck.",
+        "errorPatterns": [
+          "ReLU-Ableitung als H statt (H > 0)",
+          "Faktor 2/m vergessen oder nur auf eine Achse bezogen",
+          "transponierte Vertraege (H.T @ delta2, W2.T) vertauscht"
+        ],
+        "representation": "Python-Code mit vier Gradientenrueckgaben und ReLU-Maske (hidden > 0).",
+        "transferDemand": "Kettenregel rueckwaerts durch zwei Layer mit Maske fuehren und die Faktorfrage (2/m ueber alle Ausgabeeintraege) selbst herleiten.",
+        "difficultyRationale": "Tier 3: vier Gradienten, Maskenlogik und Transpositionen muessen konsistent zusammenpassen.",
+        "uniqueElements": [
+          "ReLU-Maske (H > 0) als lokale Ableitung",
+          "vier Gradienten in fester Rueckgabereihenfolge",
+          "numerischer Check gegen den eigenen Forward"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w19-e5",
+        "requiredAction": "Attempt-Definition-ID w19-e5 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w19.json",
+          "pointer": "/exercises/4",
+          "note": "Prompt und Tests verlangen knickfreie Eingaben und zentrale Differenz mit h=1e-5 aus dem Lernenden-Forward (Index 4)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-autograd.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 3-4 (manuelle Backprop fuer 2-Layer-MLP, numerischer Gegencheck) decken die Aufgabe exakt ab."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w19-e4 (linear, zwei Gradienten) und w19-e6 (Trainingsschritt mit Update): eigener Algorithmus, eigene Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w19-e4",
+        "w19-e6"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w19.json",
+      "sourceId": "w19-e6",
+      "currentDefinitionId": "w19-e6",
+      "legacyWeekId": "w19",
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "lessonIds": [
+        "l-dl-autograd"
+      ],
+      "learningObjective": "Die lernende Person implementiert einen vollstaendigen SGD-Trainingsschritt (Forward, Backward, Update) als reine Funktion, die den Verlust vor dem Update meldet und das Eingabe-Dictionary unveraendert laesst.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 4,
+      "proposedFamilyId": "deep-learning-training-step-sgd-mlp",
+      "proposedCaseType": "forward-backward-update-pure-function",
+      "proposedDifficultyProfile": "final-boss-synthesis",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktion train_step(X, y, params, lr) mit params-Dictionary",
+        "comparison": "assert-basierte __check-Tests: lr=0-Invarianz, Verlustsenkung, Update gegen zentrale Differenz, 40-Schritte-Konvergenz",
+        "tolerance": "tests (numerischer Vergleich 1e-5 bzw. exakt)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver kombiniert Forward, Backward (delta2, ReLU-Maske) und p ← p − lr·grad in einem neuen Dictionary; der Test nutzt lr=0-Rueckgabe als Verlustfunktion fuer die numerische Differenz.",
+        "testEvidence": [
+          "content/exercises/w19.json /exercises/5 parameters.tests — lr=0-Test, kleiner Schritt, numerischer Gradient, 40 Schritte",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — kleine synthetische Trainingslaeufe mit default_rng im Test",
+          "assets/js/core/graders.js — pyodide-Grader mit 60-s-Timeout fuer den 40-Schritte-Lauf"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Final Boss vereint Forward, Backward und Update mit Unveränderbarkeits- und Vorzeichenvertraegen; migrate als eigene Familie, weil Update-Disziplin (reine Funktion, Verlust vor Update) ueber die reine Backprop-Familie hinausgeht.",
+      "preservedDidacticContent": {
+        "solutionPath": "Forward fuer Verlust des aktuellen Modells, dieselben Zwischengroessen fuer delta2/delta1, dann neues Dictionary p − lr·grad ohne Mutation der Eingabe.",
+        "errorPatterns": [
+          "Eingabe-Dictionary in-place veraendert",
+          "Verlust nach dem Update statt davor zurueckgegeben",
+          "Update in Gradientenrichtung (Plus statt Minus)"
+        ],
+        "representation": "Python-Code mit Dictionary-Parametern, Tupelrueckgabe (loss, new_params) und lr=0-Testknoten.",
+        "transferDemand": "Analytische Gradienten und Update-Regel zu einem reproduzierbaren Schritt zusammenfuehren, dessen Korrektheit der Test per numerischer Differenz aus dem eigenen Code nachprueft.",
+        "difficultyRationale": "Tier 4: vier Gradienten plus Update plus Reinheitsvertrag plus Konvergenzbehauptung in einem Aufruf.",
+        "uniqueElements": [
+          "loss vor dem Update als Testanker fuer die numerische Differenz",
+          "Eingabe-Dictionary darf nicht mutiert werden",
+          "40-Schritte-Konvergenztest als Verhaltenspruefung"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w19-e6",
+        "requiredAction": "Attempt-Definition-ID w19-e6 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w19-e5 (nur Backward) und w20-e6 (Schleife mit Validierung) ist die Familiengrenze eine Abwaegung.",
+          "resolution": "Eigene Familie wegen Update-Vertrag und Unveränderbarkeit; Granularitaet im S4A-Review bestaetigen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w19.json",
+          "pointer": "/exercises/5",
+          "note": "Tests pruefen lr=0, kleinen Schritt, numerisches Update von W2[0,0] und 40-Schritte-Halbierung (Index 5)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-autograd.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 4 (analytische Gradienten gegenpruefen) und Lernziel 5 (kein Framework im Browser) rahmen die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": true,
+      "humanReviewReasons": [
+        "Final-Boss buendelt Backprop und SGD-Update; bei der Extraktion ist zu klären, ob Backprop und Update in kanonische Definitionen getrennt werden, ohne den ADR-0013-Vertrag (numerischer Check aus dem Lernenden-Forward) zu veraendern."
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w20.json",
+      "sourceId": "w20-e1",
+      "currentDefinitionId": "w20-e1",
+      "legacyWeekId": "w20",
+      "competencyIds": [
+        "c-dl-training"
+      ],
+      "lessonIds": [
+        "l-dl-training"
+      ],
+      "learningObjective": "Die lernende Person diagnostiziert aus zwei Verlustverlaeufen das Overfitting-Muster (Trainingsverlust faellt, Validierungsverlust steigt ab einer Epoche) und nennt Gegenmassnahmen.",
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 1,
+      "proposedFamilyId": "deep-learning-learning-curve-diagnosis",
+      "proposedCaseType": "overfitting-divergence-choice",
+      "proposedDifficultyProfile": "basic-recall",
+      "answerContract": {
+        "kind": "single-choice-id",
+        "inputShape": "ein Choice-Identifier (a bis d)",
+        "comparison": "exakter Choice-Vergleich gegen expectedAnswer.correctChoice",
+        "tolerance": null
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.correctChoice = 'd'; der deterministic-Grader vergleicht die gewaehlte Choice-ID.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradeChoice wertet correct-Flag und choice-Regeln aus",
+          "tests/w18_w21_content.test.mjs — genau eine korrekte Choice je Wochenpaket"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Diagnosekonzeptfrage mit drei sauber getrennten Fehlmodellen (Underfitting, Lernrate, Leakage); migrate, weil die Kurvenrichtung-Diagnose ein eigenes Lernziel von c-dl-training traegt.",
+      "preservedDidacticContent": {
+        "solutionPath": "Beide Kurvenrichtungen getrennt lesen: Trainingsverlust faellt monoton, Validierungsverlust kehrt nach Epoche 3 um — Auseinanderlaufen ist das Overfitting-Signal.",
+        "errorPatterns": [
+          "nur den Trainingsverlust betrachtet",
+          "steigenden Validierungsverlust als Lernratenproblem gelesen",
+          "Overfitting mit Underfitting verwechselt"
+        ],
+        "representation": "Zwei Zahlenlisten (Trainings-/Validierungsverlust) mit vier textlichen Diagnoseoptionen.",
+        "transferDemand": "Kurvenrichtungs-Diagnose auf neue Verlaeufe uebertragen und von Lernraten- bzw. Leakage-Mustern abgrenzen.",
+        "difficultyRationale": "Tier 1: ein Muster (Auseinanderlaufen), drei klar abgegrenzte Distraktoren.",
+        "uniqueElements": [
+          "Konkrete Lernkurven als Zahlenlisten statt abstrakter Definitionen",
+          "Leakage-Distraktor mit umgekehrtem Vorzeichen",
+          "Verknuepfung zu Early Stopping/Regularisierung in Woche 21"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w20-e1",
+        "requiredAction": "Attempt-Definition-ID w20-e1 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w20.json",
+          "pointer": "/exercises/0",
+          "note": "Prompt mit zwei Verlustlisten, korrekte Choice d, drei choice-Regeln (Index 0)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-training.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 4 der Lektion (Overfitting-Signale diagnostizieren) traegt die Konzeptfrage."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradeChoice",
+          "note": "Deterministic-Grader wertet das correct-Flag und die choice-Regeln der feedbackRules voll aus."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w20.json",
+      "sourceId": "w20-e2",
+      "currentDefinitionId": "w20-e2",
+      "legacyWeekId": "w20",
+      "competencyIds": [
+        "c-dl-training"
+      ],
+      "lessonIds": [
+        "l-dl-training"
+      ],
+      "learningObjective": "Die lernende Person berechnet die Zahl der Optimizer-Updates ueber mehrere Epochen als E · ceil(n/B) und beruecksichtigt den kleineren Restbatch.",
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "generatorId": "genSgdSteps",
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-batch-counting-ceil",
+      "proposedCaseType": "rest-batch-multi-epoch",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "seeded-integer",
+        "inputShape": "ganzzahliger Skalar",
+        "comparison": "exakter Integervergleich gegen den generierten Erwartungswert",
+        "tolerance": "exact-integer"
+      },
+      "solverContract": {
+        "kind": "seed-generator",
+        "authoritative": true,
+        "contract": "genSgdSteps(seed) erzeugt n, Batchgroesse und Epochen sowie die erwartete Updatezahl E · ceil(n/B); exakter Integervergleich.",
+        "testEvidence": [
+          "tests/w18_w21_generators.test.mjs — 2000 Seeds, >= 20 verschiedene Erwartungswerte",
+          "tests/fixtures/generator-golden-corpus.json — Goldwert fuer Seed 2002 (15)",
+          "assets/js/core/legacy_exercise_adapter.mjs — Generator-Instanziierung zum deterministicSeed"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Batch-/Epochen-Zaehlung mit Restbatch-Falle; migrate als eigene Familie, weil ceil-Logik und Epochenmultiplikation einen eigenen Kernloesungsweg bilden.",
+      "preservedDidacticContent": {
+        "solutionPath": "Updates pro Epoche = ceil(n/B), weil der letzte kleinere Batch als voller Schritt zaehlt; insgesamt E · ceil(n/B).",
+        "errorPatterns": [
+          "abgerundet statt aufgerundet (Restbatch vergessen)",
+          "Schritte pro Epoche mit Schritten insgesamt verwechselt",
+          "glatte Division angenommen, obwohl ein Rest bleibt"
+        ],
+        "representation": "Verbale Trainingsszenario-Beschreibung; Antwort als ganzzahliger Skalar.",
+        "transferDemand": "Aufrunden statt Abrunden auf neue n/B/E-Instanzen des Generators uebertragen.",
+        "difficultyRationale": "Tier 2: Aufrundungsregel plus Epochenmultiplikation, aber geschlossene Formel.",
+        "uniqueElements": [
+          "Restbatch zaehlt als voller Schritt",
+          "Epochenfaktor als zweite Stufe",
+          "Feedbackregeln auf 12, 5 und 13 gemuenzt"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w20-e2",
+        "requiredAction": "Attempt-Definition-ID w20-e2 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w20.json",
+          "pointer": "/exercises/1",
+          "note": "expectedAnswer mit generator genSgdSteps, defaultExpected 15, exact-integer (Index 1)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-training.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 1 der Lektion (Batches, Epochen und Optimizer-Schritte auseinanderhalten) traegt die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/diagnoseNumeric",
+          "note": "Numerischer Grader ist ganzzahlexakt und konsumiert die value-Regeln der feedbackRules voll."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/w18_w21_generators.mjs",
+          "pointer": "/genSgdSteps",
+          "note": "Seeded-Generator erzeugt Prompt, Parameter und erwartete Ganzzahl; breiter Antwortraum per Test erzwungen."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w20.json",
+      "sourceId": "w20-e3",
+      "currentDefinitionId": "w20-e3",
+      "legacyWeekId": "w20",
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "lessonIds": [
+        "l-dl-training"
+      ],
+      "learningObjective": "Die lernende Person sagt die Ausgaben eines Programms vorher, das Batch-Aufrunden per Ganzzahlarithmetik und drei SGD-Updates auf einen float-Parameter ausfuehrt.",
+      "activityType": "predict-output",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-training-loop-trace",
+      "proposedCaseType": "ceil-trick-and-sgd-updates-stdout",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "output-lines",
+        "inputShape": "zweizeiliger Text als vorhergesagte Standardausgabe",
+        "comparison": "zeilenweiser Vergleich nach Whitespace-Normalisierung",
+        "tolerance": "whitespace-normalized"
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.output = '9\\n4.0'; der Grader vergleicht whitespace-normalisiert und achtet implizit auf die .0-Endung des floats.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradePredictOutput mit normalizeOutput",
+          "content/exercises/w20.json — validationStatus 'python3-verified (lokale Ausführung)'"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "partially-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Predict-Output ueber Trainingsschleifen-Mechanik (Aufrunden, Update-Vorzeichen, float-Darstellung); migrate als eigene Familie, weil der Kern (Schrittzaehlung plus Update) fachlich von den Matmul-/Masken-Traces getrennt ist.",
+      "preservedDidacticContent": {
+        "solutionPath": "-(-n // B) rundet 90/40 zu 3 Batches je Epoche auf, ueber 3 Epochen 9 Updates; w = 10.0 − 3 · (0,5 · 4,0) = 4.0 mit float-Endung.",
+        "errorPatterns": [
+          "abgerundet (2 Batches) und 6 ausgegeben",
+          "die float-Endung .0 in der Vorhersage unterschlagen",
+          "Update nur einmal statt dreimal gerechnet"
+        ],
+        "representation": "Python-Snippet mit Schleifen; Antwort als zwei Ausgabezeilen.",
+        "transferDemand": "Batch-/Epochen- und Update-Regeln auf ein neues Programm mit anderen Konstanten uebertragen, inklusive Python-Darstellungsregeln (4.0 statt 4).",
+        "difficultyRationale": "Tier 2: zwei Konzepte (ceil-Zaehlung, wiederholtes Update) plus Darstellungsstolperer .0.",
+        "uniqueElements": [
+          "Ganzzahl-Aufrunden via -(-n // B)",
+          "float-Endung in der Ausgabe",
+          "Schrittzaehlung ueber Epochen multipliziert"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w20-e3",
+        "requiredAction": "Attempt-Definition-ID w20-e3 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w20.json",
+          "pointer": "/exercises/2",
+          "note": "parameters.snippet und expectedAnswer.output ('9\\n4.0') sind die Quellevidenz (Index 2)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-training.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 1 (Batches, Epochen, Optimizer-Schritte auseinanderhalten) traegt die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePredictOutput",
+          "note": "Ausgabe wird whitespace-normalisiert verglichen; nur die Regel element-count-mismatch wird konsumiert."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w18-e3/w21-e3: gleiches predict-output-Geruest, aber Aufrunden plus SGD-Update als Kern — eigene Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w18-e3",
+        "w21-e3"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w20.json",
+      "sourceId": "w20-e4",
+      "currentDefinitionId": "w20-e4",
+      "legacyWeekId": "w20",
+      "competencyIds": [
+        "c-dl-training",
+        "c-grad-regression"
+      ],
+      "lessonIds": [
+        "l-dl-training"
+      ],
+      "learningObjective": "Die lernende Person implementiert mse_loss, bce_loss mit Epsilon-Clipping und steps_per_epoch als vertragsgetriebene Funktionen mit ValueError vor der Rechnung.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-loss-primitives-contracts",
+      "proposedCaseType": "mse-bce-steps-valueerror-contracts",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen mse_loss, bce_loss und steps_per_epoch",
+        "comparison": "assert-basierte __check-Tests gegen direkte Formeln plus Fehlervertraege (Form, Wertebereich, n/B-Grenzen)",
+        "tolerance": "tests (1e-12 bzw. exakte Vertragspruefung)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver implementiert alle drei Funktionen mit Vertraegen vor der Rechnung; der Test rechnet bekannte Werte, Clipping-Endlichkeit und Fehlerfaelle nach.",
+        "testEvidence": [
+          "content/exercises/w20.json /exercises/3 parameters.tests — Formelreferenz fuer BCE mit eps=1e-12 und Vertragsfaelle",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Verlustfunktionen und numerische Stabilitaet als W20-Kern",
+          "assets/js/core/graders.js — pyodide-Vertrag mit numpy-Paket"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Verlustfunktionen mit numerischer Stabilitaet (Clipping) und Batch-Zaehlung als eigenstaendige Primitive; migrate, weil kein Gradient und kein Trainingsschritt im Spiel ist — klar getrennt von den Trainingsfamilien.",
+      "preservedDidacticContent": {
+        "solutionPath": "mse: Formen pruefen, dann Mittelwert der quadrierten Residuen als float; bce: Form und [0,1]-Bereich pruefen, clippen, Formel anwenden; steps: -(-n // B) als int mit Guards.",
+        "errorPatterns": [
+          "BCE ohne Clipping und damit log(0)",
+          "Wertebereich von p nicht geprueft",
+          "Batches abgerundet und den kleinen Restbatch verloren"
+        ],
+        "representation": "Python-Code mit drei Funktionen und expliziten Fehlervertraegen.",
+        "transferDemand": "Numerische Stabilitaet (Clipping vor dem Logarithmus) und fail-closed-Vertraege auf neue Verlustfunktionen uebertragen.",
+        "difficultyRationale": "Tier 2: drei kleine Funktionen, aber drei Vertraege plus Clipping-Detail.",
+        "uniqueElements": [
+          "BCE-Clipping mit eps = 1e-12",
+          "p = 1 muss endlich bleiben",
+          "steps_per_epoch als Aufrunden in Ganzzahlarithmetik"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w20-e4",
+        "requiredAction": "Attempt-Definition-ID w20-e4 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w20.json",
+          "pointer": "/exercises/3",
+          "note": "StarterCode mit drei Funktionen, Tests pruefen Werte, Clipping und Vertraege (Index 3)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-training.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 1 der Lektion (MSE- und BCE-Verluste implementieren, Batches/Epochen auseinanderhalten)."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w20-e2: gleiche ceil-Regel, aber dort Generator-Recall, hier Implementierung mit Fehlervertraegen — keine gemeinsame Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w20-e2"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w20.json",
+      "sourceId": "w20-e5",
+      "currentDefinitionId": "w20-e5",
+      "legacyWeekId": "w20",
+      "competencyIds": [
+        "c-dl-training",
+        "c-grad-regression"
+      ],
+      "lessonIds": [
+        "l-dl-training"
+      ],
+      "learningObjective": "Die lernende Person implementiert einen deterministischen Train/Val-Split aus einer Seed-Permutation und Full-Batch-SGD auf linearer Regression mit Verlusthistorie zu Epochenbeginn.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 3,
+      "proposedFamilyId": "deep-learning-seeded-linear-sgd-split",
+      "proposedCaseType": "deterministic-split-fullbatch-sgd",
+      "proposedDifficultyProfile": "advanced-transfer",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen train_val_split(n, val_fraction, seed) und train_linear_sgd(X, y, lr, epochs, seed)",
+        "comparison": "assert-basierte __check-Tests: Split-Vertrag, Determinismus ueber gleiche Seeds, Verlustfall und w-Naehe",
+        "tolerance": "tests (np.allclose bzw. exakte Listenvergleiche)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver kombiniert permutation-basierten Split (erste k Indizes = Validierung, sortiert) mit Full-Batch-SGD inklusive 2/n-Faktor und loss_history zu Epochenbeginn.",
+        "testEvidence": [
+          "content/exercises/w20.json /exercises/4 parameters.tests — Determinismus ueber gleiche Seeds, Split-Vertrag, Konvergenz",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — np.random.default_rng in Lernendencode und Tests",
+          "content/exercises/w20.json — sourceLineage verweist auf die Split-Konvention aus der CV-Woche"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Deterministisches Training mit Seed-Disziplin und Split-Vertrag; migrate als eigene Familie, weil Full-Batch-SGD auf lineare Regression ohne ReLU und ohne Validierungskurven einen eigenen Algorithmus bildet.",
+      "preservedDidacticContent": {
+        "solutionPath": "k = round(n·f) mit Guard, permutation(seed), erste k Indizes Validierung, beide Teile sortieren; Training: Verlust zu Epochenbeginn notieren, dann w/b mit Faktor 2/n updaten.",
+        "errorPatterns": [
+          "Verlust nach dem Update statt zu Epochenbeginn notiert",
+          "Faktor 2/n in einem Update vergessen",
+          "Split ohne Seed oder unsortiert zurueckgegeben"
+        ],
+        "representation": "Python-Code mit Dictionary-Rueckgabe {w, b, loss_history} und Seed-getriebener Initialisierung.",
+        "transferDemand": "Reproduzierbarkeitsdisziplin (ein Seed steuert Init und Split) auf ein neues Training uebertragen und die Verlust-Historie korrekt zeitlich verorten.",
+        "difficultyRationale": "Tier 3: zwei Funktionen, Seed-Determinismus, Split-Vertrag und Update-Faktor 2/n.",
+        "uniqueElements": [
+          "Split-Konvention: erste k Permutationsindizes = Validierung, sortiert",
+          "loss_history zu Epochenbeginn",
+          "Determinismus als expliziter Test"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w20-e5",
+        "requiredAction": "Attempt-Definition-ID w20-e5 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w20-e5, w20-e6 und w21-e6 teilen Seed-Disziplin und Full-Batch-SGD, unterscheiden sich aber im Modell und in der Auswertung.",
+          "resolution": "Drei Familien (linear SGD / MLP mit Validierung / L2-Ablation) vorgeschlagen; im Review absegnen lassen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w20.json",
+          "pointer": "/exercises/4",
+          "note": "Prompt fixiert Init-Reihenfolge, Update-Formel mit 2/n und Verlust zu Epochenbeginn (Index 4)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-training.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 2-3 (Determinismus ueber Seeds, deterministische Trennung von Train/Val) traegen die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w20-e6 (MLP mit Validierungskurven) und w21-e6 (L2-Ablation): verschiedene Trainingsalgorithmen — getrennte Familien."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w20-e6",
+        "w21-e6"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w20.json",
+      "sourceId": "w20-e6",
+      "currentDefinitionId": "w20-e6",
+      "legacyWeekId": "w20",
+      "competencyIds": [
+        "c-dl-training",
+        "c-dl-autograd"
+      ],
+      "lessonIds": [
+        "l-dl-training"
+      ],
+      "learningObjective": "Die lernende Person trainiert ein kleines MLP auf synthetischen Daten mit deterministischem Split, fuehrt pro Epoche Trainings- und Validierungsverlust des aktuellen Modells und leitet best_val_epoch als Argmin ab.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 4,
+      "proposedFamilyId": "deep-learning-mlp-training-val-curves",
+      "proposedCaseType": "one-rng-init-split-val-curves",
+      "proposedDifficultyProfile": "final-boss-synthesis",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktion train_mlp_regression(X, y, hidden, lr, epochs, seed, val_fraction=0.25)",
+        "comparison": "assert-basierte __check-Tests: Determinismus, Laengen, fallender Trainingsverlust, getrennte Validierung, argmin-Vertrag",
+        "tolerance": "tests (exakte Listen- und int-Vergleiche)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver nutzt EINEN rng in fester Reihenfolge (vier Initialisierungen, dann Permutation), notiert beide Verluste zu Epochenbeginn und updated nur auf Trainingsdaten.",
+        "testEvidence": [
+          "content/exercises/w20.json /exercises/5 parameters.tests — Determinismus, Laengen, getrennte Validierung, Split-Vertraege",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — Lernkurven als Zahlenlisten, kleine synthetische Daten (ADR-Punkt 3 und 7)"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Final Boss Trainingsschleife mit Validierung und Lernkurven als Zahlen; migrate als eigene Familie, weil rng-Reihenfolge, Split-Vertrag und Validierungsdisziplin ueber den Einzel-Schritt (w19-e6) hinausgehen.",
+      "preservedDidacticContent": {
+        "solutionPath": "Ein rng in fester Reihenfolge (Init, dann Permutation), letzte k Indizes Validierung; pro Epoche beide Verluste notieren, dann Backward/Update nur auf Trainingsdaten; best_val_epoch = int(np.argmin(val_loss)).",
+        "errorPatterns": [
+          "Updates auch auf Validierungsdaten gerechnet",
+          "zwei rng-Quellen oder andere Reihenfolge als dokumentiert",
+          "argmin 1-basiert oder als np.int64 statt int"
+        ],
+        "representation": "Python-Code mit Lernkurven als Zahlenlisten und best_val_epoch als int.",
+        "transferDemand": "Backprop der Woche 19 auf eine Schleife mit getrennten Datenmengen uebertragen und Reproduzierbarkeit ueber eine dokumentierte rng-Reihenfolge sichern.",
+        "difficultyRationale": "Tier 4: Init-, Split-, Update- und Kurvenvertraege in fester Reihenfolge plus Argmin-Semantik.",
+        "uniqueElements": [
+          "EIN rng fuer Init und Split in dokumentierter Reihenfolge",
+          "Validierung ohne Update auf getrennten Indizes",
+          "best_val_epoch als 0-basierter int"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w20-e6",
+        "requiredAction": "Attempt-Definition-ID w20-e6 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w20-e5 (linear, gleicher Seed-Mechanismus) ist unklar, ob die Validierungskurven eine eigene Familie rechtfertigen.",
+          "resolution": "Eigene Familie wegen MLP-Backward plus Validierungsdisziplin; im S4A-Review bestaetigen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w20.json",
+          "pointer": "/exercises/5",
+          "note": "Prompt spezifiziert rng-Reihenfolge und Split-Konvention; Tests pruefen Determinismus, Laengen und Argmin (Index 5)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-training.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 3 (deterministische Trennung, Lernkurven als Zahlenlisten) traegt die Aufgabe direkt."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": true,
+      "humanReviewReasons": [
+        "Final-Boss kombiniert Split, Training und Kurvenauswertung; bei der Extraktion ist zu pruefen, ob Split-Logik und Trainingsschleife in kanonische Definitionen aufgeteilt werden, ohne den dokumentierten rng-Reihenfolgevertrag zu brechen."
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w21.json",
+      "sourceId": "w21-e1",
+      "currentDefinitionId": "w21-e1",
+      "legacyWeekId": "w21",
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "lessonIds": [
+        "l-dl-regularization"
+      ],
+      "learningObjective": "Die lernende Person erklaert, warum invertiertes Dropout im Inference-Pass ohne Maske und ohne Skalierung laeuft, weil die 1/p-Skalierung bereits im Training den Erwartungswert anpasst.",
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 1,
+      "proposedFamilyId": "deep-learning-dropout-inference-semantics",
+      "proposedCaseType": "inverted-scaling-inference-choice",
+      "proposedDifficultyProfile": "basic-recall",
+      "answerContract": {
+        "kind": "single-choice-id",
+        "inputShape": "ein Choice-Identifier (a bis d)",
+        "comparison": "exakter Choice-Vergleich gegen expectedAnswer.correctChoice",
+        "tolerance": null
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.correctChoice = 'a'; der deterministic-Grader vergleicht die gewaehlte Choice-ID.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradeChoice wertet correct-Flag und choice-Regeln aus",
+          "tests/w18_w21_content.test.mjs — genau eine korrekte Choice je Wochenpaket"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Konzeptfrage zur Train/Inference-Semantik von invertiertem Dropout; migrate, weil die Skalierungszeitpunkt-Frage ein eigenes Lernziel von c-dl-regularization traegt und keine Rechnung enthaelt.",
+      "preservedDidacticContent": {
+        "solutionPath": "Invertiertes Dropout skaliert im Training erhaltene Aktivierungen mit 1/p; die Inference rechnet daher ohne Maske und ohne Skalierung deterministisch und erwartungstreu.",
+        "errorPatterns": [
+          "Maske auch zur Vorhersage angewendet",
+          "Skalierung zur falschen Zeit (Inference mit p statt Training mit 1/p)",
+          "Maske als dauerhafte Loeschung gelesen"
+        ],
+        "representation": "Szenariobeschreibung Training vs. Inference mit vier textlichen Optionen.",
+        "transferDemand": "Skalierungszeitpunkt (Training mit 1/p statt Inference mit p) auf neue Behaltenswahrscheinlichkeiten uebertragen.",
+        "difficultyRationale": "Tier 1: eine Semantikentscheidung, vier eng beieinanderliegende Optionen.",
+        "uniqueElements": [
+          "invertierte Skalierung als Konzeptkern",
+          "Erwartungstreue als Begruendungsebene",
+          "Abgrenzung zu klassischem (nicht-invertiertem) Dropout"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w21-e1",
+        "requiredAction": "Attempt-Definition-ID w21-e1 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w21.json",
+          "pointer": "/exercises/0",
+          "note": "Choices a-d mit korrekter Option a und drei choice-Regeln (Index 0)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-regularization.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 2 der Lektion (Dropout mit fester Maske und invertierter Skalierung) traegt die Konzeptfrage."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradeChoice",
+          "note": "Deterministic-Grader wertet das correct-Flag und die choice-Regeln der feedbackRules voll aus."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w21.json",
+      "sourceId": "w21-e2",
+      "currentDefinitionId": "w21-e2",
+      "legacyWeekId": "w21",
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "lessonIds": [
+        "l-dl-regularization"
+      ],
+      "learningObjective": "Die lernende Person zaehlt die Aktivierungen, die zwei feste Dropout-Masken nacheinander ueberleben, als positionweises UND der Maskenziffern.",
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "generatorId": "genDropoutCount",
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-dropout-mask-counting",
+      "proposedCaseType": "two-mask-positionwise-and",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "seeded-integer",
+        "inputShape": "ganzzahliger Skalar",
+        "comparison": "exakter Integervergleich gegen den generierten Erwartungswert",
+        "tolerance": "exact-integer"
+      },
+      "solverContract": {
+        "kind": "seed-generator",
+        "authoritative": true,
+        "contract": "genDropoutCount(seed) erzeugt zwei Maskenstrings und die erwartete Ueberlebenszaehlung als positionweises UND; exakter Integervergleich.",
+        "testEvidence": [
+          "tests/w18_w21_generators.test.mjs — 2000 Seeds, >= 20 verschiedene Erwartungswerte",
+          "tests/fixtures/generator-golden-corpus.json — Goldwert fuer Seed 2102 (8)",
+          "assets/js/core/w18_w21_generators.mjs /genDropoutCount — feste Masken als Strings"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "fully-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Masken-UND-Zaehlung mit drei gezielten Fehlwerten; migrate als eigene Familie, weil der Loesungsweg (positionweises UND zweier Masken) von der NumPy-Indexierung (w21-e3) und der Dropout-Implementierung (w21-e4) getrennt bleibt.",
+      "preservedDidacticContent": {
+        "solutionPath": "Ueberleben durch beide Schichten heisst: Position traegt in Maske 1 UND Maske 2 eine 1 — positionweises UND der Maskenziffern zaehlen.",
+        "errorPatterns": [
+          "nur eine Maske gezaehlt",
+          "Einsen beider Masken addiert statt UND-verknuepft",
+          "Skalierungsfaktor 1/p auf die Anzahl angewendet"
+        ],
+        "representation": "Zwei Masken als 0/1-Strings; Antwort als ganzzahliger Skalar.",
+        "transferDemand": "Positionweises UND von Masken auf neue Maskenpaare uebertragen und von Summen- bzw. Skalierungslesarten abgrenzen.",
+        "difficultyRationale": "Tier 2: zweistufige Filterung, aber reines Zaehlen ohne Skalierung.",
+        "uniqueElements": [
+          "zwei Masken als Strings mit positionweisem UND",
+          "Skalierungsfaktor 1/p als bewusster Distraktor",
+          "Feedbackregeln auf 13, 12 und 21 gemuenzt"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w21-e2",
+        "requiredAction": "Attempt-Definition-ID w21-e2 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w21.json",
+          "pointer": "/exercises/1",
+          "note": "expectedAnswer mit generator genDropoutCount, defaultExpected 8 (Index 1)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-regularization.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 2 der Lektion (Dropout mit fester Maske) traegt die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/diagnoseNumeric",
+          "note": "Numerischer Grader ist ganzzahlexakt und konsumiert die value-Regeln der feedbackRules voll."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/w18_w21_generators.mjs",
+          "pointer": "/genDropoutCount",
+          "note": "Seeded-Generator erzeugt Prompt, Parameter und erwartete Ganzzahl; breiter Antwortraum per Test erzwungen."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": []
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w21.json",
+      "sourceId": "w21-e3",
+      "currentDefinitionId": "w21-e3",
+      "legacyWeekId": "w21",
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-numpy-basics"
+      ],
+      "lessonIds": [
+        "l-dl-regularization"
+      ],
+      "learningObjective": "Die lernende Person sagt die Ausgaben eines NumPy-Programms mit Boolean-Maske vorher (Summe der behaltenen Werte, Anzahl der True-Eintraege) und trennt Wertsumme von Positionsanzahl.",
+      "activityType": "predict-output",
+      "graderId": "deterministic",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-boolean-mask-trace",
+      "proposedCaseType": "mask-indexing-sum-vs-count-stdout",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "output-lines",
+        "inputShape": "zweizeiliger Text als vorhergesagte Standardausgabe",
+        "comparison": "zeilenweiser Vergleich nach Whitespace-Normalisierung",
+        "tolerance": "whitespace-normalized"
+      },
+      "solverContract": {
+        "kind": "expected-answer",
+        "authoritative": true,
+        "contract": "expectedAnswer.output = '17\\n4'; der Grader vergleicht whitespace-normalisiert.",
+        "testEvidence": [
+          "assets/js/core/graders.js — gradePredictOutput mit normalizeOutput",
+          "content/exercises/w21.json — validationStatus 'python3-verified (lokale Ausführung)'"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "partially-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Predict-Output ueber Boolean-Indexierung als Grundlage der Dropout-Maske; migrate als eigene Familie, weil Summe-der-Werte-gegen-Anzahl-der-Positionen ein eigenes Fehlerbild traegt.",
+      "preservedDidacticContent": {
+        "solutionPath": "True an Positionen 0, 3, 4, 6 behaelt die Werte 1, 4, 5, 7 (Summe 17); mask.sum() zaehlt True als 1, also 4.",
+        "errorPatterns": [
+          "Summe der Indizes statt der Werte gerechnet",
+          "gedroppte statt behaltene Werte summiert",
+          "Anzahl der behaltenen Werte mit ihrer Summe verwechselt"
+        ],
+        "representation": "NumPy-Snippet mit expliziter Maske; Antwort als zwei Ausgabezeilen.",
+        "transferDemand": "Boolean-Indexierung und mask.sum()-Semantik auf neue Masken und Wertvektoren uebertragen.",
+        "difficultyRationale": "Tier 2: zwei Ausgaben, aber die Verwechslung Wertsumme/Positionszahl ist die eigentliche Huerde.",
+        "uniqueElements": [
+          "Summe der behaltenen Werte gegen Anzahl der True-Eintraege",
+          "feste Maske ohne Seed",
+          "Boolean-Indexierung statt arithmetischer Maske"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w21-e3",
+        "requiredAction": "Attempt-Definition-ID w21-e3 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w21.json",
+          "pointer": "/exercises/2",
+          "note": "parameters.snippet mit fester Maske und expectedAnswer.output ('17\\n4') (Index 2)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-regularization.json",
+          "pointer": "/objectives",
+          "note": "Lernziel 2 (Dropout mit fester Maske) plus NumPy-Boolean-Indexierung aus c-numpy-basics."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePredictOutput",
+          "note": "Ausgabe wird whitespace-normalisiert verglichen; nur die Regel element-count-mismatch wird konsumiert."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w18-e3/w20-e3: Boolean-Masken-Indexierung als Kern statt Matmul- oder Batch-Zaehlung — eigene Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "lessonCandidates": [
+        {
+          "lessonId": "l-numpy-shape-contracts",
+          "confidence": "medium",
+          "reason": "Boolean-Masken und Indexierung sind Kern der NumPy-Lektion; die Dropout-Deutung kommt aus l-dl-regularization."
+        }
+      ],
+      "comparisonSourceIds": [
+        "w18-e3",
+        "w20-e3"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w21.json",
+      "sourceId": "w21-e4",
+      "currentDefinitionId": "w21-e4",
+      "legacyWeekId": "w21",
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-numpy-basics"
+      ],
+      "lessonIds": [
+        "l-dl-regularization"
+      ],
+      "learningObjective": "Die lernende Person implementiert dropout_forward mit fester Maske und invertierter 1/p-Skalierung sowie weight_decay_update als exakte Updateformel, beide mit ValueError-Vertraegen vor der Rechnung.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 2,
+      "proposedFamilyId": "deep-learning-regularization-primitives-contracts",
+      "proposedCaseType": "fixed-mask-dropout-weight-decay-update",
+      "proposedDifficultyProfile": "core-application",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen dropout_forward(x, mask, p) und weight_decay_update(w, grad, lr, lam)",
+        "comparison": "assert-basierte __check-Tests gegen exakte Werte, Skalierung, p=1-Identitaet und Fehlervertraege",
+        "tolerance": "tests (np.allclose bzw. exakte Werte)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver implementiert np.where(m, x/p, 0.0) mit Vertraegen und w − lr·(g + λ·w) fuer Array und Skalar; der Test prueft exakte Werte, 0/1-Masken und Fehlerfaelle.",
+        "testEvidence": [
+          "content/exercises/w21.json /exercises/3 parameters.tests — exakte Skalierungswerte, p=1-Identitaet, vier ValueError-Faelle",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — browserfaehige Teilkompetenz Dropout-Forward mit fester Maske (ADR-Punkt 7)",
+          "assets/js/core/graders.js — pyodide-Vertrag mit numpy-Paket"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Regularisierungs-Primitive ohne Trainingsschleife; migrate als eigene Familie, weil feste Maske mit invertierter Skalierung und Decay-Term im Lernratenargument eigene Kernloesungswege sind.",
+      "preservedDidacticContent": {
+        "solutionPath": "dropout: Maske als bool lesen, Form und p ∈ (0,1] pruefen, np.where(m, x/p, 0.0); weight_decay: w − lr·(g + λ·w) mit float fuer Skalare.",
+        "errorPatterns": [
+          "mit p statt 1/p skaliert",
+          "Decay-Term ausserhalb des Lernraten-Faktors",
+          "Vertraege erst nach der Berechnung geprueft"
+        ],
+        "representation": "Python-Code mit zwei Funktionen, 0/1-Maskenakzeptanz und Array-/Skalar-Dualitaet.",
+        "transferDemand": "Invertierte Skalierung und Decay-Term-Platzierung auf neue Parameterwerte uebertragen und Grenzfaelle (p = 1, λ = 0) pruefen.",
+        "difficultyRationale": "Tier 2: zwei Primitive mit je einem Vertrag plus Grenzfallidentitaet.",
+        "uniqueElements": [
+          "feste Maske statt Zufallsziehung (ADR-0013-Punkt 7)",
+          "Decay-Term innerhalb des Lernratenfaktors",
+          "p = 1 als Identitaetstest"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w21-e4",
+        "requiredAction": "Attempt-Definition-ID w21-e4 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w21.json",
+          "pointer": "/exercises/3",
+          "note": "Tests pruefen Skalierung 1/p, exakte Null fuer Gedropptes, 0/1-Masken und den Decay-Term im lr-Faktor (Index 3)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-regularization.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 1-2 der Lektion (Weight-Decay-Term, Dropout mit fester Maske und invertierter Skalierung)."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        },
+        {
+          "kind": "comparison",
+          "file": "research/streamlining/s4a/deep-learning.json",
+          "pointer": "n/a",
+          "note": "Abgrenzung zu w21-e1 (Semantik) und w21-e6 (Ablation): hier Primitive mit Vertraegen, kein Training und keine Ablation — eigene Familie."
+        }
+      ],
+      "humanReviewRequired": false,
+      "humanReviewReasons": [],
+      "comparisonSourceIds": [
+        "w21-e1",
+        "w21-e6"
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w21.json",
+      "sourceId": "w21-e5",
+      "currentDefinitionId": "w21-e5",
+      "legacyWeekId": "w21",
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-ml-cv"
+      ],
+      "lessonIds": [
+        "l-dl-regularization"
+      ],
+      "learningObjective": "Die lernende Person implementiert die Early-Stopping-Patience-Regel (beste Epoche, Gleichstand frueh, Abbruch bei i − best > patience) und einen wertexakten Save/Load-Roundtrip ueber JSON-faehige Zustandsdictionaries.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 3,
+      "proposedFamilyId": "deep-learning-early-stopping-state-roundtrip",
+      "proposedCaseType": "patience-scan-json-roundtrip",
+      "proposedDifficultyProfile": "advanced-transfer",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen early_stop_epoch(val_losses, patience), to_state(model), from_state(state)",
+        "comparison": "assert-basierte __check-Tests auf fuenf Kurven, Roundtrip-Exaktheit, dtype float64 und json.dumps",
+        "tolerance": "tests (exakte int- und array_equal-Vergleiche)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver implementiert den Patience-Scan (strikte Verbesserung, frueher Index bei Gleichstand, Abbruch i − best > patience) und tolist()/asarray-Roundtrip.",
+        "testEvidence": [
+          "content/exercises/w21.json /exercises/4 parameters.tests — fuenf Kurvenfaelle inkl. patience=0 und Gleichstand",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — W21: Save/Load als browserfaehige Teilkompetenz, kein Vortaeuschungsprojekt",
+          "assets/js/core/graders.js — pyodide-Vertrag mit json-Import im Test"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Early Stopping plus Zustandsserialisierung als Plattform-relevante Persistenzpraxis; migrate als eigene Familie, weil Patience-Regel und Roundtrip-Vertrag keinen Gradienten oder Trainingsschritt enthalten.",
+      "preservedDidacticContent": {
+        "solutionPath": "Ein Lauf mit best-Index: nur strikt kleinere Verluste setzen best weiter, Abbruch wenn i − best > patience, sonst globaler Argmin; to_state via arr.tolist(), from_state via np.asarray(dtype=float64).",
+        "errorPatterns": [
+          "Gleichstand zaehlt als Verbesserung und verschiebt die beste Epoche",
+          "patience-Grenze um eins daneben (>= statt >)",
+          "Arrays ohne tolist in den Zustand gelegt"
+        ],
+        "representation": "Python-Code mit Index-Scan ueber eine Verlustliste und Dict-zu-Dict-Konvertierung.",
+        "transferDemand": "Abbruchregel (mehr als patience Epochen ohne Verbesserung) auf neue Kurven uebertragen und JSON-Roundtrip-Eigenschaft als Vertrag verstehen.",
+        "difficultyRationale": "Tier 3: Off-by-one-Gefahr in der Patience-Regel plus exakter Roundtrip-Vertrag.",
+        "uniqueElements": [
+          "Gleichstand haelt die fruehere Epoche",
+          "Abbruch i − best > patience",
+          "Zustand als tolist()/asarray-Roundtrip mit json.dumps-Nachweis"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w21-e5",
+        "requiredAction": "Attempt-Definition-ID w21-e5 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Early Stopping und Save/Load sind zwei Teilfaehigkeiten in einer Aufgabe; die Familiengrenze ist eine Abwaegung.",
+          "resolution": "Eine Familie vorgeschlagen, weil beide Teile denselben deterministischen Scan-/Roundtrip-Vertrag teilen; Aufspaltung im Review pruefen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w21.json",
+          "pointer": "/exercises/4",
+          "note": "Tests decken fuenf Patience-Faelle und den zweistufigen Roundtrip ab (Index 4)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-regularization.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 4-5 der Lektion (Early Stopping mit Patience, Zustaende speichern/laden) traegen die Aufgabe."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": true,
+      "humanReviewReasons": [
+        "Die Aufgabe bündelt Early-Stopping-Regel und Save/Load; bei der Extraktion ist zu klären, ob beide Teilfaehigkeiten in kanonische Definitionen getrennt werden, und ob der Zustandsvertrag an die Plattform-Persistenzkonventionen (JSON-Export) angepasst werden muss."
+      ]
+    },
+    {
+      "sourceKind": "legacy-week-exercise",
+      "sourceFile": "content/exercises/w21.json",
+      "sourceId": "w21-e6",
+      "currentDefinitionId": "w21-e6",
+      "legacyWeekId": "w21",
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-ml-cv"
+      ],
+      "lessonIds": [
+        "l-dl-regularization"
+      ],
+      "learningObjective": "Die lernende Person fuehrt eine faire Ablation von Weight Decay durch: zweimal train_decay mit identischem Seed und Daten, nur lambda unterscheidet sich, und vergleicht Gewichtsnormen und Endverluste als floats.",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "generatorId": null,
+      "referenceSolverId": null,
+      "currentDifficulty": 4,
+      "proposedFamilyId": "deep-learning-fair-ablation-weight-decay",
+      "proposedCaseType": "same-seed-lambda-zero-comparison",
+      "proposedDifficultyProfile": "final-boss-synthesis",
+      "answerContract": {
+        "kind": "pyodide-test-suite",
+        "inputShape": "Python-Funktionen train_decay(X, y, lam, lr, epochs, seed) und compare_decay(X, y, lam, lr, epochs, seed)",
+        "comparison": "assert-basierte __check-Tests: Determinismus, lam=0 = Plain-Lauf, kleinere Norm mit Decay, fallende Verlaeufe, float-Typen",
+        "tolerance": "tests (1e-12 bzw. exakte Vergleiche)"
+      },
+      "solverContract": {
+        "kind": "reference-solver",
+        "authoritative": true,
+        "contract": "expectedAnswer.referenceSolver trennt reinen MSE in der Historie vom Gradienten mit lam·w und ruft train_decay zweimal mit demselben Seed auf; Normen und Endverluste als echte floats.",
+        "testEvidence": [
+          "content/exercises/w21.json /exercises/5 parameters.tests — Determinismus, lam=0-Identitaet, Normvergleich, float-Typen",
+          "docs/adr/0013-w18-w30-runtime-content-delivery.md — faire Ablation als W21-Kern, c-dl-regularization.requires um c-ml-cv ergaenzt",
+          "content/lessons/deep-learning/dl-regularization.json — Lernziel 3 (faire Ablationen: eine Variable aendern, Seed und Split fixieren)"
+        ]
+      },
+      "feedbackRuleCount": 3,
+      "feedbackConsumerStatus": "not-consumed",
+      "semanticClassification": "unique",
+      "targetAction": "migrate",
+      "targetRationale": "Faire Ablation mit bewusst getrennten Verlust- und Gradientendefinitionen; migrate als eigene Familie, weil die Ablationsdisziplin (nur lambda variiert) ein eigenes Kernloesungsweg-Konzept ist, kein weiteres Trainingsschritt-Vorkommen.",
+      "preservedDidacticContent": {
+        "solutionPath": "train_decay: loss_history notiert reinen MSE zu Epochenbeginn, Gradient enthaelt zusaetzlich lam·w; compare_decay ruft train_decay zweimal mit demselben Seed auf (lam vs. 0) und vergleicht Normen und Endverluste als floats.",
+        "errorPatterns": [
+          "Strafterm in den notierten Verlust eingebaut",
+          "fuer die Ablation verschiedene Seeds verwendet",
+          "Normen als np.float64 statt float zurueckgegeben"
+        ],
+        "representation": "Python-Code mit zwei Funktionen und Vier-Werte-Vergleichsdictionary als floats.",
+        "transferDemand": "Ablationsdisziplin (Seed und Daten fix, genau eine Variable geaendert) auf neue Regularisierungsfragen uebertragen.",
+        "difficultyRationale": "Tier 4: zwei gekoppelte Funktionen, getrennte Verlust-/Gradientendefinitionen und Ablationsdisziplin.",
+        "uniqueElements": [
+          "loss_history ohne Strafterm, Gradient mit lam·w",
+          "Ablation mit identischem Seed als Fairness-Vertrag",
+          "Normen als float statt np.float64"
+        ]
+      },
+      "persistenceCompatibility": {
+        "status": "preserve-id",
+        "currentAttemptDefinitionId": "w21-e6",
+        "requiredAction": "Attempt-Definition-ID w21-e6 unveraendert uebernehmen; der Legacy-Adapter bildet definitionId = exerciseId ab, eine Migration ist nicht erforderlich."
+      },
+      "uncertainty": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w20-e5 (gleicher SGD-Mechanismus ohne Strafterm) ist die Familienabgrenzung eine Abwaegung.",
+          "resolution": "Eigene Familie wegen L2-Gradiententerm und Ablationsvertrag; im S4A-Review bestaetigen."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "source-field",
+          "file": "content/exercises/w21.json",
+          "pointer": "/exercises/5",
+          "note": "Prompt trennt Verlust (ohne Strafterm) und Gradient (mit lam·w) explizit; Tests verlangen lam=0 = Plain-Lauf (Index 5)."
+        },
+        {
+          "kind": "lesson-match",
+          "file": "content/lessons/deep-learning/dl-regularization.json",
+          "pointer": "/objectives",
+          "note": "Lernziele 1 und 3 (Weight-Decay-Term, faire Ablation mit fixiertem Seed) decken die Aufgabe ab."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/core/graders.js",
+          "pointer": "/gradePython",
+          "note": "pyodide-Grader laesst parameters.tests mit __check im Lernenden-Namensraum laufen (numpy, Timeout 60 s); feedbackRules bleiben unkonsumiert."
+        },
+        {
+          "kind": "runtime-contract",
+          "file": "assets/js/runtime/pyodide_runner.js",
+          "pointer": "/run",
+          "note": "Worker-Vertrag: Lernendencode und Tests im selben Namensraum, packages aus parameters.packages, deterministischer Seed."
+        },
+        {
+          "kind": "persistence-contract",
+          "file": "assets/js/core/legacy_exercise_adapter.mjs",
+          "pointer": "/adaptLegacyExercise",
+          "note": "Adapter setzt definitionId = exerciseId; Attempts in IndexedDB referenzieren genau diese ID, keine Alias-Migration noetig."
+        }
+      ],
+      "humanReviewRequired": true,
+      "humanReviewReasons": [
+        "Final-Boss verbindet L2-Training und Ablationsmethodik; bei der Extraktion ist zu pruefen, ob train_decay und compare_decay in kanonische Definitionen getrennt werden, ohne die CV-Disziplin (c-ml-cv-Voraussetzung) zu verlieren."
+      ]
+    }
+  ]
+}

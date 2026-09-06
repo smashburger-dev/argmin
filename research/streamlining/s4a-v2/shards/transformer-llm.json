@@ -1,0 +1,2541 @@
+{
+  "shardId": "transformer-llm",
+  "baselineCommit": "1998d57",
+  "entries": [
+    {
+      "sourceId": "w22-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w22",
+      "currentDefinitionId": "w22-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-attention",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-tf-attention"
+        ],
+        "moduleHint": "Lektion Aufmerksamkeit (l-tf-attention): Konzeptfrage zur Rolle der Value-Matrix",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'c') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'd') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'a') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-attention-roles",
+        "summary": "Ordnet Tensorrollen den Aufmerksamkeitsrollen zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Attention-Rollen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Attention-Rollen.",
+          "errorHypotheses": [
+            "Attention-Rollen vertauscht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "attention-roles-value-role",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w22-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w22",
+      "currentDefinitionId": "w22-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-attention",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-attention"
+        ],
+        "moduleHint": "Lektion Aufmerksamkeit: Zahl verdeckter Maskenzellen als seedbare Rechenaufgabe",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Die Familie ist auf den Loesungsweg dieser Woche begrenzt; aehnliche Zahlenformate anderer Wochen teilen den Kernloesungsweg nicht.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Familie folgt dem Kernloesungsweg, nicht dem Wochenbezug; formula-count-from-construction ist wochenuebergreifend belegt (Referenzgenerator und Referenzsolver derselben Klasse, siehe canonical-families und content/exercises)."
+        },
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 100) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 55) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 90) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-count-from-construction",
+        "summary": "Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.",
+        "membershipEvidence": {
+          "solutionPath": "Die Konstruktionsregel des Objekts analysieren und die gesuchte Anzahl konstruktiv herleiten.",
+          "referenceModel": "Konstruktionsregel, die die Zielanzahl deterministisch festlegt.",
+          "errorHypotheses": [
+            "Konstruktionsregel nur teilweise angewendet",
+            "Fälle doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "attention-mask-cell-count",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w23-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w23",
+      "currentDefinitionId": "w23-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tokenizer",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-tokenizer"
+        ],
+        "moduleHint": "Lektion Tokenizer: Vokabulargröße nach Merges als seedbare Rechenaufgabe",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Die Familie ist auf den Loesungsweg dieser Woche begrenzt; aehnliche Zahlenformate anderer Wochen teilen den Kernloesungsweg nicht.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Familie folgt dem Kernloesungsweg, nicht dem Wochenbezug; formula-count-from-construction ist wochenuebergreifend belegt (Referenzgenerator und Referenzsolver derselben Klasse, siehe canonical-families und content/exercises)."
+        },
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 93) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 35) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 66) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-count-from-construction",
+        "summary": "Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.",
+        "membershipEvidence": {
+          "solutionPath": "Die Konstruktionsregel des Objekts analysieren und die gesuchte Anzahl konstruktiv herleiten.",
+          "referenceModel": "Konstruktionsregel, die die Zielanzahl deterministisch festlegt.",
+          "errorHypotheses": [
+            "Konstruktionsregel nur teilweise angewendet",
+            "Fälle doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "vocab-size-chars-merges-specials",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w23-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w23",
+      "currentDefinitionId": "w23-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tokenizer",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-tokenizer"
+        ],
+        "moduleHint": "Lektion Tokenizer: Vorhersage der encode-Ausgaben",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregel output-lines-mismatch hat keinen belegten Consumer im Grader - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "output-lines-mismatch-Regel erhaelt Zielpfad answer-note (Zeildiagnose des Predict-Graders, v2 lines-diff@k); element-count-mismatch bleibt Praedikat.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w23.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Nur element-count-mismatch wird vom Grader gelesen; die output-lines-mismatch-Regel hat keinen belegten Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        },
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (element-count-mismatch) in graders.js gradePredictOutput bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Zieldiagnose der erwarteten Ausgabezeilen aus dem deterministischen Predict-Grader (v2 lines-diff@k): Zwei Ausgabezeilen: erst die Liste, dann True/False."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "trace-encode-ids-outputs",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w23-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w23",
+      "currentDefinitionId": "w23-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tokenizer",
+        "coEvidence": [
+          "c-python-collections"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-tokenizer"
+        ],
+        "moduleHint": "Lektion Tokenizer: encode/decode-Rundreise mit Fehlervertrag",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Semantische Feedbackregeln (eos-per-word, trailing-space, special-token-accepted) ohne belegten Consumer - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln eos-per-word/trailing-space/special-token-accepted laufen als answer-note ueber den checkId-Kanal der __check-Tests.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w23.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        },
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer eos-per-word fehl und mappt auf diese Diagnose: <eos> steht genau einmal am Ende der ganzen Folge — nicht pro Wort."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer trailing-space fehl und mappt auf diese Diagnose: Der Marker trennt Wörter; er erzeugt kein zusätzliches Leerzeichen am Ende."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer special-token-accepted fehl und mappt auf diese Diagnose: <pad> und <unk> sind keine Inhalts-Tokens; im Datenstrom werfen sie ValueError."
+        }
+      ],
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-tokenize-roundtrip",
+        "summary": "Baut Zeichen-Tokenisierung mit Wort-Marker und Satz-Eos auf und stellt die decode-Umkehrung samt Fehlervertrag bereit.",
+        "membershipEvidence": {
+          "solutionPath": "Wörter an Leerzeichen trennen, je Wort Zeichen-IDs plus End-of-Word-Marker anhängen, genau ein Eos am Ende setzen; decode als Umkehrung mit Eos-Abbruch und ValueError bei leeren Wörtern, unbekannten Zeichen/IDs und Sondertokens im Datenstrom.",
+          "referenceModel": "Festes Vokabular mit deterministischer encode/decode-Abbildung und Auslösebedingungen für ungültige Eingaben.",
+          "errorHypotheses": [
+            "Eos pro Wort statt einmal am Ende gesetzt",
+            "Marker- oder Sondertoken-Semantik verletzt",
+            "Fehlerfälle stillschweigend übergangen statt ValueError"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "tokenizer-encode-decode-roundtrip",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w23-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w23",
+      "currentDefinitionId": "w23-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tokenizer",
+        "coEvidence": [
+          "c-python-collections"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-tf-tokenizer"
+        ],
+        "moduleHint": "Lektion Tokenizer: Mergetabelle in Tabellenreihenfolge anwenden",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln (table-reordered, overlapping-merged, marker-missing) ohne belegten Consumer - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln table-reordered/overlapping-merged/marker-missing laufen als answer-note ueber den checkId-Kanal der __check-Tests.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w23.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer table-reordered fehl und mappt auf diese Diagnose: Die Tabellenreihenfolge ist Priorität — nicht nach Häufigkeit oder Länge sortieren."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer overlapping-merged fehl und mappt auf diese Diagnose: Überlappende Vorkommen werden nicht doppelt gezählt: nach einem Merge springt der Index um 2."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer marker-missing fehl und mappt auf diese Diagnose: Der End-of-Word-Marker gehört zur Startfolge und bleibt das letzte Symbol."
+        }
+      ],
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-bpe-merge-apply",
+        "summary": "Wendet eine BPE-Mergetabelle in Tabellenreihenfolge mit links-nach-rechts nicht überlappenden Merges auf eine Symbolfolge an.",
+        "membershipEvidence": {
+          "solutionPath": "Symbolfolge mit End-of-Word-Marker starten und jedes Tabellenpaar in Reihenfolge durch genau einen links-nach-rechts-Lauf auf alle nicht überlappenden Vorkommen anwenden.",
+          "referenceModel": "Deterministischer Merge-Pass über gegebene Mergetabelle und Symbolfolge.",
+          "errorHypotheses": [
+            "Tabellenreihenfolge umsortiert",
+            "überlappende Vorkommen doppelt verschmolzen",
+            "End-of-Word-Marker unterschlagen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "bpe-encode-apply-merge-table",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w23-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w23",
+      "currentDefinitionId": "w23-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tokenizer",
+        "coEvidence": [
+          "c-python-collections"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-tf-tokenizer"
+        ],
+        "moduleHint": "Lektion Tokenizer (Final Boss): BPE-Merges mit gepinnten Regeln lernen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Semantische Feedbackregeln ohne belegten Consumer; Final-Boss-Familiegrenze gegen bpe-anwenden im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln tie-break-wrong/single-occurrence-merged/merge-order laufen als answer-note ueber den checkId-Kanal; Boss-Familiengrenze gegen transform-bpe-merge-apply als eigener Loesungsweg (Lernen vs. Anwenden) quellenbelegt entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w23.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer tie-break-wrong fehl und mappt auf diese Diagnose: Bei Gleichstand gewinnt das lexikographisch kleinste Paar — nicht das erste gefundene oder das kürzeste."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer single-occurrence-merged fehl und mappt auf diese Diagnose: Paare mit Häufigkeit 1 werden nicht gelernt: Abbruch, sobald das Maximum unter 2 fällt."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer merge-order fehl und mappt auf diese Diagnose: Pro Runde wird genau ein Paar gelernt und sofort überall angewandt, bevor neu gezählt wird."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-bpe-merge-learn",
+        "summary": "Lernt eine BPE-Mergetabelle als greedy Schleife: Paarhäufigkeiten zählen, häufigstes Paar mit lexikographischem Tie-Break wählen, überall anwenden, abbrechen.",
+        "membershipEvidence": {
+          "solutionPath": "Pro Runde alle benachbarten Symbolpaare zählen (jedes Wortvorkommen zählt), das häufigste Paar bestimmen (bei Gleichstand das lexikographisch kleinste Paar), es in jedem Wort auf alle Vorkommen anwenden und abbrechen, sobald kein Paar mehr mehrfach vorkommt.",
+          "referenceModel": "Greedy-Lernschleife mit deterministischer Auswahl- und Abbruchregel über Paarhäufigkeiten.",
+          "errorHypotheses": [
+            "Tie-Break nicht lexikographisch",
+            "Abbruch bei maximaler Häufigkeit unter 2 vergessen",
+            "Merges vor dem Neuzählen angewandt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "bpe-learn-merges-pinned-rules",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w22-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w22",
+      "currentDefinitionId": "w22-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-attention",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-attention"
+        ],
+        "moduleHint": "Lektion Aufmerksamkeit: Vorhersage stabiler Softmax-Ausgaben",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregel output-lines-mismatch hat keinen belegten Consumer im Grader - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "output-lines-mismatch-Regel erhaelt Zielpfad answer-note (Zeildiagnose, v2 lines-diff@k); element-count-mismatch bleibt Praedikat.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w22.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Nur element-count-mismatch wird vom Grader gelesen; die output-lines-mismatch-Regel hat keinen belegten Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        },
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (element-count-mismatch) in graders.js gradePredictOutput bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Zieldiagnose der erwarteten Ausgabezeilen aus dem deterministischen Predict-Grader (v2 lines-diff@k): Es sind zwei Ausgabezeilen — je eine pro print-Aufruf."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "trace-stable-softmax-outputs",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w22-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w22",
+      "currentDefinitionId": "w22-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-attention",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-attention"
+        ],
+        "moduleHint": "Lektion Aufmerksamkeit: Implementierung skalierte Dot-Product-Attention mit Maske",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln (mask-after-softmax, no-row-max, wrong-scale) haben keinen belegten Consumer - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln mask-after-softmax/no-row-max/wrong-scale laufen als answer-note ueber den checkId-Kanal der __check-Tests.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w22.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer mask-after-softmax fehl und mappt auf diese Diagnose: Die Maske muss vor dem Softmax wirken — nach der Normalisierung sind die Gewichte schon verteilt."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer no-row-max fehl und mappt auf diese Diagnose: Ohne Abziehen des Zeilenmaximums läuft exp bei großen Scores über — np.exp(s - s.max(axis=1, keepdims=True))."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer wrong-scale fehl und mappt auf diese Diagnose: Es wird durch np.sqrt(d_k) geteilt, nicht durch d_k."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-softmax-attention-mask",
+        "summary": "Berechnet Softmax-Aufmerksamkeit inklusive Maskierung der verbotenen Positionen.",
+        "membershipEvidence": {
+          "solutionPath": "Scores bilden, die Maske anwenden, mit Softmax normalisieren und die gewichteten Werte aggregieren.",
+          "referenceModel": "Softmax-Attention mit deterministischer Maskierungsregel.",
+          "errorHypotheses": [
+            "Maske nicht oder falsch angewendet",
+            "Über den falschen Raum normalisiert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "scaled-dot-attention-masked",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w22-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w22",
+      "currentDefinitionId": "w22-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-attention",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-tf-attention"
+        ],
+        "moduleHint": "Lektion Aufmerksamkeit: Maskenbausteine mit Vertragsprüfung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Vier Feedbackregeln ohne belegten Consumer; Migration muss Klaerung zum Regel-Consumer treffen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln partial-row-rejected/mask-shape-unchecked/overflow laufen als answer-note ueber den checkId-Kanal; eigene Familie construct-attention-mask (Konstruktion statt Score-Bildung) quellenbelegt entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w22.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer partial-row-rejected fehl und mappt auf diese Diagnose: Nur Zeilen ohne eine einzige sichtbare Zelle sind illegal — teilweise maskierte Zeilen sind der Normalfall."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer mask-shape-unchecked fehl und mappt auf diese Diagnose: Die Maskenform muss vor der Anwendung gegen S geprüft werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer overflow fehl und mappt auf diese Diagnose: Ohne Abziehen des Zeilenmaximums liefert exp(1000) inf — Stabilität ist Teil des Vertrags."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-attention-mask",
+        "summary": "Konstruiert Attention-Masken als boolesche Matrizen nach Sichtbarkeitsregeln und führt das vertragsgeprüfte, stabile maskierte Softmax aus.",
+        "membershipEvidence": {
+          "solutionPath": "Sichtbarkeitsregel je Maskentyp in eine boolesche Matrix umsetzen (kausal j<=i, Padding j<Laenge), Bereichs- und Formverträge mit ValueError absichern und die Score-Matrix zeilenweise stabil normalisieren.",
+          "referenceModel": "Maskenkonstruktionsregeln plus maskiertes stabiles Softmax mit deterministischen Verletzungsbedingungen (Bereich, Form, voll maskierte Zeile).",
+          "errorHypotheses": [
+            "Sichtbarkeitsregel falsch umgesetzt (z. B. teilweise maskierte Zeile abgelehnt)",
+            "Bereichs-, Form- oder Zeilenvertrag ungeprüft",
+            "Softmax ohne Zeilenmaximum unstabil"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "attention-mask-builders",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w22-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w22",
+      "currentDefinitionId": "w22-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-attention",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-tf-attention"
+        ],
+        "moduleHint": "Lektion Aufmerksamkeit (Final Boss): Multi-Head-Attention mit Kopfzerlegung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; Boss-Familie nur mit einem Mitglied - Grenze im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln whole-matrix-scale/concat-order/divisibility-unchecked laufen als answer-note ueber den checkId-Kanal; Boss-Singleton optimize-multi-head-attention wegen Zerlegungs-/Konkatenationsvertrag begruendet.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w22.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer whole-matrix-scale fehl und mappt auf diese Diagnose: Jeder Kopf wird durch sqrt(d_model/n_heads) geteilt, nicht durch sqrt(d_model)."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer concat-order fehl und mappt auf diese Diagnose: Die Kopfausgaben werden in Kopf-Reihenfolge konkateniert, bevor Wo multipliziert wird."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer divisibility-unchecked fehl und mappt auf diese Diagnose: d_model % n_heads != 0 muss ValueError werfen, bevor irgendein Kopf gerechnet wird."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-multi-head-attention",
+        "summary": "Zerlegt projizierte Q/K/V in Köpfe, rechnet je Kopf skalierte Attention mit Maske, konkateniert und projiziert die Ausgabe.",
+        "membershipEvidence": {
+          "solutionPath": "Teilbarkeitsvertrag prüfen (d_model % n_heads == 0, sonst ValueError), Projektionen in n_heads Köpfe der Breite d_model/n_heads zerlegen, je Kopf Scores mit sqrt(d_head) bilden, maskieren, stabil normalisieren und aggregieren, dann in Kopf-Reihenfolge konkatenieren und mit Wo projizieren.",
+          "referenceModel": "Multi-Head-Attention mit deterministischem Zerlegungs-, Skalierungs- und Konkatenationsvertrag.",
+          "errorHypotheses": [
+            "Skalierungsdivisor über die ganze Matrix statt pro Kopf gewählt",
+            "Konkatenation und Ausgabeprojektion falsch geordnet",
+            "d_model-%-n_heads-Vertrag ungeprüft"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "multi-head-attention-split-concat",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w24-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w24",
+      "currentDefinitionId": "w24-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-inference",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-tf-inference"
+        ],
+        "moduleHint": "Lektion Inferenz (l-tf-inference): Konzeptfrage Greedy Decoding",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'a') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'b') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'c') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-decoding-strategy",
+        "summary": "Ordnet ein Decodierverhalten der passenden Decodierstrategie zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Decodierstrategien einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Decodierstrategien.",
+          "errorHypotheses": [
+            "Decodierstrategien miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "greedy-argmax-decoding-choice",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w24-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w24",
+      "currentDefinitionId": "w24-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-inference",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-inference"
+        ],
+        "moduleHint": "Lektion Inferenz: Top-2-Sicherheitsabstand als seedbare Rechenaufgabe",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Die Familie ist auf den Loesungsweg dieser Woche begrenzt; aehnliche Zahlenformate anderer Wochen teilen den Kernloesungsweg nicht.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Familie folgt dem Kernloesungsweg, nicht dem Wochenbezug; formula-stat-from-table ist wochenuebergreifend belegt (Referenzgenerator und Referenzsolver derselben Klasse, siehe canonical-families und content/exercises)."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 89) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 62) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 27) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-stat-from-table",
+        "summary": "Berechnet eine Kennzahl aus einer gegebenen Datentabelle über eine geschlossene Formel.",
+        "membershipEvidence": {
+          "solutionPath": "Relevante Tabellenfelder auswählen und die statistische Formel darauf anwenden.",
+          "referenceModel": "Datentabelle plus statistische Kennfunktion.",
+          "errorHypotheses": [
+            "Falsche Tabellenfelder aggregiert",
+            "Formel auf falscher Teilmenge angewendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "greedy-top2-margin-gap",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w24-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w24",
+      "currentDefinitionId": "w24-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-inference",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-inference"
+        ],
+        "moduleHint": "Lektion Inferenz: Vorhersage der Dekodierschleifen-Ausgaben",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregel output-lines-mismatch ohne belegten Consumer - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "output-lines-mismatch-Regel erhaelt Zielpfad answer-note (Zeildiagnose, v2 lines-diff@k); element-count-mismatch bleibt Praedikat.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w24.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Nur element-count-mismatch wird vom Grader gelesen; die output-lines-mismatch-Regel hat keinen belegten Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (element-count-mismatch) in graders.js gradePredictOutput bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Zieldiagnose der erwarteten Ausgabezeilen aus dem deterministischen Predict-Grader (v2 lines-diff@k): Zwei Ausgabezeilen: erst die ID-Liste, dann der dekodierte String."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-decode-greedy-loop",
+        "summary": "Führt Greedy-Decoding als Schleife über die Decodeschritte aus.",
+        "membershipEvidence": {
+          "solutionPath": "Die Decodeschleife iterieren, jeweils gierig das nächste Token wählen und die Abbruchbedingung prüfen.",
+          "referenceModel": "Decodeloop mit deterministischer Greedy-Auswahlregel.",
+          "errorHypotheses": [
+            "Abbruchbedingung falsch",
+            "Tokenauswahl nicht gierig bzw. aus falscher Verteilung"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "trace-greedy-decode-outputs",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w24-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w24",
+      "currentDefinitionId": "w24-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-inference",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-inference"
+        ],
+        "moduleHint": "Lektion Inferenz: Greedy-Dekodierschleife mit Kopie- und Eos-Vertrag",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln (init-mutated, off-by-one, eos-dropped) ohne belegten Consumer - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln init-mutated/off-by-one/eos-dropped laufen als answer-note ueber den checkId-Kanal der __check-Tests.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w24.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer init-mutated fehl und mappt auf diese Diagnose: init_ids darf nie verändert werden — list(init_ids) vor der Schleife."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer off-by-one fehl und mappt auf diese Diagnose: Die Grenze ist exklusiv: angehängt wird nur, solange len(ids) < max_len gilt."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer eos-dropped fehl und mappt auf diese Diagnose: Das eos-Token bleibt in der Rückgabe stehen — es wird nicht entfernt."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-decode-greedy-loop",
+        "summary": "Führt Greedy-Decoding als Schleife über die Decodeschritte aus.",
+        "membershipEvidence": {
+          "solutionPath": "Die Decodeschleife iterieren, jeweils gierig das nächste Token wählen und die Abbruchbedingung prüfen.",
+          "referenceModel": "Decodeloop mit deterministischer Greedy-Auswahlregel.",
+          "errorHypotheses": [
+            "Abbruchbedingung falsch",
+            "Tokenauswahl nicht gierig bzw. aus falscher Verteilung"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "greedy-decode-loop-copy-eos",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w24-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w24",
+      "currentDefinitionId": "w24-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-inference",
+        "coEvidence": [
+          "c-dl-attention"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-tf-inference"
+        ],
+        "moduleHint": "Lektion Inferenz: Toy-Forward-Pass mit kausaler Attention",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; Abgrenzung zur Attention-Familie (w22-e4) im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln mask-missing/axis-mixup/scale-forgotten laufen als answer-note ueber den checkId-Kanal; Zugehoerigkeit zu optimize-softmax-attention-mask (Kern ist kausale Single-Head-Attention) quellenbelegt entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w24.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer mask-missing fehl und mappt auf diese Diagnose: Ohne kausale Maske sieht jedes Token die Zukunft — der Toy-Decoder verletzt dann seinen Vertrag."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer axis-mixup fehl und mappt auf diese Diagnose: Der Zeilenmittelwert ist ctx.mean(axis=0); axis=1 wäre der Positionsmittel pro Merkmal."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer scale-forgotten fehl und mappt auf diese Diagnose: Die Scores werden durch np.sqrt(d) geteilt — d ist die Embedding-Breite."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-softmax-attention-mask",
+        "summary": "Berechnet Softmax-Aufmerksamkeit inklusive Maskierung der verbotenen Positionen.",
+        "membershipEvidence": {
+          "solutionPath": "Scores bilden, die Maske anwenden, mit Softmax normalisieren und die gewichteten Werte aggregieren.",
+          "referenceModel": "Softmax-Attention mit deterministischer Maskierungsregel.",
+          "errorHypotheses": [
+            "Maske nicht oder falsch angewendet",
+            "Über den falschen Raum normalisiert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "toy-forward-causal-attention",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w24-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w24",
+      "currentDefinitionId": "w24-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-inference",
+        "coEvidence": [
+          "c-dl-attention",
+          "c-dl-tokenizer"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-tf-inference"
+        ],
+        "moduleHint": "Lektion Inferenz (Final Boss): Toy-Pipeline Tokenize-Attend-Decode",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; Pipeline-Familiegrenze gegen Baustein-Familien im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln static-context/seed-used/eos-off-by-one laufen als answer-note ueber den checkId-Kanal; Pipeline-Kompositum als eigene Familie compose-toy-inference-pipeline entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w24.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        },
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Die Pipeline nutzt Attention, Decoding und Tokenizer als Bausteine; Abgrenzung zu den Baustein-Familien ist begruendet, aber synthesis-nah.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Pipeline-Kompositum als eigene Familie compose-toy-inference-pipeline; Attention, Decoding und Tokenizer bleiben Baustein-Familien, der Loesungsweg ist die Komposition."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer static-context fehl und mappt auf diese Diagnose: Der Kontext wächst mit jedem Token: forward immer mit der vollständigen aktuellen Folge aufrufen."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer seed-used fehl und mappt auf diese Diagnose: Die Pipeline darf keinen Zufall enthalten — Determinismus ist hier Teil des Vertrags (Doppelaufruf-Test)."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer eos-off-by-one fehl und mappt auf diese Diagnose: max_len begrenzt die Gesamtfolge inklusive Start-Tokens; eos wird mitgezählt."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "compose-toy-inference-pipeline",
+        "summary": "Komponiert Tokenizer, Toy-Forward-Pass und Greedy-Dekodierung zu einer deterministischen Inferenz-Pipeline mit Rückdekodierung.",
+        "membershipEvidence": {
+          "solutionPath": "Text wortweise enkodieren, autoregressiv jeweils mit der vollständigen aktuellen Folge forwardieren, das argmax-Token anhängen bis Eos oder max_len und die ID-Folge zurückdekodieren.",
+          "referenceModel": "Deterministische Toy-Inferenz-Pipeline aus Bausteinen ohne Zufallsanteil.",
+          "errorHypotheses": [
+            "Kontext nicht mit vollständiger aktueller Folge gefüttert",
+            "Zufall oder Nichtdeterminismus eingebracht",
+            "max_len- oder Eos-Abrechnung verschoben"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "toy-pipeline-encode-attend-decode",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w25-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w25",
+      "currentDefinitionId": "w25-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-finetuning",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-tf-finetuning"
+        ],
+        "moduleHint": "Lektion Finetuning (l-tf-finetuning): Konzeptfrage LoRA-Kernidee",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'b') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'c') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'd') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-lora-tradeoff",
+        "summary": "Ordnet eine LoRA-Konfiguration ihrem Trade-off zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der LoRA-Trade-offs einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der LoRA-Trade-offs.",
+          "errorHypotheses": [
+            "Trade-off-Richtung vertauscht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "lora-frozen-base-lowrank-update",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w25-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w25",
+      "currentDefinitionId": "w25-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-finetuning",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-finetuning"
+        ],
+        "moduleHint": "Lektion Finetuning: LoRA-Parameterzahl der Faktoren als seedbare Rechenaufgabe",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Die Familie ist auf den Loesungsweg dieser Woche begrenzt; aehnliche Zahlenformate anderer Wochen teilen den Kernloesungsweg nicht.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Familie folgt dem Kernloesungsweg, nicht dem Wochenbezug; formula-count-from-construction ist wochenuebergreifend belegt (Referenzgenerator und Referenzsolver derselben Klasse, siehe canonical-families und content/exercises)."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 73216) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 592) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 832) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-count-from-construction",
+        "summary": "Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.",
+        "membershipEvidence": {
+          "solutionPath": "Die Konstruktionsregel des Objekts analysieren und die gesuchte Anzahl konstruktiv herleiten.",
+          "referenceModel": "Konstruktionsregel, die die Zielanzahl deterministisch festlegt.",
+          "errorHypotheses": [
+            "Konstruktionsregel nur teilweise angewendet",
+            "Fälle doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "lora-factor-param-count",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w25-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w25",
+      "currentDefinitionId": "w25-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-finetuning",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-finetuning"
+        ],
+        "moduleHint": "Lektion Finetuning: Vorhersage der Freeze-Logik",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregel output-lines-mismatch hat keinen belegten Consumer im Grader - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "output-lines-mismatch-Regel erhaelt Zielpfad answer-note (Zeildiagnose, v2 lines-diff@k); element-count-mismatch bleibt Praedikat.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w25.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Nur element-count-mismatch wird vom Grader gelesen; die output-lines-mismatch-Regel hat keinen belegten Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        },
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Zieldiagnose der erwarteten Ausgabezeilen aus dem deterministischen Predict-Grader (v2 lines-diff@k): Zwei Ausgabezeilen: erst die Anzahl trainierbarer Parameter, dann der erste eingefrorene Name."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (element-count-mismatch) in graders.js gradePredictOutput bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "trace-freeze-trainable-flags",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w25-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w25",
+      "currentDefinitionId": "w25-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-finetuning",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-finetuning"
+        ],
+        "moduleHint": "Lektion Finetuning: LoRA-Arithmetik mit Rang- und Formvertrag",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln (wrong-order, scale-missing, contracts-unchecked) ohne belegten Consumer - Migrationsentscheid noetig."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln wrong-order/scale-missing/contracts-unchecked laufen als answer-note ueber den checkId-Kanal; eigene Formel-Familie formula-lora-delta-apply statt validate-shape-contract (Formel dominiert, Vertrag ist Waechter) entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w25.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer wrong-order fehl und mappt auf diese Diagnose: B @ A liefert (d_out × d_in); A @ B hätte die Formen vertauscht."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer scale-missing fehl und mappt auf diese Diagnose: Der Faktor alpha/r gehört vor das Produkt — im Test ist er ganzzahlig, damit exakt geprüft werden kann."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer contracts-unchecked fehl und mappt auf diese Diagnose: Rang- und Formverletzungen müssen ValueError werfen, bevor gerechnet wird."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-lora-delta-apply",
+        "summary": "Wendet die LoRA-Delta-Formel (alpha/r)*B@A an und sichert Rang-, Form- und Dimensionsverträge mit ValueError ab.",
+        "membershipEvidence": {
+          "solutionPath": "Eingaben auf 2-d und Rang-Vertrag prüfen (ValueError bei Verletzung), Delta W = (alpha/r)*B@A berechnen und W + Delta W nur bei Formgleichheit zurückgeben.",
+          "referenceModel": "Geschlossene LoRA-Delta-Formel mit deterministischen Vertragsauslösebedingungen.",
+          "errorHypotheses": [
+            "Faktorreihenfolge B@A vertauscht",
+            "Skalierung alpha/r vergessen",
+            "Rang- oder Formvertrag ungeprüft"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "lora-delta-apply-rank-contracts",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w25-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w25",
+      "currentDefinitionId": "w25-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-finetuning",
+        "coEvidence": [
+          "c-dl-training"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-tf-finetuning"
+        ],
+        "moduleHint": "Lektion Finetuning: Head-Only-Feinabstimmung mit Gradientenabstieg",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; Schwellwert final < initial/2 ist Trainings-MSE, kein Val-Split - Einordnung im Review pruefen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln trunk-updated/mse-inside-loop/factor-wrong laufen als answer-note ueber den checkId-Kanal; Schwellwert final < initial/2 prueft Trainings-MSE wie im Quelltext belegt (kein Val-Split).",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w25.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer trunk-updated fehl und mappt auf diese Diagnose: Nur W2 wird aktualisiert — W1 bleibt byte-identisch (Freeze-Checksumme im Test)."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer mse-inside-loop fehl und mappt auf diese Diagnose: final_mse gehört nach die Schleife: aus dem finalen W2, nicht aus dem letzten Zwischenschritt."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer factor-wrong fehl und mappt auf diese Diagnose: Der Gradient trägt 2/n — ohne n teilst du durch die Beispielanzahl."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-gradient-update-rule",
+        "summary": "Wendet die Gradienten-Update-Regel an: Residuen bilden, Gradient formulieren, Update anwenden.",
+        "membershipEvidence": {
+          "solutionPath": "Residuen bilden, den Gradienten formulieren und das Update anwenden.",
+          "referenceModel": "Parametermodell mit Verlustfunktion und deterministischer Update-Regel.",
+          "errorHypotheses": [
+            "Vorzeichen des Gradienten falsch",
+            "Update auf die falschen Parameter angewendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "head-only-ft-frozen-features",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w25-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w25",
+      "currentDefinitionId": "w25-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-finetuning",
+        "coEvidence": [
+          "c-dl-autograd"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-tf-finetuning"
+        ],
+        "moduleHint": "Lektion Finetuning (Final Boss): LoRA-Training an eingefrorener Abbildung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; LoRA-Trainingsfamilie nur mit diesem Boss - Grenze im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln w-updated/sequential-updates/scale-in-gradient laufen als answer-note ueber den checkId-Kanal; Zuordnung zu optimize-gradient-update-rule (LoRA-Update ist GD auf benannten freien Parametern) entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w25.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer w-updated fehl und mappt auf diese Diagnose: W bleibt eingefroren (Checksumme im Test) — nur A und B erhalten Updates."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer sequential-updates fehl und mappt auf diese Diagnose: dA und dB aus den alten Werten beider Faktoren berechnen, dann beide aktualisieren."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer scale-in-gradient fehl und mappt auf diese Diagnose: Der Faktor alpha/r gehört in die Kettenregel-terme dA und dB (und in die Vorhersage)."
+        }
+      ],
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-gradient-update-rule",
+        "summary": "Wendet die Gradienten-Update-Regel an: Residuen bilden, Gradient formulieren, Update anwenden.",
+        "membershipEvidence": {
+          "solutionPath": "Residuen bilden, den Gradienten formulieren und das Update anwenden.",
+          "referenceModel": "Parametermodell mit Verlustfunktion und deterministischer Update-Regel.",
+          "errorHypotheses": [
+            "Vorzeichen des Gradienten falsch",
+            "Update auf die falschen Parameter angewendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "lora-fit-frozen-map",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w26-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w26",
+      "currentDefinitionId": "w26-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-papers",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-tf-papers"
+        ],
+        "moduleHint": "Lektion Papers (l-tf-papers): Konzeptfrage Lesart absolut vs. relativ",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'c') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'd') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'a') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-benchmark-reading",
+        "summary": "Ordnet einen Benchmark-Befund der richtigen Lesart zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Benchmark-Lesarten einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Benchmark-Lesarten.",
+          "errorHypotheses": [
+            "Benchmark-Lesarten miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "benchmark-absolute-vs-relative",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w26-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w26",
+      "currentDefinitionId": "w26-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-papers",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-papers"
+        ],
+        "moduleHint": "Lektion Papers: absoluter Zuwachs als seedbare Rechenaufgabe",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Die Familie ist auf den Loesungsweg dieser Woche begrenzt; aehnliche Zahlenformate anderer Wochen teilen den Kernloesungsweg nicht.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Familie folgt dem Kernloesungsweg, nicht dem Wochenbezug; formula-stat-from-table ist wochenuebergreifend belegt (Referenzgenerator und Referenzsolver derselben Klasse, siehe canonical-families und content/exercises)."
+        },
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w26-e3 traced dieselbe absolut/relativ-Unterscheidung als Code; Kernloesungsweg (Lesen vs. Tracing) und Antwortvertrag unterscheiden sich.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: getrennte Familien bestaetigt — w26-e2 als geschlossene Kennzahlformel (formula-stat-from-table), w26-e3 als Programm-Tracing (trace-assignment-state) mit anderem Antwortvertrag."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 80) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 28) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value === 108) in graders.js diagnoseNumeric bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-stat-from-table",
+        "summary": "Berechnet eine Kennzahl aus einer gegebenen Datentabelle über eine geschlossene Formel.",
+        "membershipEvidence": {
+          "solutionPath": "Relevante Tabellenfelder auswählen und die statistische Formel darauf anwenden.",
+          "referenceModel": "Datentabelle plus statistische Kennfunktion.",
+          "errorHypotheses": [
+            "Falsche Tabellenfelder aggregiert",
+            "Formel auf falscher Teilmenge angewendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "system-gain-absolute-delta",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w26-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w26",
+      "currentDefinitionId": "w26-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-papers",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-papers"
+        ],
+        "moduleHint": "Lektion Papers: Code-Tracing absoluter vs. relativer Gewinn",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value:a1+value:r1) in graders.js gradeCodeTrace bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (value:r2) in graders.js gradeCodeTrace bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "trace-absolute-relative-gains",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w26-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w26",
+      "currentDefinitionId": "w26-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-papers",
+        "coEvidence": [
+          "c-ml-cv"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-tf-papers"
+        ],
+        "moduleHint": "Lektion Papers: Systemvergleich mit relativem Gewinn in Prozent",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; Baseline-0-Konvention als Fachentscheid im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln relative-unrounded/zero-baseline-crash/row-schema-unchecked laufen als answer-note ueber den checkId-Kanal; Baseline-0-Konvention (relative_percent = 0) ist im Quelltext fixiert.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w26.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer relative-unrounded fehl und mappt auf diese Diagnose: relative_percent ist eine ganze Zahl: int(round(100·delta/baseline))."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer zero-baseline-crash fehl und mappt auf diese Diagnose: baseline_correct == 0 ist per Definition relative_percent = 0 — keine Division durch null."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer row-schema-unchecked fehl und mappt auf diese Diagnose: Zeilen mit anderer Länge als 2 werfen ValueError."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-ratio-percent-metric",
+        "summary": "Wendet Verhältnis- und Prozentmetriken als geschlossene Formel auf gezählte Größen an.",
+        "membershipEvidence": {
+          "solutionPath": "Zähler und Nenner bestimmen, die Verhältnisformel anwenden und in Prozent bzw. den Metrikwert überführen.",
+          "referenceModel": "Verhältnismetrik mit wohldefiniertem Zähler-Nenner-Verhältnis.",
+          "errorHypotheses": [
+            "Falscher Nenner gewählt",
+            "Prozentumrechnung oder Rundung falsch"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "compare-systems-relative-percent",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w26-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w26",
+      "currentDefinitionId": "w26-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-papers",
+        "coEvidence": []
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-tf-papers"
+        ],
+        "moduleHint": "Lektion Papers: Paper-Karten strukturell prüfen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; higher-is-better-Annahme der Stuetzungsregel im Review fachlich bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln order-ignored/bool-accepted/equal-supported laufen als answer-note ueber den checkId-Kanal; Zuordnung zu validate-required-field-raise (Verletzungslisten missing_fields/unsupported_claims) entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w26.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer order-ignored fehl und mappt auf diese Diagnose: missing_fields folgt der festen Reihenfolge frage, methode, datensatz, ergebnis, limitation."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer bool-accepted fehl und mappt auf diese Diagnose: True/False sind keine Bewertungszahlen — isinstance(x, bool) muss ausgeschlossen werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer equal-supported fehl und mappt auf diese Diagnose: system > baseline ist die Stützungsbedingung; Gleichstand oder Verschlechterung stützt keinen Claim."
+        }
+      ],
+      "familyGroup": "validate-contract",
+      "cognitiveFamily": {
+        "familyId": "validate-required-field-raise",
+        "summary": "Prüft Datensätze oder Objekte auf Pflichtfelder und hebt bei Verletzung einen Fehler aus.",
+        "membershipEvidence": {
+          "solutionPath": "Pflichtfelder prüfen und bei Fehlen deterministisch den Fehler auslösen bzw. die Verletzungsliste erzeugen.",
+          "referenceModel": "Pflichtfeld-Vertrag mit deterministischer Auslösebedingung.",
+          "errorHypotheses": [
+            "Pflichtfeld übersehen",
+            "Fehlertyp oder Auslösezeitpunkt falsch"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "paper-card-fields-and-claims",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w26-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w26",
+      "currentDefinitionId": "w26-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-papers",
+        "coEvidence": [
+          "c-ml-cv"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-tf-papers"
+        ],
+        "moduleHint": "Lektion Papers (Final Boss): Evidenztabelle sortieren und Verdikt ableiten",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne belegten Consumer; Boss-Familiegrenze gegen metrikvergleich-implementieren im Review bestaetigen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Runtime",
+        "decision": "Regeln sort-ascending/tie-ignored/direction-ignored laufen als answer-note ueber den checkId-Kanal; Boss-Singleton rank-evidence-table als eigener Sortier- und Verdiktweg entschieden.",
+        "evidence": "feedbackDispositions dieser Quelle decken alle v1-Regelindizes mit Zielpfad; Beleg: content/exercises/w26.json (feedbackRules, referenceSolver, __check-Tests) und assets/js/core/graders.js (gradePython/gradePredictOutput lesen diese Regeln heute nicht).",
+        "latestGate": "S4C-Runtime-Vertragstest (checkId-Kanal)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die semantischen Regel-IDs der python-code-Aufgabe haben keinen belegten Consumer im Grader oder in der UI.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Aufgeloest: jedes unkonsumierte Vorkommen erhaelt in feedbackDispositions den Zielpfad answer-note (checkId-Kanal); der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal der code-test- und output-predict-lines-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "feedbackDispositions dieser Quelle decken alle Regelindizes; assets/js/core/graders.js (gradePython/gradePredictOutput) liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        },
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Tabelle aggregiert die Lesarten aus w26-e2/e3/e4; Abgrenzung als eigener Sortier- und Verdikt-Loesungsweg ist begruendet.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: eigener Sortier- und Verdiktloesungsweg rank-evidence-table; die Formeln aus w26-e2/e4 sind Bausteine, nicht der Weg."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer sort-ascending fehl und mappt auf diese Diagnose: Absteigend nach relativem Gewinn sortieren — der stärkste relative Zugewinn steht zuerst."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer tie-ignored fehl und mappt auf diese Diagnose: Bei gleichem relative_pct entscheidet paperId aufsteigend."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: __check-Test schlaegt fuer direction-ignored fehl und mappt auf diese Diagnose: Das verdict folgt dem Zahlenvergleich — kleiner-is-besser-Metriken zeigen sich hier als „regressed“ und müssen"
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "rank-evidence-table",
+        "summary": "Baut eine Evidenztabelle mit absolutem und relativem Gewinn samt Verdikt und sortiert sie nach fester Regel.",
+        "membershipEvidence": {
+          "solutionPath": "Je Paper absolute Differenz und gerundeten relativen Gewinn berechnen (Baseline 0 per Definition 0), das Verdikt aus dem Zahlenvergleich ableiten und nach relativem Gewinn absteigend mit paperId-Tie-Break aufsteigend sortieren.",
+          "referenceModel": "Geschlossene Kennzahlformeln plus deterministische Sortier- und Verdiktregel über der Papertabelle.",
+          "errorHypotheses": [
+            "Sortierrichtung oder Tie-Break vertauscht",
+            "Verdikt ohne Zahlenvergleich vergeben",
+            "Relativformel ohne Rundung oder ohne Null-Baseline-Schutz"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "evidence-table-rank-verdict",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w23-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w23",
+      "currentDefinitionId": "w23-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tokenizer",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-tf-tokenizer"
+        ],
+        "moduleHint": "Lektion Tokenizer (l-tf-tokenizer): Konzeptfrage Subword-Prinzip",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Lektion verlinkt keine Aufgabenzuordnung; die Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Placement- und Lektionsbindung ist S4B-Aufgabe; der Shard liefert lessonIds und moduleHint als Startbasis, die Kanonisierung uebernimmt der Modulentwurf.",
+          "owner": "S4B-Binding",
+          "decision": "Modul- und Lektionszuordnung uber Kompetenz-Deckung (content/competencies/core.json) und Curriculum-Units festlegen; lessonIds bleiben Migrationshinweis ohne Rueckverlinkung.",
+          "evidence": "v1-Record selbst: Lektion verlinkt keine Aufgabenzuordnung; Zuordnung laeuft ueber Kompetenz und Curriculum-Units.",
+          "latestGate": "S4B-Modulentwurf"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'd') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'a') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Konsumierte Praedikatregel (choice === 'b') in graders.js gradeChoice bleibt verhaltensstabil in der geschlossenen Grammatik der Antwortbewertung."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-subword-principle",
+        "summary": "Ordnet ein Tokenisierungsverhalten dem passenden Subword-Prinzip zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Subword-Prinzipien einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Subword-Prinzipien.",
+          "errorHypotheses": [
+            "Subword-Prinzipien miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "subword-oov-split-principle",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    }
+  ]
+}

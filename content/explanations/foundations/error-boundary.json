@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "explanationId": "x-error-boundary",
+  "version": 2,
+  "locale": "de",
+  "title": "Erwarteten Fehler an der Entscheidungsgrenze behandeln",
+  "competencyIds": ["c-python-files-errors"],
+  "diagnosticCodes": ["exception-boundary", "wrong-order"],
+  "helpLevel": 2,
+  "body": "Fange nur den Fehlertyp, den ungültige Eingabedaten erwartbar auslösen.",
+  "steps": ["Benenne den riskanten Parsingaufruf.", "Benenne den erwarteten Fehlertyp.", "Suche die Ebene mit Zeilen- und Spaltenkontext.", "Erzeuge dort einen präzisen Issue-Eintrag."],
+  "example": "ValueError aus parse_age wird beim Aufbau des Zeilen-Issues behandelt.",
+  "counterexample": "except Exception: pass verschluckt auch Tipp- und Programmierfehler.",
+  "sourceRefs": ["py-tutorial-official-3.14"],
+  "followUpActivityIds": ["f-files-parsons-01"],
+  "revealsSolution": false,
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

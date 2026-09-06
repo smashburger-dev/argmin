@@ -1,0 +1,1492 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "sourceId": "mml-book",
+      "title": "Mathematics for Machine Learning",
+      "author": "Deisenroth, Faisal, Ong",
+      "canonicalUrl": "https://mml-book.github.io/",
+      "localFile": "../mml-book.pdf",
+      "localSha256": "3f87b70c64a35d30_full_in_docs_pdf-catalog.json",
+      "edition": "Draft 2024-01-15, Cambridge University Press",
+      "contentClass": "private",
+      "license": "no open license — free to view/download for personal use only, no redistribution, no derivative works",
+      "attribution": "© 2024 M. P. Deisenroth, A. A. Faisal, C. S. Ong",
+      "allowedUses": [
+        "private reading",
+        "page anchors",
+        "concept lineage"
+      ],
+      "chapters": [
+        "2 Linear Algebra (gedruckt S. 17-69)"
+      ],
+      "weeks": [
+        5,
+        6,
+        7,
+        8,
+        10,
+        14,
+        15,
+        16
+      ],
+      "extractionStatus": "audited (docs/pdf-catalog.json, mml-chapter-map.json)",
+      "qaStatus": "page-anchors verified"
+    },
+    {
+      "sourceId": "mit-ocw-18-06sc",
+      "title": "MIT 18.06SC Linear Algebra, Fall 2011",
+      "author": "MIT OpenCourseWare / Gilbert Strang",
+      "canonicalUrl": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
+      "localFile": null,
+      "contentClass": "link-only",
+      "license": "CC BY-NC-SA 4.0 (ocw.mit.edu/terms, wörtlich verifiziert 2026-08-31: „users may not sell, profit from, or commercialize OCW materials“); NC verletzt die Public-Bedingung kommerzielle Nutzung",
+      "attribution": "© MIT OpenCourseWare, Prof. Gilbert Strang. Lizenz: https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "local private study"
+      ],
+      "chapters": [
+        "Lecture 1: The Geometry of Linear Equations",
+        "Lecture 2: Elimination with Matrices",
+        "Lecture 3: Multiplication and Inverse Matrices"
+      ],
+      "weeks": [
+        5,
+        8,
+        10,
+        16
+      ],
+      "extractionStatus": "pending (Transkript-Pipeline geplant)",
+      "qaStatus": "Reklassifiziert open→link-only nach Primärbeleg 2026-08-31 (ADR-0014 Teil 4)"
+    },
+    {
+      "sourceId": "serlo-mathe",
+      "title": "Serlo Mathematik",
+      "author": "Serlo Education e. V. und Autor:innen",
+      "canonicalUrl": "https://de.serlo.org/mathe",
+      "contentClass": "link-only",
+      "license": "CC BY-SA 4.0 (de.serlo.org/license/detail/1, verifiziert 2026-08-31); ShareAlike kollidiert mit CC-BY-4.0-Sammelcontent",
+      "attribution": "Serlo",
+      "allowedUses": [
+        "linking",
+        "attributed reuse"
+      ],
+      "weeks": [
+        1,
+        5
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Reklassifiziert open→link-only nach Primärbeleg 2026-08-31 (ADR-0014 Teil 4)"
+    },
+    {
+      "sourceId": "wikibooks-mfnf",
+      "title": "Mathe für Nicht-Freaks",
+      "author": "Wikibooks/Serlo-Community",
+      "canonicalUrl": "https://de.wikibooks.org/wiki/Mathe_f%C3%BCr_Nicht_Freaks",
+      "contentClass": "link-only",
+      "license": "CC BY-SA 4.0 (Live-Footer de.wikibooks.org, einziger CC-Link by-sa/4.0, verifiziert 2026-08-31; lokale Staging-Evidenz nannte 3.0 — SA bleibt in jedem Fall)",
+      "attribution": "Wikibooks-Autor:innen",
+      "allowedUses": [
+        "linking",
+        "attributed reuse"
+      ],
+      "weeks": [
+        1,
+        5,
+        7
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Reklassifiziert open→link-only nach Primärbeleg 2026-08-31 (ADR-0014 Teil 4)"
+    },
+    {
+      "sourceId": "ombplus",
+      "title": "OMB+ Mathematik-Brückenkurs",
+      "author": "OMB+-Konsortium / integral-learning GmbH",
+      "canonicalUrl": "https://www.ombplus.de/ombplus/public/index.html",
+      "contentClass": "private",
+      "license": "no open content license (Terms of Use: free self-study)",
+      "allowedUses": [
+        "linking",
+        "personal use"
+      ],
+      "weeks": [
+        1
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "absence of license confirmed"
+    },
+    {
+      "sourceId": "openhpi-mathe2023",
+      "title": "openHPI Vorkurs Mathematik",
+      "author": "Hasso-Plattner-Institut (Dr. Timo Kötzing)",
+      "canonicalUrl": "https://open.hpi.de/courses/mathe2023",
+      "contentClass": "private",
+      "license": "no open license found; registration required",
+      "allowedUses": [
+        "linking",
+        "personal enrollment"
+      ],
+      "weeks": [
+        1
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "absence of license confirmed"
+    },
+    {
+      "sourceId": "linalg-ch",
+      "title": "linalg.ch Übungssammlung (Begleitseite Springer-Lehrbuch)",
+      "author": "Andreas Müller, OST",
+      "canonicalUrl": "https://linalg.ch/",
+      "contentClass": "private",
+      "license": "no license statement found",
+      "allowedUses": [
+        "private exercise use",
+        "linking"
+      ],
+      "weeks": [
+        5
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "identity confirmed, license absent"
+    },
+    {
+      "sourceId": "devries-ml",
+      "title": "Maschinelles Lernen (deutschsprachiges Skript)",
+      "author": "Andreas de Vries, FH Südwestfalen",
+      "canonicalUrl": "https://www.fh-swf.de/media/neu_np/fb_tbw_1/dozentinnen_2/professorinnen_5/devries_1/Maschinelles-Lernen.pdf",
+      "contentClass": "open",
+      "license": "CC BY 4.0 (wörtlich im PDF)",
+      "attribution": "Andreas de Vries",
+      "allowedUses": [
+        "attributed reuse"
+      ],
+      "weeks": [
+        8,
+        9,
+        10,
+        11,
+        13,
+        14
+      ],
+      "extractionStatus": "pending (ab Phase 3)",
+      "qaStatus": "license quoted from PDF"
+    },
+    {
+      "sourceId": "dlwp-book",
+      "title": "Deep Learning with Python, 3rd ed. (Kostenlose Onlinefassung)",
+      "author": "François Chollet, Manning",
+      "canonicalUrl": "https://deeplearningwithpython.io/chapters/",
+      "contentClass": "private",
+      "license": "free to read; no open text license (notebooks repo: MIT)",
+      "allowedUses": [
+        "concept companion",
+        "linking"
+      ],
+      "weeks": [
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "license situation confirmed"
+    },
+    {
+      "sourceId": "numpy-docs",
+      "title": "NumPy documentation — absolute basics",
+      "author": "NumPy contributors",
+      "canonicalUrl": "https://numpy.org/doc/stable/user/absolute_beginners.html",
+      "contentClass": "open",
+      "license": "BSD-3-Clause NumPy license (numpy.org/doc/stable/license.html erreichbar, verifiziert 2026-08-31; vorherige 404-Annahme aus ADR-0013 überholt)",
+      "allowedUses": [
+        "reference"
+      ],
+      "weeks": [
+        5,
+        6,
+        8,
+        10
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "official docs"
+    },
+    {
+      "sourceId": "dair-math-ml",
+      "title": "Mathematics-for-ML (Linkliste)",
+      "author": "DAIR.AI",
+      "canonicalUrl": "https://github.com/dair-ai/Mathematics-for-ML",
+      "contentClass": "private",
+      "license": "no LICENSE file",
+      "allowedUses": [
+        "research index",
+        "linking"
+      ],
+      "weeks": [
+        5
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "absence of license confirmed"
+    },
+    {
+      "sourceId": "ki-evidenzsynthese",
+      "title": "KI-Lernpfad: Evidenzsynthese und 9-Monats-Roadmap",
+      "author": "Noa (Arbeitsdatei)",
+      "canonicalUrl": "local",
+      "localFile": "../KI_Lernpfad_Evidenzsynthese.md",
+      "contentClass": "private",
+      "license": "own working document",
+      "allowedUses": [
+        "curriculum derivation"
+      ],
+      "weeks": "all",
+      "extractionStatus": "used",
+      "qaStatus": "basis of curriculum.json"
+    },
+    {
+      "sourceId": "generated",
+      "title": "Plattform-eigene Aufgaben und Lösungen",
+      "author": "KI-Lernplattform Authoring (2026)",
+      "canonicalUrl": "local",
+      "contentClass": "generated",
+      "license": "CC BY 4.0",
+      "allowedUses": [
+        "public build"
+      ],
+      "weeks": [
+        5
+      ],
+      "extractionStatus": "generated + generator-tested",
+      "qaStatus": "see exercise validationStatus"
+    },
+    {
+      "sourceId": "murphy-pml",
+      "title": "Probabilistic Machine Learning: An Introduction",
+      "author": "Kevin Patrick Murphy",
+      "canonicalUrl": "https://probml.github.io/pml-book/",
+      "contentClass": "private",
+      "license": "CC BY-NC-ND (PDF-Seite 4, wörtlich zitiert im Staging-Register)",
+      "attribution": "© Kevin Patrick Murphy",
+      "allowedUses": [
+        "private reading",
+        "page anchors",
+        "concept lineage"
+      ],
+      "weeks": [
+        10,
+        11,
+        14
+      ],
+      "extractionStatus": "page-anchored extracts ch10-11 (staging)",
+      "qaStatus": "license quote verified at PDF page 4"
+    },
+    {
+      "sourceId": "math-deep",
+      "title": "Algebra, Topology, Differential Calculus, and Optimization Theory…",
+      "author": "Jean Gallier, Jocelyn Quaintance",
+      "contentClass": "private",
+      "license": "no license statement found (title-page copyright only); full-text check 2026-08-25",
+      "attribution": "© Jean Gallier",
+      "allowedUses": [
+        "concept reference"
+      ],
+      "weeks": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "extractionStatus": "page-anchored extracts §3+§39 (staging)",
+      "qaStatus": "absence of license confirmed by full-text search"
+    },
+    {
+      "sourceId": "integration-methods",
+      "title": "Modern Integration Methods (COMP0168 notes, draft)",
+      "author": "Marc Peter Deisenroth (UCL)",
+      "contentClass": "private",
+      "license": "no copyright/license/imprint notice in document (full-text check 2026-08-25)",
+      "attribution": "Marc Peter Deisenroth",
+      "allowedUses": [
+        "private study only"
+      ],
+      "weeks": [
+        7
+      ],
+      "extractionStatus": "page-anchored extract, full document (staging)",
+      "qaStatus": "absence of license confirmed by full-text search"
+    },
+    {
+      "sourceId": "py-tutorial-official-3.14",
+      "title": "The Python Tutorial (offizielle Doku, 3.14) — Kernkapitel W1-W4",
+      "author": "Python Software Foundation",
+      "canonicalUrl": "https://docs.python.org/3.14/tutorial/",
+      "localPath": "library/open/py-tutorial-official/html/index.html",
+      "contentClass": "open",
+      "license": "PSF License Version 2 (Software + Dokumentation); Code-Beispiele zusaetzlich BSD-0 — Beleg: docs.python.org/3/license.html (Staging rights py-tutorial-psf-v2)",
+      "attribution": "© Python Software Foundation",
+      "allowedUses": [
+        "local copy",
+        "attributed reuse with PSF copyright notice"
+      ],
+      "chapters": [
+        "Kap. 2 Using the Python Interpreter",
+        "Kap. 4 More Control Flow Tools (inkl. def/Funktionen)",
+        "Kap. 5 Data Structures"
+      ],
+      "weeks": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "extractionStatus": "snapshot 2026-08-25 (9 HTML-Seiten, Staging sources/open/py-tutorial-official)",
+      "qaStatus": "license verified via docs.python.org/3/license.html"
+    },
+    {
+      "sourceId": "cs50p-psets-harvard",
+      "title": "CS50P — Problem Sets 0-5 mit Aufgabenspezifikationen",
+      "author": "David J. Malan, Harvard OpenCourseWare",
+      "canonicalUrl": "https://cs50.harvard.edu/python/",
+      "localPath": "library-private/cs50p-psets/html/pset1.html",
+      "contentClass": "private",
+      "license": "CC BY-NC-SA 4.0 — Beleg: cs50.harvard.edu/python/license/ (Staging rights cs50p-cc-by-nc-sa-4.0)",
+      "attribution": "© CS50, Harvard University",
+      "allowedUses": [
+        "private exercise specs",
+        "non-commercial adaptation with attribution and share-alike"
+      ],
+      "chapters": [
+        "pset1: indoor, playback, faces, einstein, tip"
+      ],
+      "weeks": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "extractionStatus": "snapshot 2026-08-25 (36 HTML-Seiten, private Ablage im Staging)",
+      "qaStatus": "license verified via cs50.harvard.edu/python/license/"
+    },
+    {
+      "sourceId": "serlo-algebra-grundlagen-w01",
+      "title": "Serlo Algebra-Grundlagen: Gleichungen, Potenzen, Logarithmen (Artikel + Aufgaben)",
+      "author": "Serlo Education e. V. und Autor:innen",
+      "canonicalUrl": "https://de.serlo.org/mathe/1393/lineare-gleichungen",
+      "localPath": "library/open/de/serlo-gleichungen-1393.html",
+      "contentClass": "link-only",
+      "license": "CC BY-SA 4.0 (de.serlo.org/license/detail/1: „Dieses Werk steht unter der freien Lizenz CC BY-SA 4.0“, verifiziert 2026-08-31)",
+      "attribution": "Serlo",
+      "allowedUses": [
+        "local copy",
+        "attributed share-alike reuse"
+      ],
+      "chapters": [
+        "Lineare Gleichungen (1393) + Aufgaben (80254)",
+        "Potenzen (1420) + Potenzgesetz-Aufgaben (23665)",
+        "Logarithmus (55181) + Logarithmus-Aufgaben (23768)"
+      ],
+      "weeks": [
+        1
+      ],
+      "extractionStatus": "snapshot 2026-08-25 (6 HTML-Seiten, Staging sources/open/de)",
+      "qaStatus": "Reklassifiziert open→link-only nach Primärbeleg 2026-08-31 (ADR-0014 Teil 4)"
+    },
+    {
+      "sourceId": "dlwp-notebooks",
+      "title": "Deep Learning with Python, 3rd ed. — Notebooks",
+      "author": "François Chollet",
+      "canonicalUrl": "https://github.com/fchollet/deep-learning-with-python-notebooks",
+      "contentClass": "open",
+      "license": "MIT (LICENSE + NOTICE beigelegt)",
+      "attribution": "François Chollet / upstream repo",
+      "allowedUses": [
+        "code reuse with attribution"
+      ],
+      "weeks": [
+        18,
+        19,
+        20,
+        21,
+        22
+      ],
+      "extractionStatus": "vendored upstream snapshot (staging sources/open/dlwp-notebooks)",
+      "qaStatus": "LICENSE verified present"
+    },
+    {
+      "sourceId": "pro-git-book",
+      "title": "Pro Git, 2. Auflage",
+      "author": "Scott Chacon und Ben Straub",
+      "canonicalUrl": "https://git-scm.com/book/en/v2",
+      "contentClass": "link-only",
+      "license": "CC BY-NC-SA 3.0; im Public-Core nur Verlinkung und bibliografische Attribution",
+      "attribution": "Scott Chacon und Ben Straub / Apress / Git project",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        3,
+        4
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Lizenz auf der offiziellen Git-Buchseite verifiziert"
+    },
+    {
+      "sourceId": "ma-its-meta-analysis-2014",
+      "title": "Intelligent Tutoring Systems and Learning Outcomes: A Meta-Analysis",
+      "author": "Ma, Adesope, Nesbit und Liu",
+      "canonicalUrl": "https://doi.org/10.1037/a0037123",
+      "contentClass": "link-only",
+      "license": "Verlagsinhalt; im Public-Core nur DOI-Link und Zitation, keine Weitergabe des Volltexts",
+      "attribution": "Ma et al. (2014), Journal of Educational Psychology 106(3)",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        1
+      ],
+      "extractionStatus": "bibliographic-link-only",
+      "qaStatus": "DOI gegen die Architektur-Evidenzsynthese geprüft"
+    },
+    {
+      "sourceId": "murray-spacing-math-2025",
+      "title": "Spacing and Retrieval Practice for Mathematics Learning: Meta-Analysis",
+      "author": "Murray, Horner und Göbel",
+      "canonicalUrl": "https://doi.org/10.1007/s10648-025-10035-1",
+      "contentClass": "link-only",
+      "license": "© Autor:innen unter exklusiver Springer-Lizenz; im Public-Core nur DOI-Link und Zitation",
+      "attribution": "Murray, Horner und Göbel (2025), Educational Psychology Review 37:75",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        1
+      ],
+      "extractionStatus": "bibliographic-link-only",
+      "qaStatus": "DOI und Lizenzhinweis des Artikels geprüft"
+    },
+    {
+      "sourceId": "bastani-ai-guardrails-2025",
+      "title": "Generative AI without guardrails can harm learning",
+      "author": "Bastani, Bastani, Sungu, Ge, Kabakcı und Mariman",
+      "canonicalUrl": "https://doi.org/10.1073/pnas.2422633122",
+      "contentClass": "link-only",
+      "license": "Verlagsinhalt; im Public-Core nur DOI-Link und Zitation, keine Weitergabe des Volltexts",
+      "attribution": "Bastani et al. (2025), PNAS 122(26)",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        1
+      ],
+      "extractionStatus": "bibliographic-link-only",
+      "qaStatus": "DOI und Publikationsseite geprüft"
+    },
+    {
+      "sourceId": "pandas-docs",
+      "title": "pandas User Guide (offizielle Dokumentation)",
+      "author": "pandas development team",
+      "canonicalUrl": "https://pandas.pydata.org/docs/user_guide/index.html",
+      "contentClass": "open",
+      "license": "BSD-3-Clause (pandas-Projekt; LICENSE github.com/pandas-dev/pandas)",
+      "attribution": "© pandas development team",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "code-reading tasks (predict-output/code-trace)"
+      ],
+      "weeks": [
+        6
+      ],
+      "extractionStatus": "registered (official docs)",
+      "qaStatus": "official docs; license verified via upstream LICENSE 2026-08-30"
+    },
+    {
+      "sourceId": "sklearn-user-guide",
+      "title": "scikit-learn User Guide (offizielle Dokumentation)",
+      "author": "scikit-learn developers",
+      "canonicalUrl": "https://scikit-learn.org/stable/user_guide.html",
+      "contentClass": "open",
+      "license": "BSD-3-Clause (scikit-learn-Projekt; COPYING github.com/scikit-learn/scikit-learn)",
+      "attribution": "© scikit-learn developers",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "code-reading tasks (predict-output/code-trace)"
+      ],
+      "weeks": [
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17
+      ],
+      "extractionStatus": "registered (official docs)",
+      "qaStatus": "official docs; license verified via upstream COPYING 2026-08-30"
+    },
+    {
+      "sourceId": "openintro-statistics",
+      "title": "OpenIntro Statistics (4. Aufl., kostenfreies PDF)",
+      "author": "David M. Diez, Mine Çetinkaya-Rundel, Christopher D. Barr",
+      "canonicalUrl": "https://www.openintro.org/book/os/",
+      "contentClass": "link-only",
+      "license": "CC BY-SA 3.0 (openintro.org/license: Statistics textbooks „released under a Creative Commons BY-SA 3.0 license“, verifiziert 2026-08-31); zusätzlich Marken-/Titel-Restriktionen",
+      "attribution": "Diez, Çetinkaya-Rundel, Barr: OpenIntro Statistics, openintro.org",
+      "allowedUses": [
+        "reading",
+        "attributed citation",
+        "no verbatim reuse (ShareAlike)"
+      ],
+      "chapters": [
+        "Ch 2 Summarizing Data (S. 57-97)",
+        "Ch 3 Probability (bedingte Wahrscheinlichkeit)",
+        "Ch 4 Distributions (Normalverteilung)",
+        "Ch 8 Introduction to Linear Regression",
+        "Ch 9 Multiple and Logistic Regression"
+      ],
+      "weeks": [
+        7,
+        10,
+        11
+      ],
+      "extractionStatus": "registered (TOC verifiziert 2026-08-30)",
+      "qaStatus": "Reklassifiziert open→link-only nach Primärbeleg 2026-08-31 (ADR-0014 Teil 4); interner Widerspruch (allowedUses no-verbatim vs. Klasse open) damit aufgelöst"
+    },
+    {
+      "sourceId": "wilke-dataviz",
+      "title": "Fundamentals of Data Visualization (Autor: O'Reilly)",
+      "author": "Claus O. Wilke",
+      "canonicalUrl": "https://clauswilke.com/dataviz/",
+      "contentClass": "link-only",
+      "license": "CC BY-NC-ND 4.0 (Seitenfooter, abgerufen 2026-08-30)",
+      "attribution": "© Claus O. Wilke",
+      "allowedUses": [
+        "link-only citation",
+        "bibliografische Referenz",
+        "keine Übernahme von Abbildungen oder Text"
+      ],
+      "weeks": [
+        7
+      ],
+      "extractionStatus": "registered",
+      "qaStatus": "license verifiziert am Autorenmanuskript 2026-08-30"
+    },
+    {
+      "sourceId": "islr-book",
+      "title": "An Introduction to Statistical Learning (ISLR/ISLP)",
+      "author": "James, Witten, Hastie, Tibshirani (Python-Ausgabe mit Taylor)",
+      "canonicalUrl": "https://www.statlearning.com/",
+      "contentClass": "link-only",
+      "license": "Verlagswerk (Springer); kostenfreies PDF zum Download, keine offene Textlizenz auf der Buchseite (abgerufen 2026-08-30)",
+      "attribution": "© Springer Science+Business Media",
+      "allowedUses": [
+        "link-only citation",
+        "bibliografische Referenz und Kapitelanker"
+      ],
+      "weeks": [
+        10,
+        11,
+        14,
+        15,
+        16
+      ],
+      "extractionStatus": "registered",
+      "qaStatus": "Seite und Autoren verifiziert 2026-08-30; keine offene Lizenz gefunden"
+    },
+    {
+      "sourceId": "google-mlcc",
+      "title": "Google Machine Learning Crash Course",
+      "author": "Google",
+      "canonicalUrl": "https://developers.google.com/machine-learning/crash-course",
+      "contentClass": "link-only",
+      "license": "Google-Nutzungsbedingungen; keine offene Content-Lizenz auf der Kursseite gefunden (abgerufen 2026-08-30)",
+      "attribution": "© Google",
+      "allowedUses": [
+        "link-only citation",
+        "bibliografische Referenz"
+      ],
+      "weeks": [
+        9,
+        12
+      ],
+      "extractionStatus": "registered",
+      "qaStatus": "Landingpage geprüft 2026-08-30; Lizenzstatus: nur Verlinkung"
+    },
+    {
+      "sourceId": "model-cards-paper",
+      "title": "Model Cards for Model Reporting (FAT* 2019)",
+      "author": "Mitchell, Wu, Zaldivar, Barnes, Vasserman, Hutchinson, Spitzer, Raji, Gebru",
+      "canonicalUrl": "https://arxiv.org/abs/1810.03993",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license; ACM DOI 10.1145/3287560.3287596",
+      "attribution": "© die Autor:innen",
+      "allowedUses": [
+        "link-only citation",
+        "bibliografische Referenz"
+      ],
+      "weeks": [
+        13,
+        17
+      ],
+      "extractionStatus": "registered",
+      "qaStatus": "arXiv-Eintrag verifiziert 2026-08-30"
+    },
+    {
+      "sourceId": "arxiv-attention-2017",
+      "title": "Attention Is All You Need",
+      "author": "Vaswani et al.",
+      "canonicalUrl": "https://arxiv.org/abs/1706.03762",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; nur Verlinkung, Zitation und Abstract-Fakten",
+      "attribution": "Vaswani et al., 2017, arXiv:1706.03762",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        22,
+        26
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Abstract-Seite und Lizenz-Hinweis verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "arxiv-lora-2021",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "author": "Hu et al.",
+      "canonicalUrl": "https://arxiv.org/abs/2106.09685",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; nur Verlinkung, Zitation und Abstract-Fakten (10000x Parameter, 3x GPU-Speicher)",
+      "attribution": "Hu et al., 2021, arXiv:2106.09685",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        25,
+        26
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Abstract-Seite und Lizenz-Hinweis verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "arxiv-rag-2020",
+      "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "author": "Lewis et al.",
+      "canonicalUrl": "https://arxiv.org/abs/2005.11401",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; nur Verlinkung, Zitation und Abstract-Fakten",
+      "attribution": "Lewis et al., 2020, arXiv:2005.11401 (NeurIPS 2020)",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        26,
+        27
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Abstract-Seite und Lizenz-Hinweis verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "arxiv-bert-2018",
+      "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+      "author": "Devlin et al.",
+      "canonicalUrl": "https://arxiv.org/abs/1810.04805",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; nur Verlinkung und Zitation",
+      "attribution": "Devlin et al., 2018, arXiv:1810.04805",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        23
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Abstract-Seite verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "arxiv-gpt3-2020",
+      "title": "Language Models are Few-Shot Learners (GPT-3)",
+      "author": "Brown et al.",
+      "canonicalUrl": "https://arxiv.org/abs/2005.14165",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; nur Verlinkung und Zitation",
+      "attribution": "Brown et al., 2020, arXiv:2005.14165",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        25
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Abstract-Seite verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "karpathy-micrograd",
+      "title": "micrograd: A tiny scalar-valued autograd engine",
+      "author": "Andrej Karpathy",
+      "canonicalUrl": "https://github.com/karpathy/micrograd",
+      "contentClass": "open",
+      "license": "MIT (GitHub LICENSE verifiziert)",
+      "attribution": "Andrej Karpathy, micrograd, MIT",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        19
+      ],
+      "extractionStatus": "konzeptreferenz (kein Kopiat; eigene Implementierungen in NumPy)",
+      "qaStatus": "GitHub-LICENSE per API verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "karpathy-nanogpt",
+      "title": "nanoGPT: minimal LLM training pipeline",
+      "author": "Andrej Karpathy",
+      "canonicalUrl": "https://github.com/karpathy/nanoGPT",
+      "contentClass": "open",
+      "license": "MIT (GitHub LICENSE verifiziert)",
+      "attribution": "Andrej Karpathy, nanoGPT, MIT",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        24
+      ],
+      "extractionStatus": "konzeptreferenz (Toy-Pipeline-Struktur)",
+      "qaStatus": "GitHub-LICENSE per API verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "karpathy-zero-to-hero",
+      "title": "Neural Networks: Zero to Hero (Vorlesungsreihe)",
+      "author": "Andrej Karpathy",
+      "canonicalUrl": "https://karpathy.ai/zero-to-hero.html",
+      "contentClass": "link-only",
+      "license": "YouTube-Standardlizenz; keine Lizenzangabe auf Kursseite — nur Verlinkung",
+      "attribution": "Andrej Karpathy",
+      "allowedUses": [
+        "linking"
+      ],
+      "weeks": [
+        19
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Kursseite verifiziert 2026-08-31; keine Reuse-Lizenz gefunden (UNKNOWN bleibt) — konservativ link-only"
+    },
+    {
+      "sourceId": "karpathy-recipe-blog",
+      "title": "A Recipe for Training Neural Networks (Blogpost)",
+      "author": "Andrej Karpathy",
+      "canonicalUrl": "https://karpathy.github.io/2019/04/25/recipe/",
+      "contentClass": "link-only",
+      "license": "keine Lizenzangabe auf der Blogseite — nur Verlinkung und Zitation",
+      "attribution": "Andrej Karpathy, 2019",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        20
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Blogseite verifiziert 2026-08-31; Lizenz UNKNOWN — konservativ link-only"
+    },
+    {
+      "sourceId": "hf-tokenizers-docs",
+      "title": "Hugging Face Tokenizers Dokumentation",
+      "author": "Hugging Face",
+      "canonicalUrl": "https://huggingface.co/docs/tokenizers/index",
+      "contentClass": "open",
+      "license": "Apache-2.0 (Repo-Lizenz; Docs im Repo)",
+      "attribution": "Hugging Face, tokenizers, Apache-2.0",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        23
+      ],
+      "extractionStatus": "konzeptreferenz",
+      "qaStatus": "GitHub-LICENSE huggingface/tokenizers verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "hf-transformers-docs",
+      "title": "Hugging Face Transformers Dokumentation (Tokenizer Summary, Pipeline)",
+      "author": "Hugging Face",
+      "canonicalUrl": "https://huggingface.co/docs/transformers",
+      "contentClass": "open",
+      "license": "Apache-2.0 (Repo-Lizenz)",
+      "attribution": "Hugging Face, transformers, Apache-2.0",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        22,
+        24
+      ],
+      "extractionStatus": "konzeptreferenz (Code-Reading ohne Laufzeit)",
+      "qaStatus": "GitHub-LICENSE huggingface/transformers verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "pytorch-repro-notes",
+      "title": "PyTorch Notes: Reproducibility",
+      "author": "PyTorch",
+      "canonicalUrl": "https://pytorch.org/docs/stable/notes/randomness.html",
+      "contentClass": "open",
+      "license": "BSD-Stil (PyTorch LICENSE); nur Lektüre — torch laeuft nicht in der Plattform (ADR-0012)",
+      "attribution": "PyTorch Contributors, BSD-style license",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        20,
+        24,
+        25
+      ],
+      "extractionStatus": "lektuere",
+      "qaStatus": "LICENSE verifiziert 2026-08-31; Kernaussage: komplett reproduzierbare Ergebnisse nicht garantiert"
+    },
+    {
+      "sourceId": "dlbook-goodfellow",
+      "title": "Deep Learning (Goodfellow, Bengio, Courville)",
+      "author": "Ian Goodfellow, Yoshua Bengio, Aaron Courville",
+      "canonicalUrl": "https://www.deeplearningbook.org/",
+      "contentClass": "link-only",
+      "license": "MIT Press Copyright; Vertrag verbietet leicht kopierbare Formate — nur Verlinkung",
+      "attribution": "Goodfellow, Bengio, Courville, Deep Learning, MIT Press 2016",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        18,
+        19,
+        21
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "FAQ auf deeplearningbook.org verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "d2l-book",
+      "title": "Dive into Deep Learning",
+      "author": "Zhang, Lipton, Li, Smola",
+      "canonicalUrl": "https://d2l.ai/",
+      "contentClass": "link-only",
+      "license": "Text CC BY-SA 4.0 (ShareAlike kollidiert mit CC-BY-4.0-Sammelcontent); nur Verlinkung, Code-Ideen MIT",
+      "attribution": "Zhang, Lipton, Li, Smola, d2l.ai",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        18,
+        20
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "GitHub LICENSE d2l-ai/d2l-en verifiziert 2026-08-31: Text CC BY-SA 4.0, Code modified MIT"
+    },
+    {
+      "sourceId": "iir-book-ch8",
+      "title": "Introduction to Information Retrieval, Kapitel 8 (Evaluation)",
+      "author": "Manning, Raghavan, Schütze",
+      "canonicalUrl": "https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-of-ranked-retrieval-results-1.html",
+      "contentClass": "link-only",
+      "license": "Cambridge University Press Copyright; HTML gratis lesbar — nur Verlinkung, Formeln eigenstaendig darstellen",
+      "attribution": "Manning, Raghavan, Schütze, IIR, Cambridge UP 2008",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        27,
+        28
+      ],
+      "extractionStatus": "link-only (Metrik-Definitionen als eigene Mathematik mit Zitation)",
+      "qaStatus": "HTML-Kapitel verifiziert 2026-08-31 (P/R, DCG)"
+    },
+    {
+      "sourceId": "craswell-mrr-2009",
+      "title": "Mean Reciprocal Rank (Enzyklopädieeintrag)",
+      "author": "Nick Craswell",
+      "canonicalUrl": "https://doi.org/10.1007/978-0-387-39940-9_488",
+      "contentClass": "link-only",
+      "license": "Springer, paywalled — nur Zitation und Verlinkung",
+      "attribution": "Craswell, Mean Reciprocal Rank, Encyclopedia of Database Systems, Springer 2009",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        28
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Springer-DOI verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "nist-airmf",
+      "title": "NIST AI Risk Management Framework (AI 100-1) und GenAI Profile (AI 600-1)",
+      "author": "NIST",
+      "canonicalUrl": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "contentClass": "open",
+      "license": "US-Regierungswerk, public information (17 U.S.C. 105); Veroeffentlichung mit Byline erbeten",
+      "attribution": "National Institute of Standards and Technology",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        29,
+        30
+      ],
+      "extractionStatus": "konzeptreferenz",
+      "qaStatus": "PDFs und Copyright-Policy verifiziert 2026-08-31 (kein Copyright-Claim im Dokument)"
+    },
+    {
+      "sourceId": "owasp-genai-llm-top10",
+      "title": "OWASP Top 10 for LLM and Generative AI Applications",
+      "author": "OWASP Foundation",
+      "canonicalUrl": "https://genai.owasp.org/llm-top-10/",
+      "contentClass": "link-only",
+      "license": "CC BY-SA 4.0 (ShareAlike kollidiert mit CC-BY-4.0-Content); nur Verlinkung, Paraphrase in Eigentext, kurze Zitate mit Attribution",
+      "attribution": "OWASP Foundation, CC BY-SA 4.0",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        29,
+        30
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Repo-Lizenz verifiziert 2026-08-31; aktive Fassung: GenAI LLM Top 10 2026 (04.08.2026)"
+    },
+    {
+      "sourceId": "mitre-atlas",
+      "title": "MITRE ATLAS (Adversarial Threat Landscape for AI Systems)",
+      "author": "MITRE",
+      "canonicalUrl": "https://atlas.mitre.org/",
+      "contentClass": "open",
+      "license": "Daten Apache-2.0 (atlas-data LICENSE verifiziert); Website-Prosa nur verlinken",
+      "attribution": "MITRE, ATLAS, Apache-2.0 (Daten)",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice (nur Daten)"
+      ],
+      "weeks": [
+        29
+      ],
+      "extractionStatus": "konzeptreferenz",
+      "qaStatus": "GitHub-LICENSE mitre-atlas/atlas-data verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "openai-cookbook",
+      "title": "OpenAI Cookbook",
+      "author": "OpenAI",
+      "canonicalUrl": "https://github.com/openai/openai-cookbook",
+      "contentClass": "open",
+      "license": "MIT (GitHub LICENSE verifiziert)",
+      "attribution": "OpenAI, Cookbook, MIT",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        25,
+        27
+      ],
+      "extractionStatus": "lektuere (RAG-Pattern, nur Lesekompetenz)",
+      "qaStatus": "GitHub-LICENSE verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "ragas-docs",
+      "title": "RAGAS Dokumentation (LLM-getriebene RAG-Metriken)",
+      "author": "Exploding Gradients",
+      "canonicalUrl": "https://docs.ragas.io/",
+      "contentClass": "open",
+      "license": "Apache-2.0 (Repo-Lizenz verifiziert)",
+      "attribution": "RAGAS, Apache-2.0",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "adaptation-with-notice"
+      ],
+      "weeks": [
+        28
+      ],
+      "extractionStatus": "lektuere mit ausdruecklicher Einordnung: LLM-getriebene Metriken sind in dieser Plattform KEIN autoritativer Grader",
+      "qaStatus": "GitHub-LICENSE verifiziert 2026-08-31; Doku positioniert RAGAS als LLM-driven metrics"
+    },
+    {
+      "sourceId": "cos-prereg",
+      "title": "Preregistration (Center for Open Science)",
+      "author": "Center for Open Science",
+      "canonicalUrl": "https://www.cos.io/initiatives/prereg",
+      "contentClass": "open",
+      "license": "CC BY 4.0 (Seitenstatement, verifiziert 2026-08-31)",
+      "attribution": "Center for Open Science, CC BY 4.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "citation"
+      ],
+      "weeks": [
+        31
+      ],
+      "extractionStatus": "registered (primary page)",
+      "qaStatus": "Lizenzstatement auf der Seite gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "hf-model-cards-docs",
+      "title": "Model Cards (Hugging Face Hub-Dokumentation)",
+      "author": "Hugging Face",
+      "canonicalUrl": "https://huggingface.co/docs/hub/model-cards",
+      "contentClass": "open",
+      "license": "Apache-2.0 (hub-docs-Repo, github.com/huggingface/hub-docs, verifiziert 2026-08-31)",
+      "attribution": "Hugging Face, Apache-2.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "structure reference for card fields"
+      ],
+      "weeks": [
+        32
+      ],
+      "extractionStatus": "registered (official docs)",
+      "qaStatus": "Repo-Lizenz via GitHub API verifiziert 2026-08-31; Plattform-Doku über eigene Funktion (VENDOR-CLAIM-Aspekt)"
+    },
+    {
+      "sourceId": "fairlearn",
+      "title": "Fairlearn — Improve fairness of AI systems (Guides)",
+      "author": "Fairlearn-Projekt",
+      "canonicalUrl": "https://fairlearn.org/",
+      "contentClass": "open",
+      "license": "MIT (github.com/fairlearn/fairlearn, verifiziert 2026-08-31)",
+      "attribution": "Fairlearn contributors, MIT",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "metric definitions"
+      ],
+      "weeks": [
+        33
+      ],
+      "extractionStatus": "registered (official docs)",
+      "qaStatus": "Repo-Lizenz via GitHub API verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "aequitas-toolkit",
+      "title": "Aequitas — The Bias and Fairness Audit Toolkit",
+      "author": "Center for Data Science and Public Policy, University of Chicago",
+      "canonicalUrl": "https://dssg.github.io/aequitas/",
+      "contentClass": "open",
+      "license": "MIT (Code github.com/dssg/aequitas, verifiziert 2026-08-31); Website ohne Lizenzangabe — konservativ referenzieren",
+      "attribution": "University of Chicago DSSG, MIT (Code)",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "linking"
+      ],
+      "weeks": [
+        33
+      ],
+      "extractionStatus": "registered (tool docs)",
+      "qaStatus": "Code-Lizenz verifiziert 2026-08-31; Site ohne License-Footer"
+    },
+    {
+      "sourceId": "helm-leaderboard",
+      "title": "HELM — Holistic Evaluation of Language Models (Leaderboard)",
+      "author": "Stanford CRFM",
+      "canonicalUrl": "https://crfm.stanford.edu/helm/",
+      "contentClass": "open",
+      "license": "Apache-2.0 (github.com/stanford-crfm/helm, verifiziert 2026-08-31)",
+      "attribution": "Stanford CRFM, Apache-2.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "evaluation protocol reference"
+      ],
+      "weeks": [
+        34
+      ],
+      "extractionStatus": "registered (official leaderboard)",
+      "qaStatus": "Repo-Lizenz via GitHub API verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "lm-evaluation-harness",
+      "title": "LM Evaluation Harness",
+      "author": "EleutherAI",
+      "canonicalUrl": "https://github.com/EleutherAI/lm-evaluation-harness",
+      "contentClass": "open",
+      "license": "MIT (Repo, verifiziert 2026-08-31)",
+      "attribution": "EleutherAI, MIT",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "task-definition patterns"
+      ],
+      "weeks": [
+        34
+      ],
+      "extractionStatus": "registered (repo docs)",
+      "qaStatus": "Repo-Lizenz via GitHub API verifiziert 2026-08-31; aktiv gepflegt"
+    },
+    {
+      "sourceId": "cookiecutter-data-science",
+      "title": "Cookiecutter Data Science (v2)",
+      "author": "DrivenData",
+      "canonicalUrl": "https://cookiecutter-data-science.drivendata.org/",
+      "contentClass": "open",
+      "license": "MIT (github.com/drivendataorg/cookiecutter-data-science, verifiziert 2026-08-31)",
+      "attribution": "DrivenData, MIT",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "project structure concepts"
+      ],
+      "weeks": [
+        35,
+        38
+      ],
+      "extractionStatus": "registered (official docs)",
+      "qaStatus": "Repo-Lizenz via GitHub API verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "turing-way",
+      "title": "The Turing Way — Handbook for reproducible data science",
+      "author": "The Alan Turing Institute (Community-Projekt)",
+      "canonicalUrl": "https://book.the-turing-way.org/",
+      "contentClass": "open",
+      "license": "CC BY 4.0 (Site-Statement; Software MIT; LICENSE.md im Repo, verifiziert 2026-08-31)",
+      "attribution": "The Turing Way Community, CC BY 4.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "reproduction/pipeline chapters"
+      ],
+      "weeks": [
+        35,
+        38
+      ],
+      "extractionStatus": "registered (book)",
+      "qaStatus": "Lizenzstatement auf der Seite gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "wilson-good-enough",
+      "title": "Good enough practices in scientific computing",
+      "author": "Wilson, Bryan, Cranston, Kitzes, Nederbragt, Taback",
+      "canonicalUrl": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510",
+      "contentClass": "open",
+      "license": "CC BY 4.0 (PLOS-Copyrightzeile + Crossref, verifiziert 2026-08-31)",
+      "attribution": "Wilson et al., PLoS Comput Biol 13(6): e1005510, 2017, CC BY 4.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "citation"
+      ],
+      "weeks": [
+        35,
+        38
+      ],
+      "extractionStatus": "registered (article)",
+      "qaStatus": "Lizenz via Crossref + Artikelseite verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "sandve-repro-rules",
+      "title": "Ten Simple Rules for Reproducible Computational Research",
+      "author": "Sandve, Nekrutenko, Taylor, Hovig",
+      "canonicalUrl": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003285",
+      "contentClass": "open",
+      "license": "CC BY 4.0 (Crossref verifiziert 2026-08-31)",
+      "attribution": "Sandve et al., PLoS Comput Biol 9(10): e1003285, 2013, CC BY 4.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "citation"
+      ],
+      "weeks": [
+        38
+      ],
+      "extractionStatus": "registered (article)",
+      "qaStatus": "Lizenz via Crossref verifiziert 2026-08-31"
+    },
+    {
+      "sourceId": "rougier-figures",
+      "title": "Ten Simple Rules for Better Figures",
+      "author": "Rougier, Droettboom, Bourne",
+      "canonicalUrl": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003833",
+      "contentClass": "open",
+      "license": "CC0 1.0 (Artikeltext + Crossref publicdomain/zero/1.0, verifiziert 2026-08-31)",
+      "attribution": "Rougier, Droettboom, Bourne, PLoS Comput Biol 10(9): e1003833, 2014, CC0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "citation"
+      ],
+      "weeks": [
+        39
+      ],
+      "extractionStatus": "registered (article)",
+      "qaStatus": "CC0 via Crossref verifiziert 2026-08-31; gemeinfrei"
+    },
+    {
+      "sourceId": "kass-statistical-practice",
+      "title": "Ten Simple Rules for Effective Statistical Practice",
+      "author": "Kass, Caffo, Davidian, Ding, Dwork, ...",
+      "canonicalUrl": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004961",
+      "contentClass": "open",
+      "license": "CC BY 4.0 (Seiten-Copyrightzeile + Crossref, verifiziert 2026-08-31)",
+      "attribution": "Kass et al., PLoS Comput Biol 12(6): e1004961, 2016, CC BY 4.0",
+      "allowedUses": [
+        "reference",
+        "reading",
+        "citation"
+      ],
+      "weeks": [
+        39
+      ],
+      "extractionStatus": "registered (article)",
+      "qaStatus": "Lizenz via Crossref verifiziert 2026-08-31; korrekte DOI pcbi.1004961"
+    },
+    {
+      "sourceId": "stanford-encyclopedia-popper",
+      "title": "Karl Popper (Stanford Encyclopedia of Philosophy)",
+      "author": "Stephen Thornton",
+      "canonicalUrl": "https://plato.stanford.edu/entries/popper/",
+      "contentClass": "link-only",
+      "license": "Keine offene Lizenz — Copyright bei Autor, Encyclopedia „All rights reserved“ (Terms of Use, geprüft 2026-08-31); nur Verlinkung und Zitat",
+      "attribution": "Stephen Thornton / SEP, first published 1997, substantive revision 31.07.2026",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        31
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Lizenzstatus der Encyclopädie direkt geprüft 2026-08-31 (oft falsch als offen eingeschätzt)"
+    },
+    {
+      "sourceId": "jhangiani-research-methods",
+      "title": "Research Methods in Psychology, 4. Aufl.",
+      "author": "Jhangiani, Chiang, Cuttler & Leighton (Kwantlen Polytechnic University)",
+      "canonicalUrl": "https://kpu.pressbooks.pub/psychmethods4e/",
+      "contentClass": "link-only",
+      "license": "CC BY-NC-SA 4.0 (Buchseite, wörtlich verifiziert 2026-08-31); NC schließt kommerzielle Nutzung aus",
+      "attribution": "Jhangiani et al., 2019, CC BY-NC-SA 4.0",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        31
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Lizenzstatement der Buchseite gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "neurips-paper-checklist",
+      "title": "NeurIPS Paper Checklist",
+      "author": "NeurIPS Foundation",
+      "canonicalUrl": "https://neurips.cc/public/guides/PaperChecklist",
+      "contentClass": "link-only",
+      "license": "Keine Lizenzangabe auf der Seite (geprüft 2026-08-31); nur Verlinkung und Zitat",
+      "attribution": "NeurIPS Foundation",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        31,
+        34
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Seite ohne Datum/Lizenz — Jahrgang bei Integration dokumentieren [UNKNOWN]"
+    },
+    {
+      "sourceId": "datasheets-for-datasets",
+      "title": "Datasheets for Datasets",
+      "author": "Gebru, Morgenstern, Vecchione, Vaughan, Wallach, Daumé III, Crawford",
+      "canonicalUrl": "https://arxiv.org/abs/1803.09010",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0 (arxiv.org/licenses/nonexclusive-distrib/1.0/, gelesen 2026-08-31); Verlinkung und Zitation",
+      "attribution": "Gebru et al., v1 2018, v8 2021 (CACM 2021)",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        32
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Klassenlizenz der arXiv-Non-Exclusive-Distribution gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "data-cards-playbook",
+      "title": "The Data Cards Playbook",
+      "author": "Google People + AI Research (urspr. mit Partnership on AI)",
+      "canonicalUrl": "https://sites.research.google/datacardsplaybook/",
+      "contentClass": "link-only",
+      "license": "Website ohne Lizenzangabe [UNKNOWN]; zugehöriges Repo github.com/pair-code/datacardsplaybook Apache-2.0 (verifiziert 2026-08-31) — konservativ link-only",
+      "attribution": "Google PAIR",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        32
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Repo-Lizenz verifiziert; Site-Content-Lizenz unklar — Site nur verlinken"
+    },
+    {
+      "sourceId": "gpt4-system-card",
+      "title": "GPT-4 System Card",
+      "author": "OpenAI",
+      "canonicalUrl": "https://cdn.openai.com/papers/gpt-4-system-card.pdf",
+      "contentClass": "link-only",
+      "license": "Keine offene Lizenz (© OpenAI); nur Verlinkung und kurze Zitate",
+      "attribution": "OpenAI, March 2023",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        32
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "PDF-Inhalt direkt gelesen 2026-08-31; kanonisches System-Card-Beispiel (VENDOR-CLAIM)"
+    },
+    {
+      "sourceId": "fairmlbook",
+      "title": "Fairness and Machine Learning",
+      "author": "Barocas, Hardt, Narayanan",
+      "canonicalUrl": "https://fairmlbook.org/",
+      "contentClass": "link-only",
+      "license": "CC BY-NC-ND 4.0 (Buchwebsite, wörtlich: „licensed under the Creative Commons BY-NC-ND 4.0 license“, verifiziert 2026-08-31)",
+      "attribution": "Barocas, Hardt, Narayanan / MIT Press 2023, CC BY-NC-ND 4.0",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        33
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Lizenzstatement direkt gelesen 2026-08-31 (oft falsch eingeschätzt)"
+    },
+    {
+      "sourceId": "strubell-energy",
+      "title": "Energy and Policy Considerations for Deep Learning in NLP",
+      "author": "Strubell, Ganesh, McCallum",
+      "canonicalUrl": "https://arxiv.org/abs/1906.02243",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; Verlinkung und Zitation",
+      "attribution": "Strubell et al., ACL 2019",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        33
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Klassenlizenz, gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "patterson-carbon",
+      "title": "Carbon Emissions and Large Neural Network Training",
+      "author": "Patterson, Gonzalez, Le, Chen, Chollet, ... ",
+      "canonicalUrl": "https://arxiv.org/abs/2104.10350",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; Verlinkung und Zitation",
+      "attribution": "Patterson et al., v3 2021",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        33
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Klassenlizenz, gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "stanford-ai-index-2025",
+      "title": "AI Index Report 2025",
+      "author": "Stanford Institute for Human-Centered AI (HAI)",
+      "canonicalUrl": "https://hai.stanford.edu/ai-index/2025-ai-index-report",
+      "contentClass": "link-only",
+      "license": "CC BY-ND 4.0 (PDF-Zitat: „licensed under Attribution-NoDerivatives 4.0 International“, verifiziert 2026-08-31) — ND schließt Adaption aus; ältere Jahrgänge waren CC BY 4.0, Lizenzwechsel beachten",
+      "attribution": "Stanford HAI, April 2025, DOI 10.48550/arXiv.2504.07139",
+      "allowedUses": [
+        "linking",
+        "citation",
+        "unchanged redistribution"
+      ],
+      "weeks": [
+        33
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Lizenz direkt aus dem Report-PDF gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "helm-paper",
+      "title": "Holistic Evaluation of Language Models (Paper)",
+      "author": "Liang et al.",
+      "canonicalUrl": "https://arxiv.org/abs/2211.09110",
+      "contentClass": "link-only",
+      "license": "arXiv non-exclusive license 1.0; Verlinkung und Zitation",
+      "attribution": "Liang et al., v1 2022, v2 2023 (TMLR 2023)",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        34
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "arXiv-Klassenlizenz, gelesen 2026-08-31"
+    },
+    {
+      "sourceId": "acm-artifact-badging",
+      "title": "ACM Artifact Review and Badging (Version 1.1)",
+      "author": "Association for Computing Machinery",
+      "canonicalUrl": "https://www.acm.org/publications/policies/artifact-review-and-badging-current",
+      "contentClass": "link-only",
+      "license": "Keine offene Lizenz (© ACM); nur Verlinkung und Zitat",
+      "attribution": "ACM, Version 1.1, 24.08.2020",
+      "allowedUses": [
+        "linking",
+        "citation"
+      ],
+      "weeks": [
+        34,
+        38
+      ],
+      "extractionStatus": "link-only",
+      "qaStatus": "Versionsangabe direkt auf der Seite gelesen 2026-08-31"
+    }
+  ]
+}

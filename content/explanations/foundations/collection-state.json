@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "explanationId": "x-collection-state",
+  "version": 2,
+  "locale": "de",
+  "title": "Collection nach jedem Lauf aktualisieren",
+  "competencyIds": ["c-python-collections", "c-python-reading"],
+  "diagnosticCodes": ["wrong-output", "wrong-value"],
+  "helpLevel": 2,
+  "body": "Schreibe den vollständigen Dictionary- oder Set-Inhalt nach jedem verarbeiteten Element auf.",
+  "steps": ["Starte mit der leeren Struktur.", "Lies genau einen Eingabewert.", "Führe Mitgliedschaft oder get mit dem aktuellen Zustand aus.", "Notiere erst danach den neuen Zustand."],
+  "example": "Nach rot, blau, rot ist counts gleich {rot: 2, blau: 1}.",
+  "counterexample": "len(counts) zählt nicht die Gesamtzahl der Eingabewörter.",
+  "sourceRefs": ["py-tutorial-official-3.14"],
+  "followUpActivityIds": ["f-collections-output-01"],
+  "revealsSolution": false,
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-learning",
+  "version": 2,
+  "locale": "de",
+  "title": "Fehler in nächste Handlungen übersetzen",
+  "objectives": ["Symptom und Ursache trennen", "einen Fehler mit einem prüfbaren nächsten Schritt dokumentieren", "Review nach Fälligkeit statt Streak planen"],
+  "competencyIds": ["c-meta-learning"],
+  "requires": [],
+  "estimatedMinutes": 25,
+  "blocks": [{ "blockId": "learning-core", "type": "reflection", "contentRef": "lessons/foundations/learning.md" }],
+  "sourceRefs": [
+    { "sourceId": "murray-spacing-math-2025", "role": "reference", "locator": "Meta-Analyse zu verteilter Mathematikpraxis; keine optimalen Intervalle ableitbar" },
+    { "sourceId": "bastani-ai-guardrails-2025", "role": "reference", "locator": "Feldexperiment zu ununterstützter Leistung und Tutor-Guardrails" },
+    { "sourceId": "ma-its-meta-analysis-2014", "role": "reference", "locator": "Meta-Analyse tutorieller Systeme; heterogene Evidenz" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

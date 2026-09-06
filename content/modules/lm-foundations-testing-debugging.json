@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-testing-debugging",
+  "version": 1,
+  "locale": "de",
+  "title": "Ein Fehler, ein reproduzierbarer Test",
+  "description": "Fehler erst klein reproduzieren, dann mit Tests einkreisen und die Abdeckung prüfen.",
+  "competencyIds": [
+    "c-testing-debugging"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-testing-debugging"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-testing-debugging-csv-off-by-one-reproduce-sma",
+      "role": "curated",
+      "familyId": "classify-test-attitude",
+      "caseId": "csv-off-by-one-reproduce-smallest",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-classify-test-attitude-pract",
+      "role": "practice-space",
+      "familyId": "classify-test-attitude",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-normalize-and-assert-suite",
+      "role": "curated",
+      "familyId": "construct-regression-test-suite",
+      "caseId": "normalize-and-assert-suite",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-construct-regression-test-su",
+      "role": "practice-space",
+      "familyId": "construct-regression-test-suite",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-arrange-act-assert",
+      "role": "curated",
+      "familyId": "construct-test-structure-aaa",
+      "caseId": "arrange-act-assert",
+      "seed": 5,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-construct-test-structure-aaa",
+      "role": "practice-space",
+      "familyId": "construct-test-structure-aaa",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-nested-if-decision-tree",
+      "role": "curated",
+      "familyId": "validate-test-design-coverage",
+      "caseId": "nested-if-decision-tree",
+      "seed": 13,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-validate-test-design-coverag",
+      "role": "practice-space",
+      "familyId": "validate-test-design-coverage",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-valueerror",
+      "role": "curated",
+      "familyId": "trace-exception-path",
+      "caseId": "valueerror",
+      "seed": 5,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-keyerror",
+      "role": "curated",
+      "familyId": "trace-exception-path",
+      "caseId": "keyerror",
+      "seed": 9,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-trace-exception-path-practic",
+      "role": "practice-space",
+      "familyId": "trace-exception-path",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

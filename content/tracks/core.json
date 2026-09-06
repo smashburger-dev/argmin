@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "tracks": [
+    {
+      "trackId": "common-core",
+      "locale": "de",
+      "title": "Gemeinsamer KI-Kern",
+      "description": "Python, Mathematik, Datenarbeit und nachvollziehbare Lernpraxis als gemeinsames Fundament.",
+      "competencyIds": [
+        "c-algebra-basics",
+        "c-algebra",
+        "c-python-basics",
+        "c-python-reading",
+        "c-python-functions",
+        "c-python-control-flow",
+        "c-python-collections",
+        "c-python-files-errors",
+        "c-testing-debugging",
+        "c-git-basics",
+        "c-meta-learning",
+        "c-linalg-matrices",
+        "c-linalg-systems",
+        "c-linalg-gauss",
+        "c-linalg-independence",
+        "c-numpy-basics"
+      ],
+      "milestoneIds": [
+        "ms-foundations",
+        "ms-linear-algebra-numpy-pilot"
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "trackId": "applied-ai",
+      "locale": "de",
+      "title": "Applied AI Engineering",
+      "description": "Python- und Datenkompetenzen für robuste angewandte KI-Systeme.",
+      "competencyIds": [
+        "c-python-basics",
+        "c-python-reading",
+        "c-python-functions",
+        "c-python-control-flow",
+        "c-python-collections",
+        "c-python-files-errors",
+        "c-testing-debugging",
+        "c-git-basics",
+        "c-linalg-matrices",
+        "c-numpy-basics",
+        "c-pandas-cleaning",
+        "c-eda-viz",
+        "c-grad-regression",
+        "c-ml-baseline",
+        "c-ml-linear",
+        "c-ml-logistic",
+        "c-ml-cv",
+        "c-ml-erroranalysis",
+        "c-ml-regularization",
+        "c-ml-ensembles",
+        "c-ml-svm-pca",
+        "c-ml-repro",
+        "c-dl-tensors",
+        "c-dl-autograd",
+        "c-dl-training",
+        "c-dl-regularization",
+        "c-dl-attention",
+        "c-dl-tokenizer",
+        "c-dl-inference",
+        "c-dl-finetuning",
+        "c-dl-papers",
+        "c-genai-rag",
+        "c-genai-eval",
+        "c-genai-security",
+        "c-genai-prototype",
+        "c-research-capstone",
+        "c-capstone-pipeline"
+      ],
+      "milestoneIds": [
+        "ms-foundations",
+        "ms-linear-algebra-numpy-pilot",
+        "ms-data-ml-classic-ml",
+        "ms-dl-genai"
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "trackId": "mathematical-foundations",
+      "locale": "de",
+      "title": "Mathematical Foundations",
+      "description": "Vertiefter mathematischer Pfad von Algebra bis zu linearen Modellen.",
+      "competencyIds": [
+        "c-algebra-basics",
+        "c-algebra",
+        "c-linalg-matrices",
+        "c-linalg-systems",
+        "c-linalg-gauss",
+        "c-linalg-independence",
+        "c-grad-regression",
+        "c-ml-linear",
+        "c-ml-logistic",
+        "c-ml-regularization",
+        "c-ml-svm-pca",
+        "c-dl-tensors",
+        "c-dl-autograd",
+        "c-dl-training",
+        "c-dl-regularization",
+        "c-dl-attention"
+      ],
+      "milestoneIds": [
+        "ms-foundations",
+        "ms-linear-algebra-numpy-pilot",
+        "ms-data-ml-classic-ml",
+        "ms-dl-genai"
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "trackId": "research-evaluation",
+      "locale": "de",
+      "title": "Research and Evaluation",
+      "description": "Code lesen, Fehler dokumentieren und Evidenz für Modelle und Systeme bewerten.",
+      "competencyIds": [
+        "c-python-reading",
+        "c-python-files-errors",
+        "c-testing-debugging",
+        "c-git-basics",
+        "c-meta-learning",
+        "c-ml-baseline",
+        "c-ml-cv",
+        "c-ml-erroranalysis",
+        "c-ml-repro",
+        "c-dl-papers",
+        "c-genai-eval",
+        "c-genai-security",
+        "c-research-question",
+        "c-research-cards",
+        "c-research-responsible",
+        "c-research-capstone",
+        "c-capstone-pipeline"
+      ],
+      "milestoneIds": [
+        "ms-foundations",
+        "ms-data-ml-classic-ml",
+        "ms-dl-genai"
+      ],
+      "releaseStatus": "draft"
+    }
+  ]
+}

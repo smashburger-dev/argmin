@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="de">
+<head><meta charset="utf-8"><title>Migration-Test: Legacy-Fortschritt setzen</title></head>
+<body>
+<p>Setze ki-roadmap-progress-v1 …</p>
+<script>
+  // Test helper: seeds the legacy roadmap key, then loads the app so the
+  // one-time IndexedDB migration path can be verified end to end.
+  localStorage.setItem('ki-roadmap-progress-v1', JSON.stringify({ 1: true, 2: true }));
+  localStorage.removeItem('ki-lp-migration-done'); // safety, app uses IDB meta
+  location.href = '/index.html';
+</script>
+</body>
+</html>

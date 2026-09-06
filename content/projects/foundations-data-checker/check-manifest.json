@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-foundations-data-checker",
+  "projectVersion": "2",
+  "testPaths": ["tests"],
+  "requiredFiles": [
+    { "path": "src/checker.py", "sha256": null },
+    { "path": "tests/test_checker.py", "sha256": "afd0b2fefb1b15862e27e80c6bb398bb23179ddc243126465fae687fe97d6aa3" }
+  ],
+  "timeoutSeconds": 60
+}

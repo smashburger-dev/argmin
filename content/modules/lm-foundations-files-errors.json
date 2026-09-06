@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-files-errors",
+  "version": 1,
+  "locale": "de",
+  "title": "Dateien lesen und Fehler begrenzen",
+  "description": "Datensätze prüfen und zählen, Pflichtfelder einfordern, Fehler in Issues übersetzen.",
+  "competencyIds": [
+    "c-python-files-errors"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-files-errors"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-files-errors-translate-error-to-issue",
+      "role": "curated",
+      "familyId": "classify-exception-placement",
+      "caseId": "translate-error-to-issue",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-files-errors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-files-errors-classify-exception-placement-prac",
+      "role": "practice-space",
+      "familyId": "classify-exception-placement",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-files-errors-parse-validate-summarize",
+      "role": "curated",
+      "familyId": "aggregate-validate-and-count-records",
+      "caseId": "parse-validate-summarize",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-files-errors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-files-errors-aggregate-validate-and-count-reco",
+      "role": "practice-space",
+      "familyId": "aggregate-validate-and-count-records",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-files-errors-required-key-with-issue",
+      "role": "curated",
+      "familyId": "validate-required-field-raise",
+      "caseId": "required-key-with-issue",
+      "seed": 13,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-files-errors",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-files-errors-validate-required-field-raise-pra",
+      "role": "practice-space",
+      "familyId": "validate-required-field-raise",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-functions",
+  "version": 1,
+  "locale": "de",
+  "title": "Funktionen als kleine Verträge",
+  "description": "Zusammengesetzte Aufrufe von innen nach außen auswerten, beide Reihenfolgen prüfen.",
+  "competencyIds": [
+    "c-python-functions"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-functions"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-functions-two-functions-one-print",
+      "role": "curated",
+      "familyId": "trace-call-composition",
+      "caseId": "two-functions-one-print",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-functions",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-functions-both-orders-linear-functions",
+      "role": "curated",
+      "familyId": "trace-call-composition",
+      "caseId": "both-orders-linear-functions",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-functions",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-functions-trace-call-composition-practice",
+      "role": "practice-space",
+      "familyId": "trace-call-composition",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w03",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w03-e1",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-python-collections"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 301,
+      "masteryEligible": true,
+      "prompt": "Was gibt das Programm aus? (eine Ausgabezeile, Python-Listennotation)",
+      "parameters": {
+        "snippet": "lager = {\"ki\": 2, \"lern\": 5}\nlager[\"ki\"] += 3\ndel lager[\"lern\"]\nlager.setdefault(\"plattform\", 7)\nprint(len(lager), lager[\"ki\"], lager[\"plattform\"])"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "['2 5 7']"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Verfolge den Dictionary-Zustand Zeile für Zeile.",
+        "setdefault fügt den Schlüssel nur hinzu, wenn er fehlt — danach hat lager genau zwei Schlüssel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output contains '3'",
+          "then": "lager[\"ki\"] += 3 überschreibt den alten Wert 2 durch 5 — prüfe, ob du den Wert 3 statt des Ergebnisses 5 notiert hast."
+        },
+        {
+          "if": "output starts with '3 '",
+          "then": "del lager[\"lern\"] entfernt einen Schlüssel; setdefault fügt einen hinzu. Zähle die Schlüssel im Endzustand nochmal."
+        }
+      ],
+      "fullSolution": "Nach += ist lager[\"ki\"]=5; del entfernt \"lern\"; setdefault fügt \"plattform\":7 hinzu. Endzustand: zwei Schlüssel, Ausgabe \"2 5 7\".",
+      "typicalErrors": [
+        "Wert-Inkrement als Schlüssel-Hinzufügen gelesen",
+        "setdefault als Überschreiben verstanden",
+        "len auf Werte statt Schlüssel angewendet"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Python-Tutorial Kapitel 5.5 (Dictionaries): del, Update, setdefault; Aufgabe eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 301
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w03-e2",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-python-collections"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 302,
+      "masteryEligible": false,
+      "prompt": "Gegeben:\n\n<code>a = {\"ki\", \"lern\", \"ki\"}\nb = {\"lern\", \"plattform\"}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?",
+      "parameters": {
+        "thema": "Mengenoperationen"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "len(a) ist 2 und a & b ist {\"lern\"} — Mengen speichern jedes Element nur einmal, & bildet den Durchschnitt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "len(a) ist 3 und a & b ist {\"lern\"} — das doppelte \"ki\" bleibt erhalten.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "len(a) ist 2 und a & b ist {\"ki\", \"lern\", \"plattform\"} — & verbindet beide Mengen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "len(a) ist 3 und a & b ist {\"ki\", \"lern\", \"plattform\"} — & verbindet und erhält Duplikate.",
+          "correct": false
+        }
+      ],
+      "expectedAnswer": {
+        "correctChoice": "a"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Mengen (Sets) speichern jedes Element genau einmal — Duplikate fallen beim Anlegen still weg.",
+        "& ist der Durchschnitt, | die Vereinigung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Das Literal enthält \"ki\" zweimal, aber im Set existiert es nur einmal — len zählt eindeutige Elemente."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "& bildet den Durchschnitt (gemeinsame Elemente), nicht die Vereinigung — die wäre |."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "& bildet den Durchschnitt (gemeinsame Elemente), nicht die Vereinigung — die wäre |."
+        }
+      ],
+      "fullSolution": "a = {\"ki\", \"lern\"} (Duplikat entfällt), len(a) = 2. a & b = {\"lern\"}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "Duplikate in Sets für erhalten gehalten",
+        "& und | verwechselt",
+        "len auf Vereinigung statt auf a bezogen"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 5,
+      "sourceLineage": {
+        "concept": "Python-Tutorial Kapitel 5.6 (Sets): Eindeutigkeit und Mengenoperationen; Aufgabe eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 302
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage, python3 verifiziert)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w03-e3",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-python-files-errors",
+        "c-python-collections"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 303,
+      "masteryEligible": true,
+      "prompt": "Implementiere eine robuste Zeilenstatistik. <code>zaehle_zeilen(zeilen)</code> erhält eine Liste von Zeilen im Format <code>\"name:zahl\"</code>. Eine Zeile ist gültig, wenn sie genau einen Doppelpunkt enthält, der Name nicht leer ist (nach Trimmen) und die Zahl (nach Trimmen) eine ganze Zahl mit optionalem Minus ist. Rückgabe: <code>{\"gueltig\": g, \"ungueltig\": u, \"summe\": s}</code> mit s = Summe der Zahlen aller gültigen Zeilen. Ungültige Zeilen werden übersprungen, nicht abgebrochen — aber jede Entscheidung muss aus dem Code lesbar sein (kein blankes except). Der Testcode bringt eigene Zeilenlisten mit.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "def zaehle_zeilen(zeilen):\n    \"\"\"Zaehlt gueltige/ungueltige 'name:zahl'-Zeilen und summiert die gueltigen Zahlen.\"\"\"\n    ...\n",
+        "tests": "def check(zeilen, erwartet, label):\n    ergebnis = zaehle_zeilen(zeilen)\n    __check(label, ergebnis == erwartet, 'erhalten ' + repr(ergebnis) + ', erwartet ' + repr(erwartet))\n\ncheck([\"ki:12\", \"lern:-3\", \"plattform:abc\", \"\", \"ki:5\"], {\"gueltig\": 3, \"ungueltig\": 2, \"summe\": 14}, \"gemischte Liste\")\ncheck([], {\"gueltig\": 0, \"ungueltig\": 0, \"summe\": 0}, \"leere Liste\")\ncheck([\" ki : 7 \", \"ohne:doppelpunkt:zwei\", \"  :9\", \"minus:-1\"], {\"gueltig\": 2, \"ungueltig\": 2, \"summe\": 6}, \"Trimmen und Struktur\")\ncheck([\"ki:12\", \"lern:+4\"], {\"gueltig\": 1, \"ungueltig\": 1, \"summe\": 12}, \"Plus-Vorzeichen ist ungueltig\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def zaehle_zeilen(zeilen):\n    gueltig = 0\n    ungueltig = 0\n    summe = 0\n    for zeile in zeilen:\n        teile = zeile.split(\":\")\n        if len(teile) != 2:\n            ungueltig += 1\n            continue\n        name = teile[0].strip()\n        zahl = teile[1].strip()\n        if not name or not zahl.lstrip(\"-\").isdigit():\n            ungueltig += 1\n            continue\n        gueltig += 1\n        summe += int(zahl)\n    return {\"gueltig\": gueltig, \"ungueltig\": ungueltig, \"summe\": summe}"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Erst Struktur prüfen (genau ein Doppelpunkt), dann Inhalt (Name, Zahl).",
+        "\"-12\".lstrip(\"-\").isdigit() erkennt negative ganze Zahlen; \"+4\" fällt damit heraus — das ist gewollt.",
+        "Sammle drei Zähler in einem Dictionary statt drei Rückgabewerte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "tests fail with +4 accepted",
+          "then": "\"+4\".isdigit() ist False — prüfe, ob du das Vorzeichen anders behandelst als die Spezifikation."
+        },
+        {
+          "if": "tests fail on empty name",
+          "then": "\"  :9\" hat nach dem Trimmen einen leeren Namen — leere Namen sind ungueltig."
+        }
+      ],
+      "fullSolution": "def zaehle_zeilen(zeilen):\n    gueltig = 0\n    ungueltig = 0\n    summe = 0\n    for zeile in zeilen:\n        teile = zeile.split(\":\")\n        if len(teile) != 2:\n            ungueltig += 1\n            continue\n        name = teile[0].strip()\n        zahl = teile[1].strip()\n        if not name or not zahl.lstrip(\"-\").isdigit():\n            ungueltig += 1\n            continue\n        gueltig += 1\n        summe += int(zahl)\n    return {\"gueltig\": gueltig, \"ungueltig\": ungueltig, \"summe\": summe}\n\n# alle Testfixtures lokal python3-verifiziert",
+      "typicalErrors": [
+        "Zeilen mit zwei Doppelpunkten als gültig gewertet",
+        "leere Namen durchgelassen",
+        "blankes except um die ganze Schleife versteckt die ungültigen Fälle statt sie zu zählen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 20,
+      "sourceLineage": {
+        "concept": "Python-Tutorial Kapitel 7.2 (zeilenweise Verarbeitung) und 8.3 (Fehlerbehandlung); Aufgabe eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 303
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w03-e4",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-git-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 304,
+      "masteryEligible": true,
+      "prompt": "Du arbeitest auf <code>main</code>, erstellst mit <code>git switch -c feature</code> einen Branch, machst dort einen Commit und wechselst mit <code>git switch main</code> zurück. Welcher Stand ist unmittelbar danach in deiner Arbeitskopie sichtbar?",
+      "parameters": {
+        "thema": "Branch-Wechsel-Semantik"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der Stand von main ohne den Feature-Commit — der Wechsel stellt die Arbeitskopie auf den Zielbranch zurück.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Der Feature-Commit bleibt sichtbar, weil die geänderten Dateien im Arbeitsverzeichnis liegen bleiben.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ein leerer Zwischenzustand, bis feature in main gemerged ist.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Eine Mischung aus main und feature, weil Branches sich ihre Dateien teilen.",
+          "correct": false
+        }
+      ],
+      "expectedAnswer": {
+        "correctChoice": "a"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Ein Branch ist ein Zeiger auf einen Commit; die Arbeitskopie folgt dem ausgecheckten Branch.",
+        "Dein Feature-Commit existiert weiter — nur main referenziert ihn nicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "git switch stellt die Dateien des Zielbranch wieder her — committete Änderungen auf feature bleiben dort, nicht in der Arbeitskopie von main."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Nach dem Wechsel ist main einfach main — kein Zwischenzustand, kein Warten auf den Merge."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Arbeitskopien gehören immer genau einem ausgecheckten Branch; Mischungen entstehen erst durch Merge oder Rebase."
+        }
+      ],
+      "fullSolution": "git switch main checkt den Stand von main aus; der Feature-Commit bleibt auf feature erreichbar. Die Arbeitskopie zeigt den main-Stand ohne den Feature-Commit.",
+      "typicalErrors": [
+        "Arbeitsverzeichnis als branchunabhängig gedacht",
+        "Commits als Datei-Änderungen statt als Branch-Referenzen verstanden",
+        "Branch-Wechsel mit Merge verwechselt"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Pro Git Kapitel 3.1 (Branches in a Nutshell) — Branch als Zeiger; Aufgabe eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 304
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

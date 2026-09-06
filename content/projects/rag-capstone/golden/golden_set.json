@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "rag-capstone-e2e-v1",
+  "beschreibung": "Eingefrorenes Golden Set: Obermenge der vier W30-Queries (wörtlich aus src/w30_core.py) mit Subgruppen-Labels und zusaetzlichen Faellen, ueber dem ungeaenderten W30-Fixturkorpus (fuenf Dokumente).",
+  "docs_quelle": "src/w30_core.py DOCS (ungeaendert)",
+  "queries": [
+    {
+      "query": "Wie lange beträgt die Lieferzeit?",
+      "relevant": [
+        0
+      ],
+      "subgroup": "versand"
+    },
+    {
+      "query": "Was deckt die Garantie?",
+      "relevant": [
+        3
+      ],
+      "subgroup": "garantie"
+    },
+    {
+      "query": "Wann endet das Widerrufsrecht?",
+      "relevant": [
+        1
+      ],
+      "subgroup": "recht"
+    },
+    {
+      "query": "Bis wann läuft der Rabatt?",
+      "relevant": [
+        2
+      ],
+      "subgroup": "rabatt"
+    },
+    {
+      "query": "Wie erfolgt der Versand?",
+      "relevant": [
+        0
+      ],
+      "subgroup": "versand"
+    },
+    {
+      "query": "Welche Sturzschäden sind ausgenommen?",
+      "relevant": [
+        3
+      ],
+      "subgroup": "garantie"
+    },
+    {
+      "query": "Kann ich etwas zurückgeben?",
+      "relevant": [
+        1
+      ],
+      "subgroup": "recht"
+    },
+    {
+      "query": "Für wen gelten die Rabattcodes im Sommer?",
+      "relevant": [
+        2
+      ],
+      "subgroup": "rabatt"
+    }
+  ]
+}

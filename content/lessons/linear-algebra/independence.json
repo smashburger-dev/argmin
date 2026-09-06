@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-linalg-independence",
+  "version": 1,
+  "locale": "de",
+  "title": "Lineare Unabhängigkeit und Rang verstehen",
+  "objectives": ["Abhängigkeit über eine konkrete Linearkombination erkennen", "Rang als Zahl der Pivotpositionen bestimmen", "Determinante und Gauß passend als Prüfwerkzeug auswählen"],
+  "competencyIds": ["c-linalg-independence"],
+  "requires": ["c-linalg-matrices"],
+  "estimatedMinutes": 50,
+  "blocks": [{ "blockId": "linalg-independence-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/independence.md" }],
+  "sourceRefs": [
+    { "sourceId": "mit-ocw-18-06sc", "role": "reference", "locator": "Lectures zu Unabhängigkeit, Basis und Rang" },
+    { "sourceId": "serlo-mathe", "role": "practice", "locator": "Lineare Unabhängigkeit und Rang" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-foundations-data-checker",
+  "version": 2,
+  "locale": "de",
+  "title": "CLI-Datenprüfer",
+  "description": "Prüft CSV-Daten in vier Stufen auf Spalten, Typen, fehlende Werte und doppelte IDs.",
+  "runnerMode": "local",
+  "competencyIds": [
+    "c-python-basics",
+    "c-python-reading",
+    "c-python-functions",
+    "c-python-control-flow",
+    "c-python-collections",
+    "c-python-files-errors",
+    "c-testing-debugging",
+    "c-git-basics",
+    "c-meta-learning"
+  ],
+  "requires": [
+    "c-python-basics",
+    "c-python-reading",
+    "c-python-functions",
+    "c-python-control-flow",
+    "c-python-collections"
+  ],
+  "starterFiles": [
+    "README.md",
+    "src/checker.py",
+    "tests/test_checker.py",
+    "check-manifest.json"
+  ],
+  "solutionFiles": [
+    "solution/checker.py"
+  ],
+  "allowedCommands": [
+    {
+      "program": "python",
+      "args": [
+        "-m",
+        "pytest",
+        "-q",
+        "--disable-warnings",
+        "--maxfail=1",
+        "tests"
+      ]
+    }
+  ],
+  "testBundleId": "foundations-data-checker-tests-v1",
+  "deliverables": [
+    "Ausführbarer Datenprüfer unter src/checker.py",
+    "Alle bereitgestellten Tests bestanden",
+    "Kurze Fehleranalyse im README"
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "legacyWeekId": "w04",
+  "estimatedMinutes": 300
+}

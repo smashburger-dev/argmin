@@ -1,0 +1,1360 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "competencies": [
+    {
+      "competencyId": "c-algebra-basics",
+      "locale": "de",
+      "title": "Algebra-Grundlagen",
+      "description": "Lineare Gleichungen, Potenzen und Logarithmen sicher umformen und berechnen.",
+      "domain": "mathematics",
+      "level": "apply",
+      "requires": [],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-algebra"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 240,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-algebra",
+      "locale": "de",
+      "title": "Algebraische Termumformung",
+      "description": "Terme für mathematische und ML-bezogene Probleme strukturiert vereinfachen.",
+      "domain": "mathematics",
+      "level": "apply",
+      "requires": [
+        "c-algebra-basics"
+      ],
+      "relations": [
+        {
+          "type": "usedBy",
+          "competencyId": "c-linalg-gauss"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 180,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-python-basics",
+      "locale": "de",
+      "title": "Python-Grundlagen",
+      "description": "Werte, Typen, Variablen und Zuweisungen in kleinen Programmen verwenden.",
+      "domain": "programming",
+      "level": "apply",
+      "requires": [],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-python-reading"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai"
+      ],
+      "estimatedMinutes": 240,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-python-reading",
+      "locale": "de",
+      "title": "Python-Code lesen und tracen",
+      "description": "Programmzustände schrittweise verfolgen und die Ausgabe begründen.",
+      "domain": "programming",
+      "level": "apply",
+      "requires": [
+        "c-python-basics"
+      ],
+      "relations": [
+        {
+          "type": "related",
+          "competencyId": "c-python-functions"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 180,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-python-functions",
+      "locale": "de",
+      "title": "Python-Funktionen",
+      "description": "Funktionen mit Parametern und Rückgabewerten schreiben, lesen und testen.",
+      "domain": "programming",
+      "level": "apply",
+      "requires": [
+        "c-python-basics"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-numpy-basics"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai"
+      ],
+      "estimatedMinutes": 180,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-meta-learning",
+      "locale": "de",
+      "title": "Fehler analysieren und Lernen planen",
+      "description": "Eigene Fehlwege dokumentieren, Ursachen benennen und den nächsten Abruf planen.",
+      "domain": "metacognition",
+      "level": "transfer",
+      "requires": [],
+      "relations": [],
+      "trackIds": [
+        "common-core",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 60,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 7,
+        "freshnessDays": 30
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-linalg-matrices",
+      "locale": "de",
+      "title": "Matrizen und Matrixprodukte",
+      "description": "Matrixformen prüfen, Produkte berechnen und Zeilen- sowie Spaltensicht verbinden.",
+      "domain": "linear-algebra",
+      "level": "apply",
+      "requires": [
+        "c-algebra-basics"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-linalg-systems"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 240,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-linalg-systems",
+      "locale": "de",
+      "title": "Lineare Gleichungssysteme",
+      "description": "Lineare Systeme als Gleichungen, Matrizen und Spaltenbild interpretieren.",
+      "domain": "linear-algebra",
+      "level": "apply",
+      "requires": [
+        "c-algebra-basics",
+        "c-linalg-matrices"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-linalg-gauss"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 180,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-linalg-gauss",
+      "locale": "de",
+      "title": "Gauß-Elimination",
+      "description": "Lineare Systeme mit zulässigen Zeilenoperationen lösen und Lösungsmengen prüfen.",
+      "domain": "linear-algebra",
+      "level": "apply",
+      "requires": [
+        "c-algebra",
+        "c-linalg-systems"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-linalg-independence"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 240,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-linalg-independence",
+      "locale": "de",
+      "title": "Lineare Unabhängigkeit und Rang",
+      "description": "Unabhängigkeit, Basis und Rang mit begründeten Verfahren untersuchen.",
+      "domain": "linear-algebra",
+      "level": "transfer",
+      "requires": [
+        "c-linalg-matrices"
+      ],
+      "relations": [
+        {
+          "type": "related",
+          "competencyId": "c-linalg-gauss"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 240,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-numpy-basics",
+      "locale": "de",
+      "title": "NumPy-Grundlagen und Shapes",
+      "description": "Arrays erstellen, Shapes als Vertrag prüfen und Matrixoperationen in NumPy umsetzen.",
+      "domain": "data",
+      "level": "apply",
+      "requires": [
+        "c-python-functions",
+        "c-linalg-matrices"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-pandas-cleaning"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai"
+      ],
+      "estimatedMinutes": 240,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "browser-verified"
+    },
+    {
+      "competencyId": "c-python-control-flow",
+      "locale": "de",
+      "title": "Bedingungen und Schleifen",
+      "description": "Verzweigungen und Schleifen lesen, entwerfen und mit klaren Abbruchbedingungen prüfen.",
+      "domain": "programming",
+      "level": "apply",
+      "requires": [
+        "c-python-basics"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-python-collections"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai"
+      ],
+      "estimatedMinutes": 300,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-python-collections",
+      "locale": "de",
+      "title": "Listen, Dictionaries und Sets",
+      "description": "Daten passend strukturieren, sicher durchlaufen und Duplikate oder Häufigkeiten bestimmen.",
+      "domain": "programming",
+      "level": "apply",
+      "requires": [
+        "c-python-control-flow"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-python-files-errors"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai"
+      ],
+      "estimatedMinutes": 300,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-python-files-errors",
+      "locale": "de",
+      "title": "Dateien, Eingaben und Fehler",
+      "description": "Text- und CSV-Dateien einlesen, ungültige Daten erkennen und Fehler an einer sinnvollen Grenze behandeln.",
+      "domain": "programming",
+      "level": "transfer",
+      "requires": [
+        "c-python-functions",
+        "c-python-collections"
+      ],
+      "relations": [
+        {
+          "type": "usedBy",
+          "competencyId": "c-testing-debugging"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 300,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-testing-debugging",
+      "locale": "de",
+      "title": "Testen und systematisch debuggen",
+      "description": "Fehler reproduzieren, kleine Tests formulieren und zwischen Ursache, Symptom und Fix unterscheiden.",
+      "domain": "programming",
+      "level": "transfer",
+      "requires": [
+        "c-python-functions",
+        "c-python-files-errors"
+      ],
+      "relations": [],
+      "trackIds": [
+        "common-core",
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 300,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-git-basics",
+      "locale": "de",
+      "title": "Git-Grundlagen für Lernprojekte",
+      "description": "Änderungen gezielt prüfen, committen und über kleine Branches nachvollziehbar zusammenführen.",
+      "domain": "tooling",
+      "level": "apply",
+      "requires": [
+        "c-meta-learning"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-testing-debugging"
+        }
+      ],
+      "trackIds": [
+        "common-core",
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 180,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 1,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-pandas-cleaning",
+      "locale": "de",
+      "title": "Datenbereinigung tabellarischer Daten",
+      "description": "Tabellarische Daten (Zeilenlisten, CSV, NumPy-Arrays) auf Schema, fehlende Werte, Sentinel-Werte und Duplikate prüfen, Bereinigungsschritte deterministisch umsetzen und einen Datenqualitätsvertrag formulieren; pandas-Idiomatik als Lese- und Vorhersagekompetenz einordnen (pandas ist nicht browser-ausführbar, ADR-0012).",
+      "domain": "data",
+      "level": "apply",
+      "requires": [
+        "c-numpy-basics",
+        "c-python-collections",
+        "c-python-files-errors"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-eda-viz"
+        },
+        {
+          "type": "supports",
+          "competencyId": "c-ml-baseline"
+        }
+      ],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 420,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-eda-viz",
+      "locale": "de",
+      "title": "Explorative Datenanalyse und Visualisierung",
+      "description": "Verteilungen, Zusammenhänge und Auffälligkeiten mit geeigneten Kennzahlen und Diagrammen untersuchen und vorsichtig interpretieren.",
+      "domain": "data-analysis",
+      "level": "apply",
+      "requires": [
+        "c-pandas-cleaning"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 420,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-grad-regression",
+      "locale": "de",
+      "title": "Gradienten und Regression aus Grundoperationen",
+      "description": "Ableitungen und Gradienten für eine lineare Regression herleiten, numerisch prüfen und mit NumPy umsetzen.",
+      "domain": "mathematics",
+      "level": "apply",
+      "requires": [
+        "c-algebra",
+        "c-linalg-matrices",
+        "c-numpy-basics"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-linear"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-baseline",
+      "locale": "de",
+      "title": "ML-Problemformulierung und Baseline",
+      "description": "Zielvariable, Vergleichsmaßstab und Datensplits festlegen und eine naive Baseline als belastbare Referenz implementieren.",
+      "domain": "machine-learning",
+      "level": "apply",
+      "requires": [
+        "c-pandas-cleaning",
+        "c-eda-viz"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 360,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-linear",
+      "locale": "de",
+      "title": "Lineare Regression mit Residuenanalyse",
+      "description": "Lineare Regressionsmodelle trainieren, Verlust und Residuen prüfen und Ergebnisse gegen eine Baseline einordnen.",
+      "domain": "machine-learning",
+      "level": "apply",
+      "requires": [
+        "c-ml-baseline",
+        "c-grad-regression"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-logistic"
+        },
+        {
+          "type": "supports",
+          "competencyId": "c-ml-regularization"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-logistic",
+      "locale": "de",
+      "title": "Logistische Regression und Klassifikationsmetriken",
+      "description": "Logistische Regression anwenden und Schwellenwerte sowie Precision, Recall und F1 anhand von Fehlerkosten begründen.",
+      "domain": "machine-learning",
+      "level": "apply",
+      "requires": [
+        "c-ml-linear"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-cv"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-cv",
+      "locale": "de",
+      "title": "Cross-Validation und Leakage-Kontrolle",
+      "description": "Datensplits und Cross-Validation leakage-sicher planen, Hyperparameter vergleichen und Varianz der Ergebnisse berücksichtigen.",
+      "domain": "machine-learning",
+      "level": "apply",
+      "requires": [
+        "c-ml-logistic"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-erroranalysis"
+        },
+        {
+          "type": "supports",
+          "competencyId": "c-ml-regularization"
+        },
+        {
+          "type": "supports",
+          "competencyId": "c-ml-ensembles"
+        },
+        {
+          "type": "supports",
+          "competencyId": "c-ml-svm-pca"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-erroranalysis",
+      "locale": "de",
+      "title": "Systematische ML-Fehleranalyse",
+      "description": "Vorhersagefehler kategorisieren, relevante Teilgruppen prüfen und daraus priorisierte nächste Experimente ableiten.",
+      "domain": "machine-learning",
+      "level": "transfer",
+      "requires": [
+        "c-ml-cv"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-repro"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 420,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-regularization",
+      "locale": "de",
+      "title": "Regularisierung und Feature Engineering",
+      "description": "Ridge- und Lasso-Regularisierung vergleichen, Merkmale kontrolliert verändern und Effekte auf Fehler und Koeffizienten bewerten.",
+      "domain": "machine-learning",
+      "level": "apply",
+      "requires": [
+        "c-ml-cv",
+        "c-ml-linear"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-repro"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-ensembles",
+      "locale": "de",
+      "title": "Entscheidungsbäume und Ensembles",
+      "description": "Baumverfahren und Ensembles unter identischen Splits gegen lineare Baselines vergleichen und Unterschiede begründet erklären.",
+      "domain": "machine-learning",
+      "level": "apply",
+      "requires": [
+        "c-ml-cv"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-repro"
+        }
+      ],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-svm-pca",
+      "locale": "de",
+      "title": "SVM und Hauptkomponentenanalyse",
+      "description": "Support Vector Machines und PCA passend skalieren, anwenden und ihre geometrischen Annahmen sowie Grenzen erläutern; k-Means-Clustering deterministisch ausführen, Skalierungsanforderungen begründen und überwachtes versus unüberwachtes Lernen einordnen.",
+      "domain": "machine-learning",
+      "level": "transfer",
+      "requires": [
+        "c-ml-cv",
+        "c-linalg-independence"
+      ],
+      "relations": [
+        {
+          "type": "supports",
+          "competencyId": "c-ml-repro"
+        }
+      ],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-ml-repro",
+      "locale": "de",
+      "title": "Reproduzierbare ML-Modellvergleiche",
+      "description": "Splits, Zufallszustände, Konfigurationen und Auswertungen so festhalten, dass Modellvergleiche überprüfbar wiederholt werden können.",
+      "domain": "machine-learning",
+      "level": "transfer",
+      "requires": [
+        "c-ml-erroranalysis",
+        "c-ml-regularization",
+        "c-ml-ensembles",
+        "c-ml-svm-pca",
+        "c-git-basics",
+        "c-testing-debugging"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-tensors",
+      "locale": "de",
+      "title": "Tensoren, Layer und Dimensionsverträge",
+      "description": "Tensorformen und Broadcasting prüfen sowie einfache Layer und Forward-Pässe mit expliziten Dimensionskontrollen umsetzen.",
+      "domain": "deep-learning",
+      "level": "apply",
+      "requires": [
+        "c-numpy-basics",
+        "c-linalg-matrices"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 420,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-autograd",
+      "locale": "de",
+      "title": "Automatische Differentiation und Backpropagation",
+      "description": "Gradienten durch Rechengraphen verfolgen: Backpropagation eigenständig implementieren und mit zentralen numerischen Differenzen absichern; Framework-Autograd nur als Lese- und Vorhersagekompetenz einordnen (kein Framework im Browser, ADR-0012/0013).",
+      "domain": "deep-learning",
+      "level": "apply",
+      "requires": [
+        "c-dl-tensors",
+        "c-grad-regression"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 540,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-training",
+      "locale": "de",
+      "title": "Training Loops und Optimierung",
+      "description": "Training und Validierung mit Batches, Optimierern und Lernkurven implementieren und typische Instabilitäten diagnostizieren.",
+      "domain": "deep-learning",
+      "level": "apply",
+      "requires": [
+        "c-dl-autograd",
+        "c-ml-baseline"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-regularization",
+      "locale": "de",
+      "title": "Deep-Learning-Regularisierung und Ablation",
+      "description": "Regularisierungsmaßnahmen einzeln untersuchen, faire Ablationen planen und Modellzustände reproduzierbar speichern und laden.",
+      "domain": "deep-learning",
+      "level": "transfer",
+      "requires": [
+        "c-dl-training",
+        "c-ml-cv"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-attention",
+      "locale": "de",
+      "title": "Attention und Transformer-Grundlagen",
+      "description": "Scaled Dot-Product Attention mit kleinen Matrizen berechnen und die Rollen von Queries, Keys und Values im Transformer erklären.",
+      "domain": "deep-learning",
+      "level": "apply",
+      "requires": [
+        "c-dl-tensors",
+        "c-linalg-matrices"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "mathematical-foundations"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-tokenizer",
+      "locale": "de",
+      "title": "Tokenisierung und Sprachmodellfamilien",
+      "description": "Tokenisierungsverfahren untersuchen und Encoder-, Decoder- sowie Encoder-Decoder-Modelle für konkrete Aufgaben einordnen.",
+      "domain": "deep-learning",
+      "level": "apply",
+      "requires": [
+        "c-python-collections"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 420,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-inference",
+      "locale": "de",
+      "title": "Reproduzierbare Modellinferenz",
+      "description": "Tokenisierung, Toy-Modell-Aufruf mit gestellten Fixtur-Gewichten und Dekodierung zu einer deterministisch prüfbaren Inferenzpipeline mit festen Testfällen verbinden; reale Modellinferenz bleibt lokale Projekt- und Lesekompetenz.",
+      "domain": "deep-learning",
+      "level": "transfer",
+      "requires": [
+        "c-dl-attention",
+        "c-dl-tokenizer"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-finetuning",
+      "locale": "de",
+      "title": "Fine-Tuning-Experimente",
+      "description": "Anpassungsstrategien am Toy-Modell ausführen (Head-only-Feinabstimmung, LoRA-artige Rang-2-Anpassung), LoRA-Mathematik exakt rechnen und Experimentdesign gegen Confounds prüfen; Feinabstimmung echter Modelle bleibt protokolliertes lokales Experiment ohne Mastery-Nachweis.",
+      "domain": "deep-learning",
+      "level": "transfer",
+      "requires": [
+        "c-dl-inference",
+        "c-dl-regularization"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-dl-papers",
+      "locale": "de",
+      "title": "Deep-Learning-Paper kritisch synthetisieren",
+      "description": "Forschungsfrage, Methode, Datensatz, Ergebnisse, Limitationen und Claim-Evidence-Zuordnung strukturieren und mehrere Paper vergleichen; Mastery wird über deterministische Rech- und Strukturaufgaben gemessen, das freie Kartenschreiben bleibt Arbeitsnachweis ohne Mastery.",
+      "domain": "deep-learning",
+      "level": "transfer",
+      "requires": [
+        "c-dl-finetuning",
+        "c-meta-learning"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-genai-rag",
+      "locale": "de",
+      "title": "RAG-Pipeline mit messbarem Retrieval",
+      "description": "Dokumente verarbeiten, Retrieval und Generierung trennen und die Suchqualität mit einem festen Testset messen; Antwortgenerierung läuft nicht im Browser und wird separat über Fixtures bzw. lokale Projekte bewertet.",
+      "domain": "generative-ai",
+      "level": "apply",
+      "requires": [
+        "c-dl-inference",
+        "c-python-files-errors"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-genai-eval",
+      "locale": "de",
+      "title": "Evaluation generativer KI-Systeme",
+      "description": "Feste Evaluationsfragen, Kriterien und Fehlertaxonomien entwerfen und Antworten reproduzierbar sowie mit Unsicherheiten bewerten.",
+      "domain": "generative-ai",
+      "level": "transfer",
+      "requires": [
+        "c-genai-rag",
+        "c-ml-erroranalysis"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-genai-security",
+      "locale": "de",
+      "title": "Sicherheit generativer KI-Systeme",
+      "description": "Prompt Injection, Datenabfluss und Berechtigungsgrenzen mit definierten Angriffsfällen prüfen und Gegenmaßnahmen dokumentieren.",
+      "domain": "generative-ai",
+      "level": "transfer",
+      "requires": [
+        "c-genai-rag",
+        "c-testing-debugging"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-genai-prototype",
+      "locale": "de",
+      "title": "Abgesicherter GenAI-Prototyp",
+      "description": "Retrieval, deterministische Evaluation und Sicherheitskontrollen in einen minimalen Prototyp mit Stub-Generator und Fixtur-Kontrollen integrieren und bekannte Grenzen offen dokumentieren; das Ergebnis ist kein produktives LLM-System.",
+      "domain": "generative-ai",
+      "level": "transfer",
+      "requires": [
+        "c-genai-rag",
+        "c-genai-eval",
+        "c-genai-security"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-research-question",
+      "locale": "de",
+      "title": "Forschungsfrage und Experimentprotokoll",
+      "description": "Eine prüfbare Forschungsfrage, Hypothesen, Metriken und Abbruchregeln vor dem Hauptlauf in einem Protokoll festhalten.",
+      "domain": "research",
+      "level": "transfer",
+      "requires": [
+        "c-genai-eval",
+        "c-meta-learning"
+      ],
+      "relations": [],
+      "trackIds": [
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 420,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-research-cards",
+      "locale": "de",
+      "title": "Daten- und Modellkarten",
+      "description": "Provenienz, Verwendungszweck, Evaluationsrahmen und bekannte Einschränkungen in Daten- und Modellkarten nachvollziehbar erfassen.",
+      "domain": "research",
+      "level": "transfer",
+      "requires": [
+        "c-research-question"
+      ],
+      "relations": [],
+      "trackIds": [
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 360,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-research-responsible",
+      "locale": "de",
+      "title": "Responsible AI und Risikobewertung",
+      "description": "Teilgruppenfehler, Missbrauchsrisiken, Betriebskosten und Schutzmaßnahmen prüfen und in einem priorisierten Risikoregister festhalten.",
+      "domain": "research",
+      "level": "transfer",
+      "requires": [
+        "c-genai-security",
+        "c-research-cards"
+      ],
+      "relations": [],
+      "trackIds": [
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 480,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-research-capstone",
+      "locale": "de",
+      "title": "Forschungsbasierte Capstone-Baseline",
+      "description": "Einen GenAI-Prototyp mit Forschungsprotokoll, verantwortlicher Risikoprüfung und einer überprüfbaren End-to-End-Baseline verbinden.",
+      "domain": "research",
+      "level": "transfer",
+      "requires": [
+        "c-genai-prototype",
+        "c-research-responsible"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    },
+    {
+      "competencyId": "c-capstone-pipeline",
+      "locale": "de",
+      "title": "Reproduzierbare Capstone-Pipeline",
+      "description": "Datenfluss, Modell- oder GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit dokumentierten Grenzen integrieren.",
+      "domain": "ai-engineering",
+      "level": "transfer",
+      "requires": [
+        "c-research-capstone",
+        "c-ml-repro"
+      ],
+      "relations": [],
+      "trackIds": [
+        "applied-ai",
+        "research-evaluation"
+      ],
+      "estimatedMinutes": 600,
+      "evidencePolicy": {
+        "minimumIndependentHits": 2,
+        "minimumDistinctDefinitions": 2,
+        "delayedHitRequired": true,
+        "minimumDelayDays": 14,
+        "freshnessDays": 77
+      },
+      "rightsId": "ki-lernplattform-original",
+      "releaseStatus": "draft"
+    }
+  ]
+}

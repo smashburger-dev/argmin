@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-code-reading",
+  "version": 2,
+  "locale": "de",
+  "title": "Code Zeile für Zeile tracen",
+  "objectives": ["Ausführung von Quelltext und bloßes Lesen unterscheiden", "Schleifenläufe in einer Tabelle festhalten", "eine Ausgabe vor dem Ausführen begründen"],
+  "competencyIds": ["c-python-reading"],
+  "requires": ["c-python-basics"],
+  "estimatedMinutes": 35,
+  "blocks": [{ "blockId": "code-reading-core", "type": "worked-example", "contentRef": "lessons/foundations/code-reading.md" }],
+  "sourceRefs": [
+    { "sourceId": "py-tutorial-official-3.14", "role": "reference", "locator": "Kapitel 4: More Control Flow Tools" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,89 @@
+// The canonical integer helpers live in w01 (byte-pinned rng); re-exported
+// here so every family module has ONE import site.
+export { rng, randInt } from './w01_generators.mjs';
+
+/** Binds until/clean to one family's retry bounds, error scope and leak-guard
+ *  strictness — the per-file constants that keep RNG consumption identical. */
+export const bindFamilyDraw = (options) => ({
+  until: (random, fn, guard) => until(random, fn, guard, options),
+  clean: (random, build) => clean(random, build, options),
+});
+
+// Shared draw utilities for the week-family generators (deduplicated in the
+// shrink-complexity pass; every semantic knob of the previous per-file copies
+// is an explicit option so each family keeps its exact RNG consumption,
+// retry bounds, error scope and leak-guard strictness — the seed golden
+// corpus in tests/fixtures/generator-golden-corpus.json pins the bytes).
+
+export function pick(random, values) {
+  return values[Math.floor(random() * values.length)];
+}
+
+export function shuffle(random, values) {
+  const out = [...values];
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/** Bounded retry helper: fn(random) is repeated until guard() holds. The
+ *  scope names the calling family in the degenerate-draw error. */
+export function until(random, fn, guard, { maxTries = 96, scope = 'generator_draw_kit' } = {}) {
+  for (let i = 0; i < maxTries; i += 1) {
+    const value = fn(random);
+    if (guard(value)) return value;
+  }
+  const fallback = fn(random);
+  if (!guard(fallback)) throw new Error(`${scope}: degenerate draw survived retry guard`);
+  return fallback;
+}
+
+/** True when `value` appears in `text` as a standalone number (not part of a
+ *  longer number or percentage). Families that render negatives with a
+ *  unicode minus in the SAME string they guard normalize it first; families
+ *  whose prompts mix both notations opt out to keep their historical draws. */
+export function standaloneNumberPresent(text, value, { normalizeUnicodeMinus = true } = {}) {
+  const normalized = normalizeUnicodeMinus ? String(text).replace(/\u2212/g, '-') : text;
+  const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\d.,])${escaped}(?![\\d.,%])`).test(normalized);
+}
+
+/** Redraws the whole instance until the prompt no longer shows the answer. */
+export function clean(random, build, options = {}) {
+  return until(
+    random,
+    build,
+    (instance) => !standaloneNumberPresent(instance.prompt, instance.expected, options),
+    options,
+  );
+}
+
+/** Deterministische Subseeds (FNV-1a über Seed:Fall:Profil:Versuch). */
+export function familySubseed(seed, caseId, difficulty, attempt = 0) {
+  const text = `${seed}|${caseId}|${difficulty}|${attempt}`;
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+}
+
+/** Zieht Generatorausgaben, bis Form (`wantShape`) und Profilprädikat
+ *  (`profileAccepts`, null = Referenzverteilung) passen. Fällt nach `cap`
+ *  Versuchen auf die erste formtreue Ziehung zurück. */
+export function drawFamilyInstance(generate, { seed, caseId, difficulty, wantShape, profileAccepts, cap = 2000, profiles = null }) {
+  if (Array.isArray(profiles) && !profiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  let fallback = null;
+  for (let attempt = 0; attempt < cap; attempt += 1) {
+    const drawn = generate(familySubseed(seed, caseId, difficulty, attempt));
+    if (!wantShape(drawn)) continue;
+    if (!fallback) fallback = drawn;
+    if (!profileAccepts || profileAccepts(drawn.parameters)) return drawn;
+  }
+  if (!fallback) throw new Error(`${caseId}: keine formtreue Instanz in ${cap} Versuchen`);
+  return fallback;
+}

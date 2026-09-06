@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/schemas/review-findings.schema.json",
+  "title": "Review findings collection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "locale", "reviews"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "locale": { "const": "de" },
+    "reviews": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reviewId", "title", "scope", "status", "summary", "findings"],
+        "properties": {
+          "reviewId": { "type": "string", "pattern": "^r-[a-z0-9-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "scope": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["completed", "needs-human-review", "blocked"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "findings": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["findingId", "severity", "evidence", "uncertainty", "recommendation", "suggestedImplementation", "affectedContent", "humanReviewRequired", "implementationStatus"],
+              "properties": {
+                "findingId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]+$" },
+                "severity": { "enum": ["critical", "high", "medium", "low", "positive"] },
+                "evidence": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+                "uncertainty": { "type": "string" },
+                "recommendation": { "type": "string", "minLength": 1 },
+                "suggestedImplementation": { "type": "string", "minLength": 1 },
+                "affectedContent": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+                "humanReviewRequired": { "type": "boolean" },
+                "implementationStatus": { "enum": ["implemented", "partially-implemented", "planned", "not-started", "not-applicable"] }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "RAG-Capstone-Pipeline",
+  "komponenten": ["golden_laden", "retrieval", "sicherheit", "antwort", "metriken", "kosten", "bericht"],
+  "sicherheitsregeln": [
+    "audit prüft Anfrage und bestes Dokument auf Regelphrasen (injektionsverdacht)",
+    "request_action nach Least Privilege: forbidden schlägt restricted schlägt allowed, Unbekanntes wird abgelehnt",
+    "kein Netzwerk, kein Zufall, keine Uhrzeit im Ergebnispfad"
+  ],
+  "kostenmodell": "Deterministische Token-Näherung (Wörter zählen) mit Preistabelle aus config/experiment.json.",
+  "bekannte_limitierungen": [
+    "TODO(Lernende:r): Regel-Detektor statt robustem Injektionsschutz, lokale Ausführung, Selbstbericht ohne Mastery-Beweis."
+  ]
+}

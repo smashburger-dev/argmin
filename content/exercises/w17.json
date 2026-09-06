@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w17",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w17-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-ml-repro"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 17010,
+      "masteryEligible": false,
+      "prompt": "Konzept-Check Reproduzierbarkeit: Eine Kollegin behauptet, ihr ML-Experiment sei reproduzierbar. Welche Beobachtung verletzt den Reproduzierbarkeitsvertrag am deutlichsten? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "parameters": {},
+      "expectedAnswer": {
+        "correctChoice": "a"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Frage pro Aussage: Könnte ein Dritter mit denselben Angaben denselben Zahlenwert herausbekommen?",
+        "Drei der vier Aussagen erfüllen den Vertrag — welche zerstört die Wiederholbarkeit direkt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Das ist Erfüllung: Seed, Split, Metrik und Versionen sind genau die Pflichtschlüssel des Manifests."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Auch das gehört zum Vertrag: Metrik und Schwellenwert vorab festlegen verhindert Selection-Bias."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das README als Laufanleitung ist Teil des Experiments — keine Verletzung."
+        }
+      ],
+      "fullSolution": "Ein fixer Split (aus dem Seed abgeleitet oder gespeichert) ist Kern des Vertrags. Ändert sich der Split beim erneuten Lauf, ändern sich Trainings- und Testdaten — das Ergebnis ist nicht wiederholbar, egal wie gut das Manifest sonst ist.",
+      "typicalErrors": [
+        "Dokumentation (Manifest, README) mit Reproduzierbarkeit verwechseln",
+        "Seed-Setzung als ausreichend ansehen, obwohl der Split frei läuft",
+        "Vorab-Metrik als optional ansehen"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 5,
+      "sourceLineage": {
+        "statement": "eigenständig entwickelt",
+        "seed": 17010
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manuell geprüft",
+      "testedSeedCount": 0,
+      "locale": "de",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "exerciseId": "w17-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-ml-repro",
+        "c-ml-cv"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 17001,
+      "masteryEligible": true,
+      "prompt": "Eine 10-Fold-Cross-Validation für Abbruchprognose liefert die Accuracy-Werte 70 %, 70 %, 58 %, 81 %, 83 %, 90 %, 70 %, 72 %, 71 %, 64 %. Wie groß ist die Spannweite zwischen bestem und schlechtestem Fold, in Prozentpunkten?",
+      "parameters": {
+        "seedGenerator": "genCvSpread"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genCvSpread",
+        "defaultSeed": 17001,
+        "defaultExpected": 32
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Die Spannweite ist Maximum minus Minimum der berichteten Werte.",
+        "Suche zuerst den größten und den kleinsten Accuracy-Wert, bevor du subtrahierst."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 26",
+          "then": "26 wäre die Spannweite ohne den Ausreißer 58 % — auch ungewöhnliche Folds gehören zur berichteten Streuung."
+        },
+        {
+          "if": "value === 90",
+          "then": "90 ist das Maximum selbst — gesucht ist Maximum minus Minimum."
+        }
+      ],
+      "fullSolution": "Spannweite = max(Werte) − min(Werte). Die berichtete Streuung gehört neben den Mittelwert in jeden ehrlichen Ergebnisbericht. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "Ausreißer weglassen, weil sie „nicht passen“",
+        "Maximum statt Spannweite angeben",
+        "Mittelwert statt Spannweite berechnen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "statement": "eigenständig entwickelt",
+        "seed": 17001
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w17-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-ml-repro",
+        "c-numpy-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 17012,
+      "masteryEligible": true,
+      "prompt": "Zufallsströme vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(a[0] + b[0] + c[0])</code> vorher, ohne den Code auszuführen. Beachte, dass <code>c</code> von einem <b>neuen</b> Generator mit demselben Seed gezogen wird und <code>b</code> vom bereits benutzten <code>rng</code>.",
+      "parameters": {
+        "snippet": "import numpy as np\n\nrng = np.random.default_rng(7)\na = rng.integers(0, 10, size=3)\nb = rng.integers(0, 10, size=3)\nc = np.random.default_rng(7).integers(0, 10, size=3)\nprint(a[0] + b[0] + c[0])"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "26"
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Ein neuer default_rng(7) startet die Folge von vorn — welche Beziehung gilt deshalb zwischen a und c?",
+        "Im selben rng läuft die Folge weiter: b ist die zweite Ziehung. Die Zahlen (Seed 7, Bereich 0–10) sind a = [9, 6, 6], b = [8, 5, 7]."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 24",
+          "then": "24 entsteht, wenn man b[0] wie einen frischen Seed-7-Strom als 9 liest — b ist aber die Fortsetzung von rng."
+        },
+        {
+          "if": "value === 30",
+          "then": "Hast du a[0] zweimal mit b[0] = 12 gerechnet? Prüfe die erste Ziehung jeder Liste."
+        }
+      ],
+      "fullSolution": "default_rng(7) beginnt mit [9, 6, 6]: a = [9, 6, 6]. Der nächste Aufruf im selben Generator setzt die Folge fort: b = [8, 5, 7]. Ein neuer Generator mit Seed 7 startet von vorn: c = [9, 6, 6]. Ausgabe: 9 + 8 + 9 = <code>26</code>.",
+      "typicalErrors": [
+        "Fortsetzung im selben Generator wie Neustart behandeln",
+        "Indizes 0 mit 1 verwechseln",
+        "den dritten Generator als Fortsetzung lesen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "sourceLineage": {
+        "statement": "eigenständig entwickelt",
+        "seed": 17012
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w17-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-ml-repro",
+        "c-numpy-basics"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 17013,
+      "masteryEligible": true,
+      "prompt": "Implementiere den Reproduzierbarkeitsvertrag in zwei Funktionen. `run_experiment(config)` (config mit Pflichtschlüssel `seed`; optional `n`, `test_share`, `lam` mit Defaults 40, 0.25, 1.0; fehlt `seed` → `ValueError`) läuft deterministisch: `rng = np.random.default_rng(seed)`; `perm = rng.permutation(n)`; `n_test = max(1, round(n*test_share))`; `test_idx = perm[:n_test]` (als Liste int), `train_idx = perm[n_test:]`; `x = np.linspace(0, 1, n)`; `y = 2*x + rng.normal(0, 0.1, n)`; Ridge-1D-Gewicht `w = Σx_train·y_train/(Σx_train² + lam)`; `rmse` auf dem Testteil. Rückgabe `{'seed': int, 'n': int, 'test_idx': [...], 'w': float, 'rmse': float}`. `check_manifest(manifest)` prüft, dass ein dict die Schlüssel `seed`, `split`, `metric`, `versions` enthält — fehlt einer oder ist kein dict: `ValueError`; gültig: Rückgabe `True`.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef run_experiment(config):\n    \"\"\"Deterministic seeded experiment; config['seed'] required (else ValueError).\"\"\"\n    # 1) seed pruefen, 2) rng + permutation, 3) Daten, 4) w und rmse\n    ...\n\ndef check_manifest(manifest):\n    \"\"\"Return True if manifest has seed, split, metric, versions; else ValueError.\"\"\"\n    required = ('seed', 'split', 'metric', 'versions')\n    # fehlende Schluessel sammeln und melden\n    ...\n",
+        "tests": "import numpy as np\n\n__cfg = {'seed': 11, 'n': 40, 'test_share': 0.25, 'lam': 1.0}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes 10', len(__r1['test_idx']) == 10)\n__alt = dict(__cfg)\n__alt['seed'] = 12\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\nexcept Exception as e:\n    __check('fehlender Schluessel abgelehnt', False, type(e).__name__)\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\nexcept Exception as e:\n    __check('config ohne seed abgelehnt', False, type(e).__name__)"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef run_experiment(config):\n    if \"seed\" not in config:\n        raise ValueError(\"config requires key: seed\")\n    seed = int(config[\"seed\"])\n    n = int(config.get(\"n\", 40))\n    test_share = float(config.get(\"test_share\", 0.25))\n    lam = float(config.get(\"lam\", 1.0))\n    rng = np.random.default_rng(seed)\n    perm = rng.permutation(n)\n    n_test = max(1, int(round(n * test_share)))\n    test_idx = perm[:n_test]\n    train_idx = perm[n_test:]\n    x = np.linspace(0.0, 1.0, n)\n    y = 2.0 * x + rng.normal(0.0, 0.1, size=n)\n    xt, yt = x[train_idx], y[train_idx]\n    xv, yv = x[test_idx], y[test_idx]\n    w = float((xt @ yt) / (xt @ xt + lam))\n    rmse = float(np.sqrt(np.mean((w * xv - yv) ** 2)))\n    return {\"seed\": seed, \"n\": n, \"test_idx\": [int(i) for i in test_idx],\n            \"w\": w, \"rmse\": rmse}\n\ndef check_manifest(manifest):\n    required = (\"seed\", \"split\", \"metric\", \"versions\")\n    if not isinstance(manifest, dict):\n        raise ValueError(\"manifest must be a dict\")\n    missing = [key for key in required if key not in manifest]\n    if missing:\n        raise ValueError(\"manifest fehlt: \" + \", \".join(missing))\n    return True"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Alles Zufällige kommt aus genau einem rng-Objekt: erst permutation, dann normal — die Reihenfolge ist Teil des Vertrags.",
+        "check_manifest: Liste der fehlenden Schlüssel mit einer Abfrage `[k for k in required if k not in manifest]` sammeln und bei Nicht-Leere ValueError werfen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "nondeterministic",
+          "then": "Der rng muss aus dem config-Seed gebaut werden, nicht aus der Zeit oder einem globalen Zustand."
+        },
+        {
+          "if": "split-order",
+          "then": "test_idx sind die ERSTEN n_test Einträge der Permutation — nicht die letzten."
+        },
+        {
+          "if": "ValueError-missing",
+          "then": "Beide Prüffälle (seed fehlt, Manifest-Schlüssel fehlt) müssen ValueError werfen — nichts still ignorieren."
+        }
+      ],
+      "fullSolution": "import numpy as np\n\ndef run_experiment(config):\n    if \"seed\" not in config:\n        raise ValueError(\"config requires key: seed\")\n    seed = int(config[\"seed\"])\n    n = int(config.get(\"n\", 40))\n    test_share = float(config.get(\"test_share\", 0.25))\n    lam = float(config.get(\"lam\", 1.0))\n    rng = np.random.default_rng(seed)\n    perm = rng.permutation(n)\n    n_test = max(1, int(round(n * test_share)))\n    test_idx = perm[:n_test]\n    train_idx = perm[n_test:]\n    x = np.linspace(0.0, 1.0, n)\n    y = 2.0 * x + rng.normal(0.0, 0.1, size=n)\n    xt, yt = x[train_idx], y[train_idx]\n    xv, yv = x[test_idx], y[test_idx]\n    w = float((xt @ yt) / (xt @ xt + lam))\n    rmse = float(np.sqrt(np.mean((w * xv - yv) ** 2)))\n    return {\"seed\": seed, \"n\": n, \"test_idx\": [int(i) for i in test_idx],\n            \"w\": w, \"rmse\": rmse}\n\ndef check_manifest(manifest):\n    required = (\"seed\", \"split\", \"metric\", \"versions\")\n    if not isinstance(manifest, dict):\n        raise ValueError(\"manifest must be a dict\")\n    missing = [key for key in required if key not in manifest]\n    if missing:\n        raise ValueError(\"manifest fehlt: \" + \", \".join(missing))\n    return True",
+      "typicalErrors": [
+        "Zufallsreihenfolge in rng vertauschen",
+        "fehlerhafte Keys stillschweigend akzeptieren",
+        "Test- und Trainingsindizes vertauschen"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "sourceLineage": {
+        "statement": "eigenständig entwickelt",
+        "seed": 17013
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w17-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-ml-repro",
+        "c-numpy-basics"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 17014,
+      "masteryEligible": true,
+      "prompt": "Final Boss Reproduzierbarkeit: Implementiere `repro_report(configs)` und `check_table(table)` (und nutze dein `run_experiment`/`check_manifest` aus w17-e4 — implementiere alles, was du brauchst). `repro_report(configs)` erhält eine Liste von Config-Dicts mit `config_id` plus den Feldern für `run_experiment`; es führt jede Konfiguration **zweimal** aus und gibt ein Dictionary zurück: `{config_id: {'score': rmse_float, 'identical_rerun': bool}}`, sortiert nach config_id. `check_table(table)` validiert die Tabelle: nicht-leeres dict, jede Zeile mit `score` (nichtnegativer float) und `identical_rerun` (muss True sein) — jede Verletzung wirft `ValueError`, gültig gibt `True` zurück.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef run_experiment(config):\n    \"\"\"Deterministic seeded experiment from w17-e4.\"\"\"\n    ...\n\ndef check_manifest(manifest):\n    \"\"\"Validate seed, split, metric, versions; ValueError when incomplete.\"\"\"\n    ...\n\ndef repro_report(configs):\n    \"\"\"Run each config twice; return {config_id: {'score': float, 'identical_rerun': bool}}.\"\"\"\n    # sortiert nach config_id: erst laufen lassen, dann vergleichen\n    ...\n\ndef check_table(table):\n    \"\"\"Raise ValueError on any incomplete or non-reproducible row; else return True.\"\"\"\n    ...\n",
+        "tests": "import numpy as np\n\n__configs = [\n    {'config_id': 'a', 'seed': 1, 'n': 40, 'test_share': 0.25, 'lam': 0.5},\n    {'config_id': 'b', 'seed': 2, 'n': 40, 'test_share': 0.25, 'lam': 1.0},\n    {'config_id': 'c', 'seed': 3, 'n': 40, 'test_share': 0.25, 'lam': 2.0},\n]\n__table = repro_report(__configs)\n__check('drei Zeilen a/b/c', sorted(__table.keys()) == ['a', 'b', 'c'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\nexcept Exception as e:\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, type(e).__name__)\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\nexcept Exception as e:\n    __check('leere Tabelle abgelehnt', False, type(e).__name__)"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef run_experiment(config):\n    if \"seed\" not in config:\n        raise ValueError(\"config requires key: seed\")\n    seed = int(config[\"seed\"])\n    n = int(config.get(\"n\", 40))\n    test_share = float(config.get(\"test_share\", 0.25))\n    lam = float(config.get(\"lam\", 1.0))\n    rng = np.random.default_rng(seed)\n    perm = rng.permutation(n)\n    n_test = max(1, int(round(n * test_share)))\n    test_idx = perm[:n_test]\n    train_idx = perm[n_test:]\n    x = np.linspace(0.0, 1.0, n)\n    y = 2.0 * x + rng.normal(0.0, 0.1, size=n)\n    xt, yt = x[train_idx], y[train_idx]\n    xv, yv = x[test_idx], y[test_idx]\n    w = float((xt @ yt) / (xt @ xt + lam))\n    rmse = float(np.sqrt(np.mean((w * xv - yv) ** 2)))\n    return {\"seed\": seed, \"n\": n, \"test_idx\": [int(i) for i in test_idx],\n            \"w\": w, \"rmse\": rmse}\n\ndef check_manifest(manifest):\n    required = (\"seed\", \"split\", \"metric\", \"versions\")\n    if not isinstance(manifest, dict):\n        raise ValueError(\"manifest must be a dict\")\n    missing = [key for key in required if key not in manifest]\n    if missing:\n        raise ValueError(\"manifest fehlt: \" + \", \".join(missing))\n    return True\n\ndef repro_report(configs):\n    table = {}\n    for config in sorted(configs, key=lambda c: str(c[\"config_id\"])):\n        first = run_experiment(config)\n        second = run_experiment(config)\n        table[str(config[\"config_id\"])] = {\n            \"score\": float(first[\"rmse\"]),\n            \"identical_rerun\": first == second,\n        }\n    return table\n\ndef check_table(table):\n    if not isinstance(table, dict) or not table:\n        raise ValueError(\"Tabelle leer oder kein dict\")\n    for config_id, row in table.items():\n        if not isinstance(row, dict) or \"score\" not in row or \"identical_rerun\" not in row:\n            raise ValueError(\"Zeile unvollstaendig: \" + str(config_id))\n        if not isinstance(row[\"score\"], float) or row[\"score\"] < 0:\n            raise ValueError(\"Score muss nichtnegativer float sein: \" + str(config_id))\n        if row[\"identical_rerun\"] is not True:\n            raise ValueError(\"Wiederholung nicht identisch: \" + str(config_id))\n    return True"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Pro Config zweimal `run_experiment` aufrufen und die Ergebnisse mit == vergleichen — das ist der identical_rerun-Check.",
+        "check_table validiert Struktur und Inhalt getrennt: erst Zeilenform (score/identical_rerun vorhanden, Typen stimmen), dann identical_rerun is True."
+      ],
+      "feedbackRules": [
+        {
+          "if": "single-run",
+          "then": "identical_rerun verlangt zwei Laeufe pro Konfiguration — ein Lauf reicht nicht."
+        },
+        {
+          "if": "unsorted-keys",
+          "then": "Die Zeilen folgen der config_id-Reihenfolge (sortiert), nicht der Eingabeliste."
+        },
+        {
+          "if": "check-table-too-lenient",
+          "then": "Jede Zeile ohne score/identical_rerun, negativen Score oder identical_rerun != True muss ValueError werfen."
+        }
+      ],
+      "fullSolution": "import numpy as np\n\ndef run_experiment(config):\n    if \"seed\" not in config:\n        raise ValueError(\"config requires key: seed\")\n    seed = int(config[\"seed\"])\n    n = int(config.get(\"n\", 40))\n    test_share = float(config.get(\"test_share\", 0.25))\n    lam = float(config.get(\"lam\", 1.0))\n    rng = np.random.default_rng(seed)\n    perm = rng.permutation(n)\n    n_test = max(1, int(round(n * test_share)))\n    test_idx = perm[:n_test]\n    train_idx = perm[n_test:]\n    x = np.linspace(0.0, 1.0, n)\n    y = 2.0 * x + rng.normal(0.0, 0.1, size=n)\n    xt, yt = x[train_idx], y[train_idx]\n    xv, yv = x[test_idx], y[test_idx]\n    w = float((xt @ yt) / (xt @ xt + lam))\n    rmse = float(np.sqrt(np.mean((w * xv - yv) ** 2)))\n    return {\"seed\": seed, \"n\": n, \"test_idx\": [int(i) for i in test_idx],\n            \"w\": w, \"rmse\": rmse}\n\ndef check_manifest(manifest):\n    required = (\"seed\", \"split\", \"metric\", \"versions\")\n    if not isinstance(manifest, dict):\n        raise ValueError(\"manifest must be a dict\")\n    missing = [key for key in required if key not in manifest]\n    if missing:\n        raise ValueError(\"manifest fehlt: \" + \", \".join(missing))\n    return True\n\ndef repro_report(configs):\n    table = {}\n    for config in sorted(configs, key=lambda c: str(c[\"config_id\"])):\n        first = run_experiment(config)\n        second = run_experiment(config)\n        table[str(config[\"config_id\"])] = {\n            \"score\": float(first[\"rmse\"]),\n            \"identical_rerun\": first == second,\n        }\n    return table\n\ndef check_table(table):\n    if not isinstance(table, dict) or not table:\n        raise ValueError(\"Tabelle leer oder kein dict\")\n    for config_id, row in table.items():\n        if not isinstance(row, dict) or \"score\" not in row or \"identical_rerun\" not in row:\n            raise ValueError(\"Zeile unvollstaendig: \" + str(config_id))\n        if not isinstance(row[\"score\"], float) or row[\"score\"] < 0:\n            raise ValueError(\"Score muss nichtnegativer float sein: \" + str(config_id))\n        if row[\"identical_rerun\"] is not True:\n            raise ValueError(\"Wiederholung nicht identisch: \" + str(config_id))\n    return True",
+      "typicalErrors": [
+        "nur einmal laufen lassen und identical_rerun auf True setzen",
+        "Score als int oder String zurückgeben",
+        "check_table ohne Typ-Prüfung"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 45,
+      "sourceLineage": {
+        "statement": "eigenständig entwickelt",
+        "seed": 17014
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

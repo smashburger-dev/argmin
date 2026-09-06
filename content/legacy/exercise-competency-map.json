@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "sourceFiles": [
+    "content/curriculum.json",
+    "content/exercises/w01.json",
+    "content/exercises/w05.json"
+  ],
+  "sourceHash": "d8a7fd567fc06b026ca97491a0b5686de0100c412dc5429067838e989ad19307",
+  "unitCompetencyIds": [
+    "c-algebra-basics",
+    "c-capstone-pipeline",
+    "c-dl-attention",
+    "c-dl-autograd",
+    "c-dl-finetuning",
+    "c-dl-inference",
+    "c-dl-papers",
+    "c-dl-regularization",
+    "c-dl-tensors",
+    "c-dl-tokenizer",
+    "c-dl-training",
+    "c-eda-viz",
+    "c-genai-eval",
+    "c-genai-prototype",
+    "c-genai-rag",
+    "c-genai-security",
+    "c-git-basics",
+    "c-grad-regression",
+    "c-linalg-gauss",
+    "c-linalg-independence",
+    "c-linalg-matrices",
+    "c-linalg-systems",
+    "c-meta-learning",
+    "c-ml-baseline",
+    "c-ml-cv",
+    "c-ml-ensembles",
+    "c-ml-erroranalysis",
+    "c-ml-linear",
+    "c-ml-logistic",
+    "c-ml-regularization",
+    "c-ml-repro",
+    "c-ml-svm-pca",
+    "c-numpy-basics",
+    "c-pandas-cleaning",
+    "c-python-basics",
+    "c-python-collections",
+    "c-python-control-flow",
+    "c-python-files-errors",
+    "c-python-functions",
+    "c-research-capstone",
+    "c-research-cards",
+    "c-research-question",
+    "c-research-responsible",
+    "c-testing-debugging"
+  ],
+  "exercises": [
+    {
+      "exerciseId": "w01-e1",
+      "definitionId": "w01-e1",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "unitIds": [
+        "w01-u1"
+      ]
+    },
+    {
+      "exerciseId": "w01-e10",
+      "definitionId": "w01-e10",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "unitIds": [
+        "w01-u5"
+      ]
+    },
+    {
+      "exerciseId": "w01-e11",
+      "definitionId": "w01-e11",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-meta-learning"
+      ],
+      "unitIds": [
+        "w01-u6"
+      ]
+    },
+    {
+      "exerciseId": "w01-e2",
+      "definitionId": "w01-e2",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "unitIds": [
+        "w01-u1"
+      ]
+    },
+    {
+      "exerciseId": "w01-e3",
+      "definitionId": "w01-e3",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-python-basics",
+        "c-python-reading"
+      ],
+      "unitIds": [
+        "w01-u2"
+      ]
+    },
+    {
+      "exerciseId": "w01-e4",
+      "definitionId": "w01-e4",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-python-basics",
+        "c-python-reading"
+      ],
+      "unitIds": [
+        "w01-u2"
+      ]
+    },
+    {
+      "exerciseId": "w01-e5",
+      "definitionId": "w01-e5",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
+      "unitIds": [
+        "w01-u3"
+      ]
+    },
+    {
+      "exerciseId": "w01-e6",
+      "definitionId": "w01-e6",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
+      "unitIds": [
+        "w01-u3"
+      ]
+    },
+    {
+      "exerciseId": "w01-e7",
+      "definitionId": "w01-e7",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-python-basics"
+      ],
+      "unitIds": [
+        "w01-u2"
+      ]
+    },
+    {
+      "exerciseId": "w01-e8",
+      "definitionId": "w01-e8",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "unitIds": [
+        "w01-u5"
+      ]
+    },
+    {
+      "exerciseId": "w01-e9",
+      "definitionId": "w01-e9",
+      "legacyWeekId": "w01",
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "unitIds": [
+        "w01-u5"
+      ]
+    },
+    {
+      "exerciseId": "w05-e1",
+      "definitionId": "w05-e1",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e10",
+      "definitionId": "w05-e10",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-gauss",
+        "c-linalg-independence"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e11",
+      "definitionId": "w05-e11",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-gauss"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e12",
+      "definitionId": "w05-e12",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e13",
+      "definitionId": "w05-e13",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e14",
+      "definitionId": "w05-e14",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-numpy-basics",
+        "c-python-reading"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e15",
+      "definitionId": "w05-e15",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices",
+        "c-python-reading"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e16",
+      "definitionId": "w05-e16",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices",
+        "c-python-reading"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e2",
+      "definitionId": "w05-e2",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e3",
+      "definitionId": "w05-e3",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e4",
+      "definitionId": "w05-e4",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e5",
+      "definitionId": "w05-e5",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-algebra"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e6",
+      "definitionId": "w05-e6",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-gauss"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e8",
+      "definitionId": "w05-e8",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices",
+        "c-numpy-basics"
+      ],
+      "unitIds": []
+    },
+    {
+      "exerciseId": "w05-e9",
+      "definitionId": "w05-e9",
+      "legacyWeekId": "w05",
+      "competencyIds": [
+        "c-linalg-matrices"
+      ],
+      "unitIds": []
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-algebra",
+  "version": 1,
+  "locale": "de",
+  "title": "Algebra-Grundlagen sicher prüfen",
+  "description": "Gleichungen umstellen, Potenzen und Terme vereinfachen, Fehlerhypothesen testen.",
+  "competencyIds": [
+    "c-algebra-basics",
+    "c-algebra"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-algebra",
+    "l-foundations-algebra-transformations"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-algebra-two-step-seeded-retrieval",
+      "role": "curated",
+      "familyId": "transform-linear-equation-isolate",
+      "caseId": "two-step-seeded-retrieval",
+      "seed": 5,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-collect-x-terms-both-sides",
+      "role": "curated",
+      "familyId": "transform-linear-equation-isolate",
+      "caseId": "collect-x-terms-both-sides",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-transform-linear-equation-isolate-prac",
+      "role": "practice-space",
+      "familyId": "transform-linear-equation-isolate",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-algebra-integer-base-power",
+      "role": "curated",
+      "familyId": "transform-power-log-exponent",
+      "caseId": "integer-base-power",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-transform-power-log-exponent-practice",
+      "role": "practice-space",
+      "familyId": "transform-power-log-exponent",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-algebra-distribute-sign-constant-chain",
+      "role": "curated",
+      "familyId": "transform-expression-simplify-canonical",
+      "caseId": "distribute-sign-constant-chain",
+      "seed": 13,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-transform-expression-simplify-canonica",
+      "role": "practice-space",
+      "familyId": "transform-expression-simplify-canonical",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-algebra-base-vs-exponent-confusion",
+      "role": "curated",
+      "familyId": "classify-error-hypothesis",
+      "caseId": "base-vs-exponent-confusion",
+      "seed": 7,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-seeded-error-pattern-cases",
+      "role": "curated",
+      "familyId": "classify-error-hypothesis",
+      "caseId": "seeded-error-pattern-cases",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-classify-error-hypothesis-practice",
+      "role": "practice-space",
+      "familyId": "classify-error-hypothesis",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

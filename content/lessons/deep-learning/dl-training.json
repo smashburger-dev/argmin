@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-dl-training",
+  "version": 1,
+  "locale": "de",
+  "title": "Training Loops: Loss, Lernrate, Lernkurven",
+  "objectives": [
+    "MSE- und BCE-Verluste korrekt implementieren und Batches, Epochen und Optimizer-Schritte auseinanderhalten",
+    "SGD mit Momentum als Update-Regel herleiten und Determinismus über feste Seeds (np.random.default_rng) sichern",
+    "Trainings- und Validierungsdaten deterministisch trennen und Lernkurven als Zahlenlisten lesen",
+    "Overfitting-Signale und typische Instabilitäten (zu große Lernrate, fehlende Seeds) diagnostizieren"
+  ],
+  "competencyIds": ["c-dl-training"],
+  "requires": ["c-dl-autograd", "c-ml-baseline"],
+  "estimatedMinutes": 85,
+  "blocks": [
+    {
+      "blockId": "dl-training-core",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-training.md"
+    },
+    {
+      "blockId": "dl-training-checkpoint",
+      "type": "checkpoint",
+      "contentRef": "lessons/deep-learning/dl-training-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    { "sourceId": "dlbook-goodfellow", "role": "primary", "locator": "Ch 8.1/8.3 — SGD und Momentum (nur Lektüre)" },
+    { "sourceId": "karpathy-recipe-blog", "role": "reference", "locator": "A Recipe for Training Neural Networks — Lernrate und Erst-Diagnose (Blog, nur Lektüre)" },
+    { "sourceId": "numpy-docs", "role": "practice", "locator": "np.random.default_rng — Seeding und Permutationen" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

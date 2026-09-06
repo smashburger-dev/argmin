@@ -1,0 +1,71 @@
+{
+  "definitionId": "f-linalg-column-vector-01",
+  "version": 1,
+  "locale": "de",
+  "title": "Koeffizienten einer Spaltenkombination",
+  "competencyIds": [
+    "c-linalg-systems"
+  ],
+  "activityType": "vector",
+  "graderId": "deterministic",
+  "generatorId": "genColumnCombination",
+  "referenceSolverId": null,
+  "deterministicSeed": 5601,
+  "prompt": "Die Spalten von A sind a₁ = (1, 3) und a₂ = (-1, -4). Finde die Koeffizienten (x₁, x₂), sodass x₁·a₁ + x₂·a₂ = (6, 17).",
+  "parameters": {
+    "A": [
+      [
+        1,
+        -1
+      ],
+      [
+        3,
+        -4
+      ]
+    ],
+    "b": [
+      6,
+      17
+    ]
+  },
+  "expectedAnswer": {
+    "kind": "integer-pair",
+    "solution": [
+      7,
+      1
+    ]
+  },
+  "tolerancePolicy": {
+    "mode": "exact-integer-pair"
+  },
+  "hints": [
+    "Lies aus den beiden Komponenten ein 2×2-Gleichungssystem ab.",
+    "Setze dein Paar zur Probe wieder in $A x$ ein."
+  ],
+  "feedbackRules": [
+    {
+      "if": "swapped",
+      "then": "Achte auf die Reihenfolge $(x_1,x_2)$."
+    }
+  ],
+  "fullSolution": "Die Koeffizienten sind $(x_1,x_2)=(7,1)$. Die Probe liefert $7(1,3)^T+1(-1,-4)^T=(6,17)^T$.",
+  "difficulty": 2,
+  "estimatedMinutes": 9,
+  "sourceLineage": {
+    "statement": "eigenständig entwickelt (Seed-Generator w05_generators.mjs; Prompt auf Generatorform gebracht, Session B)",
+    "seed": 5601
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 300,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": null,
+  "workedExample": null,
+  "rubric": null,
+  "typicalErrors": [
+    "Koeffizienten vertauschen",
+    "Zeilen und Spalten verwechseln",
+    "Probe auslassen"
+  ]
+}

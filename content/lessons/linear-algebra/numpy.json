@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-numpy-shape-contracts",
+  "version": 1,
+  "locale": "de",
+  "title": "NumPy-Arrays mit Shape-Verträgen",
+  "objectives": ["ndim und shape als Funktionsvertrag prüfen", "Matrixprodukte mit @ von elementweiser Multiplikation unterscheiden", "Broadcasting an einem kleinen Handbeispiel kontrollieren"],
+  "competencyIds": ["c-numpy-basics"],
+  "requires": ["c-python-functions", "c-linalg-matrices"],
+  "estimatedMinutes": 55,
+  "blocks": [{ "blockId": "numpy-shape-contracts-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/numpy.md" }],
+  "sourceRefs": [
+    { "sourceId": "numpy-docs", "role": "primary", "locator": "NumPy: the absolute basics for beginners; Array creation, indexing and basic operations" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

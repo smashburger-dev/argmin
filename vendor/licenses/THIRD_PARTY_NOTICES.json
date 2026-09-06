@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "Pinned runtime artifacts and their version-specific upstream or embedded license files",
+  "components": [
+    {
+      "id": "katex",
+      "name": "KaTeX",
+      "version": "0.18.4",
+      "licenseExpression": "MIT",
+      "sourceUrl": "https://registry.npmjs.org/katex/-/katex-0.18.4.tgz",
+      "artifacts": [
+        "vendor/katex/dist/katex.min.css",
+        "vendor/katex/dist/katex.min.js",
+        "vendor/katex/dist/contrib/auto-render.min.js",
+        "vendor/katex/dist/fonts/"
+      ],
+      "licenseFiles": [
+        "vendor/katex/LICENSE"
+      ],
+      "licenseFileSha256": {
+        "vendor/katex/LICENSE": "766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3"
+      }
+    },
+    {
+      "id": "jsxgraph",
+      "name": "JSXGraph",
+      "version": "1.13.2",
+      "licenseExpression": "MIT",
+      "sourceUrl": "https://registry.npmjs.org/jsxgraph/-/jsxgraph-1.13.2.tgz",
+      "artifacts": [
+        "vendor/jsxgraph/jsxgraphcore.js",
+        "vendor/jsxgraph/jsxgraph.css"
+      ],
+      "licenseFiles": [
+        "vendor/jsxgraph/LICENSE.MIT"
+      ],
+      "licenseFileSha256": {
+        "vendor/jsxgraph/LICENSE.MIT": "43e325001487de7f09745fbe086b054bb1b70d4ab58060e87153849365b23ff1"
+      }
+    },
+    {
+      "id": "pyodide",
+      "name": "Pyodide",
+      "version": "314.0.5",
+      "licenseExpression": "MPL-2.0",
+      "sourceUrl": "https://github.com/pyodide/pyodide/tree/314.0.5",
+      "artifacts": [
+        "vendor/pyodide/pyodide.mjs",
+        "vendor/pyodide/pyodide.asm.mjs",
+        "vendor/pyodide/pyodide.asm.wasm",
+        "vendor/pyodide/pyodide-lock.json",
+        "vendor/pyodide/package.json"
+      ],
+      "licenseFiles": [
+        "vendor/licenses/pyodide-314.0.5-MPL-2.0.txt"
+      ],
+      "licenseFileSha256": {
+        "vendor/licenses/pyodide-314.0.5-MPL-2.0.txt": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5"
+      }
+    },
+    {
+      "id": "cpython",
+      "name": "CPython standard library",
+      "version": "3.14.2",
+      "licenseExpression": "PSF-2.0",
+      "sourceUrl": "https://github.com/python/cpython/tree/v3.14.2",
+      "artifacts": [
+        "vendor/pyodide/python_stdlib.zip",
+        "vendor/pyodide/pyodide.asm.wasm"
+      ],
+      "licenseFiles": [
+        "vendor/licenses/python-3.14.2-PSF-LICENSE.txt"
+      ],
+      "licenseFileSha256": {
+        "vendor/licenses/python-3.14.2-PSF-LICENSE.txt": "b0e25a78cffb43f4d92de8b61ccfa1f1f98ecbc22330b54b5251e7b6ba010231"
+      }
+    },
+    {
+      "id": "numpy",
+      "name": "NumPy Pyodide wheel",
+      "version": "2.4.6",
+      "licenseExpression": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0",
+      "sourceUrl": "https://cdn.jsdelivr.net/pyodide/v314.0.5/full/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl",
+      "artifacts": [
+        "vendor/pyodide/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
+      ],
+      "licenseFiles": [
+        "vendor/licenses/numpy-2.4.6-LICENSES.txt"
+      ],
+      "licenseFileSha256": {
+        "vendor/licenses/numpy-2.4.6-LICENSES.txt": "1ad6bc66f26ec18139c94f5af3fabbed1e7db1d9f9f8c9d0614803e6f9cade38"
+      }
+    },
+    {
+      "id": "sympy",
+      "name": "SymPy Pyodide wheel",
+      "version": "1.14.0",
+      "licenseExpression": "BSD-3-Clause AND MIT",
+      "sourceUrl": "https://cdn.jsdelivr.net/pyodide/v314.0.5/full/sympy-1.14.0-py3-none-any.whl",
+      "artifacts": [
+        "vendor/pyodide/sympy-1.14.0-py3-none-any.whl"
+      ],
+      "licenseFiles": [
+        "vendor/licenses/sympy-1.14.0-LICENSES.txt"
+      ],
+      "licenseFileSha256": {
+        "vendor/licenses/sympy-1.14.0-LICENSES.txt": "89e8865818eb52dcc8b44a2c427b724463cf90e9052f89fa201fa1d3676fc925"
+      }
+    },
+    {
+      "id": "mpmath",
+      "name": "mpmath Pyodide wheel",
+      "version": "1.4.1",
+      "licenseExpression": "BSD-3-Clause",
+      "sourceUrl": "https://cdn.jsdelivr.net/pyodide/v314.0.5/full/mpmath-1.4.1-py3-none-any.whl",
+      "artifacts": [
+        "vendor/pyodide/mpmath-1.4.1-py3-none-any.whl"
+      ],
+      "licenseFiles": [
+        "vendor/licenses/mpmath-1.4.1-BSD-3-Clause.txt"
+      ],
+      "licenseFileSha256": {
+        "vendor/licenses/mpmath-1.4.1-BSD-3-Clause.txt": "a0cfb17ee7b06c191ceac9eed59c92443fe561a59d188bb1795c20fd895c1c39"
+      }
+    },
+    {
+      "id": "mathlive",
+      "name": "MathLive",
+      "version": "0.110.0",
+      "licenseExpression": "MIT",
+      "sourceUrl": "https://registry.npmjs.org/mathlive/-/mathlive-0.110.0.tgz",
+      "artifacts": [
+        "vendor/mathlive/mathlive.min.mjs",
+        "vendor/mathlive/package.json",
+        "vendor/mathlive/fonts/"
+      ],
+      "licenseFiles": [
+        "vendor/mathlive/LICENSE.txt"
+      ],
+      "licenseFileSha256": {
+        "vendor/mathlive/LICENSE.txt": "3caebd18611959ca725ab976a004d408017eb1d7093d6c9b9b09c5a4790eaff8"
+      }
+    }
+  ]
+}

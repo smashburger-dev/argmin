@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w19",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w19-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-dl-autograd"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 1901,
+      "masteryEligible": false,
+      "prompt": "Backpropagation überträgt Gradienten rückwärts durch den Rechengraphen. Ein Knoten $z$ hängt von $x$ ab mit lokalem Gradienten $\\partial z / \\partial x = 3$; von oben kommt der Upstream-Gradient $\\partial L / \\partial z = -2$. Wie entsteht $\\partial L / \\partial x$ korrekt?",
+      "parameters": {
+        "thema": "lokale vs. globale Gradienten"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\partial L / \\partial x = \\partial L / \\partial z + \\partial z / \\partial x = -2 + 3 = 1$ — Beiträge an Gabelungen werden addiert, also auch hier.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$\\partial L / \\partial x = -2 / 3$ — der lokale Gradient dividiert den Upstream.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = -2 \\cdot 3 = -6$ — lokal mal upstream (Kettenregel).",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "$\\partial L / \\partial x = \\partial z / \\partial x = 3$ — der lokale Gradient ist bereits die endgültige Antwort.",
+          "correct": false
+        }
+      ],
+      "expectedAnswer": {
+        "correctChoice": "c"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Der lokale Gradient sagt, wie sich $z$ ändert, wenn $x$ wackelt. Wer sagt dir, wie sich $L$ ändert, wenn $z$ wackelt?",
+        "Kettenregel entlang eines Pfades: multiplizieren. Addiert wird nur über verschiedene Pfade, die beide in $L$ münden — hier gibt es aber nur einen Pfad."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'd'",
+          "then": "Der lokale Gradient allein ignoriert, wie stark der Verlust auf $z$ reagiert — der Upstream-Gradient muss hineinmultipliziert werden."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Addiert wird über mehrere Pfade vom selben Knoten zu $L$ — nicht lokal und upstream desselben Pfades."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Division gehört zur Umkehrung (impliziten Ableitung), nicht zur Kettenregel — hier wird multipliziert."
+        }
+      ],
+      "fullSolution": "Kettenregel auf einem Pfad: $\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = (-2) \\cdot 3 = -6$. Addition steht nur für Gabelungen mit mehreren Wegen nach $L$. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "Upstream-Gradient vergessen und nur den lokalen Gradienten angeben",
+        "Multiplikation mit Addition verwechselt",
+        "das Vorzeichen des Upstream-Gradienten unterschlagen"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "karpathy-micrograd — Backprop als lokaler Gradient mal Upstream (Lektüre); dlbook-goodfellow Ch 6.5",
+        "statement": "eigenständig entwickelt",
+        "seed": 1901
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w19-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-dl-autograd"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 1902,
+      "masteryEligible": true,
+      "prompt": "Der Verlust L hängt über zwei Zweige vom Eingang x ab. Zweig A hat die lokalen Gradienten 1 und 3, Zweig B die lokalen Gradienten 3 und −2; beide Zweige gehen additiv in L ein. Wie groß ist ∂L/∂x?",
+      "parameters": {
+        "seedGenerator": "genBackpropChain"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genBackpropChain",
+        "defaultSeed": 1902,
+        "defaultExpected": -3
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Jeder Zweig ist ein eigener Kettenregel-Pfad: multipliziere die lokalen Gradienten entlang des Zweigs (Upstream ist 1).",
+        "Weil beide Zweige additiv in L eingehen, addieren sich ihre Beiträge: Produkt aus A plus Produkt aus B."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 3",
+          "then": "Das ist nur Zweig A (1 · 3) — Zweig B trägt 3 · (−2) = −6 zusätzlich bei."
+        },
+        {
+          "if": "value === -6",
+          "then": "Das ist nur Zweig B — Zweig A fehlt noch mit +3."
+        },
+        {
+          "if": "value === -18",
+          "then": "Die Zweige werden nicht multipliziert: sie sind parallele Pfade zu L, ihre Beiträge werden addiert."
+        }
+      ],
+      "fullSolution": "Beitrag je Zweig = Produkt der lokalen Gradienten (Upstream 1). Gesamt: $\\partial L/\\partial x = g_{A1} \\cdot g_{A2} + g_{B1} \\cdot g_{B2}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "nur einen Zweig beitragen lassen",
+        "die Zweigprodukte miteinander multipliziert statt addiert",
+        "Vorzeichen eines lokalen Gradienten verloren"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "dlbook-goodfellow, Ch 6.5 — Kettenregel über Pfade und Gabelungen (Lektüre)",
+        "statement": "eigenständig entwickelt",
+        "seed": 1902
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, solver-checked lokal",
+      "testedSeedCount": 2000,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w19-e3",
+      "schemaVersion": 1,
+      "type": "code-trace",
+      "skillIds": [
+        "c-dl-autograd",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 1903,
+      "masteryEligible": true,
+      "prompt": "Einen manuellen Backward-Schritt nachvollziehen: Welche Werte haben <code>grad_w</code>, <code>w</code>, <code>grad_b</code> und <code>b</code> nach Ablauf des Programms? Trage die vier ganzzahligen Werte ein (der Upstream-Gradient ist $\\partial L/\\partial z = 6$, der lokale Gradient $\\partial z / \\partial w = -2$; SGD-Update mit $\\mathrm{lr} = 0{,}5$ entgegen dem Gradienten).",
+      "parameters": {
+        "snippet": "grad_out = 6        # dL/dz (Upstream)\nlocal = -2          # dz/dw (lokal)\ngrad_w = grad_out * local\nw = 4.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 1.0 - 0.5 * grad_b",
+        "variables": [
+          {
+            "name": "grad_w",
+            "value": -12
+          },
+          {
+            "name": "w",
+            "value": 10
+          },
+          {
+            "name": "grad_b",
+            "value": 6
+          },
+          {
+            "name": "b",
+            "value": -2
+          }
+        ]
+      },
+      "expectedAnswer": {
+        "kind": "variable-values"
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Kettenregel: $\\partial L / \\partial w = \\partial L / \\partial z \\cdot \\partial z / \\partial w$. Für den Bias ist der lokale Gradient 1 — warum?",
+        "Update: $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}_w$. Achte auf die Vorzeichen: was passiert bei negativem Gradienten und positiver Lernrate?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:grad_w+value:w",
+          "then": "grad_w ist das Produkt aus Upstream und lokal (6 · (−2) = −12); w folgt daraus mit entgegengesetztem Update-Vorzeichen."
+        },
+        {
+          "if": "value:grad_b+value:b",
+          "then": "grad_b übernimmt den Upstream unverändert (lokaler Gradient 1); b = 1,0 − 0,5 · 6 = −2,0."
+        }
+      ],
+      "fullSolution": "$\\mathrm{grad}_w = 6 \\cdot (-2) = -12$; $w = 4{,}0 - 0{,}5 \\cdot (-12) = 10{,}0$. $\\mathrm{grad}_b = 6 \\cdot 1 = 6$; $b = 1{,}0 - 0{,}5 \\cdot 6 = -2{,}0$. Als Ganzzahlen: −12, 10, 6, −2.",
+      "typicalErrors": [
+        "Vorzeichen im Update gedreht (Abstieg statt Aufstieg)",
+        "den lokalen Gradienten ohne Upstream verwendet",
+        "Bias-Gradient als 0 statt Upstream · 1 gelesen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "karpathy-zero-to-hero, Lecture 2 — manueller Backward-Schritt in Zahlen (Lektüre)",
+        "statement": "eigenständig entwickelt",
+        "seed": 1903
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (lokale Ausführung)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w19-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 1904,
+      "masteryEligible": true,
+      "prompt": "Herleiten statt nachschlagen: Implementiere die Gradienten eines linearen Layers mit MSE. <code>linear_mse_forward(X, W, b)</code> gibt $XW + b$ zurück ($X \\in \\mathbb{R}^{n \\times d}$, $W \\in \\mathbb{R}^{d \\times k}$, $b \\in \\mathbb{R}^{k}$). <code>linear_mse_backward(X, W, b, y)</code> gibt $(\\partial L / \\partial W,\\ \\partial L / \\partial b)$ zurück für $L = \\mathrm{mean}\\big((XW + b - y)^2\\big)$, gemittelt über alle $n \\cdot k$ Einträge. Der Test berechnet die Referenz per zentraler numerischer Differenz aus <em>deinem</em> <code>linear_mse_forward</code> (float64, $h = 10^{-5}$) und verlangt Übereinstimmung innerhalb $10^{-6}$.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef linear_mse_forward(X, W, b):\n    \"\"\"Return X @ W + b (shapes: X (n, d), W (d, k), b (k,)).\"\"\"\n    ...\n\n\ndef linear_mse_backward(X, W, b, y):\n    \"\"\"Return (dW, db) for L = mean((X @ W + b - y) ** 2) over all n*k entries.\n\n    Derive the gradients yourself: write the residual r = prediction - y,\n    apply the chain rule to the squared mean, and check each gradient shape\n    (dW (d, k), db (k,)) against the forward contract before returning.\n    \"\"\"\n    ...\n",
+        "tests": "X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [0.0, -1.0]])\nW = np.array([[0.5], [-1.0]])\nb = np.array([0.25])\ny = np.array([[1.0], [-2.0], [3.0], [0.5]])\npred = linear_mse_forward(X, W, b)\n__check('Forward', np.allclose(pred, X @ W + b))\ndW, db = linear_mse_backward(X, W, b, y)\nr = X @ W + b - y\n__check('dW analytisch', np.allclose(dW, 2.0 / 4.0 * X.T @ r))\n__check('db analytisch', np.allclose(db, 2.0 / 4.0 * r.sum(axis=0)))\n\n\ndef loss_of_W(Wx):\n    return float(np.mean((linear_mse_forward(X, Wx, b) - y) ** 2))\n\n\ndef loss_of_b(bx):\n    return float(np.mean((linear_mse_forward(X, W, bx) - y) ** 2))\n\n\nh = 1e-5\nok_w = True\nfor i in range(W.shape[0]):\n    for j in range(W.shape[1]):\n        Wp = W.copy(); Wp[i, j] += h\n        Wm = W.copy(); Wm[i, j] -= h\n        num = (loss_of_W(Wp) - loss_of_W(Wm)) / (2 * h)\n        ok_w = ok_w and abs(num - dW[i, j]) < 1e-6\n__check('dW numerisch (zentrale Differenz)', ok_w)\nok_b = True\nfor j in range(b.shape[0]):\n    bp = b.copy(); bp[j] += h\n    bm = b.copy(); bm[j] -= h\n    num = (loss_of_b(bp) - loss_of_b(bm)) / (2 * h)\n    ok_b = ok_b and abs(num - db[j]) < 1e-6\n__check('db numerisch (zentrale Differenz)', ok_b)\nX2 = np.array([[2.0, 0.0, -1.0], [1.0, 1.0, 1.0]])\nW2 = np.array([[1.0, -1.0], [0.5, 2.0], [-2.0, 0.0]])\nb2 = np.array([0.0, 1.0])\ny2 = np.array([[0.0, 0.0], [1.0, -1.0]])\ndW2, db2 = linear_mse_backward(X2, W2, b2, y2)\nr2 = X2 @ W2 + b2 - y2\n__check('n*k-Faktor bei k=2', np.allclose(dW2, 2.0 / 4.0 * X2.T @ r2) and np.allclose(db2, 2.0 / 4.0 * r2.sum(axis=0)))"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef linear_mse_forward(X, W, b):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    return X @ W + b\n\ndef linear_mse_backward(X, W, b, y):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    y = np.asarray(y, dtype=float)\n    r = X @ W + b - y\n    factor = 2.0 / r.size\n    return factor * X.T @ r, factor * r.sum(axis=0)"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Schreibe zuerst die Residuenmatrix r = X @ W + b − y mit Form (n, k). Die Kettenregel auf den quadrierten Mittelwert liefert einen skalaren Faktor — leite ihn her, statt ihn zu raten.",
+        "Kontrolliere über die Formen: dW muss (d, k) und db muss (k,) haben. Welcher Eingang muss transponiert werden, damit X.T @ … die Form (d, k) liefert — und über welche Achse summiert der Bias-Gradient?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "factor-2n-wrong",
+          "then": "Gemittelt wird über alle n·k Einträge: der Faktor ist 2/(n·k), nicht 2/n und nicht 1/n."
+        },
+        {
+          "if": "db-as-scalar",
+          "then": "db ist ein Vektor der Form (k,): Summation nur über axis=0, nicht über alles."
+        },
+        {
+          "if": "residual-sign-flipped",
+          "then": "r = Vorhersage − Ziel; mit y − Vorhersage dreht sich das Vorzeichen beider Gradienten."
+        }
+      ],
+      "fullSolution": "import numpy as np\n\ndef linear_mse_forward(X, W, b):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    return X @ W + b\n\ndef linear_mse_backward(X, W, b, y):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    y = np.asarray(y, dtype=float)\n    r = X @ W + b - y\n    factor = 2.0 / r.size\n    return factor * X.T @ r, factor * r.sum(axis=0)\n\n# Die zentrale Differenz im Test bestätigt beide Gradienten auf 1e-6",
+      "typicalErrors": [
+        "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt",
+        "db als Skalar statt Vektor summiert",
+        "Residuen mit umgekehrtem Vorzeichen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "dlbook-goodfellow, Ch 6.5 — Gradienten eines linearen Layers; zentrale Differenz als Gegencheck (ADR-0013)",
+        "statement": "eigenständig entwickelt",
+        "seed": 1904
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, solver-checked lokal",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w19-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-autograd",
+        "c-dl-tensors"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 1905,
+      "masteryEligible": true,
+      "prompt": "Das volle Programm: Backpropagation für ein 2-Layer-MLP mit ReLU und MSE. <code>mlp_forward(X, W1, b1, W2, b2)</code> gibt $(H, \\hat{y})$ zurück mit $H = \\mathrm{ReLU}(XW_1 + b_1)$, $\\hat{y} = HW_2 + b_2$. <code>mlp_backward(X, W1, b1, W2, b2, y)</code> gibt <code>(dW1, db1, dW2, db2)</code> zurück für $L = \\mathrm{mean}((\\hat{y} - y)^2)$ über alle Einträge. Der Test prüft alle vier Gradienten Eintrag für Eintrag gegen die zentrale numerische Differenz aus <em>deinem</em> <code>mlp_forward</code> ($h = 10^{-5}$, float64, Toleranz $10^{-6}$; die Testeingaben sind knickfrei gewählt).",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    \"\"\"Return (H, y_hat): H = relu(X @ W1 + b1), y_hat = H @ W2 + b2.\"\"\"\n    ...\n\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    \"\"\"Return (dW1, db1, dW2, db2) for L = mean((y_hat - y) ** 2).\n\n    Walk the chain rule backwards through the output layer, the ReLU mask,\n    and the hidden layer. Verify each gradient shape (dW1 (d, h), db1 (h,),\n    dW2 (h, k), db2 (k,)) against the forward contract before returning.\n    \"\"\"\n    ...\n",
+        "tests": "rng = np.random.default_rng(1905)\nX = np.array([[2.0, -1.0, 1.0], [1.0, 2.0, -2.0], [-2.0, 1.5, 2.0], [1.0, -1.0, -1.0], [2.0, 2.0, 2.0]])\nW1 = np.array([[0.8, -0.5, 0.6, -0.4], [0.3, 1.1, -0.7, 0.5], [-0.6, 0.4, 0.9, 0.7]])\nb1 = np.array([0.3, -0.2, 0.1, 0.4])\nW2 = np.array([[1.2, -0.6], [0.4, 0.8], [-0.9, 0.3], [0.2, -1.1]])\nb2 = np.array([0.1, -0.3])\ny = rng.normal(size=(5, 2))\nH, y_hat = mlp_forward(X, W1, b1, W2, b2)\nH_ref = np.maximum(0.0, X @ W1 + b1)\n__check('Forward H', np.allclose(H, H_ref))\n__check('Forward y_hat', np.allclose(y_hat, H_ref @ W2 + b2))\npre = X @ W1 + b1\n__check('Testdaten knickfrei', np.all(np.abs(pre) > 0.05))\ndW1, db1, dW2, db2 = mlp_backward(X, W1, b1, W2, b2, y)\n\n\ndef loss_at(W1x=None, b1x=None, W2x=None, b2x=None):\n    _, out = mlp_forward(X, W1x if W1x is not None else W1, b1x if b1x is not None else b1, W2x if W2x is not None else W2, b2x if b2x is not None else b2)\n    return float(np.mean((out - y) ** 2))\n\n\nh = 1e-5\nok1 = True\nfor i in range(W1.shape[0]):\n    for j in range(W1.shape[1]):\n        Wp = W1.copy(); Wp[i, j] += h\n        Wm = W1.copy(); Wm[i, j] -= h\n        ok1 = ok1 and abs((loss_at(W1x=Wp) - loss_at(W1x=Wm)) / (2 * h) - dW1[i, j]) < 1e-6\n__check('dW1 numerisch', ok1)\nokb1 = True\nfor j in range(b1.shape[0]):\n    bp = b1.copy(); bp[j] += h\n    bm = b1.copy(); bm[j] -= h\n    okb1 = okb1 and abs((loss_at(b1x=bp) - loss_at(b1x=bm)) / (2 * h) - db1[j]) < 1e-6\n__check('db1 numerisch', okb1)\nok2 = True\nfor i in range(W2.shape[0]):\n    for j in range(W2.shape[1]):\n        Wp = W2.copy(); Wp[i, j] += h\n        Wm = W2.copy(); Wm[i, j] -= h\n        ok2 = ok2 and abs((loss_at(W2x=Wp) - loss_at(W2x=Wm)) / (2 * h) - dW2[i, j]) < 1e-6\n__check('dW2 numerisch', ok2)\nokb2 = True\nfor j in range(b2.shape[0]):\n    bp = b2.copy(); bp[j] += h\n    bm = b2.copy(); bm[j] -= h\n    okb2 = okb2 and abs((loss_at(b2x=bp) - loss_at(b2x=bm)) / (2 * h) - db2[j]) < 1e-6\n__check('db2 numerisch', okb2)\n__check('Formen', dW1.shape == W1.shape and db1.shape == b1.shape and dW2.shape == W2.shape and db2.shape == b2.shape)"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    y = np.asarray(y, dtype=float)\n    hidden, out = mlp_forward(X, W1, b1, W2, b2)\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    return dW1, db1, dW2, db2"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Erst forward: H und ŷ brauchst du für die Rückwärtsrechnung wieder. Der Ausgabefehler startet als delta2 aus dem quadrierten Mittelwert über die m Ausgabeeinträge — Faktor selbst herleiten.",
+        "Durch ReLU zurück: Der lokale Gradient ist 1, wo die Aktivierung positiv war, sonst 0 — als Maske (H > 0) multiplizierbar. Wie delta1 weiter zu dW1 und db1 führt, folgt aus demselben Transpositions-/Summenvertrag wie in der Vorwoche."
+      ],
+      "feedbackRules": [
+        {
+          "if": "relu-mask-wrong",
+          "then": "Die ReLU-Ableitung ist die Maske (H > 0), nicht H selbst und nicht 1 überall."
+        },
+        {
+          "if": "factor-2m-wrong",
+          "then": "Der Faktor 2/m bezieht sich auf alle Ausgabeeinträge (n·k) — genau wie in der linearen Variante."
+        },
+        {
+          "if": "transpose-missing",
+          "then": "dW2 = H.T @ delta2 und delta1 = delta2 @ W2.T — die Transponierte gehört zum jeweiligen Forward-Vertrag."
+        }
+      ],
+      "fullSolution": "import numpy as np\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    y = np.asarray(y, dtype=float)\n    hidden, out = mlp_forward(X, W1, b1, W2, b2)\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    return dW1, db1, dW2, db2\n\n# Alle vier Gradienten stimmen mit der zentralen Differenz auf < 1e-6 ueberein",
+      "typicalErrors": [
+        "ReLU-Ableitung als H statt (H > 0)",
+        "Faktor 2/m vergessen oder nur auf eine Achse bezogen",
+        "transponierte Verträge (H.T @ delta2, W2.T) vertauscht"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 32,
+      "sourceLineage": {
+        "concept": "karpathy-zero-to-hero, Lecture 2 — Backprop eines 2-Layer-MLP (Lektüre); dlbook-goodfellow Ch 6.5",
+        "statement": "eigenständig entwickelt",
+        "seed": 1905
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, solver-checked lokal",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w19-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 1906,
+      "masteryEligible": true,
+      "prompt": "Final Boss Autograd: ein kompletter Trainings-Teilschritt aus einer Hand. <code>train_step(X, y, params, lr)</code> bekommt <code>params = {\"W1\": ..., \"b1\": ..., \"W2\": ..., \"b2\": ...}</code> (2-Layer-MLP mit ReLU, $L = \\mathrm{mean}((\\hat{y} - y)^2)$) und führt Vorwärts, Backward und ein SGD-Update <code>p ← p − lr · grad</code> für alle vier Parameter aus. Rückgabe: Tupel <code>(loss, new_params)</code> — <code>loss</code> als float des <em>aktuellen</em> Modells vor dem Update, <code>new_params</code> als neues Dictionary mit denselben Schlüsseln und Formen (das Eingabe-Dictionary darf nicht verändert werden). Der Test prüft: <code>lr = 0</code> ändert nichts; ein kleiner Schritt senkt den Verlust; das Update von <code>W2[0,0]</code> stimmt mit der zentralen Differenz aus deinem eigenen Schritt überein; 40 Schritte senken den Verlust deutlich.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef train_step(X, y, params, lr):\n    \"\"\"One SGD step on the 2-layer MLP; return (loss, new_params).\n\n    loss is the MSE of the CURRENT params (before the update); new_params is\n    a fresh dict with updated copies — never mutate the input dict.\n    \"\"\"\n    # 1) forward: hidden = relu(X @ W1 + b1); out = hidden @ W2 + b2\n    # 2) loss = float(np.mean((out - y) ** 2))\n    # 3) backward (delta2/dW2/db1/... as in the lesson)\n    # 4) new_params = {k: params[k] - lr * grad_k} for all four entries\n    ...\n",
+        "tests": "rng = np.random.default_rng(1906)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    \"W1\": rng.normal(size=(3, 8)) * 0.5,\n    \"b1\": np.zeros(8),\n    \"W2\": rng.normal(size=(8, 1)) * 0.5,\n    \"b2\": np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot[\"W1\"] + snapshot[\"b1\"]) @ snapshot[\"W2\"] + snapshot[\"b2\"] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, \"W2\": snapshot[\"W2\"].copy()}; Wp[\"W2\"][0, 0] += h\nWm = {**snapshot, \"W2\": snapshot[\"W2\"].copy()}; Wm[\"W2\"][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot[\"W2\"][0, 0] - params_step[\"W2\"][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust deutlich', last < 0.5 * first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1][\"W1\"], train_step(X, y, params, 0.01)[1][\"W1\"]))"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef train_step(X, y, params, lr):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    W1 = np.asarray(params[\"W1\"], dtype=float)\n    b1 = np.asarray(params[\"b1\"], dtype=float)\n    W2 = np.asarray(params[\"W2\"], dtype=float)\n    b2 = np.asarray(params[\"b2\"], dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    out = hidden @ W2 + b2\n    loss = float(np.mean((out - y) ** 2))\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    new_params = {\n        \"W1\": W1 - lr * dW1,\n        \"b1\": b1 - lr * db1,\n        \"W2\": W2 - lr * dW2,\n        \"b2\": b2 - lr * db2,\n    }\n    return loss, new_params"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Alles in einer Funktion: forward für loss, dieselben Zwischengrößen für die Gradienten, dann ein frisches Dictionary mit p − lr · grad — die Eingabe bleibt unangetastet.",
+        "Für den numerischen Check: bei lr = 0 ist der zurückgegebene Verlust genau L der übergebenen Parameter — damit kann der Test (L(W2+h) − L(W2−h))/2h bilden und mit deiner Schrittweite vergleichen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mutates-input",
+          "then": "new_params muss ein neues Dictionary mit neuen Arrays sein; In-place-Updates zerstören den lr=0-Test."
+        },
+        {
+          "if": "loss-after-update",
+          "then": "loss beschreibt das Modell VOR dem Update — sonst stimmt die numerische Vergleichsrechnung nicht."
+        },
+        {
+          "if": "update-sign-flipped",
+          "then": "Abstieg: p ← p − lr · grad. Mit Plus steigt der Verlust und der 40-Schritte-Test fällt durch."
+        }
+      ],
+      "fullSolution": "import numpy as np\n\ndef train_step(X, y, params, lr):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    W1 = np.asarray(params[\"W1\"], dtype=float)\n    b1 = np.asarray(params[\"b1\"], dtype=float)\n    W2 = np.asarray(params[\"W2\"], dtype=float)\n    b2 = np.asarray(params[\"b2\"], dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    out = hidden @ W2 + b2\n    loss = float(np.mean((out - y) ** 2))\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    new_params = {\n        \"W1\": W1 - lr * dW1,\n        \"b1\": b1 - lr * db1,\n        \"W2\": W2 - lr * dW2,\n        \"b2\": b2 - lr * db2,\n    }\n    return loss, new_params\n\n# lr=0 identisch, kleiner Schritt senkt, Update matcht die zentrale Differenz, 40 Schritte halbieren den Verlust",
+      "typicalErrors": [
+        "Eingabe-Dictionary in-place verändert",
+        "Verlust nach dem Update statt davor zurückgegeben",
+        "Update in Gradientenrichtung (Plus statt Minus)"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 42,
+      "sourceLineage": {
+        "concept": "karpathy-micrograd — Training-Schritt aus Forward/Backward/Update (Lektüre); ADR-0013: analytische Gradienten, numerischer Check im Test",
+        "statement": "eigenständig entwickelt",
+        "seed": 1906
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, solver-checked lokal",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

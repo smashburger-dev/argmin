@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-python-state",
+  "version": 1,
+  "locale": "de",
+  "title": "Python-Zustand lesen",
+  "description": "Zuweisungen als Zustandsänderung lesen und kurze Programme mit der Tracetabelle prüfen.",
+  "competencyIds": [
+    "c-python-basics"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-python-state"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-python-state-reassign-two-variables-print",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "reassign-two-variables-print",
+      "seed": 7,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-python-state",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-python-state-accumulate-reassign-print",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "accumulate-reassign-print",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-python-state",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-python-state-trace-assignment-state-practice",
+      "role": "practice-space",
+      "familyId": "trace-assignment-state",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

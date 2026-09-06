@@ -1,0 +1,1957 @@
+{
+  "shardId": "genai-systems",
+  "baselineCommit": "1998d57",
+  "entries": [
+    {
+      "sourceId": "w27-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w27",
+      "currentDefinitionId": "w27-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-rag",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-genai-rag"
+        ],
+        "moduleHint": "Lektion RAG Retrieval messbar machen: Trennung Retrieval/Generierung als Konzept-Auswahl",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Abgleich mit den übrigen S4A-Shards (w01–w26, w31–w39) wurde in diesem Shard nicht durchgeführt; gleichartige Konzept-Families sind dort denkbar.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Registry-Hypothese classify-rag-stage (hypothesisMemberSourceIds nennt w27-e1) ist bestätigt; der Kollisionsabgleich gegen die anderen Shards läuft über den Assembler, der Registry-Verträge zeichengetreu erzwingt."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'd' (Generierung technisch unmoeglich) als Praedikat der choice-Grammatik; Diagnose feuert nur auf dieser falschen Auswahl."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'a' (Antworten muessten aus dem Retrieval kopiert werden); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'b' (keine Metriken fuer Antworten); Praedikat bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-rag-stage",
+        "summary": "Ordnet einen Verarbeitungsschritt der passenden RAG-Stage zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der RAG-Stages einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der RAG-Stages.",
+          "errorHypotheses": [
+            "RAG-Stages miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "rag-retrieval-generation-split",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w27-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w27",
+      "currentDefinitionId": "w27-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-rag",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-rag"
+        ],
+        "moduleHint": "Lektion RAG Retrieval messbar machen: Top-k-Schnitt-Arithmetik als geseedete Zahleninstanz",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Familiengranularität des Generators (vier Shapes in einem Generator) soll menschlich bestätigt werden, damit keine Duplikatklassifikation über ähnliche Zahlen entsteht."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Die vier Generator-Shapes (hits/percent/missing/irrelevant) als parametrische Fallvarianten der Familie aggregate-topk-relevance-arithmetic bestaetigen oder in separate Familien aufteilen.",
+        "evidence": "assets/js/core/w27_w30_generators.mjs genRecallAtK zieht shape als reinen Parameter; ein gemeinsamer Schnitt-/Differenz-Solver loest jede Instanz aus Fallparametern allein.",
+        "latestGate": "Cross-Domain-Council S4A-v2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedCaseType",
+          "level": "medium",
+          "reason": "genRecallAtK mischt vier Frage-Shapes; die Default-Instanz (Seed 2711) zeigt hier nur den Shape 'nicht relevante'.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "genRecallAtK (assets/js/core/w27_w30_generators.mjs) zieht shape aus hits/percent/missing/irrelevant rein parametrisch; alle vier Shapes sind als Fallvarianten der Familie aggregate-topk-relevance-arithmetic dokumentiert, die gezeigte Instanz (Seed 2711) ist der Shape nicht relevante."
+        },
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Ähnliche Prozent-/Zahlaufgaben existieren in w28/w29/w29 mit anderen Formeln; Verwechslungsgefahr nur oberflächlich.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Familientrennung über den Lösungsweg umgesetzt: Schnitt- und Differenzarithmetik auf Top-k-Fenster und Relevant-Menge (aggregate-topk-relevance-arithmetic) statt Quotient aus gegebenen Größen (formula-ratio-percent-metric) oder tp/fp/fn/tn-Zaehlobjekt (aggregate-confusion-metric); nur der Shape percent ist ein Quotient."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 5 (relevante Dokumente im Top-7-Schnitt) als exaktes Integer-Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 7 (Fenstergroesse insgesamt) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 12 (alle relevant markierten Dokumente) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-topk-relevance-arithmetic",
+        "summary": "Bestimmt Treffer, Fehlende und Nicht-Relevante durch Schnitt- und Differenzarithmetik zwischen Top-k-Fenster und Relevant-Menge, inklusive Recall@k in ganzen Prozent.",
+        "membershipEvidence": {
+          "solutionPath": "Den Schnitt des Top-k-Fensters mit der Relevant-Menge bilden und die gefragte Größe (Treffer, Recall@k in Prozent, fehlende Relevante, nicht relevante im Fenster) durch Zählen oder Differenzbildung bestimmen.",
+          "referenceModel": "Top-k-Ranking plus Relevant-Menge als endliche Mengen; der Solver bildet Schnitt und Differenzen deterministisch, der Prozentanteil bleibt ganzzahlig (Generator-Constraint).",
+          "errorHypotheses": [
+            "Über die falsche Menge gezählt (alle relevanten Dokumente statt des Top-k-Schnitts)",
+            "Falsche Bezugsgröße gewählt (Fenstergröße, relevante insgesamt oder Trefferzahl verwechselt)",
+            "Gefragte Größe verwechselt (Treffer, Anteil in Prozent, Fehlende oder Nicht-Relevante)"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "topk-window-non-relevant-count",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w27-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w27",
+      "currentDefinitionId": "w27-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-rag",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-rag"
+        ],
+        "moduleHint": "Lektion RAG Retrieval messbar machen: Fenster-Chunking-Schleife als Ausgabe-Vorhersage",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedback-Regeln haben keinen echten Consumer im predict-output-Grader; über Consumer-Erweiterung oder Hinweistext muss bei der Migration entschieden werden."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Diagnosegrammatik der output-predict-lines (heute nur element-count-mismatch, v2 lines-diff@k) um die output-lines-Regeln erweitern oder Regeln als Hinweis fuehren; die Zielpfade je Regel liegen in feedbackDispositions.",
+        "evidence": "assets/js/core/graders.js gradePredictOutput konsumiert ausschliesslich rule.if === element-count-mismatch; output-lines-mismatch und first-line-wrong haben keinen Consumer.",
+        "latestGate": "S4C-Runtime-Vertragstest"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "gradePredictOutput konsumiert ausschließlich die Regel 'element-count-mismatch'; die Regeln output-lines-mismatch und first-line-wrong haben keinen Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Beide Regeln sind off-grammar fuer gradePredictOutput; als Zielpfade sind generic-hint (Strukturhinweis) und worked-solution (Loesungsschritte der ersten Zeile) vergeben, der kanalbildende Umbau der Zeilendiagnose liegt bei S4C.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "lines-diff@k-Diagnose der output-predict-lines-Grammatik umsetzen oder die Regeln redaktionell als Hinweis bzw. Worked-Solution fuehren.",
+          "evidence": "assets/js/core/graders.js gradePredictOutput konsumiert ausschliesslich element-count-mismatch.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "generic-hint",
+          "rationale": "Strukturhinweis auf die zwei Ausgabezeilen (Anzahl der Fenster, dann letztes Fenster als String) ist seed-unabhaengig konzeptionell und bleibt generischer Hinweis — kein Praedikat, kein Loesungsschritt."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt die Loesungsschrittfolge der ersten Zeile (Starts 0, 2, 4, 6 aus Schrittweite 4 − 2 = 2, also vier Fenster) und wird Familien-Worked-Solution."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-chunk-window-loop",
+        "summary": "Verfolgt eine Fenster-Chunking-Schleife mit Schrittweite size − overlap und sagt Fensterzahl und verkürztes Restfenster als Ausgabezeilen voraus.",
+        "membershipEvidence": {
+          "solutionPath": "Die Starts ab 0 mit Schrittweite size − overlap aufzählen, die Schleifenbedingung start < len(text) an jedem Start prüfen und Anzahl sowie letztes (möglicherweise verkürztes) Fenster als stdout-Zeilen angeben.",
+          "referenceModel": "Bewachte Fenster-Schleife mit deterministischer Schrittweite und verkürztem Endfenster; eingefrorene erwartete Ausgabezeilen als Autorität.",
+          "errorHypotheses": [
+            "Schrittweite ohne Overlap gerechnet (size statt size − overlap)",
+            "Schleifengrenze falsch ausgewertet (Starts einschließlich der Textlänge gezählt)",
+            "Letztes Fenster auf volle Größe aufgefüllt statt als Reststring gelesen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "chunk-window-count-last-window",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w27-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w27",
+      "currentDefinitionId": "w27-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-rag",
+        "coEvidence": [
+          "c-python-functions"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-rag"
+        ],
+        "moduleHint": "Lektion RAG Retrieval messbar machen: normalize- und chunk-Vertrag als Code-Implementierung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "Der pyodide-Grader gradePython liest feedbackRules nicht; die Regeln sind reine Inhaltsdokumentation.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "gradePython liest feedbackRules nicht; alle drei Regeln (punct-not-stripped, valueerror-missing, off-by-one-start) sind als answer-note ueber den kuenftigen checkId-Kanal vergeben, der Konsument entsteht mit der S4C-Runtime.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal des code-test-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "assets/js/core/graders.js gradePython prueft eingebettete __check-Tests und liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Normalisierungs-__check schlaegt fehl, weil Satzzeichen wie „ oder ! im Filter-Set fehlen; mappt auf diese konkrete Ursachendiagnose."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Vertrags-__check schlaegt fehl, weil der ValueError fuer size <= 0 beziehungsweise overlap >= size vor dem ersten Fenster fehlt."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Fensterfolgen-__check schlaegt fehl, weil die Schleifenbedingung start < len(text) falsch umgesetzt ist (Starts zu weit gezogen oder Fenster kuenstlich verlaengert)."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-normalize-chunk-contract",
+        "summary": "Implementiert den RAG-Vorverarbeitungs-Vertrag aus Textnormalisierung mit Umlautschutz und bewachter Fenster-Schleife inklusive ValueError-Parametervalidierung.",
+        "membershipEvidence": {
+          "solutionPath": "Zeichenfilter über ein explizites Satzzeichen-Set mit Whitespace-Join anwenden, dann die parametergeprüfte while-Schleife mit start += size − overlap und verkürztem Endfenster implementieren.",
+          "referenceModel": "Eingebettete Referenzlösung als Pyodide-Testsuite: getrennte __check-Prüfung von Normalisierung und Fensterfolge plus ValueError für size <= 0 und overlap >= size.",
+          "errorHypotheses": [
+            "Satzzeichen per ASCII-Annahme entfernt und Umlaute beschädigt",
+            "Fenster mit fester Anzahl statt bewachter while-Schleife erzeugt",
+            "ValueError-Guard für size <= 0 beziehungsweise overlap >= size weggelassen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "normalize-chunk-valueerror-contract",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w27-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w27",
+      "currentDefinitionId": "w27-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-rag",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-genai-rag"
+        ],
+        "moduleHint": "Lektion RAG Retrieval messbar machen: TF-IDF/Kosinus-Baseline mit NumPy implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "TF-IDF-Ranking könnte mit w27-e6 (gleiche Formeln, Index-Dictionary) verwechselt werden; der Lösungsweg unterscheidet sich durch Funktions- versus Index-Vertrag und MRR.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Keine Trennung nach Darreichungsform: w27-e5 (freie Funktionen) und w27-e6 (Index-Dictionary) teilen den TF-IDF/Kosinus-Ranking-Kern und liegen gemeinsam in aggregate-retrieval-ranking-metric; Funktions- gegen Index-Vertrag ist rein repraesentativ, MRR/evaluate ist Metrik-Nutzlast ueber derselben Rangfolge."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Ranking-__check schlaegt fehl, weil ohne idf-Gewichtung das Dokument mit den meisten Common Terms gewinnt."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Ranking-__check schlaegt fehl, weil Gleichstaende nicht deterministisch ueber den kleinsten Index aufgeloest werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Anfragevektor-__check schlaegt fehl, weil die Anfrage nicht exakt wie die Dokumente normalisiert und gewichtet wird."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-retrieval-ranking-metric",
+        "summary": "Berechnet TF-IDF- und Kosinusähnlichkeit als Ranking-Metrik, leitet das Ranking ab und evaluiert es mit Recall@k und MRR.",
+        "membershipEvidence": {
+          "solutionPath": "Termgewichte bestimmen, die Ähnlichkeitsmetrik berechnen, das Ranking ableiten und die Rankingqualität mit Recall@k und MRR evaluieren.",
+          "referenceModel": "TF-IDF-/Kosinus-Ranking über einer Dokumentmenge mit Recall@k-/MRR-Evaluation.",
+          "errorHypotheses": [
+            "IDF- oder Normierungsterm vergessen",
+            "Ähnlichkeitsrichtung vertauscht",
+            "MRR über alle statt nur erstes relevantes Dokument summiert",
+            "Ränge 0-basiert statt 1-basiert gezählt",
+            "k-Schnitt im Rank statt im Evaluator angewendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "tfidf-cosine-rank-recall",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w27-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w27",
+      "currentDefinitionId": "w27-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-rag",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-genai-rag"
+        ],
+        "moduleHint": "Lektion RAG Retrieval messbar machen: Final Boss Mini-Suchindex mit Recall@k und MRR",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Der Boss verlangt das Kopieren der w27-e5-Lösung in den Lernendencode; ob die TF-IDF-Basis extrahiert oder dupliziert migriert wird, braucht eine menschliche Entscheidung."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "TF-IDF-Basis von w27-e5 als geteiltes Fragment/Vorlage extrahieren oder dupliziert in den Boss migrieren.",
+        "evidence": "expectedAnswer.referenceSolver von w27-e6 wiederholt den Ranking-Kern aus w27-e5 als Index-Variante; die v1-targetRationale nennt das Kopieren ausdruecklich.",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Der Final Boss verlangt, die w27-e5-Lösung zu kopieren und zu erweitern; eine Extraktion der gemeinsamen TF-IDF-Basis wäre eine Alternative zur Duplikation.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Kopier- gegen Extraktionsfrage ist eine Contentarchitektur-Entscheidung und liegt als Freigabe in der Entscheidungsqueue; migrate bleibt der Grundzustand dieser Forschungsabbildung.",
+          "owner": "Noa",
+          "decision": "TF-IDF-Basis von w27-e5 als geteiltes Fragment extrahieren oder dupliziert in den Boss migrieren.",
+          "evidence": "expectedAnswer.referenceSolver von w27-e6 wiederholt den Ranking-Kern aus w27-e5 als Index-Variante.",
+          "latestGate": "S4D-Contentmigration"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der MRR-__check schlaegt fehl, weil die Rangposition nullbasiert statt einsbasiert gelesen wird."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der MRR-__check schlaegt fehl, weil ueber alle relevanten Dokumente summiert statt nur die erste Fundstelle gewertet wird."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der evaluate-__check schlaegt fehl, weil rank_query bereits bei k schneidet statt das komplette Ranking zu liefern."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-retrieval-ranking-metric",
+        "summary": "Berechnet TF-IDF- und Kosinusähnlichkeit als Ranking-Metrik, leitet das Ranking ab und evaluiert es mit Recall@k und MRR.",
+        "membershipEvidence": {
+          "solutionPath": "Termgewichte bestimmen, die Ähnlichkeitsmetrik berechnen, das Ranking ableiten und die Rankingqualität mit Recall@k und MRR evaluieren.",
+          "referenceModel": "TF-IDF-/Kosinus-Ranking über einer Dokumentmenge mit Recall@k-/MRR-Evaluation.",
+          "errorHypotheses": [
+            "IDF- oder Normierungsterm vergessen",
+            "Ähnlichkeitsrichtung vertauscht",
+            "MRR über alle statt nur erstes relevantes Dokument summiert",
+            "Ränge 0-basiert statt 1-basiert gezählt",
+            "k-Schnitt im Rank statt im Evaluator angewendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "index-evaluate-recall-mrr",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w28-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w28",
+      "currentDefinitionId": "w28-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-eval",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-genai-eval"
+        ],
+        "moduleHint": "Lektion Evaluation generativer Antworten: halluzinierten Beleg der Fehlertaxonomie zuordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Die Fehlertaxonomie existiert nur in w28-e1 als Konzept- und in w28-e4 als Regel-Implementierung; beide haben unterschiedliche Aktivitäts- und Solver-Verträge.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Trennung umgesetzt: Die Konzeptzuordnung liegt als classify-eval-hazard (w28-e1), die Regel-Implementierung als classify-rule-cascade-priority (w28-e4) — unterschiedliche Aktivitaets- und Solver-Vertraege, wie es die v1-Aufloesung verlangt."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'a' (falsch-faktisch trotz korrekter Frist); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'b' (quellos trotz vorhandenem, nur unerlaubtem Beleg); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'c' (Formatfehler bei formatierter Antwort); Praedikat bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-eval-hazard",
+        "summary": "Ordnet eine Evaluationssituation dem passenden Eval-Hazard zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Eval-Hazards einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Eval-Hazards.",
+          "errorHypotheses": [
+            "Eval-Hazards miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "hallucinated-citation-label",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w28-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w28",
+      "currentDefinitionId": "w28-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-eval",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-eval"
+        ],
+        "moduleHint": "Lektion Evaluation generativer Antworten: Precision in Prozent aus Konfusionszahlen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Die Abgrenzung gegen w29-e2 und w30-e2 (alle drei Prozent-aus-Zahlen-Aufgaben) soll menschlich bestätigt werden; Trennung erfolgt über Formel und Domäne, nicht über ähnliche Zahlen."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Grenzentscheidung bestaetigen: w28-e2 und w29-e2 in aggregate-confusion-metric (Zaehlobjekt- und Selektor-Vertrag), w30-e2 in formula-ratio-percent-metric (Policy-Zaehlung plus Anteilsformel).",
+        "evidence": "genF1orPrecision variiert den Metrikselektor ueber tp/fp/fn; genInjectionFlagCount rekonstruiert tp/fp/fn/tn aus Prosazaehlungen; genAllowedActionCount zaehlt Policy-Verdicts ohne Vier-Tupel.",
+        "latestGate": "Cross-Domain-Council S4A-v2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedCaseType",
+          "level": "medium",
+          "reason": "genF1orPrecision erzeugt Precision-, Recall- und F1-Instanzen; die Default-Instanz zeigt nur Precision.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "genF1orPrecision variiert shape aus precision/recall/f1 parametrisch ueber demselben Zaehlobjekt tp/fp/fn; alle drei Shapes sind Fallvarianten von aggregate-confusion-metric, die gezeigte Instanz (Seed 2811) ist precision."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 92 (Recall-Ablenker mit FN im Nenner) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 32 (nur der Nenner TP+FP) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 83 (F1-Ablenker) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-confusion-metric",
+        "summary": "Erschließt Konfusionsmetriken aus dem Zählobjekt {tp, fp, fn, tn} über eine geschlossene Metrikformel.",
+        "membershipEvidence": {
+          "solutionPath": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen bilden bzw. ablesen, den Metrikselektor anwenden und die geschlossene Formel mit Nullteilerschutz auswerten.",
+          "referenceModel": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen plus Metrikselektor; Solver ist eine geschlossene Metrikformel mit Nullteilerschutz.",
+          "errorHypotheses": [
+            "wrong-denominator",
+            "direction-confusion",
+            "percent-rounding",
+            "zero-division-assumed"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "precision-percent-from-tp-fp",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w28-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w28",
+      "currentDefinitionId": "w28-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-eval",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-eval"
+        ],
+        "moduleHint": "Lektion Evaluation generativer Antworten: Token-F1-Ausgabezeilen vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedback-Regeln ohne echten Consumer im predict-output-Grader; Migrationsentscheidung (Consumer erweitern oder Hinweistext) offen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Zeilendiagnose der output-predict-lines-Grammatik (lines-diff@k) umsetzen oder die Regeln redaktionell als Worked-Solution fuehren; Zielpfade je Regel liegen in feedbackDispositions.",
+        "evidence": "assets/js/core/graders.js gradePredictOutput liest first-line-wrong und second-line-wrong nicht.",
+        "latestGate": "S4C-Runtime-Vertragstest"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "Die Regeln first-line-wrong und second-line-wrong werden von gradePredictOutput nicht gelesen (nur element-count-mismatch).",
+          "disposition": "deferred-to-s4c",
+          "rationale": "first-line-wrong und second-line-wrong sind off-grammar; beide Nachrichten beschreiben die Loesungsschritte der Ausgabezeilen und sind als worked-solution vergeben, der Zeilendiagnose-Kanal lines-diff@k entsteht in S4C.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "lines-diff@k-Diagnose umsetzen oder die Regeln redaktionell als Worked-Solution fuehren.",
+          "evidence": "assets/js/core/graders.js gradePredictOutput liest beide Regel-IDs nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt die vollstaendige Loesungsschrittfolge der ersten Zeile (common = 2, p = 2/3, r = 2/4, F1 gerundet 0.57) und wird Familien-Worked-Solution."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt den Zero-Branch der zweiten Zeile (common = 0 → Rueckgabe 0.0 ohne Division) als Loesungsschritt und wird Familien-Worked-Solution."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-confusion-metric",
+        "summary": "Erschließt Konfusionsmetriken aus dem Zählobjekt {tp, fp, fn, tn} über eine geschlossene Metrikformel.",
+        "membershipEvidence": {
+          "solutionPath": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen bilden bzw. ablesen, den Metrikselektor anwenden und die geschlossene Formel mit Nullteilerschutz auswerten.",
+          "referenceModel": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen plus Metrikselektor; Solver ist eine geschlossene Metrikformel mit Nullteilerschutz.",
+          "errorHypotheses": [
+            "wrong-denominator",
+            "direction-confusion",
+            "percent-rounding",
+            "zero-division-assumed"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "token-f1-two-lines",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w28-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w28",
+      "currentDefinitionId": "w28-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-eval",
+        "coEvidence": [
+          "c-python-functions"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-eval"
+        ],
+        "moduleHint": "Lektion Evaluation generativer Antworten: geordnete Fehlertaxonomie-Regelkaskade implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "Pyodide-Grader konsumiert feedbackRules nicht; Regeln wie order-wrong sind reine Inhaltsdokumentation.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "gradePython liest feedbackRules nicht; die Regeln order-wrong, content-words-too-short und default-unreachable sind als answer-note ueber den kuenftigen checkId-Kanal vergeben.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal des code-test-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "assets/js/core/graders.js gradePython prueft eingebettete __check-Tests und liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Kaskaden-__check schlaegt fehl, weil die Regelreihenfolge nicht eingehalten wird — die erste passende Regel muss gewinnen."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Regel-__check schlaegt fehl, weil Inhaltsbegriffe ohne die Laengenbedingung >= 4 gebildet werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Vollstaendigkeits-__check schlaegt fehl, weil die default-Regel nicht zuletzt steht oder nie greift."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-rule-cascade-priority",
+        "summary": "Wendet eine geordnete Regel- oder Policy-Kaskade an, in der die erste passende Regel gewinnt und der Default- beziehungsweise Unbekannt-Fall konservativ am Ende greift.",
+        "membershipEvidence": {
+          "solutionPath": "Je Eingabe die Regeln in der vorgegebenen Reihenfolge auswerten; die erste passende Regel bestimmt das Ergebnis, Nebenbedingungen (Inhaltsbegriffe, Zahlenmengen, Argument-Allowlist) korrekt prüfen, den Default nur am Ende greifen lassen und die Ergebnisse in Eingabereihenfolge führen.",
+          "referenceModel": "Deterministische geordnete Kaskade (Regelliste beziehungsweise Policy mit festgelegter Priorität) als eingebettete Referenzlösung; die Kaskaden-Autorität löst jede Instanz aus Fallparametern allein.",
+          "errorHypotheses": [
+            "Regel- beziehungsweise Prioritätsreihenfolge verletzt",
+            "Default- oder Unbekannt-Fall weggelassen beziehungsweise nicht konservativ entschieden",
+            "Regelnebenbedingung (Inhaltsbegriffe, Zahlenmengen, Argument-Allowlist) ignoriert",
+            "Ergebnisse nicht in Eingabereihenfolge geführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "error-taxonomy-ordered-cascade",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w28-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w28",
+      "currentDefinitionId": "w28-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-eval",
+        "coEvidence": [
+          "c-ml-erroranalysis"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-genai-eval"
+        ],
+        "moduleHint": "Lektion Evaluation generativer Antworten: Metrikbibliothek confusion/prf/exact_match/token_f1",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w29-e4 berechnet ebenfalls Precision/Recall; der Lösungsweg unterscheidet sich (Metrikbibliothek über Zeilenlisten versus Detektor-Evaluation mit Rundung auf 4 Stellen).",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Trennung ueber Rundungs- und Rueckgabevertrag geprueft und verworfen: w28-e5 und w29-e4 teilen Zaehlobjekt {tp,fp,fn,tn}, Metrikselektion und Nullteilerschutz (beide Solver mit 0.0-Fallback); exakte Bibliothekswerte gegen auf vier Stellen gerundete Detektorwerte sind parametrische Vertragsvarianten, beide liegen in aggregate-confusion-metric."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der prf-__check schlaegt fehl, weil tp+fp beziehungsweise tp+fn gleich 0 nicht mit 0.0 abgefangen wird."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der token_f1-__check schlaegt fehl, weil Mengen statt Multimengen (min-Haeufigkeiten) verrechnet werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der exact_match_rate-__check schlaegt fehl, weil ohne strip() verglichen wird."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-confusion-metric",
+        "summary": "Erschließt Konfusionsmetriken aus dem Zählobjekt {tp, fp, fn, tn} über eine geschlossene Metrikformel.",
+        "membershipEvidence": {
+          "solutionPath": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen bilden bzw. ablesen, den Metrikselektor anwenden und die geschlossene Formel mit Nullteilerschutz auswerten.",
+          "referenceModel": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen plus Metrikselektor; Solver ist eine geschlossene Metrikformel mit Nullteilerschutz.",
+          "errorHypotheses": [
+            "wrong-denominator",
+            "direction-confusion",
+            "percent-rounding",
+            "zero-division-assumed"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "confusion-prf-exactmatch-tokenf1",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w28-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w28",
+      "currentDefinitionId": "w28-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-eval",
+        "coEvidence": [
+          "c-ml-erroranalysis"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-genai-eval"
+        ],
+        "moduleHint": "Lektion Evaluation generativer Antworten: Final Boss Evaluator und Regelwerksvergleich",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Der Boss verlangt das Kopieren der classify-Lösung aus w28-e4; Extraktion der geteilten Basis gegen Duplikation braucht eine menschliche Entscheidung."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "classify-Kaskade aus w28-e4 als geteiltes Fragment extrahieren oder dupliziert in den Boss migrieren.",
+        "evidence": "expectedAnswer.referenceSolver von w28-e6 enthaelt die unveraenderte classify-Funktion aus w28-e4 inklusive Hilfsmengen.",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Der Boss verlangt das Kopieren der classify-Funktion aus w28-e4; eine Extraktion der Klassifikationsbasis wäre eine Alternative zur Duplikation.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Kopier- gegen Extraktionsfrage der classify-Basis ist eine Contentarchitektur-Entscheidung und liegt als Freigabe in der Entscheidungsqueue; migrate bleibt der Grundzustand.",
+          "owner": "Noa",
+          "decision": "classify-Kaskade aus w28-e4 als geteiltes Fragment extrahieren oder dupliziert migrieren.",
+          "evidence": "expectedAnswer.referenceSolver von w28-e6 enthaelt die unveraenderte classify-Funktion aus w28-e4.",
+          "latestGate": "S4D-Contentmigration"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der run_eval-__check schlaegt fehl, weil counts fehlende Labels nicht als 0 initialisiert oder mit get() gelesen werden."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der compare_rulesets-__check schlaegt fehl, weil Gleichstand nicht als tie entschieden wird."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Klassifikations-__check schlaegt fehl, weil Spezialfaelle statt der Regelkaskade kodiert sind."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-detector-eval-compare",
+        "summary": "Wertet mehrere deterministische Regelwerke oder Detektoren auf einem gelabelten Korpus aus, führt eine Metriktabelle und kürt den Sieger über deterministische Rundung und Namens-Tie-Break.",
+        "membershipEvidence": {
+          "solutionPath": "Je Regelwerk den Klassifikations- oder Detektionslauf auswerten, die Treffer- beziehungsweise Konfusionszählung gegen die Gold-Labels führen, die Vergleichsmetrik vertragsgerecht runden, die Tabelle in fester Feldordnung aufbauen und den Sieger über die Metrik mit Namens-Tie-Break bestimmen.",
+          "referenceModel": "Gelabeltes Korpus plus mindestens zwei deterministische Regelwerke; eingebettete Referenzlösung berechnet Metriktabelle und Vergleichsurteil (better a/b/tie beziehungsweise best nach (−Metrik, Name)).",
+          "errorHypotheses": [
+            "Treffer- beziehungsweise Konfusionszählung pro Regelwerk falsch geführt (correct-Abgleich gegen das Gold-Label, flagged-Summe)",
+            "Vergleichsmetrik nicht vertragsgerecht berechnet oder gerundet",
+            "Gleichstand ohne deterministische Tie-Break-Regel aufgelöst"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "run-eval-compare-rulesets",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w29-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w29",
+      "currentDefinitionId": "w29-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-security",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-genai-security"
+        ],
+        "moduleHint": "Lektion Defensive GenAI-Sicherheit: Injektionsvorfall ueber untrusted Retrieval einordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Defensive Sicherheitsformulierung (synthetische Beispiele, keine Exploit-Entwicklung) muss bei der Migration wörtlich erhalten bleiben und soll menschlich bestätigt werden."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Woertliche Erhaltung der defensiven Sicherheitsformulierung (synthetische Beispiele, keine Exploit-Entwicklung) bei der Migration freigeben.",
+        "evidence": "content/exercises/w29.json w29-e1 nutzt ausschliesslich synthetische defensive Beispiele gem Plattformentscheid ADR-0013.",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "semanticClassification",
+          "level": "low",
+          "reason": "Threat-Kategorisierung könnte mit w30-e1 (Least-Privilege-Konzept) oberflächlich verwechselt werden; Lösungsweg (Vorfall einordnen versus Policy konfigurieren) unterscheidet sich klar.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Trennung ueber den Lösungsweg bestaetigt: w29-e1 ordnet einen Vorfall der Angriffsflaeche zu (classify-attack-surface), w30-e1 waehlt eine Policy-Konfiguration (classify-tool-policy); die Verwechslung ist nur oberflaechlich."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'b' (Datenabfluss als Einbruchsmethode gelesen); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'c' (Datenbank-Engine-Schwachstelle); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'd' (Nutzer als Einbruchsort); Praedikat bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-attack-surface",
+        "summary": "Ordnet eine Angriffsbeschreibung der passenden Angriffsfläche zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Angriffsflächen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Angriffsflächen.",
+          "errorHypotheses": [
+            "Angriffsflächen miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "injection-via-untrusted-retrieval",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w29-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w29",
+      "currentDefinitionId": "w29-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-security",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-security"
+        ],
+        "moduleHint": "Lektion Defensive GenAI-Sicherheit: Detektionsquote in Prozent aus Filterzahlen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Abgrenzung zur Precision-Aufgabe w28-e2 (gleiche Prozentform, andere Bezugsbasis und Formel) soll menschlich bestätigt werden, um keine Duplikatfamilie zu erzeugen."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Zuordnung w29-e2 zu aggregate-confusion-metric (Rekonstruktion des Zaehlobjekts aus Prosazaehlungen) gegen die Precision-Aufgabe w28-e2 bestaetigen.",
+        "evidence": "genInjectionFlagCount liefert tp/fp/fn/tn als Prosa-Zaehlungen (labeled, flagged, davon Injektionen); caught-percent ist Recall in Prozent.",
+        "latestGate": "Cross-Domain-Council S4A-v2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedCaseType",
+          "level": "medium",
+          "reason": "Der Generator mischt mehrere Frage-Shapes (unerkannt/Fehlalarme/Anteil/durchgelassene); die Default-Instanz zeigt nur eine.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "genInjectionFlagCount zieht shape aus missed/false-alarms/caught-percent/clean-kept parametrisch aus demselben rekonstruierten Zaehlobjekt; alle Shapes sind Fallvarianten von aggregate-confusion-metric, die gezeigte Instanz ist caught-percent."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 16 (Injektionen insgesamt statt Anteil) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 17 (verworfene Dokumente statt Bezugsbasis) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 80 (falscher Nenner 12/15) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-confusion-metric",
+        "summary": "Erschließt Konfusionsmetriken aus dem Zählobjekt {tp, fp, fn, tn} über eine geschlossene Metrikformel.",
+        "membershipEvidence": {
+          "solutionPath": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen bilden bzw. ablesen, den Metrikselektor anwenden und die geschlossene Formel mit Nullteilerschutz auswerten.",
+          "referenceModel": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen plus Metrikselektor; Solver ist eine geschlossene Metrikformel mit Nullteilerschutz.",
+          "errorHypotheses": [
+            "wrong-denominator",
+            "direction-confusion",
+            "percent-rounding",
+            "zero-division-assumed"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "injection-detection-rate-percent",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w29-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w29",
+      "currentDefinitionId": "w29-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-security",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-security"
+        ],
+        "moduleHint": "Lektion Defensive GenAI-Sicherheit: Substring-Detektorausgabe vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedback-Regeln ohne echten Consumer im predict-output-Grader; Migrationsentscheidung (Consumer erweitern oder Hinweistext) offen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Zeilendiagnose der output-predict-lines-Grammatik (lines-diff@k) umsetzen oder die Regeln redaktionell als Worked-Solution fuehren; Zielpfade je Regel liegen in feedbackDispositions.",
+        "evidence": "assets/js/core/graders.js gradePredictOutput liest first-line-wrong und second-line-wrong nicht.",
+        "latestGate": "S4C-Runtime-Vertragstest"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "gradePredictOutput konsumiert nur element-count-mismatch; die Regeln first-line-wrong/second-line-wrong haben keinen Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Beide Regeln sind off-grammar; beide Nachrichten beschreiben die Loesungsschritte der Ausgabezeilen (Fallanalyse bis Summe 2, Einzelregelpruefung) und sind als worked-solution vergeben.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "lines-diff@k-Diagnose umsetzen oder die Regeln redaktionell als Worked-Solution fuehren.",
+          "evidence": "assets/js/core/graders.js gradePredictOutput liest beide Regel-IDs nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt die Fallanalyse aller drei Beispiele bis zur Summe 2 als Loesungsschrittfolge und wird Familien-Worked-Solution."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt die Einzelregel-Loesung der zweiten Zeile (Lowercasting findet systemprompt → True) und wird Familien-Worked-Solution."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-substring-flag-sum",
+        "summary": "Verfolgt eine regelbasierte Substring-Detektion über Beispiele hinweg und sagt die Summe der Trefferflags sowie eine Einzelregelprüfung voraus.",
+        "membershipEvidence": {
+          "solutionPath": "Jedes Beispiel nach einmaligem Kleinschreiben gegen alle Regelphrasen als Substring prüfen, Mehrfachtreffer pro Beispiel einfach zählen, die Summe über die Booleans bilden und die Einzelregelprüfung auf das benannte Beispiel anwenden.",
+          "referenceModel": "Deterministische Kleinschreibung-Substring-Regeln über einer endlichen Beispielmenge; eingefrorene erwartete Ausgabezeilen als Autorität.",
+          "errorHypotheses": [
+            "Mehrfache Regel-Treffer pro Beispiel doppelt statt einfach gezählt",
+            "Klein-/Großschreibung beim Substring-Vergleich nicht beachtet",
+            "sum() über Booleans falsch gelesen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "substring-detector-flag-sum",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w29-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w29",
+      "currentDefinitionId": "w29-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-security",
+        "coEvidence": [
+          "c-python-functions"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-security"
+        ],
+        "moduleHint": "Lektion Defensive GenAI-Sicherheit: Detektor mit Konfusionstabelle und Rundung implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "gradePython liest feedbackRules nicht; die Regeln wirken nur als Inhalt.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "gradePython liest feedbackRules nicht; die Regeln rules-not-lowered, confusion-swapped und rounding-missing sind als answer-note ueber den kuenftigen checkId-Kanal vergeben.",
+          "owner": "S4C-Runtime",
+          "decision": "checkId-Kanal des code-test-Archetypen konsumiert die answer-note-Zuordnungen dieser Quelle.",
+          "evidence": "assets/js/core/graders.js gradePython prueft eingebettete __check-Tests und liest feedbackRules nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Detektor-__check schlaegt fehl, weil der Text nicht kleingeschrieben wird und Gross-/Kleinschreibungstreffer durchfliegen."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Konfusions-__check schlaegt fehl, weil fp und fn vertauscht gezaehlt werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Metrik-__check schlaegt fehl, weil precision/recall nicht auf vier Stellen gerundet werden."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-confusion-metric",
+        "summary": "Erschließt Konfusionsmetriken aus dem Zählobjekt {tp, fp, fn, tn} über eine geschlossene Metrikformel.",
+        "membershipEvidence": {
+          "solutionPath": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen bilden bzw. ablesen, den Metrikselektor anwenden und die geschlossene Formel mit Nullteilerschutz auswerten.",
+          "referenceModel": "Zählobjekt {tp, fp, fn, tn} oder Token-Multimengen plus Metrikselektor; Solver ist eine geschlossene Metrikformel mit Nullteilerschutz.",
+          "errorHypotheses": [
+            "wrong-denominator",
+            "direction-confusion",
+            "percent-rounding",
+            "zero-division-assumed"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "phrase-detector-confusion-rounded",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w29-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w29",
+      "currentDefinitionId": "w29-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-security",
+        "coEvidence": [
+          "c-testing-debugging"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-genai-security"
+        ],
+        "moduleHint": "Lektion Defensive GenAI-Sicherheit: Least-Privilege-Pruefkaskade mit Ablehnungsgruenden",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w30-e5/w30-e6 nutzen denselben Policy-Vertrag; dort ist er eingebetteter Baustein, hier eigenständiges Lernziel.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Familientrennung ueber den Transferanspruch umgesetzt: w29-e5 implementiert die Kaskade als eigenstaendiges Lernziel (classify-rule-cascade-priority); w30-e5 und w30-e6 nutzen denselben Policy-Vertrag nur als eingebetteten Baustein ihrer Prototyp-Familien."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Policy-__check schlaegt fehl, weil unbekannte Werkzeuge still erlaubt statt als tool-unknown abgelehnt werden."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Policy-__check schlaegt fehl, weil das restricted-Argument nicht gegen seine Allowlist geprueft wird."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Policy-__check schlaegt fehl, weil die Ergebnisliste nicht der Aufrufreihenfolge mit korrektem Index folgt."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-rule-cascade-priority",
+        "summary": "Wendet eine geordnete Regel- oder Policy-Kaskade an, in der die erste passende Regel gewinnt und der Default- beziehungsweise Unbekannt-Fall konservativ am Ende greift.",
+        "membershipEvidence": {
+          "solutionPath": "Je Eingabe die Regeln in der vorgegebenen Reihenfolge auswerten; die erste passende Regel bestimmt das Ergebnis, Nebenbedingungen (Inhaltsbegriffe, Zahlenmengen, Argument-Allowlist) korrekt prüfen, den Default nur am Ende greifen lassen und die Ergebnisse in Eingabereihenfolge führen.",
+          "referenceModel": "Deterministische geordnete Kaskade (Regelliste beziehungsweise Policy mit festgelegter Priorität) als eingebettete Referenzlösung; die Kaskaden-Autorität löst jede Instanz aus Fallparametern allein.",
+          "errorHypotheses": [
+            "Regel- beziehungsweise Prioritätsreihenfolge verletzt",
+            "Default- oder Unbekannt-Fall weggelassen beziehungsweise nicht konservativ entschieden",
+            "Regelnebenbedingung (Inhaltsbegriffe, Zahlenmengen, Argument-Allowlist) ignoriert",
+            "Ergebnisse nicht in Eingabereihenfolge geführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "least-privilege-permission-cascade",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w29-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w29",
+      "currentDefinitionId": "w29-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-security",
+        "coEvidence": [
+          "c-testing-debugging"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-genai-security"
+        ],
+        "moduleHint": "Lektion Defensive GenAI-Sicherheit: Final Boss Detektivergleich mit f1-Tie-Break",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Der Boss verlangt das Kopieren der w29-e4-Lösung; Extraktion der geteilten Detektorbasis gegen Duplikation braucht eine menschliche Entscheidung."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "contains_injection und evaluate_detector aus w29-e4 als geteiltes Fragment extrahieren oder dupliziert in den Boss migrieren.",
+        "evidence": "expectedAnswer.referenceSolver von w29-e6 enthaelt die unveraenderte Detektorbasis aus w29-e4 vor detector_table und best_by_f1.",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Der Boss verlangt das Kopieren von contains_injection und evaluate_detector aus w29-e4; Extraktion der geteilten Basis wäre eine Alternative.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Kopier- gegen Extraktionsfrage der Detektorbasis ist eine Contentarchitektur-Entscheidung und liegt als Freigabe in der Entscheidungsqueue; migrate bleibt der Grundzustand.",
+          "owner": "Noa",
+          "decision": "contains_injection und evaluate_detector aus w29-e4 als geteiltes Fragment extrahieren oder dupliziert migrieren.",
+          "evidence": "expectedAnswer.referenceSolver von w29-e6 enthaelt die unveraenderte Detektorbasis aus w29-e4.",
+          "latestGate": "S4D-Contentmigration"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Tabellen-__check schlaegt fehl, weil f1 nicht auf vier Stellen gerundet wird."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der best_by_f1-__check schlaegt fehl, weil der lexikographische Namens-Tie-Break fehlt."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Tabellen-__check schlaegt fehl, weil flagged nur tp statt tp+fp zaehlt."
+        }
+      ],
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-detector-eval-compare",
+        "summary": "Wertet mehrere deterministische Regelwerke oder Detektoren auf einem gelabelten Korpus aus, führt eine Metriktabelle und kürt den Sieger über deterministische Rundung und Namens-Tie-Break.",
+        "membershipEvidence": {
+          "solutionPath": "Je Regelwerk den Klassifikations- oder Detektionslauf auswerten, die Treffer- beziehungsweise Konfusionszählung gegen die Gold-Labels führen, die Vergleichsmetrik vertragsgerecht runden, die Tabelle in fester Feldordnung aufbauen und den Sieger über die Metrik mit Namens-Tie-Break bestimmen.",
+          "referenceModel": "Gelabeltes Korpus plus mindestens zwei deterministische Regelwerke; eingebettete Referenzlösung berechnet Metriktabelle und Vergleichsurteil (better a/b/tie beziehungsweise best nach (−Metrik, Name)).",
+          "errorHypotheses": [
+            "Treffer- beziehungsweise Konfusionszählung pro Regelwerk falsch geführt (correct-Abgleich gegen das Gold-Label, flagged-Summe)",
+            "Vergleichsmetrik nicht vertragsgerecht berechnet oder gerundet",
+            "Gleichstand ohne deterministische Tie-Break-Regel aufgelöst"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "detector-table-f1-tiebreak",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w30-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w30",
+      "currentDefinitionId": "w30-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-prototype",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-genai-prototype"
+        ],
+        "moduleHint": "Lektion Minimaler abgesicherter GenAI-Prototyp: Least-Privilege-Konfiguration waehlen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Defensive Sicherheitsformulierung (Least Privilege, kein produktives LLM-System nach ADR-0013) muss bei Migration wörtlich erhalten bleiben; Freigabe durch Menschen gewünscht."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Least-Privilege-Formulierung ohne produktives LLM-System (ADR-0013) woertlich erhalten und die Freigabe erteilen.",
+        "evidence": "content/exercises/w30.json w30-e1 begruendet die Policy strukturell; die v1-humanReviewReason verlangt eine menschliche Freigabe.",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Abgrenzung zur w29-e1-Threat-Einordnung ist klar (Konfiguration versus Vorfallseinordnung), aber beide sind Sicherheitskonzeptfragen.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Leistungsverb-Trennung bestaetigt: Vorfall einordnen (w29-e1, classify-attack-surface) gegen Konfiguration waehlen (w30-e1, classify-tool-policy) sind zwei Registry-Singletons mit unterschiedlichen Konzeptsystemen."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'c' (Prompt-Bitten als Berechtigungsgrenze); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'd' (Mail erlauben und Folgen filtern); Praedikat bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "gradeChoice konsumiert choice === 'a' (unbekannte Werkzeuge einbinden); Praedikat bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-tool-policy",
+        "summary": "Ordnet einen Tool-Einsatz der passenden Policy-Klasse zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Tool-Policys einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Tool-Policys.",
+          "errorHypotheses": [
+            "Policy-Klassen miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "least-privilege-policy-config",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w30-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w30",
+      "currentDefinitionId": "w30-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-prototype",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-prototype"
+        ],
+        "moduleHint": "Lektion Minimaler abgesicherter GenAI-Prototyp: erlaubten Aufrufanteil in Prozent",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Abgrenzung zu den Prozentaufgaben w27-e2/w28-e2/w29-e2 (gleiche Zahlenähnlichkeit, andere Formel und Bezugsbasis) soll menschlich bestätigt werden."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Zuordnung w30-e2 zu formula-ratio-percent-metric bestaetigen: Policy-Klassifikation der Aufrufe plus Anteilsformel erlaubt/gesamt, kein tp/fp/fn/tn-Zaehlobjekt (Praezedenz w26-e4 im transformer-llm-Shard).",
+        "evidence": "genAllowedActionCount klassifiziert Aufrufe nach Policy-Stufen und bildet allowed/total in Prozent; ein Metrikselektor ueber ein Vier-Tupel existiert nicht.",
+        "latestGate": "Cross-Domain-Council S4A-v2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedCaseType",
+          "level": "medium",
+          "reason": "Der Generator mischt Richtlinien- und Zählvarianten; die Default-Instanz zeigt nur eine Konstellation.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "genAllowedActionCount zieht shape aus allowed/denied/percent parametrisch aus derselben Policy-Klassifikation der Aufrufe; alle Shapes sind Fallvarianten von formula-ratio-percent-metric, die gezeigte Instanz ist percent."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 8 (absolute Zahl statt Anteil) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 20 (abgelehnter statt erlaubter Anteil) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "diagnoseNumeric konsumiert value === 10 (Gesamtzahl der Aufrufe) als Praedikat; Ablenkwert bleibt verhaltenstabil."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-ratio-percent-metric",
+        "summary": "Wendet Verhältnis- und Prozentmetriken als geschlossene Formel auf gezählte Größen an.",
+        "membershipEvidence": {
+          "solutionPath": "Zähler und Nenner bestimmen, die Verhältnisformel anwenden und in Prozent bzw. den Metrikwert überführen.",
+          "referenceModel": "Verhältnismetrik mit wohldefiniertem Zähler-Nenner-Verhältnis.",
+          "errorHypotheses": [
+            "Falscher Nenner gewählt",
+            "Prozentumrechnung oder Rundung falsch"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "allowed-action-share-percent",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "w30-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w30",
+      "currentDefinitionId": "w30-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-prototype",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-prototype"
+        ],
+        "moduleHint": "Lektion Minimaler abgesicherter GenAI-Prototyp: Stub-Satzausgabe vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedback-Regeln ohne echten Consumer im predict-output-Grader; Entscheidung über Consumer-Erweiterung oder Hinweistext offen."
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Zeilendiagnose der output-predict-lines-Grammatik (lines-diff@k) umsetzen oder die Regeln redaktionell als Worked-Solution fuehren; Zielpfade je Regel liegen in feedbackDispositions.",
+        "evidence": "assets/js/core/graders.js gradePredictOutput liest first-line-wrong und second-line-wrong nicht.",
+        "latestGate": "S4C-Runtime-Vertragstest"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "gradePredictOutput konsumiert nur element-count-mismatch; die Regeln first-line-wrong und second-line-wrong haben keinen Consumer.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Beide Regeln sind off-grammar; beide Nachrichten beschreiben die Loesungsschritte der Ausgabezeilen (Satzwahl im besten Dokument, Score-0-Fehlstring) und sind als worked-solution vergeben.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "lines-diff@k-Diagnose umsetzen oder die Regeln redaktionell als Worked-Solution fuehren.",
+          "evidence": "assets/js/core/graders.js gradePredictOutput liest beide Regel-IDs nicht.",
+          "latestGate": "S4C-Runtime-Vertragstest"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt die Loesung der ersten Zeile (erster Satz verfehlt die Anfragebegriffe, zweiter Satz trifft, strip) und wird Familien-Worked-Solution."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "worked-solution",
+          "rationale": "Nachricht beschreibt die Loesung der zweiten Zeile (kein gemeinsamer Begriff → Score 0 → kein treffer) und wird Familien-Worked-Solution."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-stub-doc-sentence-select",
+        "summary": "Verfolgt die Dokument- und Satzauswahl eines ehrlichen Stub-Generators über Begriffsschnitte und sagt die Antwortsätze oder den konstanten Fehlstring voraus.",
+        "membershipEvidence": {
+          "solutionPath": "Begriffsmengen (Länge >= 4) je Anfrage und Dokument bilden, Punktzahlen als Schnittgrößen vergleichen, das beste Dokument wählen, darin den ersten Satz mit Anfragebegriff finden (nach strip) und bei Score 0 den konstanten Fehlstring erwarten.",
+          "referenceModel": "Deterministischer Stub: Begriffsschnitt-Scores mit Auswahl des ersten Maximums und Satzauswahl; eingefrorene erwartete Ausgabezeilen als Autorität.",
+          "errorHypotheses": [
+            "Ersten Satz statt des ersten Satzes mit Anfragebegriff genommen",
+            "Score 0 als Fehler statt als konstanter Fehlstring gelesen",
+            "strip() bei der Satzausgabe vergessen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "stub-sentence-or-no-hit",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w30-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w30",
+      "currentDefinitionId": "w30-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-prototype",
+        "coEvidence": [
+          "c-python-functions"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-genai-prototype"
+        ],
+        "moduleHint": "Lektion Minimaler abgesicherter GenAI-Prototyp: Stub-Kern mit Fixtur-Metriken implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w30-e5 und w30-e6 bauen auf diesem Vertrag auf; ohne klare Vertragsgrenze droht eine Sammelfamilie über alle Prototyp-Aufgaben.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Vertragsgrenze gezogen: w30-e4 ist der Stub-Kern ohne Audit und Policy (construct-stub-prototype-contract); w30-e5 (Kontrollintegration) und w30-e6 (Ablation) sind eigene Familien — keine Sammelfamilie ueber alle Prototyp-Aufgaben."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Stub-__check schlaegt fehl, weil die Antwort formuliert statt als belegter Satz aus dem besten Dokument kopiert wird."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Satzwahl-__check schlaegt fehl, weil pauschal Satz 1 statt der erste Satz mit Anfragebegriff genommen wird."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Ranking-__check schlaegt fehl, weil Begriffe kuerzer als vier Zeichen oder mit Ziffern das Ranking tragen."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-stub-prototype-contract",
+        "summary": "Implementiert den Stub-Prototyp-Kern ohne LLM: Term-Normalisierung, Dokument- und Satzwahl mit Index-Tie-Break, ehrlicher Fehlstring plus Fixtur-Metriken.",
+        "membershipEvidence": {
+          "solutionPath": "Zentrale Normalisierung (_norm, _terms) bauen, Dokument nach Begriffs-Score mit Index-Tie-Break wählen, daraus den ersten Satz mit Anfragebegriff zurückgeben, sonst den konstanten Fehlstring, und recall@k sowie answered über dieselbe Rangfolge berechnen.",
+          "referenceModel": "Eingebettete Referenzlösung mit Fixtur-Config: deterministische Begriffs-Scores, komplette Rangfolge, konstanter Fehlstring und gemittelte Metriken als __check-Autorität.",
+          "errorHypotheses": [
+            "Stub formuliert frei statt den belegten Satz aus dem besten Dokument zu kopieren",
+            "Dokument- und Satzauswahl in einem Schritt vermischt (erster Satz statt erster treffender Satz)",
+            "Bei Score 0 einen Satz erfunden statt des konstanten Fehlstrings",
+            "Metriken nicht über dieselbe Rangfolge berechnet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "stub-prototype-metrics",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w30-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w30",
+      "currentDefinitionId": "w30-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-prototype",
+        "coEvidence": [
+          "c-python-functions"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-genai-prototype"
+        ],
+        "moduleHint": "Lektion Minimaler abgesicherter GenAI-Prototyp: Audit- und Policy-Kontrollen integrieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Der Vertrag verlangt das Kopieren von w30-e4- und w29-e5-Lösungen; Extraktion der geteilten Verträge gegen Duplikation braucht eine menschliche Entscheidung."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "build_prototype (w30-e4) und die Policy-Kaskade (w29-e5) als geteilte Fragmente extrahieren oder dupliziert migrieren.",
+        "evidence": "expectedAnswer.referenceSolver von w30-e5 bettet _rank_docs aus w30-e4 und die request_action-Reihenfolge aus w29-e5 ein.",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Der Vertrag verlangt das Kopieren von build_prototype (w30-e4) und der Policy-Kaskade aus w29-e5; Fragment-Extraktion wäre eine Alternative zur Duplikation.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Kopier- gegen Extraktionsfrage der geteilten Vertraege (w30-e4, w29-e5) ist eine Contentarchitektur-Entscheidung und liegt als Freigabe in der Entscheidungsqueue; migrate bleibt der Grundzustand.",
+          "owner": "Noa",
+          "decision": "build_prototype und die Policy-Kaskade als geteilte Fragmente extrahieren oder dupliziert migrieren.",
+          "evidence": "expectedAnswer.referenceSolver von w30-e5 bettet _rank_docs aus w30-e4 und die request_action-Reihenfolge aus w29-e5 ein.",
+          "latestGate": "S4D-Contentmigration"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Audit-__check schlaegt fehl, weil nur die Anfrage, nicht das beste Treffer-Dokument geprueft wird."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Antwort-__check schlaegt fehl, weil bei blockiertem Audit Dokumentinhalt statt des konstanten Ablehnungsstrings ausgegeben wird."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der request_action-__check schlaegt fehl, weil die Reihenfolge forbidden vor restricted vor allowed verletzt wird."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-secure-prototype-contract",
+        "summary": "Integriert Kontrollen in den Prototyp: Audit über Anfrage und Top-Dokument, konstanter Ablehnungsstring, eingebettete Policy-Kaskade und ehrlich gedämpfte Metriken.",
+        "membershipEvidence": {
+          "solutionPath": "Audit über Anfrage und bestes Treffer-Dokument mit plus-verketteten Grundteilen bauen, bei Blockierung die Antwort auf den konstanten Ablehnungsstring zwingen, request_action nach der Least-Privilege-Reihenfolge auswerten und blockierte Queries in den Metriken ehrlich dämpfen.",
+          "referenceModel": "Eingebettete Referenzlösung mit Fixtur-Config: deterministischer Audit-Status (blockiert/ok mit Grund), Policy-Verdicts und gedämpfte Metriken als __check-Autorität.",
+          "errorHypotheses": [
+            "Nur die Anfrage statt auch des besten Dokuments geprüft (Audit-Grundteile unvollständig)",
+            "Blockierte Query trotzdem mit Dokumentinhalt beantwortet statt des konstanten Ablehnungsstrings",
+            "Policy-Entscheidungsreihenfolge (forbidden vor restricted vor allowed, Unbekanntes abgelehnt) verletzt",
+            "Metriken nicht über denselben Audit gedämpft"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "secure-prototype-audit-policy",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w30-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w30",
+      "currentDefinitionId": "w30-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-genai-prototype",
+        "coEvidence": [
+          "c-python-functions"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-genai-prototype"
+        ],
+        "moduleHint": "Lektion Minimaler abgesicherter GenAI-Prototyp: Final Boss Ablation mit/ohne Kontrolle",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Der Boss verlangt das Kopieren der build_secure_prototype-Lösung; Extraktion der geteilten Prototypbasis gegen Duplikation braucht eine menschliche Entscheidung."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "build_secure_prototype aus w30-e5 als geteiltes Fragment fuer die Ablation extrahieren oder dupliziert migrieren.",
+        "evidence": "expectedAnswer.referenceSolver von w30-e6 fuehrt build_secure_prototype vollstaendig erneut aus (zwei unabhaengige Laeufe ueber denselben Fixturdatensatz).",
+        "latestGate": "S4D-Contentmigration"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Der Boss verlangt das Kopieren von build_secure_prototype aus w30-e5; Fragment-Extraktion wäre eine Alternative zur Duplikation.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Kopier- gegen Extraktionsfrage der Prototypbasis ist eine Contentarchitektur-Entscheidung und liegt als Freigabe in der Entscheidungsqueue; migrate bleibt der Grundzustand.",
+          "owner": "Noa",
+          "decision": "build_secure_prototype aus w30-e5 als geteiltes Fragment fuer die Ablation extrahieren oder dupliziert migrieren.",
+          "evidence": "expectedAnswer.referenceSolver von w30-e6 fuehrt build_secure_prototype vollstaendig erneut aus.",
+          "latestGate": "S4D-Contentmigration"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Ablations-__check schlaegt fehl, weil der Lauf ohne Kontrolle trotzdem auditiert."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Ablations-__check schlaegt fehl, weil abgelehnte_aktionen je Lauf nach abweichenden Regeln gezaehlt werden."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "checkId-Kanal: der Determinismus-__check schlaegt fehl, weil beide Laeufe Zustand teilen und die Tabelle bei erneutem Aufruf nicht identisch bleibt."
+        }
+      ],
+      "familyGroup": "reproduce-hash",
+      "cognitiveFamily": {
+        "familyId": "reproduce-pipeline-status-report",
+        "summary": "Reproduziert den Status einer Pipeline und berichtet ihn strukturiert.",
+        "membershipEvidence": {
+          "solutionPath": "Die Pipelineschritte nachvollziehen und den resultierenden Status berichten.",
+          "referenceModel": "Pipeline mit deterministischem Statusmodell.",
+          "errorHypotheses": [
+            "Statusübergang falsch gefolgert",
+            "Berichtsfeld nicht aus dem Status abgeleitet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "control-ablation-table",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    }
+  ]
+}

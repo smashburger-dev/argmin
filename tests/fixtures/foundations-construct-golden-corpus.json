@@ -1,0 +1,142 @@
+{
+  "description": "S4D1 ExerciseFamily baseline for the ten foundations Konstrukt/Pruef families. sha256 over JSON.stringify of instantiate(familyId, seed, difficulty, caseId), LF-joined, seeds 0..63, all case types, four profiles. Set 2026-09-04.",
+  "seedRange": [
+    0,
+    63
+  ],
+  "families": [
+    {
+      "familyId": "transform-linear-equation-isolate",
+      "caseTypes": [
+        "two-step-fixed-instance",
+        "two-step-seeded-retrieval",
+        "collect-x-terms-both-sides"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "transform-power-log-exponent",
+      "caseTypes": [
+        "product-and-power-of-power",
+        "integer-base-power"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "transform-expression-simplify-canonical",
+      "caseTypes": [
+        "combine-like-terms",
+        "distribute-sign-constant-chain"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "aggregate-validate-and-count-records",
+      "caseTypes": [
+        "parse-validate-summarize",
+        "seen-scope-and-narrow-except"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "construct-regression-test-suite",
+      "caseTypes": [
+        "normalize-and-assert-suite",
+        "normalize-and-assert-extended"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "construct-test-structure-aaa",
+      "caseTypes": [
+        "arrange-act-assert",
+        "arrange-act-assert-filter"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "construct-guarded-loop",
+      "caseTypes": [
+        "positive-values-structure",
+        "countdown-accumulator-structure"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "validate-required-field-raise",
+      "caseTypes": [
+        "specific-except-with-issue",
+        "required-key-with-issue"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "construct-safe-bugfix-workflow",
+      "caseTypes": [
+        "bugfix-flow-with-test-contract",
+        "datafix-flow-with-test-contract"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    },
+    {
+      "familyId": "validate-test-design-coverage",
+      "caseTypes": [
+        "elif-chain-five-outcomes",
+        "nested-if-decision-tree"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch",
+        "challenge"
+      ]
+    }
+  ],
+  "instances": 5376,
+  "digest": "95217f04d82380003d058a1764bd6da7eb9d7e015d1d546e7ce129f1487f57f1"
+}

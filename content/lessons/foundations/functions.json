@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-functions",
+  "version": 2,
+  "locale": "de",
+  "title": "Funktionen als kleine Verträge",
+  "objectives": ["Parameter, Rückgabe und Seiteneffekt unterscheiden", "eine Funktion aus Beispielen ableiten", "Grenzfälle vor der Implementierung notieren"],
+  "competencyIds": ["c-python-functions"],
+  "requires": ["c-python-basics"],
+  "estimatedMinutes": 40,
+  "blocks": [{ "blockId": "functions-core", "type": "worked-example", "contentRef": "lessons/foundations/functions.md" }],
+  "sourceRefs": [
+    { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel 4.9: Defining Functions" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

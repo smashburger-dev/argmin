@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-research-question",
+  "version": 1,
+  "locale": "de",
+  "title": "Forschungsfrage und Experimentprotokoll: prüfbare Fragen, Preregistrierung, Goal-Shift-Erkennung",
+  "objectives": [
+    "Forschungsfragen auf Prüfbarkeit prüfen (feste Metrik, fester Vergleich, Baseline) und Je-desto-Hypothesen in UV und DV zerlegen",
+    "ein Protokoll mit Metrik, Erfolgsschwelle, primärem Endpunkt, Subgruppen und Abbruchregel vor dem Hauptlauf festlegen",
+    "protokollversionen deterministisch auf Goal-Shifts prüfen (metrik_geaendert, schwelle_geaendert, primaer_demoted, subgruppe_nach_freeze)"
+  ],
+  "competencyIds": [
+    "c-research-question"
+  ],
+  "requires": [
+    "c-genai-eval",
+    "c-meta-learning"
+  ],
+  "estimatedMinutes": 60,
+  "blocks": [
+    {
+      "blockId": "research-question-core",
+      "type": "worked-example",
+      "contentRef": "lessons/research/research-question.md"
+    },
+    {
+      "blockId": "research-question-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/research/research-question-checkpoint.md"
+    },
+    {
+      "blockId": "research-question-apply",
+      "type": "exercise",
+      "contentRef": "lessons/research/research-question.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "cos-prereg",
+      "role": "primary",
+      "locator": "Preregistration — specifying your research plan in advance (Abschnitt zur Festlegung von Hypothesen und Analyseplan vor der Datenerhebung)"
+    },
+    {
+      "sourceId": "stanford-encyclopedia-popper",
+      "role": "primary",
+      "locator": "Eintrag Karl Popper, Abschnitt The Logic of Scientific Discovery — Falsifizierbarkeit als Abgrenzungskriterium (nur Lektüre)"
+    },
+    {
+      "sourceId": "neurips-paper-checklist",
+      "role": "practice",
+      "locator": "NeurIPS Paper Checklist — Fragen zu Baselines, Metrikwahl und Reproduzierbarkeit (nur Lektüre)"
+    },
+    {
+      "sourceId": "jhangiani-research-methods",
+      "role": "practice",
+      "locator": "Research Methods in Psychology, Kap. Getting Started in Research — Operationalisierung von Variablen und Hypothesen (nur Lektüre)"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

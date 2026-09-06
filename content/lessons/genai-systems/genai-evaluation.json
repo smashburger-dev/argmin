@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-genai-eval",
+  "version": 1,
+  "locale": "de",
+  "title": "Evaluation generativer Antworten: Gold-Antworten, Taxonomie, deterministische Metriken",
+  "objectives": [
+    "feste Evaluationsfragen mit Gold-Antworten und Quellenbelegen anlegen und vor der Messung einfrieren",
+    "Antwortfehler mit einem geschlossenen Labelset (falsch-faktisch, unvollständig, halluziniert, quellos, off-topic, Formatfehler) deterministisch klassifizieren und von Retrieval-Fehlern trennen",
+    "Exact Match, Contains, Zitat-Precision/Recall, Token-F1 und Konfusionsmatrix-zu-Precision/Recall/F1 ohne LLM-Judge berechnen"
+  ],
+  "competencyIds": [
+    "c-genai-eval"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-ml-erroranalysis"
+  ],
+  "estimatedMinutes": 75,
+  "blocks": [
+    {
+      "blockId": "genai-eval-core",
+      "type": "worked-example",
+      "contentRef": "lessons/genai-systems/genai-evaluation.md"
+    },
+    {
+      "blockId": "genai-eval-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/genai-systems/genai-evaluation-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "iir-book-ch8",
+      "role": "primary",
+      "locator": "Kap. 8 Evaluation in IR — Precision/Recall als eigene Mathematik mit Zitation"
+    },
+    {
+      "sourceId": "sklearn-user-guide",
+      "role": "practice",
+      "locator": "Model Evaluation: precision_recall_fscore — nur Lektüre der Metrik-Definitionen"
+    },
+    {
+      "sourceId": "ragas-docs",
+      "role": "reference",
+      "locator": "RAGAS-Doku — LLM-getriebene Metriken, ausdrücklich kein autoritativer Grader, nur Lektüre"
+    },
+    {
+      "sourceId": "model-cards-paper",
+      "role": "practice",
+      "locator": "Mitchell et al. 2019, Model Cards — Berichtsrahmen für Evaluation"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

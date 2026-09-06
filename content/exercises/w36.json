@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w36",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w36-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-capstone-pipeline"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3601,
+      "masteryEligible": false,
+      "prompt": "Eine Stage der Pipeline läuft in ein Timeout. Die Hauptfunktion fängt das ab, setzt das Ergebnis auf None und läuft munter weiter. Was ist das strukturelle Problem?",
+      "parameters": {
+        "thema": "Stille Fallbacks und Sentinels"
+      },
+      "expectedAnswer": {
+        "correctChoice": "a"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Was unterscheidet einen echten Fehlerzustand von einem Wert, der zufällig auch None sein könnte?",
+        "Wer den Fehler sieht, kann ihn behandeln — wer ihn schluckt, produziert Müll mit Stempel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "None ist in Python ein völlig legaler Wert — genau deshalb taugt es nicht als Fehlersignal: Der Aufrufer kann beides nicht unterscheiden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein leerer String ist dasselbe Problem in anderem Gewand: ein plausibler Wert statt eines sichtbaren Zustands."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein try/except um alles herum schluckt den Fehler nur global — sichtbar wird er dadurch nicht, und wo er passierte, auch nicht."
+        }
+      ],
+      "fullSolution": "Richtig ist der Sentinel-Status: Die Stage antwortet immer mit einem klar benannten Zustand ({'status': 'timeout'} bzw. 'fehler'), und die Hauptfunktion bricht den Lauf sichtbar ab (Status 'abgebrochen' mit fehlerhafter Stage). None verschleiert den Ausfall, weil es auch ein legaler Zwischenwert sein könnte — das ist der stille Fallback. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "None als Fehlersignal verwendet",
+        "Ausnahme global geschluckt statt lokal zuzuordnen",
+        "Fehlerzustand als normalen Wert weiterverarbeitet"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Fehlerbehandlungs-Mindestgerüst nach Wilson et al. (Good Enough Practices, paraphrasiert); Sentinel-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3601
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der Ausfall wird verschleiert: None ist auch ein legaler Wert, der Aufrufer kann Timeout und Ergebnis nicht unterscheiden — der Fehlerzustand müsste sichtbar sein (Sentinel-Status).",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "None ist in Python als Rückgabewert nicht erlaubt und müsste einen TypeError auslösen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Problem ist rein kosmetisch — ein leerer String statt None wäre genauso korrekt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Es fehlt nur ein globales try/except um die Hauptfunktion, dann ist die Pipeline robust.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "exerciseId": "w36-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3611,
+      "masteryEligible": true,
+      "prompt": "Vier Stage-Aufrufe werden mit einer virtuellen Uhr gemessen (Zeitpunkte in Millisekunden, Budget jeweils 50): Aufruf A startet bei 0 und endet bei 45; Aufruf B startet bei 0 und endet bei 55; Aufruf C startet bei 200 und endet bei 240; Aufruf D startet bei 300 und endet bei 310. Wie viele Aufrufe liefern den Status „ok“ (Dauer höchstens Budget)?",
+      "parameters": {},
+      "expectedAnswer": {
+        "kind": "integer",
+        "value": 3
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Dauer = Endzeit minus Startzeit — die absoluten Zeitpunkte um 200 und 300 sind irrelevant, nur die Differenz zählt.",
+        "Exakt im Budget (Dauer = Budget) gilt noch als ok."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 1",
+          "then": "1 wäre korrekt, wenn die Spätstarter durchfallen — aber 240−200=40 und 310−300=10 liegen beide im Budget von 50."
+        },
+        {
+          "if": "value === 2",
+          "then": "Nur B überschreitet das Budget (55 > 50) — A, C und D sind im Rahmen."
+        },
+        {
+          "if": "value === 4",
+          "then": "B läuft 55 ms bei 50 ms Budget — das ist ein Timeout, kein ok."
+        }
+      ],
+      "fullSolution": "Dauern: A = 45 ≤ 50 ok, B = 55 > 50 Timeout, C = 40 ≤ 50 ok, D = 10 ≤ 50 ok → 3 Aufrufe mit Status ok. Die virtuelle Uhr macht die Zeit austauschbar und testbar: kein sleep, keine echte Uhr.",
+      "typicalErrors": [
+        "absolute Endzeiten statt Differenzen verglichen",
+        "Grenzfall Dauer = Budget als Timeout gewertet",
+        "Startzeiten addiert statt subtrahiert"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Fehlerbehandlungs-/Testbarkeits-Muster nach Wilson et al. (Good Enough Practices, paraphrasiert); virtuelle Uhr eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3611
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (feste Instanz)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w36-e3",
+      "schemaVersion": 1,
+      "type": "code-trace",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3613,
+      "masteryEligible": true,
+      "prompt": "Stage-Runner mit zwei Fehlerzuständen lesen: Der Code fängt ValueError als „fehler“ und Budgetüberschreitung als „timeout“ ab. Welche Werte haben <code>status_zeile</code> und <code>summe</code> nach Ablauf? Die Uhr liefert nacheinander 0, 40, 100, 100, 200 (Millisekunden).",
+      "parameters": {
+        "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\n\ndef ok_fn():\n    return 7\n\ndef kaputt_fn():\n    raise ValueError(\"daten weg\")\n\ndef langsam_fn():\n    return 1\n\nuhr = iter([0, 40, 100, 100, 200])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)",
+        "variables": [
+          {
+            "name": "status_zeile",
+            "value": "ok fehler timeout"
+          },
+          {
+            "name": "summe",
+            "value": 7
+          }
+        ]
+      },
+      "expectedAnswer": {
+        "kind": "variable-values"
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Wie oft liest die Uhr bei einer Ausnahme? Der except-Zweig kehrt zurück, bevor die Endzeit gelesen wird.",
+        "b und c tragen keinen wert-Schlüssel — get(\"wert\", 0) fängt das ab."
+      ],
+      "feedbackRules": [
+        {
+          "if": "zweiter-uhr-aufruf-bei-exception",
+          "then": "Nach ValueError gibt die Stage sofort zurück: Nur EIN clock()-Aufruf — die 100 gehört zum Start von c, nicht zum Ende von b."
+        },
+        {
+          "if": "timeout-mit-wert",
+          "then": "Der Timeout-Bericht hat keinen wert-Schlüssel — summe greift dafür auf 0 zurück."
+        }
+      ],
+      "fullSolution": "a: start 0, fn ok, Ende 40 → Dauer 40 ≤ 50 → ok, wert 7. b: start 100, fn wirft ValueError → status fehler — die Uhr wird danach NICHT mehr aufgerufen, es gibt keinen wert-Schlüssel. c: start 100, Ende 200 → Dauer 100 > 50 → timeout. status_zeile = \"ok fehler timeout\", summe = 7 + 0 + 0 = 7.",
+      "typicalErrors": [
+        "den gedachten Endpunkt für die Exception mitgezählt (Uhr wird nur einmal gelesen)",
+        "timeout-Eintrag mit wert angenommen",
+        "Dauer von 100 auf die falschen Messpunkte gerechnet"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "sourceLineage": {
+        "concept": "Fehlerbehandlungs-Muster nach Wilson et al. (Good Enough Practices, paraphrasiert); Sentinel-/virtuelle-Uhr-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3613
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (getracert)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w36-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3614,
+      "masteryEligible": true,
+      "prompt": "Implementiere den Timeout-Wächter: <code>call_with_timeout(fn, budget_ms, clock)</code>. clock ist eine aufrufbare virtuelle Uhr (zweimal aufrufen: vorher/nachher — kein sleep, keine echte Zeit). Rückgabe bei Erfolg: <code>{\"status\": \"ok\", \"value\": ergebnis, \"dauer_ms\": dauer}</code>; bei Überschreitung: <code>{\"status\": \"timeout\", \"budget_ms\": budget, \"dauer_ms\": dauer}</code>. Grenzfall: Dauer gleich Budget gilt noch als ok.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "def call_with_timeout(fn, budget_ms, clock):\n    \"\"\"{'status': 'ok', ...} oder {'status': 'timeout', ...} — Uhr als Parameter.\"\"\"\n    ...\n\n",
+        "tests": "uhr_schnell = iter([0, 50]).__next__\nuhr_langsam = iter([0, 150]).__next__\nuhr_grenze = iter([10, 110]).__next__\n__check('ok mit dauer', call_with_timeout(lambda: 41 + 1, 100, uhr_schnell) == {\"status\": \"ok\", \"value\": 42, \"dauer_ms\": 50})\n__check('timeout', call_with_timeout(lambda: 7, 100, uhr_langsam) == {\"status\": \"timeout\", \"budget_ms\": 100, \"dauer_ms\": 150})\n__check('grenzfall ok', call_with_timeout(lambda: 1, 100, uhr_grenze)[\"status\"] == \"ok\")\n__check('kein value bei timeout', \"value\" not in call_with_timeout(lambda: 2, 1, iter([5, 500]).__next__))\n__check('uhr genau zweimal', (lambda n: call_with_timeout(lambda: n.append(1), 10, iter([0, 0]).__next__) and len(n))([]) == 1)"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def call_with_timeout(fn, budget_ms, clock):\n    start = clock()\n    value = fn()\n    dauer = clock() - start\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer}\n\n# dauer 50 <= 100 -> ok; dauer 150 > 100 -> timeout; dauer == budget -> ok"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Zeit messen heißt hier: clock() vor und nach fn() aufrufen und die Differenz nehmen.",
+        "Beim Timeout gibt es keinen brauchbaren Wert — liefere deshalb keinen 'value'-Schlüssel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "sleep-used",
+          "then": "Kein sleep: Die Uhr ist ein Parameter — genau das hält die Funktion schnell und testbar."
+        },
+        {
+          "if": "value-on-timeout",
+          "then": "Ein 'value' im Timeout-Bericht ist ein halber Ersatzwert — der Aufrufer könnte ihn versehentlich verwenden."
+        },
+        {
+          "if": "off-by-one",
+          "then": "Dauer == Budget ist noch ok; erst dauer > budget ist ein Timeout."
+        }
+      ],
+      "fullSolution": "def call_with_timeout(fn, budget_ms, clock):\n    start = clock()\n    value = fn()\n    dauer = clock() - start\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer}\n\n# Zwei clock()-Aufrufe, ein Vergleich — deterministisch und ohne echte Zeit.",
+      "typicalErrors": [
+        "sleep oder time.time() statt der übergebenen Uhr",
+        "value auch beim Timeout mitgeliefert",
+        "Grenzfall invertiert"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "Testbarkeits-Muster nach Wilson et al. (Good Enough Practices, paraphrasiert); virtuelle Uhr eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3614
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w36-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3615,
+      "masteryEligible": true,
+      "prompt": "Vollständiger Stage-Runner: <code>run_stage(name, fn, budget_ms, clock)</code> baut auf deine <code>call_with_timeout</code>-Logik auf und fügt den zweiten Fehlerzustand hinzu. Rückgaben: ok wie in w36-e4 (zusätzlich <code>\"stage\": name</code>); Timeout: <code>{\"status\": \"timeout\", \"budget_ms\": …, \"dauer_ms\": …, \"stage\": name}</code>; Ausnahme in fn: <code>{\"status\": \"fehler\", \"grund\": \"Ausnahmetyp: meldung\", \"stage\": name}</code>. Kein „value“ bei timeout/fehler — kein stiller Fallback.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "def run_stage(name, fn, budget_ms, clock):\n    \"\"\"ok | timeout | fehler — immer mit 'stage', nie mit Ersatzwert.\"\"\"\n    ...\n\n",
+        "tests": "def kaputt():\n    raise ValueError(\"daten weg\")\n\nbericht = run_stage(\"rechnen\", kaputt, 100, iter([0, 1]).__next__)\n__check('fehler-status', bericht[\"status\"] == \"fehler\")\n__check('fehler-grund-typ', \"ValueError\" in bericht[\"grund\"] and \"daten weg\" in bericht[\"grund\"])\n__check('fehler-stage', bericht[\"stage\"] == \"rechnen\")\n__check('fehler-ohne-value', \"value\" not in bericht)\nbericht = run_stage(\"speichern\", lambda: \"wert\", 5, iter([0, 900]).__next__)\n__check('timeout-vollstaendig', bericht == {\"status\": \"timeout\", \"budget_ms\": 5, \"dauer_ms\": 900, \"stage\": \"speichern\"})\nbericht = run_stage(\"laden\", lambda: 7, 100, iter([0, 3]).__next__)\n__check('ok-mit-allem', bericht == {\"status\": \"ok\", \"value\": 7, \"dauer_ms\": 3, \"stage\": \"laden\"})"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def run_stage(name, fn, budget_ms, clock):\n    try:\n        start = clock()\n        value = fn()\n        dauer = clock() - start\n    except Exception as exc:\n        return {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"stage\": name}\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer, \"stage\": name}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer, \"stage\": name}\n\n# Ausnahme -> 'fehler' mit Typ und Meldung; Budget -> 'timeout'; sonst 'ok'."
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Fange die Ausnahme um fn() herum — der Grund-String kombiniert Typ und Meldung (f-String mit type(exc).__name__).",
+        "Jede der drei Rückgaben trägt 'stage': Der Bericht muss benennen, WO es passierte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "except-pass",
+          "then": "Ein leeres except/continue ist der klassische stille Fallback — der Fehler muss als Zustand nach außen."
+        },
+        {
+          "if": "grund-nur-meldung",
+          "then": "Nur die Meldung ohne Typ macht das Nachvollziehen schwer — 'ValueError: daten weg' ist der Vertrag."
+        },
+        {
+          "if": "stage-fehlt",
+          "then": "Ohne 'stage' weiß der Abbruchbericht nicht, welche Stage scheiterte — die Hauptfunktion könnte ihn nicht zuordnen."
+        }
+      ],
+      "fullSolution": "def run_stage(name, fn, budget_ms, clock):\n    try:\n        start = clock()\n        value = fn()\n        dauer = clock() - start\n    except Exception as exc:\n        return {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"stage\": name}\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer, \"stage\": name}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer, \"stage\": name}\n\n# Drei Zustände, alle mit 'stage' — die Hauptfunktion kann sichtbar abbrechen.",
+      "typicalErrors": [
+        "Ausnahme geschluckt statt als Zustand gemeldet",
+        "grund ohne Ausnahmetyp",
+        "stage-Schlüssel vergessen"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 28,
+      "sourceLineage": {
+        "concept": "Fehlerbehandlungs-Mindestgerüst nach Wilson et al. (Good Enough Practices, paraphrasiert); Sentinel-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3615
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w36-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3616,
+      "masteryEligible": true,
+      "prompt": "Final Boss Integration: <code>starte_pipeline(stages, budget_ms, clock)</code> führt eine Liste <code>[(name, fn), …]</code> sequenziell aus (jede fn verbraucht nur ihre eigenen Eingaben, hier konstante Werte). Nutze deine Runner-Logik: Scheitert eine Stage (fehler oder timeout), bricht die Pipeline SICHTBAR ab: <code>{\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": {name: stagebericht}}</code> — der Abbruchbericht enthält nur die Stages bis einschließlich der Fehlerhaften, mit deren vollen Sentinel-Bericht (status, dauer_ms, ggf. grund/budget_ms). Erfolgreicher Durchlauf: <code>{\"status\": \"ok\", \"ergebnisse\": {name: value}, \"dauer_ms\": {name: dauer}}</code>. Kein stiller Fallback: Nach einem Abbruch läuft nichts weiter. Alles deterministisch bei gleicher Uhr.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "def starte_pipeline(stages, budget_ms, clock):\n    \"\"\"'ok' mit ergebnissen/dauer_ms oder 'abgebrochen' mit fehlerhafter Stage.\"\"\"\n    ...\n\n",
+        "tests": "LAUEFE = [(\"laden\", lambda: 7), (\"rechnen\", lambda: 7 * 2), (\"berichten\", lambda: \"fertig\")]\nergebnis = starte_pipeline(LAUEFE, 100, iter([0, 5, 10, 20, 30, 40]).__next__)\n__check('status ok', ergebnis[\"status\"] == \"ok\")\n__check('ergebnisse', ergebnis[\"ergebnisse\"] == {\"laden\": 7, \"rechnen\": 14, \"berichten\": \"fertig\"})\n__check('dauer_ms je stage', ergebnis[\"dauer_ms\"] == {\"laden\": 5, \"rechnen\": 10, \"berichten\": 10})\n__check('deterministisch', starte_pipeline(LAUEFE, 100, iter([0, 5, 10, 20, 30, 40]).__next__) == ergebnis)\ndef boese():\n    raise RuntimeError(\"stage defekt\")\nABBRUCH = [(\"laden\", lambda: 1), (\"rechnen\", boese), (\"berichten\", lambda: 2)]\nbericht = starte_pipeline(ABBRUCH, 100, iter([0, 2, 4]).__next__)\n__check('status abgebrochen', bericht[\"status\"] == \"abgebrochen\")\n__check('fehlerhafte stage', bericht[\"fehlerhafte_stage\"] == \"rechnen\")\n__check('berichte bis abbruch', set(bericht[\"bericht\"]) == {\"laden\", \"rechnen\"})\n__check('sentinel-grund', \"RuntimeError\" in bericht[\"bericht\"][\"rechnen\"][\"grund\"])\nTIMEOUT = [(\"laden\", lambda: 1), (\"speichern\", lambda: 2)]\nbericht = starte_pipeline(TIMEOUT, 3, iter([0, 10, 20, 21]).__next__)\n__check('timeout bricht ab', bericht[\"status\"] == \"abgebrochen\" and bericht[\"fehlerhafte_stage\"] == \"laden\")\n__check('bericht der zeitueberschreitung', bericht[\"bericht\"][\"laden\"][\"status\"] == \"timeout\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def starte_pipeline(stages, budget_ms, clock):\n    ergebnisse = {}\n    dauer_ms = {}\n    berichte = {}\n    for name, fn in stages:\n        try:\n            start = clock()\n            value = fn()\n            dauer = clock() - start\n        except Exception as exc:\n            berichte[name] = {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"dauer_ms\": 0}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        if dauer > budget_ms:\n            berichte[name] = {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        berichte[name] = {\"status\": \"ok\", \"dauer_ms\": dauer}\n        ergebnisse[name] = value\n        dauer_ms[name] = dauer\n    return {\"status\": \"ok\", \"ergebnisse\": ergebnisse, \"dauer_ms\": dauer_ms}\n\n# Lauf 1: laden dauer 5, rechnen 10, berichten 10 -> ok\n# Lauf 2: rechnen wirft RuntimeError -> abgebrochen mit Grund\n# Lauf 3: laden dauer 10 > 3 -> timeout-Abbruch"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Ein dict pro Kategorie (ergebnisse, dauer_ms, berichte) und ein frühes return im Fehlerfall — nach dem Abbruch keine Stage mehr.",
+        "Der Bericht der fehlerhaften Stage muss den Sentinel enthalten (status/typ bzw. budget) — sonst ist der Abbruch nicht begründet."
+      ],
+      "feedbackRules": [
+        {
+          "if": "laeuft-weiter",
+          "then": "Nach fehler/timeout stoppt die Pipeline — weiterlaufen hieße, mit einem kapannten Zwischenstand weiterzurechnen."
+        },
+        {
+          "if": "fehlende-stage-im-bericht",
+          "then": "Der Abbruchbericht endet MIT der fehlerhaften Stage — ohne ihren Sentinel ist unklar, warum abgebrochen wurde."
+        },
+        {
+          "if": "gemischte-dicts",
+          "then": "ergebnisse und dauer_ms sind getrennte Verträge — wer sie vermischt, bricht die IO-Schlüssel der nachfolgenden Stages."
+        }
+      ],
+      "fullSolution": "def starte_pipeline(stages, budget_ms, clock):\n    ergebnisse = {}\n    dauer_ms = {}\n    berichte = {}\n    for name, fn in stages:\n        try:\n            start = clock()\n            value = fn()\n            dauer = clock() - start\n        except Exception as exc:\n            berichte[name] = {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"dauer_ms\": 0}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        if dauer > budget_ms:\n            berichte[name] = {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        berichte[name] = {\"status\": \"ok\", \"dauer_ms\": dauer}\n        ergebnisse[name] = value\n        dauer_ms[name] = dauer\n    return {\"status\": \"ok\", \"ergebnisse\": ergebnisse, \"dauer_ms\": dauer_ms}\n\n# Sichtbarer Abbruch mit Stage-Bericht, sonst vollständige Ergebnis- und Zeittabellen.",
+      "typicalErrors": [
+        "nach Fehler weitergelaufen",
+        "Abbruchbericht ohne Sentinel der Fehler-Stage",
+        "Ergebnisse und Zeiten in einem dict vermischt"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 42,
+      "sourceLineage": {
+        "concept": "Integrations-/Fehlerbehandlungsmuster nach Wilson et al. (Good Enough Practices, paraphrasiert) und der Turing Way; Sentinel-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3616
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

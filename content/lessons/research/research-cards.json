@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-research-cards",
+  "version": 1,
+  "locale": "de",
+  "title": "Daten- und Modellkarten: Pflichtfelder, Konsistenz, keine Geheimnisse",
+  "objectives": [
+    "Daten- und Modellkarten als Vertrag mit festen Pflichtfeldern erfassen und fehlende oder leere Felder deterministisch zählen",
+    "Karten, Systemkarte und Forschungsprotokoll auf Widersprüche prüfen (Name, Metrik, Schwellenwert, Umfang, Modell)",
+    "Kartenwerte auf geleakte API-Schluessel, Token und Bearer-Anmeldedaten scannen, Split-Summen und Semver prüfen"
+  ],
+  "competencyIds": [
+    "c-research-cards"
+  ],
+  "requires": [
+    "c-research-question"
+  ],
+  "estimatedMinutes": 55,
+  "blocks": [
+    {
+      "blockId": "research-cards-core",
+      "type": "worked-example",
+      "contentRef": "lessons/research/research-cards.md"
+    },
+    {
+      "blockId": "research-cards-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/research/research-cards-checkpoint.md"
+    },
+    {
+      "blockId": "research-cards-apply",
+      "type": "exercise",
+      "contentRef": "lessons/research/research-cards.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "datasheets-for-datasets",
+      "role": "primary",
+      "locator": "Datasheets for Datasets — Motivation und Fragenkatalog zu Zusammensetzung und Provenienz (nur Lektüre)"
+    },
+    {
+      "sourceId": "data-cards-playbook",
+      "role": "practice",
+      "locator": "Data Cards Playbook — Zweck, Adaption und Adoption strukturierter Datenbeschreibungen (nur Lektüre)"
+    },
+    {
+      "sourceId": "hf-model-cards-docs",
+      "role": "practice",
+      "locator": "Model Cards-Dokumentation — strukturierte Pflichtangaben und Nutzungszweck von Modellkarten"
+    },
+    {
+      "sourceId": "gpt4-system-card",
+      "role": "practice",
+      "locator": "GPT-4 System Card — Abschnitte zu Einschränkungen und Evaluationsrahmen als Kartenbeispiel (nur Lektüre)"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

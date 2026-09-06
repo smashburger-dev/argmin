@@ -1,0 +1,19 @@
+# Code-only project graph
+*
+!*/
+!*.js
+!*.mjs
+!*.py
+!*.html
+!*.json
+!*.sh
+
+graphify-out/
+.git/
+.DS_Store
+**/.DS_Store
+vendor/
+build-public/
+content/
+docs/
+spikes/

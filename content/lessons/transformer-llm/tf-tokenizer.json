@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-tf-tokenizer",
+  "version": 1,
+  "locale": "de",
+  "title": "Tokenisierung und Sprachmodellfamilien",
+  "objectives": [
+    "Zeichen-, Wort- und Subword-Tokenisierung mit ihren Vokabular- und OOV-Folgen vergleichen",
+    "Encode/Decode mit End-of-Word-Marker implementieren und den Round-Trip decode(encode(s)) == s durchsetzen",
+    "einen gepinnten Mini-BPE-Ablauf (Tie-Break: lexikographisch kleinstes Paar) ausführen und Encoder-, Decoder- und Encoder-Decoder-Familien zuordnen"
+  ],
+  "competencyIds": ["c-dl-tokenizer"],
+  "requires": ["c-python-collections"],
+  "estimatedMinutes": 70,
+  "blocks": [
+    { "blockId": "tf-tokenizer-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-tokenizer.md" },
+    { "blockId": "tf-tokenizer-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-tokenizer-checkpoint.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "hf-tokenizers-docs", "role": "primary", "locator": "Tokenizers-Dokumentation — Summary der Verfahren" },
+    { "sourceId": "hf-transformers-docs", "role": "practice", "locator": "Tokenizer Summary (Encoder/Decoder-Familien)" },
+    { "sourceId": "arxiv-bert-2018", "role": "reference", "locator": "BERT-Abstract — nur Lektüre/Link" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

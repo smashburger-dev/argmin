@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w22",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w22-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-dl-attention"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 2201,
+      "masteryEligible": false,
+      "prompt": "Im Attention-Schritt einer Transformer-Schicht: Was beschreibt die Rolle der Value-Matrix $V$?",
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "$V$ skaliert die Scores: Jede Zeile von $V$ dividiert die Skalarprodukte durch ihre Länge.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$V$ liefert die Inhalte, die gemischt werden: Die Softmax-Gewichte aus $Q$ und $K$ bestimmen, wie stark jede Zeile von $V$ in die Ausgabe eingeht.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "$V$ legt fest, welche Positionen einander sehen dürfen — das ist die Maske.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$V$ speichert die Anfragen: Jede Zeile von $V$ fragt die anderen Positionen ab.",
+          "correct": false
+        }
+      ],
+      "expectedAnswer": {
+        "correctChoice": "b"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Ordne die drei Rollen: Wer fragt (Query), wer wird angefragt (Key), wer liefert den Inhalt (Value)?",
+        "Die Gewichte entstehen ausschließlich aus $Q$ und $K$; $V$ geht erst nach dem Softmax in die gewichtete Summe ein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'c'",
+          "then": "Die Sichtbarkeit regelt die Maske, die vor dem Softmax auf die Scores wirkt — nicht $V$."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Anfragen stecken in $Q$; $V$ enthält die Inhalte, auf die zugegriffen wird."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Die Skalierung ist $1/\\sqrt{d_k}$ aus der Spaltenzahl von $Q$ und $K$ — $V$ hat damit nichts zu tun."
+        }
+      ],
+      "fullSolution": "Rollen: $Q$ = Anfragen, $K$ = Angebote zum Vergleich, $V$ = Inhalte. Scores und Softmax-Gewichte kommen nur aus $Q$ und $K$; die Ausgabe ist die gewichtete Summe der $V$-Zeilen. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "Rollen von Q/K/V verwechselt",
+        "Value mit Maske verwechselt",
+        "Skalierung der Values zugeschrieben"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "arxiv-attention-2017, Abschnitt 3.2.1 — Scaled Dot-Product Attention (nur Lektüre/Link)",
+        "statement": "eigenständig entwickelt",
+        "seed": 2201
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w22-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-dl-attention"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 2211,
+      "masteryEligible": true,
+      "prompt": "Ein Decoder darf beim Token 10 nur die Tokens 1 bis 10 sehen (kausale Maske): alle Score-Zellen, in denen ein Token auf ein späteres Token schaut, werden vor dem Softmax auf −∞ gesetzt. Wie viele Zellen einer 10×10-Score-Matrix werden so verdeckt?",
+      "parameters": {
+        "seedGenerator": "genAttentionShape"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genAttentionShape",
+        "defaultSeed": 2211,
+        "defaultExpected": 45
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Erst die Form bestimmen: Zeilen- und Spaltenzahl der beteiligten Matrizen. Bei der kausalen Maske sind die sichtbaren Zellen die auf und unterhalb der Diagonale.",
+        "Shape-Vertrag: $QK^\\top$ hat eine Zeile je Query und eine Spalte je Key; die Ausgabe erbt Zeilen von $A$ und Spalten von $V$; bei der Skalierung ist der Divisor $\\sqrt{d_k}$."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 100",
+          "then": "Das ist die Gesamtzahl der Zellen — verdeckt werden nur die oberhalb der Diagonale."
+        },
+        {
+          "if": "value === 55",
+          "then": "n·(n+1)/2 zählt die Zellen unterhalb einschließlich der falschen Diagonale — unterhalb der Diagonale sind es n·(n−1)/2."
+        },
+        {
+          "if": "value === 90",
+          "then": "Ohne Division durch 2 — jede verdeckte Zelle liegt genau einmal oberhalb der Diagonale."
+        }
+      ],
+      "fullSolution": "Formen ableiten: Score-Matrix $n \\times m$, Ausgabe $n \\times d_v$, kausale Maske verdeckt $n(n-1)/2$ Zellen, Skalierungsdivisor $\\sqrt{d_k}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "Zeilen- mit Spaltenzahl vertauscht",
+        "Diagonale in die Maskenzählung einbezogen",
+        "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "arxiv-attention-2017, Abschnitt 3.2 — Shapes von Q, K, V; eigene Formzählungen",
+        "statement": "eigenständig entwickelt",
+        "seed": 2211
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w22-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-dl-attention",
+        "c-python-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 2203,
+      "masteryEligible": true,
+      "prompt": "Stabiles Softmax lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. <code>row_softmax</code> zieht das Zeilenmaximum ab und rundet auf 3 Nachkommastellen.",
+      "parameters": {
+        "snippet": "import math\n\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\n\nprint(row_softmax([2, 0]))\nprint(row_softmax([0, 1, 1]))"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "[0.881, 0.119]\n[0.155, 0.422, 0.422]"
+      },
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "hints": [
+        "Softmax zeilenweise: erst das Zeilenmaximum abziehen (numerische Stabilität), dann exponentieren und durch die Zeilensumme teilen.",
+        "Zeile 2 enthält zwei identische Scores — was passiert mit ihren Gewichten, und welche Summe ergibt die Zeile insgesamt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die erste print-Zeile liefert eine 2er-Liste, die zweite eine 3er-Liste."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — je eine pro print-Aufruf."
+        }
+      ],
+      "fullSolution": "Zeile 1: Scores $(0, -2)$, Gewichte $\\frac{1}{1+e^{-2}} \\approx 0{,}881$ und $0{,}119$. Zeile 2: Scores $(-1, 0, 0)$ mit $e^{-1} \\approx 0{,}368$: Gewichte $\\approx (0{,}155, 0{,}422, 0{,}422)$. Ausgabe: <code>[0.881, 0.119]</code> und <code>[0.155, 0.422, 0.422]</code>.",
+      "typicalErrors": [
+        "Maximum nicht abgezogen (Scores direkt exponentiiert)",
+        "über die falsche Achse normalisiert",
+        "gerundete Werte in falscher Reihenfolge notiert"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "arxiv-attention-2017, Abschnitt 3.2 — Softmax über Scores; Predict-Run nach Sentance/PRIMM 2019",
+        "statement": "eigenständig entwickelt",
+        "seed": 2203
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (lokale Ausführung)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w22-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 2204,
+      "masteryEligible": true,
+      "prompt": "Implementiere <code>attention(Q, K, V, mask=None)</code> — Scaled Dot-Product Attention als Funktion. Vertrag: $Q$ liegt als $(n, d_k)$-Matrix vor, $K$ als $(m, d_k)$, $V$ als $(m, d_v)$; die Scores sind $QK^\\top/\\sqrt{d_k}$; das Softmax ist zeilenweise und stabil (Zeilenmaximum abziehen); <code>mask</code> ist optional eine boolesche Matrix $(n, m)$ mit <code>True</code> = sichtbar, <code>False</code> = blockiert — blockierte Scores werden <em>vor</em> dem Softmax auf $-\\infty$ gesetzt. Rückgabe: $A = \\mathrm{softmax}(QK^\\top/\\sqrt{d_k})V$ als $(n, d_v)$-Array. Listen als Eingabe sind erlaubt. Der Testcode enthält eine unabhängige Python-Referenz und prüft Handwerte, Maskenfälle und unbekannte Instanzen.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef attention(Q, K, V, mask=None):\n    \"\"\"Scaled dot-product attention; mask True = visible, False = blocked.\"\"\"\n    Q = np.asarray(Q, dtype=float)\n    K = np.asarray(K, dtype=float)\n    V = np.asarray(V, dtype=float)\n    # scores = Q @ K.T / sqrt(d_k); apply mask as -inf BEFORE the softmax\n    # stable row softmax: subtract the row maximum, then normalize\n    ...\n",
+        "tests": "def __ref_attention(Q, K, V, mask=None):\n    n, d_k = len(Q), len(Q[0])\n    out = []\n    for i in range(n):\n        s = [sum(Q[i][a] * K[j][a] for a in range(d_k)) / math.sqrt(d_k) for j in range(len(K))]\n        if mask is not None:\n            s = [s[j] if mask[i][j] else float('-inf') for j in range(len(s))]\n        m = max(s)\n        ex = [math.exp(v - m) for v in s]\n        tot = sum(ex)\n        w = [e / tot for e in ex]\n        out.append([sum(w[j] * V[j][c] for j in range(len(V))) for c in range(len(V[0]))])\n    return out\n\nQ = [[1, 1, 0, 0], [0, 0, 1, 1]]\nK = [[1, 1, 0, 0], [0, 0, 1, 1]]\nV = [[2, 0], [0, 2]]\nout = attention(Q, K, V)\n__check('Handrechnung Zeile 1', np.allclose(out[0], [1.4621171572600098, 0.5378828427399903], atol=1e-9))\n__check('Handrechnung Zeile 2', np.allclose(out[1], [0.5378828427399903, 1.4621171572600098], atol=1e-9))\n__check('Form der Ausgabe', out.shape == (2, 2))\n\ncausal = [[True, False], [True, True]]\nout_m = attention(Q, K, V, mask=causal)\n__check('Kausale Maske: Zeile 2 unveraendert', np.allclose(out_m[1], out[1], atol=1e-12))\n__check('Kausale Maske: Zeile 1 sieht nur Key 1', np.allclose(out_m[0], [2.0, 0.0], atol=1e-12))\n\nrng = np.random.default_rng(42)\nQr = rng.integers(-3, 4, size=(3, 4)).astype(float)\nKr = rng.integers(-3, 4, size=(4, 4)).astype(float)\nVr = rng.integers(-5, 6, size=(4, 2)).astype(float)\n__check('gegen Referenz unmaskiert', np.allclose(attention(Qr, Kr, Vr), __ref_attention(Qr.tolist(), Kr.tolist(), Vr.tolist()), atol=1e-9))\nmr = np.tril(np.ones((3, 4), dtype=bool))\nmr[0, 0] = True\n__check('gegen Referenz mit Maske', np.allclose(attention(Qr, Kr, Vr, mask=mr), __ref_attention(Qr.tolist(), Kr.tolist(), Vr.tolist(), mask=mr.tolist()), atol=1e-9))\n__check('Padding-Maske: Value-Zeile unvermischt', np.allclose(attention([[1.0, 0.0]], [[0.0, 1.0], [1.0, 0.0]], [[7.0, 0.0], [0.0, 9.0]], mask=[[False, True]])[0], [0.0, 9.0], atol=1e-12))"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import math\nimport numpy as np\n\ndef attention(Q, K, V, mask=None):\n    \"\"\"Scaled dot-product attention; mask True = visible, False = blocked.\"\"\"\n    Q = np.asarray(Q, dtype=float)\n    K = np.asarray(K, dtype=float)\n    V = np.asarray(V, dtype=float)\n    d_k = Q.shape[1]\n    scores = Q @ K.T / np.sqrt(d_k)\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    w = w / w.sum(axis=1, keepdims=True)\n    return w @ V\n"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Scores als Q @ K.T / np.sqrt(d_k); Maske über np.where(mask, scores, -np.inf) vor dem Softmax.",
+        "Stabiles Softmax: scores -= scores.max(axis=1, keepdims=True), dann np.exp und Normalisierung je Zeile; am Ende weights @ V."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mask-after-softmax",
+          "then": "Die Maske muss vor dem Softmax wirken — nach der Normalisierung sind die Gewichte schon verteilt."
+        },
+        {
+          "if": "no-row-max",
+          "then": "Ohne Abziehen des Zeilenmaximums läuft exp bei großen Scores über — np.exp(s - s.max(axis=1, keepdims=True))."
+        },
+        {
+          "if": "wrong-scale",
+          "then": "Es wird durch np.sqrt(d_k) geteilt, nicht durch d_k."
+        }
+      ],
+      "fullSolution": "import math\nimport numpy as np\n\ndef attention(Q, K, V, mask=None):\n    \"\"\"Scaled dot-product attention; mask True = visible, False = blocked.\"\"\"\n    Q = np.asarray(Q, dtype=float)\n    K = np.asarray(K, dtype=float)\n    V = np.asarray(V, dtype=float)\n    d_k = Q.shape[1]\n    scores = Q @ K.T / np.sqrt(d_k)\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    w = w / w.sum(axis=1, keepdims=True)\n    return w @ V\n# Die Tests vergleichen gegen eine unabhaengige Python-Schleifen-Referenz:\n# attention([[1,1,0,0],[0,0,1,1]], ...) mit V=[[2,0],[0,2]] liefert Zeile 1\n# ~ [1.462, 0.538]; mit kausaler Maske sieht Zeile 1 nur Key 1 -> [2, 0].",
+      "typicalErrors": [
+        "Maske nach dem Softmax oder als 0 statt −∞ eingetragen",
+        "Zeilenmaximum nicht abgezogen (Overflow bei großen Scores)",
+        "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "arxiv-attention-2017, Abschnitt 3.2 — Scaled Dot-Product Attention; numpy-docs zu Array-Formen",
+        "statement": "eigenständig entwickelt",
+        "seed": 2204
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w22-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 2205,
+      "masteryEligible": true,
+      "prompt": "Masken-Bausteine: Implementiere drei Funktionen. <code>causal_mask(n)</code> liefert die $(n, n)$-Bool-Matrix mit <code>True</code> genau dort, wo Key $j$ für Query $i$ sichtbar ist ($j \\le i$). <code>padding_mask(lengths, L)</code> liefert für Sequenzlängen <code>lengths</code> die $(\\texttt{len(lengths)}, L)$-Bool-Matrix mit <code>True</code> an echten Token-Positionen ($j < \\texttt{lengths}[i]$); Längen außerhalb $[0, L]$ werfen <code>ValueError</code>. <code>masked_softmax(S, mask=None)</code> normalisiert eine Score-Matrix zeilenweise und stabil; <code>mask</code> ist <code>True</code> = sichtbar; eine komplett verdeckte Zeile ($0$ sichtbare Zellen) und eine Maskenform, die nicht zu $S$ passt, werfen <code>ValueError</code>. Der Testcode prüft Handwerte (u. a. Scores 1000 gegen 999), Zeilensummen und alle Fehlerfälle.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef causal_mask(n):\n    \"\"\"Lower-triangular boolean mask: True where key j may be seen by query i (j <= i).\"\"\"\n    ...\n\n\ndef padding_mask(lengths, L):\n    \"\"\"True where position j is a real token (j < lengths[i]); raise ValueError outside [0, L].\"\"\"\n    ...\n\n\ndef masked_softmax(S, mask=None):\n    \"\"\"Row-wise stable softmax over scores S; mask True = visible; ValueError on fully masked rows.\"\"\"\n    ...\n",
+        "tests": "__check('kausale Maske 3x3', causal_mask(3).tolist() == [[True, False, False], [True, True, False], [True, True, True]])\n__check('kausale Maske Diagonale True', bool(causal_mask(4).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([2, 3, 0], 3).tolist() == [[True, True, False], [True, True, True], [False, False, False]])\nw = masked_softmax([[2.0, 0.0]])\n__check('stabile Zeile [2, 0]', np.allclose(w, [[0.881, 0.119]], atol=1e-3))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\ntry:\n    padding_mask([4], 3)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef causal_mask(n):\n    \"\"\"Lower-triangular boolean mask: True where key j may be seen by query i (j <= i).\"\"\"\n    return np.tril(np.ones((int(n), int(n)), dtype=bool))\n\ndef padding_mask(lengths, L):\n    \"\"\"True where position j is a real token (j < lengths[i]); raise ValueError outside [0, L].\"\"\"\n    lengths = [int(x) for x in lengths]\n    if any(l < 0 or l > int(L) for l in lengths):\n        raise ValueError(\"lengths must be within [0, L]\")\n    return np.array([[j < l for j in range(int(L))] for l in lengths], dtype=bool)\n\ndef masked_softmax(S, mask=None):\n    \"\"\"Row-wise stable softmax over scores S; mask True = visible; ValueError on fully masked rows.\"\"\"\n    S = np.asarray(S, dtype=float)\n    if S.ndim != 2:\n        raise ValueError(\"S must be 2-d\")\n    scores = S.copy()\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        if keep.shape != scores.shape:\n            raise ValueError(\"mask shape must match S\")\n        if bool((keep.sum(axis=1) == 0).any()):\n            raise ValueError(\"fully masked row\")\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    return w / w.sum(axis=1, keepdims=True)\n"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "causal_mask ist untere Dreiecksmatrix inklusive Diagonale — np.tril hilft; padding_mask prüft die Längen, bevor sie baut.",
+        "masked_softmax: Formprüfung, dann komplett verdeckte Zeilen erkennen ((mask.sum(axis=1) == 0).any()), Scores via np.where auf −∞, Zeilenmaximum abziehen, normalisieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "partial-row-rejected",
+          "then": "Nur Zeilen ohne eine einzige sichtbare Zelle sind illegal — teilweise maskierte Zeilen sind der Normalfall."
+        },
+        {
+          "if": "mask-shape-unchecked",
+          "then": "Die Maskenform muss vor der Anwendung gegen S geprüft werden."
+        },
+        {
+          "if": "overflow",
+          "then": "Ohne Abziehen des Zeilenmaximums liefert exp(1000) inf — Stabilität ist Teil des Vertrags."
+        }
+      ],
+      "fullSolution": "import numpy as np\n\ndef causal_mask(n):\n    \"\"\"Lower-triangular boolean mask: True where key j may be seen by query i (j <= i).\"\"\"\n    return np.tril(np.ones((int(n), int(n)), dtype=bool))\n\ndef padding_mask(lengths, L):\n    \"\"\"True where position j is a real token (j < lengths[i]); raise ValueError outside [0, L].\"\"\"\n    lengths = [int(x) for x in lengths]\n    if any(l < 0 or l > int(L) for l in lengths):\n        raise ValueError(\"lengths must be within [0, L]\")\n    return np.array([[j < l for j in range(int(L))] for l in lengths], dtype=bool)\n\ndef masked_softmax(S, mask=None):\n    \"\"\"Row-wise stable softmax over scores S; mask True = visible; ValueError on fully masked rows.\"\"\"\n    S = np.asarray(S, dtype=float)\n    if S.ndim != 2:\n        raise ValueError(\"S must be 2-d\")\n    scores = S.copy()\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        if keep.shape != scores.shape:\n            raise ValueError(\"mask shape must match S\")\n        if bool((keep.sum(axis=1) == 0).any()):\n            raise ValueError(\"fully masked row\")\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    return w / w.sum(axis=1, keepdims=True)\n# causal_mask(3) -> [[True, False, False], [True, True, False], [True, True, True]]\n# masked_softmax([[2.0, 0.0]]) -> [[0.881, 0.119]]; komplett verdeckte Zeile -> ValueError.",
+      "typicalErrors": [
+        "teilweise maskierte Zeilen fälschlich abgelehnt",
+        "Maskenform ungeprüft angewendet",
+        "Overflow bei großen Scores ohne Maximum-Subtraktion"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "sourceLineage": {
+        "concept": "arxiv-attention-2017, Abschnitt 3.2 — Masking; Padding/kausale Maske als Vertragssemantik",
+        "statement": "eigenständig entwickelt",
+        "seed": 2205
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w22-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 2216,
+      "masteryEligible": true,
+      "prompt": "Final Boss Multi-Head: Implementiere <code>multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None)</code>. Vertrag: $X$ ist $(n, d_{\\text{model}})$; die Projektionen $XW_Q$, $XW_K$, $XW_V$ werden in <code>n_heads</code> Köpfe der Breite $d_{\\text{model}}/n_{\\text{heads}}$ <strong>zerlegt (Reshape/Slicing, keine neuen Projektionen)</strong>; jeder Kopf rechnet eigene skalierte Attention (Divisor $\\sqrt{d_{\\text{head}}}$, stabiles zeilenweises Softmax); optionale <code>mask</code> $(n, n)$ gilt in jedem Kopf; die Kopfausgaben werden konkateniert ($(n, d_{\\text{model}})$) und mit $W_O$ projiziert. Nicht teilbares $d_{\\text{model}}$ wirft <code>ValueError</code>. Der Testcode hält eine unabhängige Schleifen-Referenz (inkl. Kopfzerlegung und Projektion) und prüft 1, 2 und 4 Köpfe, kausale Maske, eine unbekannte Instanz und Determinismus.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    \"\"\"Project, split into n_heads heads, per-head scaled attention, concat, output projection.\"\"\"\n    X = np.asarray(X, dtype=float)\n    ...\n    # d_model % n_heads != 0 -> ValueError\n    # per head h: slice columns [h*d_head, (h+1)*d_head) of Q, K, V\n    # scores = Q_h @ K_h.T / sqrt(d_head); optional mask -> -inf before softmax\n    # concat all heads along axis=1, then multiply by Wo\n    ...\n",
+        "tests": "def __ref_mha(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    n, d_model = len(X), len(X[0])\n    d_head = d_model // n_heads\n    Q = [[sum(X[i][a] * Wq[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n    K = [[sum(X[i][a] * Wk[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n    V = [[sum(X[i][a] * Wv[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n    outs = []\n    for h in range(n_heads):\n        lo, hi = h * d_head, (h + 1) * d_head\n        rows = []\n        for i in range(n):\n            s = [sum(Q[i][a] * K[j][a] for a in range(lo, hi)) / math.sqrt(d_head) for j in range(n)]\n            if mask is not None:\n                s = [s[j] if mask[i][j] else float('-inf') for j in range(len(s))]\n            m = max(s)\n            ex = [math.exp(v - m) for v in s]\n            tot = sum(ex)\n            w = [e / tot for e in ex]\n            rows.append([sum(w[j] * V[j][c] for j in range(n)) for c in range(lo, hi)])\n        outs.append(rows)\n    concat = [[outs[h][i][c - h * d_head] for h in range(n_heads) for c in range(h * d_head, (h + 1) * d_head)] for i in range(n)]\n    return [[sum(concat[i][a] * Wo[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n\nX = [[1, 1, 0, 0], [0, 0, 1, 1], [1, 0, 1, 0]]\nWq = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWk = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWv = [[2, 0, 1, 0], [0, 2, 0, 1], [1, 0, 2, 0], [0, 1, 0, 2]]\nWo = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nout = multi_head_attention(X, Wq, Wk, Wv, Wo, 2)\n__check('Form n x d_model', out.shape == (3, 4))\n__check('gegen Referenz 2 Koepfe', np.allclose(out, __ref_mha(X, Wq, Wk, Wv, Wo, 2), atol=1e-9))\ncausal = [[True, False, False], [True, True, False], [True, True, True]]\n__check('gegen Referenz mit kausaler Maske', np.allclose(multi_head_attention(X, Wq, Wk, Wv, Wo, 2, mask=causal), __ref_mha(X, Wq, Wk, Wv, Wo, 2, mask=causal), atol=1e-9))\n__check('gegen Referenz 4 Koepfe', np.allclose(multi_head_attention(X, Wq, Wk, Wv, Wo, 4), __ref_mha(X, Wq, Wk, Wv, Wo, 4), atol=1e-9))\nrng = np.random.default_rng(7)\nXr = rng.integers(-2, 3, size=(3, 4)).tolist()\nWqr = rng.integers(-1, 2, size=(4, 4)).tolist()\nWkr = rng.integers(-1, 2, size=(4, 4)).tolist()\nWvr = rng.integers(-2, 3, size=(4, 4)).tolist()\nWor = rng.integers(-1, 2, size=(4, 4)).tolist()\n__check('unbekannte Instanz gegen Referenz', np.allclose(multi_head_attention(Xr, Wqr, Wkr, Wvr, Wor, 2), __ref_mha(Xr, Wqr, Wkr, Wvr, Wor, 2), atol=1e-9))\none = multi_head_attention(X, Wq, Wk, Wv, Wo, 1)\n__check('1 Kopf = einfache Attention mit Projektion', np.allclose(one, __ref_mha(X, Wq, Wk, Wv, Wo, 1), atol=1e-9))\ntry:\n    multi_head_attention(X, Wq, Wk, Wv, Wo, 3)\n    __check('nicht teilbar -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('nicht teilbar -> ValueError', True)\n__check('Doppelaufruf deterministisch', np.array_equal(multi_head_attention(X, Wq, Wk, Wv, Wo, 2), multi_head_attention(X, Wq, Wk, Wv, Wo, 2)))"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import math\nimport numpy as np\n\ndef multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    \"\"\"Project, split into n_heads heads, per-head scaled attention, concat, output projection.\"\"\"\n    X = np.asarray(X, dtype=float)\n    Wq = np.asarray(Wq, dtype=float)\n    Wk = np.asarray(Wk, dtype=float)\n    Wv = np.asarray(Wv, dtype=float)\n    Wo = np.asarray(Wo, dtype=float)\n    n, d_model = X.shape\n    if d_model % n_heads != 0:\n        raise ValueError(\"d_model muss durch n_heads teilbar sein\")\n    d_head = d_model // n_heads\n    Q, K, V = X @ Wq, X @ Wk, X @ Wv\n    heads = []\n    for h in range(n_heads):\n        sl = slice(h * d_head, (h + 1) * d_head)\n        scores = (Q[:, sl] @ K[:, sl].T) / np.sqrt(d_head)\n        if mask is not None:\n            keep = np.asarray(mask, dtype=bool)\n            scores = np.where(keep, scores, -np.inf)\n        scores = scores - scores.max(axis=1, keepdims=True)\n        w = np.exp(scores)\n        w = w / w.sum(axis=1, keepdims=True)\n        heads.append(w @ V[:, sl])\n    concat = np.concatenate(heads, axis=1)\n    return concat @ Wo\n"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Erst projizieren (X @ Wq usw.), dann spaltenweise in Köpfe schneiden: Slice [h·d_head : (h+1)·d_head] aus Q, K und V.",
+        "Pro Kopf Divisor np.sqrt(d_head) — nicht sqrt(d_model); am Ende np.concatenate(heads, axis=1) @ Wo."
+      ],
+      "feedbackRules": [
+        {
+          "if": "whole-matrix-scale",
+          "then": "Jeder Kopf wird durch sqrt(d_model/n_heads) geteilt, nicht durch sqrt(d_model)."
+        },
+        {
+          "if": "concat-order",
+          "then": "Die Kopfausgaben werden in Kopf-Reihenfolge konkateniert, bevor Wo multipliziert wird."
+        },
+        {
+          "if": "divisibility-unchecked",
+          "then": "d_model % n_heads != 0 muss ValueError werfen, bevor irgendein Kopf gerechnet wird."
+        }
+      ],
+      "fullSolution": "import math\nimport numpy as np\n\ndef multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    \"\"\"Project, split into n_heads heads, per-head scaled attention, concat, output projection.\"\"\"\n    X = np.asarray(X, dtype=float)\n    Wq = np.asarray(Wq, dtype=float)\n    Wk = np.asarray(Wk, dtype=float)\n    Wv = np.asarray(Wv, dtype=float)\n    Wo = np.asarray(Wo, dtype=float)\n    n, d_model = X.shape\n    if d_model % n_heads != 0:\n        raise ValueError(\"d_model muss durch n_heads teilbar sein\")\n    d_head = d_model // n_heads\n    Q, K, V = X @ Wq, X @ Wk, X @ Wv\n    heads = []\n    for h in range(n_heads):\n        sl = slice(h * d_head, (h + 1) * d_head)\n        scores = (Q[:, sl] @ K[:, sl].T) / np.sqrt(d_head)\n        if mask is not None:\n            keep = np.asarray(mask, dtype=bool)\n            scores = np.where(keep, scores, -np.inf)\n        scores = scores - scores.max(axis=1, keepdims=True)\n        w = np.exp(scores)\n        w = w / w.sum(axis=1, keepdims=True)\n        heads.append(w @ V[:, sl])\n    concat = np.concatenate(heads, axis=1)\n    return concat @ Wo\n# Kopfzerlegung als Slice-Sicht auf die Projektionen; die Tests vergleichen gegen\n# eine unabhaengige Schleifen-Referenz fuer 1, 2 und 4 Koepfe (mit und ohne Maske).",
+      "typicalErrors": [
+        "falscher Skalierungsdivisor pro Kopf",
+        "Köpfe vor statt nach der Projektion gesplittet",
+        "Konkatenation und Ausgabeprojektion in falscher Reihenfolge"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 42,
+      "sourceLineage": {
+        "concept": "arxiv-attention-2017, Abschnitt 3.2.2 — Multi-Head Attention (Reshape statt neuer Matrizen)",
+        "statement": "eigenständig entwickelt",
+        "seed": 2216
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

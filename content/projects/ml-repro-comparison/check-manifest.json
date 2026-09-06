@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-ml-repro-comparison",
+  "projectVersion": "1",
+  "testPaths": ["tests"],
+  "requiredFiles": [
+    { "path": "src/compare.py", "sha256": null },
+    { "path": "tests/test_compare.py", "sha256": "757a52c23ad49acf1ac71c1f4129cb50cfff53fc9f720f1b5b33de95d04bb27a" }
+  ],
+  "timeoutSeconds": 120
+}

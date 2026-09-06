@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-control-flow",
+  "version": 1,
+  "locale": "de",
+  "title": "Bedingungen und Schleifen kontrollieren",
+  "description": "Kontrollstrukturen erkennen, Schleifen absichern und Zählerstände vorhersagen.",
+  "competencyIds": [
+    "c-python-control-flow"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-control-flow"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-control-flow-for-over-existing-collection",
+      "role": "curated",
+      "familyId": "classify-control-construct",
+      "caseId": "for-over-existing-collection",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-control-flow",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-control-flow-classify-control-construct-practi",
+      "role": "practice-space",
+      "familyId": "classify-control-construct",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-control-flow-string-item-assignment-typeerror",
+      "role": "curated",
+      "familyId": "classify-string-immutability",
+      "caseId": "string-item-assignment-typeerror",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-control-flow",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-control-flow-classify-string-immutability-prac",
+      "role": "practice-space",
+      "familyId": "classify-string-immutability",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-control-flow-countdown-accumulator-structure",
+      "role": "curated",
+      "familyId": "construct-guarded-loop",
+      "caseId": "countdown-accumulator-structure",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-control-flow",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-control-flow-construct-guarded-loop-practice",
+      "role": "practice-space",
+      "familyId": "construct-guarded-loop",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-control-flow-while-counter-with-stop-state",
+      "role": "curated",
+      "familyId": "aggregate-accumulator-count",
+      "caseId": "while-counter-with-stop-state",
+      "seed": 5,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-control-flow",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-control-flow-for-filter-accumulator",
+      "role": "curated",
+      "familyId": "aggregate-accumulator-count",
+      "caseId": "for-filter-accumulator",
+      "seed": 9,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-control-flow",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-control-flow-aggregate-accumulator-count-pract",
+      "role": "practice-space",
+      "familyId": "aggregate-accumulator-count",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,1718 @@
+{
+  "shardId": "deep-learning",
+  "baselineCommit": "1998d57",
+  "entries": [
+    {
+      "sourceId": "w18-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w18",
+      "currentDefinitionId": "w18-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tensors",
+        "coEvidence": []
+      },
+      "familyGroup": "validate-contract",
+      "cognitiveFamily": {
+        "familyId": "validate-shape-contract",
+        "summary": "Prüft Shape- und Broadcast-Verträge von Tensoren und Matrizen.",
+        "membershipEvidence": {
+          "solutionPath": "Die Vertragsregel auf die Operanden-Shapes anwenden und Verletzung bzw. resultierende Shape bestimmen.",
+          "referenceModel": "Shape-/Broadcast-Vertrag mit deterministischer Verletzungsbedingung.",
+          "errorHypotheses": [
+            "Broadcast-Regel falsch angewendet",
+            "Ergebnis-Shape falsch gefolgert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "matmul-bias-broadcast-choice",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-dl-tensors"
+        ],
+        "moduleHint": "Lektion Tensoren und Shapes (l-dl-tensors): Matmul-Ergebnisform und Bias-Broadcast",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'c' bleibt Praedikat der choice-diagnose-Grammatik (gradeChoice); die Batch-Dimension-Diagnose ist an die falsche Choice gebunden."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'd' bleibt Praedikat; die Aufspann-Diagnose der inneren Dimension feuert auf die falsche Choice."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'a' bleibt Praedikat; die Zulaessigkeits-Diagnose der passenden inneren Dimensionen bleibt an die falsche Choice gebunden."
+        }
+      ]
+    },
+    {
+      "sourceId": "w18-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w18",
+      "currentDefinitionId": "w18-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tensors",
+        "coEvidence": []
+      },
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-count-from-construction",
+        "summary": "Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.",
+        "membershipEvidence": {
+          "solutionPath": "Die Konstruktionsregel des Objekts analysieren und die gesuchte Anzahl konstruktiv herleiten.",
+          "referenceModel": "Konstruktionsregel, die die Zielanzahl deterministisch festlegt.",
+          "errorHypotheses": [
+            "Konstruktionsregel nur teilweise angewendet",
+            "Fälle doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "hidden-width-delta-two-mlps",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-tensors"
+        ],
+        "moduleHint": "Lektion Tensoren und Shapes (l-dl-tensors): Parameterzählung von MLP-Architekturen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 70 bleibt in der numeric-exact-Grammatik (diagnoseNumeric) konsumiert; Distraktor fuer vergessenen Bias der versteckten Schicht."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 66 bleibt konsumiert; Distraktor fuer den vergessenen Ausgabe-Bias bei mitwachsender Schicht."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 7 bleibt konsumiert; Distraktor fuer Neuronen- statt Parameterdifferenz."
+        }
+      ]
+    },
+    {
+      "sourceId": "w18-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w18",
+      "currentDefinitionId": "w18-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tensors",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "familyGroup": "validate-contract",
+      "cognitiveFamily": {
+        "familyId": "validate-shape-contract",
+        "summary": "Prüft Shape- und Broadcast-Verträge von Tensoren und Matrizen.",
+        "membershipEvidence": {
+          "solutionPath": "Die Vertragsregel auf die Operanden-Shapes anwenden und Verletzung bzw. resultierende Shape bestimmen.",
+          "referenceModel": "Shape-/Broadcast-Vertrag mit deterministischer Verletzungsbedingung.",
+          "errorHypotheses": [
+            "Broadcast-Regel falsch angewendet",
+            "Ergebnis-Shape falsch gefolgert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "matmul-broadcast-ndim-stdout",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-tensors"
+        ],
+        "moduleHint": "Lektion Tensoren und Shapes (l-dl-tensors): Shape- und ndim-Vorhersage ohne Ausführung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "predict-output-Familien der Wochen 18-21 unterscheiden sich im fachlichen Kern, nicht nur im Text.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: w18-e3 liegt in der Registry-Familie validate-shape-contract; der fachliche Kern ist Matmul-Aufspannen plus Broadcasting, und ndim wird als Shape-Attribut (Achsenzahl) im selben Vertrag gelesen. Ein eigener predict-output-Familienkern ist nicht noetig, die Vorhersagezeilen sind Archetyp-, nicht Familiensache."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Konkrete Zeilendiagnose der Matmul-Zeile (4,5) mit Ursache aufgespannte innere Dimension; kuenftiger Konsument ist die lines-diff@k-Zuordnung des output-predict-lines-Archetyps (answer-note-Kanal), der Grader liest first-line-wrong heute nicht."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Konkrete Zeilendiagnose der Broadcast-Zeile (keine neue Achse); kuenftig als lines-diff@k-Diagnose konsumierbar, der Predict-Output-Grader liest second-line-wrong heute nicht."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat element-count-mismatch bleibt in der output-predict-lines-Grammatik (gradePredictOutput) konsumiert; Zeilenzahl-Diagnose der drei ndim-Werte."
+        }
+      ]
+    },
+    {
+      "sourceId": "w18-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w18",
+      "currentDefinitionId": "w18-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tensors",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-forward-layer-chain-contract",
+        "summary": "Implementiert den MLP-Forward vertrags zuerst: Struktur- und Kettenverträge vor der Rechnung, ReLU nur auf versteckten Schichten, Parameterzahl inklusive Bias.",
+        "membershipEvidence": {
+          "solutionPath": "Struktur- und Kettenverträge prüfen (Längen, ndim, Formgleichungen benachbarter Schichten, ValueError vor der Rechnung), dann den Forward über die Schichten berechnen (ReLU nur auf versteckten Schichten) und die Parameter über alle Schichtpaare zählen.",
+          "referenceModel": "Referenz-Forward über eine Schichtliste; ausführbare Autorität ist der Pyodide-Referenzsolver (Vergleich gegen Referenz- und Zufallsinstanzen), Tiefe und Breiten sind rein parametrische Fallparameter.",
+          "errorHypotheses": [
+            "Vertrag fehlt oder wird erst nach der Rechnung geprüft",
+            "Forward-Semantik (ReLU-Wahl, ReLU auf der Ausgabeschicht) falsch angewendet",
+            "Parameterzählung ohne Bias-Vektoren oder mit falschem Typ"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "single-layer-valueerror-contract",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-tensors"
+        ],
+        "moduleHint": "Lektion Tensoren und Shapes (l-dl-tensors): linear_forward mit Dimensionsverträgen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w18-e4 bis w18-e6 teilen die Vertragsdisziplin, unterscheiden sich aber in Algorithmus und Kettenpruefung.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Abweichend von der v1-Drei-Familien-Idee aufgeloest: e4/e5/e6 bilden EINE Familie (fit-forward-layer-chain-contract) als Falltyp-Stufen; die Schichttiefe ist rein parametrisch (L=1, L=2, L beliebig), der Loesungsweg verzweigt nicht programmatisch."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose valueerror-missing mit konkreter Ursache (Vertragsverletzung wirft keinen ValueError, Pruefung steht nicht am Anfang); kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose contract-after-compute (Pruefung erst nach X @ W, NumPy wirft vorher selbst); kuenftig als benannter __check-Test unter stabiler checkId konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose bias-count-missing (param_count zaehlt b.size nicht mit); kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        }
+      ]
+    },
+    {
+      "sourceId": "w18-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w18",
+      "currentDefinitionId": "w18-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tensors",
+        "coEvidence": [
+          "c-linalg-matrices"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-forward-layer-chain-contract",
+        "summary": "Implementiert den MLP-Forward vertrags zuerst: Struktur- und Kettenverträge vor der Rechnung, ReLU nur auf versteckten Schichten, Parameterzahl inklusive Bias.",
+        "membershipEvidence": {
+          "solutionPath": "Struktur- und Kettenverträge prüfen (Längen, ndim, Formgleichungen benachbarter Schichten, ValueError vor der Rechnung), dann den Forward über die Schichten berechnen (ReLU nur auf versteckten Schichten) und die Parameter über alle Schichtpaare zählen.",
+          "referenceModel": "Referenz-Forward über eine Schichtliste; ausführbare Autorität ist der Pyodide-Referenzsolver (Vergleich gegen Referenz- und Zufallsinstanzen), Tiefe und Breiten sind rein parametrische Fallparameter.",
+          "errorHypotheses": [
+            "Vertrag fehlt oder wird erst nach der Rechnung geprüft",
+            "Forward-Semantik (ReLU-Wahl, ReLU auf der Ausgabeschicht) falsch angewendet",
+            "Parameterzählung ohne Bias-Vektoren oder mit falschem Typ"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "two-layer-relu-forward-paramcount",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-dl-tensors"
+        ],
+        "moduleHint": "Lektion Tensoren und Shapes (l-dl-tensors): 2-Layer-MLP-Forward mit ReLU und Hidden-Vertrag",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose relu-wrong (np.max statt np.maximum); konkrete Fehlerursache, kuenftig ueber den checkId-Kanal des code-test-Archetyps konsumierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose hidden-contract-missing (W1.shape[1] == W2.shape[0] wird nicht geprueft); kuenftiger Konsument ist der checkId-Kanal."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose bias-in-param-count-missing (d*h statt d*h+h je Schichtpaar); kuenftig ueber den checkId-Kanal konsumierbar."
+        }
+      ]
+    },
+    {
+      "sourceId": "w18-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w18",
+      "currentDefinitionId": "w18-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-tensors",
+        "coEvidence": [
+          "c-linalg-matrices"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-forward-layer-chain-contract",
+        "summary": "Implementiert den MLP-Forward vertrags zuerst: Struktur- und Kettenverträge vor der Rechnung, ReLU nur auf versteckten Schichten, Parameterzahl inklusive Bias.",
+        "membershipEvidence": {
+          "solutionPath": "Struktur- und Kettenverträge prüfen (Längen, ndim, Formgleichungen benachbarter Schichten, ValueError vor der Rechnung), dann den Forward über die Schichten berechnen (ReLU nur auf versteckten Schichten) und die Parameter über alle Schichtpaare zählen.",
+          "referenceModel": "Referenz-Forward über eine Schichtliste; ausführbare Autorität ist der Pyodide-Referenzsolver (Vergleich gegen Referenz- und Zufallsinstanzen), Tiefe und Breiten sind rein parametrische Fallparameter.",
+          "errorHypotheses": [
+            "Vertrag fehlt oder wird erst nach der Rechnung geprüft",
+            "Forward-Semantik (ReLU-Wahl, ReLU auf der Ausgabeschicht) falsch angewendet",
+            "Parameterzählung ohne Bias-Vektoren oder mit falschem Typ"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "arbitrary-depth-list-contracts",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-dl-tensors"
+        ],
+        "moduleHint": "Lektion Tensoren und Shapes (l-dl-tensors): Final-Boss Forward-Kette mit Listen- und Kettenverträgen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Final-Boss buendelt Forward-Kette, Vertraege und Parameterzaehlung — bei der Extraktion in kanonische Definitionen ist zu pruefen, ob Teilfaehigkeiten (Vertragspruefung vs. Schleife) in eigene Definitionen aufgespalten werden."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Ob der Final-Boss w18-e6 kuenftig in eigene kanonische Definitionen (Vertragspruefung vs. Schleife) aufgespalten wird oder als Synthese-Stufe der Familienleiter stehen bleibt.",
+        "evidence": "content/exercises/w18.json: w18-e6 ist eine Einreichung mit einem Pyodide-Grader; die Teilfaehigkeiten sind mit w18-e4/w18-e5 bereits als eigene Stufen derselben Familie abgedeckt. S4A-v2 legt nur die Familienstruktur fest.",
+        "latestGate": "S4A-v2-Domaenenreview (Block C)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w18-e5 ist unklar, ob Kettenvertraege als eigene Familie oder als Ausbaustufe des MLP-Forward gefuehrt werden sollen.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: Die Kettenvertraege sind Ausbaustufe derselben Forward-Familie, keine eigene Familie; die Listenvertraege verallgemeinern die Formvertraege von e4/e5 parametrisch auf L Schichten. Die Hypothese einer getrennten Familie wegen Tiefen-Generalisierung traegt den Prozedurtest nicht."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose relu-on-last-layer (ReLU auf der linearen Ausgabeschicht); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose chain-contract-missing (benachbarte Matrizen unpassend, Fehler erst mitten in der Schleife); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose length-mismatch-accepted (len(weights) != len(biases) nicht vorab geprueft); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w19-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w19",
+      "currentDefinitionId": "w19-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-autograd",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-backprop-path-rule",
+        "summary": "Ordnet eine Kettenregel-Situation der richtigen Verknüpfungsregel auf Pfaden und über parallele Zweige zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Backprop-Pfadregeln einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Kettenregel-Pfadverknüpfungen: entlang eines Pfads wird multipliziert, über parallele Pfade zum selben Knoten wird addiert.",
+          "errorHypotheses": [
+            "Multiplikation entlang des Pfads mit Addition über Pfade verwechselt",
+            "lokalen Gradienten ohne Upstream-Gradienten gelesen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "single-path-local-times-upstream-choice",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-dl-autograd"
+        ],
+        "moduleHint": "Lektion Autograd und Backprop (l-dl-autograd): Kettenregel auf Pfaden vs. über Zweige",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'd' bleibt Praedikat der choice-diagnose-Grammatik; Diagnose lokaler Gradient ohne Upstream."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'a' bleibt Praedikat; Diagnose Addition ueber denselben Pfad statt ueber mehrere Pfade."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'b' bleibt Praedikat; Diagnose Division statt Kettenregel-Multiplikation."
+        }
+      ]
+    },
+    {
+      "sourceId": "w19-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w19",
+      "currentDefinitionId": "w19-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-autograd",
+        "coEvidence": []
+      },
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-backprop-path-sum",
+        "summary": "Berechnet den Gesamtgradienten eines Knotens als Summe der Pfadprodukte über parallele Kettenregel-Zweige.",
+        "membershipEvidence": {
+          "solutionPath": "Je Zweig das Produkt der lokalen Gradienten bilden und die Zweigbeiträge zum Gesamtgradienten summieren.",
+          "referenceModel": "Berechnungsgraph mit deterministischen Kantengradienten; der Seed-Generator (genBackpropChain) löst jedes Mitglied aus Fallparametern allein.",
+          "errorHypotheses": [
+            "nur ein Zweig beigetragen",
+            "Zweigprodukte multipliziert statt addiert",
+            "Vorzeichen eines lokalen Gradienten verloren"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "two-branch-path-products",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-autograd"
+        ],
+        "moduleHint": "Lektion Autograd und Backprop (l-dl-autograd): Gesamtgradient aus zwei parallelen Pfaden",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 3 bleibt in der numeric-exact-Grammatik konsumiert; Distraktor nur Zweig A."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === -6 bleibt konsumiert; Distraktor nur Zweig B."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === -18 bleibt konsumiert; Distraktor multiplizierte statt addierte Zweigbeitraege."
+        }
+      ]
+    },
+    {
+      "sourceId": "w19-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w19",
+      "currentDefinitionId": "w19-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-autograd",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "sgd-update-sign-trace",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-autograd"
+        ],
+        "moduleHint": "Lektion Autograd und Backprop (l-dl-autograd): Zustandstrace eines manuellen SGD-Schritts",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value:grad_w+value:w bleibt in der state-trace-vars-Grammatik (gradeCodeTrace) konsumiert; Diagnose der Gradient- und Parameter-Variablen in parameters.variables-Reihenfolge."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value:grad_b+value:b bleibt konsumiert; Diagnose der Bias-Variablen des Traces."
+        }
+      ]
+    },
+    {
+      "sourceId": "w19-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w19",
+      "currentDefinitionId": "w19-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-autograd",
+        "coEvidence": [
+          "c-grad-regression"
+        ]
+      },
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-backprop-gradient-check",
+        "summary": "Leitet die Gradienten eines Layers bzw. MLP mit MSE im Rückwärtslauf her und validiert sie gegen die zentrale numerische Differenz.",
+        "membershipEvidence": {
+          "solutionPath": "Residuen und Mittelungsfaktor bestimmen, rückwärts pro Schicht dW = X hoch T · delta und db = Achsensumme bilden, delta über Transponierte und ReLU-Maske weiterreichen, Formen prüfen und jeden Gradienten gegen die zentrale Differenz des eigenen Forwards validieren.",
+          "referenceModel": "Analytischer Rückwärtslauf über die Schichtkette mit zentraler numerischer Differenz als ausführbarer Autorität in Pyodide; die Schichttiefe ist ein rein parametrischer Fallparameter.",
+          "errorHypotheses": [
+            "Mittelungsfaktor 2/(n·k) falsch oder nur auf eine Achse bezogen",
+            "Transponierte und Achsensumme der Gradientenformeln vertauscht",
+            "Aktivierungsableitung (ReLU-Maske H > 0) falsch angewendet",
+            "Vorzeichen der Residuen gedreht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "linear-layer-mse-central-difference",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-autograd"
+        ],
+        "moduleHint": "Lektion Autograd und Backprop (l-dl-autograd): analytische Gradienten des linearen Layers",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w19-e4 und w19-e5 teilen MSE-Residuen und zentralen Check, unterscheiden sich aber in Algorithmus (linear vs. ReLU-Backprop).",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Teilweise abweichend von v1 aufgeloest: w19-e4 und w19-e5 liegen gemeinsam in optimize-backprop-gradient-check, weil der Rueckwaertslauf mit zentraler Differenz dieselbe ausfuehrbare Autoritaet ist und die Schichttiefe parametrisch variiert; getrennt bleibt w19-e6 wegen Update- und Reinheitsvertrag."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose factor-2n-wrong (2/n oder 1/n statt 2/(n·k)); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose db-as-scalar (Summation ueber alles statt axis=0); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose residual-sign-flipped (y minus Vorhersage statt Vorhersage minus y); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w19-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w19",
+      "currentDefinitionId": "w19-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-autograd",
+        "coEvidence": [
+          "c-dl-tensors"
+        ]
+      },
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-backprop-gradient-check",
+        "summary": "Leitet die Gradienten eines Layers bzw. MLP mit MSE im Rückwärtslauf her und validiert sie gegen die zentrale numerische Differenz.",
+        "membershipEvidence": {
+          "solutionPath": "Residuen und Mittelungsfaktor bestimmen, rückwärts pro Schicht dW = X hoch T · delta und db = Achsensumme bilden, delta über Transponierte und ReLU-Maske weiterreichen, Formen prüfen und jeden Gradienten gegen die zentrale Differenz des eigenen Forwards validieren.",
+          "referenceModel": "Analytischer Rückwärtslauf über die Schichtkette mit zentraler numerischer Differenz als ausführbarer Autorität in Pyodide; die Schichttiefe ist ein rein parametrischer Fallparameter.",
+          "errorHypotheses": [
+            "Mittelungsfaktor 2/(n·k) falsch oder nur auf eine Achse bezogen",
+            "Transponierte und Achsensumme der Gradientenformeln vertauscht",
+            "Aktivierungsableitung (ReLU-Maske H > 0) falsch angewendet",
+            "Vorzeichen der Residuen gedreht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "two-layer-four-gradients-numeric-check",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-dl-autograd"
+        ],
+        "moduleHint": "Lektion Autograd und Backprop (l-dl-autograd): vollständige Backprop des 2-Layer-MLP",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose relu-mask-wrong (Ableitung als H statt H > 0); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose factor-2m-wrong (2/m nur auf eine Achse bezogen); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose transpose-missing (H.T @ delta2 bzw. delta2 @ W2.T); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w19-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w19",
+      "currentDefinitionId": "w19-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-autograd",
+        "coEvidence": [
+          "c-grad-regression"
+        ]
+      },
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-sgd-step-pure-update",
+        "summary": "Implementiert einen vollständigen SGD-Trainingsschritt als reine Funktion: Verlust vor dem Update, Update in neue Parameter, Eingabe unverändert.",
+        "membershipEvidence": {
+          "solutionPath": "Forward für den Verlust des aktuellen Modells rechnen, dieselben Zwischengrößen für die Gradienten nutzen und das Update in ein frisches Parameter-Dictionary schreiben, ohne die Eingabe zu verändern.",
+          "referenceModel": "Reine Trainingsstufen-Funktion mit deterministischem Update; ausführbare Autorität ist der Pyodide-Referenzsolver samt lr=0-, Reinheits- und 40-Schritte-Tests.",
+          "errorHypotheses": [
+            "Eingabe-Dictionary in-place verändert",
+            "Verlust nach dem Update statt davor gemeldet",
+            "Update-Vorzeichen gedreht (Plus statt Minus)"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "forward-backward-update-pure-function",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-dl-autograd"
+        ],
+        "moduleHint": "Lektion Autograd und Backprop (l-dl-autograd): Final-Boss SGD-Schritt als reine Funktion",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Final-Boss buendelt Backprop und SGD-Update; bei der Extraktion ist zu klären, ob Backprop und Update in kanonische Definitionen getrennt werden, ohne den ADR-0013-Vertrag (numerischer Check aus dem Lernenden-Forward) zu veraendern."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Ob Backprop und Update kuenftig in getrennte kanonische Definitionen zerlegt werden, ohne den ADR-0013-Vertrag (numerischer Check aus dem Lernenden-Forward) zu veraendern.",
+        "evidence": "content/exercises/w19.json: w19-e6 mit tolerancePolicy tests, Referenzsolver und lr=0-/40-Schritte-Tests; Backprop-only ist als w19-e5 bereits vorhanden und familienaessig getrennt.",
+        "latestGate": "S4A-v2-Domaenenreview (Block C)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w19-e5 (nur Backward) und w20-e6 (Schleife mit Validierung) ist die Familiengrenze eine Abwaegung.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Wie v1 aufgeloest: eigene Familie optimize-sgd-step-pure-update wegen Update-Vertrag und Unveraenderbarkeit; gegenueber w19-e5 (nur Backward) und w20-e6 (Schleife mit Validierung) unterscheidet sich der Loesungsweg strukturell, nicht nur thematisch."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose mutates-input (In-place-Update zerstoert den lr=0-Test); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose loss-after-update (Verlust gehoert zum Stand vor dem Update); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose update-sign-flipped (Plus statt Minus, 40-Schritte-Test faellt); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w20-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w20",
+      "currentDefinitionId": "w20-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-training",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-training-curve",
+        "summary": "Ordnet einen Trainingskurvenverlauf seinem Diagnosemuster zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Trainingskurven-Muster einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Trainingskurven-Diagnosemuster.",
+          "errorHypotheses": [
+            "Diagnosemuster der Kurve verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "overfitting-divergence-choice",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-dl-training"
+        ],
+        "moduleHint": "Lektion Training und Kurven (l-dl-training): Overfitting-Diagnose aus Verlustverläufen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'a' bleibt Praedikat der choice-diagnose-Grammatik; Underfitting-Distraktor."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'b' bleibt Praedikat; Lernraten-Distraktor gegen monoton fallende Kurven."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'c' bleibt Praedikat; Leakage-Distraktor bei durchgehend hoeherem Validierungsverlust."
+        }
+      ]
+    },
+    {
+      "sourceId": "w20-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w20",
+      "currentDefinitionId": "w20-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-training",
+        "coEvidence": []
+      },
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-count-from-construction",
+        "summary": "Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.",
+        "membershipEvidence": {
+          "solutionPath": "Die Konstruktionsregel des Objekts analysieren und die gesuchte Anzahl konstruktiv herleiten.",
+          "referenceModel": "Konstruktionsregel, die die Zielanzahl deterministisch festlegt.",
+          "errorHypotheses": [
+            "Konstruktionsregel nur teilweise angewendet",
+            "Fälle doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "rest-batch-multi-epoch",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-training"
+        ],
+        "moduleHint": "Lektion Training und Kurven (l-dl-training): Zahl der Optimizer-Updates mit Restbatch",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 12 bleibt in der numeric-exact-Grammatik konsumiert; Distraktor abgerundete Batchzahl ohne Restbatch."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 5 bleibt konsumiert; Distraktor nur eine Epoche gezaehlt."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 13 bleibt konsumiert; Distraktor gerundete statt gezaehlte Batches."
+        }
+      ]
+    },
+    {
+      "sourceId": "w20-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w20",
+      "currentDefinitionId": "w20-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-training",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-training-loop-count",
+        "summary": "Tracet Schrittzählung und Parameter-Updates einer Trainingsloop mit Aufrund-Arithmetik.",
+        "membershipEvidence": {
+          "solutionPath": "Schrittzahl je Epoche mit Aufrund-Arithmetik bestimmen, über Epochen multiplizieren, Parameter-Updates verfolgen und beide Ausgabezeilen in Python-Darstellung angeben.",
+          "referenceModel": "Deterministische Trainingsloop mit Ceil-Schrittzählung und Float-Ausgabe.",
+          "errorHypotheses": [
+            "Ab- statt aufgerundet und Restbatch unterschlagen",
+            "Update-Anzahl falsch hochgerechnet",
+            "Float-Endung .0 in der Vorhersage unterschlagen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "ceil-trick-and-sgd-updates-stdout",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-training"
+        ],
+        "moduleHint": "Lektion Training und Kurven (l-dl-training): Ceil-Trick und SGD-Updates im Programmablauf",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Konkrete Zeilendiagnose der Ceil-Schrittzahl (9 Updates ueber 3 Epochen); kuenftiger Konsument ist die lines-diff@k-Zuordnung des output-predict-lines-Archetyps (answer-note-Kanal), first-line-wrong wird heute nicht gelesen."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Konkrete Zeilendiagnose der float-Ausgabe (4.0 statt 4); kuenftig als lines-diff@k-Diagnose konsumierbar, second-line-wrong wird heute nicht gelesen."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat element-count-mismatch bleibt in der output-predict-lines-Grammatik (gradePredictOutput) konsumiert; Zeilenzahl-Diagnose der zwei Ausgabezeilen."
+        }
+      ]
+    },
+    {
+      "sourceId": "w20-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w20",
+      "currentDefinitionId": "w20-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-training",
+        "coEvidence": [
+          "c-grad-regression"
+        ]
+      },
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-training-primitive-contract",
+        "summary": "Implementiert Verlust- und Regularisierungsprimitive mit Wertebereichs-Verträgen vor der Rechnung (MSE, BCE mit Clipping, Ceil-Schritte, Dropout, Weight Decay).",
+        "membershipEvidence": {
+          "solutionPath": "Eingangsverträge (Formen, Wertebereiche, Batchgröße) mit ValueError vor der Rechnung prüfen, dann die geschlossene Primitive formelgetreu anwenden und den geforderten Typ (float, int, Array) sicherstellen.",
+          "referenceModel": "Deterministische Primitive-Berechnung mit Guard-Vertrag; ausführbare Autorität ist der Pyodide-Referenzsolver je Funktion, die konkrete Primitive ist Fallparameter.",
+          "errorHypotheses": [
+            "Vertrag nicht oder erst nach der Rechnung geprüft",
+            "Formelsubstanz der Primitive falsch (Clipping, 1/p-Skalierungsrichtung, Decay-Term im Update)",
+            "Rundung beim Restbatch ab- statt aufgerundet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "mse-bce-steps-valueerror-contracts",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-training"
+        ],
+        "moduleHint": "Lektion Training und Kurven (l-dl-training): mse, bce und steps_per_epoch mit Verträgen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose bce-unclipped (log(0) ohne Epsilon-Clipping); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps (Endlichkeitstest des perfekten Falls)."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose valueerror-missing (Formungleichheit, p ausserhalb [0,1], n/B < 1 ohne ValueError); kuenftig als benannte __check-Tests konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose steps-rounded-down (kleiner Restbatch verloren); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w20-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w20",
+      "currentDefinitionId": "w20-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-training",
+        "coEvidence": [
+          "c-grad-regression"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-seeded-split-sgd-linear",
+        "summary": "Implementiert geseedetes Training einer linearen Regression: Seed-Permutation-Split, Full-Batch-SGD mit Faktor 2/n, Verlusthistorie zu Epochenbeginn.",
+        "membershipEvidence": {
+          "solutionPath": "Split aus round(n·f) und permutation(seed) bilden (Validierung sortiert zurückgeben), dann pro Epoche den Verlust zu Epochenbeginn notieren und w/b mit Faktor 2/n updaten.",
+          "referenceModel": "Deterministische Split-plus-SGD-Pipeline; ausführbare Autorität ist der Pyodide-Referenzsolver mit Determinismustest, Modell und Auswertung sind fix.",
+          "errorHypotheses": [
+            "Initialisierung oder Split ohne default_rng(seed)",
+            "Verlust nach dem Update statt zu Epochenbeginn notiert",
+            "Faktor 2/n im Update vergessen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "deterministic-split-fullbatch-sgd",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-dl-training"
+        ],
+        "moduleHint": "Lektion Training und Kurven (l-dl-training): geseedeter Split und Full-Batch-SGD linear",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w20-e5, w20-e6 und w21-e6 teilen Seed-Disziplin und Full-Batch-SGD, unterscheiden sich aber im Modell und in der Auswertung.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Wie v1 aufgeloest: drei getrennte Familien (w20-e5, w20-e6, w21-e6); Modell, Auswertungsschritt und Gradiententerm verzweigen den Loesungsweg programmatisch, gemeinsame Seed-Disziplin allein ist keine Familiengrenze."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose loss-recorded-after-update (Historie um einen Schritt verschoben); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose factor-2n-missing (Kettenregel 2r und Mittelung 1/n unvollstaendig); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose unseeded-init (Determinismustest faellt ohne default_rng(seed)); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w20-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w20",
+      "currentDefinitionId": "w20-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-training",
+        "coEvidence": [
+          "c-dl-autograd"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-mlp-val-curve-argmin",
+        "summary": "Trainiert ein MLP mit einem rng in fester Reihenfolge, führt Trainings- und Validierungsverlust pro Epoche und leitet best_val_epoch als Argmin ab.",
+        "membershipEvidence": {
+          "solutionPath": "Ein rng in dokumentierter Reihenfolge (erst Init, dann Permutation) erzeugen, letzte k Indizes als Validierung nehmen, pro Epoche beide Verluste notieren, Updates nur auf Trainingsdaten fahren und best_val_epoch als int(argmin(val_loss)) bestimmen.",
+          "referenceModel": "Geseedete MLP-Trainingspipeline mit rng-Reihenfolgevertrag; ausführbare Autorität ist der Pyodide-Referenzsolver gegen die dokumentierte rng-Erwartung.",
+          "errorHypotheses": [
+            "Updates auch auf Validierungsdaten gerechnet",
+            "rng-Reihenfolge oder rng-Anzahl weicht vom Vertrag ab",
+            "best_val_epoch falsch indiziert oder nicht als int gegossen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "one-rng-init-split-val-curves",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-dl-training"
+        ],
+        "moduleHint": "Lektion Training und Kurven (l-dl-training): Final-Boss MLP-Training mit Validierungskurven",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Final-Boss kombiniert Split, Training und Kurvenauswertung; bei der Extraktion ist zu pruefen, ob Split-Logik und Trainingsschleife in kanonische Definitionen aufgeteilt werden, ohne den dokumentierten rng-Reihenfolgevertrag zu brechen."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Ob Split-Logik und Trainingsschleife kuenftig getrennte kanonische Definitionen werden, ohne den dokumentierten rng-Reihenfolgevertrag (erst Init, dann Permutation) zu brechen.",
+        "evidence": "content/exercises/w20.json: w20-e6 dokumentiert genau ein rng in fester Reihenfolge; fuer eine kuenftige Split-Einzelaufgabe steht mit reproduce-seeded-split eine Registry-Familie bereit.",
+        "latestGate": "S4A-v2-Domaenenreview (Block C)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w20-e5 (linear, gleicher Seed-Mechanismus) ist unklar, ob die Validierungskurven eine eigene Familie rechtfertigen.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Aufgeloest: eigene Familie fit-mlp-val-curve-argmin; die Validierungskurven samt rng-Reihenfolgevertrag sind ein eigener Loesungsweg, gemeinsame Seed-Mechanik mit w20-e5 traegt den Prozedurtest nicht."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose val-updated-too (Updates auf Validierungsdaten machen beide Kurven gleich); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose rng-order-deviates (Reihenfolge Init dann Permutation verletzt); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose best-epoch-off-by-one (argmin 0-basiert, int im Bereich [0, epochs)); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w21-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w21",
+      "currentDefinitionId": "w21-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-regularization",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-dropout-regime",
+        "summary": "Ordnet eine Dropout-Konfiguration ihrem Wirkungsregime zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Dropout-Regime einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Dropout-Regime.",
+          "errorHypotheses": [
+            "Dropout-Regime falsch zugeordnet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "inverted-scaling-inference-choice",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-dl-regularization"
+        ],
+        "moduleHint": "Lektion Regularisierung (l-dl-regularization): invertiertes Dropout in der Inference",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'b' bleibt Praedikat der choice-diagnose-Grammatik; Distraktor frische Zufallsmaske zur Inference."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'c' bleibt Praedikat; Distraktor Skalierung mit p in der Inference."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Choice-Praedikat choice === 'd' bleibt Praedikat; Distraktor dauerhaft tote Neuronen."
+        }
+      ]
+    },
+    {
+      "sourceId": "w21-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w21",
+      "currentDefinitionId": "w21-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-regularization",
+        "coEvidence": []
+      },
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-accumulator-count",
+        "summary": "Zählt durch Akkumulation über eine Folge von Elementen oder Schritten.",
+        "membershipEvidence": {
+          "solutionPath": "Akkumulator initialisieren, über die Folge iterieren und den Zählerstand fortschreiben.",
+          "referenceModel": "Akkumulatorzustand über einer endlichen Folge.",
+          "errorHypotheses": [
+            "Startwert oder Update des Akkumulators falsch",
+            "Elemente doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "two-mask-positionwise-and",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-regularization"
+        ],
+        "moduleHint": "Lektion Regularisierung (l-dl-regularization): Überleben durch zwei Dropout-Masken",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 13 bleibt in der numeric-exact-Grammatik konsumiert; Distraktor nur Einsen der zweiten Maske."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 12 bleibt konsumiert; Distraktor nur Einsen der ersten Maske."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat value === 21 bleibt konsumiert; Distraktor Gesamtzahl der Aktivierungen ohne Filter."
+        }
+      ]
+    },
+    {
+      "sourceId": "w21-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w21",
+      "currentDefinitionId": "w21-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-regularization",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "mask-indexing-sum-vs-count-stdout",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-regularization"
+        ],
+        "moduleHint": "Lektion Regularisierung (l-dl-regularization): Boolean-Maske zwischen Summe und Anzahl",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Konkrete Zeilendiagnose der Wertsumme (17 aus den True-Positionen); kuenftiger Konsument ist die lines-diff@k-Zuordnung des output-predict-lines-Archetyps (answer-note-Kanal), first-line-wrong wird heute nicht gelesen."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Konkrete Zeilendiagnose der True-Anzahl (int(mask.sum()) == 4); kuenftig als lines-diff@k-Diagnose konsumierbar, second-line-wrong wird heute nicht gelesen."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "Praedikat element-count-mismatch bleibt in der output-predict-lines-Grammatik (gradePredictOutput) konsumiert; Zeilenzahl-Diagnose von Summe und Anzahl."
+        }
+      ]
+    },
+    {
+      "sourceId": "w21-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w21",
+      "currentDefinitionId": "w21-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-regularization",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "familyGroup": "optimize-update",
+      "cognitiveFamily": {
+        "familyId": "optimize-training-primitive-contract",
+        "summary": "Implementiert Verlust- und Regularisierungsprimitive mit Wertebereichs-Verträgen vor der Rechnung (MSE, BCE mit Clipping, Ceil-Schritte, Dropout, Weight Decay).",
+        "membershipEvidence": {
+          "solutionPath": "Eingangsverträge (Formen, Wertebereiche, Batchgröße) mit ValueError vor der Rechnung prüfen, dann die geschlossene Primitive formelgetreu anwenden und den geforderten Typ (float, int, Array) sicherstellen.",
+          "referenceModel": "Deterministische Primitive-Berechnung mit Guard-Vertrag; ausführbare Autorität ist der Pyodide-Referenzsolver je Funktion, die konkrete Primitive ist Fallparameter.",
+          "errorHypotheses": [
+            "Vertrag nicht oder erst nach der Rechnung geprüft",
+            "Formelsubstanz der Primitive falsch (Clipping, 1/p-Skalierungsrichtung, Decay-Term im Update)",
+            "Rundung beim Restbatch ab- statt aufgerundet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "fixed-mask-dropout-weight-decay-update",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-dl-regularization"
+        ],
+        "moduleHint": "Lektion Regularisierung (l-dl-regularization): dropout_forward und weight_decay_update",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose scale-wrong-direction (mit p statt 1/p skaliert); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose valueerror-missing (Formungleichheit der Maske, p ausserhalb (0,1]); kuenftig als benannte __check-Tests konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose decay-term-missing (lambda·w ausserhalb des Lernraten-Faktors); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w21-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w21",
+      "currentDefinitionId": "w21-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-regularization",
+        "coEvidence": [
+          "c-ml-cv"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-early-stopping-roundtrip",
+        "summary": "Implementiert die Early-Stopping-Patience-Regel als strikten Scan über Epochenverluste plus wertexakten JSON-Zustandsroundtrip.",
+        "membershipEvidence": {
+          "solutionPath": "Verlustfolge scannen (nur strikt kleinere Verluste setzen best weiter, Abbruch bei i − best > patience) und den Zustand via tolist serialisieren sowie mit np.asarray(dtype=float64) exakt wiederherstellen.",
+          "referenceModel": "Deterministischer Scan über die Verlustfolge plus exakte ndarray-Zustandsserialisierung; ausführbare Autorität ist der Pyodide-Referenzsolver für Scan- und Roundtripvertrag.",
+          "errorHypotheses": [
+            "Gleichstand als Verbesserung gewertet und beste Epoche verschoben",
+            "Patience-Grenze um eins daneben (>= statt >)",
+            "ndarrays ohne tolist in den JSON-Zustand gelegt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "patience-scan-json-roundtrip",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-dl-regularization"
+        ],
+        "moduleHint": "Lektion Regularisierung (l-dl-regularization): Early Stopping und JSON-Zustandsroundtrip",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Die Aufgabe bündelt Early-Stopping-Regel und Save/Load; bei der Extraktion ist zu klären, ob beide Teilfaehigkeiten in kanonische Definitionen getrennt werden, und ob der Zustandsvertrag an die Plattform-Persistenzkonventionen (JSON-Export) angepasst werden muss."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Ob Early-Stopping-Regel und Save/Load-Roundtrip kuenftig getrennte kanonische Definitionen werden und ob der Zustandsvertrag an die Plattform-Persistenzkonventionen (JSON-Export) angepasst wird.",
+        "evidence": "content/exercises/w21.json: w21-e5 enthaelt zwei Funktionsgruppen in einer Einreichung mit gemeinsamem deterministischem Zustandsvertrag; der JSON-Roundtrip beruehrt die Plattform-Persistenzkonventionen.",
+        "latestGate": "S4A-v2-Domaenenreview (Block C)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Early Stopping und Save/Load sind zwei Teilfaehigkeiten in einer Aufgabe; die Familiengrenze ist eine Abwaegung.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Wie v1 aufgeloest: eine Familie fit-early-stopping-roundtrip fuer Scan und Roundtrip, weil beide Teile einen gemeinsamen deterministischen Zustandsvertrag teilen und in einer Einreichung geprueft werden; eine kuenftige Aufspaltung bleibt S4D-Autorenfrage."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose tie-updates-best (Gleichstand verschiebt die beste Epoche); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose patience-off-by-one (Abbruch bei i − best > patience); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose tolist-skipped (json.dumps wirft TypeError auf ndarrays, genau der Testfall); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    },
+    {
+      "sourceId": "w21-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w21",
+      "currentDefinitionId": "w21-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-dl-regularization",
+        "coEvidence": [
+          "c-ml-cv"
+        ]
+      },
+      "familyGroup": "fit-model",
+      "cognitiveFamily": {
+        "familyId": "fit-weight-decay-ablation",
+        "summary": "Führt eine faire Weight-Decay-Ablation durch: zweimal train_decay mit identischem Seed, reiner MSE in der Historie, λ·w nur im Gradienten.",
+        "membershipEvidence": {
+          "solutionPath": "train_decay mit Verlusthistorie zu Epochenbeginn (reiner MSE) und Gradient inklusive lam·w implementieren, dann compare_decay mit demselben Seed für lam und 0 aufrufen und Normen sowie Endverluste als floats vergleichen.",
+          "referenceModel": "Ablationsvertrag mit identischem Seed- und Datenvertrag; ausführbare Autorität ist der Pyodide-Referenzsolver für beide Läufe und die Vergleichswerte.",
+          "errorHypotheses": [
+            "Strafterm in den notierten Verlust eingebaut",
+            "für die Ablation verschiedene Seeds verwendet",
+            "Vergleichswerte als np.float64 statt float zurückgegeben"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "same-seed-lambda-zero-comparison",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-dl-regularization"
+        ],
+        "moduleHint": "Lektion Regularisierung (l-dl-regularization): Final-Boss Weight-Decay-Ablation",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Final-Boss verbindet L2-Training und Ablationsmethodik; bei der Extraktion ist zu pruefen, ob train_decay und compare_decay in kanonische Definitionen getrennt werden, ohne die CV-Disziplin (c-ml-cv-Voraussetzung) zu verlieren."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Ob train_decay und compare_decay kuenftig getrennte kanonische Definitionen werden, ohne die CV-Disziplin (c-ml-cv als Voraussetzung) zu verlieren.",
+        "evidence": "content/exercises/w21.json: w21-e6 verlangt identischen Seed und Datenvertrag fuer die Ablation; eine Trennung wuerde die Fairness-Bedingung auf zwei Definitionen verteilen.",
+        "latestGate": "S4A-v2-Domaenenreview (Block C)"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Gegenueber w20-e5 (gleicher SGD-Mechanismus ohne Strafterm) ist die Familienabgrenzung eine Abwaegung.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Wie v1 aufgeloest: eigene Familie fit-weight-decay-ablation wegen L2-Gradiententerm und Ablationsvertrag; derselbe SGD-Mechanismus wie w20-e5 ohne Strafterm begruendet keine gemeinsame Familie."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose penalty-in-loss (Strafterm in der notierten Historie statt nur im Gradienten); konkrete Ursache, kuenftiger Konsument ist der checkId-Kanal des code-test-Archetyps."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose different-seeds (Ablation unfair, nur lam darf sich unterscheiden); kuenftig als benannter __check-Test konsumierbar."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose norm-not-float (np.float64 statt float im Vergleichswert); kuenftiger Konsument ist der checkId-Kanal."
+        }
+      ]
+    }
+  ]
+}

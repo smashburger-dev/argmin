@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-rag-capstone",
+  "projectVersion": "1",
+  "testPaths": [
+    "tests"
+  ],
+  "requiredFiles": [
+    {
+      "path": "src/w30_core.py",
+      "sha256": "2a76096db79156085a00a0e3a171153961ff853485fdbfcf837162b7a28e76af"
+    },
+    {
+      "path": "config/experiment.json",
+      "sha256": "52165e021c438961545ff828ce53ae27c16806a198b8dc282c8419b2ff777248"
+    },
+    {
+      "path": "golden/golden_set.json",
+      "sha256": "387c8b8ba6f94909734dac18e06c1ddca95a2fef0291daa583584f19e1251891"
+    },
+    {
+      "path": "golden/injection_fixtures.json",
+      "sha256": "4b0aa11e2577859ff033bb54bbc522c4c2addce5a31ae9bb1fd533bdce29d807"
+    },
+    {
+      "path": "golden/expected_results.json",
+      "sha256": "6cc7a37386f36893cf5f773c957840ab8cdc8fa08643826c48fe549baa73f05d"
+    },
+    {
+      "path": "tests/test_w35_scope.py",
+      "sha256": "024fcc789b85c6591456c95cec731b9d6c39c4ef0872336300a13b70f7516144"
+    },
+    {
+      "path": "tests/test_w36_pipeline.py",
+      "sha256": "b3db97bbde6b8bfd632d65db5d3569b8e8700e63df20184dfde222839372a485"
+    },
+    {
+      "path": "tests/test_w37_eval_redteam.py",
+      "sha256": "b991562ee5d3ef1ae0948f92cf9cba90dd64ecd98872a1cd49d633445a6e5643"
+    },
+    {
+      "path": "tests/test_w38_repro.py",
+      "sha256": "5195ae1b76f9f241da263217e4fb109eacc909f28f6acd622154a0d69064212b"
+    },
+    {
+      "path": "tests/test_w39_artifacts.py",
+      "sha256": "cd479ba88cf5dc5b7b735cf16998302e64491ddf703cec34a410098cae5b1d49"
+    },
+    {
+      "path": "README.md",
+      "sha256": null
+    },
+    {
+      "path": "src/pipeline.py",
+      "sha256": null
+    },
+    {
+      "path": "src/metrics.py",
+      "sha256": null
+    },
+    {
+      "path": "src/cost.py",
+      "sha256": null
+    },
+    {
+      "path": "src/cards.py",
+      "sha256": null
+    },
+    {
+      "path": "cards/data-card.json",
+      "sha256": null
+    },
+    {
+      "path": "cards/model-card.json",
+      "sha256": null
+    },
+    {
+      "path": "cards/system-card.json",
+      "sha256": null
+    }
+  ],
+  "timeoutSeconds": 120
+}

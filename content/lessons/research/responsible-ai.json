@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-responsible-ai",
+  "version": 1,
+  "locale": "de",
+  "title": "Responsible AI: Subgruppenmetriken, Schwellenwerte unter Paritätsband, Betriebskosten",
+  "objectives": [
+    "False-Positive-Raten und Auswahlraten pro Subgruppe berechnen und Differenzen exakt in Tausendsteln ausweisen",
+    "Schwellenwerte nach der festen Reihenfolge Paritätsband zuerst, dann F1, wählen und Betriebskosten je 1.000 Anfragen deterministisch berechnen",
+    "Risiken mit RPN priorisieren und den Responsible-Bericht nur mit Subgruppen, Parität, Kosten und Restrisiko zustande bringen"
+  ],
+  "competencyIds": [
+    "c-research-responsible"
+  ],
+  "requires": [
+    "c-genai-security",
+    "c-research-cards"
+  ],
+  "estimatedMinutes": 70,
+  "blocks": [
+    {
+      "blockId": "responsible-ai-core",
+      "type": "worked-example",
+      "contentRef": "lessons/research/responsible-ai.md"
+    },
+    {
+      "blockId": "responsible-ai-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/research/responsible-ai-checkpoint.md"
+    },
+    {
+      "blockId": "responsible-ai-apply",
+      "type": "exercise",
+      "contentRef": "lessons/research/responsible-ai.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "fairlearn",
+      "role": "primary",
+      "locator": "Fairlearn-Dokumentation — Gruppenmetriken und Auswahlraten nach Gruppe (fairlearn.metrics)"
+    },
+    {
+      "sourceId": "fairmlbook",
+      "role": "primary",
+      "locator": "Fairness and Machine Learning — Kapitel zu Klassifikation und ungleich verteilten Fehlerraten (nur Lektüre)"
+    },
+    {
+      "sourceId": "aequitas-toolkit",
+      "role": "practice",
+      "locator": "Aequitas-Bias-Toolkit — Berichtsraster für gruppenbezogene Fehlerraten (nur Lektüre)"
+    },
+    {
+      "sourceId": "strubell-energy",
+      "role": "primary",
+      "locator": "Energy and Policy Considerations — Kosten und Energiebedarf als Berichtspflicht (nur Lektüre)"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

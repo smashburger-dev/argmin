@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-dl-regularization",
+  "version": 1,
+  "locale": "de",
+  "title": "Regularisierung, faire Ablation, Save/Load",
+  "objectives": [
+    "L2/Weight-Decay als zusätzlichen Gradiententerm herleiten und das Update exakt ausführen",
+    "Dropout mit fester, per Seed gezogener Maske und invertierter Skalierung umsetzen — als kontrolliertes Konzept, nicht als Zufallsblackbox",
+    "faire Ablationen planen: eine Variable ändern, Seed und Split fixieren",
+    "Early Stopping auf dem Validierungsverlust mit Patience-Regel umsetzen",
+    "Modellzustände als NumPy-Arrays/JSON speichern, laden und reproduzierbar wiederherstellen"
+  ],
+  "competencyIds": ["c-dl-regularization"],
+  "requires": ["c-dl-training", "c-ml-cv"],
+  "estimatedMinutes": 75,
+  "blocks": [
+    {
+      "blockId": "dl-regularization-core",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-regularization.md"
+    },
+    {
+      "blockId": "dl-regularization-checkpoint",
+      "type": "checkpoint",
+      "contentRef": "lessons/deep-learning/dl-regularization-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    { "sourceId": "dlbook-goodfellow", "role": "primary", "locator": "Ch 7.1/7.5/7.12 — Weight Decay und Dropout (nur Lektüre)" },
+    { "sourceId": "pytorch-repro-notes", "role": "practice", "locator": "Notes on Reproducibility — Seeds und deterministische Läufe (nur Lektüre, kein Framework im Browser)" },
+    { "sourceId": "karpathy-nanogpt", "role": "reference", "locator": "nanoGPT — Checkpointing/Seed-Praxis als Lektüre (MIT)" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

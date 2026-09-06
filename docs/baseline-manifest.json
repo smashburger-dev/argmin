@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-08-29",
+  "project": "ki-lernplattform",
+  "purpose": "Pre-refactor private baseline for the approved architecture and foundations plan.",
+  "git": {
+    "repository": "Lifemaxxing",
+    "branch": "main",
+    "projectWasUntracked": true,
+    "unrelatedDirtyStatePresent": true,
+    "commitScope": "ki-lernplattform only",
+    "pushAuthorized": false
+  },
+  "inventory": {
+    "files": 858,
+    "bytes": 73331388,
+    "topLevel": {
+      "vendor": { "files": 699, "bytes": 48079122 },
+      "build-public": { "files": 83, "bytes": 24131700 },
+      "graphify-out": { "files": 10, "bytes": 415205 },
+      "assets": { "files": 15, "bytes": 198011 },
+      "content": { "files": 8, "bytes": 171390 },
+      "docs": { "files": 13, "bytes": 109564 },
+      "tools": { "files": 9, "bytes": 97418 },
+      "spikes": { "files": 6, "bytes": 59835 },
+      "tests": { "files": 10, "bytes": 58626 }
+    },
+    "largestTrackedCandidate": {
+      "path": "vendor/pyodide/pyodide.asm.wasm",
+      "bytes": 9597831
+    }
+  },
+  "stagedBaseline": {
+    "files": 702,
+    "bytes": 46356870,
+    "outsideProjectPaths": 0,
+    "forbiddenGeneratedOrPrivatePaths": 0,
+    "symlinks": 0,
+    "secretMatches": 0,
+    "diffCheck": {
+      "status": "WARN",
+      "reason": "Pre-existing upstream whitespace in 146 vendored files and two generated Numbas artifacts; vendor content is intentionally not reformatted."
+    }
+  },
+  "localPrerequisites": {
+    "portableClone": false,
+    "reason": "Root content validation and the W1 local-reading acceptance flow require the ignored library and library-private symlinks. Public portability is a later public-first compiler gate."
+  },
+  "excludedLocalArtifacts": [
+    "build-public/",
+    "graphify-out/",
+    "library -> ../research/ki-lernroadmap/library-staging/sources",
+    "library-private -> ../research/ki-lernroadmap/library-staging/private-extracts",
+    ".tmp-acceptance-*/",
+    "vendor/tmp/",
+    ".env*",
+    "*.local.json"
+  ],
+  "secretAudit": {
+    "scope": ["assets/", "content/", "tools/", "docs/", "tests/", "spikes/"],
+    "patterns": [
+      "OpenAI-style keys",
+      "GitHub tokens",
+      "Slack tokens",
+      "AWS access keys",
+      "private-key PEM headers",
+      "assigned API-key literals"
+    ],
+    "matches": 0,
+    "result": "PASS"
+  },
+  "checks": [
+    {
+      "command": "node --test tests/",
+      "result": "PASS",
+      "tests": 90,
+      "failed": 0
+    },
+    {
+      "command": "node tools/validate_content.mjs",
+      "result": "PASS",
+      "facts": {
+        "weeks": 39,
+        "hours": 390,
+        "sources": 20,
+        "exercises": 27,
+        "authoredExerciseFiles": 2,
+        "localReadingTargets": 14,
+        "cumulativeReferences": 62,
+        "futureCumulativeReferences": 60
+      }
+    },
+    {
+      "command": "node tools/acceptance_cdp.mjs",
+      "result": "PASS"
+    },
+    {
+      "command": "node tools/acceptance_w01_cdp.mjs",
+      "result": "PASS"
+    }
+  ],
+  "verifiedIssues": [
+    {
+      "id": "BASE-PY-001",
+      "severity": "high",
+      "summary": "Learner globals persist across Pyodide runs in the same worker.",
+      "evidence": "A second run observed state_leak_probe with value 123 from the first run."
+    },
+    {
+      "id": "BASE-RV-001",
+      "severity": "medium",
+      "summary": "The queue stamps fsrs mode at the threshold but still calculates the due date with expanding retrieval.",
+      "evidence": "At activeExerciseCount 150 the queue reported mode fsrs and a 14-day due date while fsrsReviewState returned a different due date."
+    },
+    {
+      "id": "BASE-LIC-001",
+      "severity": "high",
+      "summary": "The public build lacks complete version-specific license and notice artifacts for Pyodide, the Python standard library, NumPy, SymPy and mpmath.",
+      "evidence": "PUBLIC-BUILD.md claims license files exist beside all artifacts, but the allowlist does not include them."
+    }
+  ],
+  "baselinePolicy": {
+    "trackVendoredRuntime": true,
+    "requiredWorkspaceIgnoreOverrides": [
+      "vendor/katex/dist/katex.min.css",
+      "vendor/katex/dist/katex.min.js",
+      "vendor/katex/dist/contrib/auto-render.min.js",
+      "vendor/katex/dist/fonts/*.woff2",
+      "vendor/numbas/resources/numbas-icon.png",
+      "vendor/numbas-src/themes/default/files/resources/numbas-icon.png",
+      "vendor/numbas-src/themes/old-default-2024/files/resources/numbas-icon.png"
+    ],
+    "trackGeneratedPublicBuild": false,
+    "trackPrivateLibrarySymlinks": false,
+    "trackGraphifyOutput": false,
+    "trackExternalResearchCorpus": false
+  }
+}

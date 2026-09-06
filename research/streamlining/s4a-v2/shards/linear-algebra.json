@@ -1,0 +1,1791 @@
+{
+  "shardId": "linear-algebra",
+  "baselineCommit": "1998d57",
+  "entries": [
+    {
+      "sourceId": "w05-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen' (l-linalg-matrices): Produkteintrag c_ij als Skalarprodukt Zeile mal Spalte",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "w05-e1, w05-e12 und f-linalg-matmul-entry-01 teilen Lösungsweg, Integer-Vertrag und Darstellung; nur Zahlen und Eintragsposition unterscheiden sich.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "v2 bestätigt die gemeinsame Familie formula-scalar-product: w05-e1 bleibt statisches CaseTemplate neben dem geseedeten f-linalg-matmul-entry-01; w05-e12 mergt nach Extraktion in dieselbe Familie."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "Exakter Wertvergleich value === 2 bleibt Praedikat der numeric-exact-Grammatik; die c11/c12-Positionsverwechslung bleibt graderseitig diagnostizierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "value === -1 bleibt Praedikat; die unvollständige Summe (nur ein Produkt) bleibt graderseitig diagnostizierbar."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "entry-c12-row-column-dot",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen': Dimensionsbedingung und Ergebnisform des Matrixprodukts prüfen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedDifficultyProfile",
+          "level": "low",
+          "reason": "Schwierigkeit 1 liegt exakt im Standardprofil basic-recall; die Wahl von single-choice statt numerischer Eingabe ist der einzige Darstellungsunterschied zu w05-e1.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Dimensionsprüfung als Aussagenwahl bleibt exakt im Standardprofil basic-recall; das v1-Profil wird unverändert übernommen."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'b' bleibt Praedikat der Choice-Grammatik (gradeChoice); die BA-Definiertheits-Diagnose bleibt verhaltensstabil."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'c' bleibt Praedikat; die Diagnose gegen die Ergebnisform aus inneren Dimensionen bleibt verhaltensstabil."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'd' bleibt Praedikat; die Gegenprüfung der Definiertheitsbedingung bleibt verhaltensstabil."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-matrix-shape",
+        "summary": "Ordnet einer Matrix- oder Vektoroperation die resultierende Shape zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Matrix-Shapes einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Matrix-Shapes.",
+          "errorHypotheses": [
+            "Shape-Folgerung falsch zugeordnet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "ab-defined-ba-undefined",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-independence",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen': Skalarprodukt im R3 komponentenweise berechnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Aufgabe ist unter c-linalg-independence gelistet, inhaltlich aber eine reine Skalarprodukt-Rechnung aus dem Matrixprodukt-Kontext.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Primärlektion und die Spannung zwischen Kompetenzeintrag c-linalg-independence und reiner Skalarprodukt-Rechnung sind Platzierungsfragen und werden bei der S4B-Modulbindung entschieden.",
+          "owner": "Noa",
+          "decision": "Primärlektion festlegen (v1-Empfehlung l-linalg-matrices) und klären, ob der primary Claim auf die Matrizen-Kompetenz wechselt.",
+          "evidence": "v1 notiert l-linalg-independence als Alternative; learningObjective nennt nur die Skalarprodukt-Rechnung, keine Unabhängigkeitsprüfung.",
+          "latestGate": "S4B-Lektions- und Coverage-Bindung"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value === -2 bleibt Praedikat; die Zwischensumme als Endergebnis (fehlender letzter Term) bleibt graderseitig diagnostizierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 4 bleibt Praedikat; der Vorzeichenfehler im letzten Produkt bleibt graderseitig diagnostizierbar."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "dot-product-3d-mixed-signs",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-independence",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-independence"
+        ],
+        "moduleHint": "Lektion 'Lineare Unabhängigkeit': Vielfacherkennung bei Vektorpaaren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Abgrenzung zur Determinantenfamilie (f-linalg-det2-01) ist fachlich klar, beide prüfen aber dieselbe Kompetenz c-linalg-independence.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Trennung in v2 umgesetzt: w05-e4 liegt in classify-independence-multiple (Vielfacherkennung), f-linalg-det2-01 in formula-det2-independence (Determinante); Prozedur- und Diagnosetest trennen die Prüfwerkzeuge."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'b' bleibt Praedikat der Choice-Grammatik; der Fehlschluss Nullverschiedenheit bleibt graderseitig diagnostizierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'c' bleibt Praedikat; die Gegenbeispiel-Diagnose gegen die Immer-unabhängig-Faustregel bleibt verhaltensstabil."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-independence-multiple",
+        "summary": "Entscheidet lineare Abhängigkeit eines Vektorpaars durch Erkennen eines expliziten Vielfachen und Bilden der nichttrivialen Nullkombination.",
+        "membershipEvidence": {
+          "solutionPath": "Ein explizites Vielfaches zwischen den Vektoren erkennen, daraus die nichttriviale Nullkombination bilden und Abhängigkeit beziehungsweise Unabhängigkeit begründen.",
+          "referenceModel": "Konzeptsystem der linearen Abhängigkeit über Vielfachheitsrelation; statisch erwartete Antwort (gradeChoice).",
+          "errorHypotheses": [
+            "Nullverschiedenheit als Unabhängigkeitskriterium missbraucht",
+            "Faustregel 'zwei Vektoren sind immer unabhängig' übernommen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "explicit-multiple-dependence",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra-transformations"
+        ],
+        "moduleHint": "Foundations-Lektion 'Algebra-Transformationen': Ausmultiplizieren mit SymPy-Äquivalenz",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Die Aufgabe gehört inhaltlich zur Foundations-Algebra, liegt aber als Wochenquelle im w05-Shard; eine Familienzugehörigkeit zu Foundations-Definitionen wurde hier nicht abschließend geprüft.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Cross-Shard-Abgleich durchgeführt: der foundations-Shard führt w01-e2 und f-algebra-final-boss-01 in transform-expression-simplify-canonical; w05-e5 tritt derselben Registry-Familie bei und bleibt damit Teil der Foundations-Algebra-Kette."
+        },
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "gradeSympyExpression liest feedbackRules nicht; die Regel 'unparsed' wird nur als errorType, nicht als Regeltext ausgeliefert.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "assets/js/core/graders.js gradeSympyExpression liest feedbackRules nicht; v2 weist Regel 0 dem answer-note-Pfad (SymPy-Nahbereichsdiagnose) und Regel 1 dem input-validation-Pfad (Zeichengate) zu."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "SymPy-Nahbereichsdiagnose (konstanter Term falsch): Läuft als Answer-Note neben der Musterlösung, nicht als Praedikat — die Äquivalenzentscheidung bleibt beim autoritativen SymPy-Test."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "input-validation",
+          "rationale": "Unparsabler Term ist ein Eingabeformproblem vor der fachlichen Bewertung; das Zeichengate (^ beziehungsweise **, explizite Multiplikation) wird als format_errors-Analogon geprüft."
+        }
+      ],
+      "cognitiveFamily": {
+        "familyId": "transform-expression-simplify-canonical",
+        "summary": "Überführt Terme durch gleichwertige Umformung in eine kanonische Form.",
+        "membershipEvidence": {
+          "solutionPath": "Term äquivalent umformen und gegen die kanonische Zielform prüfen.",
+          "referenceModel": "Termäquivalenzklasse mit wohldefinierter kanonischer Normalform.",
+          "errorHypotheses": [
+            "Nicht-äquivalente Umformung ausgeführt",
+            "Kanonische Zielform nicht erreicht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "expression-equivalence"
+      },
+      "caseTemplate": {
+        "caseId": "two-linear-factors-quadratic",
+        "graderAdapter": "pyodide-sympy",
+        "authorityMode": "static"
+      },
+      "familyGroup": "transform-terms"
+    },
+    {
+      "sourceId": "w05-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-gauss",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-gauss",
+          "l-linalg-systems"
+        ],
+        "moduleHint": "Lektion 'Gauß-Verfahren': 2×2-System per Substitution lösen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "gradePair erzeugt die swapped-Diagnose mit identischem Text hartcodiert und liest die feedbackRules nicht; die noninteger-Regel ist im Grader nicht erreichbar.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "gradePair erzeugt die swapped-Diagnose hartkodiert, die noninteger-Regel ist im Grader nicht erreichbar; beide Bedingungen werden in der tuple-exact-Grammatik (pair-swapped, pair-noninteger) formalisiert und laufen als answer-notes."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Die hartkodierte swapped-Diagnose des autoritativen gradePair läuft als answer-note und wird mit pair-swapped in der tuple-exact-Grammatik formalisiert."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Die noninteger-Diagnose ist heute im Grader nicht erreichbar; sie läuft als answer-note (nicht-ganzzahlige Eingabe als Rechenfehler-Indikator) und wird mit pair-noninteger erstmals konsument."
+        }
+      ],
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-system-2x2-elimination",
+        "summary": "Löst ein 2×2-Gleichungssystem über Eliminationsstrategie mit Rückeinsetzen zu einem Lösungspaar.",
+        "membershipEvidence": {
+          "solutionPath": "Eliminationswahl treffen, eliminieren, per Rückeinsetzen auflösen und das Lösungspaar angeben.",
+          "referenceModel": "2×2-Linearssystem mit eindeutigem Lösungspaar (Eliminationsstrategie, Rückeinsetzen).",
+          "errorHypotheses": [
+            "Eliminationswahl statt Vorzeichenfehler"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "tuple-exact"
+      },
+      "caseTemplate": {
+        "caseId": "substitution-elimination-pair",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e7",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e7",
+      "entryForm": "composite-placement",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": [
+          "c-linalg-gauss",
+          "c-algebra"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices",
+          "l-linalg-gauss",
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Kein Zielmodul: historische Numbas-Sequenz, retire-blocked ohne ausführbaren Review",
+        "reviewEligible": false
+      },
+      "persistence": {
+        "status": "retire-blocked",
+        "note": "Retired nach expliziter S1B-Freigabe (Rückbauentscheidung Numbas, lokale Runtime widerspricht dem Public-Build); historische Attempts und Evidence bleiben unter der definitionId w05-e7 lesbar, die v1-Matrixzeile wird nicht gelöscht."
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Privater Numbas-Fall: Exam-Quelldatei und Runtime liegen außerhalb des Public-Builds; jede Migration muss den fail-closed-Status erneut prüfen.",
+          "Score-Semantik (Punktestand statt richtig/falsch) braucht eine bewusste Entscheidung, wie numbas-updateScore-Attempts in v3-Exclusions einfließen."
+        ],
+        "disposition": "deferred-to-domain-migration",
+        "owner": "Noa",
+        "decision": "Festlegen, wie numbas-updateScore-Attempts (Punktestand statt richtig/falsch) in die v3-Exclusions überführt werden, bevor die Retire-Route final abgeschlossen wird.",
+        "evidence": "Retire erfolgt nach expliziter S1B-Freigabe; Sequenz- und Score-Semantik sind im compositePlacement-Vertrag dokumentiert, die fachlichen Teilziele laufen über w05-e1, w05-e5, w05-e6.",
+        "latestGate": "Domainmigration S4D2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "persistenceCompatibility.status",
+          "level": "medium",
+          "reason": "Der Numbas-Adapter schreibt exerciseId statt definitionId; die v3-Normalisierung leitet definitionId daraus ab, ein Alias-Mechanismus für die Ersatzroute ist aber nicht in allen Pfaden geprüft.",
+          "disposition": "deferred-to-domain-migration",
+          "rationale": "Der Numbas-Adapter schreibt exerciseId statt definitionId; die Alias-Route ist nicht in allen Pfaden geprüft und muss vor der Attempt-Überführung verifiziert werden.",
+          "owner": "Noa",
+          "decision": "Alias-Mechanismus exerciseId zu definitionId der Numbas-Attempts bei der Domainmigration gegen normalizeAttemptV3 verifizieren.",
+          "evidence": "assets/js/core/numbas_adapter.js schreibt exerciseId; die v3-Normalisierung leitet definitionId daraus ab, ein Alias-Mechanismus ist nicht in allen Pfaden geprüft.",
+          "latestGate": "Domainmigration S4D2"
+        },
+        {
+          "field": "targetAction",
+          "level": "high",
+          "reason": "Der Public-Ersatz deckt die drei fachlichen Teilziele ab, nicht aber automatisch die geführte Sequenz und die lokale Score-Semantik der Numbas-Prüfung.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Sequenz- und Score-Semantik sind im Composite-Vertrag dokumentiert; ob damit alle didaktischen Elemente der Numbas-Prüfung extrahiert sind oder weiteres verworfen wird, entscheidet Noa.",
+          "owner": "Noa",
+          "decision": "Bestätigen, dass sequenceContract und partialScoreContract die Extraktion abschließen und keine weiteren Elemente aus der Numbas-Prüfung gerettet werden müssen.",
+          "evidence": "Geführte Dreiteilung und verzögerte Musterlösung sind im compositePlacement dokumentiert; die fachlichen Teilziele laufen über w05-e1, w05-e5, w05-e6.",
+          "latestGate": "Domainmigration S4D2"
+        }
+      ],
+      "feedbackDispositions": [],
+      "compositePlacement": {
+        "summary": "Geführte Numbas-Prüfungssequenz, die über die drei Einzelteile hinaus Sequenzdisziplin und Selbstregulation verlangt: eigener Lösungsversuch vor der verzögert sichtbaren Musterlösung.",
+        "status": "retired",
+        "historicalArchetypeId": "numbas-exam-retired",
+        "components": [
+          {
+            "sourceId": "w05-e1",
+            "role": "Numerischer Einstieg: Produkteintrag c_ij als Skalarprodukt Zeile mal Spalte (Numbas numberentry, exakt bewertet)."
+          },
+          {
+            "sourceId": "w05-e5",
+            "role": "Zweiter Teil: zweifachen Linearfaktor zur Normalform ax^2+bx+c ausmultiplizieren (öffentlicher Ersatzpfad über SymPy-Äquivalenz)."
+          },
+          {
+            "sourceId": "w05-e6",
+            "role": "Abschluss: 2×2-System per Elimination lösen, das Lösungspaar (x, y) angeben und in beiden Gleichungen prüfen."
+          }
+        ],
+        "sequenceContract": "Feste geführte Dreiteilung (Produkteintrag, Termvereinfachung, Systemlösung) über etwa 20 Minuten; die Musterlösung (advice) wird erst nach dem eigenen Versuch sichtbar, vorzeitiges Anzeigen zählt nicht als Beherrschung.",
+        "partialScoreContract": "Historischer Numbas-Teilscore 0 bis 4 über die drei Teilaufgaben (numberentry exakt, jme numerisch gesampelt mit vsetrangepoints 10 im Bereich [-2,3]); Bestehgrenze 50 Prozent; Score-Sync über numbas:event:updateScore ohne zukünftigen Runtime-Zielpfad."
+      }
+    },
+    {
+      "sourceId": "w05-e8",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e8",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-numpy-basics",
+        "coEvidence": [
+          "c-linalg-matrices"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-numpy-shape-contracts",
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'NumPy-Shape-Verträge': matvec mit Assert-Vertrag implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "gradePython wertet ausschließlich Testergebnisse aus; die beiden feedbackRules (shape-error-missing, wrong-result) werden von keinem Graderpfad gelesen.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "gradePython wertet ausschließlich Testergebnisse aus; beide Regeln erhalten den answer-note-Pfad über den checkId-Kanal der benannten Tests."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Der ausbleibende Assert-Test schlägt unter stabiler checkId fehl und mappt auf die Diagnose Shape-Prüfung fehlt oder steht nach der Multiplikation (checkId-Kanal des code-test)."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Der Wert- und Shape-Test diagnostiziert die verkehrte Operandenreihenfolge v @ A über den checkId-Kanal; konkrete Fehlerursache statt generischer Hinweis."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-matvec-shape-contract",
+        "summary": "Sequenziert eine Matrix-Vektor-Operation mit vorangestelltem Dimensionsvertrag: Normalisierung, Assert-Prüfung, erst dann die Operation.",
+        "membershipEvidence": {
+          "solutionPath": "Eingaben normalisieren, den Dimensionsvertrag (ndim, innere Maße) vor der Operation prüfen beziehungsweise anordnen und erst dann A @ v zurückgeben; Distraktoren aussortieren.",
+          "referenceModel": "Gemeinsame matvec-Referenzimplementierung (np.asarray, Assertion-Kette, A @ v); Prüfung über getrennte Pyodide-Tests (w05-e8) beziehungsweise die eingefrorene Lösungssequenz (w05-e14).",
+          "errorHypotheses": [
+            "Vertragsschritt fehlt oder steht nach der Operation",
+            "Operandenreihenfolge vertauscht (v @ A, vertauschter Assert)",
+            "Eingaben unnormalisiert verwendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "implement-matvec-with-assert",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e9",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e9",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen': Dimensionsbedingung des Matrixprodukts begründen (manual-rubric)",
+        "reviewEligible": false
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "Keine feedbackRules vorhanden; die Rubrik ist der Feedbackmechanismus, nicht der Regelkanal.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "no-rules spiegelt die Quelle exakt wider (Rubrik statt Regelkanal); feedbackDispositions bleibt deshalb leer."
+        }
+      ],
+      "feedbackDispositions": [],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "rationale-note"
+      },
+      "caseTemplate": {
+        "caseId": "column-picture-self-assessment",
+        "graderAdapter": "manual-rubric",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e10",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e10",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-independence",
+        "coEvidence": [
+          "c-linalg-gauss"
+        ]
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-independence",
+          "l-linalg-gauss"
+        ],
+        "moduleHint": "Lektion 'Lineare Unabhängigkeit': Rang über Gauß-Elimination und Pivotzeilen zählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "Die kanonische Diagnose-Definition f-linalg-rank-system-debug-01 teilt das Thema Rang, prüft aber Pivotstruktur und Lösungsfälle als Choice, nicht die Elimination selbst.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Trennung umgesetzt: w05-e10 liegt in transform-rank-dependence-rowops (numerische Elimination mit rank3-Solver), f-linalg-rank-system-debug-01 in classify-rank-solution-case (Diagnose aus fertiger Stufenform)."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 3 bleibt Praedikat; die übersehene Nullzeile (Rang zu hoch) bleibt graderseitig diagnostizierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 1 bleibt Praedikat; die falsche Abhängigkeitsvermutung (Rang zu niedrig) bleibt graderseitig diagnostizierbar."
+        }
+      ],
+      "cognitiveFamily": {
+        "familyId": "transform-rank-dependence-rowops",
+        "summary": "Prüft lineare Abhängigkeit bzw. Rang von Zeilen über Zeilenoperationen.",
+        "membershipEvidence": {
+          "solutionPath": "Zeilenoperationen systematisch anwenden und Rang bzw. Abhängigkeit ablesen.",
+          "referenceModel": "Zeilenvektorsystem bzw. Matrix mit wohldefiniertem Rang.",
+          "errorHypotheses": [
+            "Lineare Abhängigkeit übersehen",
+            "Unzulässige Zeilenoperation ausgeführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "rank3-with-null-row",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "familyGroup": "transform-terms"
+    },
+    {
+      "sourceId": "w05-e11",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e11",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-gauss",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-gauss"
+        ],
+        "moduleHint": "Lektion 'Gauß-Verfahren': Additionstechnik zum Eliminieren (Merge-Ziel Systemfamilie)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "merge-map-required",
+        "mergeInto": "transform-system-2x2-elimination"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Merge-Entscheidung gegen w05-e6 braucht Freigabe, weil die Additionstechnik als eigener Case-Type erhalten werden muss.",
+          "Persistenz: Merge-Map oder Alias für bestehende w05-e11-Attempts muss vor Umsetzung fixiert werden."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Merge nach Extraktion freigeben: Die Additionstechnik ist als eigener Case (addition-elimination-pair) in transform-system-2x2-elimination dokumentiert.",
+        "evidence": "Vollständige Falltyp-Extraktion: identischer Solver solveLinear2, identischer Pair-Vertrag und Probe wie w05-e6; nur die Eliminationswahl (Addition statt Substitution) unterscheidet den Falltyp.",
+        "latestGate": "Domainmigration S4D2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Die Additionstechnik ist ein echter Fallunterschied zur Substitution in w05-e6; ob das eine eigene Familie oder nur ein Case-Type rechtfertigt, ist eine Abgrenzungsentscheidung.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Die Additionstechnik ist ein echter Fallunterschied zur Substitution; ob Merge oder eigener Case genügt, ist als Freigabe in der Entscheidungsqueue.",
+          "owner": "Noa",
+          "decision": "Merge nach Extraktion freigeben: Additionstechnik als eigener Case (addition-elimination-pair) in transform-system-2x2-elimination erhalten.",
+          "evidence": "Vollständige Falltyp-Extraktion: identischer Solver solveLinear2 und Pair-Vertrag wie w05-e6, didaktischer Gehalt in preservedDidacticContent gesichert.",
+          "latestGate": "Domainmigration S4D2"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Die hartkodierte swapped-Diagnose des autoritativen gradePair läuft als answer-note und wird mit pair-swapped in der tuple-exact-Grammatik formalisiert."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Die noninteger-Diagnose ist heute im Grader nicht erreichbar; sie läuft als answer-note (nicht-ganzzahlige Eingabe als Rechenfehler-Indikator) und wird mit pair-noninteger erstmals konsument."
+        }
+      ],
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-system-2x2-elimination",
+        "summary": "Löst ein 2×2-Gleichungssystem über Eliminationsstrategie mit Rückeinsetzen zu einem Lösungspaar.",
+        "membershipEvidence": {
+          "solutionPath": "Eliminationswahl treffen, eliminieren, per Rückeinsetzen auflösen und das Lösungspaar angeben.",
+          "referenceModel": "2×2-Linearssystem mit eindeutigem Lösungspaar (Eliminationsstrategie, Rückeinsetzen).",
+          "errorHypotheses": [
+            "Eliminationswahl statt Vorzeichenfehler"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "tuple-exact"
+      },
+      "caseTemplate": {
+        "caseId": "addition-elimination-pair",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e12",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e12",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen': Produkteintrag mit negativen Faktoren (Merge-Ziel Skalarproduktfamilie)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "merge-map-required",
+        "mergeInto": "formula-scalar-product"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Merge-Entscheidung gegen w05-e1 braucht Freigabe, weil die Feedbackregeln gegen Teilsummen-Fehler vor dem Merge in die Familie extrahiert werden müssen.",
+          "Persistenz: Merge-Map oder Alias für bestehende w05-e12-Attempts muss vor Umsetzung fixiert werden."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Merge nach Extraktion freigeben: Negative Faktoren und Position c11 sind als Case (entry-c11-negative-factors) in formula-scalar-product dokumentiert.",
+        "evidence": "Vollständige Falltyp-Extraktion: Feedbackregeln gegen Teilsummen-Fehler (value === 4, value === -8) sind als grader-predicate-Dispositions erhalten; identischer Solver matmulEntry wie w05-e1.",
+        "latestGate": "Domainmigration S4D2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Der Negative-Zahlen-Case ist didaktisch dünn, aber die Feedbackregeln gegen Teilsummen-Fehler sind konkret und im Seed-Generator der frischen Familie so nicht abgedeckt.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Der Negative-Zahlen-Case ist didaktisch dünn, aber die Teilsummen-Feedbackregeln sind konkret und müssen vor dem Merge extrahiert sein; Freigabe steht aus.",
+          "owner": "Noa",
+          "decision": "Merge nach Extraktion freigeben: Feedbackregeln gegen Teilsummen-Fehler sind als grader-predicate-Dispositions dokumentiert.",
+          "evidence": "Vollständige Falltyp-Extraktion: value === 4 und value === -8 bleiben erhalten; identischer Solver matmulEntry und Vertrag wie w05-e1.",
+          "latestGate": "Domainmigration S4D2"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 4 bleibt Praedikat; der Teilsummen-Fehler (nur erstes Produkt) bleibt graderseitig diagnostizierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "value === -8 bleibt Praedikat; der Teilsummen-Fehler (nur zweites Produkt) bleibt graderseitig diagnostizierbar."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "entry-c11-negative-factors",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e13",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e13",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-independence",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen': Skalarprodukt mit Vorzeichenmischung (Merge-Ziel Skalarproduktfamilie)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "merge-map-required",
+        "mergeInto": "formula-scalar-product"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Merge-Entscheidung gegen w05-e3 braucht Freigabe, weil die Vorzeichen-Feedbackregeln vor dem Merge in die Familie extrahiert werden müssen.",
+          "Persistenz: Merge-Map oder Alias für bestehende w05-e13-Attempts muss vor Umsetzung fixiert werden."
+        ],
+        "disposition": "requires-noa-decision",
+        "owner": "Noa",
+        "decision": "Merge nach Extraktion freigeben: Die härtere Vorzeichenmischung ist als Case (dot-product-double-negative) in formula-scalar-product dokumentiert.",
+        "evidence": "Vollständige Falltyp-Extraktion: Vorzeichen-Feedback (value === 14, value === 34) ist als grader-predicate-Dispositions erhalten; identischer Solver dotProduct und Fehlermuster wie w05-e3.",
+        "latestGate": "Domainmigration S4D2"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "targetAction",
+          "level": "medium",
+          "reason": "Gegenüber w05-e3 gibt es keinen neuen Lösungsweg, aber die Feedbackregeln zum abgebrochenen Zwischenergebnis sind konkret und sollten in die Familie wandern.",
+          "disposition": "requires-noa-decision",
+          "rationale": "Kein neuer Lösungsweg gegenüber w05-e3, aber die Vorzeichen-Feedbackregeln müssen vor dem Merge in die Familie wandern; Freigabe steht aus.",
+          "owner": "Noa",
+          "decision": "Merge nach Extraktion freigeben: Vorzeichen-Feedback ist als grader-predicate-Dispositions dokumentiert.",
+          "evidence": "Vollständige Falltyp-Extraktion: value === 14 und value === 34 bleiben erhalten; identischer Solver dotProduct und Fehlermuster wie w05-e3.",
+          "latestGate": "Domainmigration S4D2"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 14 bleibt Praedikat; das abgebrochene Zwischenergebnis (letzter Term fehlt) bleibt graderseitig diagnostizierbar."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 34 bleibt Praedikat; der Vorzeichenfehler im Produkt bleibt graderseitig diagnostizierbar."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "dot-product-double-negative",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e14",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e14",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-numpy-basics",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-numpy-shape-contracts",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektion 'NumPy-Shape-Verträge': matvec-Referenzablauf als Parsons-Sequenz ordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Abgrenzung zur Schreibaufgabe w05-e8 ist klar (Lesen und Ordnen gegen Implementieren), beide teilen aber dieselbe Referenzimplementierung.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "v2 wendet die Mitgliedschaftstests an: w05-e14 und w05-e8 teilen die Solution-Schablone (Normalisierung, Assert, Rückgabe) und dasselbe Referenzmodell (matvec-Referenzimplementierung); die Antwortform ist explizit keine Familiengrenze, daher eine Familie mit zwei Archetypen."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "order-length-mismatch bleibt das einzige Praedikat der program-ordering-Grammatik (parsonsDiagnosis); Laengenabweichung nach Distraktor-Aussortierung."
+        }
+      ],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-matvec-shape-contract",
+        "summary": "Sequenziert eine Matrix-Vektor-Operation mit vorangestelltem Dimensionsvertrag: Normalisierung, Assert-Prüfung, erst dann die Operation.",
+        "membershipEvidence": {
+          "solutionPath": "Eingaben normalisieren, den Dimensionsvertrag (ndim, innere Maße) vor der Operation prüfen beziehungsweise anordnen und erst dann A @ v zurückgeben; Distraktoren aussortieren.",
+          "referenceModel": "Gemeinsame matvec-Referenzimplementierung (np.asarray, Assertion-Kette, A @ v); Prüfung über getrennte Pyodide-Tests (w05-e8) beziehungsweise die eingefrorene Lösungssequenz (w05-e14).",
+          "errorHypotheses": [
+            "Vertragsschritt fehlt oder steht nach der Operation",
+            "Operandenreihenfolge vertauscht (v @ A, vertauschter Assert)",
+            "Eingaben unnormalisiert verwendet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "program-ordering"
+      },
+      "caseTemplate": {
+        "caseId": "distractor-sort-sequencing",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e15",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e15",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-systems",
+          "l-foundations-python-state"
+        ],
+        "moduleHint": "Lektion 'Lineare Systeme': Spaltenbild als Python-Trace nachvollziehen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "lessonIds",
+          "level": "low",
+          "reason": "Die Aufgabe verbindet Mathematik (Spaltenbild) und Code-Lesen; die Primärzuordnung zur systems-Lektion ist inhaltlich, nicht über skillIds begründet.",
+          "disposition": "deferred-to-s4b",
+          "rationale": "Die Primärzuordnung der Lektion (Spaltenbild gegen Tracing-Ergänzung) ist eine Platzierungsfrage der S4B-Modulbindung.",
+          "owner": "Noa",
+          "decision": "Primärlektion festlegen: l-linalg-systems (Spaltenbild) oder l-foundations-python-state (Tracing-Ergänzung).",
+          "evidence": "Beide Lektions-IDs sind in v1 belegt; die Primärzuordnung ist inhaltlich, nicht über skillIds begründet.",
+          "latestGate": "S4B-Lektionsbindung"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value:b0+value:b1 bleibt Praedikat der state-trace-Grammatik in der Reihenfolge von parameters.variables (gradeCodeTrace)."
+        }
+      ],
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "trace-column-combination",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "w05-e16",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "w05-e16",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektion 'Matrizen': Zeilenprodukte einer matvec-Schleife vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Abgrenzung zur kanonischen shape-predict-Definition ist fachlich klar (numerische Zeilenprodukte gegen Broadcasting-Shape), beide sind aber predict-output.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Trennung umgesetzt: w05-e16 liegt in formula-scalar-product (numerische Zeilenprodukte), f-numpy-shape-predict-01 in validate-shape-contract (Broadcasting-Shape); der identische Graderpfad ist keine Familiengrenze, der Lösungsweg trennt."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "element-count-mismatch bleibt Praedikat der predict-Grammatik (gradePredictOutput); die falsch vorhergesagte Listengroesse bleibt graderseitig diagnostizierbar."
+        }
+      ],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "predict-row-products-list-output",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "f-linalg-column-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-linalg-column-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-systems",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-systems"
+        ],
+        "moduleHint": "Lektion 'Lineare Systeme': Spaltenkombination als Choice erkennen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die Feedbackregel nutzt if 'swapped-target' statt des graderseitig erwarteten Musters choice === 'id' und wird von gradeChoice deshalb nicht gelesen.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Das if-Muster 'swapped-target' wird von gradeChoice nicht gelesen; die Distraktor-Diagnose läuft künftig als answer-note mit Angleichung an die Choice-Grammatik."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Distraktor-Diagnose zum Zielvektor-Trugbild (Einträge von b sind das Ergebnis, nicht die Koeffizienten); läuft als answer-note, sobald das Regel-Muster an die Choice-Grammatik (choice === id) angeglichen ist."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-column-combination",
+        "summary": "Erkennt die Koeffizienten einer Spaltenkombination durch komponentenweises Nachrechnen.",
+        "membershipEvidence": {
+          "solutionPath": "Spaltenkombination komponentenweise nachrechnen und die passenden Koeffizienten aus den Antwortoptionen wählen.",
+          "referenceModel": "Spaltenbild: Zielvektor als Linearkombination gegebener Spalten.",
+          "errorHypotheses": [
+            "Zielvektor mit Koeffizienten verwechselt",
+            "Nur eine Spalte berücksichtigt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "recognize-column-sum",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "f-linalg-column-vector-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-linalg-column-vector-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-systems",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-systems"
+        ],
+        "moduleHint": "Lektion 'Lineare Systeme': Koeffizienten einer Spaltenkombination lösen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "gradePair liefert die swapped-Diagnose hartcodiert; die Regel 'swapped' in der Definition wird als Datenobjekt nicht gelesen, inhaltlich aber äquivalent ausgeliefert.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "gradePair liefert die swapped-Diagnose hartkodiert und inhaltlich äquivalent zum Regeltext; die Regel läuft als answer-note und wird mit pair-swapped formalisiert."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Die hartkodierte swapped-Diagnose des autoritativen gradePair läuft als answer-note und wird mit pair-swapped in der tuple-exact-Grammatik formalisiert."
+        }
+      ],
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-system-2x2-elimination",
+        "summary": "Löst ein 2×2-Gleichungssystem über Eliminationsstrategie mit Rückeinsetzen zu einem Lösungspaar.",
+        "membershipEvidence": {
+          "solutionPath": "Eliminationswahl treffen, eliminieren, per Rückeinsetzen auflösen und das Lösungspaar angeben.",
+          "referenceModel": "2×2-Linearssystem mit eindeutigem Lösungspaar (Eliminationsstrategie, Rückeinsetzen).",
+          "errorHypotheses": [
+            "Eliminationswahl statt Vorzeichenfehler"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "tuple-exact"
+      },
+      "caseTemplate": {
+        "caseId": "solve-for-coefficients-pair",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "f-linalg-det2-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "f-linalg-det2-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-independence",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-independence"
+        ],
+        "moduleHint": "Lektion 'Lineare Unabhängigkeit': Determinante als Unabhängigkeitsbeweis (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedDifficultyProfile",
+          "level": "low",
+          "reason": "Schwierigkeit 2 mit Formelanwendung und Schlussfolgerung liegt exakt im Standardprofil core-application.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Formelanwendung plus Unabhängigkeitsschluss mit kleinen Zahlen bleibt exakt im Standardprofil core-application; Profil unverändert übernommen."
+        }
+      ],
+      "feedbackDispositions": [],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-det2-independence",
+        "summary": "Prüft lineare Unabhängigkeit zweier Spalten über die 2×2-Determinante als geschlossene Formel mit Schluss von det ungleich 0 auf Unabhängigkeit.",
+        "membershipEvidence": {
+          "solutionPath": "Determinante als ad − bc bilden, das Vorzeichen der Nebendiagonale behandeln und aus einem von null verschiedenen Wert auf die Unabhängigkeit der Spalten schließen.",
+          "referenceModel": "Seed-Generator erzeugt 2×2-Matrizen mit nie verschwindender Determinante und liefert den erwarteten Integer (genDet2, 2000 getestete Seeds).",
+          "errorHypotheses": [
+            "Vorzeichen der Nebendiagonale falsch behandelt",
+            "Determinante berechnet, aber den Unabhängigkeitsschluss nicht gezogen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "det2-nonzero-proof",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "f-linalg-final-boss-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-linalg-final-boss-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": [
+          "c-linalg-systems",
+          "c-linalg-gauss",
+          "c-linalg-independence",
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices",
+          "l-linalg-gauss",
+          "l-linalg-independence",
+          "l-numpy-shape-contracts"
+        ],
+        "moduleHint": "Final-Boss-Modul Lineare Algebra: drei Funktionverträge synthetisieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "Keine feedbackRules; Feedback entsteht aus den Testergebnissen im Pyodide-Runner.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "no-rules spiegelt die Quelle wider; Feedback entsteht aus den Testergebnissen im Pyodide-Runner, feedbackDispositions bleibt leer."
+        }
+      ],
+      "feedbackDispositions": [],
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-linalg-contract-synthesis",
+        "summary": "Implementiert Shape-Vertrag, Pivot-Rang und Systemlöser als drei getrennte Funktionverträge in einer Synthese mit rechteckigen und abhängigen Fällen.",
+        "membershipEvidence": {
+          "solutionPath": "Drei Verträge trennen: Shape-Validierung plus matmul, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus np.linalg.solve für das System.",
+          "referenceModel": "Versteckte Pyodide-Testfälle (rechteckige Produkte, abhängige Zeilen, Systemlösungen, Fehlerfälle) als ausführbare Autorität.",
+          "errorHypotheses": [
+            "Shape-Prüfung nach statt vor der Operation",
+            "Pivotspalte ohne Zeilentausch übersprungen",
+            "Einzelnen Testfall hartkodiert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "three-function-synthesis-hidden-tests",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "f-gauss-operation-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-gauss-operation-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-gauss",
+        "coEvidence": []
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-gauss"
+        ],
+        "moduleHint": "Lektion 'Gauß-Verfahren': Gültigkeit von Zeilenoperationen begründen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die Regel nutzt if 'zero-row' statt des graderseitig erwarteten Musters choice === 'zero-row' und wird von gradeChoice daher nicht gelesen.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Das if-Muster 'zero-row' wird von gradeChoice nicht gelesen; die Diagnose läuft künftig als answer-note mit Angleichung an die Choice-Grammatik."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose der Nullskalierung (vernichtet Information, nicht umkehrbar) als konkrete Fehlerursache des Distraktors; läuft als answer-note zur Choice-Grammatik."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-row-operation-validity",
+        "summary": "Beurteilt Zeilenoperationen nach Lösungsmengenerhalt über Umkehrbarkeit und Mitführung der rechten Seite.",
+        "membershipEvidence": {
+          "solutionPath": "Prüfen, welche Operation umkehrbar ist und die vollständige Gleichung einschließlich rechter Seite transformiert, und die zulässige Operation begründen.",
+          "referenceModel": "Konzeptsystem der äquivalenzhaltigen Zeilenoperationen; statisch erwartete Antwort (gradeChoice).",
+          "errorHypotheses": [
+            "Nicht umkehrbare Operation (Nullskalierung, Löschen) als zulässig gewählt",
+            "Mitführung der rechten Seite bei der Operation vergessen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "recognize-invertible-row-operation",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "f-linalg-matmul-entry-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "f-linalg-matmul-entry-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'Matrizen': frisch generierte Produkteinträge berechnen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedDifficultyProfile",
+          "level": "low",
+          "reason": "Schwierigkeit 2 entspricht core-application; gegenüber den statischen Varianten (Schwierigkeit 1) kommt die frische Zahlenvariation hinzu.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Die frische Zahlenvariation über dem Basiswert bleibt core-application; Profil unverändert übernommen."
+        }
+      ],
+      "feedbackDispositions": [],
+      "familyGroup": "formula-apply",
+      "cognitiveFamily": {
+        "familyId": "formula-scalar-product",
+        "summary": "Berechnet Skalarprodukt bzw. Matrixeintrag als Summe der paarweisen komponentenweisen Produkte.",
+        "membershipEvidence": {
+          "solutionPath": "Paarweise komponentenweise Produkte bilden und dann summieren (Zeile mal Spalte).",
+          "referenceModel": "Zwei gleichlange Ganzzahlvektoren; Invariante: Operandenreihenfolge irrelevant.",
+          "errorHypotheses": [
+            "product-sign-error",
+            "component-missed",
+            "row-column-swap",
+            "partial-sum-stopped-early"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "seeded-fresh-entry",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    },
+    {
+      "sourceId": "f-linalg-rank-system-debug-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-linalg-rank-system-debug-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-systems",
+        "coEvidence": [
+          "c-linalg-gauss",
+          "c-linalg-independence"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-gauss",
+          "l-linalg-independence"
+        ],
+        "moduleHint": "Lektion 'Gauß-Verfahren': Stufenform auf Rang und Lösungsfall diagnostizieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die Regel nutzt if 'contradiction' statt des graderseitigen Musters choice === 'contradiction' und wird von gradeChoice deshalb nicht gelesen.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Das if-Muster 'contradiction' wird von gradeChoice nicht gelesen; die Widerspruchs-Diagnose läuft künftig als answer-note mit Angleichung an die Choice-Grammatik."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose des Widerspruchs-Missverständnisses (0=0 ist kein Widerspruch, rechts stünde ein von null verschiedener Wert) als answer-note zur Choice-Grammatik."
+        }
+      ],
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-rank-solution-case",
+        "summary": "Liest aus einer Zeilenstufenform Rang, freie Variable und Lösungsfall gleichzeitig ab, indem Pivotzeilen gezählt und die Nullzeile korrekt gedeutet wird.",
+        "membershipEvidence": {
+          "solutionPath": "Pivotpositionen zählen, die Differenz zur Variablenzahl als freie Variable deuten, die Nullzeile als 0=0 statt als Widerspruch lesen und daraus den Lösungsfall folgern.",
+          "referenceModel": "Konzeptsystem aus Pivotstruktur, Rang, freien Variablen und Lösungsfallen; statisch erwartete Antwort (gradeChoice).",
+          "errorHypotheses": [
+            "Nullzeile als Widerspruch gelesen",
+            "Rang mit der Zeilenzahl verwechselt",
+            "freie Variable übersehen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "rank-two-one-free-variable",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      }
+    },
+    {
+      "sourceId": "f-linalg-shape-debug-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-linalg-shape-debug-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-matrices",
+        "coEvidence": [
+          "c-numpy-basics"
+        ]
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-numpy-shape-contracts",
+          "l-linalg-matrices"
+        ],
+        "moduleHint": "Lektion 'NumPy-Shape-Verträge': elementweise gegen Matrixprodukt reparieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die Regel nutzt if 'sum-all' ohne das graderseitig erwartete Muster choice === 'sum-all' und wird von gradeChoice nicht gelesen.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "Das if-Muster 'sum-all' wird von gradeChoice nicht gelesen; die Diagnose läuft künftig als answer-note mit Angleichung an die Choice-Grammatik."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose der Summen-Verwechslung (Gesamtsumme verliert die geforderte Ausgabe pro Matrixzeile) als answer-note zur Choice-Grammatik."
+        }
+      ],
+      "cognitiveFamily": {
+        "familyId": "validate-shape-contract",
+        "summary": "Prüft Shape- und Broadcast-Verträge von Tensoren und Matrizen.",
+        "membershipEvidence": {
+          "solutionPath": "Die Vertragsregel auf die Operanden-Shapes anwenden und Verletzung bzw. resultierende Shape bestimmen.",
+          "referenceModel": "Shape-/Broadcast-Vertrag mit deterministischer Verletzungsbedingung.",
+          "errorHypotheses": [
+            "Broadcast-Regel falsch angewendet",
+            "Ergebnis-Shape falsch gefolgert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "elementwise-vs-matmul-repair",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "familyGroup": "validate-contract"
+    },
+    {
+      "sourceId": "f-numpy-shape-predict-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "f-numpy-shape-predict-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-numpy-basics",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-numpy-shape-contracts"
+        ],
+        "moduleHint": "Lektion 'NumPy-Shape-Verträge': Ergebnis-Shape mit Broadcasting vorhersagen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "Abgrenzung zu w05-e16 ist fachlich klar (Shape-Regeln gegen numerische Produkte), beide sind aber predict-output mit identischem Graderpfad.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Trennung von w05-e16 umgesetzt: Broadcasting-Shape-Regeln in validate-shape-contract gegen numerische Zeilenprodukte in formula-scalar-product."
+        }
+      ],
+      "feedbackDispositions": [],
+      "cognitiveFamily": {
+        "familyId": "validate-shape-contract",
+        "summary": "Prüft Shape- und Broadcast-Verträge von Tensoren und Matrizen.",
+        "membershipEvidence": {
+          "solutionPath": "Die Vertragsregel auf die Operanden-Shapes anwenden und Verletzung bzw. resultierende Shape bestimmen.",
+          "referenceModel": "Shape-/Broadcast-Vertrag mit deterministischer Verletzungsbedingung.",
+          "errorHypotheses": [
+            "Broadcast-Regel falsch angewendet",
+            "Ergebnis-Shape falsch gefolgert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "broadcast-outer-shape",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "familyGroup": "validate-contract"
+    },
+    {
+      "sourceId": "f-linalg-solve-system-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w05",
+      "currentDefinitionId": "f-linalg-solve-system-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-linalg-gauss",
+        "coEvidence": []
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-linalg-gauss"
+        ],
+        "moduleHint": "Lektion 'Gauß-Verfahren': 2×2-System per Gauß lösen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "semanticClassification",
+          "level": "low",
+          "reason": "Mechanisch ähnlich zu w05-e6/w05-e11 (gleicher Lösungsweg und Vertrag), aber als Seed-Definition mit 2000 Seeds der Überliegerkern der Familie.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "v2 bestätigt die Rolle: f-linalg-solve-system-01 ist der geseedete Kern (authorityMode seeded) von transform-system-2x2-elimination; die Wocheninstanzen migrieren beziehungsweise mergen in diese Familie."
+        }
+      ],
+      "feedbackDispositions": [],
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-system-2x2-elimination",
+        "summary": "Löst ein 2×2-Gleichungssystem über Eliminationsstrategie mit Rückeinsetzen zu einem Lösungspaar.",
+        "membershipEvidence": {
+          "solutionPath": "Eliminationswahl treffen, eliminieren, per Rückeinsetzen auflösen und das Lösungspaar angeben.",
+          "referenceModel": "2×2-Linearssystem mit eindeutigem Lösungspaar (Eliminationsstrategie, Rückeinsetzen).",
+          "errorHypotheses": [
+            "Eliminationswahl statt Vorzeichenfehler"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "tuple-exact"
+      },
+      "caseTemplate": {
+        "caseId": "seeded-gauss-elimination-pair",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      }
+    }
+  ]
+}

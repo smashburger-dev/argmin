@@ -1,0 +1,10 @@
+{
+  "name": "FAQ-Fixturkorpus (W30-Kern)",
+  "zweck": "TODO(Lernende:r): Beschreibe, wofür dieser Korpus im Capstone verwendet wird und wofür ausdrücklich nicht.",
+  "provenienz": "Eingefrorene W30-Fixtur: fünf deutschsprachige FAQ-Dokumente inklusive einer synthetischen Injektions-Fixture, byte-identisch gepinnt über src/w30_core.py (sha256 im check-manifest.json).",
+  "zeitraum": "TODO(Lernende:r): Zeitpunkt des Einfrierens und Stand der Datei nennen.",
+  "subgruppen": ["versand", "garantie", "recht", "rabatt"],
+  "bekannte_limitierungen": [
+    "TODO(Lernende:r): fünf Dokumente, lexikalischer Term-Überlappungs-Retriever, keine echten Nutzenden-Daten."
+  ]
+}

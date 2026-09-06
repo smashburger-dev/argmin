@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/schemas/track.schema.json",
+  "title": "Learning track collection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "locale", "tracks"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "locale": { "const": "de" },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["trackId", "locale", "title", "description", "competencyIds", "milestoneIds", "releaseStatus"],
+        "properties": {
+          "trackId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "locale": { "const": "de" },
+          "title": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1 },
+          "competencyIds": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^c-[a-z0-9-]+$" }
+          },
+          "milestoneIds": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^ms-[a-z0-9-]+$" }
+          },
+          "releaseStatus": {
+            "enum": ["draft", "didactic-reviewed", "browser-verified", "public-approved", "local-only"]
+          }
+        }
+      }
+    }
+  }
+}

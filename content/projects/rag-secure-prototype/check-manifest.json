@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-rag-secure-prototype",
+  "projectVersion": "1",
+  "testPaths": ["tests"],
+  "requiredFiles": [
+    { "path": "src/prototype.py", "sha256": null },
+    { "path": "tests/test_prototype.py", "sha256": "cf6551bdfd1849844e301ed7ab9ed459c0bb17efbef08e9adbb7b6530b8160d8" }
+  ],
+  "timeoutSeconds": 120
+}

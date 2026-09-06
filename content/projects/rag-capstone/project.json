@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-rag-capstone",
+  "version": 1,
+  "locale": "de",
+  "title": "RAG-Capstone: reproduzierbare Pipeline von Scope-Freeze bis Demo",
+  "description": "Fünf Wochen eine Pipeline weiterentwickeln: eingefrorenes Manifest und Stages, config-getriebene Hauptfunktion mit sichtbaren Fehlerzuständen, feste Evaluation mit Subgruppen und defensivem Red-Team gegen den eigenen Toy-Prototyp, Doppellauf-Reproduktion und Abschluss-Artefakte aus eingefrorenen Messwerten.",
+  "runnerMode": "local",
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro",
+    "c-genai-security"
+  ],
+  "starterFiles": [
+    "README.md",
+    "src/w30_core.py",
+    "src/pipeline.py",
+    "src/metrics.py",
+    "src/cost.py",
+    "src/cards.py",
+    "config/experiment.json",
+    "golden/golden_set.json",
+    "golden/injection_fixtures.json",
+    "golden/expected_results.json",
+    "cards/data-card.json",
+    "cards/model-card.json",
+    "cards/system-card.json",
+    "tests/test_w35_scope.py",
+    "tests/test_w36_pipeline.py",
+    "tests/test_w37_eval_redteam.py",
+    "tests/test_w38_repro.py",
+    "tests/test_w39_artifacts.py",
+    "phases.json",
+    "check-manifest.json"
+  ],
+  "solutionFiles": [
+    "solution/pipeline.py",
+    "solution/metrics.py",
+    "solution/cost.py",
+    "solution/cards.py"
+  ],
+  "allowedCommands": [
+    {
+      "program": "python",
+      "args": [
+        "-m",
+        "pytest",
+        "-q",
+        "--disable-warnings",
+        "--maxfail=1",
+        "tests"
+      ]
+    }
+  ],
+  "testBundleId": "rag-capstone-tests-v1",
+  "deliverables": [
+    "Vollständige src/pipeline.py, src/metrics.py, src/cost.py und src/cards.py (Referenz unter solution/)",
+    "Alle fünf Phasen-Testdateien bestanden (Manifest/Hashes, Integration/Timeouts, Evaluation/Red-Team, Reproduktion, Abschluss-Artefakte)",
+    "Ausgefüllte Karten unter cards/ sowie ein README mit Setup, Abhängigkeiten, Konfiguration, Karten, Limitations und bekannten Fehlern"
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft",
+  "legacyWeekId": "w39",
+  "estimatedMinutes": 240
+}

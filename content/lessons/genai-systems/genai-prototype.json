@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-genai-prototype",
+  "version": 1,
+  "locale": "de",
+  "title": "Minimaler abgesicherter GenAI-Prototyp: Stub-Generator, Fixtur-Kontrollen, ehrliche Grenzen",
+  "objectives": [
+    "Retrieval, deterministische Evaluation und Sicherheitskontrollen zu einem minimalen Prototyp mit Stub-Generator zusammenfügen",
+    "Least Privilege, erlaubte/verbotene Aktionen und nachvollziehbare Fehler umsetzen und mit einer Ablation (mit/ohne Kontrolle) messen",
+    "ein Threat Model für den eigenen Prototyp führen und die Grenze zu einem produktiven LLM-System offen dokumentieren"
+  ],
+  "competencyIds": [
+    "c-genai-prototype"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-genai-eval",
+    "c-genai-security"
+  ],
+  "estimatedMinutes": 80,
+  "blocks": [
+    {
+      "blockId": "genai-prototype-core",
+      "type": "worked-example",
+      "contentRef": "lessons/genai-systems/genai-prototype.md"
+    },
+    {
+      "blockId": "genai-prototype-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/genai-systems/genai-prototype-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "nist-airmf",
+      "role": "primary",
+      "locator": "NIST AI RMF — Measure/Manage: Kontrollen messen, bevor man ihnen vertraut"
+    },
+    {
+      "sourceId": "owasp-genai-llm-top10",
+      "role": "reference",
+      "locator": "OWASP Top 10 for LLM and GenAI Applications — nur Verlinkung und Paraphrase (CC BY-SA)"
+    },
+    {
+      "sourceId": "openai-cookbook",
+      "role": "practice",
+      "locator": "OpenAI Cookbook — Muster für abgesicherte Assistenten-Pipelines (MIT)"
+    },
+    {
+      "sourceId": "model-cards-paper",
+      "role": "practice",
+      "locator": "Model Cards — dokumentierte Grenzen als Berichtsform"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

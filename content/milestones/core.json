@@ -1,0 +1,854 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "milestones": [
+    {
+      "milestoneId": "ms-foundations",
+      "locale": "de",
+      "title": "Foundations",
+      "description": "Python-, Algebra- und Lernwerkzeuge für den selbstständigen Einstieg.",
+      "estimatedMinutes": 2400,
+      "competencyIds": [
+        "c-algebra-basics",
+        "c-algebra",
+        "c-python-basics",
+        "c-python-reading",
+        "c-python-functions",
+        "c-python-control-flow",
+        "c-python-collections",
+        "c-python-files-errors",
+        "c-testing-debugging",
+        "c-git-basics",
+        "c-meta-learning"
+      ],
+      "lessonIds": [
+        "l-foundations-algebra",
+        "l-foundations-algebra-transformations",
+        "l-foundations-python-state",
+        "l-foundations-code-reading",
+        "l-foundations-functions",
+        "l-foundations-learning",
+        "l-foundations-control-flow",
+        "l-foundations-collections",
+        "l-foundations-files-errors",
+        "l-foundations-testing-debugging",
+        "l-foundations-git"
+      ],
+      "exerciseDefinitionIds": [
+        "w01-e1",
+        "w01-e2",
+        "w01-e3",
+        "w01-e4",
+        "w01-e5",
+        "w01-e6",
+        "w01-e7",
+        "w01-e8",
+        "w01-e9",
+        "w01-e10",
+        "w01-e11",
+        "f-algebra-equivalence-01",
+        "f-algebra-debug-01",
+        "f-algebra-both-sides-01",
+        "f-algebra-final-boss-01",
+        "f-control-choice-01",
+        "f-control-trace-01",
+        "f-control-parsons-01",
+        "f-control-code-repair-01",
+        "f-data-code-repair-01",
+        "f-collections-output-01",
+        "f-collections-choice-01",
+        "f-files-choice-01",
+        "f-files-parsons-01",
+        "f-testing-parsons-01",
+        "f-testing-choice-01",
+        "f-git-choice-01",
+        "f-git-parsons-01",
+        "f-git-merge-debug-01",
+        "f-meta-error-log-01"
+      ],
+      "projectIds": [
+        "p-foundations-data-checker"
+      ],
+      "coverage": [
+        {
+          "competencyId": "c-algebra-basics",
+          "status": "w01-reuse",
+          "requiredArtifacts": [
+            "lesson",
+            "diagnostic",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-algebra",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-python-basics",
+          "status": "w01-reuse",
+          "requiredArtifacts": [
+            "lesson",
+            "diagnostic",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-python-reading",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "diagnostic",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-python-functions",
+          "status": "w01-reuse",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-python-control-flow",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-python-collections",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-python-files-errors",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-testing-debugging",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-git-basics",
+          "status": "w02-w04-expand",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "project-step"
+          ]
+        },
+        {
+          "competencyId": "c-meta-learning",
+          "status": "w01-reuse",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice"
+          ]
+        }
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "milestoneId": "ms-linear-algebra-numpy-pilot",
+      "locale": "de",
+      "title": "Lineare Algebra und NumPy",
+      "description": "Eigenständige deutsche Lektionen, deterministische Übungen und Browser-Labor für Matrix- und Shape-Kompetenzen.",
+      "estimatedMinutes": 600,
+      "competencyIds": [
+        "c-algebra",
+        "c-python-reading",
+        "c-linalg-matrices",
+        "c-linalg-systems",
+        "c-linalg-gauss",
+        "c-linalg-independence",
+        "c-numpy-basics",
+        "c-meta-learning"
+      ],
+      "lessonIds": [
+        "l-linalg-matrices",
+        "l-linalg-systems",
+        "l-linalg-gauss",
+        "l-linalg-independence",
+        "l-numpy-shape-contracts"
+      ],
+      "exerciseDefinitionIds": [
+        "f-linalg-column-choice-01",
+        "f-linalg-column-vector-01",
+        "f-linalg-shape-debug-01",
+        "f-linalg-rank-system-debug-01",
+        "f-gauss-operation-choice-01",
+        "f-linalg-final-boss-01",
+        "w05-e1",
+        "w05-e2",
+        "w05-e3",
+        "w05-e4",
+        "w05-e5",
+        "w05-e6",
+        "w05-e8",
+        "w05-e9",
+        "w05-e10",
+        "w05-e11",
+        "w05-e12",
+        "w05-e13",
+        "w05-e14",
+        "w05-e15",
+        "w05-e16"
+      ],
+      "projectIds": [],
+      "coverage": [
+        {
+          "competencyId": "c-linalg-systems",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "diagnostic",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-linalg-matrices",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "diagnostic",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-linalg-gauss",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-linalg-independence",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-numpy-basics",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        }
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "milestoneId": "ms-data-ml-classic-ml",
+      "locale": "de",
+      "title": "Daten und klassisches ML (W6-W17)",
+      "description": "Datenbereinigung, EDA, Regression aus Grundoperationen, Baselines, Klassifikationsmetriken, Cross-Validation, Fehleranalyse, Regularisierung, Ensembles, SVM/PCA und ein reproduzierbarer Modellvergleich – browserseitig mit Standardbibliothek und NumPy (ADR-0012).",
+      "estimatedMinutes": 5760,
+      "competencyIds": [
+        "c-pandas-cleaning",
+        "c-eda-viz",
+        "c-grad-regression",
+        "c-ml-baseline",
+        "c-ml-linear",
+        "c-ml-logistic",
+        "c-ml-cv",
+        "c-ml-erroranalysis",
+        "c-ml-regularization",
+        "c-ml-ensembles",
+        "c-ml-svm-pca",
+        "c-ml-repro"
+      ],
+      "lessonIds": [
+        "l-data-cleaning",
+        "l-eda-distributions",
+        "l-grad-regression",
+        "l-ml-baseline",
+        "l-ml-linear",
+        "l-ml-logistic",
+        "l-ml-cv",
+        "l-ml-error-analysis",
+        "l-ml-regularization",
+        "l-ml-ensembles",
+        "l-ml-svm-pca",
+        "l-ml-repro"
+      ],
+      "exerciseDefinitionIds": [
+        "w06-e1",
+        "w06-e2",
+        "w06-e3",
+        "w06-e4",
+        "w06-e5",
+        "w06-e6",
+        "w07-e1",
+        "w07-e2",
+        "w07-e3",
+        "w07-e4",
+        "w07-e5",
+        "w08-e1",
+        "w08-e2",
+        "w08-e3",
+        "w08-e4",
+        "w08-e5",
+        "w09-e1",
+        "w09-e2",
+        "w09-e3",
+        "w09-e4",
+        "w09-e5",
+        "w10-e1",
+        "w10-e2",
+        "w10-e3",
+        "w10-e4",
+        "w10-e5",
+        "w11-e1",
+        "w11-e2",
+        "w11-e3",
+        "w11-e4",
+        "w11-e5",
+        "w12-e1",
+        "w12-e2",
+        "w12-e3",
+        "w12-e4",
+        "w12-e5",
+        "w13-e1",
+        "w13-e2",
+        "w13-e3",
+        "w13-e4",
+        "w13-e5",
+        "w14-e1",
+        "w14-e2",
+        "w14-e3",
+        "w14-e4",
+        "w14-e5",
+        "w15-e1",
+        "w15-e2",
+        "w15-e3",
+        "w15-e4",
+        "w15-e5",
+        "w16-e1",
+        "w16-e2",
+        "w16-e3",
+        "w16-e4",
+        "w16-e5",
+        "w17-e1",
+        "w17-e2",
+        "w17-e3",
+        "w17-e4",
+        "w17-e5"
+      ],
+      "projectIds": [
+        "p-ml-repro-comparison"
+      ],
+      "coverage": [
+        {
+          "competencyId": "c-pandas-cleaning",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-eda-viz",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-grad-regression",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-baseline",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-linear",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-logistic",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-cv",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-erroranalysis",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-regularization",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-ensembles",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-svm-pca",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-ml-repro",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        }
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "milestoneId": "ms-dl-genai",
+      "locale": "de",
+      "title": "Deep Learning und GenAI-Systeme (W18-W30)",
+      "description": "Tensoren, Backpropagation, Training, Regularisierung, Attention, Tokenisierung, Toy-Inferenz, Fine-Tuning-Konzepte, Paper-Synthese, RAG-Retrieval, Evaluation ohne LLM-Grader, defensive GenAI-Sicherheit und ein abgesicherter Prototyp – browserseitig mit Standardbibliothek und NumPy (ADR-0013).",
+      "estimatedMinutes": 7800,
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-dl-autograd",
+        "c-dl-training",
+        "c-dl-regularization",
+        "c-dl-attention",
+        "c-dl-tokenizer",
+        "c-dl-inference",
+        "c-dl-finetuning",
+        "c-dl-papers",
+        "c-genai-rag",
+        "c-genai-eval",
+        "c-genai-security",
+        "c-genai-prototype"
+      ],
+      "lessonIds": [
+        "l-dl-tensors",
+        "l-dl-autograd",
+        "l-dl-training",
+        "l-dl-regularization",
+        "l-tf-attention",
+        "l-tf-tokenizer",
+        "l-tf-inference",
+        "l-tf-finetuning",
+        "l-tf-papers",
+        "l-genai-rag",
+        "l-genai-eval",
+        "l-genai-security",
+        "l-genai-prototype"
+      ],
+      "exerciseDefinitionIds": [
+        "w18-e1",
+        "w18-e2",
+        "w18-e3",
+        "w18-e4",
+        "w18-e5",
+        "w18-e6",
+        "w19-e1",
+        "w19-e2",
+        "w19-e3",
+        "w19-e4",
+        "w19-e5",
+        "w19-e6",
+        "w20-e1",
+        "w20-e2",
+        "w20-e3",
+        "w20-e4",
+        "w20-e5",
+        "w20-e6",
+        "w21-e1",
+        "w21-e2",
+        "w21-e3",
+        "w21-e4",
+        "w21-e5",
+        "w21-e6",
+        "w22-e1",
+        "w22-e2",
+        "w22-e3",
+        "w22-e4",
+        "w22-e5",
+        "w22-e6",
+        "w23-e1",
+        "w23-e2",
+        "w23-e3",
+        "w23-e4",
+        "w23-e5",
+        "w23-e6",
+        "w24-e1",
+        "w24-e2",
+        "w24-e3",
+        "w24-e4",
+        "w24-e5",
+        "w24-e6",
+        "w25-e1",
+        "w25-e2",
+        "w25-e3",
+        "w25-e4",
+        "w25-e5",
+        "w25-e6",
+        "w26-e1",
+        "w26-e2",
+        "w26-e3",
+        "w26-e4",
+        "w26-e5",
+        "w26-e6",
+        "w27-e1",
+        "w27-e2",
+        "w27-e3",
+        "w27-e4",
+        "w27-e5",
+        "w27-e6",
+        "w28-e1",
+        "w28-e2",
+        "w28-e3",
+        "w28-e4",
+        "w28-e5",
+        "w28-e6",
+        "w29-e1",
+        "w29-e2",
+        "w29-e3",
+        "w29-e4",
+        "w29-e5",
+        "w29-e6",
+        "w30-e1",
+        "w30-e2",
+        "w30-e3",
+        "w30-e4",
+        "w30-e5",
+        "w30-e6"
+      ],
+      "projectIds": [
+        "p-rag-secure-prototype"
+      ],
+      "coverage": [
+        {
+          "competencyId": "c-dl-tensors",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-autograd",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-training",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-regularization",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-attention",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-tokenizer",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-inference",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-finetuning",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-dl-papers",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-genai-rag",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-genai-eval",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-genai-security",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-genai-prototype",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        }
+      ],
+      "releaseStatus": "draft"
+    },
+    {
+      "milestoneId": "ms-research-capstone",
+      "locale": "de",
+      "title": "Forschung und Capstone (W31-W39)",
+      "description": "Forschungsfrage und Preregistrierung, Daten-/Modell-/Systemkarten, Responsible AI mit Subgruppen- und Kostenmetriken, Capstone-Baseline mit eingefrorenem Golden Set sowie eine reproduzierbare Multi-Wochen-Pipeline mit fester Evaluation, defensivem Red-Team gegen den eigenen Toy-Prototyp und ehrlicher Dokumentation (ADR-0014).",
+      "estimatedMinutes": 5400,
+      "competencyIds": [
+        "c-research-question",
+        "c-research-cards",
+        "c-research-responsible",
+        "c-research-capstone",
+        "c-capstone-pipeline"
+      ],
+      "lessonIds": [
+        "l-research-question",
+        "l-research-cards",
+        "l-responsible-ai",
+        "l-capstone-baseline",
+        "l-capstone-pipeline"
+      ],
+      "exerciseDefinitionIds": [],
+      "projectIds": [
+        "p-rag-capstone"
+      ],
+      "coverage": [
+        {
+          "competencyId": "c-research-question",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-research-cards",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-research-responsible",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-research-capstone",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review"
+          ]
+        },
+        {
+          "competencyId": "c-capstone-pipeline",
+          "status": "new",
+          "requiredArtifacts": [
+            "lesson",
+            "guided-practice",
+            "evidence-families",
+            "delayed-review",
+            "project-step"
+          ]
+        }
+      ],
+      "releaseStatus": "draft"
+    }
+  ]
+}

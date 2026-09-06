@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w23",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w23-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-dl-tokenizer"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 2301,
+      "masteryEligible": false,
+      "prompt": "Ein reiner Wort-Tokenizer trifft auf „Donaudampfschifffahrtskapitän“. Was macht der Subword-Ansatz stattdessen?",
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das Vokabular wird zur Laufzeit automatisch um dieses Wort erweitert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Das Wort wird zeichenweise gelöscht und durch <code>&lt;pad&gt;</code> ersetzt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Wort wird in bekannte Teile zerlegt (z. B. „Donau“ + „dampf“ + …) — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Das Wort landet komplett in <code>&lt;unk&gt;</code> — Subwords verhindern nur kürzere Sequenzen, nicht OOV.",
+          "correct": false
+        }
+      ],
+      "expectedAnswer": {
+        "correctChoice": "c"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Subwords balancieren zwei Ziele: Vokabular begrenzen und dennoch jedes Wort darstellbar halten — wie geht das für unbekannte Wörter?",
+        "Notfalls zerfällt jedes Wort bis auf Zeichenebene — die Teile sind bekannt, nur die Folge wird länger."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'd'",
+          "then": "Genau das OOV-Problem lösen Subwords: unbekannte Wörter werden zerlegt statt verworfen."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Zur Laufzeit wird nichts gelernt — das Vokabular (mit Merges) steht nach dem Training fest."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Es wird nichts gelöscht: decode(encode(s)) == s bleibt für jeden legalen String erfüllt."
+        }
+      ],
+      "fullSolution": "Subword-Tokenisierung zerlegt seltene oder unbekannte Wörter in bekannte Bestandteile bis hinunter zu Zeichen — OOV verschwindet praktisch, der Preis sind längere Tokenfolgen. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "OOV mit Subwords für unvermeidlich gehalten",
+        "dynamische Vokabularerweiterung zur Laufzeit angenommen",
+        "Round-Trip-Eigenschaft missachtet"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "hf-tokenizers-docs — Summary der Tokenisierungsverfahren (Lektüre)",
+        "statement": "eigenständig entwickelt",
+        "seed": 2301
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w23-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-dl-tokenizer"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 2311,
+      "masteryEligible": true,
+      "prompt": "Ein Subword-Tokenizer startet mit 31 Zeichen-Tokens. Ein BPE-Lauf lernt 62 Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen 4 Sondertokens (etwa <pad>, <unk>, <eos>) dazu. Wie groß ist das Vokabular danach?",
+      "parameters": {
+        "seedGenerator": "genVocabAfterMerges"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genVocabAfterMerges",
+        "defaultSeed": 2311,
+        "defaultExpected": 97
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Das Vokabular setzt sich aus drei Posten zusammen: Zeichen-Tokens am Anfang, genau ein neues Symbol pro gelerntem Merge, dazu reservierte Sondertokens.",
+        "Bei Zielgrößen rückwärts rechnen: Merges = Ziel − Zeichen − Sondertokens; Sondertokens = Ziel − Zeichen − Merges."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 93",
+          "then": "Das ist Zeichen + Merges — die Sondertokens fehlen noch."
+        },
+        {
+          "if": "value === 35",
+          "then": "Das ist Zeichen + Sondertokens — die gelernten Merges fehlen."
+        },
+        {
+          "if": "value === 66",
+          "then": "Die Zeichen sind doppelt gezählt; jede Größe geht genau einmal ein."
+        }
+      ],
+      "fullSolution": "Vokabulargröße = Zeichen + Merges + Sondertokens; jeder Merge fügt genau ein neues Symbol hinzu. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "Sondertokens vergessen",
+        "Merges doppelt gezählt (Symbole und Ausgangspaare)",
+        "bei Zielgrößen die Rückrechnung andersherum aufgestellt"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "hf-tokenizers-docs — Vokabularaufbau (Lektüre); eigene Buchhaltung",
+        "statement": "eigenständig entwickelt",
+        "seed": 2311
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w23-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-dl-tokenizer",
+        "c-python-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 2303,
+      "masteryEligible": true,
+      "prompt": "Encode lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. <code>encode</code> stellt jedes Wort als Zeichen-IDs mit <code>&lt;pad&gt;</code> am Anfang und <code>&lt;/w&gt;</code> am Wortende dar.",
+      "parameters": {
+        "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\n\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\n\nids = encode(\"cab\")\nprint(ids)\nprint(len(set(ids)) == len(ids))"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "[0, 4, 2, 3, 1]\nTrue"
+      },
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "hints": [
+        "Erst der feste <code>&lt;pad&gt;</code>-Index, dann die Zeichen von links, dann der End-of-Word-Marker.",
+        "Der zweite print prüft, ob alle IDs verschieden sind — Anfangs- und Endmarker zählen mit."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die ID-Liste hat 5 Einträge: pad, drei Zeichen, Marker."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Liste, dann True/False."
+        }
+      ],
+      "fullSolution": "„cab“: <code>&lt;pad&gt;</code>=0, dann c=4, a=2, b=3, dann <code>&lt;/w&gt;</code>=1 → <code>[0, 4, 2, 3, 1]</code>. Alle fünf IDs sind verschieden → <code>True</code>.",
+      "typicalErrors": [
+        "Zeichenreihenfolge beim Ablesen vertauscht",
+        "Marker-IDs vergessen",
+        "set-Vergleich als False eingeschätzt"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "hf-tokenizers-docs — Encode/Decode mit End-of-Word-Marker (Lektüre); Predict-Run nach Sentance/PRIMM 2019",
+        "statement": "eigenständig entwickelt",
+        "seed": 2303
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (lokale Ausführung)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w23-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 2304,
+      "masteryEligible": true,
+      "prompt": "Zeichen-Tokenizer mit Marker: Implementiere <code>encode(text)</code> und <code>decode(ids)</code> auf Basis des festen <code>VOCAB</code> aus dem Startercode. Vertrag für <code>encode</code>: Wörter werden an einfachen Leerzeichen getrennt; jedes Wort wird zu seinen Zeichen-IDs plus <code>&lt;/w&gt;</code>-ID; am Ende der ganzen Folge steht genau ein <code>&lt;eos&gt;</code>. Leere Wörter und unbekannte Zeichen werfen <code>ValueError</code>. Vertrag für <code>decode</code>: die Umkehrung — <code>&lt;/w&gt;</code> schließt ein Wort ab (Wörter werden mit Leerzeichen verbunden), <code>&lt;eos&gt;</code> beendet die Decodierung (alles danach wird ignoriert), ein Wort ohne abschließenden Marker wird trotzdem ausgegeben; unbekannte IDs und die Sondertokens <code>&lt;pad&gt;</code>/<code>&lt;unk&gt;</code> im Datenstrom werfen <code>ValueError</code>. Der Testcode erzwingt den Round-Trip <code>decode(encode(s)) == s</code> für mehrere Strings.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "# VOCAB is part of the starter code\nVOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\n\n\ndef encode(text):\n    \"\"\"Word-wise char encoding: chars + </w> per word, one <eos> at the end.\"\"\"\n    ...\n\n\ndef decode(ids):\n    \"\"\"Inverse of encode; everything after <eos> is ignored.\"\"\"\n    ...\n",
+        "tests": "__check('encode low lowest', encode(\"low lowest\") == [9, 10, 13, 3, 9, 10, 13, 8, 11, 12, 3, 2])\n__check('encode einzelwort', encode(\"cab\") == [6, 4, 5, 3, 2])\n__check('round trip einzelwort', decode(encode(\"low\")) == \"low\")\n__check('round trip zwei woerter', decode(encode(\"low lowest\")) == \"low lowest\")\n__check('round trip abc', decode(encode(\"abc\")) == \"abc\")\n__check('round trip todesliste', all(decode(encode(s)) == s for s in [\"low\", \"abc\", \"low lowest\", \"cab\", \"tease\"]))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "# VOCAB is part of the starter code\nVOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\n\ndef encode(text):\n    \"\"\"Word-wise char encoding: chars + </w> per word, one <eos> at the end.\"\"\"\n    ids = []\n    for word in text.split(\" \"):\n        if word == \"\":\n            raise ValueError(\"leeres Wort\")\n        for ch in word:\n            if ch not in VOCAB:\n                raise ValueError(\"unbekanntes Zeichen: \" + ch)\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n\ndef decode(ids):\n    \"\"\"Inverse of encode; everything after <eos> is ignored.\"\"\"\n    inv = {v: k for k, v in VOCAB.items()}\n    words = []\n    current = \"\"\n    for i in ids:\n        if i == VOCAB[\"<eos>\"]:\n            break\n        if i not in inv:\n            raise ValueError(\"unbekannte Token-ID\")\n        tok = inv[i]\n        if tok == \"</w>\":\n            words.append(current)\n            current = \"\"\n        elif tok in (\"<pad>\", \"<unk>\"):\n            raise ValueError(\"Sondertoken im Datenstrom\")\n        else:\n            current += tok\n    if current:\n        words.append(current)\n    return \" \".join(words)\n"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "encode: text.split(\" \"), je Wort zeichenweise IDs + </w>-ID, am Schluss einmal <eos>; unbekannte Zeichen und leere Wörter vorher abfangen.",
+        "decode: Wörter in einer Liste sammeln, aktueller Wortpuffer endet bei </w>; bei <eos> abbrechen; Restpuffer am Ende nicht vergessen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "eos-per-word",
+          "then": "<eos> steht genau einmal am Ende der ganzen Folge — nicht pro Wort."
+        },
+        {
+          "if": "trailing-space",
+          "then": "Der Marker trennt Wörter; er erzeugt kein zusätzliches Leerzeichen am Ende."
+        },
+        {
+          "if": "special-token-accepted",
+          "then": "<pad> und <unk> sind keine Inhalts-Tokens; im Datenstrom werfen sie ValueError."
+        }
+      ],
+      "fullSolution": "# VOCAB is part of the starter code\nVOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\n\ndef encode(text):\n    \"\"\"Word-wise char encoding: chars + </w> per word, one <eos> at the end.\"\"\"\n    ids = []\n    for word in text.split(\" \"):\n        if word == \"\":\n            raise ValueError(\"leeres Wort\")\n        for ch in word:\n            if ch not in VOCAB:\n                raise ValueError(\"unbekanntes Zeichen: \" + ch)\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n\ndef decode(ids):\n    \"\"\"Inverse of encode; everything after <eos> is ignored.\"\"\"\n    inv = {v: k for k, v in VOCAB.items()}\n    words = []\n    current = \"\"\n    for i in ids:\n        if i == VOCAB[\"<eos>\"]:\n            break\n        if i not in inv:\n            raise ValueError(\"unbekannte Token-ID\")\n        tok = inv[i]\n        if tok == \"</w>\":\n            words.append(current)\n            current = \"\"\n        elif tok in (\"<pad>\", \"<unk>\"):\n            raise ValueError(\"Sondertoken im Datenstrom\")\n        else:\n            current += tok\n    if current:\n        words.append(current)\n    return \" \".join(words)\n# encode(\"low lowest\") -> [9, 10, 13, 3, 9, 10, 13, 8, 11, 12, 3, 2]\n# decode davon -> \"low lowest\" (Round-Trip-Invariante aus dem Test).",
+      "typicalErrors": [
+        "<eos> pro Wort statt einmal am Ende",
+        "Marker als Leerzeichen am Satzende",
+        "unbekannte IDs stillschweigend überlesen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "hf-transformers-docs — Tokenizer Summary (Lektüre); Round-Trip-Vertrag als eigene Aufgabe",
+        "statement": "eigenständig entwickelt",
+        "seed": 2304
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w23-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 2305,
+      "masteryEligible": true,
+      "prompt": "BPE anwenden: Implementiere <code>bpe_encode(word, merges)</code>. Vertrag: Das Wort startet als Zeichenliste plus End-of-Word-Marker <code>\"&lt;/w&gt;\"</code>; danach gehst du die Mergetabelle <strong>in Tabellenreihenfolge</strong> durch und wendest jeden Merge <strong>einmal</strong> auf alle Vorkommen in der aktuellen Symbolfolge an — von links nach rechts, überlappende Paare zählen nicht doppelt (aus <code>a a a</code> wird <code>aa a</code>). Rückgabe: die finale Symbolfolge als Liste von Strings. Der Testcode nutzt eine vorgegebene Beispiel-Mergetabelle (l o, lo w, e s, es t) und prüft Known-Wörter, unbekannte Wörter, Tabellenreihenfolge und Überlappungen.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def bpe_encode(word, merges):\n    \"\"\"Apply the merge table in order: each merge hits all occurrences (left-to-right, non-overlapping).\"\"\"\n    # start from list(word) + [\"</w>\"]\n    # for each pair in table order: single left-to-right pass merging all occurrences\n    ...\n",
+        "tests": "MERGES = [(\"l\", \"o\"), (\"lo\", \"w\"), (\"e\", \"s\"), (\"es\", \"t\")]\n__check('lowest mit Lerntabelle', bpe_encode(\"lowest\", MERGES) == [\"low\", \"est\", \"</w>\"])\n__check('low mit Lerntabelle', bpe_encode(\"low\", MERGES) == [\"low\", \"</w>\"])\n__check('lower mit Lerntabelle', bpe_encode(\"lower\", MERGES) == [\"low\", \"e\", \"r\", \"</w>\"])\n__check('leere Tabelle reine Zeichen', bpe_encode(\"ab\", []) == [\"a\", \"b\", \"</w>\"])\n__check('unbekanntes Wort zerfaellt', bpe_encode(\"cab\", MERGES) == [\"c\", \"a\", \"b\", \"</w>\"])\n__check('Overlapping von links', bpe_encode(\"aaa\", [(\"a\", \"a\")]) == [\"aa\", \"a\", \"</w>\"])\n__check('Tabellenreihenfolge wirkt', bpe_encode(\"lowest\", [(\"e\", \"s\"), (\"l\", \"o\")]) == [\"lo\", \"w\", \"es\", \"t\", \"</w>\"])\n__check('Tokenzahl gesunken', len(bpe_encode(\"lowest\", MERGES)) == 3)\n__check('Marker immer letztes Symbol', bpe_encode(\"lowest\", MERGES)[-1] == \"</w>\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def bpe_encode(word, merges):\n    \"\"\"Apply the merge table in order: each merge hits all occurrences (left-to-right, non-overlapping).\"\"\"\n    symbols = list(word) + [\"</w>\"]\n    for pair in merges:\n        a, b = pair\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == a and symbols[i + 1] == b:\n                out.append(a + b)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Symbole als Liste von Strings führen; der Marker ist das letzte Startsymbol.",
+        "Pro Merge ein linker nach rechter Durchlauf mit Positionsindex: bei Treffer beide Symbole zum verschmolzenen String zusammenfassen und Index um 2 weiterschalten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "table-reordered",
+          "then": "Die Tabellenreihenfolge ist Priorität — nicht nach Häufigkeit oder Länge sortieren."
+        },
+        {
+          "if": "overlapping-merged",
+          "then": "Überlappende Vorkommen werden nicht doppelt gezählt: nach einem Merge springt der Index um 2."
+        },
+        {
+          "if": "marker-missing",
+          "then": "Der End-of-Word-Marker gehört zur Startfolge und bleibt das letzte Symbol."
+        }
+      ],
+      "fullSolution": "def bpe_encode(word, merges):\n    \"\"\"Apply the merge table in order: each merge hits all occurrences (left-to-right, non-overlapping).\"\"\"\n    symbols = list(word) + [\"</w>\"]\n    for pair in merges:\n        a, b = pair\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == a and symbols[i + 1] == b:\n                out.append(a + b)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n# bpe_encode(\"lowest\", [(\"l\",\"o\"),(\"lo\",\"w\"),(\"e\",\"s\"),(\"es\",\"t\")])\n# -> [\"low\", \"est\", \"</w>\"]  (aus 7 Zeichen-Tokens werden 3 Symbole).",
+      "typicalErrors": [
+        "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)",
+        "überlappende Vorkommen doppelt verschmolzen",
+        "End-of-Word-Marker unterschlagen"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "sourceLineage": {
+        "concept": "hf-tokenizers-docs — BPE-Anwendung (Lektüre); gepinnte Regeln aus der Lektion",
+        "statement": "eigenständig entwickelt",
+        "seed": 2305
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w23-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 2316,
+      "masteryEligible": true,
+      "prompt": "Final Boss BPE-Lernen: Implementiere <code>learn_merges(corpus, num_merges)</code> mit vollständig gepinnten Regeln. Vertrag: Jedes Korpuswort wird zur Zeichenliste plus <code>\"&lt;/w&gt;\"</code>; pro Runde werden alle benachbarten Symbolpaare gezählt (jedes Wortvorkommen zählt); gewählt wird das häufigste Paar — <strong>Tie-Break: bei gleicher Häufigkeit gewinnt das lexikographisch kleinste Paar</strong> (Tupel-Vergleich, der Marker beginnt mit „&lt;“ und ist damit klein); das Paar wird in jedem Wort auf alle Vorkommen angewandt (links nach rechts, nicht überlappend) und an die Merge-Liste angehängt. Vorzeitig abgebrochen wird, wenn kein Paar mehr mit Häufigkeit ≥ 2 existiert. Rückgabe: Liste von Paaren. Der Testcode enthält den Lerntable-Lauf aus der Lektion („low low lower lowest“) mit zwei echten Tie-Break-Situationen.",
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def learn_merges(corpus, num_merges):\n    \"\"\"BPE learning with pinned rules: most frequent pair, ties -> lexicographically\n    smallest pair, stop early when no pair occurs more than once.\"\"\"\n    # words = [list(word) + [\"</w>\"] for word in corpus]\n    # per round: count adjacent pairs, pick max count, tie -> min(pair), merge everywhere\n    ...\n",
+        "tests": "__check('null Merges', learn_merges([\"low\"], 0) == [])\n__check('zu seltene Paare stoppen', learn_merges([\"ab\"], 5) == [])\nCORPUS = [\"low\", \"low\", \"lower\", \"lowest\"]\n__check('Lernfolge Korpus', learn_merges(CORPUS, 3) == [(\"l\", \"o\"), (\"lo\", \"w\"), (\"low\", \"</w>\")])\n__check('erster Tie-Break lexikographisch', learn_merges(CORPUS, 1) == [(\"l\", \"o\")])\n__check('weiter mit vier Merges', learn_merges(CORPUS, 4) == [(\"l\", \"o\"), (\"lo\", \"w\"), (\"low\", \"</w>\"), (\"low\", \"e\")])\nCORPUS2 = [\"aa\", \"aa\", \"aa\"]\n__check('Tie-Break mit Marker', learn_merges(CORPUS2, 2) == [(\"a\", \"</w>\"), (\"a\", \"a</w>\")])\n__check('Rundreise anwendbar', learn_merges([\"lowest\", \"lowest\", \"low\"], 2) == [(\"l\", \"o\"), (\"lo\", \"w\")])\n__check('Einzelschritt-Abbruch bei Erschoepfung', learn_merges([\"low\", \"low\"], 10) == [(\"l\", \"o\"), (\"lo\", \"w\"), (\"low\", \"</w>\")])"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def learn_merges(corpus, num_merges):\n    \"\"\"BPE learning with pinned rules: most frequent pair, ties -> lexicographically\n    smallest pair, stop early when no pair occurs more than once.\"\"\"\n    words = [list(word) + [\"</w>\"] for word in corpus]\n    merges = []\n    for _ in range(int(num_merges)):\n        counts = {}\n        for syms in words:\n            for i in range(len(syms) - 1):\n                pair = (syms[i], syms[i + 1])\n                counts[pair] = counts.get(pair, 0) + 1\n        if not counts:\n            break\n        max_count = max(counts.values())\n        if max_count < 2:\n            break\n        best = min(pair for pair, count in counts.items() if count == max_count)\n        merges.append(best)\n        a, b = best\n        merged_words = []\n        for syms in words:\n            out = []\n            i = 0\n            while i < len(syms):\n                if i + 1 < len(syms) and syms[i] == a and syms[i + 1] == b:\n                    out.append(a + b)\n                    i += 2\n                else:\n                    out.append(syms[i])\n                    i += 1\n            merged_words.append(out)\n        words = merged_words\n    return merges\n"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Paare als Tupel von Strings zählen (dict); die Auswahl ist min() über alle Paare mit maximaler Häufigkeit.",
+        "Beim Verschmelzen wieder der linke, nicht überlappende Durchlauf; Abbruch, wenn max(counts) < 2 oder keine Paare mehr übrig sind."
+      ],
+      "feedbackRules": [
+        {
+          "if": "tie-break-wrong",
+          "then": "Bei Gleichstand gewinnt das lexikographisch kleinste Paar — nicht das erste gefundene oder das kürzeste."
+        },
+        {
+          "if": "single-occurrence-merged",
+          "then": "Paare mit Häufigkeit 1 werden nicht gelernt: Abbruch, sobald das Maximum unter 2 fällt."
+        },
+        {
+          "if": "merge-order",
+          "then": "Pro Runde wird genau ein Paar gelernt und sofort überall angewandt, bevor neu gezählt wird."
+        }
+      ],
+      "fullSolution": "def learn_merges(corpus, num_merges):\n    \"\"\"BPE learning with pinned rules: most frequent pair, ties -> lexicographically\n    smallest pair, stop early when no pair occurs more than once.\"\"\"\n    words = [list(word) + [\"</w>\"] for word in corpus]\n    merges = []\n    for _ in range(int(num_merges)):\n        counts = {}\n        for syms in words:\n            for i in range(len(syms) - 1):\n                pair = (syms[i], syms[i + 1])\n                counts[pair] = counts.get(pair, 0) + 1\n        if not counts:\n            break\n        max_count = max(counts.values())\n        if max_count < 2:\n            break\n        best = min(pair for pair, count in counts.items() if count == max_count)\n        merges.append(best)\n        a, b = best\n        merged_words = []\n        for syms in words:\n            out = []\n            i = 0\n            while i < len(syms):\n                if i + 1 < len(syms) and syms[i] == a and syms[i + 1] == b:\n                    out.append(a + b)\n                    i += 2\n                else:\n                    out.append(syms[i])\n                    i += 1\n            merged_words.append(out)\n        words = merged_words\n    return merges\n# learn_merges([\"low\",\"low\",\"lower\",\"lowest\"], 3)\n# -> [(\"l\",\"o\"), (\"lo\",\"w\"), (\"low\",\"</w>\")]\n# Runde 1: (\"l\",\"o\") und (\"o\",\"w\") stehen 4:4 — lexikographisch gewinnt (\"l\",\"o\").",
+      "typicalErrors": [
+        "Tie-Break dem Zufall oder der Fundreihenfolge überlassen",
+        "Paare mit Häufigkeit 1 trotzdem gelernt",
+        "alle Merges vor dem Zählen angewandt"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 42,
+      "sourceLineage": {
+        "concept": "hf-tokenizers-docs — BPE-Training (Lektüre); gepinnte Determinismusregeln aus der Lektion",
+        "statement": "eigenständig entwickelt",
+        "seed": 2316
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

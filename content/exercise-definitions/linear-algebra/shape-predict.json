@@ -1,0 +1,49 @@
+{
+  "definitionId": "f-numpy-shape-predict-01",
+  "version": 1,
+  "locale": "de",
+  "title": "Shape-Verträge vorhersagen",
+  "competencyIds": [
+    "c-numpy-basics"
+  ],
+  "activityType": "predict-output",
+  "graderId": "deterministic",
+  "generatorId": "genShapePredict",
+  "referenceSolverId": null,
+  "deterministicSeed": 4401,
+  "prompt": "Was gibt dieses Programm aus? Das Shape-Tuple in Python-Schreibweise angeben: (zeilen, spalten).",
+  "parameters": {
+    "seedGenerator": "genShapePredict",
+    "shape": "outer",
+    "n1": 5,
+    "n2": 3,
+    "snippet": "import numpy as np\na = np.arange(5)\nb = np.arange(3)\nprint((a[:, None] + b[None, :]).shape)"
+  },
+  "expectedAnswer": {
+    "kind": "seeded-output",
+    "generator": "genShapePredict",
+    "defaultSeed": 4401,
+    "defaultOutput": "(5, 3)"
+  },
+  "tolerancePolicy": {
+    "mode": "exact"
+  },
+  "hints": [
+    "reshape mit -1 lässt die fehlende Dimension aus der Elementzahl berechnen: Zeilen × Spalten = Länge.",
+    "Zeilen- und Skalar-Operationen lassen die Form unverändert; .T tauscht die Achsen; a[:, None] ergänzt eine Achse der Länge 1."
+  ],
+  "feedbackRules": [],
+  "fullSolution": "a[:, None] ist eine Spalte der Form (5, 1), b[None, :] eine Zeile der Form (1, 3); die Addition broadcastet beide zum äußeren Produkt der Formen. Ausgabe: (5, 3)",
+  "difficulty": 2,
+  "estimatedMinutes": 8,
+  "sourceLineage": {
+    "statement": "eigenständig entwickelt (Seed-Generator genShapePredict)",
+    "seed": 4401
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 2000,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w05"
+}

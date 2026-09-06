@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spike: Pyodide-Module-Worker</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 1rem; }
+  pre { background: #111; color: #c9ff3f; padding: .8rem; overflow: auto; min-height: 3rem; }
+  button { min-height: 44px; min-width: 44px; margin: .2rem; padding: .4rem .8rem; }
+  .case { border: 2px solid #111; margin: 1rem 0; padding: .8rem; }
+  .case h2 { font-size: 1rem; margin-top: 0; }
+  .ok { color: #0a7d24; font-weight: 700; }
+  .bad { color: #b3261e; font-weight: 700; }
+</style>
+</head>
+<body>
+<h1>Spike: Pyodide im Module-Web-Worker</h1>
+<p>Läuft nur über lokalen HTTP-Server. Der Worker wird erst auf Klick initialisiert.</p>
+
+<div class="case">
+  <h2>1. Init (Lazy Loading)</h2>
+  <button id="init">Pyodide initialisieren</button>
+  <span id="init-state">nicht geladen</span>
+</div>
+
+<div class="case">
+  <h2>2. Korrekter Code mit Tests (Funktion + NumPy)</h2>
+  <button id="run-good">Ausführen</button>
+  <pre id="out-good">–</pre>
+</div>
+
+<div class="case">
+  <h2>3. Syntaxfehler</h2>
+  <button id="run-syntax">Ausführen</button>
+  <pre id="out-syntax">–</pre>
+</div>
+
+<div class="case">
+  <h2>4. Exception zur Laufzeit</h2>
+  <button id="run-exc">Ausführen</button>
+  <pre id="out-exc">–</pre>
+</div>
+
+<div class="case">
+  <h2>5. Endlosschleife (Zeitlimit 3 s, Worker-Neustart)</h2>
+  <button id="run-loop">Ausführen</button>
+  <pre id="out-loop">–</pre>
+</div>
+
+<div class="case">
+  <h2>6. Hohe Ausgabe</h2>
+  <button id="run-output">Ausführen</button>
+  <pre id="out-output">–</pre>
+</div>
+
+<div class="case">
+  <h2>7. SymPy: exakte algebraische Äquivalenz</h2>
+  <p>Prüft <code>(x+2)(x+3)</code> gegen <code>x^2+5x+6</code> (soll äquivalent sein)
+     und gegen <code>x^2+5x+5</code> (soll nicht äquivalent sein), exakt via
+     <code>simplify(a-b)==0</code>.</p>
+  <button id="run-sympy">Ausführen</button>
+  <pre id="out-sympy">–</pre>
+</div>
+
+<script type="module">
+const WORKER_URL = '../assets/js/runtime/pyodide_worker.mjs';
+
+// Host-side runner with timeout + terminate/restart (no built-in timeout
+// exists in Pyodide for sync code — see ADR).
+class PyodideRunner {
+  constructor(url, timeoutMs = 30000) {
+    this.url = url;
+    this.timeoutMs = timeoutMs;
+    this.worker = null;
+    this.ready = false;
+    this.readyWaiters = [];
+    this.seq = 0;
+    this.pending = new Map();
+  }
+  async ensureWorker() {
+    if (this.worker && this.ready) return;
+    if (!this.worker) {
+      this.worker = new Worker(this.url, { type: 'module' });
+      this.worker.onmessage = (e) => this.onmessage(e.data);
+      this.worker.onerror = (e) => {
+        const err = new Error('worker error: ' + (e.message || 'unknown'));
+        if (!this.ready) {
+          for (const [, rej] of this.readyWaiters) rej(err);
+          this.readyWaiters = [];
+        }
+        console.error('[worker onerror]', e);
+      };
+    }
+    if (!this.ready) {
+      this.worker.postMessage({ type: 'init' });
+      await new Promise((res, rej) => { this.readyWaiters.push([res, rej]); });
+    }
+  }
+  restart() {
+    if (this.worker) this.worker.terminate();
+    this.worker = null;
+    this.ready = false;
+    for (const [, rej] of this.pending) rej(new Error('worker restarted'));
+    this.pending.clear();
+  }
+  onmessage(msg) {
+    if (msg.type === 'ready') {
+      this.ready = true;
+      this.version = msg.version;
+      for (const [res] of this.readyWaiters) res();
+      this.readyWaiters = [];
+    } else if (msg.type === 'run-result') {
+      const entry = this.pending.get(msg.id);
+      if (entry) { this.pending.delete(msg.id); entry(msg.result); }
+    } else if (msg.type === 'error') {
+      if (!this.ready) {
+        for (const [, rej] of this.readyWaiters) rej(new Error(msg.message));
+        this.readyWaiters = [];
+      }
+      console.error('[worker]', msg);
+    }
+  }
+  async run(payload) {
+    await this.ensureWorker();
+    const id = ++this.seq;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.pending.delete(id);
+        this.restart();
+        resolve({ ok: false, phase: 'timeout', errorType: 'Timeout',
+                  errorMessage: `Abbruch nach ${payload.timeoutMs} ms, Worker neu gestartet`,
+                  testResults: [], stdout: '', stderr: '', durationMs: payload.timeoutMs });
+      }, payload.timeoutMs);
+      this.pending.set(id, (result) => { clearTimeout(timer); resolve(result); });
+      this.worker.postMessage({ type: 'run', id, ...payload });
+    });
+  }
+}
+
+const runner = new PyodideRunner(WORKER_URL);
+const $ = (id) => document.getElementById(id);
+const fmt = (r) => JSON.stringify(r, null, 1).slice(0, 2000);
+
+$('init').onclick = async () => {
+  $('init-state').textContent = 'lade…';
+  const t0 = performance.now();
+  try {
+    await runner.ensureWorker();
+    $('init-state').innerHTML =
+      `<span class="ok">bereit</span> (v${runner.version}, ${Math.round(performance.now() - t0)} ms)`;
+  } catch (e) {
+    $('init-state').innerHTML = `<span class="bad">Fehler: ${e.message}</span>`;
+  }
+};
+
+const runCase = async (btn, out, payload) => {
+  btn.disabled = true;
+  $(out).textContent = 'läuft…';
+  const r = await runner.run(payload);
+  $(out).textContent = fmt(r);
+  btn.disabled = false;
+};
+
+const GOOD = `import numpy as np
+
+def matvec(A, v):
+    """Compute A @ v with a shape check."""
+    A = np.asarray(A)
+    v = np.asarray(v)
+    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]
+    return A @ v
+`;
+const GOOD_TESTS = `
+__check('Skalarprodukt-Zeile 1', matvec([[1,2],[3,4]], [1,1])[0] == 3)
+__check('Shape-Fehler wirft', (lambda: (
+    (matvec([[1,2]], [1,1,1]), False)
+    ))() == (None, False) if False else True)
+try:
+    matvec([[1,2,3]], [1,1])
+    __check('Shape-Fehler wirft', False, 'keine Exception')
+except AssertionError:
+    __check('Shape-Fehler wirft', True)
+`;
+
+$('run-good').onclick = () => runCase($('run-good'), 'out-good', {
+  code: GOOD, tests: GOOD_TESTS, packages: ['numpy'], seed: 7, timeoutMs: 60000,
+});
+
+$('run-syntax').onclick = () => runCase($('run-syntax'), 'out-syntax', {
+  code: 'def f(:\n  pass', tests: '', packages: [], seed: 1, timeoutMs: 30000,
+});
+
+$('run-exc').onclick = () => runCase($('run-exc'), 'out-exc', {
+  code: 'werte = [1,2,3]\nprint(werte[9])', tests: '', packages: [], seed: 1, timeoutMs: 30000,
+});
+
+$('run-loop').onclick = () => runCase($('run-loop'), 'out-loop', {
+  code: 'while True:\n    pass', tests: '', packages: [], seed: 1, timeoutMs: 3000,
+});
+
+$('run-output').onclick = () => runCase($('run-output'), 'out-output', {
+  code: 'for i in range(20000):\n    print(i)', tests: '', packages: [], seed: 1, timeoutMs: 30000,
+});
+
+const SYMPY = `
+from sympy import symbols, simplify, expand
+import json
+x = symbols('x')
+def equivalent(a, b):
+    return simplify(expand(a) - expand(b)) == 0
+res = {
+  'gleich': equivalent((x+2)*(x+3), x**2 + 5*x + 6),
+  'ungleich': equivalent((x+2)*(x+3), x**2 + 5*x + 5),
+  'rational': simplify(3/6 - 1/2) == 0,
+}
+print(json.dumps(res))
+`;
+const SYMPY_TESTS = `
+import json
+__parsed = json.loads(__out.buffer.getvalue().strip().splitlines()[-1])
+__check('äquivalent erkannt', __parsed['gleich'] is True)
+__check('nicht-äquivalent erkannt', __parsed['ungleich'] is False)
+__check('exakt rational', __parsed['rational'] is True)
+`;
+
+$('run-sympy').onclick = () => runCase($('run-sympy'), 'out-sympy', {
+  code: SYMPY, tests: SYMPY_TESTS, packages: ['sympy'], seed: 1, timeoutMs: 60000,
+});
+</script>
+</body>
+</html>

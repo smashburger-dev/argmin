@@ -1,0 +1,38 @@
+{
+  "definitionId": "f-git-parsons-01",
+  "version": 1,
+  "locale": "de",
+  "title": "Sicheren Bugfix-Ablauf ordnen",
+  "competencyIds": ["c-git-basics", "c-testing-debugging"],
+  "activityType": "parsons",
+  "graderId": "deterministic",
+  "generatorId": null,
+  "referenceSolverId": null,
+  "deterministicSeed": 2502,
+  "prompt": "Ordne den sicheren Arbeitsfluss für einen kleinen Bugfix. Eine Zeile umgeht den Testvertrag und gehört nicht hinein.",
+  "parameters": {
+    "fragments": [
+      { "id": "p1", "text": "Fehler mit einem einzelnen Test reproduzieren" },
+      { "id": "p2", "text": "kleinsten Fix schreiben" },
+      { "id": "p3", "text": "Einzeltest und gesamte Suite ausführen" },
+      { "id": "p4", "text": "git status und git diff lesen" },
+      { "id": "p5", "text": "zugehörige Dateien vormerken und committen" },
+      { "id": "d1", "text": "fehlschlagenden Test löschen" }
+    ],
+    "initialOrder": ["p5", "p2", "d1", "p4", "p1", "p3"]
+  },
+  "expectedAnswer": { "kind": "ordered-lines", "solutionOrder": ["p1", "p2", "p3", "p4", "p5"], "distractors": ["d1"] },
+  "tolerancePolicy": { "mode": "exact-order" },
+  "hints": ["Der rote Test kommt vor dem Fix.", "Prüfe Tests und Diff, bevor du den Commit erzeugst."],
+  "feedbackRules": [{ "if": "order-length-mismatch", "then": "Der sichere Ablauf enthält fünf Schritte." }],
+  "fullSolution": "Reproduzieren, fixen, vollständig testen, Diff lesen und erst dann den geschlossenen Commit erstellen.",
+  "difficulty": 2,
+  "estimatedMinutes": 8,
+  "sourceLineage": { "statement": "eigenständig entwickelte Workflow-Aufgabe", "seed": 2502 },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 1,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w03"
+}

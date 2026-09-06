@@ -1,0 +1,618 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w01",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w01-e1",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-algebra-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 111,
+      "masteryEligible": false,
+      "prompt": "Diagnose Algebra: Löse die Gleichung $5x - 7 = 28$ und gib $x$ als ganze Zahl ein. Diagnoseaufgaben zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "parameters": {
+        "a": 5,
+        "b": -7,
+        "c": 28
+      },
+      "expectedAnswer": {
+        "kind": "integer",
+        "value": 7
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Bringe die Zahl auf die rechte Seite: $5x = 28 + 7$.",
+        "$5x = 35$, also teile beide Seiten durch 5."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 3",
+          "then": "Rechenweg: erst $+7$ auf beiden Seiten, dann erst dividieren — nicht $28 - 7$."
+        },
+        {
+          "if": "value === 35",
+          "then": "Das ist $5x$, nicht $x$ — noch durch 5 teilen."
+        }
+      ],
+      "fullSolution": "$5x - 7 = 28 \\Rightarrow 5x = 35 \\Rightarrow x = 7$.",
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Lineare Gleichungen, Serlo Artikel 1393 (lokale Lesefassung W1)",
+        "statement": "eigenständig entwickelt",
+        "seed": 111
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified (Diagnose: masteryEligible false)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e2",
+      "schemaVersion": 1,
+      "type": "algebraic-expression",
+      "skillIds": [
+        "c-algebra-basics"
+      ],
+      "grader": "pyodide-sympy",
+      "deterministicSeed": 112,
+      "masteryEligible": false,
+      "prompt": "Diagnose Terme: Vereinfache $3x + 5 - x + 2$ so weit wie möglich und gib den Term ein (z. B. als `2x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Diagnoseaufgaben zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "parameters": {
+        "terms": [
+          3,
+          -1
+        ],
+        "constants": [
+          5,
+          2
+        ],
+        "mathKeyboard": "polynomial"
+      },
+      "expectedAnswer": {
+        "kind": "expression",
+        "expression": "2x + 7",
+        "equivalence": "sympy: simplify(expand(student) - expand(expected)) == 0"
+      },
+      "tolerancePolicy": {
+        "mode": "exact-symbolic",
+        "guarantee": "Exakte polynomiale Äquivalenz über SymPy (expand+simplify); keine numerische Approximation."
+      },
+      "hints": [
+        "Gleiche Variablen zusammenfassen: $3x - x$.",
+        "Gleiche Konstanten zusammenfassen: $5 + 2$."
+      ],
+      "feedbackRules": [],
+      "fullSolution": "$3x + 5 - x + 2 = (3 - 1)x + (5 + 2) = 2x + 7$.",
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Termvereinfachung, Serlo Algebra-Grundlagen (lokale Lesefassung W1)",
+        "statement": "eigenständig entwickelt",
+        "seed": 112
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified (Diagnose: masteryEligible false)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-python-basics",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 113,
+      "prompt": "Variablen lesen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(a, b)</code> vorher, ohne den Code auszuführen. Achtung — <code>a</code> wird zweimal zugewiesen.",
+      "parameters": {
+        "snippet": "a = 5\nb = a * 2\na = a + b\nprint(a, b)"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "15 10"
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Gehe Zeile für Zeile vor und notiere den Zustand nach jeder Zuweisung.",
+        "Zeile 2 verdoppelt a nach b; Zeile 3 liest das ALTE a und addiert b — notiere beide Werte vor der Zeile."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "print(a, b) gibt zwei Werte aus, getrennt durch ein Leerzeichen."
+        }
+      ],
+      "fullSolution": "Zeile 1: a = 5. Zeile 2: b = 5 · 2 = 10. Zeile 3: a = 5 + 10 = 15 (b bleibt 10). Ausgabe: <code>15 10</code>.",
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Variablenzustand und Zuweisungsreihenfolge, Python Tutorial Kap. 2/3 (lokale Lesefassung); Predict-Run-Schritt nach Sentance/PRIMM 2019",
+        "statement": "eigenständig entwickelt (Session B: Instanz getauscht, war Clone des Lektionsbeispiels)",
+        "seed": 113
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e4",
+      "schemaVersion": 1,
+      "type": "code-trace",
+      "skillIds": [
+        "c-python-basics",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 114,
+      "prompt": "Variablen tracen: Welche Werte haben <code>x</code>, <code>y</code> und <code>z</code> nach Ablauf des Codes? Zeile für Zeile durchgehen und nach jeder Zuweisung den neuen Wert notieren.",
+      "parameters": {
+        "snippet": "x = 3\ny = x * 2\nx = y - 1\nz = x + y",
+        "variables": [
+          {
+            "name": "x",
+            "value": 5
+          },
+          {
+            "name": "y",
+            "value": 6
+          },
+          {
+            "name": "z",
+            "value": 11
+          }
+        ]
+      },
+      "expectedAnswer": {
+        "kind": "variable-values"
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Eine Zuweisung überschreibt nur die Variable links vom Gleichheitszeichen — rechts wird der bisherige Zustand gelesen.",
+        "y = 3 · 2 = 6; danach wird x neu zugewiesen, y behält seinen Wert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:x+value:z",
+          "then": "Achtung: x wird in Zeile 3 überschrieben (y − 1), bevor z berechnet wird — z nutzt das NEUE x."
+        }
+      ],
+      "fullSolution": "x = 3, dann y = 6, dann x = 6 − 1 = 5, dann z = 5 + 6 = 11.",
+      "difficulty": 1,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Zuweisungsreihenfolge, Python Tutorial Kap. 2/3 (lokale Lesefassung); Tracing nach Lister et al. 2004",
+        "statement": "eigenständig entwickelt",
+        "seed": 114
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e5",
+      "schemaVersion": 1,
+      "type": "code-trace",
+      "skillIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 115,
+      "prompt": "Funktionen tracen: reine Funktionen ohne Ein-/Ausgabe. Welche Werte haben <code>ergebnis</code> und <code>zwischenspeicher</code> nach Ablauf?",
+      "parameters": {
+        "snippet": "def verdopple_minus_eins(n):\n    return 2 * n - 1\n\ndef kombiniere(a, b):\n    return verdopple_minus_eins(a) + b\n\nergebnis = kombiniere(4, 3)\nzwischenspeicher = verdopple_minus_eins(ergebnis)",
+        "variables": [
+          {
+            "name": "ergebnis",
+            "value": 10
+          },
+          {
+            "name": "zwischenspeicher",
+            "value": 19
+          }
+        ]
+      },
+      "expectedAnswer": {
+        "kind": "variable-values"
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Zuerst verdopple_minus_eins(4) auswerten: 2 · 4 − 1.",
+        "kombiniere(4, 3) = verdopple_minus_eins(4) + 3; danach geht ergebnis erneut in verdopple_minus_eins.",
+        "zwischenspeicher = 2 · ergebnis − 1."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:ergebnis",
+          "then": "verdopple_minus_eins(4) = 7, danach + 3 aus dem zweiten Argument von kombiniere."
+        }
+      ],
+      "fullSolution": "verdopple_minus_eins(4) = 7, also ergebnis = 7 + 3 = 10; zwischenspeicher = 2 · 10 − 1 = 19.",
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "sourceLineage": {
+        "concept": "def/return und Funktionskomposition, Python Tutorial Kap. 4.7-4.8 (lokale Lesefassung); Tracing nach Lister et al. 2004",
+        "statement": "eigenständig entwickelt",
+        "seed": 115
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e6",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 116,
+      "prompt": "Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.",
+      "parameters": {
+        "snippet": "def flaeche(a, b):\n    return a * b\n\ndef umfang(a, b):\n    return 2 * (a + b)\n\nprint(flaeche(3, 4), umfang(3, 4))"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "12 14"
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Jede Funktion wird mit den Argumenten 3 und 4 aufgerufen — beide Ergebnisse landen in derselben print-Zeile.",
+        "flaeche(3, 4) = 12 und umfang(3, 4) = 2 · (3 + 4) = 14."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "print gibt zwei durch ein Leerzeichen getrennte Zahlen aus."
+        }
+      ],
+      "fullSolution": "flaeche(3, 4) = 3 · 4 = 12; umfang(3, 4) = 2 · (3 + 4) = 14. Ausgabe: <code>12 14</code>.",
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Funktionsaufrufe mit mehreren Argumenten, Python Tutorial Kap. 4.7 (lokale Lesefassung); Predict-Run nach Sentance/PRIMM 2019",
+        "statement": "eigenständig entwickelt",
+        "seed": 116
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e7",
+      "schemaVersion": 1,
+      "type": "parsons",
+      "skillIds": [
+        "c-python-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 117,
+      "prompt": "Variablentausch ordnen: Bringe die Zeilen in die richtige Reihenfolge, sodass <code>a</code> und <code>b</code> ihre Werte tauschen und danach ausgegeben werden. Zwei Zeilen gehören nicht zur Lösung — sortiere sie aus.",
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p1",
+            "text": "a = 7"
+          },
+          {
+            "id": "p2",
+            "text": "b = 2"
+          },
+          {
+            "id": "p3",
+            "text": "temp = a"
+          },
+          {
+            "id": "p4",
+            "text": "a = b"
+          },
+          {
+            "id": "p5",
+            "text": "b = temp"
+          },
+          {
+            "id": "p6",
+            "text": "print(a, b)"
+          },
+          {
+            "id": "d1",
+            "text": "temp = b"
+          },
+          {
+            "id": "d2",
+            "text": "b = a"
+          }
+        ],
+        "initialOrder": [
+          "p2",
+          "d1",
+          "p4",
+          "p1",
+          "d2",
+          "p6",
+          "p5",
+          "p3"
+        ]
+      },
+      "expectedAnswer": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5",
+          "p6"
+        ],
+        "distractors": [
+          "d1",
+          "d2"
+        ]
+      },
+      "workedExample": {
+        "title": "Beispiel studieren: einen Wert retten, bevor er überschrieben wird",
+        "steps": [
+          {
+            "subgoalLabel": "Startwerte setzen",
+            "text": "Zuerst brauchen die Variablen Werte: <code>a = 3</code> und <code>b = 8</code>. Alles Weitere liest diese Werte.",
+            "completion": {
+              "prompt": "Welcher Wert wird zuerst gerettet (bevor a überschrieben wird)? temp = ___",
+              "answer": "a"
+            }
+          },
+          {
+            "subgoalLabel": "Originalwert sichern",
+            "text": "Die Zuweisung <code>a = b</code> zerstört den alten Wert von a. Deshalb wird er vorher in einer Hilfsvariablen gerettet: <code>temp = a</code>.",
+            "completion": {
+              "prompt": "Nach dem Retten darf a überschrieben werden: a = ___",
+              "answer": "b"
+            }
+          },
+          {
+            "subgoalLabel": "Retten und ausgeben",
+            "text": "Zum Schluss erhält b den geretteten Wert (<code>b = temp</code>) und <code>print(a, b)</code> gibt <code>8 3</code> aus. Die Zeile <code>b = a</code> wäre zu spät: a hält dann schon den neuen Wert — beide Variablen wären gleich."
+          }
+        ]
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Was passiert mit dem alten Wert von a, sobald a = b ausgeführt wird?",
+        "Die Hilfsvariable muss VOR der ersten Überschreibung gefüllt werden."
+      ],
+      "feedbackRules": [],
+      "fullSolution": "temp rettet a (7), dann a = b (2), dann b = temp (7) — Ausgabe <code>2 7</code>. „b = a“ vor dem Retten würde den 7er verlieren.",
+      "difficulty": 1,
+      "estimatedMinutes": 12,
+      "sourceLineage": {
+        "concept": "Zuweisungssemantik und Hilfsvariable, Python Tutorial Kap. 2/3 (lokale Lesefassung); Parsons-Probleme nach Ericson/Parsons 2023",
+        "statement": "eigenständig entwickelt (Session B: Werte getauscht, entsprachen dem Lektionsbeispiel)",
+        "seed": 117
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, browser-verified (Worked-Example-Abnahme w01)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e8",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-algebra-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 811,
+      "prompt": "Löse die Gleichung 4x + 12 = 48. Gib den Wert von x als ganze Zahl ein.",
+      "parameters": {
+        "seedGenerator": "genLinearEquation"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genLinearEquation",
+        "defaultSeed": 811,
+        "defaultExpected": 9
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Bringe alle x-Terme auf eine Seite und alle Zahlen auf die andere: zum Beispiel $a x = c - b$ bzw. $(a - c)x = d - b$.",
+        "Teile beide Seiten durch den Koeffizienten vor x — der Abrufgenerator garantiert eine ganzzahlige Lösung."
+      ],
+      "feedbackRules": [],
+      "fullSolution": "Umformen: x-Terme auf eine Seite, Konstanten auf die andere, dann durch den Koeffizienten vor x teilen. Bei „x auf beiden Seiten“ zuerst abziehen. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Lineare Gleichungen, Serlo Artikel 1393 + Aufgaben 80254 (lokale Lesefassung W1)",
+        "statement": "eigenständig entwickelt (Seed-Generator w01_generators.mjs)",
+        "seed": 811
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e9",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-algebra-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 822,
+      "prompt": "Vereinfache (3^3)^2 mit dem Potenzgesetz und gib den neuen Exponenten der Basis 3 an (also n aus 3^n).",
+      "parameters": {
+        "seedGenerator": "genPowerExpr"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genPowerExpr",
+        "defaultSeed": 822,
+        "defaultExpected": 6
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Gleiche Basis im Produkt: Exponenten addieren — $b^m \\cdot b^n = b^{m+n}$.",
+        "Potenz einer Potenz: Exponenten multiplizieren — $(b^m)^k = b^{m \\cdot k}$. Gefragt ist nur der neue Exponent."
+      ],
+      "feedbackRules": [],
+      "fullSolution": "Potenzgesetze: $b^m \\cdot b^n = b^{m+n}$ und $(b^m)^k = b^{m \\cdot k}$ — der neue Exponent ist Summe bzw. Produkt der alten Exponenten; die Basis bleibt unverändert.",
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Potenzgesetze, Serlo Potenzen 1420 + Aufgaben 23665 (lokale Lesefassung W1)",
+        "statement": "eigenständig entwickelt (Seed-Generator w01_generators.mjs)",
+        "seed": 822
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e10",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-algebra-basics"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 833,
+      "prompt": "Berechne log₅(25) und gib das Ergebnis als ganze Zahl ein.",
+      "parameters": {
+        "seedGenerator": "genLogExpr"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genLogExpr",
+        "defaultSeed": 833,
+        "defaultExpected": 2
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "$\\log_b(b^k) = k$ — frage dich: mit welchem Exponenten erzeugt die Basis genau das Argument?",
+        "Bei Summen mit gleicher Basis: beide Argumente als Potenzen schreiben, dann Exponenten addieren."
+      ],
+      "feedbackRules": [],
+      "fullSolution": "$\\log_b(b^k) = k$, denn $b^k$ ist per Definition das Argument. Summen gleicher Basis: $\\log_b(u) + \\log_b(v) = \\log_b(u \\cdot v)$, also Exponenten addieren.",
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Logarithmen zu ganzzahligen Basen, Serlo Logarithmus 55181 + Aufgaben 23768 (lokale Lesefassung W1)",
+        "statement": "eigenständig entwickelt (Seed-Generator w01_generators.mjs)",
+        "seed": 833
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w01-e11",
+      "schemaVersion": 1,
+      "type": "short-rationale",
+      "skillIds": [
+        "c-meta-learning"
+      ],
+      "grader": "manual-rubric",
+      "deterministicSeed": 844,
+      "prompt": "Wochenreflexion Woche 1: Schreibe 4-6 Sätze über deine beiden schwächsten Abrufbereiche dieser Woche (Gleichungen, Potenzgesetze, Logarithmen, Variablen-Zustände oder Funktionen). Benenne für jeden Bereich einen konkreten Fehler aus deinen Versuchen, seine Ursache und was du in Woche 2 anders tust. Schreibe zuerst deinen eigenen Versuch — die Musterantwort erscheint erst danach.",
+      "parameters": {
+        "minWords": 40
+      },
+      "expectedAnswer": {
+        "kind": "rubric"
+      },
+      "rubric": [
+        {
+          "id": "r1",
+          "must": "Zwei Bereiche klar benannt (z. B. „Logarithmen“ und „Zuweisungsreihenfolge“).",
+          "weight": 2
+        },
+        {
+          "id": "r2",
+          "must": "Pro Bereich ein konkreter Fehler mit Kontext (Aufgabe oder Rechenweg), nicht nur „falsch gerechnet“.",
+          "weight": 2
+        },
+        {
+          "id": "r3",
+          "must": "Pro Bereich eine Ursachen-Hypothese (z. B. Verwechslung der Potenzgesetze, Zustand nicht aktualisiert).",
+          "weight": 1
+        },
+        {
+          "id": "r4",
+          "must": "Ein konkreter nächste-Woche-Schritt pro Bereich (z. B. „zusätzliche Abrufinstanzen mit neuen Seeds“).",
+          "weight": 1
+        }
+      ],
+      "typicalErrors": [
+        "Nur Bereiche benannt ohne Beleg",
+        "Ursache und Maßnahme verwechselt",
+        "Kein Bezug auf echte Versuche"
+      ],
+      "tolerancePolicy": {
+        "mode": "self-assessed-rubric",
+        "masteryEligible": false
+      },
+      "hints": [
+        "Schau ins Fehlerjournal (Fortschritt-Ansicht) — welche errorTypes häufen sich?",
+        "Formuliere pro Bereich: Fehler → Ursache → eine Maßnahme für Woche 2."
+      ],
+      "feedbackRules": [],
+      "fullSolution": "Musterantwort: Bereich 1 Logarithmen — bei log₅(25) habe ich zuerst 25 gerechnet statt nach dem Exponenten zu fragen; Ursache: Definition log_b(b^k)=k nicht abrufbar; Maßnahme: 10 zusätzliche Abrufinstanzen mit neuen Seeds. Bereich 2 Zuweisungsreihenfolge — bei w01-e4 habe ich z mit dem alten x berechnet; Ursache: Zustand nach jeder Zuweisung nicht notiert; Maßnahme: beim Tracing Wertetabelle führen.",
+      "difficulty": 2,
+      "estimatedMinutes": 20,
+      "sourceLineage": {
+        "concept": "Reflexions-Fading nach Renkl 2004; Fehlerjournal-Methode ADR-0005",
+        "statement": "eigenständig entwickelt",
+        "seed": 844
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, rubric self-assessed (manual-rubric)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    }
+  ]
+}

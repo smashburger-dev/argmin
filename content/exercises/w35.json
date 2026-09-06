@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w35",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w35-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-capstone-pipeline"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3501,
+      "masteryEligible": false,
+      "prompt": "Capstone-Start: Was gehört in den Scope-Freeze, BEVOR die Implementierung der Pipeline beginnt?",
+      "parameters": {
+        "thema": "Scope-Freeze und Manifest"
+      },
+      "expectedAnswer": {
+        "correctChoice": "a"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Welche Dateien bestimmen, was „besser“ heißt — und welche dürfen sich nach dem Messbeginn nicht mehr ändern?",
+        "Wie macht man eine Änderung sichtbar, statt sie zu verhindern?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Nur Code zu pinnen reicht nicht: Gegen Golden Set und Konfiguration wird gemessen — dürfen die wandern, misst du gegen ein bewegliches Ziel."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Erwartungen bei jedem Lauf neu festzulegen macht Ergebnisse unvergleichbar — das Gegenteil einer Evaluation."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das README dokumentiert den Vertrag, aber es erzwingt ihn nicht — Hashes im Manifest sind die prüfbare Form."
+        }
+      ],
+      "fullSolution": "In den Freeze gehören Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte W30-Kern — jeweils mit sha256 im Manifest. Änderungen sind möglich, aber sie brauchen eine neue Version und ein neues Manifest; assert_frozen() macht Abweichungen hörbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "Daten und Konfiguration vom Freeze ausgenommen",
+        "Manifest als reine Dokumentation statt als Hash-Prüfung verstanden",
+        "Freeze erst nach der Demo aufgestellt"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "Freeze-/Manifest-Praktiken nach Sandve et al. (Ten Simple Rules for Reproducible Computational Research) und Wilson et al. (Good Enough Practices, CC BY/Mit-Lizenz, paraphrasiert); Capstone-Pipeline-Muster eigenständig nach ADR-0014 (kein produktives LLM-System)",
+        "statement": "eigenständig entwickelt",
+        "seed": 3501
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte W30-Kern — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nur den eigenen Quellcode einfrieren; Daten und Konfiguration dürfen weiterlaufen, damit man während der Entwicklung nachjustieren kann.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Nichts einfrieren — Erwartungen und Schwellen legt man bei jedem Lauf neu fest, je nachdem, was die Pipeline gerade hergibt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nur das README einfrieren, weil es als Dokument den Vertrag bereits vollständig prüfbar macht.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "exerciseId": "w35-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3511,
+      "masteryEligible": true,
+      "prompt": "Ein Capstone-Manifest beschreibt die Pipeline-Stages in Listenreihenfolge: 1. ingest (eingespeist aus quelle, mit manifest-hash); 2. bereinigung (eingespeist aus ingest, ohne manifest-hash); 3. chunking (eingespeist aus bereinigung, mit manifest-hash); 4. retrieval (eingespeist aus chunking, mit manifest-hash); 5. generator (eingespeist aus auswertung, ohne manifest-hash); 6. guard (eingespeist aus generator, mit manifest-hash); 7. export (eingespeist aus guard, mit manifest-hash); 8. auswertung (eingespeist aus auswertung, ohne manifest-hash). Wie viele Stages sind gültig (manifest-hash vorhanden UND Eingabe „quelle“ oder eine früher gelistete Stage)?",
+      "parameters": {
+        "seedGenerator": "genPipelineStages"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genPipelineStages",
+        "defaultSeed": 3511,
+        "defaultExpected": 5
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Gültig heißt beides zusammen: manifest-hash vorhanden UND Eingabe ist „quelle“ oder eine FRÜHER in der Liste genannte Stage.",
+        "Prüfe jede Stage einzeln — auch Selbstbezüge (eine Stage, die sich selbst als Eingabe nennt) und spätere Stages sind ungültig."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 8",
+          "then": "Du hast alle Stages gezählt — zwei Stages haben keinen manifest-hash und eine dritte verweist auf eine spätere bzw. eigene Stage."
+        },
+        {
+          "if": "value === 6",
+          "then": "Nur den manifest-hash geprüft? Zusätzlich ungültig: eine Stage, die eine SPÄTER gelistete Stage als Eingabe nutzt, und eine mit Selbstbezug."
+        },
+        {
+          "if": "value === 4",
+          "then": "Zähle nach: ingest, chunking, retrieval, guard und export erfüllen beide Bedingungen — das sind fünf."
+        }
+      ],
+      "fullSolution": "Gültig sind ingest (Eingabe quelle), chunking, retrieval, guard und export — jeweils manifest-hash vorhanden und Eingabe früher gelistet oder quelle. Ungültig: bereinigung (kein hash), generator (Eingabe auswertung steht später, kein hash) und auswertung (Selbstbezug, kein hash) → 5. Mit „Neue Zahlen“ erscheint eine neue Stage-Konstellation mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "externe Datei-Eingänge als Stufen-Abhängigkeiten mitgezählt",
+        "Stufen ohne ausgehende Abhängigkeiten gesucht statt ohne eingehende",
+        "Startstufen mit Schleifenanfang verwechselt"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Datenfluss-/Stage-Verträge nach Cookiecutter Data Science (MIT, paraphrasiert) und Wilson et al. (Good Enough Practices); Topo-Sort-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3511
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-verdrahtet (lokales node), Instanz python3-verifiziert",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w35-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3513,
+      "masteryEligible": true,
+      "prompt": "Topologisches Sortieren von Hand ausführen: Was gibt dieses Programm aus? Sage die <code>print</code>-Zeile vorher, ohne den Code auszuführen. Bei mehreren bereiten Stufen wählt der Algorithmus alphabetisch den kleinsten Namen.",
+      "parameters": {
+        "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {\n    \"gold\": [],\n    \"regel\": [\"gold\"],\n    \"punkte\": [\"gold\"],\n    \"bericht\": [\"regel\", \"punkte\"],\n}\nprint(topo(stages))"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "['gold', 'punkte', 'regel', 'bericht']"
+      },
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "hints": [
+        "Welche Stufe kann zuerst laufen? Danach: welche sind gleichzeitig bereit — und wie sortiert Python die?",
+        "bereit nutzt sortierte Namen; punkte und regel stehen beide sofort nach gold parat."
+      ],
+      "feedbackRules": [
+        {
+          "if": "regel-vor-punkte",
+          "then": "Nach gold sind punkte UND regel bereit — sorted() wählt alphabetisch: punkte kommt vor regel."
+        },
+        {
+          "if": "bericht-zu-frueh",
+          "then": "bericht braucht regel UND punkte — es kann erst laufen, wenn beide erledigt sind."
+        }
+      ],
+      "fullSolution": "Start: nur gold (keine Abhängigkeiten). Danach sind punkte und regel gleichzeitig bereit → alphabetisch punkte zuerst, dann regel. bericht braucht beide → kommt zuletzt: <code>['gold', 'punkte', 'regel', 'bericht']</code>. Der Zyklentest steckt in bereit: wäre die Liste leer, gäbe es einen Kreis.",
+      "typicalErrors": [
+        "Einfügungsreihenfolge statt alphabetischer Tie-Break gelesen",
+        "berichte vor ihren Voraussetzungen eingeplant",
+        "set(stages[n]) & offen als Vergleich mit allen Stufen missverstanden"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "Datenfluss-/Stage-Verträge nach Cookiecutter Data Science (MIT, paraphrasiert); Topo-Sort-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3513
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (lokale Ausführung)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w35-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3514,
+      "masteryEligible": true,
+      "prompt": "Baue den Freeze-Prüfer: <code>pruefe_pins(dateien, pins)</code> erhält Dateien als Dict <code>{name: inhalt_string}</code> und Pins als Dict <code>{name: sha256_oder_None}</code>. Rückgabe <code>{\"verstoesse\": [name + \": fehlt\", …]}</code> (sortiert): fehlt eine gepinnte Datei, kommt <code>name + \": fehlt\"</code>; ist der Pin ein String und weicht der sha256 des Inhalts (utf-8, hex) ab, kommt <code>name + \": hash weicht ab\"</code>; ist der Pin <code>None</code>, wird nur Anwesenheit geprüft. Eine Datei, die weder fehlt noch abweicht, erzeugt keinen Verstoß. Der sha256 wird über die rohen Inhalts-Bytes gebildet.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\n\n\ndef pruefe_pins(dateien, pins):\n    \"\"\"{'verstoesse': [name: grund, ...]} sortiert; None-Pin = nur Anwesenheit.\"\"\"\n    ...\n\n",
+        "tests": "import hashlib\n\nPIN = lambda s: hashlib.sha256(s.encode(\"utf-8\")).hexdigest()\nGS = \"golden_set.json\"\nCF = \"config.json\"\ndateien = {GS: \"inhalte-stabil\", CF: \"config-stabil\", \"pipeline.py\": \"x = 1\"}\npins_ok = {GS: PIN(\"inhalte-stabil\"), CF: PIN(\"config-stabil\"), \"pipeline.py\": None}\n__check('alles eingefroren ok', pruefe_pins(dateien, pins_ok) == {\"verstoesse\": []})\npins_tamper = dict(pins_ok)\npins_tamper[CF] = \"0\" * 64\n__check('hash-abweichung', pruefe_pins(dateien, pins_tamper) == {\"verstoesse\": [CF + \": hash weicht ab\"]})\n__check('null-pin nur anwesenheit', pruefe_pins({}, {\"README.md\": None}) == {\"verstoesse\": [\"README.md: fehlt\"]})\n__check('verstoesse sortiert', pruefe_pins({}, {CF: \"0\" * 64, GS: None}) == {\"verstoesse\": [CF + \": fehlt\", GS + \": fehlt\"]})\n__check('abweichung einzeln', pruefe_pins(dateien, {CF: \"0\" * 64}) == {\"verstoesse\": [CF + \": hash weicht ab\"]})"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\n\n\ndef pruefe_pins(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n\n# pruefe_pins(dateien, pins_ok) -> {'verstoesse': []}\n# Tamper am config-Pin -> ['config.json: hash weicht ab']"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Iteriere über pins, nicht über dateien — der Pin-Katalog ist der Vertrag.",
+        "hashlib.sha256(inhalt.encode('utf-8')).hexdigest() liefert den Hex-String zum Vergleich mit dem Pin."
+      ],
+      "feedbackRules": [
+        {
+          "if": "checks-pins-keys",
+          "then": "Der Freeze prüft den PIN-Katalog: Dateien ohne Pin sind nicht Teil des Vertrags und erzeugen keine Verstöße."
+        },
+        {
+          "if": "missing-before-hash",
+          "then": "Erst Anwesenheit, dann Hash — auf einem fehlenden Schlüssel würde der Hash-Vergleich sonst crashen."
+        },
+        {
+          "if": "none-pin-hashed",
+          "then": "Ein None-Pin ist bewusst Anwesenheitsprüfung; ihn wie einen String zu hashen verbiegt den Lernenden-Vertrag."
+        }
+      ],
+      "fullSolution": "import hashlib\n\n\ndef pruefe_pins(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n\n# Reihenfolge je Pin: fehlt -> hash -> frei; None-Pins nur auf Anwesenheit.",
+      "typicalErrors": [
+        "über dateien statt pins iteriert",
+        "fehlende Datei gehasht statt abgefangen",
+        "None-Pins wie Hash-Pins behandelt"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "Freeze-/Manifest-Praktiken nach Sandve et al. und der Turing Way (CC BY/MIT/Apache-2.0, paraphrasiert); Hash-Pin-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3514
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w35-e5",
+      "schemaVersion": 1,
+      "type": "parsons",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3515,
+      "masteryEligible": true,
+      "prompt": "Freeze-Check als Parsons-Problem: Bringe die Zeilen in die richtige Reihenfolge, sodass <code>assert_frozen(dateien, pins)</code> Verstöße sammelt und bei Abweichungen mit <code>AssertionError</code> scheitert — ohne stillen Fallback. Zwei Zeilen gehören nicht zur Lösung.",
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p1",
+            "text": "def assert_frozen(dateien, pins):"
+          },
+          {
+            "id": "p2",
+            "text": "    verstoesse = []"
+          },
+          {
+            "id": "p3",
+            "text": "    for name, pin in pins.items():"
+          },
+          {
+            "id": "p4",
+            "text": "        if name not in dateien:"
+          },
+          {
+            "id": "p5",
+            "text": "            verstoesse.append(name + \": fehlt\")"
+          },
+          {
+            "id": "p6",
+            "text": "        elif pin is not None and sha256(dateien[name]) != pin:"
+          },
+          {
+            "id": "p7",
+            "text": "            verstoesse.append(name + \": hash weicht ab\")"
+          },
+          {
+            "id": "p8",
+            "text": "    if verstoesse:"
+          },
+          {
+            "id": "p9",
+            "text": "        raise AssertionError(\"; \".join(verstoesse))"
+          },
+          {
+            "id": "d1",
+            "text": "        return {\"status\": \"fehler\", \"verstoesse\": []}"
+          },
+          {
+            "id": "d2",
+            "text": "    return {\"status\": \"ok\", \"verstoesse\": verstoesse}"
+          }
+        ],
+        "initialOrder": [
+          "p3",
+          "p1",
+          "d2",
+          "p6",
+          "p4",
+          "p2",
+          "p9",
+          "d1",
+          "p5",
+          "p7",
+          "p8"
+        ]
+      },
+      "expectedAnswer": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5",
+          "p6",
+          "p7",
+          "p8",
+          "p9"
+        ],
+        "distractors": [
+          "d1",
+          "d2"
+        ]
+      },
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "hints": [
+        "Zuerst sammeln, dann entscheiden: Die Schleife füllt verstoesse, der raise kommt ganz am Schluss.",
+        "Die beiden Rückgabe-Zeilen sind der stille Fallback — genau den verbietet der Freeze-Vertrag."
+      ],
+      "feedbackRules": [
+        {
+          "if": "raise-zu-frueh",
+          "then": "Der raise gehört nach die Schleife — sonst meldet assert_frozen nur den ersten Verstoß und verschweigt den Rest."
+        },
+        {
+          "if": "fallback-drin",
+          "then": "Eine Rückgabe mit status 'fehler' und leerer Liste ist der stille Fallback: Der Aufrufer sieht ein Ergebnis statt eines Abbruchs."
+        }
+      ],
+      "fullSolution": "Reihenfolge: Signatur, Liste anlegen, über pins iterieren, fehlt-Zweig, hash-Zweig, am Ende bei Verstößen raise AssertionError. Die Rückgabe-Zeilen (d1/d2) sind bewusst draußen: Ein Freeze-Assert kehrt entweder still zurück oder scheitert laut — es liefert kein Fehlerobjekt.",
+      "typicalErrors": [
+        "raise in die Schleife gezogen (nur erster Verstoß sichtbar)",
+        "Fehler-Objekt statt Assertion zurückgegeben",
+        "hash-Prüfung vor der Anwesenheitsprüfung"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 28,
+      "sourceLineage": {
+        "concept": "Freeze-/Manifest-Praktiken nach Sandve et al. (CC BY, paraphrasiert); Sentinel-statt-Fallback-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3515
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Zeilenfolge verifiziert)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w35-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3516,
+      "masteryEligible": true,
+      "prompt": "Final Boss Scope-Freeze: Implementiere <code>run_pipeline(config)</code> mit Hash-Prüfung und byte-identischem Wiederholungslauf. config: <code>{\"daten\": [woerter], \"min_laenge\": int, \"pins\": {\"daten\": sha256}}</code>. Ablauf: (1) Freeze: sha256 über die kanonische JSON-Serialisierung von <code>daten</code> (sortierte Schlüssel, keine Leerzeichen, utf-8) muss dem Pin entsprechen — sonst <code>AssertionError(\"freeze verletzt: daten\")</code>. (2) Stages ausführen: normalisieren (klein), filtern (Länge ≥ min_laenge), je Anfangsbuchstabe zählen. (3) Bericht <code>{\"anzahl\": n, \"anfangsbuchstaben\": {buchstabe: n}}</code> mit sortierten Schlüsseln. (4) Rückgabe <code>{\"status\": \"ok\", \"bericht\": bericht, \"digest\": sha256-ueber-kanonisches-json(bericht)}</code>. Alles deterministisch: zweiter Aufruf mit gleichem config liefert dasselbe Ergebnis-Objekt.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    \"\"\"Stabile Serialisierung: sortierte Schluessel, keine Leerraeume.\"\"\"\n    ...\n\n\ndef run_pipeline(config):\n    \"\"\"Freeze pruefen, Stages ausfuehren, Bericht und Digest liefern.\"\"\"\n    ...\n\n",
+        "tests": "import hashlib\nimport json\n\nDATEN = [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Birne\"]\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht anzahl', erg[\"bericht\"][\"anzahl\"] == 4)\n__check('bericht anfangsbuchstaben', erg[\"bericht\"][\"anfangsbuchstaben\"] == {\"a\": 1, \"b\": 2, \"z\": 1})\n__check('digest stimmt', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf identisch', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Kirsche\"], \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) >= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# run_pipeline(CFG) -> bericht {'anzahl': 4, 'anfangsbuchstaben': {'a': 1, 'b': 2, 'z': 1}}\n# digest 'fbb1966dc2acf0e6088a2e43477336601cd59f4904d95ae978dec4bd5612f1b5'; Doppellauf identisch"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Kanalisation zuerst: kanon() mit sort_keys=True und separators=(',', ':') — derselbe Vertrag wie im Projekt.",
+        "Der Digest des Berichts entsteht über dieselbe kanonische Serialisierung wie der Freeze-Hash der Daten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "freeze-nach-arbeit",
+          "then": "Erst pinnen, dann rechnen: Wer nach der Ausführung prüft, hat den manipulierten Lauf schon durchgelassen."
+        },
+        {
+          "if": "digest-random-ish",
+          "then": "Der Digest ist deterministisch aus dem Bericht abgeleitet — wenn er zwischen Läufen schwankt, steckt Zufall oder Reihenfolge in die Serialisierung."
+        },
+        {
+          "if": "silently-continues",
+          "then": "Bei Freeze-Verletzung wird AssertionError geworfen, kein Bericht mit Ersatzwerten — kein stiller Fallback."
+        }
+      ],
+      "fullSolution": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) >= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# Freeze zuerst, Stages rein deterministic, Digest kanonisch — Doppellauf liefert dasselbe Objekt.",
+      "typicalErrors": [
+        "Hash-Prüfung nach der Verarbeitung eingebaut",
+        "nicht-kanonische Serialisierung (Leerzeichen, unsortierte Schlüssel)",
+        "bei Abweichung Ersatzwerte geliefert statt AssertionError"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 42,
+      "sourceLineage": {
+        "concept": "Reproduktions-/Digest-Praktiken nach Sandve et al. und der Turing Way (CC BY/MIT/Apache-2.0, paraphrasiert); Capstone-Boss-Muster eigenständig nach ADR-0014",
+        "statement": "eigenständig entwickelt",
+        "seed": 3516
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

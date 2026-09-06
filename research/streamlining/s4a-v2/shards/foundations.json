@@ -1,0 +1,2883 @@
+{
+  "shardId": "foundations",
+  "baselineCommit": "1998d57",
+  "entries": [
+    {
+      "sourceId": "w01-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-linear-equation-isolate",
+        "summary": "Löst eine lineare Gleichung durch skalare Äquivalenzumformung mit einer Unbekannten und genau einer Lösung.",
+        "membershipEvidence": {
+          "solutionPath": "Skalare Äquivalenzumformungen schrittweise anwenden und die Unbekannte isolieren.",
+          "referenceModel": "Lineare Gleichung in einer Unbekannten mit genau einer Lösung; alle Umformungen sind skalare Äquivalenzumformungen.",
+          "errorHypotheses": [
+            "Vorzeichenfehler bei der Äquivalenzumformung",
+            "Umformung nur auf einer Gleichungsseite ausgeführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "two-step-fixed-instance",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': zweistufige lineare Gleichung als fixe Diagnoseinstanz",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 3 bleibt geschlossenes diagnoseNumeric-Prädikat; die Nachricht erklärt den Vorzeichenfehler beim Seitentausch (28 − 7)."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 35 bleibt diagnoseNumeric-Prädikat; die Nachricht deckt das Stehenlassen von 5x als Diagnoseachse ab."
+        }
+      ]
+    },
+    {
+      "sourceId": "w01-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-expression-simplify-canonical",
+        "summary": "Überführt Terme durch gleichwertige Umformung in eine kanonische Form.",
+        "membershipEvidence": {
+          "solutionPath": "Term äquivalent umformen und gegen die kanonische Zielform prüfen.",
+          "referenceModel": "Termäquivalenzklasse mit wohldefinierter kanonischer Normalform.",
+          "errorHypotheses": [
+            "Nicht-äquivalente Umformung ausgeführt",
+            "Kanonische Zielform nicht erreicht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "expression-equivalence"
+      },
+      "caseTemplate": {
+        "caseId": "combine-like-terms",
+        "graderAdapter": "pyodide-sympy",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': Termzusammenfassen mit SymPy-Äquivalenzprüfung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "w01-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-reading",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "reassign-two-variables-print",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-python-state",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Python-Zustand statt Code-Raten'/'Code Zeile für Zeile tracen': Zuweisungsüberschreibung vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Familienzuordnung zu f-python-state-trace-01 muss gegen die Seed-Formen des Generators abgeglichen werden, bevor eine Zusammenfuehrung geprueft wird"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Generatorabgleich",
+        "decision": "Bestätigen, dass genPythonStateTrace die Fallform von w01-e3 (zwei Variablen mit print) als parametrischen Falltyp trägt oder w01-e3 als fixer Falltyp in trace-assignment-state bleibt.",
+        "evidence": "Shard stellt beide Quellen in trace-assignment-state mit getrennten Falltypen; Generatorvertrag genPythonStateTrace (chain3, 2000 getestete Seeds) laut v1-Input.",
+        "latestGate": "S4C-Generator- und Solververtrag"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "low",
+          "reason": "w01-e3 und f-python-state-trace-01 teilen den Kernloesungsweg Zustandsaktualisierung, unterscheiden sich aber in Answer-Vertrag (fixe Quelle vs. Seed-Generator) und Herkunft.",
+          "disposition": "resolved-with-source-evidence",
+          "rationale": "Registry-Hypothese und Familieninventar (design-cognitive-first.md, worked example 3) weisen w01-e3 und f-python-state-trace-01 gemeinsam trace-assignment-state zu; umgesetzt als gemeinsame Familie mit getrennten Fällen, der Answer-Vertrags-Unterschied löst sich über authorityMode static/seeded auf. Der Generator-Feinabgleich bleibt über das Human-Review an S4C delegiert."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "element-count-mismatch ist der einzige konsumierte Token der Predict-Output-Grammatik; die Nachricht erklärt das Zweiwerte-Print-Format."
+        }
+      ]
+    },
+    {
+      "sourceId": "w01-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-reading",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "three-variable-overwrite-chain",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-python-state",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Python-Zustand statt Code-Raten'/'Code Zeile für Zeile tracen': Drei-Variablen-Kette mit Überschreibung tracen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value:x+value:z bleibt exakte Fehlervariablenfolge in gradeCodeTrace; die Nachricht diagnostiziert die Überschreibung von x vor der z-Berechnung."
+        }
+      ]
+    },
+    {
+      "sourceId": "w01-e5",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e5",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-functions",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-call-composition",
+        "summary": "Tracet die Auswertung verketteter bzw. verschachtelter Aufrufe und ihren resultierenden Wert.",
+        "membershipEvidence": {
+          "solutionPath": "Aufrufkomposition von innen nach außen auswerten und das Endergebnis bestimmen.",
+          "referenceModel": "Deterministische Auswertungssemantik der Aufrufkomposition.",
+          "errorHypotheses": [
+            "Falsche Auswertungsreihenfolge der Aufrufe",
+            "Argumentzuordnung vertauscht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "nested-call-value-chain",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-functions",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Funktionen als kleine Verträge'/'Code Zeile für Zeile tracen': verschachtelte Aufrufe als Wertekette tracen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value:ergebnis bleibt Prädikat in gradeCodeTrace; die Nachricht rekonstruiert den Aufrufwert als Diagnose des falschen Zwischenwerts."
+        }
+      ]
+    },
+    {
+      "sourceId": "w01-e6",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e6",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-functions",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-call-composition",
+        "summary": "Tracet die Auswertung verketteter bzw. verschachtelter Aufrufe und ihren resultierenden Wert.",
+        "membershipEvidence": {
+          "solutionPath": "Aufrufkomposition von innen nach außen auswerten und das Endergebnis bestimmen.",
+          "referenceModel": "Deterministische Auswertungssemantik der Aufrufkomposition.",
+          "errorHypotheses": [
+            "Falsche Auswertungsreihenfolge der Aufrufe",
+            "Argumentzuordnung vertauscht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "two-functions-one-print",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-functions",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Funktionen als kleine Verträge'/'Code Zeile für Zeile tracen': zwei Aufrufe mit gleichen Argumenten vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "element-count-mismatch konsumiert die Regel; die Nachricht erklärt die leerzeichengetrennte Zweiwert-Ausgabe von print."
+        }
+      ]
+    },
+    {
+      "sourceId": "w01-e7",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e7",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "program-ordering"
+      },
+      "caseTemplate": {
+        "caseId": "temp-variable-with-distractors",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-python-state"
+        ],
+        "moduleHint": "Lektion 'Python-Zustand statt Code-Raten': Variablentausch mit Hilfsvariable als Parsons anordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "w01-e8",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e8",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-linear-equation-isolate",
+        "summary": "Löst eine lineare Gleichung durch skalare Äquivalenzumformung mit einer Unbekannten und genau einer Lösung.",
+        "membershipEvidence": {
+          "solutionPath": "Skalare Äquivalenzumformungen schrittweise anwenden und die Unbekannte isolieren.",
+          "referenceModel": "Lineare Gleichung in einer Unbekannten mit genau einer Lösung; alle Umformungen sind skalare Äquivalenzumformungen.",
+          "errorHypotheses": [
+            "Vorzeichenfehler bei der Äquivalenzumformung",
+            "Umformung nur auf einer Gleichungsseite ausgeführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "two-step-seeded-retrieval",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': x-Isolation in ax+b=c als geseedete Abrufübung",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "w01-e9",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e9",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-power-log-exponent",
+        "summary": "Führt Potenz- und Logarithmenausdrücke fester Basis über Exponentenregeln auf einen einzigen Exponentenwert zurück.",
+        "membershipEvidence": {
+          "solutionPath": "Ausdruck auf die gemeinsame Basis zurückführen, Exponentenregeln anwenden (bei Produkten addieren, bei Potenzen multiplizieren, bei Logarithmen das Argument als Potenz der Basis schreiben) und den Exponentenwert angeben.",
+          "referenceModel": "Exponentenarithmetik zu fester ganzzahliger Basis; Seed-Generator erzeugt Produkt-, Potenz- und Logarithmenausdrücke, die Referenzberechnung liefert den Exponenten als ganze Zahl.",
+          "errorHypotheses": [
+            "Exponentenregel falsch gewählt (addieren statt multiplizieren bzw. umgekehrt)",
+            "Rollen von Basis und Exponent bzw. Logarithmand verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "product-and-power-of-power",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': Potenzgesetze auf den Exponentenwert anwenden",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "w01-e10",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e10",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-power-log-exponent",
+        "summary": "Führt Potenz- und Logarithmenausdrücke fester Basis über Exponentenregeln auf einen einzigen Exponentenwert zurück.",
+        "membershipEvidence": {
+          "solutionPath": "Ausdruck auf die gemeinsame Basis zurückführen, Exponentenregeln anwenden (bei Produkten addieren, bei Potenzen multiplizieren, bei Logarithmen das Argument als Potenz der Basis schreiben) und den Exponentenwert angeben.",
+          "referenceModel": "Exponentenarithmetik zu fester ganzzahliger Basis; Seed-Generator erzeugt Produkt-, Potenz- und Logarithmenausdrücke, die Referenzberechnung liefert den Exponenten als ganze Zahl.",
+          "errorHypotheses": [
+            "Exponentenregel falsch gewählt (addieren statt multiplizieren bzw. umgekehrt)",
+            "Rollen von Basis und Exponent bzw. Logarithmand verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "integer-base-power",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': Logarithmus als Exponenten ganzzahliger Basis bestimmen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "w01-e11",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "w01-e11",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-meta-learning",
+        "coEvidence": []
+      },
+      "familyGroup": "reflect-journal",
+      "cognitiveFamily": {
+        "familyId": "reflect-error-journal-rationale",
+        "summary": "Reflektiert ein Fehlerprotokoll und begründet die Fehlerursache.",
+        "membershipEvidence": {
+          "solutionPath": "Das Fehlerbild rekonstruieren und die Ursache mit Begründung im Journal festhalten.",
+          "referenceModel": "Fehlerjournal-Eintrag mit begründeter Ursachenhypothese.",
+          "errorHypotheses": [
+            "Ursache nur symptomatisch statt kausal begründet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "rationale-note"
+      },
+      "caseTemplate": {
+        "caseId": "weak-area-error-journal",
+        "graderAdapter": "manual-rubric",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-learning"
+        ],
+        "moduleHint": "Lektion 'Fehler in nächste Handlungen übersetzen': wöchentliche Schwachstellen-Reflexion mit Rubrik",
+        "reviewEligible": false
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "w02-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "w02-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-collections",
+        "coEvidence": [
+          "c-python-control-flow"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-collection-state",
+        "summary": "Tracet Zustandsänderungen einer Collection durch Operationen und Zuweisungen.",
+        "membershipEvidence": {
+          "solutionPath": "Collection-Operation Schritt für Schritt anwenden und den resultierenden Collection-Zustand angeben.",
+          "referenceModel": "Collection-Zustand mit deterministischer Update-Semantik (Mutation statt Kopie).",
+          "errorHypotheses": [
+            "Mutation und Kopie verwechselt",
+            "Index- oder Slice-Grenzen falsch gezogen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "half-open-slices-with-join",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-control-flow",
+          "l-foundations-collections"
+        ],
+        "moduleHint": "Lektionen 'Bedingungen und Schleifen kontrollieren'/'Datenstrukturen nach Aufgabe wählen': String-Slices und join vorhersagen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Zwei Feedbackregeln werden vom Runtime-Grader nicht konsumiert; Entscheidung ueber Umbau oder redaktionelle Diagnose offen"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Festlegen, ob die beiden 'output contains'-Regeln als Diagnosekanal (answer-note/lines-diff@k) reaktiviert oder dauerhaft redaktionell geführt werden.",
+        "evidence": "gradePredictOutput liest nur element-count-mismatch; Zielpfad answer-note je Regel in diesem Shard vorgeschlagen.",
+        "latestGate": "S4C-Feedbackextraktion"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die beiden 'output contains'-Regeln werden von gradePredictOutput nicht ausgewertet; ein UI-seitiger Konsum ist nicht sichtbar.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Beide Regeln sind off-grammar ('output contains'); als Zielpfad ist answer-note pro Regel vorgeschlagen, die tatsächliche Reaktivierung oder redaktionelle Führung entscheidet die Feedbackextraktion in S4C.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "Zielpfad answer-note je Regel umsetzen oder Regeln redaktionell führen.",
+          "evidence": "Beide Regeln sind off-grammar ('output contains'); gradePredictOutput konsumiert sie nicht.",
+          "latestGate": "S4C-Feedbackextraktion"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Nachricht benennt die Slice-Grenzen-Ursache (s[3:8] endet vor Index 8) für die beobachtbare falsche Ausgabe; künftiger Diagnosekanal statt output contains."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Index-Diagnose (11, 12, 13) für den zweiten Slice ist konkrete Fehlerursache zur beobachtbaren Ausgabe, kein Formatfehler der Eingabe."
+        }
+      ]
+    },
+    {
+      "sourceId": "w02-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "w02-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-control-flow",
+        "coEvidence": [
+          "c-python-collections"
+        ]
+      },
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-accumulator-count",
+        "summary": "Zählt durch Akkumulation über eine Folge von Elementen oder Schritten.",
+        "membershipEvidence": {
+          "solutionPath": "Akkumulator initialisieren, über die Folge iterieren und den Zählerstand fortschreiben.",
+          "referenceModel": "Akkumulatorzustand über einer endlichen Folge.",
+          "errorHypotheses": [
+            "Startwert oder Update des Akkumulators falsch",
+            "Elemente doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "stepped-range-prepend-accumulator",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-control-flow",
+          "l-foundations-collections"
+        ],
+        "moduleHint": "Lektionen 'Bedingungen und Schleifen kontrollieren'/'Datenstrukturen nach Aufgabe wählen': range-Schleife mit Präfix-Akkumulator simulieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln ohne Runtime-Konsum: Migration muss klären, ob die Regeln neu formuliert oder als reine Loesungshinweise gefuehrt werden"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Klären, ob ein Runtime-Konsument außerhalb des Graders die Regeln aufnimmt, oder die vorgeschlagenen Zielpfade worked-solution/answer-note umsetzen.",
+        "evidence": "v1-Abgleich sieht keinen Konsumpfad außerhalb des Graders; Zielpfadvorschläge in diesem Shard.",
+        "latestGate": "S4C-Feedbackextraktion"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Beide Regeln sind Inhaltsregeln ('output contains'), die gradePredictOutput ignoriert; ein Konsumpfad ausserhalb des Graders ist nicht sichtbar.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Ein Konsument außerhalb des Graders ist im v1-Abgleich nicht sichtbar; die Regeln tragen hier die Zielpfade worked-solution und answer-note, der kanalbildende Umbau liegt bei S4C.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "Konsumenten außerhalb des Graders suchen oder Zielpfade worked-solution/answer-note umsetzen.",
+          "evidence": "Kein UI- oder Tutor-Konsument im v1-Abgleich sichtbar.",
+          "latestGate": "S4C-Feedbackextraktion"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "worked-solution",
+          "rationale": "Die Nachricht durchläuft die Akkumulatorschritte (i=0 erzeugt 'p', i=3 dann 'tp') und beschreibt damit die Lösungsschrittfolge der Präfixkette selbst."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Schrittweiten-Diagnose (range in Dreierschritten) benennt die konkrete Ursache der falsch durchlaufenen Indizes."
+        }
+      ]
+    },
+    {
+      "sourceId": "w02-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "w02-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-control-flow",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-string-immutability",
+        "summary": "Ordnet eine String-Operation ihren Folgen aus der Unveränderlichkeit von Strings zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der String-Unveränderlichkeit einer Klasse zuordnen: erzeugende Operationen wirken, ändernde Operationen werfen TypeError.",
+          "referenceModel": "Konzeptsystem der String-Unveränderlichkeit mit deterministischer Fehlerauslösung bei ändernden Operationen.",
+          "errorHypotheses": [
+            "Strings wie veränderliche Listen behandelt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "string-item-assignment-typeerror",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-control-flow"
+        ],
+        "moduleHint": "Lektion 'Bedingungen und Schleifen kontrollieren': String-Unveränderlichkeit und TypeError erklären",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'b' feuert bei falscher Choice in gradeChoice; die Nachricht erklärt zeichenweise Zuweisung als Listen-, nicht String-Operation."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'c' bleibt Prädikat; die Nachricht diagnostiziert Einfügen als ebenfalls unzulässige String-Änderung."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'd' bleibt Prädikat; die Nachricht widerlegt die still tolerierte Operation als Distraktor-Vorstellung."
+        }
+      ]
+    },
+    {
+      "sourceId": "w03-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "w03-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-collections",
+        "coEvidence": []
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-dict-state-update",
+        "summary": "Verfolgt den Zustand eines Dictionaries durch Update-Operationen und liest Werte und Schlüsselmenge am Ende ab.",
+        "membershipEvidence": {
+          "solutionPath": "Dictionary-Operationen (Inkrement, del, setdefault, get-Standard) Zeile für Zeile anwenden und den Endzustand von Werten und Schlüsselmenge ablesen.",
+          "referenceModel": "Dict-Zustand mit deterministischer Update-Semantik (Überschreiben, Löschen, Einfügen nur bei Fehlen, get-Standard); ein Mini-Interpreter wertet die Operationen in Ordnung aus.",
+          "errorHypotheses": [
+            "Dict-Update-Semantik falsch angewendet (Überschreiben, del, setdefault, get-Standard)",
+            "Aggregation über das falsche Dict-Objekt (Werte statt Schlüssel)"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "del-setdefault-increment",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-collections"
+        ],
+        "moduleHint": "Lektion 'Datenstrukturen nach Aufgabe wählen': Dictionary-Mutationen (+=, del, setdefault) Zeile für Zeile verfolgen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Familienabgleich mit f-collections-output-01: gemeinsame Familie nur bei identischem Solver-Vertrag begruenden"
+        ],
+        "disposition": "deferred-to-s4b",
+        "owner": "S4B-Entwurf",
+        "decision": "Neue Familie trace-dict-state-update (w03-e1 zusammen mit f-collections-output-01) im Domänenreview bestätigen oder aufteilen.",
+        "evidence": "Beide Quellen teilen die Dict-Zustandsprozedur und die Solverklasse expected-answer/output-lines; das v1-Review verlangt den identischen Solver-Vertrag als Bedingung.",
+        "latestGate": "Domänenreview foundations vor S4B-Modulentwurf"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Die Regelformen 'output contains' und 'output starts with' werden von gradePredictOutput nicht gelesen.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Die 'output contains'/'starts with'-Formen bleiben ohne Runtime-Konsument; als Zielpfad ist answer-note vorgeschlagen, die konsumierende Form legt S4C fest.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "Regeln in konsumierende Form (z. B. lines-diff@k) überführen oder als editorial-diagnosis führen.",
+          "evidence": "Die Formen 'output contains' und 'output starts with' werden von gradePredictOutput nicht gelesen.",
+          "latestGate": "S4C-Feedbackextraktion"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Operand-statt-Ergebnis-Verwechslung (3 statt 5 notiert) wird als konkrete Ursache der falschen print-Ausgabe benannt."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "del- und setdefault-Wirkung auf die Schlüsselmenge wird als konkrete Ursache der falsch gezählten len benannt."
+        }
+      ]
+    },
+    {
+      "sourceId": "w03-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "w03-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-collections",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-set-operation-semantics",
+        "summary": "Ordnet eine Mengenbeobachtung der richtigen Set-Operation und Eindeutigkeits-Semantik zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Set-Operationen (Deduplizierung im Literal, Durchschnitt, Vereinigung, len über eindeutige Elemente) einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Mengenoperationen mit mathematischer Mengensemantik.",
+          "errorHypotheses": [
+            "Mengenoperationen oder Eindeutigkeitswirkung miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "dedup-and-intersection",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-collections"
+        ],
+        "moduleHint": "Lektion 'Datenstrukturen nach Aufgabe wählen': Set-Eindeutigkeit und Durchschnitt begründen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'b' bleibt Prädikat; die Nachricht erklärt die Deduplizierung im Set-Literal für die len-Zählung."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'c' bleibt Prädikat; die Nachricht trennt Durchschnitt (&) von Vereinigung (|)."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'd' bleibt Prädikat; dieselbe Durchschnitts-/Vereinigungs-Diagnose deckt die zweite Fehlwahl ab."
+        }
+      ]
+    },
+    {
+      "sourceId": "w03-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "w03-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-files-errors",
+        "coEvidence": [
+          "c-python-collections"
+        ]
+      },
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-validate-and-count-records",
+        "summary": "Prüft Datensätze gegen ein Validierungskriterium und zählt die erfüllenden Datensätze.",
+        "membershipEvidence": {
+          "solutionPath": "Kriterium auf jeden Datensatz anwenden und die Treffer zählen.",
+          "referenceModel": "Datensatzmenge plus deterministisches Validierungsprädikat.",
+          "errorHypotheses": [
+            "Kriterium zu streng oder zu schwach angewendet",
+            "Über die falsche Teilmenge gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "parse-validate-summarize",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-files-errors",
+          "l-foundations-collections"
+        ],
+        "moduleHint": "Lektion 'Dateien lesen und Fehler begrenzen': Zeilenvalidierung mit Zählung und Summen implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Zwei Feedbackregeln sind im Pyodide-Graderpfad nicht konsumiert; Migration muss klären, ob sie als Testdiagnose reaktiviert werden"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Beide Regeln als checkId-Kanal (answer-note) der Pyodide-Prüfungen reaktivieren oder als editorial-diagnosis führen.",
+        "evidence": "condition-Felder binden an konkrete Testfälle ('+4' akzeptiert, leerer Name); Zielpfad answer-note vorgeschlagen.",
+        "latestGate": "S4C-Feedbackextraktion"
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "'+4'.isdigit() ist False: konkrete Ursache (Vorzeichenbehandlung) für das Durchlassen ungültiger Zeilen; künftiger checkId-Kanal der Pyodide-Prüfungen."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Leerer Name nach Trimmen wird als konkrete Validierungslücke benannt und mappt auf den fehlschlagenden Prüftest."
+        }
+      ]
+    },
+    {
+      "sourceId": "w03-e4",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "w03-e4",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-git-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-git-operation",
+        "summary": "Ordnet eine Repository-Situation der passenden Git-Operation zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Git-Operationen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Git-Operationen.",
+          "errorHypotheses": [
+            "Benachbarte Git-Operationen verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "switch-worktree-state",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-git"
+        ],
+        "moduleHint": "Lektion 'Git als überprüfbares Arbeitsprotokoll': Arbeitskopie-Semantik nach Branch-Wechsel erklären",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'b' bleibt Prädikat; die Nachricht erklärt die Wiederherstellung der Zieldateien beim Branch-Wechsel."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'c' bleibt Prädikat; die Nachricht widerlegt den vermeintlichen Zwischenzustand nach dem Wechsel."
+        },
+        {
+          "ruleIndex": 2,
+          "targetPath": "grader-predicate",
+          "rationale": "choice === 'd' bleibt Prädikat; die Nachricht erklärt die Eindeutigkeit der ausgecheckten Arbeitskopie."
+        }
+      ]
+    },
+    {
+      "sourceId": "w04-e1",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "w04-e1",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-testing-debugging",
+        "coEvidence": []
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-exception-path",
+        "summary": "Tracet, welcher Programm- und Ausnahmepfad bei der Ausführung tatsächlich durchlaufen wird.",
+        "membershipEvidence": {
+          "solutionPath": "Ausführungspfad verfolgen und bestimmen, welche Ausnahme wo ausgelöst oder abgefangen wird.",
+          "referenceModel": "Programm mit deterministischem Ausnahme- und Fehlerfluss.",
+          "errorHypotheses": [
+            "Falscher Zweig gewählt",
+            "Reihenfolge der Ausnahmebehandlung missverstanden"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "assert-raise-and-catch",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektion 'Ein Fehler, ein reproduzierbarer Test': assert-Auslösen und -Abfangen als Ausgabeprognose",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "'output contains'-Feedbackregeln sind im Runtime-Grader ohne Wirkung; Migrationsentscheidung dokumentieren"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Beide Regeln als answer-note (Nachricht statt Typ, Abbruch durch assert) in die erweiterte Predict-Output-Diagnose übernehmen.",
+        "evidence": "Archetyp output-predict-lines erhält v2 lines-diff@k; beide Nachrichten diagnostizieren beobachtbare Ausgabezeilen.",
+        "latestGate": "S4C-Feedbackextraktion"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "medium",
+          "reason": "Beide Regeln sind 'output contains'-Formen, die gradePredictOutput ignoriert.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "Beide 'output contains'-Regeln diagnostizieren beobachtbare Zeilen; answer-note ist vorgeschlagen, die Überführung in die erweiterte Grammatik erfolgt in S4C.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "Diagnosen als answer-note in die erweiterte Predict-Output-Grammatik übernehmen.",
+          "evidence": "Beide 'output contains'-Regeln diagnostizieren konkrete Ausgabezeilen (Nachricht statt Typ, kein Rückgabewert).",
+          "latestGate": "S4C-Feedbackextraktion"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Nachricht-statt-Typ-Diagnose für die gefangene AssertionError-Ausgabe; konkrete Ursache zur beobachtbaren Prognosezeile."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Diagnose erklärt, dass assert bei −1 abbricht, sodass der Rückgabewert −2 nie entsteht; Ursache zur beobachtbaren Prognose."
+        }
+      ]
+    },
+    {
+      "sourceId": "w04-e2",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "w04-e2",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-testing-debugging",
+        "coEvidence": []
+      },
+      "familyGroup": "validate-contract",
+      "cognitiveFamily": {
+        "familyId": "validate-test-design-coverage",
+        "summary": "Bewertet einen Testentwurf gegen Abdeckungs- und Designkriterien.",
+        "membershipEvidence": {
+          "solutionPath": "Die Testfallmenge gegen das Abdeckungskriterium prüfen und die Lücken benennen.",
+          "referenceModel": "Abdeckungskriterium über einer Spezifikation.",
+          "errorHypotheses": [
+            "Abdeckungslücke übersehen",
+            "Kriterium falsch operationalisiert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "elif-chain-five-outcomes",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektion 'Ein Fehler, ein reproduzierbarer Test': minimale Testfallzahl für Zweigabdeckung bestimmen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Gemeinsame Familie mit f-branch-coverage-01 erfordert Abgleich der Generatorformen (if-if vs. elif-Kette) vor Zusammenfuehrung"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Generatorabgleich",
+        "decision": "Falltyp elif-chain-five-outcomes von w04-e2 als Familienfalltyp von validate-test-design-coverage neben nested-if-decision-tree bestätigen.",
+        "evidence": "genBranchCoverageCount erzeugt bereits elif-Ketten (BRANCH_SHAPES if-elif-elif-else, if-elif-elif-elif-else in foundations_fresh_generators.mjs).",
+        "latestGate": "S4C-Generator- und Solververtrag"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "proposedFamilyId",
+          "level": "medium",
+          "reason": "w04-e2 (elif-Kette, fix) und f-branch-coverage-01 (if-if-Baum, Seed-Generator) teilen das Zaehlprinzip, aber nicht die Strukturklasse des Generators.",
+          "disposition": "resolved-with-code-evidence",
+          "rationale": "genBranchCoverageCount erzeugt elif-Ketten (assets/js/core/foundations_fresh_generators.mjs, BRANCH_SHAPES if-elif-elif-else und if-elif-elif-elif-else) und deckt damit die Strukturklasse von w04-e2; beide Quellen liegen als getrennte Fälle in validate-test-design-coverage, wie es der v1-Vorsatz für diesen Fall vorsieht."
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value === 3 bleibt diagnoseNumeric-Prädikat; die Nachricht zählt die Zweig-Ausgänge als Diagnose der Unterzählung."
+        }
+      ]
+    },
+    {
+      "sourceId": "w04-e3",
+      "sourceKind": "legacy-week-exercise",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "w04-e3",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-testing-debugging",
+        "coEvidence": []
+      },
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-regression-test-suite",
+        "summary": "Implementiert eine normalisierende Funktion plus Regressionstestfunktion mit Assert-Kette und Prüfzähler.",
+        "membershipEvidence": {
+          "solutionPath": "Normalisierung festlegen (Kleinbuchstaben, Leerzeichen entfernen), den Vergleich mit der Umkehrung implementieren und eine Testfunktion mit mindestens fünf asserts samt zurückgegebenem Prüfzähler autoren.",
+          "referenceModel": "Eingebettete Referenzlösung mit Referenztestsuite; Bewertung über das Pyodide-Testbündel gegen die Referenz.",
+          "errorHypotheses": [
+            "Vergleich vor der Normalisierung ausgeführt",
+            "Tests ohne prüfende asserts verfasst"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "normalize-and-assert-suite",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektion 'Ein Fehler, ein reproduzierbarer Test': Palindrom-Funktion plus Regressionstest-Suite implementieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Feedbackregeln im Pyodide-Pfad unkonsumiert; Umgang (Formwechsel oder redaktionelle Diagnose) muss im Migrationsschritt entschieden werden"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Feedbackextraktion",
+        "decision": "Beide Regeln als checkId-Diagnose (Normalisierungsfehler lower/Leerzeichen) an die Pyodide-Prüfungen binden.",
+        "evidence": "condition-Felder nennen konkrete Testfälle (Relief pfeiler, Anna); Zielpfad answer-note vorgeschlagen.",
+        "latestGate": "S4C-Feedbackextraktion"
+      },
+      "uncertaintyDispositions": [
+        {
+          "field": "feedbackConsumerStatus",
+          "level": "low",
+          "reason": "gradePython liest feedbackRules nicht; die beiden Regeln wirken nur als redaktionelle Hinweise.",
+          "disposition": "deferred-to-s4c",
+          "rationale": "gradePython liest feedbackRules nicht; beide Regeln sind hier als answer-note über den checkId-Kanal disponentiert, die endgültige Kanalwahl trifft S4C.",
+          "owner": "S4C-Feedbackextraktion",
+          "decision": "Regeln als checkId-Diagnose der Pyodide-Prüfungen aktivieren oder als editorial-diagnosis kennzeichnen.",
+          "evidence": "gradePython liest feedbackRules nicht; die Regeln wirken aktuell nur redaktionell.",
+          "latestGate": "S4C-Feedbackextraktion"
+        }
+      ],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "answer-note",
+          "rationale": "Fehlende Leerzeichen-Normalisierung wird als konkrete Ursache des scheiternden Palindrom-Vergleichs benannt."
+        },
+        {
+          "ruleIndex": 1,
+          "targetPath": "answer-note",
+          "rationale": "Fallfehler ('Anna' gegen 'annA') wird diagnostiziert; die lower()-Reihenfolge vor dem Vergleich ist die konkrete Korrektur."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-algebra-both-sides-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-algebra-both-sides-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra-basics",
+        "coEvidence": [
+          "c-algebra"
+        ]
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-linear-equation-isolate",
+        "summary": "Löst eine lineare Gleichung durch skalare Äquivalenzumformung mit einer Unbekannten und genau einer Lösung.",
+        "membershipEvidence": {
+          "solutionPath": "Skalare Äquivalenzumformungen schrittweise anwenden und die Unbekannte isolieren.",
+          "referenceModel": "Lineare Gleichung in einer Unbekannten mit genau einer Lösung; alle Umformungen sind skalare Äquivalenzumformungen.",
+          "errorHypotheses": [
+            "Vorzeichenfehler bei der Äquivalenzumformung",
+            "Umformung nur auf einer Gleichungsseite ausgeführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "collect-x-terms-both-sides",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra",
+          "l-foundations-algebra-transformations"
+        ],
+        "moduleHint": "Lektionen 'Algebra-Grundlagen sicher prüfen'/'Terme strukturiert umformen': Gleichung mit x auf beiden Seiten lösen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "generic-hint",
+          "rationale": "Seed-unabhängiger konzeptioneller Hinweis auf die Vorzeichenregel beim Sammeln der x-Terme; kein konkreter falscher Wert adressierbar, daher Hinweisleiter statt Diagnose."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-algebra-debug-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-algebra-debug-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-error-hypothesis",
+        "summary": "Ordnet ein beobachtetes Fehlerbild der plausibelsten Fehlerhypothese zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Fehlerhypothesen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Fehlerhypothesen.",
+          "errorHypotheses": [
+            "Symptom statt Ursache klassifiziert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "base-vs-exponent-confusion",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra-transformations"
+        ],
+        "moduleHint": "Lektion 'Terme strukturiert umformen': ersten Fehler einer Potenzrechnung diagnostizieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'a' bleibt Prädikat; die Nachricht trennt Basis- von Exponentenrolle als Diagnoseachse der Fehlerhypothese."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-algebra-equivalence-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-algebra-equivalence-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra",
+        "coEvidence": [
+          "c-algebra-basics"
+        ]
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-linear-equation-isolate",
+        "summary": "Löst eine lineare Gleichung durch skalare Äquivalenzumformung mit einer Unbekannten und genau einer Lösung.",
+        "membershipEvidence": {
+          "solutionPath": "Skalare Äquivalenzumformungen schrittweise anwenden und die Unbekannte isolieren.",
+          "referenceModel": "Lineare Gleichung in einer Unbekannten mit genau einer Lösung; alle Umformungen sind skalare Äquivalenzumformungen.",
+          "errorHypotheses": [
+            "Vorzeichenfehler bei der Äquivalenzumformung",
+            "Umformung nur auf einer Gleichungsseite ausgeführt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "divide-both-sides-fully",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra-transformations",
+          "l-foundations-algebra"
+        ],
+        "moduleHint": "Lektionen 'Terme strukturiert umformen'/'Algebra-Grundlagen sicher prüfen': äquivalente Umformung einer Klammergleichung wählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'a' bleibt Prädikat; die Nachricht fordert die vollständige beidseitige Operation als Äquivalenz-Diagnose."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-algebra-final-boss-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-algebra-final-boss-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-algebra",
+        "coEvidence": [
+          "c-algebra-basics"
+        ]
+      },
+      "familyGroup": "transform-terms",
+      "cognitiveFamily": {
+        "familyId": "transform-expression-simplify-canonical",
+        "summary": "Überführt Terme durch gleichwertige Umformung in eine kanonische Form.",
+        "membershipEvidence": {
+          "solutionPath": "Term äquivalent umformen und gegen die kanonische Zielform prüfen.",
+          "referenceModel": "Termäquivalenzklasse mit wohldefinierter kanonischer Normalform.",
+          "errorHypotheses": [
+            "Nicht-äquivalente Umformung ausgeführt",
+            "Kanonische Zielform nicht erreicht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "expression-equivalence"
+      },
+      "caseTemplate": {
+        "caseId": "distribute-sign-constant-chain",
+        "graderAdapter": "pyodide-sympy",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "final-boss-synthesis",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-algebra",
+          "l-foundations-algebra-transformations"
+        ],
+        "moduleHint": "Lektionen 'Terme strukturiert umformen'/'Algebra-Grundlagen sicher prüfen': Termkette mit Distributivgesetz und Vorzeichen reparieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "input-validation",
+          "rationale": "Nachricht prüft die Eingabeform (^/**, implizite Multiplikation) vor der fachlichen SymPy-Bewertung; Format-Guard nach PrairieLearn-Vorbild."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-branch-coverage-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "f-branch-coverage-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-testing-debugging",
+        "coEvidence": []
+      },
+      "familyGroup": "validate-contract",
+      "cognitiveFamily": {
+        "familyId": "validate-test-design-coverage",
+        "summary": "Bewertet einen Testentwurf gegen Abdeckungs- und Designkriterien.",
+        "membershipEvidence": {
+          "solutionPath": "Die Testfallmenge gegen das Abdeckungskriterium prüfen und die Lücken benennen.",
+          "referenceModel": "Abdeckungskriterium über einer Spezifikation.",
+          "errorHypotheses": [
+            "Abdeckungslücke übersehen",
+            "Kriterium falsch operationalisiert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "numeric-exact"
+      },
+      "caseTemplate": {
+        "caseId": "nested-if-decision-tree",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektion 'Ein Fehler, ein reproduzierbarer Test': Wege eines Entscheidungsbaums für Zweigabdeckung zählen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Gemeinsame Familie mit w04-e2 erfordert Klärung, ob genBranchCoverageCount elif-Ketten abdecken kann"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Generatorabgleich",
+        "decision": "Generatorfähigkeit für elif-Ketten ist code-belegt; Familienbindung validate-test-design-coverage zusammen mit w04-e2 im Review bestätigen.",
+        "evidence": "assets/js/core/foundations_fresh_generators.mjs BRANCH_SHAPES enthält elif-Formen mit fünf Ausgängen.",
+        "latestGate": "Domänenreview foundations vor S4C-Generatorvertrag"
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-testing-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "f-testing-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-testing-debugging",
+        "coEvidence": [
+          "c-meta-learning"
+        ]
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-test-attitude",
+        "summary": "Ordnet eine Testpraxis der passenden Testhaltung zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Testhaltungen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Testhaltungen.",
+          "errorHypotheses": [
+            "Testhaltungen miteinander verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "csv-off-by-one-reproduce-smallest",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-testing-debugging",
+          "l-foundations-learning"
+        ],
+        "moduleHint": "Lektionen 'Ein Fehler, ein reproduzierbarer Test'/'Fehler in nächste Handlungen übersetzen': nächsten Diagnoseschritt bei Off-by-one wählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'a' bleibt Prädikat; die Nachricht erklärt Reproduktion vor Fix als Testhaltungs-Diagnose."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-testing-parsons-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "f-testing-parsons-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-testing-debugging",
+        "coEvidence": []
+      },
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-test-structure-aaa",
+        "summary": "Ordnet einen Test nach Arrange-Act-Assert bei unabhängig formulierter Erwartung.",
+        "membershipEvidence": {
+          "solutionPath": "Testaufbau, Funktionsaufruf und unabhängige Erwartung in AAA-Reihenfolge anordnen und die ergebnisangepasste Erwartung als Distraktor aussondern.",
+          "referenceModel": "AAA-Strukturvertrag mit erwartungsunabhängigem Assert; Referenz ist die geordnete Lösungssequenz.",
+          "errorHypotheses": [
+            "Erwartung dem Ergebnis angepasst statt unabhängig formuliert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "program-ordering"
+      },
+      "caseTemplate": {
+        "caseId": "arrange-act-assert",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektion 'Ein Fehler, ein reproduzierbarer Test': Test nach Arrange-Act-Assert anordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "order-length-mismatch bleibt der einzige Parsons-Token; die Nachricht benennt die exakte Zeilenzahl der AAA-Struktur."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-meta-error-classify-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "f-meta-error-classify-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-meta-learning",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-error-hypothesis",
+        "summary": "Ordnet ein beobachtetes Fehlerbild der plausibelsten Fehlerhypothese zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Fehlerhypothesen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Fehlerhypothesen.",
+          "errorHypotheses": [
+            "Symptom statt Ursache klassifiziert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "seeded-error-pattern-cases",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-learning"
+        ],
+        "moduleHint": "Lektion 'Fehler in nächste Handlungen übersetzen': Debug-Beobachtung dem Prozessschritt zuordnen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-meta-error-log-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": null,
+      "currentDefinitionId": "f-meta-error-log-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-meta-learning",
+        "coEvidence": []
+      },
+      "familyGroup": "reflect-journal",
+      "cognitiveFamily": {
+        "familyId": "reflect-error-journal-rationale",
+        "summary": "Reflektiert ein Fehlerprotokoll und begründet die Fehlerursache.",
+        "membershipEvidence": {
+          "solutionPath": "Das Fehlerbild rekonstruieren und die Ursache mit Begründung im Journal festhalten.",
+          "referenceModel": "Fehlerjournal-Eintrag mit begründeter Ursachenhypothese.",
+          "errorHypotheses": [
+            "Ursache nur symptomatisch statt kausal begründet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "hypothesis-with-fresh-test",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-learning"
+        ],
+        "moduleHint": "Lektion 'Fehler in nächste Handlungen übersetzen': Journaleintrag mit prüfbarer Hypothese bewerten",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'observable-test' bleibt Prädikat; die Nachricht erklärt Beobachtung, Reproduktion und frischen Test als Journal-Diagnose."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-python-state-trace-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "f-python-state-trace-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-reading",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "chain3-overwrite-print",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-python-state",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Python-Zustand statt Code-Raten'/'Code Zeile für Zeile tracen': Zuweisungskette mit Überschreibung simulieren (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Familienabgleich mit w01-e3: gemeinsame Familie nur nach Pruefung der Seed-Formen und der Fehlerregel von w01-e3"
+        ],
+        "disposition": "deferred-to-s4c",
+        "owner": "S4C-Generatorabgleich",
+        "decision": "Seed-Formen von genPythonStateTrace gegen die fixe Quelle w01-e3 abgleichen und die gemeinsame Familie trace-assignment-state bestätigen.",
+        "evidence": "Registry-Hypothese und Design-Beispiel 3 führen beide Quellen in trace-assignment-state; authorityMode static/seeded trennt die Fälle.",
+        "latestGate": "S4C-Generator- und Solververtrag"
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-code-reading-output-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-code-reading-output-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-reading",
+        "coEvidence": []
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-assignment-state",
+        "summary": "Verfolgt Zuweisungszustände durch ein Programm in einer Umgebungstabelle mit stdout-Puffer.",
+        "membershipEvidence": {
+          "solutionPath": "Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.",
+          "referenceModel": "Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).",
+          "errorHypotheses": [
+            "reads-new-value",
+            "overwrite-forgotten",
+            "print-order",
+            "state-object-confusion"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "method-chain-transform",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektion 'Code Zeile für Zeile tracen': String-Methodenkette in exakter Form vorhersagen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-collection-step-trace-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-collection-step-trace-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-collections",
+        "coEvidence": [
+          "c-python-basics"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-collection-state",
+        "summary": "Tracet Zustandsänderungen einer Collection durch Operationen und Zuweisungen.",
+        "membershipEvidence": {
+          "solutionPath": "Collection-Operation Schritt für Schritt anwenden und den resultierenden Collection-Zustand angeben.",
+          "referenceModel": "Collection-Zustand mit deterministischer Update-Semantik (Mutation statt Kopie).",
+          "errorHypotheses": [
+            "Mutation und Kopie verwechselt",
+            "Index- oder Slice-Grenzen falsch gezogen"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "list-copy-alias-steps",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-collections",
+          "l-foundations-python-state"
+        ],
+        "moduleHint": "Lektionen 'Datenstrukturen nach Aufgabe wählen'/'Python-Zustand statt Code-Raten': Listen-Aliassung Schritt für Schritt tracen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-control-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-control-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-control-flow",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-control-construct",
+        "summary": "Ordnet ein Code-Fragment dem passenden Kontrollkonstrukt zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Kontrollkonstrukte einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Kontrollkonstrukte.",
+          "errorHypotheses": [
+            "Kontrollkonstrukte mit ähnlicher Semantik verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "for-over-existing-collection",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-control-flow"
+        ],
+        "moduleHint": "Lektion 'Bedingungen und Schleifen kontrollieren': passende Schleifenform zur Absicht wählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'for-values' bleibt Prädikat; die Nachricht diagnostiziert die fehlende Abbruchbedingung der while-Alternative."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-control-flow-output-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-control-flow-output-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-control-flow",
+        "coEvidence": []
+      },
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-accumulator-count",
+        "summary": "Zählt durch Akkumulation über eine Folge von Elementen oder Schritten.",
+        "membershipEvidence": {
+          "solutionPath": "Akkumulator initialisieren, über die Folge iterieren und den Zählerstand fortschreiben.",
+          "referenceModel": "Akkumulatorzustand über einer endlichen Folge.",
+          "errorHypotheses": [
+            "Startwert oder Update des Akkumulators falsch",
+            "Elemente doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "while-counter-with-stop-state",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-control-flow"
+        ],
+        "moduleHint": "Lektion 'Bedingungen und Schleifen kontrollieren': while-Schleife mit Summenakkumulator simulieren (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-control-parsons-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-control-parsons-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-control-flow",
+        "coEvidence": []
+      },
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-guarded-loop",
+        "summary": "Konstruiert eine bewachte Schleife mit korrekter Bedingung und Update.",
+        "membershipEvidence": {
+          "solutionPath": "Die Weiterlauf- bzw. Abbruchbedingung festlegen und Rumpf samt Update konstruieren.",
+          "referenceModel": "Wächterschleife mit deterministischer Terminierungsbedingung.",
+          "errorHypotheses": [
+            "Bedingung invertiert",
+            "Update fehlt bzw. terminiert nicht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "program-ordering"
+      },
+      "caseTemplate": {
+        "caseId": "positive-values-structure",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-control-flow"
+        ],
+        "moduleHint": "Lektion 'Bedingungen und Schleifen kontrollieren': Filterschleife als Parsons anordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "order-length-mismatch bleibt der einzige Parsons-Token; die Nachricht benennt die exakte Sechs-Zeilen-Struktur."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-control-code-repair-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-control-code-repair-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-control-flow",
+        "coEvidence": [
+          "c-python-basics",
+          "c-python-reading",
+          "c-python-functions",
+          "c-testing-debugging"
+        ]
+      },
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-guarded-loop",
+        "summary": "Konstruiert eine bewachte Schleife mit korrekter Bedingung und Update.",
+        "membershipEvidence": {
+          "solutionPath": "Die Weiterlauf- bzw. Abbruchbedingung festlegen und Rumpf samt Update konstruieren.",
+          "referenceModel": "Wächterschleife mit deterministischer Terminierungsbedingung.",
+          "errorHypotheses": [
+            "Bedingung invertiert",
+            "Update fehlt bzw. terminiert nicht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "append-return-in-loop",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-python-state",
+          "l-foundations-code-reading",
+          "l-foundations-functions",
+          "l-foundations-control-flow",
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektionen 'Bedingungen und Schleifen kontrollieren'/'Ein Fehler, ein reproduzierbarer Test': Schleifenaggregation mit frühem Return reparieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-control-trace-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-control-trace-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-reading",
+        "coEvidence": [
+          "c-python-basics",
+          "c-python-control-flow"
+        ]
+      },
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-accumulator-count",
+        "summary": "Zählt durch Akkumulation über eine Folge von Elementen oder Schritten.",
+        "membershipEvidence": {
+          "solutionPath": "Akkumulator initialisieren, über die Folge iterieren und den Zählerstand fortschreiben.",
+          "referenceModel": "Akkumulatorzustand über einer endlichen Folge.",
+          "errorHypotheses": [
+            "Startwert oder Update des Akkumulators falsch",
+            "Elemente doppelt oder gar nicht gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "state-trace-vars"
+      },
+      "caseTemplate": {
+        "caseId": "for-if-else-accumulator",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-python-state",
+          "l-foundations-control-flow",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Code Zeile für Zeile tracen'/'Bedingungen und Schleifen kontrollieren': for-Schleife mit if/else-Zweig tracen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "value:summe bleibt Prädikat in gradeCodeTrace; die Nachricht diagnostiziert das fälschliche Zurücksetzen zwischen den Läufen."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-collections-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-collections-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-collections",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-python-collection-choice",
+        "summary": "Ordnet eine Aufgabe der passenden Python-Collection zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Python-Collections einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Python-Collection-Typen.",
+          "errorHypotheses": [
+            "Collection-Typ nach falschem Kriterium gewählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "membership-set-for-dedup",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-collections"
+        ],
+        "moduleHint": "Lektion 'Datenstrukturen nach Aufgabe wählen': Datenstruktur für Eindeutigkeit und Mitgliedschaft wählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'a' bleibt Prädikat; die Nachricht lenkt auf Eindeutigkeit und Mitgliedschaft als Auswahlkriterium."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-collections-output-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w02",
+      "currentDefinitionId": "f-collections-output-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-collections",
+        "coEvidence": [
+          "c-python-reading"
+        ]
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-dict-state-update",
+        "summary": "Verfolgt den Zustand eines Dictionaries durch Update-Operationen und liest Werte und Schlüsselmenge am Ende ab.",
+        "membershipEvidence": {
+          "solutionPath": "Dictionary-Operationen (Inkrement, del, setdefault, get-Standard) Zeile für Zeile anwenden und den Endzustand von Werten und Schlüsselmenge ablesen.",
+          "referenceModel": "Dict-Zustand mit deterministischer Update-Semantik (Überschreiben, Löschen, Einfügen nur bei Fehlen, get-Standard); ein Mini-Interpreter wertet die Operationen in Ordnung aus.",
+          "errorHypotheses": [
+            "Dict-Update-Semantik falsch angewendet (Überschreiben, del, setdefault, get-Standard)",
+            "Aggregation über das falsche Dict-Objekt (Werte statt Schlüssel)"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "get-default-counting",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-collections",
+          "l-foundations-code-reading"
+        ],
+        "moduleHint": "Lektionen 'Datenstrukturen nach Aufgabe wählen'/'Code Zeile für Zeile tracen': Zähl-Dictionary mit get-Standard verfolgen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": true,
+        "reasons": [
+          "Familienabgleich mit w03-e1: gemeinsame Familie nur bei identischem Solver-Vertrag begruenden"
+        ],
+        "disposition": "deferred-to-s4b",
+        "owner": "S4B-Entwurf",
+        "decision": "Gemeinsame Dict-Familie mit w03-e1 (trace-dict-state-update) bestätigen oder f-collections-output-01 der Akkumulator-Zählung zuordnen.",
+        "evidence": "v1-Review verlangt identischen Solver-Vertrag; beide Quellen sind expected-answer/output-lines mit Dict-Endzustandsabgleich.",
+        "latestGate": "Domänenreview foundations vor S4B-Modulentwurf"
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "element-count-mismatch konsumiert die Regel; die Nachricht erklärt Häufigkeit und Schlüsselzahl als Zweiwert-Ausgabe."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-files-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-files-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-files-errors",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-exception-placement",
+        "summary": "Ordnet eine Ausnahmebehandlung dem passenden Platzierungsort zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Exception-Platzierungen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Exception-Platzierungsorte.",
+          "errorHypotheses": [
+            "Platzierung der Ausnahmebehandlung falsch begründet"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "translate-error-to-issue",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-files-errors"
+        ],
+        "moduleHint": "Lektion 'Dateien lesen und Fehler begrenzen': Ebene der ValueError-Behandlung wählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'a' bleibt Prädikat; die Nachricht trennt erwartete Eingabefehler von unerwarteten Programmfehlern als Platzierungs-Diagnose."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-files-parsons-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-files-parsons-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-files-errors",
+        "coEvidence": [
+          "c-python-control-flow"
+        ]
+      },
+      "familyGroup": "validate-contract",
+      "cognitiveFamily": {
+        "familyId": "validate-required-field-raise",
+        "summary": "Prüft Datensätze oder Objekte auf Pflichtfelder und hebt bei Verletzung einen Fehler aus.",
+        "membershipEvidence": {
+          "solutionPath": "Pflichtfelder prüfen und bei Fehlen deterministisch den Fehler auslösen bzw. die Verletzungsliste erzeugen.",
+          "referenceModel": "Pflichtfeld-Vertrag mit deterministischer Auslösebedingung.",
+          "errorHypotheses": [
+            "Pflichtfeld übersehen",
+            "Fehlertyp oder Auslösezeitpunkt falsch"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "program-ordering"
+      },
+      "caseTemplate": {
+        "caseId": "specific-except-with-issue",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-files-errors",
+          "l-foundations-control-flow"
+        ],
+        "moduleHint": "Lektionen 'Dateien lesen und Fehler begrenzen'/'Bedingungen und Schleifen kontrollieren': try/except mit spezifischem ValueError anordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "order-length-mismatch bleibt der einzige Parsons-Token; die Nachricht benennt die exakte Vier-Zeilen-Struktur."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-function-compose-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w01",
+      "currentDefinitionId": "f-function-compose-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-functions",
+        "coEvidence": []
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-call-composition",
+        "summary": "Tracet die Auswertung verketteter bzw. verschachtelter Aufrufe und ihren resultierenden Wert.",
+        "membershipEvidence": {
+          "solutionPath": "Aufrufkomposition von innen nach außen auswerten und das Endergebnis bestimmen.",
+          "referenceModel": "Deterministische Auswertungssemantik der Aufrufkomposition.",
+          "errorHypotheses": [
+            "Falsche Auswertungsreihenfolge der Aufrufe",
+            "Argumentzuordnung vertauscht"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "output-predict-lines"
+      },
+      "caseTemplate": {
+        "caseId": "both-orders-linear-functions",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-functions"
+        ],
+        "moduleHint": "Lektion 'Funktionen als kleine Verträge': Komposition f(g(v)) und g(f(v)) in beiden Reihenfolgen berechnen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-git-choice-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-git-choice-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-git-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-git-operation",
+        "summary": "Ordnet eine Repository-Situation der passenden Git-Operation zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Git-Operationen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Git-Operationen.",
+          "errorHypotheses": [
+            "Benachbarte Git-Operationen verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "unstaged-diff-read",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "basic-recall",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-git"
+        ],
+        "moduleHint": "Lektion 'Git als überprüfbares Arbeitsprotokoll': Lesebefehl für unstagede Änderungen wählen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'a' bleibt Prädikat; die Nachricht schließt Remote- und Historieneffekte als Distraktor-Diagnose aus."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-git-next-action-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-git-next-action-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-git-basics",
+        "coEvidence": []
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-git-operation",
+        "summary": "Ordnet eine Repository-Situation der passenden Git-Operation zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Git-Operationen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Git-Operationen.",
+          "errorHypotheses": [
+            "Benachbarte Git-Operationen verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "seeded-state-action-cases",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-git"
+        ],
+        "moduleHint": "Lektion 'Git als überprüfbares Arbeitsprotokoll': nächsten Prüfschritt einer Git-Situation zuordnen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-git-merge-debug-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-git-merge-debug-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-git-basics",
+        "coEvidence": [
+          "c-testing-debugging"
+        ]
+      },
+      "familyGroup": "classify-concept",
+      "cognitiveFamily": {
+        "familyId": "classify-git-operation",
+        "summary": "Ordnet eine Repository-Situation der passenden Git-Operation zu.",
+        "membershipEvidence": {
+          "solutionPath": "Eine Beobachtung anhand des Konzeptsystems der Git-Operationen einer Klasse zuordnen.",
+          "referenceModel": "Konzeptsystem der Git-Operationen.",
+          "errorHypotheses": [
+            "Benachbarte Git-Operationen verwechselt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "resolve-then-verify-tests",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-git",
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektionen 'Git als überprüfbares Arbeitsprotokoll'/'Ein Fehler, ein reproduzierbarer Test': Merge-Konflikt-Abschluss mit Tests planen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "choice !== 'resolve-test-diff' bleibt Prädikat; die Nachricht erklärt add-dann-commit als Abschluss-Diagnose des Merge."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-git-parsons-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-git-parsons-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-git-basics",
+        "coEvidence": [
+          "c-testing-debugging"
+        ]
+      },
+      "familyGroup": "construct-program",
+      "cognitiveFamily": {
+        "familyId": "construct-safe-bugfix-workflow",
+        "summary": "Ordnet den gesicherten Bugfix-Ablauf von der Reproduktion bis zum Commit mit Testvertrag.",
+        "membershipEvidence": {
+          "solutionPath": "Die Schritte Reproduzieren, minimaler Fix, Testlauf, Diff-Prüfung und Commit in die gesicherte Reihenfolge bringen und die Testlöschung als Distraktor aussondern.",
+          "referenceModel": "Sicherheitsreihenfolge des Änderungsprozesses mit Testvertrag; Referenz ist die geordnete Lösungssequenz.",
+          "errorHypotheses": [
+            "Commit oder Testlöschung vor dem gesicherten Testlauf platziert"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "program-ordering"
+      },
+      "caseTemplate": {
+        "caseId": "bugfix-flow-with-test-contract",
+        "graderAdapter": "deterministic",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-git",
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektionen 'Git als überprüfbares Arbeitsprotokoll'/'Ein Fehler, ein reproduzierbarer Test': sicheren Bugfix-Ablauf als Parsons anordnen",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": [
+        {
+          "ruleIndex": 0,
+          "targetPath": "grader-predicate",
+          "rationale": "order-length-mismatch bleibt der einzige Parsons-Token; die Nachricht benennt die exakte Fünf-Schritt-Folge."
+        }
+      ]
+    },
+    {
+      "sourceId": "f-data-code-repair-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w04",
+      "currentDefinitionId": "f-data-code-repair-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-files-errors",
+        "coEvidence": [
+          "c-python-reading",
+          "c-python-collections",
+          "c-testing-debugging"
+        ]
+      },
+      "familyGroup": "aggregate-count",
+      "cognitiveFamily": {
+        "familyId": "aggregate-validate-and-count-records",
+        "summary": "Prüft Datensätze gegen ein Validierungskriterium und zählt die erfüllenden Datensätze.",
+        "membershipEvidence": {
+          "solutionPath": "Kriterium auf jeden Datensatz anwenden und die Treffer zählen.",
+          "referenceModel": "Datensatzmenge plus deterministisches Validierungsprädikat.",
+          "errorHypotheses": [
+            "Kriterium zu streng oder zu schwach angewendet",
+            "Über die falsche Teilmenge gezählt"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "code-test"
+      },
+      "caseTemplate": {
+        "caseId": "seen-scope-and-narrow-except",
+        "graderAdapter": "pyodide",
+        "authorityMode": "static"
+      },
+      "difficultyProfile": "advanced-transfer",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-code-reading",
+          "l-foundations-collections",
+          "l-foundations-files-errors",
+          "l-foundations-testing-debugging"
+        ],
+        "moduleHint": "Lektion 'Dateien lesen und Fehler begrenzen': Zeilenprüfung mit seen-Scope und schmalem except reparieren",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    },
+    {
+      "sourceId": "f-exception-boundary-01",
+      "sourceKind": "canonical-definition",
+      "legacyWeekId": "w03",
+      "currentDefinitionId": "f-exception-boundary-01",
+      "entryForm": "atomic-case",
+      "competencyClaim": {
+        "primary": "c-python-files-errors",
+        "coEvidence": []
+      },
+      "familyGroup": "trace-state",
+      "cognitiveFamily": {
+        "familyId": "trace-exception-path",
+        "summary": "Tracet, welcher Programm- und Ausnahmepfad bei der Ausführung tatsächlich durchlaufen wird.",
+        "membershipEvidence": {
+          "solutionPath": "Ausführungspfad verfolgen und bestimmen, welche Ausnahme wo ausgelöst oder abgefangen wird.",
+          "referenceModel": "Programm mit deterministischem Ausnahme- und Fehlerfluss.",
+          "errorHypotheses": [
+            "Falscher Zweig gewählt",
+            "Reihenfolge der Ausnahmebehandlung missverstanden"
+          ]
+        }
+      },
+      "taskArchetype": {
+        "archetypeId": "choice-diagnose"
+      },
+      "caseTemplate": {
+        "caseId": "seeded-operation-type-cases",
+        "graderAdapter": "deterministic",
+        "authorityMode": "seeded"
+      },
+      "difficultyProfile": "core-application",
+      "placement": {
+        "lessonIds": [
+          "l-foundations-files-errors"
+        ],
+        "moduleHint": "Lektion 'Dateien lesen und Fehler begrenzen': Ausnahmetyp eines Ausdrucks bestimmen (geseedet)",
+        "reviewEligible": true
+      },
+      "persistence": {
+        "status": "preserve-id"
+      },
+      "humanReview": {
+        "required": false,
+        "reasons": []
+      },
+      "uncertaintyDispositions": [],
+      "feedbackDispositions": []
+    }
+  ]
+}

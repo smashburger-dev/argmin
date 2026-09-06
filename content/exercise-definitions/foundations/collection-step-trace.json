@@ -1,0 +1,74 @@
+{
+  "definitionId": "f-collection-step-trace-01",
+  "version": 1,
+  "locale": "de",
+  "title": "Collections-Zustände Schritt für Schritt",
+  "competencyIds": [
+    "c-python-collections",
+    "c-python-basics"
+  ],
+  "activityType": "code-trace",
+  "graderId": "deterministic",
+  "generatorId": "genCollectionStepTrace",
+  "referenceSolverId": null,
+  "deterministicSeed": 3601,
+  "prompt": "Zustände verfolgen: Welche Werte hat x nach jeder Zeile — und welche Liste steht am Ende in y? Jede Zeile einzeln anwenden; Python-Schreibweise verwenden (z. B. [1, 2]).",
+  "parameters": {
+    "seedGenerator": "genCollectionStepTrace",
+    "family": "list-copy",
+    "snippet": "1  x = [6, 2]\n2  y = x.copy()\n3  y.append(-7)\n4  x[0] = -9",
+    "variables": [
+      {
+        "name": "x_nach_1",
+        "type": "repr",
+        "value": "[6, 2]"
+      },
+      {
+        "name": "x_nach_2",
+        "type": "repr",
+        "value": "[6, 2]"
+      },
+      {
+        "name": "x_nach_3",
+        "type": "repr",
+        "value": "[6, 2]"
+      },
+      {
+        "name": "x_nach_4",
+        "type": "repr",
+        "value": "[-9, 2]"
+      },
+      {
+        "name": "y_ende",
+        "type": "repr",
+        "value": "[6, 2, -7]"
+      }
+    ]
+  },
+  "expectedAnswer": {
+    "kind": "variable-values",
+    "generator": "genCollectionStepTrace",
+    "defaultSeed": 3601
+  },
+  "tolerancePolicy": {
+    "mode": "exact"
+  },
+  "hints": [
+    "Zuweisung (b = a) kopiert bei Listen nicht — sie erzeugt einen zweiten Namen für dasselbe Objekt; x = x + […] baut dagegen eine neue Liste.",
+    "Methoden wie append, extend und discard verändern das Objekt direkt. Mengen: Die Elementreihenfolge ist nicht beobachtbar und spielt keine Rolle."
+  ],
+  "feedbackRules": [],
+  "fullSolution": "x.copy() legt eine eigenständige Liste an: append über y ändert x nicht. Erst x[0] = -9 verändert x. x-Verlauf: [6, 2] → [6, 2] → [6, 2] → [-9, 2]; y am Ende: [6, 2, -7].",
+  "difficulty": 2,
+  "estimatedMinutes": 10,
+  "sourceLineage": {
+    "statement": "eigenständig entwickelt (Seed-Generator genCollectionStepTrace)",
+    "seed": 3601
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 2000,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w03"
+}

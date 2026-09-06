@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-baseline",
+  "version": 1,
+  "locale": "de",
+  "title": "ML-Probleme formulieren und Baselines setzen",
+  "objectives": [
+    "eine Vorhersageaufgabe als Regression oder Klassifikation einordnen und die Zielvariable präzise definieren",
+    "Majority- und Mean-Baselines berechnen und als Vergleichsmaßstab begründen",
+    "einen deterministischen Train/Test-Split mit np.random.default_rng(seed).permutation umsetzen"
+  ],
+  "competencyIds": ["c-ml-baseline"],
+  "requires": ["c-pandas-cleaning", "c-eda-viz"],
+  "estimatedMinutes": 50,
+  "blocks": [
+    { "blockId": "ml-baseline-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-baseline.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "devries-ml", "role": "primary", "locator": "Kapitel zu Lernverfahren und Modellbewertung" },
+    { "sourceId": "google-mlcc", "role": "practice", "locator": "Module Framing/Regression — nur Verweis, keine offene Lizenz" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

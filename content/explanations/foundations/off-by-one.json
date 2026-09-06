@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "explanationId": "x-off-by-one",
+  "version": 2,
+  "locale": "de",
+  "title": "Index und sichtbare Zeilennummer trennen",
+  "competencyIds": ["c-testing-debugging"],
+  "diagnosticCodes": ["off-by-one", "wrong-value"],
+  "helpLevel": 2,
+  "body": "Trace die Umrechnung vom nullbasierten Listenindex zur sichtbaren CSV-Zeilennummer.",
+  "steps": ["Baue eine Datei mit Header und zwei Datenzeilen.", "Notiere für jede Datenzeile Listenindex und sichtbare Zeilennummer.", "Prüfe, an welcher Stelle der Headeraufschlag fehlt."],
+  "example": "Datenindex 1 entspricht mit Header der sichtbaren CSV-Zeile 3.",
+  "counterexample": "Die Testerwartung nur auf 2 zu ändern untersucht die Ursache nicht.",
+  "sourceRefs": ["py-tutorial-official-3.14"],
+  "followUpActivityIds": ["f-testing-choice-01"],
+  "revealsSolution": false,
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

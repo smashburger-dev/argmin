@@ -1,0 +1,54 @@
+# Paper synthetisieren: Frage, Methode, Evidenz, Grenzen
+
+Ein Paper zu lesen heißt nicht, es zu glauben. Diese Woche übst du das Zerlegen in **Forschungsfrage, Methode, Datensatz, Ergebnisse, Limitationen** — und das Zuordnen von **Claims** (Behauptungen) zu **Evidence** (Zahlen, aus denen sie stammen). Mastery in dieser Woche kommt ausschließlich aus deterministischen Rech- und Struktur-Aufgaben; Papierkarten und Freitext bleiben Bearbeitungsnachweise.
+
+## Die fünf Slots einer Paper-Karte
+
+| Slot | Frage | Schlechtes Beispiel | Gutes Beispiel |
+|---|---|---|---|
+| Forschungsfrage | Was wird behauptet, was untersucht? | „Attention“ | „Ersetzt Attention allein Rekurrenz bei Übersetzung?“ |
+| Methode | Wie wurde es gebaut/vergleichbar gemacht? | „neues Modell“ | „Encoder-Decoder nur mit Attention, gegen stärkere Baselines“ |
+| Datensatz | Welche Daten, welche Aufteilung? | „große Daten“ | „WMT 2014 EN-DE und EN-FR, Testsets fest“ |
+| Ergebnisse | Welche Zahl belegt was — absolut und relativ? | „viel besser“ | „28,4 BLEU; über 2 BLEU über bisherigem Besten inkl. Ensembles“ |
+| Limitationen | Was wurde nicht gezeigt? | „keine“ | „nur Übersetzung/Parsing; keine Analyse pro Domäne“ |
+
+## Claim-Evidence-Zuordnung
+
+Jeder Claim braucht eine Nummer, aus der er folgt — und die Zuordnung muss fremdprüfbar sein: Gleiche Metrik, gleiche Menge, gleiche Richtung. Ein Claim ohne Evidence-Eintrag ist eine Meinung. Ein Claim mit falscher Basis („+7,7 % relativ“ statt „+7,7 Punkte absolut“) ist schlimmer: Er klingt besser, als die Zahl hergibt.
+
+## Absolut versus relativ
+
+- **Absolut (Prozentpunkte)**: $\text{neu} - \text{alt}$ — bei Accuracy-/F1-Angaben in Punkten die Standardleseart „+X Punkte“.
+- **Relativ**: $100\cdot(\text{neu} - \text{alt})/\text{alt}$ — „+X %“.
+- **Fehlerraten**: Sinkt der Fehler von 10 auf 8, ist das −2 Punkte absolut, aber −20 % relativ — dieselbe Zahl, zwei ehrliche Lesarten, und die relative klingt stärker.
+Faustregel: Papers behaupten relativ, wenn es vorteilhaft klingt; du rechnest beides nach.
+
+## Abstract-Fakten: vier Karten zum Gegenüberstellen
+
+Verifizierte Zahlen aus den Abstracts (Primärseiten, abgerufen 2026-08-31):
+
+- **Attention Is All You Need (2017)**: Nur-Attention-Encoder-Decoder ohne Rekurrenz/Konvolution; **28,4 BLEU** auf WMT 2014 EN-DE (über 2 BLEU über dem bisherigen Besten, inklusive Ensembles), **41,8 BLEU** EN-FR als Einzelmodell-SOTA; Trainingslauf **3,5 Tage auf 8 GPUs**; Transfer auf Constituency Parsing.
+- **BERT (2018)**: Bidirektionale Vortrainierung; nach Feinabstimmung mit nur einer zusätzlichen Ausgabeschicht SOTA auf **elf NLP-Aufgaben**: GLUE **80,5 %** (+**7,7 Punkte absolut**), MultiNLI **86,7 %** (+4,6), SQuAD v1.1 F1 **93,2** (+1,5), SQuAD v2.0 F1 **83,1** (+5,1).
+- **GPT-3 (2020)**: **175 Milliarden Parameter** (10× jedes bisherige nicht-sparse Sprachmodell); Few-shot **ohne Gradienten-Updates oder Feinabstimmung**, nur über Textinteraktion — der Gegensatz zu BERTs Feinabstimmungs-Rezept.
+- **LoRA (2021)**: Friert vortrainierte Gewichte ein, injiziert trainierbare Rang-Zerlegungen; gegenüber GPT-3 175B mit Adam-Full-FT **10 000× weniger trainierbare Parameter, 3× weniger GPU-Speicher**; gleichwertig oder besser auf RoBERTa, DeBERTa, GPT-2, GPT-3; keine zusätzliche Inferenz-Latenz.
+
+Gegenüberstellen lohnt: BERTs „+7,7“ ist absolut in Punkten (GLUE), nicht relativ — wer es als „+7,7 %“ weitererzählt, übertreibt massiv. GPT-3 und LoRA widersprechen sich nicht, sie antworten auf verschiedene Fragen (Skalierung ohne Anpassung versus billige Anpassung).
+
+## Reproduzierbarkeits-Fallen
+
+- **Seedlos**: Ohne festgehaltene Zufallszustände ist „+0,4 BLEU“ oft Rauschen (PyTorchs Reproducibility-Notes listen die Quellen: Seed, Nondeterminismus der GPU-Kernel, Worker-Reihenfolge).
+- **Baseline-Totholz**: Vergleiche gegen veraltete, schlecht getunte Baselines machen Gewinne groß.
+- **Testset-Diät**: Hyperparameter am Testset gewählt verwandelt Test in Validierung.
+- **Mengen-Swap**: Relativ gegen absolut ausgetauscht (siehe GLUE oben).
+- **Ein Seed, eine Zahl**: Punktschätzungen ohne Streuung sind nicht falsch, aber dünn.
+
+## Typische Fehler beim Kartenschreiben
+
+- Claim aus dem Discussion-Teil mit einer Zahl aus dem Abstract „belegt“.
+- Limitations leer lassen — jedes Paper hat welche.
+- Datensatz-Slot ohne Aufteilung/Split.
+- Ergebnisse ohne Einheit (BLEU? F1? %? Punkte?).
+
+## Direkter Check
+
+Übe absolut/relativ in [w26-e2](#/exercise/w26-e2) und [w26-e3](#/exercise/w26-e3). Baue Metriken aus Zeilenlisten in [w26-e4](#/exercise/w26-e4), prüfe Paper-Karten strukturell in [w26-e5](#/exercise/w26-e5); [w26-e6](#/exercise/w26-e6) erstellt die sortierte Evidenztabelle als Endgegner.

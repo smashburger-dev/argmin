@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-genai-security",
+  "version": 1,
+  "locale": "de",
+  "title": "Defensive GenAI-Sicherheit: Injektion erkennen, Abfluss begrenzen, Rechte prüfen",
+  "objectives": [
+    "Prompt-Injection in synthetischen, deutschsprachigen Beispielen regelbasiert erkennen und die Detektorqualität mit Precision/Recall messen",
+    "Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (untrusted Retrieval → Modell → Tool) analysieren und Least-Privilege-Policies prüfen",
+    "Threat-Model-Entscheidungen treffen, Befunde auf die OWASP GenAI LLM Top 10 (nur verlinkt/paraphrasiert) beziehen und als Security-Regressionstests festschreiben"
+  ],
+  "competencyIds": [
+    "c-genai-security"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-testing-debugging"
+  ],
+  "estimatedMinutes": 75,
+  "blocks": [
+    {
+      "blockId": "genai-security-core",
+      "type": "worked-example",
+      "contentRef": "lessons/genai-systems/genai-security.md"
+    },
+    {
+      "blockId": "genai-security-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/genai-systems/genai-security-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "owasp-genai-llm-top10",
+      "role": "primary",
+      "locator": "OWASP Top 10 for LLM and Generative AI Applications — nur Verlinkung und Paraphrase in Eigentext (CC BY-SA)"
+    },
+    {
+      "sourceId": "mitre-atlas",
+      "role": "reference",
+      "locator": "MITRE ATLAS — Taktiken/Techniken für KI-Systeme, Daten Apache-2.0"
+    },
+    {
+      "sourceId": "nist-airmf",
+      "role": "reference",
+      "locator": "NIST AI RMF — Funktion Govern/Map für KI-Risiken"
+    },
+    {
+      "sourceId": "openai-cookbook",
+      "role": "practice",
+      "locator": "OpenAI Cookbook — praktische Muster für Eingabefilterung (MIT)"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

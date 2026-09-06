@@ -1,0 +1,383 @@
+{
+  "schemaVersion": 1,
+  "weekId": "w34",
+  "locale": "de",
+  "exercises": [
+    {
+      "exerciseId": "w34-e1",
+      "schemaVersion": 1,
+      "type": "single-choice",
+      "skillIds": [
+        "c-research-capstone"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3401,
+      "masteryEligible": false,
+      "prompt": "Warum wird das Golden Set der Capstone-Baseline mit einem sha256-Wert über eine kanonische Serialisierung hashfixiert?",
+      "parameters": {
+        "thema": "Golden-Set-Integrität"
+      },
+      "expectedAnswer": {
+        "correctChoice": "d"
+      },
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "hints": [
+        "Was passiert mit Vorher-Nachher-Aussagen, wenn sich das Evaluationsset zwischen zwei Läufen unbemerkt ändert?",
+        "Der Hash beweist einen Zustand — Umsortieren soll ihn nicht ändern, jede inhaltliche Änderung schon."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Ein Hash verschlüsselt nichts — er ist eine Prüfsumme des Zustands, keine Vertraulichkeit."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Ein Hash verhindert keine Änderungen — er macht sie sichtbar, sobald der Wert nicht mehr stimmt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Metriken werden aus den Fällen berechnet, nicht aus dem Hash — der Hash sichert die Vergleichbarkeit der Läufe."
+        }
+      ],
+      "fullSolution": "Der Hash macht den Zustand des Sets prüfbar: Dieselben Einträge in anderer Reihenfolge ergeben denselben Wert, jede inhaltliche Änderung (Gold-Antwort, Fall, Feld) einen anderen. Steht in Woche 39 derselbe Wert wie heute, sind die Baseline-Zahlen noch über demselben Set vergleichbar — hat er sich geändert, ist jede Vorher-Nachher-Aussage wertlos. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "typicalErrors": [
+        "Hash als Verschlüsselung oder Schutz vor Änderung missverstanden",
+        "Reihenfolge-Invarianz und Änderungssensitivität für unvereinbar gehalten"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "sourceLineage": {
+        "concept": "ACM Artifact Badging — Available/Functional/Reusable als Stufen nachprüfbarer Artefakte (nur Lektüre); Hashfixierung des Evaluationssets eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3401
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, manually-checked (Konzeptfrage)",
+      "testedSeedCount": 0,
+      "locale": "de",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Er verschlüsselt die Gold-Antworten, damit niemand die Lösungen lesen kann.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Er verhindert, dass jemand das Set überhaupt ändern kann.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Er berechnet die Metriken schneller, indem er statt der Fälle nur den Hash auswertet.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Er beweist den Zustand des Sets: gleiche Einträge in anderer Reihenfolge bleiben gleich, jede inhaltliche Änderung wird sichtbar — nur so bleiben Läufe vergleichbar.",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "exerciseId": "w34-e2",
+      "schemaVersion": 1,
+      "type": "numeric",
+      "skillIds": [
+        "c-research-capstone"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3411,
+      "masteryEligible": true,
+      "prompt": "Ein Fehler-Ledger über 22 Golden-Set-Fragen des RAG-Prototypen listet 8 Retrieval-Fehler (kein relevantes Dokument in den Top 5) und — nur unter den 14 Fällen mit Treffer — 5 Antwortfehler; 9 Fälle sind inhaltlich korrekt. Um wie viele Tausendstel liegt die naive Genauigkeit unter der bereinigten (Differenz · 1000, auf ganze Tausendstel gerundet)?",
+      "parameters": {
+        "seedGenerator": "genBaselineLedger"
+      },
+      "expectedAnswer": {
+        "kind": "seeded-integer",
+        "generator": "genBaselineLedger",
+        "defaultSeed": 3411,
+        "defaultExpected": 234
+      },
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "hints": [
+        "Bereinigt heißt: korrekte Fälle geteilt durch Fälle mit Treffer; naiv heißt: korrekte Fälle geteilt durch alle Fälle.",
+        "Die Antwort ist (bereinigt − naiv) · 1000, gerundet auf ganze Tausendstel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 23",
+          "then": "Vorsicht Einheiten: 0,23… ist die Differenz als Dezimalzahl — gefragt sind Tausendstel (Faktor 1000)."
+        },
+        {
+          "if": "value === 364",
+          "then": "364 Tausendstel wäre näher an 5/14 — prüfe, ob du Antwortfehler und Retrieval-Fehler vermischt hast."
+        },
+        {
+          "if": "value === 643",
+          "then": "643 Tausendstel ist ungefähr die bereinigte Genauigkeit selbst — gesucht ist der Abstand zwischen bereinigt und naiv."
+        }
+      ],
+      "fullSolution": "Bereinigte Genauigkeit = korrekt/Trefferfälle, naive Genauigkeit = korrekt/alle Fälle; Antwort = (bereinigt − naiv) · 1000, auf ganze Tausendstel gerundet. Mit „Neue Zahlen“ erscheint ein neues Fehler-Ledger (bereinigt, naiv oder Abstand) mit demselben Lösungsweg.",
+      "typicalErrors": [
+        "Differenz als Dezimalzahl statt in Tausendsteln angegeben",
+        "Retrieval-Fehler in den Nenner der bereinigten Genauigkeit genommen",
+        "auf die falsche Richtung der Differenz geachtet (naiv liegt immer unter bereinigt)"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 9,
+      "sourceLineage": {
+        "concept": "HELM — feste Szenarien und vergleichbare Metriken; Trennung von Retrieval- und Antwortfehlern aus W27/W28 weitergeführt; Ledger-Instanzen eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3411
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "generator-tested",
+      "testedSeedCount": 200,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w34-e3",
+      "schemaVersion": 1,
+      "type": "predict-output",
+      "skillIds": [
+        "c-research-capstone",
+        "c-python-reading"
+      ],
+      "grader": "deterministic",
+      "deterministicSeed": 3413,
+      "masteryEligible": true,
+      "prompt": "Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tupel sind (kennung, retrieval_treffer, antwort_korrekt).",
+      "parameters": {
+        "snippet": "faelle = [(\"q1\", True, True), (\"q2\", True, False), (\"q3\", False, False), (\"q4\", True, True), (\"q5\", True, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))"
+      },
+      "expectedAnswer": {
+        "kind": "output-lines",
+        "output": "4\n0.5\n0.4"
+      },
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "hints": [
+        "treffer enthält nur Fälle mit f[1] True; korrekt filtert darunter nach f[2] — der q3-Fall zählt in keiner Antwortquote.",
+        "Zweite Zeile ist die bereinigte Quote (korrekt/treffer), dritte die naive (korrekt/alle) — jeweils auf 3 Stellen gerundet."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Treffer sind q1, q2, q4, q5 — q3 hat f[1] False und zählt nicht."
+        },
+        {
+          "if": "third-line-wrong",
+          "then": "Naiv teilt durch alle fünf Fälle: 2/5 = 0.4 — die bereinigte Quote 2/4 = 0.5 steht eine Zeile darüber."
+        }
+      ],
+      "fullSolution": "treffer = q1, q2, q4, q5 → <code>4</code>. korrekt = q1, q4 → bereinigt 2/4 = <code>0.5</code>, naiv 2/5 = <code>0.4</code>.",
+      "typicalErrors": [
+        "Retrieval-Fehlerfälle in die bereinigte Quote genommen",
+        "naive und bereinigte Zeile vertauscht",
+        "Rundung auf 3 Stellen vergessen"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "sourceLineage": {
+        "concept": "HELM/LM Evaluation Harness — getrennte Metrikausweise; Vorhersage-Instanz eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3413
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "authored, python3-verified (lokale Ausführung)",
+      "testedSeedCount": 0,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w34-e4",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-research-capstone",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3414,
+      "masteryEligible": true,
+      "prompt": "Implementiere das gehashte Golden Set. <code>build_golden(items)</code> erhält eine Liste von Einträgen mit <code>id</code> und weiteren Feldern (z. B. antwort, quellen). Kanonische Serialisierung: <code>json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))</code>; der sha256-Hash wird über die UTF-8-Bytes dieser Serialisierung gebildet. Rückgabe: <code>{\"n\": anzahl, \"ids\": sortierte ids, \"sha256\": hexdigest}</code>. Der Testcode bringt ein Golden Set mit und prüft Reihenfolge-Invarianz, Änderungssensitivität und den exakten Hash.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef build_golden(items):\n    \"\"\"{'n': .., 'ids': .., 'sha256': ..} mit kanonischer Serialisierung und sha256 darueber.\"\"\"\n    ...\n\n",
+        "tests": "GOLDEN = [\n    {\"id\": \"faq-03\", \"antwort\": \"Die Lieferzeit betraegt 3 Werktage.\", \"quellen\": [\"faq-3\"]},\n    {\"id\": \"faq-11\", \"antwort\": \"Die Frist endet nach 30 Tagen.\", \"quellen\": [\"vertrag-1\"]},\n    {\"id\": \"vertrag-02\", \"antwort\": \"Der Vertrag laeuft 12 Monate.\", \"quellen\": [\"vertrag-1\"]},\n]\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('anzahl und ids', a[\"n\"] == 3 and a[\"ids\"] == [\"faq-03\", \"faq-11\", \"vertrag-02\"])\n__check('reihenfolge-invarianz', a == b)\nveraendert = [dict(GOLDEN[0]), dict(GOLDEN[1]), dict(GOLDEN[2])]\nveraendert[1] = dict(GOLDEN[1])\nveraendert[1][\"antwort\"] = \"Die Frist endet nach 14 Tagen.\"\n__check('aenderungssensitiv', build_golden(veraendert)[\"sha256\"] != a[\"sha256\"])\n__check('exakter hash', a[\"sha256\"] == \"ef6c223d1f4463f5f34a57685240c39a6bf79a9957cd2bf9b05734ad19eaa312\")\n__check('leeres set', build_golden([]) == {\"n\": 0, \"ids\": [], \"sha256\": hashlib.sha256(\"[]\".encode(\"utf-8\")).hexdigest()})\nprint(\"ok w34-e4\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\n\ndef build_golden(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Erst sortieren (nach id), dann json.dumps mit sort_keys=True, ensure_ascii=False und kompakten Trennzeichen — genau diese Parameter machen die Serialisierung kanonisch.",
+        "Der Digest läuft über kanonisch.encode(\"utf-8\"); ids und n kommen aus denselben Daten, nicht aus dem Hash."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-dependence",
+          "then": "Ohne sorted(items, key=...) ändert die Eingabereihenfolge den Hash — die Tests prüfen genau das mit reversed()."
+        },
+        {
+          "if": "ensure-ascii-default",
+          "then": "ensure_ascii=True (Voreinstellung) würde Umlaute als \\\\uXXXX escapen und damit einen anderen Hash liefern — der Vertrag verlangt ensure_ascii=False."
+        },
+        {
+          "if": "wrong-digest-input",
+          "then": "Gehasht werden die UTF-8-Bytes der kanonischen Serialisierung — nicht die Liste selbst und nicht nur die ids."
+        }
+      ],
+      "fullSolution": "import hashlib\nimport json\n\n\ndef build_golden(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\n\n# exakter Fixture-Hash ef6c223d…eaa312; reversed() aendert ihn nicht, eine andere Gold-Antwort schon (lokal python3-verifiziert)",
+      "typicalErrors": [
+        "Eingabereihenfolge nicht wegkanonisiert",
+        "json.dumps-Parameter vergessen (ensure_ascii, separators)",
+        "über etwas anderes als die Serialisierung gehasht"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 22,
+      "sourceLineage": {
+        "concept": "LM Evaluation Harness — feste Task-Definitionen als reproduzierbare Grundlage; ACM Artifact Badging — nachprüfbare Artefakte (beides nur Lektüre); Kanonisierungs- und Hashvertrag eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3414
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w34-e5",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-research-capstone",
+        "c-python-functions"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3415,
+      "masteryEligible": true,
+      "prompt": "Implementiere die Baseline mit Reproduzierbarkeits-Assert. <code>run_baseline(config)</code> erhält <code>{\"k\": .., \"faelle\": [...]}</code>; jeder Fall ist <code>{\"id\": .., \"relevante\": [doc-ids], \"top\": [doc-ids], \"korrekt\": bool}</code>. Auswertung: recall_at_k = Anteil der Fälle, bei denen mindestens ein relevantes Dokument in den ersten k Einträgen von top liegt; antwort_naiv = korrekt/alle Fälle; antwort_getrennt = korrekt/Fälle mit Treffer — alle auf 3 Dezimalstellen gerundet. Baue zusätzlich einen Digest als sha256 über <code>json.dumps(werte, sort_keys=True, separators=(\",\", \":\"))</code>. Die Funktion muss die Auswertung zweimal unabhängig durchführen und per <code>assert</code> vergleichen (Digest-Gleichheit, sonst AssertionError) und <code>{\"werte\": werte, \"digest\": digest}</code> zurückgeben. Der Testcode bringt eine Konfiguration mit und prüft exakte Werte, Doppel-Lauf-Gleichheit und Digest-Empfindlichkeit.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef run_baseline(config):\n    \"\"'{'werte': .., 'digest': ..} mit Doppel-Lauf-Assert ueber den Digest.'\"\"\n    ...\n\n",
+        "tests": "CONFIG = {\n    \"k\": 5,\n    \"faelle\": [\n        {\"id\": \"faq-03\", \"relevante\": [\"faq-3\"], \"top\": [\"faq-3\", \"faq-7\"], \"korrekt\": True},\n        {\"id\": \"faq-11\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\", \"faq-3\"], \"korrekt\": False},\n        {\"id\": \"faq-19\", \"relevante\": [\"faq-7\"], \"top\": [\"faq-7\"], \"korrekt\": True},\n        {\"id\": \"vertrag-02\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\"], \"korrekt\": True},\n        {\"id\": \"vertrag-07\", \"relevante\": [\"vertrag-2\"], \"top\": [\"faq-3\"], \"korrekt\": False},\n    ],\n}\nr = run_baseline(CONFIG)\n__check('werte der baseline', r[\"werte\"] == {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75})\n__check('exakter digest', r[\"digest\"] == \"728a5e258971cd2fb9f7456d88cef6f8559ae1c6fbdd1b0c6ba8ff26fb1ad0a7\")\n__check('doppel-lauf gleich', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"][0][\"korrekt\"] = False\n__check('digest reagiert auf aenderung', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\nK_CONFIG = json.loads(json.dumps(CONFIG))\nK_CONFIG[\"k\"] = 1\nK_CONFIG[\"faelle\"][0][\"top\"] = [\"faq-7\", \"faq-3\"]\n__check('k wirkt auf recall', run_baseline(K_CONFIG)[\"werte\"][\"recall_at_k\"] == 0.6)\nprint(\"ok w34-e5\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\n\ndef _baseline_werte(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3),\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\n\n\ndef run_baseline(config):\n    werte, digest = _baseline_werte(config)\n    werte2, digest2 = _baseline_werte(config)\n    assert digest == digest2, \"nicht reproduzierbar\"\n    return {\"werte\": werte, \"digest\": digest}"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Treffer prüft set(relevante) & set(top[:k]) — erst k abschneiden, dann die Schnittmenge bilden.",
+        "Führe die Auswertung zweimal aus und vergleiche die Digests mit assert, bevor du zurückgibst; der Digest läuft über json.dumps der gerundeten Werte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "slice-after-intersect",
+          "then": "top[:k] kommt vor der Schnittmenge: Wer erst schneidet und dann k anwendet, zählt Treffer falsch."
+        },
+        {
+          "if": "no-assert",
+          "then": "Ohne den Doppel-Lauf-Assert ist die Reproduzierbarkeit nur behauptet — der Vertrag verlangt den Vergleich im Lauf."
+        },
+        {
+          "if": "naiv-uses-treffer",
+          "then": "antwort_naiv teilt durch alle Fälle, antwort_getrennt nur durch Trefferfälle — die Nenner sind die Kernunterscheidung der Woche."
+        }
+      ],
+      "fullSolution": "import hashlib\nimport json\n\ndef _baseline_werte(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3),\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\n\ndef run_baseline(config):\n    werte, digest = _baseline_werte(config)\n    werte2, digest2 = _baseline_werte(config)\n    assert digest == digest2, \"nicht reproduzierbar\"\n    return {\"werte\": werte, \"digest\": digest}\n\n# Fixture: recall 4/5 = 0.8, naiv 3/5 = 0.6, getrennt 3/4 = 0.75, digest 728a5e25…d0a7 (lokal python3-verifiziert)",
+      "typicalErrors": [
+        "k erst nach der Schnittmengenbildung angewandt",
+        "Assert über die Digests vergessen",
+        "naive und bereinigte Quote im Nenner vertauscht"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 27,
+      "sourceLineage": {
+        "concept": "LM Evaluation Harness — reproduzierbare Läufe mit festen Konfigurationen; W30-Manifest-Idee (Hash als Zustandsbeweis) auf die Baseline übertragen; Vertrag eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3415
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    },
+    {
+      "exerciseId": "w34-e6",
+      "schemaVersion": 1,
+      "type": "python-code",
+      "skillIds": [
+        "c-research-capstone",
+        "c-genai-eval"
+      ],
+      "grader": "pyodide",
+      "deterministicSeed": 3416,
+      "masteryEligible": true,
+      "prompt": "Final Boss Baseline-Report: Implementiere <code>baseline_report(ergebnis, protocol, karten, fehlerliste)</code>. Der Bericht liefert Messwerte NUR mit allen drei Kontexten: <code>protocol</code> ein Dict mit nicht-leerer <code>metrik</code>, <code>karten</code> ein Dict mit nicht-leerer <code>datacard</code> und <code>modelcard</code>, <code>fehlerliste</code> eine nichtleere Liste von Einträgen mit <code>art</code> in (\"retrieval\", \"antwort\"). Fehlt etwas, Rückgabe <code>{\"status\": \"verweigert\", \"fehlt\": sortierte codes}</code> — mit Codes protokoll-metrik, karten, fehlerliste — und OHNE jeden Messwert. Sonst <code>{\"status\": \"ok\", \"metrik\": .., \"messwerte\": ergebnis[\"werte\"], \"fehler_nach_art\": {\"retrieval\": .., \"antwort\": ..}}</code>. Der Testcode bringt ein vollständiges Quartett und vier unvollständige Varianten mit.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "def baseline_report(ergebnis, protocol, karten, fehlerliste):\n    \"\"'Messwerte nur mit Protokoll-Metrik, Karten und getrennter Fehlerliste; sonst Verweigerung ohne Werte.'\"\"\n    ...\n\n",
+        "tests": "ERGEBNIS = {\"werte\": {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75}, \"digest\": \"728a5e258971cd2fb9f7456d88cef6f8559ae1c6fbdd1b0c6ba8ff26fb1ad0a7\"}\nPROTO = {\"metrik\": \"recall@5\", \"datum_prereg\": \"2026-05-12\"}\nKARTEN = {\"datacard\": {\"name\": \"faq-korpus\"}, \"modelcard\": {\"name\": \"rag-stub\"}}\nFEHLER = [\n    {\"id\": \"faq-11\", \"art\": \"antwort\"},\n    {\"id\": \"vertrag-07\", \"art\": \"retrieval\"},\n    {\"id\": \"faq-03\", \"art\": \"antwort\"},\n]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {\"status\": \"ok\", \"metrik\": \"recall@5\", \"messwerte\": {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75}, \"fehler_nach_art\": {\"retrieval\": 1, \"antwort\": 2}})\nv = baseline_report(ERGEBNIS, {\"datum_prereg\": \"2026-05-12\"}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {\"status\": \"verweigert\", \"fehlt\": [\"protokoll-metrik\"]})\n__check('verweigert hat keine messwerte', \"messwerte\" not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {\"datacard\": {\"name\": \"faq-korpus\"}}, FEHLER) == {\"status\": \"verweigert\", \"fehlt\": [\"karten\"]})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {\"status\": \"verweigert\", \"fehlt\": [\"fehlerliste\"]})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{\"id\": \"faq-11\", \"art\": \"unbekannt\"}]) == {\"status\": \"verweigert\", \"fehlt\": [\"fehlerliste\"]})\nv2 = baseline_report(ERGEBNIS, {}, {}, [])\n__check('alles fehlt sortiert', v2 == {\"status\": \"verweigert\", \"fehlt\": [\"fehlerliste\", \"karten\", \"protokoll-metrik\"]})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {\"metrik\": \"\"}, KARTEN, FEHLER)[\"status\"] == \"verweigert\")\nprint(\"ok w34-e6\")"
+      },
+      "expectedAnswer": {
+        "kind": "reference-solver",
+        "referenceSolver": "def baseline_report(ergebnis, protocol, karten, fehlerliste):\n    fehlt = []\n    if not (isinstance(protocol, dict) and protocol.get(\"metrik\")):\n        fehlt.append(\"protokoll-metrik\")\n    if not (isinstance(karten, dict) and karten.get(\"datacard\") and karten.get(\"modelcard\")):\n        fehlt.append(\"karten\")\n    if not (isinstance(fehlerliste, list) and any(isinstance(f, dict) and f.get(\"art\") in (\"retrieval\", \"antwort\") for f in fehlerliste)):\n        fehlt.append(\"fehlerliste\")\n    if fehlt:\n        return {\"status\": \"verweigert\", \"fehlt\": sorted(fehlt)}\n    zaehlung = {art: sum(1 for f in fehlerliste if f.get(\"art\") == art) for art in (\"retrieval\", \"antwort\")}\n    return {\"status\": \"ok\", \"metrik\": protocol[\"metrik\"], \"messwerte\": ergebnis[\"werte\"], \"fehler_nach_art\": zaehlung}"
+      },
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "hints": [
+        "Prüfe die drei Kontexte unabhängig voneinander und sammle die fehlt-Codes — sortiert zurückgeben.",
+        "Bei Verweigerung darf das Ergebnis-Dict keinen messwerte-Schlüssel haben; die Zählung der Fehlerarten passiert nur im ok-Fall."
+      ],
+      "feedbackRules": [
+        {
+          "if": "partial-values",
+          "then": "Teilergebnisse mit Messwerten trotz fehlender Kontexte sind Overclaiming — verweigert heißt ohne Werte."
+        },
+        {
+          "if": "unsorted-codes",
+          "then": "Die fehlt-Liste ist alphabetisch sortiert (fehlerliste, karten, protokoll-metrik) — die Tests vergleichen exakt."
+        },
+        {
+          "if": "ungetrennte-liste-ok",
+          "then": "Eine Fehlerliste ohne art in (retrieval, antwort) ist keine getrennte Fehlerliste — sie zählt als fehlend."
+        }
+      ],
+      "fullSolution": "def baseline_report(ergebnis, protocol, karten, fehlerliste):\n    fehlt = []\n    if not (isinstance(protocol, dict) and protocol.get(\"metrik\")):\n        fehlt.append(\"protokoll-metrik\")\n    if not (isinstance(karten, dict) and karten.get(\"datacard\") and karten.get(\"modelcard\")):\n        fehlt.append(\"karten\")\n    if not (isinstance(fehlerliste, list) and any(isinstance(f, dict) and f.get(\"art\") in (\"retrieval\", \"antwort\") for f in fehlerliste)):\n        fehlt.append(\"fehlerliste\")\n    if fehlt:\n        return {\"status\": \"verweigert\", \"fehlt\": sorted(fehlt)}\n    zaehlung = {art: sum(1 for f in fehlerliste if f.get(\"art\") == art) for art in (\"retrieval\", \"antwort\")}\n    return {\"status\": \"ok\", \"metrik\": protocol[\"metrik\"], \"messwerte\": ergebnis[\"werte\"], \"fehler_nach_art\": zaehlung}\n\n# vollstaendiges Quartett -> ok mit exakten Zaehlungen; jede fehlende Vorbedingung -> verweigert ohne messwerte (lokal python3-verifiziert)",
+      "typicalErrors": [
+        "Messwerte trotz Verweigerung mitgeliefert",
+        "fehlt-Codes unsortiert",
+        "Fehlerliste ohne getrennte Arten akzeptiert"
+      ],
+      "difficulty": 4,
+      "estimatedMinutes": 40,
+      "sourceLineage": {
+        "concept": "HELM — vergleichbare Berichte nur mit festem Kontext; ACM Artifact Badging — Funktionsnachweis braucht Artefakte (beides nur Lektüre); Verweigerungslogik eigenständig",
+        "statement": "eigenständig entwickelt",
+        "seed": 3416
+      },
+      "license": "CC BY 4.0 (generated)",
+      "contentClass": "generated",
+      "validationStatus": "solver-verified (lokales python3)",
+      "testedSeedCount": 1,
+      "locale": "de"
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "definitionId": "f-control-trace-01",
+  "version": 2,
+  "locale": "de",
+  "title": "Schleife mit Zustandswechsel tracen",
+  "competencyIds": [
+    "c-python-basics",
+    "c-python-control-flow",
+    "c-python-reading"
+  ],
+  "activityType": "code-trace",
+  "graderId": "deterministic",
+  "generatorId": null,
+  "referenceSolverId": null,
+  "deterministicSeed": 2101,
+  "prompt": "Schleifenzustände tracen: Welche Werte haben <code>summe</code> und <code>wert</code> nach Ablauf des Codes? Zeile für Zeile durchgehen und nach jeder Zuweisung den neuen Wert notieren.",
+  "parameters": {
+    "snippet": "summe = 0\nfor wert in [4, 3, 7]:\n    if wert > 4:\n        summe = summe + wert\n    else:\n        summe = summe - 2",
+    "variables": [
+      {
+        "name": "summe",
+        "value": 3
+      },
+      {
+        "name": "wert",
+        "value": 7
+      }
+    ]
+  },
+  "expectedAnswer": {
+    "kind": "variable-values"
+  },
+  "tolerancePolicy": {
+    "mode": "exact"
+  },
+  "hints": [
+    "Lege eine Tabellenzeile pro Schleifenlauf an.",
+    "4 und 3 laufen in den else-Zweig; nur 7 erfüllt wert > 4."
+  ],
+  "feedbackRules": [
+    {
+      "if": "value:summe",
+      "then": "Prüfe summe nach jedem der drei Läufe, ohne es neu auf null zu setzen."
+    }
+  ],
+  "fullSolution": "Die Zustände von summe sind 0 → -2 → -4 → 3 (nur 7 erfüllt wert > 4). Im letzten Lauf ist wert gleich 7.",
+  "difficulty": 2,
+  "estimatedMinutes": 8,
+  "sourceLineage": {
+    "statement": "eigenständig entwickelt (Session B: Instanz getauscht, war Clone des Lektionsbeispiels)",
+    "seed": 2101
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 1,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w02"
+}

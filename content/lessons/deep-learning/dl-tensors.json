@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-dl-tensors",
+  "version": 1,
+  "locale": "de",
+  "title": "Tensoren, Layer und Dimensionsverträge",
+  "objectives": [
+    "Tensorformen als Vertrag lesen: Batch-, Feature- und Hidden-Dimensionen bei Vorwärtsdurchläufen nachvollziehen",
+    "Broadcasting-Regeln auf Bias-Vektoren und Shapes anwenden und entscheiden, wann eine Operation erlaubt ist",
+    "lineare Layer als Matrizenmultiplikation ausdrücken und die Parameterzahl inklusive Bias berechnen",
+    "Formalverletzungen in NumPy-Code erkennen und mit expliziten Dimensionskontrollen abweisen"
+  ],
+  "competencyIds": ["c-dl-tensors"],
+  "requires": ["c-numpy-basics", "c-linalg-matrices"],
+  "estimatedMinutes": 70,
+  "blocks": [
+    {
+      "blockId": "dl-tensors-core",
+      "type": "worked-example",
+      "contentRef": "lessons/deep-learning/dl-tensors.md"
+    },
+    {
+      "blockId": "dl-tensors-checkpoint",
+      "type": "checkpoint",
+      "contentRef": "lessons/deep-learning/dl-tensors-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    { "sourceId": "dlbook-goodfellow", "role": "primary", "locator": "Ch 2.1 — Lineare Algebra: Tensoren und Shape-Nomenklatur (nur Lektüre)" },
+    { "sourceId": "numpy-docs", "role": "practice", "locator": "Absolute basics — Broadcasting" },
+    { "sourceId": "karpathy-zero-to-hero", "role": "reference", "locator": "Lecture 1—2: MLP-Forward als Matrixmultiplikation (nur Lektüre)" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

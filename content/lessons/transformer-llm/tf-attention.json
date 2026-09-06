@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-tf-attention",
+  "version": 1,
+  "locale": "de",
+  "title": "Attention und Transformer-Grundlagen",
+  "objectives": [
+    "die Rollen von Queries, Keys und Values in Scaled Dot-Product Attention erklären und Shape-Verträge prüfen",
+    "stabiles zeilenweises Softmax und Maskierung (kausal, Padding) mit −∞ vor dem Softmax korrekt anwenden",
+    "eine kleine Attention vollständig per Hand rechnen und Multi-Head als Reshape der Projektionen beschreiben"
+  ],
+  "competencyIds": ["c-dl-attention"],
+  "requires": ["c-dl-tensors", "c-linalg-matrices"],
+  "estimatedMinutes": 75,
+  "blocks": [
+    { "blockId": "tf-attention-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-attention.md" },
+    { "blockId": "tf-attention-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-attention-checkpoint.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "arxiv-attention-2017", "role": "primary", "locator": "Attention Is All You Need, Abschnitt 3.2 — nur Lektüre/Link" },
+    { "sourceId": "d2l-book", "role": "practice", "locator": "Kapitel Attention — nur Lektüre/Link" },
+    { "sourceId": "numpy-docs", "role": "reference", "locator": "NumPy absolute basics — Array-Formen" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

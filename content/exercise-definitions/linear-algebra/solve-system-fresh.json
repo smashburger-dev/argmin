@@ -1,0 +1,62 @@
+{
+  "definitionId": "f-linalg-solve-system-01",
+  "version": 1,
+  "locale": "de",
+  "title": "2x2-System per Gauß lösen",
+  "competencyIds": [
+    "c-linalg-gauss"
+  ],
+  "activityType": "vector",
+  "graderId": "deterministic",
+  "generatorId": "genLinear2Fresh",
+  "referenceSolverId": null,
+  "deterministicSeed": 4201,
+  "prompt": "Löse das lineare Gleichungssystem\n\n  1x + 1y = -1\n  2x + -2y = -18\n\nmit dem Gauß-Verfahren und gib die Lösung als Paar (x, y) an — in der Schreibweise (x, y).",
+  "parameters": {
+    "seedGenerator": "genLinear2Fresh",
+    "A": [
+      [
+        1,
+        1
+      ],
+      [
+        2,
+        -2
+      ]
+    ],
+    "b": [
+      -1,
+      -18
+    ]
+  },
+  "expectedAnswer": {
+    "kind": "seeded-pair",
+    "generator": "genLinear2Fresh",
+    "defaultSeed": 4201,
+    "defaultExpected": [
+      -5,
+      4
+    ]
+  },
+  "tolerancePolicy": {
+    "mode": "exact"
+  },
+  "hints": [
+    "Eine Gleichung so skalieren, dass beim Abziehen eine Variable komplett entfällt.",
+    "Nach dem Eliminieren zurückeinsetzen und die Probe in beiden Zeilen machen."
+  ],
+  "feedbackRules": [],
+  "fullSolution": "Elimination: eine Gleichung mit passendem Faktor von der anderen abziehen, bis eine Gleichung nur noch y enthält; dann zurückeinsetzen. Die Lösung ist x = -5, y = 4 (Probe in beiden Gleichungen einsetzen).",
+  "difficulty": 2,
+  "estimatedMinutes": 9,
+  "sourceLineage": {
+    "statement": "eigenständig entwickelt (Seed-Generator genLinear2Fresh)",
+    "seed": 4201
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 2000,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w05"
+}

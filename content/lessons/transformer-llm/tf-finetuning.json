@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-tf-finetuning",
+  "version": 1,
+  "locale": "de",
+  "title": "Fine-Tuning-Strategien und LoRA-Mathematik",
+  "objectives": [
+    "Fine-Tuning, Feature Extraction und LoRA mit ihren Parameter- und Speicherfolgen vergleichen",
+    "LoRA-Updates ΔW = (α/r)·B·A exakt berechnen, anwenden und Parameterzahlen gegen volles Fine-Tuning stellen",
+    "Toy-Head-Only-Feinabstimmung mit eingefrorenem Rumpf, festem Seed und vorab festgelegter Metrik ehrlich ausführen und auswerten"
+  ],
+  "competencyIds": ["c-dl-finetuning"],
+  "requires": ["c-dl-inference", "c-dl-regularization"],
+  "estimatedMinutes": 85,
+  "blocks": [
+    { "blockId": "tf-finetuning-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-finetuning.md" },
+    { "blockId": "tf-finetuning-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-finetuning-checkpoint.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "arxiv-lora-2021", "role": "primary", "locator": "LoRA-Abstract und Abschnitt 3 — nur Lektüre/Link" },
+    { "sourceId": "hf-transformers-docs", "role": "practice", "locator": "Training-/Adaptionsübersicht (Lektüre)" },
+    { "sourceId": "model-cards-paper", "role": "reference", "locator": "Model Cards — ehrliches Berichten von Bewertungszahlen" },
+    { "sourceId": "numpy-docs", "role": "reference", "locator": "NumPy absolute basics — Matrixoperationen" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

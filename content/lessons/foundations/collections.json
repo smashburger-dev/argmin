@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-collections",
+  "version": 2,
+  "locale": "de",
+  "title": "Datenstrukturen nach Aufgabe wählen",
+  "objectives": ["Liste, Dictionary und Set über ihren Zugriff unterscheiden", "Häufigkeiten mit einem Dictionary zählen", "Duplikate mit einem Set erkennen"],
+  "competencyIds": ["c-python-collections"],
+  "requires": ["c-python-control-flow"],
+  "estimatedMinutes": 45,
+  "blocks": [{ "blockId": "collections-core", "type": "worked-example", "contentRef": "lessons/foundations/collections.md" }],
+  "sourceRefs": [
+    { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel 5: Data Structures" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

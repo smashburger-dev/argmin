@@ -1,0 +1,75 @@
+{
+  "definitionId": "f-git-merge-debug-01",
+  "version": 1,
+  "locale": "de",
+  "title": "Merge-Konflikt als Prüfauftrag",
+  "competencyIds": [
+    "c-git-basics",
+    "c-testing-debugging"
+  ],
+  "activityType": "single-choice",
+  "graderId": "deterministic",
+  "generatorId": null,
+  "referenceSolverId": null,
+  "deterministicSeed": 2601,
+  "prompt": "Beim Merge eines Feature-Branches entsteht ein Konflikt in `checker.py`. Beide Branches hatten vor dem Merge grüne Tests. Welcher Ablauf liefert den belastbarsten Abschluss?",
+  "parameters": {},
+  "choices": [
+    {
+      "id": "resolve-test-diff",
+      "text": "Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen",
+      "correct": true
+    },
+    {
+      "id": "ours",
+      "text": "Immer `--ours` wählen, weil der aktuelle Branch Vorrang hat",
+      "correct": false
+    },
+    {
+      "id": "commit-markers",
+      "text": "Konfliktmarker unverändert committen; die frühere grüne Suite reicht als Beleg",
+      "correct": false
+    },
+    {
+      "id": "force",
+      "text": "Die Historie neu schreiben, damit kein Konflikt mehr sichtbar ist",
+      "correct": false
+    }
+  ],
+  "expectedAnswer": {
+    "kind": "choice",
+    "choiceId": "resolve-test-diff"
+  },
+  "tolerancePolicy": {
+    "mode": "exact"
+  },
+  "hints": [
+    "Ein Merge kombiniert zwei Änderungen; frühere Tests prüfen diese Kombination noch nicht.",
+    "Git-Status, Diff und Tests beantworten verschiedene Fragen."
+  ],
+  "feedbackRules": [
+    {
+      "if": "choice !== 'resolve-test-diff'",
+      "then": "Nach dem Bereinigen der Konfliktmarkierungen markiert git add die Datei als gelöst — erst dann schließt git commit den Merge ab."
+    }
+  ],
+  "fullSolution": "Lies zuerst beide Varianten und löse die fachliche Absicht. Danach prüfst du die neu entstandene Kombination mit Tests und Diff. Erst dieser Zustand wird als Merge-Commit gespeichert.",
+  "difficulty": 3,
+  "estimatedMinutes": 10,
+  "sourceLineage": {
+    "statement": "Eigenständig entwickelte Git-Transferaufgabe auf Grundlage des verlinkten Pro-Git-Kapitels.",
+    "seed": 2601
+  },
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "testedSeedCount": 1,
+  "masteryEligible": true,
+  "active": true,
+  "legacyWeekId": "w03",
+  "workedExample": null,
+  "rubric": null,
+  "typicalErrors": [
+    "grüne Tests vor dem Merge als Beleg danach behandeln",
+    "Konflikt mechanisch statt fachlich lösen"
+  ]
+}

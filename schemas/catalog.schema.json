@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/schemas/catalog.schema.json",
+  "title": "Learning content catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogId",
+    "locale",
+    "version",
+    "sourceRightsFile",
+    "sourcesFile",
+    "coverageMatrixFile",
+    "roots",
+    "legacy"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "catalogId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "locale": { "const": "de" },
+    "version": { "type": "string", "minLength": 1 },
+    "sourceRightsFile": { "$ref": "#/$defs/jsonPath" },
+    "sourcesFile": { "$ref": "#/$defs/jsonPath" },
+    "coverageMatrixFile": { "$ref": "#/$defs/jsonPath" },
+    "roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "competencies",
+        "tracks",
+        "milestones",
+        "lessons",
+        "exerciseDefinitions",
+        "explanations",
+        "projects",
+        "tools",
+        "reviews",
+        "modules"
+      ],
+      "properties": {
+        "competencies": { "$ref": "#/$defs/dirPath" },
+        "tracks": { "$ref": "#/$defs/dirPath" },
+        "milestones": { "$ref": "#/$defs/dirPath" },
+        "lessons": { "$ref": "#/$defs/dirPath" },
+        "exerciseDefinitions": { "$ref": "#/$defs/dirPath" },
+        "explanations": { "$ref": "#/$defs/dirPath" },
+        "projects": { "$ref": "#/$defs/dirPath" },
+        "tools": { "$ref": "#/$defs/dirPath" },
+        "reviews": { "$ref": "#/$defs/dirPath" },
+        "modules": { "$ref": "#/$defs/dirPath" }
+      }
+    },
+    "legacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["curriculumFile", "exerciseFiles"],
+      "properties": {
+        "curriculumFile": { "$ref": "#/$defs/jsonPath" },
+        "exerciseFiles": { "$ref": "#/$defs/jsonPaths" }
+      }
+    }
+  },
+  "$defs": {
+    "dirPath": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]*$"
+    },
+    "jsonPath": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._/-]*\\.json$"
+    },
+    "jsonPaths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/jsonPath" }
+    }
+  }
+}

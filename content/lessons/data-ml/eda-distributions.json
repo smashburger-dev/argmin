@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-eda-distributions",
+  "version": 1,
+  "locale": "de",
+  "title": "Verteilungen, Korrelation und bedingte Anteile",
+  "objectives": [
+    "Verteilungen durch Histogramm-Bins, Median, Quartile und Schiefe zusammenfassen",
+    "die Diagrammart aus der Fragestellung ableiten und Korrelation mit np.corrcoef berechnen",
+    "Korrelation von Kausalität trennen und bedingte Wahrscheinlichkeit als Spaltenanteil lesen"
+  ],
+  "competencyIds": ["c-eda-viz"],
+  "requires": ["c-pandas-cleaning"],
+  "estimatedMinutes": 55,
+  "blocks": [
+    { "blockId": "eda-distributions-core", "type": "worked-example", "contentRef": "lessons/data-ml/eda-distributions.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "openintro-statistics", "role": "primary", "locator": "Ch 2 Summarizing Data; Ch 3 Probability (bedingte Wahrscheinlichkeit); Ch 4 Distributions" },
+    { "sourceId": "wilke-dataviz", "role": "practice", "locator": "Kapitel zu Histogrammen und Verteilungsformen — nur Verweis, CC BY-NC-ND" },
+    { "sourceId": "numpy-docs", "role": "practice", "locator": "np.corrcoef Dokumentation" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

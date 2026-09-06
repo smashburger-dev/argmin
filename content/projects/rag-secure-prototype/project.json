@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-rag-secure-prototype",
+  "version": 1,
+  "locale": "de",
+  "title": "Abgesicherter RAG-Prototyp mit Stub-Generator",
+  "description": "Fügt Retrieval, deterministische Evaluation und defensive Sicherheitskontrollen zu einem minimalen Prototyp zusammen: Injektions-Fixtures werden geflaggt, verbotene Aktionen abgelehnt, und eine Ablation misst den Preis der Kontrolle.",
+  "runnerMode": "local",
+  "competencyIds": [
+    "c-genai-prototype"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-genai-eval",
+    "c-genai-security"
+  ],
+  "starterFiles": [
+    "README.md",
+    "src/prototype.py",
+    "tests/test_prototype.py",
+    "check-manifest.json"
+  ],
+  "solutionFiles": [
+    "solution/prototype.py"
+  ],
+  "allowedCommands": [
+    {
+      "program": "python",
+      "args": [
+        "-m",
+        "pytest",
+        "-q",
+        "--disable-warnings",
+        "--maxfail=1",
+        "tests"
+      ]
+    }
+  ],
+  "testBundleId": "rag-secure-prototype-tests-v1",
+  "deliverables": [
+    "Vollständiges src/prototype.py mit deterministischem audit, request_action, answer, metrics und ablation",
+    "Alle bereitgestellten pytest-Tests bestanden (Recall-at-k-Schwelle, Metrik-Exactness, Injektions-Flag, Least Privilege)",
+    "Kurze Dokumentation im README: Threat Model, Grenzen des Prototyps (kein produktives LLM-System)"
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft",
+  "legacyWeekId": "w30",
+  "estimatedMinutes": 120
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-tf-papers",
+  "version": 1,
+  "locale": "de",
+  "title": "Deep-Learning-Paper kritisch synthetisieren",
+  "objectives": [
+    "Paper nach Forschungsfrage, Methode, Datensatz, Ergebnissen und Limitationen strukturieren und Claims Evidenz-Zahlen zuordnen",
+    "absolute (Prozentpunkte) und relative Verbesserungen (Prozent) unterscheiden und aus Paper-Zahlen nachrechnen",
+    "Reproduzierbarkeits-Fallen (Seed, Baseline, Testset-Diät) erkennen und Paper anhand von Abstract-Fakten vergleichen"
+  ],
+  "competencyIds": ["c-dl-papers"],
+  "requires": ["c-dl-finetuning", "c-meta-learning"],
+  "estimatedMinutes": 70,
+  "blocks": [
+    { "blockId": "tf-papers-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-papers.md" },
+    { "blockId": "tf-papers-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-papers-checkpoint.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "arxiv-attention-2017", "role": "primary", "locator": "Abstract — BLEU-Zahlen EN-DE/EN-FR (nur Lektüre/Link)" },
+    { "sourceId": "arxiv-bert-2018", "role": "primary", "locator": "Abstract — GLUE/MultiNLI/SQuAD-Zahlen (nur Lektüre/Link)" },
+    { "sourceId": "arxiv-gpt3-2020", "role": "primary", "locator": "Abstract — 175B-Parameter, Few-shot ohne Fine-Tuning (nur Lektüre/Link)" },
+    { "sourceId": "arxiv-lora-2021", "role": "primary", "locator": "Abstract — 10.000×/3×-Einsparungen (nur Lektüre/Link)" },
+    { "sourceId": "arxiv-rag-2020", "role": "reference", "locator": "Abstract — parametrischer plus nicht-parametrischer Speicher (nur Lektüre/Link)" },
+    { "sourceId": "pytorch-repro-notes", "role": "practice", "locator": "Reproducibility-Notes — Seed-/Nondeterminismus-Quellen" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

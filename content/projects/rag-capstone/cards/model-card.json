@@ -1,0 +1,9 @@
+{
+  "name": "Stub-Generator (kein LLM)",
+  "typ": "extraktions-stub",
+  "trainingsdaten": "Keine. Der Stub formuliert nicht, sondern wählt aus dem besten Dokument den ersten Satz mit Anfragebegriff.",
+  "evaluationsrahmen": "Golden Set (acht Queries, vier Subgruppen) mit Recall@1, Precision@1 und Subgruppen-Recall; Schwellen in config/experiment.json.",
+  "bekannte_limitierungen": [
+    "TODO(Lernende:r): keine Sprachmodell-Anteile, keine semantische Suche, Antwortqualität nur für die Fixtur belegt."
+  ]
+}

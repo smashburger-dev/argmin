@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-git-basics",
+  "version": 1,
+  "locale": "de",
+  "title": "Git als überprüfbares Arbeitsprotokoll",
+  "description": "Status und Diff lesen, einen geschlossenen Commit setzen, Merge von Codekorrektheit trennen.",
+  "competencyIds": ["c-git-basics"],
+  "requires": ["c-meta-learning"],
+  "trackIds": ["common-core", "applied-ai", "research-evaluation"],
+  "lessonIds": ["l-foundations-git"],
+  "explanationIds": ["x-git-workflow"],
+  "placements": [
+    {
+      "placementId": "p-git-merge-curated",
+      "role": "curated",
+      "familyId": "classify-git-operation",
+      "caseId": "merge-conflict-test-flow",
+      "seed": 2601,
+      "difficulty": "stretch",
+      "estimatedMinutes": 12,
+      "lessonId": "l-foundations-git",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-git-op-unstaged",
+      "role": "curated",
+      "familyId": "classify-git-operation",
+      "caseId": "diff-unstaged",
+      "seed": 7,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-git",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-git-op-staged",
+      "role": "curated",
+      "familyId": "classify-git-operation",
+      "caseId": "diff-staged",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-git",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-git-practice-space",
+      "role": "practice-space",
+      "familyId": "classify-git-operation",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-git-bugfix-flow-curated",
+      "role": "curated",
+      "familyId": "construct-safe-bugfix-workflow",
+      "caseId": "datafix-flow-with-test-contract",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-git",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-git-bugfix-flow-practice",
+      "role": "practice-space",
+      "familyId": "construct-safe-bugfix-workflow",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

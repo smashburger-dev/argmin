@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-foundations-control-flow",
+  "version": 2,
+  "locale": "de",
+  "title": "Bedingungen und Schleifen kontrollieren",
+  "objectives": ["Bedingungen als Wahrheitsfragen formulieren", "for und while passend auswählen", "Abbruch und Fortschritt einer Schleife prüfen"],
+  "competencyIds": ["c-python-control-flow"],
+  "requires": ["c-python-basics"],
+  "estimatedMinutes": 45,
+  "blocks": [{ "blockId": "control-flow-core", "type": "worked-example", "contentRef": "lessons/foundations/control-flow.md" }],
+  "sourceRefs": [
+    { "sourceId": "py-tutorial-official-3.14", "role": "practice", "locator": "Kapitel 4.1 bis 4.5: if, for, range und break" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

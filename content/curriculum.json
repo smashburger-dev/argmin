@@ -1,0 +1,3642 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "id": "ki-lernpfad",
+  "title": "KI-Lernpfad — 39 Wochen, 390 Stunden",
+  "derivedFrom": [
+    {
+      "sourceId": "ki-evidenzsynthese",
+      "file": "../KI_Lernpfad_Evidenzsynthese.md",
+      "sha256": "see docs/pdf-catalog.json"
+    }
+  ],
+  "totalWeeks": 39,
+  "totalHours": 390,
+  "phases": [
+    {
+      "phaseId": "p1",
+      "index": 1,
+      "title": "Fundament",
+      "weeks": [
+        1,
+        4
+      ],
+      "hours": 40,
+      "tags": [
+        "core",
+        "practice",
+        "python",
+        "git"
+      ],
+      "artifact": "CLI-Datenpruefer"
+    },
+    {
+      "phaseId": "p2",
+      "index": 2,
+      "title": "Daten und Mathematik",
+      "weeks": [
+        5,
+        8
+      ],
+      "hours": 40,
+      "tags": [
+        "core",
+        "practice",
+        "math",
+        "data",
+        "numpy",
+        "pandas"
+      ],
+      "artifact": "Explorative Datenanalyse"
+    },
+    {
+      "phaseId": "p3",
+      "index": 3,
+      "title": "Klassisches ML I",
+      "weeks": [
+        9,
+        13
+      ],
+      "hours": 50,
+      "tags": [
+        "core",
+        "practice",
+        "ml",
+        "evaluation"
+      ],
+      "artifact": "Baseline-Modell"
+    },
+    {
+      "phaseId": "p4",
+      "index": 4,
+      "title": "Klassisches ML II",
+      "weeks": [
+        14,
+        17
+      ],
+      "hours": 40,
+      "tags": [
+        "core",
+        "practice",
+        "ml",
+        "repro"
+      ],
+      "artifact": "Reproduzierbarer Modellvergleich"
+    },
+    {
+      "phaseId": "p5",
+      "index": 5,
+      "title": "Deep Learning",
+      "weeks": [
+        18,
+        21
+      ],
+      "hours": 40,
+      "tags": [
+        "core",
+        "practice",
+        "numpy"
+      ],
+      "artifact": "Kleines deterministisches Tabular-Netz aus Grundoperationen"
+    },
+    {
+      "phaseId": "p6",
+      "index": 6,
+      "title": "Transformer und LLM",
+      "weeks": [
+        22,
+        26
+      ],
+      "hours": 50,
+      "tags": [
+        "core",
+        "practice",
+        "paper",
+        "transformer"
+      ],
+      "artifact": "Toy-NLP-Demo ohne LLM-Lauf (deterministische Pipeline)"
+    },
+    {
+      "phaseId": "p7",
+      "index": 7,
+      "title": "GenAI-Systeme",
+      "weeks": [
+        27,
+        30
+      ],
+      "hours": 40,
+      "tags": [
+        "practice",
+        "safety",
+        "rag"
+      ],
+      "artifact": "Sicherer RAG-Prototyp"
+    },
+    {
+      "phaseId": "p8",
+      "index": 8,
+      "title": "Forschung und Betrieb",
+      "weeks": [
+        31,
+        34
+      ],
+      "hours": 40,
+      "tags": [
+        "practice",
+        "safety",
+        "paper",
+        "repro"
+      ],
+      "artifact": "Capstone-Protokoll und Baseline"
+    },
+    {
+      "phaseId": "p9",
+      "index": 9,
+      "title": "Capstone",
+      "weeks": [
+        35,
+        39
+      ],
+      "hours": 50,
+      "tags": [
+        "practice",
+        "safety",
+        "capstone",
+        "portfolio"
+      ],
+      "artifact": "Portfoliofaehiges KI-Projekt"
+    }
+  ],
+  "weeks": [
+    {
+      "weekId": "w01",
+      "number": 1,
+      "phaseId": "p1",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Diagnose, Setup, Variablen, Funktionen, Algebra",
+      "goals": [
+        "Python-Interpreter, Variablenzuweisungen und kleine Funktionen sicher anwenden",
+        "Algebra-Diagnose ablegen (OMB+/Serlo) und den Abruf mit Zufallsinstanzen ueben",
+        "Gleichungen umformen, Potenzgesetze anwenden und Logarithmen zu kleinen Basen im Kopf berechnen"
+      ],
+      "task": "Drei kleine Funktionen und zehn Algebraaufgaben ohne Vorlage",
+      "evidence": "Repository mit README und Tests",
+      "prerequisites": [],
+      "learningUnits": [
+        {
+          "unitId": "w01-u1",
+          "title": "Diagnose: Algebra-Abruf und Standortbestimmung",
+          "competencyId": "c-algebra-basics",
+          "minutes": 75,
+          "type": "abruf",
+          "unitExerciseIds": [
+            "w01-e1",
+            "w01-e2"
+          ],
+          "sources": [
+            {
+              "sourceId": "ombplus",
+              "locator": "OMB+ Selbsteinschaetzung Algebra-Kurs (extern, link-only)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Lineare Gleichungen (Artikel 1393)",
+              "locatorPath": "library/open/de/serlo-gleichungen-1393.html",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w01-u2",
+          "title": "Python-Setup, REPL und Variablen",
+          "competencyId": "c-python-basics",
+          "minutes": 105,
+          "type": "konzept",
+          "unitExerciseIds": [
+            "w01-e3",
+            "w01-e4",
+            "w01-e7"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kap. 2: Using the Python Interpreter",
+              "locatorPath": "library/open/py-tutorial-official/html/interpreter.html",
+              "role": "primary"
+            },
+            {
+              "sourceId": "cs50p-psets-harvard",
+              "locator": "pset1: tip (Tip Calculator) — Variablen und Ausdruecke",
+              "locatorPath": "library-private/cs50p-psets/html/tip.html",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w01-u3",
+          "title": "Funktionen schreiben: def, Parameter, return",
+          "competencyId": "c-python-functions",
+          "minutes": 150,
+          "type": "coding",
+          "unitExerciseIds": [
+            "w01-e5",
+            "w01-e6"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kap. 4.7-4.8: Defining Functions",
+              "locatorPath": "library/open/py-tutorial-official/html/controlflow.html",
+              "role": "primary"
+            },
+            {
+              "sourceId": "cs50p-psets-harvard",
+              "locator": "pset1: einstein (E=mc^2 als reine Funktion ohne I/O)",
+              "locatorPath": "library-private/cs50p-psets/html/einstein.html",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w01-u4",
+          "title": "Algebra-Grundlagen: Gleichungen, Potenzen, Logarithmen",
+          "competencyId": "c-algebra-basics",
+          "minutes": 75,
+          "type": "konzept",
+          "unitExerciseIds": [],
+          "sources": [
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Lineare Gleichungen (Artikel 1393)",
+              "locatorPath": "library/open/de/serlo-gleichungen-1393.html",
+              "role": "primary"
+            },
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Potenzen (Artikel 1420)",
+              "locatorPath": "library/open/de/serlo-potenzen-1420.html",
+              "role": "reference"
+            },
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Logarithmus (Artikel 55181)",
+              "locatorPath": "library/open/de/serlo-logarithmus-55181.html",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w01-u5",
+          "title": "Algebra-Abruf mit Zufallsinstanzen",
+          "competencyId": "c-algebra-basics",
+          "minutes": 105,
+          "type": "abruf",
+          "unitExerciseIds": [
+            "w01-e8",
+            "w01-e9",
+            "w01-e10"
+          ],
+          "sources": [
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Aufgaben zu linearen Gleichungen (80254)",
+              "locatorPath": "library/open/de/serlo-aufg-lin-gl-80254.html",
+              "role": "primary"
+            },
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Aufgaben zu den Potenzgesetzen (23665)",
+              "locatorPath": "library/open/de/serlo-potenzgesetze-aufg-23665.html",
+              "role": "practice"
+            },
+            {
+              "sourceId": "serlo-algebra-grundlagen-w01",
+              "locator": "Aufgaben zum Rechnen mit Logarithmen (23768)",
+              "locatorPath": "library/open/de/serlo-aufg-logarithmen-23768.html",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w01-u6",
+          "title": "Wochenlog und Reflexion",
+          "competencyId": "c-meta-learning",
+          "minutes": 90,
+          "type": "log",
+          "unitExerciseIds": [
+            "w01-e11"
+          ],
+          "sources": [
+            {
+              "sourceId": "generated",
+              "locator": "w01-e11 Reflexionsfrage",
+              "role": "practice"
+            }
+          ]
+        }
+      ],
+      "exercises": [
+        "w01-e1",
+        "w01-e2",
+        "w01-e3",
+        "w01-e4",
+        "w01-e5",
+        "w01-e6",
+        "w01-e7",
+        "w01-e8",
+        "w01-e9",
+        "w01-e10",
+        "w01-e11"
+      ],
+      "artifact": "Diagnose- und Abrufprotokoll plus drei kleine Funktionen als reine Python-Funktionen (ohne I/O) mit Selbsttests",
+      "gate": {
+        "gateId": "w01-gate",
+        "title": "Geschlossenes Buch: Variablen-Logik und Algebra-Abruf ohne Hilfen",
+        "criteria": [
+          "Eine lineare Gleichung nach Umformung loesen (x auf beiden Seiten moeglich)",
+          "Einen Logarithmus zu ganzzahliger Basis im Kopf bestimmen",
+          "Variablenzuweisungen in der richtigen Reihenfolge ausfuehren (Variablentausch)"
+        ],
+        "evidenceExerciseIds": [
+          "w01-e7",
+          "w01-e8",
+          "w01-e10"
+        ]
+      }
+    },
+    {
+      "weekId": "w02",
+      "number": 2,
+      "phaseId": "p1",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Bedingungen, Schleifen, Strings, Listen",
+      "goals": [
+        "Bedingungen als Wahrheitsfragen formulieren und Boolesche Ausdrücke zusammensetzen",
+        "for- und while-Schleifen passend auswählen und den Zustand pro Durchlauf tracen",
+        "Strings durchlaufen, zerlegen und zusammensetzen",
+        "Listen aufbauen, indizieren, durchsuchen und Zustandsänderungen vorhersagen",
+        "typische Schleifenfehler (off-by-one, Endloslauf, falscher Abbruch) erkennen und reparieren"
+      ],
+      "task": "Daten aus einer Textdatei pruefen und Fehler melden",
+      "evidence": "Trace-Tabellen fuer drei Schleifenprogramme und reparierte Kontrollflussfehler",
+      "learningUnits": [
+        {
+          "unitId": "w02-u1",
+          "title": "Bedingungen, Vergleiche und Boolesche Logik",
+          "competencyId": "c-python-control-flow",
+          "minutes": 120,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 4.1: if-Anweisungen und Bedingungen",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w02-u2",
+          "title": "Schleifen tracen und reparieren",
+          "competencyId": "c-python-control-flow",
+          "minutes": 150,
+          "type": "coding",
+          "unitExerciseIds": [
+            "w02-e2"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 4.2 bis 4.5: for, range, break, continue",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w02-u3",
+          "title": "Strings zerlegen und Listen aufbauen",
+          "competencyId": "c-python-collections",
+          "minutes": 150,
+          "type": "coding",
+          "unitExerciseIds": [
+            "w02-e1",
+            "w02-e3"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 3 (Strings) und Kapitel 5.1 (Listen)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w02-u4",
+          "title": "Wochenpraxis: Datensaetze pruefen und Fehler melden",
+          "competencyId": "c-python-control-flow",
+          "minutes": 180,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 4.4: break und else an Schleifen",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w03",
+      "number": 3,
+      "phaseId": "p1",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Dictionaries, Sets, Exceptions, Git-Branches",
+      "goals": [
+        "Dictionaries als Schlüssel-Werte-Speicher einsetzen und Zugriffe vorhersagen",
+        "Sets für Eindeutigkeit und Mengenvergleiche nutzen",
+        "Exceptions mit try/except gezielt abfangen und Fehlerprotokolle reproduzierbar führen",
+        "Dateien zeilenweise lesen und robust gegen fehlerhafte Zeilen verarbeiten",
+        "Git-Branches für Feature-Arbeit nutzen und einen Merge nachvollziehbar dokumentieren"
+      ],
+      "task": "Datenpruefer um Duplikate und fehlende Werte erweitern",
+      "evidence": "Feature-Branch, Merge und Testprotokoll",
+      "learningUnits": [
+        {
+          "unitId": "w03-u1",
+          "title": "Dictionaries und Sets: Schlüssel, Werte, Eindeutigkeit",
+          "competencyId": "c-python-collections",
+          "minutes": 120,
+          "type": "konzept",
+          "unitExerciseIds": [
+            "w03-e1",
+            "w03-e2"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 5.5 (Dictionaries) und 5.6 (Sets)",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w03-u2",
+          "title": "Exceptions abfangen und Fehlerprotokolle führen",
+          "competencyId": "c-python-files-errors",
+          "minutes": 120,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 8.3 und 8.4: Ausnahmen behandeln und auslösen",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w03-u3",
+          "title": "Dateien zeilenweise lesen und robust verarbeiten",
+          "competencyId": "c-python-files-errors",
+          "minutes": 120,
+          "type": "coding",
+          "unitExerciseIds": [
+            "w03-e3"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 7.2: Lesen und Schreiben von Dateien",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w03-u4",
+          "title": "Git-Branches, Merge und Testprotokoll",
+          "competencyId": "c-git-basics",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "pro-git-book",
+              "locator": "Kapitel 2 und 3: Git Basics; Git Branching",
+              "role": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w04",
+      "number": 4,
+      "phaseId": "p1",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Module, pytest-Grundlagen",
+      "goals": [
+        "eigenen Code in Module gliedern und zwischen Import-Varianten unterscheiden",
+        "pytest-Tests benennen, strukturieren und lokal ausführen (kein Browser-Pytest, ADR-0012)",
+        "Fehlerfälle als Regressionstests festhalten statt nur zu korrigieren",
+        "systematisch debuggen: Hypothese aufstellen, Fehler isolieren, kleinsten reproduzierbaren Fall bauen",
+        "das Foundations-Projekt mit mindestens acht automatisierten Tests abschließen"
+      ],
+      "task": "Mini-Projekt abschliessen und fremden Fehlerfall reproduzieren",
+      "evidence": "Mindestens acht automatisierte Tests",
+      "learningUnits": [
+        {
+          "unitId": "w04-u1",
+          "title": "Module, Importe und Teststruktur",
+          "competencyId": "c-testing-debugging",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 6: Module und Import-Varianten",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w04-u2",
+          "title": "pytest-Grundlagen: Assertions, Struktur, Regressionstests",
+          "competencyId": "c-testing-debugging",
+          "minutes": 150,
+          "type": "coding",
+          "unitExerciseIds": [
+            "w04-e1",
+            "w04-e2"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 8: Exceptions als reproduzierbare Fehlergrenze für Tests",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w04-u3",
+          "title": "Projekt: Datenprüfer mit acht Tests abschließen (p-foundations-data-checker)",
+          "competencyId": "c-testing-debugging",
+          "minutes": 300,
+          "type": "coding",
+          "unitExerciseIds": [
+            "w04-e3"
+          ],
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel 6.1: Module als Testeinheit",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w05",
+      "number": 5,
+      "phaseId": "p2",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Vektoren, Matrizen und Dimensionschecks mit NumPy",
+      "goals": [
+        "Vektor- und Matrixoperationen (Skalarprodukt, Matrixprodukt) von Hand und mit NumPy ausfuehren",
+        "Dimensions-/Shape-Regeln von Matrixmultiplikation erklaeren und anwenden",
+        "Lineare Gleichungssysteme mit Gauß-Elimination loesen",
+        "Lineare Unabhaengigkeit und Rang an kleinen Beispielen pruefen",
+        "Ergebnisaequivalenz algebraischer Terme exakt nachweisen (SymPy)"
+      ],
+      "prerequisites": [
+        "w04"
+      ],
+      "learningUnits": [
+        {
+          "unitId": "w05-u1",
+          "title": "Systeme linearer Gleichungen und die Spaltenbild-Deutung",
+          "competencyId": "c-linalg-systems",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "mml-book",
+              "locator": "§2.1, S. 19-21 (gedruckt, Draft 2024-01-15)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "mit-ocw-18-06sc",
+              "locator": "Lecture 1: The Geometry of Linear Equations",
+              "role": "primary"
+            },
+            {
+              "sourceId": "wikibooks-mfnf",
+              "locator": "Lineare Algebra-Einstieg",
+              "role": "remedial"
+            }
+          ]
+        },
+        {
+          "unitId": "w05-u2",
+          "title": "Matrizen, Matrixprodukt, Dimensionsregeln",
+          "competencyId": "c-linalg-matrices",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "mml-book",
+              "locator": "§2.2, S. 22-26",
+              "role": "primary"
+            },
+            {
+              "sourceId": "mit-ocw-18-06sc",
+              "locator": "Lecture 3: Multiplication and Inverse Matrices (Auszug Matrixprodukt)",
+              "role": "practice"
+            },
+            {
+              "sourceId": "serlo-mathe",
+              "locator": "Themenportal Matrixrechnung",
+              "role": "remedial"
+            }
+          ]
+        },
+        {
+          "unitId": "w05-u3",
+          "title": "Gauß-Elimination und Loesungsmengen",
+          "competencyId": "c-linalg-gauss",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "mml-book",
+              "locator": "§2.3, S. 27-34",
+              "role": "primary"
+            },
+            {
+              "sourceId": "mit-ocw-18-06sc",
+              "locator": "Lecture 2: Elimination with Matrices",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w05-u4",
+          "title": "Vektorraeume, Unabhaengigkeit, Rang",
+          "competencyId": "c-linalg-independence",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "mml-book",
+              "locator": "§2.4-2.6, S. 35-47",
+              "role": "primary"
+            },
+            {
+              "sourceId": "wikibooks-mfnf",
+              "locator": "Lineare Unabhaengigkeit",
+              "role": "remedial"
+            }
+          ]
+        },
+        {
+          "unitId": "w05-u5",
+          "title": "NumPy-Labor: Shapes als Vertrag",
+          "competencyId": "c-numpy-basics",
+          "minutes": 120,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "numpy-docs",
+              "locator": "NumPy: the absolute basics for beginners",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w05-u6",
+          "title": "Abruf und Transfer",
+          "competencyId": "c-linalg-independence",
+          "minutes": 60,
+          "type": "abruf",
+          "sources": [
+            {
+              "sourceId": "generated",
+              "locator": "w05-e1..w05-e16 ohne e7 (aktiv)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w05-u7",
+          "title": "Wochenlog und Fehlerjournal",
+          "competencyId": "c-meta-learning",
+          "minutes": 60,
+          "type": "log",
+          "sources": []
+        }
+      ],
+      "exercises": [
+        "w05-e1",
+        "w05-e2",
+        "w05-e3",
+        "w05-e4",
+        "w05-e5",
+        "w05-e6",
+        "w05-e8",
+        "w05-e9",
+        "w05-e10",
+        "w05-e11",
+        "w05-e12",
+        "w05-e13",
+        "w05-e14",
+        "w05-e15",
+        "w05-e16"
+      ],
+      "visualization": {
+        "vizId": "w05-viz1",
+        "title": "Matrix-Vektor: Spalten von A als Abbildung",
+        "learningGoal": "Verstehen, dass A·x die Spalten von A mit den Eintraegen von x kombiniert; Steuern des Vektors b=A·e und Ablesen der Koeffizienten.",
+        "type": "jsxgraph"
+      },
+      "artifact": "Notebook bzw. Lauf mit Form- und Dimensionschecks (hier: Pyodide-Lab w05-e8)",
+      "gate": {
+        "gateId": "w05-gate",
+        "title": "Geschlossenes Buch: Matrixmultiplikation und Dimensionen",
+        "criteria": [
+          "Shape von C=A·B ohne Nachschlagen begruenden",
+          "Ein 2x2-System per Gauß loesen",
+          "Unabhaengigkeit zweier Vektoren pruefen"
+        ],
+        "evidenceExerciseIds": [
+          "w05-e2",
+          "w05-e6",
+          "w05-e4"
+        ]
+      }
+    },
+    {
+      "weekId": "w06",
+      "number": 6,
+      "phaseId": "p2",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Tabellarische Daten: fehlende Werte, Duplikate, Datenqualitätsvertrag",
+      "goals": [
+        "Tabellarische Daten als Zeilenlisten und CSV einlesen und das Schema beschreiben",
+        "fehlende Werte und Sentinel-Werte erkennen und Entscheidungen zur Behandlung begründen",
+        "exakte Duplikate von Schlüssel-Duplikaten unterscheiden",
+        "einen Datenqualitätsvertrag als prüfbare Regel formulieren",
+        "pandas-Idiomatik für Bereinigung lesen und ihre Ausgabe vorhersagen (kein pandas-Lauf im Browser, ADR-0012)"
+      ],
+      "task": "Offenen Datensatz laden und Datenprobleme katalogisieren",
+      "evidence": "Datenqualitaetsprotokoll",
+      "learningUnits": [
+        {
+          "unitId": "w06-u1",
+          "title": "Schema, Datentypen und CSV-Einlesen mit Standardbibliothek",
+          "competencyId": "c-pandas-cleaning",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "py-tutorial-official-3.14",
+              "locator": "Kapitel csv — Lesen und Schreiben von Tabellendaten",
+              "role": "primary"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "absolute basics: Arrays aus Zeilenlisten",
+              "role": "remedial"
+            }
+          ]
+        },
+        {
+          "unitId": "w06-u2",
+          "title": "Fehlende Werte, Sentinel-Werte und Duplikate",
+          "competencyId": "c-pandas-cleaning",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "pandas-docs",
+              "locator": "User Guide — Missing data / Duplicates (nur Lektüre)",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w06-u3",
+          "title": "Datenqualitätsvertrag und Bereinigungs-Praxis",
+          "competencyId": "c-pandas-cleaning",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "pandas-docs",
+              "locator": "User Guide — Cleaning data (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w07",
+      "number": 7,
+      "phaseId": "p2",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Verteilungen, Diagrammwahl, Korrelation, bedingte Wahrscheinlichkeit",
+      "goals": [
+        "Verteilungen mit Histogramm-Bins, Median und Quartilen beschreiben",
+        "zu Frage und Datentyp die passende Diagrammform begründen",
+        "Korrelation mit NumPy berechnen und ihren Aussagebereich eingrenzen",
+        "Korrelation von Kausalität unterscheiden und Confounder benennen",
+        "bedingte Wahrscheinlichkeit als Spaltenanteil einer Tabelle ablesen"
+      ],
+      "task": "Drei Hypothesen visualisieren und gegen Daten pruefen",
+      "evidence": "EDA-Notebook mit begruendeten Diagrammen",
+      "learningUnits": [
+        {
+          "unitId": "w07-u1",
+          "title": "Verteilungen und Kennzahlen",
+          "competencyId": "c-eda-viz",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "openintro-statistics",
+              "locator": "Ch 2 Summarizing Data",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w07-u2",
+          "title": "Diagrammwahl und Korrelation versus Kausalität",
+          "competencyId": "c-eda-viz",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "wilke-dataviz",
+              "locator": "Kapitel zu Histogrammen und Verteilungsformen (nur Verweis, CC BY-NC-ND)",
+              "role": "practice"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "np.corrcoef Dokumentation",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w07-u3",
+          "title": "Bedingte Wahrscheinlichkeit und EDA-Praxis",
+          "competencyId": "c-eda-viz",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "openintro-statistics",
+              "locator": "Ch 3 Probability (bedingte Wahrscheinlichkeit)",
+              "role": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w08",
+      "number": 8,
+      "phaseId": "p2",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Ableitung, Gradient, MSE, lineare Regression aus Grundoperationen",
+      "goals": [
+        "die Ableitung als lokale Änderungsrate interpretieren",
+        "den Gradienten von MSE bzgl. w und b aus Grundoperationen herleiten",
+        "Gradientenabstieg-Updates mit Lernrate ausführen und Divergenz erklären",
+        "einen numerischen Gradientencheck mit zentraler Differenz umsetzen",
+        "lineare Regression mit NumPy fitten und gegen lstsq absichern"
+      ],
+      "task": "Lineare Regression einer Variable aus Grundoperationen",
+      "evidence": "Kurzer Bericht mit Fehleranalyse",
+      "learningUnits": [
+        {
+          "unitId": "w08-u1",
+          "title": "Ableitung und Gradient als Werkzeug",
+          "competencyId": "c-grad-regression",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "devries-ml",
+              "locator": "Kapitel zu Ableitung und Gradientenabstieg",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w08-u2",
+          "title": "MSE-Gradient und Gradientenabstieg",
+          "competencyId": "c-grad-regression",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "devries-ml",
+              "locator": "Kapitel Lineare Regression",
+              "role": "practice"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "np.linalg.lstsq",
+              "role": "remedial"
+            }
+          ]
+        },
+        {
+          "unitId": "w08-u3",
+          "title": "Numerischer Gradientencheck und Regression aus Grundoperationen",
+          "competencyId": "c-grad-regression",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "mit-ocw-18-06sc",
+              "locator": "Lecture 16: Projection Matrices and Least Squares",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w09",
+      "number": 9,
+      "phaseId": "p3",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Problemformulierung, Zielvariable, Baseline, deterministischer Split",
+      "goals": [
+        "eine Vorhersageaufgabe als Regression oder Klassifikation formulieren",
+        "die Zielvariable und die Metrik vorab festlegen",
+        "Majority- und Mean-Baselines berechnen und als Maßstab begründen",
+        "einen deterministischen Train/Test-Split mit Seed umsetzen",
+        "sklearn-Idiomatik für Splits lesen und vorhersagen (kein sklearn-Lauf im Browser, ADR-0012)"
+      ],
+      "task": "Einseitiger Experimentvertrag",
+      "evidence": "Experimentvertrag",
+      "gate": {
+        "gateId": "w09-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w01",
+            "skillId": "c-python-basics"
+          },
+          {
+            "weekId": "w05",
+            "skillId": "c-linalg-matrices"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w09-u1",
+          "title": "Problemformulierung und Zielvariable",
+          "competencyId": "c-ml-baseline",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "devries-ml",
+              "locator": "Kapitel zu Lernverfahren und Modellbewertung",
+              "role": "primary"
+            },
+            {
+              "sourceId": "google-mlcc",
+              "locator": "Module Framing (nur Verweis)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w09-u2",
+          "title": "Baselines und deterministische Splits",
+          "competencyId": "c-ml-baseline",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "devries-ml",
+              "locator": "Kapitel Modellbewertung",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w09-u3",
+          "title": "Experimentvertrag-Praxis",
+          "competencyId": "c-ml-baseline",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "google-mlcc",
+              "locator": "Module Regression/Validation (nur Verweis)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w10",
+      "number": 10,
+      "phaseId": "p3",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Lineare Regression, Loss, RMSE, R², Residuenanalyse",
+      "goals": [
+        "lineare Regression über die Verlustminimierung erklären",
+        "MSE, RMSE und R² aus Grundformeln berechnen",
+        "Residuenmuster lesen (Trend, Trichterform, Hebel Punkte) und Diagnosen ableiten",
+        "Modellgüte immer gegen die Baseline berichten",
+        "Regressionsdiagnostik als NumPy-Praxis umsetzen"
+      ],
+      "task": "Reproduzierbares Notebook",
+      "evidence": "Notebook",
+      "gate": {
+        "gateId": "w10-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w02",
+            "skillId": "c-python-control-flow",
+            "note": "Rückgriff auf die Foundations-Wochen (W2-W4 ausgearbeitet, ADR-0014); neue Seeds je Wiederholung"
+          },
+          {
+            "weekId": "w06",
+            "skillId": "c-pandas-cleaning"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w10-u1",
+          "title": "Verlust, RMSE und R²",
+          "competencyId": "c-ml-linear",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 3 Linear Regression (nur Zitation)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "openintro-statistics",
+              "locator": "Ch 8 Introduction to Linear Regression",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w10-u2",
+          "title": "Residuenanalyse und Baseline-Vergleich",
+          "competencyId": "c-ml-linear",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "mit-ocw-18-06sc",
+              "locator": "Lecture 16: Least Squares",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w10-u3",
+          "title": "Regressions-Praxis mit NumPy",
+          "competencyId": "c-ml-linear",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Linear Models (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w11",
+      "number": 11,
+      "phaseId": "p3",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Logistische Regression, Konfusionsmatrix, Precision/Recall, Schwellenwerte",
+      "goals": [
+        "die Sigmoid-Funktion und ihre Rolle bei Klassifikation erklären",
+        "Konfusionsmatrix, Precision, Recall und F1 aus Zählwerten berechnen",
+        "Schwellenwerte gegen Fehlerkosten (FP vs. FN) abwägen",
+        "Accuracy-Fallen bei unbalancierten Klassen erkennen",
+        "Klassifikationsmetrik als NumPy-Praxis umsetzen"
+      ],
+      "task": "Metrikentscheidung mit Kostenargument",
+      "evidence": "Entscheidung + Matrix",
+      "gate": {
+        "gateId": "w11-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w03",
+            "skillId": "c-python-collections",
+            "note": "Rückgriff auf die Foundations-Wochen (W2-W4 ausgearbeitet, ADR-0014); neue Seeds je Wiederholung"
+          },
+          {
+            "weekId": "w07",
+            "skillId": "c-eda-viz"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w11-u1",
+          "title": "Sigmoid und logistische Verlustidee",
+          "competencyId": "c-ml-logistic",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "openintro-statistics",
+              "locator": "Ch 9 Multiple and Logistic Regression",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w11-u2",
+          "title": "Metriken, Schwellenwerte und Fehlerkosten",
+          "competencyId": "c-ml-logistic",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Classification metrics (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w11-u3",
+          "title": "Klassifikations-Praxis mit NumPy",
+          "competencyId": "c-ml-logistic",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "openintro-statistics",
+              "locator": "Ch 9, Abschnitt logistische Regression",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w12",
+      "number": 12,
+      "phaseId": "p3",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Cross-Validation, Hyperparameter, Leakage, Pipelinegrenzen",
+      "goals": [
+        "K-Fold-Aufteilungen deterministisch erzeugen (n mod k Verteilung)",
+        "Hyperparameter von Parametern unterscheiden und per CV auswählen",
+        "Leakage-Arten diagnostizieren (Ziel in Features, Skalieren vor Split, Zielstatistik im Fill-Wert)",
+        "die Pipeline-Grenze begründen: fit nur auf Train-Folds",
+        "CV-Streuung als Information lesen, nicht als Rauschen"
+      ],
+      "task": "Leakage-Test und CV-Tabelle",
+      "evidence": "CV-Tabelle",
+      "gate": {
+        "gateId": "w12-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w04",
+            "skillId": "c-testing-debugging",
+            "note": "Rückgriff auf die Foundations-Wochen (W2-W4 ausgearbeitet, ADR-0014); neue Seeds je Wiederholung"
+          },
+          {
+            "weekId": "w08",
+            "skillId": "c-grad-regression"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w12-u1",
+          "title": "Cross-Validation und Hyperparameter",
+          "competencyId": "c-ml-cv",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Cross-validation (nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 5 Resampling Methods (nur Zitation)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w12-u2",
+          "title": "Leakage-Arten und Pipelinegrenzen",
+          "competencyId": "c-ml-cv",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "google-mlcc",
+              "locator": "Module Validation (nur Verweis)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w12-u3",
+          "title": "CV- und Leakage-Praxis",
+          "competencyId": "c-ml-cv",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Common pitfalls (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w13",
+      "number": 13,
+      "phaseId": "p3",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Fehleranalyse, Teilgruppen, Modellkarte, Kommunikation ohne Overclaims",
+      "goals": [
+        "Fehler nach Teilgruppen aufschlüsseln und Lücken quantifizieren",
+        "Fehlertypen unterscheiden: Label-Noise, systematische Subgruppenfehler, Drift",
+        "eine Modellkarte mit beabsichtigtem Einsatz und Grenzen entwerfen",
+        "Ergebnisse ohne Overclaims formulieren",
+        "Fehleranalyse als deterministische NumPy-Praxis umsetzen"
+      ],
+      "task": "Modellkarte v0.1 und Kurzpraesentation",
+      "evidence": "Modellkarte",
+      "gate": {
+        "gateId": "w13-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w03",
+            "skillId": "c-git-basics",
+            "note": "Verzögerter Rückgriff vor dem W17-Final-Boss: hält c-git-basics innerhalb der 77-Tage-Frische (Reviewbefund git-testing-freshness-before-w17, ADR-0014)"
+          },
+          {
+            "weekId": "w05",
+            "skillId": "c-numpy-basics"
+          },
+          {
+            "weekId": "w09",
+            "skillId": "c-ml-baseline"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w13-u1",
+          "title": "Subgruppen-Fehleranalyse und Fehlertypen",
+          "competencyId": "c-ml-erroranalysis",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "devries-ml",
+              "locator": "Kapitel Modellbewertung",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w13-u2",
+          "title": "Modellkarten und ehrliche Kommunikation",
+          "competencyId": "c-ml-erroranalysis",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "model-cards-paper",
+              "locator": "Model Cards for Model Reporting, FAT* 2019 (arXiv:1810.03993)",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w13-u3",
+          "title": "Analyse-Praxis und Modellkarte-Entwurf",
+          "competencyId": "c-ml-erroranalysis",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Classification metrics / Controlling randomness (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w14",
+      "number": 14,
+      "phaseId": "p4",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Ridge, Lasso, Regularisierung und Feature Engineering",
+      "goals": [
+        "Ridge über die geschlossene Form (XᵀX+λI)⁻¹Xᵀy begründen und berechnen",
+        "Lasso-Sparsity in 1D über Soft-Thresholding erklären",
+        "λ per Cross-Validation auswählen (Rückbindung Woche 12)",
+        "Feature-Engineering (One-Hot, Interaktionen, Skalierung) sicher zuordnen",
+        "Regularisierungs- und Leak-Risiken im Feature-Engineering erkennen"
+      ],
+      "task": "Koeffizienten- und Fehlerplot",
+      "evidence": "Plot + Tabelle",
+      "gate": {
+        "gateId": "w14-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w06",
+            "skillId": "c-pandas-cleaning"
+          },
+          {
+            "weekId": "w10",
+            "skillId": "c-ml-linear"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w14-u1",
+          "title": "Ridge und Lasso aus Grundoperationen",
+          "competencyId": "c-ml-regularization",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 6 Linear Model Selection and Regularization (nur Zitation)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "devries-ml",
+              "locator": "Kapitel Regularisierung",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w14-u2",
+          "title": "Lambda-Auswahl per CV und Feature Engineering",
+          "competencyId": "c-ml-regularization",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Ridge regression / Lasso (nur Lektüre)",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w14-u3",
+          "title": "Regularisierungs-Praxis mit NumPy",
+          "competencyId": "c-ml-regularization",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Ridge / Lasso Anwendungsbeispiele (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w15",
+      "number": 15,
+      "phaseId": "p4",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Entscheidungsbäume, Ensembles, Vergleich gegen Baselines",
+      "goals": [
+        "Entscheidungsbäume über Gini und Split-Suche (Tiefe ≤ 2) nachvollziehen",
+        "Bias-Varianz-Idee und die Wirkung von Bagging/Majority-Voting erklären",
+        "Ensemble-Voting deterministisch ausführen",
+        "Modelle unter identischen Splits vergleichbar machen",
+        "Baum und Ensemble als NumPy-Praxis gegen eine lineare Baseline vergleichen"
+      ],
+      "task": "Gemeinsame Evaluationsmatrix",
+      "evidence": "Matrix",
+      "gate": {
+        "gateId": "w15-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w07",
+            "skillId": "c-eda-viz"
+          },
+          {
+            "weekId": "w11",
+            "skillId": "c-ml-logistic"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w15-u1",
+          "title": "Entscheidungsbäume und Gini",
+          "competencyId": "c-ml-ensembles",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Decision Trees (nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 8 Tree-Based Methods (nur Zitation)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w15-u2",
+          "title": "Ensembles und identische Splits",
+          "competencyId": "c-ml-ensembles",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Ensembles: RandomForest, GradientBoosting (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w15-u3",
+          "title": "Baum- und Ensemble-Praxis mit NumPy",
+          "competencyId": "c-ml-ensembles",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 8, Abschnitt Bagging/Random Forests (nur Zitation)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w16",
+      "number": 16,
+      "phaseId": "p4",
+      "minutes": 600,
+      "detailed": true,
+      "title": "SVM, PCA, Clustering, Skalierung, überwacht versus unüberwacht",
+      "goals": [
+        "die Margin-Idee einer Hard-Margin-SVM geometrisch erklären",
+        "den Kernel-Trick konzeptionell einordnen (keine Kernel-Implementierung)",
+        "PCA über Zentrieren, Kovarianz und Eigenwerte ausführen",
+        "k-Means mit fester Initialisierung und Seed deterministisch ausführen",
+        "Skalierungsanforderungen begründen und überwacht vs. unüberwacht einordnen"
+      ],
+      "task": "Begruendete Modellwahl",
+      "evidence": "Bericht",
+      "gate": {
+        "gateId": "w16-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w08",
+            "skillId": "c-grad-regression"
+          },
+          {
+            "weekId": "w12",
+            "skillId": "c-ml-cv"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w16-u1",
+          "title": "SVM: Margin und Kernel-Idee",
+          "competencyId": "c-ml-svm-pca",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "SVM (nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 9 SVM (nur Zitation)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w16-u2",
+          "title": "PCA aus Eigenwerten",
+          "competencyId": "c-ml-svm-pca",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "mit-ocw-18-06sc",
+              "locator": "Lecture 29: Singular Value Decomposition / Eigenwerte",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w16-u3",
+          "title": "k-Means, Skalierung und Lernparadigmen",
+          "competencyId": "c-ml-svm-pca",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Clustering (k-Means) und Scaling (nur Lektüre)",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w16-u4",
+          "title": "Dimensionsreduktion und Clustering als Praxis",
+          "competencyId": "c-ml-svm-pca",
+          "minutes": 90,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "islr-book",
+              "locator": "Ch 12 Unsupervised (nur Zitation)",
+              "role": "practice"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w17",
+      "number": 17,
+      "phaseId": "p4",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Reproduzierbarer Modellvergleich als Final-Boss-Projekt",
+      "goals": [
+        "einen Reproduzierbarkeitsvertrag festlegen: Seeds, Split, Metrik, Versionen",
+        "Modellvergleiche unter identischen Bedingungen wiederholbar machen",
+        "ein Manifest (Seed, Split, Versionen, Test-Hash) prüfen",
+        "README und Modellkarte als Teil des Experiments schreiben",
+        "berichtetete Streuung zwischen Läufen lesen und einordnen"
+      ],
+      "task": "Projekt 2 mit Tests und Ergebnisbericht",
+      "evidence": "Bericht + Repro-Befehl",
+      "gate": {
+        "gateId": "w17-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w09",
+            "skillId": "c-ml-baseline"
+          },
+          {
+            "weekId": "w13",
+            "skillId": "c-ml-erroranalysis"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w17-u1",
+          "title": "Reproduzierbarkeitsvertrag und Manifest",
+          "competencyId": "c-ml-repro",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Common pitfalls: Controlling randomness (nur Lektüre)",
+              "role": "primary"
+            }
+          ]
+        },
+        {
+          "unitId": "w17-u2",
+          "title": "Modellvergleich unter identischen Bedingungen",
+          "competencyId": "c-ml-repro",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Model evaluation (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w17-u3",
+          "title": "Projekt 2: Reproduzierbarer Modellvergleich (lokal)",
+          "competencyId": "c-ml-repro",
+          "minutes": 120,
+          "type": "log",
+          "sources": [
+            {
+              "sourceId": "model-cards-paper",
+              "locator": "Model Cards, FAT* 2019 (arXiv:1810.03993)",
+              "role": "primary"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w18",
+      "number": 18,
+      "phaseId": "p5",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Tensors, Layer, Forward Pass",
+      "goals": [
+        "Tensorformen und Broadcasting-Regeln sicher bestimmen",
+        "lineare Layer als Matrixmultiplikation mit Dimensionsvertrag umsetzen",
+        "Forward-Pässe eines MLP mit Shape-Checks implementieren",
+        "Parameterzahlen inklusive Bias zählen"
+      ],
+      "task": "6 Aufgaben: Dimensionsverträge, Parameterzählung, MLP-Forward mit Shape-Tests",
+      "evidence": "Grüne Shape-Tests und Parameterzählungen",
+      "gate": {
+        "gateId": "w18-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w10",
+            "skillId": "c-ml-linear"
+          },
+          {
+            "weekId": "w14",
+            "skillId": "c-ml-regularization"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w18-u1",
+          "title": "Tensoren, Layer und Dimensionsverträge",
+          "competencyId": "c-dl-tensors",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "dlbook-goodfellow",
+              "locator": "Ch 2.1 — Lineare Algebra: Tensoren und Shape-Nomenklatur (nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "Absolute basics — Broadcasting",
+              "role": "practice"
+            },
+            {
+              "sourceId": "karpathy-zero-to-hero",
+              "locator": "Lecture 1—2: MLP-Forward als Matrixmultiplikation (nur Lektüre)",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w18-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-tensors",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w18-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-tensors",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w19",
+      "number": 19,
+      "phaseId": "p5",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Autograd und Backpropagation",
+      "goals": [
+        "Rechengraphen für kleine Ausdrücke aufbauen",
+        "lokale Ableitungen mit der Kettenregel verketten",
+        "Backpropagation für ein 2-Layer-MLP von Hand implementieren",
+        "numerische Gradientenchecks mit zentraler Differenz durchführen",
+        "Framework-Autograd als Lese-/Vorhersagekompetenz einordnen"
+      ],
+      "task": "6 Aufgaben: Kettenregel, MLP-Backprop, numerischer Gradientencheck als Test",
+      "evidence": "Analytische Gradienten bestehen den numerischen Check",
+      "gate": {
+        "gateId": "w19-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w11",
+            "skillId": "c-ml-logistic"
+          },
+          {
+            "weekId": "w15",
+            "skillId": "c-ml-ensembles"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w19-u1",
+          "title": "Rechengraphen und Backpropagation",
+          "competencyId": "c-dl-autograd",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "karpathy-micrograd",
+              "locator": "micrograd — Backprop als Graph-Durchlauf (MIT, nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "dlbook-goodfellow",
+              "locator": "Ch 6.5 — Backpropagation und Kettenregel (nur Lektüre)",
+              "role": "reference"
+            },
+            {
+              "sourceId": "karpathy-zero-to-hero",
+              "locator": "Lecture 2/4 — manuelles Backprop für ein MLP (nur Lektüre)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w19-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-autograd",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w19-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-autograd",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w20",
+      "number": 20,
+      "phaseId": "p5",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Training Loop, Optimizer, Batch",
+      "goals": [
+        "Loss-Funktionen (MSE, BCE) korrekt implementieren",
+        "Batch, Epoche und Step unterscheiden und zählen",
+        "SGD mit Momentum mit festen Seeds implementieren",
+        "Trainings- und Validierungsverlust als Lernkurve interpretieren",
+        "typische Instabilitäten diagnostizieren"
+      ],
+      "task": "6 Aufgaben: Loss, Batching, SGD-Trainingsschleife mit Lernkurve und Validierung",
+      "evidence": "Lernkurve fällt, Validierungsschwellwert erreicht, Doppelaufruf deterministisch",
+      "gate": {
+        "gateId": "w20-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w12",
+            "skillId": "c-ml-cv"
+          },
+          {
+            "weekId": "w16",
+            "skillId": "c-ml-svm-pca"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w20-u1",
+          "title": "Trainingsschleifen und Optimierer",
+          "competencyId": "c-dl-training",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "dlbook-goodfellow",
+              "locator": "Ch 8.1/8.3 — SGD und Momentum (nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "karpathy-recipe-blog",
+              "locator": "A Recipe for Training Neural Networks — Lernrate und Erst-Diagnose (Blog, nur Lektüre)",
+              "role": "reference"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "np.random.default_rng — Seeding und Permutationen",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w20-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-training",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w20-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-training",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w21",
+      "number": 21,
+      "phaseId": "p5",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Regularisierung, Ablation, Save/Load",
+      "goals": [
+        "Weight Decay im Update exakt anwenden",
+        "Dropout als kontrolliertes Konzept mit fester Maske umsetzen",
+        "faire Ablationen mit einer Variable und festem Seed planen",
+        "Modellzustände reproduzierbar speichern und laden"
+      ],
+      "task": "6 Aufgaben: Weight Decay, Dropout-Maske, Ablation, Save/Load-Round-Trip",
+      "evidence": "Ablation ändert genau eine Variable; Save/Load identisch",
+      "gate": {
+        "gateId": "w21-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w13",
+            "skillId": "c-ml-erroranalysis"
+          },
+          {
+            "weekId": "w17",
+            "skillId": "c-ml-repro"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w21-u1",
+          "title": "Regularisierung und faire Ablation",
+          "competencyId": "c-dl-regularization",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "dlbook-goodfellow",
+              "locator": "Ch 7.1/7.5/7.12 — Weight Decay und Dropout (nur Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "pytorch-repro-notes",
+              "locator": "Notes on Reproducibility — Seeds und deterministische Läufe (nur Lektüre, kein Framework im Browser)",
+              "role": "practice"
+            },
+            {
+              "sourceId": "karpathy-nanogpt",
+              "locator": "nanoGPT — Checkpointing/Seed-Praxis als Lektüre (MIT)",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w21-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-regularization",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w21-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-regularization",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w22",
+      "number": 22,
+      "phaseId": "p6",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Attention und Transformer",
+      "goals": [
+        "Queries, Keys und Values als Rollen erklären",
+        "Scaled Dot-Product Attention mit kleinen Matrizen berechnen",
+        "zeilenweises stabiles Softmax und Maskierung korrekt anwenden",
+        "Shape-Verträge von Attention prüfen",
+        "eine kleine Attention per Hand nachrechnen"
+      ],
+      "task": "6 Aufgaben: Attention mit Maske, Softmax-Achse, Multi-Head als Final Boss",
+      "evidence": "Attention-Output besteht Referenz- und Maskentest",
+      "gate": {
+        "gateId": "w22-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w14",
+            "skillId": "c-ml-regularization"
+          },
+          {
+            "weekId": "w18",
+            "skillId": "c-dl-tensors"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w22-u1",
+          "title": "Attention mit kleinen Matrizen",
+          "competencyId": "c-dl-attention",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "arxiv-attention-2017",
+              "locator": "Attention Is All You Need, Abschnitt 3.2 — nur Lektüre/Link",
+              "role": "primary"
+            },
+            {
+              "sourceId": "d2l-book",
+              "locator": "Kapitel Attention — nur Lektüre/Link",
+              "role": "practice"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "NumPy absolute basics — Array-Formen",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w22-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-attention",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w22-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-attention",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w23",
+      "number": 23,
+      "phaseId": "p6",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Tokenizer und Modellfamilien",
+      "goals": [
+        "Zeichen-, Wort- und Subword-Tokenisierung unterscheiden",
+        "ein kleines Vokabular aufbauen und Encode/Decode runden",
+        "einen deterministischen Mini-BPE-Ablauf mit festen Regeln ausführen",
+        "Encoder-, Decoder- und Encoder-Decoder-Modellfamilien einordnen"
+      ],
+      "task": "6 Aufgaben: Encode/Decode, BPE mit fester Mergetabelle, learn_merges als Final Boss",
+      "evidence": "Encode/Decode-Round-Trip und feste Mergetabelle stimmen exakt",
+      "gate": {
+        "gateId": "w23-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w15",
+            "skillId": "c-ml-ensembles"
+          },
+          {
+            "weekId": "w19",
+            "skillId": "c-dl-autograd"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w23-u1",
+          "title": "Tokenisierung und Modellfamilien",
+          "competencyId": "c-dl-tokenizer",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "hf-tokenizers-docs",
+              "locator": "Tokenizers-Dokumentation — Summary der Verfahren",
+              "role": "primary"
+            },
+            {
+              "sourceId": "hf-transformers-docs",
+              "locator": "Tokenizer Summary (Encoder/Decoder-Familien)",
+              "role": "practice"
+            },
+            {
+              "sourceId": "arxiv-bert-2018",
+              "locator": "BERT-Abstract — nur Lektüre/Link",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w23-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-tokenizer",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w23-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-tokenizer",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w24",
+      "number": 24,
+      "phaseId": "p6",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Pipeline und Modellinferenz",
+      "goals": [
+        "eine Toy-Inferenzpipeline aus Tokenizer, Forward und Greedy-Decoding aufbauen",
+        "Fixtur-Gewichte als Literale verwenden und feste Outputs prüfen",
+        "Determinismus durch Seeds und Doppelaufruf-Tests absichern",
+        "die Grenze zu echter LLM-Inferenz klar benennen"
+      ],
+      "task": "6 Aufgaben: Greedy-Decoding, Toy-Forward mit Fixtur-Gewichten, Pipeline als Final Boss",
+      "evidence": "Toy-Pipeline liefert feste Outputs deterministisch",
+      "gate": {
+        "gateId": "w24-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w16",
+            "skillId": "c-ml-svm-pca"
+          },
+          {
+            "weekId": "w20",
+            "skillId": "c-dl-training"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w24-u1",
+          "title": "Toy-Modell-Inferenzpipeline",
+          "competencyId": "c-dl-inference",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "karpathy-nanogpt",
+              "locator": "nanoGPT — minimale Trainings-/Inferenz-Pipeline (Lektüre)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "hf-transformers-docs",
+              "locator": "Generation Strategies — Greedy Decoding",
+              "role": "reference"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "numpy.argmax — Achsenvertrag",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w24-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-inference",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w24-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-inference",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w25",
+      "number": 25,
+      "phaseId": "p6",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Fine-Tuning-Konzept und Evaluation",
+      "goals": [
+        "Fine-Tuning, Feature Extraction und LoRA vergleichen",
+        "LoRA-Parameterzahlen mit Delta W = B·A exakt berechnen",
+        "Head-only-Feinabstimmung an einem Toy-Modell ausführen",
+        "Experimentdesign gegen Confounds prüfen",
+        "Ressourcen-Realität ehrlich protokollieren"
+      ],
+      "task": "6 Aufgaben: LoRA-Arithmetik, Freeze-Logik, Head-only-FT, Experimentdesign",
+      "evidence": "LoRA-Zahlen exakt; eingefrorene Gewichte unverändert (Checksumme)",
+      "gate": {
+        "gateId": "w25-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w17",
+            "skillId": "c-ml-repro"
+          },
+          {
+            "weekId": "w21",
+            "skillId": "c-dl-regularization"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w25-u1",
+          "title": "Fine-Tuning-Konzepte und LoRA",
+          "competencyId": "c-dl-finetuning",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "arxiv-lora-2021",
+              "locator": "LoRA-Abstract und Abschnitt 3 — nur Lektüre/Link",
+              "role": "primary"
+            },
+            {
+              "sourceId": "hf-transformers-docs",
+              "locator": "Training-/Adaptionsübersicht (Lektüre)",
+              "role": "practice"
+            },
+            {
+              "sourceId": "model-cards-paper",
+              "locator": "Model Cards — ehrliches Berichten von Bewertungszahlen",
+              "role": "reference"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "NumPy absolute basics — Matrixoperationen",
+              "role": "reference"
+            }
+          ]
+        },
+        {
+          "unitId": "w25-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-finetuning",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w25-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-finetuning",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w26",
+      "number": 26,
+      "phaseId": "p6",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Paper-Synthese und Demo",
+      "goals": [
+        "Forschungsfrage, Methode, Datensatz und Limitationen strukturieren",
+        "Claims der Evidenz zuordnen",
+        "relative von absoluter Verbesserung unterscheiden",
+        "mehrere Papers anhand von Abstract-Fakten vergleichen",
+        "Paperkarten als Arbeitsevidenz, nicht als Mastery, einordnen"
+      ],
+      "task": "6 Aufgaben: Claim-Evidence-Matching, Metrikberechnung, Evidence-Tabelle als Final Boss",
+      "evidence": "Claim-Evidence-Zuordnungen und Metriken stimmen exakt",
+      "gate": {
+        "gateId": "w26-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w18",
+            "skillId": "c-dl-tensors"
+          },
+          {
+            "weekId": "w22",
+            "skillId": "c-dl-attention"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w26-u1",
+          "title": "Paper kritisch synthetisieren",
+          "competencyId": "c-dl-papers",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "arxiv-attention-2017",
+              "locator": "Abstract — BLEU-Zahlen EN-DE/EN-FR (nur Lektüre/Link)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "arxiv-bert-2018",
+              "locator": "Abstract — GLUE/MultiNLI/SQuAD-Zahlen (nur Lektüre/Link)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "arxiv-gpt3-2020",
+              "locator": "Abstract — 175B-Parameter, Few-shot ohne Fine-Tuning (nur Lektüre/Link)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "arxiv-lora-2021",
+              "locator": "Abstract — 10.000×/3×-Einsparungen (nur Lektüre/Link)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "arxiv-rag-2020",
+              "locator": "Abstract — parametrischer plus nicht-parametrischer Speicher (nur Lektüre/Link)",
+              "role": "reference"
+            },
+            {
+              "sourceId": "pytorch-repro-notes",
+              "locator": "Reproducibility-Notes — Seed-/Nondeterminismus-Quellen",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w26-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-dl-papers",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w26-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-dl-papers",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w27",
+      "number": 27,
+      "phaseId": "p7",
+      "minutes": 600,
+      "detailed": true,
+      "title": "RAG-Baseline",
+      "goals": [
+        "Chunking mit Größe und Overlap umsetzen",
+        "einen lexikalischen Index deterministisch aufbauen",
+        "top-k-Retrieval von der Antwortbildung trennen",
+        "Recall@k gegen ein festes Golden Set messen",
+        "Normalisierung als festen Vertrag spezifizieren"
+      ],
+      "task": "6 Aufgaben: Chunking, TF-IDF/Cosine, Recall@k, Retrieval-System als Final Boss",
+      "evidence": "Recall@k gegen Golden Set reproduzierbar",
+      "gate": {
+        "gateId": "w27-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w19",
+            "skillId": "c-dl-autograd"
+          },
+          {
+            "weekId": "w23",
+            "skillId": "c-dl-tokenizer"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w27-u1",
+          "title": "RAG-Retrieval messbar machen",
+          "competencyId": "c-genai-rag",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "arxiv-rag-2020",
+              "locator": "Lewis et al. 2020, Retrieval-Augmented Generation — nur Verlinkung und Zitation",
+              "role": "primary"
+            },
+            {
+              "sourceId": "iir-book-ch8",
+              "locator": "Kap. 8 Evaluation in IR — Metrik-Formeln als eigene Mathematik dargestellt",
+              "role": "reference"
+            },
+            {
+              "sourceId": "craswell-mrr-2009",
+              "locator": "Mean Reciprocal Rank (Enzyklopädieeintrag) — nur Zitation",
+              "role": "reference"
+            },
+            {
+              "sourceId": "numpy-docs",
+              "locator": "NumPy absolute basics — Vektorisierung der TF-IDF-Matrix",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w27-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-genai-rag",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w27-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-genai-rag",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w28",
+      "number": 28,
+      "phaseId": "p7",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Antwort-Evaluation",
+      "goals": [
+        "feste Evaluationsfragen mit Gold-Antworten entwerfen",
+        "eine geschlossene Fehlertaxonomie anwenden",
+        "Retrievalfehler von Antwortfehlern trennen",
+        "deterministische Metriken exakt berechnen",
+        "LLM-Judge-Verzerrungen als Kritikthema einordnen"
+      ],
+      "task": "6 Aufgaben: Fehlertaxonomie, Zitat-Precision, Regelwerk-Evaluator als Final Boss",
+      "evidence": "Metriken und Regelwerk-Klassifikation exakt",
+      "gate": {
+        "gateId": "w28-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w20",
+            "skillId": "c-dl-training"
+          },
+          {
+            "weekId": "w24",
+            "skillId": "c-dl-inference"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w28-u1",
+          "title": "Evaluation ohne LLM-Grader",
+          "competencyId": "c-genai-eval",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "iir-book-ch8",
+              "locator": "Kap. 8 Evaluation in IR — Precision/Recall als eigene Mathematik mit Zitation",
+              "role": "primary"
+            },
+            {
+              "sourceId": "sklearn-user-guide",
+              "locator": "Model Evaluation: precision_recall_fscore — nur Lektüre der Metrik-Definitionen",
+              "role": "practice"
+            },
+            {
+              "sourceId": "ragas-docs",
+              "locator": "RAGAS-Doku — LLM-getriebene Metriken, ausdrücklich kein autoritativer Grader, nur Lektüre",
+              "role": "reference"
+            },
+            {
+              "sourceId": "model-cards-paper",
+              "locator": "Mitchell et al. 2019, Model Cards — Berichtsrahmen für Evaluation",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w28-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-genai-eval",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w28-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-genai-eval",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w29",
+      "number": 29,
+      "phaseId": "p7",
+      "minutes": 600,
+      "detailed": true,
+      "title": "OWASP-Sicherheitsreview",
+      "goals": [
+        "Prompt-Injection-Beispiele regelbasiert klassifizieren",
+        "Datenabflusskanäle und Vertrauensgrenzen skizzieren",
+        "Toolberechtigungen nach Least Privilege prüfen",
+        "Bedrohungen auf OWASP-GenAI-Kategorien mappen (nur Verlinkung)",
+        "Security-Regressionstests formulieren"
+      ],
+      "task": "6 Aufgaben: Injektions-Klassifikation, Berechtigungsprüfung, Detektor-Kombination als Final Boss",
+      "evidence": "Detektoren bestehen Precision-/Recall-Schwellwerte auf gelabelten Fixtures",
+      "gate": {
+        "gateId": "w29-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w21",
+            "skillId": "c-dl-regularization"
+          },
+          {
+            "weekId": "w25",
+            "skillId": "c-dl-finetuning"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w29-u1",
+          "title": "Defensive GenAI-Sicherheit",
+          "competencyId": "c-genai-security",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "owasp-genai-llm-top10",
+              "locator": "OWASP Top 10 for LLM and Generative AI Applications — nur Verlinkung und Paraphrase in Eigentext (CC BY-SA)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "mitre-atlas",
+              "locator": "MITRE ATLAS — Taktiken/Techniken für KI-Systeme, Daten Apache-2.0",
+              "role": "reference"
+            },
+            {
+              "sourceId": "nist-airmf",
+              "locator": "NIST AI RMF — Funktion Govern/Map für KI-Risiken",
+              "role": "reference"
+            },
+            {
+              "sourceId": "openai-cookbook",
+              "locator": "OpenAI Cookbook — praktische Muster für Eingabefilterung (MIT)",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w29-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-genai-security",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w29-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-genai-security",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w30",
+      "number": 30,
+      "phaseId": "p7",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Sicherer Prototyp",
+      "goals": [
+        "einen minimalen Prototyp aus Retrieval, Evaluation und Kontrolle integrieren",
+        "erlaubte und verbotene Aktionen maschinell durchsetzen",
+        "nachvollziehbare Fehlerzustände implementieren",
+        "ein Threat Model dokumentieren",
+        "die Grenze zu einem produktiven LLM-System benennen"
+      ],
+      "task": "6 Aufgaben: Prototyp mit Stub-Generator, Audit, Ablation; lokales Runner-Projekt",
+      "evidence": "Prototyp-Tests grün; verbotene Aktionen werden abgelehnt",
+      "gate": {
+        "gateId": "w30-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w22",
+            "skillId": "c-dl-attention"
+          },
+          {
+            "weekId": "w26",
+            "skillId": "c-dl-papers"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w30-u1",
+          "title": "Abgesicherter Prototyp",
+          "competencyId": "c-genai-prototype",
+          "minutes": 90,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "nist-airmf",
+              "locator": "NIST AI RMF — Measure/Manage: Kontrollen messen, bevor man ihnen vertraut",
+              "role": "primary"
+            },
+            {
+              "sourceId": "owasp-genai-llm-top10",
+              "locator": "OWASP Top 10 for LLM and GenAI Applications — nur Verlinkung und Paraphrase (CC BY-SA)",
+              "role": "reference"
+            },
+            {
+              "sourceId": "openai-cookbook",
+              "locator": "OpenAI Cookbook — Muster für abgesicherte Assistenten-Pipelines (MIT)",
+              "role": "practice"
+            },
+            {
+              "sourceId": "model-cards-paper",
+              "locator": "Model Cards — dokumentierte Grenzen als Berichtsform",
+              "role": "practice"
+            }
+          ]
+        },
+        {
+          "unitId": "w30-u2",
+          "title": "Geleitete und unabhängige Praxis",
+          "competencyId": "c-genai-prototype",
+          "minutes": 240,
+          "type": "praxis",
+          "sources": []
+        },
+        {
+          "unitId": "w30-u3",
+          "title": "Final Boss der Woche",
+          "competencyId": "c-genai-prototype",
+          "minutes": 120,
+          "type": "praxis",
+          "sources": []
+        }
+      ]
+    },
+    {
+      "weekId": "w31",
+      "number": 31,
+      "phaseId": "p8",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Forschungsfrage und Protokoll",
+      "goals": [
+        "prüfbare Forschungsfragen von unprüfbaren unterscheiden (operationale Metrik und Vergleichsbedingung)",
+        "Hypothesen als gerichtete Behauptung mit unabhängiger und abhängiger Variable formulieren",
+        "Baseline, feste Metrik und Abbruchregel vor dem Hauptlauf festlegen",
+        "Preregistrierung (experiment.md plus strukturiertes Protokoll) vor dem Hauptlauf einfrieren",
+        "Zielverschiebungen nach dem Freeze deterministisch erkennen (Goal-Shift-Flags)"
+      ],
+      "task": "Preregistrierung des Capstone-Experiments vor dem Hauptlauf",
+      "evidence": "experiment.md mit Prereg-JSON und Goal-Shift-Checker (deterministisch geprüft)",
+      "gate": {
+        "gateId": "w31-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w23",
+            "skillId": "c-dl-tokenizer"
+          },
+          {
+            "weekId": "w27",
+            "skillId": "c-genai-rag"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w31-u1",
+          "title": "Forschungsfrage, Hypothese und Falsifizierbarkeit",
+          "competencyId": "c-research-question",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "cos-prereg",
+              "locator": "Preregistration — specifying your research plan in advance of your study",
+              "role": "primary"
+            },
+            {
+              "sourceId": "stanford-encyclopedia-popper",
+              "locator": "Eintrag Karl Popper — Abschnitte zu Falsifikation",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w31-e1"
+          ]
+        },
+        {
+          "unitId": "w31-u2",
+          "title": "Protokoll, Metrik, Baseline und Abbruchregel",
+          "competencyId": "c-research-question",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "jhangiani-research-methods",
+              "locator": "Generating Good Research Questions; Developing a Hypothesis",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w31-e2",
+            "w31-e3",
+            "w31-e4",
+            "w31-e5"
+          ]
+        },
+        {
+          "unitId": "w31-u3",
+          "title": "Prereg-Validator und Goal-Shift-Erkennung",
+          "competencyId": "c-research-question",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "neurips-paper-checklist",
+              "locator": "Checkliste — Begründungspflicht für Abweichungen",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w31-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w32",
+      "number": 32,
+      "phaseId": "p8",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Daten-, Modell- und Systemkarte",
+      "goals": [
+        "Data-, Model- und System Cards als Verträge mit prüfbaren Pflichtfeldern erfassen",
+        "Herkunft, Version, erlaubte Nutzung, Datenaufteilung und Evaluationsrahmen maschinenlesbar dokumentieren",
+        "Konsistenz zwischen Karte, Protokoll und Pipeline deterministisch prüfen",
+        "vertrauliche Werte in Karten zuverlässig ausschließen (Muster-Scan)"
+      ],
+      "task": "Drei Karten für den Capstone-Prototyp mit Validator schreiben",
+      "evidence": "Karten-Tripel plus Konsistenzbericht (deterministisch geprüft)",
+      "gate": {
+        "gateId": "w32-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w24",
+            "skillId": "c-dl-inference"
+          },
+          {
+            "weekId": "w28",
+            "skillId": "c-genai-eval"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w32-u1",
+          "title": "Karten als Vertrag: Datasheets, Data Cards, Model Cards",
+          "competencyId": "c-research-cards",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "datasheets-for-datasets",
+              "locator": "Fragenkatalog des Datasheets-Papers (v8, 2021)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "data-cards-playbook",
+              "locator": "Data-Card-Template — Stakeholders, Facts, Questions",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w32-e1"
+          ]
+        },
+        {
+          "unitId": "w32-u2",
+          "title": "Pflichtfeld- und Konsistenzvalidator",
+          "competencyId": "c-research-cards",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "hf-model-cards-docs",
+              "locator": "Model Cards — Struktur und Metadaten (license-Feld)",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w32-e2",
+            "w32-e3",
+            "w32-e4",
+            "w32-e5"
+          ]
+        },
+        {
+          "unitId": "w32-u3",
+          "title": "System Cards und Grenzen der Aussage",
+          "competencyId": "c-research-cards",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "gpt4-system-card",
+              "locator": "System Card — Limitations, Risk and Mitigations",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w32-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w33",
+      "number": 33,
+      "phaseId": "p8",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Responsible AI und Betrieb",
+      "goals": [
+        "Subgruppenmetriken (Selection Rate und FPR je Gruppe) exakt berechnen und Differenzen interpretieren",
+        "Schwellenwerte im Paritäts-Nutzen-Trade-off mit fester Regelordnung wählen",
+        "Betriebskosten und Ressourcenverbrauch mit fester Preistabelle berechnen",
+        "Missbrauchsrisiken benennen, Schutzmaßnahmen priorisieren und Restrisiken ausweisen (Risk Register bleibt Arbeitsevidenz)"
+      ],
+      "task": "Subgruppen-, Kosten- und Risikoanalyse des Capstone-Prototyps",
+      "evidence": "responsible_report mit Subgruppen-, Schwellen- und Kostenwerten (deterministisch geprüft); Risk Register als nicht bindende Arbeitsevidenz",
+      "gate": {
+        "gateId": "w33-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w25",
+            "skillId": "c-dl-finetuning"
+          },
+          {
+            "weekId": "w29",
+            "skillId": "c-genai-security"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w33-u1",
+          "title": "Subgruppenmetriken und Paritätsbänder",
+          "competencyId": "c-research-responsible",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "fairlearn",
+              "locator": "Guides — Assessment: demographic parity, equalized odds",
+              "role": "primary"
+            },
+            {
+              "sourceId": "fairmlbook",
+              "locator": "Kapitel Classification — group fairness",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w33-e1"
+          ]
+        },
+        {
+          "unitId": "w33-u2",
+          "title": "Schwellensweep und Betriebskosten",
+          "competencyId": "c-research-responsible",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "aequitas-toolkit",
+              "locator": "Bias Report — FPR-Parity und weitere Gruppenmetriken",
+              "role": "practice"
+            },
+            {
+              "sourceId": "strubell-energy",
+              "locator": "Kosten- und Energieabschätzungen für NLP-Systeme",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w33-e2",
+            "w33-e3",
+            "w33-e4",
+            "w33-e5"
+          ]
+        },
+        {
+          "unitId": "w33-u3",
+          "title": "Risikopriorisierung und Restrisiko",
+          "competencyId": "c-research-responsible",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "stanford-ai-index-2025",
+              "locator": "Report-Highlights — Estimates of inference costs",
+              "role": "practice"
+            },
+            {
+              "sourceId": "patterson-carbon",
+              "locator": "Carbon-Emissions-Ansatz und Rechenweg",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w33-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w34",
+      "number": 34,
+      "phaseId": "p8",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Capstone-Baseline",
+      "goals": [
+        "festes Ziel aus der Forschungsfrage in einen kleinen End-to-End-Lauf übersetzen",
+        "deterministisches Golden Set einfrieren und per Hash unveränderlich machen",
+        "Baselinewerte erheben, reproduzierbar konfigurieren (Seeds, Versionen) und doppelt laufen lassen",
+        "Fehlerliste nach Retrieval-/Antwort-Taxonomie führen und die Baseline-Berichterstattung abschließen (Phase 1 des Capstones folgt in Woche 35)"
+      ],
+      "task": "Capstone-Baseline mit eingefrorenem Golden Set und Fehlerliste",
+      "evidence": "baseline_report als nicht bindende Arbeitsevidenz plus bestandene Browser-Aufgaben w34-e2 bis w34-e6 (deterministisch bewertet)",
+      "gate": {
+        "gateId": "w34-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w26",
+            "skillId": "c-dl-papers"
+          },
+          {
+            "weekId": "w30",
+            "skillId": "c-genai-prototype"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w34-u1",
+          "title": "Baseline-Prinzip und Golden Set",
+          "competencyId": "c-research-capstone",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "helm-leaderboard",
+              "locator": "Leaderboard — Szenarien, Metriken, Adaptationen",
+              "role": "primary"
+            },
+            {
+              "sourceId": "helm-paper",
+              "locator": "Taxonomie: Szenarien × Metriken × Adaptation",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w34-e1"
+          ]
+        },
+        {
+          "unitId": "w34-u2",
+          "title": "Reproduktion, Fehlerliste, getrennte Fehlerraten",
+          "competencyId": "c-research-capstone",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "lm-evaluation-harness",
+              "locator": "Task-Definitionen als Evaluationsprotokoll-Vorlage",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w34-e2",
+            "w34-e3",
+            "w34-e4",
+            "w34-e5"
+          ]
+        },
+        {
+          "unitId": "w34-u3",
+          "title": "Projektphase 1: Baseline-Checkpoint",
+          "competencyId": "c-research-capstone",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "acm-artifact-badging",
+              "locator": "Badge-Definitionen — Available, Functional, Reproduced",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w34-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w35",
+      "number": 35,
+      "phaseId": "p9",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Scope einfrieren, Pipeline, Baseline",
+      "goals": [
+        "den Capstone-Scope als Manifest mit Hashes einfrieren und Änderungen danach erkennbar machen",
+        "Datenfluss als Stages mit definierten Ein- und Ausgaben deklarieren",
+        "Seeds und Konfiguration zentral und versioniert halten",
+        "Topologische Ordnung und Zyklusfreiheit der Pipeline deterministisch prüfen"
+      ],
+      "task": "Capstone-Pipeline mit Manifest und IO-Verträgen aufbauen (Phase w35-scope)",
+      "evidence": "bestandene Phase test_w35_scope im lokalen Projekt (capstone-cp1)",
+      "gate": {
+        "gateId": "w35-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w27",
+            "skillId": "c-genai-rag"
+          },
+          {
+            "weekId": "w31",
+            "skillId": "c-research-question",
+            "note": "Zielwoche ausgearbeitet (ADR-0014); neue Seeds je Wiederholung"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w35-u1",
+          "title": "Scope-Freeze und Manifest-Vertrag",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "cookiecutter-data-science",
+              "locator": "Directory-Layout — Daten, Quellen, Ergebnisse getrennt",
+              "role": "primary"
+            },
+            {
+              "sourceId": "wilson-good-enough",
+              "locator": "Regeln zu Data und Software — Benennung, Licenses, Nachvollziehbarkeit",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w35-e1"
+          ]
+        },
+        {
+          "unitId": "w35-u2",
+          "title": "Pipeline-Stages, IO-Verträge, Topo-Ordnung",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "turing-way",
+              "locator": "Handbook — Reproducible Research: Pipelines und Versionierung",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w35-e2",
+            "w35-e3",
+            "w35-e4",
+            "w35-e5"
+          ]
+        },
+        {
+          "unitId": "w35-u3",
+          "title": "Projektphase w35-scope",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "turing-way",
+              "locator": "Handbook — Version Control und Reproducible Environments",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w35-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w36",
+      "number": 36,
+      "phaseId": "p9",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Hauptfunktion, Integrationstests",
+      "goals": [
+        "die Hauptfunktion des Capstones fertigstellen und Stages integrationssicher verdrahten",
+        "Integrationsverträge zwischen Stages erzwingen (Typen, Schlüssel, Reihenfolge)",
+        "Fehlerzustände und Timeouts deterministisch mit virtueller Uhr testen",
+        "stille Fallbacks ausschließen — erwartete Fehler müssen sichtbar bleiben"
+      ],
+      "task": "Capstone-Hauptfunktion mit Integrationssuite (Phase w36-integration)",
+      "evidence": "bestandene Phase test_w36_pipeline im lokalen Projekt (capstone-cp2)",
+      "gate": {
+        "gateId": "w36-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w28",
+            "skillId": "c-genai-eval"
+          },
+          {
+            "weekId": "w32",
+            "skillId": "c-research-cards",
+            "note": "Zielwoche ausgearbeitet (ADR-0014); neue Seeds je Wiederholung"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w36-u1",
+          "title": "Integrationsverträge und Fehlerzustände",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "wilson-good-enough",
+              "locator": "Regeln zu Software — Tests als Teil der Arbeit, nicht Anhängsel",
+              "role": "primary"
+            }
+          ],
+          "unitExerciseIds": [
+            "w36-e1"
+          ]
+        },
+        {
+          "unitId": "w36-u2",
+          "title": "Timeouts mit virtueller Uhr, keine stillen Fallbacks",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "turing-way",
+              "locator": "Handbook — Testing und robuste Pipelines",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w36-e2",
+            "w36-e3",
+            "w36-e4",
+            "w36-e5"
+          ]
+        },
+        {
+          "unitId": "w36-u3",
+          "title": "Projektphase w36-integration",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "cookiecutter-data-science",
+              "locator": "Project-Struktur — src-Layout und Trennung von Tests",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w36-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w37",
+      "number": 37,
+      "phaseId": "p9",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Feste Evaluation, Red-Team",
+      "goals": [
+        "das Golden Set per Hash als unverändert nachweisen und nach Ergebnisänderungen sperren",
+        "Retrievalfehler von Antwortfehlern getrennt ausweisen",
+        "Subgruppen- und Sicherheitsfälle in die feste Evaluation einbauen",
+        "Angriffe ausschließlich gegen den eigenen Toy-Prototyp fahren und Regressionen gegen die W34-Baseline dokumentieren"
+      ],
+      "task": "Feste Evaluation mit defensivem Red-Team (Phase w37-eval-redteam)",
+      "evidence": "bestandene Phase test_w37_eval_redteam im lokalen Projekt (capstone-cp3)",
+      "gate": {
+        "gateId": "w37-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w29",
+            "skillId": "c-genai-security"
+          },
+          {
+            "weekId": "w33",
+            "skillId": "c-research-responsible",
+            "note": "Zielwoche ausgearbeitet (ADR-0014); neue Seeds je Wiederholung"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w37-u1",
+          "title": "Feste Evaluation und Hypothesen-Verdikte",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "helm-paper",
+              "locator": "Evaluation — Metriken vor der Messung festlegen",
+              "role": "primary"
+            }
+          ],
+          "unitExerciseIds": [
+            "w37-e1"
+          ]
+        },
+        {
+          "unitId": "w37-u2",
+          "title": "Defensives Red-Team gegen den eigenen Prototyp",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "fairlearn",
+              "locator": "Guides — Assessment: Subgruppenberichte als Teil der Evaluation",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w37-e2",
+            "w37-e3",
+            "w37-e4",
+            "w37-e5"
+          ]
+        },
+        {
+          "unitId": "w37-u3",
+          "title": "Projektphase w37-eval-redteam",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "sandve-repro-rules",
+              "locator": "Rule 1 — keep track of how every result was produced",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w37-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w38",
+      "number": 38,
+      "phaseId": "p9",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Reproduktion, README, Karten",
+      "goals": [
+        "einen frischen lokalen Lauf in sauberem Verzeichnis nachweisen (Doppellauf, Digest-Vergleich)",
+        "README mit Setup, gepinnten Abhängigkeiten, Konfiguration, Karten, Limitations und bekannten Fehlern schreiben",
+        "Overclaims deterministisch erkennen und entfernen",
+        "nicht als produktives LLM-System ausgeben — Grenzen ehrlich benennen"
+      ],
+      "task": "Reproduktionslauf und vollständiges Doku-Paket (Phase w38-repro)",
+      "evidence": "bestandene Phase test_w38_repro im lokalen Projekt (capstone-cp4)",
+      "gate": {
+        "gateId": "w38-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w30",
+            "skillId": "c-genai-prototype"
+          },
+          {
+            "weekId": "w34",
+            "skillId": "c-research-capstone",
+            "note": "Zielwoche ausgearbeitet (ADR-0014); neue Seeds je Wiederholung"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w38-u1",
+          "title": "Reproduktion als Vertrag: frischer Lauf, Digests",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "sandve-repro-rules",
+              "locator": "Ten Simple Rules for Reproducible Computational Research (Rule 1-10)",
+              "role": "primary"
+            },
+            {
+              "sourceId": "acm-artifact-badging",
+              "locator": "Results Reproduced / Results Validated — Anforderungen",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w38-e1"
+          ]
+        },
+        {
+          "unitId": "w38-u2",
+          "title": "README-Pflichten und Overclaim-Detektor",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "wilson-good-enough",
+              "locator": "Regeln zu Collaboration — Dokumentation und Publikationsfähigkeit",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w38-e2",
+            "w38-e3",
+            "w38-e4",
+            "w38-e5"
+          ]
+        },
+        {
+          "unitId": "w38-u3",
+          "title": "Projektphase w38-repro",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "cookiecutter-data-science",
+              "locator": "README- und LICENSE-Anforderungen der Projektvorlage",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w38-e6"
+          ]
+        }
+      ]
+    },
+    {
+      "weekId": "w39",
+      "number": 39,
+      "phaseId": "p9",
+      "minutes": 600,
+      "detailed": true,
+      "title": "Demo, Abschlussdiagnose, Retrospektive",
+      "goals": [
+        "eine fünfminütige Demo ausschließlich aus vorher festgelegten Messwerten bestücken",
+        "Abschlussdiagnose aus Evidenz-Events ableiten (Treffer, Definitionen, Abstände, Ausschlüsse)",
+        "einen Acceptance-Report über alle Capstone-Verträge erzeugen",
+        "Retrospektive und nächste Lernziele formulieren — Demo und Retrospektive bleiben Arbeitsevidenz, nie Mastery"
+      ],
+      "task": "Abschlusswoche: Demo aus festen Messwerten, Diagnose, Retrospektive (Phase w39-artifacts)",
+      "evidence": "acceptance_report (deterministisch) plus Demo und Retrospektive als nicht bindende Arbeitsevidenz",
+      "gate": {
+        "gateId": "w39-gate",
+        "title": "Kumulativer Gate-Anteil (ab Woche 9, LM-R2)",
+        "criteria": [
+          "Zwei Belegaufgaben aus Vorwochen (Lag +4 und +8 Wochen) mit neuen Seeds lösen",
+          "Kumulative Rückgriffe erhalten neue Seeds (Autoringregel der W6-Pipeline; Auswahl über skillIds)"
+        ],
+        "cumulativeExerciseRefs": [
+          {
+            "weekId": "w31",
+            "skillId": "c-research-question",
+            "note": "Zielwoche ausgearbeitet (ADR-0014); neue Seeds je Wiederholung"
+          },
+          {
+            "weekId": "w35",
+            "skillId": "c-capstone-pipeline",
+            "note": "Zielwoche ausgearbeitet (ADR-0014); neue Seeds je Wiederholung"
+          }
+        ]
+      },
+      "learningUnits": [
+        {
+          "unitId": "w39-u1",
+          "title": "Demo aus Messwerten, ehrliche Ergebnisdarstellung",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 150,
+          "type": "konzept",
+          "sources": [
+            {
+              "sourceId": "kass-statistical-practice",
+              "locator": "Rules zu Zahlen, Unsicherheit und Overclaims",
+              "role": "primary"
+            },
+            {
+              "sourceId": "rougier-figures",
+              "locator": "Rule 1 Know Your Audience — Zielgruppengerechte Darstellung",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w39-e1"
+          ]
+        },
+        {
+          "unitId": "w39-u2",
+          "title": "Abschlussdiagnose und Acceptance-Report",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 210,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "acm-artifact-badging",
+              "locator": "Eröffnungssatz — „not fully established unless it can be independently reproduced“",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w39-e2",
+            "w39-e3",
+            "w39-e4",
+            "w39-e5"
+          ]
+        },
+        {
+          "unitId": "w39-u3",
+          "title": "Projektphase w39-artifacts und Retrospektive",
+          "competencyId": "c-capstone-pipeline",
+          "minutes": 240,
+          "type": "coding",
+          "sources": [
+            {
+              "sourceId": "turing-way",
+              "locator": "Handbook — Retrospektiven und Projektabschlüsse",
+              "role": "practice"
+            }
+          ],
+          "unitExerciseIds": [
+            "w39-e6"
+          ]
+        }
+      ]
+    }
+  ]
+}

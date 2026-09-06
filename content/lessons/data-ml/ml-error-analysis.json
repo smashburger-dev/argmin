@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-error-analysis",
+  "version": 1,
+  "locale": "de",
+  "title": "Fehleranalyse nach Teilgruppen und Modellkarten",
+  "objectives": [
+    "Fehlerraten je Teilgruppe berechnen und die größte Lücke in Prozentpunkten angeben",
+    "Fehlertypen unterscheiden: Label-Noise, systematischer Subgruppenfehler und Drift",
+    "eine Modellkarte mit intended use, Metriken pro Gruppe und Grenzen ohne Overclaims formulieren"
+  ],
+  "competencyIds": ["c-ml-erroranalysis"],
+  "requires": ["c-ml-cv"],
+  "estimatedMinutes": 50,
+  "blocks": [
+    { "blockId": "ml-error-analysis-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-error-analysis.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "model-cards-paper", "role": "primary", "locator": "Model Cards for Model Reporting, FAT* 2019 (arXiv:1810.03993)" },
+    { "sourceId": "devries-ml", "role": "practice", "locator": "Kapitel Modellbewertung" },
+    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Classification metrics / Controlling randomness — nur Lektüre" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

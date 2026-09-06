@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-foundations-code-reading",
+  "version": 1,
+  "locale": "de",
+  "title": "Code Zeile für Zeile tracen",
+  "description": "Ausgaben vorhersagen ohne auszuführen: Slices, Comprehensions und zusammengesetzte Aufrufe.",
+  "competencyIds": [
+    "c-python-reading"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-foundations-code-reading"
+  ],
+  "placements": [
+    {
+      "placementId": "p-foundations-code-reading-slice-predict-output",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "slice-predict-output",
+      "seed": 5,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-code-reading",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-code-reading-comprehension-predict",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "comprehension-predict",
+      "seed": 9,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-code-reading",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-code-reading-trace-assignment-state-practice",
+      "role": "practice-space",
+      "familyId": "trace-assignment-state",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-code-reading-both-orders-linear-functions",
+      "role": "curated",
+      "familyId": "trace-call-composition",
+      "caseId": "both-orders-linear-functions",
+      "seed": 13,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-code-reading",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-code-reading-trace-call-composition-practice",
+      "role": "practice-space",
+      "familyId": "trace-call-composition",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

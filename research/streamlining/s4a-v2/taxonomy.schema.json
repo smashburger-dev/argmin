@@ -1,0 +1,782 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ki-lernplattform.local/research/streamlining/s4a-v2/taxonomy.schema.json",
+  "title": "S4A-v2 deep family taxonomy shard",
+  "description": "Maschinenlesbarer Vertrag fuer S4A-v2-Shards nach dem Hybrid aus design/design-comparison.md Abschnitt 3: orthogonale Achsen (CompetencyClaim, FamilyGroup, CognitiveFamily, TaskArchetype, CaseTemplate, DifficultyProfile, Placement) mit kognitiv konsolidierter Familiendefinition. Zwei Entry-Formen (QTI-Analogie Item vs. Section/Test, nur als Modellanalogie): atomic-case mit genau einer CognitiveFamily und einem CaseTemplate; composite-placement als geordnete Komposition atomarer CaseTemplates mit Sequenz-, Teilscore- oder Synthesevertrag. Jeder Shard deckt genau eine Domain der 268 Baseline-Definitionen (Commit 1998d57) ab. Der Assembler assemble-v2.mjs erzwingt zusaetzlich die Kreuzpruefung gegen die v1-Inputs, die Archetyp-Registry archetypes.json, die Familien-Registry canonical-families.json und content/competencies/core.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "shardId",
+    "baselineCommit",
+    "entries"
+  ],
+  "properties": {
+    "shardId": {
+      "description": "Domain-Identifikator des Shards; muss zum Dateinamen <domain>.json passen.",
+      "enum": [
+        "foundations",
+        "linear-algebra",
+        "data-ml",
+        "deep-learning",
+        "transformer-llm",
+        "genai-systems",
+        "research-capstone"
+      ]
+    },
+    "baselineCommit": {
+      "description": "Baseline der 268 Quelldefinitionen inklusive des spaeter retired w05-e7.",
+      "const": "1998d57"
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  },
+  "$defs": {
+    "kebabCase": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "disposition": {
+      "description": "Die acht Dispositionen aus docs/idle-task-pre-s2b-integration.md Abschnitt 6.",
+      "enum": [
+        "resolved-with-code-evidence",
+        "resolved-with-source-evidence",
+        "resolved-by-review-council",
+        "requires-noa-decision",
+        "requires-empirical-data",
+        "deferred-to-s4b",
+        "deferred-to-s4c",
+        "deferred-to-domain-migration"
+      ]
+    },
+    "resolvedDisposition": {
+      "enum": [
+        "resolved-with-code-evidence",
+        "resolved-with-source-evidence",
+        "resolved-by-review-council"
+      ]
+    },
+    "councilReviewRefRule": {
+      "description": "resolved-by-review-council darf nur mit Verweis auf einen existierenden unabhaengigen Reviewbericht vergeben werden (Assembler prueft Existenz und sourceId-Nennung).",
+      "type": "object",
+      "if": {
+        "type": "object",
+        "properties": {
+          "disposition": {
+            "const": "resolved-by-review-council"
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "required": [
+          "councilReviewRef"
+        ],
+        "properties": {
+          "councilReviewRef": {
+            "description": "Pfad relativ zu research/streamlining/s4a-v2/, z. B. reviews/foundations-review.md.",
+            "type": "string",
+            "pattern": "^reviews/[a-z0-9-]+\\.md$"
+          }
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "sourceKind",
+        "legacyWeekId",
+        "currentDefinitionId",
+        "entryForm",
+        "competencyClaim",
+        "difficultyProfile",
+        "placement",
+        "persistence",
+        "humanReview",
+        "uncertaintyDispositions",
+        "feedbackDispositions"
+      ],
+      "properties": {
+        "sourceId": {
+          "description": "Historische Quell-ID aus der v1-Matrix (z. B. w05-e3 oder f-linalg-...); muss exakt der v1-Quellmenge entsprechen.",
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceKind": {
+          "enum": [
+            "legacy-week-exercise",
+            "canonical-definition"
+          ]
+        },
+        "legacyWeekId": {
+          "description": "Woche der Legacy-Shell oder null bei kanonischen Definitionen ohne Wochenbezug.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^w[0-9]{2}$"
+        },
+        "currentDefinitionId": {
+          "description": "Definitions-ID des aktuellen Contentbaums; bleibt Attempt-Schluessel und darf nie still fallen.",
+          "type": "string",
+          "minLength": 1
+        },
+        "entryForm": {
+          "description": "atomic-case: genau eine CognitiveFamily, ein TaskArchetype, ein CaseTemplate. composite-placement: geordnete Komposition atomarer CaseTemplates (QTI-Analogie Section/Test); keine eigene CognitiveFamily, keine erfundene Familie nur fuer die Aufnahme einer Sequenz.",
+          "enum": [
+            "atomic-case",
+            "composite-placement"
+          ]
+        },
+        "competencyClaim": {
+          "description": "ECD-Claim: primary Claim je Placement (S4B-Coverage fail-closed), coEvidence instrumental.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "primary",
+            "coEvidence"
+          ],
+          "properties": {
+            "primary": {
+              "description": "Kompetenz-ID aus content/competencies/core.json (Assembler erzwingt Existenz).",
+              "type": "string",
+              "minLength": 3
+            },
+            "coEvidence": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            }
+          }
+        },
+        "familyGroup": {
+          "description": "Grobe fachliche Grossfamilie (Strang, 11 Stueck, z. B. classify-concept, transform-formula, compute-metric, trace-state, design-pipeline). Nur fuer atomic-case. Domain ist Placement-, nie Familieneigenschaft.",
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "minLength": 3
+        },
+        "cognitiveFamily": {
+          "description": "Gemeinsamer Loesungsweg, Invarianten und Referenzmodell. Nur fuer atomic-case. familyId benennt nie die Familie-x-Archetyp-Kombination; einmal vergeben muss familyId sharduebergreifend identisch bleiben und zur Registry canonical-families.json passen (Assembler erzwingt familyGroup, summary und membershipEvidence uebereinstimmend).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "familyId",
+            "summary",
+            "membershipEvidence"
+          ],
+          "properties": {
+            "familyId": {
+              "$ref": "#/$defs/kebabCase"
+            },
+            "summary": {
+              "description": "Kurze Zusammenfassung des gemeinsamen Loesungs- und Denkvertrags (Deutsch erlaubt). Bei Registry-Familien zeichengetreu aus canonical-families.json uebernehmen.",
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 300
+            },
+            "membershipEvidence": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "solutionPath",
+                "referenceModel",
+                "errorHypotheses"
+              ],
+              "properties": {
+                "solutionPath": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "referenceModel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "errorHypotheses": {
+                  "description": "Mengen-identische Diagnoseachsen aller Familienmitglieder; mindestens eine Hypothese.",
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                }
+              }
+            }
+          }
+        },
+        "taskArchetype": {
+          "description": "Interaktions-/Grader-Achse aus der geschlossenen Registry archetypes.json (Assembler erzwingt Existenz, Status active und Graderadapter-Konsistenz). Nur fuer atomic-case. Orthogonal zur CognitiveFamily.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "archetypeId"
+          ],
+          "properties": {
+            "archetypeId": {
+              "type": "string",
+              "minLength": 3
+            }
+          }
+        },
+        "caseTemplate": {
+          "description": "Einziges Objekt, das familyId und archetypeId zusammen verknuepft; bindet genau einen GraderAdapter. Nur fuer atomic-case.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "caseId",
+            "graderAdapter",
+            "authorityMode"
+          ],
+          "properties": {
+            "caseId": {
+              "$ref": "#/$defs/kebabCase"
+            },
+            "graderAdapter": {
+              "enum": [
+                "deterministic",
+                "pyodide",
+                "pyodide-sympy",
+                "manual-rubric"
+              ]
+            },
+            "authorityMode": {
+              "description": "static: eingefrorene Instanz mit fixen Parametern oder erwarteter Antwort (auch wenn ein Referenz-Solver die Erwartung ueber die fixen Parameter berechnet oder hidden tests fixem Code pruefen; ein historisch eingebetteter Seed bleibt eingefroren). seeded: die Instanz wird zur Laufzeit aus einem Seed generiert (Generator-Autoritaet; entspricht v1 solverContract.kind=seed-generator). Kanonische Abbildung: seeded genau bei seed-generator, sonst static. Loest die sechs v1-familyContractVariants strukturell auf.",
+              "enum": [
+                "static",
+                "seeded"
+              ]
+            }
+          }
+        },
+        "compositePlacement": {
+          "description": "Nur fuer entryForm composite-placement: geordnete Komposition bestehender atomarer CaseTemplates plus Sequenz-, Teilscore- oder Synthesevertrag (z. B. w05-e7 als retired Numbas-Sequenz auf w05-e1/w05-e5/w05-e6). Keine Convenience-Form: ein Composite muss mehr sein als die Summe seiner Komponenten (echte Sequenz-, Teilscore- oder Syntheseforderung).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "summary",
+            "status",
+            "components",
+            "sequenceContract"
+          ],
+          "properties": {
+            "summary": {
+              "description": "Was der Composite ueber die Einzelkomponenten hinaus fordert.",
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 300
+            },
+            "status": {
+              "description": "retired: historische Sequenz ohne ausfuehrbaren Grader (Assembler koppelt an persistence retire-blocked und reviewEligible false). active: bewusst genutzte Mehrteilsequenz.",
+              "enum": [
+                "active",
+                "retired"
+              ]
+            },
+            "historicalArchetypeId": {
+              "description": "Optionale historische Interaktionsklasse; muss in archetypes.json Status historical-retired haben. Kein zukuenftiger GraderAdapter.",
+              "type": "string",
+              "minLength": 3
+            },
+            "components": {
+              "description": "Geordnete Referenzen auf atomic-case-Entries der 268er-Baseline (Assembler prueft Existenz, Atomicitaet, Eindeutigkeit, kein Selbstbezug).",
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "sourceId",
+                  "role"
+                ],
+                "properties": {
+                  "sourceId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "role": {
+                    "description": "Fachliche Rolle der Komponente in der Sequenz (Deutsch erlaubt).",
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 200
+                  }
+                }
+              }
+            },
+            "sequenceContract": {
+              "description": "Reihenfolge-, Bearbeitungs- oder Fuehrungsvertrag der Komposition.",
+              "type": "string",
+              "minLength": 10
+            },
+            "partialScoreContract": {
+              "description": "Teilscore-Semantik, falls die Komposition mehrteilig bewertet war oder wird.",
+              "type": "string",
+              "minLength": 10
+            },
+            "synthesisContract": {
+              "description": "Synthese-/Transferforderung ueber die Komponenten hinaus, falls vorhanden.",
+              "type": "string",
+              "minLength": 10
+            }
+          }
+        },
+        "difficultyProfile": {
+          "description": "Kognitiv-prozedurale Anforderung; die alte 1-5-Zahl bleibt nur als Migrationsabbildung.",
+          "enum": [
+            "basic-recall",
+            "core-application",
+            "advanced-transfer",
+            "final-boss-synthesis"
+          ]
+        },
+        "placement": {
+          "description": "Kuenftige Nutzung in LearningModule/Lektion plus Review-Policy. reviewEligible muss false sein, wenn der Entry retired ist (kein ausfuehrbarer Review, kein toter Link).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lessonIds",
+            "moduleHint",
+            "reviewEligible"
+          ],
+          "properties": {
+            "lessonIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "moduleHint": {
+              "description": "Deutscher Hinweis auf das Zielmodul/die Ziellektion.",
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 200
+            },
+            "reviewEligible": {
+              "type": "boolean"
+            }
+          }
+        },
+        "persistence": {
+          "description": "Erhaelt historische IDs oder definiert eine Merge-/Retire-Map. 262x preserve-id, 5x merge-map-required, 1x retire-blocked (Assembler erzwingt). retire-blocked ist an composite-placement mit status retired gekoppelt.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "preserve-id",
+                "merge-map-required",
+                "retire-blocked"
+              ]
+            },
+            "mergeInto": {
+              "description": "Ziel-Definition bzw. Zielfamilieninstanz; Pflicht bei merge-map-required.",
+              "type": "string",
+              "minLength": 1
+            },
+            "note": {
+              "description": "Pflicht bei retire-blocked; muss die S1B-Freigabe erwaehnen (Assembler prueft).",
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "merge-map-required"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "required": [
+                  "mergeInto"
+                ],
+                "properties": {
+                  "mergeInto": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "retire-blocked"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "required": [
+                  "note"
+                ],
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "humanReview": {
+          "description": "Disposition der v1-Human-Review-Markierung (57 gesamt). required muss exakt v1 humanReviewRequired entsprechen (Assembler erzwingt).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required",
+            "reasons"
+          ],
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "reasons": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "disposition": {
+              "$ref": "#/$defs/disposition"
+            },
+            "councilReviewRef": {
+              "type": "string",
+              "pattern": "^reviews/[a-z0-9-]+\\.md$"
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "decision": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence": {
+              "type": "string",
+              "minLength": 1
+            },
+            "latestGate": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "allOf": [
+            {
+              "$ref": "#/$defs/councilReviewRefRule"
+            },
+            {
+              "if": {
+                "properties": {
+                  "required": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "required"
+                ]
+              },
+              "then": {
+                "required": [
+                  "disposition"
+                ],
+                "properties": {
+                  "disposition": {
+                    "$ref": "#/$defs/disposition"
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "required": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "required"
+                ],
+                "not": {
+                  "properties": {
+                    "disposition": {
+                      "$ref": "#/$defs/resolvedDisposition"
+                    }
+                  },
+                  "required": [
+                    "disposition"
+                  ]
+                }
+              },
+              "then": {
+                "required": [
+                  "owner",
+                  "decision",
+                  "evidence",
+                  "latestGate"
+                ],
+                "properties": {
+                  "owner": { "type": "string" },
+                  "decision": { "type": "string" },
+                  "evidence": { "type": "string" },
+                  "latestGate": { "type": "string" }
+                }
+              }
+            }
+          ]
+        },
+        "uncertaintyDispositions": {
+          "description": "Jede v1-Unsicherheitsliste (235 Records gesamt) bekommt genau eine Disposition; field+level+reason muessen das v1-Record zeichengetreu abdecken (Assembler erzwingt).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "field",
+              "level",
+              "reason",
+              "disposition",
+              "rationale"
+            ],
+            "properties": {
+              "field": {
+                "type": "string",
+                "minLength": 1
+              },
+              "level": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "reason": {
+                "description": "Zeichengetreuer v1-Reason; darf nicht umformuliert werden.",
+                "type": "string",
+                "minLength": 1
+              },
+              "disposition": {
+                "$ref": "#/$defs/disposition"
+              },
+              "rationale": {
+                "description": "Begruendung der Disposition; ersetzt das v1-Feld resolution.",
+                "type": "string",
+                "minLength": 10
+              },
+              "councilReviewRef": {
+                "type": "string",
+                "pattern": "^reviews/[a-z0-9-]+\\.md$"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "decision": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence": {
+                "type": "string",
+                "minLength": 1
+              },
+              "latestGate": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "allOf": [
+              {
+                "$ref": "#/$defs/councilReviewRefRule"
+              },
+              {
+                "if": {
+                  "not": {
+                    "properties": {
+                      "disposition": {
+                        "$ref": "#/$defs/resolvedDisposition"
+                      }
+                    },
+                    "required": [
+                      "disposition"
+                    ]
+                  }
+                },
+                "then": {
+                  "required": [
+                    "owner",
+                    "decision",
+                    "evidence",
+                    "latestGate"
+                  ],
+                  "properties": {
+                    "owner": { "type": "string" },
+                    "decision": { "type": "string" },
+                    "evidence": { "type": "string" },
+                    "latestGate": { "type": "string" }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "feedbackDispositions": {
+          "description": "Jedes v1-Feedbackvorkommen der Quelle bekommt genau einen Zielpfad (alle 623; die 348 nicht konsumierten sind Pflicht, Assembler erzwingt exakte Deckung).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "ruleIndex",
+              "targetPath",
+              "rationale"
+            ],
+            "properties": {
+              "ruleIndex": {
+                "description": "Index im feedbackRules-Array der Quelle (0-basiert); Matching-Schluessel gegen v1.",
+                "type": "integer",
+                "minimum": 0
+              },
+              "targetPath": {
+                "description": "Sieben Zielpfade aus Abschnitt 6; answer-note deckt dabei die Testdiagnose aus autoritativem Grader-/Pyodide-Test (checkId-Kanal) ab. Kein Pfad fuehrt zu einem LLM.",
+                "enum": [
+                  "grader-predicate",
+                  "answer-note",
+                  "input-validation",
+                  "generic-hint",
+                  "worked-solution",
+                  "editorial-diagnosis",
+                  "retire-after-intent-extraction"
+                ]
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 10
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "description": "atomic-case: genau eine CognitiveFamily, ein TaskArchetype, ein CaseTemplate, eine FamilyGroup; kein compositePlacement.",
+          "if": {
+            "properties": {
+              "entryForm": {
+                "const": "atomic-case"
+              }
+            },
+            "required": [
+              "entryForm"
+            ]
+          },
+          "then": {
+            "required": [
+              "familyGroup",
+              "cognitiveFamily",
+              "taskArchetype",
+              "caseTemplate"
+            ],
+            "properties": {
+              "familyGroup": {},
+              "cognitiveFamily": {},
+              "taskArchetype": {},
+              "caseTemplate": {}
+            },
+            "not": {
+              "required": [
+                "compositePlacement"
+              ],
+              "properties": {
+                "compositePlacement": {}
+              }
+            }
+          }
+        },
+        {
+          "description": "composite-placement: Composite-Vertrag statt eigener Familie; keine caseTemplate-/Archetyp-Vortaeuschung.",
+          "if": {
+            "properties": {
+              "entryForm": {
+                "const": "composite-placement"
+              }
+            },
+            "required": [
+              "entryForm"
+            ]
+          },
+          "then": {
+            "required": [
+              "compositePlacement"
+            ],
+            "properties": {
+              "compositePlacement": {}
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "cognitiveFamily"
+                  ],
+                  "properties": {
+                    "cognitiveFamily": {}
+                  }
+                },
+                {
+                  "required": [
+                    "taskArchetype"
+                  ],
+                  "properties": {
+                    "taskArchetype": {}
+                  }
+                },
+                {
+                  "required": [
+                    "caseTemplate"
+                  ],
+                  "properties": {
+                    "caseTemplate": {}
+                  }
+                },
+                {
+                  "required": [
+                    "familyGroup"
+                  ],
+                  "properties": {
+                    "familyGroup": {}
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

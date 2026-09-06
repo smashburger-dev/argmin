@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "rag-capstone-e2e-v1",
+  "beschreibung": "Erwartete Pipeline-Outputs des Referenzlaufs (Exaktwerte, eingefroren). run_digest ist der sha256 ueber die kanonische Serialisierung von run(); demo_metrics() prueft diese Werte gegen jede Neuberechnung.",
+  "run_digest": "00752b35a98b543e4eeb32695be5176c7e46e32ad2213b876580370480c38e50",
+  "metriken": {
+    "overall": {
+      "queries": 8,
+      "recall_at_k": 0.75,
+      "precision_at_k": 0.75,
+      "answered": 6,
+      "retrieval_fehler": 2
+    },
+    "subgroups": {
+      "garantie": 1.0,
+      "rabatt": 0.5,
+      "recht": 0.5,
+      "versand": 1.0
+    },
+    "w30_teilmenge": {
+      "queries": 4,
+      "recall_at_k": 0.75,
+      "precision_at_k": 0.75,
+      "answered": 3,
+      "retrieval_fehler": 1
+    }
+  },
+  "kosten": {
+    "tokens_input": 95,
+    "tokens_output": 32,
+    "kosten_eur": 0.0334
+  },
+  "sicherheit": {
+    "fixtures_blockiert": 4,
+    "fixtures_ok": 3,
+    "aktionen_abgelehnt": 4,
+    "uebereinstimmung": true
+  }
+}

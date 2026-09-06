@@ -1,0 +1,49 @@
+# Generated outputs
+/build-public/
+/build-next/
+/.next-ui/
+/.next-local-ui/
+/.content-build/
+/playwright-report/
+/test-results/
+/graphify-out/
+
+# Required vendored runtime files overridden from the workspace-wide ignores
+!/vendor/katex/dist/
+/vendor/katex/dist/**
+!/vendor/katex/dist/contrib/
+!/vendor/katex/dist/contrib/auto-render.min.js
+!/vendor/katex/dist/fonts/
+!/vendor/katex/dist/fonts/*.woff2
+!/vendor/katex/dist/katex.min.css
+!/vendor/katex/dist/katex.min.js
+
+# Pyodide contract sources hidden by the workspace-wide *Contract* ignore;
+# negate exactly these three tracked files, never a broad contract pattern.
+!/tools/pyodide_contract_matrix.mjs
+!/tests/pyodide_contract_matrix.test.mjs
+!/tests/e2e/pyodide-contracts.spec.ts
+# Generated contract artifacts stay ignored independently of the root rules.
+/tests/e2e/pyodide-contract-matrix.json
+/tests/e2e/pyodide-contract-receipt.json
+
+# Local source-library mirrors
+/library
+/library-private
+
+# Browser acceptance profiles and local scratch data
+/.tmp-acceptance-*/
+/vendor/tmp/
+
+# Local-only configuration and secrets
+/.env
+/.env.*
+!/.env.example
+/*.local.json
+
+# Operating-system files
+.DS_Store
+
+# leaked validator temp dirs from interrupted test runs
+tmp-validate-neg-*/
+.tmp-validate-neg-*/

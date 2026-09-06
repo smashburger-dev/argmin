@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-cv",
+  "version": 1,
+  "locale": "de",
+  "title": "Cross-Validation und Leakage-Kontrolle",
+  "objectives": [
+    "eine K-Fold-Aufteilung mit der n-mod-k-Größenverteilung deterministisch erzeugen",
+    "Hyperparameter von gelernten Parametern unterscheiden und Hyperparameter über Cross-Validation wählen",
+    "Leakage-Quellen erkennen und die Pipelinegrenze „fit nur auf Train-Folds“ durchsetzen"
+  ],
+  "competencyIds": ["c-ml-cv"],
+  "requires": ["c-ml-logistic"],
+  "estimatedMinutes": 55,
+  "blocks": [
+    { "blockId": "ml-cv-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-cv.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Cross-validation: evaluating estimator performance — nur Lektüre" },
+    { "sourceId": "google-mlcc", "role": "practice", "locator": "Module Validation" },
+    { "sourceId": "islr-book", "role": "practice", "locator": "Ch 5 Resampling Methods (nur Zitation)" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

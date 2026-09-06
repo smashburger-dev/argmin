@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-linear",
+  "version": 1,
+  "locale": "de",
+  "title": "Lineare Regression: Fit, Fehlermaße und Residuenanalyse",
+  "objectives": [
+    "MSE, RMSE und R² von Hand berechnen und die Einheiten der Fehlermaße angeben",
+    "eine Kleinste-Quadrate-Anpassung mit Intercept über eine Design-Matrix und np.linalg.lstsq berechnen",
+    "Residuenplots auf Trend, Trichterform und Ausreißer untersuchen"
+  ],
+  "competencyIds": ["c-ml-linear"],
+  "requires": ["c-ml-baseline", "c-grad-regression"],
+  "estimatedMinutes": 55,
+  "blocks": [
+    { "blockId": "ml-linear-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-linear.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "islr-book", "role": "primary", "locator": "Ch 3 Linear Regression (nur Zitation/Verweis)" },
+    { "sourceId": "mit-ocw-18-06sc", "role": "practice", "locator": "Lecture 16: Least Squares" },
+    { "sourceId": "openintro-statistics", "role": "practice", "locator": "Ch 8 Introduction to Linear Regression" },
+    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Linear Models — nur Lektüre, sklearn läuft nicht im Browser" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

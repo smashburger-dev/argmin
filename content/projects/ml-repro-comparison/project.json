@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "projectId": "p-ml-repro-comparison",
+  "version": 1,
+  "locale": "de",
+  "title": "Reproduzierbarer Modellvergleich",
+  "description": "Vergleicht eine Mittelwert-Baseline gegen Ridge-Regression auf seeded synthetischen Daten und beweist die Reproduzierbarkeit über identische Wiederholungsläufe.",
+  "runnerMode": "local",
+  "competencyIds": [
+    "c-ml-repro"
+  ],
+  "requires": [
+    "c-ml-regularization",
+    "c-ml-ensembles",
+    "c-ml-svm-pca",
+    "c-ml-erroranalysis"
+  ],
+  "starterFiles": [
+    "README.md",
+    "src/compare.py",
+    "tests/test_compare.py",
+    "check-manifest.json"
+  ],
+  "solutionFiles": [
+    "solution/compare.py"
+  ],
+  "allowedCommands": [
+    {
+      "program": "python",
+      "args": [
+        "-m",
+        "pytest",
+        "-q",
+        "--disable-warnings",
+        "--maxfail=1",
+        "tests"
+      ]
+    }
+  ],
+  "testBundleId": "ml-repro-comparison-tests-v1",
+  "deliverables": [
+    "Vollständiges src/compare.py mit deterministischem compare(seed)",
+    "Alle bereitgestellten pytest-Tests bestanden (identischer Wiederholungslauf, verschiedener Seed, Ridge schlägt Baseline)",
+    "Kurze Repro-Dokumentation im README: Seed, Split-Regel, Metrik, Versionen"
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "solver-verified",
+  "legacyWeekId": "w17",
+  "estimatedMinutes": 120
+}

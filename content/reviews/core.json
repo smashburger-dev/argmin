@@ -1,0 +1,776 @@
+{
+  "schemaVersion": 1,
+  "locale": "de",
+  "reviews": [
+    {
+      "reviewId": "r-foundations-algebra",
+      "title": "Foundations Mathematik und Algebra",
+      "scope": "Algebra-Lektionen, Generatoren, SymPy-Prüfung und Schwierigkeitsprogression",
+      "status": "needs-human-review",
+      "summary": "Die geprüften Rechnungen und Generatoren sind konsistent. Advanced- und Final-Boss-Stufen wurden ergänzt; die Lektionen bleiben bis zum didaktischen Gegenlesen Draft.",
+      "findings": [
+        {
+          "findingId": "algebra-solver-consistency",
+          "severity": "positive",
+          "evidence": [
+            "assets/js/core/w01_generators.mjs",
+            "tests/w01_generators.test.mjs",
+            "assets/js/core/graders.js"
+          ],
+          "uncertainty": "Die Property-Tests beweisen keine Verständlichkeit der Formulierungen für alle Lernenden.",
+          "recommendation": "Generator- und SymPy-Gates beibehalten.",
+          "suggestedImplementation": "Seed-Tests und Browser-Smoke bei jeder neuen Algebrafamilie ausführen.",
+          "affectedContent": [
+            "c-algebra-basics",
+            "c-algebra"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "algebra-upper-tiers",
+          "severity": "high",
+          "evidence": [
+            "content/exercise-definitions/foundations/algebra-both-sides.json",
+            "content/exercise-definitions/foundations/algebra-final-boss.json",
+            "content/coverage-matrix.json"
+          ],
+          "uncertainty": "Difficulty 4 ist eine Produktklassifikation und noch nicht empirisch kalibriert.",
+          "recommendation": "Advanced- und Final-Boss-Aufgaben mit Lernenden auf Lösungszeit und Fehlermuster prüfen.",
+          "suggestedImplementation": "Didaktische Abnahme protokollieren und erst danach Release-Status erhöhen.",
+          "affectedContent": [
+            "f-algebra-both-sides-01",
+            "f-algebra-final-boss-01"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "partially-implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-foundations-python",
+      "title": "Foundations Python und PRIMM",
+      "scope": "Zustand, Funktionen, Kontrollfluss sowie Predict-Trace-Parsons-Repair-Make",
+      "status": "needs-human-review",
+      "summary": "Predict, Trace und Parsons waren vorhanden; Code Repair und eine Advanced-Stufe wurden ergänzt. Seed-Variation fehlt für die meisten Programmierfamilien.",
+      "findings": [
+        {
+          "findingId": "python-repair-bridge",
+          "severity": "high",
+          "evidence": [
+            "content/exercise-definitions/foundations/control-repair.json",
+            "tests/methodology_tasks.test.mjs",
+            "tests/e2e/next-shell.spec.ts"
+          ],
+          "uncertainty": "Ein einzelner Repair-Task zeigt noch nicht, welche PRIMM-Stufe für unterschiedliche Vorkenntnisse optimal ist.",
+          "recommendation": "Repair zwischen Parsons und offenem Projekt einsetzen, nicht als Ersatz für Make-Aufgaben.",
+          "suggestedImplementation": "Bearbeitungsfehler und Transfer auf das lokale Projekt in einer Lernendenstichprobe prüfen.",
+          "affectedContent": [
+            "c-python-basics",
+            "c-python-reading",
+            "c-python-functions",
+            "c-python-control-flow"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "python-fresh-variation",
+          "severity": "medium",
+          "evidence": [
+            "assets/js/core/foundations_fresh_generators.mjs",
+            "content/exercise-definitions/foundations/python-state-trace.json",
+            "tests/foundations_fresh_generators.test.mjs",
+            "docs/adr/0015-seeded-variation-nonnumeric-and-retention-timelines.md"
+          ],
+          "uncertainty": "Nicht jede konzeptuelle Codeaufgabe profitiert von zufälligen Zahlen; Variation muss semantisch nützlich bleiben.",
+          "recommendation": "Generatoren nur für Aufgaben mit stabil prüfbarer Variation ergänzen.",
+          "suggestedImplementation": "Zuerst Code-Trace- und Collection-Familien mit kontrollierten Zustandsräumen pilotieren.",
+          "affectedContent": [
+            "c-python-basics",
+            "c-python-reading",
+            "c-python-functions",
+            "c-python-control-flow"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-code-reading-collections",
+      "title": "Code Reading und Collections",
+      "scope": "Trace-Tiefe, Fehlvorstellungen, Collection-Zustand, Transfer und Varianten",
+      "status": "needs-human-review",
+      "summary": "Basismodule und mehrere Grader-Typen sind vorhanden. Eine kombinierte Daten-Code-Repair-Aufgabe ergänzt Advanced-Transfer; schrittweise Collection-Traces bleiben eine Lücke.",
+      "findings": [
+        {
+          "findingId": "collection-transfer-repair",
+          "severity": "high",
+          "evidence": [
+            "content/exercise-definitions/foundations/data-code-repair.json",
+            "content/projects/foundations-data-checker/project.json"
+          ],
+          "uncertainty": "Der Browser-Task bildet nur kleine In-Memory-Daten ab, nicht den vollständigen CSV-Workflow.",
+          "recommendation": "Browser-Repair als Vorbereitung auf das lokale CLI-Projekt verwenden.",
+          "suggestedImplementation": "Projektlink nach bestandenem Repair anzeigen und Transferfehler getrennt erfassen.",
+          "affectedContent": [
+            "c-python-reading",
+            "c-python-collections",
+            "c-python-files-errors"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "collection-step-traces",
+          "severity": "medium",
+          "evidence": [
+            "content/exercise-definitions/foundations/collection-step-trace.json",
+            "assets/js/core/graders.js",
+            "tests/e2e/next-shell.spec.ts",
+            "docs/adr/0015-seeded-variation-nonnumeric-and-retention-timelines.md"
+          ],
+          "uncertainty": "Eine neue Tabellen-UI kann mehr Bedienlast als Lerngewinn erzeugen.",
+          "recommendation": "Collection-Zustände über mehrere Schritte explizit prüfen.",
+          "suggestedImplementation": "Einen kleinen JSON-Trace-Prototyp mit deterministischem Grader und Accessibility-Test evaluieren.",
+          "affectedContent": [
+            "c-python-collections",
+            "c-python-reading"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-exercise-graders-variation",
+      "title": "Aufgabenkorrektheit, Grader und Variation",
+      "scope": "Legacy-Adapter, Generator-/Referenzsolver-Trennung, Seeds und native Routen",
+      "status": "completed",
+      "summary": "Alle öffentlichen Legacy-Definitionen besitzen native Routen; das lokale Prüfungsartefakt hat einen expliziten Ersatzpfad. Generatoren und Referenzsolver bleiben getrennt.",
+      "findings": [
+        {
+          "findingId": "legacy-native-route-parity",
+          "severity": "positive",
+          "evidence": [
+            "assets/js/domain/activity_route.mjs",
+            "tests/legacy_ui_migration.test.mjs",
+            "src/ui/ExerciseView.tsx"
+          ],
+          "uncertainty": "Browserabnahmen können seltene gerätespezifische Eingabeprobleme nicht vollständig ausschließen.",
+          "recommendation": "Native-Route-Gate für jede neue Legacy-Definition beibehalten.",
+          "suggestedImplementation": "Public-Compiler und Browser-Smokes gemeinsam als Release-Gate ausführen.",
+          "affectedContent": [
+            "w01",
+            "w05"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "fixed-instance-families",
+          "severity": "medium",
+          "evidence": [
+            "assets/js/core/foundations_fresh_generators.mjs",
+            "assets/js/core/linalg_numpy_fresh_generators.mjs",
+            "content/coverage-matrix.json"
+          ],
+          "uncertainty": "Für manche Choice-Aufgaben ist eine zweite Definition didaktisch besser als prozedurale Zufallsvariation.",
+          "recommendation": "Fresh-Instance-Lücken pro Lernziel statt pauschal schließen.",
+          "suggestedImplementation": "Generator nur nach Determinismus-, Degenerations- und Solver-Agreement-Tests freigeben.",
+          "affectedContent": [
+            "c-linalg-matrices",
+            "c-linalg-gauss",
+            "c-linalg-independence"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-linear-algebra-numpy",
+      "title": "Lineare Algebra und NumPy",
+      "scope": "Woche 5, mathematische Korrektheit, Hand-zu-Code-Transfer, Visualisierung und vier Tiers",
+      "status": "needs-human-review",
+      "summary": "Fünf fehlende deutsche Lektionen, Spaltenbild-Evidence, Advanced-Aufgaben, Final Boss und JSXGraph-Ansicht wurden ergänzt.",
+      "findings": [
+        {
+          "findingId": "linalg-content-sequence",
+          "severity": "high",
+          "evidence": [
+            "content/lessons/linear-algebra",
+            "content/milestones/core.json",
+            "content/coverage-matrix.json"
+          ],
+          "uncertainty": "Die Reihenfolge Matrix vor System folgt dem aktuellen DAG, kann für manche Lernende aber geometrisch umgekehrt leichter sein.",
+          "recommendation": "Die fünf Lektionen fachlich und didaktisch gegenlesen.",
+          "suggestedImplementation": "Begriffe, Notation und Übergänge mit zwei Zielgruppenprofilen testen.",
+          "affectedContent": [
+            "c-linalg-matrices",
+            "c-linalg-systems",
+            "c-linalg-gauss",
+            "c-linalg-independence",
+            "c-numpy-basics"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "linalg-final-boss-runtime",
+          "severity": "positive",
+          "evidence": [
+            "content/exercise-definitions/linear-algebra/final-boss.json",
+            "tests/linear_algebra_content.test.mjs",
+            "tests/e2e/next-shell.spec.ts"
+          ],
+          "uncertainty": "Die Laufzeit ist browsergeprüft, die Schwierigkeit noch nicht mit echten Bearbeitungszeiten kalibriert.",
+          "recommendation": "Deterministische Tests autoritativ lassen und Schwierigkeit separat evaluieren.",
+          "suggestedImplementation": "Fehlgeschlagene Testkategorien ohne Codeinhalt lokal aggregieren, falls Lernende opt-in zustimmen.",
+          "affectedContent": [
+            "f-linalg-final-boss-01"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-testing-project-workflow",
+      "title": "Testing, Git und Projektworkflow",
+      "scope": "Datenprüfer, lokaler Runner, Git-Aufgaben, Reportsicherheit und Evidence-Semantik",
+      "status": "completed",
+      "summary": "Runner, Hashprüfung und Reportvalidierung sind fail-closed getestet. Gültige Projektberichte werden als nicht bindende Arbeitsereignisse gespeichert; Git-Merge-Diagnose ist vorhanden.",
+      "findings": [
+        {
+          "findingId": "project-work-event",
+          "severity": "positive",
+          "evidence": [
+            "src/adapters/project-session.ts",
+            "src/ui/ProjectView.tsx",
+            "assets/js/domain/project_report.mjs"
+          ],
+          "uncertainty": "Ein Selbstbericht beweist nicht, dass eine fremde Umgebung den Lauf reproduzieren kann.",
+          "recommendation": "Projektarbeit sichtbar machen, aber niemals automatisch als Mastery zertifizieren.",
+          "suggestedImplementation": "eventType project-report mit evidenceEligible=false beibehalten.",
+          "affectedContent": [
+            "p-foundations-data-checker"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "runner-edge-tests",
+          "severity": "medium",
+          "evidence": [
+            "tests/test_learner_project_check.py",
+            "tools/learner_project_check.py"
+          ],
+          "uncertainty": "Temporäre Fixtures und Mocks decken die Vertragsfälle ab, aber nicht jede Betriebssystem- und Dateisystemvariante.",
+          "recommendation": "Die fail-closed Randfall-Suite bei jeder Änderung am Runnervertrag beibehalten.",
+          "suggestedImplementation": "Gelöst 2026-08-31: tool-missing, timeout, failed exit, Pflichtdateien, Hashabweichung, ungültige Manifeste, Traversal, begrenzte Umgebung, Truncation, atomisches Schreiben, Interpreter und shell=false sind getestet.",
+          "affectedContent": [
+            "learner-project-runner"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-evidence-review-feedback",
+      "title": "Evidence, Review und Feedbackschleifen",
+      "scope": "EvidenceEngine, Review-Queue, Lösungsoffenlegung, Konfigurierbarkeit und Statussprache",
+      "status": "completed",
+      "summary": "Instanzlokale Lösungssperre bleibt erhalten. Reviewabstände sind lokal konfigurierbar und als Heuristik gekennzeichnet; demonstrated und retained werden getrennt erklärt.",
+      "findings": [
+        {
+          "findingId": "review-configuration",
+          "severity": "high",
+          "evidence": [
+            "src/ui/views.tsx",
+            "src/adapters/local-progress.ts",
+            "assets/js/core/progress_store.js",
+            "tests/review_scheduler.test.mjs"
+          ],
+          "uncertainty": "Keine Intervallfolge ist durch die ausgewertete Forschung als optimal belegt.",
+          "recommendation": "Reviewparameter veränderbar und transparent halten.",
+          "suggestedImplementation": "Eigene Retentionsdaten nur mit Opt-in erheben und Parameter vor Änderungen evaluieren.",
+          "affectedContent": [
+            "review-scheduler",
+            "settings",
+            "progress"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "dual-retention-clocks",
+          "severity": "medium",
+          "evidence": [
+            "src/adapters/local-progress.ts",
+            "src/adapters/learning-plan.ts",
+            "src/ui/views.tsx",
+            "docs/adr/0015-seeded-variation-nonnumeric-and-retention-timelines.md"
+          ],
+          "uncertainty": "Reviewfälligkeit und Kompetenzfrische messen verwandte, aber nicht identische Zustände.",
+          "recommendation": "Beide Zeitachsen im UI unterscheiden und später gemeinsam kalibrieren.",
+          "suggestedImplementation": "Eine Retention-Konfiguration mit getrennten Feldern und Evaluationsversion dokumentieren.",
+          "affectedContent": [
+            "c-meta-learning",
+            "review-queue",
+            "evidence-state"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-ui-accessibility-parity",
+      "title": "UI, Accessibility und Legacy-Parität",
+      "scope": "Neue Preact-Routen, Eingabekontrollen, Mathematik, Roadmap, Quellen, Werkzeuge und mobile Bedienung",
+      "status": "needs-human-review",
+      "summary": "Alle öffentlichen Legacy-Aufgabentypen, Mathematikeingabe, Worked Examples, Roadmap, Quellen, Werkzeuge und Visualisierung sind nativ erreichbar. Automatisierte Accessibility-Gates bleiben erforderlich.",
+      "findings": [
+        {
+          "findingId": "native-control-completeness",
+          "severity": "positive",
+          "evidence": [
+            "src/ui/ExerciseView.tsx",
+            "src/ui/MathInput.tsx",
+            "src/ui/MathMarkup.tsx",
+            "tests/e2e/next-shell.spec.ts"
+          ],
+          "uncertainty": "MathLive- und Bildschirmtastaturverhalten variiert auf mobilen Geräten.",
+          "recommendation": "Plain-Text-Fallback und native Labels beibehalten.",
+          "suggestedImplementation": "Manuelle Screenreader- und Mobilgeräteabnahme zusätzlich zu Axe ausführen.",
+          "affectedContent": [
+            "numeric",
+            "vector",
+            "algebraic-expression",
+            "short-rationale",
+            "parsons",
+            "code-trace",
+            "predict-output"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "progress-portability",
+          "severity": "positive",
+          "evidence": [
+            "src/adapters/progress-admin.ts",
+            "src/ui/views.tsx",
+            "assets/js/core/progress_store.js"
+          ],
+          "uncertainty": "Große reale Exporte und assistive Dateiauswahl wurden noch nicht manuell geprüft.",
+          "recommendation": "Atomare Importvalidierung im neuen UI zugänglich halten.",
+          "suggestedImplementation": "Große v1-, v2- und v3-Fixtures im Produktionsbuild testen.",
+          "affectedContent": [
+            "settings",
+            "indexeddb-v3"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-roadmap-weeks-06-17",
+      "title": "Data und klassisches ML, Wochen 6 bis 17",
+      "scope": "Kompetenzen, Lektionen, Übungen, Projekte, Quellen und Browserpakete",
+      "status": "needs-human-review",
+      "summary": "W6 bis W17 sind nach ADR-0012 (NumPy-first-Hybrid) erstgebaut: 12 deutsche Lektionen (draft), 61 neue öffentliche Aufgaben in 12 Wochenpaketen, 13 Generatorenfamilien mit Property-Tests, 7 neue öffentliche/link-only Quellen und das lokale Repro-Projekt. Deterministische Grader und Referenzsolver sind grün; die didaktische Prüfung durch einen Menschen steht aus.",
+      "findings": [
+        {
+          "findingId": "weeks-06-17-content-gap",
+          "severity": "positive",
+          "evidence": [
+            "content/coverage-matrix.json",
+            "docs/coverage-report.md",
+            "tests/data_ml_content.test.mjs"
+          ],
+          "uncertainty": "Coverage-Matrix bestätigt alle Evidenzdimensionen; Aussagen zur Verständlichkeit der Lektionstexte bleiben dem menschlichen Review vorbehalten.",
+          "recommendation": "Didaktisches Gegenlesen der 12 Lektionen als Freigabegate für releaseStatus über draft.",
+          "suggestedImplementation": "Human-Review je Lektion (Verständlichkeit, Beispielqualität, Fehlvorstellungen), danach releaseStatus-Anhebung.",
+          "affectedContent": [
+            "w06",
+            "w07",
+            "w08",
+            "w09",
+            "w10",
+            "w11",
+            "w12",
+            "w13",
+            "w14",
+            "w15",
+            "w16",
+            "w17"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "runtime-decision-adr-0012",
+          "severity": "positive",
+          "evidence": [
+            "docs/adr/0012-w06-w17-runtime.md",
+            "assets/js/runtime/pyodide_worker.mjs",
+            "vendor/pyodide/pyodide-lock.json"
+          ],
+          "uncertainty": "RAM- und Ladezeitverhalten vendorter pandas/sklearn-Wheels ist ungemessen; pandas-only-Variante (+4,7 MB) bleibt an Noas Freigabe gebunden.",
+          "recommendation": "NumPy-first-Hybrid beibehalten; OPTION B-lite nur nach CDP-Messung und Freigabe (Vorlage in ADR-0012).",
+          "suggestedImplementation": "Bei Freigabe: vendor_fetch.sh, Notices mit SHA-256, Allowlist, Worker-Whitelist erweitern und CDP-Abnahme messen.",
+          "affectedContent": [
+            "c-pandas-cleaning",
+            "c-eda-viz"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "generator-answer-space-policy",
+          "severity": "positive",
+          "evidence": [
+            "assets/js/core/data_ml_generators.mjs",
+            "tests/data_ml_generators.test.mjs"
+          ],
+          "uncertainty": "Die Untergrenze von 20 distinkten Antworten über 2000 Seeds ist eine Produktheuristik gegen Memorierung, kein didaktisches Beweiskriterium.",
+          "recommendation": "Property-Tests (Determinismus, Antwortraum, Solver-Übereinstimmung, kein Prompt-Leak) bei jeder neuen Familie fortführen.",
+          "suggestedImplementation": "Neue Familien nur mit Aufnahme in DATA_ML_SEED_GENERATORS plus Testaufnahme.",
+          "affectedContent": [
+            "w06",
+            "w07",
+            "w08",
+            "w09",
+            "w10",
+            "w11",
+            "w12",
+            "w13",
+            "w14",
+            "w15",
+            "w16",
+            "w17"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "pandas-sklearn-honesty-contract",
+          "severity": "positive",
+          "evidence": [
+            "content/competencies/core.json",
+            "tests/data_ml_content.test.mjs",
+            "content/lessons/data-ml/data-cleaning.md"
+          ],
+          "uncertainty": "Ob Lese-/Vorhersagekompetenz für pandas/sklearn-Idiomatik für spätere echte Projekte ausreicht, ist eine didaktische Annahme.",
+          "recommendation": "pandas/sklearn niemals als browser-ausgeführt ausgeben; Kompetenztext von c-pandas-cleaning ist entsprechend ehrlich umformuliert.",
+          "suggestedImplementation": "Bei späterem B-lite-Vendoring: predict-output-Aufgaben in ausführbare python-code-Aufgaben überführen.",
+          "affectedContent": [
+            "c-pandas-cleaning",
+            "c-ml-baseline",
+            "c-ml-linear",
+            "c-ml-logistic",
+            "c-ml-regularization",
+            "c-ml-ensembles",
+            "c-ml-svm-pca"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "w06-w17-workload-risk",
+          "severity": "medium",
+          "evidence": [
+            "content/competencies/core.json",
+            "content/curriculum.json"
+          ],
+          "uncertainty": "Die Summe von rund 96 Stunden Kompetenzzeit in 12 Wochen kollidiert mit dem Wochenbudget inklusive Reviews und Gates; eine Kürzung wäre eine inhaltliche Entscheidung.",
+          "recommendation": "Belastungspunkt Noa zur Entscheidung vorlegen: entweder Wochenstreckung oder inhaltliche Kürzung (z. B. W16-Clustering nur konzeptionell).",
+          "suggestedImplementation": "Roadmap-Minuten oder Kompetenz estimatedMinutes nach Entscheidung anpassen.",
+          "affectedContent": [
+            "w06",
+            "w07",
+            "w08",
+            "w09",
+            "w10",
+            "w11",
+            "w12",
+            "w13",
+            "w14",
+            "w15",
+            "w16",
+            "w17"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "planned"
+        },
+        {
+          "findingId": "git-testing-freshness-before-w17",
+          "severity": "medium",
+          "evidence": [
+            "content/competencies/core.json",
+            "assets/js/domain/competency_graph.mjs"
+          ],
+          "uncertainty": "Die 77-Tage-Frist und die gewählten Gate-Abstände sind Produktheuristiken und noch nicht mit Kohortendaten kalibriert.",
+          "recommendation": "Die zusätzlichen W12-/W13-Gate-Rückgriffe beibehalten und ihre Nutzung in der Pilotphase prüfen.",
+          "suggestedImplementation": "Gelöst 2026-08-31 (ADR-0014 Teil 1): w13-Gate trägt zusätzlich w03/c-git-basics (Lag +10, neue Seeds); c-testing-debugging läuft über das nun aktive w12->w04-Gate; freshnessDays unverändert.",
+          "affectedContent": [
+            "w17"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-roadmap-weeks-18-30",
+      "title": "Deep Learning, LLM und GenAI, Wochen 18 bis 30",
+      "scope": "Tensoren, Training, Transformer, Inferenz, RAG, Evaluation und Sicherheit",
+      "status": "needs-human-review",
+      "summary": "Alle dreizehn Wochen sind ausgearbeitet (ADR-0013, NumPy-first): je eine eigene Lektion, sechs Aufgaben mit Generatoren und Pyodide-Verträgen, Toy-Systeme ausdrücklich als Toy bezeichnet. Inhalte bleiben draft bis zur menschlichen didaktischen Prüfung; Solver-Verifikation erhöht keinen Release-Status.",
+      "findings": [
+        {
+          "findingId": "weeks-18-30-implemented-draft",
+          "severity": "positive",
+          "evidence": [
+            "docs/adr/0013-w18-w30-runtime-content-delivery.md",
+            "content/coverage-matrix.json",
+            "tests/e2e/pyodide-contract-receipt.json"
+          ],
+          "uncertainty": "Browser-Laufzeiten der Boss-Aufgaben sind lokal geprüft (Receipt 94 Definitionen im aktuellen Gesamtkorpus), aber nicht auf Zielgeräten gemessen; didaktische Freigabe steht aus.",
+          "recommendation": "Menschliche Prüfung der Lektionen und Aufgaben; danach schrittweise Freigabe der Release-Statuswerte.",
+          "suggestedImplementation": "Prüf-Reihenfolge: Ehrlichkeits-Abgrenzungen (Autograd, Toy-Inferenz, Fine-Tuning), dann Beispielaufgaben je Woche.",
+          "affectedContent": [
+            "w18",
+            "w19",
+            "w20",
+            "w21",
+            "w22",
+            "w23",
+            "w24",
+            "w25",
+            "w26",
+            "w27",
+            "w28",
+            "w29",
+            "w30"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-roadmap-weeks-31-39",
+      "title": "Forschung und Capstone, Wochen 31 bis 39",
+      "scope": "Forschungsfrage, Karten, Betrieb, Capstone, Reproduzierbarkeit, Evaluation und Demo",
+      "status": "needs-human-review",
+      "summary": "W31-W39 sind nach ADR-0014 ausgebaut: 5 deutsche Lektionen (draft), 54 öffentliche Aufgaben in 9 Wochenpaketen, 6 Generatorenfamilien mit Property-Tests, 24 neue Quellen (12 open, 12 link-only) und das Multi-Wochen-Capstone p-rag-capstone (Design A: eine Projekt-ID, legacyWeekId w39, Phasenvertrag phases.json, hash-gepinnter W30-Kern). Deterministische Grader, Referenzsolver und die reposeitige Solution-Suite sind grün; die didaktische Prüfung durch einen Menschen steht aus.",
+      "findings": [
+        {
+          "findingId": "weeks-31-39-capstone-gap",
+          "severity": "positive",
+          "evidence": [
+            "content/curriculum.json",
+            "content/coverage-matrix.json",
+            "content/projects"
+          ],
+          "uncertainty": "Viele geplante Artefakte brauchen menschliche Beurteilung; unter dem aktuellen Vertrag dürfen sie allein keine Mastery öffnen.",
+          "recommendation": "Deterministische Teilverträge beibehalten; Demo, Retrospektive und Risk Register als nicht bindende Arbeitsevidenz kennzeichnen.",
+          "suggestedImplementation": "Nach didaktischem Gegenlesen schrittweise Freigabe; Frischekalibrierung mit erster Kohorte.",
+          "affectedContent": [
+            "w31",
+            "w32",
+            "w33",
+            "w34",
+            "w35",
+            "w36",
+            "w37",
+            "w38",
+            "w39"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "partially-implemented"
+        },
+        {
+          "findingId": "capstone-mastery-separation",
+          "severity": "positive",
+          "evidence": [
+            "content/projects/rag-capstone/project.json",
+            "tests/test_rag_capstone_project_solution.py",
+            "tests/verify_w35_w39.test.mjs"
+          ],
+          "uncertainty": "Die Phasen-Tests prüfen Struktur und Reproduzierbarkeit, nicht didaktische Qualität der Lernenden-Artefakte.",
+          "recommendation": "Projekt-Reports bleiben Selbstberichte ohne Mastery-Evidence (ADR-0010); Mastery entsteht nur aus den Wochenpaketen mit autoritativen Gradern.",
+          "suggestedImplementation": "Contract-Matrix-Receipt nach jedem neuen Pyodide-Content regenerieren (npm run test:e2e).",
+          "affectedContent": [
+            "w35",
+            "w36",
+            "w37",
+            "w38",
+            "w39"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "research-fresh-window",
+          "severity": "medium",
+          "evidence": [
+            "content/curriculum.json",
+            "assets/js/domain/learning_policy.mjs",
+            "assets/js/domain/evidence_engine.mjs"
+          ],
+          "uncertainty": "S3A: instanceId gewinnt. Fallback ist definitionId:cycleId:seed (cycle default legacy, seed default 0). Der zweiteilige Key definitionId:seed ist nicht mehr der Evidence-Fallback.",
+          "recommendation": "Verzögerte Treffer für c-research-capstone (W34) und c-capstone-pipeline (W35) laufen über die Gates w38 bzw. w39. Qualifikation sitzt in learning_policy.mjs; Review und Evidence bleiben getrennte Projektionen.",
+          "suggestedImplementation": "In der Pilotphase prüfen, dass Lernende die Kumulativ-Gates wirklich anfassen. Keinen zweiten Evidence-Fallback wieder einführen.",
+          "affectedContent": [
+            "w38",
+            "w39"
+          ],
+          "humanReviewRequired": false,
+          "implementationStatus": "implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-sources-rights-readings",
+      "title": "Quellen, Rechte und Lektüren",
+      "scope": "Source-Registry, Rechteprofile, Lektionsverknüpfung, Attribution und Public-Filter",
+      "status": "needs-human-review",
+      "summary": "Alle 46 Lektionen haben öffentliche oder bibliografische Quellenanker (46 Kompetenzen, W31-W39 inklusive). Public-Filter bleiben fail-closed; der Validator lehnt NC-/ND-/SA-Marker in contentClass open ab und prüft Source-ID-Referenzen. Das Lizenzregister ist als generierter Anhang mit sources.json synchronisiert.",
+      "findings": [
+        {
+          "findingId": "lesson-source-links",
+          "severity": "positive",
+          "evidence": [
+            "content/lessons",
+            "content/sources.json",
+            "tests/content_tools.test.mjs"
+          ],
+          "uncertainty": "Linkverfügbarkeit und Seitenausgaben können sich upstream ändern.",
+          "recommendation": "Quellenanker pro Lektion beibehalten und regelmäßig prüfen.",
+          "suggestedImplementation": "Source-ID, Locator, Rolle, Lizenz und QA-Status gemeinsam versionieren.",
+          "affectedContent": [
+            "all-current-lessons"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "license-register-drift",
+          "severity": "medium",
+          "evidence": [
+            "content/sources.json",
+            "docs/license-register.md"
+          ],
+          "uncertainty": "Einige Einträge im Arbeitsregister beziehen sich auf lokale Recherche und sollen möglicherweise bewusst nicht in den Katalog.",
+          "recommendation": "Register und Source-Registry zeilenweise abgleichen.",
+          "suggestedImplementation": "Teilweise gelöst 2026-08-31: Der Validator prüft fehlende Referenzen und meldet verwaiste Source-IDs; der zeilenweise Registerabgleich bleibt menschlich offen.",
+          "affectedContent": [
+            "source-registry",
+            "license-register"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "partially-implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-learning-methodology",
+      "title": "Methodik und Lernforschung",
+      "scope": "Diagnose, Spacing, Retrieval, Worked Examples, Tutor-Guardrails, Planung und Evidence-Schwellen",
+      "status": "needs-human-review",
+      "summary": "Die Architektur folgt der Evidenz vorsichtig: Diagnose sperrt nicht, Grader bleiben deterministisch und Tutorhilfen überstimmen sie nicht. Planer, Beispiele und Heuristikhinweise sind nun verdrahtet; Schwellen bleiben evaluierungsbedürftig.",
+      "findings": [
+        {
+          "findingId": "planner-and-guardrails",
+          "severity": "positive",
+          "evidence": [
+            "src/adapters/learning-plan.ts",
+            "src/ui/ExerciseView.tsx",
+            "assets/js/domain/tutor_engine.mjs",
+            "content/lessons/foundations/learning.json"
+          ],
+          "uncertainty": "Die ausgewerteten Studien prüfen nicht exakt diese deutschsprachige, local-first Umsetzung.",
+          "recommendation": "Mechanismen als plausible Übertragung, nicht als bewiesenes Optimum darstellen.",
+          "suggestedImplementation": "Planannahmen, Tutorhilfen und unabhängige Folgeversuche in Produkt-Evals messen.",
+          "affectedContent": [
+            "today-plan",
+            "static-tutor",
+            "worked-examples"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "heuristic-thresholds",
+          "severity": "high",
+          "evidence": [
+            "content/competencies/core.json",
+            "assets/js/core/review_scheduler.js",
+            "docs/coverage-report.md"
+          ],
+          "uncertainty": "Zwei Treffer, ein Hinweis und konkrete Frischefristen sind Produktentscheidungen, keine universellen Konstanten.",
+          "recommendation": "Schwellen versionieren, erklären und empirisch kalibrieren.",
+          "suggestedImplementation": "Vor jeder Änderung eine Hypothese, Metrik und ununterstützte Transferprobe definieren.",
+          "affectedContent": [
+            "evidence-policy",
+            "review-policy",
+            "hint-policy"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "partially-implemented"
+        }
+      ]
+    },
+    {
+      "reviewId": "r-critical-program-review",
+      "title": "Kritischer Gesamtprogramm-Review",
+      "scope": "Vollständigkeit, Releaseaussagen, technische Schulden und nächste Ausbaugrenze",
+      "status": "blocked",
+      "summary": "Die erste vollständige Autorenfassung steht: 39 von 39 Roadmap-Wochen detailliert (W2-W4 mit Bestands-Foundations integriert, W31-W39 als Forschungs-/Capstone-Phase nach ADR-0014), 46 von 46 Kompetenzen mit Lektüre, Praxis, unabhängiger Evidenz und verzögertem Review. Alle Inhalte bleiben bis zur menschlichen didaktischen Prüfung Draft; seit Session B (ADR-0015) besitzt jede der 46 Kompetenzen einen frischen Instanzvariationspfad.",
+      "findings": [
+        {
+          "findingId": "course-completeness-overclaim",
+          "severity": "critical",
+          "evidence": [
+            "content/coverage-matrix.json",
+            "docs/coverage-report.md",
+            "src/ui/views.tsx"
+          ],
+          "uncertainty": "Die technische Vollständigkeit belegt weder Verständlichkeit noch Transferwirkung oder angemessene Arbeitslast für die Zielgruppe.",
+          "recommendation": "Die vollständige Autorenfassung als Draft kommunizieren und keine didaktische Programmfreigabe vor menschlichem Gegenlesen behaupten.",
+          "suggestedImplementation": "Gelöst 2026-08-31 (ADR-0014): 39/39 Wochen detailliert, 0 Outline-Wochen, 0 undefinierte Kompetenzreferenzen; Coverage-Matrix regeneriert.",
+          "affectedContent": [
+            "public-release-scope",
+            "w06-w39"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        },
+        {
+          "findingId": "fresh-variation-debt",
+          "severity": "high",
+          "evidence": [
+            "content/coverage-matrix.json",
+            "tests/foundations_fresh_generators.test.mjs",
+            "docs/adr/0015-seeded-variation-nonnumeric-and-retention-timelines.md"
+          ],
+          "uncertainty": "Generatoren können bei konzeptuellen Aufgaben künstliche oder degenerierte Varianten erzeugen.",
+          "recommendation": "Fresh-Instance-Lücken als priorisierte, aber lernzielabhängige Schuld führen.",
+          "suggestedImplementation": "Pro Kompetenz entweder einen geprüften Generator oder mehrere echte Definitionen mit verzögertem Transfer bereitstellen.",
+          "affectedContent": [
+            "current-competency-catalog"
+          ],
+          "humanReviewRequired": true,
+          "implementationStatus": "implemented"
+        }
+      ]
+    }
+  ]
+}

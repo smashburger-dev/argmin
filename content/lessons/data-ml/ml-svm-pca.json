@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-svm-pca",
+  "version": 1,
+  "locale": "de",
+  "title": "Margins, PCA und k-Means: Abstände ohne Ambiguität",
+  "objectives": [
+    "die Margin-Idee der Hard-Margin-SVM als kleinste-Norm-Lösung erklären",
+    "PCA mit Zentrieren, Kovarianz, eigh und Varianzanteil von Hand und in numpy rechnen",
+    "k-Means mit fester Initialisierung deterministisch ausführen und Skalierungsanforderungen begründen"
+  ],
+  "competencyIds": ["c-ml-svm-pca"],
+  "requires": ["c-ml-cv", "c-linalg-independence"],
+  "estimatedMinutes": 60,
+  "blocks": [{ "blockId": "ml-svm-pca-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-svm-pca.md" }],
+  "sourceRefs": [
+    { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "SVM, PCA (decomposition), Clustering (k-Means) — nur Lektüre" },
+    { "sourceId": "islr-book", "role": "practice", "locator": "Ch 9 SVM, Ch 12 Unsupervised (nur Zitation)" },
+    { "sourceId": "mit-ocw-18-06sc", "role": "practice", "locator": "Lecture 29: Singular Value Decomposition / Eigenwerte" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-regularization",
+  "version": 1,
+  "locale": "de",
+  "title": "Ridge und Lasso: Schrumpfen statt Überanpassen",
+  "objectives": [
+    "die Ridge-Geschlossene-Formel herleiten und auf kleine Matrizen anwenden",
+    "Lasso-Soft-Thresholding in einer Dimension berechnen und Sparsity begründen",
+    "lambda per Cross-Validation wählen und Feature Engineering leakage-frei vorbereiten"
+  ],
+  "competencyIds": ["c-ml-regularization"],
+  "requires": ["c-ml-cv", "c-ml-linear"],
+  "estimatedMinutes": 55,
+  "blocks": [{ "blockId": "ml-regularization-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-regularization.md" }],
+  "sourceRefs": [
+    { "sourceId": "islr-book", "role": "primary", "locator": "Ch 6 Linear Model Selection and Regularization (nur Zitation)" },
+    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Ridge regression / Lasso — nur Lektüre" },
+    { "sourceId": "devries-ml", "role": "practice", "locator": "Kapitel Regularisierung" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

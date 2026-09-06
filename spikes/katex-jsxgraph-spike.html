@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spike: KaTeX + JSXGraph</title>
+<link rel="stylesheet" href="../vendor/katex/dist/katex.min.css">
+<script defer src="../vendor/katex/dist/katex.min.js"></script>
+<script defer src="../vendor/katex/dist/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="../vendor/jsxgraph/jsxgraph.css">
+<script src="../vendor/jsxgraph/jsxgraphcore.js"></script>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 1rem; }
+  .jxgbox { width: 420px; height: 340px; border: 2px solid #111; }
+  input[type="number"] { width: 5rem; min-height: 44px; }
+  button, input { font: inherit; }
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  fieldset { border: 2px solid #111; }
+</style>
+</head>
+<body>
+<h1>Spike: KaTeX-Formeln + JSXGraph-Interaktion</h1>
+
+<section>
+  <h2>Formel (KaTeX, offline-Fonts)</h2>
+  <div id="formula">$$C = AB,\quad A\in\mathbb{R}^{2\times2},\ B\in\mathbb{R}^{2\times2}$$</div>
+  <p id="katex-status">–</p>
+</section>
+
+<section>
+  <h2>Lineare Abbildung als Vektorpfeil (JSXGraph)</h2>
+  <p>Lernziel: Der Vektor <strong>b</strong> (grün, durchgezogen) ist die erste Spalte von
+     <strong>A</strong>; ziehe die Spitze oder nutze die Zahlenfelder. Der gestrichelte
+     graue Vektor zeigt (1,0) als Bezug.</p>
+  <div class="row">
+    <div id="board" class="jxgbox" aria-label="Interaktives Koordinatensystem: Vektor b"></div>
+    <fieldset>
+      <legend>Spitzenkoordinaten von b (Tastatur-zugänglich)</legend>
+      <label>x = <input type="number" id="bx" step="0.1" value="1.5"></label>
+      <label>y = <input type="number" id="by" step="0.1" value="2"></label>
+      <p>Skalarprodukt mit e₁=(1,0): <output id="dot">1.5</output></p>
+    </fieldset>
+  </div>
+  <p id="jxg-status">–</p>
+</section>
+
+<script>
+window.addEventListener('load', () => {
+  // KaTeX: verify offline rendering succeeded (no error thrown, katex-html present)
+  try {
+    renderMathInElement(document.body, { delimiters: [{ left: '$$', right: '$$', display: true }] });
+    const ok = document.querySelector('#formula .katex-html') !== null;
+    document.getElementById('katex-status').textContent =
+      ok ? 'KaTeX: Formula rendered (.katex-html vorhanden)' : 'KaTeX: FEHLER — kein Rendering';
+  } catch (e) {
+    document.getElementById('katex-status').textContent = 'KaTeX-Fehler: ' + e.message;
+  }
+});
+
+const board = JXG.JSXGraph.initBoard('board', {
+  boundingbox: [-1, 4, 4, -1], axis: true, showNavigation: true,
+});
+const e1 = board.create('arrow', [[0, 0], [1, 0]], {
+  dash: 2, strokeColor: '#6a675f', strokeWidth: 2, name: 'e₁', withLabel: true, fixed: true,
+});
+const b = board.create('arrow', [[0, 0], [1.5, 2]], {
+  strokeColor: '#0a7d24', strokeWidth: 3, lastArrow: true,
+  name: 'b', withLabel: true, highlightStrokeColor: '#0a7d24',
+});
+const tipX = document.getElementById('bx');
+const tipY = document.getElementById('by');
+const dotOut = document.getElementById('dot');
+
+const updateDot = () => {
+  dotOut.value = (b.point2.X() * 1 + b.point2.Y() * 0).toFixed(2).replace(/\.00$/, '');
+};
+b.point2.on('drag', () => { tipX.value = b.point2.X().toFixed(2); tipY.value = b.point2.Y().toFixed(2); updateDot(); });
+const applyInputs = () => {
+  b.point2.moveTo([Number(tipX.value), Number(tipY.value)], 50);
+  updateDot();
+};
+tipX.addEventListener('change', applyInputs);
+tipY.addEventListener('change', applyInputs);
+updateDot();
+document.getElementById('jxg-status').textContent =
+  'JSXGraph ' + JXG.version + ' geladen; Pfeilspitze per Drag UND per Zahlenfeld steuerbar.';
+</script>
+</body>
+</html>

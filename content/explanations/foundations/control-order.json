@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "explanationId": "x-control-order",
+  "version": 2,
+  "locale": "de",
+  "title": "Kontrollfluss zuerst als Ablauf ordnen",
+  "competencyIds": ["c-python-control-flow"],
+  "diagnosticCodes": ["wrong-order"],
+  "helpLevel": 2,
+  "body": "Markiere Initialisierung, Wiederholung, Bedingung und Rückgabe als vier getrennte Rollen.",
+  "steps": ["Lege fest, was vor der Schleife existieren muss.", "Rücke nur die Zeile ein, die bei wahrer Bedingung laufen soll.", "Setze return nach die Schleife, wenn alle Werte verarbeitet werden müssen."],
+  "example": "result = [] steht vor for; return result steht danach.",
+  "counterexample": "return im Schleifenkörper beendet nach dem ersten Element.",
+  "sourceRefs": ["py-tutorial-official-3.14"],
+  "followUpActivityIds": ["f-control-parsons-01"],
+  "revealsSolution": false,
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

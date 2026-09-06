@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-ensembles",
+  "version": 1,
+  "locale": "de",
+  "title": "Entscheidungsbäume und Ensembles: Gini, Bagging, Majority Voting",
+  "objectives": [
+    "Gini-Unreinheit und gewichtete Splits für Tiefe <= 2 von Hand rechnen",
+    "Bias-Varianz-Idee von Bagging und Majority Voting begründen",
+    "Ensemble- gegen Baseline-Vergleiche unter identischen Splits planen"
+  ],
+  "competencyIds": ["c-ml-ensembles"],
+  "requires": ["c-ml-cv"],
+  "estimatedMinutes": 55,
+  "blocks": [{ "blockId": "ml-ensembles-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-ensembles.md" }],
+  "sourceRefs": [
+    { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Decision Trees + Ensembles (RandomForest, GradientBoosting) — nur Lektüre" },
+    { "sourceId": "islr-book", "role": "practice", "locator": "Ch 8 Tree-Based Methods (nur Zitation)" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

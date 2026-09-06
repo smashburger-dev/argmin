@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-repro",
+  "version": 1,
+  "locale": "de",
+  "title": "Reproduzierbarkeit: Seeds, Splits und Manifeste",
+  "objectives": [
+    "den Reproduzierbarkeitsvertrag aus Seeds, fixem Split, Vorab-Metrik und Manifest anwenden",
+    "numpy-Zufallsströme mit default_rng korrekt vorhersagen und wiederholen",
+    "Modellkarten und berichtete Streuung als Teil ehrlicher Ergebnisberichte einsetzen"
+  ],
+  "competencyIds": ["c-ml-repro"],
+  "requires": ["c-ml-erroranalysis", "c-ml-regularization", "c-ml-ensembles", "c-ml-svm-pca", "c-git-basics", "c-testing-debugging"],
+  "estimatedMinutes": 60,
+  "blocks": [{ "blockId": "ml-repro-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-repro.md" }],
+  "sourceRefs": [
+    { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Common pitfalls: Controlling randomness — nur Lektüre" },
+    { "sourceId": "model-cards-paper", "role": "practice", "locator": "Model Cards, FAT* 2019 (arXiv:1810.03993)" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-ml-logistic",
+  "version": 1,
+  "locale": "de",
+  "title": "Logistische Regression und Klassifikationsmetriken",
+  "objectives": [
+    "die Sigmoid-Funktion auswerten und Wahrscheinlichkeiten mit einem Schwellenwert in Labels überführen",
+    "Precision, Recall und F1 aus einer Konfusionsmatrix berechnen",
+    "den Schwellenwert an den Fehlerkosten von False Positive und False Negative ausrichten"
+  ],
+  "competencyIds": ["c-ml-logistic"],
+  "requires": ["c-ml-linear"],
+  "estimatedMinutes": 55,
+  "blocks": [
+    { "blockId": "ml-logistic-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-logistic.md" }
+  ],
+  "sourceRefs": [
+    { "sourceId": "openintro-statistics", "role": "primary", "locator": "Ch 9 Multiple and Logistic Regression" },
+    { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Logistic Regression + Classification metrics — nur Lektüre" }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
