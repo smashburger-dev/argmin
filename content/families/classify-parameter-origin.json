@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-parameter-origin",
+  "contract": {
+    "familyId": "classify-parameter-origin",
+    "familyGroup": "classify-concept",
+    "summary": "Unterscheidet gelernte Modellparameter von vorab gewählten Hyperparametern.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "hyperparameter-vs-parameter",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-cv"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "hyperparameter-vs-parameter",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w12-e1"
+      ],
+      "parameters": {
+        "topic": "Hyperparameter vs. Parameter"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Was ist der wesentliche Unterschied zwischen Hyperparametern und Parametern eines Modells?",
+      "fullSolution": "Parameter (Gewichte, Intercepts) entstehen aus dem Training auf Daten; Hyperparameter (Fold-Anzahl k, Regularisierungsstärke, Lernrate) werden vor dem Training festgelegt und steuern den Lernprozess — ihre Wahl gehört in die Cross-Validation, nicht in den Gradientenabstieg.",
+      "hints": [
+        "Frage dich bei jeder Größe: Wird sie aus Daten berechnet oder muss sie jemand vorab entscheiden?",
+        "Die Fold-Anzahl k oder eine Regularisierungsstärke stehen nicht in der Verlustfunktion als gelernte Gewichte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Genau umgekehrt: Gewichte (Parameter) werden gelernt, Hyperparameter steuern das Lernen und werden vorab gewählt."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Modellgewichte lernt der Algorithmus; was das Lernen selbst steuert (Lernrate, k, Stärke), muss von außen gesetzt werden."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Auch einfache Verfahren haben Hyperparameter — etwa die Regularisierungsstärke bei regularisierter Regression oder k bei k-Nächste-Nachbarn."
+        }
+      ],
+      "typicalErrors": [
+        "Hyperparameter und Parameter vertauschen",
+        "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln",
+        "glauben, einfache Modelle hätten keine Hyperparameter"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hyperparameter werden aus den Trainingsdaten optimiert, Parameter werden vor dem Training manuell festgelegt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Es gibt keinen Unterschied — beide werden beim Training gelernt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Hyperparameter werden vor dem Training festgelegt und steuern den Lernprozess (z. B. Fold-Anzahl, Regularisierungsstärke); Parameter (z. B. Gewichte) werden aus den Trainingsdaten gelernt.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Hyperparameter gibt es nur bei neuronalen Netzen; lineare Regression hat keine.",
+          "correct": false
+        }
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    }
+  ]
+}

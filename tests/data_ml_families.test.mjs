@@ -7,6 +7,7 @@ import {
   DATA_ML_FAMILY_SPECS,
   generateAggregateMajorityRuleCountFamily,
   generateAggregateConfusionMetricFamily,
+  generateFormulaMetricSpreadRangeFamily,
   generateCountRemainingRowsFamily,
   generateFormulaQuadraticErrorMetricFamily,
   generateMseGradientClosedFormFamily,
@@ -14,6 +15,7 @@ import {
   solveFormulaQuadraticErrorMetric,
   solveAggregateMajorityRuleCount,
   solveAggregateConfusionMetric,
+  solveFormulaMetricSpreadRange,
   solveCountRemainingRows,
   solveMseGradientClosedForm,
   solveFormulaRatioPercentMetric,
@@ -21,6 +23,7 @@ import {
 import {
   genBaselineCorrect,
   genConfusionCount,
+  genCvSpread,
   genCompleteRows,
   genDedupRows,
   genMseFromResiduals,
@@ -41,6 +44,9 @@ const metricsDoc = JSON.parse(readFileSync(join(root, 'content/families/fit-pred
 const quadraticErrorDoc = JSON.parse(readFileSync(join(root, 'content/families/formula-quadratic-error-metric.json'), 'utf8'));
 const confusionMetricDoc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-confusion-metric.json'), 'utf8'));
 const sigmoidDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-sigmoid-regime.json'), 'utf8'));
+const parameterOriginDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-parameter-origin.json'), 'utf8'));
+const cvLeakageDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-cv-leakage.json'), 'utf8'));
+const leakageAuditDoc = JSON.parse(readFileSync(join(root, 'content/families/validate-leakage-rule-audit.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -49,6 +55,9 @@ registerStaticCases(taskTypeDoc.familyId, taskTypeDoc.cases);
 registerStaticCases(splitDoc.familyId, splitDoc.cases);
 registerStaticCases(metricsDoc.familyId, metricsDoc.cases);
 registerStaticCases(quadraticErrorDoc.familyId, quadraticErrorDoc.cases);
+registerStaticCases(parameterOriginDoc.familyId, parameterOriginDoc.cases);
+registerStaticCases(cvLeakageDoc.familyId, cvLeakageDoc.cases);
+registerStaticCases(leakageAuditDoc.familyId, leakageAuditDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -63,6 +72,9 @@ const familyDocs = [
   JSON.parse(readFileSync(join(root, 'content/families/classify-confounding.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8')),
+  parameterOriginDoc,
+  cvLeakageDoc,
+  leakageAuditDoc,
 ];
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
@@ -501,6 +513,110 @@ test('W11 seeded confusion corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['aggregate-confusion-metric'].digest);
+});
+
+test('CV spread family preserves seeded generation, profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-metric-spread-range');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'cv-fold-accuracy-spread',
+        difficulty,
+      });
+      const expected = Math.max(...generated.parameters.scores) - Math.min(...generated.parameters.scores);
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveFormulaMetricSpreadRange(generated.parameters).value, expected);
+      if (difficulty === 'intro') assert.equal(generated.parameters.k, 4);
+      if (difficulty === 'stretch') assert.equal(generated.parameters.k, 10);
+    }
+  }
+  assert.equal(
+    generateFormulaMetricSpreadRangeFamily({
+      seed: 12001,
+      caseId: 'cv-fold-accuracy-spread',
+      difficulty: 'core',
+    }).expected.value,
+    genCvSpread(12001).expected,
+  );
+  assert.equal(
+    generateFormulaMetricSpreadRangeFamily({
+      seed: 12001,
+      caseId: 'cv-fold-accuracy-spread',
+      difficulty: 'core',
+    }).expected.value,
+    32,
+  );
+});
+
+test('W12 static cases enforce profiles and competency overrides', () => {
+  const parameterOrigin = EXERCISE_FAMILIES.instantiate(
+    'classify-parameter-origin',
+    0,
+    'intro',
+    'hyperparameter-vs-parameter',
+  );
+  assert.equal(parameterOrigin.masteryEligible, false);
+  assert.deepEqual(parameterOrigin.competencyIds, ['c-ml-cv']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'classify-parameter-origin',
+      0,
+      'core',
+      'hyperparameter-vs-parameter',
+    ),
+    /Unbekanntes Profil/,
+  );
+  const leakage = EXERCISE_FAMILIES.instantiate(
+    'classify-cv-leakage',
+    0,
+    'core',
+    'impute-before-split',
+  );
+  assert.equal(leakage.masteryEligible, true);
+  assert.deepEqual(leakage.competencyIds, ['c-ml-cv']);
+  const kfold = EXERCISE_FAMILIES.instantiate(
+    'reproduce-seeded-split',
+    0,
+    'core',
+    'kfold-indices-numpy',
+  );
+  assert.deepEqual(kfold.competencyIds, ['c-ml-cv', 'c-numpy-basics']);
+  assert.equal(kfold.parameters.packages[0], 'numpy');
+  const audit = EXERCISE_FAMILIES.instantiate(
+    'validate-leakage-rule-audit',
+    0,
+    'stretch',
+    'pipeline-leakage-audit',
+  );
+  assert.deepEqual(audit.competencyIds, ['c-ml-cv']);
+  for (const [familyId, caseId, difficulty, wrongDifficulty] of [
+    ['classify-cv-leakage', 'impute-before-split', 'core', 'stretch'],
+    ['reproduce-seeded-split', 'kfold-indices-numpy', 'core', 'stretch'],
+    ['validate-leakage-rule-audit', 'pipeline-leakage-audit', 'stretch', 'core'],
+  ]) {
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(familyId, 0, wrongDifficulty, caseId),
+      /Unbekanntes Profil/,
+    );
+    assert.ok(difficulty);
+  }
+});
+
+test('W12 seeded CV spread corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateFormulaMetricSpreadRangeFamily({
+        seed,
+        caseId: 'cv-fold-accuracy-spread',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['formula-metric-spread-range'].digest);
 });
 
 test('sklearn trace case grades and exposes the ML-baseline competency override', async () => {

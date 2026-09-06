@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-cv-leakage",
+  "contract": {
+    "familyId": "classify-cv-leakage",
+    "familyGroup": "classify-concept",
+    "summary": "Erkennt Daten-Leakage an der Grenze zwischen Training und Test.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "impute-before-split",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-ml-cv"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "impute-before-split",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w12-e3"
+      ],
+      "parameters": {
+        "steps": [
+          "fill with column mean over all rows",
+          "deterministic split",
+          "fit on train, evaluate on test"
+        ]
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Ein Team beschreibt seine Pipeline mit 200 Zeilen: (1) Fehlende Werte der Spalte „Einkommen“ werden mit dem Spaltenmittelwert gefüllt — berechnet über alle 200 Zeilen. (2) Danach wird deterministisch in Train und Test geteilt. (3) Ein Modell wird auf Train gefittet und auf Test bewertet. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
+      "fullSolution": "Der Mittelwert wird über alle 200 Zeilen geschätzt, bevor geteilt wird — die Testzeilen stecken also in der Trainingsstatistik (Statistik-Leakage vor dem Split). Korrekt wäre: erst teilen, den Fill-Wert nur auf Train berechnen und auf Test anwenden.",
+      "hints": [
+        "Prüfe jeden Schritt gegen die Pipelinegrenze: Wurde vor dem Schritt schon geteilt, und welche Daten fließen in die Berechnung ein?",
+        "Ein per Hand ausgefüllter Wert ist kein Problem — das Problem ist, aus welchen Zeilen der Wert geschätzt wurde."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Von einer Ziel-Spalte in den Features steht nichts in der Beschreibung — der einzige Verstoß liegt bei den verwendeten Zeilen."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Deterministisch heißt reproduzierbar, nicht unkritisch: Die Frage ist, ob Testzeilen in eine Train-Statistik eingeflossen sind — hier ja."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein deterministischer Split ist gerade das Mittel zur Kontrolle; das Problem ist die Reihenfolge der Schritte, nicht der Seed."
+        }
+      ],
+      "typicalErrors": [
+        "Leakage nur bei Ziel-in-Features vermuten",
+        "Determinismus mit Unbedenklichkeit verwechseln",
+        "die Reihenfolge Füllen → Split nicht als Problem erkennen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Statistik-Leakage vor dem Split: Der Fill-Wert wird über alle Zeilen (inklusive Test) berechnet — Test-Information fließt in die Trainingsdaten.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Ziel-Leakage: Die Zielvariable steht als Feature im Modell.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Kein Leakage — der Mittelwert ist deterministisch, also unproblematisch.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Split-Leakage: Ein deterministischer Split leakt immer die Testreihenfolge.",
+          "correct": false
+        }
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    }
+  ]
+}

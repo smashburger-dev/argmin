@@ -87,6 +87,18 @@
       ],
       "instances": 192,
       "digest": "c39821e37fbe850d3e8f71f0326bb0b9f187b285b08cde5dd8caefaecc5f6d60"
+    },
+    "formula-metric-spread-range": {
+      "cases": [
+        "cv-fold-accuracy-spread"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "03fd5f98a0076b4ea55cca8a20b868c9b4e1b302cdcba7e24aea8e4495496cc2"
     }
   }
 }
