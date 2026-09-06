@@ -20,6 +20,12 @@ import {
   genR2Share,
   genPcaVariancePercent,
 } from './data_ml_generators.mjs';
+import {
+  genBackpropChain,
+  genDropoutCount,
+  genLinearParamCount,
+  genSgdSteps,
+} from './w18_w21_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
@@ -92,6 +98,22 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'pca-explained-variance-percent') {
     if (difficulty === 'intro') return (parameters) => parameters.total === 50;
     if (difficulty === 'stretch') return (parameters) => parameters.total === 25;
+  }
+  if (caseId === 'linear-param-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'single';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'compare';
+  }
+  if (caseId === 'sgd-update-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'epochs';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'until' || parameters.variant === 'momentum';
+  }
+  if (caseId === 'dropout-mask-kept-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'kept';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'both';
+  }
+  if (caseId === 'chain-rule-path-sum') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'path';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'fork';
   }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
@@ -261,6 +283,71 @@ const FAMILY_DEFINITIONS = {
       };
     },
   },
+  'formula-count-from-construction': {
+    cases: {
+      'linear-param-count': {
+        generator: genLinearParamCount,
+        competencyIds: ['c-dl-tensors'],
+      },
+      'sgd-update-count': {
+        generator: genSgdSteps,
+        competencyIds: ['c-dl-training'],
+      },
+      'dropout-mask-kept-count': {
+        generator: genDropoutCount,
+        competencyIds: ['c-dl-regularization'],
+      },
+    },
+    solve(parameters) {
+      if (parameters.caseId === 'linear-param-count') {
+        if (parameters.variant === 'single') return { value: parameters.d * parameters.h + parameters.h };
+        if (parameters.variant === 'mlp') {
+          return {
+            value: (parameters.d * parameters.h1 + parameters.h1)
+              + (parameters.h1 * parameters.h2 + parameters.h2),
+          };
+        }
+        return {
+          value: (parameters.hWide - parameters.hNarrow)
+            * (parameters.d + 1 + parameters.out),
+        };
+      }
+      if (parameters.caseId === 'sgd-update-count') {
+        if (parameters.variant === 'plain') {
+          return { value: parameters.descending ? parameters.w0 - parameters.n * parameters.step : parameters.w0 + parameters.n * parameters.step };
+        }
+        if (parameters.variant === 'epochs') return { value: parameters.epochs * Math.ceil(parameters.n / parameters.batch) };
+        if (parameters.variant === 'until') return { value: Math.ceil((parameters.w0 - parameters.target) / parameters.step) };
+        return { value: 2 * parameters.g - parameters.g / 2 ** (parameters.n - 1) };
+      }
+      if (parameters.caseId === 'dropout-mask-kept-count') {
+        if (parameters.variant === 'kept') return { value: parameters.mask.filter(Boolean).length };
+        if (parameters.variant === 'dropped') return { value: parameters.n - parameters.mask.filter(Boolean).length };
+        return {
+          value: parameters.mask1.reduce((count, value, index) => count + (value && parameters.mask2[index] ? 1 : 0), 0),
+        };
+      }
+      throw new Error(`formula-count-from-construction: unbekannter Fall ${parameters.caseId}`);
+    },
+  },
+  'optimize-backprop-path-sum': {
+    cases: {
+      'chain-rule-path-sum': {
+        generator: genBackpropChain,
+        competencyIds: ['c-dl-autograd'],
+      },
+    },
+    solve(parameters) {
+      if (parameters.variant === 'path') {
+        return { value: parameters.locals.reduce((product, local) => product * local, 1) };
+      }
+      if (parameters.variant === 'repeat') return { value: parameters.a ** parameters.n };
+      return {
+        value: parameters.branchA[0] * parameters.branchA[1]
+          + parameters.branchB[0] * parameters.branchB[1],
+      };
+    },
+  },
 };
 
 function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
@@ -360,6 +447,22 @@ export function generateFormulaMetricSpreadRangeFamily({ seed, caseId, difficult
   return generateDataMlFamily('formula-metric-spread-range', { seed, caseId, difficulty });
 }
 
+export function solveFormulaCountFromConstruction(parameters) {
+  return FAMILY_DEFINITIONS['formula-count-from-construction'].solve(parameters);
+}
+
+export function generateFormulaCountFromConstructionFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('formula-count-from-construction', { seed, caseId, difficulty });
+}
+
+export function solveOptimizeBackpropPathSum(parameters) {
+  return FAMILY_DEFINITIONS['optimize-backprop-path-sum'].solve(parameters);
+}
+
+export function generateOptimizeBackpropPathSumFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('optimize-backprop-path-sum', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -405,6 +508,16 @@ const FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES = [
     caseId: 'seed-rerun-accuracy-spread',
     competencyIds: ['c-ml-repro', 'c-ml-cv'],
   },
+];
+
+const FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES = [
+  { caseId: 'linear-param-count', sourceLineage: ['w18-e2'], competencyIds: ['c-dl-tensors'] },
+  { caseId: 'sgd-update-count', sourceLineage: ['w20-e2'], competencyIds: ['c-dl-training'] },
+  { caseId: 'dropout-mask-kept-count', sourceLineage: ['w21-e2'], competencyIds: ['c-dl-regularization'] },
+];
+
+const OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES = [
+  { caseId: 'chain-rule-path-sum', sourceLineage: ['w19-e2'], competencyIds: ['c-dl-autograd'] },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -505,6 +618,34 @@ export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
   activityType: 'numeric',
 };
 
+export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
+  familyId: 'formula-count-from-construction',
+  familyGroup: 'formula-apply',
+  summary: 'Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-dl-tensors', 'c-dl-training', 'c-dl-regularization'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
+export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
+  familyId: 'optimize-backprop-path-sum',
+  familyGroup: 'optimize-update',
+  summary: 'Berechnet den Gesamtgradienten eines Knotens als Summe der Pfadprodukte über parallele Kettenregel-Zweige.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-dl-autograd'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
 export const DATA_ML_FAMILY_SPECS = [
   {
     ...COUNT_REMAINING_ROWS_CONTRACT,
@@ -540,5 +681,15 @@ export const DATA_ML_FAMILY_SPECS = [
     ...FORMULA_METRIC_SPREAD_RANGE_CONTRACT,
     generate: generateFormulaMetricSpreadRangeFamily,
     solve: solveFormulaMetricSpreadRange,
+  },
+  {
+    ...FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT,
+    generate: generateFormulaCountFromConstructionFamily,
+    solve: solveFormulaCountFromConstruction,
+  },
+  {
+    ...OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT,
+    generate: generateOptimizeBackpropPathSumFamily,
+    solve: solveOptimizeBackpropPathSum,
   },
 ];
