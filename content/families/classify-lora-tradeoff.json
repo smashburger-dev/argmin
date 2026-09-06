@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-lora-tradeoff",
+  "contract": {
+    "familyId": "classify-lora-tradeoff",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine LoRA-Konfiguration ihrem Trade-off zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "lora-tradeoff",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-dl-finetuning"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "lora-tradeoff",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w25-e1"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-finetuning"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Basisgewichte $W$ bleiben eingefroren; trainiert wird nur $\\Delta W = \\frac{\\alpha}{r}BA$ mit kleinem Rang $r$ — beim Einsatz lässt sich $\\Delta W$ direkt in $W$ einrechnen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Alle Modellparameter werden mit sehr kleiner Lernrate aktualisiert, damit sich wenig ändert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Netz wird gestutzt (Pruning): unwichtige Zeilen von $W$ werden entfernt und die Reste neu trainiert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Gewichte werden quantisiert und nur die Quantisierungsfehler trainiert.",
+          "correct": false
+        }
+      ],
+      "prompt": "Was ist die Kernidee von LoRA (Low-Rank Adaptation)?",
+      "fullSolution": "LoRA friert $W$ ein und lernt $\\Delta W = \\frac{\\alpha}{r}BA$ mit Rang $r \\ll \\min(d_{in}, d_{out})$; $\\Delta W$ lässt sich in $W$ einrechnen, dadurch entsteht keine zusätzliche Inferenz-Latenz. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "LoRA nennt sich Low-Rank: Was wird an Stelle der vollen Matrix gelernt, und was passiert beim Inferenz-Einsatz?",
+        "Zwei kleine Faktoren $B$ und $A$ mit Rang $r$ ersetzen das Update; eingefroren heißt: $W$ bekommt keine Gradienten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Kleine Lernrate ist trotzdem Full Fine-Tuning — LoRA friert $W$ komplett ein."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Pruning entfernt Gewichte dauerhaft; LoRA ergänzt ein Rang-r-Update und lässt $W$ unangetastet."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Quantisierung ist eine eigene Methode (z. B. QLoRA kombiniert beide) — nicht die LoRA-Kernidee."
+        }
+      ],
+      "typicalErrors": [
+        "LoRA mit Full Fine-Tuning bei kleiner Lernrate verwechselt",
+        "LoRA mit Pruning verwechselt",
+        "eingefrorene Basis übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

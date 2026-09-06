@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "transform-tokenize-roundtrip",
+  "contract": {
+    "familyId": "transform-tokenize-roundtrip",
+    "familyGroup": "transform-terms",
+    "summary": "Baut Zeichen-Tokenisierung mit Wort-Marker und Satz-Eos auf und stellt die decode-Umkehrung samt Fehlervertrag bereit.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "char-encode-roundtrip",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-dl-tokenizer",
+      "c-python-collections"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "char-encode-roundtrip",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w23-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "# VOCAB is part of the starter code\nVOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\n\n\ndef encode(text):\n    \"\"\"Word-wise char encoding: chars + </w> per word, one <eos> at the end.\"\"\"\n    ...\n\n\ndef decode(ids):\n    \"\"\"Inverse of encode; everything after <eos> is ignored.\"\"\"\n    ...\n",
+        "tests": "__check('encode low lowest', encode(\"low lowest\") == [9, 10, 13, 3, 9, 10, 13, 8, 11, 12, 3, 2])\n__check('encode einzelwort', encode(\"cab\") == [6, 4, 5, 3, 2])\n__check('round trip einzelwort', decode(encode(\"low\")) == \"low\")\n__check('round trip zwei woerter', decode(encode(\"low lowest\")) == \"low lowest\")\n__check('round trip abc', decode(encode(\"abc\")) == \"abc\")\n__check('round trip todesliste', all(decode(encode(s)) == s for s in [\"low\", \"abc\", \"low lowest\", \"cab\", \"tease\"]))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "# VOCAB is part of the starter code\nVOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\n\ndef encode(text):\n    \"\"\"Word-wise char encoding: chars + </w> per word, one <eos> at the end.\"\"\"\n    ids = []\n    for word in text.split(\" \"):\n        if word == \"\":\n            raise ValueError(\"leeres Wort\")\n        for ch in word:\n            if ch not in VOCAB:\n                raise ValueError(\"unbekanntes Zeichen: \" + ch)\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n\ndef decode(ids):\n    \"\"\"Inverse of encode; everything after <eos> is ignored.\"\"\"\n    inv = {v: k for k, v in VOCAB.items()}\n    words = []\n    current = \"\"\n    for i in ids:\n        if i == VOCAB[\"<eos>\"]:\n            break\n        if i not in inv:\n            raise ValueError(\"unbekannte Token-ID\")\n        tok = inv[i]\n        if tok == \"</w>\":\n            words.append(current)\n            current = \"\"\n        elif tok in (\"<pad>\", \"<unk>\"):\n            raise ValueError(\"Sondertoken im Datenstrom\")\n        else:\n            current += tok\n    if current:\n        words.append(current)\n    return \" \".join(words)\n"
+      },
+      "prompt": "Zeichen-Tokenizer mit Marker: Implementiere <code>encode(text)</code> und <code>decode(ids)</code> auf Basis des festen <code>VOCAB</code> aus dem Startercode. Vertrag für <code>encode</code>: Wörter werden an einfachen Leerzeichen getrennt; jedes Wort wird zu seinen Zeichen-IDs plus <code>&lt;/w&gt;</code>-ID; am Ende der ganzen Folge steht genau ein <code>&lt;eos&gt;</code>. Leere Wörter und unbekannte Zeichen werfen <code>ValueError</code>. Vertrag für <code>decode</code>: die Umkehrung — <code>&lt;/w&gt;</code> schließt ein Wort ab (Wörter werden mit Leerzeichen verbunden), <code>&lt;eos&gt;</code> beendet die Decodierung (alles danach wird ignoriert), ein Wort ohne abschließenden Marker wird trotzdem ausgegeben; unbekannte IDs und die Sondertokens <code>&lt;pad&gt;</code>/<code>&lt;unk&gt;</code> im Datenstrom werfen <code>ValueError</code>. Der Testcode erzwingt den Round-Trip <code>decode(encode(s)) == s</code> für mehrere Strings.",
+      "fullSolution": "# VOCAB is part of the starter code\nVOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\n\ndef encode(text):\n    \"\"\"Word-wise char encoding: chars + </w> per word, one <eos> at the end.\"\"\"\n    ids = []\n    for word in text.split(\" \"):\n        if word == \"\":\n            raise ValueError(\"leeres Wort\")\n        for ch in word:\n            if ch not in VOCAB:\n                raise ValueError(\"unbekanntes Zeichen: \" + ch)\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n\ndef decode(ids):\n    \"\"\"Inverse of encode; everything after <eos> is ignored.\"\"\"\n    inv = {v: k for k, v in VOCAB.items()}\n    words = []\n    current = \"\"\n    for i in ids:\n        if i == VOCAB[\"<eos>\"]:\n            break\n        if i not in inv:\n            raise ValueError(\"unbekannte Token-ID\")\n        tok = inv[i]\n        if tok == \"</w>\":\n            words.append(current)\n            current = \"\"\n        elif tok in (\"<pad>\", \"<unk>\"):\n            raise ValueError(\"Sondertoken im Datenstrom\")\n        else:\n            current += tok\n    if current:\n        words.append(current)\n    return \" \".join(words)\n# encode(\"low lowest\") -> [9, 10, 13, 3, 9, 10, 13, 8, 11, 12, 3, 2]\n# decode davon -> \"low lowest\" (Round-Trip-Invariante aus dem Test).",
+      "hints": [
+        "encode: text.split(\" \"), je Wort zeichenweise IDs + </w>-ID, am Schluss einmal <eos>; unbekannte Zeichen und leere Wörter vorher abfangen.",
+        "decode: Wörter in einer Liste sammeln, aktueller Wortpuffer endet bei </w>; bei <eos> abbrechen; Restpuffer am Ende nicht vergessen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "eos-per-word",
+          "then": "<eos> steht genau einmal am Ende der ganzen Folge — nicht pro Wort."
+        },
+        {
+          "if": "trailing-space",
+          "then": "Der Marker trennt Wörter; er erzeugt kein zusätzliches Leerzeichen am Ende."
+        },
+        {
+          "if": "special-token-accepted",
+          "then": "<pad> und <unk> sind keine Inhalts-Tokens; im Datenstrom werfen sie ValueError."
+        }
+      ],
+      "typicalErrors": [
+        "<eos> pro Wort statt einmal am Ende",
+        "Marker als Leerzeichen am Satzende",
+        "unbekannte IDs stillschweigend überlesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

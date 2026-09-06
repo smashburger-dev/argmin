@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-tf-finetuning",
+  "version": 1,
+  "locale": "de",
+  "title": "Fine-Tuning-Strategien und LoRA-Mathematik",
+  "description": "Fine-Tuning, Feature Extraction und LoRA mit ihren Parameter- und Speicherfolgen vergleichen LoRA-Updates ΔW = (α/r)·B·A exakt berechnen, anwenden und Parameterzahlen gegen volles Fine-Tuning stellen Toy-Head-Only-Feinabstimmung mit eingefrorenem Rumpf, festem Seed und vorab festgelegter Metrik ehrlich ausführen und auswerten",
+  "competencyIds": [
+    "c-dl-finetuning"
+  ],
+  "requires": [
+    "c-dl-inference",
+    "c-dl-regularization"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-tf-finetuning"
+  ],
+  "placements": [
+    {
+      "placementId": "p-tf-finetuning-tradeoff",
+      "role": "curated",
+      "familyId": "classify-lora-tradeoff",
+      "caseId": "lora-tradeoff",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-tf-finetuning",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-tf-finetuning-count",
+      "role": "curated",
+      "familyId": "formula-count-from-construction",
+      "caseId": "lora-param-count",
+      "seed": 2511,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-finetuning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-finetuning-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "freeze-param-filter-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-finetuning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-finetuning-delta",
+      "role": "curated",
+      "familyId": "formula-lora-delta-apply",
+      "caseId": "lora-delta-apply",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-tf-finetuning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-finetuning-head",
+      "role": "curated",
+      "familyId": "optimize-gradient-update-rule",
+      "caseId": "head-only-finetune",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-tf-finetuning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-finetuning-fit",
+      "role": "curated",
+      "familyId": "optimize-gradient-update-rule",
+      "caseId": "lora-fit-toy",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 45,
+      "lessonId": "l-tf-finetuning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-finetuning-practice",
+      "role": "practice-space",
+      "familyId": "formula-count-from-construction",
+      "caseId": "lora-param-count",
+      "seed": 2511,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-tf-finetuning"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

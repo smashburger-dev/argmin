@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-bpe-merge-learn",
+  "contract": {
+    "familyId": "optimize-bpe-merge-learn",
+    "familyGroup": "optimize-update",
+    "summary": "Lernt eine BPE-Mergetabelle als greedy Schleife: Paarhäufigkeiten zählen, häufigstes Paar mit lexikographischem Tie-Break wählen, überall anwenden, abbrechen.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "bpe-merge-learn",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-tokenizer",
+      "c-python-collections"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "bpe-merge-learn",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w23-e6"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def learn_merges(corpus, num_merges):\n    \"\"\"BPE learning with pinned rules: most frequent pair, ties -> lexicographically\n    smallest pair, stop early when no pair occurs more than once.\"\"\"\n    # words = [list(word) + [\"</w>\"] for word in corpus]\n    # per round: count adjacent pairs, pick max count, tie -> min(pair), merge everywhere\n    ...\n",
+        "tests": "__check('null Merges', learn_merges([\"low\"], 0) == [])\n__check('zu seltene Paare stoppen', learn_merges([\"ab\"], 5) == [])\nCORPUS = [\"low\", \"low\", \"lower\", \"lowest\"]\n__check('Lernfolge Korpus', learn_merges(CORPUS, 3) == [(\"l\", \"o\"), (\"lo\", \"w\"), (\"low\", \"</w>\")])\n__check('erster Tie-Break lexikographisch', learn_merges(CORPUS, 1) == [(\"l\", \"o\")])\n__check('weiter mit vier Merges', learn_merges(CORPUS, 4) == [(\"l\", \"o\"), (\"lo\", \"w\"), (\"low\", \"</w>\"), (\"low\", \"e\")])\nCORPUS2 = [\"aa\", \"aa\", \"aa\"]\n__check('Tie-Break mit Marker', learn_merges(CORPUS2, 2) == [(\"a\", \"</w>\"), (\"a\", \"a</w>\")])\n__check('Rundreise anwendbar', learn_merges([\"lowest\", \"lowest\", \"low\"], 2) == [(\"l\", \"o\"), (\"lo\", \"w\")])\n__check('Einzelschritt-Abbruch bei Erschoepfung', learn_merges([\"low\", \"low\"], 10) == [(\"l\", \"o\"), (\"lo\", \"w\"), (\"low\", \"</w>\")])"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def learn_merges(corpus, num_merges):\n    \"\"\"BPE learning with pinned rules: most frequent pair, ties -> lexicographically\n    smallest pair, stop early when no pair occurs more than once.\"\"\"\n    words = [list(word) + [\"</w>\"] for word in corpus]\n    merges = []\n    for _ in range(int(num_merges)):\n        counts = {}\n        for syms in words:\n            for i in range(len(syms) - 1):\n                pair = (syms[i], syms[i + 1])\n                counts[pair] = counts.get(pair, 0) + 1\n        if not counts:\n            break\n        max_count = max(counts.values())\n        if max_count < 2:\n            break\n        best = min(pair for pair, count in counts.items() if count == max_count)\n        merges.append(best)\n        a, b = best\n        merged_words = []\n        for syms in words:\n            out = []\n            i = 0\n            while i < len(syms):\n                if i + 1 < len(syms) and syms[i] == a and syms[i + 1] == b:\n                    out.append(a + b)\n                    i += 2\n                else:\n                    out.append(syms[i])\n                    i += 1\n            merged_words.append(out)\n        words = merged_words\n    return merges\n"
+      },
+      "prompt": "Final Boss BPE-Lernen: Implementiere <code>learn_merges(corpus, num_merges)</code> mit vollständig gepinnten Regeln. Vertrag: Jedes Korpuswort wird zur Zeichenliste plus <code>\"&lt;/w&gt;\"</code>; pro Runde werden alle benachbarten Symbolpaare gezählt (jedes Wortvorkommen zählt); gewählt wird das häufigste Paar — <strong>Tie-Break: bei gleicher Häufigkeit gewinnt das lexikographisch kleinste Paar</strong> (Tupel-Vergleich, der Marker beginnt mit „&lt;“ und ist damit klein); das Paar wird in jedem Wort auf alle Vorkommen angewandt (links nach rechts, nicht überlappend) und an die Merge-Liste angehängt. Vorzeitig abgebrochen wird, wenn kein Paar mehr mit Häufigkeit ≥ 2 existiert. Rückgabe: Liste von Paaren. Der Testcode enthält den Lerntable-Lauf aus der Lektion („low low lower lowest“) mit zwei echten Tie-Break-Situationen.",
+      "fullSolution": "def learn_merges(corpus, num_merges):\n    \"\"\"BPE learning with pinned rules: most frequent pair, ties -> lexicographically\n    smallest pair, stop early when no pair occurs more than once.\"\"\"\n    words = [list(word) + [\"</w>\"] for word in corpus]\n    merges = []\n    for _ in range(int(num_merges)):\n        counts = {}\n        for syms in words:\n            for i in range(len(syms) - 1):\n                pair = (syms[i], syms[i + 1])\n                counts[pair] = counts.get(pair, 0) + 1\n        if not counts:\n            break\n        max_count = max(counts.values())\n        if max_count < 2:\n            break\n        best = min(pair for pair, count in counts.items() if count == max_count)\n        merges.append(best)\n        a, b = best\n        merged_words = []\n        for syms in words:\n            out = []\n            i = 0\n            while i < len(syms):\n                if i + 1 < len(syms) and syms[i] == a and syms[i + 1] == b:\n                    out.append(a + b)\n                    i += 2\n                else:\n                    out.append(syms[i])\n                    i += 1\n            merged_words.append(out)\n        words = merged_words\n    return merges\n# learn_merges([\"low\",\"low\",\"lower\",\"lowest\"], 3)\n# -> [(\"l\",\"o\"), (\"lo\",\"w\"), (\"low\",\"</w>\")]\n# Runde 1: (\"l\",\"o\") und (\"o\",\"w\") stehen 4:4 — lexikographisch gewinnt (\"l\",\"o\").",
+      "hints": [
+        "Paare als Tupel von Strings zählen (dict); die Auswahl ist min() über alle Paare mit maximaler Häufigkeit.",
+        "Beim Verschmelzen wieder der linke, nicht überlappende Durchlauf; Abbruch, wenn max(counts) < 2 oder keine Paare mehr übrig sind."
+      ],
+      "feedbackRules": [
+        {
+          "if": "tie-break-wrong",
+          "then": "Bei Gleichstand gewinnt das lexikographisch kleinste Paar — nicht das erste gefundene oder das kürzeste."
+        },
+        {
+          "if": "single-occurrence-merged",
+          "then": "Paare mit Häufigkeit 1 werden nicht gelernt: Abbruch, sobald das Maximum unter 2 fällt."
+        },
+        {
+          "if": "merge-order",
+          "then": "Pro Runde wird genau ein Paar gelernt und sofort überall angewandt, bevor neu gezählt wird."
+        }
+      ],
+      "typicalErrors": [
+        "Tie-Break dem Zufall oder der Fundreihenfolge überlassen",
+        "Paare mit Häufigkeit 1 trotzdem gelernt",
+        "alle Merges vor dem Zählen angewandt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-tf-papers",
+  "version": 1,
+  "locale": "de",
+  "title": "Deep-Learning-Paper kritisch synthetisieren",
+  "description": "Paper nach Forschungsfrage, Methode, Datensatz, Ergebnissen und Limitationen strukturieren und Claims Evidenz-Zahlen zuordnen absolute (Prozentpunkte) und relative Verbesserungen (Prozent) unterscheiden und aus Paper-Zahlen nachrechnen Reproduzierbarkeits-Fallen (Seed, Baseline, Testset-Diät) erkennen und Paper anhand von Abstract-Fakten vergleichen",
+  "competencyIds": [
+    "c-dl-papers"
+  ],
+  "requires": [
+    "c-dl-finetuning",
+    "c-meta-learning"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-tf-papers"
+  ],
+  "placements": [
+    {
+      "placementId": "p-tf-papers-reading",
+      "role": "curated",
+      "familyId": "classify-benchmark-reading",
+      "caseId": "benchmark-absolute-gain",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-tf-papers",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-tf-papers-gain",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "paper-gain-from-counts",
+      "seed": 2611,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-papers",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-papers-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "absolute-vs-relative-gain-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-papers",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-papers-metric",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "compare-systems-metric",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 20,
+      "lessonId": "l-tf-papers",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-papers-fields",
+      "role": "curated",
+      "familyId": "validate-required-field-raise",
+      "caseId": "paper-card-required-fields",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 25,
+      "lessonId": "l-tf-papers",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-papers-rank",
+      "role": "curated",
+      "familyId": "rank-evidence-table",
+      "caseId": "evidence-table-ranking",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 40,
+      "lessonId": "l-tf-papers",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-papers-practice",
+      "role": "practice-space",
+      "familyId": "formula-stat-from-table",
+      "caseId": "paper-gain-from-counts",
+      "seed": 2611,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-tf-papers"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -255,6 +255,200 @@
       },
       "activityType": "predict-output",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "stable-softmax-rows-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w22-e3"
+      ],
+      "parameters": {
+        "snippet": "import math\n\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\n\nprint(row_softmax([2, 0]))\nprint(row_softmax([0, 1, 1]))"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "[0.881, 0.119]\n[0.155, 0.422, 0.422]"
+      },
+      "prompt": "Stabiles Softmax lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. <code>row_softmax</code> zieht das Zeilenmaximum ab und rundet auf 3 Nachkommastellen.",
+      "fullSolution": "Zeile 1: Scores $(0, -2)$, Gewichte $\\frac{1}{1+e^{-2}} \\approx 0{,}881$ und $0{,}119$. Zeile 2: Scores $(-1, 0, 0)$ mit $e^{-1} \\approx 0{,}368$: Gewichte $\\approx (0{,}155, 0{,}422, 0{,}422)$. Ausgabe: <code>[0.881, 0.119]</code> und <code>[0.155, 0.422, 0.422]</code>.",
+      "hints": [
+        "Softmax zeilenweise: erst das Zeilenmaximum abziehen (numerische Stabilität), dann exponentieren und durch die Zeilensumme teilen.",
+        "Zeile 2 enthält zwei identische Scores — was passiert mit ihren Gewichten, und welche Summe ergibt die Zeile insgesamt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die erste print-Zeile liefert eine 2er-Liste, die zweite eine 3er-Liste."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — je eine pro print-Aufruf."
+        }
+      ],
+      "typicalErrors": [
+        "Maximum nicht abgezogen (Scores direkt exponentiiert)",
+        "über die falsche Achse normalisiert",
+        "gerundete Werte in falscher Reihenfolge notiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "char-encode-roundtrip-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w23-e3"
+      ],
+      "parameters": {
+        "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\n\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\n\nids = encode(\"cab\")\nprint(ids)\nprint(len(set(ids)) == len(ids))"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "[0, 4, 2, 3, 1]\nTrue"
+      },
+      "prompt": "Encode lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. <code>encode</code> stellt jedes Wort als Zeichen-IDs mit <code>&lt;pad&gt;</code> am Anfang und <code>&lt;/w&gt;</code> am Wortende dar.",
+      "fullSolution": "„cab“: <code>&lt;pad&gt;</code>=0, dann c=4, a=2, b=3, dann <code>&lt;/w&gt;</code>=1 → <code>[0, 4, 2, 3, 1]</code>. Alle fünf IDs sind verschieden → <code>True</code>.",
+      "hints": [
+        "Erst der feste <code>&lt;pad&gt;</code>-Index, dann die Zeichen von links, dann der End-of-Word-Marker.",
+        "Der zweite print prüft, ob alle IDs verschieden sind — Anfangs- und Endmarker zählen mit."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die ID-Liste hat 5 Einträge: pad, drei Zeichen, Marker."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Liste, dann True/False."
+        }
+      ],
+      "typicalErrors": [
+        "Zeichenreihenfolge beim Ablesen vertauscht",
+        "Marker-IDs vergessen",
+        "set-Vergleich als False eingeschätzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "freeze-param-filter-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w25-e3"
+      ],
+      "parameters": {
+        "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\n\nparams = freeze([\"backbone.w1\", \"backbone.w2\", \"head.w3\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])"
+      },
+      "competencyIds": [
+        "c-dl-finetuning",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "1\nbackbone.w1"
+      },
+      "prompt": "Freeze-Logik lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Parameter, deren Name mit „backbone“ beginnt, gelten als eingefroren (kein Training).",
+      "fullSolution": "freeze markiert backbone.w1 und backbone.w2 als False (eingefroren), head.w3 als True → erste Zeile <code>1</code>. Sortierte eingefrorene Namen: <code>[\"backbone.w1\", \"backbone.w2\"]</code> → zweite Zeile <code>backbone.w1</code>.",
+      "hints": [
+        "Drei Parameter, zwei mit „backbone“-Präfix — nur der head bleibt trainierbar.",
+        "sorted() liefert die eingefrorenen Namen aufsteigend; [0] nimmt den lexikographisch ersten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Anzahl trainierbarer Parameter, dann der erste eingefrorene Name."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Trainierbar ist nur head.w3 — die backbone-Parameter stehen auf False."
+        }
+      ],
+      "typicalErrors": [
+        "Präfix-Logik invertiert",
+        "sortierte Reihenfolge von Strings unterschätzt",
+        "Anzahl statt Index verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "absolute-vs-relative-gain-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w26-e3"
+      ],
+      "parameters": {
+        "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(72, 78)\na2, r2 = gains(250, 262)",
+        "variables": [
+          {
+            "name": "a1",
+            "value": 6
+          },
+          {
+            "name": "r1",
+            "value": 8
+          },
+          {
+            "name": "a2",
+            "value": 12
+          },
+          {
+            "name": "r2",
+            "value": 5
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-dl-papers",
+        "c-python-basics"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Code-Tracing absolut vs. relativ: Was sind die Werte der Variablen <code>a1</code>, <code>r1</code>, <code>a2</code>, <code>r2</code>, nachdem dieses Programm gelaufen ist? <code>absolut</code> zählt Einheiten (z. B. Prozentpunkte), <code>relativ</code> rundet 100·(neu − alt)/alt auf eine ganze Zahl.",
+      "fullSolution": "gains(72, 78): absolut = 6, relativ = round(8,33…) = 8. gains(250, 262): absolut = 12, relativ = round(4,8) = 5. Also a1 = 6, r1 = 8, a2 = 12, r2 = 5 — dieselben Zahlen, zwei ehrliche Lesarten.",
+      "hints": [
+        "Erst die Differenz: 78 − 72 und 262 − 250; das sind die absoluten Werte.",
+        "Relativ: 100·6/72 = 8,33… → round → 8; 100·12/250 = 4,8 → round → 5."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:a1+value:r1",
+          "then": "a1 ist die Differenz in Punkten (6), r1 der gerundete relative Anteil (8) — nicht umgekehrt."
+        },
+        {
+          "if": "value:r2",
+          "then": "round(4.8) = 5 — Python rundet hier kaufmännisch auf die nächste ganze Zahl."
+        }
+      ],
+      "typicalErrors": [
+        "absolut und relativ vertauscht",
+        "round()-Verhalten bei ,5-Werten missverstanden",
+        "relative Basis (alt statt neu) verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
     }
   ]
 }

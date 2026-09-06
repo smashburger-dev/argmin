@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-tf-tokenizer",
+  "version": 1,
+  "locale": "de",
+  "title": "Tokenisierung und Sprachmodellfamilien",
+  "description": "Zeichen-, Wort- und Subword-Tokenisierung mit ihren Vokabular- und OOV-Folgen vergleichen Encode/Decode mit End-of-Word-Marker implementieren und den Round-Trip decode(encode(s)) == s durchsetzen einen gepinnten Mini-BPE-Ablauf (Tie-Break: lexikographisch kleinstes Paar) ausführen und Encoder-, Decoder- und Encoder-Decoder-Familien zuordnen",
+  "competencyIds": [
+    "c-dl-tokenizer"
+  ],
+  "requires": [
+    "c-python-collections"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-tf-tokenizer"
+  ],
+  "placements": [
+    {
+      "placementId": "p-tf-tokenizer-principle",
+      "role": "curated",
+      "familyId": "classify-subword-principle",
+      "caseId": "subword-oov-robustness",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-tf-tokenizer",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-tf-tokenizer-vocab",
+      "role": "curated",
+      "familyId": "formula-count-from-construction",
+      "caseId": "bpe-vocab-size",
+      "seed": 2311,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-tokenizer",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-tokenizer-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "char-encode-roundtrip-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-tokenizer",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-tokenizer-encode",
+      "role": "curated",
+      "familyId": "transform-tokenize-roundtrip",
+      "caseId": "char-encode-roundtrip",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-tf-tokenizer",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-tokenizer-bpe",
+      "role": "curated",
+      "familyId": "transform-bpe-merge-apply",
+      "caseId": "bpe-merge-apply",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 25,
+      "lessonId": "l-tf-tokenizer",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-tokenizer-learn",
+      "role": "curated",
+      "familyId": "optimize-bpe-merge-learn",
+      "caseId": "bpe-merge-learn",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-tf-tokenizer",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-tokenizer-practice",
+      "role": "practice-space",
+      "familyId": "formula-count-from-construction",
+      "caseId": "bpe-vocab-size",
+      "seed": 2311,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-tf-tokenizer"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
