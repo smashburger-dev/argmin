@@ -617,6 +617,105 @@
       },
       "activityType": "predict-output",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "stage-runner-error-states",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w36-e3"
+      ],
+      "parameters": {
+        "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\n\ndef ok_fn():\n    return 7\n\ndef kaputt_fn():\n    raise ValueError(\"daten weg\")\n\ndef langsam_fn():\n    return 1\n\nuhr = iter([0, 40, 100, 100, 200])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)",
+        "variables": [
+          {
+            "name": "status_zeile",
+            "value": "ok fehler timeout"
+          },
+          {
+            "name": "summe",
+            "value": 7
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Stage-Runner mit zwei Fehlerzuständen lesen: Der Code fängt ValueError als „fehler“ und Budgetüberschreitung als „timeout“ ab. Welche Werte haben <code>status_zeile</code> und <code>summe</code> nach Ablauf? Die Uhr liefert nacheinander 0, 40, 100, 100, 200 (Millisekunden).",
+      "fullSolution": "a: start 0, fn ok, Ende 40 → Dauer 40 ≤ 50 → ok, wert 7. b: start 100, fn wirft ValueError → status fehler — die Uhr wird danach NICHT mehr aufgerufen, es gibt keinen wert-Schlüssel. c: start 100, Ende 200 → Dauer 100 > 50 → timeout. status_zeile = \"ok fehler timeout\", summe = 7 + 0 + 0 = 7.",
+      "hints": [
+        "Wie oft liest die Uhr bei einer Ausnahme? Der except-Zweig kehrt zurück, bevor die Endzeit gelesen wird.",
+        "b und c tragen keinen wert-Schlüssel — get(\"wert\", 0) fängt das ab."
+      ],
+      "feedbackRules": [
+        {
+          "if": "zweiter-uhr-aufruf-bei-exception",
+          "then": "Nach ValueError gibt die Stage sofort zurück: Nur EIN clock()-Aufruf — die 100 gehört zum Start von c, nicht zum Ende von b."
+        },
+        {
+          "if": "timeout-mit-wert",
+          "then": "Der Timeout-Bericht hat keinen wert-Schlüssel — summe greift dafür auf 0 zurück."
+        }
+      ],
+      "typicalErrors": [
+        "den gedachten Endpunkt für die Exception mitgezählt (Uhr wird nur einmal gelesen)",
+        "timeout-Eintrag mit wert angenommen",
+        "Dauer von 100 auf die falschen Messpunkte gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "overclaim-scanner-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w38-e3"
+      ],
+      "parameters": {
+        "snippet": "PHRASEN = [\"produktionsreif\", \"sicher gegen\", \"halluziniert nie\"]\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = \"Unser Prototyp ist produktionsreif und halluziniert nie bei Versandanfragen.\"\nprint(scan(text, PHRASEN))\nprint(len(scan(\"Der Stub kopiert nur Saetze.\", PHRASEN)))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "['halluziniert nie', 'produktionsreif']\n0"
+      },
+      "prompt": "Overclaim-Scanner lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen.",
+      "fullSolution": "Kleinschreibung, dann Teilstring-Suche je Phrase: gefunden sind „produktionsreif“ und „halluziniert nie“, sortiert <code>['halluziniert nie', 'produktionsreif']</code>. Der zweite Satz ist sauber → <code>0</code>. „sicher gegen“ fehlt im Text und fehlt deshalb in der Liste.",
+      "hints": [
+        "Der Vergleich läuft kleingeschrieben — Großschreibung im Text stört nicht.",
+        "sorted() ordnet die Funde alphabetisch; „halluziniert nie“ steht vor „produktionsreif“."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Gefunden werden „produktionsreif“ und „halluziniert nie“ — sortiert steht „halluziniert nie“ zuerst."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Der zweite Text enthält keine der Phrasen → leere Liste → Länge 0."
+        }
+      ],
+      "typicalErrors": [
+        "Groß-/Kleinschreibung beim Vergleich ignoriert",
+        "Fundreihenfolge statt alphabetisch ausgegeben",
+        "leere Liste als None gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
     }
   ]
 }

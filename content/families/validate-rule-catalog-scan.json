@@ -5,7 +5,7 @@
     "familyId": "validate-rule-catalog-scan",
     "familyGroup": "validate-contract",
     "summary": "Wendet einen festen Regel- oder Musterkatalog auf Datensaetze an und meldet die Treffer als sortierte, duplikatfreie Codes oder Verstossstrings.",
-    "taskArchetype": "code-tests",
+    "taskArchetype": "code-test",
     "authorityMode": "static",
     "masteryEligible": true,
     "caseTypes": [
@@ -16,15 +16,27 @@
       {
         "caseId": "cross-card-consistency",
         "propertyTest": false
+      },
+      {
+        "caseId": "freeze-checker",
+        "propertyTest": false
+      },
+      {
+        "caseId": "pin-version-check",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
+      "core",
       "stretch",
       "challenge"
     ],
     "competencyIds": [
-      "c-research-cards",
-      "c-genai-security"
+      "c-capstone-pipeline",
+      "c-genai-security",
+      "c-ml-repro",
+      "c-python-functions",
+      "c-research-cards"
     ],
     "graderId": "pyodide",
     "activityType": "python-code"
@@ -125,6 +137,108 @@
         "nur paarweise verglichen statt aller Werte zugleich",
         "fehlende Pflichtfelder nicht als eigenen Code geführt",
         "Duplikate in der Ergebnisliste"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "freeze-checker",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w35-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\n\n\ndef pruefe_pins(dateien, pins):\n    \"\"\"{'verstoesse': [name: grund, ...]} sortiert; None-Pin = nur Anwesenheit.\"\"\"\n    ...\n\n",
+        "tests": "import hashlib\n\nPIN = lambda s: hashlib.sha256(s.encode(\"utf-8\")).hexdigest()\nGS = \"golden_set.json\"\nCF = \"config.json\"\ndateien = {GS: \"inhalte-stabil\", CF: \"config-stabil\", \"pipeline.py\": \"x = 1\"}\npins_ok = {GS: PIN(\"inhalte-stabil\"), CF: PIN(\"config-stabil\"), \"pipeline.py\": None}\n__check('alles eingefroren ok', pruefe_pins(dateien, pins_ok) == {\"verstoesse\": []})\npins_tamper = dict(pins_ok)\npins_tamper[CF] = \"0\" * 64\n__check('hash-abweichung', pruefe_pins(dateien, pins_tamper) == {\"verstoesse\": [CF + \": hash weicht ab\"]})\n__check('null-pin nur anwesenheit', pruefe_pins({}, {\"README.md\": None}) == {\"verstoesse\": [\"README.md: fehlt\"]})\n__check('verstoesse sortiert', pruefe_pins({}, {CF: \"0\" * 64, GS: None}) == {\"verstoesse\": [CF + \": fehlt\", GS + \": fehlt\"]})\n__check('abweichung einzeln', pruefe_pins(dateien, {CF: \"0\" * 64}) == {\"verstoesse\": [CF + \": hash weicht ab\"]})"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\n\n\ndef pruefe_pins(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n\n# pruefe_pins(dateien, pins_ok) -> {'verstoesse': []}\n# Tamper am config-Pin -> ['config.json: hash weicht ab']"
+      },
+      "prompt": "Baue den Freeze-Prüfer: <code>pruefe_pins(dateien, pins)</code> erhält Dateien als Dict <code>{name: inhalt_string}</code> und Pins als Dict <code>{name: sha256_oder_None}</code>. Rückgabe <code>{\"verstoesse\": [name + \": fehlt\", …]}</code> (sortiert): fehlt eine gepinnte Datei, kommt <code>name + \": fehlt\"</code>; ist der Pin ein String und weicht der sha256 des Inhalts (utf-8, hex) ab, kommt <code>name + \": hash weicht ab\"</code>; ist der Pin <code>None</code>, wird nur Anwesenheit geprüft. Eine Datei, die weder fehlt noch abweicht, erzeugt keinen Verstoß. Der sha256 wird über die rohen Inhalts-Bytes gebildet.",
+      "fullSolution": "import hashlib\n\n\ndef pruefe_pins(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n\n# Reihenfolge je Pin: fehlt -> hash -> frei; None-Pins nur auf Anwesenheit.",
+      "hints": [
+        "Iteriere über pins, nicht über dateien — der Pin-Katalog ist der Vertrag.",
+        "hashlib.sha256(inhalt.encode('utf-8')).hexdigest() liefert den Hex-String zum Vergleich mit dem Pin."
+      ],
+      "feedbackRules": [
+        {
+          "if": "checks-pins-keys",
+          "then": "Der Freeze prüft den PIN-Katalog: Dateien ohne Pin sind nicht Teil des Vertrags und erzeugen keine Verstöße."
+        },
+        {
+          "if": "missing-before-hash",
+          "then": "Erst Anwesenheit, dann Hash — auf einem fehlenden Schlüssel würde der Hash-Vergleich sonst crashen."
+        },
+        {
+          "if": "none-pin-hashed",
+          "then": "Ein None-Pin ist bewusst Anwesenheitsprüfung; ihn wie einen String zu hashen verbiegt den Lernenden-Vertrag."
+        }
+      ],
+      "typicalErrors": [
+        "über dateien statt pins iteriert",
+        "fehlende Datei gehasht statt abgefangen",
+        "None-Pins wie Hash-Pins behandelt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "pin-version-check",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w38-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def pruefe_pins_versionen(spezis):\n    \"\"\"{'verletzungen': ['name: spec', ...]} sortiert; Marker: >=, <=, ~=, *.\"\"\"\n    ...\n\n",
+        "tests": "__check('alles exakt ok', pruefe_pins_versionen({\"python\": \"3.11\", \"pytest\": \"8\"}) == {\"verletzungen\": []})\n__check('drei verstoesse', pruefe_pins_versionen({\"pytest\": \">=8\", \"numpy\": \"~=1.26\", \"pandas\": \"*\"}) == {\"verletzungen\": [\"numpy: ~=1.26\", \"pandas: *\", \"pytest: >=8\"]})\n__check('gemischt', pruefe_pins_versionen({\"b\": \"2.0\", \"a\": \"<=1.0\"}) == {\"verletzungen\": [\"a: <=1.0\"]})\n__check('leer', pruefe_pins_versionen({}) == {\"verletzungen\": []})\n__check('stern in mitte', pruefe_pins_versionen({\"x\": \"1.*\"}) == {\"verletzungen\": [\"x: 1.*\"]})"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def pruefe_pins_versionen(spezis):\n    marker = (\">=\", \"<=\", \"~=\", \"*\")\n    verletzungen = sorted(\n        f\"{name}: {spec}\"\n        for name, spec in spezis.items()\n        if any(m in str(spec) for m in marker)\n    )\n    return {\"verletzungen\": verletzungen}\n\n# {'pytest': '>=8', 'numpy': '~=1.26', 'pandas': '*'} -> ['numpy: ~=1.26', 'pandas: *', 'pytest: >=8']"
+      },
+      "prompt": "Pin-Prüfer: <code>pruefe_pins_versionen(spezis)</code> erhält <code>{name: versionspec}</code> und liefert <code>{\"verletzungen\": [\"name: spec\", …]}</code> — sortiert. Ein Eintrag verletzt, wenn der Spec (als String) mindestens einen der Marker <code>&gt;=</code>, <code>&lt;=</code>, <code>~=</code> oder <code>*</code> enthält. Exakte Angaben wie <code>\"8.3\"</code> sind regelkonform.",
+      "fullSolution": "def pruefe_pins_versionen(spezis):\n    marker = (\">=\", \"<=\", \"~=\", \"*\")\n    verletzungen = sorted(\n        f\"{name}: {spec}\"\n        for name, spec in spezis.items()\n        if any(m in str(spec) for m in marker)\n    )\n    return {\"verletzungen\": verletzungen}\n\n# Bereichs-Specs machen Reproduktion zur Wette — exakte Pins sind der Vertrag.",
+      "hints": [
+        "any(m in str(spec) for m in marker) prüft alle vier Marker in einem Ausdruck.",
+        "Sortiert wird die fertige „name: spec“-Liste — nicht nur die Namen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "nur-greater-equal",
+          "then": "Auch <=, ~= und * sind Bereichs-/Wildcard-Marker — der Pin-Vertrag kennt vier Verstöße, nicht einen."
+        },
+        {
+          "if": "unsorted",
+          "then": "Die Verstöße-Liste ist sortiert — nur die Namen zu sortieren und die Specs zu verketten reicht nicht."
+        },
+        {
+          "if": "exakt-geflaggt",
+          "then": "Ein exakter Spec wie '8.3' ist der Normalfall des Pinning — kein Verstoß."
+        }
+      ],
+      "typicalErrors": [
+        "nur >= als Marker geprüft",
+        "unsortierte Verstöße zurückgegeben",
+        "exakte Specs fälschlich geflaggt"
       ],
       "tolerancePolicy": {
         "mode": "tests"

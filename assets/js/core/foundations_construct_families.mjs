@@ -523,6 +523,11 @@ export const VALIDATE_COUNT_CONTRACT = {
   caseTypes: [
     { caseId: 'parse-validate-summarize' },
     { caseId: 'seen-scope-and-narrow-except' },
+    {
+      caseId: 'separate-error-kinds',
+      propertyTest: false,
+      competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
+    },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-files-errors'],
@@ -650,6 +655,9 @@ export const INSPECT_STARTER = `def inspect_rows(rows):
 export function solveValidateCount(parameters) {
   if (parameters.task === 'zaehle') return { referenceCode: ZAEHLE_REFERENZ };
   if (parameters.task === 'inspect') return { referenceCode: INSPECT_REFERENZ };
+  if (parameters.caseId === 'separate-error-kinds') {
+    return { kind: staticCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
+  }
   throw new Error(`Unbekannte Aufgabe ${parameters.task}`);
 }
 
@@ -745,6 +753,21 @@ const EXTRA_COUNTS = [0, 1, 2, 3];
 export function generateValidateCountFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
+  if (caseId === 'separate-error-kinds') {
+    const body = staticCaseBody('aggregate-validate-and-count-records', caseId);
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      ...generated
+    } = body;
+    return {
+      ...generated,
+      masteryEligible: body.masteryEligible,
+      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+    };
+  }
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   if (caseId === 'parse-validate-summarize') {
     const extraRows = zaehleExtraRows(seed, extraCount);
@@ -1183,6 +1206,7 @@ export const REQUIRED_FIELD_CONTRACT = {
     { caseId: 'paper-card-required-fields', propertyTest: false, competencyIds: ['c-dl-papers'] },
     { caseId: 'protocol-validator', propertyTest: false, competencyIds: ['c-research-question', 'c-python-functions'] },
     { caseId: 'validate-card-fields', propertyTest: false, competencyIds: ['c-research-cards', 'c-python-functions'] },
+    { caseId: 'readme-required-headings', propertyTest: false, competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-files-errors'],
@@ -1217,7 +1241,11 @@ export function solveRequiredField(parameters) {
   if (parameters.caseId === 'paper-card-required-fields') {
     return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
-  if (parameters.caseId === 'protocol-validator' || parameters.caseId === 'validate-card-fields') {
+  if (
+    parameters.caseId === 'protocol-validator'
+    || parameters.caseId === 'validate-card-fields'
+    || parameters.caseId === 'readme-required-headings'
+  ) {
     return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
   const order = REQUIRED_ORDERS[parameters.parsonsCase];
@@ -1228,7 +1256,12 @@ export function solveRequiredField(parameters) {
 export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
-  if (caseId === 'paper-card-required-fields' || caseId === 'protocol-validator' || caseId === 'validate-card-fields') {
+  if (
+    caseId === 'paper-card-required-fields'
+    || caseId === 'protocol-validator'
+    || caseId === 'validate-card-fields'
+    || caseId === 'readme-required-headings'
+  ) {
     const body = staticCaseBody('validate-required-field-raise', caseId);
     const {
       caseId: _caseId,

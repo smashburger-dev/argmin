@@ -125,6 +125,12 @@ export function solveTraceAssignment(parameters) {
   if (parameters.caseId === 'metric-name-normalize-trace') {
     return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
   }
+  if (parameters.caseId === 'stage-runner-error-states') {
+    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
+  }
+  if (parameters.caseId === 'overclaim-scanner-trace') {
+    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
+  }
   if (parameters.caseId === 'card-check-variable-trace' || parameters.caseId === 'rpn-priority-trace') {
     return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
   }
@@ -178,6 +184,8 @@ export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
     || caseId === 'card-check-variable-trace'
     || caseId === 'rpn-priority-trace'
     || caseId === 'metric-name-normalize-trace'
+    || caseId === 'stage-runner-error-states'
+    || caseId === 'overclaim-scanner-trace'
   ) {
     const body = staticCaseBody('trace-assignment-state', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
@@ -278,6 +286,16 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
       caseId: 'metric-name-normalize-trace',
       propertyTest: false,
       competencyIds: ['c-research-question', 'c-python-reading'],
+    },
+    {
+      caseId: 'stage-runner-error-states',
+      propertyTest: false,
+      competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
+    },
+    {
+      caseId: 'overclaim-scanner-trace',
+      propertyTest: false,
+      competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
     },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],

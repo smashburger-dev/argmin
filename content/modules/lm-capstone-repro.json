@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-capstone-repro",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Pipeline: Evidenz und Reproduzierbarkeit",
+  "description": "Evidenz von Demo-Verhalten unterscheiden und Versionen, Pflichtfelder und Overclaims prüfen.",
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-capstone-pipeline"
+  ],
+  "placements": [
+    {
+      "placementId": "p-capstone-38-e1",
+      "role": "curated",
+      "familyId": "classify-evidence-vs-demo",
+      "caseId": "demo-vs-evidence",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-capstone-38-e2",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "dependency-pin-count",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-38-e3",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "overclaim-scanner-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-38-e4",
+      "role": "curated",
+      "familyId": "validate-required-field-raise",
+      "caseId": "readme-required-headings",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-38-e5",
+      "role": "curated",
+      "familyId": "validate-rule-catalog-scan",
+      "caseId": "pin-version-check",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-38-e6",
+      "role": "curated",
+      "familyId": "reproduce-run-digest-assert",
+      "caseId": "reproduction-verdict-rules",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

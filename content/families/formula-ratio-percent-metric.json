@@ -55,6 +55,96 @@
       },
       "activityType": "python-code",
       "graderId": "pyodide"
+    },
+    {
+      "caseId": "ledger-rates-output-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w34-e3"
+      ],
+      "parameters": {
+        "snippet": "faelle = [(\"q1\", True, True), (\"q2\", True, False), (\"q3\", False, False), (\"q4\", True, True), (\"q5\", True, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))"
+      },
+      "competencyIds": [
+        "c-research-capstone",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "4\n0.5\n0.4"
+      },
+      "prompt": "Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tupel sind (kennung, retrieval_treffer, antwort_korrekt).",
+      "fullSolution": "treffer = q1, q2, q4, q5 → <code>4</code>. korrekt = q1, q4 → bereinigt 2/4 = <code>0.5</code>, naiv 2/5 = <code>0.4</code>.",
+      "hints": [
+        "treffer enthält nur Fälle mit f[1] True; korrekt filtert darunter nach f[2] — der q3-Fall zählt in keiner Antwortquote.",
+        "Zweite Zeile ist die bereinigte Quote (korrekt/treffer), dritte die naive (korrekt/alle) — jeweils auf 3 Stellen gerundet."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Treffer sind q1, q2, q4, q5 — q3 hat f[1] False und zählt nicht."
+        },
+        {
+          "if": "third-line-wrong",
+          "then": "Naiv teilt durch alle fünf Fälle: 2/5 = 0.4 — die bereinigte Quote 2/4 = 0.5 steht eine Zeile darüber."
+        }
+      ],
+      "typicalErrors": [
+        "Retrieval-Fehlerfälle in die bereinigte Quote genommen",
+        "naive und bereinigte Zeile vertauscht",
+        "Rundung auf 3 Stellen vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "subgroup-recall-output-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w37-e3"
+      ],
+      "parameters": {
+        "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {\n    \"versand\": (2, 2),\n    \"recht\": (2, 1),\n    \"rabatt\": (2, 1),\n    \"garantie\": (2, 2),\n}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"versand\"], werte[\"rabatt\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "1.0 0.5\n75.0"
+      },
+      "prompt": "Subgruppen-Recall von Hand ausführen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. gruppen enthält je Subgruppe (gesamt, getroffen).",
+      "fullSolution": "werte = {versand: 1.0, recht: 0.5, rabatt: 0.5, garantie: 1.0} → erste Zeile <code>1.0 0.5</code>. Mittel = 3.0/4 = 0.75 → 75.0 in der zweiten Zeile. Genau diese Verteilung (zwei Gruppen bei 0,5) ist der Subgruppen-Befund des Capstone-Golden-Sets.",
+      "hints": [
+        "Berechne zuerst die vier Einzelwerte: versand 2/2, recht 2/1, rabatt 2/1, garantie 2/2.",
+        "Der Mittelwert der vier Subgruppen-Werte ist nicht der Gesamt-Recall — hier ist er zufällig gleich, weil alle Gruppen gleich groß sind."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "versand = 2/2 = 1.0, rabatt = 1/2 = 0.5 — Python druckt das als „1.0 0.5“."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Summe 3.0 über 4 Gruppen → 0.75 → 75.0 nach round(…, 1)."
+        }
+      ],
+      "typicalErrors": [
+        "Mittelwert der Anzahlen statt der Quotienten gebildet",
+        "round auf ganze Stellen angewendet",
+        "leere Gruppe mit 0.5 statt 0.0 belegt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
     }
   ]
 }

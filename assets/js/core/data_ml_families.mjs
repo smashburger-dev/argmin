@@ -43,6 +43,9 @@ import {
   genProtocolShifts,
   genCardAudit,
   genSubgroupCost,
+  genBaselineLedger,
+  genPipelineStages,
+  genEvalRates,
   protocolShiftFlags,
   countCardDefects,
   subgroupRatePerMille,
@@ -188,6 +191,24 @@ function profileAccepts(caseId, difficulty) {
     if (difficulty === 'intro') return (parameters) => parameters.karten?.length === 1;
     if (difficulty === 'stretch') return (parameters) => parameters.karten?.length === 2;
   }
+  if (caseId === 'baseline-ledger-rates') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'naive-percent';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'gap-promille';
+  }
+  if (caseId === 'pipeline-stage-audit') {
+    if (difficulty === 'intro') return (parameters) => parameters.shape === 'valid-count';
+    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'missing-hashes';
+  }
+  if (caseId === 'eval-batch-rates') {
+    if (difficulty === 'intro') {
+      return (parameters) => parameters.shape === 'retrieval-error-count'
+        || parameters.shape === 'answer-error-count';
+    }
+    if (difficulty === 'stretch') {
+      return (parameters) => parameters.shape === 'answer-rate-percent'
+        || parameters.shape === 'retrieval-hit-percent';
+    }
+  }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
 
@@ -248,6 +269,12 @@ const FAMILY_DEFINITIONS = {
         generator: genAllowedActionCount,
         competencyIds: ['c-genai-prototype'],
       },
+      'baseline-ledger-rates': {
+        generator: genBaselineLedger,
+        competencyIds: ['c-research-capstone'],
+      },
+      'ledger-rates-output-trace': {},
+      'subgroup-recall-output-trace': {},
     },
     solve(parameters) {
       if (parameters.caseId === 'compare-systems-metric') {
@@ -277,6 +304,13 @@ const FAMILY_DEFINITIONS = {
               ? parameters.denied
               : (100 * parameters.allowed) / parameters.total,
         };
+      }
+      if (parameters.caseId === 'baseline-ledger-rates') {
+        const treffer = parameters.n - parameters.retrieval_fehler;
+        const korrekt = treffer - parameters.antwort_fehler;
+        if (parameters.shape === 'sep-percent') return { value: (100 * korrekt) / treffer };
+        if (parameters.shape === 'naive-percent') return { value: (100 * korrekt) / parameters.n };
+        return { value: Math.round((korrekt / treffer - korrekt / parameters.n) * 1000) };
       }
       if (parameters.direction === 'count') return { value: (parameters.nA * parameters.p) / parameters.q };
       return { value: (100 * parameters.c) / parameters.n };
@@ -499,6 +533,16 @@ const FAMILY_DEFINITIONS = {
         generator: genCardAudit,
         competencyIds: ['c-research-cards'],
       },
+      'pipeline-stage-audit': {
+        generator: genPipelineStages,
+        competencyIds: ['c-capstone-pipeline', 'c-ml-repro'],
+      },
+      'stage-timeout-count': {},
+      'dependency-pin-count': {},
+      'eval-batch-rates': {
+        generator: genEvalRates,
+        competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'greedy-step-stat') {
@@ -513,6 +557,31 @@ const FAMILY_DEFINITIONS = {
       }
       if (parameters.caseId === 'card-audit-missing-count') {
         return { value: countCardDefects(parameters.karten, parameters.pflichtfelder) };
+      }
+      if (parameters.caseId === 'pipeline-stage-audit') {
+        const index = new Map(parameters.stages.map((stage, i) => [stage.id, i]));
+        if (parameters.shape === 'missing-hashes') {
+          return { value: parameters.stages.filter((stage) => !stage.hash).length };
+        }
+        return {
+          value: parameters.stages.filter((stage) => stage.hash
+            && (stage.input === 'quelle'
+              || (stage.input && index.get(stage.input) < index.get(stage.id)))).length,
+        };
+      }
+      if (parameters.caseId === 'eval-batch-rates') {
+        const n = parameters.batches.reduce((sum, batch) => sum + batch.n, 0);
+        const retrieval = parameters.batches.reduce((sum, batch) => sum + batch.retrieval_fehler, 0);
+        const antwort = parameters.batches.reduce((sum, batch) => sum + batch.antwort_fehler, 0);
+        const treffer = n - retrieval;
+        const korrekt = treffer - antwort;
+        if (parameters.shape === 'retrieval-error-count') return { value: retrieval };
+        if (parameters.shape === 'answer-error-count') return { value: antwort };
+        if (parameters.shape === 'answer-rate-percent') return { value: (100 * korrekt) / treffer };
+        return { value: (100 * treffer) / n };
+      }
+      if (parameters.caseId === 'stage-timeout-count' || parameters.caseId === 'dependency-pin-count') {
+        return staticExpected('formula-stat-from-table', parameters);
       }
       if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
       if (parameters.variant === 'relative-percent') {
@@ -728,6 +797,19 @@ const FORMULA_RATIO_PERCENT_CASE_TYPES = [
     competencyIds: ['c-dl-papers', 'c-ml-cv'],
   },
   { caseId: 'allowed-action-count', sourceLineage: ['w30-e2'], competencyIds: ['c-genai-prototype'] },
+  {
+    caseId: 'ledger-rates-output-trace',
+    propertyTest: false,
+    sourceLineage: ['w34-e3'],
+    competencyIds: ['c-research-capstone', 'c-python-reading'],
+  },
+  { caseId: 'baseline-ledger-rates', sourceLineage: ['w34-e2'], competencyIds: ['c-research-capstone'] },
+  {
+    caseId: 'subgroup-recall-output-trace',
+    propertyTest: false,
+    sourceLineage: ['w37-e3'],
+    competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
+  },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
@@ -784,6 +866,10 @@ const FORMULA_STAT_FROM_TABLE_CASE_TYPES = [
   { caseId: 'greedy-step-stat', sourceLineage: ['w24-e2'], competencyIds: ['c-dl-inference'] },
   { caseId: 'paper-gain-from-counts', sourceLineage: ['w26-e2'], competencyIds: ['c-dl-papers'] },
   { caseId: 'card-audit-missing-count', sourceLineage: ['w32-e2'], competencyIds: ['c-research-cards'] },
+  { caseId: 'pipeline-stage-audit', sourceLineage: ['w35-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
+  { caseId: 'stage-timeout-count', propertyTest: false, sourceLineage: ['w36-e2'], competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
+  { caseId: 'dependency-pin-count', propertyTest: false, sourceLineage: ['w38-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
+  { caseId: 'eval-batch-rates', sourceLineage: ['w37-e2'], competencyIds: ['c-capstone-pipeline', 'c-genai-security'] },
 ];
 
 const AGGREGATE_TOPK_RELEVANCE_CASE_TYPES = [

@@ -5,12 +5,20 @@
     "familyId": "validate-report-guard-compose",
     "familyGroup": "validate-contract",
     "summary": "Prueft die Vorbedingungen eines Berichts und verweigert bei Fehlen deterministisch ohne Teilmesswerte, sonst werden alle Berichtsteile zusammengefuehrt.",
-    "taskArchetype": "code-tests",
+    "taskArchetype": "code-test",
     "authorityMode": "static",
     "masteryEligible": true,
     "caseTypes": [
       {
         "caseId": "report-guard-compose",
+        "propertyTest": false
+      },
+      {
+        "caseId": "baseline-report",
+        "propertyTest": false
+      },
+      {
+        "caseId": "run-digest-assert",
         "propertyTest": false
       }
     ],
@@ -18,8 +26,11 @@
       "challenge"
     ],
     "competencyIds": [
-      "c-research-responsible",
-      "c-genai-eval"
+      "c-capstone-pipeline",
+      "c-genai-eval",
+      "c-ml-repro",
+      "c-research-capstone",
+      "c-research-responsible"
     ],
     "graderId": "pyodide",
     "activityType": "python-code"
@@ -69,6 +80,57 @@
         "Bericht mit Lücken statt Verweigerung erzeugt",
         "paritaet_ok truthy statt is True geprüft",
         "übergebene Restrisiken-Liste mutiert statt sortiert zu kopieren"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "baseline-report",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w34-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def baseline_report(ergebnis, protocol, karten, fehlerliste):\n    \"\"'Messwerte nur mit Protokoll-Metrik, Karten und getrennter Fehlerliste; sonst Verweigerung ohne Werte.'\"\"\n    ...\n\n",
+        "tests": "ERGEBNIS = {\"werte\": {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75}, \"digest\": \"728a5e258971cd2fb9f7456d88cef6f8559ae1c6fbdd1b0c6ba8ff26fb1ad0a7\"}\nPROTO = {\"metrik\": \"recall@5\", \"datum_prereg\": \"2026-05-12\"}\nKARTEN = {\"datacard\": {\"name\": \"faq-korpus\"}, \"modelcard\": {\"name\": \"rag-stub\"}}\nFEHLER = [\n    {\"id\": \"faq-11\", \"art\": \"antwort\"},\n    {\"id\": \"vertrag-07\", \"art\": \"retrieval\"},\n    {\"id\": \"faq-03\", \"art\": \"antwort\"},\n]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {\"status\": \"ok\", \"metrik\": \"recall@5\", \"messwerte\": {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75}, \"fehler_nach_art\": {\"retrieval\": 1, \"antwort\": 2}})\nv = baseline_report(ERGEBNIS, {\"datum_prereg\": \"2026-05-12\"}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {\"status\": \"verweigert\", \"fehlt\": [\"protokoll-metrik\"]})\n__check('verweigert hat keine messwerte', \"messwerte\" not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {\"datacard\": {\"name\": \"faq-korpus\"}}, FEHLER) == {\"status\": \"verweigert\", \"fehlt\": [\"karten\"]})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {\"status\": \"verweigert\", \"fehlt\": [\"fehlerliste\"]})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{\"id\": \"faq-11\", \"art\": \"unbekannt\"}]) == {\"status\": \"verweigert\", \"fehlt\": [\"fehlerliste\"]})\nv2 = baseline_report(ERGEBNIS, {}, {}, [])\n__check('alles fehlt sortiert', v2 == {\"status\": \"verweigert\", \"fehlt\": [\"fehlerliste\", \"karten\", \"protokoll-metrik\"]})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {\"metrik\": \"\"}, KARTEN, FEHLER)[\"status\"] == \"verweigert\")\nprint(\"ok w34-e6\")"
+      },
+      "competencyIds": [
+        "c-research-capstone",
+        "c-genai-eval"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def baseline_report(ergebnis, protocol, karten, fehlerliste):\n    fehlt = []\n    if not (isinstance(protocol, dict) and protocol.get(\"metrik\")):\n        fehlt.append(\"protokoll-metrik\")\n    if not (isinstance(karten, dict) and karten.get(\"datacard\") and karten.get(\"modelcard\")):\n        fehlt.append(\"karten\")\n    if not (isinstance(fehlerliste, list) and any(isinstance(f, dict) and f.get(\"art\") in (\"retrieval\", \"antwort\") for f in fehlerliste)):\n        fehlt.append(\"fehlerliste\")\n    if fehlt:\n        return {\"status\": \"verweigert\", \"fehlt\": sorted(fehlt)}\n    zaehlung = {art: sum(1 for f in fehlerliste if f.get(\"art\") == art) for art in (\"retrieval\", \"antwort\")}\n    return {\"status\": \"ok\", \"metrik\": protocol[\"metrik\"], \"messwerte\": ergebnis[\"werte\"], \"fehler_nach_art\": zaehlung}"
+      },
+      "prompt": "Final Boss Baseline-Report: Implementiere <code>baseline_report(ergebnis, protocol, karten, fehlerliste)</code>. Der Bericht liefert Messwerte NUR mit allen drei Kontexten: <code>protocol</code> ein Dict mit nicht-leerer <code>metrik</code>, <code>karten</code> ein Dict mit nicht-leerer <code>datacard</code> und <code>modelcard</code>, <code>fehlerliste</code> eine nichtleere Liste von Einträgen mit <code>art</code> in (\"retrieval\", \"antwort\"). Fehlt etwas, Rückgabe <code>{\"status\": \"verweigert\", \"fehlt\": sortierte codes}</code> — mit Codes protokoll-metrik, karten, fehlerliste — und OHNE jeden Messwert. Sonst <code>{\"status\": \"ok\", \"metrik\": .., \"messwerte\": ergebnis[\"werte\"], \"fehler_nach_art\": {\"retrieval\": .., \"antwort\": ..}}</code>. Der Testcode bringt ein vollständiges Quartett und vier unvollständige Varianten mit.",
+      "fullSolution": "def baseline_report(ergebnis, protocol, karten, fehlerliste):\n    fehlt = []\n    if not (isinstance(protocol, dict) and protocol.get(\"metrik\")):\n        fehlt.append(\"protokoll-metrik\")\n    if not (isinstance(karten, dict) and karten.get(\"datacard\") and karten.get(\"modelcard\")):\n        fehlt.append(\"karten\")\n    if not (isinstance(fehlerliste, list) and any(isinstance(f, dict) and f.get(\"art\") in (\"retrieval\", \"antwort\") for f in fehlerliste)):\n        fehlt.append(\"fehlerliste\")\n    if fehlt:\n        return {\"status\": \"verweigert\", \"fehlt\": sorted(fehlt)}\n    zaehlung = {art: sum(1 for f in fehlerliste if f.get(\"art\") == art) for art in (\"retrieval\", \"antwort\")}\n    return {\"status\": \"ok\", \"metrik\": protocol[\"metrik\"], \"messwerte\": ergebnis[\"werte\"], \"fehler_nach_art\": zaehlung}\n\n# vollstaendiges Quartett -> ok mit exakten Zaehlungen; jede fehlende Vorbedingung -> verweigert ohne messwerte (lokal python3-verifiziert)",
+      "hints": [
+        "Prüfe die drei Kontexte unabhängig voneinander und sammle die fehlt-Codes — sortiert zurückgeben.",
+        "Bei Verweigerung darf das Ergebnis-Dict keinen messwerte-Schlüssel haben; die Zählung der Fehlerarten passiert nur im ok-Fall."
+      ],
+      "feedbackRules": [
+        {
+          "if": "partial-values",
+          "then": "Teilergebnisse mit Messwerten trotz fehlender Kontexte sind Overclaiming — verweigert heißt ohne Werte."
+        },
+        {
+          "if": "unsorted-codes",
+          "then": "Die fehlt-Liste ist alphabetisch sortiert (fehlerliste, karten, protokoll-metrik) — die Tests vergleichen exakt."
+        },
+        {
+          "if": "ungetrennte-liste-ok",
+          "then": "Eine Fehlerliste ohne art in (retrieval, antwort) ist keine getrennte Fehlerliste — sie zählt als fehlend."
+        }
+      ],
+      "typicalErrors": [
+        "Messwerte trotz Verweigerung mitgeliefert",
+        "fehlt-Codes unsortiert",
+        "Fehlerliste ohne getrennte Arten akzeptiert"
       ],
       "tolerancePolicy": {
         "mode": "tests"

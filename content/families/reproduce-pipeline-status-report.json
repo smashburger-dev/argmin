@@ -5,21 +5,46 @@
     "familyId": "reproduce-pipeline-status-report",
     "familyGroup": "reproduce-hash",
     "summary": "Reproduziert den Status einer Pipeline und berichtet ihn strukturiert.",
-    "taskArchetype": "code-tests",
+    "taskArchetype": "code-test",
     "authorityMode": "static",
     "masteryEligible": true,
     "caseTypes": [
       {
         "caseId": "pipeline-status-report",
         "propertyTest": false
+      },
+      {
+        "caseId": "call-with-timeout",
+        "propertyTest": false
+      },
+      {
+        "caseId": "run-stage-budget",
+        "propertyTest": false
+      },
+      {
+        "caseId": "start-pipeline-integration",
+        "propertyTest": false
+      },
+      {
+        "caseId": "verdict-rules",
+        "propertyTest": false
+      },
+      {
+        "caseId": "acceptance-all-contracts",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
+      "core",
+      "stretch",
       "challenge"
     ],
     "competencyIds": [
+      "c-capstone-pipeline",
       "c-genai-prototype",
-      "c-python-functions"
+      "c-genai-security",
+      "c-python-functions",
+      "c-research-capstone"
     ],
     "graderId": "pyodide",
     "activityType": "python-code"
@@ -69,6 +94,261 @@
         "Ablation und Kontrolle vermischt",
         "blockierte Queries im ungedämpften Lauf mitgezählt",
         "abgelehnte Aktionen nach unterschiedlichen Regeln gezählt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "call-with-timeout",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w36-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def call_with_timeout(fn, budget_ms, clock):\n    \"\"\"{'status': 'ok', ...} oder {'status': 'timeout', ...} — Uhr als Parameter.\"\"\"\n    ...\n\n",
+        "tests": "uhr_schnell = iter([0, 50]).__next__\nuhr_langsam = iter([0, 150]).__next__\nuhr_grenze = iter([10, 110]).__next__\n__check('ok mit dauer', call_with_timeout(lambda: 41 + 1, 100, uhr_schnell) == {\"status\": \"ok\", \"value\": 42, \"dauer_ms\": 50})\n__check('timeout', call_with_timeout(lambda: 7, 100, uhr_langsam) == {\"status\": \"timeout\", \"budget_ms\": 100, \"dauer_ms\": 150})\n__check('grenzfall ok', call_with_timeout(lambda: 1, 100, uhr_grenze)[\"status\"] == \"ok\")\n__check('kein value bei timeout', \"value\" not in call_with_timeout(lambda: 2, 1, iter([5, 500]).__next__))\n__check('uhr genau zweimal', (lambda n: call_with_timeout(lambda: n.append(1), 10, iter([0, 0]).__next__) and len(n))([]) == 1)"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def call_with_timeout(fn, budget_ms, clock):\n    start = clock()\n    value = fn()\n    dauer = clock() - start\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer}\n\n# dauer 50 <= 100 -> ok; dauer 150 > 100 -> timeout; dauer == budget -> ok"
+      },
+      "prompt": "Implementiere den Timeout-Wächter: <code>call_with_timeout(fn, budget_ms, clock)</code>. clock ist eine aufrufbare virtuelle Uhr (zweimal aufrufen: vorher/nachher — kein sleep, keine echte Zeit). Rückgabe bei Erfolg: <code>{\"status\": \"ok\", \"value\": ergebnis, \"dauer_ms\": dauer}</code>; bei Überschreitung: <code>{\"status\": \"timeout\", \"budget_ms\": budget, \"dauer_ms\": dauer}</code>. Grenzfall: Dauer gleich Budget gilt noch als ok.",
+      "fullSolution": "def call_with_timeout(fn, budget_ms, clock):\n    start = clock()\n    value = fn()\n    dauer = clock() - start\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer}\n\n# Zwei clock()-Aufrufe, ein Vergleich — deterministisch und ohne echte Zeit.",
+      "hints": [
+        "Zeit messen heißt hier: clock() vor und nach fn() aufrufen und die Differenz nehmen.",
+        "Beim Timeout gibt es keinen brauchbaren Wert — liefere deshalb keinen 'value'-Schlüssel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "sleep-used",
+          "then": "Kein sleep: Die Uhr ist ein Parameter — genau das hält die Funktion schnell und testbar."
+        },
+        {
+          "if": "value-on-timeout",
+          "then": "Ein 'value' im Timeout-Bericht ist ein halber Ersatzwert — der Aufrufer könnte ihn versehentlich verwenden."
+        },
+        {
+          "if": "off-by-one",
+          "then": "Dauer == Budget ist noch ok; erst dauer > budget ist ein Timeout."
+        }
+      ],
+      "typicalErrors": [
+        "sleep oder time.time() statt der übergebenen Uhr",
+        "value auch beim Timeout mitgeliefert",
+        "Grenzfall invertiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "run-stage-budget",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w36-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def run_stage(name, fn, budget_ms, clock):\n    \"\"\"ok | timeout | fehler — immer mit 'stage', nie mit Ersatzwert.\"\"\"\n    ...\n\n",
+        "tests": "def kaputt():\n    raise ValueError(\"daten weg\")\n\nbericht = run_stage(\"rechnen\", kaputt, 100, iter([0, 1]).__next__)\n__check('fehler-status', bericht[\"status\"] == \"fehler\")\n__check('fehler-grund-typ', \"ValueError\" in bericht[\"grund\"] and \"daten weg\" in bericht[\"grund\"])\n__check('fehler-stage', bericht[\"stage\"] == \"rechnen\")\n__check('fehler-ohne-value', \"value\" not in bericht)\nbericht = run_stage(\"speichern\", lambda: \"wert\", 5, iter([0, 900]).__next__)\n__check('timeout-vollstaendig', bericht == {\"status\": \"timeout\", \"budget_ms\": 5, \"dauer_ms\": 900, \"stage\": \"speichern\"})\nbericht = run_stage(\"laden\", lambda: 7, 100, iter([0, 3]).__next__)\n__check('ok-mit-allem', bericht == {\"status\": \"ok\", \"value\": 7, \"dauer_ms\": 3, \"stage\": \"laden\"})"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def run_stage(name, fn, budget_ms, clock):\n    try:\n        start = clock()\n        value = fn()\n        dauer = clock() - start\n    except Exception as exc:\n        return {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"stage\": name}\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer, \"stage\": name}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer, \"stage\": name}\n\n# Ausnahme -> 'fehler' mit Typ und Meldung; Budget -> 'timeout'; sonst 'ok'."
+      },
+      "prompt": "Vollständiger Stage-Runner: <code>run_stage(name, fn, budget_ms, clock)</code> baut auf deine <code>call_with_timeout</code>-Logik auf und fügt den zweiten Fehlerzustand hinzu. Rückgaben: ok wie in w36-e4 (zusätzlich <code>\"stage\": name</code>); Timeout: <code>{\"status\": \"timeout\", \"budget_ms\": …, \"dauer_ms\": …, \"stage\": name}</code>; Ausnahme in fn: <code>{\"status\": \"fehler\", \"grund\": \"Ausnahmetyp: meldung\", \"stage\": name}</code>. Kein „value“ bei timeout/fehler — kein stiller Fallback.",
+      "fullSolution": "def run_stage(name, fn, budget_ms, clock):\n    try:\n        start = clock()\n        value = fn()\n        dauer = clock() - start\n    except Exception as exc:\n        return {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"stage\": name}\n    if dauer > budget_ms:\n        return {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer, \"stage\": name}\n    return {\"status\": \"ok\", \"value\": value, \"dauer_ms\": dauer, \"stage\": name}\n\n# Drei Zustände, alle mit 'stage' — die Hauptfunktion kann sichtbar abbrechen.",
+      "hints": [
+        "Fange die Ausnahme um fn() herum — der Grund-String kombiniert Typ und Meldung (f-String mit type(exc).__name__).",
+        "Jede der drei Rückgaben trägt 'stage': Der Bericht muss benennen, WO es passierte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "except-pass",
+          "then": "Ein leeres except/continue ist der klassische stille Fallback — der Fehler muss als Zustand nach außen."
+        },
+        {
+          "if": "grund-nur-meldung",
+          "then": "Nur die Meldung ohne Typ macht das Nachvollziehen schwer — 'ValueError: daten weg' ist der Vertrag."
+        },
+        {
+          "if": "stage-fehlt",
+          "then": "Ohne 'stage' weiß der Abbruchbericht nicht, welche Stage scheiterte — die Hauptfunktion könnte ihn nicht zuordnen."
+        }
+      ],
+      "typicalErrors": [
+        "Ausnahme geschluckt statt als Zustand gemeldet",
+        "grund ohne Ausnahmetyp",
+        "stage-Schlüssel vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "start-pipeline-integration",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w36-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def starte_pipeline(stages, budget_ms, clock):\n    \"\"\"'ok' mit ergebnissen/dauer_ms oder 'abgebrochen' mit fehlerhafter Stage.\"\"\"\n    ...\n\n",
+        "tests": "LAUEFE = [(\"laden\", lambda: 7), (\"rechnen\", lambda: 7 * 2), (\"berichten\", lambda: \"fertig\")]\nergebnis = starte_pipeline(LAUEFE, 100, iter([0, 5, 10, 20, 30, 40]).__next__)\n__check('status ok', ergebnis[\"status\"] == \"ok\")\n__check('ergebnisse', ergebnis[\"ergebnisse\"] == {\"laden\": 7, \"rechnen\": 14, \"berichten\": \"fertig\"})\n__check('dauer_ms je stage', ergebnis[\"dauer_ms\"] == {\"laden\": 5, \"rechnen\": 10, \"berichten\": 10})\n__check('deterministisch', starte_pipeline(LAUEFE, 100, iter([0, 5, 10, 20, 30, 40]).__next__) == ergebnis)\ndef boese():\n    raise RuntimeError(\"stage defekt\")\nABBRUCH = [(\"laden\", lambda: 1), (\"rechnen\", boese), (\"berichten\", lambda: 2)]\nbericht = starte_pipeline(ABBRUCH, 100, iter([0, 2, 4]).__next__)\n__check('status abgebrochen', bericht[\"status\"] == \"abgebrochen\")\n__check('fehlerhafte stage', bericht[\"fehlerhafte_stage\"] == \"rechnen\")\n__check('berichte bis abbruch', set(bericht[\"bericht\"]) == {\"laden\", \"rechnen\"})\n__check('sentinel-grund', \"RuntimeError\" in bericht[\"bericht\"][\"rechnen\"][\"grund\"])\nTIMEOUT = [(\"laden\", lambda: 1), (\"speichern\", lambda: 2)]\nbericht = starte_pipeline(TIMEOUT, 3, iter([0, 10, 20, 21]).__next__)\n__check('timeout bricht ab', bericht[\"status\"] == \"abgebrochen\" and bericht[\"fehlerhafte_stage\"] == \"laden\")\n__check('bericht der zeitueberschreitung', bericht[\"bericht\"][\"laden\"][\"status\"] == \"timeout\")"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def starte_pipeline(stages, budget_ms, clock):\n    ergebnisse = {}\n    dauer_ms = {}\n    berichte = {}\n    for name, fn in stages:\n        try:\n            start = clock()\n            value = fn()\n            dauer = clock() - start\n        except Exception as exc:\n            berichte[name] = {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"dauer_ms\": 0}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        if dauer > budget_ms:\n            berichte[name] = {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        berichte[name] = {\"status\": \"ok\", \"dauer_ms\": dauer}\n        ergebnisse[name] = value\n        dauer_ms[name] = dauer\n    return {\"status\": \"ok\", \"ergebnisse\": ergebnisse, \"dauer_ms\": dauer_ms}\n\n# Lauf 1: laden dauer 5, rechnen 10, berichten 10 -> ok\n# Lauf 2: rechnen wirft RuntimeError -> abgebrochen mit Grund\n# Lauf 3: laden dauer 10 > 3 -> timeout-Abbruch"
+      },
+      "prompt": "Final Boss Integration: <code>starte_pipeline(stages, budget_ms, clock)</code> führt eine Liste <code>[(name, fn), …]</code> sequenziell aus (jede fn verbraucht nur ihre eigenen Eingaben, hier konstante Werte). Nutze deine Runner-Logik: Scheitert eine Stage (fehler oder timeout), bricht die Pipeline SICHTBAR ab: <code>{\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": {name: stagebericht}}</code> — der Abbruchbericht enthält nur die Stages bis einschließlich der Fehlerhaften, mit deren vollen Sentinel-Bericht (status, dauer_ms, ggf. grund/budget_ms). Erfolgreicher Durchlauf: <code>{\"status\": \"ok\", \"ergebnisse\": {name: value}, \"dauer_ms\": {name: dauer}}</code>. Kein stiller Fallback: Nach einem Abbruch läuft nichts weiter. Alles deterministisch bei gleicher Uhr.",
+      "fullSolution": "def starte_pipeline(stages, budget_ms, clock):\n    ergebnisse = {}\n    dauer_ms = {}\n    berichte = {}\n    for name, fn in stages:\n        try:\n            start = clock()\n            value = fn()\n            dauer = clock() - start\n        except Exception as exc:\n            berichte[name] = {\"status\": \"fehler\", \"grund\": f\"{type(exc).__name__}: {exc}\", \"dauer_ms\": 0}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        if dauer > budget_ms:\n            berichte[name] = {\"status\": \"timeout\", \"budget_ms\": budget_ms, \"dauer_ms\": dauer}\n            return {\"status\": \"abgebrochen\", \"fehlerhafte_stage\": name, \"bericht\": berichte}\n        berichte[name] = {\"status\": \"ok\", \"dauer_ms\": dauer}\n        ergebnisse[name] = value\n        dauer_ms[name] = dauer\n    return {\"status\": \"ok\", \"ergebnisse\": ergebnisse, \"dauer_ms\": dauer_ms}\n\n# Sichtbarer Abbruch mit Stage-Bericht, sonst vollständige Ergebnis- und Zeittabellen.",
+      "hints": [
+        "Ein dict pro Kategorie (ergebnisse, dauer_ms, berichte) und ein frühes return im Fehlerfall — nach dem Abbruch keine Stage mehr.",
+        "Der Bericht der fehlerhaften Stage muss den Sentinel enthalten (status/typ bzw. budget) — sonst ist der Abbruch nicht begründet."
+      ],
+      "feedbackRules": [
+        {
+          "if": "laeuft-weiter",
+          "then": "Nach fehler/timeout stoppt die Pipeline — weiterlaufen hieße, mit einem kapannten Zwischenstand weiterzurechnen."
+        },
+        {
+          "if": "fehlende-stage-im-bericht",
+          "then": "Der Abbruchbericht endet MIT der fehlerhaften Stage — ohne ihren Sentinel ist unklar, warum abgebrochen wurde."
+        },
+        {
+          "if": "gemischte-dicts",
+          "then": "ergebnisse und dauer_ms sind getrennte Verträge — wer sie vermischt, bricht die IO-Schlüssel der nachfolgenden Stages."
+        }
+      ],
+      "typicalErrors": [
+        "nach Fehler weitergelaufen",
+        "Abbruchbericht ohne Sentinel der Fehler-Stage",
+        "Ergebnisse und Zeiten in einem dict vermischt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "verdict-rules",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w37-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def bewerte(lauf, schwellen):\n    \"\"\"Regelwerk-Verdict: angenommen, abgelehnt oder abgebrochen.\"\"\"\n    ...\n\n",
+        "tests": "SCHWELLEN = {\"recall_min\": 0.7, \"subgruppe_min\": 0.5}\nLAUF_OK = {\"status\": \"ok\", \"recall_at_k\": 0.75, \"subgruppen\": {\"versand\": 1.0, \"recht\": 0.5}, \"fixtures_bestanden\": 7, \"fixtures_gesamt\": 7}\n__check('angenommen', bewerte(LAUF_OK, SCHWELLEN)[\"verdict\"] == \"angenommen\")\n__check('pruefungen komplett', [p[\"name\"] for p in bewerte(LAUF_OK, SCHWELLEN)[\"pruefungen\"]] == [\"recall_at_k\", \"subgruppe_min\", \"redteam_fixtures\"])\n__check('alle bestanden', all(p[\"bestanden\"] for p in bewerte(LAUF_OK, SCHWELLEN)[\"pruefungen\"]))\n__check('ist und soll', {(p[\"name\"], p[\"ist\"], p[\"soll\"]) for p in bewerte(LAUF_OK, SCHWELLEN)[\"pruefungen\"]} == {(\"recall_at_k\", 0.75, 0.7), (\"subgruppe_min\", 0.5, 0.5), (\"redteam_fixtures\", 7, 7)})\nLAUF_SCHLECHT = {\"status\": \"ok\", \"recall_at_k\": 0.75, \"subgruppen\": {\"versand\": 1.0, \"recht\": 0.3}, \"fixtures_bestanden\": 6, \"fixtures_gesamt\": 7}\nurteil = bewerte(LAUF_SCHLECHT, SCHWELLEN)\n__check('abgelehnt', urteil[\"verdict\"] == \"abgelehnt\")\n__check('zwei durchgefallen', [p[\"name\"] for p in urteil[\"pruefungen\"] if not p[\"bestanden\"]] == [\"subgruppe_min\", \"redteam_fixtures\"])\n__check('abgebrochen', bewerte({\"status\": \"abgebrochen\", \"recall_at_k\": 0.9, \"subgruppen\": {}, \"fixtures_bestanden\": 0, \"fixtures_gesamt\": 0}, SCHWELLEN) == {\"verdict\": \"abgebrochen\", \"pruefungen\": []})"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def bewerte(lauf, schwellen):\n    if lauf[\"status\"] != \"ok\":\n        return {\"verdict\": \"abgebrochen\", \"pruefungen\": []}\n    min_subgruppe = min(lauf[\"subgruppen\"].values()) if lauf[\"subgruppen\"] else 0.0\n    pruefungen = [\n        {\"name\": \"recall_at_k\", \"bestanden\": lauf[\"recall_at_k\"] >= schwellen[\"recall_min\"], \"ist\": lauf[\"recall_at_k\"], \"soll\": schwellen[\"recall_min\"]},\n        {\"name\": \"subgruppe_min\", \"bestanden\": min_subgruppe >= schwellen[\"subgruppe_min\"], \"ist\": min_subgruppe, \"soll\": schwellen[\"subgruppe_min\"]},\n        {\"name\": \"redteam_fixtures\", \"bestanden\": lauf[\"fixtures_bestanden\"] == lauf[\"fixtures_gesamt\"], \"ist\": lauf[\"fixtures_bestanden\"], \"soll\": lauf[\"fixtures_gesamt\"]},\n    ]\n    verdict = \"angenommen\" if all(p[\"bestanden\"] for p in pruefungen) else \"abgelehnt\"\n    return {\"verdict\": verdict, \"pruefungen\": pruefungen}\n\n# LAUF_OK -> angenommen (0.75/1.0&0.5/7von7); LAUF_SCHLECHT -> abgelehnt (0.3, 6von7)"
+      },
+      "prompt": "Final Boss Regelwerk: <code>bewerte(lauf, schwellen)</code> entscheidet das Verdict. lauf: <code>{\"status\": \"ok\"|\"abgebrochen\", \"recall_at_k\": float, \"subgruppen\": {label: float}, \"fixtures_bestanden\": int, \"fixtures_gesamt\": int}</code>; schwellen: <code>{\"recall_min\": float, \"subgruppe_min\": float}</code>. Regeln: (1) lauf[\"status\"] != \"ok\" → <code>{\"verdict\": \"abgebrochen\", \"pruefungen\": []}</code>. (2) Sonst drei Prüfungen mit <code>{\"name\", \"bestanden\", \"ist\", \"soll\"}</code>: recall_at_k ≥ recall_min; min(subgruppen.values()) ≥ subgruppe_min; fixtures_bestanden == fixtures_gesamt. (3) Verdict „angenommen“ nur wenn alle Prüfungen bestanden, sonst „abgelehnt“. Deterministisch, keine Nebenwirkungen.",
+      "fullSolution": "def bewerte(lauf, schwellen):\n    if lauf[\"status\"] != \"ok\":\n        return {\"verdict\": \"abgebrochen\", \"pruefungen\": []}\n    min_subgruppe = min(lauf[\"subgruppen\"].values()) if lauf[\"subgruppen\"] else 0.0\n    pruefungen = [\n        {\"name\": \"recall_at_k\", \"bestanden\": lauf[\"recall_at_k\"] >= schwellen[\"recall_min\"], \"ist\": lauf[\"recall_at_k\"], \"soll\": schwellen[\"recall_min\"]},\n        {\"name\": \"subgruppe_min\", \"bestanden\": min_subgruppe >= schwellen[\"subgruppe_min\"], \"ist\": min_subgruppe, \"soll\": schwellen[\"subgruppe_min\"]},\n        {\"name\": \"redteam_fixtures\", \"bestanden\": lauf[\"fixtures_bestanden\"] == lauf[\"fixtures_gesamt\"], \"ist\": lauf[\"fixtures_bestanden\"], \"soll\": lauf[\"fixtures_gesamt\"]},\n    ]\n    verdict = \"angenommen\" if all(p[\"bestanden\"] for p in pruefungen) else \"abgelehnt\"\n    return {\"verdict\": verdict, \"pruefungen\": pruefungen}\n\n# Drei Zustände, drei Prüfungen mit ist/soll — das Verdict ist eine Tabelle, kein Gefühl.",
+      "hints": [
+        "Der Abbruch kommt VOR jede Prüfung: Eine kaputte Pipeline hat keine bewertbaren Werte.",
+        "Bei leeren subgruppen wäre min() ein Fehler — definierend ist 0.0 als IST-Wert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "abgelehnt-statt-abgebrochen",
+          "then": "Ein Lauf mit Status 'abgebrochen' hat keine Metriken, die man ablehnen könnte — abbrechen ist kein Urteil über Schwellen."
+        },
+        {
+          "if": "min-crash",
+          "then": "min({}.values()) wirft ValueError — leere Subgruppen-Tabelle als 0.0 zu führen ist der defensive Vertrag."
+        },
+        {
+          "if": "fixtures-teilweise",
+          "then": "Rot-Team besteht nur komplett: fixtures_bestanden muss fixtures_gesamt treffen, 6 von 7 ist abgelehnt."
+        }
+      ],
+      "typicalErrors": [
+        "abgebrochen wie abgelehnt behandelt",
+        "min über leere Subgruppen crashen lassen",
+        "Rot-Team-Prüfung weggelassen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "acceptance-all-contracts",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w39-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def acceptance(pruefungen):\n    \"\"\"Verdict ueber alle Vertraege: angenommen, abgelehnt oder abgebrochen.\"\"\"\n    ...\n\n",
+        "tests": "ALLE_OK = [\n    {\"name\": \"manifest_gepinnt\", \"bestanden\": True},\n    {\"name\": \"regelwerk_verdict\", \"bestanden\": True},\n    {\"name\": \"keine_overclaims\", \"bestanden\": True},\n]\n__check('angenommen', acceptance(ALLE_OK)[\"verdict\"] == \"angenommen\")\n__check('keine fehlgeschlagenen', acceptance(ALLE_OK)[\"fehlgeschlagen\"] == [])\nMANIFEST_KAPUTT = [\n    {\"name\": \"manifest_gepinnt\", \"bestanden\": False},\n    {\"name\": \"regelwerk_verdict\", \"bestanden\": True},\n]\nr = acceptance(MANIFEST_KAPUTT)\n__check('freeze bricht ab', r == {\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": [\"manifest_gepinnt\"]})\nTEILWEISE = [\n    {\"name\": \"manifest_gepinnt\", \"bestanden\": True},\n    {\"name\": \"keine_regression\", \"bestanden\": True},\n    {\"name\": \"keine_overclaims\", \"bestanden\": False},\n    {\"name\": \"doppellauf_identisch\", \"bestanden\": False},\n]\nr = acceptance(TEILWEISE)\n__check('abgelehnt', r[\"verdict\"] == \"abgelehnt\")\n__check('sortierte fehlgeschlagenen', r[\"fehlgeschlagen\"] == [\"doppellauf_identisch\", \"keine_overclaims\"])\n__check('vakuum', acceptance([]) == {\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": []})\n__check('eingabe unangetastet', len(TEILWEISE) == 4 and TEILWEISE[2][\"name\"] == \"keine_overclaims\")\n__check('deterministisch', acceptance(TEILWEISE) == r)"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-research-capstone"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def acceptance(pruefungen):\n    if not pruefungen:\n        return {\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": []}\n    fehlgeschlagen = sorted(p[\"name\"] for p in pruefungen if not p[\"bestanden\"])\n    if any(p[\"name\"] == \"manifest_gepinnt\" and not p[\"bestanden\"] for p in pruefungen):\n        return {\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": fehlgeschlagen}\n    if fehlgeschlagen:\n        return {\"verdict\": \"abgelehnt\", \"fehlgeschlagen\": fehlgeschlagen}\n    return {\"verdict\": \"angenommen\", \"fehlgeschlagen\": []}\n\n# leer -> abgebrochen; Freeze kaputt -> abgebrochen; sonst angenommen/abgelehnt"
+      },
+      "prompt": "Final Boss Abnahme: <code>acceptance(pruefungen)</code> entscheidet über alle Verträge. pruefungen: Liste <code>{\"name\": str, \"bestanden\": bool}</code>. Regeln: (1) Ist die Liste leer → <code>{\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": []}</code> (nichts geprüft heißt nichts angenommen). (2) Scheitert <code>manifest_gepinnt</code> → ebenfalls „abgebrochen“: Ohne Freeze sind alle anderen Ergebnisse unbrauchbar (fehlgeschlagen: sortierte Namen aller nicht bestandenen Prüfungen). (3) Sonst „angenommen“, wenn alle bestanden, sonst „abgelehnt“ mit <code>fehlgeschlagen</code> = sortierte Liste der gescheiterten Namen. Die Eingabe wird nicht verändert.",
+      "fullSolution": "def acceptance(pruefungen):\n    if not pruefungen:\n        return {\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": []}\n    fehlgeschlagen = sorted(p[\"name\"] for p in pruefungen if not p[\"bestanden\"])\n    if any(p[\"name\"] == \"manifest_gepinnt\" and not p[\"bestanden\"] for p in pruefungen):\n        return {\"verdict\": \"abgebrochen\", \"fehlgeschlagen\": fehlgeschlagen}\n    if fehlgeschlagen:\n        return {\"verdict\": \"abgelehnt\", \"fehlgeschlagen\": fehlgeschlagen}\n    return {\"verdict\": \"angenommen\", \"fehlgeschlagen\": []}\n\n# Drei Verdicts, ein Sortiervertrag, keine Mutation der Eingabe.",
+      "hints": [
+        "Erst die Sonderfälle: leere Liste und kaputtes Manifest brechen ab, bevor über Schwellen geurteilt wird.",
+        "fehlgeschlagen ist immer sortiert — auch im Abbruchfall."
+      ],
+      "feedbackRules": [
+        {
+          "if": "leer-angenommen",
+          "then": "Eine leere Prüfungsliste hat nichts bestanden — angenommen wäre der gefährlichste stille Fallback."
+        },
+        {
+          "if": "freeze-abgelehnt",
+          "then": "Ein kaputter Freeze ist kein Schwellenurteil (abgelehnt), sondern ein Abbruch: Alle weiteren Werte stehen auf Sand."
+        },
+        {
+          "if": "unsorted",
+          "then": "Die fehlgeschlagenen Namen werden sortiert zurückgegeben — sonst ist der Bericht bei jedem Lauf anders geordnet."
+        }
+      ],
+      "typicalErrors": [
+        "leere Prüfungsliste angenommen",
+        "Freeze-Fehler nur als abgelehnt gewertet",
+        "unsortierte Fehlliste zurückgegeben"
       ],
       "tolerancePolicy": {
         "mode": "tests"

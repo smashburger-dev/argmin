@@ -5,7 +5,7 @@
     "familyId": "aggregate-grouped-metrics-report",
     "familyGroup": "aggregate-count",
     "summary": "Berechnet gruppenweise Kennzahlen und Anteile und füllt daraus einen strukturierten Bericht ohne Kausaldeutung.",
-    "taskArchetype": "code-tests",
+    "taskArchetype": "code-test",
     "authorityMode": "static",
     "masteryEligible": true,
     "caseTypes": [
@@ -20,6 +20,10 @@
       {
         "caseId": "categorize-errors-report",
         "propertyTest": false
+      },
+      {
+        "caseId": "subgroup-recall-report",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -27,8 +31,9 @@
       "stretch"
     ],
     "competencyIds": [
-      "c-eda-viz",
-      "c-numpy-basics"
+      "c-capstone-pipeline",
+      "c-genai-security",
+      "c-ml-erroranalysis"
     ],
     "graderId": "pyodide",
     "activityType": "python-code"
@@ -180,6 +185,57 @@
       "tolerancePolicy": {
         "mode": "tests"
       }
+    },
+    {
+      "caseId": "subgroup-recall-report",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w37-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def subgroup_recall(datensaetze):\n    \"\"\"{label: mittelwert_recall} mit sortierten Labels und round(…, 6).\"\"\"\n    ...\n\n",
+        "tests": "D = [\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n]\n__check('vier gruppen', set(subgroup_recall(D)) == {\"versand\", \"recht\", \"rabatt\", \"garantie\"})\n__check('werte exakt', subgroup_recall(D) == {\"versand\": 1.0, \"recht\": 0.5, \"rabatt\": 0.5, \"garantie\": 1.0})\n__check('leere liste', subgroup_recall([]) == {})\n__check('label fehlt -> alle', subgroup_recall([{\"recall\": 0.25}, {\"recall\": 0.75}]) == {\"alle\": 0.5})\n__check('dritte gruppe', subgroup_recall([{\"subgroup\": \"b\", \"recall\": 0.1}, {\"subgroup\": \"b\", \"recall\": 0.2}, {\"subgroup\": \"b\", \"recall\": 0.3}]) == {\"b\": 0.2})"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def subgroup_recall(datensaetze):\n    werte = {}\n    for datensatz in datensaetze:\n        werte.setdefault(datensatz.get(\"subgroup\", \"alle\"), []).append(datensatz[\"recall\"])\n    return {label: round(sum(v) / len(v), 6) for label, v in sorted(werte.items())}\n\n# subgroup_recall(D) -> {'versand': 1.0, 'recht': 0.5, 'rabatt': 0.5, 'garantie': 1.0}"
+      },
+      "prompt": "Baue die Subgruppen-Auswertung: <code>subgroup_recall(datensaetze)</code> erhält eine Liste <code>{\"subgroup\": label, \"recall\": wert}</code> und liefert <code>{label: mittelwert}</code> über alle Datensätze der Gruppe (auf 6 Stellen gerundet, Labels sortiert). Leere Liste → leeres Dict. Fehlt das subgroup-Feld, gilt <code>\"alle\"</code>. Runde mit round(x, 6).",
+      "fullSolution": "def subgroup_recall(datensaetze):\n    werte = {}\n    for datensatz in datensaetze:\n        werte.setdefault(datensatz.get(\"subgroup\", \"alle\"), []).append(datensatz[\"recall\"])\n    return {label: round(sum(v) / len(v), 6) for label, v in sorted(werte.items())}\n\n# Zwei Gruppen landen bei 0.5 — das ist der Befund, nicht ein Bug.",
+      "hints": [
+        "Sammle je Label erst eine Liste von Recall-Werten, bilde dann Mittelwert und round(x, 6).",
+        "sorted(werte.items()) sortiert das Endergebnis direkt nach Label."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mean-over-all",
+          "then": "Der Gesamt-Mittelwert versteckt Gruppen-Zusammenbrüche — genau die soll die Subgruppen-Tabelle sichtbar machen."
+        },
+        {
+          "if": "division-single",
+          "then": "Mittelwert heißt Summe geteilt durch die Anzahl der Einträge DER GRUPPE, nicht durch die Gesamtzahl."
+        },
+        {
+          "if": "missing-label-crash",
+          "then": "datensatz.get('subgroup', 'alle') fängt fehlende Labels ab, ohne zu crashen."
+        }
+      ],
+      "typicalErrors": [
+        "über alle Datensätze gemittelt statt je Gruppe",
+        "fehlendes Label crashen lassen",
+        "unsortierte Labels zurückgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
     }
   ]
 }

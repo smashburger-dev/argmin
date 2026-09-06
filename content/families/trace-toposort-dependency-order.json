@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-toposort-dependency-order",
+  "contract": {
+    "familyId": "trace-toposort-dependency-order",
+    "familyGroup": "trace-state",
+    "summary": "Verfolgt die Reihenfolge eines Pipeline-Toposorts aus seinen Abhängigkeiten.",
+    "taskArchetype": "output-predict-lines",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "toposort-dependency-order",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "toposort-dependency-order",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w35-e3"
+      ],
+      "parameters": {
+        "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {\n    \"gold\": [],\n    \"regel\": [\"gold\"],\n    \"punkte\": [\"gold\"],\n    \"bericht\": [\"regel\", \"punkte\"],\n}\nprint(topo(stages))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "['gold', 'punkte', 'regel', 'bericht']"
+      },
+      "prompt": "Topologisches Sortieren von Hand ausführen: Was gibt dieses Programm aus? Sage die <code>print</code>-Zeile vorher, ohne den Code auszuführen. Bei mehreren bereiten Stufen wählt der Algorithmus alphabetisch den kleinsten Namen.",
+      "fullSolution": "Start: nur gold (keine Abhängigkeiten). Danach sind punkte und regel gleichzeitig bereit → alphabetisch punkte zuerst, dann regel. bericht braucht beide → kommt zuletzt: <code>['gold', 'punkte', 'regel', 'bericht']</code>. Der Zyklentest steckt in bereit: wäre die Liste leer, gäbe es einen Kreis.",
+      "hints": [
+        "Welche Stufe kann zuerst laufen? Danach: welche sind gleichzeitig bereit — und wie sortiert Python die?",
+        "bereit nutzt sortierte Namen; punkte und regel stehen beide sofort nach gold parat."
+      ],
+      "feedbackRules": [
+        {
+          "if": "regel-vor-punkte",
+          "then": "Nach gold sind punkte UND regel bereit — sorted() wählt alphabetisch: punkte kommt vor regel."
+        },
+        {
+          "if": "bericht-zu-frueh",
+          "then": "bericht braucht regel UND punkte — es kann erst laufen, wenn beide erledigt sind."
+        }
+      ],
+      "typicalErrors": [
+        "Einfügungsreihenfolge statt alphabetischer Tie-Break gelesen",
+        "berichte vor ihren Voraussetzungen eingeplant",
+        "set(stages[n]) & offen als Vergleich mit allen Stufen missverstanden"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

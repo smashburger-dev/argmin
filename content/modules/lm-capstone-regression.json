@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-capstone-regression",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Pipeline: Regression und Evaluationsregeln",
+  "description": "Evaluationsraten, Subgruppenberichte und Fehlerregeln reproduzierbar gegen Regressionen absichern.",
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-capstone-pipeline"
+  ],
+  "placements": [
+    {
+      "placementId": "p-capstone-37-e1",
+      "role": "curated",
+      "familyId": "classify-freeze-purpose",
+      "caseId": "freeze-purpose",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-capstone-37-e2",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "eval-batch-rates",
+      "seed": 3711,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-37-e3",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "subgroup-recall-output-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-37-e4",
+      "role": "curated",
+      "familyId": "aggregate-grouped-metrics-report",
+      "caseId": "subgroup-recall-report",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-37-e5",
+      "role": "curated",
+      "familyId": "aggregate-validate-and-count-records",
+      "caseId": "separate-error-kinds",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-37-e6",
+      "role": "curated",
+      "familyId": "reproduce-pipeline-status-report",
+      "caseId": "verdict-rules",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-37-practice",
+      "role": "practice-space",
+      "familyId": "formula-stat-from-table",
+      "caseId": "eval-batch-rates",
+      "seed": 3711,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-capstone-pipeline"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

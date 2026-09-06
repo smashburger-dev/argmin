@@ -52,6 +52,100 @@
       },
       "activityType": "numeric",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "stage-timeout-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w36-e2"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "integer",
+        "value": 3
+      },
+      "prompt": "Vier Stage-Aufrufe werden mit einer virtuellen Uhr gemessen (Zeitpunkte in Millisekunden, Budget jeweils 50): Aufruf A startet bei 0 und endet bei 45; Aufruf B startet bei 0 und endet bei 55; Aufruf C startet bei 200 und endet bei 240; Aufruf D startet bei 300 und endet bei 310. Wie viele Aufrufe liefern den Status „ok“ (Dauer höchstens Budget)?",
+      "fullSolution": "Dauern: A = 45 ≤ 50 ok, B = 55 > 50 Timeout, C = 40 ≤ 50 ok, D = 10 ≤ 50 ok → 3 Aufrufe mit Status ok. Die virtuelle Uhr macht die Zeit austauschbar und testbar: kein sleep, keine echte Uhr.",
+      "hints": [
+        "Dauer = Endzeit minus Startzeit — die absoluten Zeitpunkte um 200 und 300 sind irrelevant, nur die Differenz zählt.",
+        "Exakt im Budget (Dauer = Budget) gilt noch als ok."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 1",
+          "then": "1 wäre korrekt, wenn die Spätstarter durchfallen — aber 240−200=40 und 310−300=10 liegen beide im Budget von 50."
+        },
+        {
+          "if": "value === 2",
+          "then": "Nur B überschreitet das Budget (55 > 50) — A, C und D sind im Rahmen."
+        },
+        {
+          "if": "value === 4",
+          "then": "B läuft 55 ms bei 50 ms Budget — das ist ein Timeout, kein ok."
+        }
+      ],
+      "typicalErrors": [
+        "absolute Endzeiten statt Differenzen verglichen",
+        "Grenzfall Dauer = Budget als Timeout gewertet",
+        "Startzeiten addiert statt subtrahiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "dependency-pin-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w38-e2"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "expected": {
+        "kind": "integer",
+        "value": 4
+      },
+      "prompt": "Eine Abhängigkeitsliste hat 9 Einträge. Zwei davon sind als „paket>=2.0“ gepinnt, einer als „paket~=1.9“, und ein weiterer als „paket*“. Wie viele Einträge verletzen die Pin-Regel (keine Bereichs- oder Wildcard-Specs)?",
+      "fullSolution": "Verletzt: 2 × „>=“, 1 × „~=“, 1 × „*“ → 4 Einträge. Exakte Pins ohne Marker sind regelkonform; Bereichs- und Wildcard-Specs machen Reproduktion zu einer Wette.",
+      "hints": [
+        "Gezählt wird jeder Eintrag, der irgendeinen Marker trägt: >=, <=, ~= oder *.",
+        "Zähle Einträge, nicht Marker-Arten — derselbe Marker kann bei mehreren Einträgen auftreten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 3",
+          "then": "3 zählt nur die Spec-ARTEN (>=, ~=, *) — gefragt sind die Einträge, und >= kommt zweimal vor."
+        },
+        {
+          "if": "value === 5",
+          "then": "5 wäre korrekt, wenn auch exakte Pins verletzen würden — sie sind aber gerade der Standardfall."
+        },
+        {
+          "if": "value === 2",
+          "then": "Nur die >=-Einträge zu zählen lässt den ~=-Eintrag und den *-Eintrag außen vor."
+        }
+      ],
+      "typicalErrors": [
+        "Spec-Arten statt Einträge gezählt",
+        "exakte Pins mitgezählt",
+        "Wildcard als harmlos eingestuft"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
     }
   ]
 }

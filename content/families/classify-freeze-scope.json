@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-freeze-scope",
+  "contract": {
+    "familyId": "classify-freeze-scope",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen eingefrorenen Evaluationsstand dem geschützten Umfang einer reproduzierbaren Pipeline zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "freeze-scope",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "freeze-scope",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w35-e1"
+      ],
+      "parameters": {
+        "thema": "Scope-Freeze und Manifest"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Capstone-Start: Was gehört in den Scope-Freeze, BEVOR die Implementierung der Pipeline beginnt?",
+      "fullSolution": "In den Freeze gehören Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte W30-Kern — jeweils mit sha256 im Manifest. Änderungen sind möglich, aber sie brauchen eine neue Version und ein neues Manifest; assert_frozen() macht Abweichungen hörbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Welche Dateien bestimmen, was „besser“ heißt — und welche dürfen sich nach dem Messbeginn nicht mehr ändern?",
+        "Wie macht man eine Änderung sichtbar, statt sie zu verhindern?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Nur Code zu pinnen reicht nicht: Gegen Golden Set und Konfiguration wird gemessen — dürfen die wandern, misst du gegen ein bewegliches Ziel."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Erwartungen bei jedem Lauf neu festzulegen macht Ergebnisse unvergleichbar — das Gegenteil einer Evaluation."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das README dokumentiert den Vertrag, aber es erzwingt ihn nicht — Hashes im Manifest sind die prüfbare Form."
+        }
+      ],
+      "typicalErrors": [
+        "Daten und Konfiguration vom Freeze ausgenommen",
+        "Manifest als reine Dokumentation statt als Hash-Prüfung verstanden",
+        "Freeze erst nach der Demo aufgestellt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte W30-Kern — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nur den eigenen Quellcode einfrieren; Daten und Konfiguration dürfen weiterlaufen, damit man während der Entwicklung nachjustieren kann.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Nichts einfrieren — Erwartungen und Schwellen legt man bei jedem Lauf neu fest, je nachdem, was die Pipeline gerade hergibt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nur das README einfrieren, weil es als Dokument den Vertrag bereits vollständig prüfbar macht.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

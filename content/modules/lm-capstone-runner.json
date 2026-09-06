@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-capstone-runner",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Pipeline: Stage-Runner und Budgets",
+  "description": "Stage-Runner, Fehlerzustände, Timeouts und Budgets ohne stille Fallbacks analysieren.",
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-capstone-pipeline"
+  ],
+  "placements": [
+    {
+      "placementId": "p-capstone-36-e1",
+      "role": "curated",
+      "familyId": "classify-silent-fallback-hazard",
+      "caseId": "silent-fallback-hazard",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-capstone-36-e2",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "stage-timeout-count",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-36-e3",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "stage-runner-error-states",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-36-e4",
+      "role": "curated",
+      "familyId": "reproduce-pipeline-status-report",
+      "caseId": "call-with-timeout",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-36-e5",
+      "role": "curated",
+      "familyId": "reproduce-pipeline-status-report",
+      "caseId": "run-stage-budget",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-36-e6",
+      "role": "curated",
+      "familyId": "reproduce-pipeline-status-report",
+      "caseId": "start-pipeline-integration",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
