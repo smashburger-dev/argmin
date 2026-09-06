@@ -32,20 +32,30 @@ Gelöschte Runtime- und Tool-Dateien:
 - `tools/migrate_legacy_content.mjs`
 - `tools/build_search_index.mjs`
 
-## Assertions and fixtures
+## Assertions
 
-Wochenabhängige Suiten wurden entfernt, wenn sie ausschließlich die gelöschte
-Projektion prüften. Familien-, Solver-, Grader-, Ledger- und
-IndexedDB-Verträge blieben in den bestehenden Suiten erhalten oder wurden auf
-die kanonischen Familienobjekte umgestellt. `tests/fixtures/legacy-oracle.json`
-bleibt als eingefrorene Vergleichsquelle für historische Seed-Äquivalenz
-erhalten; sie enthält nur die gelesenen Felder und trägt den Hinweis, dass die
-Quelle bei `7fd26b8` eingefroren wurde.
+Die erste S4E2-Fassung hatte 307 Tests und entfernte dabei neben den
+obsoleten Wochenprojektionen auch Live-Verträge. In dieser Review-Runde wurden
+die 15 geforderten Suiten aus dem S4D8-Stand wiederhergestellt. Nur einzelne
+Assertions, die direkt `weeks`, `curriculum`, `exerciseDefinitions`,
+aggregierte `SEED_GENERATORS` oder den gelöschten Legacy-Adapter voraussetzen,
+wurden entfernt oder auf Familien-, Lesson-, Modul- und Split-Index-Objekte
+umgestellt. Parsons-, Code-Trace-, Predict-Output-, Mastery-, Solver-,
+Generator-, Quellenrechts-, Public-Validator-, Split- und
+Projekt-Assertions blieben erhalten.
 
-Die ursprünglichen Golden-Corpus-Digests der Familien bleiben unverändert.
-Das Open-Core-Erzeugnis prüft nun eine vorhandene, familienbasierte Suite und
-die `familyActivities`-Anzahl statt gelöschter Generator-Tests und
-`exerciseDefinitions`.
+Die gezielte wiederhergestellte Runde umfasst 308 Tests und besteht vollständig.
+`tests/fixtures/legacy-oracle.json` bleibt als eingefrorene Vergleichsquelle
+für historische Seed-Äquivalenz erhalten; sie enthält nur die von den
+umgestellten Suiten gelesenen Felder, behält `weeks.wNN.exercises[]` bei und
+trägt den Hinweis, dass die Quelle bei `7fd26b8` eingefroren wurde.
+
+Neu schützt `tests/family_golden_corpus.test.mjs` das Laufzeitverhalten aller
+107 registrierten Familien: jeder Runtime-Fall, jedes tatsächlich deklarierte
+Profil und die Seeds 0–63 werden über Prompt, Parameter, erwartete Antwort und
+Choices kanonisiert und per SHA-256 digestiert. Das Fixture wurde in einem
+separaten Worktree aus `3af6534` mit demselben Runtime-/Toolpfad erzeugt.
+Die aktuelle Runde meldet keine geänderte Familie.
 
 ## LOC
 
@@ -55,8 +65,8 @@ Gezählt mit `wc -l`-äquivalenter Zeilenzählung:
 |---|---:|---:|
 | `assets/js` + `src` (JS/MJS/TS/TSX) | 13,199 | 12,180 |
 | `tools` (JS/MJS/TS/TSX) | 3,432 | 2,143 |
-| `tests` (JS/MJS/TS/TSX/JSON) | 22,861 | 13,274 |
-| `content` (JSON) | 68,455 | 25,158 |
+| `tests` (JS/MJS/TS/TSX/JSON) | 22,861 | 14,253 |
+| `content` (JSON) | 68,455 | 25,157 |
 
 Die gelöschten Wochenquellen umfassen 39 Dateien und 14,873 Zeilen; die 27
 gelöschten authored Definitionen umfassen 1,357 Zeilen. Die übrigen gelöschten
@@ -75,17 +85,12 @@ Pfade. Der abschließende Release-Build erzeugte 614 Dateien bei 28,6 MB. Das
 JavaScript-Bundle beträgt 96,1 KiB gzip, das CSS-Bundle 6,3 KiB gzip. Der
 Public-Content-Build erzeugte 432 Dateien bei 26,4 MB.
 
-`node --test tests/` endete mit 307 Tests: 306 bestanden, 1 übersprungen
-(SymPy-Hostvoraussetzung). Die Content-Validierung meldete die etablierte
-Baseline mit 14 Library-/Local-Path-Fehlern und 2 Hinweisen; Public- und
-Release-Build validierten erfolgreich. Die Chromium-E2E-Suite wurde nach
-Neustart des Servers ausgeführt: die einzige verbleibende Abweichung ist die
-bekannte `59 Min.`-Erwartung in `tests/e2e/learning-module.spec.ts`; die
-entfernten Routen, modernen Familienrouten, Reviews und mobilen Katalogpfade
-wurden angepasst und bestanden.
-
-Die Golden-Corpus-Prüfungen für Choice-, Construct-, Linalg-, Trace- und
-weitere Familien bestanden byte-identisch über die geprüften Seeds.
+Die erste S4E2-Fassung hatte 307 Tests. Nach Wiederherstellung der Live-
+Verträge umfasst der vollständige Node-Gate-Lauf 615 Tests: 615 bestanden,
+0 fehlgeschlagen, 0 übersprungen. Die Content-Validierung meldete die etablierte
+Baseline mit 14
+Library-/Local-Path-Fehlern und 2 Hinweisen; Public- und Release-Build
+validierten erfolgreich.
 
 ## Verbleibende historische Reste
 
