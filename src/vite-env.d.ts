@@ -7,7 +7,6 @@ declare module '@content-index' {
 
 declare module '@content-chunks' {
   export const lessonChunks: Record<string, () => Promise<{ default: unknown }>>;
-  export const exerciseChunks: Record<string, () => Promise<{ default: unknown }>>;
   export const familyChunks: Record<string, () => Promise<{ default: unknown }>>;
   export const sectionChunks: Record<string, () => Promise<{ default: unknown }>>;
 }

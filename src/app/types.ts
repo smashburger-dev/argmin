@@ -48,7 +48,6 @@ export interface Milestone {
   estimatedMinutes: number;
   competencyIds: string[];
   lessonIds: string[];
-  exerciseDefinitionIds: string[];
   projectIds: string[];
   coverage: MilestoneCoverage[];
   releaseStatus: string;
@@ -70,7 +69,6 @@ export interface ExerciseSummary {
   masteryEligible: boolean;
   active: boolean;
   releaseStatus: string;
-  legacyWeekId: string | null;
   parameters: Record<string, unknown>;
   choices: Array<{ id: string; text: string; correct: boolean }>;
   expectedAnswer: Record<string, unknown>;
@@ -186,16 +184,6 @@ export interface SourceSummary {
   weeks: number[];
   extractionStatus: string;
   qaStatus: string;
-}
-
-export interface LegacyWeekSummary {
-  weekId: string;
-  number: number;
-  phaseId: string;
-  title: string;
-  detailed: boolean;
-  goals: string[];
-  learningUnits?: Array<Record<string, unknown>>;
 }
 
 export interface ExercisePlacement {

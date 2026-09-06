@@ -1,4 +1,3 @@
-import { instantiateLegacyExercise } from '../core/legacy_exercise_adapter.mjs';
 import { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
 import {
   GIT_OPERATION_CONTRACT,
@@ -66,35 +65,3 @@ export function familyEventInput(instance) {
 }
 export const grade = (instance, answer) => EXERCISE_FAMILIES.grade(instance, answer);
 export const assertFamilyPlacement = (placement) => EXERCISE_FAMILIES.assertFamilyPlacement(placement);
-
-export class ExerciseRegistry {
-  constructor(definitions) {
-    this.byId = new Map();
-    for (const definition of definitions) {
-      if (!definition?.definitionId || this.byId.has(definition.definitionId)) {
-        throw new Error(`fehlende oder doppelte Definition ${definition?.definitionId || '(leer)'}`);
-      }
-      this.byId.set(definition.definitionId, definition);
-    }
-  }
-
-  get size() {
-    return this.byId.size;
-  }
-
-  get(definitionId) {
-    return this.byId.get(definitionId) || null;
-  }
-
-  forCompetency(competencyId) {
-    return [...this.byId.values()]
-      .filter((definition) => definition.competencyIds.includes(competencyId))
-      .sort((a, b) => a.definitionId.localeCompare(b.definitionId));
-  }
-
-  instantiate(definitionId, seed) {
-    const definition = this.byId.get(definitionId);
-    if (!definition) throw new Error(`Unbekannte Definition ${definitionId}`);
-    return instantiateLegacyExercise(definition, seed ?? definition.deterministicSeed);
-  }
-}

@@ -261,13 +261,3 @@ export function genAllowedActionCount(seed) {
     };
   });
 }
-
-// --- registry -------------------------------------------------------------------------
-
-export const W27_W30_SEED_GENERATORS = {
-  genRecallAtK,
-  genChunkCount,
-  genF1orPrecision,
-  genInjectionFlagCount,
-  genAllowedActionCount,
-};

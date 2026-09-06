@@ -470,14 +470,3 @@ export function genEvalRates(seed) {
     };
   });
 }
-
-// --- registry -------------------------------------------------------------------------
-
-export const W31_W39_SEED_GENERATORS = {
-  genProtocolShifts,
-  genCardAudit,
-  genSubgroupCost,
-  genBaselineLedger,
-  genPipelineStages,
-  genEvalRates,
-};

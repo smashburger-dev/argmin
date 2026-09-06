@@ -1,6 +1,6 @@
 import contentIndex from '@content-index';
-import { exerciseChunks, familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
-import type { CatalogData, ExerciseSummary, LearningModule, Lesson, LegacyWeekSummary, ReviewRecord, SourceSummary, ToolCard } from '../app/types';
+import { familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
+import type { CatalogData, ExerciseSummary, LearningModule, Lesson, ReviewRecord, SourceSummary, ToolCard } from '../app/types';
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
@@ -19,7 +19,6 @@ interface CompiledIndex {
   explanations: CatalogData['explanations'];
   projects: CatalogData['projects'];
   learningModules?: LearningModule[];
-  exerciseDefinitions: Array<Partial<ExerciseSummary> & Pick<ExerciseSummary, 'definitionId' | 'competencyIds' | 'activityType' | 'estimatedMinutes' | 'difficulty' | 'graderId'>>;
   familyActivities: Array<{
     definitionId: string;
     familyId: string;
@@ -44,38 +43,13 @@ interface CompiledIndex {
 
 // Route-scoped heavy sections: own JSON chunks, loaders cached and deduped.
 interface SectionIndex {
-  roadmap: { legacyProjection: { weeks: LegacyWeekSummary[] } };
   sources: { sources: SourceSummary[] };
   tools: { tools: ToolCard[] };
   reviews: { reviews: ReviewRecord[] };
 }
 
 type LessonBody = { lessonId: string; blocks: Lesson['blocks'] };
-type ExerciseBody = Partial<ExerciseSummary> & { definitionId: string };
 type FamilyCases = { familyId: string; cases: Array<Record<string, unknown>> };
-
-const EMPTY_EXERCISE_BODY = {
-  parameters: {},
-  choices: [],
-  expectedAnswer: {},
-  tolerancePolicy: {},
-  hints: [],
-  feedbackRules: [],
-  fullSolution: '',
-  workedExample: null,
-  rubric: null,
-  typicalErrors: null,
-} as const;
-
-function mergeExerciseBody(summary: ExerciseSummary, body: ExerciseBody): ExerciseSummary {
-  return {
-    ...summary,
-    ...EMPTY_EXERCISE_BODY,
-    ...body,
-    starterCode: (body.parameters as { starterCode?: string } | undefined)?.starterCode,
-    packages: (body.parameters as { packages?: string[] } | undefined)?.packages ?? [],
-  } as ExerciseSummary;
-}
 
 export class ContentUnavailableError extends Error {
   constructor(public readonly contentId: string, kind: 'lesson' | 'exercise', cause: unknown) {
@@ -87,7 +61,6 @@ export class ContentUnavailableError extends Error {
 const index = contentIndex as unknown as CompiledIndex;
 
 const lessonCache = new Map<string, Lesson>();
-const exerciseCache = new Map<string, ExerciseSummary>();
 const familyCache = new Map<string, FamilyCases>();
 const pending = new Map<string, Promise<unknown>>();
 
@@ -97,40 +70,6 @@ function loadOnce<T>(key: string, run: () => Promise<T>): Promise<T> {
   const promise = run().finally(() => { pending.delete(key); });
   pending.set(key, promise);
   return promise;
-}
-
-function toExerciseSummary(exercise: CompiledIndex['exerciseDefinitions'][number]): ExerciseSummary {
-  return {
-    definitionId: exercise.definitionId,
-    version: exercise.version ?? 1,
-    title: exercise.title ?? exercise.definitionId,
-    prompt: (exercise as { promptSnippet?: string }).promptSnippet ?? '',
-    activityType: exercise.activityType,
-    graderId: exercise.graderId,
-    generatorId: exercise.generatorId ?? null,
-    referenceSolverId: exercise.referenceSolverId ?? null,
-    competencyIds: exercise.competencyIds,
-    estimatedMinutes: exercise.estimatedMinutes,
-    difficulty: exercise.difficulty,
-    deterministicSeed: exercise.deterministicSeed ?? 0,
-    masteryEligible: exercise.masteryEligible ?? false,
-    active: exercise.active ?? true,
-    releaseStatus: exercise.releaseStatus ?? 'draft',
-    legacyWeekId: exercise.legacyWeekId ?? null,
-    testedSeedCount: exercise.testedSeedCount ?? 0,
-    parameters: {},
-    choices: [],
-    expectedAnswer: {},
-    tolerancePolicy: {},
-    hints: [],
-    feedbackRules: [],
-    fullSolution: '',
-    workedExample: null,
-    rubric: null,
-    typicalErrors: null,
-    starterCode: undefined,
-    packages: [],
-  } as ExerciseSummary;
 }
 
 function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): ExerciseSummary {
@@ -150,7 +89,6 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
     masteryEligible: activity.masteryEligible,
     active: true,
     releaseStatus: 'draft',
-    legacyWeekId: null,
     parameters: {},
     choices: [],
     expectedAnswer: {},
@@ -169,11 +107,6 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
     seed: activity.seed,
     seeded: activity.seeded,
   };
-}
-
-export function findLegacyExerciseSummary(definitionId: string): ExerciseSummary | null {
-  const exercise = index.exerciseDefinitions.find((item) => item.definitionId === definitionId);
-  return exercise ? toExerciseSummary(exercise) : null;
 }
 
 export function loadCatalog(): CatalogData {
@@ -214,9 +147,6 @@ async function sectionFile<K extends keyof SectionIndex>(name: K): Promise<Secti
   return body.default;
 }
 
-export async function loadRoadmapWeeks(): Promise<LegacyWeekSummary[]> {
-  return (await sectionFile('roadmap')).legacyProjection.weeks;
-}
 export async function loadSources(): Promise<SourceSummary[]> {
   return (await sectionFile('sources')).sources;
 }
@@ -241,22 +171,5 @@ export async function getLesson(lessonId: string): Promise<Lesson> {
     return lesson;
   } catch (cause) {
     throw new ContentUnavailableError(lessonId, 'lesson', cause);
-  }
-}
-
-export async function getExercise(definitionId: string): Promise<ExerciseSummary> {
-  const cached = exerciseCache.get(definitionId);
-  if (cached) return cached;
-  const summary = toExerciseSummary(index.exerciseDefinitions.find((exercise) => exercise.definitionId === definitionId)
-    ?? (() => { throw new ContentUnavailableError(definitionId, 'exercise', new Error('Aufgabe existiert im Katalog nicht')); })());
-  const loader = exerciseChunks[definitionId];
-  if (!loader) throw new ContentUnavailableError(definitionId, 'exercise', new Error('kein Content-Chunk registriert'));
-  try {
-    const body = await loadOnce(`exercise:${definitionId}`, () => loader()) as { default: ExerciseBody };
-    const exercise = mergeExerciseBody(summary, body.default);
-    exerciseCache.set(definitionId, exercise);
-    return exercise;
-  } catch (cause) {
-    throw new ContentUnavailableError(definitionId, 'exercise', cause);
   }
 }

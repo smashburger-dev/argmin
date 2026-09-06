@@ -3,7 +3,6 @@
 // { correct, verdictText, errorType, diagnosis? } (async allowed).
 
 import { parseIntegerAnswer, parseIntegerPair, genMatmulEntry, genDot, solveLinear2, matmul, dot, rank } from './w05_generators.mjs';
-import { resolveSeedGenerator } from './seed_generator_registry.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
 // never pay for the pyodide runner module in their chunk.
 const loadPyodideRunner = () => import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner);
@@ -23,7 +22,6 @@ function expectedNumeric(exercise) {
   // seeded retrieval generators (w01) follow the CURRENT seed — the runtime
   // passes the re-rolled seed through exercise.deterministicSeed.
   const p = exercise.parameters || {};
-  if (p.seedGenerator) return resolveSeedGenerator(p.seedGenerator)(exercise.deterministicSeed).expected;
   if (Array.isArray(p.A) && typeof p.expectedRank === 'number') {
     return rank(p.A);
   }
@@ -58,26 +56,8 @@ function diagnoseNumeric(exercise, value) {
   return null;
 }
 
-/** Seeded instance for the raw-JSON path (legacy shell): when a week-pack
- *  exercise carries parameters.seedGenerator, the generator follows the
- *  CURRENT deterministicSeed (re-rolled instances included). Instantiated
- *  exercises (Next shell) carry concrete parameters and never hit this. */
-function seededInstance(exercise) {
-  const name = exercise.parameters && exercise.parameters.seedGenerator;
-  if (typeof name !== 'string' || !name) return null;
-  return resolveSeedGenerator(name)(exercise.deterministicSeed);
-}
-
-/** Seeded-override read shared by the type graders: the generated instance
- *  replaces the exercise's own field only when the generator provides it. */
-const seededField = (exercise, pick, fallback) => {
-  const seeded = seededInstance(exercise);
-  const generated = seeded === null ? undefined : pick(seeded);
-  return generated !== undefined ? generated : fallback();
-};
-
 function gradeChoice(exercise, choiceId) {
-  const choices = seededField(exercise, (s) => (Array.isArray(s.choices) ? s.choices : undefined), () => exercise.choices) || [];
+  const choices = exercise.choices || [];
   const choice = choices.find((c) => c.id === choiceId);
   if (!choice) return { correct: false, verdictText: 'Bitte eine Auswahl treffen.', errorType: 'invalid-input' };
   if (!choices.some((c) => c.correct)) {
@@ -96,7 +76,7 @@ function gradeChoice(exercise, choiceId) {
 function gradePair(exercise, raw) {
   const p = parseIntegerPair(raw);
   if (!p.ok) return { correct: false, verdictText: p.error, errorType: 'invalid-input' };
-  const { A, b } = seededField(exercise, (s) => s.parameters, () => exercise.parameters) || {};
+  const { A, b } = exercise.parameters || {};
   let expected;
   try { expected = solveLinear2(A, b); } catch {
     return { correct: false, verdictText: 'Interner Fehler: Aufgabe fehlerhaft konfiguriert.', errorType: 'grader-error' };
@@ -394,7 +374,7 @@ function gradeVariable(variable, raw) {
 }
 
 function gradeCodeTrace(exercise, answers) {
-  const source = seededField(exercise, (s) => s.parameters, () => exercise.parameters);
+  const source = exercise.parameters;
   const vars = (source && source.variables) || [];
   if (!vars.length) {
     return { correct: false, verdictText: 'Interner Fehler: Trace-Variablen fehlen.', errorType: 'grader-error' };
@@ -445,11 +425,7 @@ function gradePredictOutput(exercise, raw) {
   if (raw == null || !String(raw).trim()) {
     return { correct: false, verdictText: 'Bitte die erwartete Ausgabe eingeben.', errorType: 'invalid-input' };
   }
-  const expectedOutput = seededField(
-    exercise,
-    (s) => (s.expected && typeof s.expected.output === 'string' ? s.expected.output : undefined),
-    () => exercise.expectedAnswer.output,
-  );
+  const expectedOutput = exercise.expectedAnswer.output;
   const expected = normalizeOutput(expectedOutput);
   const got = normalizeOutput(raw);
   const correct = got === expected;

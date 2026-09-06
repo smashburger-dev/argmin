@@ -14,7 +14,7 @@
 //    with the case so no fixed answer position can be learned.
 //
 // Non-numeric answer shapes follow the extended contract: `choices` is
-// validated fail-closed by legacy_exercise_adapter.mjs; code-trace
+// validated fail-closed by the family runtime; code-trace
 // variables may carry `type: 'repr'` (canonical Python literals).
 
 import { rng, randInt, nonzeroInt } from './w01_generators.mjs';

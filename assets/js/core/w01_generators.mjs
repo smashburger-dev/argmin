@@ -164,7 +164,3 @@ export function genLinearBothSides(seed) {
     fullSolution: `${coeff(a)} ${signed(b)} = ${coeff(c)} ${signed(d)} führt auf ${a - c}x = ${d - b} und damit x = ${x}. Die Probe erfüllt beide Seiten.`,
   };
 }
-
-/** Registry used by graders.js (seeded numeric exercises) and the adapter.
- *  (prompt rendering / re-roll). */
-export const W01_SEED_GENERATORS = { genLinearEquation, genPowerExpr, genLogExpr, genLinearBothSides };
