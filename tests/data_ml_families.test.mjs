@@ -29,6 +29,7 @@ import {
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
+  genShrinkagePercent,
   genSubgroupGapPp,
 } from '../assets/js/core/data_ml_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
@@ -51,6 +52,8 @@ const leakageAuditDoc = JSON.parse(readFileSync(join(root, 'content/families/val
 const fairnessAggregationDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-fairness-aggregation.json'), 'utf8'));
 const errorDriftDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-error-drift.json'), 'utf8'));
 const groupedMetricsDoc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8'));
+const regularizerEffectDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-regularizer-effect.json'), 'utf8'));
+const ridgeLassoDoc = JSON.parse(readFileSync(join(root, 'content/families/formula-ridge-lasso-closed-form.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -65,6 +68,8 @@ registerStaticCases(leakageAuditDoc.familyId, leakageAuditDoc.cases);
 registerStaticCases(fairnessAggregationDoc.familyId, fairnessAggregationDoc.cases);
 registerStaticCases(errorDriftDoc.familyId, errorDriftDoc.cases);
 registerStaticCases(groupedMetricsDoc.familyId, groupedMetricsDoc.cases);
+registerStaticCases(regularizerEffectDoc.familyId, regularizerEffectDoc.cases);
+registerStaticCases(ridgeLassoDoc.familyId, ridgeLassoDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -84,6 +89,8 @@ const familyDocs = [
   leakageAuditDoc,
   fairnessAggregationDoc,
   errorDriftDoc,
+  regularizerEffectDoc,
+  ridgeLassoDoc,
 ];
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
@@ -236,6 +243,58 @@ test('W13 seeded subgroup gap corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['formula-ratio-percent-metric-subgroup-gap'].digest);
+});
+
+test('ridge shrinkage family preserves seeded generation, binding profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-ratio-percent-metric');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'ridge-shrinkage-percent',
+        difficulty,
+      });
+      const share = (100 * generated.parameters.sxx)
+        / (generated.parameters.sxx + generated.parameters.lam);
+      const expected = generated.parameters.phrasing === 'shrink' ? 100 - share : share;
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveFormulaRatioPercentMetric(generated.parameters).value, expected);
+      if (difficulty === 'intro') assert.equal(generated.parameters.phrasing, 'share');
+      if (difficulty === 'stretch') assert.equal(generated.parameters.phrasing, 'shrink');
+    }
+  }
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 14001,
+      caseId: 'ridge-shrinkage-percent',
+      difficulty: 'core',
+    }).expected.value,
+    genShrinkagePercent(14001).expected,
+  );
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 14001,
+      caseId: 'ridge-shrinkage-percent',
+      difficulty: 'core',
+    }).expected.value,
+    75,
+  );
+});
+
+test('W14 seeded ridge shrinkage corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateFormulaRatioPercentMetricFamily({
+        seed,
+        caseId: 'ridge-shrinkage-percent',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['formula-ratio-percent-metric-ridge-shrinkage'].digest);
 });
 
 test('MSE gradient family preserves seeded generation and independent solving', () => {
@@ -711,6 +770,56 @@ test('W13 static cases enforce profiles and competency overrides', () => {
     assert.throws(
       () => EXERCISE_FAMILIES.instantiate(
         'aggregate-grouped-metrics-report',
+        0,
+        difficulty === 'core' ? 'stretch' : 'core',
+        caseId,
+      ),
+      /Unbekanntes Profil/,
+    );
+  }
+});
+
+test('W14 static cases enforce profiles and competency overrides', () => {
+  const regularizer = EXERCISE_FAMILIES.instantiate(
+    'classify-regularizer-effect',
+    0,
+    'intro',
+    'l1-vs-l2-effect',
+  );
+  assert.equal(regularizer.masteryEligible, false);
+  assert.deepEqual(regularizer.competencyIds, ['c-ml-regularization']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'classify-regularizer-effect',
+      0,
+      'core',
+      'l1-vs-l2-effect',
+    ),
+    /Unbekanntes Profil/,
+  );
+  const leakage = EXERCISE_FAMILIES.instantiate(
+    'classify-cv-leakage',
+    0,
+    'core',
+    'target-encoding-leakage',
+  );
+  assert.equal(leakage.masteryEligible, true);
+  assert.deepEqual(leakage.competencyIds, ['c-ml-regularization']);
+  for (const [caseId, difficulty] of [
+    ['ridge-normal-equation', 'core'],
+    ['lasso-soft-threshold', 'stretch'],
+  ]) {
+    const instance = EXERCISE_FAMILIES.instantiate(
+      'formula-ridge-lasso-closed-form',
+      0,
+      difficulty,
+      caseId,
+    );
+    assert.deepEqual(instance.competencyIds, ['c-ml-regularization', 'c-numpy-basics']);
+    assert.equal(instance.parameters.packages[0], 'numpy');
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(
+        'formula-ridge-lasso-closed-form',
         0,
         difficulty === 'core' ? 'stretch' : 'core',
         caseId,

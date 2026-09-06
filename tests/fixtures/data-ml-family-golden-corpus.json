@@ -111,6 +111,18 @@
       ],
       "instances": 192,
       "digest": "ae7dbfd1102a42e34de49ea38e9bfda876fe557c62de7c0f13d6400908e905c2"
+    },
+    "formula-ratio-percent-metric-ridge-shrinkage": {
+      "cases": [
+        "ridge-shrinkage-percent"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "f7e9a9e3f91b1a4e568cbbc6d74ff84c04bcccc0d8387f729e9b7ea85c5a42c6"
     }
   }
 }
