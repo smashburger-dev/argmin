@@ -186,7 +186,7 @@ export function createFamilyRegistry(families) {
       type: generated.activityType ?? family.activityType,
       graderId: generated.graderId ?? family.graderId,
       grader: generated.graderId ?? family.graderId,
-      competencyIds: [...family.competencyIds],
+      competencyIds: [...(generated.competencyIds ?? family.competencyIds)],
       prompt: generated.prompt,
       parameters: generated.parameters,
       choices: generated.choices,
