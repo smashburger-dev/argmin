@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-decode-greedy-loop",
+  "contract": {
+    "familyId": "optimize-decode-greedy-loop",
+    "familyGroup": "optimize-update",
+    "summary": "Führt Greedy-Decoding als Schleife über die Decodeschritte aus.",
+    "taskArchetype": "output-predict-lines",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "greedy-loop-trace",
+        "propertyTest": false
+      },
+      {
+        "caseId": "greedy-decode-function",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-dl-inference",
+      "c-python-basics"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "greedy-loop-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w24-e3"
+      ],
+      "parameters": {
+        "snippet": "VOCAB = {0: \"a\", 1: \"b\", 2: \"<eos>\"}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))"
+      },
+      "competencyIds": [
+        "c-dl-inference",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "[0, 1, 2]\nab<eos>"
+      },
+      "prompt": "Dekodierschleife lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tabelle in <code>step_fn</code> ist eine gestellte Fixtur (Toy-Modell mit gestellten Gewichten — Mechanik, keine Sprachfähigkeit).",
+      "fullSolution": "Schritt 1: <code>() → 0</code>, Schritt 2: <code>(0,) → 1</code>, Schritt 3: <code>(0, 1) → 2 = eos</code> → Stop. Ausgabe: <code>[0, 1, 2]</code> und <code>ab&lt;eos&gt;</code>.",
+      "hints": [
+        "Start mit leerer Folge: Was liefert step_fn für das leere Präfix — und welcher Buchstabe wird daraus angehängt?",
+        "Arbeite die Präfixe der Reihe nach ab: Jeder Schritt hängt genau ein Symbol an, bis die Schrittfunktion das Stoppsymbol liefert. Tabelliere Präfix → Symbol statt alles im Kopf zu halten; die Ausgabe enthält das Stoppsymbol mit."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die Tokenliste hat drei Einträge — das <eos>-Token wird mitgezählt."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die ID-Liste, dann der dekodierte String."
+        }
+      ],
+      "typicalErrors": [
+        "<eos> nicht angehängt oder nicht mitgezählt",
+        "max_len als exklusive Grenze falsch gelesen",
+        "Join-Reihenfolge der Token vertauscht"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "greedy-decode-function",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w24-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def greedy_decode(step_fn, init_ids, max_len, eos):\n    \"\"\"Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos.\"\"\"\n    # copy init_ids first (never mutate the caller's list)\n    # while len(ids) < max_len: nxt = step_fn(...); append; break on eos\n    ...\n",
+        "tests": "TABLE = {(): 5, (5,): 7, (5, 7): 9}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\n__check('kette bis eos', greedy_decode(table_step, [], 8, 9) == [5, 7, 9])\n\ndef always_four(ids):\n    return 4\n\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\n__check('eos als erstes token', greedy_decode(always_four, [], 1, 4) == [4])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos wird mitgezaehlt', len(greedy_decode(table_step, [], 3, 9)) == 3)\n__check('eos stoppt vor max_len', len(greedy_decode(table_step, [], 99, 9)) == 3)\n__check('leerer start erlaubt', greedy_decode(table_step, [], 1, 5) == [5])"
+      },
+      "competencyIds": [
+        "c-dl-inference",
+        "c-python-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def greedy_decode(step_fn, init_ids, max_len, eos):\n    \"\"\"Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos.\"\"\"\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = int(step_fn(list(ids)))\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n"
+      },
+      "prompt": "Implementiere <code>greedy_decode(step_fn, init_ids, max_len, eos)</code>. Vertrag: Die Startfolge wird <strong>kopiert</strong> (die Eingabe des Aufrufers darf nicht mutiert werden); solange die Folge kürzer als <code>max_len</code> ist, liefert <code>step_fn(ids)</code> das nächste Token (aufrufen mit einer Kopie der aktuellen Folge); das Token wird angehängt; ist es <code>eos</code>, stoppt die Schleife sofort — das <code>eos</code> bleibt Teil der Folge. Rückgabe: Liste von ints. <strong>Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.</strong> Der Testcode benutzt Fixtur-<code>step_fn</code>s (Tabellen und Konstanten) und prüft Stoppen, Längengrenze, Kopie-Vertrag und Randfälle.",
+      "fullSolution": "def greedy_decode(step_fn, init_ids, max_len, eos):\n    \"\"\"Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos.\"\"\"\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = int(step_fn(list(ids)))\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n# greedy_decode(table_step, [], 8, 9) -> [5, 7, 9] (eos mitgezählt)\n# greedy_decode(always_four, [], 3, 9) -> [4, 4, 4] (max_len schneidet ab).",
+      "hints": [
+        "ids = list(init_ids) kopiert; die Schleifenbedingung ist len(ids) < max_len.",
+        "step_fn bekommt eine eigene Kopie der Folge (list(ids)); nach dem Anhängen von eos sofort abbrechen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "init-mutated",
+          "then": "init_ids darf nie verändert werden — list(init_ids) vor der Schleife."
+        },
+        {
+          "if": "off-by-one",
+          "then": "Die Grenze ist exklusiv: angehängt wird nur, solange len(ids) < max_len gilt."
+        },
+        {
+          "if": "eos-dropped",
+          "then": "Das eos-Token bleibt in der Rückgabe stehen — es wird nicht entfernt."
+        }
+      ],
+      "typicalErrors": [
+        "Eingabeliste mutiert statt kopiert",
+        "max_len-Grenze um eins verschoben",
+        "eos aus der Rückgabe entfernt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

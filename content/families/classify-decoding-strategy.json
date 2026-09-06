@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-decoding-strategy",
+  "contract": {
+    "familyId": "classify-decoding-strategy",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet ein Decodierverhalten der passenden Decodierstrategie zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "greedy-decoding",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-dl-inference"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "greedy-decoding",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w24-e1"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-inference"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Es zieht ein Token zufällig, proportional zu den Softmax-Wahrscheinlichkeiten.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Es wählt gelegentlich das Token mit der niedrigsten Punktzahl, um Wiederholungen zu vermeiden.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Es generiert mehrere Kandidatenfolgen parallel und wählt am Ende die beste.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+          "correct": true
+        }
+      ],
+      "prompt": "Was zeichnet Greedy Decoding als Dekodierstrategie aus?",
+      "fullSolution": "Greedy Decoding hängt pro Schritt das Token mit der höchsten Logit-Punktzahl an (argmax, Gleichstand geht an die kleinste ID) und stoppt bei <eos> oder max_len — vollständig deterministisch. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "„Greedy“ heißt gierig nach dem Maximum: Was passiert in jedem einzelnen Schritt mit den Kandidaten?",
+        "Kein Zufall, kein Sampling, kein Zurücknehmen — nur argmax, angewandt bis eos oder max_len."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Das ist Sampling (mit Temperatur), nicht Greedy — Greedy ist deterministisch."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Auch das wäre eine Zufallsstrategie; Greedy nimmt immer das argmax-Token."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Mehrere Folgen parallel zu verfolgen ist Beam Search — aufwendiger als Greedy."
+        }
+      ],
+      "typicalErrors": [
+        "Greedy mit Sampling verwechselt",
+        "Determinismus von Argmax missverstanden",
+        "Greedy mit Beam Search verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
