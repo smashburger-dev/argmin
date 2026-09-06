@@ -75,6 +75,18 @@
       ],
       "instances": 192,
       "digest": "97b4e4c2380b5456735d1c953b9f1bf83faa33391767c14191f3d4fd59dc7a21"
+    },
+    "aggregate-confusion-metric": {
+      "cases": [
+        "confusion-marginal-count"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "c39821e37fbe850d3e8f71f0326bb0b9f187b285b08cde5dd8caefaecc5f6d60"
     }
   }
 }

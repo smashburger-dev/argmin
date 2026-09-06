@@ -6,18 +6,21 @@ import { join } from 'node:path';
 import {
   DATA_ML_FAMILY_SPECS,
   generateAggregateMajorityRuleCountFamily,
+  generateAggregateConfusionMetricFamily,
   generateCountRemainingRowsFamily,
   generateFormulaQuadraticErrorMetricFamily,
   generateMseGradientClosedFormFamily,
   generateFormulaRatioPercentMetricFamily,
   solveFormulaQuadraticErrorMetric,
   solveAggregateMajorityRuleCount,
+  solveAggregateConfusionMetric,
   solveCountRemainingRows,
   solveMseGradientClosedForm,
   solveFormulaRatioPercentMetric,
 } from '../assets/js/core/data_ml_families.mjs';
 import {
   genBaselineCorrect,
+  genConfusionCount,
   genCompleteRows,
   genDedupRows,
   genMseFromResiduals,
@@ -36,6 +39,8 @@ const taskTypeDoc = JSON.parse(readFileSync(join(root, 'content/families/classif
 const splitDoc = JSON.parse(readFileSync(join(root, 'content/families/reproduce-seeded-split.json'), 'utf8'));
 const metricsDoc = JSON.parse(readFileSync(join(root, 'content/families/fit-predict-metrics.json'), 'utf8'));
 const quadraticErrorDoc = JSON.parse(readFileSync(join(root, 'content/families/formula-quadratic-error-metric.json'), 'utf8'));
+const confusionMetricDoc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-confusion-metric.json'), 'utf8'));
+const sigmoidDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-sigmoid-regime.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -53,6 +58,8 @@ const familyDocs = [
   splitDoc,
   metricsDoc,
   quadraticErrorDoc,
+  confusionMetricDoc,
+  sigmoidDoc,
   JSON.parse(readFileSync(join(root, 'content/families/classify-confounding.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8')),
@@ -397,6 +404,103 @@ test('W10 static cases enforce profiles and competency overrides', () => {
     'regression-report',
   );
   assert.deepEqual(report.competencyIds, ['c-ml-linear']);
+});
+
+test('confusion metric family preserves seeded generation, profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'aggregate-confusion-metric');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'confusion-marginal-count',
+        difficulty,
+      });
+      const { metric, tp, fp, fn, tn } = generated.parameters;
+      const expected = metric === 'actual-neg'
+        ? tn + fp
+        : metric === 'predicted-pos'
+          ? tp + fp
+          : tp + fn;
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveAggregateConfusionMetric(generated.parameters).value, expected);
+      if (difficulty === 'intro') assert.equal(metric, 'predicted-pos');
+      if (difficulty === 'stretch') assert.equal(metric, 'actual-neg');
+    }
+  }
+  assert.equal(
+    generateAggregateConfusionMetricFamily({
+      seed: 11001,
+      caseId: 'confusion-marginal-count',
+      difficulty: 'core',
+    }).expected.value,
+    genConfusionCount(11001).expected,
+  );
+  assert.equal(
+    generateAggregateConfusionMetricFamily({
+      seed: 11001,
+      caseId: 'confusion-marginal-count',
+      difficulty: 'core',
+    }).expected.value,
+    117,
+  );
+});
+
+test('W11 static cases enforce profiles and logistic competency', () => {
+  const sigmoid = EXERCISE_FAMILIES.instantiate(
+    'classify-sigmoid-regime',
+    0,
+    'intro',
+    'sigmoid-large-z',
+  );
+  assert.equal(sigmoid.masteryEligible, false);
+  assert.deepEqual(sigmoid.competencyIds, ['c-ml-logistic']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'classify-sigmoid-regime',
+      0,
+      'core',
+      'sigmoid-large-z',
+    ),
+    /Unbekanntes Profil/,
+  );
+  for (const [caseId, difficulty] of [
+    ['threshold-under-asymmetric-cost', 'core'],
+    ['sigmoid-predict-numpy', 'core'],
+    ['confusion-cost-report', 'stretch'],
+  ]) {
+    const instance = EXERCISE_FAMILIES.instantiate(
+      'aggregate-confusion-metric',
+      0,
+      difficulty,
+      caseId,
+    );
+    assert.deepEqual(instance.competencyIds, ['c-ml-logistic']);
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(
+        'aggregate-confusion-metric',
+        0,
+        difficulty === 'core' ? 'stretch' : 'core',
+        caseId,
+      ),
+      /Unbekanntes Profil/,
+    );
+  }
+});
+
+test('W11 seeded confusion corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateAggregateConfusionMetricFamily({
+        seed,
+        caseId: 'confusion-marginal-count',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['aggregate-confusion-metric'].digest);
 });
 
 test('sklearn trace case grades and exposes the ML-baseline competency override', async () => {
