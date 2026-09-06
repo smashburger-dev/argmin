@@ -44,7 +44,7 @@
     {
       "placementId": "p-tf-inference-trace",
       "role": "curated",
-      "familyId": "trace-assignment-state",
+      "familyId": "optimize-decode-greedy-loop",
       "caseId": "greedy-loop-trace",
       "seed": 0,
       "difficulty": "core",

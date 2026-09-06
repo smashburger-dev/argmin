@@ -114,7 +114,7 @@ export function solveTraceAssignment(parameters) {
     return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
   }
   if (
-    ['stable-softmax-rows-trace', 'char-encode-roundtrip-trace', 'greedy-loop-trace', 'freeze-param-filter-trace']
+    ['stable-softmax-rows-trace', 'char-encode-roundtrip-trace', 'freeze-param-filter-trace']
       .includes(parameters.caseId)
   ) {
     return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
@@ -167,7 +167,6 @@ export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
     || caseId === 'fixed-dropout-mask-trace'
     || caseId === 'stable-softmax-rows-trace'
     || caseId === 'char-encode-roundtrip-trace'
-    || caseId === 'greedy-loop-trace'
     || caseId === 'freeze-param-filter-trace'
     || caseId === 'absolute-vs-relative-gain-trace'
   ) {
@@ -245,11 +244,6 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
       caseId: 'char-encode-roundtrip-trace',
       propertyTest: false,
       competencyIds: ['c-dl-tokenizer', 'c-python-basics'],
-    },
-    {
-      caseId: 'greedy-loop-trace',
-      propertyTest: false,
-      competencyIds: ['c-dl-inference', 'c-python-basics'],
     },
     {
       caseId: 'freeze-param-filter-trace',

@@ -345,50 +345,6 @@
       "graderId": "deterministic"
     },
     {
-      "caseId": "greedy-loop-trace",
-      "difficultyProfile": "core",
-      "masteryEligible": true,
-      "sourceLineage": [
-        "w24-e3"
-      ],
-      "parameters": {
-        "snippet": "VOCAB = {0: \"a\", 1: \"b\", 2: \"<eos>\"}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))"
-      },
-      "competencyIds": [
-        "c-dl-inference",
-        "c-python-basics"
-      ],
-      "expected": {
-        "output": "[0, 1, 2]\nab<eos>"
-      },
-      "prompt": "Dekodierschleife lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tabelle in <code>step_fn</code> ist eine gestellte Fixtur (Toy-Modell mit gestellten Gewichten — Mechanik, keine Sprachfähigkeit).",
-      "fullSolution": "Schritt 1: <code>() → 0</code>, Schritt 2: <code>(0,) → 1</code>, Schritt 3: <code>(0, 1) → 2 = eos</code> → Stop. Ausgabe: <code>[0, 1, 2]</code> und <code>ab&lt;eos&gt;</code>.",
-      "hints": [
-        "Start mit leerer Folge: Was liefert step_fn für das leere Präfix — und welcher Buchstabe wird daraus angehängt?",
-        "Arbeite die Präfixe der Reihe nach ab: Jeder Schritt hängt genau ein Symbol an, bis die Schrittfunktion das Stoppsymbol liefert. Tabelliere Präfix → Symbol statt alles im Kopf zu halten; die Ausgabe enthält das Stoppsymbol mit."
-      ],
-      "feedbackRules": [
-        {
-          "if": "element-count-mismatch",
-          "then": "Die Tokenliste hat drei Einträge — das <eos>-Token wird mitgezählt."
-        },
-        {
-          "if": "output-lines-mismatch",
-          "then": "Zwei Ausgabezeilen: erst die ID-Liste, dann der dekodierte String."
-        }
-      ],
-      "typicalErrors": [
-        "<eos> nicht angehängt oder nicht mitgezählt",
-        "max_len als exklusive Grenze falsch gelesen",
-        "Join-Reihenfolge der Token vertauscht"
-      ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
-      "activityType": "predict-output",
-      "graderId": "deterministic"
-    },
-    {
       "caseId": "freeze-param-filter-trace",
       "difficultyProfile": "core",
       "masteryEligible": true,

@@ -157,30 +157,6 @@ function staticExpected(familyId, parameters) {
   return {};
 }
 
-function decimalFraction(value) {
-  const text = String(value);
-  if (!text.includes('.')) return { numerator: BigInt(text), denominator: 1n };
-  const [whole, fraction] = text.split('.');
-  const denominator = 10n ** BigInt(fraction.length);
-  const sign = whole.startsWith('-') ? -1n : 1n;
-  const absoluteWhole = whole.replace('-', '');
-  return {
-    numerator: sign * (BigInt(absoluteWhole) * denominator + BigInt(fraction)),
-    denominator,
-  };
-}
-
-function exactPercent(numeratorValue, denominatorValue) {
-  const numerator = decimalFraction(numeratorValue);
-  const denominator = decimalFraction(denominatorValue);
-  const scaledNumerator = numerator.numerator * 100n * denominator.denominator;
-  const scaledDenominator = numerator.denominator * denominator.numerator;
-  if (scaledNumerator % scaledDenominator === 0n) {
-    return Number(scaledNumerator / scaledDenominator);
-  }
-  return Number(scaledNumerator) / Number(scaledDenominator);
-}
-
 const FAMILY_DEFINITIONS = {
   'count-remaining-rows-cleaning-rule': {
     cases: {
@@ -448,10 +424,10 @@ const FAMILY_DEFINITIONS = {
       }
       if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
       if (parameters.variant === 'relative-percent') {
-        return { value: exactPercent(parameters.newer - parameters.base, parameters.base) };
+        return { value: Math.round(100 * (parameters.newer - parameters.base) / parameters.base) };
       }
       if (parameters.variant === 'error-reduction') {
-        return { value: exactPercent(parameters.eBase - parameters.eNew, parameters.eBase) };
+        return { value: Math.round(100 * (parameters.eBase - parameters.eNew) / parameters.eBase) };
       }
       return { value: parameters.newer - parameters.base };
     },

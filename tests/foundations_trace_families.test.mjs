@@ -312,7 +312,6 @@ const TRACE_TAXONOMY = [
       'fixed-dropout-mask-trace': 'statischer W21-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
       'stable-softmax-rows-trace': 'statischer W22-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
       'char-encode-roundtrip-trace': 'statischer W23-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'greedy-loop-trace': 'statischer W24-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
       'freeze-param-filter-trace': 'statischer W25-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
       'absolute-vs-relative-gain-trace': 'statischer W26-Fall mit Variablenzustand und eigenem Kompetenz-Override',
     },
