@@ -145,6 +145,116 @@
       },
       "activityType": "predict-output",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "manual-backward-step-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e3"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "grad_out = 6        # dL/dz (Upstream)\nlocal = -2          # dz/dw (lokal)\ngrad_w = grad_out * local\nw = 4.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 1.0 - 0.5 * grad_b",
+        "variables": [
+          {
+            "name": "grad_w",
+            "value": -12
+          },
+          {
+            "name": "w",
+            "value": 10
+          },
+          {
+            "name": "grad_b",
+            "value": 6
+          },
+          {
+            "name": "b",
+            "value": -2
+          }
+        ]
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Einen manuellen Backward-Schritt nachvollziehen: Welche Werte haben <code>grad_w</code>, <code>w</code>, <code>grad_b</code> und <code>b</code> nach Ablauf des Programms? Trage die vier ganzzahligen Werte ein (der Upstream-Gradient ist $\\partial L/\\partial z = 6$, der lokale Gradient $\\partial z / \\partial w = -2$; SGD-Update mit $\\mathrm{lr} = 0{,}5$ entgegen dem Gradienten).",
+      "fullSolution": "$\\mathrm{grad}_w = 6 \\cdot (-2) = -12$; $w = 4{,}0 - 0{,}5 \\cdot (-12) = 10{,}0$. $\\mathrm{grad}_b = 6 \\cdot 1 = 6$; $b = 1{,}0 - 0{,}5 \\cdot 6 = -2{,}0$. Als Ganzzahlen: −12, 10, 6, −2.",
+      "hints": [
+        "Kettenregel: $\\partial L / \\partial w = \\partial L / \\partial z \\cdot \\partial z / \\partial w$. Für den Bias ist der lokale Gradient 1 — warum?",
+        "Update: $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}_w$. Achte auf die Vorzeichen: was passiert bei negativem Gradienten und positiver Lernrate?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:grad_w+value:w",
+          "then": "grad_w ist das Produkt aus Upstream und lokal (6 · (−2) = −12); w folgt daraus mit entgegengesetztem Update-Vorzeichen."
+        },
+        {
+          "if": "value:grad_b+value:b",
+          "then": "grad_b übernimmt den Upstream unverändert (lokaler Gradient 1); b = 1,0 − 0,5 · 6 = −2,0."
+        }
+      ],
+      "typicalErrors": [
+        "Vorzeichen im Update gedreht (Abstieg statt Aufstieg)",
+        "den lokalen Gradienten ohne Upstream verwendet",
+        "Bias-Gradient als 0 statt Upstream · 1 gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "fixed-dropout-mask-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w21-e3"
+      ],
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\nmask = np.array([True, False, False, True, True, False, True, False])\nx = np.arange(1, 9)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))"
+      },
+      "expected": {
+        "output": "17\n4"
+      },
+      "prompt": "Feste Maske lesen: Was gibt dieses NumPy-Programm aus? Sage die Ausgaben der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Maske ist explizit gegeben — kein Zufall, kein Seed nötig.",
+      "fullSolution": "True steht an den Positionen 0, 3, 4, 6 — behalten werden die Werte 1, 4, 5, 7 mit Summe 17. Die Maske hat 4 Einsen. Ausgabe: <code>17</code> und <code>4</code>.",
+      "hints": [
+        "Boolean-Indexierung behält genau die Positionen mit True: Welche Werte von x bleiben stehen?",
+        "mask.sum() zählt True als 1 — die Anzahl der Einsen. kept.sum() ist die Summe der BEHALTENEN Werte, nicht der Positionen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Behalten bleiben die Werte an den True-Positionen: 1, 4, 5, 7 — Summe 17."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Vier True-Einträge in der Maske: int(mask.sum()) ist 4."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Summe der erhaltenen Werte, dann die Anzahl der erhaltenen Positionen."
+        }
+      ],
+      "typicalErrors": [
+        "Summe der Indizes statt der Werte gerechnet",
+        "gedroppte statt behaltene Werte summiert",
+        "Anzahl der behaltenen Werte mit ihrer Summe verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
     }
   ]
 }

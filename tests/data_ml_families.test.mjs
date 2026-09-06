@@ -12,6 +12,8 @@ import {
   generateFormulaQuadraticErrorMetricFamily,
   generateMseGradientClosedFormFamily,
   generateFormulaRatioPercentMetricFamily,
+  generateFormulaCountFromConstructionFamily,
+  generateOptimizeBackpropPathSumFamily,
   solveFormulaQuadraticErrorMetric,
   solveAggregateMajorityRuleCount,
   solveAggregateConfusionMetric,
@@ -19,6 +21,8 @@ import {
   solveCountRemainingRows,
   solveMseGradientClosedForm,
   solveFormulaRatioPercentMetric,
+  solveFormulaCountFromConstruction,
+  solveOptimizeBackpropPathSum,
 } from '../assets/js/core/data_ml_families.mjs';
 import {
   genBaselineCorrect,
@@ -35,6 +39,12 @@ import {
   genShrinkagePercent,
   genSubgroupGapPp,
 } from '../assets/js/core/data_ml_generators.mjs';
+import {
+  genBackpropChain,
+  genDropoutCount,
+  genLinearParamCount,
+  genSgdSteps,
+} from '../assets/js/core/w18_w21_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 
@@ -1202,4 +1212,73 @@ test('conditional-count corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['formula-ratio-percent-metric'].digest);
+});
+
+test('W18-W21 seeded numeric families derive values independently over 200 seeds', () => {
+  const formula = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-count-from-construction');
+  const backprop = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'optimize-backprop-path-sum');
+  const formulaCases = ['linear-param-count', 'sgd-update-count', 'dropout-mask-kept-count'];
+  for (const caseId of formulaCases) {
+    for (const difficulty of profiles) {
+      for (let seed = 0; seed < 200; seed += 1) {
+        const generated = formula.generate({ seed, caseId, difficulty });
+        assert.equal(generated.expected.value, formula.solve(generated.parameters).value);
+        assert.equal(generated.expected.value, solveFormulaCountFromConstruction(generated.parameters).value);
+        if (caseId === 'linear-param-count' && difficulty === 'intro') assert.equal(generated.parameters.variant, 'single');
+        if (caseId === 'linear-param-count' && difficulty === 'stretch') assert.equal(generated.parameters.variant, 'compare');
+        if (caseId === 'sgd-update-count' && difficulty === 'intro') assert.equal(generated.parameters.variant, 'epochs');
+        if (caseId === 'sgd-update-count' && difficulty === 'stretch') assert.ok(['until', 'momentum'].includes(generated.parameters.variant));
+        if (caseId === 'dropout-mask-kept-count' && difficulty === 'intro') assert.equal(generated.parameters.variant, 'kept');
+        if (caseId === 'dropout-mask-kept-count' && difficulty === 'stretch') assert.equal(generated.parameters.variant, 'both');
+      }
+    }
+  }
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = backprop.generate({ seed, caseId: 'chain-rule-path-sum', difficulty });
+      assert.equal(generated.expected.value, solveOptimizeBackpropPathSum(generated.parameters).value);
+      if (difficulty === 'intro') assert.equal(generated.parameters.variant, 'path');
+      if (difficulty === 'stretch') assert.equal(generated.parameters.variant, 'fork');
+    }
+  }
+  assert.equal(generateFormulaCountFromConstructionFamily({ seed: 1802, caseId: 'linear-param-count', difficulty: 'core' }).expected.value, 77);
+  assert.equal(generateOptimizeBackpropPathSumFamily({ seed: 1902, caseId: 'chain-rule-path-sum', difficulty: 'core' }).expected.value, -3);
+  assert.equal(generateFormulaCountFromConstructionFamily({ seed: 2002, caseId: 'sgd-update-count', difficulty: 'core' }).expected.value, 15);
+  assert.equal(generateFormulaCountFromConstructionFamily({ seed: 2102, caseId: 'dropout-mask-kept-count', difficulty: 'core' }).expected.value, 8);
+});
+
+test('W18-W21 seeded family cases preserve generator answers and competency overrides', () => {
+  const cases = [
+    ['linear-param-count', 1802, genLinearParamCount, ['c-dl-tensors']],
+    ['chain-rule-path-sum', 1902, genBackpropChain, ['c-dl-autograd']],
+    ['sgd-update-count', 2002, genSgdSteps, ['c-dl-training']],
+    ['dropout-mask-kept-count', 2102, genDropoutCount, ['c-dl-regularization']],
+  ];
+  for (const [caseId, seed, generator, competencyIds] of cases) {
+    const familyId = caseId === 'chain-rule-path-sum' ? 'optimize-backprop-path-sum' : 'formula-count-from-construction';
+    const instance = EXERCISE_FAMILIES.instantiate(familyId, seed, 'core', caseId);
+    assert.equal(instance.expectedAnswer.value, generator(seed).expected);
+    assert.deepEqual(instance.competencyIds, competencyIds);
+  }
+});
+
+test('W18-W21 seeded family corpora match fixtures', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const groups = [
+    ['formula-count-from-construction-linear', generateFormulaCountFromConstructionFamily, 'linear-param-count'],
+    ['formula-count-from-construction-sgd', generateFormulaCountFromConstructionFamily, 'sgd-update-count'],
+    ['formula-count-from-construction-dropout', generateFormulaCountFromConstructionFamily, 'dropout-mask-kept-count'],
+    ['optimize-backprop-path-sum', generateOptimizeBackpropPathSumFamily, 'chain-rule-path-sum'],
+  ];
+  for (const [fixtureId, generate, caseId] of groups) {
+    const entry = fixture.families[fixtureId];
+    const instances = [];
+    for (const difficulty of profiles) {
+      for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+        instances.push(generate({ seed, caseId, difficulty }));
+      }
+    }
+    const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+    assert.equal(digest, entry.digest);
+  }
 });

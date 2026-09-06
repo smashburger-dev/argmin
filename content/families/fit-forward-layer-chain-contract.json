@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "familyId": "fit-forward-layer-chain-contract",
+  "contract": {
+    "familyId": "fit-forward-layer-chain-contract",
+    "familyGroup": "fit-model",
+    "summary": "Implementiert den MLP-Forward vertrags zuerst: Struktur- und Kettenverträge vor der Rechnung, ReLU nur auf versteckten Schichten, Parameterzahl inklusive Bias.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "linear-forward-contract",
+        "propertyTest": false
+      },
+      {
+        "caseId": "mlp-forward-relu",
+        "propertyTest": false
+      },
+      {
+        "caseId": "deep-forward-chain",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-tensors",
+      "c-numpy-basics",
+      "c-linalg-matrices"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "linear-forward-contract",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w18-e4"
+      ],
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef linear_forward(X, W, b):\n    \"\"\"Return X @ W + b as ndarray after checking the dimension contract.\n\n    Contracts: X (n, d), W (d, h), b (h,). Raise ValueError on any violation\n    before computing anything.\n    \"\"\"\n    # 1) X, W must be 2-d, b must be 1-d (np.asarray first, then check ndim)\n    # 2) X.shape[1] == W.shape[0] and W.shape[1] == b.shape[0]\n    # 3) return X @ W + b\n    ...\n\n\ndef param_count(W, b):\n    \"\"\"Return the number of trainable parameters (weights + bias) as int.\"\"\"\n    ...\n",
+        "tests": "X = np.array([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])\nW = np.array([[1.0, 0.0, -1.0], [0.0, 1.0, 1.0]])\nb = np.array([0.5, -0.5, 2.0])\nout = linear_forward(X, W, b)\n__check('bekannte Instanz', isinstance(out, np.ndarray) and np.allclose(out, X @ W + b))\n__check('Ausgabeform (3, 3)', np.asarray(out).shape == (3, 3))\n__check('param_count', param_count(W, b) == 6 + 3)\nfor bad in [\n    lambda: linear_forward(np.zeros(2), W, b),\n    lambda: linear_forward(X, np.zeros((3, 2, 2)), b),\n    lambda: linear_forward(X, W, np.zeros((3, 1))),\n    lambda: linear_forward(X, np.zeros((5, 3)), b),\n    lambda: linear_forward(X, W, np.zeros(4)),\n]:\n    try:\n        bad()\n        __check('Vertrag -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check('Vertrag -> ValueError', True)\n__rnd = np.random.default_rng(1804)\nfor i in range(3):\n    n, d, h = __rnd.integers(2, 5, size=3)\n    Xr = __rnd.normal(size=(int(n), int(d)))\n    Wr = __rnd.normal(size=(int(d), int(h)))\n    br = __rnd.normal(size=int(h))\n    got = np.asarray(linear_forward(Xr, Wr, br))\n    __check(f'Unbekannte Instanz {i + 1}', got.shape == (int(n), int(h)) and np.allclose(got, Xr @ Wr + br))\n    __check(f'Parameterzahl Instanz {i + 1}', param_count(Wr, br) == int(d) * int(h) + int(h))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef linear_forward(X, W, b):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if X.ndim != 2 or W.ndim != 2:\n        raise ValueError(\"X und W muessen 2-dimensional sein\")\n    if b.ndim != 1:\n        raise ValueError(\"b muss 1-dimensional sein\")\n    if X.shape[1] != W.shape[0]:\n        raise ValueError(\"X und W passen nicht zusammen\")\n    if W.shape[1] != b.shape[0]:\n        raise ValueError(\"W und b passen nicht zusammen\")\n    return X @ W + b\n\ndef param_count(W, b):\n    W = np.asarray(W)\n    b = np.asarray(b)\n    return int(W.size + b.size)"
+      },
+      "prompt": "Implementiere ein lineares Layer mit Dimensionsvertrag. <code>linear_forward(X, W, b)</code> gibt $XW + b$ zurück, nachdem es die Verträge geprüft hat: <code>X.ndim == 2</code>, <code>W.ndim == 2</code>, <code>b.ndim == 1</code>, <code>X.shape[1] == W.shape[0]</code> und <code>W.shape[1] == b.shape[0]</code>. Bei Verstoß wirft die Funktion <code>ValueError</code> — vor jeder Rechnung. <code>param_count(W, b)</code> liefert die Anzahl trainierbarer Parameter des Layers ($d \\cdot h + h$) als <code>int</code>. Der Test prüft bekannte Instanzen gegen eine direkte Referenz, unbekannte per Zufall generierte Instanzen gegen <code>X @ W + b</code> und das Fehlerverhalten.",
+      "fullSolution": "def linear_forward(X, W, b):\n    X = np.asarray(X, dtype=float)\n    W = np.asarray(W, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if X.ndim != 2 or W.ndim != 2:\n        raise ValueError(\"X und W muessen 2-dimensional sein\")\n    if b.ndim != 1:\n        raise ValueError(\"b muss 1-dimensional sein\")\n    if X.shape[1] != W.shape[0]:\n        raise ValueError(\"X und W passen nicht zusammen\")\n    if W.shape[1] != b.shape[0]:\n        raise ValueError(\"W und b passen nicht zusammen\")\n    return X @ W + b\n\ndef param_count(W, b):\n    W = np.asarray(W)\n    b = np.asarray(b)\n    return int(W.size + b.size)\n\n# linear_forward((3,2)-X, (2,3)-W, (3,)-b) -> (3, 3); Vertragsverletzungen werfen ValueError",
+      "hints": [
+        "Normalisiere zuerst mit np.asarray(x, dtype=float), prüfe dann ndim und die beiden Form-Gleichungen — ValueError vor der Rechnung, nicht erst danach.",
+        "param_count zählt W.size + b.size als int; die Verträge stellen sicher, dass dabei d·h + h herauskommt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "valueerror-missing",
+          "then": "Jede der fünf Vertragsverletzungen im Test muss ValueError werfen — die Prüfung steht am Anfang der Funktion."
+        },
+        {
+          "if": "contract-after-compute",
+          "then": "Prüfe die Formen, bevor du X @ W rechnest — sonst wirft erst NumPy selbst einen Fehler und deine eigene Prüfung wird nie erreicht."
+        },
+        {
+          "if": "bias-count-missing",
+          "then": "param_count muss den Bias mitzählen: W.size + b.size, nicht nur W.size."
+        }
+      ],
+      "typicalErrors": [
+        "Verträge erst nach der Berechnung prüfen",
+        "b.ndim == 2 mit Broadcast still akzeptieren",
+        "param_count ohne Bias oder als float zurückgeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "mlp-forward-relu",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w18-e5"
+      ],
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-linalg-matrices"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    \"\"\"Return (H, y_hat) with H = relu(X @ W1 + b1), y_hat = H @ W2 + b2.\n\n    Contracts: X (n, d), W1 (d, h1), b1 (h1,), W2 (h1, h2), b2 (h2,).\n    Raise ValueError before computing anything if a contract is broken.\n    \"\"\"\n    # 1) check ndim and shapes (including the hidden shape against W2)\n    # 2) hidden = np.maximum(0.0, X @ W1 + b1)\n    # 3) return hidden, hidden @ W2 + b2\n    ...\n\n\ndef mlp_param_count(layer_sizes):\n    \"\"\"Return the total number of trainable parameters (all weights + all biases).\"\"\"\n    ...\n",
+        "tests": "X = np.array([[1.0, -2.0], [0.5, 0.5], [-1.0, 2.0]])\nW1 = np.array([[1.0, -1.0, 0.5], [0.0, 2.0, -0.5]])\nb1 = np.array([0.0, 0.25, -0.25])\nW2 = np.array([[1.0], [-1.0], [2.0]])\nb2 = np.array([0.5])\nH, y_hat = mlp_forward(X, W1, b1, W2, b2)\nH_ref = np.maximum(0.0, X @ W1 + b1)\n__check('H wie Referenz', np.allclose(H, H_ref))\n__check('y_hat wie Referenz', np.allclose(y_hat, H_ref @ W2 + b2))\n__check('H klemmt Negative', np.all(H >= 0.0) and np.isclose(H[2, 0], 0.0))\n__check('Formen (3, 3) und (3, 1)', np.asarray(H).shape == (3, 3) and np.asarray(y_hat).shape == (3, 1))\n__check('param_count [2, 3, 1]', mlp_param_count([2, 3, 1]) == 2 * 3 + 3 + 3 * 1 + 1)\n__check('param_count [6, 13, 9]', mlp_param_count([6, 13, 9]) == 6 * 13 + 13 + 13 * 9 + 9)\nfor bad in [\n    lambda: mlp_forward(X, W1, b1, np.zeros((2, 1)), b2),\n    lambda: mlp_forward(X, W1, b1, W2, np.zeros(2)),\n    lambda: mlp_forward(X, np.zeros((3, 3)), b1, W2, b2),\n]:\n    try:\n        bad()\n        __check('Vertrag -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check('Vertrag -> ValueError', True)\n__rnd = np.random.default_rng(1805)\nfor i in range(3):\n    n, d, h1, h2 = [int(v) for v in __rnd.integers(2, 6, size=4)]\n    Xr = __rnd.normal(size=(n, d)) * 2.0\n    W1r = __rnd.normal(size=(d, h1))\n    b1r = __rnd.normal(size=h1)\n    W2r = __rnd.normal(size=(h1, h2))\n    b2r = __rnd.normal(size=h2)\n    Hr, yr = mlp_forward(Xr, W1r, b1r, W2r, b2r)\n    Hr_ref = np.maximum(0.0, Xr @ W1r + b1r)\n    __check(f'Unbekannte Instanz {i + 1}', np.allclose(Hr, Hr_ref) and np.allclose(yr, Hr_ref @ W2r + b2r))\n    __check(f'Parameterzahl {i + 1}', mlp_param_count([d, h1, h2]) == d * h1 + h1 + h1 * h2 + h2)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    if X.ndim != 2 or W1.ndim != 2 or W2.ndim != 2:\n        raise ValueError(\"X, W1 und W2 muessen 2-dimensional sein\")\n    if b1.ndim != 1 or b2.ndim != 1:\n        raise ValueError(\"b1 und b2 muessen 1-dimensional sein\")\n    if X.shape[1] != W1.shape[0]:\n        raise ValueError(\"X und W1 passen nicht zusammen\")\n    if W1.shape[1] != b1.shape[0]:\n        raise ValueError(\"W1 und b1 passen nicht zusammen\")\n    if W1.shape[1] != W2.shape[0]:\n        raise ValueError(\"H und W2 passen nicht zusammen\")\n    if W2.shape[1] != b2.shape[0]:\n        raise ValueError(\"W2 und b2 passen nicht zusammen\")\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_param_count(layer_sizes):\n    total = 0\n    for d, h in zip(layer_sizes[:-1], layer_sizes[1:]):\n        total += d * h + h\n    return int(total)"
+      },
+      "prompt": "Baue den Forward-Pass eines 2-Layer-MLP. <code>mlp_forward(X, W1, b1, W2, b2)</code> berechnet $H = \\mathrm{ReLU}(XW_1 + b_1)$ und $\\hat{y} = HW_2 + b_2$ und gibt das Tupel <code>(H, y_hat)</code> zurück. Verträge: <code>X (n, d)</code>, <code>W1 (d, h1)</code>, <code>b1 (h1,)</code>, <code>W2 (h1, h2)</code>, <code>b2 (h2,)</code> — Verstoß wirft <code>ValueError</code> vor der Rechnung (auch $H$-Form gegen $W2$). <code>mlp_param_count(layer_sizes)</code> bekommt eine Liste wie <code>[d, h1, h2]</code> und liefert die Gesamtzahl trainierbarer Parameter inklusive aller Bias-Vektoren als <code>int</code>. Der Test rechnet bekannte und unbekannte Instanzen gegen direkte NumPy-Referenzen nach und prüft, dass ReLU Negative auf 0 klemmt.",
+      "fullSolution": "def mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    if X.ndim != 2 or W1.ndim != 2 or W2.ndim != 2:\n        raise ValueError(\"X, W1 und W2 muessen 2-dimensional sein\")\n    if b1.ndim != 1 or b2.ndim != 1:\n        raise ValueError(\"b1 und b2 muessen 1-dimensional sein\")\n    if X.shape[1] != W1.shape[0]:\n        raise ValueError(\"X und W1 passen nicht zusammen\")\n    if W1.shape[1] != b1.shape[0]:\n        raise ValueError(\"W1 und b1 passen nicht zusammen\")\n    if W1.shape[1] != W2.shape[0]:\n        raise ValueError(\"H und W2 passen nicht zusammen\")\n    if W2.shape[1] != b2.shape[0]:\n        raise ValueError(\"W2 und b2 passen nicht zusammen\")\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_param_count(layer_sizes):\n    total = 0\n    for d, h in zip(layer_sizes[:-1], layer_sizes[1:]):\n        total += d * h + h\n    return int(total)\n\n# mlp_param_count([6, 13, 9]) = 6·13 + 13 + 13·9 + 9 = 217",
+      "hints": [
+        "Erst alle Formen prüfen (auch W1.shape[1] gegen W2.shape[0] — die Hidden-Dimension muss durchgereicht werden), dann np.maximum(0.0, ...) für ReLU.",
+        "mlp_param_count läuft über Paare aufeinanderfolgender Schichtgrößen: zip(sizes[:-1], sizes[1:]) und je d·h + h aufsummieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "relu-wrong",
+          "then": "ReLU ist np.maximum(0.0, z) elementweise — np.max reduziert ein Array auf einen Wert."
+        },
+        {
+          "if": "hidden-contract-missing",
+          "then": "Der Vertrag zwischen H (n, h1) und W2 (h1, h2) ist eine eigene Prüfung: W1.shape[1] == W2.shape[0]."
+        },
+        {
+          "if": "bias-in-param-count-missing",
+          "then": "Jede Schicht trägt ihren Bias: d·h + h pro Paar, nicht d·h."
+        }
+      ],
+      "typicalErrors": [
+        "np.max statt np.maximum für ReLU verwendet",
+        "Hidden-Dimension nicht gegen W2 geprüft",
+        "Bias in der Parameterzählung vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "deep-forward-chain",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w18-e6"
+      ],
+      "competencyIds": [
+        "c-dl-tensors",
+        "c-linalg-matrices"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef deep_forward(X, weights, biases):\n    \"\"\"Return the output of an arbitrarily deep MLP (ReLU hidden, linear last).\n\n    Contracts: X (n, d); weights [W1..WL] with Wi (d_i, d_{i+1}); biases [b1..bL].\n    Raise ValueError before computing if any contract is broken, including\n    len(weights) != len(biases).\n    \"\"\"\n    # 1) structural checks: lists non-empty, same length, ndim per layer\n    # 2) chain checks: X->W1, Wi->bi, Wi->W(i+1)\n    # 3) loop: ReLU on all but the last layer, linear output\n    ...\n\n\ndef deep_param_count(weights, biases):\n    \"\"\"Return the total number of trainable parameters (all weights + biases) as int.\"\"\"\n    ...\n",
+        "tests": "def __reference(X, weights, biases):\n    A = np.asarray(X, dtype=float)\n    L = len(weights)\n    for i, (W, b) in enumerate(zip(weights, biases)):\n        A = A @ np.asarray(W, dtype=float) + np.asarray(b, dtype=float)\n        if i < L - 1:\n            A = np.maximum(0.0, A)\n    return A\n\n\n__rnd = np.random.default_rng(1806)\nfor depth in range(1, 5):\n    sizes = [int(v) for v in __rnd.integers(2, 6, size=depth + 1)]\n    n = int(__rnd.integers(2, 5))\n    X = __rnd.normal(size=(n, sizes[0])) * 2.0\n    weights = [__rnd.normal(size=(sizes[i], sizes[i + 1])) for i in range(depth)]\n    biases = [__rnd.normal(size=sizes[i + 1]) for i in range(depth)]\n    out = np.asarray(deep_forward(X, weights, biases))\n    ref = __reference(X, weights, biases)\n    __check(f'Tiefe {depth}: Werte', np.allclose(out, ref))\n    __check(f'Tiefe {depth}: Form', out.shape == (n, sizes[-1]))\n    __check(f'Tiefe {depth}: Parameterzahl', deep_param_count(weights, biases) == sum(w.size + b.size for w, b in zip(weights, biases)))\nX1 = np.array([[1.0, -1.0], [0.0, 1.0]])\nW = [np.ones((2, 3)), np.ones((3, 1))]\nB = [np.zeros(3), np.zeros(1)]\nfor label, bad in [\n    ('W1-Form', lambda: deep_forward(X1, [np.ones((3, 2))] + W[1:], B)),\n    ('b-Form', lambda: deep_forward(X1, W, [np.zeros((3, 1)), np.zeros(1)])),\n    ('Luecke in der Kette', lambda: deep_forward(X1, W, [np.zeros(3)])),\n    ('leere Listen', lambda: deep_forward(X1, [], [])),\n]:\n    try:\n        bad()\n        __check(f'Vertrag {label} -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check(f'Vertrag {label} -> ValueError', True)\nout1 = deep_forward(X1, [np.eye(2)], [np.zeros(2)])\n__check('Tiefe 1 bleibt linear (kein ReLU)', np.allclose(out1, X1))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef deep_forward(X, weights, biases):\n    X = np.asarray(X, dtype=float)\n    if X.ndim != 2:\n        raise ValueError(\"X muss 2-dimensional sein\")\n    if not isinstance(weights, (list, tuple)) or not isinstance(biases, (list, tuple)):\n        raise ValueError(\"weights und biases muessen Listen sein\")\n    if len(weights) == 0 or len(weights) != len(biases):\n        raise ValueError(\"weights und biases brauchen gleiche, nichtleere Laenge\")\n    mats = [np.asarray(W, dtype=float) for W in weights]\n    vecs = [np.asarray(b, dtype=float) for b in biases]\n    for W, b in zip(mats, vecs):\n        if W.ndim != 2:\n            raise ValueError(\"jede Gewichtsmatrix muss 2-dimensional sein\")\n        if b.ndim != 1:\n            raise ValueError(\"jeder Bias muss 1-dimensional sein\")\n        if W.shape[1] != b.shape[0]:\n            raise ValueError(\"Wi und bi passen nicht zusammen\")\n    if X.shape[1] != mats[0].shape[0]:\n        raise ValueError(\"X und W1 passen nicht zusammen\")\n    for W, nxt in zip(mats[:-1], mats[1:]):\n        if W.shape[1] != nxt.shape[0]:\n            raise ValueError(\"benachbarte Schichten passen nicht zusammen\")\n    A = X\n    last = len(mats) - 1\n    for i, (W, b) in enumerate(zip(mats, vecs)):\n        A = A @ W + b\n        if i < last:\n            A = np.maximum(0.0, A)\n    return A\n\ndef deep_param_count(weights, biases):\n    return int(sum(np.asarray(W).size + np.asarray(b).size for W, b in zip(weights, biases)))"
+      },
+      "prompt": "Final Boss Dimensionsverträge: Implementiere den Forward-Pass eines **beliebig tiefen** MLP. <code>deep_forward(X, weights, biases)</code> bekommt eine Liste von Gewichtsmatriken <code>weights = [W1, ..., WL]</code> und Bias-Vektoren <code>biases = [b1, ..., bL]</code>. Alle Schichten außer der letzten nutzen ReLU, die letzte ist linear. Verträge (jeder Verstoß wirft <code>ValueError</code> vor der Rechnung): <code>X.ndim == 2</code>, Listen gleich lang und nicht leer, jedes <code>Wi.ndim == 2</code>, jedes <code>bi.ndim == 1</code>, <code>X.shape[1] == W1.shape[0]</code>, <code>Wi.shape[1] == bi.shape[0]</code> und <code>Wi.shape[1] == W(i+1).shape[0]</code> für benachbarte Schichten. Rückgabe: der Ausgabe-Tensor. <code>deep_param_count(weights, biases)</code> zählt alle Parameter inklusive Bias als <code>int</code>. Der Test fährt Tiefen 1 bis 4 mit unbekannten Instanzen gegen eine Schleifen-Referenz und prüft Vertragsverletzungen inklusive einer Lückenlänge.",
+      "fullSolution": "def deep_forward(X, weights, biases):\n    X = np.asarray(X, dtype=float)\n    if X.ndim != 2:\n        raise ValueError(\"X muss 2-dimensional sein\")\n    if not isinstance(weights, (list, tuple)) or not isinstance(biases, (list, tuple)):\n        raise ValueError(\"weights und biases muessen Listen sein\")\n    if len(weights) == 0 or len(weights) != len(biases):\n        raise ValueError(\"weights und biases brauchen gleiche, nichtleere Laenge\")\n    mats = [np.asarray(W, dtype=float) for W in weights]\n    vecs = [np.asarray(b, dtype=float) for b in biases]\n    for W, b in zip(mats, vecs):\n        if W.ndim != 2:\n            raise ValueError(\"jede Gewichtsmatrix muss 2-dimensional sein\")\n        if b.ndim != 1:\n            raise ValueError(\"jeder Bias muss 1-dimensional sein\")\n        if W.shape[1] != b.shape[0]:\n            raise ValueError(\"Wi und bi passen nicht zusammen\")\n    if X.shape[1] != mats[0].shape[0]:\n        raise ValueError(\"X und W1 passen nicht zusammen\")\n    for W, nxt in zip(mats[:-1], mats[1:]):\n        if W.shape[1] != nxt.shape[0]:\n            raise ValueError(\"benachbarte Schichten passen nicht zusammen\")\n    A = X\n    last = len(mats) - 1\n    for i, (W, b) in enumerate(zip(mats, vecs)):\n        A = A @ W + b\n        if i < last:\n            A = np.maximum(0.0, A)\n    return A\n\ndef deep_param_count(weights, biases):\n    return int(sum(np.asarray(W).size + np.asarray(b).size for W, b in zip(weights, biases)))\n\n# Tiefe 1 bleibt linear, Tiefen 2-4 matchen die Schleifen-Referenz",
+      "hints": [
+        "Prüfe in zwei Phasen: erst Struktur (Länge, ndim), dann die Kette X→W1→b1→W2→… — alles, bevor der erste Matmul läuft.",
+        "In der Schleife entscheidet der Index: enumerate über die Schichten, ReLU nur wenn i < len(weights) - 1; die Referenz im Test macht genau das."
+      ],
+      "feedbackRules": [
+        {
+          "if": "relu-on-last-layer",
+          "then": "Die Ausgabeschicht ist linear — ReLU nur auf versteckten Schichten (i < L − 1)."
+        },
+        {
+          "if": "chain-contract-missing",
+          "then": "Benachbarte Matrizen müssen aneinander passen: Wi.shape[1] == W(i+1).shape[0] — sonst entsteht der Fehler erst mitten in der Schleife."
+        },
+        {
+          "if": "length-mismatch-accepted",
+          "then": "len(weights) != len(biases) ist ein Strukturfehler — ValueError vor der Rechnung, auch bei leeren Listen."
+        }
+      ],
+      "typicalErrors": [
+        "ReLU auch auf der Ausgabeschicht",
+        "Kettenverträge zwischen benachbarten Matrizen nicht geprüft",
+        "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

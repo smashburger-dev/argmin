@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "fit-seeded-split-sgd-linear",
+  "contract": {
+    "familyId": "fit-seeded-split-sgd-linear",
+    "familyGroup": "fit-model",
+    "summary": "Implementiert geseedetes Training einer linearen Regression: Seed-Permutation-Split, Full-Batch-SGD mit Faktor 2/n, Verlusthistorie zu Epochenbeginn.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "seeded-split-sgd-linear",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-training",
+      "c-grad-regression"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "seeded-split-sgd-linear",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w20-e5"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-grad-regression"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef train_val_split(n, val_fraction, seed):\n    \"\"\"Return (train_idx, val_idx), both sorted ascending; k = round(n * f) val indices.\n\n    k must satisfy 1 <= k <= n - 1, else ValueError. Uses\n    np.random.default_rng(seed).permutation(n); the FIRST k indices go to val.\n    \"\"\"\n    # guard k, permute, split, sort both parts\n    ...\n\n\ndef train_linear_sgd(X, y, lr, epochs, seed):\n    \"\"\"Full-batch SGD on MSE of X @ w + b; return {'w', 'b', 'loss_history'}.\n\n    Init: w = rng.normal(size=(d, 1)) * 0.1, b = 0.0 with\n    rng = np.random.default_rng(seed). loss_history[i] is the MSE at the\n    START of epoch i (length == epochs).\n    \"\"\"\n    # init from seed, loop: record loss, residuals, both updates\n    ...\n",
+        "tests": "tr, va = train_val_split(50, 0.2, 7)\n__check('Split-Groessen', len(tr) == 40 and len(va) == 10)\n__check('Split disjunkt und vollstaendig', set(tr.tolist()) | set(va.tolist()) == set(range(50)) and not (set(tr.tolist()) & set(va.tolist())))\n__check('Split sortiert', np.all(np.diff(tr) > 0) and np.all(np.diff(va) > 0))\n__check('Split deterministisch', np.array_equal(train_val_split(50, 0.2, 7)[0], tr))\n__check('Split anderer Seed unterscheidet sich', not np.array_equal(train_val_split(50, 0.2, 8)[1], va))\nfor bad_f in [0.0, 1.0]:\n    try:\n        train_val_split(50, bad_f, 7)\n        __check('Split Vertrag -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check('Split Vertrag -> ValueError', True)\nrng = np.random.default_rng(2020)\nn = 120\nX = rng.normal(size=(n, 2))\nw_true = np.array([[1.5], [-0.75]])\ny = X @ w_true + 0.02 * rng.normal(size=(n, 1))\nres1 = train_linear_sgd(X, y, 0.05, 300, 42)\nres2 = train_linear_sgd(X, y, 0.05, 300, 42)\n__check('Training deterministisch', np.array_equal(res1[\"w\"], res2[\"w\"]) and res1[\"loss_history\"] == res2[\"loss_history\"])\n__check('Verlaufslaenge', len(res1[\"loss_history\"]) == 300)\n__check('Verlust faellt', res1[\"loss_history\"][-1] < res1[\"loss_history\"][0])\n__check('Verlust klein am Ende', res1[\"loss_history\"][-1] < 1e-2)\n__check('w nahe an der Wahrheit', np.allclose(res1[\"w\"], w_true, atol=0.05))\nres3 = train_linear_sgd(X, y, 0.05, 300, 43)\n__check('Anderer Seed -> anderer Startverlust', res3[\"loss_history\"][0] != res1[\"loss_history\"][0])\n__check('Rueckgabeschluessel', set(res1.keys()) == {\"w\", \"b\", \"loss_history\"})"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\n\ndef train_val_split(n, val_fraction, seed):\n    if n < 2:\n        raise ValueError(\"n muss mindestens 2 sein\")\n    k = int(round(n * val_fraction))\n    if k < 1 or k > n - 1:\n        raise ValueError(\"val_fraction muss zwischen 1/n und 1 - 1/n liegen\")\n    perm = np.random.default_rng(seed).permutation(n)\n    val_idx = np.sort(perm[:k])\n    train_idx = np.sort(perm[k:])\n    return train_idx, val_idx\n\n\ndef train_linear_sgd(X, y, lr, epochs, seed):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    d = X.shape[1]\n    n = X.shape[0]\n    rng = np.random.default_rng(seed)\n    w = rng.normal(size=(d, 1)) * 0.1\n    b = 0.0\n    loss_history = []\n    for _ in range(int(epochs)):\n        pred = X @ w + b\n        loss_history.append(float(np.mean((pred - y) ** 2)))\n        r = pred - y\n        w = w - lr * (2.0 / n) * (X.T @ r)\n        b = b - lr * (2.0 / n) * float(np.sum(r))\n    return {\"w\": w, \"b\": float(b), \"loss_history\": loss_history}"
+      },
+      "prompt": "Deterministisches Training einer linearen Regression mit SGD. <code>train_val_split(n, val_fraction, seed)</code> erzeugt mit <code>np.random.default_rng(seed).permutation(n)</code> eine feste Permutation, entnimmt die ersten $k = \\mathrm{round}(n \\cdot f)$ Indizes für Validierung und den Rest für Training — Rückgabe <code>(train_idx, val_idx)</code>, beide aufsteigend sortiert; $k$ muss mindestens 1 und höchstens $n-1$ sein, sonst <code>ValueError</code>. <code>train_linear_sgd(X, y, lr, epochs, seed)</code> initialisiert $w$ mit <code>rng.normal(size=(d, 1)) * 0.1</code> und $b = 0{,}0$ aus <code>np.random.default_rng(seed)</code> und führt <code>epochs</code> Full-Batch-SGD-Schritte auf den MSE aus (Vorzeichen $w \\leftarrow w - \\mathrm{lr} \\cdot \\frac{2}{n} X^\\top r$ mit $r = Xw + b - y$; analog für $b$). Rückgabe: <code>{\"w\", \"b\", \"loss_history\"}</code>, wobei <code>loss_history</code> den Verlust <em>zu Epochenbeginn</em> enthält (Länge <code>epochs</code>). Der Test prüft Determinismus über gleiche Seeds, den Split-Vertrag und, dass der Verlust über 300 Epochen auf gut konditionierten Daten fällt.",
+      "fullSolution": "def train_val_split(n, val_fraction, seed):\n    k = int(round(n * val_fraction))\n    if k < 1 or k > n - 1:\n        raise ValueError(\"val_fraction muss zwischen 1/n und 1 - 1/n liegen\")\n    perm = np.random.default_rng(seed).permutation(n)\n    val_idx = np.sort(perm[:k])\n    train_idx = np.sort(perm[k:])\n    return train_idx, val_idx\n\ndef train_linear_sgd(X, y, lr, epochs, seed):\n    rng = np.random.default_rng(seed)\n    w = rng.normal(size=(X.shape[1], 1)) * 0.1\n    b = 0.0\n    loss_history = []\n    for _ in range(int(epochs)):\n        pred = X @ w + b\n        loss_history.append(float(np.mean((pred - y) ** 2)))\n        r = pred - y\n        w = w - lr * (2.0 / X.shape[0]) * (X.T @ r)\n        b = b - lr * (2.0 / X.shape[0]) * float(np.sum(r))\n    return {\"w\": w, \"b\": b, \"loss_history\": loss_history}\n\n# n=120, lr=0.05, 300 Epochen: Verlust faellt unter 1e-2, w liegt nahe [1.5, -0.75]",
+      "hints": [
+        "Split: k = round(n · f) mit Guard 1 ≤ k ≤ n−1, Permutation aus default_rng(seed), die ERSTEN k Indizes sind Validierung — beide Teile sortieren.",
+        "Training: pro Epoche erst Verlust notieren (Epochenbeginn!), dann Residuen r = Xw + b − y und beide Updates mit Faktor 2/n. Gleicher Seed ⇒ gleicher Start ⇒ identische Historie."
+      ],
+      "feedbackRules": [
+        {
+          "if": "loss-recorded-after-update",
+          "then": "loss_history[i] beschreibt den Stand zu Epochenbeginn — sonst ist die Historie um einen Schritt verschoben."
+        },
+        {
+          "if": "factor-2n-missing",
+          "then": "Beide Updates tragen 2/n (Kettenregel 2r und Mittelung 1/n) — ohne den Faktor konvergiert die Schleife anders als spezifiziert."
+        },
+        {
+          "if": "unseeded-init",
+          "then": "Initialisierung ohne default_rng(seed) macht den Lauf nicht reproduzierbar — der Determinismustest fällt dann durch."
+        }
+      ],
+      "typicalErrors": [
+        "Verlust nach dem Update statt zu Epochenbeginn notiert",
+        "Faktor 2/n in einem Update vergessen",
+        "Split ohne Seed oder unsortiert zurückgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
