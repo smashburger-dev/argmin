@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-research-cards",
+  "version": 1,
+  "locale": "de",
+  "title": "Daten- und Modellkarten: Pflichtfelder, Konsistenz, keine Geheimnisse",
+  "description": "Daten- und Modellkarten als Vertrag mit festen Pflichtfeldern erfassen und fehlende oder leere Felder deterministisch zählen Karten, Systemkarte und Forschungsprotokoll auf Widersprüche prüfen (Name, Metrik, Schwellenwert, Umfang, Modell) Kartenwerte auf geleakte API-Schluessel, Token und Bearer-Anmeldedaten scannen, Split-Summen und Semver prüfen",
+  "competencyIds": [
+    "c-research-cards"
+  ],
+  "requires": [
+    "c-research-question"
+  ],
+  "trackIds": [
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-research-cards"
+  ],
+  "placements": [
+    {
+      "placementId": "p-research-cards-1",
+      "role": "curated",
+      "familyId": "classify-provenance-duty",
+      "caseId": "provenance-duty",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-research-cards",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-research-cards-2",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "card-audit-missing-count",
+      "seed": 3211,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-research-cards",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-cards-3",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "card-check-variable-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-research-cards",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-cards-4",
+      "role": "curated",
+      "familyId": "validate-required-field-raise",
+      "caseId": "validate-card-fields",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-research-cards",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-cards-5",
+      "role": "curated",
+      "familyId": "validate-rule-catalog-scan",
+      "caseId": "card-secret-scan",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 26,
+      "lessonId": "l-research-cards",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-cards-6",
+      "role": "curated",
+      "familyId": "validate-rule-catalog-scan",
+      "caseId": "cross-card-consistency",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 40,
+      "lessonId": "l-research-cards",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-research-cards-practice",
+      "role": "practice-space",
+      "familyId": "formula-stat-from-table",
+      "caseId": "card-audit-missing-count",
+      "seed": 3211,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-research-cards"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
