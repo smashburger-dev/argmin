@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-logistic",
+  "version": 1,
+  "locale": "de",
+  "title": "Logistische Regression und Klassifikationsmetriken",
+  "description": "Lerne Wahrscheinlichkeiten zu Schwellenwerten zu verdichten, Konfusionsmetriken zu berechnen und Fehlerkosten gezielt zu minimieren.",
+  "competencyIds": [
+    "c-ml-logistic"
+  ],
+  "requires": [
+    "c-ml-linear"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-logistic"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-logistic-sigmoid",
+      "role": "curated",
+      "familyId": "classify-sigmoid-regime",
+      "caseId": "sigmoid-large-z",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-logistic",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-logistic-confusion",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "confusion-marginal-count",
+      "seed": 11001,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-logistic",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-logistic-threshold",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "threshold-under-asymmetric-cost",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-logistic",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-logistic-sigmoid-python",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "sigmoid-predict-numpy",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 30,
+      "lessonId": "l-ml-logistic",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-logistic-cost-report",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "confusion-cost-report",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-ml-logistic",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-logistic-practice-space",
+      "role": "practice-space",
+      "familyId": "aggregate-confusion-metric",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

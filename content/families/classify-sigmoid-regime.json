@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-sigmoid-regime",
+  "contract": {
+    "familyId": "classify-sigmoid-regime",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet die Sigmoid-Funktion, ihren Wertebereich und ihre Symmetrie korrekt ein.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "sigmoid-large-z",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-logistic"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "sigmoid-large-z",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w11-e1"
+      ],
+      "competencyIds": [
+        "c-ml-logistic"
+      ],
+      "parameters": {
+        "formula": "sigmoid(z) = 1 / (1 + exp(-z))"
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\sigma(0) = 0{,}5$ und es gilt $\\sigma(-z) = 1 - \\sigma(z)$ — die Funktion ist symmetrisch zum Punkt $(0\\,|\\,0{,}5)$.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "$\\sigma(z)$ wird negativ für $z < 0$, weil $e^{-z}$ dann groß ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$\\sigma(z)$ gibt für jedes $z$ exakt 0 oder 1 aus — eine harte Entscheidung.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$\\sigma(0) = 0$ und $\\sigma(z)$ wächst unbegrenzt mit $z$.",
+          "correct": false
+        }
+      ],
+      "prompt": "Die Sigmoid-Funktion $\\sigma(z) = \\frac{1}{1+e^{-z}}$ bildet reelle Zahlen auf $(0,1)$ ab. Welche Aussage ist korrekt?",
+      "fullSolution": "σ(0) = 1/(1 + e⁰) = 1/2. Wegen σ(−z) = 1/(1 + e^{z}) = 1 − σ(z) liegt der Symmetriepunkt bei (0 | 0,5). Die Ausgabe ist immer eine Zahl streng zwischen 0 und 1.",
+      "hints": [
+        "Setze z = 0 ein: Zähler und Nenner bestehen nur noch aus Einsen.",
+        "Für große negative z geht σ gegen 0, aber bleibt positiv; für große positive z geht σ gegen 1."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Der Nenner 1 + e^{-z} ist immer größer als 1, der Bruch bleibt positiv — σ nähert sich für z → −∞ nur der 0."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die Sigmoid-Ausgabe ist eine Wahrscheinlichkeit in (0, 1). Die harte 0/1-Entscheidung entsteht erst durch einen Schwellenwert."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "σ(0) = 1/(1+1) = 0,5, und die Werte liegen wegen des gebundenen Nenners immer unter 1."
+        }
+      ],
+      "typicalErrors": [
+        "Ausgabebereich (0, 1) mit {0, 1} verwechseln",
+        "Symmetrie σ(−z) = 1 − σ(z) nicht kennen",
+        "den Schwellenwert-Schritt mit der Sigmoid-Ausgabe gleichsetzen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
