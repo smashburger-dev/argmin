@@ -30,6 +30,7 @@ import {
   genMseFromResiduals,
   genMseGradient,
   genPcaVariancePercent,
+  genSeedSpread,
   genR2Share,
   genShrinkagePercent,
   genSubgroupGapPp,
@@ -62,6 +63,8 @@ const ensembleComparisonDoc = JSON.parse(readFileSync(join(root, 'content/famili
 const svmMarginDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-svm-margin.json'), 'utf8'));
 const supervisionScalingDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-supervision-scaling.json'), 'utf8'));
 const pcaKmeansDoc = JSON.parse(readFileSync(join(root, 'content/families/fit-pca-kmeans-pipeline.json'), 'utf8'));
+const reproContractDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-repro-contract.json'), 'utf8'));
+const reproReportDoc = JSON.parse(readFileSync(join(root, 'content/families/reproduce-seeded-experiment-report.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -84,6 +87,8 @@ registerStaticCases(ensembleComparisonDoc.familyId, ensembleComparisonDoc.cases)
 registerStaticCases(svmMarginDoc.familyId, svmMarginDoc.cases);
 registerStaticCases(supervisionScalingDoc.familyId, supervisionScalingDoc.cases);
 registerStaticCases(pcaKmeansDoc.familyId, pcaKmeansDoc.cases);
+registerStaticCases(reproContractDoc.familyId, reproContractDoc.cases);
+registerStaticCases(reproReportDoc.familyId, reproReportDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -111,6 +116,8 @@ const familyDocs = [
   svmMarginDoc,
   supervisionScalingDoc,
   pcaKmeansDoc,
+  reproContractDoc,
+  reproReportDoc,
 ];
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
@@ -526,6 +533,85 @@ test('W16 seeded PCA variance corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['formula-ratio-percent-metric-pca'].digest);
+});
+
+test('W17 seed rerun spread preserves profiles, prompts and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-metric-spread-range');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'seed-rerun-accuracy-spread',
+        difficulty,
+      });
+      const expected = Math.max(...generated.parameters.scores)
+        - Math.min(...generated.parameters.scores);
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveFormulaMetricSpreadRange(generated.parameters).value, expected);
+      if (difficulty === 'intro') {
+        assert.equal(generated.parameters.unit, 'percent');
+        assert.equal(generated.parameters.runs, 3);
+      }
+      if (difficulty === 'stretch') assert.equal(generated.parameters.unit, 'fraction');
+    }
+  }
+  const fraction = spec.generate({
+    seed: 1,
+    caseId: 'seed-rerun-accuracy-spread',
+    difficulty: 'stretch',
+  });
+  assert.equal(fraction.prompt.slice(0, fraction.prompt.indexOf('?')).includes('%'), false);
+  assert.match(fraction.prompt, /0,\d{2}/);
+  assert.equal(
+    generateFormulaMetricSpreadRangeFamily({
+      seed: 17001,
+      caseId: 'cv-fold-accuracy-spread',
+      difficulty: 'core',
+    }).expected.value,
+    32,
+  );
+  assert.equal(
+    generateFormulaMetricSpreadRangeFamily({
+      seed: 17002,
+      caseId: 'seed-rerun-accuracy-spread',
+      difficulty: 'core',
+    }).expected.value,
+    34,
+  );
+});
+
+test('W17 seeded rerun spread corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateFormulaMetricSpreadRangeFamily({
+        seed,
+        caseId: 'seed-rerun-accuracy-spread',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['formula-metric-spread-range-seed-rerun'].digest);
+});
+
+test('W17 static cases expose competency overrides and stdout trace output', () => {
+  const spread = EXERCISE_FAMILIES.instantiate(
+    'formula-metric-spread-range',
+    17002,
+    'core',
+    'seed-rerun-accuracy-spread',
+  );
+  assert.deepEqual(spread.competencyIds, ['c-ml-repro', 'c-ml-cv']);
+  const trace = EXERCISE_FAMILIES.instantiate(
+    'trace-assignment-state',
+    0,
+    'core',
+    'rng-stream-reseed-trace',
+  );
+  assert.deepEqual(trace.competencyIds, ['c-ml-repro', 'c-numpy-basics']);
+  assert.deepEqual(trace.expectedAnswer, { kind: 'output-lines', output: '26' });
 });
 
 test('quadratic error family preserves seeded generation, profiles and solver', () => {
