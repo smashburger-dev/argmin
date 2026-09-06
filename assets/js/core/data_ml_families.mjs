@@ -3,7 +3,13 @@
 // instance shape.
 
 import { drawFamilyInstance } from './generator_draw_kit.mjs';
-import { genCompleteRows, genConditionalCount, genDedupRows } from './data_ml_generators.mjs';
+import { staticCaseBody } from '../domain/family_registry.mjs';
+import {
+  genCompleteRows,
+  genConditionalCount,
+  genDedupRows,
+  genMseGradient,
+} from './data_ml_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
@@ -21,7 +27,19 @@ function profileAccepts(caseId, difficulty) {
     if (difficulty === 'intro') return (parameters) => parameters.direction === 'count';
     if (difficulty === 'stretch') return (parameters) => parameters.direction === 'percent';
   }
+  if (caseId === 'mse-gradient-wrt-w') {
+    if (difficulty === 'intro') return (parameters) => parameters.n === 2;
+    if (difficulty === 'stretch') return (parameters) => parameters.n === 4;
+  }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
+}
+
+function staticExpected(familyId, parameters) {
+  const expected = staticCaseBody(familyId, parameters.caseId).expected || {};
+  if (Object.hasOwn(expected, 'value')) return { value: expected.value };
+  if (Object.hasOwn(expected, 'output')) return { output: expected.output };
+  if (expected.kind === 'rubric') return { kind: 'rubric' };
+  return {};
 }
 
 const FAMILY_DEFINITIONS = {
@@ -56,12 +74,48 @@ const FAMILY_DEFINITIONS = {
       return { value: (100 * parameters.c) / parameters.n };
     },
   },
+  'optimize-mse-gradient-closed-form': {
+    cases: {
+      'mse-gradient-wrt-w': { generator: genMseGradient },
+      'grad-mse-numpy-reference': {},
+    },
+    solve(parameters) {
+      if (parameters.caseId === 'grad-mse-numpy-reference') {
+        return staticExpected('optimize-mse-gradient-closed-form', parameters);
+      }
+      const { n, w, b, points } = parameters;
+      return {
+        value: (2 / n) * points.reduce(
+          (sum, [x, y]) => sum + x * (w * x + b - y),
+          0,
+        ),
+      };
+    },
+  },
 };
 
 function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
   const definition = FAMILY_DEFINITIONS[familyId];
   const caseDefinition = definition?.cases[caseId];
   if (!definition || !caseDefinition) throw new Error(`${familyId}: unbekannter Fall ${caseId}`);
+  if (!caseDefinition.generator) {
+    const body = staticCaseBody(familyId, caseId);
+    if (body.difficultyProfile !== difficulty) {
+      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+    }
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      ...generated
+    } = body;
+    return {
+      ...generated,
+      masteryEligible: body.masteryEligible,
+      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+    };
+  }
   const drawn = difficulty === 'core'
     ? caseDefinition.generator(seed)
     : drawFamilyInstance(caseDefinition.generator, {
@@ -97,6 +151,14 @@ export function generateFormulaRatioPercentMetricFamily({ seed, caseId, difficul
   return generateDataMlFamily('formula-ratio-percent-metric', { seed, caseId, difficulty });
 }
 
+export function solveMseGradientClosedForm(parameters) {
+  return FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].solve(parameters);
+}
+
+export function generateMseGradientClosedFormFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('optimize-mse-gradient-closed-form', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -104,6 +166,15 @@ const COUNT_REMAINING_ROWS_CASE_TYPES = [
 
 const FORMULA_RATIO_PERCENT_CASE_TYPES = [
   { caseId: 'conditional-count-percent', sourceLineage: ['w07-e2'], competencyIds: ['c-eda-viz'] },
+];
+
+const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
+  { caseId: 'mse-gradient-wrt-w' },
+  {
+    caseId: 'grad-mse-numpy-reference',
+    propertyTest: false,
+    competencyIds: ['c-grad-regression', 'c-numpy-basics'],
+  },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -134,6 +205,20 @@ export const FORMULA_RATIO_PERCENT_CONTRACT = {
   activityType: 'numeric',
 };
 
+export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
+  familyId: 'optimize-mse-gradient-closed-form',
+  familyGroup: 'optimize-update',
+  summary: 'Leitet den MSE-Gradienten nach w her und prüft ihn gegen eine NumPy-Referenz.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: MSE_GRADIENT_CLOSED_FORM_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-grad-regression'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
 export const DATA_ML_FAMILY_SPECS = [
   {
     ...COUNT_REMAINING_ROWS_CONTRACT,
@@ -144,5 +229,10 @@ export const DATA_ML_FAMILY_SPECS = [
     ...FORMULA_RATIO_PERCENT_CONTRACT,
     generate: generateFormulaRatioPercentMetricFamily,
     solve: solveFormulaRatioPercentMetric,
+  },
+  {
+    ...MSE_GRADIENT_CLOSED_FORM_CONTRACT,
+    generate: generateMseGradientClosedFormFamily,
+    solve: solveMseGradientClosedForm,
   },
 ];
