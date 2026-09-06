@@ -25,7 +25,7 @@
       "role": "curated",
       "familyId": "classify-shape-contract",
       "caseId": "shape-bias-broadcast-mc",
-      "seed": 1801,
+      "seed": 0,
       "difficulty": "intro",
       "estimatedMinutes": 6,
       "lessonId": "l-dl-tensors",
