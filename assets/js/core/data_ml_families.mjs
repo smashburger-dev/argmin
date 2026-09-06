@@ -26,6 +26,13 @@ import {
   genLinearParamCount,
   genSgdSteps,
 } from './w18_w21_generators.mjs';
+import {
+  genAttentionShape,
+  genGreedyToken,
+  genLoraParamCount,
+  genRelativeGain,
+  genVocabAfterMerges,
+} from './w22_w26_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
@@ -115,6 +122,30 @@ function profileAccepts(caseId, difficulty) {
     if (difficulty === 'intro') return (parameters) => parameters.variant === 'path';
     if (difficulty === 'stretch') return (parameters) => parameters.variant === 'fork';
   }
+  if (caseId === 'attention-tensor-cells') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'score-cells';
+    if (difficulty === 'stretch') {
+      return (parameters) => parameters.variant === 'mask-cells' || parameters.variant === 'scale-divisor';
+    }
+  }
+  if (caseId === 'bpe-vocab-size') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'total';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'merges-needed';
+  }
+  if (caseId === 'lora-param-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'lora';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'saved';
+  }
+  if (caseId === 'greedy-step-stat') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'argmax-position';
+    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'decode-length';
+  }
+  if (caseId === 'paper-gain-from-counts') {
+    if (difficulty === 'intro') return (parameters) => parameters.variant === 'count-gain';
+    if (difficulty === 'stretch') {
+      return (parameters) => parameters.variant === 'relative-percent' || parameters.variant === 'error-reduction';
+    }
+  }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
 
@@ -124,6 +155,30 @@ function staticExpected(familyId, parameters) {
   if (Object.hasOwn(expected, 'output')) return { output: expected.output };
   if (expected.kind === 'rubric') return { kind: 'rubric' };
   return {};
+}
+
+function decimalFraction(value) {
+  const text = String(value);
+  if (!text.includes('.')) return { numerator: BigInt(text), denominator: 1n };
+  const [whole, fraction] = text.split('.');
+  const denominator = 10n ** BigInt(fraction.length);
+  const sign = whole.startsWith('-') ? -1n : 1n;
+  const absoluteWhole = whole.replace('-', '');
+  return {
+    numerator: sign * (BigInt(absoluteWhole) * denominator + BigInt(fraction)),
+    denominator,
+  };
+}
+
+function exactPercent(numeratorValue, denominatorValue) {
+  const numerator = decimalFraction(numeratorValue);
+  const denominator = decimalFraction(denominatorValue);
+  const scaledNumerator = numerator.numerator * 100n * denominator.denominator;
+  const scaledDenominator = numerator.denominator * denominator.numerator;
+  if (scaledNumerator % scaledDenominator === 0n) {
+    return Number(scaledNumerator / scaledDenominator);
+  }
+  return Number(scaledNumerator) / Number(scaledDenominator);
 }
 
 const FAMILY_DEFINITIONS = {
@@ -168,8 +223,14 @@ const FAMILY_DEFINITIONS = {
         generator: genPcaVariancePercent,
         competencyIds: ['c-ml-svm-pca'],
       },
+      'compare-systems-metric': {
+        competencyIds: ['c-dl-papers', 'c-ml-cv'],
+      },
     },
     solve(parameters) {
+      if (parameters.caseId === 'compare-systems-metric') {
+        return staticExpected('formula-ratio-percent-metric', parameters);
+      }
       if (parameters.caseId === 'ridge-shrinkage-percent') {
         const share = (100 * parameters.sxx) / (parameters.sxx + parameters.lam);
         return { value: parameters.phrasing === 'shrink' ? 100 - share : share };
@@ -297,6 +358,18 @@ const FAMILY_DEFINITIONS = {
         generator: genDropoutCount,
         competencyIds: ['c-dl-regularization'],
       },
+      'attention-tensor-cells': {
+        generator: genAttentionShape,
+        competencyIds: ['c-dl-attention'],
+      },
+      'bpe-vocab-size': {
+        generator: genVocabAfterMerges,
+        competencyIds: ['c-dl-tokenizer'],
+      },
+      'lora-param-count': {
+        generator: genLoraParamCount,
+        competencyIds: ['c-dl-finetuning'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'linear-param-count') {
@@ -327,7 +400,60 @@ const FAMILY_DEFINITIONS = {
           value: parameters.mask1.reduce((count, value, index) => count + (value && parameters.mask2[index] ? 1 : 0), 0),
         };
       }
+      if (parameters.caseId === 'attention-tensor-cells') {
+        if (parameters.variant === 'score-cells') return { value: parameters.n * parameters.m };
+        if (parameters.variant === 'output-cells') return { value: parameters.n * parameters.dv };
+        if (parameters.variant === 'mask-cells') return { value: (parameters.n * (parameters.n - 1)) / 2 };
+        return { value: Math.sqrt(parameters.dk) };
+      }
+      if (parameters.caseId === 'bpe-vocab-size') {
+        if (parameters.variant === 'total') {
+          return { value: parameters.chars + parameters.merges + parameters.specials };
+        }
+        if (parameters.variant === 'merges-needed') {
+          return { value: parameters.target - parameters.chars - parameters.specials };
+        }
+        return { value: parameters.target - parameters.chars - parameters.merges };
+      }
+      if (parameters.caseId === 'lora-param-count') {
+        const lora = parameters.rank * (parameters.dIn + parameters.dOut);
+        if (parameters.variant === 'lora') return { value: lora };
+        if (parameters.variant === 'full') return { value: parameters.dIn * parameters.dOut };
+        return { value: parameters.dIn * parameters.dOut - lora };
+      }
       throw new Error(`formula-count-from-construction: unbekannter Fall ${parameters.caseId}`);
+    },
+  },
+  'formula-stat-from-table': {
+    cases: {
+      'greedy-step-stat': {
+        generator: genGreedyToken,
+        competencyIds: ['c-dl-inference'],
+      },
+      'paper-gain-from-counts': {
+        generator: genRelativeGain,
+        competencyIds: ['c-dl-papers'],
+      },
+    },
+    solve(parameters) {
+      if (parameters.caseId === 'greedy-step-stat') {
+        if (parameters.variant === 'argmax-position') {
+          return { value: 1 + parameters.logits.indexOf(Math.max(...parameters.logits)) };
+        }
+        if (parameters.variant === 'margin') {
+          const sorted = [...parameters.logits].sort((left, right) => right - left);
+          return { value: sorted[0] - sorted[1] };
+        }
+        return { value: parameters.init + parameters.steps };
+      }
+      if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
+      if (parameters.variant === 'relative-percent') {
+        return { value: exactPercent(parameters.newer - parameters.base, parameters.base) };
+      }
+      if (parameters.variant === 'error-reduction') {
+        return { value: exactPercent(parameters.eBase - parameters.eNew, parameters.eBase) };
+      }
+      return { value: parameters.newer - parameters.base };
     },
   },
   'optimize-backprop-path-sum': {
@@ -463,6 +589,14 @@ export function generateOptimizeBackpropPathSumFamily({ seed, caseId, difficulty
   return generateDataMlFamily('optimize-backprop-path-sum', { seed, caseId, difficulty });
 }
 
+export function solveFormulaStatFromTable(parameters) {
+  return FAMILY_DEFINITIONS['formula-stat-from-table'].solve(parameters);
+}
+
+export function generateFormulaStatFromTableFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('formula-stat-from-table', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -474,6 +608,12 @@ const FORMULA_RATIO_PERCENT_CASE_TYPES = [
   { caseId: 'subgroup-error-gap-pp', sourceLineage: ['w13-e2'], competencyIds: ['c-ml-erroranalysis'] },
   { caseId: 'ridge-shrinkage-percent', sourceLineage: ['w14-e2'], competencyIds: ['c-ml-regularization'] },
   { caseId: 'pca-explained-variance-percent', sourceLineage: ['w16-e2'], competencyIds: ['c-ml-svm-pca'] },
+  {
+    caseId: 'compare-systems-metric',
+    propertyTest: false,
+    sourceLineage: ['w26-e4'],
+    competencyIds: ['c-dl-papers', 'c-ml-cv'],
+  },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
@@ -514,6 +654,14 @@ const FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES = [
   { caseId: 'linear-param-count', sourceLineage: ['w18-e2'], competencyIds: ['c-dl-tensors'] },
   { caseId: 'sgd-update-count', sourceLineage: ['w20-e2'], competencyIds: ['c-dl-training'] },
   { caseId: 'dropout-mask-kept-count', sourceLineage: ['w21-e2'], competencyIds: ['c-dl-regularization'] },
+  { caseId: 'attention-tensor-cells', sourceLineage: ['w22-e2'], competencyIds: ['c-dl-attention'] },
+  { caseId: 'bpe-vocab-size', sourceLineage: ['w23-e2'], competencyIds: ['c-dl-tokenizer'] },
+  { caseId: 'lora-param-count', sourceLineage: ['w25-e2'], competencyIds: ['c-dl-finetuning'] },
+];
+
+const FORMULA_STAT_FROM_TABLE_CASE_TYPES = [
+  { caseId: 'greedy-step-stat', sourceLineage: ['w24-e2'], competencyIds: ['c-dl-inference'] },
+  { caseId: 'paper-gain-from-counts', sourceLineage: ['w26-e2'], competencyIds: ['c-dl-papers'] },
 ];
 
 const OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES = [
@@ -543,7 +691,7 @@ export const FORMULA_RATIO_PERCENT_CONTRACT = {
   masteryEligible: true,
   caseTypes: FORMULA_RATIO_PERCENT_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-eda-viz'],
+  competencyIds: ['c-eda-viz', 'c-dl-papers', 'c-ml-cv'],
   graderId: 'deterministic',
   activityType: 'numeric',
 };
@@ -627,7 +775,28 @@ export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
   masteryEligible: true,
   caseTypes: FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-dl-tensors', 'c-dl-training', 'c-dl-regularization'],
+  competencyIds: [
+    'c-dl-tensors',
+    'c-dl-training',
+    'c-dl-regularization',
+    'c-dl-attention',
+    'c-dl-tokenizer',
+    'c-dl-finetuning',
+  ],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
+export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
+  familyId: 'formula-stat-from-table',
+  familyGroup: 'formula-apply',
+  summary: 'Berechnet eine Kennzahl aus einer gegebenen Datentabelle über eine geschlossene Formel.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: FORMULA_STAT_FROM_TABLE_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-dl-inference', 'c-dl-papers'],
   graderId: 'deterministic',
   activityType: 'numeric',
 };
@@ -686,6 +855,11 @@ export const DATA_ML_FAMILY_SPECS = [
     ...FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT,
     generate: generateFormulaCountFromConstructionFamily,
     solve: solveFormulaCountFromConstruction,
+  },
+  {
+    ...FORMULA_STAT_FROM_TABLE_CONTRACT,
+    generate: generateFormulaStatFromTableFamily,
+    solve: solveFormulaStatFromTable,
   },
   {
     ...OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT,

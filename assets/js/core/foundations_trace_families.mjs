@@ -113,6 +113,15 @@ export function solveTraceAssignment(parameters) {
   if (parameters.caseId === 'fixed-dropout-mask-trace') {
     return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
   }
+  if (
+    ['stable-softmax-rows-trace', 'char-encode-roundtrip-trace', 'greedy-loop-trace', 'freeze-param-filter-trace']
+      .includes(parameters.caseId)
+  ) {
+    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
+  }
+  if (parameters.caseId === 'absolute-vs-relative-gain-trace') {
+    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
+  }
   const { shape } = parameters;
   if (shape === 'reassign') {
     const b = parameters.a0 + parameters.k1;
@@ -156,6 +165,11 @@ export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
     || caseId === 'rng-stream-reseed-trace'
     || caseId === 'manual-backward-step-trace'
     || caseId === 'fixed-dropout-mask-trace'
+    || caseId === 'stable-softmax-rows-trace'
+    || caseId === 'char-encode-roundtrip-trace'
+    || caseId === 'greedy-loop-trace'
+    || caseId === 'freeze-param-filter-trace'
+    || caseId === 'absolute-vs-relative-gain-trace'
   ) {
     const body = staticCaseBody('trace-assignment-state', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
@@ -221,6 +235,31 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
       caseId: 'fixed-dropout-mask-trace',
       propertyTest: false,
       competencyIds: ['c-dl-regularization', 'c-numpy-basics'],
+    },
+    {
+      caseId: 'stable-softmax-rows-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-attention', 'c-python-basics'],
+    },
+    {
+      caseId: 'char-encode-roundtrip-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-tokenizer', 'c-python-basics'],
+    },
+    {
+      caseId: 'greedy-loop-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-inference', 'c-python-basics'],
+    },
+    {
+      caseId: 'freeze-param-filter-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-finetuning', 'c-python-basics'],
+    },
+    {
+      caseId: 'absolute-vs-relative-gain-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-papers', 'c-python-basics'],
     },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],

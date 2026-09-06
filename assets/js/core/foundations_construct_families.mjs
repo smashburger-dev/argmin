@@ -1180,6 +1180,7 @@ export const REQUIRED_FIELD_CONTRACT = {
   caseTypes: [
     { caseId: 'specific-except-with-issue' },
     { caseId: 'required-key-with-issue' },
+    { caseId: 'paper-card-required-fields', propertyTest: false, competencyIds: ['c-dl-papers'] },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-files-errors'],
@@ -1211,6 +1212,9 @@ const REQUIRED_ORDERS = {
 
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
+  if (parameters.caseId === 'paper-card-required-fields') {
+    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  }
   const order = REQUIRED_ORDERS[parameters.parsonsCase];
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
@@ -1219,6 +1223,21 @@ export function solveRequiredField(parameters) {
 export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
+  if (caseId === 'paper-card-required-fields') {
+    const body = staticCaseBody('validate-required-field-raise', caseId);
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      ...generated
+    } = body;
+    return {
+      ...generated,
+      masteryEligible: body.masteryEligible,
+      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+    };
+  }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
