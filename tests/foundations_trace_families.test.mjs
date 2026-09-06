@@ -306,6 +306,7 @@ const TRACE_TAXONOMY = [
       'join-split-predict': 'genCodeReadingOutput-Einmalzuweisung (split/join); Überschreibungsschritt läuft vakant',
       'comprehension-predict': 'genCodeReadingOutput-Einmalzuweisung (Filter/Abbildung); Überschreibungsschritt läuft vakant',
       'gradient-loop-two-updates': 'statischer W08-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
+      'tree-majority-vote-trace': 'statischer W15-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
     },
     staticContent: [
       { sourceId: 'w01-e3', contentType: 'predict-output', caseId: 'reassign-two-variables-print' },
