@@ -1,0 +1,56 @@
+{
+  "description": "S4D22 seeded family corpus over seeds 0-63 and intro/core/stretch profiles",
+  "seedRange": [
+    0,
+    63
+  ],
+  "difficultyProfiles": [
+    "intro",
+    "core",
+    "stretch"
+  ],
+  "families": {
+    "aggregate-topk-relevance-arithmetic:recall-at-k-window": {
+      "familyId": "aggregate-topk-relevance-arithmetic",
+      "caseId": "recall-at-k-window",
+      "instances": 192,
+      "digest": "94665993e36fcb9c73819d95058ef043cf95673d8b9a1a7cfbcf65087bba831d"
+    },
+    "aggregate-confusion-metric:answer-filter-precision-recall-f1": {
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "answer-filter-precision-recall-f1",
+      "instances": 192,
+      "digest": "d2898e400dbb2447fbbbdd4a4c9cb0b3bb9d349d57e2044b0b06d0e118f83e93"
+    },
+    "aggregate-confusion-metric:injection-filter-counts": {
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "injection-filter-counts",
+      "instances": 192,
+      "digest": "c054abe33e01f222c65b56ffd0111cece281befae19d643cd46b4e8ba1e81f51"
+    },
+    "formula-ratio-percent-metric:allowed-action-count": {
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "allowed-action-count",
+      "instances": 192,
+      "digest": "5f62efecc27192a8907d2696e1a38dd043ac506c77eeb967f5cc6ef0ba1d2536"
+    },
+    "validate-goalshift-flag-rules:protocol-shift-flag-count": {
+      "familyId": "validate-goalshift-flag-rules",
+      "caseId": "protocol-shift-flag-count",
+      "instances": 192,
+      "digest": "eddb42c539eca45de1fabf9ec54f0e46f68e1cf1ec5f026729b58c3ae075445f"
+    },
+    "formula-stat-from-table:card-audit-missing-count": {
+      "familyId": "formula-stat-from-table",
+      "caseId": "card-audit-missing-count",
+      "instances": 192,
+      "digest": "8c4529c9011bcc8a8c69d88d1b6276a128701cec955e6309b4b8fb40c0caaff1"
+    },
+    "aggregate-confusion-metric:subgroup-rate-gap-permille": {
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "subgroup-rate-gap-permille",
+      "instances": 192,
+      "digest": "6f9cdd847bfa8bdbd0b6abf1e5f53f278819b2152aa9cb616ada1586f417237a"
+    }
+  }
+}
