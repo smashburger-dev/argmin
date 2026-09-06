@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-leakage-rule-audit",
+  "contract": {
+    "familyId": "validate-leakage-rule-audit",
+    "familyGroup": "validate-contract",
+    "summary": "Prüft Pipelines auf Ziel-, Statistik- und Test-Leakage.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "pipeline-leakage-audit",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-cv"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "pipeline-leakage-audit",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w12-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def audit_pipeline(steps):\n    # a step leaks if its lower-cased action matches at least one rule:\n    # 1) 'ziel' AND 'feature'  (target leak)\n    # 2) 'alle zeilen'         (statistic computed before the split)\n    # 3) 'test' AND 'fit'      (fitted on the test set)\n    # return the sorted list of 0-based indices of leaking steps\n    ...\n",
+        "tests": "clean = [\n    {'step': 'split',  'action': 'Deterministischer Train/Test-Split mit Seed'},\n    {'step': 'impute', 'action': 'Mittelwert der Train-Spalten als Fill-Wert'},\n    {'step': 'fit',    'action': 'Modell auf Train gefittet'},\n    {'step': 'report', 'action': 'Bewertung auf Test'},\n]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [\n    {'step': 'features', 'action': 'Ziel-Spalte als Feature uebernommen'},\n    {'step': 'split',    'action': 'Deterministischer Train/Test-Split'},\n    {'step': 'fit',      'action': 'Modell auf Train gefittet'},\n]\n__check('Ziel-Leak an Position 0', audit_pipeline(target_leak) == [0])\nscaler_leak = [\n    {'step': 'scale', 'action': 'Standardisierung ueber alle Zeilen'},\n    {'step': 'split', 'action': 'Deterministischer Train/Test-Split'},\n    {'step': 'fit',   'action': 'Modell auf Train gefittet'},\n]\n__check('Skalier-Leak vor Split an Position 0', audit_pipeline(scaler_leak) == [0])\nmulti_leak = [\n    {'step': 'engineer', 'action': 'Ziel-Mittelwert als Feature eingefuegt'},\n    {'step': 'scale',    'action': 'Standardisierung ueber alle Zeilen'},\n    {'step': 'split',    'action': 'Deterministischer Train/Test-Split'},\n    {'step': 'refit',    'action': 'Transformation auf Test neu gefittet'},\n]\n__check('drei Leaks: Indizes [0, 1, 3] sortiert', audit_pipeline(multi_leak) == [0, 1, 3])\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [\n    {'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'},\n    {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'},\n]\n__check('unbekannte Pipeline: nur Regel 1 schlaegt zu', audit_pipeline(hidden_case) == [0])\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def audit_pipeline(steps):\n    '''Return sorted indices of leaking steps by three keyword rules.'''\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        is_leak = False\n        if 'ziel' in action and 'feature' in action:\n            is_leak = True\n        if 'alle zeilen' in action:\n            is_leak = True\n        if 'test' in action and 'fit' in action:\n            is_leak = True\n        if is_leak:\n            leaks.append(idx)\n    return leaks\n"
+      },
+      "prompt": "Final Boss: Leakage-Auditor für beschriebene Pipelines. `audit_pipeline(steps)` bekommt eine Liste von Schritten, jeder Schritt ist `{'step': name, 'action': beschreibung}`. Rückgabe: aufsteigend sortierte Liste der 0-basierten Indizes aller Schritte, die leaken. Ein Schritt leakt, wenn seine kleingeschriebene Aktion mindestens eine Regel trifft: (1) Ziel-Leak: enthält 'ziel' UND 'feature'; (2) Statistik vor dem Split: enthält 'alle zeilen'; (3) Fit auf Test: enthält 'test' UND 'fit'. Beispiel: 'Standardisierung über alle Zeilen' → Regel 2; 'Modell auf Train gefittet' → keine Regel (kein 'test').",
+      "fullSolution": "def audit_pipeline(steps):\n    '''Return sorted indices of leaking steps by three keyword rules.'''\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        is_leak = False\n        if 'ziel' in action and 'feature' in action:\n            is_leak = True\n        if 'alle zeilen' in action:\n            is_leak = True\n        if 'test' in action and 'fit' in action:\n            is_leak = True\n        if is_leak:\n            leaks.append(idx)\n    return leaks\n",
+      "hints": [
+        "Kleinbuchstaben normalisieren (action.lower()) und dann drei unabhängige Marker-Prüfungen mit 'in' verknüpfen — eine reicht zum Flaggen.",
+        "Die Indizes entstehen in Schleifenreihenfolge automatisch aufsteigend; collecte sie nur für zutreffende Schritte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "case-sensitive-match",
+          "then": "Die Regeln gelten für die kleingeschriebene Fassung der Aktion — ohne .lower() verpasst du Großschreibungen am Satzanfang."
+        },
+        {
+          "if": "or-instead-of-and",
+          "then": "Regel 1 und Regel 3 verlangen BEIDE Marker im selben Schritt ('ziel' UND 'feature' bzw. 'test' UND 'fit') — einzeln reicht nicht."
+        },
+        {
+          "if": "unsorted-result",
+          "then": "Die Ergebnisliste muss aufsteigend sortiert sein — Index 3 gehört nach Index 1."
+        }
+      ],
+      "typicalErrors": [
+        "Groß-/Kleinschreibung nicht normalisieren",
+        "UND-Regeln als ODER-Regeln implementieren",
+        "Indizes unsortiert sammeln"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    }
+  ]
+}

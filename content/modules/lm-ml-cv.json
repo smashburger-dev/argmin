@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-cv",
+  "version": 1,
+  "locale": "de",
+  "title": "Cross-Validation und Leakage-Kontrolle",
+  "description": "Lerne Cross-Validation deterministisch zu reproduzieren, Metrikstreuung zu bewerten und Leakage vor dem Test zuverlässig zu verhindern.",
+  "competencyIds": [
+    "c-ml-cv"
+  ],
+  "requires": [
+    "c-ml-logistic"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-cv"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-cv-parameter",
+      "role": "curated",
+      "familyId": "classify-parameter-origin",
+      "caseId": "hyperparameter-vs-parameter",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-cv-spread",
+      "role": "curated",
+      "familyId": "formula-metric-spread-range",
+      "caseId": "cv-fold-accuracy-spread",
+      "seed": 12001,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-cv-leakage",
+      "role": "curated",
+      "familyId": "classify-cv-leakage",
+      "caseId": "impute-before-split",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-cv-kfold",
+      "role": "curated",
+      "familyId": "reproduce-seeded-split",
+      "caseId": "kfold-indices-numpy",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 30,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-cv-audit",
+      "role": "curated",
+      "familyId": "validate-leakage-rule-audit",
+      "caseId": "pipeline-leakage-audit",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 40,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-cv-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-metric-spread-range",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
