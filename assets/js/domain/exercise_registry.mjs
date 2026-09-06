@@ -9,6 +9,7 @@ import { FOUNDATIONS_CHOICE_FAMILY_SPECS } from '../core/foundations_choice_fami
 import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mjs';
 import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
 import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
+import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
 
 export { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec };
 
@@ -26,6 +27,8 @@ const jsFamilySpecs = [
   ...TRACE_FAMILY_SPECS,
   // S4D5: Skalarprodukt-Familie (linalg).
   ...LINALG_FAMILY_SPECS,
+  // S4D8: Datenbereinigung.
+  ...DATA_ML_FAMILY_SPECS,
 ];
 
 export let EXERCISE_FAMILIES = createFamilyRegistry(jsFamilySpecs);
