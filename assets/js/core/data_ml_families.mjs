@@ -9,6 +9,7 @@ import {
   genConditionalCount,
   genDedupRows,
   genBaselineCorrect,
+  genConfusionCount,
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
@@ -55,6 +56,10 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'r2-explained-share') {
     if (difficulty === 'intro') return (parameters) => parameters.phrasing === 'r2';
     if (difficulty === 'stretch') return (parameters) => parameters.phrasing === 'context';
+  }
+  if (caseId === 'confusion-marginal-count') {
+    if (difficulty === 'intro') return (parameters) => parameters.metric === 'predicted-pos';
+    if (difficulty === 'stretch') return (parameters) => parameters.metric === 'actual-neg';
   }
   throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
@@ -146,6 +151,28 @@ const FAMILY_DEFINITIONS = {
       return { value: parameters.counts.reduce((sum, count) => sum + count, 0) - Math.max(...parameters.counts) };
     },
   },
+  'aggregate-confusion-metric': {
+    cases: {
+      'confusion-marginal-count': {
+        generator: genConfusionCount,
+        competencyIds: ['c-ml-logistic'],
+      },
+      'threshold-under-asymmetric-cost': {},
+      'sigmoid-predict-numpy': {},
+      'confusion-cost-report': {},
+    },
+    solve(parameters) {
+      if (parameters.caseId === 'confusion-marginal-count') {
+        const value = parameters.metric === 'actual-neg'
+          ? parameters.tn + parameters.fp
+          : parameters.metric === 'predicted-pos'
+            ? parameters.tp + parameters.fp
+            : parameters.tp + parameters.fn;
+        return { value };
+      }
+      return staticExpected('aggregate-confusion-metric', parameters);
+    },
+  },
 };
 
 function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
@@ -229,6 +256,14 @@ export function generateAggregateMajorityRuleCountFamily({ seed, caseId, difficu
   return generateDataMlFamily('aggregate-majority-rule-count', { seed, caseId, difficulty });
 }
 
+export function solveAggregateConfusionMetric(parameters) {
+  return FAMILY_DEFINITIONS['aggregate-confusion-metric'].solve(parameters);
+}
+
+export function generateAggregateConfusionMetricFamily({ seed, caseId, difficulty }) {
+  return generateDataMlFamily('aggregate-confusion-metric', { seed, caseId, difficulty });
+}
+
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -255,6 +290,13 @@ const AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES = [
 const FORMULA_QUADRATIC_ERROR_CASE_TYPES = [
   { caseId: 'rmse-unit-from-mse', propertyTest: false },
   { caseId: 'mse-from-residuals', sourceLineage: ['w10-e2'] },
+];
+
+const AGGREGATE_CONFUSION_METRIC_CASE_TYPES = [
+  { caseId: 'confusion-marginal-count', sourceLineage: ['w11-e2'] },
+  { caseId: 'threshold-under-asymmetric-cost', propertyTest: false },
+  { caseId: 'sigmoid-predict-numpy', propertyTest: false },
+  { caseId: 'confusion-cost-report', propertyTest: false },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -327,6 +369,20 @@ export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
   activityType: 'numeric',
 };
 
+export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
+  familyId: 'aggregate-confusion-metric',
+  familyGroup: 'aggregate-count',
+  summary: 'Erschließt Konfusionsmetriken aus {TP, FP, FN, TN} und bewertet Fehlerkosten und Schwellen.',
+  taskArchetype: 'numeric-exact',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: AGGREGATE_CONFUSION_METRIC_CASE_TYPES,
+  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+  competencyIds: ['c-ml-logistic'],
+  graderId: 'deterministic',
+  activityType: 'numeric',
+};
+
 export const DATA_ML_FAMILY_SPECS = [
   {
     ...COUNT_REMAINING_ROWS_CONTRACT,
@@ -352,5 +408,10 @@ export const DATA_ML_FAMILY_SPECS = [
     ...FORMULA_QUADRATIC_ERROR_CONTRACT,
     generate: generateFormulaQuadraticErrorMetricFamily,
     solve: solveFormulaQuadraticErrorMetric,
+  },
+  {
+    ...AGGREGATE_CONFUSION_METRIC_CONTRACT,
+    generate: generateAggregateConfusionMetricFamily,
+    solve: solveAggregateConfusionMetric,
   },
 ];
