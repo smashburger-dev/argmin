@@ -28,9 +28,9 @@ const wrongAnswerFor = (definition) => {
   }
 };
 
-test('Foundations adds twelve independently graded exercise definitions', () => {
-  assert.equal(definitions.length, 12);
-  assert.equal(new Set(definitions.map((definition) => definition.definitionId)).size, 12);
+test('Foundations keeps ten legacy independently graded exercise definitions', () => {
+  assert.equal(definitions.length, 10);
+  assert.equal(new Set(definitions.map((definition) => definition.definitionId)).size, 10);
   assert.equal(definitions.every((definition) => definition.releaseStatus === 'solver-verified'), true);
 });
 

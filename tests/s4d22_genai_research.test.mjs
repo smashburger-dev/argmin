@@ -20,9 +20,10 @@ import { genProtocolShifts, genCardAudit, genSubgroupCost, protocolShiftFlags, c
 import { configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import { TRACE_ASSIGNMENT_CONTRACT } from '../assets/js/core/foundations_trace_families.mjs';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 const root = join(new URL('..', import.meta.url).pathname);
-const legacy = Object.fromEntries([27, 28, 29, 30, 31, 32, 33].map((week) => [week, JSON.parse(readFileSync(join(root, `content/exercises/w${week}.json`), 'utf8'))]));
+const legacy = Object.fromEntries([27, 28, 29, 30, 31, 32, 33].map((week) => [week, legacyOracle.weeks[`w${week}`]]));
 const familyDocs = readdirSync(join(root, 'content/families')).filter((name) => name.endsWith('.json')).map((name) => JSON.parse(readFileSync(join(root, 'content/families', name), 'utf8')));
 for (const doc of familyDocs) registerStaticCases(doc.familyId, doc.cases);
 const families = configureExerciseFamilies(familyDocs);

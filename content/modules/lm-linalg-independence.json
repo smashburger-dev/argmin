@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-linalg-independence",
+  "version": 1,
+  "locale": "de",
+  "title": "Unabhängigkeit und Rang begründen",
+  "description": "Determinante, Rang und abhängige Spalten als zusammenhängende Evidenz lesen.",
+  "competencyIds": [
+    "c-linalg-independence"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-linalg-independence"
+  ],
+  "placements": [
+    {
+      "placementId": "p-linalg-independence-01-dependent-pair-double",
+      "role": "curated",
+      "familyId": "classify-independence-multiple",
+      "caseId": "dependent-pair-double",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-independence-02-rank-3x3-staircase",
+      "role": "curated",
+      "familyId": "transform-rank-dependence-rowops",
+      "caseId": "rank-3x3-staircase",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-independence-03-formula-det2-independence-practice",
+      "role": "practice-space",
+      "familyId": "formula-det2-independence",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
-import { loadRoadmapWeeks, loadReviews, loadSources, loadTools } from '../adapters/content-repository';
+import { findLegacyExerciseSummary, loadRoadmapWeeks, loadReviews, loadSources, loadTools } from '../adapters/content-repository';
 
 /** Loads a route-scoped content section once per session. null while the
  *  sidecar chunk is in flight — views render an honest loading state. */
@@ -328,7 +328,7 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
   const recommendations = buildFoundationsDiagnosis(catalog, progress).slice(0, 4);
   const labels = new Map(catalog.competencies.map((item) => [item.competencyId, item]));
   const typeLabels = { review: 'Kompetenz-Frische fällig', lesson: 'Kompetenz stärken', diagnostic: 'Evidence fehlt' };
-  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'w01-e1');
+  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'transform-linear-equation-isolate:two-step-fixed-instance');
   return (
     <section class="view" aria-labelledby="diagnostic-title">
       <header class="view-header"><p class="eyebrow">Formative Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>
@@ -342,6 +342,12 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
 
 export function ReviewView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const byId = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
+  for (const review of progress.dueReviews) {
+    if (!byId.has(review.exerciseId)) {
+      const legacy = findLegacyExerciseSummary(review.exerciseId);
+      if (legacy) byId.set(review.exerciseId, legacy);
+    }
+  }
   // Retired definitions stay visible as archived entries (history preserved)
   // but never get an exercise route — the fallback `#/exercise/<id>` anchor
   // for unknown ids would be a dead link.

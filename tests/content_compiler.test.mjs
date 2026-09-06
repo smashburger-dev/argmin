@@ -46,7 +46,11 @@ test('public compiler is deterministic and excludes private-only legacy content'
     const policy = first.competencies.find((competency) => competency.competencyId === competencyId).evidencePolicy;
     const eligible = first.exerciseDefinitions.filter((exercise) => foundations.exerciseDefinitionIds.includes(exercise.definitionId)
       && exercise.competencyIds.includes(competencyId) && exercise.masteryEligible);
-    assert.ok(eligible.length >= policy.minimumDistinctDefinitions, `${competencyId} cannot satisfy its milestone evidence policy`);
+    const modernEligible = first.familyActivities.filter((activity) => activity.competencyIds.includes(competencyId) && activity.masteryEligible);
+    assert.ok(
+      eligible.length + modernEligible.length >= policy.minimumDistinctDefinitions,
+      `${competencyId} cannot satisfy its milestone evidence policy`,
+    );
   }
   assert.equal(first.exerciseDefinitions.some((exercise) => exercise.definitionId === 'w05-e7'), false);
   assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|locatorPath|localPath|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/);

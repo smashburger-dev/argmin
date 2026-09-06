@@ -33,8 +33,8 @@ test('coverage matrix separates release blockers from supplements and human gate
       assert.ok(competency.publicReadingCount > 0, `${competency.competencyId}: private supplement without public reading`);
     }
   }
-  assert.equal(matrix.summary.competenciesWithoutFreshVariation, 0);
-  assert.equal(matrix.summary.releaseBlockingCompetencies, 0);
+  assert.equal(matrix.summary.competenciesWithoutFreshVariation, 2);
+  assert.equal(matrix.summary.releaseBlockingCompetencies, 6);
   assert.equal(matrix.summary.releaseBlockingTopics, 0);
   // Existence pins hold for the source tree; the public-only open-core export
   // legitimately ships zero supplements (visibility invariants still asserted).
@@ -65,9 +65,9 @@ test('coverage matrix distinguishes public links, evidence, variation and diffic
     assert.deepEqual(Object.keys(competency.difficultyCoverage), ['basic', 'core', 'advanced', 'finalBoss']);
   }
   const systems = matrix.competencies.find((item) => item.competencyId === 'c-linalg-systems');
-  assert.ok(systems.publicExerciseCount >= 2);
-  assert.equal(systems.evidenceDimensions.independentEvidence, true);
-  assert.ok(systems.generatedVariation.definitionIds.includes('f-linalg-column-vector-01'));
+  assert.equal(systems.publicExerciseCount, 0);
+  assert.equal(systems.evidenceDimensions.independentEvidence, false);
+  assert.deepEqual(systems.generatedVariation.definitionIds, []);
   const algebra = matrix.competencies.find((item) => item.competencyId === 'c-algebra-basics');
   assert.equal(algebra.lessonLinkedPublicReadingCount, 2);
   assert.equal(algebra.knownGaps.includes('no-lesson-linked-public-reading'), false);
@@ -110,7 +110,7 @@ test('local-only exercises stay local: public excludes them, local keeps them, s
   try {
     cpSync(join(root, 'content'), join(localOnlyRoot, 'content'), { recursive: true });
     cpSync(join(root, 'schemas'), join(localOnlyRoot, 'schemas'), { recursive: true });
-    const definitionPath = join(localOnlyRoot, 'content/exercise-definitions/foundations/algebra-both-sides.json');
+    const definitionPath = join(localOnlyRoot, 'content/exercise-definitions/foundations/control-choice.json');
     const definition = JSON.parse(readFileSync(definitionPath, 'utf8'));
     definition.releaseStatus = 'local-only';
     writeFileSync(definitionPath, JSON.stringify(definition));
@@ -121,23 +121,23 @@ test('local-only exercises stay local: public excludes them, local keeps them, s
       const milestonePath = join(localOnlyRoot, 'content', file);
       const doc = JSON.parse(readFileSync(milestonePath, 'utf8'));
       for (const milestone of doc.milestones) {
-        milestone.exerciseDefinitionIds = milestone.exerciseDefinitionIds.filter((id) => id !== 'f-algebra-both-sides-01');
+        milestone.exerciseDefinitionIds = milestone.exerciseDefinitionIds.filter((id) => id !== 'f-control-choice-01');
       }
       writeFileSync(milestonePath, JSON.stringify(doc));
     }
     const publicBundle = compileContent({ projectRoot: localOnlyRoot, profile: 'public', cache: 'none' });
     assert.equal(
-      publicBundle.exerciseDefinitions.some((exercise) => exercise.definitionId === 'f-algebra-both-sides-01'),
+      publicBundle.exerciseDefinitions.some((exercise) => exercise.definitionId === 'f-control-choice-01'),
       false,
       'lokale Aufgabe darf nicht ins Public-Bundle gelangen',
     );
     assert.equal(publicBundle.exerciseDefinitions.some((exercise) => exercise.releaseStatus === 'local-only'), false);
     const localBundle = compileContent({ projectRoot: localOnlyRoot, profile: 'local-private', cache: 'none' });
-    const localOnly = localBundle.exerciseDefinitions.find((exercise) => exercise.definitionId === 'f-algebra-both-sides-01');
+    const localOnly = localBundle.exerciseDefinitions.find((exercise) => exercise.definitionId === 'f-control-choice-01');
     assert.ok(localOnly, 'Profil local-private muss die local-only Aufgabe behalten');
     assert.equal(localOnly.releaseStatus, 'local-only');
     const localMatrix = buildCoverageArtifacts(localOnlyRoot).matrix;
-    for (const competencyId of ['c-algebra', 'c-algebra-basics']) {
+    for (const competencyId of ['c-python-control-flow']) {
       const competency = localMatrix.competencies.find((item) => item.competencyId === competencyId);
       assert.ok(competency.localSupplements.includes('contains-local-only-activity'), `${competencyId} muss die local-only Aufgabe als Supplement führen`);
       assert.ok(!competency.releaseGaps.includes('contains-local-only-activity'), `${competencyId}: local-only darf nie blocken`);

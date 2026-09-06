@@ -64,7 +64,7 @@ const REVIVALS = [
     // Authored spelling: an examFile reference is an unknown property — the
     // strict exercise-definition schema (additionalProperties: false)
     // rejects it instead of silently dropping the field.
-    const path = join(tmp, 'content/exercise-definitions/foundations/algebra-both-sides.json');
+    const path = join(tmp, 'content/exercise-definitions/foundations/control-choice.json');
     const definition = JSON.parse(readFileSync(path, 'utf8'));
     definition.examFile = 'exams/numbas-revival.exam';
     writeFileSync(path, JSON.stringify(definition));

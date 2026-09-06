@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-linalg-systems",
+  "version": 1,
+  "locale": "de",
+  "title": "Lineare Gleichungssysteme als Spaltenbild",
+  "description": "Gleichungssysteme, Spaltenkombinationen und Lösungsfälle strukturiert diagnostizieren.",
+  "competencyIds": [
+    "c-linalg-systems"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-linalg-systems"
+  ],
+  "placements": [
+    {
+      "placementId": "p-linalg-systems-00-column-vector-authored",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "column-vector-authored",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-systems-01-system-w05-e11",
+      "role": "curated",
+      "familyId": "transform-system-2x2-elimination",
+      "caseId": "system-w05-e11",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-systems-02-system-w05-e6",
+      "role": "curated",
+      "familyId": "transform-system-2x2-elimination",
+      "caseId": "system-w05-e6",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-systems-03-column-choice-authored",
+      "role": "curated",
+      "familyId": "classify-column-combination",
+      "caseId": "column-choice-authored",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-systems-04-echelon-read-rank-case",
+      "role": "curated",
+      "familyId": "classify-rank-solution-case",
+      "caseId": "echelon-read-rank-case",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-systems-05-rank-system-authored",
+      "role": "curated",
+      "familyId": "classify-rank-solution-case",
+      "caseId": "rank-system-authored",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 10,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-systems-06-transform-system-2x2-elimination-practice",
+      "role": "practice-space",
+      "familyId": "transform-system-2x2-elimination",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-linalg-matrices",
+  "version": 1,
+  "locale": "de",
+  "title": "Matrizen und Spaltenbilder sicher rechnen",
+  "description": "Matrixprodukte, Spaltenkombinationen und Dimensionsverträge anhand konkreter Fälle prüfen.",
+  "competencyIds": [
+    "c-linalg-matrices"
+  ],
+  "requires": [],
+  "trackIds": [
+    "common-core",
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-linalg-matrices"
+  ],
+  "placements": [
+    {
+      "placementId": "p-linalg-matrices-01-shape-product-drawn",
+      "role": "curated",
+      "familyId": "classify-matrix-shape",
+      "caseId": "shape-product-drawn",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-matrices-02-matmul-entry-w05-e1",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "matmul-entry-w05-e1",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-matrices-03-matmul-entry-w05-e12",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "matmul-entry-w05-e12",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-04-dot-product-w05-e13",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "dot-product-w05-e13",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-05-dot-product-w05-e3",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "dot-product-w05-e3",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-06-scalar-loop-output",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "scalar-loop-output",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-07-product-definition-rationale",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "product-definition-rationale",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-08-column-coefficients-double",
+      "role": "curated",
+      "familyId": "classify-column-combination",
+      "caseId": "column-coefficients-double",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-10-shape-debug-authored",
+      "role": "curated",
+      "familyId": "classify-column-combination",
+      "caseId": "shape-debug-authored",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-matrices-10-column-picture-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "column-picture-trace",
+      "seed": 915,
+      "difficulty": "intro",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-matrices-11-formula-scalar-product-practice",
+      "role": "practice-space",
+      "familyId": "formula-scalar-product",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

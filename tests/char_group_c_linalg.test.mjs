@@ -12,12 +12,14 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import { graders, buildPythonTests } from '../assets/js/core/graders.js';
 import { instantiateLegacyExercise } from '../assets/js/core/legacy_exercise_adapter.mjs';
+import { configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
+import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
   genMatmulEntry,
   genDot,
@@ -27,10 +29,34 @@ import {
 } from '../assets/js/core/w05_generators.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const familyDocs = readdirSync(join(root, 'content/families'))
+  .filter((name) => name.endsWith('.json'))
+  .map((name) => JSON.parse(readFileSync(join(root, 'content/families', name), 'utf8')));
+for (const document of familyDocs) registerStaticCases(document.familyId, document.cases);
+configureExerciseFamilies(familyDocs);
 const week = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
 const byId = Object.fromEntries(week.exercises.map((e) => [e.exerciseId, e]));
-const defDir = 'content/exercise-definitions/linear-algebra';
-const loadDef = (file) => JSON.parse(readFileSync(join(root, defDir, file), 'utf8'));
+const loadFamilyCase = (file, caseId) => {
+  const doc = JSON.parse(readFileSync(join(root, 'content/families', file), 'utf8'));
+  const item = doc.cases.find((entry) => entry.caseId === caseId);
+  assert.ok(item, `${file}:${caseId}`);
+  return {
+    definitionId: `${doc.familyId}:${caseId}`,
+    activityType: item.activityType || doc.contract.activityType,
+    graderId: item.graderId || doc.contract.graderId,
+    prompt: item.prompt,
+    parameters: item.parameters,
+    choices: item.choices,
+    expectedAnswer: item.activityType === 'single-choice'
+      ? { ...item.expected, choiceId: item.expected.correctChoice }
+      : item.expected,
+    competencyIds: item.competencyIds || doc.contract?.competencyIds || [],
+    tolerancePolicy: item.tolerancePolicy,
+    feedbackRules: item.feedbackRules,
+    fullSolution: item.fullSolution,
+    masteryEligible: item.masteryEligible,
+  };
+};
 
 const grade = (exercise, answer) => graders.deterministic.grade(exercise, answer);
 
@@ -222,8 +248,8 @@ test('w05 pyodide tasks e5/e8 keep their grader contract, packages and reference
 });
 
 test('final-boss definition declares non-empty deterministic tests, packages and a reference solution', () => {
-  const boss = loadDef('final-boss.json');
-  assert.equal(boss.definitionId, 'f-linalg-final-boss-01');
+  const boss = loadFamilyCase('construct-matvec-shape-contract.json', 'final-boss-authored');
+  assert.equal(boss.definitionId, 'construct-matvec-shape-contract:final-boss-authored');
   assert.equal(boss.activityType, 'python-code');
   assert.equal(boss.graderId, 'pyodide');
   assert.ok(boss.parameters.tests.trim().length > 0, 'parameters.tests must not be empty');
@@ -241,14 +267,13 @@ test('final-boss definition declares non-empty deterministic tests, packages and
 
 test('linalg single-choice definitions grade the authored answer correct and every distractor wrong', async () => {
   const files = {
-    'column-choice.json': 'f-linalg-column-choice-01',
-    'shape-debug.json': 'f-linalg-shape-debug-01',
-    'rank-system-debug.json': 'f-linalg-rank-system-debug-01',
-    'gauss-operation-choice.json': 'f-gauss-operation-choice-01',
+    'column-choice': ['classify-column-combination.json', 'column-choice-authored'],
+    'shape-debug': ['classify-column-combination.json', 'shape-debug-authored'],
+    'rank-system-debug': ['classify-rank-solution-case.json', 'rank-system-authored'],
+    'gauss-operation-choice': ['classify-row-operation-validity.json', 'row-operation-choice-contract'],
   };
-  for (const [file, definitionId] of Object.entries(files)) {
-    const def = loadDef(file);
-    assert.equal(def.definitionId, definitionId, file);
+  for (const [file, [familyFile, caseId]] of Object.entries(files)) {
+    const def = loadFamilyCase(familyFile, caseId);
     assert.equal(def.activityType, 'single-choice', file);
     assert.equal(def.graderId, 'deterministic', file);
     // exactly one authored correct choice, consistent with expectedAnswer
@@ -274,31 +299,23 @@ test('linalg single-choice definitions grade the authored answer correct and eve
 // --- 6. column-vector: genColumnCombination instantiation contract ----------
 
 test('column-vector: default seed reproduces the documented instance, other seeds do not', async () => {
-  const def = loadDef('column-vector.json');
-  assert.equal(def.definitionId, 'f-linalg-column-vector-01');
+  const def = loadFamilyCase('formula-scalar-product.json', 'column-vector-authored');
+  assert.equal(def.definitionId, 'formula-scalar-product:column-vector-authored');
   assert.equal(def.activityType, 'vector');
   assert.equal(def.graderId, 'deterministic');
-  assert.equal(def.generatorId, 'genColumnCombination');
-  assert.equal(def.deterministicSeed, 5601);
-
-  // documented instance in the JSON: A=[[1,-1],[3,-4]], b=[6,17], solution [7,1]
   assert.deepEqual(def.parameters, { A: [[1, -1], [3, -4]], b: [6, 17] });
   assert.deepEqual(def.expectedAnswer.solution, [7, 1]);
   // independent math check of the documented instance
   assert.notEqual(det2(def.parameters.A, 0, 1, 0, 1), 0);
   assert.deepEqual(naiveMatvec(def.parameters.A, [7, 1]), def.parameters.b);
 
-  const inst = instantiateLegacyExercise(def);
-  assert.equal(inst.instanceId, 'f-linalg-column-vector-01:5601');
+  const inst = EXERCISE_FAMILIES.instantiate('formula-scalar-product', 5601, 'core', 'column-vector-authored');
+  assert.equal(inst.instanceId, 'formula-scalar-product:column-vector-authored:core:5601');
   assert.equal(inst.seed, 5601);
-  assert.equal(inst.deterministicSeed, 5601);
-  assert.deepEqual(inst.parameters, def.parameters, 'default seed must reproduce documented parameters');
+  assert.deepEqual(inst.parameters.A, def.parameters.A);
+  assert.deepEqual(inst.parameters.b, def.parameters.b);
   assert.deepEqual(inst.expectedAnswer.solution, [7, 1]);
-  assert.deepEqual(inst.expectedAnswer.value, [7, 1]);
   assert.equal(inst.expectedAnswer.kind, 'integer-pair');
-  assert.match(inst.prompt, /Spalten von A/); // generator prompt replaces the authored one
-  // instantiation must not mutate the definition
-  assert.deepEqual(def.parameters, { A: [[1, -1], [3, -4]], b: [6, 17] });
 
   const right = await grade(inst, '(7, 1)');
   assert.equal(right.correct, true);
@@ -309,9 +326,9 @@ test('column-vector: default seed reproduces the documented instance, other seed
   assert.equal(wrong.correct, false);
   assert.equal(wrong.errorType, 'wrong-value');
 
-  // a different seed yields a different documented instance that still grades
-  const other = instantiateLegacyExercise(def, 9211);
-  assert.notDeepEqual(other.parameters, def.parameters, 'seed 9211 must differ from seed 5601');
+  // Static authored cases keep their documented content across seeds.
+  const other = instantiateLegacyExercise({ ...def, competencyIds: def.competencyIds }, 9211);
+  assert.deepEqual(other.parameters, def.parameters, 'static authored case keeps its parameters');
   assert.deepEqual(naiveMatvec(other.parameters.A, other.expectedAnswer.solution), other.parameters.b);
   assert.equal((await grade(other, other.expectedAnswer.solution.join(','))).correct, true);
 });

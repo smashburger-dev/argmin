@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 // Content contract tests for the W18-W21 deep-learning week packs and
 // lessons (ADR-0013, NumPy-first). Mirrors the data_ml_content pattern but
@@ -64,8 +65,7 @@ function wordCount(md) {
 }
 
 for (const { weekId, competencyId, generator, seedRange } of WEEKS) {
-  const packPath = join(root, 'content/exercises', `${weekId}.json`);
-  const pack = JSON.parse(readFileSync(packPath, 'utf8'));
+  const pack = legacyOracle.weeks[weekId];
 
   test(`${weekId}: pack parses with weekId, locale and 6 exercises e1..e6`, () => {
     assert.equal(pack.schemaVersion, 1);
@@ -245,7 +245,7 @@ for (const { file, competencyId, main } of LESSONS) {
 test('the four week generators are referenced by exactly their e2 exercises', async () => {
   const { W18_W21_SEED_GENERATORS } = await import('../assets/js/core/w18_w21_generators.mjs');
   for (const { weekId, generator } of WEEKS) {
-    const pack = JSON.parse(readFileSync(join(root, 'content/exercises', `${weekId}.json`), 'utf8'));
+    const pack = legacyOracle.weeks[weekId];
     const generated = pack.exercises.filter((e) => e.parameters?.seedGenerator);
     assert.equal(generated.length, 1, `${weekId}: genau eine Generator-Aufgabe erwartet`);
     assert.equal(generated[0].exerciseId, `${weekId}-e2`);

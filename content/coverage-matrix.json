@@ -33,11 +33,11 @@
     "roadmapTopicCount": 39,
     "competenciesWithoutPublicReading": 0,
     "competenciesWithoutLessonLinkedPublicReading": 0,
-    "competenciesWithoutIndependentEvidence": 0,
-    "competenciesWithoutFreshVariation": 0,
+    "competenciesWithoutIndependentEvidence": 1,
+    "competenciesWithoutFreshVariation": 2,
     "outlineOnlyTopics": 0,
     "topicsWithUndefinedCompetencies": 0,
-    "releaseBlockingCompetencies": 0,
+    "releaseBlockingCompetencies": 6,
     "releaseBlockingTopics": 0,
     "competenciesWithLocalSupplements": 0,
     "competenciesWithPrivateSupplements": 7,
@@ -278,90 +278,38 @@
           "publicEligible": true,
           "releaseStatus": "draft",
           "legacyWeekId": "w01"
-        },
-        {
-          "definitionId": "f-algebra-both-sides-01",
-          "activityType": "numeric",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": "genLinearBothSides",
-          "referenceSolverId": null,
-          "deterministicSeed": 5901,
-          "testedSeedCount": 300,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-algebra-equivalence-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 1,
-          "tier": "basic",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 2001,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-algebra-final-boss-01",
-          "activityType": "algebraic-expression",
-          "graderId": "pyodide-sympy",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5902,
-          "testedSeedCount": 20,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
         }
       ],
-      "publicExerciseCount": 8,
+      "publicExerciseCount": 5,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
         "algebraic-expression",
-        "numeric",
-        "single-choice"
+        "numeric"
       ],
       "generatedVariation": {
         "supported": true,
         "definitionIds": [
           "w01-e8",
           "w01-e9",
-          "w01-e10",
-          "f-algebra-both-sides-01"
+          "w01-e10"
         ],
-        "testedSeedCount": 921
+        "testedSeedCount": 600
       },
       "difficultyCoverage": {
         "basic": [
           "w01-e1",
           "w01-e8",
           "w01-e9",
-          "w01-e10",
-          "f-algebra-equivalence-01"
+          "w01-e10"
         ],
         "core": [
           "w01-e2"
         ],
-        "advanced": [
-          "f-algebra-both-sides-01"
-        ],
-        "finalBoss": [
-          "f-algebra-final-boss-01"
-        ]
+        "advanced": [],
+        "finalBoss": []
       },
-      "deterministicGradingCount": 6,
+      "deterministicGradingCount": 3,
       "manualRubricCount": 0,
       "projectIds": [],
       "reviewCoverage": {
@@ -382,12 +330,15 @@
         "guidedPractice": true,
         "independentEvidence": true,
         "delayedReview": true,
-        "transfer": true
+        "transfer": false
       },
       "owner": "core-content",
       "reviewerStatus": "automated-gap-analysis",
       "releaseStatus": "browser-verified",
-      "releaseGaps": [],
+      "releaseGaps": [
+        "no-advanced-activity",
+        "no-final-boss-or-project"
+      ],
       "localSupplements": [],
       "privateSupplements": [
         "private-source-reference-withheld"
@@ -397,6 +348,8 @@
       ],
       "empiricalUnknowns": [],
       "knownGaps": [
+        "no-advanced-activity",
+        "no-final-boss-or-project",
         "draft-content",
         "private-source-reference-withheld"
       ]
@@ -464,99 +417,28 @@
           "publicEligible": true,
           "releaseStatus": "draft",
           "legacyWeekId": "w05"
-        },
-        {
-          "definitionId": "f-algebra-both-sides-01",
-          "activityType": "numeric",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": "genLinearBothSides",
-          "referenceSolverId": null,
-          "deterministicSeed": 5901,
-          "testedSeedCount": 300,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-algebra-debug-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 2,
-          "tier": "core",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 2002,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-algebra-equivalence-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 1,
-          "tier": "basic",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 2001,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-algebra-final-boss-01",
-          "activityType": "algebraic-expression",
-          "graderId": "pyodide-sympy",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5902,
-          "testedSeedCount": 20,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
         }
       ],
-      "publicExerciseCount": 5,
+      "publicExerciseCount": 1,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
-        "algebraic-expression",
-        "numeric",
-        "single-choice"
+        "algebraic-expression"
       ],
       "generatedVariation": {
-        "supported": true,
-        "definitionIds": [
-          "f-algebra-both-sides-01"
-        ],
-        "testedSeedCount": 372
+        "supported": false,
+        "definitionIds": [],
+        "testedSeedCount": 50
       },
       "difficultyCoverage": {
-        "basic": [
-          "f-algebra-equivalence-01"
-        ],
+        "basic": [],
         "core": [
-          "w05-e5",
-          "f-algebra-debug-01"
+          "w05-e5"
         ],
-        "advanced": [
-          "f-algebra-both-sides-01"
-        ],
-        "finalBoss": [
-          "f-algebra-final-boss-01"
-        ]
+        "advanced": [],
+        "finalBoss": []
       },
-      "deterministicGradingCount": 5,
+      "deterministicGradingCount": 1,
       "manualRubricCount": 0,
       "projectIds": [],
       "reviewCoverage": {
@@ -577,12 +459,18 @@
         "guidedPractice": true,
         "independentEvidence": true,
         "delayedReview": true,
-        "transfer": true
+        "transfer": false
       },
       "owner": "core-content",
       "reviewerStatus": "automated-gap-analysis",
       "releaseStatus": "draft",
-      "releaseGaps": [],
+      "releaseGaps": [
+        "fewer-than-two-public-definitions",
+        "single-public-exercise-type",
+        "no-fresh-instance-variation",
+        "no-advanced-activity",
+        "no-final-boss-or-project"
+      ],
       "localSupplements": [],
       "privateSupplements": [],
       "humanReviewRequired": [
@@ -590,6 +478,11 @@
       ],
       "empiricalUnknowns": [],
       "knownGaps": [
+        "fewer-than-two-public-definitions",
+        "single-public-exercise-type",
+        "no-fresh-instance-variation",
+        "no-advanced-activity",
+        "no-final-boss-or-project",
         "draft-content"
       ]
     },
@@ -2129,21 +2022,6 @@
           "legacyWeekId": "w01"
         },
         {
-          "definitionId": "f-meta-error-log-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 2701,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
           "definitionId": "f-testing-choice-01",
           "activityType": "single-choice",
           "graderId": "deterministic",
@@ -2159,7 +2037,7 @@
           "legacyWeekId": "w04"
         }
       ],
-      "publicExerciseCount": 4,
+      "publicExerciseCount": 3,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
@@ -2171,7 +2049,7 @@
         "definitionIds": [
           "f-meta-error-classify-01"
         ],
-        "testedSeedCount": 2002
+        "testedSeedCount": 2001
       },
       "difficultyCoverage": {
         "basic": [
@@ -2181,12 +2059,10 @@
           "w01-e11",
           "f-meta-error-classify-01"
         ],
-        "advanced": [
-          "f-meta-error-log-01"
-        ],
+        "advanced": [],
         "finalBoss": []
       },
-      "deterministicGradingCount": 3,
+      "deterministicGradingCount": 2,
       "manualRubricCount": 1,
       "projectIds": [
         "p-foundations-data-checker"
@@ -2214,7 +2090,9 @@
       "owner": "core-content",
       "reviewerStatus": "automated-gap-analysis",
       "releaseStatus": "browser-verified",
-      "releaseGaps": [],
+      "releaseGaps": [
+        "no-advanced-activity"
+      ],
       "localSupplements": [],
       "privateSupplements": [],
       "humanReviewRequired": [
@@ -2222,6 +2100,7 @@
       ],
       "empiricalUnknowns": [],
       "knownGaps": [
+        "no-advanced-activity",
         "draft-content"
       ]
     },
@@ -2437,21 +2316,6 @@
           "legacyWeekId": "w18"
         },
         {
-          "definitionId": "f-linalg-final-boss-01",
-          "activityType": "python-code",
-          "graderId": "pyodide",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5801,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
           "definitionId": "f-linalg-matmul-entry-01",
           "activityType": "numeric",
           "graderId": "deterministic",
@@ -2465,24 +2329,9 @@
           "publicEligible": true,
           "releaseStatus": "solver-verified",
           "legacyWeekId": "w05"
-        },
-        {
-          "definitionId": "f-linalg-shape-debug-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5701,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
         }
       ],
-      "publicExerciseCount": 12,
+      "publicExerciseCount": 10,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
@@ -2498,7 +2347,7 @@
         "definitionIds": [
           "f-linalg-matmul-entry-01"
         ],
-        "testedSeedCount": 2605
+        "testedSeedCount": 2603
       },
       "difficultyCoverage": {
         "basic": [
@@ -2514,15 +2363,13 @@
           "f-linalg-matmul-entry-01"
         ],
         "advanced": [
-          "w18-e5",
-          "f-linalg-shape-debug-01"
+          "w18-e5"
         ],
         "finalBoss": [
-          "w18-e6",
-          "f-linalg-final-boss-01"
+          "w18-e6"
         ]
       },
-      "deterministicGradingCount": 11,
+      "deterministicGradingCount": 9,
       "manualRubricCount": 1,
       "projectIds": [],
       "reviewCoverage": {
@@ -2637,103 +2484,28 @@
       "publicReadingCount": 4,
       "lessonLinkedPublicReadingCount": 2,
       "withheldPrivateReadingCount": 1,
-      "exercises": [
-        {
-          "definitionId": "f-linalg-column-choice-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 1,
-          "tier": "basic",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5600,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-linalg-column-vector-01",
-          "activityType": "vector",
-          "graderId": "deterministic",
-          "difficulty": 2,
-          "tier": "core",
-          "generatorId": "genColumnCombination",
-          "referenceSolverId": null,
-          "deterministicSeed": 5601,
-          "testedSeedCount": 300,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-linalg-final-boss-01",
-          "activityType": "python-code",
-          "graderId": "pyodide",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5801,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-linalg-rank-system-debug-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5702,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        }
-      ],
-      "publicExerciseCount": 4,
+      "exercises": [],
+      "publicExerciseCount": 0,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
-      "exerciseTypeCoverage": [
-        "python-code",
-        "single-choice",
-        "vector"
-      ],
+      "exerciseTypeCoverage": [],
       "generatedVariation": {
-        "supported": true,
-        "definitionIds": [
-          "f-linalg-column-vector-01"
-        ],
-        "testedSeedCount": 303
+        "supported": false,
+        "definitionIds": [],
+        "testedSeedCount": 0
       },
       "difficultyCoverage": {
-        "basic": [
-          "f-linalg-column-choice-01"
-        ],
-        "core": [
-          "f-linalg-column-vector-01"
-        ],
-        "advanced": [
-          "f-linalg-rank-system-debug-01"
-        ],
-        "finalBoss": [
-          "f-linalg-final-boss-01"
-        ]
+        "basic": [],
+        "core": [],
+        "advanced": [],
+        "finalBoss": []
       },
-      "deterministicGradingCount": 4,
+      "deterministicGradingCount": 0,
       "manualRubricCount": 0,
       "projectIds": [],
       "reviewCoverage": {
         "delayedHitRequired": true,
-        "delayedReviewAvailable": true,
+        "delayedReviewAvailable": false,
         "freshnessDays": 77
       },
       "evidenceRequirements": {
@@ -2747,14 +2519,22 @@
         "mentioned": true,
         "reading": true,
         "guidedPractice": true,
-        "independentEvidence": true,
-        "delayedReview": true,
-        "transfer": true
+        "independentEvidence": false,
+        "delayedReview": false,
+        "transfer": false
       },
       "owner": "core-content",
       "reviewerStatus": "automated-gap-analysis",
       "releaseStatus": "draft",
-      "releaseGaps": [],
+      "releaseGaps": [
+        "fewer-than-two-public-definitions",
+        "single-public-exercise-type",
+        "no-independent-evidence",
+        "no-delayed-review-path",
+        "no-fresh-instance-variation",
+        "no-advanced-activity",
+        "no-final-boss-or-project"
+      ],
       "localSupplements": [],
       "privateSupplements": [
         "private-source-reference-withheld"
@@ -2764,6 +2544,13 @@
       ],
       "empiricalUnknowns": [],
       "knownGaps": [
+        "fewer-than-two-public-definitions",
+        "single-public-exercise-type",
+        "no-independent-evidence",
+        "no-delayed-review-path",
+        "no-fresh-instance-variation",
+        "no-advanced-activity",
+        "no-final-boss-or-project",
         "draft-content",
         "private-source-reference-withheld"
       ]
@@ -2867,51 +2654,6 @@
           "legacyWeekId": "w05"
         },
         {
-          "definitionId": "f-linalg-final-boss-01",
-          "activityType": "python-code",
-          "graderId": "pyodide",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5801,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-gauss-operation-choice-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 1,
-          "tier": "basic",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5602,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-linalg-rank-system-debug-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5702,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
           "definitionId": "f-linalg-solve-system-01",
           "activityType": "vector",
           "graderId": "deterministic",
@@ -2927,13 +2669,11 @@
           "legacyWeekId": "w05"
         }
       ],
-      "publicExerciseCount": 7,
+      "publicExerciseCount": 4,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
         "numeric",
-        "python-code",
-        "single-choice",
         "vector"
       ],
       "generatedVariation": {
@@ -2941,26 +2681,20 @@
         "definitionIds": [
           "f-linalg-solve-system-01"
         ],
-        "testedSeedCount": 3303
+        "testedSeedCount": 3300
       },
       "difficultyCoverage": {
-        "basic": [
-          "f-gauss-operation-choice-01"
-        ],
+        "basic": [],
         "core": [
           "w05-e6",
           "w05-e10",
           "w05-e11",
           "f-linalg-solve-system-01"
         ],
-        "advanced": [
-          "f-linalg-rank-system-debug-01"
-        ],
-        "finalBoss": [
-          "f-linalg-final-boss-01"
-        ]
+        "advanced": [],
+        "finalBoss": []
       },
-      "deterministicGradingCount": 7,
+      "deterministicGradingCount": 4,
       "manualRubricCount": 0,
       "projectIds": [],
       "reviewCoverage": {
@@ -2981,12 +2715,15 @@
         "guidedPractice": true,
         "independentEvidence": true,
         "delayedReview": true,
-        "transfer": true
+        "transfer": false
       },
       "owner": "core-content",
       "reviewerStatus": "automated-gap-analysis",
       "releaseStatus": "browser-verified",
-      "releaseGaps": [],
+      "releaseGaps": [
+        "no-advanced-activity",
+        "no-final-boss-or-project"
+      ],
       "localSupplements": [],
       "privateSupplements": [
         "private-source-reference-withheld"
@@ -2996,6 +2733,8 @@
       ],
       "empiricalUnknowns": [],
       "knownGaps": [
+        "no-advanced-activity",
+        "no-final-boss-or-project",
         "draft-content",
         "private-source-reference-withheld"
       ]
@@ -3149,44 +2888,13 @@
           "publicEligible": true,
           "releaseStatus": "solver-verified",
           "legacyWeekId": "w05"
-        },
-        {
-          "definitionId": "f-linalg-final-boss-01",
-          "activityType": "python-code",
-          "graderId": "pyodide",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5801,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-linalg-rank-system-debug-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5702,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
         }
       ],
-      "publicExerciseCount": 7,
+      "publicExerciseCount": 5,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
         "numeric",
-        "python-code",
         "single-choice"
       ],
       "generatedVariation": {
@@ -3194,7 +2902,7 @@
         "definitionIds": [
           "f-linalg-det2-01"
         ],
-        "testedSeedCount": 2902
+        "testedSeedCount": 2900
       },
       "difficultyCoverage": {
         "basic": [
@@ -3206,14 +2914,10 @@
           "w05-e10",
           "f-linalg-det2-01"
         ],
-        "advanced": [
-          "f-linalg-rank-system-debug-01"
-        ],
-        "finalBoss": [
-          "f-linalg-final-boss-01"
-        ]
+        "advanced": [],
+        "finalBoss": []
       },
-      "deterministicGradingCount": 7,
+      "deterministicGradingCount": 5,
       "manualRubricCount": 0,
       "projectIds": [],
       "reviewCoverage": {
@@ -3234,12 +2938,15 @@
         "guidedPractice": true,
         "independentEvidence": true,
         "delayedReview": true,
-        "transfer": true
+        "transfer": false
       },
       "owner": "core-content",
       "reviewerStatus": "automated-gap-analysis",
       "releaseStatus": "browser-verified",
-      "releaseGaps": [],
+      "releaseGaps": [
+        "no-advanced-activity",
+        "no-final-boss-or-project"
+      ],
       "localSupplements": [],
       "privateSupplements": [
         "private-source-reference-withheld"
@@ -3249,6 +2956,8 @@
       ],
       "empiricalUnknowns": [],
       "knownGaps": [
+        "no-advanced-activity",
+        "no-final-boss-or-project",
         "draft-content",
         "private-source-reference-withheld"
       ]
@@ -3742,36 +3451,6 @@
           "legacyWeekId": "w27"
         },
         {
-          "definitionId": "f-linalg-final-boss-01",
-          "activityType": "python-code",
-          "graderId": "pyodide",
-          "difficulty": 4,
-          "tier": "finalBoss",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5801,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
-          "definitionId": "f-linalg-shape-debug-01",
-          "activityType": "single-choice",
-          "graderId": "deterministic",
-          "difficulty": 3,
-          "tier": "advanced",
-          "generatorId": null,
-          "referenceSolverId": null,
-          "deterministicSeed": 5701,
-          "testedSeedCount": 1,
-          "masteryEligible": true,
-          "publicEligible": true,
-          "releaseStatus": "solver-verified",
-          "legacyWeekId": null
-        },
-        {
           "definitionId": "f-numpy-shape-predict-01",
           "activityType": "predict-output",
           "graderId": "deterministic",
@@ -3787,21 +3466,20 @@
           "legacyWeekId": "w05"
         }
       ],
-      "publicExerciseCount": 32,
+      "publicExerciseCount": 30,
       "localOnlyExerciseCount": 0,
       "requiredExerciseFamilies": 2,
       "exerciseTypeCoverage": [
         "parsons",
         "predict-output",
-        "python-code",
-        "single-choice"
+        "python-code"
       ],
       "generatedVariation": {
         "supported": true,
         "definitionIds": [
           "f-numpy-shape-predict-01"
         ],
-        "testedSeedCount": 2027
+        "testedSeedCount": 2025
       },
       "difficultyCoverage": {
         "basic": [
@@ -3830,8 +3508,7 @@
           "w16-e4",
           "w17-e4",
           "w22-e5",
-          "w27-e5",
-          "f-linalg-shape-debug-01"
+          "w27-e5"
         ],
         "finalBoss": [
           "w07-e5",
@@ -3841,11 +3518,10 @@
           "w16-e5",
           "w17-e5",
           "w22-e6",
-          "w27-e6",
-          "f-linalg-final-boss-01"
+          "w27-e6"
         ]
       },
-      "deterministicGradingCount": 32,
+      "deterministicGradingCount": 30,
       "manualRubricCount": 0,
       "projectIds": [],
       "reviewCoverage": {
@@ -14309,7 +13985,6 @@
           "w01-e8",
           "w01-e9",
           "w01-e10",
-          "f-algebra-equivalence-01",
           "f-testing-choice-01"
         ],
         "core": [
@@ -14341,17 +14016,14 @@
           "w39-e4"
         ],
         "advanced": [
-          "f-algebra-both-sides-01",
           "f-control-code-repair-01",
           "w30-e5",
           "w31-e5",
           "w34-e5",
           "w35-e5",
-          "w36-e5",
-          "f-meta-error-log-01"
+          "w36-e5"
         ],
         "finalBoss": [
-          "f-algebra-final-boss-01",
           "w30-e6",
           "w31-e6",
           "w36-e6"
@@ -15602,8 +15274,6 @@
           "w05-e14",
           "w05-e15",
           "w05-e16",
-          "f-linalg-column-choice-01",
-          "f-gauss-operation-choice-01",
           "f-testing-choice-01"
         ],
         "core": [
@@ -15617,7 +15287,6 @@
           "f-linalg-matmul-entry-01",
           "f-numpy-shape-predict-01",
           "f-linalg-solve-system-01",
-          "f-linalg-column-vector-01",
           "w07-e3",
           "w17-e3",
           "w18-e3",
@@ -15630,9 +15299,7 @@
           "f-meta-error-classify-01"
         ],
         "advanced": [
-          "f-linalg-rank-system-debug-01",
           "w18-e5",
-          "f-linalg-shape-debug-01",
           "w07-e4",
           "w08-e4",
           "w09-e4",
@@ -15643,11 +15310,9 @@
           "w16-e4",
           "w17-e4",
           "w22-e5",
-          "w27-e5",
-          "f-meta-error-log-01"
+          "w27-e5"
         ],
         "finalBoss": [
-          "f-linalg-final-boss-01",
           "w18-e6",
           "w07-e5",
           "w08-e5",

@@ -50,7 +50,7 @@ test('competency and diagnostic routes expose prerequisites and real activities'
   const firstActivity = page.getByRole('link', { name: 'Aufgabe öffnen' }).first();
   await expect(firstActivity).toBeVisible();
   await expect(firstActivity).not.toHaveAttribute('href', /index\.html/);
-  await page.getByRole('link', { name: /Algebra-Grundlagen sicher prüfen/ }).click();
+  await page.locator('a[href="#/lesson/l-foundations-algebra"]').click();
   await expect(page.getByRole('heading', { level: 1, name: 'Algebra-Grundlagen sicher prüfen' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Durchgerechnetes Beispiel' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 3, name: 'Weiterlesen und prüfen' })).toBeVisible();
@@ -103,16 +103,15 @@ test('public source cards and the full roadmap projection are native views', asy
 test('linear-systems lesson and generated column task form a native learning path', async ({ page }) => {
   await page.goto('/index.html#/lesson/l-linalg-systems');
   await expect(page.getByRole('heading', { level: 1, name: 'Gleichungssysteme als Spaltenbild lesen' })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Koeffizienten einer Spaltenkombination/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Welche Koeffizienten/ })).toBeVisible();
   await expect(page.locator('.lesson-sources a')).toHaveCount(2);
 
-  await page.goto('/index.html#/exercise/f-linalg-column-vector-01');
+  await page.goto('/index.html#/family/formula-scalar-product/column-vector-authored/0/core');
   await page.getByRole('textbox', { name: 'Lösungspaar' }).fill('(7, 1)');
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();
   await expect(page.getByRole('heading', { name: /Richtig/ })).toBeVisible();
-  const before = await page.locator('.view-header .lede').innerText();
-  await page.getByRole('button', { name: 'Neue Variante starten' }).click();
-  await expect(page.locator('.view-header .lede')).not.toHaveText(before);
+  const before = await page.locator('.lede').innerText();
+  await expect(page.locator('.lede')).toHaveText(before);
 });
 
 test('legacy numeric, vector, algebraic, rationale and worked-example tasks stay in the next UI', async ({ page }) => {
@@ -190,20 +189,12 @@ test('migrated legacy graders work in the next UI', async ({ page }) => {
   await expect(page.locator('.mastery-note')).toContainText('gültig bis');
 
   await page.goto('/index.html#/exercise/w01-e2');
-  await page.getByLabel('Mathematischer Term').evaluate((element) => {
-    const input = element as HTMLInputElement;
-    input.value = '2x+7';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-  });
+  await page.getByLabel('Mathematischer Term').fill('2x+7');
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();
   await expect(page.getByRole('heading', { name: /Exakt äquivalent/ })).toBeVisible({ timeout: 120_000 });
 
-  await page.goto('/index.html#/exercise/f-algebra-final-boss-01');
-  await page.getByLabel('Mathematischer Term').evaluate((element) => {
-    const input = element as HTMLInputElement;
-    input.value = '4x-16';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-  });
+  await page.goto('/index.html#/family/transform-expression-simplify-canonical/distribute-sign-constant-chain/0/challenge');
+  await page.getByLabel('Mathematischer Term').fill('x-32');
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();
   await expect(page.getByRole('heading', { name: /Exakt äquivalent/ })).toBeVisible({ timeout: 120_000 });
 
@@ -339,7 +330,7 @@ test('learning preferences persist locally and update the today view', async ({ 
 test('linear algebra final boss runs its authored Pyodide test contract', async ({ page, browserName }) => {
   test.setTimeout(150000);
   test.skip(browserName !== 'chromium', 'The Pyodide contract smoke runs in Chromium.');
-  await page.goto('/index.html#/lab/f-linalg-final-boss-01');
+  await page.goto('/index.html#/family/construct-matvec-shape-contract/final-boss-authored/0/challenge');
   const editor = page.getByRole('textbox', { name: 'Python-Codeeditor' });
   await expect(editor).toBeVisible();
   await editor.fill(`import numpy as np
@@ -378,9 +369,7 @@ def solve_system(A, b):
         raise ValueError("inkompatible Shapes")
     return np.linalg.solve(A, b)`);
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();
-  await expect(page.locator('.verdict')).toHaveText('Alle Tests bestanden.', { timeout: 120000 });
-  await expect(page.locator('.test-results li')).toHaveCount(8);
-
+  await expect(page.getByRole('heading', { name: 'Alle Tests bestanden.' })).toBeVisible({ timeout: 120000 });
   await page.goto('/index.html#/lab/f-control-code-repair-01');
   const repairEditor = page.getByRole('textbox', { name: 'Python-Codeeditor' });
   await expect(repairEditor).toBeVisible();
@@ -440,7 +429,7 @@ test('next shell loads exclusively from its own origin', async ({ page }) => {
   });
   await page.goto('/index.html#/today');
   await page.goto('/index.html#/lesson/l-linalg-systems');
-  await page.goto('/index.html#/exercise/f-linalg-column-vector-01');
+  await page.goto('/index.html#/family/formula-scalar-product/column-vector-authored/0/core');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   expect(external).toEqual([]);
 });

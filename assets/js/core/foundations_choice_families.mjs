@@ -54,11 +54,17 @@ function generateStaticChoice(bank, { seed, caseId, difficulty }) {
   const rotated = rotateOptions(options, rotation);
   const ids = CHOICE_IDS.slice(0, options.length);
   return {
-    parameters: { caseId, difficulty },
+    parameters: { caseId, difficulty, ...(meta.parameters || {}) },
     expected: { correctChoice: ids[rotation] },
     choices: rotated.map((text, index) => ({ id: ids[index], text, correct: index === rotation })),
     prompt: meta.prompt,
     fullSolution: meta.solution,
+    ...(meta.hints ? { hints: meta.hints } : {}),
+    ...(meta.feedbackRules ? { feedbackRules: meta.feedbackRules } : {}),
+    ...(meta.typicalErrors ? { typicalErrors: meta.typicalErrors } : {}),
+    ...(meta.tolerancePolicy ? { tolerancePolicy: meta.tolerancePolicy } : {}),
+    ...(meta.competencyIds ? { competencyIds: meta.competencyIds } : {}),
+    ...(meta.masteryEligible !== undefined ? { masteryEligible: meta.masteryEligible } : {}),
   };
 }
 
@@ -151,6 +157,33 @@ export const ERROR_HYPOTHESIS_CASES = [
     correct: frozenMetaError.choices.find((choice) => choice.correct).text,
     distractors: frozenMetaError.choices.filter((choice) => !choice.correct).map((choice) => choice.text),
     solution: frozenMetaError.fullSolution,
+  },
+  {
+    caseId: 'error-journal-next-test',
+    sourceId: 'f-meta-error-log-01',
+    sourceLineage: ['f-meta-error-log-01'],
+    competencyIds: ['c-meta-learning'],
+    masteryEligible: true,
+    prompt: 'Eine generierte Gleichungsaufgabe wurde mit falschem Vorzeichen gelöst. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?',
+    correct: 'Beobachtung und kleinste Reproduktion notieren, die Vorzeichenregel als Ursachenhypothese benennen und dieselbe Regel an einer frischen Instanz gezielt testen',
+    distractors: [
+      'Nur ‚Algebra schlecht‘ notieren und die gesamte Lektion erneut lesen',
+      'Die Musterlösung abschreiben und den Fehler als erledigt markieren',
+      'Den Kompetenzstatus manuell auf nachgewiesen setzen',
+    ],
+    solution: 'Der vollständige Eintrag enthält beobachtbares Symptom, kleinste Reproduktion, eine konkrete Ursachenhypothese und einen frischen Test. So entsteht eine überprüfbare Handlung statt eines pauschalen Urteils.',
+    hints: [
+      'Eine Hypothese muss durch einen nächsten Versuch widerlegbar sein.',
+      'Trenne Beobachtung, Ursache und nächsten Test.',
+    ],
+    feedbackRules: [
+      {
+        if: "choice !== 'observable-test'",
+        then: 'Erst beobachten, dann reproduzieren: Ein neuer Testfall mit demselben Fehler bestätigt die Hypothese, bevor sie ins Journal kommt.',
+      },
+    ],
+    typicalErrors: ['pauschales Selbsturteil', 'Ursache ohne Gegenprobe', 'Musterlösung mit eigenem Abruf verwechseln'],
+    tolerancePolicy: { mode: 'exact' },
   },
 ];
 
@@ -302,7 +335,11 @@ export const FOUNDATIONS_CHOICE_CONTRACTS = [
     taskArchetype: 'choice-diagnose',
     authorityMode: 'static',
     masteryEligible: true,
-    caseTypes: [{ caseId: 'base-vs-exponent-confusion' }, { caseId: 'seeded-error-pattern-cases' }],
+    caseTypes: [
+      { caseId: 'base-vs-exponent-confusion' },
+      { caseId: 'seeded-error-pattern-cases' },
+      { caseId: 'error-journal-next-test' },
+    ],
     difficultyProfiles: [...DIFFICULTY_PROFILES],
     competencyIds: ['c-algebra', 'c-meta-learning'],
     graderId: 'deterministic',
