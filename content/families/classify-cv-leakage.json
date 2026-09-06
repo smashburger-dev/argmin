@@ -12,6 +12,10 @@
       {
         "caseId": "impute-before-split",
         "propertyTest": false
+      },
+      {
+        "caseId": "target-encoding-leakage",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -96,6 +100,73 @@
       "competencyIds": [
         "c-ml-cv"
       ]
+    },
+    {
+      "caseId": "target-encoding-leakage",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w14-e3"
+      ],
+      "competencyIds": [
+        "c-ml-regularization"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Stadtteil per One-Hot kodieren; Wohnfläche und Baujahr standardisieren, wobei Mittelwert und Standardabweichung nur aus dem Trainingsteil stammen; die Spalte preis_pro_m2 entfernen, weil sie aus dem Ziel berechnet wurde.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Alle numerischen Spalten auf dem kompletten Datensatz standardisieren und danach erst den Train/Test-Split ziehen — so sehen alle Features gleich aus.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Stadtteil als Zahlen 1 bis 8 kodieren und direkt in Ridge verwenden; skalieren ist bei Ridge unnötig.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "preis_pro_m2 behalten — mehr Features verbessern ein regularisiertes Modell immer.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Feature Engineering für ein Ridge-Modell zur Mietpreisvorhersage: Features sind Stadtteil (kategorial, 8 Ausprägungen), Wohnfläche in m² (42–190) und Baujahr (1900–2020). Im Datensatz liegt zusätzlich die Spalte preis_pro_m2, die aus Ziel und Fläche berechnet wurde. Welcher Vorverarbeitungsweg ist korrekt?",
+      "fullSolution": "Kategorial → One-Hot (keine falsche Ordnung). Numerisch → standardisieren mit Trainingsstatistiken, damit λ alle Koeffizienten gleich fair bestraft. Ziel-abgeleitete Spalten (preis_pro_m2) sind Leakage und fliegen raus. Standardisieren vor dem Split auf dem vollen Datensatz wäre ebenfalls Leakage.",
+      "hints": [
+        "Prüfe zuerst jede Spalte auf zwei Fragen: Enthält sie Zielinformation? Und braucht sie eine Skala, die λ fair bestraft?",
+        "One-Hot für Kategoriales, Standardisieren aus Trainingsstatistiken für Numerisches — und Ziel-abgeleitete Spalten haben im Modell nichts verloren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Das ist Leakage: Testset-Werte fließen über Mittelwert/Standardabweichung in das Training. Statistiken nur aus dem Trainingsteil berechnen, dann auf Test anwenden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Zahlen 1–8 erzeugen eine falsche Reihenfolge zwischen Stadtteilen; außerdem bestraft λ unskalierte Merkmale unfair — One-Hot plus Standardisieren ist der Weg."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "preis_pro_m2 ist aus dem Ziel berechnet — das Modell lernt die Antwort abzulesen (Leakage), kein echtes Signal."
+        }
+      ],
+      "typicalErrors": [
+        "Skalierungsstatistiken aus dem vollen Datensatz nehmen",
+        "kategoriale Ausprägungen durchnummerieren",
+        "ziel-abgeleitete Spalten als Features behalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
     }
   ]
 }
