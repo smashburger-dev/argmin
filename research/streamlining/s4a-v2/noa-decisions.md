@@ -199,3 +199,34 @@ Quelle: Noa, schriftlich, nach Gegenreview.
   (Verzweigung im Testbauer); E2E beweist den Browser-Lauf.
 - Lösungen ohne Lehrbuch-Zitate (Public-Regel), Test prüft
   gegen die Pipeline-Redaktion.
+
+## 2026-09-06: S4D8a-Entscheidungen (E1–E8, Noa-freigegeben)
+
+- E1: Statischer Content lebt in `content/families/<familyId>.json`
+  (Root `families`, Schema `exercise-family-cases`), nicht in
+  Runtime-JS. Ein generischer Adapter (`staticFamilySpec`,
+  `registerStaticCases`, `staticCaseBody`) in der Registry; neue
+  statische Aufgabe = eine JSON-Datei, null Codezeilen.
+- E2: Statischer Fall = genau ein Profil (aus dem S4A-Shard:
+  basic-recall→intro, core-application→core,
+  advanced-transfer→stretch, final-boss-synthesis→challenge; ohne
+  Quelle: Modulplatzierung, sonst core; Synthese challenge).
+  Familienprofile werden aus den Fällen abgeleitet; falsches
+  Profil wirft. Statik-only-Familien nicht im Übungsraum.
+- E3: `masteryEligible` pro Fall: Einstiegs-MC (choice-diagnose,
+  intro) und manual-rubric zählen nicht; Rest zählt. Linalg an
+  diese Regel angeglichen (shape-product-drawn,
+  dependent-pair-double, product-definition-rationale → false).
+- E4: Python-Fälle nehmen Startcode/Referenz/Tests 1:1, gleicher
+  Pyodide-Grader.
+- E5: `formula-metric-spread-range` eine Familie; W17 bekommt einen
+  eigenen neuen Repro-Fall (Vorschlag beim W17-Schnitt).
+- E6: Data/ML = 12 Module, eines pro Lektion.
+- E7: Dieses Repo ist das Public-Profil. Private/Public-Trennung
+  wird in S5B entfernt, W01-Bibliotheksverweise werden öffentliche
+  Links. Bis dahin bleiben die 14 Validator-Fehler Baseline.
+- E8: 7.268 Runtime-LOC ist keine geprüfte Zahl (9.085·0,8). Ziel
+  wird nach Messung gesetzt; Test-LOC wird mitgemessen, an
+  verschobenen/gelöschten Code gekoppelte Tests fallen mit.
+- Schema `exercise-family` erlaubt jetzt einen Falltyp
+  (Runtime-Regel seit S4C).
