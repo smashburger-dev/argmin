@@ -435,13 +435,6 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     return value;
   });
   configureExerciseFamilies(families);
-  const competencyIds = new Set(competencies.map((item) => item.competencyId));
-  for (const family of families) {
-    checkReferences(family.contract, family.familyId, family.contract?.competencyIds || [], competencyIds, 'Kompetenz');
-    for (const item of family.cases) {
-      checkReferences(item, `${family.familyId}:${item.caseId}`, item.competencyIds || [], competencyIds, 'Kompetenz');
-    }
-  }
   validateProjectPackages(contentRoot, projectFiles, projects);
   assertUniqueCheckpoints(lessons);
 

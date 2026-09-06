@@ -7,17 +7,17 @@ import { genCompleteRows, genConditionalCount, genDedupRows } from './data_ml_ge
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
-function profileAccepts(caseDefinition, difficulty) {
+function profileAccepts(caseId, difficulty) {
   if (difficulty === 'core') return null;
-  if (caseDefinition.profile === 'missing-target-rows') {
+  if (caseId === 'missing-target-rows') {
     if (difficulty === 'intro') return (parameters) => parameters.framing === 'drop';
     if (difficulty === 'stretch') return (parameters) => parameters.framing === 'rate';
   }
-  if (caseDefinition.profile === 'duplicate-rows') {
+  if (caseId === 'duplicate-rows') {
     if (difficulty === 'intro') return (parameters) => !parameters.dropKey && parameters.keyConflicts === 0;
     if (difficulty === 'stretch') return (parameters) => parameters.dropKey;
   }
-  if (caseDefinition.profile === 'conditional-count-percent') {
+  if (caseId === 'conditional-count-percent') {
     if (difficulty === 'intro') return (parameters) => parameters.direction === 'count';
     if (difficulty === 'stretch') return (parameters) => parameters.direction === 'percent';
   }
@@ -27,8 +27,8 @@ function profileAccepts(caseDefinition, difficulty) {
 const FAMILY_DEFINITIONS = {
   'count-remaining-rows-cleaning-rule': {
     cases: {
-      'missing-target-rows': { generator: genCompleteRows, profile: 'missing-target-rows' },
-      'duplicate-rows': { generator: genDedupRows, profile: 'duplicate-rows' },
+      'missing-target-rows': { generator: genCompleteRows },
+      'duplicate-rows': { generator: genDedupRows },
     },
     solve(parameters) {
       if (parameters.caseId === 'missing-target-rows') {
@@ -48,7 +48,6 @@ const FAMILY_DEFINITIONS = {
     cases: {
       'conditional-count-percent': {
         generator: genConditionalCount,
-        profile: 'conditional-count-percent',
         competencyIds: ['c-eda-viz'],
       },
     },
@@ -70,7 +69,7 @@ function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
       caseId,
       difficulty,
       wantShape: () => true,
-      profileAccepts: profileAccepts(caseDefinition, difficulty),
+      profileAccepts: profileAccepts(caseId, difficulty),
       profiles: DATA_ML_DIFFICULTY_PROFILES,
     });
   return {
