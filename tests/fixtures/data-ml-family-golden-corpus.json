@@ -99,6 +99,18 @@
       ],
       "instances": 192,
       "digest": "03fd5f98a0076b4ea55cca8a20b868c9b4e1b302cdcba7e24aea8e4495496cc2"
+    },
+    "formula-ratio-percent-metric-subgroup-gap": {
+      "cases": [
+        "subgroup-error-gap-pp"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "ae7dbfd1102a42e34de49ea38e9bfda876fe557c62de7c0f13d6400908e905c2"
     }
   }
 }

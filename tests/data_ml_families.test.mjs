@@ -29,6 +29,7 @@ import {
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
+  genSubgroupGapPp,
 } from '../assets/js/core/data_ml_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
@@ -47,6 +48,9 @@ const sigmoidDoc = JSON.parse(readFileSync(join(root, 'content/families/classify
 const parameterOriginDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-parameter-origin.json'), 'utf8'));
 const cvLeakageDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-cv-leakage.json'), 'utf8'));
 const leakageAuditDoc = JSON.parse(readFileSync(join(root, 'content/families/validate-leakage-rule-audit.json'), 'utf8'));
+const fairnessAggregationDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-fairness-aggregation.json'), 'utf8'));
+const errorDriftDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-error-drift.json'), 'utf8'));
+const groupedMetricsDoc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -58,6 +62,9 @@ registerStaticCases(quadraticErrorDoc.familyId, quadraticErrorDoc.cases);
 registerStaticCases(parameterOriginDoc.familyId, parameterOriginDoc.cases);
 registerStaticCases(cvLeakageDoc.familyId, cvLeakageDoc.cases);
 registerStaticCases(leakageAuditDoc.familyId, leakageAuditDoc.cases);
+registerStaticCases(fairnessAggregationDoc.familyId, fairnessAggregationDoc.cases);
+registerStaticCases(errorDriftDoc.familyId, errorDriftDoc.cases);
+registerStaticCases(groupedMetricsDoc.familyId, groupedMetricsDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -71,10 +78,12 @@ const familyDocs = [
   sigmoidDoc,
   JSON.parse(readFileSync(join(root, 'content/families/classify-confounding.json'), 'utf8')),
   JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8')),
-  JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8')),
+  groupedMetricsDoc,
   parameterOriginDoc,
   cvLeakageDoc,
   leakageAuditDoc,
+  fairnessAggregationDoc,
+  errorDriftDoc,
 ];
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
@@ -176,6 +185,57 @@ test('conditional-count core preserves the canonical W07 generator', () => {
     generateFormulaRatioPercentMetricFamily({ seed: 7001, caseId: conditionalCase, difficulty: 'core' }).expected.value,
     42,
   );
+});
+
+test('subgroup error gap family preserves seeded generation, binding profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-ratio-percent-metric');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'subgroup-error-gap-pp',
+        difficulty,
+      });
+      const expected = (100 * Math.abs(generated.parameters.e1 - generated.parameters.e2))
+        / generated.parameters.n;
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveFormulaRatioPercentMetric(generated.parameters).value, expected);
+      if (difficulty === 'intro') assert.equal(generated.parameters.n, 100);
+      if (difficulty === 'stretch') assert.ok([20, 25].includes(generated.parameters.n));
+    }
+  }
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 13001,
+      caseId: 'subgroup-error-gap-pp',
+      difficulty: 'core',
+    }).expected.value,
+    genSubgroupGapPp(13001).expected,
+  );
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 13001,
+      caseId: 'subgroup-error-gap-pp',
+      difficulty: 'core',
+    }).expected.value,
+    45,
+  );
+});
+
+test('W13 seeded subgroup gap corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateFormulaRatioPercentMetricFamily({
+        seed,
+        caseId: 'subgroup-error-gap-pp',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['formula-ratio-percent-metric-subgroup-gap'].digest);
 });
 
 test('MSE gradient family preserves seeded generation and independent solving', () => {
@@ -600,6 +660,63 @@ test('W12 static cases enforce profiles and competency overrides', () => {
       /Unbekanntes Profil/,
     );
     assert.ok(difficulty);
+  }
+});
+
+test('W13 static cases enforce profiles and competency overrides', () => {
+  const fairness = EXERCISE_FAMILIES.instantiate(
+    'classify-fairness-aggregation',
+    0,
+    'intro',
+    'overall-accuracy-hides-subgroups',
+  );
+  assert.equal(fairness.masteryEligible, false);
+  assert.deepEqual(fairness.competencyIds, ['c-ml-erroranalysis']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'classify-fairness-aggregation',
+      0,
+      'core',
+      'overall-accuracy-hides-subgroups',
+    ),
+    /Unbekanntes Profil/,
+  );
+  const drift = EXERCISE_FAMILIES.instantiate(
+    'classify-error-drift',
+    0,
+    'core',
+    'accuracy-drop-without-code-change',
+  );
+  assert.equal(drift.masteryEligible, true);
+  assert.deepEqual(drift.competencyIds, ['c-ml-erroranalysis']);
+  const gap = EXERCISE_FAMILIES.instantiate(
+    'formula-ratio-percent-metric',
+    13001,
+    'core',
+    'subgroup-error-gap-pp',
+  );
+  assert.deepEqual(gap.competencyIds, ['c-ml-erroranalysis']);
+  for (const [caseId, difficulty] of [
+    ['subgroup-error-rates-numpy', 'core'],
+    ['categorize-errors-report', 'stretch'],
+  ]) {
+    const instance = EXERCISE_FAMILIES.instantiate(
+      'aggregate-grouped-metrics-report',
+      0,
+      difficulty,
+      caseId,
+    );
+    assert.deepEqual(instance.competencyIds, ['c-ml-erroranalysis']);
+    assert.equal(instance.parameters.packages[0], 'numpy');
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(
+        'aggregate-grouped-metrics-report',
+        0,
+        difficulty === 'core' ? 'stretch' : 'core',
+        caseId,
+      ),
+      /Unbekanntes Profil/,
+    );
   }
 });
 

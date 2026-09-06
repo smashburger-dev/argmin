@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-error-drift",
+  "contract": {
+    "familyId": "classify-error-drift",
+    "familyGroup": "classify-concept",
+    "summary": "Unterscheidet Drift von Label-Noise und systematischen Subgruppenfehlern.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "accuracy-drop-without-code-change",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-ml-erroranalysis"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "accuracy-drop-without-code-change",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w13-e3"
+      ],
+      "parameters": {
+        "accuracyBefore": 0.96,
+        "accuracyAfter": 0.81,
+        "codeChanged": false
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Label-Noise: Die Messreihen sind zufällig falsch beschriftet, deshalb schwankt die Metrik.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Drift: Die Verteilung der Eingabedaten hat sich verschoben — das Modell muss auf aktuellen Daten neu bewertet und trainiert werden.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Systematischer Subgruppenfehler: Eine Teilgruppe war schon immer schlechter, das zeigt sich erst jetzt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Überfitting auf das Testset: Das alte Testset war zu klein und hat die 96 % rein zufällig ergeben.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Ein Defekt-Klassifikator erreicht in der Pilotphase 96 % Accuracy. Drei Monate später liegt dieselbe Metrik auf neuen Werkdaten bei 81 % — der Code ist unverändert, das Werk hat die Vorbehandlung umgestellt, sodass die Sensordaten seither systematisch anders aussehen. Welcher Fehlertyp liegt vor?",
+      "fullSolution": "Code unverändert, Metrik bricht nach einer Umstellung der Vorbehandlung ein, die Eingabedaten sehen systematisch anders aus — das ist Daten-Drift. Korrekte Maßnahme: Verteilungen vergleichen, auf den aktuellen Daten neu bewerten und neu trainieren.",
+      "hints": [
+        "Was hat sich zwischen den Messungen geändert — das Modell, die Labels oder die Daten?",
+        "Drift erkennst du am Muster „früher gut, jetzt schlecht, ohne Codeänderung“ plus verschobenen Eingabestatistiken."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Label-Noise wäre zufällig und würde die Metrik nicht erst nach einer Umstellung systematisch senken — hier haben sich die Eingabedaten verschoben."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein Subgruppenfehler bliebe in beiden Phasen sichtbar, nicht erst nach einer Änderung der Vorbehandlung. Es gibt keinen Hinweis auf eine Teilgruppe."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der Einwand sagt nichts über den Einbruch nach der Umstellung — der zeitliche Zusammenhang mit den veränderten Sensordaten erklärt ihn direkt."
+        }
+      ],
+      "typicalErrors": [
+        "Zeitlichen Einbruch als Zufall deuten",
+        "Drift mit Label-Noise verwechseln",
+        "ohne Hinweis auf Gruppen einen Subgruppenfehler annehmen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

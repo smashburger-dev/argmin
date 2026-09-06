@@ -4,7 +4,7 @@
   "contract": {
     "familyId": "aggregate-grouped-metrics-report",
     "familyGroup": "aggregate-count",
-    "summary": "Erstellt einen deskriptiven Gruppenbericht mit Korrelation, Medianen und Anteilen.",
+    "summary": "Berechnet gruppenweise Kennzahlen und Anteile und füllt daraus einen strukturierten Bericht ohne Kausaldeutung.",
     "taskArchetype": "code-tests",
     "authorityMode": "static",
     "masteryEligible": true,
@@ -12,9 +12,18 @@
       {
         "caseId": "hypothesis-report-groups",
         "propertyTest": false
+      },
+      {
+        "caseId": "subgroup-error-rates-numpy",
+        "propertyTest": false
+      },
+      {
+        "caseId": "categorize-errors-report",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
+      "core",
       "stretch"
     ],
     "competencyIds": [
@@ -67,6 +76,106 @@
         "Kausalaussagen im verdict statt Richtungsbeschreibung",
         "Median über alle Zeilen statt gruppenweise berechnet",
         "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      }
+    },
+    {
+      "caseId": "subgroup-error-rates-numpy",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "competencyIds": [
+        "c-ml-erroranalysis"
+      ],
+      "sourceLineage": [
+        "w13-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef subgroup_error_rates(y_true, y_pred, groups):\n    # return {group: errors / count} as float per group\n    # ValueError if the three inputs differ in length\n    ...\n\ndef largest_gap(rates):\n    # difference between the highest and the lowest rate; ValueError on empty dict\n    ...\n",
+        "tests": "import numpy as np\n\ny_true = [1, 0, 1, 0, 1, 0, 1, 1, 0, 0]\ny_pred = [1, 0, 1, 0, 1, 1, 0, 0, 0, 0]\ngroups = ['A', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'C', 'C']\nrates = subgroup_error_rates(y_true, y_pred, groups)\n__check('drei Gruppen als Schluessel', set(str(k) for k in rates.keys()) == {'A', 'B', 'C'})\n__check('Fehlerrate A = 0/4 = 0.0', abs(float(rates['A']) - 0.0) < 1e-12)\n__check('Fehlerrate B = 3/4 = 0.75', abs(float(rates['B']) - 0.75) < 1e-12)\n__check('Fehlerrate C = 0/2 = 0.0', abs(float(rates['C']) - 0.0) < 1e-12)\n__check('largest_gap = 0.75 - 0.0 = 0.75', abs(largest_gap(rates) - 0.75) < 1e-12)\n__check('eine Gruppe: Rate 1/2', subgroup_error_rates([1, 0], [1, 1], ['X', 'X']) == {'X': 0.5})\n__check('largest_gap mit einer Gruppe = 0', abs(largest_gap({'X': 0.5})) < 1e-12)\ntry:\n    subgroup_error_rates([1, 0], [1], ['X', 'X'])\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError geworfen')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, 'falscher Fehlertyp: ' + type(e).__name__)\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef subgroup_error_rates(y_true, y_pred, groups):\n    '''Error rate per group {group: errors / count}; ValueError on length mismatch.'''\n    y_true = list(y_true)\n    y_pred = list(y_pred)\n    groups = list(groups)\n    if not (len(y_true) == len(y_pred) == len(groups)):\n        raise ValueError('y_true, y_pred and groups must have equal length')\n    stats = {}\n    for t, p, g in zip(y_true, y_pred, groups):\n        if g not in stats:\n            stats[g] = [0, 0]\n        stats[g][1] += 1\n        if t != p:\n            stats[g][0] += 1\n    return {g: errors / total for g, (errors, total) in stats.items()}\n\ndef largest_gap(rates):\n    '''Difference between the highest and the lowest rate.'''\n    if not rates:\n        raise ValueError('rates must not be empty')\n    values = [float(v) for v in rates.values()]\n    return float(max(values) - min(values))\n"
+      },
+      "prompt": "Implementiere die Teilgruppen-Analyse. `subgroup_error_rates(y_true, y_pred, groups)`: drei gleich lange Eingänge (Listen oder 1-d-Arrays); Rückgabe ein dict, das jeder vorkommenden Gruppe ihre Fehlerrate `fehler / anzahl` als float zuordnet; bei unterschiedlich langen Eingängen wirf `ValueError`. `largest_gap(rates)`: nimmt das Ergebnis-dict und gibt die Differenz zwischen höchster und niedrigster Fehlerrate als float zurück; für ein leeres dict wirf `ValueError`. Kontrolle: y_true = [1,0,1,0,1,0,1,1,0,0], y_pred = [1,0,1,0,1,1,0,0,0,0], groups = ['A','A','A','A','B','B','B','B','C','C'] → A 0/4, B 3/4, C 0/2, largest_gap 0.75.",
+      "fullSolution": "import numpy as np\n\ndef subgroup_error_rates(y_true, y_pred, groups):\n    '''Error rate per group {group: errors / count}; ValueError on length mismatch.'''\n    y_true = list(y_true)\n    y_pred = list(y_pred)\n    groups = list(groups)\n    if not (len(y_true) == len(y_pred) == len(groups)):\n        raise ValueError('y_true, y_pred and groups must have equal length')\n    stats = {}\n    for t, p, g in zip(y_true, y_pred, groups):\n        if g not in stats:\n            stats[g] = [0, 0]\n        stats[g][1] += 1\n        if t != p:\n            stats[g][0] += 1\n    return {g: errors / total for g, (errors, total) in stats.items()}\n\ndef largest_gap(rates):\n    '''Difference between the highest and the lowest rate.'''\n    if not rates:\n        raise ValueError('rates must not be empty')\n    values = [float(v) for v in rates.values()]\n    return float(max(values) - min(values))\n",
+      "hints": [
+        "Sammle pro Gruppe zwei Zähler in einem Dictionary: Anzahl der Beispiele und Anzahl der Fehler (t != p).",
+        "Die Rate bildet sich erst am Ende: Fehlerzähler durch Anzahlzähler je Gruppe teilen — largest_gap ist dann max minus min über die Werte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "counts-instead-of-rates",
+          "then": "Zurückgegeben werden Raten (Fehler / Anzahl), nicht die rohen Fehlerzahlen — die Gruppengröße muss eingehen."
+        },
+        {
+          "if": "gap-absolute-only",
+          "then": "largest_gap vergleicht höchste und niedrigste Rate der gegebenen Gruppen — nicht den Abstand zu einer vorgegebenen Gruppe."
+        },
+        {
+          "if": "length-check-missing",
+          "then": "Die Längenprüfung der drei Eingänge muss ValueError werfen, bevor gezählt wird."
+        }
+      ],
+      "typicalErrors": [
+        "absolute Fehlerzahlen statt Raten vergleichen",
+        "Gruppen als eigene Schleifen statt Zähler-dict",
+        "Längenprüfung weglassen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      }
+    },
+    {
+      "caseId": "categorize-errors-report",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "competencyIds": [
+        "c-ml-erroranalysis"
+      ],
+      "sourceLineage": [
+        "w13-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def categorize_errors(errors):\n    # errors: list of {'id', 'kind', 'group'}\n    # return counts by kind, counts by group, share by group (count / total),\n    # and extreme_groups {'highest', 'lowest', 'difference'}\n    # ties go to first-seen order; ValueError on missing keys or empty list\n    ...\n\ndef model_card_stub(metrics_by_group):\n    # higher metric is better; worst_group has the LOWEST value\n    # return {'intended_use', 'metric_by_group', 'worst_group', 'known_limitation'}\n    ...\n",
+        "tests": "errors = [\n    {'id': 1, 'kind': 'drift', 'group': 'A'},\n    {'id': 2, 'kind': 'label_noise', 'group': 'B'},\n    {'id': 3, 'kind': 'subgroup', 'group': 'B'},\n    {'id': 4, 'kind': 'drift', 'group': 'B'},\n    {'id': 5, 'kind': 'label_noise', 'group': 'B'},\n    {'id': 6, 'kind': 'subgroup', 'group': 'B'},\n    {'id': 7, 'kind': 'drift', 'group': 'C'},\n    {'id': 8, 'kind': 'subgroup', 'group': 'C'},\n]\nr = categorize_errors(errors)\n__check('counts_by_kind exakt', dict(r['counts_by_kind']) == {'drift': 3, 'label_noise': 2, 'subgroup': 3})\n__check('counts_by_group exakt', dict(r['counts_by_group']) == {'A': 1, 'B': 5, 'C': 2})\n__check('Anteile: A 0.125, B 0.625, C 0.25', all(abs(float(r['share_by_group'][g]) - v) < 1e-12 for g, v in [('A', 0.125), ('B', 0.625), ('C', 0.25)]))\nex = r['extreme_groups']\n__check('extreme_groups: hoechste B, tiefste A, Differenz 0.5', str(ex['highest']) == 'B' and str(ex['lowest']) == 'A' and abs(float(ex['difference']) - 0.5) < 1e-12)\ncard = model_card_stub({'A': 0.9, 'B': 0.55, 'C': 0.8})\n__check('Modellkarte: worst_group ist B', str(card['worst_group']) == 'B')\n__check('Modellkarte: known_limitation nennt Gruppe B', 'B' in str(card['known_limitation']))\n__check('Modellkarte: Metriken uebernommen', dict(card['metric_by_group']) == {'A': 0.9, 'B': 0.55, 'C': 0.8})\ncard2 = model_card_stub({'fern': 0.7, 'nah': 0.95})\n__check('anderes Dict: worst_group fern', str(card2['worst_group']) == 'fern')\ntry:\n    categorize_errors([{'id': 9, 'kind': 'drift'}])\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError geworfen')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, 'falscher Fehlertyp: ' + type(e).__name__)\ntry:\n    categorize_errors([])\n    __check('ValueError bei leerer Liste', False, 'kein ValueError geworfen')\nexcept ValueError:\n    __check('ValueError bei leerer Liste', True)\nexcept Exception as e:\n    __check('ValueError bei leerer Liste', False, 'falscher Fehlertyp: ' + type(e).__name__)\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def categorize_errors(errors):\n    '''Summarize errors by kind and group; identify extreme error-share groups.'''\n    if not errors:\n        raise ValueError('errors must not be empty')\n    counts_by_kind = {}\n    counts_by_group = {}\n    for e in errors:\n        if 'kind' not in e or 'group' not in e:\n            raise ValueError('each error needs kind and group')\n        counts_by_kind[e['kind']] = counts_by_kind.get(e['kind'], 0) + 1\n        counts_by_group[e['group']] = counts_by_group.get(e['group'], 0) + 1\n    total = len(errors)\n    share_by_group = {g: c / total for g, c in counts_by_group.items()}\n    highest = max(share_by_group, key=lambda g: share_by_group[g])\n    lowest = min(share_by_group, key=lambda g: share_by_group[g])\n    return {\n        'counts_by_kind': counts_by_kind,\n        'counts_by_group': counts_by_group,\n        'share_by_group': share_by_group,\n        'extreme_groups': {\n            'highest': highest,\n            'lowest': lowest,\n            'difference': float(share_by_group[highest] - share_by_group[lowest]),\n        },\n    }\n\ndef model_card_stub(metrics_by_group):\n    '''Minimal model card stub naming the group with the lowest metric.'''\n    worst = min(metrics_by_group, key=lambda g: metrics_by_group[g])\n    return {\n        'intended_use': 'Defekt-Klassifikation in der Pilotwerk',\n        'metric_by_group': dict(metrics_by_group),\n        'worst_group': worst,\n        'known_limitation': 'Schwaecheste Teilgruppe: {} (Metrik {})'.format(worst, metrics_by_group[worst]),\n    }\n"
+      },
+      "prompt": "Final Boss: Fehlerkategorisierung und Modellkarte. `categorize_errors(errors)` bekommt eine Liste von dicts `{'id': int, 'kind': str, 'group': str}`. Rückgabe: `{'counts_by_kind': {kind: anzahl}, 'counts_by_group': {gruppe: anzahl}, 'share_by_group': {gruppe: fehler_der_gruppe / gesamtfehler}, 'extreme_groups': {'highest': gruppe, 'lowest': gruppe, 'difference': anteil_hoch - anteil_tief}}`. Bei Gleichstand entscheidet die Reihenfolge des ersten Auftretens; fehlt bei einem Fehler 'kind' oder 'group', oder ist die Liste leer, wirf `ValueError`. `model_card_stub(metrics_by_group)` bekommt ein dict `gruppe -> metrik` (höher = besser, z. B. Accuracy) und gibt `{'intended_use': 'Defekt-Klassifikation in der Pilotwerk', 'metric_by_group': kopie, 'worst_group': gruppe_mit_kleinster_metrik, 'known_limitation': 'Schwaecheste Teilgruppe: <gruppe> (Metrik <wert>)'}` zurück.",
+      "fullSolution": "def categorize_errors(errors):\n    '''Summarize errors by kind and group; identify extreme error-share groups.'''\n    if not errors:\n        raise ValueError('errors must not be empty')\n    counts_by_kind = {}\n    counts_by_group = {}\n    for e in errors:\n        if 'kind' not in e or 'group' not in e:\n            raise ValueError('each error needs kind and group')\n        counts_by_kind[e['kind']] = counts_by_kind.get(e['kind'], 0) + 1\n        counts_by_group[e['group']] = counts_by_group.get(e['group'], 0) + 1\n    total = len(errors)\n    share_by_group = {g: c / total for g, c in counts_by_group.items()}\n    highest = max(share_by_group, key=lambda g: share_by_group[g])\n    lowest = min(share_by_group, key=lambda g: share_by_group[g])\n    return {\n        'counts_by_kind': counts_by_kind,\n        'counts_by_group': counts_by_group,\n        'share_by_group': share_by_group,\n        'extreme_groups': {\n            'highest': highest,\n            'lowest': lowest,\n            'difference': float(share_by_group[highest] - share_by_group[lowest]),\n        },\n    }\n\ndef model_card_stub(metrics_by_group):\n    '''Minimal model card stub naming the group with the lowest metric.'''\n    worst = min(metrics_by_group, key=lambda g: metrics_by_group[g])\n    return {\n        'intended_use': 'Defekt-Klassifikation in der Pilotwerk',\n        'metric_by_group': dict(metrics_by_group),\n        'worst_group': worst,\n        'known_limitation': 'Schwaecheste Teilgruppe: {} (Metrik {})'.format(worst, metrics_by_group[worst]),\n    }\n",
+      "hints": [
+        "Zwei Zähler-dicts in einem Durchlauf füllen (kind und group), daraus die Anteile als count / len(errors) ableiten — max und min über die Anteile bestimmen die extreme Gruppen.",
+        "In der Modellkarte ist weniger mehr: min über die Metrikwerte liefert die schwächste Gruppe, und der Limitationstext muss den Gruppennamen enthalten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "share-of-kind",
+          "then": "share_by_group bezieht sich auf GRUPPEN-Anteile an allen Fehlern — die Anteile je kind stehen nicht im Rückgabe-dict."
+        },
+        {
+          "if": "worst-is-max",
+          "then": "In metrics_by_group ist höher besser: worst_group ist der MINIMALE Metrikwert, nicht der maximale."
+        },
+        {
+          "if": "missing-key-validation",
+          "then": "Fehlt 'kind' oder 'group' in einem Fehler-dict, muss ValueError geworfen werden — auch für die leere Liste."
+        }
+      ],
+      "typicalErrors": [
+        "Anteile auf kind statt Gruppe beziehen",
+        "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen",
+        "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
       ],
       "tolerancePolicy": {
         "mode": "tests"
