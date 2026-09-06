@@ -111,3 +111,15 @@ test('Parsons family hosts W35 e5 and W39 e4 static cases', () => {
   const python = families.instantiate('construct-freeze-assert-guard', 0, 'core', 'demo-from-frozen-report');
   assert.equal(python.activityType, 'python-code');
 });
+
+test('code-trace grader accepts authored string variables with or without quotes', async () => {
+  const { graders } = await import('../assets/js/core/graders.js');
+  const exercise = {
+    type: 'code-trace',
+    parameters: { variables: [{ name: 'status_zeile', value: 'ok fehler timeout' }, { name: 'summe', value: 7 }] },
+  };
+  const grade = (status_zeile) => graders.deterministic.grade(exercise, { status_zeile, summe: '7' });
+  assert.equal((await grade('ok fehler timeout')).correct, true);
+  assert.equal((await grade("'ok fehler timeout'")).correct, true);
+  assert.equal((await grade('ok fehler')).correct, false);
+});

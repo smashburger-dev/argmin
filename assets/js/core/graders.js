@@ -386,7 +386,7 @@ function gradeVariable(variable, raw) {
     return { ok: got !== null, wrong: got !== null && got !== canonicalRepr(variable.value) };
   }
   if (typeof variable.value === 'string') {
-    const got = String(raw ?? '').trim();
+    const got = String(raw ?? '').trim().replace(/^(['"])(.*)\1$/s, '$2');
     return { ok: got.length > 0, wrong: got.length > 0 && got !== variable.value };
   }
   const parsed = parseIntegerAnswer(raw);
