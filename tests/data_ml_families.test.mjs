@@ -3,7 +3,13 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { DATA_ML_FAMILY_SPECS, generateCountRemainingRowsFamily, solveCountRemainingRows } from '../assets/js/core/data_ml_families.mjs';
+import {
+  DATA_ML_FAMILY_SPECS,
+  generateCountRemainingRowsFamily,
+  generateFormulaRatioPercentMetricFamily,
+  solveCountRemainingRows,
+  solveFormulaRatioPercentMetric,
+} from '../assets/js/core/data_ml_families.mjs';
 import { genCompleteRows, genDedupRows } from '../assets/js/core/data_ml_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
@@ -11,11 +17,19 @@ import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 const root = join(new URL('..', import.meta.url).pathname);
 const traceDoc = JSON.parse(readFileSync(join(root, 'content/families/trace-library-api-output.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
-configureExerciseFamilies([traceDoc]);
+const familyDocs = [
+  traceDoc,
+  JSON.parse(readFileSync(join(root, 'content/families/classify-confounding.json'), 'utf8')),
+  JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8')),
+  JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8')),
+];
+for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
+configureExerciseFamilies(familyDocs);
 
 const seededSpec = DATA_ML_FAMILY_SPECS[0];
 const cases = ['missing-target-rows', 'duplicate-rows'];
 const profiles = ['intro', 'core', 'stretch'];
+const conditionalCase = 'conditional-count-percent';
 
 function expectedFromParameters(parameters) {
   if (parameters.caseId === 'missing-target-rows') return parameters.rows - parameters.missing;
@@ -86,4 +100,52 @@ test('data-cleaning family corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.digest);
+});
+
+test('conditional-count family derives values independently over 200 seeds per profile', () => {
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = DATA_ML_FAMILY_SPECS[1].generate({ seed, caseId: conditionalCase, difficulty });
+      assert.equal(generated.expected.value, solveFormulaRatioPercentMetric(generated.parameters).value);
+      if (difficulty === 'intro') assert.equal(generated.parameters.direction, 'count');
+      if (difficulty === 'stretch') assert.equal(generated.parameters.direction, 'percent');
+    }
+  }
+});
+
+test('conditional-count core preserves the canonical W07 generator', () => {
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({ seed: 7001, caseId: conditionalCase, difficulty: 'core' }).expected.value,
+    42,
+  );
+});
+
+test('NumPy trace grades and exposes case competency override', async () => {
+  const numpy = EXERCISE_FAMILIES.instantiate(
+    'trace-library-api-output',
+    0,
+    'core',
+    'numpy-median-histogram-corrcoef',
+  );
+  assert.deepEqual(numpy.competencyIds, ['c-eda-viz', 'c-numpy-basics']);
+  assert.equal((await EXERCISE_FAMILIES.grade(numpy, '4.5\n[1 7]\n0.97')).correct, true);
+  const pandas = EXERCISE_FAMILIES.instantiate(
+    'trace-library-api-output',
+    0,
+    'core',
+    'pandas-dedup-isna-lines',
+  );
+  assert.deepEqual(pandas.competencyIds, ['c-pandas-cleaning', 'c-python-reading']);
+});
+
+test('conditional-count corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateFormulaRatioPercentMetricFamily({ seed, caseId: conditionalCase, difficulty }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['formula-ratio-percent-metric'].digest);
 });
