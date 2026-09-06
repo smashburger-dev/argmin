@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-regularizer-effect",
+  "contract": {
+    "familyId": "classify-regularizer-effect",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Regularisierer seiner Wirkung auf das Modellverhalten zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "l1-vs-l2-effect",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-regularization"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "l1-vs-l2-effect",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w14-e1"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Konzept-Check Regularisierung: Was ist der zentrale Unterschied zwischen Ridge (L2) und Lasso (L1) bei linearer Regression? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Ridge (L2, λΣw²) schrumpft stetig gegen null; Lasso (L1, λΣ|w|) kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten. Im 1D-Fall sieht man es direkt: Ridge teilt durch (Σx²+λ), Lasso wendet sign(c)·max(|c|−λ, 0) an.",
+      "hints": [
+        "Der Unterschied liegt in der Strafe: Quadrate (L2) versus Beträge (L1) — was passiert mit einem kleinen Koeffizienten unter jeder der beiden Strafen?",
+        "Die L1-Strafe hat eine Ecke bei null: kleine Koeffizienten werden exakt auf null gezogen, die L2-Strafe erreicht null nur asymptotisch."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Nur L1 erzeugt exakte Nullen — Ridge schrumpft gegen null, erreicht es aber im Allgemeinen nicht."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "lambda ist ein freier Hyperparameter; der Wirkungsunterschied kommt aus der Form der Strafe, nicht aus der Größe von lambda."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Beide sind Regression-Verfahren; beide können auch in Klassifikation-Pipelines (z. B. Logistische Regression mit Penalty) auftreten."
+        }
+      ],
+      "typicalErrors": [
+        "L1- und L2-Strafe verwechseln",
+        "Sparsity als Nebeneffekt von kleinem lambda erklären",
+        "Regularisierung mit Normalisierung der Eingaben verwechseln"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

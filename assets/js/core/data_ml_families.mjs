@@ -12,6 +12,7 @@ import {
   genConfusionCount,
   genCvSpread,
   genSubgroupGapPp,
+  genShrinkagePercent,
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
@@ -36,6 +37,10 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'subgroup-error-gap-pp') {
     if (difficulty === 'intro') return (parameters) => parameters.n === 100;
     if (difficulty === 'stretch') return (parameters) => parameters.n === 20 || parameters.n === 25;
+  }
+  if (caseId === 'ridge-shrinkage-percent') {
+    if (difficulty === 'intro') return (parameters) => parameters.phrasing === 'share';
+    if (difficulty === 'stretch') return (parameters) => parameters.phrasing === 'shrink';
   }
   if (caseId === 'mse-gradient-wrt-w') {
     if (difficulty === 'intro') return (parameters) => parameters.n === 2;
@@ -116,8 +121,16 @@ const FAMILY_DEFINITIONS = {
         generator: genSubgroupGapPp,
         competencyIds: ['c-ml-erroranalysis'],
       },
+      'ridge-shrinkage-percent': {
+        generator: genShrinkagePercent,
+        competencyIds: ['c-ml-regularization'],
+      },
     },
     solve(parameters) {
+      if (parameters.caseId === 'ridge-shrinkage-percent') {
+        const share = (100 * parameters.sxx) / (parameters.sxx + parameters.lam);
+        return { value: parameters.phrasing === 'shrink' ? 100 - share : share };
+      }
       if (parameters.caseId === 'subgroup-error-gap-pp') {
         return { value: (100 * Math.abs(parameters.e1 - parameters.e2)) / parameters.n };
       }
@@ -311,6 +324,7 @@ const FORMULA_RATIO_PERCENT_CASE_TYPES = [
   { caseId: 'conditional-count-percent', sourceLineage: ['w07-e2'], competencyIds: ['c-eda-viz'] },
   { caseId: 'r2-explained-share', sourceLineage: ['w10-e3'], competencyIds: ['c-ml-linear'] },
   { caseId: 'subgroup-error-gap-pp', sourceLineage: ['w13-e2'], competencyIds: ['c-ml-erroranalysis'] },
+  { caseId: 'ridge-shrinkage-percent', sourceLineage: ['w14-e2'], competencyIds: ['c-ml-regularization'] },
 ];
 
 const MSE_GRADIENT_CLOSED_FORM_CASE_TYPES = [
