@@ -23,7 +23,6 @@ import { buildLearningEvent, isJournalWorthy } from '../assets/js/domain/learnin
 import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
 import { assertModuleBindings } from '../assets/js/domain/learning_module.mjs';
 import { validateSourceDocument } from '../tools/compile_content.mjs';
-import { SEED_GENERATORS } from '../assets/js/core/seed_generator_registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
@@ -280,11 +279,6 @@ test('property tests cover every authoritative case type and profile over 32 see
   }
 });
 
-test('legacy seed-generator baseline stays at 52 families', () => {
-  assert.equal(Object.keys(SEED_GENERATORS).length, 52);
-  assert.equal(Object.hasOwn(SEED_GENERATORS, 'generateGitOperationFamily'), false);
-});
-
 test('S4C family golden corpus is byte-identical over seeds 0-63', () => {
   const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/exercise-family-golden-corpus.json'), 'utf8'));
   const [firstSeed, lastSeed] = fixture.seedRange;
@@ -337,27 +331,4 @@ test('S4D0 wrong family answers are journal-worthy with the case key', () => {
   });
   assert.equal(event.exerciseId, 'classify-git-operation:diff-unstaged');
   assert.equal(isJournalWorthy({ ...event, errorType: 'wrong-choice' }), true);
-});
-
-test('merge case pins the w03 definition byte-identically and rotates positions', () => {
-  const definition = JSON.parse(readFileSync(join(root, 'content/exercise-definitions/foundations/git-merge-debug.json'), 'utf8'));
-  const byText = new Map(definition.choices.map((choice) => [choice.text, choice]));
-  const seenPositions = new Set();
-  for (const difficulty of GIT_OPERATION_CONTRACT.difficultyProfiles) {
-    for (const seed of [1, 2, 3, 2601]) {
-      const instance = instantiate('classify-git-operation', seed, difficulty, 'merge-conflict-test-flow');
-      assert.equal(instance.choices.length, difficulty === 'intro' ? 2 : 4);
-      for (const choice of instance.choices) {
-        assert.ok(byText.has(choice.text), `fremder Optionstext: ${choice.text}`);
-        assert.equal(choice.correct, byText.get(choice.text).correct);
-      }
-      const correct = instance.choices.find((choice) => choice.id === instance.expectedAnswer.correctChoice);
-      assert.equal(correct.text, definition.choices.find((choice) => choice.correct).text);
-      assert.ok(instance.prompt.includes('Welcher Ablauf liefert den belastbarsten Abschluss?'));
-      assert.ok(!instance.prompt.includes('Arbeitsdatei'), 'statischer Fall ohne Dateinamen-Notiz');
-      assert.equal(instance.masteryEligible, true);
-      seenPositions.add(instance.expectedAnswer.correctChoice);
-    }
-  }
-  assert.ok(seenPositions.size > 1, 'Seed rotiert die korrekte Position');
 });

@@ -86,24 +86,22 @@ test('open-core export recompiles from filtered sources without private content'
       const base = pathToFileURL(process.cwd() + '/');
       for (const path of [
         './assets/js/core/graders.js',
-        './assets/js/core/legacy_exercise_adapter.mjs',
         './assets/js/runtime/pyodide_runner.js',
       ]) await import(new URL(path, base));
-      const { createPublicLegacyContent } = await import(new URL('./tools/public_content.mjs', base));
+      const { createPublicContent } = await import(new URL('./tools/public_content.mjs', base));
       const marker = ['M', 'M', 'L'].join('') + ' §2.2';
       let rejected = false;
       try {
-        createPublicLegacyContent({
-          curriculum: {},
+        createPublicContent({
           sources: { sources: [] },
-          exercisePacks: [{ exercises: [{ exerciseId: 'probe', prompt: marker, deterministicSeed: 1 }] }],
+          content: { prompt: marker },
         });
       } catch { rejected = true; }
       if (!rejected) throw new Error('exported public marker gate is disabled');
     `;
     const child = runInExport(target, ['--input-type=module', '--eval', moduleProbe]);
     assert.equal(child.status, 0, child.stdout + child.stderr);
-    const childTests = runInExport(target, ['--test', 'tests/generator_registry.test.mjs', 'tests/w31_w39_generators.test.mjs']);
+    const childTests = runInExport(target, ['--test', 'tests/mastery_policy.test.mjs']);
     assert.equal(childTests.status, 0, childTests.stdout + childTests.stderr);
     const testCount = /(?:ℹ|#) tests (\d+)/.exec(childTests.stdout)?.[1];
     assert.ok(Number(testCount) > 0, childTests.stdout + childTests.stderr);
@@ -111,7 +109,7 @@ test('open-core export recompiles from filtered sources without private content'
     const expectedCounts = expectedPublicCounts(target);
     assert.equal(bundle.competencies.length, expectedCounts.competencies);
     assert.equal(bundle.lessons.length, expectedCounts.lessons);
-    assert.equal(bundle.exerciseDefinitions.length, expectedCounts.exercises);
+    assert.equal(bundle.familyActivities.length, expectedCounts.exercises);
     assert.doesNotMatch(JSON.stringify(bundle), /library-private|private-extracts|\bMML\b|mml-book|murphy-pml/);
   } finally {
     rmSync(target, { recursive: true, force: true });

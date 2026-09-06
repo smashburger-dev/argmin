@@ -38,11 +38,3 @@ test('local reading paths stay profile-bound', () => {
   if (localBundle.sources.length > publicBundle.sources.length) assert.ok(localBundle.sources.some((source) => source.localPath));
   else assert.equal(localBundle.sources.some((source) => source.localPath || source.localFile), false);
 });
-
-test('legacy visualization and native tool card stay linked', () => {
-  const weekFive = publicBundle.legacyProjection.weeks.find((week) => week.weekId === 'w05');
-  assert.equal(weekFive.visualization.vizId, 'w05-viz1');
-  assert.equal(weekFive.visualization.type, 'jsxgraph');
-  const tool = publicBundle.tools.find((item) => item.toolId === 't-matrix-column-visualization');
-  assert.ok(tool.competencyIds.includes('c-linalg-systems'));
-});

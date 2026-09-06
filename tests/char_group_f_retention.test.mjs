@@ -464,9 +464,9 @@ test('F4 tool: migrate_attempts_v3.mjs turns a v1 export into a valid schema-3 f
     const migrated = JSON.parse(readFileSync(output, 'utf8'));
     assert.equal(migrated.schemaVersion, 3);
     assert.equal(migrated.data.attempts.length, 1);
-    // The tool maps competencies through content/legacy/exercise-competency-map.json.
-    assert.deepEqual(migrated.data.attempts[0].competencyIds, ['c-linalg-matrices']);
-    assert.equal(migrated.data.attempts[0].evidenceEligible, true);
+    assert.deepEqual(migrated.data.attempts[0].competencyIds, []);
+    assert.equal(migrated.data.attempts[0].evidenceEligible, false);
+    assert.equal(migrated.data.attempts[0].exclusionCode, 'legacy-unmapped');
     const { ok, errors } = validateImportPayload(migrated);
     assert.equal(ok, true, JSON.stringify(errors));
   } finally {

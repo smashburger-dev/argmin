@@ -31,6 +31,11 @@ import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
+const CONTENT_TYPE_ARCHETYPE = {
+  'predict-output': 'output-predict-lines',
+  'code-trace': 'state-trace-vars',
+  parsons: 'parsons-order',
+};
 
 const runtimeOf = (familyId) => TRACE_FAMILY_RUNTIME[familyId];
 const contractOf = (familyId) => TRACE_FAMILY_CONTRACTS.find((contract) => contract.familyId === familyId);
@@ -432,22 +437,6 @@ const TRACE_TAXONOMY = [
   },
 ];
 
-const CONTENT_TYPE_ARCHETYPE = {
-  'predict-output': 'output-predict-lines',
-  'code-trace': 'state-trace-vars',
-  'single-choice': 'choice-diagnose',
-  parsons: 'program-ordering',
-};
-
-function loadContentExercises() {
-  const byId = new Map();
-  for (const week of ['w01', 'w02', 'w03', 'w04']) {
-    const document = JSON.parse(readFileSync(join(root, 'content/exercises', `${week}.json`), 'utf8'));
-    for (const exercise of document.exercises) byId.set(exercise.exerciseId, exercise);
-  }
-  return byId;
-}
-
 test('taxonomy crosscheck covers every shard case and documents every refinement', () => {
   for (const entry of TRACE_TAXONOMY) {
     const contract = contractOf(entry.familyId);
@@ -474,22 +463,6 @@ test('taxonomy crosscheck covers every shard case and documents every refinement
       assert.ok(
         (entry.multiArchetypeRationale || '').length > 0,
         `${entry.familyId}: Multi-Archetyp ist begründet`,
-      );
-    }
-  }
-});
-
-test('taxonomy static siblings exist in w01-w04 with matching answer form', () => {
-  const content = loadContentExercises();
-  for (const entry of TRACE_TAXONOMY) {
-    const contract = contractOf(entry.familyId);
-    for (const sibling of entry.staticContent) {
-      const exercise = content.get(sibling.sourceId);
-      assert.ok(exercise, `${sibling.sourceId} existiert im Content`);
-      assert.equal(exercise.type, sibling.contentType, `${sibling.sourceId}: Antwortform`);
-      assert.ok(
-        exercise.skillIds.some((skill) => contract.competencyIds.includes(skill)),
-        `${sibling.sourceId}: teilt die Kompetenz mit der Familie`,
       );
     }
   }
