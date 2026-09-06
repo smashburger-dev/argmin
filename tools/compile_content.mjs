@@ -14,7 +14,8 @@ import { buildLegacyMap } from './migrate_legacy_content.mjs';
 import { createPublicLegacyContent, sanitizePublicValue } from './public_content.mjs';
 import { renderMarkdown } from './markdown_content.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
-import { assertFamilyPlacement } from '../assets/js/domain/exercise_registry.mjs';
+import { assertFamilyPlacement, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
+import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import {
   assertModuleBindings,
   compileLearningModule,
@@ -36,7 +37,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-definition', 'exercise-family', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
+  'exercise-definition', 'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
 ];
 const profiles = new Set(['public', 'local-private']);
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -395,6 +396,7 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   const projectFiles = discoverProjects(contentRoot, catalogRoot(catalog, 'projects'));
   const exerciseDefinitionFiles = discoverJson(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'));
   const moduleFiles = discoverJson(contentRoot, catalogRoot(catalog, 'modules'));
+  const familyFiles = discoverJson(contentRoot, catalogRoot(catalog, 'families'));
 
   const sourceRightsDocument = readJson(resolveContentPath(contentRoot, catalog.sourceRightsFile));
   validateSourceDocument('source-rights', sourceRightsDocument, projectRoot);
@@ -411,6 +413,20 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   let projects = loadObjects(contentRoot, projectFiles, 'projectId', 'project', projectRoot);
   const authoredDefinitions = loadObjects(contentRoot, exerciseDefinitionFiles, 'definitionId', 'exercise-definition', projectRoot);
   let learningModules = loadObjects(contentRoot, moduleFiles, 'moduleId', 'learning-module', projectRoot);
+  const families = familyFiles.map((file) => {
+    const value = readJson(resolveContentPath(contentRoot, file));
+    validateSourceDocument('exercise-family-cases', value, projectRoot);
+    if (value.familyId !== file.split('/').pop().replace(/\.json$/, '')) {
+      throw new Error(`${file}: familyId stimmt nicht mit Dateinamen überein`);
+    }
+    const caseIds = value.cases.map((item) => item.caseId);
+    if (new Set(caseIds).size !== caseIds.length) {
+      throw new Error(`${value.familyId}: Fall doppelt`);
+    }
+    registerStaticCases(value.familyId, value.cases);
+    return value;
+  });
+  configureExerciseFamilies(families);
   validateProjectPackages(contentRoot, projectFiles, projects);
   assertUniqueCheckpoints(lessons);
 
@@ -422,6 +438,7 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'explanations'), explanationFiles);
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'), exerciseDefinitionFiles);
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'modules'), moduleFiles);
+  assertJsonRoot(contentRoot, catalogRoot(catalog, 'families'), familyFiles);
   assertNoOrphans(catalogRoot(catalog, 'lessons'), listRootFiles(contentRoot, catalogRoot(catalog, 'lessons')), lessonClaims(lessonFiles, lessons));
   assertNoOrphans(
     catalogRoot(catalog, 'projects'),
@@ -512,6 +529,7 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     explanations,
     projects,
     learningModules,
+    families,
     legacyProjection: {
       curriculumId: projectionCurriculum.id,
       schemaVersion: projectionCurriculum.schemaVersion,
@@ -580,6 +598,13 @@ export function buildSplitArtifacts(bundle) {
       summary.promptSnippet = promptSnippet(exercise.prompt);
       return summary;
     }),
+    families: bundle.families.map((family) => ({
+      familyId: family.familyId,
+      contract: family.contract,
+      cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible }) => ({
+        caseId, difficultyProfile, masteryEligible,
+      })),
+    })),
   };
   const lessonBodies = bundle.lessons.map((lesson) => {
     if (!SAFE_CHUNK_ID.test(lesson.lessonId)) throw new Error(`unsichere Lektions-ID für Chunk: ${lesson.lessonId}`);
@@ -590,9 +615,13 @@ export function buildSplitArtifacts(bundle) {
     const body = Object.fromEntries(Object.entries(exercise).filter(([field]) => EXERCISE_BODY_FIELDS.includes(field)));
     return { id: exercise.definitionId, body: { definitionId: exercise.definitionId, ...body } };
   });
+  const familyBodies = bundle.families.map((family) => {
+    if (!SAFE_CHUNK_ID.test(family.familyId)) throw new Error(`unsichere Familien-ID für Chunk: ${family.familyId}`);
+    return { id: family.familyId, body: family };
+  });
   const duplicateIds = new Set();
   const seen = new Set();
-  for (const id of [...lessonBodies.map((item) => item.id), ...exerciseBodies.map((item) => item.id)]) {
+  for (const id of [...lessonBodies.map((item) => item.id), ...exerciseBodies.map((item) => item.id), ...familyBodies.map((item) => item.id)]) {
     if (seen.has(id)) duplicateIds.add(id);
     seen.add(id);
   }
@@ -607,28 +636,33 @@ export function buildSplitArtifacts(bundle) {
     `export const exerciseChunks: Record<string, () => Promise<{ default: unknown }>> = {`,
     ...exerciseBodies.map(({ id }) => `  ${JSON.stringify(id)}: () => import('./exercises/${id}.json'),`),
     '};',
+    `export const familyChunks: Record<string, () => Promise<{ default: unknown }>> = {`,
+    ...familyBodies.map(({ id }) => `  ${JSON.stringify(id)}: () => import('./families/${id}.json'),`),
+    '};',
     `export const sectionChunks: Record<string, () => Promise<{ default: unknown }>> = {`,
     ...Object.keys(SECTION_FIELDS).map((name) => `  ${JSON.stringify(name)}: () => import('./sections/${name}.json'),`),
     '};',
     '',
   ].join('\n');
-  return { index, sections, lessonBodies, exerciseBodies, chunks };
+  return { index, sections, lessonBodies, exerciseBodies, familyBodies, chunks };
 }
 
 export function writeSplitArtifacts(bundle, splitDir) {
-  const { index, sections, lessonBodies, exerciseBodies, chunks } = buildSplitArtifacts(bundle);
+  const { index, sections, lessonBodies, exerciseBodies, familyBodies, chunks } = buildSplitArtifacts(bundle);
   rmSync(splitDir, { recursive: true, force: true });
   mkdirSync(join(splitDir, 'lessons'), { recursive: true });
   mkdirSync(join(splitDir, 'exercises'), { recursive: true });
   mkdirSync(join(splitDir, 'sections'), { recursive: true });
+  mkdirSync(join(splitDir, 'families'), { recursive: true });
   for (const [name, body] of Object.entries(sections)) {
     writeFileSync(join(splitDir, 'sections', `${name}.json`), JSON.stringify(body, null, 2) + '\n');
   }
   writeFileSync(join(splitDir, 'index.json'), JSON.stringify(index, null, 2) + '\n');
   for (const { id, body } of lessonBodies) writeFileSync(join(splitDir, 'lessons', `${id}.json`), JSON.stringify(body, null, 2) + '\n');
   for (const { id, body } of exerciseBodies) writeFileSync(join(splitDir, 'exercises', `${id}.json`), JSON.stringify(body, null, 2) + '\n');
+  for (const { id, body } of familyBodies) writeFileSync(join(splitDir, 'families', `${id}.json`), JSON.stringify(body, null, 2) + '\n');
   writeFileSync(join(splitDir, 'chunks.ts'), chunks);
-  return { index, lessonBodies, exerciseBodies };
+  return { index, lessonBodies, exerciseBodies, familyBodies };
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);

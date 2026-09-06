@@ -1,5 +1,5 @@
 import { instantiateLegacyExercise } from '../core/legacy_exercise_adapter.mjs';
-import { createFamilyRegistry, familyHint, familyIdTokens } from './family_registry.mjs';
+import { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
 import {
   GIT_OPERATION_CONTRACT,
   generateGitOperationFamily,
@@ -10,9 +10,9 @@ import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mj
 import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
 import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
 
-export { createFamilyRegistry, familyHint, familyIdTokens };
+export { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec };
 
-export const EXERCISE_FAMILIES = createFamilyRegistry([
+const jsFamilySpecs = [
   {
     ...GIT_OPERATION_CONTRACT,
     generate: generateGitOperationFamily,
@@ -26,7 +26,17 @@ export const EXERCISE_FAMILIES = createFamilyRegistry([
   ...TRACE_FAMILY_SPECS,
   // S4D5: Skalarprodukt-Familie (linalg).
   ...LINALG_FAMILY_SPECS,
-]);
+];
+
+export let EXERCISE_FAMILIES = createFamilyRegistry(jsFamilySpecs);
+
+export function configureExerciseFamilies(staticDocs = []) {
+  EXERCISE_FAMILIES = createFamilyRegistry([
+    ...jsFamilySpecs,
+    ...staticDocs.filter((doc) => doc?.contract).map(staticFamilySpec),
+  ]);
+  return EXERCISE_FAMILIES;
+}
 
 export const instantiate = (familyId, seed, difficulty, caseId) => (
   EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId)

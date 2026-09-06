@@ -5,6 +5,75 @@ import { graders } from '../core/graders.js';
 // Domänen-Registry-Module dieselbe Implementierung nutzen, ohne
 // zirkulär voneinander abzuhängen.
 const FAMILY_ID = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+const DIFFICULTY_ORDER = ['intro', 'core', 'stretch', 'challenge'];
+const staticCases = new Map();
+
+export function registerStaticCases(familyId, cases) {
+  if (!FAMILY_ID.test(familyId)) throw new Error(`Ungültige familyId ${familyId}`);
+  if (!Array.isArray(cases)) throw new Error(`${familyId}: Fälle müssen eine Liste sein`);
+  const byCase = new Map();
+  for (const body of cases) {
+    if (!body || typeof body.caseId !== 'string' || !FAMILY_ID.test(body.caseId)) {
+      throw new Error(`${familyId}: Ungültige caseId`);
+    }
+    if (byCase.has(body.caseId)) throw new Error(`${familyId}: Fall doppelt: ${body.caseId}`);
+    byCase.set(body.caseId, body);
+  }
+  const existing = staticCases.get(familyId);
+  if (existing) {
+    for (const [caseId, body] of byCase) {
+      if (!existing.has(caseId)) existing.set(caseId, body);
+    }
+    return;
+  }
+  staticCases.set(familyId, byCase);
+}
+
+export function staticCaseBody(familyId, caseId) {
+  const body = staticCases.get(familyId)?.get(caseId);
+  if (!body) throw new Error(`${familyId}:${caseId}: Fallkörper nicht geladen`);
+  return body;
+}
+
+export function staticFamilySpec(doc) {
+  if (!doc?.contract) throw new Error(`${doc?.familyId || '(leer)'}: Statischer Vertrag fehlt`);
+  const cases = Array.isArray(doc.cases) ? doc.cases : [];
+  const difficultyProfiles = [...new Set(cases.map((item) => item.difficultyProfile))]
+    .sort((left, right) => DIFFICULTY_ORDER.indexOf(left) - DIFFICULTY_ORDER.indexOf(right));
+  return {
+    ...doc.contract,
+    familyId: doc.familyId,
+    masteryEligible: cases.some((item) => item.masteryEligible === true),
+    difficultyProfiles,
+    caseTypes: cases.map((item) => ({ caseId: item.caseId, propertyTest: false })),
+    staticOnly: true,
+    generate: ({ caseId, difficulty }) => {
+      const body = staticCaseBody(doc.familyId, caseId);
+      if (body.difficultyProfile !== difficulty) {
+        throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+      }
+      const {
+        caseId: _caseId,
+        difficultyProfile: _difficultyProfile,
+        sourceLineage: _sourceLineage,
+        ...generated
+      } = body;
+      return {
+        ...generated,
+        parameters: {
+          caseId,
+          difficulty,
+          ...(body.parameters || {}),
+        },
+      };
+    },
+    solve: (parameters) => {
+      const body = staticCaseBody(doc.familyId, parameters.caseId);
+      const correct = (body.choices || []).find((choice) => choice.correct);
+      return correct ? { correctText: correct.text } : {};
+    },
+  };
+}
 
 export function familyIdTokens(familyId) {
   return String(familyId).split('-').filter(Boolean).sort().join('\0');
@@ -92,7 +161,7 @@ export function createFamilyRegistry(families) {
   function instantiate(familyId, seed, difficulty, caseId) {
     if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
     const family = requireFamily(byId, familyId);
-    if (!family.difficultyProfiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
+    if (!family.staticOnly && !family.difficultyProfiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
     const resolvedCase = resolveCaseId(family, seed, caseId);
     const generated = family.generate({ seed, caseId: resolvedCase, difficulty });
     const solved = family.solve(generated.parameters);
@@ -107,7 +176,7 @@ export function createFamilyRegistry(families) {
       seed,
       deterministicSeed: seed,
       instanceId: `${familyId}:${resolvedCase}:${difficulty}:${seed}`,
-      masteryEligible: family.masteryEligible,
+        masteryEligible: generated.masteryEligible ?? family.masteryEligible,
       // S4D7: Antwortform und Grader gelten pro Fall (CaseTemplate
       // verbindet Familie und Archetyp); Fallwerte aus generate
       // schlagen die Familien-Defaults aus.
@@ -136,6 +205,9 @@ export function createFamilyRegistry(families) {
   function assertFamilyPlacement(placement) {
     if (placement.definitionId) return;
     const family = requireFamily(byId, placement.familyId);
+    if (placement.role === 'practice-space' && family.caseTypes.every((item) => item.propertyTest === false)) {
+      throw new Error(`${family.familyId}: Statische Familien dürfen nicht im Übungsraum platziert werden`);
+    }
     if (placement.difficulty && !family.difficultyProfiles.includes(placement.difficulty)) {
       throw new Error(`Unbekanntes Profil ${placement.difficulty}`);
     }

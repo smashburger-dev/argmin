@@ -36,7 +36,8 @@
         "projects",
         "tools",
         "reviews",
-        "modules"
+        "modules",
+        "families"
       ],
       "properties": {
         "competencies": { "$ref": "#/$defs/dirPath" },
@@ -48,7 +49,8 @@
         "projects": { "$ref": "#/$defs/dirPath" },
         "tools": { "$ref": "#/$defs/dirPath" },
         "reviews": { "$ref": "#/$defs/dirPath" },
-        "modules": { "$ref": "#/$defs/dirPath" }
+        "modules": { "$ref": "#/$defs/dirPath" },
+        "families": { "$ref": "#/$defs/dirPath" }
       }
     },
     "legacy": {

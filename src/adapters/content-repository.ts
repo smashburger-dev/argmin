@@ -1,6 +1,7 @@
 import contentIndex from '@content-index';
-import { exerciseChunks, lessonChunks, sectionChunks } from '@content-chunks';
+import { exerciseChunks, familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
 import type { CatalogData, ExerciseSummary, LearningModule, Lesson, LegacyWeekSummary, ReviewRecord, SourceSummary, ToolCard } from '../app/types';
+import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
@@ -20,6 +21,11 @@ interface CompiledIndex {
   projects: CatalogData['projects'];
   learningModules?: LearningModule[];
   exerciseDefinitions: Array<Partial<ExerciseSummary> & Pick<ExerciseSummary, 'definitionId' | 'competencyIds' | 'activityType' | 'estimatedMinutes' | 'difficulty' | 'graderId'>>;
+  families: Array<{
+    familyId: string;
+    contract: Record<string, unknown> | null;
+    cases: Array<{ caseId: string; difficultyProfile: string; masteryEligible: boolean }>;
+  }>;
 }
 
 // Route-scoped heavy sections: own JSON chunks, loaders cached and deduped.
@@ -67,6 +73,7 @@ const index = contentIndex as unknown as CompiledIndex;
 
 const lessonCache = new Map<string, Lesson>();
 const exerciseCache = new Map<string, ExerciseSummary>();
+const familyCache = new Map<string, unknown>();
 const pending = new Map<string, Promise<unknown>>();
 
 function loadOnce<T>(key: string, run: () => Promise<T>): Promise<T> {
@@ -126,6 +133,23 @@ export function loadCatalog(): CatalogData {
   };
 }
 
+export function loadFamilyIndex() {
+  return index.families;
+}
+
+export async function loadFamilyCases(familyId: string): Promise<unknown | null> {
+  const cached = familyCache.get(familyId);
+  if (cached) return cached;
+  const loader = familyChunks[familyId];
+  if (!loader) return null;
+    const body = await loadOnce(`family:${familyId}`, () => loader()) as {
+      default: { familyId: string; cases: Array<Record<string, unknown>> };
+  };
+  registerStaticCases(familyId, body.default.cases);
+  familyCache.set(familyId, body.default);
+  return body.default;
+}
+
 async function sectionFile<K extends keyof SectionIndex>(name: K): Promise<SectionIndex[K]> {
   const loader = sectionChunks[name];
   if (!loader) throw new Error(`Content-Sektion ${name} fehlt im Chunk-Mapping`);
@@ -179,4 +203,3 @@ export async function getExercise(definitionId: string): Promise<ExerciseSummary
     throw new ContentUnavailableError(definitionId, 'exercise', cause);
   }
 }
-

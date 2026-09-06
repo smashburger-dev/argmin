@@ -16,7 +16,8 @@
     "projects": "projects",
     "tools": "tools",
     "reviews": "reviews",
-    "modules": "modules"
+    "modules": "modules",
+    "families": "families"
   },
   "legacy": {
     "curriculumFile": "curriculum.json",

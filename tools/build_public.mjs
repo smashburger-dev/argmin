@@ -317,6 +317,7 @@ const ALLOWED_DIRS = [
   { dir: 'vendor/katex/dist/fonts', ext: '.woff2' },
   { dir: 'vendor/mathlive/fonts', ext: '.woff2' },
   { dir: 'content/modules', ext: '.json' },
+  { dir: 'content/families', ext: '.json' },
 ];
 // Source directories scanned for private canaries before copying.
 const SCAN_DIRS = ['assets', 'content'];
