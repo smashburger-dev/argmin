@@ -1,0 +1,18 @@
+{
+  "description": "data-cleaning family baseline over seeds 0-63, both case types and three profiles",
+  "seedRange": [
+    0,
+    63
+  ],
+  "cases": [
+    "missing-target-rows",
+    "duplicate-rows"
+  ],
+  "difficultyProfiles": [
+    "intro",
+    "core",
+    "stretch"
+  ],
+  "instances": 384,
+  "digest": "498039a59a4f589daec48e3055dd035b5e1117ec84651eabab93a5618d63a0ac"
+}

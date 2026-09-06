@@ -51,6 +51,7 @@ const ALLOWED_FILES = [
   'assets/js/core/legacy_exercise_adapter.mjs',
   'assets/js/core/seed_generator_registry.mjs',
   'assets/js/core/data_ml_generators.mjs',
+  'assets/js/core/data_ml_families.mjs',
   'assets/js/domain/activity_route.mjs',
   'assets/js/domain/fresh_seed.mjs',
   'assets/js/domain/review_route.mjs',
