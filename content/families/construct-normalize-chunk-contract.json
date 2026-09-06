@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-normalize-chunk-contract",
+  "contract": {
+    "familyId": "construct-normalize-chunk-contract",
+    "familyGroup": "construct-program",
+    "summary": "Implementiert den RAG-Vorverarbeitungs-Vertrag aus Textnormalisierung mit Umlautschutz und bewachter Fenster-Schleife inklusive ValueError-Parametervalidierung.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "normalize-chunk-contract",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-genai-rag",
+      "c-python-functions"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "normalize-chunk-contract",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w27-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def normalize(text):\n    \"\"\"Kleinbuchstaben, Umlaute bleiben, Satzzeichen weg, Whitespace zusammen.\"\"\"\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\n\n\ndef chunk(text, size, overlap):\n    \"\"\"Fenster text[start:start+size], start += size - overlap, solange start < len(text).\"\"\"\n    ...\n\n",
+        "tests": "__check('normalize kleinbuchstaben', normalize(\"Der Bäcker sagte: „Halt!“\") == \"der bäcker sagte halt\")\n__check('normalize umlaute bleiben', normalize(\"Größenmaßstäbe\") == \"größenmaßstäbe\")\n__check('normalize zahlen bleiben', normalize(\"Artikel 12, Absatz 3!\") == \"artikel 12 absatz 3\")\n__check('chunk fensterfolge', chunk(\"abcdefghij\", 4, 2) == [\"abcd\", \"cdef\", \"efgh\", \"ghij\", \"ij\"])\n__check('chunk startreihe', chunk(\"abcdef\", 4, 1) == [\"abcd\", \"def\"])\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\n__check('chunk ohne overlap', chunk(\"abcdefgh\", 4, 0) == [\"abcd\", \"efgh\"])\n__check('chunk fensterlaenge', all(len(p) <= 4 for p in chunk(\"abcdefghij\", 4, 2)))\ntry:\n    chunk(\"abc\", 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('size 0 -> ValueError', True)\ntry:\n    chunk(\"abc\", 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('overlap >= size -> ValueError', True)"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def normalize(text):\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\n\ndef chunk(text, size, overlap):\n    if not isinstance(size, int) or not isinstance(overlap, int):\n        raise ValueError(\"size und overlap muessen ganze Zahlen sein\")\n    if size <= 0:\n        raise ValueError(\"size muss positiv sein\")\n    if overlap < 0 or overlap >= size:\n        raise ValueError(\"overlap muss zwischen 0 und size-1 liegen\")\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n\n# chunk(\"abcdefghij\", 4, 2) -> [\"abcd\", \"cdef\", \"efgh\", \"ghij\", \"ij\"]\n# normalize(\"Der Bäcker sagte: „Halt!“\") -> \"der bäcker sagte halt\""
+      },
+      "prompt": "Implementiere <code>normalize(text)</code> und <code>chunk(text, size, overlap)</code> exakt nach dem gepinnten Vertrag. normalize: Kleinbuchstaben, Umlaute bleiben erhalten, Satzzeichen entfernen, Whitespace zusammenziehen (Ergebnis ein String mit je einem Leerzeichen zwischen Wörtern). chunk: Fenster <code>text[start:start+size]</code>, Start bei 0, dann um <code>size − overlap</code> weiter, solange <code>start &lt; len(text)</code>; Rückgabe Liste von Strings. Ungültige Parameter (size ≤ 0, overlap &lt; 0, overlap ≥ size oder nicht-ganzzahlig) werfen <code>ValueError</code>. Der Testcode prüft Normalisierung und Fensterfolgen getrennt von deinem Code.",
+      "fullSolution": "def normalize(text):\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\n\ndef chunk(text, size, overlap):\n    if not isinstance(size, int) or not isinstance(overlap, int):\n        raise ValueError(\"size und overlap muessen ganze Zahlen sein\")\n    if size <= 0:\n        raise ValueError(\"size muss positiv sein\")\n    if overlap < 0 or overlap >= size:\n        raise ValueError(\"overlap muss zwischen 0 und size-1 liegen\")\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n\n# chunk(\"abcdefghij\", 4, 2) -> [\"abcd\", \"cdef\", \"efgh\", \"ghij\", \"ij\"]\n# normalize(\"Der Bäcker sagte: „Halt!“\") -> \"der bäcker sagte halt\"\n\n# alle __check-Tests bestanden (lokal python3-verifiziert)",
+      "hints": [
+        "Für normalize: erst alles auf Kleinbuchstaben, dann Zeichen für Zeichen prüfen — Satzzeichen überspringen, alles andere (inklusive ä ö ü ß und Ziffern) bleibt.",
+        "chunk validiert zuerst die Parameter und sammelt dann die Fenster mit start += size − overlap, bis start die Länge erreicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "punct-not-stripped",
+          "then": "Satzzeichen wie „ oder ! müssen verschwinden — prüfe dein Zeichenfilter-Set gegen die Testfälle."
+        },
+        {
+          "if": "valueerror-missing",
+          "then": "Die ValueError-Prüfung steht vor dem ersten Fenster — size ≤ 0 und overlap ≥ size sind vertragswidrig."
+        },
+        {
+          "if": "off-by-one-start",
+          "then": "Die Schleifenbedingung ist start < len(text): der letzte Start liegt unter der Länge, das Fenster darf kürzer als size sein."
+        }
+      ],
+      "typicalErrors": [
+        "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt",
+        "Fenster mit fester Anzahl statt while-Schleife erzeugt",
+        "overlap ≥ size erlaubt und Endlosschleife riskiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

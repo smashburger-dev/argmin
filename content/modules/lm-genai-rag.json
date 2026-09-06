@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-genai-rag",
+  "version": 1,
+  "locale": "de",
+  "title": "RAG: Retrieval messbar machen — getrennt von der Antwortbildung",
+  "description": "Dokumente deterministisch chunken (Größe, Overlap, Fensterarithmetik) und einen Inverted-Index mit gepinnter Normalisierung aufbauen Retrieval als eigene, messbare Stufe behandeln: top-k, Recall@k und MRR gegen ein festes Golden Set eine deterministische Retrieval-Baseline (Bag-of-Words-Kosinus bzw. TF-IDF) in reinem Python/NumPy implementieren und die Antwortbildung bewusst als Stub/Fixtur halten",
+  "competencyIds": [
+    "c-genai-rag"
+  ],
+  "requires": [
+    "c-dl-inference",
+    "c-python-files-errors"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-genai-rag"
+  ],
+  "placements": [
+    {
+      "placementId": "p-genai-rag-1",
+      "role": "curated",
+      "familyId": "classify-rag-stage",
+      "caseId": "rag-stage-separation",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-genai-rag",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-genai-rag-2",
+      "role": "curated",
+      "familyId": "aggregate-topk-relevance-arithmetic",
+      "caseId": "recall-at-k-window",
+      "seed": 2711,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-rag",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-rag-3",
+      "role": "curated",
+      "familyId": "trace-chunk-window-loop",
+      "caseId": "chunk-window-loop",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-rag",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-rag-4",
+      "role": "curated",
+      "familyId": "construct-normalize-chunk-contract",
+      "caseId": "normalize-chunk-contract",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-genai-rag",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-rag-5",
+      "role": "curated",
+      "familyId": "aggregate-retrieval-ranking-metric",
+      "caseId": "retrieval-ranking-recall",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-genai-rag",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-rag-6",
+      "role": "curated",
+      "familyId": "aggregate-retrieval-ranking-metric",
+      "caseId": "retrieval-evaluate-queries",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-genai-rag",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-rag-practice",
+      "role": "practice-space",
+      "familyId": "aggregate-topk-relevance-arithmetic",
+      "caseId": "recall-at-k-window",
+      "seed": 2711,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-genai-rag"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

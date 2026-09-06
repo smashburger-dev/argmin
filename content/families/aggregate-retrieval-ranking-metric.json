@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-retrieval-ranking-metric",
+  "contract": {
+    "familyId": "aggregate-retrieval-ranking-metric",
+    "familyGroup": "aggregate-count",
+    "summary": "Berechnet TF-IDF- und Kosinusähnlichkeit als Ranking-Metrik, leitet das Ranking ab und evaluiert es mit Recall@k und MRR.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "retrieval-ranking-recall",
+        "propertyTest": false
+      },
+      {
+        "caseId": "retrieval-evaluate-queries",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-genai-rag",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "retrieval-ranking-recall",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w27-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef build_vectors(docs):\n    \"\"\"TF-IDF-Matrix (n_docs x |vocab|) mit idf = log((n+1)/(df+1)) + 1, tf normiert auf Dokumentlänge.\"\"\"\n    ...\n\ndef rank(query, docs, k):\n    \"\"\"Top-k Indizes nach Kosinus-Aehnlichkeit, Gleichstand -> kleinster Index zuerst.\"\"\"\n    ...\n\ndef recall_at_k(relevant, ranked, k):\n    \"\"\"|top-k ∩ relevant| / |relevant|; leere relevant-Liste -> ValueError.\"\"\"\n    ...\n\n",
+        "tests": "DOCS = [\n    \"Die Lieferzeit beträgt drei Werktage.\",\n    \"Die Lieferzeit im Ausland beträgt zwei Wochen.\",\n    \"Der Vertrag läuft zwölf Monate.\",\n    \"Die Kündigung des Vertrags ist schriftlich möglich.\",\n    \"Rabattcodes gelten im Sommer.\",\n    \"Das Widerrufsrecht endet nach vierzehn Tagen.\",\n]\n__check('lieferzeit top1', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 3)[0] == 0)\n__check('lieferzeit top2 sortierung', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2) == [0, 1])\n__check('vertrag top1', rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) == [2])\n__check('widerruf top1', rank(\"Wann endet das Widerrufsrecht?\", DOCS, 1) == [5])\n__check('recall voll', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([5], rank(\"Wie lange läuft der Vertrag?\", DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere relevante -> ValueError', True)"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef _tokens(text):\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    stripped = \"\".join(ch for ch in text.lower() if ch not in PUNCT)\n    return \" \".join(stripped.split()).split()\n\ndef build_vectors(docs):\n    doc_tokens = [_tokens(d) for d in docs]\n    vocab = sorted({t for toks in doc_tokens for t in toks})\n    pos = {t: i for i, t in enumerate(vocab)}\n    n = len(docs)\n    df = np.zeros(len(vocab))\n    for toks in doc_tokens:\n        for t in set(toks):\n            df[pos[t]] += 1.0\n    idf = np.log((n + 1.0) / (df + 1.0)) + 1.0\n    m = np.zeros((n, len(vocab)))\n    for i, toks in enumerate(doc_tokens):\n        for t in toks:\n            m[i, pos[t]] += 1.0\n        nz = m[i] > 0\n        m[i, nz] = (m[i, nz] / len(toks)) * idf[nz]\n    return vocab, pos, m\n\ndef _query_vec(vocab, pos, m, query):\n    n = m.shape[0]\n    v = np.zeros(len(vocab))\n    for t in _tokens(query):\n        if t in pos:\n            v[pos[t]] += 1.0\n    total = v.sum()\n    if total > 0:\n        nz = v > 0\n        df = (m[:, nz] > 0).sum(axis=0)\n        v[nz] = (v[nz] / total) * (np.log((n + 1.0) / (df + 1.0)) + 1.0)\n    return v\n\ndef rank(query, docs, k):\n    vocab, pos, m = build_vectors(docs)\n    v = _query_vec(vocab, pos, m, query)\n    norms = np.linalg.norm(m, axis=1) * np.linalg.norm(v)\n    norms[norms == 0.0] = 1.0\n    scores = (m @ v) / norms\n    order = sorted(range(len(docs)), key=lambda i: (-scores[i], i))\n    return order[:k]\n\ndef recall_at_k(relevant, ranked, k):\n    rel = set(relevant)\n    if not rel:\n        raise ValueError(\"relevant darf nicht leer sein\")\n    return len(set(ranked[:k]) & rel) / len(rel)\n\n# rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) -> [2]"
+      },
+      "prompt": "Implementiere die deterministische Retrieval-Baseline mit NumPy. <code>build_vectors(docs)</code> liefert (vocab, pos, matrix) mit TF-IDF: $\\mathrm{tf}(t,d)/|d| \\cdot (\\log\\frac{n+1}{\\mathrm{df}(t)+1} + 1)$, Vokabular sortiert, Normalisierung wie in w27-e4 (Kleinbuchstaben, Umlaute bleiben, Satzzeichen weg). <code>rank(query, docs, k)</code> sortiert nach Kosinus-Ähnlichkeit zwischen Anfragevektor (gleiche Gewichtung) und Dokumentzeilen, Gleichstand entscheidet der kleinste Index; Rückgabe die Top-k-Indizes. <code>recall_at_k(relevant, ranked, k)</code> = |Top-k ∩ relevant| / |relevant|, leere relevant-Liste → <code>ValueError</code>. Der Testcode nutzt die feste Dokumentmenge DOCS und prüft Rankings sowie Recall-Werte.",
+      "fullSolution": "import numpy as np\n\ndef _tokens(text):\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    stripped = \"\".join(ch for ch in text.lower() if ch not in PUNCT)\n    return \" \".join(stripped.split()).split()\n\ndef build_vectors(docs):\n    doc_tokens = [_tokens(d) for d in docs]\n    vocab = sorted({t for toks in doc_tokens for t in toks})\n    pos = {t: i for i, t in enumerate(vocab)}\n    n = len(docs)\n    df = np.zeros(len(vocab))\n    for toks in doc_tokens:\n        for t in set(toks):\n            df[pos[t]] += 1.0\n    idf = np.log((n + 1.0) / (df + 1.0)) + 1.0\n    m = np.zeros((n, len(vocab)))\n    for i, toks in enumerate(doc_tokens):\n        for t in toks:\n            m[i, pos[t]] += 1.0\n        nz = m[i] > 0\n        m[i, nz] = (m[i, nz] / len(toks)) * idf[nz]\n    return vocab, pos, m\n\ndef _query_vec(vocab, pos, m, query):\n    n = m.shape[0]\n    v = np.zeros(len(vocab))\n    for t in _tokens(query):\n        if t in pos:\n            v[pos[t]] += 1.0\n    total = v.sum()\n    if total > 0:\n        nz = v > 0\n        df = (m[:, nz] > 0).sum(axis=0)\n        v[nz] = (v[nz] / total) * (np.log((n + 1.0) / (df + 1.0)) + 1.0)\n    return v\n\ndef rank(query, docs, k):\n    vocab, pos, m = build_vectors(docs)\n    v = _query_vec(vocab, pos, m, query)\n    norms = np.linalg.norm(m, axis=1) * np.linalg.norm(v)\n    norms[norms == 0.0] = 1.0\n    scores = (m @ v) / norms\n    order = sorted(range(len(docs)), key=lambda i: (-scores[i], i))\n    return order[:k]\n\ndef recall_at_k(relevant, ranked, k):\n    rel = set(relevant)\n    if not rel:\n        raise ValueError(\"relevant darf nicht leer sein\")\n    return len(set(ranked[:k]) & rel) / len(rel)\n\n# rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) -> [2]\n\n# rank('Wie lange läuft der Vertrag?', DOCS, 1) -> [2]; recall-Tests exakt grün",
+      "hints": [
+        "Baue zuerst Dokument-Tokens und das sortierte Vokabular; df zählt Dokumente pro Term, tf wird auf die Dokumentlänge normiert.",
+        "Der Anfragevektor bekommt dieselbe idf-Gewichtung wie die Dokumente; bei Score-Gleichstand gewinnt der kleinere Index (sortiere mit key=(-score, i))."
+      ],
+      "feedbackRules": [
+        {
+          "if": "no-idf",
+          "then": "Ohne idf-Gewichtung gewinnt das Dokument mit den meisten Common Terms — die Tests erwarten die TF-IDF-Variante."
+        },
+        {
+          "if": "tie-break-wrong",
+          "then": "Gleichstände müssen deterministisch über den kleinsten Index aufgelöst werden, sonst atmet das Ranking zwischen Läufen."
+        },
+        {
+          "if": "query-not-normalized",
+          "then": "Die Anfrage muss exakt wie die Dokumente normalisiert werden, sonst verschwinden ihre Terme aus dem Vokabular."
+        }
+      ],
+      "typicalErrors": [
+        "Anfrage anders normalisiert als Dokumente",
+        "Kosinus ohne Längennormierung gerechnet",
+        "argsort ohne stabilen Tie-Break verwendet"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "retrieval-evaluate-queries",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w27-e6"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef build_index(docs):\n    \"\"\"Index aus Vokabular und TF-IDF-Matrix (gleiche Formeln wie in w27-e5).\"\"\"\n    ...\n\ndef rank_query(index, query):\n    \"\"\"Komplettes Ranking (alle Dokumente) nach Kosinus, Gleichstand -> kleinster Index.\"\"\"\n    ...\n\ndef evaluate(index, queries, relevant_sets, k):\n    \"\"\"{'recall_at_k': mittelwert, 'mrr': mittelwert der 1/rank des ersten relevanten Dokuments}.\"\"\"\n    ...\n\n",
+        "tests": "B_DOCS = [\n    \"Achte auf die Frist: Widerspruch ist innerhalb von vierzehn Tagen möglich.\",\n    \"Die Frist für die Rückgabe liegt bei dreißig Tagen ab Kauf.\",\n    \"Rückgaben ohne Kassenbon werden nicht erstattet.\",\n    \"Die Garantie deckt Herstellungsfehler, aber keine Sturzschäden.\",\n    \"Fristen verlängern sich nicht automatisch; ein neuer Antrag ist nötig.\",\n    \"Sturzschäden am Display sind von der Garantie ausgeschlossen.\",\n    \"Ein Garantiefall benötigt die Seriennummer und das Kaufdatum.\",\n    \"Ohne Kaufdatum gibt es keinen Garantiefall.\",\n]\nB_QUERIES = [\"Bis wann ist Widerspruch möglich?\", \"Was deckt die Garantie?\", \"Wie lange gilt die Rückgabefrist?\", \"Was braucht ein Garantiefall?\"]\nB_RELEVANT = [[0], [5], [1], [6, 7]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (8, len(b_index[\"vocab\"])))\n__check('widerspruch top1', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('garantie ordnung', rank_query(b_index, B_QUERIES[1])[:2] == [3, 5])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1 exakt', abs(res1[\"recall_at_k\"] - 0.625) < 1e-9)\n__check('mrr@1 exakt', abs(res1[\"mrr\"] - 0.875) < 1e-9)\n__check('recall@3 exakt', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef _tokens(text):\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    stripped = \"\".join(ch for ch in text.lower() if ch not in PUNCT)\n    return \" \".join(stripped.split()).split()\n\ndef build_index(docs):\n    doc_tokens = [_tokens(d) for d in docs]\n    vocab = sorted({t for toks in doc_tokens for t in toks})\n    pos = {t: i for i, t in enumerate(vocab)}\n    n = len(docs)\n    df = np.zeros(len(vocab))\n    for toks in doc_tokens:\n        for t in set(toks):\n            df[pos[t]] += 1.0\n    idf = np.log((n + 1.0) / (df + 1.0)) + 1.0\n    m = np.zeros((n, len(vocab)))\n    for i, toks in enumerate(doc_tokens):\n        for t in toks:\n            m[i, pos[t]] += 1.0\n        nz = m[i] > 0\n        m[i, nz] = (m[i, nz] / len(toks)) * idf[nz]\n    return {\"vocab\": vocab, \"pos\": pos, \"matrix\": m}\n\ndef rank_query(index, query):\n    m = index[\"matrix\"]\n    n = m.shape[0]\n    v = np.zeros(m.shape[1])\n    for t in _tokens(query):\n        if t in index[\"pos\"]:\n            v[index[\"pos\"][t]] += 1.0\n    total = v.sum()\n    if total > 0:\n        nz = v > 0\n        df = (m[:, nz] > 0).sum(axis=0)\n        v[nz] = (v[nz] / total) * (np.log((n + 1.0) / (df + 1.0)) + 1.0)\n    norms = np.linalg.norm(m, axis=1) * np.linalg.norm(v)\n    norms[norms == 0.0] = 1.0\n    scores = (m @ v) / norms\n    return sorted(range(n), key=lambda i: (-scores[i], i))\n\ndef evaluate(index, queries, relevant_sets, k):\n    recalls = []\n    rrs = []\n    for query, relevant in zip(queries, relevant_sets):\n        rel = set(relevant)\n        order = rank_query(index, query)\n        recalls.append(len(set(order[:k]) & rel) / len(rel))\n        rr = 0.0\n        for position, doc in enumerate(order, start=1):\n            if doc in rel:\n                rr = 1.0 / position\n                break\n        rrs.append(rr)\n    return {\"recall_at_k\": sum(recalls) / len(recalls), \"mrr\": sum(rrs) / len(rrs)}\n\n# evaluate(build_index(B_DOCS), B_QUERIES, B_RELEVANT, 1) -> {'recall_at_k': 0.625, 'mrr': 0.875}"
+      },
+      "prompt": "Final Boss Retrieval-System: Baue einen bewertbaren Mini-Suchindex über den Fixtur-Korpus B_DOCS. <code>build_index(docs)</code> → Dictionary mit <code>\"vocab\"</code>, <code>\"pos\"</code> und <code>\"matrix\"</code> (TF-IDF wie in w27-e5). <code>rank_query(index, query)</code> → komplettes Ranking aller Dokumente nach Kosinus, Gleichstand → kleinster Index. <code>evaluate(index, queries, relevant_sets, k)</code> → <code>{\"recall_at_k\": mittelwert, \"mrr\": mittelwert}</code>, wobei MRR den Kehrwert $1/\\mathrm{rank}$ des ersten relevanten Dokuments je Anfrage mittelt. Der Testcode prüft Matrixform, Ranking-Reihenfolge und die Metriken gegen exakte Referenzwerte (recall@1 = 0{,}625, MRR = 0{,}875, recall@3 = 1).",
+      "fullSolution": "import numpy as np\n\ndef _tokens(text):\n    PUNCT = \"!\\\"$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\n    stripped = \"\".join(ch for ch in text.lower() if ch not in PUNCT)\n    return \" \".join(stripped.split()).split()\n\ndef build_index(docs):\n    doc_tokens = [_tokens(d) for d in docs]\n    vocab = sorted({t for toks in doc_tokens for t in toks})\n    pos = {t: i for i, t in enumerate(vocab)}\n    n = len(docs)\n    df = np.zeros(len(vocab))\n    for toks in doc_tokens:\n        for t in set(toks):\n            df[pos[t]] += 1.0\n    idf = np.log((n + 1.0) / (df + 1.0)) + 1.0\n    m = np.zeros((n, len(vocab)))\n    for i, toks in enumerate(doc_tokens):\n        for t in toks:\n            m[i, pos[t]] += 1.0\n        nz = m[i] > 0\n        m[i, nz] = (m[i, nz] / len(toks)) * idf[nz]\n    return {\"vocab\": vocab, \"pos\": pos, \"matrix\": m}\n\ndef rank_query(index, query):\n    m = index[\"matrix\"]\n    n = m.shape[0]\n    v = np.zeros(m.shape[1])\n    for t in _tokens(query):\n        if t in index[\"pos\"]:\n            v[index[\"pos\"][t]] += 1.0\n    total = v.sum()\n    if total > 0:\n        nz = v > 0\n        df = (m[:, nz] > 0).sum(axis=0)\n        v[nz] = (v[nz] / total) * (np.log((n + 1.0) / (df + 1.0)) + 1.0)\n    norms = np.linalg.norm(m, axis=1) * np.linalg.norm(v)\n    norms[norms == 0.0] = 1.0\n    scores = (m @ v) / norms\n    return sorted(range(n), key=lambda i: (-scores[i], i))\n\ndef evaluate(index, queries, relevant_sets, k):\n    recalls = []\n    rrs = []\n    for query, relevant in zip(queries, relevant_sets):\n        rel = set(relevant)\n        order = rank_query(index, query)\n        recalls.append(len(set(order[:k]) & rel) / len(rel))\n        rr = 0.0\n        for position, doc in enumerate(order, start=1):\n            if doc in rel:\n                rr = 1.0 / position\n                break\n        rrs.append(rr)\n    return {\"recall_at_k\": sum(recalls) / len(recalls), \"mrr\": sum(rrs) / len(rrs)}\n\n# evaluate(build_index(B_DOCS), B_QUERIES, B_RELEVANT, 1) -> {'recall_at_k': 0.625, 'mrr': 0.875}\n\n# evaluate(...) k=1 -> recall 0.625, mrr 0.875; k=3 -> recall 1.0",
+      "hints": [
+        "Ranking und Auswertung trennen: rank_query liefert die komplette Ordnung, evaluate schneidet nur top-k ab und sucht die erste relevante Position (1-basiert).",
+        "Recall@k zählt den Schnitt |top-k ∩ relevant|; MRR bricht nach dem ersten relevanten Dokument ab."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mrr-zero-based",
+          "then": "Die Rangposition ist 1-basiert — das erste Dokument hat rank 1, nicht 0 (sonst wird MRR unendlich groß)."
+        },
+        {
+          "if": "mrr-sums-all",
+          "then": "MRR nutzt nur das ERSTE relevante Dokument pro Anfrage, nicht die Summe über alle."
+        },
+        {
+          "if": "k-applied-in-rank",
+          "then": "evaluate bekommt das komplette Ranking und schneidet selbst bei k ab — so bleibt die Funktion für jedes k wiederverwendbar."
+        }
+      ],
+      "typicalErrors": [
+        "MRR null-basiert gerechnet",
+        "Recall über alle gelisteten statt der top-k",
+        "bei MRR alle relevanten Dokumente summiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
