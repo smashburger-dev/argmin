@@ -45,3 +45,4 @@ Content-JSON +995 Zeilen. Kein Linalg-Modul vorhanden (Familien ohne
 
 S4D8 W06 Datenbereinigung (erstes Data/ML-Modul), Linalg-Modul,
 `learning-module.spec.ts`-Dauer-Erwartung, S5A Test-Cleanup, S5B Public-Profil.
+UI-Rework (Ende): „Antwort prüfen“-Button ohne Außenabstand (Noa).
