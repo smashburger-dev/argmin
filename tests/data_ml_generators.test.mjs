@@ -55,6 +55,7 @@ const SOLVERS = {
     return p.direction === 'count' ? ones : ones * (100 / p.n);
   },
   genPcaVariancePercent: (p) => (100 * p.lambda1) / (p.lambda1 + p.lambda2 + p.lambda3),
+  genSeedSpread: (p) => Math.max(...p.scores) - Math.min(...p.scores),
 };
 
 for (const [name, generator] of Object.entries(DATA_ML_SEED_GENERATORS)) {

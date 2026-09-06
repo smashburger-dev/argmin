@@ -1,5 +1,5 @@
 {
-  "description": "S4C ExerciseFamily baseline for classify-git-operation. sha256 over JSON.stringify of instantiate(familyId, seed, difficulty, caseId), LF-joined, seeds 0..63, both case types, four profiles. Set 2026-09-04. The 51-family SEED_GENERATORS corpus is unchanged.",
+  "description": "S4C ExerciseFamily baseline for classify-git-operation. sha256 over JSON.stringify of instantiate(familyId, seed, difficulty, caseId), LF-joined, seeds 0..63, both case types, four profiles. Set 2026-09-04. The 52-family SEED_GENERATORS corpus is unchanged.",
   "seedRange": [
     0,
     63

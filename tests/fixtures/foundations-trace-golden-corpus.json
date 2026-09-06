@@ -1,5 +1,5 @@
 {
-  "description": "S4D1 ExerciseFamily baseline for the six foundations trace families. sha256 over JSON.stringify of instantiate(familyId, seed, difficulty, caseId), LF-joined, seeds 0..63, all case types, four profiles. The git-operation and 51-family generator corpora are unchanged.",
+  "description": "S4D1 ExerciseFamily baseline for the six foundations trace families. sha256 over JSON.stringify of instantiate(familyId, seed, difficulty, caseId), LF-joined, seeds 0..63, all case types, four profiles. The git-operation and 52-family generator corpora are unchanged.",
   "seedRange": [
     0,
     63
