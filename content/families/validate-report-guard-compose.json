@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-report-guard-compose",
+  "contract": {
+    "familyId": "validate-report-guard-compose",
+    "familyGroup": "validate-contract",
+    "summary": "Prueft die Vorbedingungen eines Berichts und verweigert bei Fehlen deterministisch ohne Teilmesswerte, sonst werden alle Berichtsteile zusammengefuehrt.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "report-guard-compose",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-research-responsible",
+      "c-genai-eval"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "report-guard-compose",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w33-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def responsible_report(subgroups, sweep, kosten, restrisiken):\n    \"\"'Bericht nur mit Subgruppen, Paritaet, Kosten und Restrisiko; sonst ValueError.'\"\"\"\n    ...\n\n",
+        "tests": "SUB = {\"fpr_diff\": 0.15, \"selrate_diff\": 0.05}\nSWP = {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True}\nKST = {\"input_eur\": 0.06, \"output_eur\": 0.06, \"gesamt_eur\": 0.12}\nr = responsible_report(SUB, SWP, KST, [\"regel-detektor erkennt nur bekannte muster\", \"kein echtes llm\"])\n__check('bericht mit allen teilen', r == {\"fpr_diff\": 0.15, \"selrate_diff\": 0.05, \"schwelle\": 0.6, \"f1\": 0.78, \"kosten_gesamt_eur\": 0.12, \"restrisiko\": [\"kein echtes llm\", \"regel-detektor erkennt nur bekannte muster\"]})\nfor args, meldung in (\n    (({}, SWP, KST, [\"x\"]), \"subgruppen fehlen\"),\n    ((SUB, {\"schwelle\": 0.6, \"f1\": 0.78}, KST, [\"x\"]), \"paritaet nicht geprueft\"),\n    ((SUB, SWP, {\"input_eur\": 0.06}, [\"x\"]), \"kosten fehlen\"),\n    ((SUB, SWP, KST, []), \"restrisiko fehlt\"),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": False}, KST, [\"x\"])\n    print(\"paritaet-false nicht verworfen\")\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == \"paritaet nicht geprueft\")\nprint(\"ok w33-e6\")"
+      },
+      "competencyIds": [
+        "c-research-responsible",
+        "c-genai-eval"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def responsible_report(subgroups, sweep, kosten, restrisiken):\n    if not isinstance(subgroups, dict) or \"fpr_diff\" not in subgroups or \"selrate_diff\" not in subgroups:\n        raise ValueError(\"subgruppen fehlen\")\n    if not isinstance(sweep, dict) or sweep.get(\"paritaet_ok\") is not True or \"schwelle\" not in sweep or \"f1\" not in sweep:\n        raise ValueError(\"paritaet nicht geprueft\")\n    if not isinstance(kosten, dict) or \"gesamt_eur\" not in kosten:\n        raise ValueError(\"kosten fehlen\")\n    if not isinstance(restrisiken, list) or len(restrisiken) == 0:\n        raise ValueError(\"restrisiko fehlt\")\n    return {\n        \"fpr_diff\": subgroups[\"fpr_diff\"],\n        \"selrate_diff\": subgroups[\"selrate_diff\"],\n        \"schwelle\": sweep[\"schwelle\"],\n        \"f1\": sweep[\"f1\"],\n        \"kosten_gesamt_eur\": kosten[\"gesamt_eur\"],\n        \"restrisiko\": sorted(restrisiken),\n    }"
+      },
+      "prompt": "Final Boss Responsible-Report: Implementiere <code>responsible_report(subgroups, sweep, kosten, restrisiken)</code>. Der Bericht entsteht nur vollständig: Fehlt eine Vorbedingung, wird <code>ValueError</code> mit fester Meldung geworfen — <code>\"subgruppen fehlen\"</code> (subgroups ist kein Dict oder ohne fpr_diff/selrate_diff), <code>\"paritaet nicht geprueft\"</code> (sweep ist kein Dict oder ohne paritaet_ok True samt schwelle und f1), <code>\"kosten fehlen\"</code> (kosten ist kein Dict oder ohne gesamt_eur), <code>\"restrisiko fehlt\"</code> (restrisiken ist keine nichtleere Liste). Sonst Rückgabe <code>{\"fpr_diff\": .., \"selrate_diff\": .., \"schwelle\": .., \"f1\": .., \"kosten_gesamt_eur\": .., \"restrisiko\": sortierte kopie}</code>. Das Risikoregister selbst (RPN-Priorisierung) bleibt menschliche Arbeitsevidenz und ist bewusst kein Teil dieser Mastery-Aufgabe — nur der Restrisiko-Eintrag fließt hier ein.",
+      "fullSolution": "def responsible_report(subgroups, sweep, kosten, restrisiken):\n    if not isinstance(subgroups, dict) or \"fpr_diff\" not in subgroups or \"selrate_diff\" not in subgroups:\n        raise ValueError(\"subgruppen fehlen\")\n    if not isinstance(sweep, dict) or sweep.get(\"paritaet_ok\") is not True or \"schwelle\" not in sweep or \"f1\" not in sweep:\n        raise ValueError(\"paritaet nicht geprueft\")\n    if not isinstance(kosten, dict) or \"gesamt_eur\" not in kosten:\n        raise ValueError(\"kosten fehlen\")\n    if not isinstance(restrisiken, list) or len(restrisiken) == 0:\n        raise ValueError(\"restrisiko fehlt\")\n    return {\n        \"fpr_diff\": subgroups[\"fpr_diff\"],\n        \"selrate_diff\": subgroups[\"selrate_diff\"],\n        \"schwelle\": sweep[\"schwelle\"],\n        \"f1\": sweep[\"f1\"],\n        \"kosten_gesamt_eur\": kosten[\"gesamt_eur\"],\n        \"restrisiko\": sorted(restrisiken),\n    }\n\n# vollstaendiger Bericht -> exaktes Dict; jede fehlende Vorbedingung -> ValueError mit fester Meldung (lokal python3-verifiziert)",
+      "hints": [
+        "Prüfe in der festen Reihenfolge subgroups, sweep, kosten, restrisiken — jede Verletzung wirft ValueError mit genau der genannten Meldung.",
+        "paritaet_ok True heißt echt True (is True) — False oder fehlend verweigern; das Restrisiko wird als sortierte Kopie eingebettet."
+      ],
+      "feedbackRules": [
+        {
+          "if": "partial-report",
+          "then": "Ein halber Bericht ist kein Bericht: Fehlt eine Vorbedingung, wird vollständig verworfen (ValueError), nicht mit Lücken gefüllt."
+        },
+        {
+          "if": "truthy-check",
+          "then": "paritaet_ok mit Truthiness zu prüfen nimmt auch 1 oder 'ja' an — der Vertrag verlangt is True."
+        },
+        {
+          "if": "restrisiko-mutated",
+          "then": "restrisiko im Bericht ist eine sortierte Kopie — die übergebene Liste darf nicht verändert werden."
+        }
+      ],
+      "typicalErrors": [
+        "Bericht mit Lücken statt Verweigerung erzeugt",
+        "paritaet_ok truthy statt is True geprüft",
+        "übergebene Restrisiken-Liste mutiert statt sortiert zu kopieren"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
