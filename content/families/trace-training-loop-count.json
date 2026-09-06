@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-training-loop-count",
+  "contract": {
+    "familyId": "trace-training-loop-count",
+    "familyGroup": "trace-state",
+    "summary": "Tracet Schrittzählung und Parameter-Updates einer Trainingsloop mit Aufrund-Arithmetik.",
+    "taskArchetype": "output-predict-lines",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "training-loop-count",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-dl-training",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "training-loop-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w20-e3"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "n, B, epochs = 90, 40, 3\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 10.0\nfor g in [4.0, 4.0, 4.0]:\n    w = w - 0.5 * g\nprint(w)"
+      },
+      "expected": {
+        "output": "9\n4.0"
+      },
+      "prompt": "Trainingsschleife lesen: Was gibt dieses Programm aus? Sage die Ausgaben der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis: <code>-(-n // B)</code> ist Aufrunden in Ganzzahlarithmetik; <code>w</code> startet als float.",
+      "fullSolution": "Batches: $\\lceil 90/40 \\rceil = 3$ pro Epoche, über 3 Epochen $3 \\cdot 3 = 9$ Updates. Parameter: $w = 10{,}0 - 3 \\cdot (0{,}5 \\cdot 4{,}0) = 4{,}0$. Ausgabe: <code>9</code> und <code>4.0</code>.",
+      "hints": [
+        "Pro Epoche: aufrunden(90/40) = 3 Batches — auch wenn der letzte nur 30 Beispiele hat. Drei Epochen multiplizieren das.",
+        "Jeder der drei Updates zieht 0,5 · 4 = 2 ab: 10,0 − 2 − 2 − 2. Achtung: print eines floats zeigt die .0-Endung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "−(−90 // 40) = −(−3) = 3 pro Epoche (Ganzzahl-Aufrunden); über 3 Epochen 9."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "w bleibt float: 10.0 − 3 · 2.0 = 4.0 — die Ausgabe lautet 4.0, nicht 4."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — erst die Schrittzahl, dann der Parameterwert."
+        }
+      ],
+      "typicalErrors": [
+        "abgerundet (2 Batches) und 6 ausgegeben",
+        "die float-Endung .0 in der Vorhersage unterschlagen",
+        "Update nur einmal statt dreimal gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

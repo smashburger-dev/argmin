@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-dl-training",
+  "version": 1,
+  "locale": "de",
+  "title": "Training Loops: Loss, Lernrate, Lernkurven",
+  "description": "Lerne Trainingsloops, SGD-Schritte und Lernkurven deterministisch zu zählen, zu implementieren und zu diagnostizieren.",
+  "competencyIds": [
+    "c-dl-training"
+  ],
+  "requires": [
+    "c-dl-autograd",
+    "c-ml-baseline"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "mathematical-foundations"
+  ],
+  "lessonIds": [
+    "l-dl-training"
+  ],
+  "placements": [
+    {
+      "placementId": "p-dl-training-classify",
+      "role": "curated",
+      "familyId": "classify-training-curve",
+      "caseId": "training-curve-diagnosis",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-dl-training",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-dl-training-sgd",
+      "role": "curated",
+      "familyId": "formula-count-from-construction",
+      "caseId": "sgd-update-count",
+      "seed": 2002,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-training",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-training-trace",
+      "role": "curated",
+      "familyId": "trace-training-loop-count",
+      "caseId": "training-loop-count",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-training",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-training-primitive",
+      "role": "curated",
+      "familyId": "optimize-training-primitive-contract",
+      "caseId": "loss-and-batch-primitives",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 20,
+      "lessonId": "l-dl-training",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-training-split",
+      "role": "curated",
+      "familyId": "fit-seeded-split-sgd-linear",
+      "caseId": "seeded-split-sgd-linear",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-dl-training",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-training-mlp",
+      "role": "curated",
+      "familyId": "fit-mlp-val-curve-argmin",
+      "caseId": "mlp-val-curve-argmin",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 45,
+      "lessonId": "l-dl-training",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-training-practice",
+      "role": "practice-space",
+      "familyId": "formula-count-from-construction",
+      "caseId": "sgd-update-count",
+      "seed": 2002,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-dl-training"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

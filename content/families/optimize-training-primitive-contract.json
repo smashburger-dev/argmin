@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-training-primitive-contract",
+  "contract": {
+    "familyId": "optimize-training-primitive-contract",
+    "familyGroup": "optimize-update",
+    "summary": "Implementiert Verlust- und Regularisierungsprimitive mit Wertebereichs-Verträgen vor der Rechnung (MSE, BCE mit Clipping, Ceil-Schritte, Dropout, Weight Decay).",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "loss-and-batch-primitives",
+        "propertyTest": false
+      },
+      {
+        "caseId": "dropout-weight-decay-primitives",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-dl-training",
+      "c-dl-regularization",
+      "c-grad-regression",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "loss-and-batch-primitives",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w20-e4"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-grad-regression"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef mse_loss(y_hat, y):\n    \"\"\"Return mean((y_hat - y) ** 2) as float; ValueError on shape mismatch.\"\"\"\n    # np.asarray, check shapes coincide, then mean of squared residuals\n    ...\n\n\ndef bce_loss(p, y):\n    \"\"\"Return binary cross entropy with eps = 1e-12 clipping as float.\n\n    p must lie within [0, 1] and match the shape of y; otherwise ValueError.\n    \"\"\"\n    # check shapes and value range FIRST, then clip and apply the formula\n    ...\n\n\ndef steps_per_epoch(n, batch_size):\n    \"\"\"Return ceil(n / batch_size) as int; ValueError for n < 1 or batch_size < 1.\"\"\"\n    ...\n",
+        "tests": "yh = np.array([1.0, 2.0, 3.0])\nyv = np.array([1.5, 2.0, 3.5])\n__check('mse bekannter Wert', abs(mse_loss(yh, yv) - (0.25 + 0.0 + 0.25) / 3.0) < 1e-12)\n__check('mse konstant null', mse_loss(yh, yh) == 0.0)\ntry:\n    mse_loss(np.zeros(3), np.zeros(4))\n    __check('mse Formfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('mse Formfehler -> ValueError', True)\np = np.array([0.9, 0.2, 0.7, 0.99])\nt = np.array([1.0, 0.0, 1.0, 0.0])\neps = 1e-12\npc = np.clip(p, eps, 1.0 - eps)\nref = -np.mean(t * np.log(pc) + (1.0 - t) * np.log(1.0 - pc))\n__check('bce bekannter Wert', abs(bce_loss(p, t) - float(ref)) < 1e-12)\n__check('bce clippt 1.0 endlich', np.isfinite(bce_loss(np.array([1.0, 0.5]), np.array([1.0, 1.0]))))\n__check('bce perfekt ist ~0', bce_loss(np.array([1.0 - 1e-9, 1e-9]), np.array([1.0, 0.0])) < 1e-6)\nfor bad in [\n    lambda: bce_loss(np.array([1.2, 0.5]), np.array([1.0, 0.0])),\n    lambda: bce_loss(np.array([-0.1, 0.5]), np.array([1.0, 0.0])),\n    lambda: bce_loss(np.zeros(3), np.zeros(4)),\n]:\n    try:\n        bad()\n        __check('bce Vertrag -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check('bce Vertrag -> ValueError', True)\n__check('steps 90/40', steps_per_epoch(90, 40) == 3)\n__check('steps 100/10', steps_per_epoch(100, 10) == 10)\n__check('steps 5/8', steps_per_epoch(5, 8) == 1)\n__check('steps ist int', isinstance(steps_per_epoch(7, 3), int))\nfor bad_n, bad_b in [(0, 4), (10, 0), (-3, 4)]:\n    try:\n        steps_per_epoch(bad_n, bad_b)\n        __check('steps Vertrag -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check('steps Vertrag -> ValueError', True)\n__check('mse/bce als float', isinstance(mse_loss(yh, yv), float) and isinstance(bce_loss(p, t), float))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\n\ndef mse_loss(y_hat, y):\n    y_hat = np.asarray(y_hat, dtype=float)\n    y = np.asarray(y, dtype=float)\n    if y_hat.shape != y.shape:\n        raise ValueError(\"y_hat und y brauchen gleiche Form\")\n    return float(np.mean((y_hat - y) ** 2))\n\n\ndef bce_loss(p, y):\n    p = np.asarray(p, dtype=float)\n    y = np.asarray(y, dtype=float)\n    if p.shape != y.shape:\n        raise ValueError(\"p und y brauchen gleiche Form\")\n    if np.any(p < 0.0) or np.any(p > 1.0):\n        raise ValueError(\"p muss in [0, 1] liegen\")\n    eps = 1e-12\n    pc = np.clip(p, eps, 1.0 - eps)\n    return float(-np.mean(y * np.log(pc) + (1.0 - y) * np.log(1.0 - pc)))\n\n\ndef steps_per_epoch(n, batch_size):\n    if n < 1 or batch_size < 1:\n        raise ValueError(\"n und batch_size muessen >= 1 sein\")\n    return int(-(-n // batch_size))"
+      },
+      "prompt": "Verluste und Batch-Zählung sauber implementieren. <code>mse_loss(y_hat, y)</code> gibt $\\frac{1}{n}\\sum_i (\\hat{y}_i - y_i)^2$ als float zurück; bei Formungleichheit wirft sie <code>ValueError</code>. <code>bce_loss(p, y)</code> bekommt Wahrscheinlichkeiten $p \\in [0, 1]$ und Labels $y \\in \\{0, 1\\}$ und gibt $-\\frac{1}{n}\\sum_i (y_i \\log p_i + (1 - y_i)\\log(1 - p_i))$ zurück — dabei werden die Wahrscheinlichkeiten vor dem Logarithmus auf $[\\varepsilon, 1-\\varepsilon]$ mit $\\varepsilon = 10^{-12}$ geclippt; Werte außerhalb $[0, 1]$ oder falsche Formen werfen <code>ValueError</code>. <code>steps_per_epoch(n, batch_size)</code> liefert $\\lceil n / B \\rceil$ als <code>int</code> und wirft <code>ValueError</code> für $n < 1$ oder $B < 1$. Der Test rechnet alle Werte gegen direkte Formeln nach und prüft die Fehlerverträge.",
+      "fullSolution": "def mse_loss(y_hat, y):\n    y_hat = np.asarray(y_hat, dtype=float)\n    y = np.asarray(y, dtype=float)\n    if y_hat.shape != y.shape:\n        raise ValueError(\"y_hat und y brauchen gleiche Form\")\n    return float(np.mean((y_hat - y) ** 2))\n\ndef bce_loss(p, y):\n    p = np.asarray(p, dtype=float)\n    y = np.asarray(y, dtype=float)\n    if p.shape != y.shape:\n        raise ValueError(\"p und y brauchen gleiche Form\")\n    if np.any(p < 0.0) or np.any(p > 1.0):\n        raise ValueError(\"p muss in [0, 1] liegen\")\n    eps = 1e-12\n    pc = np.clip(p, eps, 1.0 - eps)\n    return float(-np.mean(y * np.log(pc) + (1.0 - y) * np.log(1.0 - pc)))\n\ndef steps_per_epoch(n, batch_size):\n    if n < 1 or batch_size < 1:\n        raise ValueError(\"n und batch_size muessen >= 1 sein\")\n    return int(-(-n // batch_size))\n\n# mse([1,2,3],[1.5,2,3.5]) = 1/6; steps_per_epoch(90,40) = 3",
+      "hints": [
+        "mse_loss: Formen prüfen, dann mean der quadrierten Residuen als float. bce_loss: erst Form und Wertbereich [0,1] prüfen (ValueError), dann clippen und die Formel anwenden.",
+        "Aufrunden in Ganzzahlen: -(-n // batch_size) oder math.ceil — Rückgabe als int. Die Verträge werfen vor der Rechnung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "bce-unclipped",
+          "then": "Ohne Clipping liefert log(0) = −inf — die Endlichkeit des perfekten Falls im Test prüft genau das."
+        },
+        {
+          "if": "valueerror-missing",
+          "then": "Formungleichheit, p außerhalb [0,1] und n/B < 1 sind Vertragsverletzungen mit ValueError vor der Rechnung."
+        },
+        {
+          "if": "steps-rounded-down",
+          "then": "5 Beispiele mit Batchgröße 8 sind ein Schritt: aufgerundet — Ab rounding verliert den letzten kleinen Batch."
+        }
+      ],
+      "typicalErrors": [
+        "BCE ohne Clipping und damit log(0)",
+        "Wertebereich von p nicht geprüft",
+        "Batches abgerundet und den kleinen Restbatch verloren"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "dropout-weight-decay-primitives",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w21-e4"
+      ],
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef dropout_forward(x, mask, p):\n    \"\"\"Return x with dropped entries exactly 0 and kept entries scaled by 1/p.\n\n    mask is read via np.asarray(mask).astype(bool); ValueError (before any\n    computation) if mask.shape != x.shape or not 0 < p <= 1.\n    \"\"\"\n    # 1) contracts: shape equality and 0 < p <= 1\n    # 2) scaled = x / p, then zero out dropped entries via the mask\n    ...\n\n\ndef weight_decay_update(w, grad, lr, lam):\n    \"\"\"Return w - lr * (grad + lam * w); ndarray in -> ndarray out, float in -> float out.\"\"\"\n    ...\n",
+        "tests": "x = np.array([[2.0, -4.0], [6.0, 8.0]])\nmask = np.array([[True, False], [True, True]])\nout = dropout_forward(x, mask, 0.5)\n__check('Skalierung 1/p', np.allclose(out, np.array([[4.0, 0.0], [12.0, 16.0]])))\n__check('gedroppt exakt 0', out[0, 1] == 0.0)\n__check('p=1 ist Identitaet', np.allclose(dropout_forward(x, mask, 1.0), np.array([[2.0, 0.0], [6.0, 8.0]])))\nout34 = dropout_forward(x, mask, 0.75)\n__check('Skalierung 1/0,75', np.allclose(out34, np.array([[2.0 / 0.75, 0.0], [8.0, 32.0 / 3.0]])))\n__check('0/1-Maske akzeptiert', np.allclose(dropout_forward(x, np.array([[1, 0], [0, 1]]), 0.5), np.array([[4.0, 0.0], [0.0, 16.0]])))\nfor bad in [\n    lambda: dropout_forward(x, np.array([True, False, True]), 0.5),\n    lambda: dropout_forward(x, mask, 0.0),\n    lambda: dropout_forward(x, mask, 1.5),\n    lambda: dropout_forward(x, mask, -0.5),\n]:\n    try:\n        bad()\n        __check('Dropout Vertrag -> ValueError', False, 'kein ValueError')\n    except ValueError:\n        __check('Dropout Vertrag -> ValueError', True)\nw = np.array([2.0, -1.0])\ng = np.array([0.4, 0.2])\nupd = weight_decay_update(w, g, 0.5, 0.2)\n__check('Weight-Decay-Update Array', np.allclose(upd, w - 0.5 * (g + 0.2 * w)))\n__check('Weight-Decay Update Vektorraeume', upd.shape == w.shape and isinstance(upd, np.ndarray))\n__check('Weight-Decay lam=0 ist SGD', np.allclose(weight_decay_update(w, g, 0.5, 0.0), w - 0.5 * g))\n__check('Weight-Decay skalar', isinstance(weight_decay_update(2.0, 0.4, 0.5, 0.2), float) and abs(weight_decay_update(2.0, 0.4, 0.5, 0.2) - 1.6) < 1e-12)\nbig = weight_decay_update(np.array([10.0]), np.array([0.0]), 0.5, 0.2)\n__check('reiner Decay zieht Richtung null', big[0] == 9.0)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\n\ndef dropout_forward(x, mask, p):\n    x = np.asarray(x, dtype=float)\n    m = np.asarray(mask).astype(bool)\n    if m.shape != x.shape:\n        raise ValueError(\"mask und x brauchen gleiche Form\")\n    if not (0.0 < p <= 1.0):\n        raise ValueError(\"p muss in (0, 1] liegen\")\n    return np.where(m, x / p, 0.0)\n\n\ndef weight_decay_update(w, grad, lr, lam):\n    if np.isscalar(w):\n        return float(w - lr * (grad + lam * w))\n    w = np.asarray(w, dtype=float)\n    grad = np.asarray(grad, dtype=float)\n    return w - lr * (grad + lam * w)"
+      },
+      "prompt": "Regularisierung exakt umsetzen. <code>dropout_forward(x, mask, p)</code> wendet eine feste Maske an: Gedroppte Einträge werden exakt $0$, erhaltene werden mit $1/p$ multipliziert (invertierte Skalierung). Verträge: <code>mask</code> wird mit <code>np.asarray(mask).astype(bool)</code> gelesen; <code>mask.shape != x.shape</code> oder $p \\notin (0, 1]$ wirft <code>ValueError</code> vor der Rechnung. <code>weight_decay_update(w, grad, lr, lam)</code> gibt $w - \\mathrm{lr} \\cdot (g + \\lambda w)$ zurück — Array für Array, float für float. Der Test prüft exakte Werte, Skalierung, Fehlerverträge und dass $p = 1$ die Identität ist.",
+      "fullSolution": "def dropout_forward(x, mask, p):\n    x = np.asarray(x, dtype=float)\n    m = np.asarray(mask).astype(bool)\n    if m.shape != x.shape:\n        raise ValueError(\"mask und x brauchen gleiche Form\")\n    if not (0.0 < p <= 1.0):\n        raise ValueError(\"p muss in (0, 1] liegen\")\n    return np.where(m, x / p, 0.0)\n\ndef weight_decay_update(w, grad, lr, lam):\n    if np.isscalar(w):\n        return float(w - lr * (grad + lam * w))\n    return np.asarray(w, float) - lr * (np.asarray(grad, float) + lam * np.asarray(w, float))\n\n# dropout(x=[[2,-4],[6,8]], mask, p=0.5) -> [[4, 0], [12, 16]]; weight_decay_update(2.0, 0.4, 0.5, 0.2) = 1.6",
+      "hints": [
+        "dropout_forward: np.where(maske, x/p, 0.0) macht beides auf einmal — Skalierung der erhaltenen, exakte Null für gedroppte Einträge. Verträge zuerst.",
+        "weight_decay_update ist eine Zeile Mathematik: w − lr·(g + λ·w). Für skalare Eingaben float zurückgeben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "scale-wrong-direction",
+          "then": "Erhaltene Einträge werden mit 1/p GRÖSSER (p < 1), nicht mit p kleiner — das hält den Erwartungswert stabil."
+        },
+        {
+          "if": "valueerror-missing",
+          "then": "Formungleichheit der Maske und p außerhalb (0, 1] sind Vertragsverletzungen mit ValueError vor der Rechnung."
+        },
+        {
+          "if": "decay-term-missing",
+          "then": "Im Update steht λ·w IM Argument: w − lr·(g + λ·w) — nicht w − lr·g − λ·w mit falscher Lernrate auf den Decay-Term."
+        }
+      ],
+      "typicalErrors": [
+        "mit p statt 1/p skaliert",
+        "Decay-Term außerhalb des Lernraten-Faktors",
+        "Verträge erst nach der Berechnung geprüft"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
