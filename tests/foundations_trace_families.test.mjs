@@ -319,6 +319,7 @@ const TRACE_TAXONOMY = [
       'freeze-param-filter-trace': 'statischer W25-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
       'absolute-vs-relative-gain-trace': 'statischer W26-Fall mit Variablenzustand und eigenem Kompetenz-Override',
       'metric-name-normalize-trace': 'statischer W31-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
+      'column-picture-trace': 'statischer W05-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
     },
     staticContent: [
       { sourceId: 'w01-e3', contentType: 'predict-output', caseId: 'reassign-two-variables-print' },

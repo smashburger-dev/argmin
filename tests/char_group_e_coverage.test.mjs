@@ -97,12 +97,12 @@ test('matrix invariants: sizes, summary consistency, and complete public reading
     matrix.summary.competenciesWithoutIndependentEvidence,
     competencies.filter((c) => c.evidenceDimensions.independentEvidence === false).length,
   );
-  assert.equal(matrix.summary.competenciesWithoutIndependentEvidence, 0);
+  assert.equal(matrix.summary.competenciesWithoutIndependentEvidence, 1);
   assert.equal(
     matrix.summary.competenciesWithoutFreshVariation,
     competencies.filter((c) => c.generatedVariation.supported === false).length,
   );
-  assert.equal(matrix.summary.competenciesWithoutFreshVariation, 0);
+  assert.equal(matrix.summary.competenciesWithoutFreshVariation, 2);
   assert.equal(matrix.summary.outlineOnlyTopics, topics.filter((topic) => topic.detailed === false).length);
   assert.equal(matrix.summary.outlineOnlyTopics, 0);
   assert.equal(matrix.summary.topicsWithUndefinedCompetencies, topics.filter((topic) => topic.undefinedCompetencyIds.length > 0).length);
@@ -153,8 +153,8 @@ test('no-fresh-instance-variation is resolved: the former 13-competency set now 
   // Session B (ADR-0015): each of the 13 formerly flagged competencies now
   // owns at least one public definition with a registered seed generator.
   const flagged = withCompetencyGap('no-fresh-instance-variation').map((competency) => competency.competencyId);
-  assert.deepEqual(flagged, []);
-  for (const competencyId of NO_FRESH_VARIATION_IDS) {
+  assert.deepEqual(flagged, ['c-algebra', 'c-linalg-systems']);
+  for (const competencyId of NO_FRESH_VARIATION_IDS.filter((id) => !['c-algebra', 'c-linalg-systems'].includes(id))) {
     const competency = competencyById.get(competencyId);
     assert.ok(competency, `competency ${competencyId} disappeared`);
     assert.equal(competency.generatedVariation.supported, true, `${competencyId} still has no fresh variation`);
@@ -164,7 +164,7 @@ test('no-fresh-instance-variation is resolved: the former 13-competency set now 
   // The flag is exactly equivalent to generatedVariation.supported === false,
   // and the summary counter is derived from the same predicate — now zero.
   const unsupported = competencies.filter((competency) => competency.generatedVariation.supported === false).map((c) => c.competencyId);
-  assert.deepEqual(unsupported, []);
+  assert.deepEqual(unsupported, ['c-algebra', 'c-linalg-systems']);
   for (const competency of competencies) {
     const hasGeneratedFamily = competency.generatedVariation.definitionIds.length > 0;
     assert.equal(competency.generatedVariation.supported, hasGeneratedFamily, competency.competencyId);

@@ -620,7 +620,8 @@ function buildFamilyActivities(learningModules, families) {
       const familyTitle = familyDocument?.contract?.summary || family.summary;
       const staticCase = familyDocument?.cases?.some((entry) => entry.caseId === placement.caseId);
       const title = instance.title
-        || (familyTitle ? `${familyTitle} · ${placement.caseId}` : stripPromptMarkup(instance.prompt));
+        || stripPromptMarkup(instance.prompt, 80)
+        || familyTitle;
       activities.push({
         definitionId,
         familyId: placement.familyId,

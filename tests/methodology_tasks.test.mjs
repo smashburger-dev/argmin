@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { compileContent } from '../tools/compile_content.mjs';
 import { graders } from '../assets/js/core/graders.js';
 import { instantiateLegacyExercise } from '../assets/js/core/legacy_exercise_adapter.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { routeForDefinition } from '../assets/js/domain/activity_route.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -12,15 +13,14 @@ const bundle = compileContent({ projectRoot: root, profile: 'public' });
 const definition = (id) => bundle.exerciseDefinitions.find((item) => item.definitionId === id);
 
 test('algebra now spans generated advanced practice and a symbolic final boss', async () => {
-  const advanced = definition('f-algebra-both-sides-01');
-  const instance = instantiateLegacyExercise(advanced, 7311);
-  assert.equal(instance.generatorId, 'genLinearBothSides');
-  assert.equal(instance.difficulty, 3);
+  const instance = EXERCISE_FAMILIES.instantiate('transform-linear-equation-isolate', 7311, 'stretch', 'collect-x-terms-both-sides');
+  assert.equal(instance.familyId, 'transform-linear-equation-isolate');
+  assert.equal(instance.difficulty, 'stretch');
   assert.equal((await graders.deterministic.grade(instance, String(instance.expectedAnswer.value))).correct, true);
-  const boss = definition('f-algebra-final-boss-01');
-  assert.equal(boss.difficulty, 4);
+  const boss = EXERCISE_FAMILIES.instantiate('transform-expression-simplify-canonical', 7311, 'challenge', 'distribute-sign-constant-chain');
+  assert.equal(boss.familyId, 'transform-expression-simplify-canonical');
+  assert.equal(boss.difficulty, 'challenge');
   assert.equal(boss.graderId, 'pyodide-sympy');
-  assert.equal(boss.expectedAnswer.expression, '4*x - 16');
 });
 
 test('advanced repair and reflection tasks close the Foundations transfer bridge', () => {
@@ -29,7 +29,7 @@ test('advanced repair and reflection tasks close the Foundations transfer bridge
   assert.ok(dataRepair.competencyIds.includes('c-python-collections'));
   assert.ok(dataRepair.competencyIds.includes('c-python-files-errors'));
   assert.equal(definition('f-git-merge-debug-01').difficulty, 3);
-  assert.equal(definition('f-meta-error-log-01').difficulty, 3);
+  assert.ok(bundle.familyActivities.some((activity) => activity.familyId === 'classify-error-hypothesis'));
   const meta = bundle.competencies.find((item) => item.competencyId === 'c-meta-learning');
   assert.equal(meta.evidencePolicy.delayedHitRequired, true);
   assert.equal(meta.evidencePolicy.minimumDistinctDefinitions, 2);

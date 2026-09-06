@@ -32,7 +32,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL = {
   'classify-string-immutability': { summary: 'Ordnet eine String-Operation ihren Folgen aus der Unveränderlichkeit von Strings zu.', members: ['w02-e3'] },
   'classify-set-operation-semantics': { summary: 'Ordnet eine Mengenbeobachtung der richtigen Set-Operation und Eindeutigkeits-Semantik zu.', members: ['w03-e2'] },
-  'classify-error-hypothesis': { summary: 'Ordnet ein beobachtetes Fehlerbild der plausibelsten Fehlerhypothese zu.', members: ['f-algebra-debug-01', 'f-meta-error-classify-01'] },
+  'classify-error-hypothesis': { summary: 'Ordnet ein beobachtetes Fehlerbild der plausibelsten Fehlerhypothese zu.', members: ['f-algebra-debug-01', 'f-meta-error-classify-01', 'f-meta-error-log-01'] },
   'classify-test-attitude': { summary: 'Ordnet eine Testpraxis der passenden Testhaltung zu.', members: ['f-testing-choice-01'] },
   'classify-control-construct': { summary: 'Ordnet ein Code-Fragment dem passenden Kontrollkonstrukt zu.', members: ['f-control-choice-01'] },
   'classify-python-collection-choice': { summary: 'Ordnet eine Aufgabe der passenden Python-Collection zu.', members: ['f-collections-choice-01'] },
@@ -54,6 +54,7 @@ const SOLVER_TABLE = {
   'dedup-and-intersection': 'len(a) ist 2 und a & b ist {"lern"} — Mengen speichern jedes Element nur einmal, & bildet den Durchschnitt.',
   'base-vs-exponent-confusion': 'Bei gleicher Basis werden die Exponenten addiert, aber die Basis bleibt 2.',
   'seeded-error-pattern-cases': 'Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen.',
+  'error-journal-next-test': 'Beobachtung und kleinste Reproduktion notieren, die Vorzeichenregel als Ursachenhypothese benennen und dieselbe Regel an einer frischen Instanz gezielt testen',
   'csv-off-by-one-reproduce-smallest': 'Den kleinsten Fall reproduzieren und prüfen, ob Header und nullbasierter Index in der Umrechnung fehlen.',
   'for-over-existing-collection': '`for value in values:`',
   'membership-set-for-dedup': 'Ein Set `seen`, das jede erstmals gelesene ID aufnimmt.',
@@ -71,6 +72,28 @@ function loadSourceDefinition(sourceId) {
     const week = sourceId.slice(0, 3);
     const doc = JSON.parse(readFileSync(join(root, 'content', 'exercises', `${week}.json`), 'utf8'));
     return doc.exercises.find((entry) => entry.exerciseId === sourceId);
+  }
+  if (sourceId === 'f-meta-error-log-01') {
+    const item = ERROR_HYPOTHESIS_CASES.find((entry) => entry.sourceId === sourceId);
+    return {
+      prompt: item.prompt,
+      fullSolution: item.solution,
+      choices: [
+        { id: 'correct', text: item.correct, correct: true },
+        ...item.distractors.map((text, index) => ({ id: `wrong-${index}`, text, correct: false })),
+      ],
+    };
+  }
+  if (sourceId === 'f-algebra-debug-01' || sourceId === 'f-meta-error-classify-01') {
+    const item = ERROR_HYPOTHESIS_CASES.find((entry) => entry.sourceId === sourceId);
+    return {
+      prompt: item.prompt,
+      fullSolution: item.solution,
+      choices: [
+        { id: 'correct', text: item.correct, correct: true },
+        ...item.distractors.map((text, index) => ({ id: `wrong-${index}`, text, correct: false })),
+      ],
+    };
   }
   const stem = { 'f-control-choice-01': 'control-choice', 'f-collections-choice-01': 'collections-choice', 'f-files-choice-01': 'files-choice', 'f-testing-choice-01': 'testing-choice', 'f-algebra-debug-01': 'algebra-debug', 'f-meta-error-classify-01': 'meta-error-classify' }[sourceId];
   return JSON.parse(readFileSync(join(root, 'content', 'exercise-definitions', 'foundations', `${stem}.json`), 'utf8'));

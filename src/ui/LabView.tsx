@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { CatalogData, ExerciseSummary } from '../app/types';
-import { getExercise } from '../adapters/content-repository';
+import { findLegacyExerciseSummary, getExercise } from '../adapters/content-repository';
 import { loadCodeDraft, saveCodeDraft } from '../adapters/local-progress';
 import { checkPython, runPython, type WorkspaceResult } from '../adapters/python-workspace';
 import { CodeEditor } from './CodeEditor';
 
 export function LabView({ catalog, exerciseId }: { catalog: CatalogData; exerciseId: string }) {
-  const summary = catalog.exercises.find((item) => item.definitionId === exerciseId);
+  const summary = catalog.exercises.find((item) => item.definitionId === exerciseId) ?? findLegacyExerciseSummary(exerciseId);
   const [exercise, setExercise] = useState<ExerciseSummary | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [initialCode, setInitialCode] = useState<string | null>(null);

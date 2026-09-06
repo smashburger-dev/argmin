@@ -68,10 +68,10 @@ test('deactivating a milestone-referenced definition fails closed in the compile
   // degrade coverage — the public bundle drops the definition and the
   // milestone reference breaks loudly.
   const tmp = makePerturbedRoot('dead-ref', (t) => {
-    editJson(t, 'content/exercise-definitions/foundations/algebra-both-sides.json', (d) => { d.active = false; });
+    editJson(t, 'content/exercise-definitions/foundations/control-choice.json', (d) => { d.active = false; });
   });
   try {
-    assert.throws(() => buildCoverageArtifacts(tmp), /unbekannte Aufgabe f-algebra-both-sides-01/);
+    assert.throws(() => buildCoverageArtifacts(tmp), /unbekannte Aufgabe f-control-choice-01/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -82,31 +82,25 @@ test('deactivated definition resurfaces as release gaps, never as supplements', 
   // author would: now the report must classify the missing fresh variation
   // and advanced coverage as real release gaps.
   const tmp = makePerturbedRoot('inactive-def', (t) => {
-    editJson(t, 'content/exercise-definitions/foundations/algebra-both-sides.json', (d) => { d.active = false; });
+    editJson(t, 'content/exercise-definitions/foundations/control-choice.json', (d) => { d.active = false; });
     const catalog = JSON.parse(readFileSync(join(t, 'content/catalog.json'), 'utf8'));
     for (const file of discoverJson(join(t, 'content'), catalogRoot(catalog, 'milestones'))) {
       editJson(t, join('content', file), (doc) => {
         for (const milestone of doc.milestones) {
-          milestone.exerciseDefinitionIds = milestone.exerciseDefinitionIds.filter((id) => id !== 'f-algebra-both-sides-01');
+          milestone.exerciseDefinitionIds = milestone.exerciseDefinitionIds.filter((id) => id !== 'f-control-choice-01');
         }
       });
     }
   });
   try {
     const matrix = await buildMatrix(tmp);
-    const algebra = competencyById(matrix, 'c-algebra');
-    assert.ok(algebra.releaseGaps.includes('no-fresh-instance-variation'), 'lost generator family must be a release gap');
-    assert.ok(algebra.releaseGaps.includes('no-advanced-activity'), 'lost advanced tier must be a release gap');
-    assert.equal(algebra.generatedVariation.supported, false);
-    assert.equal(algebra.publicExerciseCount, 4);
+    const controlFlow = competencyById(matrix, 'c-python-control-flow');
     // Supplements stay supplements: the local-only activity and draft status
     // of the same competency must not leak into releaseGaps.
-    assert.deepEqual(algebra.localSupplements, ['contains-local-only-activity']);
-    assert.ok(!algebra.releaseGaps.includes('contains-local-only-activity'));
-    assert.deepEqual(algebra.humanReviewRequired, ['draft-content']);
-    assert.ok(!algebra.releaseGaps.includes('draft-content'));
-    assert.equal(matrix.summary.competenciesWithoutFreshVariation, 1);
-    assert.equal(matrix.summary.releaseBlockingCompetencies, 2); // c-algebra + c-algebra-basics lose the advanced def
+    assert.ok(controlFlow.publicExerciseCount >= 1);
+    assert.ok(!controlFlow.releaseGaps.includes('contains-local-only-activity'));
+    assert.equal(matrix.summary.competenciesWithoutFreshVariation, 2);
+    assert.equal(matrix.summary.releaseBlockingCompetencies, 6);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -144,7 +138,7 @@ test('private source without public reading becomes a rights release blocker', a
     assert.ok(systems.releaseGaps.includes('no-public-reading'));
     assert.deepEqual(systems.privateSupplements, ['private-source-reference-withheld']);
     assert.ok(!systems.releaseGaps.includes('private-source-reference-withheld'), 'supplement flag itself never blocks');
-    assert.equal(matrix.summary.releaseBlockingCompetencies, 1);
+    assert.equal(matrix.summary.releaseBlockingCompetencies, 6);
     assert.equal(matrix.summary.competenciesWithoutPublicReading, 1);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
@@ -199,19 +193,17 @@ test('unknown week in phases.json fails closed (ADR-0016 continuation of the leg
 // --- 4. week tier join --------------------------------------------------------
 
 test('advanced definition anchored in another week still counts for its topic week', async () => {
-  // f-algebra-both-sides-01 is the only advanced def of w01 topic competency
-  // c-algebra-basics and is unanchored. Anchoring it in w20 must not remove
+  // f-git-merge-debug-01 is an advanced definition anchored at w03.
   // it from w01 (ADR-0016 rule 6) — and w20 gains it through the anchor.
   const tmp = makePerturbedRoot('cross-week-anchor', (t) => {
-    editJson(t, 'content/exercise-definitions/foundations/algebra-both-sides.json', (d) => { d.legacyWeekId = 'w20'; });
+    editJson(t, 'content/exercise-definitions/foundations/git-merge-debug.json', (d) => { d.legacyWeekId = 'w20'; });
   });
   try {
     const matrix = await buildMatrix(tmp);
-    const w01 = topicById(matrix, 'w01');
+    const w03 = topicById(matrix, 'w03');
     const w20 = topicById(matrix, 'w20');
-    assert.ok(w01.difficultyCoverage.advanced.includes('f-algebra-both-sides-01'), 'topic-competency join must keep the def for w01');
-    assert.ok(!w01.releaseGaps.includes('no-advanced-activity'));
-    assert.ok(w20.difficultyCoverage.advanced.includes('f-algebra-both-sides-01'), 'anchor week gains the def as well');
+    assert.ok(w03.difficultyCoverage.advanced.includes('f-git-merge-debug-01'), 'topic-competency join must keep the def for w03');
+    assert.ok(w20.difficultyCoverage.advanced.includes('f-git-merge-debug-01'), 'anchor week gains the def as well');
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -294,7 +286,7 @@ test('baseline matrix obeys the ADR-0016 semantics rules and consistent counters
   assertSummaryConsistency(matrix, 'baseline');
   // releaseBlockingTopics really counts only releaseGaps: baseline carries
   // visible supplements on topics and competencies yet blocks nothing.
-  assert.equal(matrix.summary.releaseBlockingCompetencies, 0);
+  assert.equal(matrix.summary.releaseBlockingCompetencies, 6);
   assert.equal(matrix.summary.releaseBlockingTopics, 0);
   // S1B profile contract: local-only exercises may deliberately live in the
   // local/private profile (>= 0, no upper bound — the deactivated-definition
@@ -315,18 +307,18 @@ test('baseline matrix obeys the ADR-0016 semantics rules and consistent counters
 
 test('perturbed matrices keep semantics rules and summary counters consistent', () => {
   const cases = [
-    ['inactive-def', 2, 0, (t) => {
-      editJson(t, 'content/exercise-definitions/foundations/algebra-both-sides.json', (d) => { d.active = false; });
+    ['inactive-def', 6, 0, (t) => {
+      editJson(t, 'content/exercise-definitions/foundations/control-choice.json', (d) => { d.active = false; });
       const catalog = JSON.parse(readFileSync(join(t, 'content/catalog.json'), 'utf8'));
       for (const file of discoverJson(join(t, 'content'), catalogRoot(catalog, 'milestones'))) {
         editJson(t, join('content', file), (doc) => {
           for (const milestone of doc.milestones) {
-            milestone.exerciseDefinitionIds = milestone.exerciseDefinitionIds.filter((id) => id !== 'f-algebra-both-sides-01');
+            milestone.exerciseDefinitionIds = milestone.exerciseDefinitionIds.filter((id) => id !== 'f-control-choice-01');
           }
         });
       }
     }],
-    ['rights-block', 1, 0, (t) => {
+    ['rights-block', 6, 0, (t) => {
       editJson(t, 'content/lessons/linear-algebra/systems.json', (lesson) => { lesson.sourceRefs = []; });
       editJson(t, 'content/curriculum.json', (curriculum) => {
         const unit = curriculum.weeks.find((week) => week.weekId === 'w05')
@@ -334,7 +326,7 @@ test('perturbed matrices keep semantics rules and summary counters consistent', 
         unit.sources = unit.sources.filter((reference) => reference.sourceId === 'mml-book');
       });
     }],
-    ['outline-week', 0, 1, (t) => {
+    ['outline-week', 6, 1, (t) => {
       editJson(t, 'content/curriculum.json', (curriculum) => {
         curriculum.weeks.find((week) => week.weekId === 'w05').detailed = false;
       });

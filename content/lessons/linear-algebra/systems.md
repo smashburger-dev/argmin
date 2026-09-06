@@ -67,6 +67,6 @@ Bei einer invertierbaren $2\times2$-Matrix tritt für jedes $b$ genau eine Lösu
 
 ## Direkter Check
 
-1. Öffne die [Spaltenbild-Auswahl](#/exercise/f-linalg-column-choice-01).
-2. Löse danach die [generierte Koeffizientenaufgabe](#/exercise/f-linalg-column-vector-01).
+1. Öffne die [Spaltenbild-Auswahl](#/family/classify-column-combination/column-choice-authored/0/intro).
+2. Löse danach die [generierte Koeffizientenaufgabe](#/family/formula-scalar-product/column-vector-authored/0/core).
 3. Verändere anschließend $x_1$ und $x_2$ in der [interaktiven Visualisierung](#/visualization/w05-viz1).

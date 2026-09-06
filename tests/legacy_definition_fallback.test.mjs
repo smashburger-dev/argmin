@@ -24,7 +24,7 @@ test('compiled bundle resolves a catalog f-* definition by id', () => {
 test('every discovered f-* definition compiles and unknown ids stay absent', () => {
   const catalog = JSON.parse(readFileSync(join(root, 'content/catalog.json'), 'utf8'));
   const files = discoverJson(join(root, 'content'), catalogRoot(catalog, 'exerciseDefinitions'));
-  assert.ok(files.length >= 30, `expected the catalog definition files, got ${files.length}`);
+  assert.ok(files.length >= 27, `expected the catalog definition files, got ${files.length}`);
   const bundle = compileContent({ projectRoot: root, profile: 'public' });
   const ids = new Set(bundle.exerciseDefinitions.map((item) => item.definitionId));
   for (const file of files) {

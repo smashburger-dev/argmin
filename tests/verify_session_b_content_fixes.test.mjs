@@ -19,6 +19,7 @@ import { tmpdir } from 'node:os';
 import { graders, buildPythonTests } from '../assets/js/core/graders.js';
 import { compileContent } from '../tools/compile_content.mjs';
 import { catalogRoot, discoverJson } from '../tools/content_roots.mjs';
+import { ERROR_HYPOTHESIS_CASES } from '../assets/js/core/foundations_choice_families.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -26,7 +27,42 @@ const readText = (path) => readFileSync(join(root, path), 'utf8');
 const grade = (exercise, answer) => graders.deterministic.grade(exercise, answer);
 const weekPack = (w) => read(`content/exercises/w${String(w).padStart(2, '0')}.json`);
 const exercise = (w, id) => weekPack(w).exercises.find((e) => e.exerciseId === id);
-const definition = (path) => read(`content/exercise-definitions/${path}`);
+const definition = (path) => {
+  const fullPath = join(root, 'content/exercise-definitions', path);
+  if (existsSync(fullPath)) return read(`content/exercise-definitions/${path}`);
+  if (path === 'foundations/meta-error-log.json') {
+    const item = ERROR_HYPOTHESIS_CASES.find((entry) => entry.sourceId === 'f-meta-error-log-01');
+    return {
+      definitionId: 'classify-error-hypothesis:error-journal-next-test',
+      activityType: 'single-choice',
+      graderId: 'deterministic',
+      prompt: item.prompt,
+      choices: [
+        { id: 'observable-test', text: item.correct, correct: true },
+        ...item.distractors.map((text, index) => ({
+          id: index === 0 ? 'more-reading' : `wrong-${index}`,
+          text,
+          correct: false,
+        })),
+      ],
+      expectedAnswer: { correctChoice: 'observable-test' },
+      feedbackRules: item.feedbackRules,
+    };
+  }
+  if (path === 'linear-algebra/column-vector.json') {
+    const family = read('content/families/formula-scalar-product.json');
+    const item = family.cases.find((entry) => entry.caseId === 'column-vector-authored');
+    return {
+      definitionId: 'formula-scalar-product:column-vector-authored',
+      activityType: item.activityType,
+      graderId: item.graderId,
+      prompt: item.prompt,
+      parameters: item.parameters,
+      expectedAnswer: item.expected,
+    };
+  }
+  throw new Error(`missing definition fixture ${path}`);
+};
 const lesson = (path) => readText(`content/lessons/${path}`);
 
 // ---------------------------------------------------------------------------

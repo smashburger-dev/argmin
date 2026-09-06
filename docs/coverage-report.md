@@ -6,12 +6,12 @@ Katalog: `ki-lernplattform-core` 2026.08.31. Die Matrix unterscheidet Erwähnung
 
 - Kompetenzen: 46
 - Roadmap-Themen: 39
-- Kompetenzen mit echten Releaseblockern: 0
+- Kompetenzen mit echten Releaseblockern: 6
 - Roadmap-Themen mit echten Releaseblockern: 0
 - Kompetenzen ohne öffentliche Lektüre: 0
 - Kompetenzen ohne in der Lektion verknüpfte öffentliche Lektüre: 0
-- Kompetenzen ohne unabhängige Evidenz: 0
-- Kompetenzen ohne frische Varianten: 0
+- Kompetenzen ohne unabhängige Evidenz: 1
+- Kompetenzen ohne frische Varianten: 2
 - Nur skizzierte Roadmap-Themen: 0
 - Roadmap-Themen mit undefinierten Kompetenzreferenzen: 0
 - Optionale lokale Zusatzaktivitäten: 0 Kompetenzen (kein Releaseblocker, wenn gleichwertige öffentliche Evidenz existiert)
@@ -22,17 +22,17 @@ Katalog: `ki-lernplattform-core` 2026.08.31. Die Matrix unterscheidet Erwähnung
 
 | Kompetenz | Lektionen | Lektionsverknüpfte / öffentliche Lektüren | öffentliche Aufgaben / Typen | Varianten | Basic · Core · Advanced · Final Boss | Evidenzdimensionen | Releaseblocker | Supplements | Human-Review |
 |---|---:|---:|---|---|---|---|---|---|---|
-| `c-algebra-basics` Algebra-Grundlagen | 1 | 2 / 9 | 8 / algebraic-expression, numeric, single-choice | ja (4) | 5 · 1 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
-| `c-algebra` Algebraische Termumformung | 1 | 2 / 2 | 5 / algebraic-expression, numeric, single-choice | ja (1) | 1 · 2 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
+| `c-algebra-basics` Algebra-Grundlagen | 1 | 2 / 9 | 5 / algebraic-expression, numeric | ja (3) | 4 · 1 · 0 · 0 | mentioned, reading, guidedPractice, independentEvidence, delayedReview | no-advanced-activity, no-final-boss-or-project | private Lektüre zurückgehalten | draft-content |
+| `c-algebra` Algebraische Termumformung | 1 | 2 / 2 | 1 / algebraic-expression | nein | 0 · 1 · 0 · 0 | mentioned, reading, guidedPractice, independentEvidence, delayedReview | fewer-than-two-public-definitions, single-public-exercise-type, no-fresh-instance-variation, no-advanced-activity, no-final-boss-or-project | — | draft-content |
 | `c-python-basics` Python-Grundlagen | 1 | 1 / 2 | 13 / code-trace, parsons, predict-output, python-code | ja (2) | 3 · 9 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
 | `c-python-reading` Python-Code lesen und tracen | 1 | 1 / 1 | 31 / code-trace, parsons, predict-output, python-code | ja (2) | 6 · 23 · 2 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
 | `c-python-functions` Python-Funktionen | 1 | 1 / 2 | 24 / code-trace, numeric, parsons, predict-output, python-code | ja (1) | 1 · 14 · 6 · 4 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
-| `c-meta-learning` Fehler analysieren und Lernen planen | 1 | 3 / 4 | 4 / short-rationale, single-choice | ja (1) | 1 · 2 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
-| `c-linalg-matrices` Matrizen und Matrixprodukte | 1 | 2 / 4 | 12 / code-trace, numeric, predict-output, python-code, short-rationale, single-choice | ja (1) | 5 · 3 · 2 · 2 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
-| `c-linalg-systems` Lineare Gleichungssysteme | 1 | 2 / 4 | 4 / python-code, single-choice, vector | ja (1) | 1 · 1 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
-| `c-linalg-gauss` Gauß-Elimination | 1 | 2 / 2 | 7 / numeric, python-code, single-choice, vector | ja (1) | 1 · 4 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
-| `c-linalg-independence` Lineare Unabhängigkeit und Rang | 1 | 2 / 4 | 7 / numeric, python-code, single-choice | ja (1) | 3 · 2 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
-| `c-numpy-basics` NumPy-Grundlagen und Shapes | 1 | 1 / 2 | 32 / parsons, predict-output, python-code, single-choice | ja (1) | 1 · 10 · 12 · 9 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
+| `c-meta-learning` Fehler analysieren und Lernen planen | 1 | 3 / 4 | 3 / short-rationale, single-choice | ja (1) | 1 · 2 · 0 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | no-advanced-activity | — | draft-content |
+| `c-linalg-matrices` Matrizen und Matrixprodukte | 1 | 2 / 4 | 10 / code-trace, numeric, predict-output, python-code, short-rationale, single-choice | ja (1) | 5 · 3 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | private Lektüre zurückgehalten | draft-content |
+| `c-linalg-systems` Lineare Gleichungssysteme | 1 | 2 / 4 | 0 / — | nein | 0 · 0 · 0 · 0 | mentioned, reading, guidedPractice | fewer-than-two-public-definitions, single-public-exercise-type, no-independent-evidence, no-delayed-review-path, no-fresh-instance-variation, no-advanced-activity, no-final-boss-or-project | private Lektüre zurückgehalten | draft-content |
+| `c-linalg-gauss` Gauß-Elimination | 1 | 2 / 2 | 4 / numeric, vector | ja (1) | 0 · 4 · 0 · 0 | mentioned, reading, guidedPractice, independentEvidence, delayedReview | no-advanced-activity, no-final-boss-or-project | private Lektüre zurückgehalten | draft-content |
+| `c-linalg-independence` Lineare Unabhängigkeit und Rang | 1 | 2 / 4 | 5 / numeric, single-choice | ja (1) | 3 · 2 · 0 · 0 | mentioned, reading, guidedPractice, independentEvidence, delayedReview | no-advanced-activity, no-final-boss-or-project | private Lektüre zurückgehalten | draft-content |
+| `c-numpy-basics` NumPy-Grundlagen und Shapes | 1 | 1 / 2 | 30 / parsons, predict-output, python-code | ja (1) | 1 · 10 · 11 · 8 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
 | `c-python-control-flow` Bedingungen und Schleifen | 1 | 1 / 4 | 9 / code-trace, parsons, predict-output, python-code, single-choice | ja (1) | 2 · 6 · 1 · 1 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
 | `c-python-collections` Listen, Dictionaries und Sets | 1 | 1 / 3 | 13 / code-trace, predict-output, python-code, single-choice | ja (1) | 2 · 7 · 3 · 2 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |
 | `c-python-files-errors` Dateien, Eingaben und Fehler | 1 | 1 / 3 | 6 / parsons, python-code, single-choice | ja (1) | 1 · 3 · 1 · 2 | mentioned, reading, guidedPractice, independentEvidence, delayedReview, transfer | — | — | draft-content |

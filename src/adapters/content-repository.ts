@@ -171,6 +171,11 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
   };
 }
 
+export function findLegacyExerciseSummary(definitionId: string): ExerciseSummary | null {
+  const exercise = index.exerciseDefinitions.find((item) => item.definitionId === definitionId);
+  return exercise ? toExerciseSummary(exercise) : null;
+}
+
 export function loadCatalog(): CatalogData {
   return {
     catalogId: index.catalogId,

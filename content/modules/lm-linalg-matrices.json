@@ -106,15 +106,15 @@
       "masteryEligible": true
     },
     {
-      "placementId": "p-linalg-matrices-09-column-choice-authored",
+      "placementId": "p-linalg-matrices-10-shape-debug-authored",
       "role": "curated",
       "familyId": "classify-column-combination",
-      "caseId": "column-choice-authored",
+      "caseId": "shape-debug-authored",
       "seed": 0,
-      "difficulty": "intro",
-      "estimatedMinutes": 5,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
       "lessonId": "l-linalg-matrices",
-      "masteryEligible": false
+      "masteryEligible": true
     },
     {
       "placementId": "p-linalg-matrices-10-column-picture-trace",

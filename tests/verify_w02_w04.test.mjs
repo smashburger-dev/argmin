@@ -95,10 +95,9 @@ test('every mapped foundations definition carries its assigned legacyWeekId', ()
       assert.equal(def.legacyWeekId, weekId, `${file}: expected legacyWeekId ${weekId}`);
     }
   }
-  // The diagnosis definition stays deliberately unassigned (meta learning is
-  // not bound to one roadmap week).
-  assert.equal(definition('meta-error-log.json').legacyWeekId, null,
-    'meta-error-log.json must keep legacyWeekId null');
+  // The diagnosis task is a family case and therefore has no authored
+  // definition assignment.
+  assert.equal(existsSync(join(root, 'content/exercise-definitions/foundations/meta-error-log.json')), false);
 });
 
 // --- B: week-to-competency coverage in the curriculum ------------------------------

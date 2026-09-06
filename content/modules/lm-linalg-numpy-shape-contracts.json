@@ -40,6 +40,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-numpy-shape-contracts-03-final-boss-authored",
+      "role": "curated",
+      "familyId": "construct-matvec-shape-contract",
+      "caseId": "final-boss-authored",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 45,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-numpy-shape-contracts-03-synthesis-three-contracts",
       "role": "curated",
       "familyId": "construct-linalg-contract-synthesis",

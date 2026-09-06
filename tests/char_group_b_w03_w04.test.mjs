@@ -204,7 +204,6 @@ test('group B is exactly the thirteen collections/files/testing/git/meta/data de
     'f-git-next-action-01',
     'f-git-parsons-01',
     'f-meta-error-classify-01',
-    'f-meta-error-log-01',
     'f-testing-choice-01',
     'f-testing-parsons-01',
   ]);
@@ -236,14 +235,13 @@ test('group B single-choice definitions accept the correct choice and reject eve
     'f-git-merge-debug-01',
     'f-git-next-action-01',
     'f-meta-error-classify-01',
-    'f-meta-error-log-01',
     'f-testing-choice-01',
   ]);
 
   for (const definition of choiceDefinitions) {
     const correctId = correctChoiceId(definition);
     // Where expectedAnswer.correctChoice exists it must agree with the
-    // choice flag (merge-debug and meta-error-log ship without it).
+    // choice flag (merge-debug ships without it).
     if (definition.expectedAnswer.correctChoice !== undefined) {
       assert.equal(definition.expectedAnswer.correctChoice, correctId, `${definition.definitionId}: correctChoice disagrees with choice flags`);
     }
@@ -272,10 +270,10 @@ test('group B single-choice definitions accept the correct choice and reject eve
   }
 });
 
-test('git-merge-debug and meta-error-log fire authored feedback after the Session-B grammar fix', async () => {
+test('git-merge-debug fires authored feedback after the Session-B grammar fix', async () => {
   // Session B: the bare rule keys ("ours", "copy-solution") were rewritten
   // as `choice !== '<correct>'` rules — wrong answers now carry feedback.
-  for (const definitionId of ['f-git-merge-debug-01', 'f-meta-error-log-01']) {
+  for (const definitionId of ['f-git-merge-debug-01']) {
     const definition = byDefinitionId(definitionId);
     const wrongChoice = definition.choices.find((choice) => !choice.correct);
     const outcome = await grade(definition, wrongChoice.id);

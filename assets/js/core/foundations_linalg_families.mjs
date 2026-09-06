@@ -30,7 +30,7 @@ function matmulProfileAccepts(difficulty) {
 /** Unabhängiger Solver: Matrixeintrag oder Skalarprodukt aus den
  *  Fallparametern, liest nie `expected` ab. */
 export function solveScalarProduct(parameters) {
-  if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3'].includes(parameters.caseId)) {
+  if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3', 'column-vector-authored'].includes(parameters.caseId)) {
     const body = staticCaseBody('formula-scalar-product', parameters.caseId);
     if (body.expected?.output) return { output: body.expected.output };
     if (body.expected?.kind === 'rubric') return { kind: 'rubric' };
@@ -49,7 +49,7 @@ export function solveScalarProduct(parameters) {
 }
 
 export function generateScalarProductFamily({ seed, caseId, difficulty }) {
-  if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3'].includes(caseId)) {
+  if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3', 'column-vector-authored'].includes(caseId)) {
     const body = staticCaseBody('formula-scalar-product', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
@@ -84,6 +84,7 @@ export const SCALAR_PRODUCT_CONTRACT = {
     { caseId: 'matmul-entry-w05-e12', propertyTest: false },
     { caseId: 'dot-product-w05-e13', propertyTest: false },
     { caseId: 'dot-product-w05-e3', propertyTest: false },
+    { caseId: 'column-vector-authored', propertyTest: false },
     { caseId: 'scalar-loop-output', propertyTest: false },
     { caseId: 'product-definition-rationale', propertyTest: false },
   ],

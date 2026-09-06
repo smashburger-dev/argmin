@@ -18,6 +18,17 @@
   ],
   "placements": [
     {
+      "placementId": "p-linalg-systems-00-column-vector-authored",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "column-vector-authored",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-systems-01-system-w05-e11",
       "role": "curated",
       "familyId": "transform-system-2x2-elimination",
