@@ -29,6 +29,7 @@ import {
   genEnsembleAccuracy,
   genMseFromResiduals,
   genMseGradient,
+  genPcaVariancePercent,
   genR2Share,
   genShrinkagePercent,
   genSubgroupGapPp,
@@ -58,6 +59,9 @@ const ridgeLassoDoc = JSON.parse(readFileSync(join(root, 'content/families/formu
 const ensembleEffectDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-ensemble-effect.json'), 'utf8'));
 const treeSplitDoc = JSON.parse(readFileSync(join(root, 'content/families/optimize-tree-best-split.json'), 'utf8'));
 const ensembleComparisonDoc = JSON.parse(readFileSync(join(root, 'content/families/construct-ensemble-predictor-comparison.json'), 'utf8'));
+const svmMarginDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-svm-margin.json'), 'utf8'));
+const supervisionScalingDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-supervision-scaling.json'), 'utf8'));
+const pcaKmeansDoc = JSON.parse(readFileSync(join(root, 'content/families/fit-pca-kmeans-pipeline.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -77,6 +81,9 @@ registerStaticCases(ridgeLassoDoc.familyId, ridgeLassoDoc.cases);
 registerStaticCases(ensembleEffectDoc.familyId, ensembleEffectDoc.cases);
 registerStaticCases(treeSplitDoc.familyId, treeSplitDoc.cases);
 registerStaticCases(ensembleComparisonDoc.familyId, ensembleComparisonDoc.cases);
+registerStaticCases(svmMarginDoc.familyId, svmMarginDoc.cases);
+registerStaticCases(supervisionScalingDoc.familyId, supervisionScalingDoc.cases);
+registerStaticCases(pcaKmeansDoc.familyId, pcaKmeansDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -101,6 +108,9 @@ const familyDocs = [
   ensembleEffectDoc,
   treeSplitDoc,
   ensembleComparisonDoc,
+  svmMarginDoc,
+  supervisionScalingDoc,
+  pcaKmeansDoc,
 ];
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
@@ -465,6 +475,57 @@ test('W15 seeded ensemble majority corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['aggregate-majority-rule-count-ensemble'].digest);
+});
+
+test('W16 PCA variance family preserves seeded generation, profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-ratio-percent-metric');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'pca-explained-variance-percent',
+        difficulty,
+      });
+      const { lambda1, lambda2, lambda3 } = generated.parameters;
+      const expected = (100 * lambda1) / (lambda1 + lambda2 + lambda3);
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveFormulaRatioPercentMetric(generated.parameters).value, expected);
+      if (difficulty === 'intro') assert.equal(generated.parameters.total, 50);
+      if (difficulty === 'stretch') assert.equal(generated.parameters.total, 25);
+    }
+  }
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 16001,
+      caseId: 'pca-explained-variance-percent',
+      difficulty: 'core',
+    }).expected.value,
+    genPcaVariancePercent(16001).expected,
+  );
+  assert.equal(
+    generateFormulaRatioPercentMetricFamily({
+      seed: 16001,
+      caseId: 'pca-explained-variance-percent',
+      difficulty: 'core',
+    }).expected.value,
+    85,
+  );
+});
+
+test('W16 seeded PCA variance corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateFormulaRatioPercentMetricFamily({
+        seed,
+        caseId: 'pca-explained-variance-percent',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['formula-ratio-percent-metric-pca'].digest);
 });
 
 test('quadratic error family preserves seeded generation, profiles and solver', () => {
@@ -940,6 +1001,48 @@ test('W15 static cases enforce profiles and competency overrides', () => {
       ),
       /Unbekanntes Profil/,
     );
+  }
+});
+
+test('W16 static cases enforce profiles and competency overrides', () => {
+  const margin = EXERCISE_FAMILIES.instantiate(
+    'classify-svm-margin',
+    0,
+    'intro',
+    'hard-margin-width',
+  );
+  assert.equal(margin.masteryEligible, false);
+  assert.deepEqual(margin.competencyIds, ['c-ml-svm-pca']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'classify-svm-margin',
+      0,
+      'core',
+      'hard-margin-width',
+    ),
+    /Unbekanntes Profil/,
+  );
+  const pca = EXERCISE_FAMILIES.instantiate(
+    'formula-ratio-percent-metric',
+    16001,
+    'core',
+    'pca-explained-variance-percent',
+  );
+  assert.deepEqual(pca.competencyIds, ['c-ml-svm-pca']);
+  const supervision = EXERCISE_FAMILIES.instantiate(
+    'classify-supervision-scaling',
+    0,
+    'core',
+    'supervised-vs-unsupervised-scaling',
+  );
+  assert.deepEqual(supervision.competencyIds, ['c-ml-svm-pca']);
+  for (const [caseId, difficulty] of [
+    ['pca-eigh-projection', 'core'],
+    ['standardize-pca-kmeans', 'stretch'],
+  ]) {
+    const instance = EXERCISE_FAMILIES.instantiate('fit-pca-kmeans-pipeline', 0, difficulty, caseId);
+    assert.deepEqual(instance.competencyIds, ['c-ml-svm-pca', 'c-numpy-basics']);
+    assert.equal(instance.parameters.packages[0], 'numpy');
   }
 });
 
