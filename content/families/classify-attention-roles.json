@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-attention-roles",
+  "contract": {
+    "familyId": "classify-attention-roles",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Tensorrollen den Aufmerksamkeitsrollen zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "attention-role-values",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-dl-attention"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "attention-role-values",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w22-e1"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-attention"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$V$ skaliert die Scores: Jede Zeile von $V$ dividiert die Skalarprodukte durch ihre Länge.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$V$ liefert die Inhalte, die gemischt werden: Die Softmax-Gewichte aus $Q$ und $K$ bestimmen, wie stark jede Zeile von $V$ in die Ausgabe eingeht.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "$V$ legt fest, welche Positionen einander sehen dürfen — das ist die Maske.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$V$ speichert die Anfragen: Jede Zeile von $V$ fragt die anderen Positionen ab.",
+          "correct": false
+        }
+      ],
+      "prompt": "Im Attention-Schritt einer Transformer-Schicht: Was beschreibt die Rolle der Value-Matrix $V$?",
+      "fullSolution": "Rollen: $Q$ = Anfragen, $K$ = Angebote zum Vergleich, $V$ = Inhalte. Scores und Softmax-Gewichte kommen nur aus $Q$ und $K$; die Ausgabe ist die gewichtete Summe der $V$-Zeilen. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Ordne die drei Rollen: Wer fragt (Query), wer wird angefragt (Key), wer liefert den Inhalt (Value)?",
+        "Die Gewichte entstehen ausschließlich aus $Q$ und $K$; $V$ geht erst nach dem Softmax in die gewichtete Summe ein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'c'",
+          "then": "Die Sichtbarkeit regelt die Maske, die vor dem Softmax auf die Scores wirkt — nicht $V$."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Anfragen stecken in $Q$; $V$ enthält die Inhalte, auf die zugegriffen wird."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Die Skalierung ist $1/\\sqrt{d_k}$ aus der Spaltenzahl von $Q$ und $K$ — $V$ hat damit nichts zu tun."
+        }
+      ],
+      "typicalErrors": [
+        "Rollen von Q/K/V verwechselt",
+        "Value mit Maske verwechselt",
+        "Skalierung der Values zugeschrieben"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
