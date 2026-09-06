@@ -12,6 +12,10 @@
       {
         "caseId": "pandas-dedup-isna-lines",
         "propertyTest": false
+      },
+      {
+        "caseId": "numpy-median-histogram-corrcoef",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -63,6 +67,55 @@
         "drop_duplicates auf eine einzelne Spalte bezogen statt auf alle Spalten",
         "None nicht als fehlender Wert gezählt",
         "Zeilen- mit Wertanzahl verwechselt (len gegen sum)"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "numpy-median-histogram-corrcoef",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "competencyIds": [
+        "c-eda-viz",
+        "c-numpy-basics"
+      ],
+      "sourceLineage": [
+        "w07-e3"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\nx = np.array([2, 4, 4, 4, 5, 5, 7, 9])\ny = np.array([1, 2, 3, 3, 4, 5, 6, 8])\nprint(round(float(np.median(x)), 1))\nprint(np.histogram(x, bins=[0, 4, 9])[0])\nprint(round(float(np.corrcoef(x, y)[0, 1]), 2))"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "4.5\n[1 7]\n0.97"
+      },
+      "prompt": "NumPy-Zusammenfassungen lesen: Was gibt dieses Programm aus? Sage die Ausgabe der drei <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Achte auf die Kanten-Regel von <code>np.histogram</code> und auf das Runden.",
+      "fullSolution": "Sortiert ist x = (2, 4, 4, 4, 5, 5, 7, 9); der Median ist (4+5)/2 = 4.5. Histogramm-Kanten [0, 4, 9]: Bin [0, 4) enthält nur die 2 (die 4 zählt noch nicht), Bin [4, 9] enthält 4, 4, 4, 5, 5, 7, 9 → 7 Werte, also [1 7]. np.corrcoef(x, y)[0, 1] ≈ 0.9746, gerundet auf 2 Stellen 0.97. Ausgabe: <code>4.5</code>, <code>[1 7]</code>, <code>0.97</code>.",
+      "hints": [
+        "8 Werte, gerade Anzahl: der Median ist das Mittel der beiden mittleren Werte der sortierten Liste.",
+        "np.histogram mit Kanten [0, 4, 9] bildet die Bins [0, 4) und [4, 9] — nur der letzte Bin schließt seine rechte Kante ein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Drei print-Zeilen → drei Ausgabezeilen: Median, Bin-Anzahlen, gerundete Korrelation."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Die drei 4en fallen in [4, 9], nicht in [0, 4) — zusammen mit 5, 5, 7, 9 sind das 7 Werte."
+        },
+        {
+          "if": "third-line-wrong",
+          "then": "np.corrcoef liefert eine 2x2-Matrix; [0, 1] ist r. Nicht runden vergessen: auf 2 Stellen ergibt sich 0.97."
+        }
+      ],
+      "typicalErrors": [
+        "Bin-Kanten links und rechts inklusiv gelesen",
+        "corrcoef-Matrix statt Eintrag [0, 1] weiterverwendet",
+        "Median bei gerader Anzahl als einzelner Wert statt Mittel der mittleren beiden"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"

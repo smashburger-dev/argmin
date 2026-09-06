@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-confounding",
+  "contract": {
+    "familyId": "classify-confounding",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet starke Korrelationen mit möglicher Drittvariable korrekt ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "temperature-confounder",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-eda-viz"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "temperature-confounder",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w07-e1"
+      ],
+      "parameters": {
+        "r": 0.9,
+        "confounder": "Sommertemperatur"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Sommertemperatur) — Korrelation allein belegt keine Kausalität.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Eisverkäufe verursachen Badeunfälle, denn $r \\approx 0{,}9$ ist fast maximal.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die starke Korrelation widerlegt jeden kausalen Einfluss zwischen den Größen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$r \\approx 0{,}9$ beweist, dass der Zusammenhang exakt linear und kausal ist.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?",
+      "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (**Confounder**). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Suche eine Größe, die beide Variablen gemeinsam erklärt — was passiert gleichzeitig im Sommer?",
+        "$r$ misst nur die Stärke des linearen Zusammenhangs; über Ursache sagt er nichts."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Ein hoher $r$ sagt nichts über Ursache — hier fehlt die gemeinsame Drittvariable im Argument."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Korrelation kann Kausalität weder beweisen noch widerlegen; sie ist stumm zur Richtung."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$r \\approx 0{,}9$ heißt starke, aber nicht exakte Linearität — und Kausalität folgt nie allein aus $r$."
+        }
+      ],
+      "typicalErrors": [
+        "aus Korrelation direkt Kausalität geschlossen",
+        "Korrelation als Kausalitäts-Widerlegung gelesen",
+        "Confounder nicht gesucht, weil $r$ „fast 1“ ist"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    }
+  ]
+}
