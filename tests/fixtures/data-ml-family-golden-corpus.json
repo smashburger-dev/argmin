@@ -159,6 +159,54 @@
       ],
       "instances": 192,
       "digest": "7d834d70dd12ff5ec16acca16516e498ea0c58d9822771ec5bef56ff4198817b"
+    },
+    "formula-count-from-construction-linear": {
+      "cases": [
+        "linear-param-count"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "9de0671d747b7c6b5c0cc6e3dd7afc6ad72ee1cc6430e648df7a786c53890e81"
+    },
+    "formula-count-from-construction-sgd": {
+      "cases": [
+        "sgd-update-count"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "cb076e549d1cfe21027509037c4056b87ea0a49253bd79ba5a146b03bcc12880"
+    },
+    "formula-count-from-construction-dropout": {
+      "cases": [
+        "dropout-mask-kept-count"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "7ecef00bd62dd3657236da542058d16efc9ad7553edb9687a82c2d3091e89d8f"
+    },
+    "optimize-backprop-path-sum": {
+      "cases": [
+        "chain-rule-path-sum"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "1865a946e67f647f9ab52954f03abe8cd76600126b37d96eb04068d3719a49aa"
     }
   }
 }
