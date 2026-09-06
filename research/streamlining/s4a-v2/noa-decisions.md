@@ -236,3 +236,9 @@ Quelle: Noa, schriftlich, nach Gegenreview.
 Erstes Data/ML-Modul `lm-data-cleaning` nach E1–E6: 4 Familien (1 seeded,
 3 statisch als JSON), 6 Fälle, `w06.json` bleibt. Details:
 `docs/session-2026-09-06-s4d8-data-cleaning.md`.
+
+## 2026-09-06: S4D9 W07 EDA (umgesetzt) und E9
+
+E9: Fälle dürfen `competencyIds` der Familie überschreiben (wochenüber-
+greifende Familien). CI-Workflows werden in S5B eingerichtet (Noa, „ok“).
+Details: `docs/session-2026-09-06-s4d9-eda.md`.
