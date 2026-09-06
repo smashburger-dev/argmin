@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-matrix-shape",
+  "contract": {
+    "familyId": "classify-matrix-shape",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einer Matrix- oder Vektoroperation die resultierende Shape zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "shape-product-drawn",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-linalg-matrices"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "shape-product-drawn",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w05-e2"
+      ],
+      "parameters": {
+        "dimsA": [
+          3,
+          2
+        ],
+        "dimsB": [
+          2,
+          4
+        ]
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$AB$ ist definiert und hat die Form $3\\times4$; $BA$ ist nicht definiert.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "$AB$ und $BA$ sind beide definiert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$AB$ ist definiert und hat die Form $2\\times2$.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Keines der Produkte ist definiert.",
+          "correct": false
+        }
+      ],
+      "prompt": "$A$ ist eine $3\\times2$-Matrix und $B$ eine $2\\times4$-Matrix. Welche Aussage ist korrekt?",
+      "fullSolution": "Spaltenzahl($A$)=2 = Zeilenzahl($B$)=2, also ist $AB$ definiert mit Form $3\\times4$. Für $BA$ müsste Spaltenzahl($B$)=4 gleich Zeilenzahl($A$)=3 sein — falsch, also undefiniert."
+    }
+  ]
+}

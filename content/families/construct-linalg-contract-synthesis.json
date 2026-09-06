@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-linalg-contract-synthesis",
+  "contract": {
+    "familyId": "construct-linalg-contract-synthesis",
+    "familyGroup": "construct-program",
+    "summary": "Implementiert Shape-Vertrag, Pivot-Rang und Systemlöser als drei getrennte Funktionverträge in einer Synthese mit rechteckigen und abhängigen Fällen.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "synthesis-three-contracts",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-numpy-basics",
+      "c-linalg-gauss"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "synthesis-three-contracts",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Erst rechnen, dann die Shapes prüfen — das Ergebnis verrät Fehler von selbst.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Rang ohne Zeilentausch: Pivotspalte mit Null oben wird übersprungen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein hartkodierter Testfall je Funktion als Beleg.",
+          "correct": false
+        }
+      ],
+      "prompt": "Drei Verträge in einer Synthese: Shape prüfen und `matvec` rechnen, Rang per Elimination mit Zeilentausch, System per `solve` mit Shape-Prüfung. Welche Implementierung erfüllt alle drei?",
+      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle."
+    }
+  ]
+}

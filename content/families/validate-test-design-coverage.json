@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-test-design-coverage",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "elif-chain-five-outcomes",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w04-e2"
+      ],
+      "parameters": {
+        "shape": "elif-chain-five",
+        "anchor": "w04-e2"
+      },
+      "expected": {
+        "kind": "integer",
+        "value": 5
+      },
+      "prompt": "Eine Funktion <code>note(punkte)</code> ist so definiert:\n\n<code>if punkte >= 90: return \"a\"\nelif punkte >= 80: return \"b\"\nelif punkte >= 70: return \"c\"\nelif punkte >= 60: return \"d\"\nelse: return \"f\"</code>\n\nWie viele Testfälle braucht man mindestens, damit jede Verzweigung (jeder Rückgabewert) mindestens einmal erreicht wird?",
+      "fullSolution": "Fünf Rückgabewerte (a, b, c, d, f) brauchen fünf verschiedene Eingaben, z. B. 95, 85, 75, 65, 10 — Minimum fünf Testfälle."
+    }
+  ]
+}

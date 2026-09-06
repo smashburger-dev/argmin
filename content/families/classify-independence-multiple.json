@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-independence-multiple",
+  "contract": {
+    "familyId": "classify-independence-multiple",
+    "familyGroup": "classify-concept",
+    "summary": "Entscheidet lineare Abhängigkeit eines Vektorpaars durch Erkennen eines expliziten Vielfachen und Bilden der nichttrivialen Nullkombination.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "dependent-pair-double",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-linalg-independence"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "dependent-pair-double",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w05-e4"
+      ],
+      "parameters": {
+        "vectors": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nein — $b_2 = 2\\,b_1$, also ist die Menge abhängig.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Ja — beide Vektoren sind vom Nullvektor verschieden.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ja — zwei Vektoren im $\\mathbb{R}^2$ sind immer unabhängig.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Das lässt sich ohne Rechnung nicht entscheiden.",
+          "correct": false
+        }
+      ],
+      "prompt": "Sind $b_1=(1,2)$, $b_2=(2,4)$ linear unabhängig?",
+      "fullSolution": "Wegen $b_2 = 2b_1$ gilt $(-2)\\,b_1 + 1\\,b_2 = 0$ mit Koeffizienten $\\neq 0$ — die Menge ist linear abhängig."
+    }
+  ]
+}

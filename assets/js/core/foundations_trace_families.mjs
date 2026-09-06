@@ -18,6 +18,7 @@ import {
   genCollectionStepTrace,
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
+import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -183,17 +184,6 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
 // die gepinnte statische Quelle w01-e6 (zwei unabhängige Aufrufe, Autorität
 // fix, propertyTest: false) — gleiche Antwortform, gleicher Lösungsweg.
 
-// Gepinnte Fakten aus content/exercises/w01.json (w01-e6, unverändert): Der
-// Solver rechnet daraus, statt die Antwort zu übernehmen.
-const TWO_FUNCTIONS_STATIC = {
-  form: 'area-perimeter',
-  a: 3,
-  b: 4,
-  snippet: 'def flaeche(a, b):\n    return a * b\n\ndef umfang(a, b):\n    return 2 * (a + b)\n\nprint(flaeche(3, 4), umfang(3, 4))',
-  prompt: 'Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.',
-  fullSolution: 'flaeche(3, 4) = 3 · 4 = 12; umfang(3, 4) = 2 · (3 + 4) = 14. Ausgabe: <code>12 14</code>.',
-};
-
 function callCompositionProfileAccepts(difficulty) {
   if (difficulty === 'core') return null;
   if (difficulty === 'intro') {
@@ -221,20 +211,9 @@ export function solveTraceCallComposition(parameters) {
 export function generateTraceCallCompositionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (caseId === 'two-functions-one-print') {
-    const generated = {
-      parameters: {
-        caseId,
-        difficulty,
-        form: TWO_FUNCTIONS_STATIC.form,
-        a: TWO_FUNCTIONS_STATIC.a,
-        b: TWO_FUNCTIONS_STATIC.b,
-        snippet: TWO_FUNCTIONS_STATIC.snippet,
-      },
-      expected: { output: '12 14' },
-      prompt: TWO_FUNCTIONS_STATIC.prompt,
-      fullSolution: TWO_FUNCTIONS_STATIC.fullSolution,
-    };
-    return { ...generated, traceTable: callCompositionTraceTable(generated) };
+    const body = staticCaseBody('trace-call-composition', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
   if (caseId !== 'both-orders-linear-functions') throw new Error(`Unbekannter Fall ${caseId}`);
   const drawn = drawTraceInstance(genFunctionCompose, {

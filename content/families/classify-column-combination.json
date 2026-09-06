@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-column-combination",
+  "contract": {
+    "familyId": "classify-column-combination",
+    "familyGroup": "classify-concept",
+    "summary": "Erkennt die Koeffizienten einer Spaltenkombination durch komponentenweises Nachrechnen.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "column-coefficients-double",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-linalg-matrices"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "column-coefficients-double",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$(a,b) = (2,1)$: $2(2,1) + (-1,3) = (3,5)$.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "$(a,b) = (1,2)$: Koeffizienten in Spaltenreihenfolge.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$(a,b) = (3,5)$: Zielvektor als Koeffizienten.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$(a,b) = (2,0)$: nur die erste Spalte trägt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Gegeben $s_1=(2,1)$, $s_2=(-1,3)$ und $w=(3,5)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+      "fullSolution": "Komponentenweise: $2(2,1) + 1(-1,3) = (4-1, 2+3) = (3,5) = w$. (1,2) vertauscht Koeffizienten mit Spalten, (3,5) verwechselt Ziel mit Koeffizienten, (2,0) ignoriert die zweite Spalte."
+    }
+  ]
+}

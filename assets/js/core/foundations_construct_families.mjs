@@ -42,6 +42,7 @@ import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
+import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -97,8 +98,6 @@ export const LINEAR_ISOLATE_CONTRACT = {
 };
 
 /** Verankerung w01-e1: fixe Diagnoseinstanz, keine Seed-Variation. */
-export const LINEAR_FIXED_INSTANCE = { a: 5, b: -7, c: 28 };
-
 /** Unabhängiger Solver: Lösung allein aus den Fallparametern. */
 export function solveLinearIsolate(parameters) {
   if (parameters.shape === 'both-sides') {
@@ -144,14 +143,9 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
   if (caseId === 'two-step-fixed-instance') {
-    const { a, b, c } = LINEAR_FIXED_INSTANCE;
-    const value = solveLinearIsolate({ shape: 'simple', a, b, c }).value;
-    return {
-      parameters: { shape: 'simple', a, b, c, anchor: 'w01-e1' },
-      expected: { kind: 'integer', value },
-      prompt: `Diagnose Algebra: Löse die Gleichung $${a}x ${signed(b).replace('+ ', '+').replace('- ', '-')} = ${c}$ und gib $x$ als ganze Zahl ein.`,
-      fullSolution: `$${a}x ${signed(b)} = ${c} \\Rightarrow ${a}x = ${c - b} \\Rightarrow x = ${value}$.`,
-    };
+    const body = staticCaseBody('transform-linear-equation-isolate', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
   if (caseId === 'two-step-seeded-retrieval') {
     const p = drawLinearSimple(seed, LINEAR_SIMPLE_TIERS[tier]);
@@ -1341,25 +1335,14 @@ export const TEST_DESIGN_COVERAGE_CONTRACT = {
   activityType: 'numeric',
 };
 
-/** Verankerung w04-e2: fünf Rückgabewerte brauchen fünf Testfälle. */
-export const COVERAGE_FIXED_ANSWER = 5;
-
-const COVERAGE_PROMPT_FIXED = `Eine Funktion <code>note(punkte)</code> ist so definiert:
-
-<code>if punkte >= 90: return "a"
-elif punkte >= 80: return "b"
-elif punkte >= 70: return "c"
-elif punkte >= 60: return "d"
-else: return "f"</code>
-
-Wie viele Testfälle braucht man mindestens, damit jede Verzweigung (jeder Rückgabewert) mindestens einmal erreicht wird?`;
-
 /** Blattzahl-Stufen je Profil (Teilmengen der 2–5-Antworträume). */
 export const COVERAGE_LEAF_TIERS = [[2, 3], [3, 4], [4, 4], [4, 5]];
 
 /** Unabhängiger Solver: statisch 5, sonst Blattzahl des Entscheidungsbaums. */
 export function solveTestDesignCoverage(parameters) {
-  if (parameters.shape === 'elif-chain-five') return { value: COVERAGE_FIXED_ANSWER };
+  if (parameters.caseId === 'elif-chain-five-outcomes') {
+    return { value: staticCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
+  }
   return { value: countBranchCoverageLeaves(parameters.branchShape) };
 }
 
@@ -1367,12 +1350,9 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'elif-chain-five-outcomes') {
-    return {
-      parameters: { shape: 'elif-chain-five', anchor: 'w04-e2' },
-      expected: { kind: 'integer', value: COVERAGE_FIXED_ANSWER },
-      prompt: COVERAGE_PROMPT_FIXED,
-      fullSolution: 'Fünf Rückgabewerte (a, b, c, d, f) brauchen fünf verschiedene Eingaben, z. B. 95, 85, 75, 65, 10 — Minimum fünf Testfälle.',
-    };
+    const body = staticCaseBody('validate-test-design-coverage', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
   if (caseId === 'nested-if-decision-tree') {
     const [lo, hi] = COVERAGE_LEAF_TIERS[profileTier(difficulty)];

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "familyId": "transform-linear-equation-isolate",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "two-step-fixed-instance",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w01-e1"
+      ],
+      "parameters": {
+        "shape": "simple",
+        "a": 5,
+        "b": -7,
+        "c": 28,
+        "anchor": "w01-e1"
+      },
+      "expected": {
+        "kind": "integer",
+        "value": 7
+      },
+      "prompt": "Diagnose Algebra: Löse die Gleichung $5x -7 = 28$ und gib $x$ als ganze Zahl ein.",
+      "fullSolution": "$5x - 7 = 28 \\Rightarrow 5x = 35 \\Rightarrow x = 7$."
+    }
+  ]
+}

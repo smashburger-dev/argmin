@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-call-composition",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "two-functions-one-print",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w01-e6"
+      ],
+      "parameters": {
+        "form": "area-perimeter",
+        "a": 3,
+        "b": 4,
+        "snippet": "def flaeche(a, b):\n    return a * b\n\ndef umfang(a, b):\n    return 2 * (a + b)\n\nprint(flaeche(3, 4), umfang(3, 4))"
+      },
+      "expected": {
+        "output": "12 14"
+      },
+      "prompt": "Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.",
+      "fullSolution": "flaeche(3, 4) = 3 · 4 = 12; umfang(3, 4) = 2 · (3 + 4) = 14. Ausgabe: <code>12 14</code>.",
+      "traceTable": {
+        "lines": [
+          "flaeche(3, 4)",
+          "umfang(3, 4)"
+        ],
+        "stateVars": [
+          "ergebnis"
+        ],
+        "expectedStates": [
+          {
+            "ergebnis": "12"
+          },
+          {
+            "ergebnis": "14"
+          }
+        ]
+      }
+    }
+  ]
+}

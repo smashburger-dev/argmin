@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-rank-solution-case",
+  "contract": {
+    "familyId": "classify-rank-solution-case",
+    "familyGroup": "classify-concept",
+    "summary": "Liest aus einer Zeilenstufenform Rang, freie Variable und Lösungsfall gleichzeitig ab, indem Pivotzeilen gezählt und die Nullzeile korrekt gedeutet wird.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "echelon-read-rank-case",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-linalg-gauss"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "echelon-read-rank-case",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Rang 2, $z$ frei, unendlich viele Lösungen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Rang 3, keine freie Variable, genau eine Lösung.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Keine Lösung, die Nullzeile ist ein Widerspruch.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Rang 2 und genau eine Lösung.",
+          "correct": false
+        }
+      ],
+      "prompt": "Das System in $x,y,z$ steht in Zeilenstufenform: \\[\\begin{array}{rrr|r}1&0&2&3\\\\0&1&-1&2\\\\0&0&0&0\\end{array}\\] Was folgt für Rang, freie Variable und Lösungsfall?",
+      "fullSolution": "Zwei Pivotzeilen, also Rang 2. Drei Variablen minus Rang 2: $z$ ist frei, unendlich viele Lösungen. Die Nullzeile liest sich als $0=0$, nicht als Widerspruch."
+    }
+  ]
+}

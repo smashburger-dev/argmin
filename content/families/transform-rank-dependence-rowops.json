@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "familyId": "transform-rank-dependence-rowops",
+  "contract": {
+    "familyId": "transform-rank-dependence-rowops",
+    "familyGroup": "transform-terms",
+    "summary": "Prüft lineare Abhängigkeit bzw. Rang von Zeilen über Zeilenoperationen.",
+    "taskArchetype": "numeric-exact",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "rank-3x3-staircase",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-linalg-independence",
+      "c-linalg-gauss"
+    ],
+    "graderId": "deterministic",
+    "activityType": "numeric"
+  },
+  "cases": [
+    {
+      "caseId": "rank-3x3-staircase",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e10"
+      ],
+      "parameters": {
+        "A": [
+          [
+            2,
+            1,
+            1
+          ],
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            3,
+            3,
+            1
+          ]
+        ]
+      },
+      "expected": {
+        "kind": "integer",
+        "value": 2
+      },
+      "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}2&1&1\\\\1&2&0\\\\3&3&1\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.",
+      "fullSolution": "III − I − II: $(3,3,1)-(2,1,1)-(1,2,0)=(0,0,0)$, also eine Nullzeile. Zeile 1 und Zeile 2 sind unabhängig (keine Vielfachen), damit ist $\\operatorname{rang}(A)=2$."
+    }
+  ]
+}

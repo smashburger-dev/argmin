@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-matvec-shape-contract",
+  "contract": {
+    "familyId": "construct-matvec-shape-contract",
+    "familyGroup": "construct-program",
+    "summary": "Sequenziert eine Matrix-Vektor-Operation mit vorangestelltem Dimensionsvertrag: Normalisierung, Assert-Prüfung, erst dann die Operation.",
+    "taskArchetype": "program-ordering",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "matvec-contract-order",
+        "propertyTest": false
+      },
+      {
+        "caseId": "matvec-code-reference",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-numpy-basics",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "parsons"
+  },
+  "cases": [
+    {
+      "caseId": "matvec-contract-order",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e14"
+      ],
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p1",
+            "text": "def matvec(A, v):"
+          },
+          {
+            "id": "p2",
+            "text": "    A = np.asarray(A)"
+          },
+          {
+            "id": "p3",
+            "text": "    v = np.asarray(v)"
+          },
+          {
+            "id": "p4",
+            "text": "    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]"
+          },
+          {
+            "id": "p5",
+            "text": "    return A @ v"
+          },
+          {
+            "id": "d1",
+            "text": "    assert v.ndim == 2 and A.ndim == 1 and v.shape[1] == A.shape[0]"
+          },
+          {
+            "id": "d2",
+            "text": "    return v @ A"
+          }
+        ],
+        "initialOrder": [
+          "p1",
+          "d1",
+          "p3",
+          "p5",
+          "p2",
+          "d2",
+          "p4"
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5"
+        ],
+        "distractors": [
+          "d1",
+          "d2"
+        ]
+      },
+      "prompt": "Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` (Begleiter zu w05-e8) in die richtige Reihenfolge. Zwei Zeilen sind Distraktoren, die nicht zur Lösung gehören — sortiere sie aus.",
+      "fullSolution": "Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert)."
+    },
+    {
+      "caseId": "matvec-code-reference",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e8"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef matvec(A, v):\n    \"\"\"Return A @ v after checking shapes.\"\"\"\n    # pruefe Shapes, dann berechne\n    ...\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def matvec(A, v):\n    A = np.asarray(A); v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v"
+      },
+      "prompt": "Implementiere `matvec(A, v)`, das $A\\,v$ mit NumPy berechnet und VOR der Berechnung prüft, dass `A` 2-dimensional, `v` 1-dimensional und `A.shape[1] == v.shape[0]` ist — sonst `AssertionError`. Der Testcode ist von deiner Eingabe getrennt und prüft Wert und Shape-Verhalten.",
+      "fullSolution": "import numpy as np\n\ndef matvec(A, v):\n    A = np.asarray(A)\n    v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v\n\n# matvec([[1,2],[3,4]], [1,1]) -> array([3, 7])",
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
