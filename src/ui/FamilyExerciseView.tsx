@@ -68,6 +68,7 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
         const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
         if (!active) return;
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
+        setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
         setInstance(next);
       } catch (error) {
         if (active) setFailed(error instanceof Error ? error.message : String(error));
@@ -80,7 +81,7 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
     return <section class="view"><h1 tabIndex={-1}>Variante nicht gefunden</h1><p role="alert" class="content-error">{parseError instanceof Error ? parseError.message : String(parseError)}</p></section>;
   }
   if (!instance) {
-    return <section class="view"><h1 tabIndex={-1}>Variante wird geladen</h1>{failed ? <p role="alert" class="content-error">{failed}</p> : <p>Bitte kurz warten.</p>}</section>;
+    return <section class="view"><h1 tabIndex={-1}>{failed ? 'Variante nicht gefunden' : 'Variante wird geladen'}</h1>{failed ? <p role="alert" class="content-error">{failed}</p> : <p>Bitte kurz warten.</p>}</section>;
   }
 
   // S4D1: Trace-Tabelle als Interaktionsvariante, sobald der Generator
