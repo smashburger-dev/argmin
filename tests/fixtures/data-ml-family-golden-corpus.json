@@ -52,6 +52,18 @@
       "instances": 192,
       "digest": "27d561f48e63deaef537ba0e257bf6a3989814775f94175b0f94665d12809a15"
     },
+    "aggregate-majority-rule-count-ensemble": {
+      "cases": [
+        "ensemble-majority-output-count"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "6e695134f13934dd20a8690e9b0d6f5b2c20f01acf3be76779f2fb80eb221fe8"
+    },
     "formula-quadratic-error-metric": {
       "cases": [
         "mse-from-residuals"

@@ -26,6 +26,7 @@ import {
   genCvSpread,
   genCompleteRows,
   genDedupRows,
+  genEnsembleAccuracy,
   genMseFromResiduals,
   genMseGradient,
   genR2Share,
@@ -54,6 +55,9 @@ const errorDriftDoc = JSON.parse(readFileSync(join(root, 'content/families/class
 const groupedMetricsDoc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-grouped-metrics-report.json'), 'utf8'));
 const regularizerEffectDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-regularizer-effect.json'), 'utf8'));
 const ridgeLassoDoc = JSON.parse(readFileSync(join(root, 'content/families/formula-ridge-lasso-closed-form.json'), 'utf8'));
+const ensembleEffectDoc = JSON.parse(readFileSync(join(root, 'content/families/classify-ensemble-effect.json'), 'utf8'));
+const treeSplitDoc = JSON.parse(readFileSync(join(root, 'content/families/optimize-tree-best-split.json'), 'utf8'));
+const ensembleComparisonDoc = JSON.parse(readFileSync(join(root, 'content/families/construct-ensemble-predictor-comparison.json'), 'utf8'));
 registerStaticCases(traceDoc.familyId, traceDoc.cases);
 registerStaticCases(traceAssignmentDoc.familyId, traceAssignmentDoc.cases);
 registerStaticCases(gradientUpdateDoc.familyId, gradientUpdateDoc.cases);
@@ -70,6 +74,9 @@ registerStaticCases(errorDriftDoc.familyId, errorDriftDoc.cases);
 registerStaticCases(groupedMetricsDoc.familyId, groupedMetricsDoc.cases);
 registerStaticCases(regularizerEffectDoc.familyId, regularizerEffectDoc.cases);
 registerStaticCases(ridgeLassoDoc.familyId, ridgeLassoDoc.cases);
+registerStaticCases(ensembleEffectDoc.familyId, ensembleEffectDoc.cases);
+registerStaticCases(treeSplitDoc.familyId, treeSplitDoc.cases);
+registerStaticCases(ensembleComparisonDoc.familyId, ensembleComparisonDoc.cases);
 const familyDocs = [
   traceDoc,
   traceAssignmentDoc,
@@ -91,6 +98,9 @@ const familyDocs = [
   errorDriftDoc,
   regularizerEffectDoc,
   ridgeLassoDoc,
+  ensembleEffectDoc,
+  treeSplitDoc,
+  ensembleComparisonDoc,
 ];
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
@@ -396,6 +406,65 @@ test('majority baseline family corpus matches its fixture', () => {
   }
   const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
   assert.equal(digest, fixture.families['aggregate-majority-rule-count'].digest);
+});
+
+test('ensemble majority family preserves seeded generation, profiles and solver', () => {
+  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'aggregate-majority-rule-count');
+  for (const difficulty of profiles) {
+    for (let seed = 0; seed < 200; seed += 1) {
+      const generated = spec.generate({
+        seed,
+        caseId: 'ensemble-majority-output-count',
+        difficulty,
+      });
+      const ones = generated.parameters.votes[0].reduce(
+        (count, _, index) => count
+          + (generated.parameters.votes[0][index]
+            + generated.parameters.votes[1][index]
+            + generated.parameters.votes[2][index] >= 2 ? 1 : 0),
+        0,
+      );
+      const expected = generated.parameters.direction === 'count'
+        ? ones
+        : ones * (100 / generated.parameters.n);
+      assert.equal(generated.expected.value, expected);
+      assert.equal(solveAggregateMajorityRuleCount(generated.parameters).value, expected);
+      if (difficulty === 'intro') assert.equal(generated.parameters.direction, 'count');
+      if (difficulty === 'stretch') assert.equal(generated.parameters.direction, 'percent');
+    }
+  }
+  assert.equal(
+    generateAggregateMajorityRuleCountFamily({
+      seed: 15001,
+      caseId: 'ensemble-majority-output-count',
+      difficulty: 'core',
+    }).expected.value,
+    genEnsembleAccuracy(15001).expected,
+  );
+  assert.equal(
+    generateAggregateMajorityRuleCountFamily({
+      seed: 15001,
+      caseId: 'ensemble-majority-output-count',
+      difficulty: 'core',
+    }).expected.value,
+    11,
+  );
+});
+
+test('W15 seeded ensemble majority corpus matches its fixture', () => {
+  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
+  const instances = [];
+  for (const difficulty of profiles) {
+    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
+      instances.push(generateAggregateMajorityRuleCountFamily({
+        seed,
+        caseId: 'ensemble-majority-output-count',
+        difficulty,
+      }));
+    }
+  }
+  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
+  assert.equal(digest, fixture.families['aggregate-majority-rule-count-ensemble'].digest);
 });
 
 test('quadratic error family preserves seeded generation, profiles and solver', () => {
@@ -820,6 +889,51 @@ test('W14 static cases enforce profiles and competency overrides', () => {
     assert.throws(
       () => EXERCISE_FAMILIES.instantiate(
         'formula-ridge-lasso-closed-form',
+        0,
+        difficulty === 'core' ? 'stretch' : 'core',
+        caseId,
+      ),
+      /Unbekanntes Profil/,
+    );
+  }
+});
+
+test('W15 static cases enforce profiles and competency overrides', () => {
+  const effect = EXERCISE_FAMILIES.instantiate(
+    'classify-ensemble-effect',
+    0,
+    'intro',
+    'bagging-variance-reduction',
+  );
+  assert.equal(effect.masteryEligible, false);
+  assert.deepEqual(effect.competencyIds, ['c-ml-ensembles']);
+  assert.throws(
+    () => EXERCISE_FAMILIES.instantiate(
+      'classify-ensemble-effect',
+      0,
+      'core',
+      'bagging-variance-reduction',
+    ),
+    /Unbekanntes Profil/,
+  );
+  const trace = EXERCISE_FAMILIES.instantiate(
+    'trace-assignment-state',
+    0,
+    'core',
+    'tree-majority-vote-trace',
+  );
+  assert.equal(trace.masteryEligible, true);
+  assert.deepEqual(trace.competencyIds, ['c-ml-ensembles', 'c-python-reading']);
+  for (const [familyId, caseId, difficulty] of [
+    ['optimize-tree-best-split', 'gini-best-binary-split', 'core'],
+    ['construct-ensemble-predictor-comparison', 'voting-tree-linear-rmse', 'stretch'],
+  ]) {
+    const instance = EXERCISE_FAMILIES.instantiate(familyId, 0, difficulty, caseId);
+    assert.deepEqual(instance.competencyIds, ['c-ml-ensembles', 'c-numpy-basics']);
+    assert.equal(instance.parameters.packages[0], 'numpy');
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(
+        familyId,
         0,
         difficulty === 'core' ? 'stretch' : 'core',
         caseId,
