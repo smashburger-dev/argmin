@@ -21,6 +21,17 @@
   ],
   "placements": [
     {
+      "placementId": "p-dl-tensors-shape-bias",
+      "role": "curated",
+      "familyId": "classify-shape-contract",
+      "caseId": "shape-bias-broadcast-mc",
+      "seed": 1801,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-dl-tensors",
+      "masteryEligible": false
+    },
+    {
       "placementId": "p-dl-tensors-param",
       "role": "curated",
       "familyId": "formula-count-from-construction",
