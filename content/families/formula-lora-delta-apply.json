@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-lora-delta-apply",
+  "contract": {
+    "familyId": "formula-lora-delta-apply",
+    "familyGroup": "formula-apply",
+    "summary": "Wendet die LoRA-Delta-Formel (alpha/r)*B@A an und sichert Rang-, Form- und Dimensionsverträge mit ValueError ab.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "lora-delta-apply",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-dl-finetuning",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "lora-delta-apply",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w25-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef lora_delta(A, B, alpha, r):\n    \"\"\"Delta W = (alpha / r) * B @ A with the rank contract checked.\"\"\"\n    A = np.asarray(A, dtype=float)\n    B = np.asarray(B, dtype=float)\n    # rank contract: A.shape[0] == r and B.shape[1] == r, both 2-d -> else ValueError\n    ...\n\n\ndef apply_lora(W, A, B, alpha, r):\n    \"\"\"W' = W + Delta W; Delta shape must match W.\"\"\"\n    W = np.asarray(W, dtype=float)\n    # delta = lora_delta(...); shape check against W; return W + delta\n    ...\n",
+        "tests": "A = [[1, 0, 2], [0, 1, 1]]\nB = [[2, 0], [1, 1], [0, 3]]\n__check('Delta exakt ganzzahlig', np.array_equal(lora_delta(A, B, 4, 2), np.array([[4.0, 0.0, 8.0], [2.0, 2.0, 6.0], [0.0, 6.0, 6.0]])))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, 8, 2), 2 * lora_delta(A, B, 4, 2)))\n__check('alpha gleich r laesst W unveraendert plus Basis-Delta', np.array_equal(lora_delta(A, B, 2, 2), B @ np.asarray(A, dtype=float)))\nW = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]\nW_new = apply_lora(W, A, B, 4, 2)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W) + lora_delta(A, B, 4, 2)))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[1, 1, 1], [1, 1, 1], [1, 1, 1]]))\nA_bad = [[1, 0, 2], [0, 1, 1], [1, 1, 1]]\ntry:\n    lora_delta(A_bad, B, 4, 2)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falscher Rang -> ValueError', True)\ntry:\n    apply_lora([[1, 1], [1, 1]], A, B, 4, 2)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Form -> ValueError', True)\n__check('Rang-1 Sonderfall', np.array_equal(lora_delta([[2, 1]], [[3], [1]], 2, 1), np.array([[12.0, 6.0], [4.0, 2.0]])))"
+      },
+      "competencyIds": [
+        "c-dl-finetuning",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef lora_delta(A, B, alpha, r):\n    \"\"\"Delta W = (alpha / r) * B @ A with the rank contract checked.\"\"\"\n    A = np.asarray(A, dtype=float)\n    B = np.asarray(B, dtype=float)\n    if A.ndim != 2 or B.ndim != 2:\n        raise ValueError(\"A und B muessen 2-d sein\")\n    if A.shape[0] != r or B.shape[1] != r:\n        raise ValueError(\"Rang-Vertrag verletzt\")\n    return (alpha / r) * (B @ A)\n\ndef apply_lora(W, A, B, alpha, r):\n    \"\"\"W' = W + Delta W; Delta shape must match W.\"\"\"\n    W = np.asarray(W, dtype=float)\n    delta = lora_delta(A, B, alpha, r)\n    if delta.shape != W.shape:\n        raise ValueError(\"Delta-Form muss W entsprechen\")\n    return W + delta\n"
+      },
+      "prompt": "LoRA-Arithmetik exakt: Implementiere <code>lora_delta(A, B, alpha, r)</code> und <code>apply_lora(W, A, B, alpha, r)</code>. Vertrag: $\\Delta W = \\frac{\\alpha}{r}\\,BA$ mit $A$ als $(r, d_{in})$-Matrix und $B$ als $(d_{out}, r)$-Matrix; Verletzungen des Rang-Vertrags (<code>A.shape[0] != r</code> oder <code>B.shape[1] != r</code>) und nicht-2-d-Eingaben werfen <code>ValueError</code>. <code>apply_lora</code> liefert $W + \\Delta W$ und wirft <code>ValueError</code>, wenn die Form von $\\Delta W$ nicht zu $W$ passt; die Eingaben dürfen nicht mutiert werden. Reine Arithmetik an Toy-Maßen — kein echtes Fine-Tuning. Der Testcode rechnet mit ganzzahligen Fixtures (Skalierung $\\alpha/r$ ganzzahlig) exakt, nicht nur näherungsweise.",
+      "fullSolution": "import numpy as np\n\ndef lora_delta(A, B, alpha, r):\n    \"\"\"Delta W = (alpha / r) * B @ A with the rank contract checked.\"\"\"\n    A = np.asarray(A, dtype=float)\n    B = np.asarray(B, dtype=float)\n    if A.ndim != 2 or B.ndim != 2:\n        raise ValueError(\"A und B muessen 2-d sein\")\n    if A.shape[0] != r or B.shape[1] != r:\n        raise ValueError(\"Rang-Vertrag verletzt\")\n    return (alpha / r) * (B @ A)\n\ndef apply_lora(W, A, B, alpha, r):\n    \"\"\"W' = W + Delta W; Delta shape must match W.\"\"\"\n    W = np.asarray(W, dtype=float)\n    delta = lora_delta(A, B, alpha, r)\n    if delta.shape != W.shape:\n        raise ValueError(\"Delta-Form muss W entsprechen\")\n    return W + delta\n# lora_delta(A, B, 4, 2) mit den Test-Matrizen -> exakt [[4, 0, 8], [2, 2, 6], [0, 6, 6]]\n# (B @ A) * 2; apply_lora addiert dieses Delta auf W.",
+      "hints": [
+        "Delta = (alpha / r) * (B @ A) — die Matrixmultiplikation zuerst, dann skalieren; die Form ist (d_out, d_in).",
+        "Alle Verträge vor der Rechnung prüfen: Rang, Dimensionen, Formgleichheit mit W."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-order",
+          "then": "B @ A liefert (d_out × d_in); A @ B hätte die Formen vertauscht."
+        },
+        {
+          "if": "scale-missing",
+          "then": "Der Faktor alpha/r gehört vor das Produkt — im Test ist er ganzzahlig, damit exakt geprüft werden kann."
+        },
+        {
+          "if": "contracts-unchecked",
+          "then": "Rang- und Formverletzungen müssen ValueError werfen, bevor gerechnet wird."
+        }
+      ],
+      "typicalErrors": [
+        "BA gegen AB vertauscht",
+        "Skalierung α/r vergessen",
+        "Rang-/Formverträge ungeprüft"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
