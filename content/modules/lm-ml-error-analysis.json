@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-error-analysis",
+  "version": 1,
+  "locale": "de",
+  "title": "Fehleranalyse nach Teilgruppen und Modellkarten",
+  "description": "Lerne Fehlerraten nach Teilgruppen zu vergleichen, Drift zu erkennen und Modellkarten ohne unbelegte Kausalaussagen zu formulieren.",
+  "competencyIds": [
+    "c-ml-erroranalysis"
+  ],
+  "requires": [
+    "c-ml-cv"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-error-analysis"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-error-analysis-fairness",
+      "role": "curated",
+      "familyId": "classify-fairness-aggregation",
+      "caseId": "overall-accuracy-hides-subgroups",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-error-analysis",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-error-analysis-gap",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "subgroup-error-gap-pp",
+      "seed": 13001,
+      "difficulty": "core",
+      "estimatedMinutes": 7,
+      "lessonId": "l-ml-error-analysis",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-error-analysis-drift",
+      "role": "curated",
+      "familyId": "classify-error-drift",
+      "caseId": "accuracy-drop-without-code-change",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-error-analysis",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-error-analysis-rates",
+      "role": "curated",
+      "familyId": "aggregate-grouped-metrics-report",
+      "caseId": "subgroup-error-rates-numpy",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 28,
+      "lessonId": "l-ml-error-analysis",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-error-analysis-categorize",
+      "role": "curated",
+      "familyId": "aggregate-grouped-metrics-report",
+      "caseId": "categorize-errors-report",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-ml-error-analysis",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-error-analysis-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "subgroup-error-gap-pp",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}
