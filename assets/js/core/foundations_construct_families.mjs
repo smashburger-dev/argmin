@@ -535,7 +535,7 @@ export const VALIDATE_COUNT_CONTRACT = {
   activityType: 'python-code',
 };
 
-/** Referenz w03-e3 (wörtlich aus content/exercises/w03.json). */
+/** Referenz für den kanonischen Zeilenprüfungsfall. */
 export const ZAEHLE_REFERENZ = `def zaehle_zeilen(zeilen):
     gueltig = 0
     ungueltig = 0
@@ -554,7 +554,7 @@ export const ZAEHLE_REFERENZ = `def zaehle_zeilen(zeilen):
         summe += int(zahl)
     return {"gueltig": gueltig, "ungueltig": ungueltig, "summe": summe}`;
 
-/** Kuratiertes Bündel w03-e3 (wörtlich aus content/exercises/w03.json). */
+/** Kuratiertes Bündel für den kanonischen Zeilenprüfungsfall. */
 export const ZAEHLE_TESTS = `def check(zeilen, erwartet, label):
     ergebnis = zaehle_zeilen(zeilen)
     __check(label, ergebnis == erwartet, 'erhalten ' + repr(ergebnis) + ', erwartet ' + repr(erwartet))
@@ -840,12 +840,12 @@ export const REGRESSION_SUITE_CONTRACT = {
   activityType: 'python-code',
 };
 
-/** Referenzfunktion w04-e3 (wörtlich aus content/exercises/w04.json). */
+/** Referenzfunktion für den kanonischen Palindromfall. */
 export const PALINDROM_REFERENZ = `def ist_palindrom(s):
     normalisiert = "".join(s.lower().split())
     return normalisiert == normalisiert[::-1]`;
 
-/** Referenzsuite w04-e3 (fünf Prüfungen, wörtlich aus w04-e3). */
+/** Referenzsuite für den kanonischen Palindromfall. */
 export const PALINDROM_SUITE_REFERENZ = `def teste_palindrom():
     pruefungen = 0
     assert ist_palindrom("Anna") is True
@@ -870,7 +870,7 @@ export const PALINDROM_SUITE_EXTENDED_REFERENZ = `${PALINDROM_SUITE_REFERENZ.spl
     pruefungen += 1
     return pruefungen`;
 
-/** Kuratiertes Bündel w04-e3 (wörtlich aus content/exercises/w04.json). */
+/** Kuratiertes Bündel für den kanonischen Palindromfall. */
 export const PALINDROM_TESTS = `__check("Anna ist Palindrom", ist_palindrom("Anna") is True)
 __check("Lager ist kein Palindrom", ist_palindrom("Lager") is False)
 __check("leerer Text ist Palindrom", ist_palindrom("") is True)

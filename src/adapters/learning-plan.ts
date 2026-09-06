@@ -1,7 +1,6 @@
 import { CompetencyGraph } from '../../assets/js/domain/competency_graph.mjs';
 import { PlanEngine } from '../../assets/js/domain/plan_engine.mjs';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
-import { freshReviewRoute } from '../../assets/js/domain/review_route.mjs';
 import type { CatalogData } from '../app/types';
 import type { ProgressSnapshot } from './local-progress';
 
@@ -65,12 +64,9 @@ export function buildWeeklyLearningPlan(catalog: CatalogData, progress: Progress
       : project ? `#/project/${project.projectId}` : '#/learn';
     return {
       ...rest,
-      // Reviews open a fresh instance for generator-backed exercises (ADR-0015).
-      route: dueAt && exercise?.familyId && exercise.seeded
+      route: dueAt && exercise?.familyId
         ? `#/family/${exercise.familyId}/${exercise.caseId}/-/${exercise.difficulty ?? 'core'}`
-        : dueAt && exercise?.generatorId
-          ? freshReviewRoute(baseRoute, exercise.generatorId, `${item.activityId}:${dueAt}`)
-          : baseRoute,
+        : baseRoute,
       title: lesson?.title || exercise?.title || project?.title || item.activityId,
       ...(dueAt ? { reviewDueAt: dueAt } : {}),
     };

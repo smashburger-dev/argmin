@@ -3,15 +3,15 @@ import { devices, expect, test, type Page } from '@playwright/test';
 
 const overflowRoutes: Array<{ hash: string; ready: (page: Page) => Promise<void> }> = [
   { hash: '/today', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible(); } },
-  { hash: '/exercise/w01-e1', ready: async (page) => { await expect(page.getByRole('textbox', { name: 'Antwort als ganze Zahl' })).toBeVisible(); } },
-  { hash: '/lab/w05-e8', ready: async (page) => { await expect(page.getByRole('textbox', { name: 'Python-Codeeditor' })).toBeVisible(); } },
   { hash: '/settings', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeVisible(); } },
   { hash: '/project/p-foundations-data-checker', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'CLI-Datenprüfer' })).toBeVisible(); } },
   { hash: '/tools', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Werkzeuge' })).toBeVisible(); } },
   { hash: '/visualization/w05-viz1', ready: async (page) => { await expect(page.locator('#w05-column-board svg')).toBeVisible({ timeout: 15_000 }); } },
-  { hash: '/roadmap', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Roadmap' })).toBeVisible(); } },
   { hash: '/sources', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Lektüren' })).toBeVisible(); } },
   { hash: '/lesson/l-linalg-systems', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Gleichungssysteme als Spaltenbild lesen' })).toBeVisible(); } },
+  { hash: '/module/lm-linalg-matrices', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
+  { hash: '/family/formula-scalar-product/column-vector-authored/0/core', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
+  { hash: '/review', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Review' })).toBeVisible(); } },
   { hash: '/diagnostic', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Diagnose' })).toBeVisible(); } },
 ];
 
@@ -54,33 +54,6 @@ async function tapNavigation(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
 }
 
-async function parsonsTouchFlow(page: Page): Promise<void> {
-  await page.goto('/index.html#/exercise/f-git-parsons-01');
-  await expect(page.getByRole('heading', { level: 1, name: 'Sicheren Bugfix-Ablauf ordnen' })).toBeVisible();
-  const list = page.locator('.parsons-control ol');
-  const distractor = list.locator('li').filter({ hasText: 'fehlschlagenden Test löschen' });
-  await expect(list.locator('li')).toHaveCount(6);
-  await page.getByRole('button', { name: 'p2 nach oben' }).tap();
-  await expect(list.locator('li').first()).toContainText('kleinsten Fix schreiben');
-  await distractor.getByRole('button', { name: 'Aussortieren' }).tap();
-  await expect(list.locator('li')).toHaveCount(5);
-  const excluded = page.locator('.excluded-lines');
-  const restore = excluded.getByRole('button', { name: /Zurückholen/ }).filter({ hasText: 'fehlschlagenden Test löschen' });
-  await restore.tap();
-  await expect(list.locator('li')).toHaveCount(6);
-  await expect(list.locator('li').filter({ hasText: 'fehlschlagenden Test löschen' })).toHaveCount(1);
-  await expect(excluded).toHaveCount(0);
-}
-
-async function numericAnswerTap(page: Page): Promise<void> {
-  await page.goto('/index.html#/exercise/w01-e1');
-  const input = page.getByRole('textbox', { name: 'Antwort als ganze Zahl' });
-  await input.tap();
-  await input.fill('7');
-  await page.getByRole('button', { name: 'Antwort prüfen' }).tap();
-  await expect(page.getByRole('heading', { name: /Richtig/ })).toBeVisible();
-}
-
 async function progressImport(page: Page): Promise<void> {
   await page.goto('/index.html#/settings');
   await expect(page.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeVisible();
@@ -109,30 +82,7 @@ test.describe('mobile touch emulation, small Android Chromium', () => {
   test.use(android);
 
   test('tap navigation switches the primary routes', async ({ page }) => tapNavigation(page));
-  test('parsons lines move, exclude and restore by tap', async ({ page }) => parsonsTouchFlow(page));
-  test('numeric answer grades after tap input', async ({ page }) => numericAnswerTap(page));
   test('progress JSON import rejects invalid and accepts exported files', async ({ page }) => progressImport(page));
-
-  test('a failed MathLive module falls back to a usable plain input', async ({ page }) => {
-    await page.route(/vendor\/mathlive\/mathlive\.min\.mjs/, async (route) => route.abort('failed'));
-    await page.goto('/index.html#/exercise/w01-e2');
-    const fallback = page.getByRole('textbox', { name: 'Mathematischer Term' });
-    await expect(fallback).toHaveAttribute('placeholder', 'x^2+x-6');
-    await fallback.fill('2x+7');
-    await expect(fallback).toHaveValue('2x+7');
-    await expect(page.locator('math-field')).toHaveCount(0);
-  });
-
-  test('CodeMirror preserves Tab and Shift+Tab focus without running Python', async ({ page }) => {
-    await page.goto('/index.html#/lab/w05-e8');
-    const editor = page.getByRole('textbox', { name: 'Python-Codeeditor' });
-    const runButton = page.getByRole('button', { name: 'Code ausführen' });
-    await editor.press('Tab');
-    await expect(runButton).toBeFocused();
-    await runButton.press('Shift+Tab');
-    await expect(editor).toBeFocused();
-    await expect(page.locator('.output-content pre')).toHaveCount(0);
-  });
 
   for (const route of overflowRoutes) {
     test(`320px viewport reflows ${route.hash} without horizontal overflow`, async ({ page }) => {
@@ -154,7 +104,7 @@ test.describe('mobile touch emulation, small Android Chromium', () => {
   });
 
   test('mobile routes pass serious and critical axe checks', async ({ page }) => {
-    for (const hash of ['#/today', '#/exercise/w01-e1', '#/settings']) {
+    for (const hash of ['#/today', '#/learn', '#/settings']) {
       await page.goto(`/index.html${hash}`);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       const accessibility = await new AxeBuilder({ page }).analyze();
@@ -168,8 +118,6 @@ test.describe('mobile touch emulation, small iPhone WebKit', () => {
   test.use(iphone);
 
   test('tap navigation switches the primary routes', async ({ page }) => tapNavigation(page));
-  test('parsons lines move, exclude and restore by tap', async ({ page }) => parsonsTouchFlow(page));
-  test('numeric answer grades after tap input', async ({ page }) => numericAnswerTap(page));
   test('progress JSON import rejects invalid and accepts exported files', async ({ page }) => progressImport(page));
 
   for (const route of overflowRoutes) {
@@ -182,7 +130,7 @@ test.describe('mobile touch emulation, small iPhone WebKit', () => {
   }
 
   test('mobile routes pass serious and critical axe checks', async ({ page }) => {
-    for (const hash of ['#/today', '#/exercise/w01-e1', '#/settings']) {
+    for (const hash of ['#/today', '#/learn', '#/settings']) {
       await page.goto(`/index.html${hash}`);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       const accessibility = await new AxeBuilder({ page }).analyze();

@@ -4,12 +4,12 @@ import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { W22_W26_SEED_GENERATORS } from '../assets/js/core/w22_w26_generators.mjs';
+import {
+  genAttentionShape, genVocabAfterMerges, genGreedyToken, genLoraParamCount, genRelativeGain,
+} from '../assets/js/core/w22_w26_generators.mjs';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
-// Contract tests for the W22-W26 week packs and transformer-llm lessons
-// (ADR-0013). The weeks are not registered in content/catalog.json yet
-// (registration is the parent's integration step), so these tests read the
-// week packs and lesson files directly.
+// Contract tests for the W22-W26 transformer-LLM content.
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -35,8 +35,10 @@ const REQUIRED_EXERCISE_FIELDS = [
   'license', 'validationStatus', 'testedSeedCount',
 ];
 
-const loadPack = async (weekId) =>
-  JSON.parse(await readFile(join(root, 'content', 'exercises', `${weekId}.json`), 'utf8'));
+const loadPack = async (weekId) => legacyOracle.weeks[weekId];
+const W22_W26_SEED_GENERATORS = {
+  genAttentionShape, genVocabAfterMerges, genGreedyToken, genLoraParamCount, genRelativeGain,
+};
 
 const loadCompetencies = async () => {
   const doc = JSON.parse(await readFile(join(root, 'content', 'competencies', 'core.json'), 'utf8'));

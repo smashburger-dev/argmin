@@ -15,7 +15,7 @@
         "additionalProperties": false,
         "required": [
           "milestoneId", "locale", "title", "description", "estimatedMinutes",
-          "competencyIds", "lessonIds", "exerciseDefinitionIds", "projectIds",
+          "competencyIds", "lessonIds", "projectIds",
           "coverage", "releaseStatus"
         ],
         "properties": {
@@ -26,7 +26,6 @@
           "estimatedMinutes": { "type": "integer", "minimum": 0 },
           "competencyIds": { "$ref": "#/$defs/competencyIds" },
           "lessonIds": { "$ref": "#/$defs/ids" },
-          "exerciseDefinitionIds": { "$ref": "#/$defs/ids" },
           "projectIds": { "$ref": "#/$defs/ids" },
           "coverage": {
             "type": "array",

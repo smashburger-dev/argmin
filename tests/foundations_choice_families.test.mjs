@@ -143,23 +143,6 @@ test('contracts match the canonical taxonomy, not a silent token permutation', (
   assert.ok(!signatures.has(familyIdTokens('classify-git-operation')), 'keine Kollision mit classify-git-operation');
 });
 
-test('bank content is verbatim source content (prompt, options, solution)', () => {
-  for (const [familyId, bank] of Object.entries(BANKS)) {
-    for (const item of bank) {
-      const source = loadSourceDefinition(item.sourceId);
-      assert.ok(source, `${familyId}: Quelle ${item.sourceId} fehlt`);
-      assert.equal(item.prompt, source.prompt, `${item.caseId}: Prompt`);
-      assert.equal(item.solution, source.fullSolution, `${item.caseId}: Lösung`);
-      const sourceCorrect = source.choices.find((choice) => choice.correct).text;
-      assert.equal(item.correct, sourceCorrect, `${item.caseId}: korrekte Option`);
-      assert.deepEqual(
-        [item.correct, ...item.distractors].sort(),
-        source.choices.map((choice) => choice.text).sort(),
-        `${item.caseId}: Optionsmenge`,
-      );
-    }
-  }
-});
 
 test('static families declare no vacuous template steps', () => {
   for (const contract of FOUNDATIONS_CHOICE_CONTRACTS) {

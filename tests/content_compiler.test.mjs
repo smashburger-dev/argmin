@@ -12,10 +12,6 @@ import {
 } from '../tools/compile_content.mjs';
 import { expectedPublicCounts } from './helpers/content_counts.mjs';
 import { catalogRoot, discoverJson } from '../tools/content_roots.mjs';
-import {
-  adaptLegacyExercise,
-  instantiateLegacyExercise,
-} from '../assets/js/core/legacy_exercise_adapter.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
@@ -37,22 +33,21 @@ test('public compiler is deterministic and excludes private-only legacy content'
   assert.equal(first.explanations.length, expectedCounts.explanations);
   assert.equal(first.lessons.every((lesson) => lesson.blocks.every((block) => block.html?.length > 0)), true);
   assert.doesNotMatch(JSON.stringify(first.lessons), /<script|href=\\"javascript:/i);
-  assert.equal(first.exerciseDefinitions.length, expectedCounts.exercises);
+  assert.equal(first.familyActivities.length, expectedCounts.exercises);
   for (const competencyId of ['c-python-control-flow', 'c-python-collections', 'c-python-files-errors', 'c-testing-debugging', 'c-git-basics']) {
-    assert.ok(first.exerciseDefinitions.filter((exercise) => exercise.competencyIds.includes(competencyId)).length >= 2, `${competencyId} needs two evidence definitions`);
+    assert.ok(first.familyActivities.filter((activity) => activity.competencyIds.includes(competencyId)).length >= 2, `${competencyId} needs two evidence activities`);
   }
   const foundations = first.milestones.find((milestone) => milestone.milestoneId === 'ms-foundations');
   for (const competencyId of foundations.competencyIds) {
     const policy = first.competencies.find((competency) => competency.competencyId === competencyId).evidencePolicy;
-    const eligible = first.exerciseDefinitions.filter((exercise) => foundations.exerciseDefinitionIds.includes(exercise.definitionId)
-      && exercise.competencyIds.includes(competencyId) && exercise.masteryEligible);
+    const eligible = first.familyActivities.filter((activity) => activity.competencyIds.includes(competencyId) && activity.masteryEligible);
     const modernEligible = first.familyActivities.filter((activity) => activity.competencyIds.includes(competencyId) && activity.masteryEligible);
     assert.ok(
       eligible.length + modernEligible.length >= policy.minimumDistinctDefinitions,
       `${competencyId} cannot satisfy its milestone evidence policy`,
     );
   }
-  assert.equal(first.exerciseDefinitions.some((exercise) => exercise.definitionId === 'w05-e7'), false);
+  assert.equal(first.familyActivities.some((activity) => activity.definitionId === 'w05-e7'), false);
   assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|locatorPath|localPath|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/);
 });
 
@@ -92,20 +87,12 @@ test('local-private compiler retains private-only exercises and merges an explic
       tracks: [],
       milestones: [],
       lessons: [],
-      exerciseDefinitions: [],
+      familyActivities: [],
       explanations: [],
       projects: [],
     }));
     const bundle = compileContent({ projectRoot: root, profile: 'local-private', overlayPath });
-    const catalog = JSON.parse(readFileSync(join(root, 'content/catalog.json'), 'utf8'));
-    const contentRoot = join(root, 'content');
-    const localOnlyLegacy = catalog.legacy.exerciseFiles
-      .flatMap((file) => JSON.parse(readFileSync(join(contentRoot, file), 'utf8')).exercises || [])
-      .filter((exercise) => exercise.active === false).length;
-    const localOnlyAuthored = discoverJson(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'))
-      .map((file) => JSON.parse(readFileSync(join(contentRoot, file), 'utf8')))
-      .filter((item) => item.active === false || item.releaseStatus === 'local-only').length;
-    assert.equal(bundle.exerciseDefinitions.length, expectedPublicCounts(root).exercises + localOnlyLegacy + localOnlyAuthored);
+    assert.equal(bundle.familyActivities.length, expectedPublicCounts(root).exercises);
     assert.equal(bundle.competencies.some((competency) => competency.competencyId === 'c-local-test'), true);
     assert.deepEqual(bundle.overlays, ['test-private']);
     assert.throws(
@@ -131,33 +118,9 @@ test('competency validator rejects unknown prerequisites and cycles', () => {
   );
 });
 
-test('legacy adapter preserves W1 seeded prompts and W5 generated parameters', () => {
-  const w01 = readJson(join(root, 'content/exercises/w01.json')).exercises;
-  const w05 = readJson(join(root, 'content/exercises/w05.json')).exercises;
-  const w01e8 = w01.find((exercise) => exercise.exerciseId === 'w01-e8');
-  const w01Definition = adaptLegacyExercise(w01e8, 'w01');
-  const w01Instance = instantiateLegacyExercise(w01Definition, w01e8.deterministicSeed);
-  assert.equal(w01Definition.definitionId, 'w01-e8');
-  assert.deepEqual(w01Definition.competencyIds, w01e8.skillIds);
-  assert.equal(w01Instance.prompt, w01e8.prompt);
-  assert.equal(w01Instance.expectedAnswer.value, w01e8.expectedAnswer.defaultExpected);
-
-  const w05e1 = w05.find((exercise) => exercise.exerciseId === 'w05-e1');
-  const w05Definition = adaptLegacyExercise(w05e1, 'w05');
-  const w05Instance = instantiateLegacyExercise(w05Definition, w05e1.deterministicSeed);
-  assert.equal(w05Definition.generatorId, null);
-  assert.equal(w05Definition.referenceSolverId, 'matmulEntry');
-  assert.deepEqual(w05Instance.parameters, w05e1.parameters);
-  assert.equal(w05Instance.expectedAnswer.value, 1);
-
-  const w05e2 = w05.find((exercise) => exercise.exerciseId === 'w05-e2');
-  const choiceDefinition = adaptLegacyExercise(w05e2, 'w05');
-  assert.deepEqual(choiceDefinition.choices, w05e2.choices);
-});
-
 test('compiled content rejects unknown competency references and incompatible public rights', () => {
   const unknownCompetency = compileContent({ projectRoot: root, profile: 'public' });
-  unknownCompetency.exerciseDefinitions[0].competencyIds = ['c-missing'];
+  unknownCompetency.families[0].cases[0].competencyIds = ['c-missing'];
   assert.throws(() => validateCompiledContent(unknownCompetency), /unbekannte Kompetenz c-missing/);
 
   const incompatibleRights = compileContent({ projectRoot: root, profile: 'public' });
@@ -174,7 +137,7 @@ test('JSON Schema validation rejects malformed source documents', () => {
 test('all declared schemas use JSON Schema 2020-12', () => {
   const names = [
     'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-    'exercise-definition', 'exercise-family', 'explanation-card', 'project', 'source-rights',
+    'exercise-family', 'explanation-card', 'project', 'source-rights',
   ];
   for (const name of names) {
     const schema = readJson(join(root, `schemas/${name}.schema.json`));
@@ -199,19 +162,40 @@ test('content can grow by one lesson and one exercise without touching counters'
     const extraLesson = { ...seedLesson, lessonId: 'l-growth-extra', title: 'Zusatzlektion', blocks: [{ blockId: 'b1', type: 'worked-example', contentRef: 'lessons/growth/extra.md' }] };
     writeFileSync(join(growRoot, 'content/lessons/growth/extra.json'), JSON.stringify(extraLesson));
 
-    const seedExercise = JSON.parse(readFileSync(join(root, 'content/exercise-definitions/foundations/collections-choice.json'), 'utf8'));
-    const extraExercise = { ...seedExercise, definitionId: 'f-growth-extra-01', title: 'Zusatzaufgabe', competencyIds: seedExercise.competencyIds };
-    mkdirSync(join(growRoot, 'content/exercise-definitions/growth'), { recursive: true });
-    writeFileSync(join(growRoot, 'content/exercise-definitions/growth/extra.json'), JSON.stringify(extraExercise));
+    const seedFamily = JSON.parse(readFileSync(join(root, 'content/families/classify-attention-roles.json'), 'utf8'));
+    const extraFamily = {
+      ...seedFamily,
+      familyId: 'growth-family',
+      cases: [{
+        ...seedFamily.cases[0],
+        caseId: 'growth-extra-01',
+        sourceLineage: ['growth'],
+      }],
+    };
+    writeFileSync(join(growRoot, 'content/families/growth-family.json'), JSON.stringify(extraFamily));
+    const growthModulePath = join(growRoot, 'content/modules/git-basics.json');
+    const growthModule = JSON.parse(readFileSync(growthModulePath, 'utf8'));
+    growthModule.placements.push({
+      placementId: 'p-growth-extra',
+      role: 'curated',
+      familyId: 'growth-family',
+      caseId: 'growth-extra-01',
+      seed: 0,
+      difficulty: extraFamily.cases[0].difficultyProfile,
+      estimatedMinutes: 5,
+      lessonId: 'l-foundations-git',
+      masteryEligible: false,
+    });
+    writeFileSync(growthModulePath, JSON.stringify(growthModule));
 
     const after = expectedPublicCounts(growRoot);
     assert.equal(after.lessons, before.lessons + 1, 'derived lesson count must follow the catalog');
-    assert.equal(after.exercises, before.exercises + 1, 'derived exercise count must follow the catalog');
+    assert.equal(after.exercises, before.exercises + 1, 'derived activity count must follow the catalog');
     const grown = compileContent({ projectRoot: growRoot, profile: 'public' });
     assert.equal(grown.lessons.length, after.lessons, 'compiled bundle grows with the catalog without counter edits');
-    assert.equal(grown.exerciseDefinitions.length, after.exercises);
+    assert.equal(grown.familyActivities.length, after.exercises);
     assert.ok(grown.lessons.some((lesson) => lesson.lessonId === 'l-growth-extra'));
-    assert.ok(grown.exerciseDefinitions.some((exercise) => exercise.definitionId === 'f-growth-extra-01'));
+    assert.ok(grown.familyActivities.some((activity) => activity.definitionId === 'growth-family:growth-extra-01'));
   } finally {
     rmSync(growRoot, { recursive: true, force: true });
   }

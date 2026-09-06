@@ -12,11 +12,12 @@ import {
 import { genAttentionShape, genGreedyToken, genLoraParamCount, genRelativeGain, genVocabAfterMerges } from '../assets/js/core/w22_w26_generators.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { createFamilyRegistry, registerStaticCases, staticFamilySpec } from '../assets/js/domain/family_registry.mjs';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 const root = join(process.cwd(), 'content');
 const legacy = {};
 for (const week of [22, 23, 24, 25, 26]) {
-  const exercises = JSON.parse(readFileSync(join(root, 'exercises', `w${week}.json`), 'utf8')).exercises;
+  const exercises = legacyOracle.weeks[`w${week}`].exercises;
   for (const exercise of exercises) legacy[exercise.exerciseId] = exercise;
 }
 

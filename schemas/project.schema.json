@@ -125,10 +125,6 @@
         "local-only"
       ]
     },
-    "legacyWeekId": {
-      "type": "string",
-      "pattern": "^w[0-9]{2}$"
-    },
     "estimatedMinutes": {
       "type": "integer",
       "minimum": 10,

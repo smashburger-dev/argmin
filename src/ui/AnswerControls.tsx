@@ -7,7 +7,7 @@ interface Fragment {
   text: string;
 }
 
-// S4D2: Antwort-Inputs je Aktivitätstyp, aus ExerciseView extrahiert und
+// S4D2: Antwort-Inputs je Aktivitätstyp,
 // für Definitions- und Familienübungen gemeinsam genutzt. Arbeitet auf der
 // minimalen Struktur (activityType, parameters, choices, rubric), die beide
 // Instanzformen liefern.

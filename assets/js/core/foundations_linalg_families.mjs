@@ -1,9 +1,6 @@
-// S4D5 Linalg-Familie (formula-scalar-product): ein Adapter hinter dem
-// Registry-Seam für Skalarprodukt und Matrixeintrag. Ein geseedeter Fall
-// (f-linalg-matmul-entry-01 über genMatmulEntryFresh) plus vier statische
-// Falltypen, byte-identisch aus content/exercises/w05.json (w05-e1, w05-e12,
-// w05-e13, w05-e3). w05-e16 (Code-Ausgabe) und w05-e9 (Begründung) teilen
-// Lösungsweg und Antwortform nicht und bleiben Definitionen.
+// Linalg-Familie (formula-scalar-product) für Skalarprodukt und Matrixeintrag.
+// Ein geseedeter Fall und statische Falltypen teilen den kanonischen
+// Lösungsweg; Code-Ausgabe und Begründung bleiben getrennte Familienfälle.
 
 import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, solveShape } from './linalg_numpy_fresh_generators.mjs';
 import { drawFamilyInstance } from './generator_draw_kit.mjs';

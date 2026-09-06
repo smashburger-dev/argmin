@@ -11,7 +11,7 @@ import { TraceTableView } from './TraceTableView';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
-// S4D2: Antwort-Inputs je Aktivitätstyp (gemeinsam mit ExerciseView),
+// S4D2: Antwort-Inputs je Aktivitätstyp,
 // domänenspezifische Hinweise mit Ledger-Zählung, Offenlegung mit
 // Mastery-Disqualifikation. Trace-Tabelle bleibt eigene Variante.
 function parseFamilyRef(ref: string): {

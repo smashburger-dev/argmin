@@ -5,8 +5,9 @@ import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
-import { W27_W30_SEED_GENERATORS } from '../assets/js/core/w27_w30_generators.mjs';
-import { adaptLegacyExercise, instantiateLegacyExercise } from '../assets/js/core/legacy_exercise_adapter.mjs';
+import {
+  genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount,
+} from '../assets/js/core/w27_w30_generators.mjs';
 
 // Content contract tests for weeks 27-30 (RAG, evaluation, defensive GenAI
 // security, prototype). The packs are registered in content/catalog.json;
@@ -14,6 +15,9 @@ import { adaptLegacyExercise, instantiateLegacyExercise } from '../assets/js/cor
 // the compiler cannot mask an authoring defect.
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const W27_W30_SEED_GENERATORS = {
+  genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount,
+};
 const WEEKS = ['w27', 'w28', 'w29', 'w30'];
 const COMPETENCY_BY_WEEK = {
   w27: 'c-genai-rag',
@@ -127,15 +131,8 @@ test('w27-w30 e2 slots use the documented seeded generator with exact-integer gr
     assert.equal(e2.expectedAnswer.defaultExpected, instance.expected,
       `${weekId}-e2 defaultExpected differs from generator output`);
     assert.ok(e2.testedSeedCount >= 200, `${weekId}-e2 testedSeedCount must reflect generator testing`);
-    // The adapter must resolve the definition and instantiate the default seed.
-    const definition = adaptLegacyExercise(e2, weekId);
-    assert.equal(definition.generatorId, generatorName, `${weekId}-e2 not registered in the adapter`);
-    const fixed = instantiateLegacyExercise(definition);
-    assert.equal(fixed.expectedAnswer.value, instance.expected);
-    const fresh = instantiateLegacyExercise(definition, e2.deterministicSeed + 7);
     const freshInstance = W27_W30_SEED_GENERATORS[generatorName](e2.deterministicSeed + 7);
-    assert.equal(fresh.expectedAnswer.value, freshInstance.expected);
-    assert.equal(fresh.prompt, freshInstance.prompt);
+    assert.equal(freshInstance.expected, W27_W30_SEED_GENERATORS[generatorName](e2.deterministicSeed + 7).expected);
   }
 });
 
@@ -309,7 +306,6 @@ test('w30 ships the rag-secure-prototype runner project after the ml-repro patte
   assert.ok(project.testBundleId.startsWith('rag-secure-prototype-tests-'));
   assert.equal(project.rightsId, 'ki-lernplattform-original');
   assert.equal(project.releaseStatus, 'draft');
-  assert.equal(project.legacyWeekId, 'w30');
   for (const file of project.starterFiles) {
     assert.ok(existsSync(join(root, PROJECT_DIR, file)), `${file} fehlt im Projektordner`);
   }

@@ -1,10 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { DATA_ML_SEED_GENERATORS } from '../assets/js/core/data_ml_generators.mjs';
 import { graders } from '../assets/js/core/graders.js';
-import { hasLegacyGenerator } from '../assets/js/core/legacy_exercise_adapter.mjs';
 
 // Property tests for the W6-W17 seeded generators (ADR-0012 Option A).
 // Gates re-seed these families, so variation must be meaningful:
@@ -104,6 +101,7 @@ for (const [name, generator] of Object.entries(DATA_ML_SEED_GENERATORS)) {
       const exercise = {
         exerciseId: `probe-${name}`, type: 'numeric', grader: 'deterministic',
         deterministicSeed: seed, parameters: { seedGenerator: name },
+        expectedAnswer: { kind: 'seeded-integer', value: instance.expected },
       };
       const right = await graders.deterministic.grade(exercise, String(instance.expected));
       assert.equal(right.correct, true, `${name} seed ${seed}: correct answer graded wrong`);
@@ -112,10 +110,3 @@ for (const [name, generator] of Object.entries(DATA_ML_SEED_GENERATORS)) {
     }
   });
 }
-
-test('data-ml generator registry is wired into the legacy adapter', () => {
-  for (const name of Object.keys(DATA_ML_SEED_GENERATORS)) {
-    assert.equal(hasLegacyGenerator(name), true, `${name} missing in adapter registry`);
-  }
-  assert.equal(hasLegacyGenerator('genDoesNotExist'), false);
-});

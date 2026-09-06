@@ -243,7 +243,12 @@ for (const { file, competencyId, main } of LESSONS) {
 }
 
 test('the four week generators are referenced by exactly their e2 exercises', async () => {
-  const { W18_W21_SEED_GENERATORS } = await import('../assets/js/core/w18_w21_generators.mjs');
+  const {
+    genLinearParamCount, genBackpropChain, genSgdSteps, genDropoutCount,
+  } = await import('../assets/js/core/w18_w21_generators.mjs');
+  const W18_W21_SEED_GENERATORS = {
+    genLinearParamCount, genBackpropChain, genSgdSteps, genDropoutCount,
+  };
   for (const { weekId, generator } of WEEKS) {
     const pack = legacyOracle.weeks[weekId];
     const generated = pack.exercises.filter((e) => e.parameters?.seedGenerator);

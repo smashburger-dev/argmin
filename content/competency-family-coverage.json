@@ -1,0 +1,616 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "ki-lernplattform-core",
+  "catalogVersion": "2026.08.31",
+  "coverage": [
+    {
+      "competencyId": "c-algebra-basics",
+      "familyIds": [
+        "transform-expression-simplify-canonical",
+        "transform-linear-equation-isolate",
+        "transform-power-log-exponent"
+      ],
+      "placedCaseCount": 4,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-algebra",
+      "familyIds": [
+        "classify-error-hypothesis",
+        "transform-expression-simplify-canonical",
+        "transform-linear-equation-isolate"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-python-basics",
+      "familyIds": [
+        "optimize-decode-greedy-loop",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 10,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-python-reading",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "aggregate-evidence-rule-audit",
+        "construct-matvec-shape-contract",
+        "formula-ratio-percent-metric",
+        "trace-assignment-state",
+        "trace-call-composition",
+        "trace-chunk-window-loop",
+        "trace-library-api-output",
+        "trace-stub-doc-sentence-select",
+        "trace-substring-flag-sum",
+        "trace-toposort-dependency-order",
+        "trace-training-loop-count"
+      ],
+      "placedCaseCount": 28,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-python-functions",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "classify-rule-cascade-priority",
+        "construct-freeze-assert-guard",
+        "construct-normalize-chunk-contract",
+        "construct-secure-prototype-contract",
+        "construct-stub-prototype-contract",
+        "formula-stat-from-table",
+        "reproduce-canonical-hash-verify",
+        "reproduce-pipeline-status-report",
+        "reproduce-run-digest-assert",
+        "trace-call-composition",
+        "validate-goalshift-flag-rules",
+        "validate-required-field-raise",
+        "validate-rule-catalog-scan",
+        "validate-text-normalize-match"
+      ],
+      "placedCaseCount": 22,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-meta-learning",
+      "familyIds": [
+        "classify-error-hypothesis",
+        "classify-test-attitude"
+      ],
+      "placedCaseCount": 4,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-linalg-matrices",
+      "familyIds": [
+        "classify-column-combination",
+        "classify-matrix-shape",
+        "construct-matvec-shape-contract",
+        "fit-forward-layer-chain-contract",
+        "formula-scalar-product",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 13,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-linalg-systems",
+      "familyIds": [
+        "classify-column-combination",
+        "classify-rank-solution-case",
+        "construct-matvec-shape-contract",
+        "formula-scalar-product"
+      ],
+      "placedCaseCount": 4,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-linalg-gauss",
+      "familyIds": [
+        "classify-rank-solution-case",
+        "classify-row-operation-validity",
+        "construct-linalg-contract-synthesis",
+        "construct-matvec-shape-contract",
+        "transform-rank-dependence-rowops",
+        "transform-system-2x2-elimination"
+      ],
+      "placedCaseCount": 9,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-linalg-independence",
+      "familyIds": [
+        "classify-independence-multiple",
+        "classify-rank-solution-case",
+        "construct-matvec-shape-contract",
+        "transform-rank-dependence-rowops"
+      ],
+      "placedCaseCount": 4,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-numpy-basics",
+      "familyIds": [
+        "aggregate-retrieval-ranking-metric",
+        "classify-column-combination",
+        "construct-attention-mask",
+        "construct-ensemble-predictor-comparison",
+        "construct-linalg-contract-synthesis",
+        "construct-matvec-shape-contract",
+        "fit-forward-layer-chain-contract",
+        "fit-pca-kmeans-pipeline",
+        "fit-predict-metrics",
+        "formula-descriptive-stats-numpy",
+        "formula-lora-delta-apply",
+        "formula-ridge-lasso-closed-form",
+        "optimize-gradient-update-rule",
+        "optimize-mse-gradient-closed-form",
+        "optimize-multi-head-attention",
+        "optimize-softmax-attention-mask",
+        "optimize-training-primitive-contract",
+        "optimize-tree-best-split",
+        "reproduce-seeded-experiment-report",
+        "reproduce-seeded-split",
+        "trace-assignment-state",
+        "trace-library-api-output",
+        "validate-shape-contract"
+      ],
+      "placedCaseCount": 31,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-python-control-flow",
+      "familyIds": [
+        "aggregate-accumulator-count",
+        "classify-control-construct",
+        "classify-string-immutability",
+        "construct-guarded-loop",
+        "trace-collection-state"
+      ],
+      "placedCaseCount": 7,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-python-collections",
+      "familyIds": [
+        "aggregate-accumulator-count",
+        "classify-python-collection-choice",
+        "classify-set-operation-semantics",
+        "optimize-bpe-merge-learn",
+        "trace-collection-state",
+        "trace-dict-state-update",
+        "transform-bpe-merge-apply",
+        "transform-tokenize-roundtrip"
+      ],
+      "placedCaseCount": 10,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-python-files-errors",
+      "familyIds": [
+        "aggregate-validate-and-count-records",
+        "classify-exception-placement",
+        "validate-required-field-raise"
+      ],
+      "placedCaseCount": 3,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-testing-debugging",
+      "familyIds": [
+        "aggregate-detector-eval-compare",
+        "classify-rule-cascade-priority",
+        "classify-test-attitude",
+        "construct-regression-test-suite",
+        "construct-test-structure-aaa",
+        "trace-exception-path",
+        "validate-test-design-coverage"
+      ],
+      "placedCaseCount": 8,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-git-basics",
+      "familyIds": [
+        "classify-git-operation",
+        "construct-safe-bugfix-workflow"
+      ],
+      "placedCaseCount": 4,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-pandas-cleaning",
+      "familyIds": [
+        "classify-missingness",
+        "count-remaining-rows-cleaning-rule",
+        "trace-library-api-output",
+        "validate-data-quality-contract"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-eda-viz",
+      "familyIds": [
+        "classify-confounding",
+        "formula-descriptive-stats-numpy",
+        "formula-ratio-percent-metric",
+        "trace-library-api-output"
+      ],
+      "placedCaseCount": 4,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-grad-regression",
+      "familyIds": [
+        "fit-seeded-split-sgd-linear",
+        "optimize-backprop-gradient-check",
+        "optimize-gradient-update-rule",
+        "optimize-mse-gradient-closed-form",
+        "optimize-sgd-step-pure-update",
+        "optimize-training-primitive-contract",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 9,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-baseline",
+      "familyIds": [
+        "aggregate-majority-rule-count",
+        "classify-task-type",
+        "fit-predict-metrics",
+        "reproduce-seeded-split",
+        "trace-library-api-output"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-linear",
+      "familyIds": [
+        "fit-predict-metrics",
+        "formula-quadratic-error-metric",
+        "formula-ratio-percent-metric"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-logistic",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "classify-sigmoid-regime"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-cv",
+      "familyIds": [
+        "classify-cv-leakage",
+        "classify-parameter-origin",
+        "fit-early-stopping-roundtrip",
+        "fit-weight-decay-ablation",
+        "formula-metric-spread-range",
+        "formula-ratio-percent-metric",
+        "rank-evidence-table",
+        "reproduce-seeded-split",
+        "validate-leakage-rule-audit"
+      ],
+      "placedCaseCount": 10,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-erroranalysis",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "aggregate-detector-eval-compare",
+        "aggregate-grouped-metrics-report",
+        "classify-error-drift",
+        "classify-fairness-aggregation",
+        "formula-ratio-percent-metric"
+      ],
+      "placedCaseCount": 8,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-regularization",
+      "familyIds": [
+        "classify-cv-leakage",
+        "classify-regularizer-effect",
+        "formula-ratio-percent-metric",
+        "formula-ridge-lasso-closed-form"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-ensembles",
+      "familyIds": [
+        "aggregate-majority-rule-count",
+        "classify-ensemble-effect",
+        "construct-ensemble-predictor-comparison",
+        "optimize-tree-best-split",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-svm-pca",
+      "familyIds": [
+        "classify-supervision-scaling",
+        "classify-svm-margin",
+        "fit-pca-kmeans-pipeline",
+        "formula-ratio-percent-metric"
+      ],
+      "placedCaseCount": 5,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-ml-repro",
+      "familyIds": [
+        "classify-evidence-vs-demo",
+        "classify-repro-contract",
+        "formula-metric-spread-range",
+        "formula-stat-from-table",
+        "reproduce-run-digest-assert",
+        "reproduce-seeded-experiment-report",
+        "trace-assignment-state",
+        "validate-rule-catalog-scan"
+      ],
+      "placedCaseCount": 11,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-tensors",
+      "familyIds": [
+        "classify-shape-contract",
+        "fit-forward-layer-chain-contract",
+        "formula-count-from-construction",
+        "optimize-backprop-gradient-check",
+        "validate-shape-contract"
+      ],
+      "placedCaseCount": 7,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-autograd",
+      "familyIds": [
+        "classify-backprop-path-rule",
+        "fit-mlp-val-curve-argmin",
+        "optimize-backprop-gradient-check",
+        "optimize-backprop-path-sum",
+        "optimize-gradient-update-rule",
+        "optimize-sgd-step-pure-update",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 8,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-training",
+      "familyIds": [
+        "classify-training-curve",
+        "fit-mlp-val-curve-argmin",
+        "fit-seeded-split-sgd-linear",
+        "formula-count-from-construction",
+        "optimize-gradient-update-rule",
+        "optimize-training-primitive-contract",
+        "trace-training-loop-count"
+      ],
+      "placedCaseCount": 7,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-regularization",
+      "familyIds": [
+        "classify-dropout-regime",
+        "fit-early-stopping-roundtrip",
+        "fit-weight-decay-ablation",
+        "formula-count-from-construction",
+        "optimize-training-primitive-contract",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-attention",
+      "familyIds": [
+        "classify-attention-roles",
+        "compose-toy-inference-pipeline",
+        "construct-attention-mask",
+        "formula-count-from-construction",
+        "optimize-multi-head-attention",
+        "optimize-softmax-attention-mask",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 8,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-tokenizer",
+      "familyIds": [
+        "classify-subword-principle",
+        "compose-toy-inference-pipeline",
+        "formula-count-from-construction",
+        "optimize-bpe-merge-learn",
+        "trace-assignment-state",
+        "transform-bpe-merge-apply",
+        "transform-tokenize-roundtrip"
+      ],
+      "placedCaseCount": 7,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-inference",
+      "familyIds": [
+        "classify-decoding-strategy",
+        "compose-toy-inference-pipeline",
+        "formula-stat-from-table",
+        "optimize-decode-greedy-loop",
+        "optimize-softmax-attention-mask"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-finetuning",
+      "familyIds": [
+        "classify-lora-tradeoff",
+        "formula-count-from-construction",
+        "formula-lora-delta-apply",
+        "optimize-gradient-update-rule",
+        "trace-assignment-state"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-dl-papers",
+      "familyIds": [
+        "classify-benchmark-reading",
+        "formula-ratio-percent-metric",
+        "formula-stat-from-table",
+        "rank-evidence-table",
+        "trace-assignment-state",
+        "validate-required-field-raise"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-genai-rag",
+      "familyIds": [
+        "aggregate-retrieval-ranking-metric",
+        "aggregate-topk-relevance-arithmetic",
+        "classify-rag-stage",
+        "construct-normalize-chunk-contract",
+        "trace-chunk-window-loop"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-genai-eval",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "aggregate-detector-eval-compare",
+        "aggregate-parity-threshold-selection",
+        "classify-eval-hazard",
+        "classify-rule-cascade-priority",
+        "validate-report-guard-compose"
+      ],
+      "placedCaseCount": 10,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-genai-security",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "aggregate-detector-eval-compare",
+        "aggregate-grouped-metrics-report",
+        "aggregate-validate-and-count-records",
+        "classify-attack-surface",
+        "classify-freeze-purpose",
+        "classify-rule-cascade-priority",
+        "formula-stat-from-table",
+        "reproduce-pipeline-status-report",
+        "trace-substring-flag-sum",
+        "validate-rule-catalog-scan"
+      ],
+      "placedCaseCount": 14,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-genai-prototype",
+      "familyIds": [
+        "classify-tool-policy",
+        "construct-secure-prototype-contract",
+        "construct-stub-prototype-contract",
+        "formula-ratio-percent-metric",
+        "reproduce-pipeline-status-report",
+        "trace-stub-doc-sentence-select"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-research-question",
+      "familyIds": [
+        "classify-question-quality",
+        "trace-assignment-state",
+        "validate-goalshift-flag-rules",
+        "validate-required-field-raise",
+        "validate-text-normalize-match"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-research-cards",
+      "familyIds": [
+        "classify-provenance-duty",
+        "formula-stat-from-table",
+        "trace-assignment-state",
+        "validate-required-field-raise",
+        "validate-rule-catalog-scan"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-research-responsible",
+      "familyIds": [
+        "aggregate-confusion-metric",
+        "aggregate-parity-threshold-selection",
+        "classify-fairness-aggregation",
+        "trace-assignment-state",
+        "validate-report-guard-compose"
+      ],
+      "placedCaseCount": 6,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-research-capstone",
+      "familyIds": [
+        "aggregate-evidence-rule-audit",
+        "classify-hash-semantics",
+        "formula-ratio-percent-metric",
+        "reproduce-canonical-hash-verify",
+        "reproduce-pipeline-status-report",
+        "reproduce-run-digest-assert",
+        "validate-report-guard-compose"
+      ],
+      "placedCaseCount": 9,
+      "seededFamilyCount": 0
+    },
+    {
+      "competencyId": "c-capstone-pipeline",
+      "familyIds": [
+        "aggregate-evidence-rule-audit",
+        "aggregate-grouped-metrics-report",
+        "aggregate-validate-and-count-records",
+        "classify-evidence-vs-demo",
+        "classify-freeze-purpose",
+        "classify-freeze-scope",
+        "classify-silent-fallback-hazard",
+        "construct-freeze-assert-guard",
+        "formula-ratio-percent-metric",
+        "formula-stat-from-table",
+        "reproduce-pipeline-status-report",
+        "reproduce-run-digest-assert",
+        "trace-assignment-state",
+        "trace-toposort-dependency-order",
+        "validate-required-field-raise",
+        "validate-rule-catalog-scan"
+      ],
+      "placedCaseCount": 31,
+      "seededFamilyCount": 0
+    }
+  ]
+}

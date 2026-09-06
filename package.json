@@ -20,7 +20,6 @@
     "build:next": "vite build && node tools/build_public.mjs --out build-next --next-dir .next-ui && node tools/validate_content.mjs --dir build-next && node tools/validate_next_build.mjs build-next",
     "build:release": "npm run build:next",
     "preview:next": "vite preview --outDir build-next --host 127.0.0.1",
-    "content:migrate": "node tools/migrate_legacy_content.mjs",
     "content:compile": "node tools/compile_content.mjs --profile public",
     "content:compile:local": "node tools/compile_content.mjs --profile local-private",
     "predev:local": "npm run content:compile:local",

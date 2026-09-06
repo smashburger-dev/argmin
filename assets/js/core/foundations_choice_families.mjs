@@ -2,12 +2,8 @@
 //
 // Jede Familie ordnet eine Beobachtung anhand eines Konzeptsystems einer
 // Klasse zu (Referenzmodell = das Konzeptsystem, Lösungsweg = Zuordnen).
-// Alle Inhalte sind wörtlich aus den autoritativen Quellen übernommen:
-//   - content/exercises/w02.json (w02-e3), content/exercises/w03.json (w03-e2)
-//   - content/exercise-definitions/foundations/{control-choice,
-//     collections-choice, files-choice, testing-choice, algebra-debug,
-//     meta-error-classify}.json
-// Falltypen sind die echten Shard-Fälle aus
+// Alle Inhalte sind wörtlich aus den autoritativen Family-Shards übernommen.
+// Falltypen sind die kanonischen Shard-Fälle aus
 // research/streamlining/s4a-v2/shards/foundations.json (authorityMode dort
 // überall static, außer seeded-error-pattern-cases: seeded).
 //

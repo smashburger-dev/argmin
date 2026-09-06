@@ -120,7 +120,7 @@ test('import: invalid records are rejected per store', () => {
   p.data.attempts = [{ exerciseId: 'w05-e1', correct: 'yes' }];
   const { ok, errors } = validateImportPayload(p);
   assert.equal(ok, false);
-  assert.ok(errors.some((e) => e.includes('weeks[0]')));
+  assert.equal(errors.some((e) => e.includes('weeks[0]')), false);
   assert.ok(errors.some((e) => e.includes('weeks[1]')));
   assert.ok(errors.some((e) => e.includes('weeks[2]')));
   assert.ok(errors.some((e) => e.includes('attempts[0]')));

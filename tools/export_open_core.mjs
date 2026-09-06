@@ -4,24 +4,20 @@ import { OUTPUT_PRIVATE_MARKERS } from './content_policy.mjs';
 import { cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildLegacyMap } from './migrate_legacy_content.mjs';
 import { compileContent, writeSplitArtifacts } from './compile_content.mjs';
 import { buildCoverageArtifacts } from './build_coverage_matrix.mjs';
+import { catalogRoot, discoverJson } from './content_roots.mjs';
 import { expectedPublicCounts } from '../tests/helpers/content_counts.mjs';
 import { projectReleaseFiles } from './project_release_files.mjs';
-import { catalogRoot, discoverJson } from './content_roots.mjs';
 
 const topFiles = [
   'LICENSE', 'LICENSE-CONTENT.md', 'AGENTS.md', 'package.json', 'package-lock.json',
   'tsconfig.json', 'vite.config.ts', 'playwright.config.ts', 'index.html',
 ];
 const assetFiles = [
-  'assets/js/core/content_repository.js',
   'assets/js/core/exercise_runtime.js',
   'assets/js/core/learning_ledger.mjs',
   'assets/js/core/graders.js',
-  'assets/js/core/legacy_exercise_adapter.mjs',
-  'assets/js/core/seed_generator_registry.mjs',
   'assets/js/core/data_ml_generators.mjs',
   'assets/js/core/data_ml_families.mjs',
   'assets/js/core/w18_w21_generators.mjs',
@@ -53,11 +49,8 @@ const assetFiles = [
   'assets/js/domain/foundations_construct_registry.mjs',
   'assets/js/domain/foundations_trace_registry.mjs',
   'assets/js/domain/foundations_linalg_registry.mjs',
-  'assets/js/domain/fresh_seed.mjs',
-  'assets/js/domain/review_route.mjs',
   'assets/js/domain/plan_engine.mjs',
   'assets/js/domain/project_report.mjs',
-  'assets/js/domain/tutor_engine.mjs',
   'assets/js/runtime/pyodide_runner.js',
   'assets/js/runtime/pyodide_worker.mjs',
   'assets/js/runtime/workspace_protocol.mjs',
@@ -66,14 +59,12 @@ const toolFiles = [
   'tools/build_coverage_matrix.mjs',
   'tools/build_npm_notices.mjs',
   'tools/build_public.mjs',
-  'tools/build_search_index.mjs',
   'tools/compile_content.mjs',
   'tools/export_open_core.mjs',
   'tools/learner_project_check.py',
   'tools/markdown_content.mjs',
   'tools/measure_next_timing.mjs',
   'tools/migrate_attempts_v3.mjs',
-  'tools/migrate_legacy_content.mjs',
   'tools/public_content.mjs',
   'tools/project_release_files.mjs',
   'tools/pyodide_contract_matrix.mjs',
@@ -86,7 +77,6 @@ const excludedTestFiles = new Set([
   'tests/open_core_export.test.mjs',
 ]);
 const docFiles = [
-  'docs/coverage-report.md',
   'docs/adr/0005-progress-indexeddb.md',
   'docs/adr/0008-review-scheduling-of3.md',
   'docs/adr/0009-competency-learning-core.md',
@@ -151,10 +141,7 @@ function openCoreCounts(sourceRoot) {
   const draftCompetencies = discoverJson(contentRoot, catalogRoot(catalog, 'competencies'))
     .flatMap((file) => read(file).competencies)
     .filter((item) => item.releaseStatus === 'draft').length;
-  const solverVerified = discoverJson(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'))
-    .map((file) => read(file))
-    .filter((item) => item.releaseStatus === 'solver-verified').length;
-  return { ...expected, draftCompetencies, solverVerified };
+  return { ...expected, draftCompetencies, solverVerified: 0 };
 }
 
 function publicReadme(counts) {
@@ -162,7 +149,7 @@ function publicReadme(counts) {
 }
 
 function openCoreTest() {
-  return `import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { dirname, join } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nimport { compileContent } from '../tools/compile_content.mjs';\nimport { expectedPublicCounts } from './helpers/content_counts.mjs';\n\nconst root = join(dirname(fileURLToPath(import.meta.url)), '..');\n\ntest('public source compiles without a private overlay', () => {\n  const first = compileContent({ projectRoot: root, profile: 'public' });\n  const second = compileContent({ projectRoot: root, profile: 'public' });\n  assert.equal(first.contentVersion, second.contentVersion);\n  const expected = expectedPublicCounts(root);\n  assert.equal(first.competencies.length, expected.competencies);\n  assert.equal(first.lessons.length, expected.lessons);\n  assert.equal(first.exerciseDefinitions.length, expected.exercises);\n  assert.equal(first.projects.length, expected.projects);\n  assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|\\bMML\\b|mml-book|murphy-pml/);\n});\n`;
+  return `import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { dirname, join } from 'node:path';\nimport { fileURLToPath } from 'node:url';\nimport { compileContent } from '../tools/compile_content.mjs';\nimport { expectedPublicCounts } from './helpers/content_counts.mjs';\n\nconst root = join(dirname(fileURLToPath(import.meta.url)), '..');\n\ntest('public source compiles without a private overlay', () => {\n  const first = compileContent({ projectRoot: root, profile: 'public' });\n  const second = compileContent({ projectRoot: root, profile: 'public' });\n  assert.equal(first.contentVersion, second.contentVersion);\n  const expected = expectedPublicCounts(root);\n  assert.equal(first.competencies.length, expected.competencies);\n  assert.equal(first.lessons.length, expected.lessons);\n  assert.equal(first.projects.length, expected.projects);\n  assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|\\bMML\\b|mml-book|murphy-pml/);\n});\n`;
 }
 
 function publicAgents() {
@@ -248,8 +235,6 @@ export function exportOpenCore(sourceRoot, targetRoot, { includeVendor = true } 
   writeFileSync(join(target, 'AGENTS.md'), publicAgents());
   writeFileSync(join(target, '.gitignore'), publicGitignore());
   writeFileSync(join(target, 'tests/open_core_content.test.mjs'), openCoreTest());
-  const mapping = buildLegacyMap(target);
-  writeFileSync(join(target, 'content/legacy/exercise-competency-map.json'), JSON.stringify(mapping, null, 2) + '\n');
   const bundle = compileContent({ projectRoot: target, profile: 'public' });
   writeFileSync(join(target, 'content/content-bundle.json'), JSON.stringify(bundle, null, 2) + '\n');
   const generatedContent = join(target, '.content-build/public');
@@ -257,8 +242,7 @@ export function exportOpenCore(sourceRoot, targetRoot, { includeVendor = true } 
   writeFileSync(join(generatedContent, 'content-bundle.json'), JSON.stringify(bundle, null, 2) + '\n');
   writeSplitArtifacts(bundle, join(generatedContent, 'split'));
   const coverage = buildCoverageArtifacts(target);
-  writeFileSync(join(target, 'content/coverage-matrix.json'), JSON.stringify(coverage.matrix, null, 2) + '\n');
-  writeFileSync(join(target, 'docs/coverage-report.md'), coverage.markdown);
+  writeFileSync(join(target, 'content/competency-family-coverage.json'), JSON.stringify(coverage, null, 2) + '\n');
   const contentText = filesUnder(join(target, 'content'))
     .filter((path) => !/\.(wasm|zip|whl|pyc)$/i.test(path))
     .map((path) => readFileSync(join(target, 'content', path), 'utf8'))
