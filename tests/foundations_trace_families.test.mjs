@@ -310,6 +310,11 @@ const TRACE_TAXONOMY = [
       'rng-stream-reseed-trace': 'statischer W17-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
       'manual-backward-step-trace': 'statischer W19-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
       'fixed-dropout-mask-trace': 'statischer W21-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'stable-softmax-rows-trace': 'statischer W22-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'char-encode-roundtrip-trace': 'statischer W23-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'greedy-loop-trace': 'statischer W24-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'freeze-param-filter-trace': 'statischer W25-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'absolute-vs-relative-gain-trace': 'statischer W26-Fall mit Variablenzustand und eigenem Kompetenz-Override',
     },
     staticContent: [
       { sourceId: 'w01-e3', contentType: 'predict-output', caseId: 'reassign-two-variables-print' },
