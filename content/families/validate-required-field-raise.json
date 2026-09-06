@@ -156,6 +156,57 @@
       },
       "activityType": "python-code",
       "graderId": "pyodide"
+    },
+    {
+      "caseId": "readme-required-headings",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w38-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def fehlende_uberschriften(text, pflicht):\n    \"\"\"Pflichtueberschriften, die im Text nicht als #-Zeile vorkommen (Reihenfolge wie pflicht).\"\"\"\n    ...\n\n",
+        "tests": "README = \"# Titel\\n\\n## Setup\\nAnleitung.\\n\\n## Karten\\nInhalt.\\n\"\nPFLICHT = [\"Setup\", \"Abhängigkeiten\", \"Karten\", \"Limitations\"]\n__check('zwei fehlen', fehlende_uberschriften(README, PFLICHT) == [\"Abhängigkeiten\", \"Limitations\"])\n__check('alle da', fehlende_uberschriften(README, [\"Setup\", \"Karten\"]) == [])\n__check('dreifach-raute', fehlende_uberschriften(\"###  Limitations \\n\", [\"Limitations\"]) == [])\n__check('text-zeile zaehlt nicht', fehlende_uberschriften(\"Setup steht nur im Fließtext\", [\"Setup\"]) == [\"Setup\"])\n__check('leerer text', fehlende_uberschriften(\"\", [\"Setup\"]) == [\"Setup\"])\n__check('reihenfolge von pflicht', fehlende_uberschriften(\"## Karten\\n\", [\"Limitations\", \"Karten\"]) == [\"Limitations\"])"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def fehlende_uberschriften(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n\n# README -> ['Abhängigkeiten', 'Limitations']; nur #-Zeilen zaehlen"
+      },
+      "prompt": "README-Prüfung: <code>fehlende_uberschriften(text, pflicht)</code> liefert die Liste der Pflichtüberschriften, die im Text fehlen — in der Reihenfolge von pflicht. Eine Überschrift ist eine Zeile, die (nach strip) mit <code>#</code> beginnt; verglichen wird der von Rauten und Leerzeichen befreite Zeilenrest. Toleranz: führende Rauten beliebiger Anzahl, Leerzeichen vor und nach dem Text.",
+      "fullSolution": "def fehlende_uberschriften(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n\n# Normalisieren, sammeln, in pflicht-Reihenfolge filtern.",
+      "hints": [
+        "Sammle zuerst alle normalisierten Überschriften-Zeilen (strip, lstrip('#'), strip), dann filtere pflicht.",
+        "lstrip('#') entfernt auch mehrfache Rauten — aber nur am Anfang."
+      ],
+      "feedbackRules": [
+        {
+          "if": "substring-match",
+          "then": "„Setup“ im Fließtext ist keine Überschrift — nur #-Zeilen erfüllen den Vertrag."
+        },
+        {
+          "if": "order-lost",
+          "then": "Die Rückgabe folgt der Reihenfolge in pflicht, nicht der Fundreihenfolge im Text."
+        },
+        {
+          "if": "hash-in-middle",
+          "then": "lstrip('#') greift nur führende Rauten — ein Hash mitten im Titel bleibt Teil des Textes."
+        }
+      ],
+      "typicalErrors": [
+        "Fließtext-Treffer zugelassen",
+        "Reihenfolge der Rückgabe verdreht",
+        "Rauten mitten in der Zeile mit entfernt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
     }
   ]
 }

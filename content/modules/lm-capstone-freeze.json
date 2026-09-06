@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-capstone-freeze",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Pipeline: Freeze und Abhängigkeitsordnung",
+  "description": "Einen eingefrorenen Pipeline-Stand und seine Abhängigkeiten deterministisch prüfen.",
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-capstone-pipeline"
+  ],
+  "placements": [
+    {
+      "placementId": "p-capstone-35-e1",
+      "role": "curated",
+      "familyId": "classify-freeze-scope",
+      "caseId": "freeze-scope",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-capstone-35-e2",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "pipeline-stage-audit",
+      "seed": 3511,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-35-e3",
+      "role": "curated",
+      "familyId": "trace-toposort-dependency-order",
+      "caseId": "toposort-dependency-order",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-35-e4",
+      "role": "curated",
+      "familyId": "validate-rule-catalog-scan",
+      "caseId": "freeze-checker",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-35-e5",
+      "role": "curated",
+      "familyId": "construct-freeze-assert-guard",
+      "caseId": "freeze-assert-parsons",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-35-e6",
+      "role": "curated",
+      "familyId": "reproduce-run-digest-assert",
+      "caseId": "pipeline-freeze-report",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-capstone-pipeline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-35-practice",
+      "role": "practice-space",
+      "familyId": "formula-stat-from-table",
+      "caseId": "pipeline-stage-audit",
+      "seed": 3511,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-capstone-pipeline"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

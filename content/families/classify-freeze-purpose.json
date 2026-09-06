@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-freeze-purpose",
+  "contract": {
+    "familyId": "classify-freeze-purpose",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet den Zweck eines eingefrorenen Prüfstands in einer deterministischen Auswertung ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "freeze-purpose",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline",
+      "c-genai-security"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "freeze-purpose",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w37-e1"
+      ],
+      "parameters": {
+        "thema": "Golden-Set-Unveränderlichkeit"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Warum wird das Golden Set einer Capstone-Pipeline per Hash eingefroren, bevor Optimierung beginnt?",
+      "fullSolution": "Der Hash hält die Prüfmenge stabil: Nach jeder Optimierung greift exakt dieselbe Evaluation, und Werte bleiben über Zeit vergleichbar. Wird das Golden Set trotzdem geändert, scheitert die Freeze-Prüfung sichtbar — so wird aus einer stillen Zielverschiebung eine dokumentierte Entscheidung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was passiert mit alten Messwerten, wenn sich die Prüfmenge still ändert?",
+        "Ein Hash verhindert nichts — er macht etwas sichtbar. Was?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Laufzeit speichert kein Hash-Abgleich nennenswert — Motiv ist Messbarkeit, nicht Performance."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Urheberrecht regelt Quellennutzung, nicht die Vergleichbarkeit der eigenen Evaluation."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Im Projektordner darf jeder lesen — der Hash schützt nicht vor Lesen, sondern macht Änderungen erkennbar."
+        }
+      ],
+      "typicalErrors": [
+        "Golden Set nachträglich an die Pipeline angepasst",
+        "Hash-Prüfung als Lizenz- oder Geheimhaltungsmaßnahme missverstanden",
+        "Vergleichbarkeit alter und neuer Läufe still vorausgesetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Um Laufzeit zu sparen — der Hash-Abgleich beschleunigt die Auswertung des Golden Sets deutlich.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Aus Urheberrecht: Die Fragen im Golden Set dürfen nur in unveränderter Form gespeichert werden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Damit niemand die Testfragen lesen und auswendig lernen kann.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

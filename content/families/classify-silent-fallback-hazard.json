@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-silent-fallback-hazard",
+  "contract": {
+    "familyId": "classify-silent-fallback-hazard",
+    "familyGroup": "classify-concept",
+    "summary": "Erkennt stille Fallbacks als Gefahr für die Aussagekraft eines reproduzierbaren Stage-Runners.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "silent-fallback-hazard",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "silent-fallback-hazard",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w36-e1"
+      ],
+      "parameters": {
+        "thema": "Stille Fallbacks und Sentinels"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Eine Stage der Pipeline läuft in ein Timeout. Die Hauptfunktion fängt das ab, setzt das Ergebnis auf None und läuft munter weiter. Was ist das strukturelle Problem?",
+      "fullSolution": "Richtig ist der Sentinel-Status: Die Stage antwortet immer mit einem klar benannten Zustand ({'status': 'timeout'} bzw. 'fehler'), und die Hauptfunktion bricht den Lauf sichtbar ab (Status 'abgebrochen' mit fehlerhafter Stage). None verschleiert den Ausfall, weil es auch ein legaler Zwischenwert sein könnte — das ist der stille Fallback. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was unterscheidet einen echten Fehlerzustand von einem Wert, der zufällig auch None sein könnte?",
+        "Wer den Fehler sieht, kann ihn behandeln — wer ihn schluckt, produziert Müll mit Stempel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "None ist in Python ein völlig legaler Wert — genau deshalb taugt es nicht als Fehlersignal: Der Aufrufer kann beides nicht unterscheiden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein leerer String ist dasselbe Problem in anderem Gewand: ein plausibler Wert statt eines sichtbaren Zustands."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein try/except um alles herum schluckt den Fehler nur global — sichtbar wird er dadurch nicht, und wo er passierte, auch nicht."
+        }
+      ],
+      "typicalErrors": [
+        "None als Fehlersignal verwendet",
+        "Ausnahme global geschluckt statt lokal zuzuordnen",
+        "Fehlerzustand als normalen Wert weiterverarbeitet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der Ausfall wird verschleiert: None ist auch ein legaler Wert, der Aufrufer kann Timeout und Ergebnis nicht unterscheiden — der Fehlerzustand müsste sichtbar sein (Sentinel-Status).",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "None ist in Python als Rückgabewert nicht erlaubt und müsste einen TypeError auslösen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Problem ist rein kosmetisch — ein leerer String statt None wäre genauso korrekt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Es fehlt nur ein globales try/except um die Hauptfunktion, dann ist die Pipeline robust.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-evidence-rule-audit",
+  "contract": {
+    "familyId": "aggregate-evidence-rule-audit",
+    "familyGroup": "aggregate-count",
+    "summary": "Prüft Evidenzregeln und zählt die belastbaren Nachweise eines Abschlussberichts.",
+    "taskArchetype": "numeric-exact",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "evidence-rule-count",
+        "propertyTest": false
+      },
+      {
+        "caseId": "final-diagnosis-trace",
+        "propertyTest": false
+      },
+      {
+        "caseId": "final-diagnosis-rules",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline",
+      "c-python-reading",
+      "c-research-capstone"
+    ],
+    "graderId": "deterministic",
+    "activityType": "numeric"
+  },
+  "cases": [
+    {
+      "caseId": "evidence-rule-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w39-e2"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-research-capstone"
+      ],
+      "expected": {
+        "kind": "integer",
+        "value": 2
+      },
+      "prompt": "Eine Lernende erzielt Treffer auf drei verschiedenen Instanzen und sieht sich zwei Definitionen auf zwei weiteren Instanzen an. Kurz vor dem Abschluss öffnet sie zur Kontrolle die Lösung einer der drei Treffer-Instanzen. Wie viele unabhängige Treffer zählen nach den Evidenzregeln noch (Lösungsanzeige disqualifiziert die Instanz)?",
+      "fullSolution": "Treffer auf 3 Instanzen, 1 Instanz durch Lösungsanzeige disqualifiziert → 3 − 1 = 2 unabhängige Treffer. Die zwei Definitionen auf unberührten Instanzen bleiben zählbar; ob der 14-Tage-Abstand reicht, ist eine separate Regel.",
+      "hints": [
+        "Gezählt werden Treffer auf verschiedenen Instanzen — und nur solche, deren Instanz nicht disqualifiziert ist.",
+        "Drei Instanzen mit Treffer, eine davon disqualifiziert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 3",
+          "then": "3 ignoriert die Lösungsanzeige: Die betroffene Instanz zählt nicht mehr als unabhängiger Treffer."
+        },
+        {
+          "if": "value === 1",
+          "then": "Nur eine Instanz zu streichen ist zu wenig — die Lösungsanzeige disqualifiziert genau ihre Instanz, nicht die anderen."
+        },
+        {
+          "if": "value === 5",
+          "then": "Definitionen sind keine Treffer — sie zählen in einer eigenen Regel (mindestens zwei verschiedene)."
+        }
+      ],
+      "typicalErrors": [
+        "Lösungsanzeige ignoriert",
+        "alle Instanzen gestrichen",
+        "Definitionen als Treffer mitgezählt"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "final-diagnosis-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w39-e3"
+      ],
+      "parameters": {
+        "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-05-02\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-20\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-21\", \"instanz\": \"b\", \"art\": \"loesungsanzeige\"},\n    {\"tag\": \"2026-05-03\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-05-21\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "nicht_erfuellt\nerfuellt"
+      },
+      "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Ereignisse: E enthält zwei Treffer, eine Lösungsanzeige auf Instanz b und eine Definition; E2 ersetzt die Lösungsanzeige durch einen weiteren Treffer auf b.",
+      "fullSolution": "E: Lösungsanzeige sperrt b, übrig bleibt Treffer {a} → 1 < 2 → <code>nicht_erfuellt</code>. E2: Treffer {a, b}, frühester Tag 02, spätester 21 → Abstand 19 ≥ 14 → <code>erfuellt</code>. Die Definition auf c geht in diese vereinfachten Regeln gar nicht ein — im vollen final_diagnosis zählt sie in der eigenen Regel.",
+      "hints": [
+        "In E wird Instanz b disqualifiziert — welche Treffer bleiben, und wie groß ist ihre Menge?",
+        "In E2 zählen beide Instanzen; der Abstand ergibt sich aus den Tageszahlen der Tagesspalte (02 bis 21)."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Ohne b bleibt nur Treffer a → weniger als 2 Treffer → nicht_erfuellt, egal wie alt die Definition ist."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "E2: Treffer {a, b}, Tage 02 und 21 → Abstand 19 ≥ 14 und 2 Treffer → erfuellt."
+        }
+      ],
+      "typicalErrors": [
+        "disqualifizierte Instanz mitgezählt",
+        "Abstand über alle Ereignisse statt nur der Treffer gerechnet",
+        "Tagesspalte als ganze Zahl statt [-2:] gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "final-diagnosis-rules",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w39-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    \"\"\"Evidenzregeln: 2 Treffer, 2 Definitionen, 14 Tage, Loesungsanzeige sperrt Instanzen.\"\"\"\n    ...\n\n",
+        "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-05-04\", \"instanz\": \"w35-e6\", \"art\": \"definition\"},\n    {\"tag\": \"2026-05-05\", \"instanz\": \"w37-e4\", \"art\": \"definition\"},\n    {\"tag\": \"2026-05-05\", \"instanz\": \"w36-e4\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-20\", \"instanz\": \"w38-e6\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, 15))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_ZU_KURZ = [\n    {\"tag\": \"2026-05-01\", \"instanz\": \"w35-e6\", \"art\": \"definition\"},\n    {\"tag\": \"2026-05-02\", \"instanz\": \"w37-e4\", \"art\": \"definition\"},\n    {\"tag\": \"2026-05-05\", \"instanz\": \"w36-e4\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-13\", \"instanz\": \"w38-e6\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_ZU_KURZ)\n__check('abstand zu klein', r[\"status\"] == \"nicht_erfuellt\" and r[\"abstand_tage\"] == 8)\nE_GESPERRT = E_OK + [\n    {\"tag\": \"2026-05-21\", \"instanz\": \"w38-e6\", \"art\": \"loesungsanzeige\"},\n]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"w38-e6\"] and r[\"treffer\"] == 1)\n__check('doppelte hits eine instanz', final_diagnosis(E_OK + [{\"tag\": \"2026-05-06\", \"instanz\": \"w36-e4\", \"art\": \"hit\"}])[\"treffer\"] == 2)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-research-capstone"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}\n\n# E_OK -> (2, 2, 15) erfuellt; Loesungsanzeige auf w38-e6 -> treffer faellt auf 1"
+      },
+      "prompt": "Evidenzregeln implementieren: <code>final_diagnosis(ereignisse)</code> erhält <code>{\"tag\": \"JJJJ-MM-TT\", \"instanz\": str, \"art\": \"hit\"|\"definition\"|\"loesungsanzeige\"}</code>. Rückgabe <code>{\"status\", \"treffer\", \"definitionen\", \"abstand_tage\", \"disqualifizierte\"}</code>: Treffer = verschiedene Instanzen mit art „hit“, deren Instanz NICHT eine Lösungsanzeige hat; definitionen = verschiedene Instanzen mit art „definition“ ohne Lösungsanzeige; abstand_tage = Tage zwischen frühestem und spätem Treffer-Datum (0 bei weniger als zwei Treffern). status „erfuellt“ nur wenn treffer ≥ 2 UND definitionen ≥ 2 UND abstand_tage ≥ 14, sonst „nicht_erfuellt“. disqualifizierte = sortierte Liste der gesperrten Instanzen. Nutze datetime.date.fromisoformat.",
+      "fullSolution": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}\n\n# Instanzen zaehlen, Loesungsanzeige sperrt genau ihre Instanz, Abstand nur ueber Treffer.",
+      "hints": [
+        "Zwei Sets/Dicts bauen: eines für Treffer-Daten je Instanz, eines für Definitions-Instanzen — beide ohne die gesperrten.",
+        "Der Abstand nutzt min/max über die Treffer-DATEN, nicht über alle Ereignisse."
+      ],
+      "feedbackRules": [
+        {
+          "if": "counts-events",
+          "then": "Gezählt werden INSTANZEN, nicht Ereignisse — drei Hits auf derselben Instanz sind ein Treffer."
+        },
+        {
+          "if": "sperrt-alles",
+          "then": "Die Lösungsanzeige sperrt genau ihre Instanz — alles zu sperren wäre die harte, hier nicht vereinbarte Variante."
+        },
+        {
+          "if": "abstand-mit-definitionen",
+          "then": "Definitionen zählen in ihrer eigenen Regel — in den 14-Tage-Abstand fließen nur Treffer-Daten."
+        }
+      ],
+      "typicalErrors": [
+        "Ereignisse statt Instanzen gezählt",
+        "Lösungsanzeige global gesperrt",
+        "Abstand über alle Ereignisdaten berechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}
