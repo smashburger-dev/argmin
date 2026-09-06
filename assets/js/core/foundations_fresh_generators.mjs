@@ -662,9 +662,8 @@ export function solveGitOperation(parameters) {
 }
 
 // Gepinnte statische Quelle für den Merge-Fall
-// (content/exercise-definitions/foundations/git-merge-debug.json, w03,
-// unverändert übernommen). Eigener Lookup neben GIT_CASES, damit die
-// 51er-Seed-Generator-Baseline (genGitNextAction) unangetastet bleibt.
+// Unabhängiger Lookup neben GIT_CASES, damit die Seed-Generator-Baseline
+// (genGitNextAction) unangetastet bleibt.
 const GIT_OPERATION_STATIC = {
   'merge-conflict-test-flow': {
     caseId: 'merge-conflict-test-flow',

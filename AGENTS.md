@@ -2,7 +2,7 @@
 
 ## Product contract
 
-- Maintain a local, German-language static learning platform whose canonical model is the competency catalog; keep the 39-week roadmap only as a tested legacy projection.
+- Maintain a local, German-language static learning platform whose canonical model is the competency and learning-module catalog.
 - Keep runtime dependencies vendored. The application must not require a CDN at runtime.
 - Keep learner progress local in IndexedDB and preserve documented migrations and JSON import/export.
 - Treat deterministic graders and reference solvers as authoritative. An LLM is never an authoritative grader.
@@ -14,7 +14,7 @@
 - Persistence, grading, adapters, and repositories: `assets/js/core/`
 - Pure competency, evidence, policy, diagnosis, planning, registry, and tutor logic: `assets/js/domain/`
 - Pyodide worker and host runtime: `assets/js/runtime/`
-- Public-first catalog, competencies, tracks, milestones, tools, reviews, coverage matrix, legacy curriculum, and exercises: `content/`
+- Public-first catalog, competencies, tracks, milestones, tools, reviews, coverage, modules, lessons, and families: `content/`
 - JSON Schema 2020-12 content contracts: `schemas/`
 - Architecture, licenses, dependencies, and authoring rules: `docs/`
 - Build, audit, validation, and browser acceptance tools: `tools/`
@@ -33,10 +33,8 @@ npm run build:release
 npm run test:e2e
 npm run test:e2e:build
 npm run test:project-runner
-node tools/migrate_legacy_content.mjs
 node tools/compile_content.mjs --profile public
 node tools/validate_content.mjs
-node tools/validate_content.mjs --legacy
 node tools/build_public.mjs
 node tools/validate_content.mjs --dir build-public
 ```
