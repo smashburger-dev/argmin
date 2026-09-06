@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-missingness",
+  "contract": {
+    "familyId": "classify-missingness",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet zielabhängige Missingness als Verzerrungsrisiko beim Löschen fehlender Zielwerte ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "target-dependent-missingness",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-pandas-cleaning"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "target-dependent-missingness",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w06-e1"
+      ],
+      "parameters": {
+        "thema": "zielabhängige Missingness"
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "In einer Kundentabelle fehlt der Zielwert „Umsatz“ genau bei den Kunden mit sehr hohen Umsätzen, weil diese keine Einwilligung zur Weitergabe gegeben haben. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
+      "fullSolution": "Das Fehlen hängt vom Zielwert ab (zielabhängige Missingness, kein MCAR). Löschen entfernt genau die hohen Umsätze, der Mittelwert der Verbleibenden liegt darunter — systematische Unterschätzung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Frage zuerst: Hängt das Fehlen vom Zielwert selbst ab — MCAR oder nicht?",
+        "Welche Umsätze fehlen danach systematisch im Datensatz, und in welche Richtung verschiebt das den Mittelwert?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "MCAR heißt „completely at random“ — hier fehlen die Werte gerade bei hohen Umsätzen, also nicht zufällig."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Unverzerrtheit hängt von der Missingness-Mechanik ab, nicht von der Zeilenzahl. Eine große verzerrte Stichprobe bleibt verzerrt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Hohe Umsätze fehlen ja gerade — sie werden eher unter- als doppelt gezählt."
+        }
+      ],
+      "typicalErrors": [
+        "MCAR angenommen, ohne zu fragen, warum Werte fehlen",
+        "Verzerrung mit kleiner Stichprobe verwechselt",
+        "Löschen als neutral behandelt, weil „nur Zeilen entfernt“ werden"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die verbleibenden Daten unterschätzen den durchschnittlichen Umsatz systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nichts — Zeilen löschen ist bei MCAR immer unverzerrt, und das ist hier gegeben.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Schätzer bleibt unverzerrt, solange genügend Zeilen übrig bleiben.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Der Mittelwert wird überschätzt, weil hohe Umsätze doppelt gezählt werden.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

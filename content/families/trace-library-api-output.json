@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-library-api-output",
+  "contract": {
+    "familyId": "trace-library-api-output",
+    "familyGroup": "trace-state",
+    "summary": "Liest die Ausgabe einer dokumentierten Bibliotheksoperation und zählt bereinigte und fehlende Zeilen.",
+    "taskArchetype": "predict-output",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "pandas-dedup-isna-lines",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-pandas-cleaning",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "pandas-dedup-isna-lines",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w06-e3"
+      ],
+      "parameters": {
+        "snippet": "import pandas as pd\ndf = pd.DataFrame({\"id\": [1, 2, 2, 3], \"ziel\": [10, 20, 20, None]})\nprint(len(df.drop_duplicates()))\nprint(int(df[\"ziel\"].isna().sum()))"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "3\n1"
+      },
+      "prompt": "pandas lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: pandas läuft im Browser nicht — hier zählt api-reading, die dokumentierten Bedeutungen von <code>drop_duplicates()</code> (erster Vorkommen bleibt) und <code>isna()</code>.",
+      "fullSolution": "Die Zeilen (2, 20.0) und (2, 20.0) sind in allen Spalten identisch: drop_duplicates() behält die erste, also bleiben 3 Zeilen (len → 3). In der Spalte ziel fehlt genau ein Wert (None → NaN): isna().sum() ist 1. Ausgabe: <code>3</code> und <code>1</code>.",
+      "hints": [
+        "drop_duplicates() vergleicht alle Spalten und behält die erste Zeile jedes identischen Paares. Welche Zeile ist hier komplett identisch?",
+        "isna() markiert fehlende Werte (None wird in der Zielspalte zu NaN); sum() zählt sie. Nur eine Zeile hat keinen Zielwert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — eine je print: erst die Länge nach drop_duplicates, dann die Anzahl fehlender Zielwerte."
+        },
+        {
+          "if": "first-line-wrong",
+          "then": "Die Zeilen (2, 20) und (2, 20) sind exakte Duplikate, also fällt genau eine von vier Zeilen weg."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "None in der Spalte ziel zählt als genau ein fehlender Wert."
+        }
+      ],
+      "typicalErrors": [
+        "drop_duplicates auf eine einzelne Spalte bezogen statt auf alle Spalten",
+        "None nicht als fehlender Wert gezählt",
+        "Zeilen- mit Wertanzahl verwechselt (len gegen sum)"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}
