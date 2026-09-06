@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 import { W27_W30_SEED_GENERATORS } from '../assets/js/core/w27_w30_generators.mjs';
 import { adaptLegacyExercise, instantiateLegacyExercise } from '../assets/js/core/legacy_exercise_adapter.mjs';
 
@@ -44,7 +45,7 @@ const ALLOWED_SOURCES = new Set([
 ]);
 
 const readJson = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
-const pack = (weekId) => readJson(`content/exercises/${weekId}.json`);
+const pack = (weekId) => legacyOracle.weeks[weekId];
 const exercisesOf = (weekId) => pack(weekId).exercises;
 const tier = (d) => (d <= 1 ? 'basic' : d === 2 ? 'core' : d === 3 ? 'advanced' : 'finalBoss');
 

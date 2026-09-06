@@ -20,9 +20,10 @@ import {
 import { configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import './helpers/register_static_cases.mjs';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 const root = join(new URL('..', import.meta.url).pathname);
-const legacy = Object.fromEntries([34, 35, 37].map((week) => [week, JSON.parse(readFileSync(join(root, `content/exercises/w${week}.json`), 'utf8'))]));
+const legacy = Object.fromEntries([34, 35, 37].map((week) => [week, legacyOracle.weeks[`w${week}`]]));
 const familyDocs = [
   'formula-ratio-percent-metric',
   'formula-stat-from-table',

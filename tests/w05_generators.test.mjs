@@ -9,6 +9,7 @@ import {
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -102,7 +103,7 @@ test('parseIntegerPair accepts (1, 3) variants, rejects wrong arity', () => {
 
 // Consistency: exercise JSON parameters agree with generators (no stale seeds).
 test('week05.json fixed instances match generators and solvers', () => {
-  const week = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
+  const week = legacyOracle.weeks.w05;
   const by = Object.fromEntries(week.exercises.map((e) => [e.exerciseId, e]));
   // e1: parameters fix A/B; expected via matmul
   const e1 = by['w05-e1'];

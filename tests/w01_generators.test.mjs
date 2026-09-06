@@ -10,6 +10,7 @@ import {
   solveLinearEquation, solveLinearEquationBothSides, logInt,
 } from '../assets/js/core/w01_generators.mjs';
 import { graders } from '../assets/js/core/graders.js';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -144,7 +145,7 @@ test('seeded grader path: a re-rolled seed changes the expected value (runtime c
 // --- edge cases -------------------------------------------------------------------
 
 test('w01-e1 fixed diagnose instance grades through the real grader (expectedAnswer.value authoritative)', async () => {
-  const week = JSON.parse(readFileSync(join(root, 'content/exercises/w01.json'), 'utf8'));
+  const week = legacyOracle.weeks.w01;
   const e1 = week.exercises.find((e) => e.exerciseId === 'w01-e1');
   // consistency: parameters must actually solve to the documented value
   assert.equal(solveLinearEquation(e1.parameters.a, e1.parameters.b, e1.parameters.c), e1.expectedAnswer.value);
@@ -165,7 +166,7 @@ test('reference solvers throw on the degenerate cases generators exclude', () =>
 // --- w01.json consistency: documented prompts/seeds match the generators -----------
 
 test('w01.json seeded exercises match generator output for their documented seed', () => {
-  const week = JSON.parse(readFileSync(join(root, 'content/exercises/w01.json'), 'utf8'));
+  const week = legacyOracle.weeks.w01;
   const by = Object.fromEntries(week.exercises.map((e) => [e.exerciseId, e]));
   for (const [id, genName] of [['w01-e8', 'genLinearEquation'], ['w01-e9', 'genPowerExpr'], ['w01-e10', 'genLogExpr']]) {
     const e = by[id];

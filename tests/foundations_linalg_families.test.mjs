@@ -14,6 +14,7 @@ import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { sanitizePublicValue } from '../tools/public_content.mjs';
 import './helpers/register_static_cases.mjs';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STATIC_SOURCES = {
@@ -34,7 +35,7 @@ test('contract carries the canonical scalar-product identity', () => {
 });
 
 test('static cases pin w05 definitions byte-identically', () => {
-  const w05 = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
+  const w05 = legacyOracle.weeks.w05;
   for (const [caseId, exerciseId] of Object.entries(STATIC_SOURCES)) {
     const definition = w05.exercises.find((entry) => entry.exerciseId === exerciseId);
     const generated = generateScalarProductFamily({ seed: 511, caseId, difficulty: 'core' });
@@ -49,7 +50,7 @@ test('static cases pin w05 definitions byte-identically', () => {
 });
 
 test('independent solver matches seeded and static expectations', () => {
-  const w05 = JSON.parse(readFileSync(join(root, 'content/exercises/w05.json'), 'utf8'));
+  const w05 = legacyOracle.weeks.w05;
   const expectations = { 'w05-e1': 1, 'w05-e12': -4, 'w05-e13': 22, 'w05-e3': -8 };
   for (const [caseId, exerciseId] of Object.entries(STATIC_SOURCES)) {
     const generated = generateScalarProductFamily({ seed: 3, caseId, difficulty: 'core' });
