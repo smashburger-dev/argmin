@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-ensemble-effect",
+  "contract": {
+    "familyId": "classify-ensemble-effect",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Ensemble-Effekt seiner Ursache zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "bagging-variance-reduction",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-ensembles"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "bagging-variance-reduction",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w15-e1"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Konzept-Check Ensembles: Warum reduziert Bagging mit Bootstrap-Stichproben typischerweise die Varianz der Ensemble-Vorhersage? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Bagging trainiert jedes Modell auf einer anderen Bootstrap-Stichprobe. Da die Fehler der Bäume nur teilweise korreliert sind, heben sie sich beim Mitteln bzw. Majority Voting gegenseitig auf: Die Varianz der Ensemble-Vorhersage sinkt, der Bias bleibt etwa gleich.",
+      "hints": [
+        "Bagging verändert nicht die Modellklasse, sondern die Stichproben, auf denen die Einzelmodelle trainiert werden.",
+        "Varianz ist Streuung über Stichproben hinweg — wenn viele Modelle auf verschiedenen Stichproben gemittelt werden, glättet sich deren Streuung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Der Bias eines einzelnen (tiefen) Baumes ist schon klein — Bagging wirkt hauptsächlich auf die Varianz, nicht auf den Bias."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Identische Trainingdaten würden identische Bäume liefern — gerade die Verschiedenheit der Bootstrap-Stichproben bringt die Dekorrelierung."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Bootstrap zieht mit Zurücklegen aus den vorhandenen Daten — es entsteht keine neue Information, nur eine neue Stichprobe."
+        }
+      ],
+      "typicalErrors": [
+        "Varianzreduktion mit Biasreduktion verwechseln",
+        "Bootstrap als Datensynthese verstehen",
+        "Korrelation der Basis-Modelle ignorieren"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
