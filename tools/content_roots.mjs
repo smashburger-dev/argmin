@@ -1,7 +1,7 @@
 import { existsSync, lstatSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-export const OBJECT_ROOT_KEYS = ['lessons', 'exerciseDefinitions', 'explanations', 'modules'];
+export const OBJECT_ROOT_KEYS = ['lessons', 'explanations', 'modules'];
 export const COLLECTION_ROOT_KEYS = ['competencies', 'tracks', 'milestones', 'tools', 'reviews'];
 export const PROJECT_ROOT_KEY = 'projects';
 

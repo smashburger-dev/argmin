@@ -5,13 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
-import {
-  adaptLegacyExercise,
-  hasLegacyGenerator,
-  hasLegacyReferenceSolver,
-} from '../assets/js/core/legacy_exercise_adapter.mjs';
-import { buildLegacyMap } from './migrate_legacy_content.mjs';
-import { createPublicLegacyContent, sanitizePublicValue } from './public_content.mjs';
+import { sanitizePublicValue } from './public_content.mjs';
 import { renderMarkdown } from './markdown_content.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
@@ -37,7 +31,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-definition', 'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
 ];
 const profiles = new Set(['public', 'local-private']);
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -224,7 +218,6 @@ function validateTracksAndMilestones(bundle, ids) {
   for (const milestone of bundle.milestones) {
     for (const competencyId of milestone.competencyIds || []) if (!ids.competencies.has(competencyId)) throw new Error(`${milestone.milestoneId}: unbekannte Kompetenz ${competencyId}`);
     for (const lessonId of milestone.lessonIds || []) if (!ids.lessons.has(lessonId)) throw new Error(`${milestone.milestoneId}: unbekannte Lektion ${lessonId}`);
-    for (const definitionId of milestone.exerciseDefinitionIds || []) if (!ids.exercises.has(definitionId)) throw new Error(`${milestone.milestoneId}: unbekannte Aufgabe ${definitionId}`);
     for (const projectId of milestone.projectIds || []) if (!ids.projects.has(projectId)) throw new Error(`${milestone.milestoneId}: unbekanntes Projekt ${projectId}`);
     for (const coverage of milestone.coverage || []) if (!ids.competencies.has(coverage.competencyId)) throw new Error(`${milestone.milestoneId}: unbekannte Coverage-Kompetenz ${coverage.competencyId}`);
   }
@@ -245,18 +238,6 @@ function validateLessons(bundle, ids) {
   }
 }
 
-function validateExercises(bundle, ids) {
-  for (const exercise of bundle.exerciseDefinitions) {
-    if (!ids.rights.has(exercise.rightsId)) throw new Error(`${exercise.definitionId}: unbekannte Rechte ${exercise.rightsId}`);
-    if (!hasLegacyGenerator(exercise.generatorId)) throw new Error(`${exercise.definitionId}: unbekannter Generator ${exercise.generatorId}`);
-    if (!hasLegacyReferenceSolver(exercise.referenceSolverId)) throw new Error(`${exercise.definitionId}: unbekannter Referenzsolver ${exercise.referenceSolverId}`);
-    checkReferences(exercise, exercise.definitionId, exercise.competencyIds || [], ids.competencies, 'Kompetenz');
-    if (bundle.profile === 'public' && (!exercise.active || exercise.releaseStatus === 'local-only')) {
-      throw new Error(`${exercise.definitionId}: private Aufgabe im Public-Bundle`);
-    }
-  }
-}
-
 function validateToolsExplanationsProjects(bundle, ids) {
   for (const tool of bundle.tools) {
     if (!ids.rights.has(tool.rightsId)) throw new Error(`${tool.toolId}: unbekannte Rechte ${tool.rightsId}`);
@@ -268,7 +249,6 @@ function validateToolsExplanationsProjects(bundle, ids) {
     if (!ids.rights.has(explanation.rightsId)) throw new Error(`${explanation.explanationId}: unbekannte Rechte ${explanation.rightsId}`);
     checkReferences(explanation, explanation.explanationId, explanation.competencyIds || [], ids.competencies, 'Kompetenz');
     for (const sourceId of explanation.sourceRefs || []) if (!ids.sources.has(sourceId)) throw new Error(`${explanation.explanationId}: unbekannte Quelle ${sourceId}`);
-    for (const activityId of explanation.followUpActivityIds || []) if (!ids.exercises.has(activityId)) throw new Error(`${explanation.explanationId}: unbekannte Folgeaktivität ${activityId}`);
   }
   for (const project of bundle.projects) {
     if (!ids.rights.has(project.rightsId)) throw new Error(`${project.projectId}: unbekannte Rechte ${project.rightsId}`);
@@ -304,7 +284,6 @@ export function validateCompiledContent(bundle) {
     tracks: uniqueBy(bundle.tracks, 'trackId', 'Tracks'),
     milestones: uniqueBy(bundle.milestones, 'milestoneId', 'Milestones'),
     lessons: uniqueBy(bundle.lessons, 'lessonId', 'Lektionen'),
-    exercises: uniqueBy(bundle.exerciseDefinitions, 'definitionId', 'Aufgaben'),
     projects: uniqueBy(bundle.projects, 'projectId', 'Projekte'),
     explanations: uniqueBy(bundle.explanations, 'explanationId', 'Erklärungen'),
     modules: uniqueBy(bundle.learningModules || [], 'moduleId', 'LearningModules'),
@@ -322,7 +301,6 @@ export function validateCompiledContent(bundle) {
   validateTracksAndMilestones(bundle, ids);
   validateToolsExplanationsProjects(bundle, ids);
   validateLessons(bundle, ids);
-  validateExercises(bundle, ids);
   validateLearningModules(bundle, ids);
   validateSourceRights(bundle);
   if (bundle.profile === 'public' && privateMarkers.test(JSON.stringify(bundle))) {
@@ -402,7 +380,6 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   const lessonFiles = discoverJson(contentRoot, catalogRoot(catalog, 'lessons'));
   const explanationFiles = discoverJson(contentRoot, catalogRoot(catalog, 'explanations'));
   const projectFiles = discoverProjects(contentRoot, catalogRoot(catalog, 'projects'));
-  const exerciseDefinitionFiles = discoverJson(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'));
   const moduleFiles = discoverJson(contentRoot, catalogRoot(catalog, 'modules'));
   const familyFiles = discoverJson(contentRoot, catalogRoot(catalog, 'families'));
 
@@ -419,7 +396,6 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   let lessons = loadObjects(contentRoot, lessonFiles, 'lessonId', 'lesson', projectRoot);
   let explanations = loadObjects(contentRoot, explanationFiles, 'explanationId', 'explanation-card', projectRoot);
   let projects = loadObjects(contentRoot, projectFiles, 'projectId', 'project', projectRoot);
-  const authoredDefinitions = loadObjects(contentRoot, exerciseDefinitionFiles, 'definitionId', 'exercise-definition', projectRoot);
   let learningModules = loadObjects(contentRoot, moduleFiles, 'moduleId', 'learning-module', projectRoot);
   const families = familyFiles.map((file) => {
     const value = readJson(resolveContentPath(contentRoot, file));
@@ -444,7 +420,6 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'tools'), toolFiles);
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'reviews'), reviewFiles);
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'explanations'), explanationFiles);
-  assertJsonRoot(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'), exerciseDefinitionFiles);
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'modules'), moduleFiles);
   assertJsonRoot(contentRoot, catalogRoot(catalog, 'families'), familyFiles);
   assertNoOrphans(catalogRoot(catalog, 'lessons'), listRootFiles(contentRoot, catalogRoot(catalog, 'lessons')), lessonClaims(lessonFiles, lessons));
@@ -454,19 +429,15 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     projectPackageClaims(contentRoot, projectFiles),
   );
 
-  const legacyExercisePacks = catalog.legacy.exerciseFiles.map((file) => readJson(resolveContentPath(contentRoot, file)));
-  const exerciseDefinitions = [];
-  for (const pack of legacyExercisePacks) {
-    for (const exercise of pack.exercises || []) exerciseDefinitions.push(adaptLegacyExercise(exercise, pack.weekId));
-  }
-  for (const definition of exerciseDefinitions) validateSourceDocument('exercise-definition', definition, projectRoot);
-  const allDefinitions = [...exerciseDefinitions, ...authoredDefinitions];
-  let definitions = profile === 'public'
-    ? allDefinitions
-      .filter((exercise) => exercise.active && exercise.releaseStatus !== 'local-only')
-      .map(sanitizePublicValue)
-    : allDefinitions;
   sourceRights = sourceRights.filter((rights) => rights.allowedProfiles?.includes(profile));
+  sources = profile === 'public'
+    ? sanitizePublicValue(sources.filter((source) => source.contentClass !== 'private').map((source) => {
+      const publicSource = { ...source };
+      delete publicSource.localFile;
+      delete publicSource.localPath;
+      return publicSource;
+    }))
+    : sources;
   competencies = competencies.filter((item) => item.releaseStatus !== 'local-only');
   tracks = tracks.filter((item) => item.releaseStatus !== 'local-only');
   milestones = milestones.filter((item) => item.releaseStatus !== 'local-only');
@@ -485,7 +456,6 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     validateSourceDocument('track', { schemaVersion: 1, locale: 'de', tracks: overlay.tracks || [] }, projectRoot);
     validateSourceDocument('milestone', { schemaVersion: 1, locale: 'de', milestones: overlay.milestones || [] }, projectRoot);
     for (const lesson of overlay.lessons || []) validateSourceDocument('lesson', lesson, projectRoot);
-    for (const definition of overlay.exerciseDefinitions || []) validateSourceDocument('exercise-definition', definition, projectRoot);
     for (const explanation of overlay.explanations || []) validateSourceDocument('explanation-card', explanation, projectRoot);
     for (const project of overlay.projects || []) validateSourceDocument('project', project, projectRoot);
     for (const module of overlay.learningModules || []) validateSourceDocument('learning-module', module, projectRoot);
@@ -495,7 +465,6 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     tracks = mergeUnique(tracks, overlay.tracks || [], 'trackId', 'Tracks');
     milestones = mergeUnique(milestones, overlay.milestones || [], 'milestoneId', 'Milestones');
     lessons = mergeUnique(lessons, overlay.lessons || [], 'lessonId', 'Lektionen');
-    definitions = mergeUnique(definitions, overlay.exerciseDefinitions || [], 'definitionId', 'Aufgaben');
     explanations = mergeUnique(explanations, overlay.explanations || [], 'explanationId', 'Erklärungen');
     projects = mergeUnique(projects, overlay.projects || [], 'projectId', 'Projekte');
     learningModules = mergeUnique(learningModules, overlay.learningModules || [], 'moduleId', 'LearningModules');
@@ -504,19 +473,10 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
   lessons = compileLessonContent(contentRoot, lessons);
   learningModules = learningModules.map((module) => compileLearningModule(module, {
     lessons,
-    definitions,
+    definitions: [],
     projects,
   }));
   const familyActivities = buildFamilyActivities(learningModules, families);
-  const expectedMap = buildLegacyMap(projectRoot);
-  const storedMap = readJson(join(contentRoot, 'legacy/exercise-competency-map.json'));
-  if (JSON.stringify(storedMap) !== JSON.stringify(expectedMap)) throw new Error('Legacy-Mapping ist veraltet; tools/migrate_legacy_content.mjs ausführen');
-  const curriculum = readJson(resolveContentPath(contentRoot, catalog.legacy.curriculumFile));
-  const legacyContent = profile === 'public'
-    ? createPublicLegacyContent({ curriculum, sources: sourcesDocument, exercisePacks: legacyExercisePacks })
-    : { curriculum, sources: sourcesDocument };
-  sources = legacyContent.sources.sources || [];
-  const projectionCurriculum = legacyContent.curriculum;
   const bundle = {
     schemaVersion: 1,
     catalogId: catalog.catalogId,
@@ -534,21 +494,11 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     tools,
     reviews,
     lessons,
-    exerciseDefinitions: definitions,
     familyActivities,
     explanations,
     projects,
     learningModules,
     families,
-    legacyProjection: {
-      curriculumId: projectionCurriculum.id,
-      schemaVersion: projectionCurriculum.schemaVersion,
-      totalWeeks: projectionCurriculum.totalWeeks,
-      phases: projectionCurriculum.phases,
-      weeks: projectionCurriculum.weeks,
-      authoredWeekIds: legacyExercisePacks.map((pack) => pack.weekId),
-      exerciseCompetencyMap: storedMap,
-    },
   };
   validateCompiledContent(bundle);
   const hashInput = { ...bundle, contentVersion: undefined };
@@ -558,25 +508,9 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
 }
 
 // --- split content delivery (ADR-0013) ----------------------------------------
-// The next shell must not grow its initial chunk linearly with lessons and
-// exercises. compileContent output is therefore additionally split into:
-//   index.json              catalog without lesson bodies and exercise bodies
-//   lessons/<lessonId>.json full lesson incl. rendered blocks
-//   exercises/<defId>.json  full exercise definition (tests, solutions, hints)
-//   chunks.ts               profile-local module mapping ids to dynamic
-//                           imports, consumed through the @content-chunks alias
-// Only ids matching SAFE_CHUNK_ID may become file names; everything else fails
-// closed so a hostile id can never escape the split directory.
+// Lesson and family bodies stay out of the initial index and are loaded by id.
 
 const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
-const EXERCISE_BODY_FIELDS = [
-  'prompt', 'parameters', 'choices', 'expectedAnswer', 'tolerancePolicy', 'hints',
-  'feedbackRules', 'fullSolution', 'workedExample', 'rubric', 'typicalErrors',
-  // sourceLineage is provenance detail for the exercise view (ADR-0014 Teil 5):
-  // summaries keep ids/metadata only, the lineage text rides in the body chunk.
-  'sourceLineage',
-];
-
 // List views show a short prompt snippet; the full prompt stays in the
 // per-exercise body chunk. Without this, the index (and with it the initial
 // chunk) grows linearly with prompt text.
@@ -646,23 +580,17 @@ function buildFamilyActivities(learningModules, families) {
 // Route-scoped index sections: four heavy sections ship as sidecar chunks
 // loaded through sectionChunks, keeping them out of the initial bundle.
 const SECTION_FIELDS = {
-  roadmap: 'legacyProjection',
   sources: 'sources',
   tools: 'tools',
   reviews: 'reviews',
 };
 
 export function buildSplitArtifacts(bundle) {
-  const { legacyProjection, sources, tools, reviews, ...lightBundle } = bundle;
-  const sections = { roadmap: { legacyProjection }, sources: { sources }, tools: { tools }, reviews: { reviews } };
+  const { sources, tools, reviews, ...lightBundle } = bundle;
+  const sections = { sources: { sources }, tools: { tools }, reviews: { reviews } };
   const index = {
     ...lightBundle,
     lessons: bundle.lessons.map((lesson) => ({ ...lesson, blocks: [] })),
-    exerciseDefinitions: bundle.exerciseDefinitions.map((exercise) => {
-      const summary = Object.fromEntries(Object.entries(exercise).filter(([field]) => !EXERCISE_BODY_FIELDS.includes(field)));
-      summary.promptSnippet = promptSnippet(exercise.prompt);
-      return summary;
-    }),
     familyActivities: bundle.familyActivities,
     families: bundle.families.map((family) => ({
       familyId: family.familyId,
@@ -676,18 +604,13 @@ export function buildSplitArtifacts(bundle) {
     if (!SAFE_CHUNK_ID.test(lesson.lessonId)) throw new Error(`unsichere Lektions-ID für Chunk: ${lesson.lessonId}`);
     return { id: lesson.lessonId, body: { lessonId: lesson.lessonId, blocks: lesson.blocks } };
   });
-  const exerciseBodies = bundle.exerciseDefinitions.map((exercise) => {
-    if (!SAFE_CHUNK_ID.test(exercise.definitionId)) throw new Error(`unsichere Aufgaben-ID für Chunk: ${exercise.definitionId}`);
-    const body = Object.fromEntries(Object.entries(exercise).filter(([field]) => EXERCISE_BODY_FIELDS.includes(field)));
-    return { id: exercise.definitionId, body: { definitionId: exercise.definitionId, ...body } };
-  });
   const familyBodies = bundle.families.map((family) => {
     if (!SAFE_CHUNK_ID.test(family.familyId)) throw new Error(`unsichere Familien-ID für Chunk: ${family.familyId}`);
     return { id: family.familyId, body: family };
   });
   const duplicateIds = new Set();
   const seen = new Set();
-  for (const id of [...lessonBodies.map((item) => item.id), ...exerciseBodies.map((item) => item.id), ...familyBodies.map((item) => item.id)]) {
+  for (const id of [...lessonBodies.map((item) => item.id), ...familyBodies.map((item) => item.id)]) {
     if (seen.has(id)) duplicateIds.add(id);
     seen.add(id);
   }
@@ -699,9 +622,6 @@ export function buildSplitArtifacts(bundle) {
     `export const lessonChunks: Record<string, () => Promise<{ default: unknown }>> = {`,
     ...lessonBodies.map(({ id }) => `  ${JSON.stringify(id)}: () => import('./lessons/${id}.json'),`),
     '};',
-    `export const exerciseChunks: Record<string, () => Promise<{ default: unknown }>> = {`,
-    ...exerciseBodies.map(({ id }) => `  ${JSON.stringify(id)}: () => import('./exercises/${id}.json'),`),
-    '};',
     `export const familyChunks: Record<string, () => Promise<{ default: unknown }>> = {`,
     ...familyBodies.map(({ id }) => `  ${JSON.stringify(id)}: () => import('./families/${id}.json'),`),
     '};',
@@ -710,14 +630,13 @@ export function buildSplitArtifacts(bundle) {
     '};',
     '',
   ].join('\n');
-  return { index, sections, lessonBodies, exerciseBodies, familyBodies, chunks };
+  return { index, sections, lessonBodies, familyBodies, chunks };
 }
 
 export function writeSplitArtifacts(bundle, splitDir) {
-  const { index, sections, lessonBodies, exerciseBodies, familyBodies, chunks } = buildSplitArtifacts(bundle);
+  const { index, sections, lessonBodies, familyBodies, chunks } = buildSplitArtifacts(bundle);
   rmSync(splitDir, { recursive: true, force: true });
   mkdirSync(join(splitDir, 'lessons'), { recursive: true });
-  mkdirSync(join(splitDir, 'exercises'), { recursive: true });
   mkdirSync(join(splitDir, 'sections'), { recursive: true });
   mkdirSync(join(splitDir, 'families'), { recursive: true });
   for (const [name, body] of Object.entries(sections)) {
@@ -725,10 +644,9 @@ export function writeSplitArtifacts(bundle, splitDir) {
   }
   writeFileSync(join(splitDir, 'index.json'), JSON.stringify(index, null, 2) + '\n');
   for (const { id, body } of lessonBodies) writeFileSync(join(splitDir, 'lessons', `${id}.json`), JSON.stringify(body, null, 2) + '\n');
-  for (const { id, body } of exerciseBodies) writeFileSync(join(splitDir, 'exercises', `${id}.json`), JSON.stringify(body, null, 2) + '\n');
   for (const { id, body } of familyBodies) writeFileSync(join(splitDir, 'families', `${id}.json`), JSON.stringify(body, null, 2) + '\n');
   writeFileSync(join(splitDir, 'chunks.ts'), chunks);
-  return { index, lessonBodies, exerciseBodies, familyBodies };
+  return { index, lessonBodies, familyBodies };
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
@@ -745,6 +663,6 @@ if (isMain) {
   writeFileSync(output, JSON.stringify(bundle, null, 2) + '\n');
   const splitDir = join(dirname(output), 'split');
   writeSplitArtifacts(bundle, splitDir);
-  console.log(`Content-Bundle geschrieben: ${relative(defaultProjectRoot, output)} (${bundle.competencies.length} Kompetenzen, ${bundle.lessons.length} Lektionen, ${bundle.exerciseDefinitions.length} Aufgaben)`);
-  console.log(`Split-Content geschrieben: ${relative(defaultProjectRoot, splitDir)} (${bundle.lessons.length} Lektionen, ${bundle.exerciseDefinitions.length} Aufgaben)`);
+  console.log(`Content-Bundle geschrieben: ${relative(defaultProjectRoot, output)} (${bundle.competencies.length} Kompetenzen, ${bundle.lessons.length} Lektionen, ${bundle.familyActivities.length} Aktivitäten)`);
+  console.log(`Split-Content geschrieben: ${relative(defaultProjectRoot, splitDir)} (${bundle.lessons.length} Lektionen, ${bundle.familyActivities.length} Aktivitäten)`);
 }

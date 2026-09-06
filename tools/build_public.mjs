@@ -11,11 +11,10 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { compileContent } from './compile_content.mjs';
-import { buildCoverageArtifacts } from './build_coverage_matrix.mjs';
-import { createPublicLegacyContent } from './public_content.mjs';
 import { validateNextBuild } from './validate_next_build.mjs';
 import { writeNpmBundleNotices } from './build_npm_notices.mjs';
 import { projectReleaseFiles } from './project_release_files.mjs';
+import { sanitizePublicValue } from './public_content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const argument = (name) => {
@@ -32,7 +31,6 @@ if (out === root || !out.startsWith(root + sep)) throw new Error('Public-Ausgabe
 const ALLOWED_FILES = [
   'LICENSE',
   'LICENSE-CONTENT.md',
-  'assets/js/core/content_repository.js',
   'assets/js/core/exercise_runtime.js',
   'assets/js/core/learning_ledger.mjs',
   'assets/js/core/graders.js',
@@ -48,13 +46,9 @@ const ALLOWED_FILES = [
   'assets/js/core/foundations_trace_families.mjs',
   'assets/js/core/foundations_linalg_families.mjs',
   'assets/js/core/linalg_numpy_fresh_generators.mjs',
-  'assets/js/core/legacy_exercise_adapter.mjs',
-  'assets/js/core/seed_generator_registry.mjs',
   'assets/js/core/data_ml_generators.mjs',
   'assets/js/core/data_ml_families.mjs',
   'assets/js/domain/activity_route.mjs',
-  'assets/js/domain/fresh_seed.mjs',
-  'assets/js/domain/review_route.mjs',
   'assets/js/domain/competency_graph.mjs',
   'assets/js/domain/evidence_engine.mjs',
   'assets/js/domain/learning_event.mjs',
@@ -67,38 +61,19 @@ const ALLOWED_FILES = [
   'assets/js/domain/foundations_construct_registry.mjs',
   'assets/js/domain/foundations_trace_registry.mjs',
   'assets/js/domain/foundations_linalg_registry.mjs',
-  'assets/js/domain/tutor_engine.mjs',
   'assets/js/domain/project_report.mjs',
   'assets/js/runtime/pyodide_runner.js',
   'assets/js/runtime/pyodide_worker.mjs',
   'assets/js/runtime/workspace_protocol.mjs',
-  'content/curriculum.json',
   'content/sources.json',
-  'content/exercises/w01.json',
-  'content/exercises/w05.json',
-  'content/exercises/w06.json',
-  'content/exercises/w07.json',
-  'content/exercises/w08.json',
-  'content/exercises/w09.json',
-  'content/exercises/w10.json',
-  'content/exercises/w11.json',
-  'content/exercises/w12.json',
-  'content/exercises/w13.json',
-  'content/exercises/w14.json',
-  'content/exercises/w15.json',
-  'content/exercises/w16.json',
-  'content/exercises/w17.json',
-  'content/search-index.json',
   'content/catalog.json',
-  'content/coverage-matrix.json',
-  'docs/coverage-report.md',
+  'content/competency-family-coverage.json',
   'content/source-rights.json',
   'content/competencies/core.json',
   'content/tracks/core.json',
   'content/milestones/core.json',
   'content/tools/core.json',
   'content/reviews/core.json',
-  'content/legacy/exercise-competency-map.json',
   'content/foundations/inventory.md',
   'content/lessons/foundations/algebra.json',
   'content/lessons/foundations/algebra.md',
@@ -156,33 +131,6 @@ const ALLOWED_FILES = [
   'content/lessons/data-ml/ml-svm-pca.md',
   'content/lessons/data-ml/ml-repro.json',
   'content/lessons/data-ml/ml-repro.md',
-  'content/exercise-definitions/foundations/control-choice.json',
-  'content/exercise-definitions/foundations/control-trace.json',
-  'content/exercise-definitions/foundations/control-parsons.json',
-  'content/exercise-definitions/foundations/control-repair.json',
-  'content/exercise-definitions/foundations/data-code-repair.json',
-  'content/exercise-definitions/foundations/collections-output.json',
-  'content/exercise-definitions/foundations/collections-choice.json',
-  'content/exercise-definitions/foundations/files-choice.json',
-  'content/exercise-definitions/foundations/files-parsons.json',
-  'content/exercise-definitions/foundations/testing-parsons.json',
-  'content/exercise-definitions/foundations/testing-choice.json',
-  'content/exercise-definitions/foundations/git-choice.json',
-  'content/exercise-definitions/foundations/git-parsons.json',
-  'content/exercise-definitions/foundations/git-merge-debug.json',
-  'content/exercise-definitions/foundations/python-state-trace.json',
-  'content/exercise-definitions/foundations/code-reading-output.json',
-  'content/exercise-definitions/foundations/function-compose.json',
-  'content/exercise-definitions/foundations/meta-error-classify.json',
-  'content/exercise-definitions/foundations/control-flow-output.json',
-  'content/exercise-definitions/foundations/collection-step-trace.json',
-  'content/exercise-definitions/foundations/exception-boundary.json',
-  'content/exercise-definitions/foundations/branch-coverage.json',
-  'content/exercise-definitions/foundations/git-next-action.json',
-  'content/exercise-definitions/linear-algebra/matmul-entry-fresh.json',
-  'content/exercise-definitions/linear-algebra/solve-system-fresh.json',
-  'content/exercise-definitions/linear-algebra/det2-fresh.json',
-  'content/exercise-definitions/linear-algebra/shape-predict.json',
   'content/explanations/foundations/control-order.json',
   'content/explanations/foundations/collection-state.json',
   'content/explanations/foundations/error-boundary.json',
@@ -222,31 +170,6 @@ const ALLOWED_FILES = [
   'assets/js/core/w22_w26_generators.mjs',
   'assets/js/core/w27_w30_generators.mjs',
   'assets/js/core/w31_w39_generators.mjs',
-  'content/exercises/w02.json',
-  'content/exercises/w03.json',
-  'content/exercises/w04.json',
-  'content/exercises/w18.json',
-  'content/exercises/w19.json',
-  'content/exercises/w20.json',
-  'content/exercises/w21.json',
-  'content/exercises/w22.json',
-  'content/exercises/w23.json',
-  'content/exercises/w24.json',
-  'content/exercises/w25.json',
-  'content/exercises/w26.json',
-  'content/exercises/w27.json',
-  'content/exercises/w28.json',
-  'content/exercises/w29.json',
-  'content/exercises/w30.json',
-  'content/exercises/w31.json',
-  'content/exercises/w32.json',
-  'content/exercises/w33.json',
-  'content/exercises/w34.json',
-  'content/exercises/w35.json',
-  'content/exercises/w36.json',
-  'content/exercises/w37.json',
-  'content/exercises/w38.json',
-  'content/exercises/w39.json',
   'content/lessons/deep-learning/dl-autograd-checkpoint.md',
   'content/lessons/deep-learning/dl-autograd.json',
   'content/lessons/deep-learning/dl-autograd.md',
@@ -334,12 +257,6 @@ function walk(dir, acc = []) {
   return acc;
 }
 const fail = (msg) => { console.error('BUILD FEHLGESCHLAGEN: ' + msg); process.exit(1); };
-const coverage = buildCoverageArtifacts(root);
-if (readFileSync(join(root, 'content/coverage-matrix.json'), 'utf8') !== `${JSON.stringify(coverage.matrix, null, 2)}\n`
-  || readFileSync(join(root, 'docs/coverage-report.md'), 'utf8') !== coverage.markdown) {
-  fail('Coverage-Artefakte sind veraltet; npm run coverage:build ausführen');
-}
-
 // --- 1) canary scan of the allowlisted source tree ----------------------------
 for (const d of SCAN_DIRS) {
   for (const f of walk(join(root, d))) {
@@ -380,22 +297,19 @@ for (const rel of targets) {
 }
 
 // --- 3) public content pass -----------------------------------------------------
-const exOutDir = join(out, 'content/exercises');
-const exerciseFiles = readdirSync(exOutDir).filter((file) => /^w\d{2}\.json$/.test(file)).sort();
-const publicLegacy = createPublicLegacyContent({
-  curriculum: JSON.parse(readFileSync(join(out, 'content/curriculum.json'), 'utf8')),
-  sources: JSON.parse(readFileSync(join(out, 'content/sources.json'), 'utf8')),
-  exercisePacks: exerciseFiles.map((file) => JSON.parse(readFileSync(join(exOutDir, file), 'utf8'))),
-});
-writeFileSync(join(out, 'content/curriculum.json'), JSON.stringify(publicLegacy.curriculum, null, 1) + '\n');
-writeFileSync(join(out, 'content/sources.json'), JSON.stringify(publicLegacy.sources, null, 1) + '\n');
-writeFileSync(join(out, 'content/search-index.json'), JSON.stringify(publicLegacy.searchIndex, null, 1) + '\n');
 const toolDocument = JSON.parse(readFileSync(join(out, 'content/tools/core.json'), 'utf8'));
 toolDocument.tools = (toolDocument.tools || []).filter((tool) => tool.availability === 'public' && tool.releaseStatus !== 'local-only');
 writeFileSync(join(out, 'content/tools/core.json'), JSON.stringify(toolDocument, null, 2) + '\n');
-for (let index = 0; index < exerciseFiles.length; index++) {
-  writeFileSync(join(exOutDir, exerciseFiles[index]), JSON.stringify(publicLegacy.exercisePacks[index], null, 1) + '\n');
-}
+const sourceDocument = JSON.parse(readFileSync(join(out, 'content/sources.json'), 'utf8'));
+sourceDocument.sources = sanitizePublicValue((sourceDocument.sources || [])
+  .filter((source) => source.contentClass !== 'private')
+  .map((source) => {
+    const publicSource = { ...source };
+    delete publicSource.localFile;
+    delete publicSource.localPath;
+    return publicSource;
+  }));
+writeFileSync(join(out, 'content/sources.json'), JSON.stringify(sourceDocument, null, 2) + '\n');
 
 const contentBundle = compileContent({ projectRoot: root, profile: 'public' });
 writeFileSync(join(out, 'content/content-bundle.json'), JSON.stringify(contentBundle, null, 2) + '\n');
