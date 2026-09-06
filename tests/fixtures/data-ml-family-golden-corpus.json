@@ -147,6 +147,18 @@
       ],
       "instances": 192,
       "digest": "e3b843e7473bcee2fcb3e95b60dab73d6e5ed3c8a21e4066f772d4bf43ef6a08"
+    },
+    "formula-metric-spread-range-seed-rerun": {
+      "cases": [
+        "seed-rerun-accuracy-spread"
+      ],
+      "difficultyProfiles": [
+        "intro",
+        "core",
+        "stretch"
+      ],
+      "instances": 192,
+      "digest": "7d834d70dd12ff5ec16acca16516e498ea0c58d9822771ec5bef56ff4198817b"
     }
   }
 }

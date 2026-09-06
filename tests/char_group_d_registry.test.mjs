@@ -47,7 +47,7 @@ import { LINALG_NUMPY_FRESH_GENERATORS } from '../assets/js/core/linalg_numpy_fr
 // ===========================================================================
 
 // Exact registry snapshot (Session A + Session B): 51 IDs total, composed of
-// w01(4) + genColumnCombination(1) + data-ml(13) + w18-21(4) + w22-26(5)
+// w01(4) + genColumnCombination(1) + data-ml(14) + w18-21(4) + w22-26(5)
 // + w27-30(5) + w31-39(6) + foundations-fresh(9) + linalg-numpy-fresh(4).
 // Session B (ADR-0015) added the last 13 fresh-variation generators.
 const EXPECTED_GENERATOR_IDS = [
@@ -55,7 +55,7 @@ const EXPECTED_GENERATOR_IDS = [
   'genColumnCombination',
   'genCompleteRows', 'genDedupRows', 'genConditionalCount',
   'genMseGradient', 'genBaselineCorrect', 'genMseFromResiduals', 'genR2Share',
-  'genConfusionCount', 'genCvSpread', 'genSubgroupGapPp', 'genShrinkagePercent',
+  'genConfusionCount', 'genCvSpread', 'genSubgroupGapPp', 'genShrinkagePercent', 'genSeedSpread',
   'genEnsembleAccuracy', 'genPcaVariancePercent', 'genLinearParamCount',
   'genBackpropChain', 'genSgdSteps', 'genDropoutCount', 'genAttentionShape',
   'genVocabAfterMerges', 'genGreedyToken', 'genLoraParamCount',
@@ -69,8 +69,8 @@ const EXPECTED_GENERATOR_IDS = [
   'genMatmulEntryFresh', 'genLinear2Fresh', 'genDet2', 'genShapePredict',
 ];
 
-test('registry: exactly 51 generator IDs with documented per-source composition', () => {
-  assert.equal(Object.keys(SEED_GENERATORS).length, 51);
+test('registry: exactly 52 generator IDs with documented per-source composition', () => {
+  assert.equal(Object.keys(SEED_GENERATORS).length, 52);
   assert.deepEqual(
     Object.keys(SEED_GENERATORS).sort(),
     [...EXPECTED_GENERATOR_IDS].sort(),
@@ -89,7 +89,7 @@ test('registry: exactly 51 generator IDs with documented per-source composition'
   };
   assert.deepEqual(Object.keys(SEED_GENERATORS).sort(), Object.keys(union).sort());
   assert.equal(Object.keys(W01_SEED_GENERATORS).length, 4);
-  assert.equal(Object.keys(DATA_ML_SEED_GENERATORS).length, 13);
+  assert.equal(Object.keys(DATA_ML_SEED_GENERATORS).length, 14);
   assert.equal(Object.keys(W18_W21_SEED_GENERATORS).length, 4);
   assert.equal(Object.keys(W22_W26_SEED_GENERATORS).length, 5);
   assert.equal(Object.keys(W27_W30_SEED_GENERATORS).length, 5);
@@ -104,7 +104,7 @@ test('registry: SEED_GENERATORS is frozen — duplicate registration cannot be s
   assert.equal(Object.isFrozen(SEED_GENERATORS), true);
   assert.throws(() => { SEED_GENERATORS.genEvil = () => ({}); }, TypeError);
   assert.throws(() => { delete SEED_GENERATORS.genLinearEquation; }, TypeError);
-  assert.equal(Object.keys(SEED_GENERATORS).length, 51);
+  assert.equal(Object.keys(SEED_GENERATORS).length, 52);
   assert.equal(typeof SEED_GENERATORS.genLinearEquation, 'function');
 });
 

@@ -12,6 +12,7 @@ import {
   genEnsembleAccuracy,
   genConfusionCount,
   genCvSpread,
+  genSeedSpread,
   genSubgroupGapPp,
   genShrinkagePercent,
   genMseFromResiduals,
@@ -81,6 +82,12 @@ function profileAccepts(caseId, difficulty) {
   if (caseId === 'cv-fold-accuracy-spread') {
     if (difficulty === 'intro') return (parameters) => parameters.k === 4;
     if (difficulty === 'stretch') return (parameters) => parameters.k === 10;
+  }
+  if (caseId === 'seed-rerun-accuracy-spread') {
+    if (difficulty === 'intro') {
+      return (parameters) => parameters.unit === 'percent' && parameters.runs === 3;
+    }
+    if (difficulty === 'stretch') return (parameters) => parameters.unit === 'fraction';
   }
   if (caseId === 'pca-explained-variance-percent') {
     if (difficulty === 'intro') return (parameters) => parameters.total === 50;
@@ -243,6 +250,10 @@ const FAMILY_DEFINITIONS = {
         generator: genCvSpread,
         competencyIds: ['c-ml-cv'],
       },
+      'seed-rerun-accuracy-spread': {
+        generator: genSeedSpread,
+        competencyIds: ['c-ml-repro', 'c-ml-cv'],
+      },
     },
     solve(parameters) {
       return {
@@ -389,7 +400,11 @@ const AGGREGATE_CONFUSION_METRIC_CASE_TYPES = [
 ];
 
 const FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES = [
-  { caseId: 'cv-fold-accuracy-spread', sourceLineage: ['w12-e2'] },
+  { caseId: 'cv-fold-accuracy-spread', sourceLineage: ['w12-e2', 'w17-e2'] },
+  {
+    caseId: 'seed-rerun-accuracy-spread',
+    competencyIds: ['c-ml-repro', 'c-ml-cv'],
+  },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {

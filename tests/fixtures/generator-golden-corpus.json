@@ -4,8 +4,12 @@
     0,
     63
   ],
-  "families": 51,
+  "families": 52,
   "corpus": {
+    "genSeedSpread": {
+      "seeds": 64,
+      "digest": "50e19d487aa3f91879cbd2429a0241b2fe1dc9d004c3f76aea4ba6919f58e6cf"
+    },
     "genLinearEquation": {
       "seeds": 64,
       "digest": "231cb3040c24743931fffe9467aaddb3e8659455c5400522faf4b33fd582c346"

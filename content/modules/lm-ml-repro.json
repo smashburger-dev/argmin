@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-repro",
+  "version": 1,
+  "locale": "de",
+  "title": "Reproduzierbarkeit: Seeds, Splits und Manifeste",
+  "description": "Lerne Reproduzierbarkeit mit festen Seeds, deterministischen Splits, Zufallsströmen und belastbaren Ergebnisberichten zu sichern.",
+  "competencyIds": [
+    "c-ml-repro"
+  ],
+  "requires": [
+    "c-ml-erroranalysis",
+    "c-ml-regularization",
+    "c-ml-ensembles",
+    "c-ml-svm-pca",
+    "c-git-basics",
+    "c-testing-debugging"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-repro"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-repro-contract",
+      "role": "curated",
+      "familyId": "classify-repro-contract",
+      "caseId": "repro-contract-violation",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-repro",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-repro-cv-spread",
+      "role": "curated",
+      "familyId": "formula-metric-spread-range",
+      "caseId": "cv-fold-accuracy-spread",
+      "seed": 17001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-repro",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-repro-seed-spread",
+      "role": "curated",
+      "familyId": "formula-metric-spread-range",
+      "caseId": "seed-rerun-accuracy-spread",
+      "seed": 17002,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-repro",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-repro-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "rng-stream-reseed-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-repro",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-repro-manifest",
+      "role": "curated",
+      "familyId": "reproduce-seeded-experiment-report",
+      "caseId": "seeded-experiment-manifest",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-ml-repro",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-repro-report",
+      "role": "curated",
+      "familyId": "reproduce-seeded-experiment-report",
+      "caseId": "repro-report-table-check",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 45,
+      "lessonId": "l-ml-repro",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-repro-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-metric-spread-range",
+      "caseId": "seed-rerun-accuracy-spread",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

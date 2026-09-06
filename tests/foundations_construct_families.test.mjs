@@ -609,8 +609,8 @@ test('branch coverage solver reuses the existing leaf counter', () => {
   }
 });
 
-test('legacy seed-generator baseline stays at 51 families', () => {
-  assert.equal(Object.keys(SEED_GENERATORS).length, 51);
+test('legacy seed-generator baseline stays at 52 families', () => {
+  assert.equal(Object.keys(SEED_GENERATORS).length, 52);
   for (const name of [
     'generateLinearIsolateFamily', 'generatePowerLogFamily', 'generateExpressionCanonicalFamily',
     'generateValidateCountFamily', 'generateRegressionSuiteFamily', 'generateTestStructureFamily',

@@ -104,6 +104,9 @@ export function solveTraceAssignment(parameters) {
   if (parameters.caseId === 'tree-majority-vote-trace') {
     return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
   }
+  if (parameters.caseId === 'rng-stream-reseed-trace') {
+    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
+  }
   const { shape } = parameters;
   if (shape === 'reassign') {
     const b = parameters.a0 + parameters.k1;
@@ -141,7 +144,11 @@ export function solveTraceAssignment(parameters) {
 }
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
-  if (caseId === 'gradient-loop-two-updates' || caseId === 'tree-majority-vote-trace') {
+  if (
+    caseId === 'gradient-loop-two-updates'
+    || caseId === 'tree-majority-vote-trace'
+    || caseId === 'rng-stream-reseed-trace'
+  ) {
     const body = staticCaseBody('trace-assignment-state', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
@@ -191,6 +198,11 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
       caseId: 'tree-majority-vote-trace',
       propertyTest: false,
       competencyIds: ['c-ml-ensembles', 'c-python-reading'],
+    },
+    {
+      caseId: 'rng-stream-reseed-trace',
+      propertyTest: false,
+      competencyIds: ['c-ml-repro', 'c-numpy-basics'],
     },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],

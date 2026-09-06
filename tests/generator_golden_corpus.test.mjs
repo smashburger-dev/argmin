@@ -22,7 +22,7 @@ const digestFor = (generatorId) => {
   return createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
 };
 
-test('generator golden corpus: all 51 families byte-identical over seeds 0-63', () => {
+test('generator golden corpus: all 52 families byte-identical over seeds 0-63', () => {
   assert.equal(Object.keys(SEED_GENERATORS).length, corpus.families, 'registry family count drifted');
   assert.equal(Object.keys(corpus.corpus).length, corpus.families, 'fixture family count drifted');
 
@@ -41,7 +41,7 @@ test('generator golden corpus: all 51 families byte-identical over seeds 0-63', 
     );
   }
   const elapsedMs = performance.now() - startedAt;
-  // Runtime guard: the generators are pure math — 51 families x 64 seeds must
+  // Runtime guard: the generators are pure math — 52 families x 64 seeds must
   // stay well below ~2s. A regression here means a generator accidentally
   // became non-local (I/O, imports, heavy allocation).
   assert.ok(elapsedMs < 2000, `golden corpus computation took ${elapsedMs.toFixed(0)}ms (guard: <2000ms)`);

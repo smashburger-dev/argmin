@@ -182,7 +182,7 @@ test('all 13 fresh families are registered, ids do not collide with the 38 exist
   for (const id of ids) {
     assert.equal(SEED_GENERATORS[id], FAMILIES[id], `${id} not registered`);
   }
-  assert.equal(Object.keys(SEED_GENERATORS).length, 51);
+  assert.equal(Object.keys(SEED_GENERATORS).length, 52);
 });
 
 const DEFINITIONS = [

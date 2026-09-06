@@ -280,8 +280,8 @@ test('property tests cover every authoritative case type and profile over 32 see
   }
 });
 
-test('legacy seed-generator baseline stays at 51 families', () => {
-  assert.equal(Object.keys(SEED_GENERATORS).length, 51);
+test('legacy seed-generator baseline stays at 52 families', () => {
+  assert.equal(Object.keys(SEED_GENERATORS).length, 52);
   assert.equal(Object.hasOwn(SEED_GENERATORS, 'generateGitOperationFamily'), false);
 });
 
