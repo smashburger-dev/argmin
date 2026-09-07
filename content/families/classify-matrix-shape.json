@@ -131,21 +131,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Shape-Prüfung bei Addition: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Addition übernimmt die gemeinsame Form der beiden Operanden; aus zwei $2\\times3$-Matrizen wird keine gedrehte $3\\times2$-Matrix."
         },
         {
           "if": "choice === 'b'",
-          "then": "Shape-Prüfung bei Addition: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "NumPy-Broadcasting gilt nur bei kompatiblen Achsen und macht nicht jede Addition gültig; hier ist die konkrete Begründung die identische Form."
         },
         {
           "if": "choice === 'd'",
-          "then": "Shape-Prüfung bei Addition: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Matrixaddition erfordert keine quadratische Form: Die beiden $2\\times3$-Matrizen können elementweise addiert werden."
         }
       ],
       "typicalErrors": [
-        "Shape-Prüfung bei Addition mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Bei elementweiser Addition die Zeilen- und Spaltenzahl vertauscht.",
+        "Broadcasting als pauschale Erlaubnis für jede beliebige Matrixform verstanden.",
+        "Die quadratische Voraussetzung der Matrixmultiplikation fälschlich auf Addition übertragen."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -202,21 +202,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "äußere Dimensionen der Produkte: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Für $AB$ stimmen die inneren Dimensionen 3 und 3 überein, und die äußeren Dimensionen liefern $1\\times1$; außerdem ist $BA$ ebenfalls definiert."
         },
         {
           "if": "choice === 'b'",
-          "then": "äußere Dimensionen der Produkte: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Auch $AB$ ist gültig und hat Form $1\\times1$; bei $BA$ liefern die äußeren Dimensionen dagegen $3\\times3$."
         },
         {
           "if": "choice === 'c'",
-          "then": "äußere Dimensionen der Produkte: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die drei Zeilen von $B$ bestimmen nicht beide Ergebnisse: $AB$ hat äußere Form $1\\times1$, während nur $BA$ die Form $3\\times3$ besitzt."
         }
       ],
       "typicalErrors": [
-        "äußere Dimensionen der Produkte mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Bei $AB$ die äußeren Dimensionen nicht als Ergebnisform verwendet.",
+        "Die Gültigkeit eines Produkts nur für eine Faktor-Reihenfolge geprüft.",
+        "Eine einzelne Operanden-Dimension fälschlich als Form beider Produkte übernommen."
       ],
       "tolerancePolicy": {
         "mode": "none"

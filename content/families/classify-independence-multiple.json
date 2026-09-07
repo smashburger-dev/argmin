@@ -134,21 +134,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Unabhängigkeit eines Vektorpaares: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Dass beide Vektoren in $\\mathbb{R}^2$ liegen, sagt nichts über ihre Abhängigkeit; entscheidend ist, ob ein gemeinsamer Skalar beide Komponenten trifft."
         },
         {
           "if": "choice === 'b'",
-          "then": "Unabhängigkeit eines Vektorpaares: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "$3u=(3,6)$ und ist damit nicht $v=(2,3)$; der behauptete Faktor 3 erklärt das gegebene Vektorpaar nicht."
         },
         {
           "if": "choice === 'd'",
-          "then": "Unabhängigkeit eines Vektorpaares: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Für zwei Vektoren genügt der Vergleich der Komponenten beziehungsweise der Skalarfaktor; eine $3\\times3$-Determinante ist hier nicht erforderlich."
         }
       ],
       "typicalErrors": [
-        "Unabhängigkeit eines Vektorpaares mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Gemeinsamen Vektorraum und lineare Unabhängigkeit als dieselbe Aussage behandelt.",
+        "Einen unpassenden gemeinsamen Faktor für $(1,2)$ und $(2,3)$ verwendet.",
+        "Das kleine Vektorpaar mit einem nicht benötigten Determinantenverfahren für $3\\times3$-Matrizen geprüft."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -207,21 +207,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "lineare Kombination im Vektorraum: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Nichtverschwindende Vektoren können trotzdem abhängig sein; hier gilt konkret $v_3=v_1+v_2$."
         },
         {
           "if": "choice === 'c'",
-          "then": "lineare Kombination im Vektorraum: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Drei Vektoren in $\\mathbb{R}^3$ bilden nicht automatisch eine Basis; die explizite Summe der ersten beiden erzeugt hier den dritten."
         },
         {
           "if": "choice === 'd'",
-          "then": "lineare Kombination im Vektorraum: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "$v_1$ und $v_2$ sind nicht parallel, aber die Dreiermenge ist wegen $v_3=v_1+v_2$ abhängig."
         }
       ],
       "typicalErrors": [
-        "lineare Kombination im Vektorraum mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Jeden einzelnen Nichtnullvektor fälschlich als Beleg für Unabhängigkeit der ganzen Menge gelesen.",
+        "Die mögliche Abhängigkeit von drei Vektoren in $\\mathbb{R}^3$ durch die Dimensionszahl ausgeschlossen.",
+        "Paarweise Nichtparallelität mit Unabhängigkeit einer gesamten Vektormenge verwechselt."
       ],
       "tolerancePolicy": {
         "mode": "none"

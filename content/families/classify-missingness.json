@@ -122,21 +122,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Das Gerät schaltet gerade bei extremen Messwerten ab; das Fehlen hängt damit vom Wertbereich ab und ist nicht MCAR."
         },
         {
           "if": "choice === 'b'",
-          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Auch wenn mehr als die Hälfte der Werte bleibt, können systematisch fehlende Extremwerte die beobachtete Verteilung verschieben."
         },
         {
           "if": "choice === 'd'",
-          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Ein Abschalten des Sensors erzeugt zunächst fehlende Werte, aber keinen Ersatzwert; Imputation wäre ein zusätzlicher Verarbeitungsschritt."
         }
       ],
       "typicalErrors": [
-        "Missingness-Mechanik mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Wertabhängiges Abschalten eines Sensors fälschlich als vollständig zufälliges Fehlen klassifiziert.",
+        "Den Anteil vorhandener Werte als Beleg für unverzerrtes Löschen verwendet.",
+        "Das Entstehen eines fehlenden Messwerts mit dessen späterer Imputation verwechselt."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -188,21 +188,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Freiwilligkeit erklärt nicht die konkrete Abhängigkeit vom Einkommen: Im Szenario fehlen gerade sehr hohe Einkommen häufiger."
         },
         {
           "if": "choice === 'b'",
-          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Richtung ist entscheidend, weil das Überwiegen fehlender hoher Werte den Mittelwert der beobachteten Einkommen nach unten ziehen kann."
         },
         {
           "if": "choice === 'c'",
-          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Medianimputation ersetzt die fehlenden hohen Einkommen nicht neutral; dafür müssten Missingness-Annahme und Imputationsmodell begründet werden."
         }
       ],
       "typicalErrors": [
-        "Missingness-Mechanik mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Freiwillige Teilnahme pauschal als MCAR-Annahme für die Einkommenswerte behandelt.",
+        "Systematisch fehlende hohe Einkommen ohne Blick auf die Verzerrungsrichtung zusammengezählt.",
+        "Eine Medianimputation als voraussetzungsfreie Reparatur wertabhängiger Ausfälle angenommen."
       ],
       "tolerancePolicy": {
         "mode": "none"

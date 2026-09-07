@@ -118,21 +118,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Aufsicht und Skalierung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "PCA sucht Varianzrichtungen in den Eingabemerkmalen und benötigt im beschriebenen Fall keine Zielwerte; Überwachung ist hier nicht die Begründung."
         },
         {
           "if": "choice === 'b'",
-          "then": "Aufsicht und Skalierung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Varianz hängt von der Einheit ab: Ein Merkmal in großen Einheiten kann PCA dominieren, weshalb die Aussage die Skalierungsfrage verneint."
         },
         {
           "if": "choice === 'c'",
-          "then": "Aufsicht und Skalierung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "PCA und k-Means sind beide ohne Labels möglich; die Aussage schreibt PCA fälschlich eine Zielvariable zu."
         }
       ],
       "typicalErrors": [
-        "Aufsicht und Skalierung mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Eine Varianzzerlegung ohne Zielvariable fälschlich als überwachte Vorhersageaufgabe eingeordnet.",
+        "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert.",
+        "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -182,21 +182,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'b'",
-          "then": "SVM und Skalierung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Standardisierung erzeugt keine Labels; sie verändert nur die Skalen der Merkmale, auf denen die RBF-Distanzen berechnet werden."
         },
         {
           "if": "choice === 'c'",
-          "then": "SVM und Skalierung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Ein RBF-Kernel verarbeitet reelle Merkmale und verlangt keine Ganzzahlen; der relevante Punkt ist die vergleichbare Distanzskala."
         },
         {
           "if": "choice === 'd'",
-          "then": "SVM und Skalierung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine SVM bleibt überwacht, weil sie Trainingslabels nutzt; fehlende Standardisierung ändert nicht den Aufgabentyp."
         }
       ],
       "typicalErrors": [
-        "SVM und Skalierung mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Vorverarbeitung mit der Erzeugung von Zielmarkierungen verwechselt.",
+        "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt.",
+        "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
       ],
       "tolerancePolicy": {
         "mode": "none"

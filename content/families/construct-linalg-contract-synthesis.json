@@ -111,21 +111,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Shape- und Singuläritätsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine rohe NumPy-Ausnahme beschreibt nicht den Vertrag und unterscheidet keine Formverletzung von einer singulären Eingabe; die Prüfungen müssen explizit erfolgen."
         },
         {
           "if": "choice === 'b'",
-          "then": "Shape- und Singuläritätsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Quadratisch bedeutet nur gleiche Zeilen- und Spaltenzahl; eine quadratische Matrix kann wie bei abhängigen Zeilen singulär und nicht invertierbar sein."
         },
         {
           "if": "choice === 'c'",
-          "then": "Shape- und Singuläritätsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Bei einer singulären Matrix darf die Routine keine beliebige Lösung als eindeutige Lösung ausgeben; der Vertrag muss den nicht eindeutigen Fall melden."
         }
       ],
       "typicalErrors": [
-        "Shape- und Singuläritätsvertrag mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Bibliotheksausnahme mit einer verständlichen, vorgelagerten Vertragsdiagnose gleichgesetzt.",
+        "Quadratische Form fälschlich als Beweis für Invertierbarkeit verwendet.",
+        "Bei singulären Eingaben eine beliebige Antwort statt einer eindeutigen Lösbarkeitsprüfung akzeptiert."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -173,21 +173,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Zeilentausch bei Pivot-Elimination: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine Null in der aktuellen Pivotposition ist noch keine Nullzeile; eine darunterliegende Nichtnullzeile kann den benötigten Pivot liefern."
         },
         {
           "if": "choice === 'c'",
-          "then": "Zeilentausch bei Pivot-Elimination: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Durch null zu teilen ist nicht zulässig und erzeugt keinen gültigen Pivot; zuerst muss eine geeignete Zeile getauscht oder die Spalte übersprungen werden."
         },
         {
           "if": "choice === 'd'",
-          "then": "Zeilentausch bei Pivot-Elimination: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Transponieren verändert die Eingabematrix und garantiert keinen Pivot an der gewünschten Stelle; der Vertrag verlangt einen Zeilentausch in der Restmatrix."
         }
       ],
       "typicalErrors": [
-        "Zeilentausch bei Pivot-Elimination mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Null-Pivot und vollständig verschwindende Zeile als denselben Zustand behandelt.",
+        "Eine Division durch den Null-Pivot als zulässigen Eliminationsschritt angenommen.",
+        "Eine strukturelle Änderung durch Transponieren mit dem erlaubten Zeilentausch verwechselt."
       ],
       "tolerancePolicy": {
         "mode": "none"

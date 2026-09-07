@@ -140,21 +140,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'b'",
-          "then": "Regularisierungswirkung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Elastic Net enthält ausdrücklich L1- und L2-Terme; unregularisierte Regression hätte keine dieser beiden Strafkomponenten."
         },
         {
           "if": "choice === 'c'",
-          "then": "Regularisierungswirkung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "L1 kann einzelne Koeffizienten auf null setzen und L2 schrumpft sie; daraus folgt nicht, dass alle Koeffizienten denselben Wert erhalten."
         },
         {
           "if": "choice === 'd'",
-          "then": "Regularisierungswirkung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Elastic Net ist eine Regularisierungswahl für Modelle wie lineare Regression, nicht eine Methode, die ausschließlich Entscheidungsbäume verwenden dürfen."
         }
       ],
       "typicalErrors": [
-        "Regularisierungswirkung mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Eine kombinierte L1/L2-Strafe mit einer unregularisierten Zielfunktion gleichgesetzt.",
+        "Sparsity als Gleichsetzen sämtlicher Koeffizienten missverstanden.",
+        "Regularisierungstechnik fälschlich auf die Baumfamilie beschränkt."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -204,21 +204,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Regularisierungswahl: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Lambda steuert die Regularisierungsstärke und wird als Hyperparameter gewählt; es ist kein Koeffizient, den der Fit zwingend selbst lernt."
         },
         {
           "if": "choice === 'b'",
-          "then": "Regularisierungswahl: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Das Trainingsziel kann Regularisierung enthalten, aber die Auswahl zwischen Lambda-Werten gehört zur Modellselektion und braucht einen separaten Validierungsentscheid."
         },
         {
           "if": "choice === 'c'",
-          "then": "Regularisierungswahl: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Validierung benötigt sehr wohl Daten: Sie vergleicht die Kandidaten auf zurückgehaltenen Beispielen, ohne das Testset zu verbrauchen."
         }
       ],
       "typicalErrors": [
-        "Regularisierungswahl mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Regularisierungsstärke mit einem aus den Trainingsdaten geschätzten Modellkoeffizienten verwechselt.",
+        "Optimierungsziel und Auswahlverfahren für Hyperparameter nicht getrennt.",
+        "Validierung fälschlich als datenlosen Schritt ohne Vergleich von Kandidaten verstanden."
       ],
       "tolerancePolicy": {
         "mode": "none"

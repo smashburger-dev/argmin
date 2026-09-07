@@ -118,21 +118,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Slack-Variablen behalten alle Trainingspunkte im Optimierungsproblem; sie messen nur, wie stark einzelne Punkte die Margin verletzen."
         },
         {
           "if": "choice === 'b'",
-          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine Soft-Margin-SVM erlaubt Verletzungen nicht kostenlos: Die Slack-Summe wird über den Kostenparameter bestraft."
         },
         {
           "if": "choice === 'd'",
-          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die SVM bleibt ein überwachtes Verfahren mit Klassenlabels; Slack verändert die Trennbedingung, nicht den Aufgabentyp."
         }
       ],
       "typicalErrors": [
-        "SVM-Margin mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Slack-Variablen mit dem Entfernen problematischer Trainingspunkte verwechselt.",
+        "Die Kostenstrafe für Margin-Verletzungen aus der Soft-Margin-Idee entfernt.",
+        "Eine überwachte Trennaufgabe wegen ihrer Robustheitskomponente als Clustering eingeordnet."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -182,21 +182,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Support Vectors entstehen aus den aktiven Randbedingungen der Trainingsoptimierung; sie werden nicht für einen zufälligen Validierungssplit ausgewählt."
         },
         {
           "if": "choice === 'c'",
-          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Punkte weit außerhalb der Margin tragen typischerweise keine aktive Nebenbedingung und sind deshalb gerade nicht die bestimmenden Support Vectors."
         },
         {
           "if": "choice === 'd'",
-          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Support Vectors können korrekt klassifizierte Trainingspunkte auf der Margin sein; sie sind weder auf Testdaten beschränkt noch nur Fehlklassifikationen."
         }
       ],
       "typicalErrors": [
-        "SVM-Margin mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Geometrisch bestimmende Trainingspunkte mit zufällig gezogenen Validierungspunkten verwechselt.",
+        "Nur Punkte weit innerhalb der korrekten Seite als randbestimmend betrachtet.",
+        "Support-Vektor-Begriff fälschlich auf Testfehler und nicht auf die Trainingslösung bezogen."
       ],
       "tolerancePolicy": {
         "mode": "none"

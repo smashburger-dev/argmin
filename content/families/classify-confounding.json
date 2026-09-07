@@ -144,21 +144,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Confounding: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der geringere Arbeitsstress beeinflusst laut Szenario zugleich Bewegung und Schlaf; die positive Korrelation allein beweist deshalb keinen Bewegungseffekt."
         },
         {
           "if": "choice === 'c'",
-          "then": "Confounding: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine positive Korrelation schließt Arbeitsstress als gemeinsame Ursache nicht aus; gerade die dritte Variable macht die Kausalrichtung unsicher."
         },
         {
           "if": "choice === 'd'",
-          "then": "Confounding: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Aus den beobachteten Werten folgt keine umgekehrte Schlaf-zu-Bewegung-Kausalität, weil der genannte Arbeitsstress beide Größen erklären kann."
         }
       ],
       "typicalErrors": [
-        "Confounding mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Beobachtete Korrelation zwischen Bewegung und Schlaf als sicheren Kausaleffekt gelesen.",
+        "Eine positive Korrelation fälschlich als Ausschluss jeder Drittvariable behandelt.",
+        "Ohne zeitliche oder experimentelle Evidenz eine umgekehrte Kausalrichtung behauptet."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -209,21 +209,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Confounding: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der starke Dezemberumsatz enthält den saisonalen Effekt; er kann deshalb nicht vollständig dem gleichzeitig erhöhten Werbebudget zugerechnet werden."
         },
         {
           "if": "choice === 'b'",
-          "then": "Confounding: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Saison ist auch ohne explizite Modellspalte eine beobachtbare Drittvariable; ihr gleichzeitiger Einfluss auf Werbung und Umsatz kann konfundieren."
         },
         {
           "if": "choice === 'c'",
-          "then": "Confounding: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die hohe Dezemberkorrelation trennt Werbewirkung und Saison nicht; für eine Budgetentscheidung muss der Saisoneffekt kontrolliert werden."
         }
       ],
       "typicalErrors": [
-        "Confounding mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Einen gemeinsamen Dezemberanstieg vollständig der Werbung zugeschrieben.",
+        "Eine kalenderbasierte Drittvariable fälschlich nur dann als Confounder zugelassen, wenn sie bereits im Modell steht.",
+        "Hohe Korrelation ohne Kontrolle der umsatzstarken Saison als kausalen Beleg verwendet."
       ],
       "tolerancePolicy": {
         "mode": "none"

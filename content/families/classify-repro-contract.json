@@ -124,15 +124,15 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der Seed kontrolliert Zufallsentscheidungen, aber nicht geänderte Vorverarbeitungsdefaults oder numerische Details einer anderen Bibliotheksversion."
         },
         {
           "if": "choice === 'c'",
-          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der fehlende Versionsstand verletzt direkt die Reproduzierbarkeit der Umgebung und nicht bloß einen separaten Speichervertrag."
         },
         {
           "if": "choice === 'd'",
-          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Ein README ist nicht automatisch maschinenlesbar oder vollständig fixiert; der Vertrag braucht eine konkrete Versionsangabe für die Vorverarbeitungsbibliothek."
         }
       ],
       "choices": [
@@ -158,9 +158,9 @@
         }
       ],
       "typicalErrors": [
-        "Reproduktionsvertrag mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Zufallsseed fälschlich als vollständige Fixierung der Softwareumgebung betrachtet.",
+        "Reproduzierbarkeit auf Datenablage reduziert und Versionsinformationen ausgeblendet.",
+        "Freitextdokumentation mit einer überprüfbaren, maschinenlesbaren Umgebungsangabe gleichgesetzt."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -191,15 +191,15 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Ein statistisch gültiger Split ist nicht zwingend derselbe Split; ohne gespeicherte Aufteilung können Training und Test bei jedem Lauf andere Zeilen enthalten."
         },
         {
           "if": "choice === 'b'",
-          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Modellarchitektur kann vollständig dokumentiert sein, während der konkrete Train/Test-Split weiterhin fehlt; das Problem liegt in der Datenaufteilung."
         },
         {
           "if": "choice === 'd'",
-          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine unveränderte Metrikdefinition sagt nichts über die verwendeten Zeilen aus; der nicht dokumentierte Split bleibt ein Reproduktionsfehler."
         }
       ],
       "choices": [
@@ -225,9 +225,9 @@
         }
       ],
       "typicalErrors": [
-        "Reproduktionsvertrag mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Statistische Gültigkeit eines neuen Splits mit Identität des ursprünglichen Splits verwechselt.",
+        "Dokumentation der Architektur fälschlich als Ersatz für die Datenaufteilung behandelt.",
+        "Metrikdefinition und konkrete Trainings- und Testzeilen nicht auseinandergehalten."
       ],
       "tolerancePolicy": {
         "mode": "none"

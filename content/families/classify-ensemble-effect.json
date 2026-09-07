@@ -140,21 +140,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Ensemble-Effekt: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Bootstrap-Stichproben und zufällige Featureauswahl sollen die Bäume entkoppeln; sie werden nicht absichtlich auf exakt denselben Fehlerverlauf festgelegt."
         },
         {
           "if": "choice === 'c'",
-          "then": "Ensemble-Effekt: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Mehr Bäume erhöhen nicht automatisch die Varianz: Die Aggregation der teilweise decorrelierten Vorhersagen mittelt gerade zufällige Schwankungen."
         },
         {
           "if": "choice === 'd'",
-          "then": "Ensemble-Effekt: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der Varianzgewinn stammt aus Bagging und Diversität der Bäume, nicht aus einer Lernratenänderung wie bei einem Gradientenverfahren."
         }
       ],
       "typicalErrors": [
-        "Ensemble-Effekt mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Random-Forest-Diversität mit identischem Fehlerfokus aller Einzelbäume verwechselt.",
+        "Die Varianzreduktion durch Aggregation als bloßen Nachteil zusätzlicher Modelle missverstanden.",
+        "Bagging-Mechanismus fälschlich mit der Lernrate eines iterativen Optimierers erklärt."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -204,21 +204,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Ensemble-Effekt: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Boosting kombiniert die Lerner sequentiell und richtet spätere Modelle auf bisher schlecht erklärte Beispiele; es wählt nicht zufällig nur ein Modell aus."
         },
         {
           "if": "choice === 'b'",
-          "then": "Ensemble-Effekt: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die schwachen Lerner bleiben Teil der kombinierten Vorhersage; Boosting verwirft sie nicht nach jedem Trainingsschritt."
         },
         {
           "if": "choice === 'c'",
-          "then": "Ensemble-Effekt: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der nächste Lerner reagiert auf Fehler oder Residuen der Vorgänger; eine reine Änderung der Feature-Skalierung beschreibt diese Sequenz nicht."
         }
       ],
       "typicalErrors": [
-        "Ensemble-Effekt mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Sequentielle Fehlerkorrektur mit zufälliger Auswahl eines Einzelmodells verwechselt.",
+        "Die additive Kombination der bereits trainierten Lerner übersehen.",
+        "Boosting fälschlich als reine Merkmalsvorverarbeitung ohne Residuenfokus beschrieben."
       ],
       "tolerancePolicy": {
         "mode": "none"

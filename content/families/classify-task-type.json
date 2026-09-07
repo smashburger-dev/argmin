@@ -146,21 +146,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Merkmale Fläche, Lage und Baujahr sind Eingaben; der vorhandene Verkaufspreis ist die stetige Zielvariable, daher liegt kein Clustering vor."
         },
         {
           "if": "choice === 'b'",
-          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Ein Verkaufspreis ist nicht automatisch eine binäre Klasse: Im Szenario wird ein kontinuierlicher Betrag aus historischen Preisen geschätzt."
         },
         {
           "if": "choice === 'd'",
-          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Das Szenario beschreibt keine Belohnungen oder Aktionen, sondern das Lernen aus gelabelten Hausverkäufen; bestärkendes Lernen passt deshalb nicht."
         }
       ],
       "typicalErrors": [
-        "Aufgabenart mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Die Zahl der Eingangsmerkmale mit dem Fehlen von Zielwerten verwechselt.",
+        "Einen stetigen Hauspreis ohne Begründung in zwei Klassen eingeteilt.",
+        "Eine Preisvorhersage fälschlich als Folge von Entscheidungen mit Belohnungen modelliert."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -213,21 +213,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Im Händlerbeispiel ist gerade keine Zielvariable vorgegeben; eine unbekannte Zielvariable macht die Aufgabe nicht zu überwachter Regression."
         },
         {
           "if": "choice === 'c'",
-          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Dass jeder Kunde später einer Gruppe zugeordnet wird, erzeugt keine bekannten Klassenlabels; die Gruppen werden erst aus den Profilähnlichkeiten entdeckt."
         },
         {
           "if": "choice === 'd'",
-          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Numerische Kaufprofile sind lediglich Merkmale; ohne Zielwert wird nicht automatisch ein numerischer Zielwert regressiert."
         }
       ],
       "typicalErrors": [
-        "Aufgabenart mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Die fehlende Zielvariable des Händlerdatensatzes übersehen.",
+        "Die Ausgabe von Cluster-IDs mit vorgegebenen Klassenzielen verwechselt.",
+        "Numerische Eingabespalten fälschlich als kontinuierliches Vorhersageziel interpretiert."
       ],
       "tolerancePolicy": {
         "mode": "none"

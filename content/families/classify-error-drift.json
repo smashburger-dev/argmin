@@ -148,21 +148,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Drift-Typ: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Eingabeverteilung bleibt laut Szenario stabil; geändert wird die Bedeutung des positiven Labels, daher liegt nicht primär Input-Drift vor."
         },
         {
           "if": "choice === 'b'",
-          "then": "Drift-Typ: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Geschäftsregel ändert das Label systematisch und nicht zufällig pro Beispiel; das ist mehr als unabhängiges Label-Rauschen."
         },
         {
           "if": "choice === 'd'",
-          "then": "Drift-Typ: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Der starke Genauigkeitsabfall folgt auf die neue Zieldefinition und ist kein Rundungsartefakt der unveränderten Eingabewerte."
         }
       ],
       "typicalErrors": [
-        "Drift-Typ mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Eine unveränderte Eingabeverteilung trotz geänderter Zieldefinition als Input-Drift bezeichnet.",
+        "Systematische Labeländerung mit zufälligem, unabhängigen Rauschen gleichgesetzt.",
+        "Eine semantische Änderung des positiven Labels auf numerische Rundungsfehler reduziert."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -216,21 +216,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Fehlerdiagnose: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Sprachgruppe hat dauerhaft mehr Fehler; ohne zeitliche Verschiebung ist das kein Hinweis auf einen neuen Daten-Drift."
         },
         {
           "if": "choice === 'c'",
-          "then": "Fehlerdiagnose: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Das Fehler-Muster hängt ausdrücklich an einer Sprachgruppe und ist damit nicht als gruppenunabhängiges zufälliges Label-Rauschen erklärt."
         },
         {
           "if": "choice === 'd'",
-          "then": "Fehlerdiagnose: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine gute Gesamtgenauigkeit kann die dauerhaft schlechtere Sprachgruppenleistung verdecken; sie macht das Fairness-Risiko nicht harmlos."
         }
       ],
       "typicalErrors": [
-        "Fehlerdiagnose mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Ein zeitlich stabiles Gruppenmuster fälschlich als zeitlichen Daten-Drift diagnostiziert.",
+        "Systematische gruppenspezifische Fehler als ungerichtetes Label-Rauschen verbucht.",
+        "Aggregierte Genauigkeit als ausreichenden Gegenbeweis gegen Subgruppenrisiken verwendet."
       ],
       "tolerancePolicy": {
         "mode": "none"

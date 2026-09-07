@@ -125,21 +125,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Parameter versus Hyperparameter: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Tiefe 3, 5 oder 8 wird vor dem Fit per Cross-Validation gewählt; sie ist kein Gewichtsparameter, der an jedem Knoten entsteht."
         },
         {
           "if": "choice === 'b'",
-          "then": "Parameter versus Hyperparameter: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Eine Validierung kann Messwerte liefern, aber die ausgewählte maximale Tiefe beschreibt die Modellkapazität und ist kein Messfehler."
         },
         {
           "if": "choice === 'c'",
-          "then": "Parameter versus Hyperparameter: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Tiefe ist eine Einstellung des Modells und nicht der vorherzusagende Zielwert; Zielwerte stammen aus den Beispielen."
         }
       ],
       "typicalErrors": [
-        "Parameter versus Hyperparameter mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Eine vorab getestete Baumtiefe als lokal gelerntes Knotengewicht bezeichnet.",
+        "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt.",
+        "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
       ],
       "tolerancePolicy": {
         "mode": "none"
@@ -194,21 +194,21 @@
       "feedbackRules": [
         {
           "if": "choice === 'a'",
-          "then": "Parameter versus Hyperparameter: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Koeffizienten werden nach dem Fit aus Trainingsdaten geschätzt und gehören damit zur gelernten Modellfunktion; ihre numerische Form macht sie nicht zu Hyperparametern."
         },
         {
           "if": "choice === 'b'",
-          "then": "Parameter versus Hyperparameter: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Dass ein Koeffizient aus Trainingsdaten gelernt wird, ist der normale Fit und noch kein Leakage; Leakage würde eine unzulässige Informationsquelle beschreiben."
         },
         {
           "if": "choice === 'd'",
-          "then": "Parameter versus Hyperparameter: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+          "then": "Die Koeffizienten bestimmen direkt die Vorhersage der linearen Funktion und sind deshalb keine wirkungslosen Metadaten."
         }
       ],
       "typicalErrors": [
-        "Parameter versus Hyperparameter mit der Nachbardisziplin verwechselt",
-        "ein einzelnes Signal als vollständigen Beweis gelesen",
-        "die Randbedingung der Aufgabe übersehen"
+        "Modellparameter allein wegen ihres Zahlenformats als Hyperparameter bezeichnet.",
+        "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet.",
+        "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
       ],
       "tolerancePolicy": {
         "mode": "none"

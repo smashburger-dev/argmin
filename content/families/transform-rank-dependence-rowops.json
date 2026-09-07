@@ -99,15 +99,15 @@
         "value": 3
       },
       "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}1&2&0\\\\0&1&3\\\\2&0&1\\end{pmatrix}\\] mit Gauß-Elimination.",
-      "fullSolution": "Die Determinante ist $7$ und damit ungleich null. Es gibt drei Pivotzeilen, also ist $\\operatorname{rang}(A)=3$.",
+      "fullSolution": "Mit $R_3\\leftarrow R_3-2R_1$ entsteht $\\begin{pmatrix}1&2&0\\\\0&1&3\\\\0&-4&1\\end{pmatrix}$. Danach liefert $R_3\\leftarrow R_3+4R_2$ die Form $\\begin{pmatrix}1&2&0\\\\0&1&3\\\\0&0&13\\end{pmatrix}$. Es gibt drei Pivotzeilen, also ist $\\operatorname{rang}(A)=3$.",
       "hints": [
         "Suche Pivotzeilen nach dem Zeilentausch und der Elimination.",
         "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
       ],
       "typicalErrors": [
-        "Zeilenabhängigkeit nicht erkannt",
-        "Rang mit der Zahl der Spalten verwechselt",
-        "Nullzeilen nach der Elimination mitgezählt"
+        "Beim 3×3-Fall den Pivot in der dritten Spalte nach dem Zeilenschritt übersehen",
+        "Die drei Pivotzeilen dieses Beispiels nicht von drei bloßen Matrixspalten unterschieden",
+        "Die Zwischenzeile mit Eintrag 13 nach der Elimination als Nullzeile fehlgedeutet"
       ],
       "tolerancePolicy": {
         "mode": "absolute",
@@ -154,9 +154,9 @@
         "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
       ],
       "typicalErrors": [
-        "Zeilenabhängigkeit nicht erkannt",
-        "Rang mit der Zahl der Spalten verwechselt",
-        "Nullzeilen nach der Elimination mitgezählt"
+        "Die beiden Vielfachen der ersten Zeile in diesem 3×4-Beispiel nicht als abhängig erkannt",
+        "Den Rang 1 fälschlich an der vier Spalten statt an den Pivotzeilen festgemacht",
+        "Die beiden nach der Elimination entstehenden Nullzeilen als zusätzliche Pivots gezählt"
       ],
       "tolerancePolicy": {
         "mode": "absolute",
