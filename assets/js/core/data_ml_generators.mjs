@@ -398,22 +398,3 @@ export function genPcaVariancePercent(seed) {
     };
   });
 }
-
-// --- registry ------------------------------------------------------------------------
-
-export const DATA_ML_SEED_GENERATORS = {
-  genCompleteRows,
-  genDedupRows,
-  genConditionalCount,
-  genMseGradient,
-  genBaselineCorrect,
-  genMseFromResiduals,
-  genR2Share,
-  genConfusionCount,
-  genCvSpread,
-  genSeedSpread,
-  genSubgroupGapPp,
-  genShrinkagePercent,
-  genEnsembleAccuracy,
-  genPcaVariancePercent,
-};

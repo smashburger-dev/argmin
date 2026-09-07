@@ -1,10 +1,6 @@
-import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, lstatSync, readdirSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { catalogRoot, discoverProjects } from './content_roots.mjs';
-
-function readJson(path) {
-  return JSON.parse(readFileSync(path, 'utf8'));
-}
+import { catalogRoot, discoverProjects, readJson } from './content_roots.mjs';
 
 function safeRelativePath(path) {
   if (typeof path !== 'string' || !path || path.includes('\\') || isAbsolute(path)) throw new Error(`Ungültiger Projektpfad: ${path}`);

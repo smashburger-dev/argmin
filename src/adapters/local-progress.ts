@@ -78,18 +78,6 @@ export async function loadProgressSnapshot(catalog: CatalogData): Promise<Progre
   };
 }
 
-export async function loadCodeDraft(activityId: string): Promise<string | null> {
-  if (!progress) return null;
-  const draft = await progress.getDraft(activityId);
-  return typeof draft?.code === 'string' ? draft.code : null;
-}
-
-export async function saveCodeDraft(activityId: string, code: string): Promise<void> {
-  if (!progress) return;
-  const draft = await progress.getDraft(activityId);
-  await progress.saveDraft({ ...(draft || {}), activityId, code });
-}
-
 export async function saveLearningPreferences(weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]): Promise<void> {
   if (!progress) return;
   await Promise.all([

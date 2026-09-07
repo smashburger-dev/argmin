@@ -24,6 +24,7 @@ import {
   lessonClaims,
   listRootFiles,
   projectPackageClaims,
+  readJson,
 } from './content_roots.mjs';
 
 export { validateCompetencyGraph };
@@ -35,7 +36,6 @@ const schemaNames = [
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
 
-const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
 const canonicalize = (value) => {
   if (Array.isArray(value)) return value.map(canonicalize);
   if (value && typeof value === 'object') {

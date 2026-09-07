@@ -82,9 +82,8 @@ export function reviewStateFromAttempts(attempts, nowMs = Date.now(), params = D
 }
 
 /** One reviewQueue record (or null when the exercise has nothing to
- *  schedule: never qualified, locked by solution reveal, consolidated).
- *  activeExerciseCount stays in the compatibility signature and is unused. */
-export function buildReviewQueueEntry(exerciseId, attempts, nowMs = Date.now(), params = DEFAULT_REVIEW_PARAMS, activeExerciseCount = 1) {
+ *  schedule: never qualified, locked by solution reveal, consolidated). */
+export function buildReviewQueueEntry(exerciseId, attempts, nowMs = Date.now(), params = DEFAULT_REVIEW_PARAMS) {
   const st = reviewStateFromAttempts(attempts, nowMs, params);
   if (!st.qualified || st.locked) return null;
   return {
@@ -108,7 +107,7 @@ export function buildReviewQueueEntries(attempts, nowMs = Date.now(), params = D
   }
   const out = [];
   for (const [exerciseId, list] of byExercise) {
-    const entry = buildReviewQueueEntry(exerciseId, list, nowMs, params, byExercise.size);
+    const entry = buildReviewQueueEntry(exerciseId, list, nowMs, params);
     if (entry) out.push(entry);
   }
   return out;
