@@ -19,6 +19,7 @@ import {
   assertFamilyPlacement,
   EXERCISE_FAMILIES,
 } from '../assets/js/domain/exercise_registry.mjs';
+import { registerStaticCases, staticFamilySpec } from '../assets/js/domain/family_registry.mjs';
 import { buildLearningEvent, isJournalWorthy } from '../assets/js/domain/learning_event.mjs';
 import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
 import { assertModuleBindings } from '../assets/js/domain/learning_module.mjs';
@@ -96,6 +97,87 @@ test('rationale-note members skip family property tests and stay non-authoritati
   const registry = createFamilyRegistry([stub]);
   assert.deepEqual(propertyCases(registry.get('reflect-guided-note')), []);
   assert.equal(registry.get('reflect-guided-note').masteryEligible, false);
+});
+
+test('static variants select deterministic cases and stay solver-aligned', () => {
+  const baseChoice = (text, correct) => ({ id: correct ? 'a' : 'b', text, correct });
+  const variantDoc = {
+    familyId: 'variant-static-contract',
+    contract: {
+      familyId: 'variant-static-contract',
+      familyGroup: 'classify-concept',
+      summary: 'Testfamilie für deterministische Varianten.',
+      taskArchetype: 'choice-diagnose',
+      authorityMode: 'static',
+      masteryEligible: true,
+      caseTypes: [{ caseId: 'variant-case' }, { caseId: 'plain-case' }],
+      difficultyProfiles: ['intro'],
+      competencyIds: ['c-git-basics'],
+      graderId: 'deterministic',
+      activityType: 'single-choice',
+    },
+    cases: [
+      {
+        caseId: 'variant-case',
+        difficultyProfile: 'intro',
+        masteryEligible: true,
+        sourceLineage: [],
+        parameters: { base: true },
+        expected: { correctChoice: 'a' },
+        choices: [baseChoice('Basis', true), baseChoice('Distraktor', false)],
+        prompt: 'Basis',
+        fullSolution: 'Basis',
+        variants: [
+          {
+            parameters: { value: 1 },
+            expected: { correctChoice: 'a' },
+            choices: [baseChoice('Variante 1', true), baseChoice('Distraktor 1', false)],
+            prompt: 'Variante 1',
+            fullSolution: 'Variante 1',
+          },
+          {
+            parameters: { value: 2 },
+            expected: { correctChoice: 'a' },
+            choices: [baseChoice('Variante 2', true), baseChoice('Distraktor 2', false)],
+            prompt: 'Variante 2',
+            fullSolution: 'Variante 2',
+          },
+        ],
+      },
+      {
+        caseId: 'plain-case',
+        difficultyProfile: 'intro',
+        masteryEligible: true,
+        sourceLineage: [],
+        parameters: { base: true },
+        expected: { correctChoice: 'a' },
+        choices: [baseChoice('Nur Basis', true), baseChoice('Distraktor', false)],
+        prompt: 'Nur Basis',
+        fullSolution: 'Nur Basis',
+      },
+    ],
+  };
+  registerStaticCases(variantDoc.familyId, variantDoc.cases);
+  const registry = createFamilyRegistry([staticFamilySpec(variantDoc)]);
+  const variantFamily = registry.get(variantDoc.familyId);
+  assert.equal(variantFamily.caseTypes.find((item) => item.caseId === 'variant-case').propertyTest, true);
+  assert.equal(variantFamily.caseTypes.find((item) => item.caseId === 'plain-case').propertyTest, false);
+  assert.deepEqual(
+    [0, 1, 2, 3].map((seed) => registry.instantiate(variantDoc.familyId, seed, 'intro', 'variant-case').prompt),
+    ['Basis', 'Variante 1', 'Variante 2', 'Basis'],
+  );
+  for (const seed of [0, 1, 2, 3]) {
+    const instance = registry.instantiate(variantDoc.familyId, seed, 'intro', 'variant-case');
+    assert.equal(instance.parameters.variant, seed % 3);
+    assert.equal(registry.get(variantDoc.familyId).solve(instance.parameters).correctText, instance.choices.find((choice) => choice.correct).text);
+  }
+  const plain = [0, 1, 2].map((seed) => registry.instantiate(variantDoc.familyId, seed, 'intro', 'plain-case'));
+  assert.deepEqual(plain.map((instance) => instance.parameters), [
+    { base: true, caseId: 'plain-case', difficulty: 'intro', variant: 0 },
+    { base: true, caseId: 'plain-case', difficulty: 'intro', variant: 0 },
+    { base: true, caseId: 'plain-case', difficulty: 'intro', variant: 0 },
+  ]);
+  assert.deepEqual(plain.map((instance) => instance.prompt), ['Nur Basis', 'Nur Basis', 'Nur Basis']);
 });
 
 test('vacuous-axis steps are declared, not silent', () => {

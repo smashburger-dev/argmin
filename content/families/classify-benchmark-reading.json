@@ -99,7 +99,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "before": 0.731,
+            "after": 0.808
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 0,731 auf 0,808 — ein absoluter Zuwachs von 7,7 Prozentpunkten (relativ etwa 10,534 %).",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der Score stieg von 7,7 % auf 80,8 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 7,7 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,731 auf 0,808. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,808−0,731=0,077, also 7,7 Prozentpunkte. Relativ sind das ungefähr 10,534 %."
+        },
+        {
+          "parameters": {
+            "before": 0.62,
+            "after": 0.705
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 8,5 % auf 70,5 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Score stieg von 0,62 auf 0,705 — ein absoluter Zuwachs von 8,5 Prozentpunkten (relativ etwa 13,71 %).",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 8,5 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,62 auf 0,705. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,705−0,62=0,085, also 8,5 Prozentpunkte. Relativ sind das ungefähr 13,71 %."
+        },
+        {
+          "parameters": {
+            "before": 0.845,
+            "after": 0.901
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 5,6 % auf 90,1 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 5,6 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Score stieg von 0,845 auf 0,901 — ein absoluter Zuwachs von 5,6 Prozentpunkten (relativ etwa 6,627 %).",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,845 auf 0,901. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,901−0,845=0,056, also 5,6 Prozentpunkte. Relativ sind das ungefähr 6,627 %."
+        },
+        {
+          "parameters": {
+            "before": 0.55,
+            "after": 0.641
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 9,1 % auf 64,1 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 9,1 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Score stieg von 0,55 auf 0,641 — ein absoluter Zuwachs von 9,1 Prozentpunkten (relativ etwa 16,545 %).",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,55 auf 0,641. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,641−0,55=0,091, also 9,1 Prozentpunkte. Relativ sind das ungefähr 16,545 %."
+        },
+        {
+          "parameters": {
+            "before": 0.68,
+            "after": 0.752
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 0,68 auf 0,752 — ein absoluter Zuwachs von 7,2 Prozentpunkten (relativ etwa 10,588 %).",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der Score stieg von 7,2 % auf 75,2 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 7,2 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,68 auf 0,752. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,752−0,68=0,072, also 7,2 Prozentpunkte. Relativ sind das ungefähr 10,588 %."
+        },
+        {
+          "parameters": {
+            "before": 0.79,
+            "after": 0.844
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 5,4 % auf 84,4 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Score stieg von 0,79 auf 0,844 — ein absoluter Zuwachs von 5,4 Prozentpunkten (relativ etwa 6,835 %).",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 5,4 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,79 auf 0,844. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,844−0,79=0,054, also 5,4 Prozentpunkte. Relativ sind das ungefähr 6,835 %."
+        },
+        {
+          "parameters": {
+            "before": 0.48,
+            "after": 0.573
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 9,3 % auf 57,3 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 9,3 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Score stieg von 0,48 auf 0,573 — ein absoluter Zuwachs von 9,3 Prozentpunkten (relativ etwa 19,375 %).",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,48 auf 0,573. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,573−0,48=0,093, also 9,3 Prozentpunkte. Relativ sind das ungefähr 19,375 %."
+        },
+        {
+          "parameters": {
+            "before": 0.905,
+            "after": 0.947
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 4,2 % auf 94,7 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 4,2 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Score stieg von 0,905 auf 0,947 — ein absoluter Zuwachs von 4,2 Prozentpunkten (relativ etwa 4,641 %).",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,905 auf 0,947. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,947−0,905=0,042, also 4,2 Prozentpunkte. Relativ sind das ungefähr 4,641 %."
+        },
+        {
+          "parameters": {
+            "before": 0.66,
+            "after": 0.738
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Score stieg von 0,66 auf 0,738 — ein absoluter Zuwachs von 7,8 Prozentpunkten (relativ etwa 11,818 %).",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der Score stieg von 7,8 % auf 73,8 % — die Baseline fehlt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 7,8 % relativ; Prozentpunkte und relative Prozente sind identisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Zuwachs ist nicht angegeben, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Benchmark-Score steigt von 0,66 auf 0,738. Welche Weitererzählung ist rechnerisch korrekt?",
+          "fullSolution": "Absolut: 0,738−0,66=0,078, also 7,8 Prozentpunkte. Relativ sind das ungefähr 11,818 %."
+        }
+      ]
     },
     {
       "caseId": "benchmark-absolute-relative",
@@ -169,7 +468,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "before": 0.62,
+            "after": 0.7
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es sind 8 Prozentpunkte absolut und ungefähr 12,903 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 8 Prozent, weil 0,7 minus 0,62 gleich 0,08 ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 12,903 Prozentpunkte, weil 0,08 durch 0,62 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,62$ auf $0,7$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,08 = 8 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 12,903 %."
+        },
+        {
+          "parameters": {
+            "before": 0.45,
+            "after": 0.54
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Gewinn beträgt 9 Prozent, weil 0,54 minus 0,45 gleich 0,09 ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es sind 9 Prozentpunkte absolut und ungefähr 20 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 20 Prozentpunkte, weil 0,09 durch 0,45 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,45$ auf $0,54$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,09 = 9 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 20 %."
+        },
+        {
+          "parameters": {
+            "before": 0.7,
+            "after": 0.77
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Gewinn beträgt 7 Prozent, weil 0,77 minus 0,7 gleich 0,07 ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 10 Prozentpunkte, weil 0,07 durch 0,7 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es sind 7 Prozentpunkte absolut und ungefähr 10 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,7$ auf $0,77$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,07 = 7 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 10 %."
+        },
+        {
+          "parameters": {
+            "before": 0.8,
+            "after": 0.86
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Gewinn beträgt 6 Prozent, weil 0,86 minus 0,8 gleich 0,06 ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 7,5 Prozentpunkte, weil 0,06 durch 0,8 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es sind 6 Prozentpunkte absolut und ungefähr 7,5 Prozent relativ.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,8$ auf $0,86$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,06 = 6 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 7,5 %."
+        },
+        {
+          "parameters": {
+            "before": 0.35,
+            "after": 0.49
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es sind 14 Prozentpunkte absolut und ungefähr 40 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 14 Prozent, weil 0,49 minus 0,35 gleich 0,14 ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 40 Prozentpunkte, weil 0,14 durch 0,35 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,35$ auf $0,49$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,14 = 14 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 40 %."
+        },
+        {
+          "parameters": {
+            "before": 0.55,
+            "after": 0.66
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Gewinn beträgt 11 Prozent, weil 0,66 minus 0,55 gleich 0,11 ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es sind 11 Prozentpunkte absolut und ungefähr 20 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 20 Prozentpunkte, weil 0,11 durch 0,55 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,55$ auf $0,66$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,11 = 11 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 20 %."
+        },
+        {
+          "parameters": {
+            "before": 0.64,
+            "after": 0.72
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Gewinn beträgt 8 Prozent, weil 0,72 minus 0,64 gleich 0,08 ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 12,5 Prozentpunkte, weil 0,08 durch 0,64 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es sind 8 Prozentpunkte absolut und ungefähr 12,5 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,64$ auf $0,72$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,08 = 8 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 12,5 %."
+        },
+        {
+          "parameters": {
+            "before": 0.72,
+            "after": 0.81
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Gewinn beträgt 9 Prozent, weil 0,81 minus 0,72 gleich 0,09 ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 12,5 Prozentpunkte, weil 0,09 durch 0,72 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es sind 9 Prozentpunkte absolut und ungefähr 12,5 Prozent relativ.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,72$ auf $0,81$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,09 = 9 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 12,5 %."
+        },
+        {
+          "parameters": {
+            "before": 0.25,
+            "after": 0.4
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es sind 15 Prozentpunkte absolut und ungefähr 60 Prozent relativ.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der Gewinn beträgt 15 Prozent, weil 0,4 minus 0,25 gleich 0,15 ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Gewinn beträgt 60 Prozentpunkte, weil 0,15 durch 0,25 geteilt wird.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell steigt von Accuracy $0,25$ auf $0,4$. Welche Einordnung ist rechnerisch korrekt?",
+          "fullSolution": "Die absolute Differenz ist 0,15 = 15 Prozentpunkte. Relativ zum Ausgangswert ergibt sich 60 %."
+        }
+      ]
     },
     {
       "caseId": "benchmark-imbalanced-accuracy",
@@ -240,7 +838,315 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "negativeShare": 0.95,
+            "positiveShare": 0.05,
+            "accuracy": 0.95
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Accuracy von 95 % entspricht hier der Mehrheits-Baseline (95 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "95 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 5 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 95 % der Fälle negativ und 5 % positiv. Ein Modell erreicht 95 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 95 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.9,
+            "positiveShare": 0.1,
+            "accuracy": 0.9
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "90 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Accuracy von 90 % entspricht hier der Mehrheits-Baseline (90 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 10 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 90 % der Fälle negativ und 10 % positiv. Ein Modell erreicht 90 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 90 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.8,
+            "positiveShare": 0.2,
+            "accuracy": 0.8
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "80 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 20 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Accuracy von 80 % entspricht hier der Mehrheits-Baseline (80 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 80 % der Fälle negativ und 20 % positiv. Ein Modell erreicht 80 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 80 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.97,
+            "positiveShare": 0.03,
+            "accuracy": 0.97
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "97 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 3 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Accuracy von 97 % entspricht hier der Mehrheits-Baseline (97 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            }
+          ],
+          "prompt": "In einem Datensatz sind 97 % der Fälle negativ und 3 % positiv. Ein Modell erreicht 97 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 97 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.85,
+            "positiveShare": 0.15,
+            "accuracy": 0.85
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Accuracy von 85 % entspricht hier der Mehrheits-Baseline (85 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "85 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 15 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 85 % der Fälle negativ und 15 % positiv. Ein Modell erreicht 85 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 85 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.75,
+            "positiveShare": 0.25,
+            "accuracy": 0.75
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "75 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Accuracy von 75 % entspricht hier der Mehrheits-Baseline (75 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 25 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 75 % der Fälle negativ und 25 % positiv. Ein Modell erreicht 75 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 75 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.92,
+            "positiveShare": 0.08,
+            "accuracy": 0.92
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "92 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 8 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Accuracy von 92 % entspricht hier der Mehrheits-Baseline (92 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 92 % der Fälle negativ und 8 % positiv. Ein Modell erreicht 92 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 92 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.88,
+            "positiveShare": 0.12,
+            "accuracy": 0.88
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "88 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 12 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Accuracy von 88 % entspricht hier der Mehrheits-Baseline (88 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            }
+          ],
+          "prompt": "In einem Datensatz sind 88 % der Fälle negativ und 12 % positiv. Ein Modell erreicht 88 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 88 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        },
+        {
+          "parameters": {
+            "negativeShare": 0.7,
+            "positiveShare": 0.3,
+            "accuracy": 0.7
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Accuracy von 70 % entspricht hier der Mehrheits-Baseline (70 %) und sagt nichts über den positiven Recall aus.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "70 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Modell ohne positive Treffer hat automatisch 30 % Accuracy.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einem Datensatz sind 70 % der Fälle negativ und 30 % positiv. Ein Modell erreicht 70 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+          "fullSolution": "Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits 70 % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend."
+        }
+      ]
     }
   ]
 }

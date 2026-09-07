@@ -8,6 +8,21 @@ const FAMILY_ID = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const DIFFICULTY_ORDER = ['intro', 'core', 'stretch', 'challenge'];
 const staticCases = new Map();
 
+const variantOf = (body, seed) => {
+  const all = [body, ...(body.variants || [])];
+  const index = Math.abs(seed) % all.length;
+  const variant = all[index];
+  return {
+    index,
+    body: {
+      ...body,
+      ...variant,
+      variants: undefined,
+      parameters: { ...(body.parameters || {}), ...(variant.parameters || {}) },
+    },
+  };
+};
+
 export function registerStaticCases(familyId, cases) {
   if (!FAMILY_ID.test(familyId)) throw new Error(`Ungültige familyId ${familyId}`);
   if (!Array.isArray(cases)) throw new Error(`${familyId}: Fälle müssen eine Liste sein`);
@@ -46,31 +61,37 @@ export function staticFamilySpec(doc) {
     familyId: doc.familyId,
     masteryEligible: cases.some(isMasteryEligible),
     difficultyProfiles,
-    caseTypes: cases.map((item) => ({ caseId: item.caseId, propertyTest: false })),
-    generate: ({ caseId, difficulty }) => {
+    caseTypes: cases.map((item) => ({
+      caseId: item.caseId,
+      propertyTest: Array.isArray(item.variants) && item.variants.length > 0,
+    })),
+    generate: ({ seed, caseId, difficulty }) => {
       const body = staticCaseBody(doc.familyId, caseId);
       if (body.difficultyProfile !== difficulty) {
         throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
       }
+      const { body: chosen, index } = variantOf(body, seed ?? 0);
       const {
         caseId: _caseId,
         difficultyProfile: _difficultyProfile,
         masteryEligible: _masteryEligible,
         sourceLineage: _sourceLineage,
+        variants: _variants,
         ...generated
-      } = body;
+      } = chosen;
       return {
         ...generated,
         masteryEligible: isMasteryEligible(body),
         parameters: {
           caseId,
           difficulty,
-          ...(body.parameters || {}),
+          variant: index,
+          ...(chosen.parameters || {}),
         },
       };
     },
     solve: (parameters) => {
-      const body = staticCaseBody(doc.familyId, parameters.caseId);
+      const { body } = variantOf(staticCaseBody(doc.familyId, parameters.caseId), parameters.variant ?? 0);
       const correct = (body.choices || []).find((choice) => choice.correct);
       return correct ? { correctText: correct.text } : {};
     },

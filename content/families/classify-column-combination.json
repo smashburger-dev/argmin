@@ -59,7 +59,396 @@
         }
       ],
       "prompt": "Gegeben $s_1=(2,1)$, $s_2=(-1,3)$ und $w=(3,5)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
-      "fullSolution": "Komponentenweise: $2(2,1) + 1(-1,3) = (4-1, 2+3) = (3,5) = w$. (1,2) vertauscht Koeffizienten mit Spalten, (3,5) verwechselt Ziel mit Koeffizienten, (2,0) ignoriert die zweite Spalte."
+      "fullSolution": "Komponentenweise: $2(2,1) + 1(-1,3) = (4-1, 2+3) = (3,5) = w$. (1,2) vertauscht Koeffizienten mit Spalten, (3,5) verwechselt Ziel mit Koeffizienten, (2,0) ignoriert die zweite Spalte.",
+      "variants": [
+        {
+          "parameters": {
+            "s1": [
+              2,
+              1
+            ],
+            "s2": [
+              -1,
+              3
+            ],
+            "target": [
+              3,
+              5
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (2,1)$: $2(2,1) + 1(-1,3) = (3,5)$.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (1,2)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (3,5)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (2,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(2,1)$, $s_2=(-1,3)$ und $w=(3,5)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 2(2,1) + 1(-1,3) = (3,5). Deshalb sind die Koeffizienten $(a,b)=(2,1)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              1,
+              2
+            ],
+            "s2": [
+              3,
+              -1
+            ],
+            "target": [
+              7,
+              0
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (2,1)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (1,2)$: $1(1,2) + 2(3,-1) = (7,0)$.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (7,0)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (1,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(1,2)$, $s_2=(3,-1)$ und $w=(7,0)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 1(1,2) + 2(3,-1) = (7,0). Deshalb sind die Koeffizienten $(a,b)=(1,2)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              2,
+              -2
+            ],
+            "s2": [
+              1,
+              4
+            ],
+            "target": [
+              5,
+              -10
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (-1,3)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (5,-10)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (3,-1)$: $3(2,-2) + -1(1,4) = (5,-10)$.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (3,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(2,-2)$, $s_2=(1,4)$ und $w=(5,-10)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 3(2,-2) + -1(1,4) = (5,-10). Deshalb sind die Koeffizienten $(a,b)=(3,-1)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              3,
+              1
+            ],
+            "s2": [
+              -2,
+              2
+            ],
+            "target": [
+              -3,
+              7
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (3,1)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (-3,7)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (1,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (1,3)$: $1(3,1) + 3(-2,2) = (-3,7)$.",
+              "correct": true
+            }
+          ],
+          "prompt": "Gegeben $s_1=(3,1)$, $s_2=(-2,2)$ und $w=(-3,7)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 1(3,1) + 3(-2,2) = (-3,7). Deshalb sind die Koeffizienten $(a,b)=(1,3)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              1,
+              -3
+            ],
+            "s2": [
+              2,
+              2
+            ],
+            "target": [
+              0,
+              8
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (-2,1)$: $-2(1,-3) + 1(2,2) = (0,8)$.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (1,-2)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (0,8)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (-2,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(1,-3)$, $s_2=(2,2)$ und $w=(0,8)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: -2(1,-3) + 1(2,2) = (0,8). Deshalb sind die Koeffizienten $(a,b)=(-2,1)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              4,
+              1
+            ],
+            "s2": [
+              -1,
+              2
+            ],
+            "target": [
+              9,
+              0
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (-1,2)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (2,-1)$: $2(4,1) + -1(-1,2) = (9,0)$.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (9,0)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (2,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(4,1)$, $s_2=(-1,2)$ und $w=(9,0)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 2(4,1) + -1(-1,2) = (9,0). Deshalb sind die Koeffizienten $(a,b)=(2,-1)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              2,
+              5
+            ],
+            "s2": [
+              3,
+              -2
+            ],
+            "target": [
+              4,
+              -9
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (2,-1)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (4,-9)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (-1,2)$: $-1(2,5) + 2(3,-2) = (4,-9)$.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (-1,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(2,5)$, $s_2=(3,-2)$ und $w=(4,-9)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: -1(2,5) + 2(3,-2) = (4,-9). Deshalb sind die Koeffizienten $(a,b)=(-1,2)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              5,
+              -1
+            ],
+            "s2": [
+              1,
+              3
+            ],
+            "target": [
+              12,
+              4
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (2,2)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (12,4)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (2,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (2,2)$: $2(5,-1) + 2(1,3) = (12,4)$.",
+              "correct": true
+            }
+          ],
+          "prompt": "Gegeben $s_1=(5,-1)$, $s_2=(1,3)$ und $w=(12,4)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 2(5,-1) + 2(1,3) = (12,4). Deshalb sind die Koeffizienten $(a,b)=(2,2)$."
+        },
+        {
+          "parameters": {
+            "s1": [
+              3,
+              2
+            ],
+            "s2": [
+              -2,
+              5
+            ],
+            "target": [
+              7,
+              -8
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(a,b) = (1,-2)$: $1(3,2) + -2(-2,5) = (7,-8)$.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(a,b) = (-2,1)$: Koeffizienten in Spaltenreihenfolge.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(a,b) = (7,-8)$: Zielvektor als Koeffizienten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(a,b) = (1,0)$: nur die erste Spalte trägt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gegeben $s_1=(3,2)$, $s_2=(-2,5)$ und $w=(7,-8)$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?",
+          "fullSolution": "Einsetzen zeigt: 1(3,2) + -2(-2,5) = (7,-8). Deshalb sind die Koeffizienten $(a,b)=(1,-2)$."
+        }
+      ]
     },
     {
       "caseId": "column-choice-authored",
@@ -117,7 +506,396 @@
         "mode": "exact"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "a1": [
+              2,
+              1
+            ],
+            "a2": [
+              1,
+              3
+            ],
+            "target": [
+              3,
+              4
+            ]
+          },
+          "expected": {
+            "correctChoice": "both-one"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=1, x_2=1$",
+              "correct": true
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=1, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=0, x_2=1$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=3, x_2=4$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(2,1)^T$ und $a_2=(1,3)^T$ gilt $b=(3,4)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "1(2,1) + 1(1,3) = (3,4); daher gilt $x_1=1$ und $x_2=1$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              3,
+              1
+            ],
+            "a2": [
+              2,
+              4
+            ],
+            "target": [
+              4,
+              -2
+            ]
+          },
+          "expected": {
+            "correctChoice": "first-only"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=2, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=2, x_2=-1$",
+              "correct": true
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=0, x_2=-1$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=4, x_2=-2$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(3,1)^T$ und $a_2=(2,4)^T$ gilt $b=(4,-2)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "2(3,1) + -1(2,4) = (4,-2); daher gilt $x_1=2$ und $x_2=-1$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              1,
+              2
+            ],
+            "a2": [
+              3,
+              -1
+            ],
+            "target": [
+              5,
+              -4
+            ]
+          },
+          "expected": {
+            "correctChoice": "second-only"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=-1, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=0, x_2=2$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=-1, x_2=2$",
+              "correct": true
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=5, x_2=-4$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(1,2)^T$ und $a_2=(3,-1)^T$ gilt $b=(5,-4)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "-1(1,2) + 2(3,-1) = (5,-4); daher gilt $x_1=-1$ und $x_2=2$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              2,
+              3
+            ],
+            "a2": [
+              -1,
+              2
+            ],
+            "target": [
+              2,
+              10
+            ]
+          },
+          "expected": {
+            "correctChoice": "swapped-target"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=2, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=0, x_2=2$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=2, x_2=10$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=2, x_2=2$",
+              "correct": true
+            }
+          ],
+          "prompt": "Für $a_1=(2,3)^T$ und $a_2=(-1,2)^T$ gilt $b=(2,10)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "2(2,3) + 2(-1,2) = (2,10); daher gilt $x_1=2$ und $x_2=2$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              4,
+              1
+            ],
+            "a2": [
+              1,
+              2
+            ],
+            "target": [
+              -1,
+              5
+            ]
+          },
+          "expected": {
+            "correctChoice": "both-one"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=-1, x_2=3$",
+              "correct": true
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=-1, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=0, x_2=3$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=-1, x_2=5$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(4,1)^T$ und $a_2=(1,2)^T$ gilt $b=(-1,5)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "-1(4,1) + 3(1,2) = (-1,5); daher gilt $x_1=-1$ und $x_2=3$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              1,
+              4
+            ],
+            "a2": [
+              2,
+              1
+            ],
+            "target": [
+              -1,
+              10
+            ]
+          },
+          "expected": {
+            "correctChoice": "first-only"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=3, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=3, x_2=-2$",
+              "correct": true
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=0, x_2=-2$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=-1, x_2=10$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(1,4)^T$ und $a_2=(2,1)^T$ gilt $b=(-1,10)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "3(1,4) + -2(2,1) = (-1,10); daher gilt $x_1=3$ und $x_2=-2$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              3,
+              2
+            ],
+            "a2": [
+              -2,
+              3
+            ],
+            "target": [
+              -1,
+              8
+            ]
+          },
+          "expected": {
+            "correctChoice": "second-only"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=1, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=0, x_2=2$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=1, x_2=2$",
+              "correct": true
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=-1, x_2=8$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(3,2)^T$ und $a_2=(-2,3)^T$ gilt $b=(-1,8)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "1(3,2) + 2(-2,3) = (-1,8); daher gilt $x_1=1$ und $x_2=2$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              2,
+              -1
+            ],
+            "a2": [
+              1,
+              5
+            ],
+            "target": [
+              -3,
+              7
+            ]
+          },
+          "expected": {
+            "correctChoice": "swapped-target"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=-2, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=0, x_2=1$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=-3, x_2=7$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=-2, x_2=1$",
+              "correct": true
+            }
+          ],
+          "prompt": "Für $a_1=(2,-1)^T$ und $a_2=(1,5)^T$ gilt $b=(-3,7)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "-2(2,-1) + 1(1,5) = (-3,7); daher gilt $x_1=-2$ und $x_2=1$."
+        },
+        {
+          "parameters": {
+            "a1": [
+              5,
+              2
+            ],
+            "a2": [
+              2,
+              -3
+            ],
+            "target": [
+              3,
+              5
+            ]
+          },
+          "expected": {
+            "correctChoice": "both-one"
+          },
+          "choices": [
+            {
+              "id": "both-one",
+              "text": "$x_1=1, x_2=-1$",
+              "correct": true
+            },
+            {
+              "id": "first-only",
+              "text": "$x_1=1, x_2=0$",
+              "correct": false
+            },
+            {
+              "id": "second-only",
+              "text": "$x_1=0, x_2=-1$",
+              "correct": false
+            },
+            {
+              "id": "swapped-target",
+              "text": "$x_1=3, x_2=5$",
+              "correct": false
+            }
+          ],
+          "prompt": "Für $a_1=(5,2)^T$ und $a_2=(2,-3)^T$ gilt $b=(3,5)^T$. Welche Koeffizienten erfüllen $x_1a_1+x_2a_2=b$?",
+          "fullSolution": "1(5,2) + -1(2,-3) = (3,5); daher gilt $x_1=1$ und $x_2=-1$."
+        }
+      ]
     },
     {
       "caseId": "shape-debug-authored",
@@ -175,6 +953,305 @@
           "id": "transpose",
           "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch",
           "correct": false
+        }
+      ],
+      "variants": [
+        {
+          "parameters": {
+            "matrixRows": 2,
+            "matrixColumns": 3
+          },
+          "expected": {
+            "correctChoice": "matmul-contract"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(2,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "reshape-any",
+              "text": "Beide Eingaben immer auf `(3,3)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(2,3) und einen Vektor v mit Shape (3,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 3,
+            "matrixColumns": 2
+          },
+          "expected": {
+            "correctChoice": "reshape-any"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "Beide Eingaben immer auf `(2,2)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "reshape-any",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(3,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "sum-all",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(3,2) und einen Vektor v mit Shape (2,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 4,
+            "matrixColumns": 5
+          },
+          "expected": {
+            "correctChoice": "sum-all"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "Beide Eingaben immer auf `(5,5)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "reshape-any",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(4,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(4,5) und einen Vektor v mit Shape (5,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 5,
+            "matrixColumns": 3
+          },
+          "expected": {
+            "correctChoice": "transpose"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "Beide Eingaben immer auf `(3,3)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "reshape-any",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(5,)` zurückgeben",
+              "correct": true
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(5,3) und einen Vektor v mit Shape (3,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 6,
+            "matrixColumns": 4
+          },
+          "expected": {
+            "correctChoice": "matmul-contract"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(6,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "reshape-any",
+              "text": "Beide Eingaben immer auf `(4,4)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(6,4) und einen Vektor v mit Shape (4,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 2,
+            "matrixColumns": 7
+          },
+          "expected": {
+            "correctChoice": "reshape-any"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "Beide Eingaben immer auf `(7,7)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "reshape-any",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(2,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "sum-all",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(2,7) und einen Vektor v mit Shape (7,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 7,
+            "matrixColumns": 2
+          },
+          "expected": {
+            "correctChoice": "sum-all"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "Beide Eingaben immer auf `(2,2)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "reshape-any",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(7,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(7,2) und einen Vektor v mit Shape (2,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 3,
+            "matrixColumns": 6
+          },
+          "expected": {
+            "correctChoice": "transpose"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "Beide Eingaben immer auf `(6,6)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "reshape-any",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(3,)` zurückgeben",
+              "correct": true
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(3,6) und einen Vektor v mit Shape (6,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
+        },
+        {
+          "parameters": {
+            "matrixRows": 4,
+            "matrixColumns": 7
+          },
+          "expected": {
+            "correctChoice": "matmul-contract"
+          },
+          "choices": [
+            {
+              "id": "matmul-contract",
+              "text": "A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(4,)` zurückgeben",
+              "correct": true
+            },
+            {
+              "id": "reshape-any",
+              "text": "Beide Eingaben immer auf `(7,7)` umformen und danach `A * v` verwenden",
+              "correct": false
+            },
+            {
+              "id": "sum-all",
+              "text": "`(A * v).sum()` zurückgeben, unabhängig von der erwarteten Ausgabe-Shape",
+              "correct": false
+            },
+            {
+              "id": "transpose",
+              "text": "Nur `A.T * v` verwenden; NumPy erkennt den Vertrag automatisch.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n)=(4,7) und einen Vektor v mit Shape (7,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
+          "fullSolution": "Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile."
         }
       ]
     }

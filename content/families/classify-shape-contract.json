@@ -101,7 +101,315 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "batch": 32,
+            "inputFeatures": 8,
+            "outputFeatures": 16
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(32,16)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 8 auf 16 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Operation ist unzulässig — $(32,8)$ und $(8,16)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(8,16)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(32,8)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{32 \\times 8}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{8 \\times 16}$ und der Bias $b \\in \\mathbb{R}^{16}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $32\\times16$; der Bias mit Form $16$ wird über die 32 Zeilen gebroadcastet. Ergebnis: $(32,16)$."
+        },
+        {
+          "parameters": {
+            "batch": 16,
+            "inputFeatures": 12,
+            "outputFeatures": 24
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Operation ist unzulässig — $(16,12)$ und $(12,24)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(16,24)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 12 auf 24 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(12,24)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(16,12)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{16 \\times 12}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{12 \\times 24}$ und der Bias $b \\in \\mathbb{R}^{24}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $16\\times24$; der Bias mit Form $24$ wird über die 16 Zeilen gebroadcastet. Ergebnis: $(16,24)$."
+        },
+        {
+          "parameters": {
+            "batch": 64,
+            "inputFeatures": 10,
+            "outputFeatures": 6
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Operation ist unzulässig — $(64,10)$ und $(10,6)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(10,6)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(64,6)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 10 auf 6 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(64,10)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{64 \\times 10}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{10 \\times 6}$ und der Bias $b \\in \\mathbb{R}^{6}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $64\\times6$; der Bias mit Form $6$ wird über die 64 Zeilen gebroadcastet. Ergebnis: $(64,6)$."
+        },
+        {
+          "parameters": {
+            "batch": 8,
+            "inputFeatures": 5,
+            "outputFeatures": 11
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Operation ist unzulässig — $(8,5)$ und $(5,11)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(5,11)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(8,5)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(8,11)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 5 auf 11 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{8 \\times 5}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{5 \\times 11}$ und der Bias $b \\in \\mathbb{R}^{11}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $8\\times11$; der Bias mit Form $11$ wird über die 8 Zeilen gebroadcastet. Ergebnis: $(8,11)$."
+        },
+        {
+          "parameters": {
+            "batch": 24,
+            "inputFeatures": 7,
+            "outputFeatures": 9
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(24,9)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 7 auf 9 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Operation ist unzulässig — $(24,7)$ und $(7,9)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(7,9)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(24,7)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{24 \\times 7}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{7 \\times 9}$ und der Bias $b \\in \\mathbb{R}^{9}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $24\\times9$; der Bias mit Form $9$ wird über die 24 Zeilen gebroadcastet. Ergebnis: $(24,9)$."
+        },
+        {
+          "parameters": {
+            "batch": 4,
+            "inputFeatures": 13,
+            "outputFeatures": 3
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Operation ist unzulässig — $(4,13)$ und $(13,3)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(4,3)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 13 auf 3 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(13,3)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(4,13)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{4 \\times 13}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{13 \\times 3}$ und der Bias $b \\in \\mathbb{R}^{3}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $4\\times3$; der Bias mit Form $3$ wird über die 4 Zeilen gebroadcastet. Ergebnis: $(4,3)$."
+        },
+        {
+          "parameters": {
+            "batch": 48,
+            "inputFeatures": 6,
+            "outputFeatures": 20
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Operation ist unzulässig — $(48,6)$ und $(6,20)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(6,20)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(48,20)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 6 auf 20 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(48,6)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{48 \\times 6}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{6 \\times 20}$ und der Bias $b \\in \\mathbb{R}^{20}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $48\\times20$; der Bias mit Form $20$ wird über die 48 Zeilen gebroadcastet. Ergebnis: $(48,20)$."
+        },
+        {
+          "parameters": {
+            "batch": 12,
+            "inputFeatures": 9,
+            "outputFeatures": 4
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Operation ist unzulässig — $(12,9)$ und $(9,4)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(9,4)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(12,9)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(12,4)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 9 auf 4 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{12 \\times 9}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{9 \\times 4}$ und der Bias $b \\in \\mathbb{R}^{4}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $12\\times4$; der Bias mit Form $4$ wird über die 12 Zeilen gebroadcastet. Ergebnis: $(12,4)$."
+        },
+        {
+          "parameters": {
+            "batch": 20,
+            "inputFeatures": 11,
+            "outputFeatures": 15
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(20,15)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 11 auf 15 umprojiziert; $b$ wird zeilenweise broadcastet.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Operation ist unzulässig — $(20,11)$ und $(11,15)$ passen nicht zusammen, Broadcast regelt das nicht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(11,15)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(20,11)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{20 \\times 11}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{11 \\times 15}$ und der Bias $b \\in \\mathbb{R}^{15}$. Welche Form hat $XW+b$, und warum?",
+          "fullSolution": "$XW$ hat Form $20\\times15$; der Bias mit Form $15$ wird über die 20 Zeilen gebroadcastet. Ergebnis: $(20,15)$."
+        }
+      ]
     },
     {
       "caseId": "shape-transformer-qkv",
@@ -178,7 +486,342 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "inputShape": [
+              2,
+              5,
+              12
+            ],
+            "projectionWidth": 4
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(2,5,4)$",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(2,12,4)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(5,4)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(10,4)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(2,5,12)$; $W_Q$ hat Shape $(12,4)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 2·5 Tokenpositionen wird von 12 auf 4 Merkmale abgebildet. Daher hat $Q$ Shape $(2,5,4)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              4,
+              8,
+              16
+            ],
+            "projectionWidth": 6
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(4,16,6)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(4,8,6)$",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(8,6)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(32,6)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(4,8,16)$; $W_Q$ hat Shape $(16,6)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 4·8 Tokenpositionen wird von 16 auf 6 Merkmale abgebildet. Daher hat $Q$ Shape $(4,8,6)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              1,
+              7,
+              10
+            ],
+            "projectionWidth": 5
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(1,10,5)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(7,5)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(1,7,5)$",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(7,5)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(1,7,10)$; $W_Q$ hat Shape $(10,5)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 1·7 Tokenpositionen wird von 10 auf 5 Merkmale abgebildet. Daher hat $Q$ Shape $(1,7,5)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              3,
+              11,
+              24
+            ],
+            "projectionWidth": 8
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(3,24,8)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(11,8)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(33,8)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(3,11,8)$",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(3,11,24)$; $W_Q$ hat Shape $(24,8)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 3·11 Tokenpositionen wird von 24 auf 8 Merkmale abgebildet. Daher hat $Q$ Shape $(3,11,8)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              8,
+              4,
+              32
+            ],
+            "projectionWidth": 16
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(8,4,16)$",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(8,32,16)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(4,16)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(32,16)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(8,4,32)$; $W_Q$ hat Shape $(32,16)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 8·4 Tokenpositionen wird von 32 auf 16 Merkmale abgebildet. Daher hat $Q$ Shape $(8,4,16)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              2,
+              13,
+              20
+            ],
+            "projectionWidth": 10
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(2,20,10)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(2,13,10)$",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(13,10)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(26,10)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(2,13,20)$; $W_Q$ hat Shape $(20,10)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 2·13 Tokenpositionen wird von 20 auf 10 Merkmale abgebildet. Daher hat $Q$ Shape $(2,13,10)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              5,
+              6,
+              18
+            ],
+            "projectionWidth": 9
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(5,18,9)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(6,9)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(5,6,9)$",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(30,9)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(5,6,18)$; $W_Q$ hat Shape $(18,9)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 5·6 Tokenpositionen wird von 18 auf 9 Merkmale abgebildet. Daher hat $Q$ Shape $(5,6,9)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              6,
+              9,
+              14
+            ],
+            "projectionWidth": 7
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(6,14,7)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(9,7)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(54,7)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(6,9,7)$",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(6,9,14)$; $W_Q$ hat Shape $(14,7)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 6·9 Tokenpositionen wird von 14 auf 7 Merkmale abgebildet. Daher hat $Q$ Shape $(6,9,7)$."
+        },
+        {
+          "parameters": {
+            "inputShape": [
+              3,
+              3,
+              8
+            ],
+            "projectionWidth": 2
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(3,3,2)$",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(3,8,2)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(3,2)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(9,2)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(3,3,8)$; $W_Q$ hat Shape $(8,2)$. Welche Shape besitzt $Q=XW_Q$?",
+          "fullSolution": "Die Projektion wirkt auf die letzte Achse: jede der 3·3 Tokenpositionen wird von 8 auf 2 Merkmale abgebildet. Daher hat $Q$ Shape $(3,3,2)$."
+        }
+      ]
     },
     {
       "caseId": "shape-token-batch-flatten",
@@ -249,7 +892,315 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "batch": 3,
+            "tokens": 7,
+            "embeddingWidth": 16
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(3,7,16)$",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(3,16,7)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(7,16)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(3,7)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(3,7)$; ein Embedding mit Breite $d=16$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 3 Sequenzen enthält 7 Token, und jedes Token wird durch einen Vektor der Breite 16 ersetzt. Die Shape ist daher $(3,7,16)$."
+        },
+        {
+          "parameters": {
+            "batch": 2,
+            "tokens": 5,
+            "embeddingWidth": 8
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(2,8,5)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(2,5,8)$",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(5,8)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(2,5)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(2,5)$; ein Embedding mit Breite $d=8$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 2 Sequenzen enthält 5 Token, und jedes Token wird durch einen Vektor der Breite 8 ersetzt. Die Shape ist daher $(2,5,8)$."
+        },
+        {
+          "parameters": {
+            "batch": 4,
+            "tokens": 9,
+            "embeddingWidth": 12
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(4,12,9)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(9,12)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(4,9,12)$",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(4,9)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(4,9)$; ein Embedding mit Breite $d=12$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 4 Sequenzen enthält 9 Token, und jedes Token wird durch einen Vektor der Breite 12 ersetzt. Die Shape ist daher $(4,9,12)$."
+        },
+        {
+          "parameters": {
+            "batch": 1,
+            "tokens": 11,
+            "embeddingWidth": 24
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(1,24,11)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(11,24)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(1,11)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(1,11,24)$",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(1,11)$; ein Embedding mit Breite $d=24$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 1 Sequenzen enthält 11 Token, und jedes Token wird durch einen Vektor der Breite 24 ersetzt. Die Shape ist daher $(1,11,24)$."
+        },
+        {
+          "parameters": {
+            "batch": 6,
+            "tokens": 4,
+            "embeddingWidth": 10
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(6,4,10)$",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(6,10,4)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(4,10)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(6,4)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(6,4)$; ein Embedding mit Breite $d=10$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 6 Sequenzen enthält 4 Token, und jedes Token wird durch einen Vektor der Breite 10 ersetzt. Die Shape ist daher $(6,4,10)$."
+        },
+        {
+          "parameters": {
+            "batch": 8,
+            "tokens": 3,
+            "embeddingWidth": 6
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(8,6,3)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(8,3,6)$",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$(3,6)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(8,3)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(8,3)$; ein Embedding mit Breite $d=6$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 8 Sequenzen enthält 3 Token, und jedes Token wird durch einen Vektor der Breite 6 ersetzt. Die Shape ist daher $(8,3,6)$."
+        },
+        {
+          "parameters": {
+            "batch": 5,
+            "tokens": 12,
+            "embeddingWidth": 14
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(5,14,12)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(12,14)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(5,12,14)$",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$(5,12)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(5,12)$; ein Embedding mit Breite $d=14$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 5 Sequenzen enthält 12 Token, und jedes Token wird durch einen Vektor der Breite 14 ersetzt. Die Shape ist daher $(5,12,14)$."
+        },
+        {
+          "parameters": {
+            "batch": 2,
+            "tokens": 10,
+            "embeddingWidth": 32
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(2,32,10)$",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$(10,32)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(2,10)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(2,10,32)$",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(2,10)$; ein Embedding mit Breite $d=32$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 2 Sequenzen enthält 10 Token, und jedes Token wird durch einen Vektor der Breite 32 ersetzt. Die Shape ist daher $(2,10,32)$."
+        },
+        {
+          "parameters": {
+            "batch": 7,
+            "tokens": 6,
+            "embeddingWidth": 18
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$(7,6,18)$",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$(7,18,6)$",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$(6,18)$",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$(7,6)$",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(7,6)$; ein Embedding mit Breite $d=18$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+          "fullSolution": "Jede der 7 Sequenzen enthält 6 Token, und jedes Token wird durch einen Vektor der Breite 18 ersetzt. Die Shape ist daher $(7,6,18)$."
+        }
+      ]
     }
   ]
 }

@@ -80,7 +80,162 @@
         "mode": "exact-integer"
       },
       "activityType": "numeric",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "hits": 3,
+            "disqualified": 1,
+            "definitions": 2
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 2
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 3 verschiedenen Instanzen und sieht 2 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 1 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 3 Treffer-Instanzen werden 1 durch Lösungsanzeigen disqualifiziert. Es bleiben 3−1=2 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "3 Treffer minus 1 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 4,
+            "disqualified": 2,
+            "definitions": 2
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 2
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 4 verschiedenen Instanzen und sieht 2 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 2 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 4 Treffer-Instanzen werden 2 durch Lösungsanzeigen disqualifiziert. Es bleiben 4−2=2 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "4 Treffer minus 2 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 5,
+            "disqualified": 1,
+            "definitions": 4
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 4
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 5 verschiedenen Instanzen und sieht 4 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 1 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 5 Treffer-Instanzen werden 1 durch Lösungsanzeigen disqualifiziert. Es bleiben 5−1=4 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "5 Treffer minus 1 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 6,
+            "disqualified": 3,
+            "definitions": 3
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 3
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 6 verschiedenen Instanzen und sieht 3 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 3 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 6 Treffer-Instanzen werden 3 durch Lösungsanzeigen disqualifiziert. Es bleiben 6−3=3 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "6 Treffer minus 3 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 2,
+            "disqualified": 1,
+            "definitions": 1
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 1
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 2 verschiedenen Instanzen und sieht 1 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 1 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 2 Treffer-Instanzen werden 1 durch Lösungsanzeigen disqualifiziert. Es bleiben 2−1=1 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "2 Treffer minus 1 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 7,
+            "disqualified": 2,
+            "definitions": 5
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 5
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 7 verschiedenen Instanzen und sieht 5 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 2 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 7 Treffer-Instanzen werden 2 durch Lösungsanzeigen disqualifiziert. Es bleiben 7−2=5 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "7 Treffer minus 2 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 8,
+            "disqualified": 4,
+            "definitions": 4
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 4
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 8 verschiedenen Instanzen und sieht 4 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 4 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 8 Treffer-Instanzen werden 4 durch Lösungsanzeigen disqualifiziert. Es bleiben 8−4=4 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "8 Treffer minus 4 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 3,
+            "disqualified": 2,
+            "definitions": 1
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 1
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 3 verschiedenen Instanzen und sieht 1 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 2 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 3 Treffer-Instanzen werden 2 durch Lösungsanzeigen disqualifiziert. Es bleiben 3−2=1 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "3 Treffer minus 2 gesperrte Instanz(en)."
+          ]
+        },
+        {
+          "parameters": {
+            "hits": 9,
+            "disqualified": 5,
+            "definitions": 4
+          },
+          "expected": {
+            "kind": "integer",
+            "value": 4
+          },
+          "prompt": "Eine Lernende erzielt Treffer auf 9 verschiedenen Instanzen und sieht 4 Definitionen auf weiteren Instanzen an. Kurz vor dem Abschluss öffnen sich Lösungsanzeigen auf 5 Treffer-Instanz(en). Wie viele unabhängige Treffer zählen noch?",
+          "fullSolution": "Von 9 Treffer-Instanzen werden 5 durch Lösungsanzeigen disqualifiziert. Es bleiben 9−5=4 unabhängige Treffer; Definitionen zählen in einer eigenen Regel.",
+          "hints": [
+            "Gezählt werden Treffer auf verschiedenen Instanzen, deren Instanz nicht disqualifiziert ist.",
+            "9 Treffer minus 5 gesperrte Instanz(en)."
+          ]
+        }
+      ]
     },
     {
       "caseId": "final-diagnosis-trace",
@@ -125,7 +280,144 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-05-02\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-20\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-20\", \"instanz\": \"b\", \"art\": \"loesungsanzeige\"},\n    {\"tag\": \"2026-05-02\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-05-20\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "nicht_erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-05-02 und 2026-05-20; eine Lösungsanzeige auf b ist vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: b ist gesperrt, daher bleibt nur a und es fehlen zwei Treffer → nicht_erfuellt. E2 zählt a und b; der Tagesabstand ist 18 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-06-03\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-06-18\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-06-03\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-06-18\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-06-03 und 2026-06-18; eine Lösungsanzeige auf b ist nicht vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: a und b zählen und der Abstand wird geprüft → erfuellt. E2 zählt a und b; der Tagesabstand ist 15 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-07-01\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-07-12\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-07-12\", \"instanz\": \"b\", \"art\": \"loesungsanzeige\"},\n    {\"tag\": \"2026-07-01\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-07-12\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "nicht_erfuellt\\nnicht_erfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-07-01 und 2026-07-12; eine Lösungsanzeige auf b ist vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: b ist gesperrt, daher bleibt nur a und es fehlen zwei Treffer → nicht_erfuellt. E2 zählt a und b; der Tagesabstand ist 11 → nicht_erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-08-04\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-08-25\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-08-04\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-08-25\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-08-04 und 2026-08-25; eine Lösungsanzeige auf b ist nicht vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: a und b zählen und der Abstand wird geprüft → erfuellt. E2 zählt a und b; der Tagesabstand ist 21 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-09-10\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-09-24\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-09-24\", \"instanz\": \"b\", \"art\": \"loesungsanzeige\"},\n    {\"tag\": \"2026-09-10\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-09-24\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "nicht_erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-09-10 und 2026-09-24; eine Lösungsanzeige auf b ist vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: b ist gesperrt, daher bleibt nur a und es fehlen zwei Treffer → nicht_erfuellt. E2 zählt a und b; der Tagesabstand ist 14 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-10-02\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-10-19\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-10-02\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-10-19\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-10-02 und 2026-10-19; eine Lösungsanzeige auf b ist nicht vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: a und b zählen und der Abstand wird geprüft → erfuellt. E2 zählt a und b; der Tagesabstand ist 17 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-11-05\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-11-21\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-11-21\", \"instanz\": \"b\", \"art\": \"loesungsanzeige\"},\n    {\"tag\": \"2026-11-05\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-11-21\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "nicht_erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-11-05 und 2026-11-21; eine Lösungsanzeige auf b ist vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: b ist gesperrt, daher bleibt nur a und es fehlen zwei Treffer → nicht_erfuellt. E2 zählt a und b; der Tagesabstand ist 16 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2026-12-01\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2026-12-15\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2026-12-01\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2026-12-15\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2026-12-01 und 2026-12-15; eine Lösungsanzeige auf b ist nicht vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: a und b zählen und der Abstand wird geprüft → erfuellt. E2 zählt a und b; der Tagesabstand ist 14 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        },
+        {
+          "parameters": {
+            "snippet": "def diagnose(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"hit\"} - gesperrt\n    tag = {e[\"instanz\"]: e[\"tag\"] for e in ereignisse if e[\"art\"] == \"hit\"}\n    tage = sorted(tag[i] for i in treffer)\n    abstand = (int(tage[-1][-2:]) - int(tage[0][-2:])) if len(tage) > 1 else 0\n    if len(treffer) >= 2 and abstand >= 14:\n        return \"erfuellt\"\n    return \"nicht_erfuellt\"\n\nE = [\n    {\"tag\": \"2027-01-03\", \"instanz\": \"a\", \"art\": \"hit\"},\n    {\"tag\": \"2027-01-22\", \"instanz\": \"b\", \"art\": \"hit\"},\n    {\"tag\": \"2027-01-22\", \"instanz\": \"b\", \"art\": \"loesungsanzeige\"},\n    {\"tag\": \"2027-01-03\", \"instanz\": \"c\", \"art\": \"definition\"},\n]\nprint(diagnose(E))\nE2 = [e for e in E if e[\"art\"] != \"loesungsanzeige\"] + [\n    {\"tag\": \"2027-01-22\", \"instanz\": \"b\", \"art\": \"hit\"}\n]\nprint(diagnose(E2))"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "nicht_erfuellt\\nerfuellt"
+          },
+          "prompt": "Abschlussdiagnose von Hand ausführen: Was gibt dieses Programm aus? E nutzt Treffer an 2027-01-03 und 2027-01-22; eine Lösungsanzeige auf b ist vorhanden. E2 ersetzt sie durch einen weiteren Treffer.",
+          "fullSolution": "E: b ist gesperrt, daher bleibt nur a und es fehlen zwei Treffer → nicht_erfuellt. E2 zählt a und b; der Tagesabstand ist 19 → erfuellt.",
+          "hints": [
+            "In E zuerst die gesperrten Instanzen aus der Treffermenge entfernen.",
+            "In E2 zählen beide Treffer; der Abstand wird aus den Tageszahlen berechnet."
+          ]
+        }
+      ]
     },
     {
       "caseId": "final-diagnosis-rules",
@@ -176,7 +468,162 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-02-01\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-02-01\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-02-01\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-02-16\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-02-16\") - date.fromisoformat(\"2026-02-01\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-02-16\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-02-01, Treffer am 2026-02-01 und 2026-02-16; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 15 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-03-02\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-03-02\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-03-02\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-03-20\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-03-20\") - date.fromisoformat(\"2026-03-02\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-03-20\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-03-02, Treffer am 2026-03-02 und 2026-03-20; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 18 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-04-04\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-04-04\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-04-04\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-04-19\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-04-19\") - date.fromisoformat(\"2026-04-04\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-04-19\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-04-04, Treffer am 2026-04-04 und 2026-04-19; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 15 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-05-01\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-05-01\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-05-01\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-05-17\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-05-17\") - date.fromisoformat(\"2026-05-01\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-05-17\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-05-01, Treffer am 2026-05-01 und 2026-05-17; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 16 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-06-03\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-06-03\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-06-03\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-06-22\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-06-22\") - date.fromisoformat(\"2026-06-03\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-06-22\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-06-03, Treffer am 2026-06-03 und 2026-06-22; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 19 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-07-05\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-07-05\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-07-05\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-07-21\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-07-21\") - date.fromisoformat(\"2026-07-05\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-07-21\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-07-05, Treffer am 2026-07-05 und 2026-07-21; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 16 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-08-02\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-08-02\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-08-02\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-08-18\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-08-18\") - date.fromisoformat(\"2026-08-02\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-08-18\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-08-02, Treffer am 2026-08-02 und 2026-08-18; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 16 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-09-01\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-09-01\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-09-01\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-09-16\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-09-16\") - date.fromisoformat(\"2026-09-01\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-09-16\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-09-01, Treffer am 2026-09-01 und 2026-09-16; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 15 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        },
+        {
+          "parameters": {
+            "packages": [],
+            "starterCode": "from datetime import date\n\n\ndef final_diagnosis(ereignisse):\n    ...\n\n",
+            "tests": "from datetime import date\n\nE_OK = [\n    {\"tag\": \"2026-10-04\", \"instanz\": \"a\", \"art\": \"definition\"},\n    {\"tag\": \"2026-10-04\", \"instanz\": \"b\", \"art\": \"definition\"},\n    {\"tag\": \"2026-10-04\", \"instanz\": \"c\", \"art\": \"hit\"},\n    {\"tag\": \"2026-10-24\", \"instanz\": \"d\", \"art\": \"hit\"},\n]\nr = final_diagnosis(E_OK)\n__check('erfuellt', r[\"status\"] == \"erfuellt\")\n__check('zaehlungen', (r[\"treffer\"], r[\"definitionen\"], r[\"abstand_tage\"]) == (2, 2, (date.fromisoformat(\"2026-10-24\") - date.fromisoformat(\"2026-10-04\")).days))\n__check('keine gesperrten', r[\"disqualifizierte\"] == [])\nE_GESPERRT = E_OK + [{\"tag\": \"2026-10-24\", \"instanz\": \"d\", \"art\": \"loesungsanzeige\"}]\nr = final_diagnosis(E_GESPERRT)\n__check('instanz gesperrt', r[\"disqualifizierte\"] == [\"d\"] and r[\"treffer\"] == 1)\n__check('leere liste', final_diagnosis([])[\"status\"] == \"nicht_erfuellt\")"
+          },
+          "expected": {
+            "kind": "reference-solver",
+            "referenceSolver": "from datetime import date\n\ndef final_diagnosis(ereignisse):\n    gesperrt = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"loesungsanzeige\"}\n    treffer_daten = {e[\"instanz\"]: date.fromisoformat(e[\"tag\"]) for e in ereignisse if e[\"art\"] == \"hit\" and e[\"instanz\"] not in gesperrt}\n    definitionen = {e[\"instanz\"] for e in ereignisse if e[\"art\"] == \"definition\" and e[\"instanz\"] not in gesperrt}\n    if len(treffer_daten) > 1:\n        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days\n    else:\n        abstand = 0\n    status = \"erfuellt\" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else \"nicht_erfuellt\"\n    return {\"status\": status, \"treffer\": len(treffer_daten), \"definitionen\": len(definitionen), \"abstand_tage\": abstand, \"disqualifizierte\": sorted(gesperrt)}"
+          },
+          "prompt": "Evidenzregeln implementieren: Verwende zwei Definitionen am 2026-10-04, Treffer am 2026-10-04 und 2026-10-24; prüfe Treffer, Definitionen, Abstand und Lösungsanzeige.",
+          "fullSolution": "Die beiden Treffer liegen 20 Tage auseinander und es gibt zwei Definitionen. Ohne Lösungsanzeige ist der Status erfuellt; die zusätzliche Anzeige sperrt Instanz d.",
+          "hints": [
+            "Gezählt werden verschiedene Instanzen, nicht Ereignisse.",
+            "Eine Lösungsanzeige sperrt genau ihre Instanz."
+          ]
+        }
+      ]
     }
   ]
 }
