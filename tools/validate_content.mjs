@@ -5,10 +5,6 @@ import { fileURLToPath } from 'node:url';
 import { compileContent, validateCompiledContent } from './compile_content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-if (process.argv.includes('--legacy')) {
-  throw new Error('--legacy ist nicht mehr verfügbar');
-}
-
 const dirIndex = process.argv.indexOf('--dir');
 if (dirIndex >= 0) {
   const dir = process.argv[dirIndex + 1];

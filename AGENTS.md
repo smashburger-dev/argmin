@@ -6,7 +6,7 @@
 - Keep runtime dependencies vendored. The application must not require a CDN at runtime.
 - Keep learner progress local in IndexedDB and preserve documented migrations and JSON import/export.
 - Treat deterministic graders and reference solvers as authoritative. An LLM is never an authoritative grader.
-- Keep the public build fail-closed. Private sources, local overlays, non-allowlisted material, and runtimes without hashed license notices must not enter `build-public/`.
+- Keep the public build fail-closed. Private sources, local overlays, non-allowlisted material, and runtimes without hashed license notices must not enter the release tree.
 
 ## Map
 
@@ -20,7 +20,6 @@
 - Build, audit, validation, and browser acceptance tools: `tools/`
 - Node tests: `tests/`
 - Vendored runtimes: `vendor/`
-- Generated content-only public tree: `build-public/`
 - Generated combined release candidate: `build-next/`
 
 ## Verification
@@ -33,10 +32,10 @@ npm run build:release
 npm run test:e2e
 npm run test:e2e:build
 npm run test:project-runner
-node tools/compile_content.mjs --profile public
+node tools/compile_content.mjs
 node tools/validate_content.mjs
 node tools/build_public.mjs
-node tools/validate_content.mjs --dir build-public
+node tools/validate_content.mjs --dir build-next
 ```
 
 - Match checks to the changed area. Content changes require content validation. Public-build changes require the build and leak test.
@@ -45,7 +44,7 @@ node tools/validate_content.mjs --dir build-public
 
 ## Engineering
 
-- Do not edit `build-public/` directly. Regenerate it with `tools/build_public.mjs`.
+- Do not edit generated release trees directly. Regenerate them with `tools/build_public.mjs`.
 - Do not patch vendored runtimes casually. Update them through the existing vendoring workflow with pinned versions and hashes.
 - Preserve the IndexedDB schema and migration path unless the change includes a tested migration.
 - Keep learner-facing content in German. Use English for code identifiers and code comments.
@@ -64,7 +63,7 @@ The project graph is `graphify-out/graph.json` relative to this directory.
 - Use Graphify first for exact symbols, imports, calls, module ownership, architecture paths, and blast radius.
 - Use targeted search and file reads first for visible copy, curriculum content, HTML, CSS, and literal data. Use Graphify after an exact identifier is known.
 - Validate that seeds and `source_file` paths belong to `ki-lernplattform` before trusting a result.
-- The code graph excludes `vendor/` and generated `build-public/` files.
+- The code graph excludes `vendor/` and generated release files.
 - Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review.
 - Treat the graph as stale after uncommitted code changes and update it only before another graph-dependent answer.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Public build: copies a strictly allowlisted set of artifacts into
-// build-public/. Fail-closed in both directions:
+// build-next/. Fail-closed in both directions:
 //   1. Nothing is copied that is not on the allowlist (no recursive copies
 //      of vendor trees, no spikes, no source repos, no temp files).
 //   2. If a private canary file or private marker shows up anywhere in the
@@ -23,7 +23,7 @@ const argument = (name) => {
 };
 const outputArg = argument('--out');
 const nextDirArg = argument('--next-dir');
-const out = outputArg ? resolve(root, outputArg) : join(root, 'build-public');
+const out = outputArg ? resolve(root, outputArg) : join(root, 'build-next');
 if (out === root || !out.startsWith(root + sep)) throw new Error('Public-Ausgabe muss innerhalb des Projekts liegen');
 
 // --- allowlist (the only artifacts allowed to ship) ---------------------------
@@ -384,7 +384,7 @@ const npmNoticeLine = npmBundleNotices
 // Public marker + attribution (CC BY 4.0 for generated content, dependency
 // licenses shipped next to the artifacts). Embeds a build manifest (path +
 // SHA-256 for every produced file except this one) so that
-// tools/validate_content.mjs --dir build-public can enforce that the build
+// tools/validate_content.mjs --dir build-next can enforce that the build
 // contains EXACTLY the files this script produced, byte for byte.
 const manifestEntries = walk(out)
   .map((p) => relative(out, p))
@@ -431,5 +431,5 @@ for (const rel of produced) {
 const nFiles = produced.length;
 let bytes = 0;
 for (const rel of produced) bytes += statSync(join(out, rel)).size;
-console.log(`build-public erstellt: ${out}`);
+console.log(`build-next erstellt: ${out}`);
 console.log(`  Dateien: ${nFiles}, Groesse: ${(bytes / 1024 / 1024).toFixed(1)} MB`);
