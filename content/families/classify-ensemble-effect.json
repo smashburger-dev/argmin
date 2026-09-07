@@ -96,7 +96,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Bäume auf Bootstrap"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum sinkt die Varianz einer Bagging-Vorhersage, wenn du 100 tiefe Bäume auf Bootstrap-Ziehungen mittelst?",
+          "fullSolution": "Unterschiedliche Ziehungen dekorrelieren Fehler teilweise; Mitteln senkt Varianz. Der Bias eines tiefen Baums bleibt etwa gleich, Bootstrap erfindet keine neuen Punkte."
+        },
+        {
+          "parameters": {
+            "setting": "nicht Bias"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jemand erklärt Bagging mit „die Einzelbäume werden durchs Mitteln weniger verzerrt“. Was ist die tragende Varianz-Erklärung?",
+          "fullSolution": "Tiefe Bäume haben schon kleinen Bias. Bagging wirkt über verschiedene Stichproben und Mittelung auf die Varianz."
+        },
+        {
+          "parameters": {
+            "setting": "nicht identische Daten"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            }
+          ],
+          "prompt": "Würde Bagging die Varianz auch senken, wenn alle Bäume auf genau demselben Trainingsset lägen?",
+          "fullSolution": "Nein. Identische Daten liefern (fast) identische Bäume; ohne Bootstrap-Diversität heben sich Fehler nicht auf."
+        },
+        {
+          "parameters": {
+            "setting": "kein neues n"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Erzeugt Bootstrap in Bagging zusätzliche echte Beobachtungen — und warum sinkt trotzdem die Varianz?",
+          "fullSolution": "Bootstrap zieht mit Zurücklegen aus vorhandenen Punkten, erzeugt keine neue Information. Die Varianz sinkt durch Mittelung verschieden gezogener Modelle."
+        },
+        {
+          "parameters": {
+            "setting": "Klassifikation"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bei Klassifikation aggregiert Bagging per Mehrheitsentscheid. Warum reduziert das typischerweise Varianz?",
+          "fullSolution": "Dieselbe Mechanik: verschiedene Bootstrap-Modelle, teilweise unkorrelierte Fehler, Aggregation glättet Schwankungen."
+        },
+        {
+          "parameters": {
+            "setting": "Regression"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bei Regression mittelst du die Baumvorhersagen. Warum ist das vor allem Varianz- und nicht Bias-Reduktion?",
+          "fullSolution": "Das Mittel vieler ähnlich verzerrter, aber schwankender Schätzer glättet die Schwankung. Der Bias bleibt ungefähr der der Basislerner."
+        },
+        {
+          "parameters": {
+            "setting": "Korrelation"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            }
+          ],
+          "prompt": "Wenn die Bootstrap-Bäume stark korrelierte Fehler hätten, würde die Varianz kaum fallen. Was ist deshalb der Kern von Bagging?",
+          "fullSolution": "Verschiedene Ziehungen sollen Fehler teilweise entkoppeln. Nur dann hilft Mitteln gegen Varianz."
+        },
+        {
+          "parameters": {
+            "setting": "n_estimators"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Mehr Bagging-Bäume senken die Varianz oft weiter, machen den einzelnen Baum aber nicht „wahrer“. Warum?",
+          "fullSolution": "Zusätzliche Bootstrap-Modelle glätten Schwankungen. Sie ändern den Bias der Basislerner kaum und erzeugen keine neuen Daten."
+        },
+        {
+          "parameters": {
+            "setting": "Konzept-Check"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil Bagging den Bias jedes einzelnen Baumes stark senkt — die Bäume werden durch das Kombinieren grundsätzlich genauer.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil jeder Baum auf einer anderen Bootstrap-Stichprobe trainiert wird und sich die Fehler der Bäume beim Mittel bzw. bei der Mehrheitsentscheidung teilweise aufheben.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Weil alle Bäume im Ensemble auf identischen Daten trainiert werden und dadurch ihre Fehler perfekt korreliert sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Bootstrap-Stichproben neue Beobachtungen erzeugen und der effektive Datensatz dadurch wächst.",
+              "correct": false
+            }
+          ],
+          "prompt": "Konzept-Check Ensembles: Warum reduziert Bagging mit Bootstrap-Stichproben typischerweise die Varianz der Ensemble-Vorhersage?",
+          "fullSolution": "Andere Ziehungen, teilweise unkorrelierte Fehler, Aggregation. Bias bleibt etwa gleich, Bootstrap ist kein Datensynthese."
+        }
+      ]
     },
     {
       "caseId": "ensemble-random-forest",
@@ -160,7 +450,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Feature-Zufall"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Random Forest zieht Bootstrap-Stichproben und wählt an Splits zufällige Feature-Untermengen. Warum senkt das typischerweise Varianz gegenüber einem tiefen Einzelbaum?",
+          "fullSolution": "Beides dekorreliert Bäume. Die Aggregation mittelt dann Schwankungen. Keine Lernrate, kein gemeinsamer Fehlerpfad."
+        },
+        {
+          "parameters": {
+            "setting": "nicht gleicher Fehler"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Zielt ein Random Forest darauf, dass alle Bäume denselben Fehler machen?",
+          "fullSolution": "Nein. Diversität (Bootstrap + Feature-Zufall) ist Absicht. Identische Fehler würden die Varianz nicht drücken."
+        },
+        {
+          "parameters": {
+            "setting": "mehr Modelle"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            }
+          ],
+          "prompt": "Erhöht ein Wald die Varianz einfach deshalb, weil mehr Bäume mitspielen?",
+          "fullSolution": "Nein. Mehr teilweise unabhängige Schätzer senken nach Aggregation typischerweise die Varianz."
+        },
+        {
+          "parameters": {
+            "setting": "keine LR"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jemand erklärt Random-Forest-Varianz mit der Lernrate. Was ist die korrekte Ursache?",
+          "fullSolution": "Es gibt keine Boosting-Lernrate. Varianz sinkt durch Bagging plus Feature-Zufall und Mittelung."
+        },
+        {
+          "parameters": {
+            "setting": "vs Einzelbaum"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein einzelner tiefer Baum schwankt stark über Stichproben. Warum ist ein Forest typischerweise ruhiger?",
+          "fullSolution": "Viele dekorrelierte Bäume werden aggregiert. Das mittelt stichprobenbedingte Schwankungen."
+        },
+        {
+          "parameters": {
+            "setting": "mtry"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum ist die zufällige Featureauswahl am Split für die Varianz des Forests wichtig?",
+          "fullSolution": "Sie bricht die Korrelation zwischen Bäumen, die sonst alle denselben starken Split wählen würden. Dann greift die Mittelung."
+        },
+        {
+          "parameters": {
+            "setting": "OOB"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            }
+          ],
+          "prompt": "Out-of-Bag-Schätzungen nutzen, dass jeder Baum andere Punkte nicht sieht. Was erklärt dennoch den Varianzgewinn des Forests?",
+          "fullSolution": "Nicht OOB selbst, sondern Aggregation vieler Bootstrap-Bäume mit Feature-Zufall. OOB ist eine Schätztechnik."
+        },
+        {
+          "parameters": {
+            "setting": "Regression-Forest"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Regressions-Forest mittelt numerische Vorhersagen. Warum reduziert das Varianz gegenüber einem Baum?",
+          "fullSolution": "Dieselbe Logik: dekorrelierte Bootstrap-Bäume, Mittelung glättet Schwankungen."
+        },
+        {
+          "parameters": {
+            "setting": "Kurzfrage"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein tiefer Einzelbaum schwankt stark. Warum ist ein Random Forest auf denselben Daten typischerweise varianzärmer?",
+          "fullSolution": "Bootstrap plus zufällige Features dekorrelieren; Aggregation mittelt. Kein Boosting-Schritt, keine Lernrate."
+        }
+      ]
     },
     {
       "caseId": "ensemble-boosting-errors",
@@ -224,7 +804,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Residuen"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bei Gradient Boosting passt der nächste Baum grob die bisherigen Residuen an. Welche Idee steckt dahinter?",
+          "fullSolution": "Sequentielle Korrektur: neue Lerner auf bisher schlecht erklärte Beispiele, danach additive Kombination."
+        },
+        {
+          "parameters": {
+            "setting": "nicht unabhängig"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ist Boosting dasselbe wie „viele unabhängige Modelle, am Ende eines würfeln“?",
+          "fullSolution": "Nein. Die Folge ist abhängig: jeder Schritt sieht die Fehler der Vorgänger. Am Ende bleiben alle in der Summe."
+        },
+        {
+          "parameters": {
+            "setting": "behalten"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Verwirft Boosting den schwachen Lerner nach jedem Schritt?",
+          "fullSolution": "Nein. Die Lerner bleiben additiv in der Vorhersage. Verwerfen wäre kein Boosting."
+        },
+        {
+          "parameters": {
+            "setting": "keine Skala"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ist Boosting im Kern eine Skalierungsvorschrift für Merkmale?",
+          "fullSolution": "Nein. Es ist eine sequentielle Fehlerkorrektur schwacher Lerner, keine Vorverarbeitung der Skalen."
+        },
+        {
+          "parameters": {
+            "setting": "AdaBoost-Gewichte"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "AdaBoost erhöht die Gewichte bisher falsch klassifizierter Punkte. Welche Ensemble-Idee ist das?",
+          "fullSolution": "Der nächste Lerner konzentriert sich auf aktuelle Fehler; die Modelle werden kombiniert, nicht verworfen."
+        },
+        {
+          "parameters": {
+            "setting": "Bias"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum kann Boosting im Gegensatz zu Bagging den Bias senken?",
+          "fullSolution": "Weil spätere Lerner gezielt Residuen bzw. Fehler angreifen und additiv ergänzen, nicht nur unabhängige Hochvarianz-Modelle mitteln."
+        },
+        {
+          "parameters": {
+            "setting": "Reihenfolge"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Darf man die Boosting-Runde in beliebiger Reihenfolge neu mischen, als wären es Bagging-Bäume?",
+          "fullSolution": "Nein. Die Sequenz hängt an den bisherigen Fehlern. Das ist der Unterschied zu unabhängigem Bagging."
+        },
+        {
+          "parameters": {
+            "setting": "schwache Lerner"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            }
+          ],
+          "prompt": "Warum startet Boosting oft mit flachen Bäumen (schwachen Lernern)?",
+          "fullSolution": "Jeder Schritt soll einen Restfehler korrigieren, nicht schon das ganze Problem lösen. Die Kombination trägt die Stärke."
+        },
+        {
+          "parameters": {
+            "setting": "Kurzfrage"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Boosting verwirft jedes Modell nach dem Training.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Boosting verändert nur die Feature-Skalierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Worauf konzentriert sich in Boosting der nächste schwache Lerner — und was passiert mit den schon trainierten Modellen?",
+          "fullSolution": "Sequentiell auf bisherige Fehler bzw. Residuen fokussieren und die Lerner additiv kombinieren."
+        }
+      ]
     }
   ]
 }

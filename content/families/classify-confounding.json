@@ -97,7 +97,306 @@
       ],
       "tolerancePolicy": {
         "mode": "none"
-      }
+      },
+      "variants": [
+        {
+          "parameters": {
+            "r": 0.85,
+            "confounder": "Regen"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Cafébesuche verursachen Schirmverkäufe, denn $r \\approx 0{,}85$ ist hoch.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Regen) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Die starke Korrelation widerlegt jeden kausalen Einfluss zwischen den Größen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}85$ beweist, dass der Zusammenhang exakt linear und kausal ist.",
+              "correct": false
+            }
+          ],
+          "prompt": "Cafébesuche und Schirmverkäufe korrelieren über das Jahr mit $r \\approx 0{,}85$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Regen treibt Cafébesuche in Innenräumen und Schirmverkäufe zugleich (**Confounder**). $r$ beschreibt nur den linearen Zusammenhang, keine Ursache."
+        },
+        {
+          "parameters": {
+            "r": 0.88,
+            "confounder": "Brandgröße"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mehr Einsatzkräfte verursachen größeren Schaden, denn $r \\approx 0{,}88$ ist hoch.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die starke Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Brandgröße) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}88$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            }
+          ],
+          "prompt": "Die Zahl der eingesetzten Feuerwehrleute und der Gebäudeschaden korrelieren mit $r \\approx 0{,}88$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Große Brände ziehen mehr Einsatzkräfte und erzeugen mehr Schaden. Die Brandgröße ist der Confounder; $r$ belegt keine Kausalität zwischen Leuten und Schaden."
+        },
+        {
+          "parameters": {
+            "r": 0.7,
+            "confounder": "Alter"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Große Füße verursachen besseres Lesen, denn $r \\approx 0{,}7$ ist deutlich.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Korrelation widerlegt jeden Einfluss zwischen Schuhgröße und Lesen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$r \\approx 0{,}7$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Alter) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            }
+          ],
+          "prompt": "Bei Kindern korrelieren Schuhgröße und Lesefähigkeit mit $r \\approx 0{,}7$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Ältere Kinder haben größere Füße und lesen besser. Das Alter ist der Confounder; Korrelation belegt keine Kausalität."
+        },
+        {
+          "parameters": {
+            "r": 0.75,
+            "confounder": "Hitze"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Hitze) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Eisverkauf verursacht Straftaten, denn $r \\approx 0{,}75$ ist hoch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}75$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eisverkäufe und gemeldete Straftaten korrelieren über das Jahr mit $r \\approx 0{,}75$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Hitze kann Eisverkauf und bestimmte Straftaten gemeinsam anheben. $r$ misst den Zusammenhang, nicht die Ursache."
+        },
+        {
+          "parameters": {
+            "r": 0.62,
+            "confounder": "ländliche Siedlungsdichte"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Störche verursachen Geburten, denn $r \\approx 0{,}62$ ist positiv.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. ländliche Siedlung) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Die Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}62$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            }
+          ],
+          "prompt": "Auf Kreisebene korrelieren Storchennester und Geburtenzahlen mit $r \\approx 0{,}62$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Ländlichkeit kann Nester und Geburtenraten gemeinsam erklären. Die Korrelation isoliert keine Kausalität."
+        },
+        {
+          "parameters": {
+            "r": 0.82,
+            "confounder": "Sonnenscheindauer"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Freibadbesuche verursachen Sonnenbrand, denn $r \\approx 0{,}82$ ist hoch.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Sonnenschein) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}82$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            }
+          ],
+          "prompt": "Freibadbesuche und Sonnenbrandfälle korrelieren im Sommer mit $r \\approx 0{,}82$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Sonnenschein treibt beides. $r$ beschreibt den linearen Zusammenhang, nicht welche Größe die andere verursacht."
+        },
+        {
+          "parameters": {
+            "r": 0.8,
+            "confounder": "Außentemperatur"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Klimaanlagenverkäufe verursachen Ertrinkungsunfälle, denn $r \\approx 0{,}8$ ist hoch.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$r \\approx 0{,}8$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Außentemperatur) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            }
+          ],
+          "prompt": "Klimaanlagenverkäufe und Ertrinkungsunfälle korrelieren mit $r \\approx 0{,}8$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Hohe Außentemperatur kann beides anheben. Korrelation allein belegt keine Kausalität zwischen den beiden Größen."
+        },
+        {
+          "parameters": {
+            "r": 0.78,
+            "confounder": "Fallschwere"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Fallschwere) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Mehr Ärztinnen verursachen mehr Todesfälle, denn $r \\approx 0{,}78$ ist hoch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}78$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            }
+          ],
+          "prompt": "In Kliniken korrelieren die Zahl der Ärztinnen und die Zahl der Todesfälle mit $r \\approx 0{,}78$. Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Schwere Fälle brauchen mehr Personal und haben mehr Todesfälle. Die Fallschwere ist ein Confounder; $r$ beweist keine Kausalität."
+        },
+        {
+          "parameters": {
+            "r": 0.71,
+            "confounder": "Wohlstand"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schokoladenkonsum verursacht Nobelpreise, denn $r \\approx 0{,}71$ ist positiv.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Wohlstand) — Korrelation allein belegt keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Die Korrelation widerlegt jeden kausalen Einfluss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$r \\approx 0{,}71$ beweist einen exakt linearen kausalen Zusammenhang.",
+              "correct": false
+            }
+          ],
+          "prompt": "Länder mit höherem Schokoladenkonsum haben mehr Nobelpreise ($r \\approx 0{,}71$). Was ist die sauberste Schlussfolgerung?",
+          "fullSolution": "Wohlstand kann Konsum und Forschungsoutput gemeinsam erklären. Ländergemitteltes $r$ belegt keine Kausalität."
+        }
+      ]
     },
     {
       "caseId": "confounder-exercise-sleep",
@@ -162,7 +461,306 @@
       ],
       "tolerancePolicy": {
         "mode": "none"
-      }
+      },
+      "variants": [
+        {
+          "parameters": {
+            "r": 0.64,
+            "confounder": "Einkommen"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Einkommen kann als Confounder Ernährung und Stimmung beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Bessere Ernährung verursacht sicher bessere Stimmung.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation positiv ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass Stimmung die Ernährung verursacht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bessere Ernährung und bessere Stimmung treten gemeinsam auf. Menschen mit höherem Einkommen ernähren sich aber auch häufiger ausgewogen. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Einkommen ist eine plausible Drittvariable. Die Korrelation allein belegt keinen kausalen Effekt der Ernährung."
+        },
+        {
+          "parameters": {
+            "r": 0.58,
+            "confounder": "sozioökonomischer Status"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mehr Schuljahre verursachen sicher bessere Gesundheit.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation positiv ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Sozioökonomischer Status kann Bildung und Gesundheit beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass Gesundheit die Bildung verursacht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Mehr Schuljahre und bessere Gesundheitswerte treten gemeinsam auf. Der sozioökonomische Status beeinflusst aber beides. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "SES kann beide Größen treiben. Ohne Kontrolle dieser Drittvariable folgt keine Kausalität der Bildung."
+        },
+        {
+          "parameters": {
+            "r": 0.55,
+            "confounder": "elterliche Unterstützung"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mehr Bildschirmzeit verursacht sicher schlechtere Noten.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation negativ ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Korrelation beweist, dass Noten die Bildschirmzeit verursachen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Elterliche Unterstützung kann Bildschirmzeit und Noten beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            }
+          ],
+          "prompt": "Mehr Bildschirmzeit und schlechtere Noten treten gemeinsam auf. Weniger elterliche Unterstützung geht aber oft mit beidem einher. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Elterliche Unterstützung ist ein plausibler Confounder. Die Korrelation isoliert keinen kausalen Bildschirmeffekt."
+        },
+        {
+          "parameters": {
+            "r": 0.6,
+            "confounder": "Krankheitslast"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Krankheitslast kann Medikamenteneinnahme und Symptome beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Mehr Tabletten verursachen sicher mehr Symptome.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation positiv ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass Symptome die Tablettenzahl verursachen — und sonst nichts.",
+              "correct": false
+            }
+          ],
+          "prompt": "Wer mehr Medikamente nimmt, berichtet oft mehr Symptome. Gleichzeitig haben kränkere Personen beides. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Die Krankheitslast kann beide Größen treiben. Korrelation allein belegt keine schädliche Wirkung der Tablettenzahl."
+        },
+        {
+          "parameters": {
+            "r": 0.52,
+            "confounder": "Freizeitbudget"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Vereinsmitgliedschaft verursacht sicher höheres Wohlbefinden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Freizeitbudget kann Vereinsmitgliedschaft und Wohlbefinden beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation positiv ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass Wohlbefinden die Mitgliedschaft verursacht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Vereinsmitgliedschaft und höheres Wohlbefinden treten gemeinsam auf. Wer mehr Zeit und Geld hat, macht aber oft beides. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Freizeitbudget ist eine plausible Drittvariable. Die Korrelation beweist keinen kausalen Vereinseffekt."
+        },
+        {
+          "parameters": {
+            "r": 0.67,
+            "confounder": "Kaffeekonsum am Vortag"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Höhere Herzfrequenz verursacht sicher bessere Konzentration.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Confounder ist ausgeschlossen, sobald beide Werte am selben Tag gemessen wurden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein gemeinsamer Faktor wie Kaffeekonsum kann Konzentration und Herzfrequenz beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass Konzentration die Herzfrequenz verursacht.",
+              "correct": false
+            }
+          ],
+          "prompt": "An Tagen mit höherer Herzfrequenz berichten Personen bessere Konzentration. Viele haben dann auch mehr Kaffee getrunken. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Kaffee kann beide Größen anheben. Die Korrelation isoliert keine kausale Richtung zwischen Puls und Konzentration."
+        },
+        {
+          "parameters": {
+            "r": 0.49,
+            "confounder": "Wohnlage"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mehr Parkbesuche verursachen sicher weniger Stress.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation negativ ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Korrelation beweist, dass Stress die Parkbesuche verursacht.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Wohnlage kann Grünflächennutzung und Stress beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            }
+          ],
+          "prompt": "Wer häufiger Parks nutzt, berichtet weniger Stress. Ruhige Wohnlagen bieten aber oft beides. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Wohnlage ist ein plausibler Confounder. Die Korrelation belegt keinen kausalen Effekt der Parkbesuche."
+        },
+        {
+          "parameters": {
+            "r": 0.57,
+            "confounder": "Schichtdienst"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schichtdienst kann Kaffeekonsum und Schlafqualität beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Mehr Kaffee verursacht sicher schlechteren Schlaf.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation negativ ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass schlechter Schlaf den Kaffee verursacht — und sonst nichts.",
+              "correct": false
+            }
+          ],
+          "prompt": "Mehr Kaffee und schlechterer Schlaf treten gemeinsam auf. Schichtdienst hängt aber oft mit beidem zusammen. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Schichtdienst kann beide Größen treiben. Die Korrelation allein belegt keinen kausalen Kaffee-Effekt."
+        },
+        {
+          "parameters": {
+            "r": 0.61,
+            "confounder": "Arbeitsstress"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mehr Sport verursacht sicher besseren Schlaf.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Arbeitsstress kann als Confounder Sport und Schlaf beeinflussen; Korrelation beweist keine Kausalität.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation positiv ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Korrelation beweist, dass Schlaf den Sport verursacht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Häufigeres Krafttraining und besserer Schlaf treten gemeinsam auf. Weniger Arbeitsstress geht aber oft mit beidem einher. Was darfst du aus der Korrelation schließen?",
+          "fullSolution": "Arbeitsstress bleibt eine plausible Drittvariable. Die Korrelation isoliert keinen kausalen Trainingseffekt."
+        }
+      ]
     },
     {
       "caseId": "confounder-ad-spend-season",
@@ -227,7 +825,306 @@
       ],
       "tolerancePolicy": {
         "mode": "none"
-      }
+      },
+      "variants": [
+        {
+          "parameters": {
+            "r": 0.91,
+            "confounder": "Sommersaison"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Saison kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle der Saison geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der gesamte Sommerumsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Saison kann kein Confounder sein, weil sie keine Modellvariable ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eiswerbung und Eisumsatz steigen im Juli stark. Juli ist zugleich die stärkste Eissaison. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Sommersaison ist ein Confounder. Ohne ihre Kontrolle kann der Werbeeffekt überschätzt werden."
+        },
+        {
+          "parameters": {
+            "r": 0.87,
+            "confounder": "Erkältungssaison"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der gesamte Januarumsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Saison kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle der Saison geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Saison kann kein Confounder sein, weil sie keine Modellvariable ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Werbung für Erkältungsmittel und deren Umsatz steigen im Januar stark. Januar ist zugleich die Erkältungssaison. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Die Saison treibt Bedarf und oft auch Werbebudget. Der Werbeeffekt braucht Kontrolle der Saison."
+        },
+        {
+          "parameters": {
+            "r": 0.84,
+            "confounder": "Schulstart"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der gesamte Septemberumsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Schulstart kann kein Confounder sein, weil er keine Modellspalte ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Schulstart kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle dieses Kalendereffekts geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Schulbedarfswerbung und Umsatz steigen Anfang September stark. Gleichzeitig beginnt das Schuljahr. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Der Schulstart ist ein Kalender-Confounder. Korrelation im September isoliert die Werbung nicht."
+        },
+        {
+          "parameters": {
+            "r": 0.89,
+            "confounder": "Black Friday"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der gesamte Black-Friday-Umsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ein Aktionstag kann kein Confounder sein, weil er keine Modellvariable ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Aktionstag kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle dieses Kalendereffekts geschätzt werden.",
+              "correct": true
+            }
+          ],
+          "prompt": "Werbeausgaben und Online-Umsatz steigen am Black Friday stark. Gleichzeitig kaufen viele unabhängig von dieser Kampagne. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Der Aktionstag treibt Nachfrage und Budgets. Ohne seine Kontrolle überschätzt man den Kampagneneffekt."
+        },
+        {
+          "parameters": {
+            "r": 0.77,
+            "confounder": "Steuertermin"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Steuertermin kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle dieses Kalendereffekts geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der gesamte Märzumsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Stichtag kann kein Confounder sein, weil er keine Modellspalte ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Werbung für Steuer-Software und Käufe steigen im März stark. Gleichzeitig endet eine Abgabefrist. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Die Frist erzeugt Nachfrage unabhängig von der Kampagne. Der Werbeeffekt braucht Kontrolle des Termins."
+        },
+        {
+          "parameters": {
+            "r": 0.83,
+            "confounder": "Grippewelle"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der gesamte Wochenumsatz ist der kausale App-Effekt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Krankheitswelle kann beide Größen treiben; der Lieferdienst-Effekt muss unter ihrer Kontrolle geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Eine Epidemiewelle kann kein Confounder sein, weil sie nicht im Shop-Modell steht.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Push-Nachrichten einer Liefer-App und Bestellungen steigen in einer Grippewelle. Gleichzeitig bleiben mehr Menschen zu Hause. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Die Welle verändert Nachfrage und Kampagnenintensität. Ohne Kontrolle bleibt der App-Effekt vermengt."
+        },
+        {
+          "parameters": {
+            "r": 0.86,
+            "confounder": "Tourismus-Hochsaison"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der gesamte Augustumsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Saison kann kein Confounder sein, weil sie keine Modellvariable ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die touristische Hochsaison kann beide Größen treiben; der Werbeeffekt muss unter ihrer Kontrolle geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Hotelwerbung und Buchungen steigen im August stark. August ist zugleich Hochsaison. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Hochsaison treibt Buchungen und oft das Werbebudget. Korrelation isoliert die Kampagne nicht."
+        },
+        {
+          "parameters": {
+            "r": 0.8,
+            "confounder": "Wahlkampfzeit"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der gesamte Oktoberumsatz an Spenden ist der kausale Anzeigeneffekt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Wahlkampf kann kein Confounder sein, weil er keine Modellspalte ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Wahlkampfzeit kann beide Größen treiben; der Anzeigeneffekt muss unter ihrer Kontrolle geschätzt werden.",
+              "correct": true
+            }
+          ],
+          "prompt": "Politische Online-Anzeigen und Spendeneingänge steigen kurz vor der Wahl. Gleichzeitig mobilisiert der Wahlkalender. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Der Wahltermin treibt Spenden und Anzeigen. Ohne Kontrolle überschätzt man den Anzeigeneffekt."
+        },
+        {
+          "parameters": {
+            "r": 0.9,
+            "confounder": "Weihnachtsgeschäft"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Weihnachtsgeschäft kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle der Saison geschätzt werden.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Der gesamte Novemberumsatz ist der kausale Werbeeffekt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Saison kann kein Confounder sein, weil sie keine Modellvariable ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Spielzeugwerbung und Spielzeugumsatz steigen im November stark. November ist zugleich Vorweihnachtsgeschäft. Welche Aussage ist methodisch sauber?",
+          "fullSolution": "Das Weihnachtsgeschäft ist ein Confounder. Der Werbeeffekt muss saisonbereinigt geschätzt werden."
+        }
+      ]
     }
   ]
 }

@@ -99,7 +99,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Split driftet"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Welches Signal zerstört Reproduzierbarkeit am deutlichsten, obwohl ein Seed im Manifest steht?",
+          "fullSolution": "Wenn derselbe Seed einen anderen Split liefert, sind Train/Test nicht wiederholbar. Dokumentation der übrigen Felder heilt das nicht."
+        },
+        {
+          "parameters": {
+            "setting": "Manifest vollständig ist OK"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Manifest listet Seed, gespeicherten Split, Metrik und Bibliotheksversionen. Ist das die Vertragsverletzung?",
+          "fullSolution": "Nein, das erfüllt den Vertrag. Verletzung wäre ein Split, der trotz dokumentiertem Seed wandert."
+        },
+        {
+          "parameters": {
+            "setting": "Vorab-Metrik OK"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            }
+          ],
+          "prompt": "Metrik und Schwelle stehen vor dem Lauf fest. Welche Beobachtung wäre stattdessen die klare Vertragsverletzung?",
+          "fullSolution": "Ein nicht wiederholbarer Split trotz dokumentiertem Seed. Vorab-Metrik ist Vertragserfüllung."
+        },
+        {
+          "parameters": {
+            "setting": "README OK"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein README erklärt Datensatz und Kommando. Wann ist der Reproduzierbarkeitsvertrag trotzdem gebrochen?",
+          "fullSolution": "Wenn ein dokumentierter Seed nicht denselben Split erzeugt. Das README ersetzt das nicht."
+        },
+        {
+          "parameters": {
+            "setting": "Shuffle ohne Freeze"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "sklearn.train_test_split läuft ohne festgezogenen random_state, im Manifest steht trotzdem „seed: 42“. Was verletzt den Vertrag am stärksten?",
+          "fullSolution": "Der Split folgt dem Seed nicht. Beim zweiten Lauf andere Zeilen in Train/Test."
+        },
+        {
+          "parameters": {
+            "setting": "Hash der IDs fehlt praktisch"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Derselbe Seed, aber die Zeilenordnung der CSV ändert sich, und der Split hängt an iloc. Welche Beobachtung ist die Vertragsverletzung?",
+          "fullSolution": "Train/Test-Mengen sind nicht stabil. Seed allein reicht nicht, wenn die Aufteilung nicht eingefroren ist."
+        },
+        {
+          "parameters": {
+            "setting": "Neues Datum shufflet"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Skript mischt den Split mit dem Tagesdatum, dokumentiert aber einen festen Seed. Was ist die deutlichste Verletzung?",
+          "fullSolution": "Der dokumentierte Seed steuert den Split nicht. Wiederholbarkeit ist gebrochen."
+        },
+        {
+          "parameters": {
+            "setting": "GPU-nondet vs Split"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Kleine numerische GPU-Abweichungen stehen im Raum, der Split mit dokumentiertem Seed liefert aber andere IDs. Was ist die klarste Vertragsverletzung?",
+          "fullSolution": "Wandernde Splits. Nicht die vollständige Manifestliste und nicht das README."
+        },
+        {
+          "parameters": {
+            "setting": "Konzept-Check"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Im Manifest stehen Seed, Split, Metrik und Versionen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beim erneuten Lauf mit dem im Manifest dokumentierten Seed ändert sich der Train/Test-Split.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Metrik und Schwellenwert wurden vor dem Lauf festgelegt und dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das README beschreibt Datensatz, Laufkommando und Umgebung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Konzept-Check Reproduzierbarkeit: Welche Beobachtung verletzt den Vertrag am deutlichsten?",
+          "fullSolution": "Split ändert sich trotz dokumentiertem Seed. Die anderen drei Optionen erfüllen den Vertrag."
+        }
+      ]
     },
     {
       "caseId": "repro-environment-version",
@@ -166,7 +456,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "pandas-Default"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Seed und Split sind fix, die pandas-Version fehlt. Ein Default der CSV-Parser ändert sich zwischen Releases. Warum ist das ein Risiko?",
+          "fullSolution": "Der Seed steuert keinen Parser-Default. Ohne Version ist die Umgebung nicht fest."
+        },
+        {
+          "parameters": {
+            "setting": "sklearn 1.3 vs 1.5"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Experiment speichert Seed und Split, nicht aber die scikit-learn-Version der Vorverarbeitung. Warum riskant?",
+          "fullSolution": "Andere Versionen ändern Transformer-Defaults oder numerische Details. Seed allein reicht nicht."
+        },
+        {
+          "parameters": {
+            "setting": "nicht nur Storage"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ist eine fehlende Bibliotheksversion nur ein Ablageproblem, kein Reproduktionsproblem?",
+          "fullSolution": "Nein. Die ausführbare Umgebung gehört zum Vertrag, nicht nur „Dateien liegen irgendwo“."
+        },
+        {
+          "parameters": {
+            "setting": "README unzureichend"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Das README sagt „neueste numpy“. Seed und Split sind gespeichert. Reicht das?",
+          "fullSolution": "Nein. „Neueste“ driftet. Es braucht eine konkrete, prüfbare Versionsangabe."
+        },
+        {
+          "parameters": {
+            "setting": "tokenizer"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Tokenisierung hängt an einer Bibliotheksversion, die nicht im Lockfile steht. Seed ist 0. Warum riskant?",
+          "fullSolution": "Andere Tokengrenzen trotz gleichem Seed. Umgebung nicht fixiert."
+        },
+        {
+          "parameters": {
+            "setting": "CUDA/cuDNN"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Trainingsseed ist gesetzt, CUDA- und Bibliotheksversionen nicht. Welches Reproduktionsrisiko bleibt?",
+          "fullSolution": "Implementierungs- und Default-Änderungen unabhängig vom Seed. Versionspin fehlt."
+        },
+        {
+          "parameters": {
+            "setting": "requirements.txt pin"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            }
+          ],
+          "prompt": "Seed und Split liegen vor, `install pandas` ohne Pin. Warum ist das ein Reproduktionsrisiko?",
+          "fullSolution": "Ungenannte Version kann Vorverarbeitung ändern. Ein Prosatext im README ersetzt den Pin nicht."
+        },
+        {
+          "parameters": {
+            "setting": "Hash vs Version"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Du hasht den Split, pinnt aber die Imputationsbibliothek nicht. Welches Risiko bleibt?",
+          "fullSolution": "Dieselben Zeilen, andere Fill-Werte nach einem Release. Seed/Split-Hash ersetzen keine Versionsangabe."
+        },
+        {
+          "parameters": {
+            "setting": "Basisfrage"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Seed und Split sind gespeichert, die Version der Vorverarbeitungsbibliothek fehlt. Warum bleibt das ein Reproduktionsrisiko?",
+          "fullSolution": "Umgebung unvollständig. Seed kontrolliert Zufall, nicht Bibliotheksdefaults."
+        }
+      ]
     },
     {
       "caseId": "repro-random-split-undocumented",
@@ -233,7 +813,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "neuer Split jedes Mal"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Seed steht im Skript, `train_test_split` zieht aber jedes Mal neue Indizes und speichert sie nicht. Was ist verletzt?",
+          "fullSolution": "Nicht dieselbe Aufteilung. Statistische Gültigkeit ≠ Identität des Splits."
+        },
+        {
+          "parameters": {
+            "setting": "nicht Architektur"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "Die Architektur ist im README vollständig, der Split wird nicht gespeichert und ändert sich. Was ist verletzt?",
+          "fullSolution": "Die Datenaufteilung, nicht die Architekturbeschreibung."
+        },
+        {
+          "parameters": {
+            "setting": "nicht Metrik"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "Accuracy ist vorab definiert, der Split rotiert trotzdem. Ist das „nur Metrik“?",
+          "fullSolution": "Nein. Dieselbe Metrik auf anderen Zeilen ist ein anderes Experiment. Split-Vertrag."
+        },
+        {
+          "parameters": {
+            "setting": "80/20 neu gewürfelt"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            }
+          ],
+          "prompt": "Jeder Lauf macht einen frischen 80/20-Split ohne Artefakt. Warum reicht „ist doch 80/20“ nicht?",
+          "fullSolution": "Andere 20 % sind andere Testdaten. Reproduzierbarkeit verlangt dieselbe Menge, nicht nur dasselbe Verhältnis."
+        },
+        {
+          "parameters": {
+            "setting": "time-based split undokumentiert"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "Der Cut hängt am „heutigen“ Datum minus 30 Tage und wird nicht festgehalten. Seed existiert. Was ist verletzt?",
+          "fullSolution": "Morgen andere Train/Test-Fenster. Der zeitliche Split gehört als Artefakt in den Vertrag."
+        },
+        {
+          "parameters": {
+            "setting": "Hash fehlt"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "IDs der Testmenge werden nicht gespeichert, nur `np.random.seed(0)` vor einem Shuffle, dessen Reihenfolge an Datei-Order hängt. Was ist verletzt?",
+          "fullSolution": "Ohne festes Split-Artefakt können andere Zeilen in den Test rutschen. Architektur/Metrik sind hier nicht das Loch."
+        },
+        {
+          "parameters": {
+            "setting": "k-fold neu"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jede Auswertung zieht neue CV-Folds ohne gespeicherte Indizes. Der Modellcode ist gepinnt. Was ist verletzt?",
+          "fullSolution": "Die Aufteilung. Neue Folds sind andere Train/Valid-Mengen trotz gleicher Architektur."
+        },
+        {
+          "parameters": {
+            "setting": "stratify ohne Freeze"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein stratifizierter Split ist statistisch sauber, wird aber nicht persistiert und neu gezogen. Was ist verletzt?",
+          "fullSolution": "Sauber ≠ reproduzierbar. Ohne gespeicherte Indizes sieht der nächste Lauf andere Zeilen."
+        },
+        {
+          "parameters": {
+            "setting": "Basisfrage"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nichts, weil jeder Split statistisch gültig ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+              "correct": false
+            }
+          ],
+          "prompt": "Das Training setzt einen Seed, zieht aber jeden Lauf neu und speichert den Train/Test-Split nicht. Was ist verletzt?",
+          "fullSolution": "Der Split-Vertrag. Seed allein reicht nicht, wenn die Aufteilung nicht deterministisch reproduziert wird."
+        }
+      ]
     }
   ]
 }
