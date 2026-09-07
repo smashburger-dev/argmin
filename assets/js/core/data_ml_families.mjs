@@ -53,115 +53,53 @@ import {
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
-const acceptsMissingTargetRowsIntro = (parameters) => parameters.framing === 'drop';
-const acceptsMissingTargetRowsStretch = (parameters) => parameters.framing === 'rate';
-const acceptsDuplicateRowsIntro = (parameters) => !parameters.dropKey && parameters.keyConflicts === 0;
-const acceptsDuplicateRowsStretch = (parameters) => parameters.dropKey;
-const acceptsConditionalCountIntro = (parameters) => parameters.direction === 'count';
-const acceptsConditionalCountStretch = (parameters) => parameters.direction === 'percent';
-const acceptsSubgroupErrorGapIntro = (parameters) => parameters.n === 100;
-const acceptsSubgroupErrorGapStretch = (parameters) => parameters.n === 20 || parameters.n === 25;
-const acceptsRidgeShrinkageIntro = (parameters) => parameters.phrasing === 'share';
-const acceptsRidgeShrinkageStretch = (parameters) => parameters.phrasing === 'shrink';
-const acceptsMseGradientIntro = (parameters) => parameters.n === 2;
-const acceptsMseGradientStretch = (parameters) => parameters.n === 4;
-const acceptsMajorityBaselineIntro = (parameters) => {
-  const counts = [...parameters.counts].sort((a, b) => b - a);
-  return counts[0] >= 2 * counts[1];
-};
-const acceptsMajorityBaselineStretch = (parameters) => {
-  const counts = [...parameters.counts].sort((a, b) => b - a);
-  return counts[0] - counts[1] <= 10;
-};
-const acceptsEnsembleMajorityIntro = (parameters) => parameters.direction === 'count';
-const acceptsEnsembleMajorityStretch = (parameters) => parameters.direction === 'percent';
-const acceptsMseResidualsIntro = (parameters) => parameters.n <= 3;
-const acceptsMseResidualsStretch = (parameters) => parameters.n >= 5;
-const acceptsR2Intro = (parameters) => parameters.phrasing === 'r2';
-const acceptsR2Stretch = (parameters) => parameters.phrasing === 'context';
-const acceptsConfusionMarginalIntro = (parameters) => parameters.metric === 'predicted-pos';
-const acceptsConfusionMarginalStretch = (parameters) => parameters.metric === 'actual-neg';
-const acceptsCvSpreadIntro = (parameters) => parameters.k === 4;
-const acceptsCvSpreadStretch = (parameters) => parameters.k === 10;
-const acceptsSeedSpreadIntro = (parameters) => parameters.unit === 'percent' && parameters.runs === 3;
-const acceptsSeedSpreadStretch = (parameters) => parameters.unit === 'fraction';
-const acceptsPcaVarianceIntro = (parameters) => parameters.total === 50;
-const acceptsPcaVarianceStretch = (parameters) => parameters.total === 25;
-const acceptsLinearParamIntro = (parameters) => parameters.variant === 'single';
-const acceptsLinearParamStretch = (parameters) => parameters.variant === 'compare';
-const acceptsSgdIntro = (parameters) => parameters.variant === 'epochs';
-const acceptsSgdStretch = (parameters) => parameters.variant === 'until' || parameters.variant === 'momentum';
-const acceptsDropoutIntro = (parameters) => parameters.variant === 'kept';
-const acceptsDropoutStretch = (parameters) => parameters.variant === 'both';
-const acceptsChainRuleIntro = (parameters) => parameters.variant === 'path';
-const acceptsChainRuleStretch = (parameters) => parameters.variant === 'fork';
-const acceptsAttentionIntro = (parameters) => parameters.variant === 'score-cells';
-const acceptsAttentionStretch = (parameters) => parameters.variant === 'mask-cells' || parameters.variant === 'scale-divisor';
-const acceptsBpeIntro = (parameters) => parameters.variant === 'total';
-const acceptsBpeStretch = (parameters) => parameters.variant === 'merges-needed';
-const acceptsLoraIntro = (parameters) => parameters.variant === 'lora';
-const acceptsLoraStretch = (parameters) => parameters.variant === 'saved';
-const acceptsGreedyIntro = (parameters) => parameters.variant === 'argmax-position';
-const acceptsGreedyStretch = (parameters) => parameters.variant === 'decode-length';
-const acceptsPaperGainIntro = (parameters) => parameters.variant === 'count-gain';
-const acceptsPaperGainStretch = (parameters) => parameters.variant === 'relative-percent' || parameters.variant === 'error-reduction';
-const acceptsPrecisionIntro = (parameters) => parameters.shape === 'precision';
-const acceptsPrecisionStretch = (parameters) => parameters.shape === 'f1';
-const acceptsInjectionIntro = (parameters) => parameters.shape === 'missed' || parameters.shape === 'false-alarms';
-const acceptsInjectionStretch = (parameters) => parameters.shape === 'caught-percent';
-const acceptsSubgroupRateIntro = (parameters) => parameters.shape === 'fpr-diff';
-const acceptsSubgroupRateStretch = (parameters) => parameters.shape === 'selrate-diff';
-const acceptsAllowedActionIntro = (parameters) => parameters.shape === 'allowed';
-const acceptsAllowedActionStretch = (parameters) => parameters.shape === 'percent';
-const acceptsRecallIntro = (parameters) => parameters.shape === 'hits';
-const acceptsRecallStretch = (parameters) => parameters.shape === 'percent' || parameters.shape === 'irrelevant';
-const acceptsProtocolShiftIntro = (parameters) => parameters.flags?.length === 1;
-const acceptsProtocolShiftStretch = (parameters) => parameters.flags?.length >= 3;
-const acceptsCardAuditIntro = (parameters) => parameters.karten?.length === 1;
-const acceptsCardAuditStretch = (parameters) => parameters.karten?.length === 2;
-const acceptsBaselineLedgerIntro = (parameters) => parameters.shape === 'naive-percent';
-const acceptsBaselineLedgerStretch = (parameters) => parameters.shape === 'gap-promille';
-const acceptsPipelineIntro = (parameters) => parameters.shape === 'valid-count';
-const acceptsPipelineStretch = (parameters) => parameters.shape === 'missing-hashes';
-const acceptsEvalBatchIntro = (parameters) => parameters.shape === 'retrieval-error-count'
-  || parameters.shape === 'answer-error-count';
-const acceptsEvalBatchStretch = (parameters) => parameters.shape === 'answer-rate-percent'
-  || parameters.shape === 'retrieval-hit-percent';
-
+const sortedCountsDesc = (parameters) => [...parameters.counts].sort((a, b) => b - a);
 const PROFILE_PREDICATES = {
-  'missing-target-rows': { intro: acceptsMissingTargetRowsIntro, stretch: acceptsMissingTargetRowsStretch },
-  'duplicate-rows': { intro: acceptsDuplicateRowsIntro, stretch: acceptsDuplicateRowsStretch },
-  'conditional-count-percent': { intro: acceptsConditionalCountIntro, stretch: acceptsConditionalCountStretch },
-  'subgroup-error-gap-pp': { intro: acceptsSubgroupErrorGapIntro, stretch: acceptsSubgroupErrorGapStretch },
-  'ridge-shrinkage-percent': { intro: acceptsRidgeShrinkageIntro, stretch: acceptsRidgeShrinkageStretch },
-  'mse-gradient-wrt-w': { intro: acceptsMseGradientIntro, stretch: acceptsMseGradientStretch },
-  'majority-baseline-errors': { intro: acceptsMajorityBaselineIntro, stretch: acceptsMajorityBaselineStretch },
-  'ensemble-majority-output-count': { intro: acceptsEnsembleMajorityIntro, stretch: acceptsEnsembleMajorityStretch },
-  'mse-from-residuals': { intro: acceptsMseResidualsIntro, stretch: acceptsMseResidualsStretch },
-  'r2-explained-share': { intro: acceptsR2Intro, stretch: acceptsR2Stretch },
-  'confusion-marginal-count': { intro: acceptsConfusionMarginalIntro, stretch: acceptsConfusionMarginalStretch },
-  'cv-fold-accuracy-spread': { intro: acceptsCvSpreadIntro, stretch: acceptsCvSpreadStretch },
-  'seed-rerun-accuracy-spread': { intro: acceptsSeedSpreadIntro, stretch: acceptsSeedSpreadStretch },
-  'pca-explained-variance-percent': { intro: acceptsPcaVarianceIntro, stretch: acceptsPcaVarianceStretch },
-  'linear-param-count': { intro: acceptsLinearParamIntro, stretch: acceptsLinearParamStretch },
-  'sgd-update-count': { intro: acceptsSgdIntro, stretch: acceptsSgdStretch },
-  'dropout-mask-kept-count': { intro: acceptsDropoutIntro, stretch: acceptsDropoutStretch },
-  'chain-rule-path-sum': { intro: acceptsChainRuleIntro, stretch: acceptsChainRuleStretch },
-  'attention-tensor-cells': { intro: acceptsAttentionIntro, stretch: acceptsAttentionStretch },
-  'bpe-vocab-size': { intro: acceptsBpeIntro, stretch: acceptsBpeStretch },
-  'lora-param-count': { intro: acceptsLoraIntro, stretch: acceptsLoraStretch },
-  'greedy-step-stat': { intro: acceptsGreedyIntro, stretch: acceptsGreedyStretch },
-  'paper-gain-from-counts': { intro: acceptsPaperGainIntro, stretch: acceptsPaperGainStretch },
-  'answer-filter-precision-recall-f1': { intro: acceptsPrecisionIntro, stretch: acceptsPrecisionStretch },
-  'injection-filter-counts': { intro: acceptsInjectionIntro, stretch: acceptsInjectionStretch },
-  'subgroup-rate-gap-permille': { intro: acceptsSubgroupRateIntro, stretch: acceptsSubgroupRateStretch },
-  'allowed-action-count': { intro: acceptsAllowedActionIntro, stretch: acceptsAllowedActionStretch },
-  'recall-at-k-window': { intro: acceptsRecallIntro, stretch: acceptsRecallStretch },
-  'protocol-shift-flag-count': { intro: acceptsProtocolShiftIntro, stretch: acceptsProtocolShiftStretch },
-  'card-audit-missing-count': { intro: acceptsCardAuditIntro, stretch: acceptsCardAuditStretch },
-  'baseline-ledger-rates': { intro: acceptsBaselineLedgerIntro, stretch: acceptsBaselineLedgerStretch },
-  'pipeline-stage-audit': { intro: acceptsPipelineIntro, stretch: acceptsPipelineStretch },
-  'eval-batch-rates': { intro: acceptsEvalBatchIntro, stretch: acceptsEvalBatchStretch },
+  'missing-target-rows': { intro: (p) => p.framing === 'drop', stretch: (p) => p.framing === 'rate' },
+  'duplicate-rows': { intro: (p) => !p.dropKey && p.keyConflicts === 0, stretch: (p) => p.dropKey },
+  'conditional-count-percent': { intro: (p) => p.direction === 'count', stretch: (p) => p.direction === 'percent' },
+  'subgroup-error-gap-pp': { intro: (p) => p.n === 100, stretch: (p) => p.n === 20 || p.n === 25 },
+  'ridge-shrinkage-percent': { intro: (p) => p.phrasing === 'share', stretch: (p) => p.phrasing === 'shrink' },
+  'mse-gradient-wrt-w': { intro: (p) => p.n === 2, stretch: (p) => p.n === 4 },
+  'majority-baseline-errors': {
+    intro: (p) => {
+      const counts = sortedCountsDesc(p);
+      return counts[0] >= 2 * counts[1];
+    },
+    stretch: (p) => {
+      const counts = sortedCountsDesc(p);
+      return counts[0] - counts[1] <= 10;
+    },
+  },
+  'ensemble-majority-output-count': { intro: (p) => p.direction === 'count', stretch: (p) => p.direction === 'percent' },
+  'mse-from-residuals': { intro: (p) => p.n <= 3, stretch: (p) => p.n >= 5 },
+  'r2-explained-share': { intro: (p) => p.phrasing === 'r2', stretch: (p) => p.phrasing === 'context' },
+  'confusion-marginal-count': { intro: (p) => p.metric === 'predicted-pos', stretch: (p) => p.metric === 'actual-neg' },
+  'cv-fold-accuracy-spread': { intro: (p) => p.k === 4, stretch: (p) => p.k === 10 },
+  'seed-rerun-accuracy-spread': { intro: (p) => p.unit === 'percent' && p.runs === 3, stretch: (p) => p.unit === 'fraction' },
+  'pca-explained-variance-percent': { intro: (p) => p.total === 50, stretch: (p) => p.total === 25 },
+  'linear-param-count': { intro: (p) => p.variant === 'single', stretch: (p) => p.variant === 'compare' },
+  'sgd-update-count': { intro: (p) => p.variant === 'epochs', stretch: (p) => p.variant === 'until' || p.variant === 'momentum' },
+  'dropout-mask-kept-count': { intro: (p) => p.variant === 'kept', stretch: (p) => p.variant === 'both' },
+  'chain-rule-path-sum': { intro: (p) => p.variant === 'path', stretch: (p) => p.variant === 'fork' },
+  'attention-tensor-cells': { intro: (p) => p.variant === 'score-cells', stretch: (p) => p.variant === 'mask-cells' || p.variant === 'scale-divisor' },
+  'bpe-vocab-size': { intro: (p) => p.variant === 'total', stretch: (p) => p.variant === 'merges-needed' },
+  'lora-param-count': { intro: (p) => p.variant === 'lora', stretch: (p) => p.variant === 'saved' },
+  'greedy-step-stat': { intro: (p) => p.variant === 'argmax-position', stretch: (p) => p.variant === 'decode-length' },
+  'paper-gain-from-counts': { intro: (p) => p.variant === 'count-gain', stretch: (p) => p.variant === 'relative-percent' || p.variant === 'error-reduction' },
+  'answer-filter-precision-recall-f1': { intro: (p) => p.shape === 'precision', stretch: (p) => p.shape === 'f1' },
+  'injection-filter-counts': { intro: (p) => p.shape === 'missed' || p.shape === 'false-alarms', stretch: (p) => p.shape === 'caught-percent' },
+  'subgroup-rate-gap-permille': { intro: (p) => p.shape === 'fpr-diff', stretch: (p) => p.shape === 'selrate-diff' },
+  'allowed-action-count': { intro: (p) => p.shape === 'allowed', stretch: (p) => p.shape === 'percent' },
+  'recall-at-k-window': { intro: (p) => p.shape === 'hits', stretch: (p) => p.shape === 'percent' || p.shape === 'irrelevant' },
+  'protocol-shift-flag-count': { intro: (p) => p.flags?.length === 1, stretch: (p) => p.flags?.length >= 3 },
+  'card-audit-missing-count': { intro: (p) => p.karten?.length === 1, stretch: (p) => p.karten?.length === 2 },
+  'baseline-ledger-rates': { intro: (p) => p.shape === 'naive-percent', stretch: (p) => p.shape === 'gap-promille' },
+  'pipeline-stage-audit': { intro: (p) => p.shape === 'valid-count', stretch: (p) => p.shape === 'missing-hashes' },
+  'eval-batch-rates': {
+    intro: (p) => p.shape === 'retrieval-error-count' || p.shape === 'answer-error-count',
+    stretch: (p) => p.shape === 'answer-rate-percent' || p.shape === 'retrieval-hit-percent',
+  },
 };
 
 function profileAccepts(caseId, difficulty) {
@@ -307,13 +245,14 @@ const solveFormulaStatFallback = (parameters) => {
   }
   return { value: parameters.newer - parameters.base };
 };
+const solveFormulaStatStatic = (parameters) => staticExpected('formula-stat-from-table', parameters);
 const FORMULA_STAT_SOLVERS = {
   'greedy-step-stat': solveFormulaStatGreedy,
   'card-audit-missing-count': solveFormulaStatCardAudit,
   'pipeline-stage-audit': solveFormulaStatPipeline,
   'eval-batch-rates': solveFormulaStatEvalBatch,
-  'stage-timeout-count': (parameters) => staticExpected('formula-stat-from-table', parameters),
-  'dependency-pin-count': (parameters) => staticExpected('formula-stat-from-table', parameters),
+  'stage-timeout-count': solveFormulaStatStatic,
+  'dependency-pin-count': solveFormulaStatStatic,
 };
 const solveConfusionMarginal = (parameters) => ({
   value: parameters.metric === 'actual-neg'

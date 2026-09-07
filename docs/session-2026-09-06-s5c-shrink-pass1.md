@@ -40,12 +40,12 @@ and ordering remain unchanged.
 
 | Function | Before | After | File LOC before → after | Existing coverage |
 |---|---:|---:|---:|---|
-| `profileAccepts` | 100 | 2 | included in `data_ml_families.mjs` 1129 → 1112 | family contract and golden corpus |
+| `profileAccepts` | 100 | 2 | included in `data_ml_families.mjs` 1129 → 1051 | family contract and golden corpus |
 | `formula-ratio-percent-metric.solve` | 13 | 0 |  | family contract and golden corpus |
 | `aggregate-confusion-metric.solve` branch | 11 | 1 |  | family contract and golden corpus |
 | `formula-count-from-construction.solve` | 21 | 0 |  | family contract and golden corpus |
 | `formula-stat-from-table.solve` | 15 | 0 |  | family contract and golden corpus |
-| `assignmentProfileAccepts` | 15 | 3 | `foundations_trace_families.mjs` 1012 → 1001 | trace family tests and golden corpus |
+| `assignmentProfileAccepts` | 15 | 3 | `foundations_trace_families.mjs` 1012 → 993 | trace family tests and golden corpus |
 | `solveTraceAssignment` | 21 | 2 |  | trace family tests and golden corpus |
 | `generateTraceAssignmentFamily` | 19 | 5 |  | trace family tests and golden corpus |
 | `solveTraceException` | 11 | 1 |  | trace family tests and golden corpus |
@@ -55,7 +55,7 @@ The additional scan entry at `data_ml_families.mjs:399` was the
 `aggregate-confusion-metric.solve` branch and was refactored through the
 same case-table approach.
 
-Group C file LOC delta: **−17 + −11 + +14 = −14 net LOC**.
+Group C file LOC delta: **−79 + −19 + +14 = −84 net LOC**.
 
 ## Runtime LOC
 
@@ -64,13 +64,14 @@ excluding tests, vendor, and build trees:
 
 | Area | Before | After | Delta |
 |---|---:|---:|---:|
-| `assets/js` | 9,886 | 9,801 | −85 |
+| `assets/js` | 9,886 | 9,732 | −154 |
 | `src` | 2,294 | 2,255 | −39 |
 | `tools` | 2,143 | 2,136 | −7 |
-| **Total** | **14,323** | **14,192** | **−131** |
+| **Total** | **14,323** | **14,123** | **−200** |
 
-The runtime total includes Groups A–C. Group A's shared `readJson` movement
-and Group B's RNG change are therefore reflected in the total.
+The runtime total includes Groups A–C and this review compaction. Group A's
+shared `readJson` movement and Group B's RNG change are therefore reflected
+in the total.
 
 ## Verification
 

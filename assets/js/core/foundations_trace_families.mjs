@@ -62,50 +62,42 @@ function assignmentStateNumbers(caseId, parameters) {
   return [parameters.n0, parameters.k1, parameters.f1, parameters.g1];
 }
 
-const acceptsReassignIntro = (parameters) => maxAbs(assignmentStateNumbers('reassign-two-variables-print', parameters)) <= 6;
-const acceptsReassignStretch = (parameters) => hasNegative(assignmentStateNumbers('reassign-two-variables-print', parameters));
-const acceptsReassignChallenge = (parameters) => {
-  const numbers = assignmentStateNumbers('reassign-two-variables-print', parameters);
-  return hasNegative(numbers) && maxAbs(numbers) >= 8;
-};
-const acceptsChainIntro = (parameters) => maxAbs(assignmentStateNumbers('chain3-overwrite-print', parameters)) <= 6;
-const acceptsChainStretch = (parameters) => hasNegative(assignmentStateNumbers('chain3-overwrite-print', parameters));
-const acceptsChainChallenge = (parameters) => {
-  const numbers = assignmentStateNumbers('chain3-overwrite-print', parameters);
-  return hasNegative(numbers) && maxAbs(numbers) >= 8;
-};
-const acceptsAccumulateIntro = (parameters) => maxAbs(assignmentStateNumbers('accumulate-reassign-print', parameters)) <= 6;
-const acceptsAccumulateStretch = (parameters) => hasNegative(assignmentStateNumbers('accumulate-reassign-print', parameters));
-const acceptsAccumulateChallenge = (parameters) => {
-  const numbers = assignmentStateNumbers('accumulate-reassign-print', parameters);
-  return hasNegative(numbers) && maxAbs(numbers) >= 8;
-};
-const acceptsSliceIntro = (parameters) => parameters.b - parameters.a <= 3;
-const acceptsSliceStretch = (parameters) => parameters.a >= 3;
-const acceptsSliceChallenge = (parameters) => parameters.b - parameters.a >= 5;
-const acceptsJoinIntro = (parameters) => parameters.j - parameters.i === 2;
-const acceptsJoinStretch = (parameters) => parameters.j - parameters.i >= 3;
-const acceptsJoinChallenge = (parameters) => parameters.i === 0 && parameters.j === parameters.parts.length;
-const acceptsComprehensionIntro = (parameters) => parameters.threshold <= -1 && parameters.factor === 2;
-const acceptsComprehensionStretch = (parameters) => parameters.threshold >= 1;
-const acceptsComprehensionChallenge = (parameters) => parameters.factor >= 3 && parameters.threshold >= 0;
-const acceptsTransformIntro = (parameters) => parameters.mode === 0;
-const acceptsTransformStretch = (parameters) => parameters.mode === 1;
-const acceptsTransformChallenge = (parameters) => parameters.mode === 1 && parameters.word.length >= 12;
+const stateShapeProfiles = (caseId) => ({
+  intro: (parameters) => maxAbs(assignmentStateNumbers(caseId, parameters)) <= 6,
+  stretch: (parameters) => hasNegative(assignmentStateNumbers(caseId, parameters)),
+  challenge: (parameters) => {
+    const numbers = assignmentStateNumbers(caseId, parameters);
+    return hasNegative(numbers) && maxAbs(numbers) >= 8;
+  },
+});
 const ASSIGNMENT_PROFILE_PREDICATES = {
-  'reassign-two-variables-print': { intro: acceptsReassignIntro, stretch: acceptsReassignStretch, challenge: acceptsReassignChallenge },
-  'chain3-overwrite-print': { intro: acceptsChainIntro, stretch: acceptsChainStretch, challenge: acceptsChainChallenge },
-  'accumulate-reassign-print': { intro: acceptsAccumulateIntro, stretch: acceptsAccumulateStretch, challenge: acceptsAccumulateChallenge },
-  'slice-predict-output': { intro: acceptsSliceIntro, stretch: acceptsSliceStretch, challenge: acceptsSliceChallenge },
-  'join-split-predict': { intro: acceptsJoinIntro, stretch: acceptsJoinStretch, challenge: acceptsJoinChallenge },
-  'comprehension-predict': { intro: acceptsComprehensionIntro, stretch: acceptsComprehensionStretch, challenge: acceptsComprehensionChallenge },
-  'method-chain-transform': { intro: acceptsTransformIntro, stretch: acceptsTransformStretch, challenge: acceptsTransformChallenge },
+  ...Object.fromEntries(Object.keys(ASSIGNMENT_STATE_SHAPES).map((id) => [id, stateShapeProfiles(id)])),
+  'slice-predict-output': {
+    intro: (p) => p.b - p.a <= 3,
+    stretch: (p) => p.a >= 3,
+    challenge: (p) => p.b - p.a >= 5,
+  },
+  'join-split-predict': {
+    intro: (p) => p.j - p.i === 2,
+    stretch: (p) => p.j - p.i >= 3,
+    challenge: (p) => p.i === 0 && p.j === p.parts.length,
+  },
+  'comprehension-predict': {
+    intro: (p) => p.threshold <= -1 && p.factor === 2,
+    stretch: (p) => p.threshold >= 1,
+    challenge: (p) => p.factor >= 3 && p.threshold >= 0,
+  },
+  'method-chain-transform': {
+    intro: (p) => p.mode === 0,
+    stretch: (p) => p.mode === 1,
+    challenge: (p) => p.mode === 1 && p.word.length >= 12,
+  },
 };
 
 function assignmentProfileAccepts(caseId, difficulty) {
   if (difficulty === 'core') return null;
   const predicates = ASSIGNMENT_PROFILE_PREDICATES[caseId]
-    || { intro: acceptsTransformIntro, stretch: acceptsTransformStretch, challenge: acceptsTransformChallenge };
+    || ASSIGNMENT_PROFILE_PREDICATES['method-chain-transform'];
   return predicates[difficulty] || predicates.challenge;
 }
 
