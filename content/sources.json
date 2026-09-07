@@ -2,43 +2,10 @@
   "schemaVersion": 1,
   "sources": [
     {
-      "sourceId": "mml-book",
-      "title": "Mathematics for Machine Learning",
-      "author": "Deisenroth, Faisal, Ong",
-      "canonicalUrl": "https://mml-book.github.io/",
-      "localFile": "../mml-book.pdf",
-      "localSha256": "3f87b70c64a35d30_full_in_docs_pdf-catalog.json",
-      "edition": "Draft 2024-01-15, Cambridge University Press",
-      "contentClass": "private",
-      "license": "no open license — free to view/download for personal use only, no redistribution, no derivative works",
-      "attribution": "© 2024 M. P. Deisenroth, A. A. Faisal, C. S. Ong",
-      "allowedUses": [
-        "private reading",
-        "page anchors",
-        "concept lineage"
-      ],
-      "chapters": [
-        "2 Linear Algebra (gedruckt S. 17-69)"
-      ],
-      "weeks": [
-        5,
-        6,
-        7,
-        8,
-        10,
-        14,
-        15,
-        16
-      ],
-      "extractionStatus": "audited (docs/pdf-catalog.json, mml-chapter-map.json)",
-      "qaStatus": "page-anchors verified"
-    },
-    {
       "sourceId": "mit-ocw-18-06sc",
       "title": "MIT 18.06SC Linear Algebra, Fall 2011",
       "author": "MIT OpenCourseWare / Gilbert Strang",
       "canonicalUrl": "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
-      "localFile": null,
       "contentClass": "link-only",
       "license": "CC BY-NC-SA 4.0 (ocw.mit.edu/terms, wörtlich verifiziert 2026-08-31: „users may not sell, profit from, or commercialize OCW materials“); NC verletzt die Public-Bedingung kommerzielle Nutzung",
       "attribution": "© MIT OpenCourseWare, Prof. Gilbert Strang. Lizenz: https://creativecommons.org/licenses/by-nc-sa/4.0/",
@@ -101,57 +68,6 @@
       "qaStatus": "Reklassifiziert open→link-only nach Primärbeleg 2026-08-31 (ADR-0014 Teil 4)"
     },
     {
-      "sourceId": "ombplus",
-      "title": "OMB+ Mathematik-Brückenkurs",
-      "author": "OMB+-Konsortium / integral-learning GmbH",
-      "canonicalUrl": "https://www.ombplus.de/ombplus/public/index.html",
-      "contentClass": "private",
-      "license": "no open content license (Terms of Use: free self-study)",
-      "allowedUses": [
-        "linking",
-        "personal use"
-      ],
-      "weeks": [
-        1
-      ],
-      "extractionStatus": "link-only",
-      "qaStatus": "absence of license confirmed"
-    },
-    {
-      "sourceId": "openhpi-mathe2023",
-      "title": "openHPI Vorkurs Mathematik",
-      "author": "Hasso-Plattner-Institut (Dr. Timo Kötzing)",
-      "canonicalUrl": "https://open.hpi.de/courses/mathe2023",
-      "contentClass": "private",
-      "license": "no open license found; registration required",
-      "allowedUses": [
-        "linking",
-        "personal enrollment"
-      ],
-      "weeks": [
-        1
-      ],
-      "extractionStatus": "link-only",
-      "qaStatus": "absence of license confirmed"
-    },
-    {
-      "sourceId": "linalg-ch",
-      "title": "linalg.ch Übungssammlung (Begleitseite Springer-Lehrbuch)",
-      "author": "Andreas Müller, OST",
-      "canonicalUrl": "https://linalg.ch/",
-      "contentClass": "private",
-      "license": "no license statement found",
-      "allowedUses": [
-        "private exercise use",
-        "linking"
-      ],
-      "weeks": [
-        5
-      ],
-      "extractionStatus": "link-only",
-      "qaStatus": "identity confirmed, license absent"
-    },
-    {
       "sourceId": "devries-ml",
       "title": "Maschinelles Lernen (deutschsprachiges Skript)",
       "author": "Andreas de Vries, FH Südwestfalen",
@@ -174,27 +90,6 @@
       "qaStatus": "license quoted from PDF"
     },
     {
-      "sourceId": "dlwp-book",
-      "title": "Deep Learning with Python, 3rd ed. (Kostenlose Onlinefassung)",
-      "author": "François Chollet, Manning",
-      "canonicalUrl": "https://deeplearningwithpython.io/chapters/",
-      "contentClass": "private",
-      "license": "free to read; no open text license (notebooks repo: MIT)",
-      "allowedUses": [
-        "concept companion",
-        "linking"
-      ],
-      "weeks": [
-        18,
-        19,
-        20,
-        21,
-        22
-      ],
-      "extractionStatus": "link-only",
-      "qaStatus": "license situation confirmed"
-    },
-    {
       "sourceId": "numpy-docs",
       "title": "NumPy documentation — absolute basics",
       "author": "NumPy contributors",
@@ -214,42 +109,10 @@
       "qaStatus": "official docs"
     },
     {
-      "sourceId": "dair-math-ml",
-      "title": "Mathematics-for-ML (Linkliste)",
-      "author": "DAIR.AI",
-      "canonicalUrl": "https://github.com/dair-ai/Mathematics-for-ML",
-      "contentClass": "private",
-      "license": "no LICENSE file",
-      "allowedUses": [
-        "research index",
-        "linking"
-      ],
-      "weeks": [
-        5
-      ],
-      "extractionStatus": "link-only",
-      "qaStatus": "absence of license confirmed"
-    },
-    {
-      "sourceId": "ki-evidenzsynthese",
-      "title": "KI-Lernpfad: Evidenzsynthese und 9-Monats-Roadmap",
-      "author": "Noa (Arbeitsdatei)",
-      "canonicalUrl": "local",
-      "localFile": "../KI_Lernpfad_Evidenzsynthese.md",
-      "contentClass": "private",
-      "license": "own working document",
-      "allowedUses": [
-        "curriculum derivation"
-      ],
-      "weeks": "all",
-      "extractionStatus": "used",
-      "qaStatus": "basis of curriculum.json"
-    },
-    {
       "sourceId": "generated",
       "title": "Plattform-eigene Aufgaben und Lösungen",
       "author": "KI-Lernplattform Authoring (2026)",
-      "canonicalUrl": "local",
+      "canonicalUrl": "https://github.com/smashburger-dev/ki-lernplattform",
       "contentClass": "generated",
       "license": "CC BY 4.0",
       "allowedUses": [
@@ -262,67 +125,10 @@
       "qaStatus": "see exercise validationStatus"
     },
     {
-      "sourceId": "murphy-pml",
-      "title": "Probabilistic Machine Learning: An Introduction",
-      "author": "Kevin Patrick Murphy",
-      "canonicalUrl": "https://probml.github.io/pml-book/",
-      "contentClass": "private",
-      "license": "CC BY-NC-ND (PDF-Seite 4, wörtlich zitiert im Staging-Register)",
-      "attribution": "© Kevin Patrick Murphy",
-      "allowedUses": [
-        "private reading",
-        "page anchors",
-        "concept lineage"
-      ],
-      "weeks": [
-        10,
-        11,
-        14
-      ],
-      "extractionStatus": "page-anchored extracts ch10-11 (staging)",
-      "qaStatus": "license quote verified at PDF page 4"
-    },
-    {
-      "sourceId": "math-deep",
-      "title": "Algebra, Topology, Differential Calculus, and Optimization Theory…",
-      "author": "Jean Gallier, Jocelyn Quaintance",
-      "contentClass": "private",
-      "license": "no license statement found (title-page copyright only); full-text check 2026-08-25",
-      "attribution": "© Jean Gallier",
-      "allowedUses": [
-        "concept reference"
-      ],
-      "weeks": [
-        5,
-        6,
-        7,
-        8
-      ],
-      "extractionStatus": "page-anchored extracts §3+§39 (staging)",
-      "qaStatus": "absence of license confirmed by full-text search"
-    },
-    {
-      "sourceId": "integration-methods",
-      "title": "Modern Integration Methods (COMP0168 notes, draft)",
-      "author": "Marc Peter Deisenroth (UCL)",
-      "contentClass": "private",
-      "license": "no copyright/license/imprint notice in document (full-text check 2026-08-25)",
-      "attribution": "Marc Peter Deisenroth",
-      "allowedUses": [
-        "private study only"
-      ],
-      "weeks": [
-        7
-      ],
-      "extractionStatus": "page-anchored extract, full document (staging)",
-      "qaStatus": "absence of license confirmed by full-text search"
-    },
-    {
       "sourceId": "py-tutorial-official-3.14",
       "title": "The Python Tutorial (offizielle Doku, 3.14) — Kernkapitel W1-W4",
       "author": "Python Software Foundation",
       "canonicalUrl": "https://docs.python.org/3.14/tutorial/",
-      "localPath": "library/open/py-tutorial-official/html/index.html",
       "contentClass": "open",
       "license": "PSF License Version 2 (Software + Dokumentation); Code-Beispiele zusaetzlich BSD-0 — Beleg: docs.python.org/3/license.html (Staging rights py-tutorial-psf-v2)",
       "attribution": "© Python Software Foundation",
@@ -346,36 +152,10 @@
       "qaStatus": "license verified via docs.python.org/3/license.html"
     },
     {
-      "sourceId": "cs50p-psets-harvard",
-      "title": "CS50P — Problem Sets 0-5 mit Aufgabenspezifikationen",
-      "author": "David J. Malan, Harvard OpenCourseWare",
-      "canonicalUrl": "https://cs50.harvard.edu/python/",
-      "localPath": "library-private/cs50p-psets/html/pset1.html",
-      "contentClass": "private",
-      "license": "CC BY-NC-SA 4.0 — Beleg: cs50.harvard.edu/python/license/ (Staging rights cs50p-cc-by-nc-sa-4.0)",
-      "attribution": "© CS50, Harvard University",
-      "allowedUses": [
-        "private exercise specs",
-        "non-commercial adaptation with attribution and share-alike"
-      ],
-      "chapters": [
-        "pset1: indoor, playback, faces, einstein, tip"
-      ],
-      "weeks": [
-        1,
-        2,
-        3,
-        4
-      ],
-      "extractionStatus": "snapshot 2026-08-25 (36 HTML-Seiten, private Ablage im Staging)",
-      "qaStatus": "license verified via cs50.harvard.edu/python/license/"
-    },
-    {
       "sourceId": "serlo-algebra-grundlagen-w01",
       "title": "Serlo Algebra-Grundlagen: Gleichungen, Potenzen, Logarithmen (Artikel + Aufgaben)",
       "author": "Serlo Education e. V. und Autor:innen",
       "canonicalUrl": "https://de.serlo.org/mathe/1393/lineare-gleichungen",
-      "localPath": "library/open/de/serlo-gleichungen-1393.html",
       "contentClass": "link-only",
       "license": "CC BY-SA 4.0 (de.serlo.org/license/detail/1: „Dieses Werk steht unter der freien Lizenz CC BY-SA 4.0“, verifiziert 2026-08-31)",
       "attribution": "Serlo",
