@@ -3,7 +3,7 @@
 // instance shape.
 
 import { drawFamilyInstance } from './generator_draw_kit.mjs';
-import { staticCaseBody } from '../domain/family_registry.mjs';
+import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import {
   genCompleteRows,
   genConditionalCount,
@@ -573,17 +573,24 @@ function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
     if (body.difficultyProfile !== difficulty) {
       throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
     }
+    const { body: chosen, index } = variantOf(body, seed ?? 0);
     const {
       caseId: _caseId,
       difficultyProfile: _difficultyProfile,
       masteryEligible: _masteryEligible,
       sourceLineage: _sourceLineage,
+      variants: _variants,
       ...generated
-    } = body;
+    } = chosen;
     return {
       ...generated,
       masteryEligible: body.masteryEligible,
-      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+      parameters: {
+        caseId,
+        difficulty,
+        ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+        ...(chosen.parameters || {}),
+      },
     };
   }
   const drawn = difficulty === 'core'

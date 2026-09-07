@@ -71,7 +71,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "mse": 36,
+            "unit": "kg"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 6, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (kg).",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 36 — MSE und RMSE unterscheiden sich nur im Namen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 6, ist aber einheitenlos, weil die Wurzel die Einheit kürzt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Aus dem MSE allein lässt sich der RMSE nicht berechnen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Modell schätzt Liefergewicht (Ziel in kg), Test-MSE = 36. Welche Aussage über den RMSE ist korrekt?",
+          "fullSolution": "√36 = 6, Einheit kg. MSE trägt kg²."
+        },
+        {
+          "parameters": {
+            "mse": 49,
+            "unit": "min"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 49.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 7 und einheitenlos.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 7, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (min).",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ohne Residuen kein RMSE.",
+              "correct": false
+            }
+          ],
+          "prompt": "Fahrzeitmodell, Ziel in Minuten, MSE = 49. Korrekte RMSE-Aussage?",
+          "fullSolution": "√49 = 7 min. Die Wurzel macht min² wieder zu min."
+        },
+        {
+          "parameters": {
+            "mse": 100,
+            "unit": "°C"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 100.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 10 ohne Einheit.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "MSE reicht nicht, Residuen fehlen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "RMSE = 10, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (°C).",
+              "correct": true
+            }
+          ],
+          "prompt": "Temperaturmodell, Ziel in °C, Test-MSE = 100. Welche Aussage über den RMSE stimmt?",
+          "fullSolution": "√100 = 10 °C."
+        },
+        {
+          "parameters": {
+            "mse": 9,
+            "unit": "m"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 3, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (m).",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 9.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 3, einheitenlos.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "RMSE braucht die einzelnen Residuen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Abstandsschätzer, Ziel in Metern, MSE = 9. RMSE?",
+          "fullSolution": "√9 = 3 m."
+        },
+        {
+          "parameters": {
+            "mse": 16,
+            "unit": "s"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 16 — nur ein anderer Name für MSE.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 4, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (s).",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 4, ist aber einheitenlos.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Aus dem MSE allein lässt sich der RMSE nicht berechnen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Latenzmodell (Ziel in Sekunden) hat MSE = 16. Welche Aussage über den RMSE ist korrekt?",
+          "fullSolution": "√16 = 4 s. s² unter der Wurzel wird s."
+        },
+        {
+          "parameters": {
+            "mse": 81,
+            "unit": "Euro"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 81.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 9 ohne Währung.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 9, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (Euro).",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ohne Einzelfehler kein RMSE.",
+              "correct": false
+            }
+          ],
+          "prompt": "Preisregression, Ziel in Euro, MSE = 81. Korrekte Aussage?",
+          "fullSolution": "√81 = 9 Euro. MSE war Euro²."
+        },
+        {
+          "parameters": {
+            "mse": 4,
+            "unit": "kWh"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 4.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 2, einheitenlos.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Residuenliste ist Pflicht.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "RMSE = 2, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (kWh).",
+              "correct": true
+            }
+          ],
+          "prompt": "Energieverbrauch, Ziel in kWh, Test-MSE = 4. Welche RMSE-Aussage ist korrekt?",
+          "fullSolution": "√4 = 2 kWh."
+        },
+        {
+          "parameters": {
+            "mse": 64,
+            "unit": "mm"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 8, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (mm).",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 64.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 8 ohne mm.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "MSE allein reicht nicht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Fertigungstoleranz in mm, MSE = 64. RMSE?",
+          "fullSolution": "√64 = 8 mm."
+        },
+        {
+          "parameters": {
+            "mse": 121,
+            "unit": "Tage"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "RMSE = 121 — MSE und RMSE unterscheiden sich nur im Namen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "RMSE = 11, denn RMSE = √MSE; er liegt wieder in der Einheit des Ziels (Tage).",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "RMSE = 11, ist aber einheitenlos, weil sich beim Wurzelziehen die Einheit herauskürzt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Aus dem MSE allein lässt sich der RMSE nicht berechnen — man braucht die einzelnen Residuen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Liegedauermodell (Ziel in Tagen) hat auf dem Testset MSE = 121. Welche Aussage über den RMSE ist korrekt?",
+          "fullSolution": "√121 = 11 Tage. Dieselbe Regel wie √25 = 5 Euro, andere Zahl und Einheit."
+        }
+      ]
     }
   ]
 }

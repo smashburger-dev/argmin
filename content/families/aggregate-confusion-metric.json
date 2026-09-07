@@ -71,7 +71,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "fpCost": 40,
+            "fnCost": 0.04
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als Spam klassifizieren, weil ein FP rund 1000-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Schwellenwert senken (Richtung 0,1): Fast alles als Spam.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beim Standard 0,5 bleiben: immer optimal.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Schwellenwert beeinflusst die Kosten nicht — nur Accuracy.",
+              "correct": false
+            }
+          ],
+          "prompt": "Spamfilter: FP (legitime Mail im Spam) 40 €, FN 0,04 €. Welche Schwellen-Strategie senkt die erwarteten Kosten?",
+          "fullSolution": "FP/FN = 1000. Schwelle hoch, weniger FP."
+        },
+        {
+          "parameters": {
+            "fpCost": 200,
+            "fnCost": 1
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle senken, um keine Positive zu verpassen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Bei 0,5 bleiben.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit positiv klassifizieren, weil ein FP viel teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nur Accuracy zählt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Betrugsalarm: falsches Einfrieren eines Kontos (FP) kostet 200, übersehener Kleinstbetrug (FN) 1. Strategie?",
+          "fullSolution": "FP dominiert. Weniger Alarme, höhere Schwelle."
+        },
+        {
+          "parameters": {
+            "fpCost": 80,
+            "fnCost": 0.08
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle gegen 0,1.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Immer 0,5.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Schwelle egal, Accuracy reicht.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur sehr sichere Fälle positiv, weil FP ≈ 1000·FN kostet.",
+              "correct": true
+            }
+          ],
+          "prompt": "Werbeblocker: fälschlich geblockte legitime Anzeige 80, durchgerutschte Spam-Anzeige 0,08. Schwelle?",
+          "fullSolution": "Teure FP → Schwelle hoch."
+        },
+        {
+          "parameters": {
+            "fpCost": 25,
+            "fnCost": 0.05
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als positiv klassifizieren, weil ein FP 500-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Schwelle senken Richtung 0,1.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bei 0,5 bleiben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Accuracy ersetzt die Kosten.",
+              "correct": false
+            }
+          ],
+          "prompt": "Moderation: falsches Entfernen eines harmlosen Posts 25, übersehenes toxisches Kurzposting 0,05. Kostenminimale Schwelle?",
+          "fullSolution": "FP/FN = 500. Anheben."
+        },
+        {
+          "parameters": {
+            "fpCost": 100,
+            "fnCost": 0.1
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert senken (Richtung 0,1): Fast alles wird als Spam markiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als Spam klassifizieren, weil ein FP 1000-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Beim Standard 0,5 bleiben: kostenunabhängig optimal.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Schwellenwert beeinflusst die Kostenbilanz nicht — entscheidend ist allein die Accuracy.",
+              "correct": false
+            }
+          ],
+          "prompt": "Filter: FP 100 €, FN 0,10 €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?",
+          "fullSolution": "Faktor 1000 wie im Basisbeispiel, andere Euro-Beträge. Schwelle hoch."
+        },
+        {
+          "parameters": {
+            "fpCost": 60,
+            "fnCost": 0.2
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle senken.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "0,5 ist immer das Optimum.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit positiv, weil FP deutlich teurer ist als FN.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nur die Trefferquote zählt.",
+              "correct": false
+            }
+          ],
+          "prompt": "QA-Scanner: Ausschuss eines guten Teils (FP) 60, entgangener Mini-Defekt (FN) 0,20. Strategie?",
+          "fullSolution": "FP teurer → weniger Positive, Schwelle rauf."
+        },
+        {
+          "parameters": {
+            "fpCost": 15,
+            "fnCost": 0.03
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle gegen 0.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Fix 0,5.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Accuracy unabhängig vom Threshold.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur sehr sichere Positive, weil FP ≈ 500·FN.",
+              "correct": true
+            }
+          ],
+          "prompt": "Phishing-Warnung: Fehlalarm an eine Kundin 15, übersehene Nuisance-Mail 0,03. Schwelle?",
+          "fullSolution": "FP-dominant. Anheben."
+        },
+        {
+          "parameters": {
+            "fpCost": 500,
+            "fnCost": 0.5
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit alarmieren, weil ein FP 1000-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Schwelle senken, damit nichts durchrutscht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "0,5 beibehalten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Schwelle ändert die Kosten nicht.",
+              "correct": false
+            }
+          ],
+          "prompt": "SOC-Alert: falscher Incident-Call (FP) 500, verpasste Low-Severity-Mail (FN) 0,5. Kostenstrategie?",
+          "fullSolution": "Faktor 1000. Höhere Schwelle, weniger Alarme."
+        },
+        {
+          "parameters": {
+            "fpCost": 50,
+            "fnCost": 0.1
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert senken (Richtung 0,1): Fast alles wird als Spam markiert, dadurch geht kein Spam unter.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als Spam klassifizieren, weil ein FP 500-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Beim Standard 0,5 bleiben: Dieser Wert ist kostenunabhängig immer optimal.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Schwellenwert beeinflusst die Kostenbilanz nicht — entscheidend ist allein die Accuracy.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Spamfilter gibt Wahrscheinlichkeiten aus. FP kostet 50 €, FN 0,10 €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?",
+          "fullSolution": "Wie die Basisfrage mit FN 0,10 statt 0,05: FP bleibt dominant, Schwelle hoch."
+        }
+      ]
     },
     {
       "caseId": "sigmoid-predict-numpy",

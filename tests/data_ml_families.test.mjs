@@ -261,6 +261,26 @@ test('W10 static cases enforce profiles and competency overrides', () => {
   assert.deepEqual(report.competencyIds, ['c-ml-linear']);
 });
 
+test('static data-ml choice cases without generators honor seeded variants', () => {
+  const base = EXERCISE_FAMILIES.instantiate(
+    'formula-quadratic-error-metric',
+    0,
+    'intro',
+    'rmse-unit-from-mse',
+  );
+  const next = EXERCISE_FAMILIES.instantiate(
+    'formula-quadratic-error-metric',
+    1,
+    'intro',
+    'rmse-unit-from-mse',
+  );
+  assert.equal(base.parameters.variant, 0);
+  assert.equal(next.parameters.variant, 1);
+  assert.notEqual(base.prompt, next.prompt);
+  assert.equal(base.choices.find((choice) => choice.correct).id, 'b');
+  assert.equal(next.choices.find((choice) => choice.correct).id, 'a');
+});
+
 
 
 test('W11 static cases enforce profiles and logistic competency', () => {
