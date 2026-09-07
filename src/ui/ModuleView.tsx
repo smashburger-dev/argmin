@@ -26,6 +26,9 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
   const curated = module?.placements.filter((item) => item.role === 'curated') ?? [];
   const practice = module?.placements.filter((item) => item.role === 'practice-space') ?? [];
   useEffect(() => {
+    setOpen(module?.lessonIds.length ? 'lessons' : 'exercises');
+  }, [moduleId]);
+  useEffect(() => {
     if (module?.lessonIds.length === 1 && curated.length === 0) location.hash = `#/lesson/${module.lessonIds[0]}`;
   }, [module?.moduleId, module?.lessonIds, curated.length]);
   if (!module) return <section class="view"><h1 tabIndex={-1}>Modul nicht gefunden</h1></section>;
@@ -47,10 +50,13 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
       <div class="module-panels">
         {hasLessons && (
           <section class={`module-panel${open === 'lessons' ? ' open' : ''}`} aria-labelledby="module-lesson-title">
-            <button type="button" class="module-panel-head" aria-expanded={open === 'lessons'} aria-controls="module-lessons" onClick={() => setOpen('lessons')}>
-              <span><p class="eyebrow">Lesen</p><h2 id="module-lesson-title">Lektionen</h2></span>
+            <div class="module-panel-head">
+              <p class="eyebrow">Lesen</p>
+              <h2 id="module-lesson-title">
+                <button type="button" aria-expanded={open === 'lessons'} aria-controls="module-lessons" onClick={() => setOpen('lessons')}>Lektionen</button>
+              </h2>
               <span>{module.lessonIds.length}</span>
-            </button>
+            </div>
             <div id="module-lessons" hidden={open !== 'lessons'}>
               <div class="lesson-list">
                 {module.lessonIds.map((lessonId) => {
@@ -65,10 +71,13 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
         )}
         {hasExercises && (
           <section class={`module-panel${open === 'exercises' ? ' open' : ''}`} aria-labelledby="module-exercise-title">
-            <button type="button" class="module-panel-head" aria-expanded={open === 'exercises'} aria-controls="module-exercises" onClick={() => setOpen('exercises')}>
-              <span><p class="eyebrow">Üben</p><h2 id="module-exercise-title">Aufgaben & Üben</h2></span>
-              <span>{curated.length + practice.length}</span>
-            </button>
+            <div class="module-panel-head">
+              <p class="eyebrow">Üben</p>
+              <h2 id="module-exercise-title">
+                <button type="button" aria-expanded={open === 'exercises'} aria-controls="module-exercises" onClick={() => setOpen('exercises')}>Aufgaben & Üben</button>
+              </h2>
+              <span>{curated.length + standalonePractice.length}</span>
+            </div>
             <div id="module-exercises" hidden={open !== 'exercises'}>
               <div class="activity-list">
                 {curated.map((placement) => {
