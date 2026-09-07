@@ -93,6 +93,12 @@ const LESSONS = [
   { id: 'l-genai-security', file: 'genai-security', competency: 'c-genai-security' },
   { id: 'l-genai-prototype', file: 'genai-prototype', competency: 'c-genai-prototype' },
 ];
+const FAMILIES_BY_LESSON = {
+  'rag-retrieval': new Set(['construct-normalize-chunk-contract', 'aggregate-retrieval-ranking-metric']),
+  'genai-evaluation': new Set(['classify-rule-cascade-priority', 'aggregate-confusion-metric', 'aggregate-detector-eval-compare']),
+  'genai-security': new Set(['aggregate-confusion-metric', 'classify-rule-cascade-priority', 'aggregate-detector-eval-compare']),
+  'genai-prototype': new Set(['construct-stub-prototype-contract', 'construct-secure-prototype-contract', 'reproduce-pipeline-status-report']),
+};
 
 test('w27-w30 lessons follow the canonical lesson contract with allowed readings only', () => {
   const sources = new Set(readJson('content/sources.json').sources.map((s) => s.sourceId));
@@ -135,12 +141,9 @@ test('w27-w30 lesson markdown is German, in budget and links only its own exerci
     assert.equal(md.includes('```html'), false, `${lesson.file}.md: raw HTML verboten`);
     const weekId = `w${lesson.id.slice(-6) === 'l-genai' ? '' : ''}`; // not used; explicit below
     void weekId;
-    const links = [...md.matchAll(/#\/exercise\/(w\d+-e\d)/g)].map((m) => m[1]);
+    const links = [...md.matchAll(/#\/family\/([^/]+)\//g)].map((m) => m[1]);
     assert.ok(links.length >= 3, `${lesson.file}.md: too few exercise links`);
-    for (const link of links) {
-      const week = link.slice(0, 3);
-      assert.ok(WEEKS.includes(week), `${lesson.file}.md links foreign exercise ${link}`);
-    }
+    for (const familyId of links) assert.ok(FAMILIES_BY_LESSON[lesson.file].has(familyId), `${lesson.file}.md links foreign family ${familyId}`);
   }
 });
 

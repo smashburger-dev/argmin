@@ -51,7 +51,7 @@ Nach **Model Cards** (Mitchell et al., FAT\* 2019) dokumentiert eine kurze Karte
 
 ## Berichtete Streuung statt Einzelwert
 
-Ein einzelner Score ist eine Zufallsgröße. Dasselbe Experiment mehrfach wiederholt ergibt eine Streuung (Spannweite zwischen bestem und schlechtestem Lauf), die mitberichtet wird. Eine Spannweite von 32 Prozentpunkten über 10 Wiederholungen sagt mehr als ein Score von 72 % aus einem Lauf. (Das liest du in [w17-e2](#/exercise/w17-e2).)
+Ein einzelner Score ist eine Zufallsgröße. Dasselbe Experiment mehrfach wiederholt ergibt eine Streuung (Spannweite zwischen bestem und schlechtestem Lauf), die mitberichtet wird. Eine Spannweite von 32 Prozentpunkten über 10 Wiederholungen sagt mehr als ein Score von 72 % aus einem Lauf. (Das liest du in einer Einstiegsaufgabe.)
 
 ## Typische Fehler
 
@@ -64,4 +64,4 @@ Ein einzelner Score ist eine Zufallsgröße. Dasselbe Experiment mehrfach wieder
 
 ## Direkter Check
 
-Klär den Vertrag in [w17-e1](#/exercise/w17-e1) und lies in [w17-e2](#/exercise/w17-e2) eine berichtete Run-to-Run-Streuung: dieselbe Spannweite entsteht, wenn du dasselbe Experiment mit verschiedenen Seeds wiederholst. Sage dann die rng-Ausgabe in [w17-e3](#/exercise/w17-e3) vorher und baue den Vertrag in [w17-e4](#/exercise/w17-e4) nach: deterministische Funktion plus Manifest-Prüfung. Final: [w17-e5](#/exercise/w17-e5) berichtet drei Konfigurationen mit Wiederholungs-Check — und das Wochenprojekt [Reproduzierbarer Modellvergleich](#/project/p-ml-repro-comparison) setzt alles als lokales pytest-Projekt um.
+Klär den Vertrag in [Konzept-Check Reproduzierbarkeit: Eine Kollegin behauptet, ihr ML-Experiment …](#/family/classify-repro-contract/repro-contract-violation/0/intro) und lies in einer Einstiegsaufgabe eine berichtete Run-to-Run-Streuung: dieselbe Spannweite entsteht, wenn du dasselbe Experiment mit verschiedenen Seeds wiederholst. Sage dann die rng-Ausgabe in [Zufallsströme vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von …](#/family/trace-assignment-state/rng-stream-reseed-trace/0/core) vorher und baue den Vertrag in [Implementiere den Reproduzierbarkeitsvertrag in zwei Funktionen. …](#/family/reproduce-seeded-experiment-report/seeded-experiment-manifest/0/core) nach: deterministische Funktion plus Manifest-Prüfung. Final: [Final Boss Reproduzierbarkeit: Implementiere `repro_report(configs)` und …](#/family/reproduce-seeded-experiment-report/repro-report-table-check/0/stretch) berichtet drei Konfigurationen mit Wiederholungs-Check — und das Projekt [Reproduzierbarer Modellvergleich](#/project/p-ml-repro-comparison) setzt alles als lokales pytest-Projekt um.

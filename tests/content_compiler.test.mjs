@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   compileContent,
+  resolveLegacyExerciseLink,
   validateCompetencyGraph,
   validateCompiledContent,
   validateSourceDocument,
@@ -51,6 +52,36 @@ test('public compiler is deterministic and excludes private-only legacy content'
   }
   assert.equal(first.familyActivities.some((activity) => activity.definitionId === 'w05-e7'), false);
   assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|locatorPath|localPath|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/);
+});
+
+test('legacy exercise links resolve to curated family routes', () => {
+  const families = [
+    {
+      familyId: 'family-one',
+      cases: [{ caseId: 'case-one', difficultyProfile: 'intro', sourceLineage: ['w06-e1'], prompt: 'Erste Aufgabe' }],
+    },
+    {
+      familyId: 'family-two',
+      cases: [{ caseId: 'case-two', difficultyProfile: 'core', sourceLineage: ['w06-e1', 'w06-e2'], prompt: 'Zweite Aufgabe' }],
+    },
+  ];
+  const activities = [{ familyId: 'family-two', caseId: 'case-two', title: 'Kuratiertes Beispiel' }];
+  assert.deepEqual(
+    resolveLegacyExerciseLink('w06-e1', activities, families),
+    {
+      familyId: 'family-two',
+      caseId: 'case-two',
+      difficulty: 'core',
+      title: 'Kuratiertes Beispiel',
+      curated: true,
+      href: '#/family/family-two/case-two/0/core',
+    },
+  );
+  assert.equal(resolveLegacyExerciseLink('w06-e2', activities, families).href, '#/family/family-two/case-two/0/core');
+  assert.throws(
+    () => resolveLegacyExerciseLink('w99-e9', activities, families),
+    /Legacy-Aufgabe w99-e9 konnte nicht aufgelöst werden/,
+  );
 });
 
 test('competency validator rejects unknown prerequisites and cycles', () => {

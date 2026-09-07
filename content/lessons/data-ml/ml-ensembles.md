@@ -68,4 +68,4 @@ Wie in der Lektion „Cross-Validation und Leakage-Kontrolle“: Der Vergleich B
 
 ## Direkter Check
 
-Trace einen handgeschriebenen Baum in [w15-e3](#/exercise/w15-e3), rechne das Stimm-Ensemble in [w15-e2](#/exercise/w15-e2) und implementiere Gini plus Split-Suche in [w15-e4](#/exercise/w15-e4). Transfer: [w15-e5](#/exercise/w15-e5) vergleicht Baum, Voting und lineare Baseline auf identischen Daten.
+Trace einen handgeschriebenen Baum in [Entscheidungsbaum von Hand ausführen: Der Code implementiert einen Baum der …](#/family/trace-assignment-state/tree-majority-vote-trace/0/core), rechne das Stimm-Ensemble in einer Einstiegsaufgabe und implementiere Gini plus Split-Suche in [Implementiere die Baumbasis: `gini(labels)` berechnet $1 - \sum_k p_k^2$ aus …](#/family/optimize-tree-best-split/gini-best-binary-split/0/core). Transfer: [Final Boss Ensembles: Implementiere drei Funktionen. `majority_vote(preds)` …](#/family/construct-ensemble-predictor-comparison/voting-tree-linear-rmse/0/stretch) vergleicht Baum, Voting und lineare Baseline auf identischen Daten.

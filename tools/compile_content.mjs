@@ -141,7 +141,8 @@ function assertUniqueCheckpoints(lessons) {
   }
 }
 
-function compileLessonContent(contentRoot, lessons, projectRoot) {
+function compileLessonContent(contentRoot, lessons, projectRoot, familyActivities, families) {
+  const links = legacyExerciseLinks(familyActivities, families);
   const visualizationIds = new Map();
   return lessons.map((lesson) => ({
     ...lesson,
@@ -161,10 +162,52 @@ function compileLessonContent(contentRoot, lessons, projectRoot) {
       }
       if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown oder .viz.json zeigen`);
       const source = readFileSync(resolveContentPath(contentRoot, block.contentRef, ['.md']), 'utf8');
-      const html = renderMarkdown(source).replace(/^<h1>[^<]*<\/h1>\n/, '');
+      const html = renderMarkdown(source)
+        .replace(/^<h1>[^<]*<\/h1>\n/, '')
+        .replace(/href="#\/exercise\/([^"]+)"/g, (_, legacyId) => {
+          const target = links.get(legacyId);
+          if (!target) throw new Error(`${lesson.lessonId}: Legacy-Aufgabe ${legacyId} konnte nicht aufgelöst werden`);
+          return `href="${target.href}"`;
+        })
+        .replace(/>(w\d\d-e\d+)</g, (_, legacyId) => {
+          const target = links.get(legacyId);
+          if (!target) throw new Error(`${lesson.lessonId}: Legacy-Aufgabe ${legacyId} konnte nicht aufgelöst werden`);
+          return `>${target.title}<`;
+        });
       return { ...block, html };
     }),
   }));
+}
+
+export function resolveLegacyExerciseLink(legacyId, familyActivities, families) {
+  const target = legacyExerciseLinks(familyActivities, families).get(legacyId);
+  if (!target) throw new Error(`Legacy-Aufgabe ${legacyId} konnte nicht aufgelöst werden`);
+  return target;
+}
+
+function legacyExerciseLinks(familyActivities, families) {
+  const curated = new Set(familyActivities.map((activity) => `${activity.familyId}:${activity.caseId}`));
+  const links = new Map();
+  for (const family of families) {
+    for (const item of family.cases || []) {
+      for (const legacyId of item.sourceLineage || []) {
+        const candidate = {
+          familyId: family.familyId,
+          caseId: item.caseId,
+          difficulty: item.difficultyProfile,
+          title: familyActivities.find((activity) => activity.familyId === family.familyId && activity.caseId === item.caseId)?.title
+            || stripPromptMarkup(item.prompt, 60),
+          curated: curated.has(`${family.familyId}:${item.caseId}`),
+        };
+        const current = links.get(legacyId);
+        if (!current || (!current.curated && candidate.curated)) links.set(legacyId, candidate);
+      }
+    }
+  }
+  return new Map([...links].map(([legacyId, target]) => [legacyId, {
+    ...target,
+    href: `#/family/${target.familyId}/${target.caseId}/0/${target.difficulty}`,
+  }]));
 }
 
 function validateVisualizationExpressions(spec, lessonId, visualizationId) {
@@ -524,12 +567,12 @@ function filterPublicEntities(entities) {
 }
 
 function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities) {
-  entities.lessons = compileLessonContent(contentRoot, entities.lessons, projectRoot);
+  entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, { lessons: entities.lessons, definitions: [], projects: entities.projects }));
+  const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
+  entities.lessons = compileLessonContent(contentRoot, entities.lessons, projectRoot, familyActivities, entities.families);
   const visualizations = entities.lessons.flatMap((lesson) => lesson.blocks
     .filter((block) => block.type === 'visualization' && block.viz && block.visualizationId)
     .map((block) => ({ visualizationId: block.visualizationId, lessonId: lesson.lessonId, spec: block.viz })));
-  entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, { lessons: entities.lessons, definitions: [], projects: entities.projects }));
-  const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
   return {
     schemaVersion: 1, catalogId: catalog.catalogId, catalogVersion: catalog.version, contractVersion, contentVersion: '',
     profile: 'public', locale: catalog.locale, overlays: [], sourceRights: entities.sourceRights, sources: entities.sources,
@@ -615,6 +658,7 @@ export function buildSplitArtifacts(bundle) {
     familyActivities: bundle.familyActivities,
     families: bundle.families.map((family) => ({
       familyId: family.familyId,
+      summary: family.contract?.summary || '',
       contract: family.contract,
       cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible }) => ({
         caseId, difficultyProfile, masteryEligible,

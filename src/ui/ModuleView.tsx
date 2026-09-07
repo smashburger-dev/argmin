@@ -1,11 +1,12 @@
 import type { CatalogData } from '../app/types';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
+import { Breadcrumbs } from './Breadcrumbs';
 
 const difficultyLabel = {
   intro: 'Einstieg',
   core: 'Kern',
-  stretch: 'Dehnung',
+  stretch: 'Vertiefung',
   challenge: 'Herausforderung',
 } as const;
 
@@ -20,7 +21,8 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
   return (
     <section class="view" aria-labelledby="module-title">
       <header class="view-header">
-        <p class="eyebrow">LearningModule · {module.estimatedMinutes} Min.{module.durationOverridden ? ' (Override)' : ' abgeleitet'}</p>
+        <Breadcrumbs items={[{ href: '#/learn', label: 'Lernen' }, { label: module.title }]} />
+        <p class="eyebrow">Modul · {module.estimatedMinutes} Min.</p>
         <h1 id="module-title" tabIndex={-1}>{module.title}</h1>
         <p class="lede">{module.description}</p>
       </header>
@@ -43,7 +45,7 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
       )}
       <section class="activity-section" aria-labelledby="module-curated-title">
         <div class="section-heading">
-          <div><p class="eyebrow">Kuratiert</p><h2 id="module-curated-title">Aufgaben dieser Lektüre</h2></div>
+          <div><p class="eyebrow">Kuratiert</p><h2 id="module-curated-title">Aufgaben</h2></div>
           <span>{curated.length}</span>
         </div>
         {curated.length > 0
@@ -57,17 +59,17 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
               return (
                 <article class="activity-card" key={placement.placementId}>
                   <div>
-                    <p class="card-kicker">{placement.familyId} · {difficultyLabel[placement.difficulty]}{placement.seed != null ? ` · Seed ${placement.seed}` : ''}</p>
+                    <p class="card-kicker">{difficultyLabel[placement.difficulty]} · {exercise?.masteryEligible ? 'Kompetenzbeleg möglich' : 'Übung'}</p>
                     <h3>{title}</h3>
                     <p>{exercise
                       ? (exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Bearbeitungsnachweis, kein Mastery-Beleg.')
-                      : 'Falltyp, Seed und Profil. Ohne JSON-Kopie.'}</p>
+                      : 'Jede Öffnung erzeugt eine neue Variante.'}</p>
                   </div>
                   {href
                     ? <Button href={href}>Aufgabe öffnen</Button>
                     : familyHref
                       ? <Button href={familyHref}>Variante öffnen</Button>
-                      : <span class="muted">Noch nicht instantiierbar</span>}
+                      : <span class="muted">Bald verfügbar</span>}
                 </article>
               );
             })}</div>
@@ -76,19 +78,19 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
       {practice.length > 0 && (
         <section class="activity-section" aria-labelledby="module-practice-title">
           <div class="section-heading">
-            <div><p class="eyebrow">Übungsplatz</p><h2 id="module-practice-title">Familien-Varianten</h2></div>
+            <div><p class="eyebrow">Übungsplatz</p><h2 id="module-practice-title">Frei üben</h2></div>
             <span>{practice.length}</span>
           </div>
           <div class="activity-list">{practice.map((placement) => (
             <article class="activity-card" key={placement.placementId}>
               <div>
-                <p class="card-kicker">{placement.familyId} · {difficultyLabel[placement.difficulty]}</p>
-                <h3>Varianten über Falltyp, Seed und Profil</h3>
-                <p>Neue Aufgaben sind Falltyp, Seed und Profil. Keine JSON-Kopie.</p>
+                <p class="card-kicker">{difficultyLabel[placement.difficulty]} · Übung</p>
+                <h3>{catalog.families?.find((family) => family.familyId === placement.familyId)?.summary || 'Freie Aufgabe'}</h3>
+                <p>Jede Öffnung erzeugt eine neue Variante.</p>
               </div>
               {placement.familyId
                 ? <Button href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>Üben</Button>
-                : <span class="muted">Noch nicht instantiierbar</span>}
+                : <span class="muted">Bald verfügbar</span>}
             </article>
           ))}</div>
         </section>

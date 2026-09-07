@@ -20,6 +20,7 @@ test('split index plus bodies plus sections rebuild every lesson, activity and f
   assert.deepEqual(publicSplit.index.familyActivities, publicBundle.familyActivities);
   assert.deepEqual(publicSplit.index.families, publicBundle.families.map((family) => ({
     familyId: family.familyId,
+    summary: family.contract?.summary || '',
     contract: family.contract,
     cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible }) => ({ caseId, difficultyProfile, masteryEligible })),
   })));

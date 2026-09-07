@@ -7,8 +7,11 @@ import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository
 import { AnswerControls } from './AnswerControls';
 import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
-import { TraceTableView } from './TraceTableView';
 import { Button } from './Button';
+import { TraceTableView } from './TraceTableView';
+import { ExerciseFrame } from './ExerciseFrame';
+import { getExerciseContext } from './exercise-context';
+import type { CatalogData } from '../app/types';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
@@ -23,19 +26,19 @@ function parseFamilyRef(ref: string): {
 } {
   const [familyId = '', casePart = '', seedPart = '', difficulty = ''] = String(ref).split('/');
   if (!familyId) throw new Error('Familie fehlt.');
-  if (!difficulty) throw new Error('Profil fehlt.');
+  if (!difficulty) throw new Error('Schwierigkeitsstufe fehlt.');
   const caseId = casePart && casePart !== '-' ? casePart : undefined;
   const seed = seedPart === '-' || seedPart === ''
     ? Math.floor(Math.random() * 2 ** 31)
     : /^\d+$/.test(seedPart)
       ? Number(seedPart) >>> 0
-      : (() => { throw new Error(`Seed ungültig: ${seedPart}`); })();
+      : (() => { throw new Error(`Startwert ungültig: ${seedPart}`); })();
   return { familyId, caseId, seed, difficulty };
 }
 
 configureExerciseFamilies(loadFamilyIndex());
 
-export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
+export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogData; familyRef: string }) {
   const [answer, setAnswer] = useState<unknown>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
   const [correct, setCorrect] = useState<boolean | null>(null);
@@ -88,7 +91,7 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
   // S4D1: Trace-Tabelle als Interaktionsvariante, sobald der Generator
   // Zustände kennt (instance.traceTable). Sonst normale Familienübung.
   if (instance.traceTable) {
-    return <TraceTableView instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} />;
+    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} />;
   }
 
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
@@ -166,27 +169,39 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
     ? instance.parameters.starterCode
     : '';
 
+  const ctx = getExerciseContext(catalog, instance, summary);
+  const feedback = failed
+    ? <p role="alert" class="content-error">{failed}</p>
+    : verdict
+      ? <div class={`feedback-box ${correct ? 'correct' : 'incorrect'}`}>
+          <p class="feedback-title">{verdict}</p>
+          {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
+          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {new Date(reviewDueAt).toLocaleDateString('de-DE')}</p> : null}
+          {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
+        </div>
+      : null;
   return (
-    <section class="view" aria-labelledby="family-title">
-      <header class="view-header">
-        <p class="eyebrow">{instance.familyId} · {instance.caseId} · Seed {instance.seed}</p>
-        <h1 id="family-title" tabIndex={-1}>Variante üben</h1>
-      </header>
-      <div class="lede"><MathMarkup html={instance.prompt} /></div>
-      {isCode
+    <ExerciseFrame
+      ctx={ctx}
+      eyebrow={`${ctx.difficultyLabel} · Variante ${instance.seed}`}
+      prompt={<MathMarkup html={instance.prompt} />}
+      snippet={!isCode && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
+      answer={isCode
         ? <CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} />
         : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
-      <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>
-      {failed ? <p role="alert" class="content-error">{failed}</p> : null}
-      {verdict ? <h2>{verdict}</h2> : null}
-      {correct === true && masteryNote ? <p>Kann als Kompetenzbeleg zählen.</p> : null}
-      {correct === true && reviewDueAt ? <p>Nächstes Review: {reviewDueAt}</p> : null}
-      {correct === false && errorType ? <p>Fehlertyp: {errorType}</p> : null}
-      <div class="hint-stack">{shownHints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}</div>
-      {shownHints.length < 2 && !solutionVisible ? <Button variant="ghost" size="sm" onClick={() => void openHint()}>Hinweis öffnen</Button> : null}
-      {!solutionVisible && instance.fullSolution ? <Button variant="ghost" size="sm" onClick={() => void revealSolution()}>Lösung dieser Variante anzeigen</Button> : null}
-      {solutionVisible && instance.fullSolution ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div> : null}
-      <p><a href="#/learn">Zurück zum Lernen</a></p>
-    </section>
+      actions={
+        <>
+          <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>
+          {shownHints.length < 2 && !solutionVisible ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/2</Button> : null}
+          {!solutionVisible && instance.fullSolution ? <Button variant="ghost" onClick={() => void revealSolution()}>Lösung anzeigen</Button> : null}
+        </>
+      }
+      feedback={feedback}
+      hints={shownHints}
+      solution={solutionVisible && instance.fullSolution
+        ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div>
+        : undefined}
+      done={correct === true || solutionVisible}
+    />
   );
 }

@@ -60,4 +60,4 @@ Beispiel Spamfilter: Eine gelöschte wichtige E-Mail (FP) schadet 50 €, zugest
 
 ## Direkter Check
 
-Zähle in [w11-e2](#/exercise/w11-e2) Konfusionsmatrix-Summen nach. [w11-e3](#/exercise/w11-e3) prüft die Schwellenwert-Entscheidung bei ungleichen Kosten. In [w11-e4](#/exercise/w11-e4) implementierst du sigmoid, confusion und precision/recall/F1 exakt; [w11-e5](#/exercise/w11-e5) verlangt die komplette Kosten-Suche über Schwellenwerte.
+Zähle in einer Einstiegsaufgabe Konfusionsmatrix-Summen nach. [Ein Spamfilter gibt Wahrscheinlichkeiten aus. Ein False Positive (legitime Mail …](#/family/aggregate-confusion-metric/threshold-under-asymmetric-cost/0/core) prüft die Schwellenwert-Entscheidung bei ungleichen Kosten. In [Implementiere die Klassifikationswerkzeuge. `sigmoid(z)` = 1/(1 + e^(−z)) …](#/family/aggregate-confusion-metric/sigmoid-predict-numpy/0/core) implementierst du sigmoid, confusion und precision/recall/F1 exakt; [Final Boss: Kostengetriebene Schwellenwertsuche. `total_cost(cm, fp_cost, …](#/family/aggregate-confusion-metric/confusion-cost-report/0/stretch) verlangt die komplette Kosten-Suche über Schwellenwerte.
