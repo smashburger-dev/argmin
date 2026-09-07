@@ -157,27 +157,37 @@ function validateProjectPackage(contentRoot, file, project) {
   if (project.runnerMode === 'browser') return;
   const sourceFile = resolveContentPath(contentRoot, file);
   const directory = dirname(sourceFile);
-  for (const path of project.starterFiles) {
-    if (!existsSync(projectPath(directory, path))) throw new Error(`${project.projectId}: Starterdatei fehlt: ${path}`);
-  }
-  for (const path of project.solutionFiles) {
-    if (!existsSync(projectPath(directory, path))) throw new Error(`${project.projectId}: Lösungsdatei fehlt: ${path}`);
-  }
+  validateProjectFiles(directory, project.projectId, project.starterFiles, 'Starterdatei');
+  validateProjectFiles(directory, project.projectId, project.solutionFiles, 'Lösungsdatei');
   const manifestPath = projectPath(directory, 'check-manifest.json');
   if (!existsSync(manifestPath)) throw new Error(`${project.projectId}: check-manifest.json fehlt`);
   const manifest = readJson(manifestPath);
-  if (manifest.schemaVersion !== 1 || manifest.projectId !== project.projectId || String(manifest.projectVersion) !== String(project.version)) {
-    throw new Error(`${project.projectId}: Check-Manifest-Identität stimmt nicht`);
-  }
+  validateProjectManifest(project, manifest);
   const expectedArgs = ['-m', 'pytest', '-q', '--disable-warnings', '--maxfail=1', ...(manifest.testPaths || [])];
   const command = project.allowedCommands.find((item) => item.program === 'python');
   if (!command || JSON.stringify(command.args) !== JSON.stringify(expectedArgs)) throw new Error(`${project.projectId}: pytest-Kommando stimmt nicht`);
-  for (const required of manifest.requiredFiles || []) {
+  validateManifestFiles(directory, project.projectId, manifest.requiredFiles || []);
+}
+
+function validateProjectFiles(directory, projectId, files, label) {
+  for (const path of files) {
+    if (!existsSync(projectPath(directory, path))) throw new Error(`${projectId}: ${label} fehlt: ${path}`);
+  }
+}
+
+function validateProjectManifest(project, manifest) {
+  if (manifest.schemaVersion !== 1 || manifest.projectId !== project.projectId || String(manifest.projectVersion) !== String(project.version)) {
+    throw new Error(`${project.projectId}: Check-Manifest-Identität stimmt nicht`);
+  }
+}
+
+function validateManifestFiles(directory, projectId, files) {
+  for (const required of files) {
     const path = projectPath(directory, required.path);
-    if (!existsSync(path)) throw new Error(`${project.projectId}: Pflichtdatei fehlt: ${required.path}`);
+    if (!existsSync(path)) throw new Error(`${projectId}: Pflichtdatei fehlt: ${required.path}`);
     if (required.sha256) {
       const actual = createHash('sha256').update(readFileSync(path)).digest('hex');
-      if (actual !== required.sha256) throw new Error(`${project.projectId}: Hash stimmt nicht: ${required.path}`);
+      if (actual !== required.sha256) throw new Error(`${projectId}: Hash stimmt nicht: ${required.path}`);
     }
   }
 }
