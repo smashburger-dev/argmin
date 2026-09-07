@@ -13,6 +13,7 @@
 import {
   genPythonStateTrace,
   genCodeReadingOutput,
+  TRANSFORM_MODES,
   genFunctionCompose,
   genControlFlowOutput,
   genCollectionStepTrace,
@@ -90,7 +91,7 @@ const ASSIGNMENT_PROFILE_PREDICATES = {
   'method-chain-transform': {
     intro: (p) => p.mode === 0,
     stretch: (p) => p.mode === 1,
-    challenge: (p) => p.mode === 1 && p.word.length >= 12,
+    challenge: (p) => p.mode === 2,
   },
 };
 
@@ -137,7 +138,7 @@ const solveAssignmentAccumulate = (parameters) => {
   return { output: `${n} ${m}` };
 };
 const solveAssignmentSlice = (parameters) => ({ output: parameters.word.slice(parameters.a, parameters.b) });
-const solveAssignmentJoin = (parameters) => ({ output: parameters.parts.slice(parameters.i, parameters.j).join('-') });
+const solveAssignmentJoin = (parameters) => ({ output: parameters.parts.slice(parameters.i, parameters.j).join(parameters.sep ?? '-') });
 const solveAssignmentComprehension = (parameters) => {
   const out = parameters.nums
     .filter((n) => n > parameters.threshold)
@@ -146,10 +147,7 @@ const solveAssignmentComprehension = (parameters) => {
 };
 const solveAssignmentTransform = (parameters) => {
   const clean = parameters.word.trim();
-  const out = parameters.mode === 0
-    ? clean.toUpperCase()
-    : clean.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
-  return { output: out };
+  return { output: TRANSFORM_MODES[parameters.mode].apply(clean) };
 };
 const TRACE_ASSIGNMENT_SOLVERS = {
   reassign: solveAssignmentReassign,

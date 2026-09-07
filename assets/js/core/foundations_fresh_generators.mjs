@@ -100,7 +100,17 @@ export function genPythonStateTrace(seed) {
 /** predict-output: reading slices, splits/joins and simple comprehensions.
  *  Invariants: slice bounds valid and non-trivial (result is a proper
  *  substring, never the whole word); comprehension output differs from the
- *  input list; all outputs are deterministic Python reprs. */
+ *  input list; joins and string modes vary without leaking the output;
+ *  all outputs are deterministic Python reprs. */
+export const TRANSFORM_MODES = [
+  { method: 'upper', apply: (clean) => clean.toUpperCase() },
+  {
+    method: 'title',
+    apply: (clean) => clean.split(' ').map((word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`).join(' '),
+  },
+  { method: 'capitalize', apply: (clean) => `${clean[0].toUpperCase()}${clean.slice(1).toLowerCase()}` },
+];
+
 export function genCodeReadingOutput(seed) {
   const r = rng(seed);
   const shape = ['slice', 'join', 'comprehension', 'transform'][randInt(r, 0, 3)];
@@ -117,17 +127,31 @@ export function genCodeReadingOutput(seed) {
     };
   }
   if (shape === 'join') {
-    const parts = [['ki', 'lern', 'plattform'], ['daten', 'analyse', 'kurs'], ['abruf', 'statt', 'wiederlesen'], ['code', 'lesen', 'und', 'schreiben']][randInt(r, 0, 3)];
+    const parts = [
+      ['ki', 'lern', 'plattform'],
+      ['daten', 'analyse', 'kurs'],
+      ['abruf', 'statt', 'wiederlesen'],
+      ['code', 'lesen', 'und', 'schreiben'],
+      ['modell', 'daten', 'pruefen'],
+      ['lernen', 'messen', 'verbessern', 'teilen'],
+      ['code', 'testen', 'debuggen'],
+      ['frage', 'hypothese', 'ergebnis'],
+      ['tabelle', 'spalte', 'zeile', 'wert'],
+      ['api', 'daten', 'laden', 'speichern'],
+      ['klasse', 'merkmal', 'ziel'],
+      ['text', 'teilen', 'suchen', 'bewerten'],
+    ][randInt(r, 0, 11)];
     // at least two parts must survive the slice: a single-element join would
     // just echo a substring of the prompt verbatim
     const i = randInt(r, 0, parts.length - 2);
     const j = randInt(r, Math.min(i + 2, parts.length), parts.length);
-    const out = parts.slice(i, j).join('-');
+    const sep = ['-', '_', ' ', '/', '+'][randInt(r, 0, 4)];
+    const out = parts.slice(i, j).join(sep);
     return {
-      parameters: { shape, parts, i, j, snippet: `teile = "${parts.join(',')}".split(",")\nprint("-".join(teile[${i}:${j}]))` },
+      parameters: { shape, parts, i, j, sep, snippet: `teile = "${parts.join(',')}".split(",")\nprint("${sep}".join(teile[${i}:${j}]))` },
       expected: { output: out },
       prompt: `Was gibt dieses Programm aus? split und join wirken zusammen; die Ausgabe ist der fertige String.`,
-      fullSolution: `split(",") erzeugt die Liste ${pyRepr(parts)}. teile[${i}:${j}] ist ${pyRepr(parts.slice(i, j))}, und "-".join verbindet diese Teile zu ${out}.`,
+      fullSolution: `split(",") erzeugt die Liste ${pyRepr(parts)}. teile[${i}:${j}] ist ${pyRepr(parts.slice(i, j))}, und "${sep}".join verbindet diese Teile zu ${out}.`,
     };
   }
   if (shape === 'comprehension') {
@@ -143,14 +167,35 @@ export function genCodeReadingOutput(seed) {
       fullSolution: `Die Bedingung behält ${pyRepr(nums.filter((n) => n > threshold))}; danach multipliziert jedes erhaltene z mit ${factor}. Ergebnis: ${pyRepr(out)}.`,
     };
   }
-  const word = ['  lernplan  ', ' abrufuebung ', '  datenbank '][randInt(r, 0, 2)];
-  const mode = randInt(r, 0, 1);
-  const out = mode === 0 ? word.trim().toUpperCase() : word.trim().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  const wordBase = [
+    '  lern plan  ',
+    ' abruf uebung ',
+    '  daten bank ',
+    ' modell training ',
+    ' frage pruefen ',
+    ' code lesen ',
+    ' fehler suchen ',
+    ' zahlen vergleichen ',
+    ' text normalisieren ',
+    ' ziel wert ',
+    ' spalten namen ',
+    ' ergebnis sichern ',
+  ][randInt(r, 0, 11)];
+  const mode = randInt(r, 0, 2);
+  const padding = randInt(r, 1, 3);
+  const word = `${' '.repeat(padding)}${wordBase.trim()}${' '.repeat(padding)}`;
+  const { method, apply } = TRANSFORM_MODES[mode];
+  const clean = word.trim();
+  const out = apply(clean);
   return {
-    parameters: { shape, word, mode, snippet: `t = "${word}"\nprint(t.strip()${mode === 0 ? '.upper()' : '.title()'})` },
+    parameters: { shape, word, mode, snippet: `t = "${word}"\nprint(t.strip().${method}())` },
     expected: { output: out },
     prompt: `Was gibt dieses Programm aus? String-Methoden wandeln schrittweise um.`,
-    fullSolution: `strip() entfernt die Rand-Leerzeichen, ${mode === 0 ? 'upper() schreibt alle Buchstaben groß' : 'title() schreibt jeden Wortanfang groß'}. Ergebnis: ${out}.`,
+    fullSolution: `strip() entfernt die Rand-Leerzeichen, ${method === 'upper'
+      ? 'upper() schreibt alle Buchstaben groß'
+      : method === 'title'
+        ? 'title() schreibt jeden Wortanfang groß'
+        : 'capitalize() schreibt nur den allerersten Buchstaben groß'}. Ergebnis: ${out}.`,
   };
 }
 
