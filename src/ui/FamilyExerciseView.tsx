@@ -8,6 +8,7 @@ import { AnswerControls } from './AnswerControls';
 import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
 import { TraceTableView } from './TraceTableView';
+import { Button } from './Button';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
@@ -175,15 +176,15 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
       {isCode
         ? <CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} />
         : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
-      <button class="button button-primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</button>
+      <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>
       {failed ? <p role="alert" class="content-error">{failed}</p> : null}
       {verdict ? <h2>{verdict}</h2> : null}
       {correct === true && masteryNote ? <p>Kann als Kompetenzbeleg zählen.</p> : null}
       {correct === true && reviewDueAt ? <p>Nächstes Review: {reviewDueAt}</p> : null}
       {correct === false && errorType ? <p>Fehlertyp: {errorType}</p> : null}
       <div class="hint-stack">{shownHints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}</div>
-      {shownHints.length < 2 && !solutionVisible ? <button class="text-button" type="button" onClick={() => void openHint()}>Hinweis öffnen</button> : null}
-      {!solutionVisible && instance.fullSolution ? <button class="text-button" type="button" onClick={() => void revealSolution()}>Lösung dieser Variante anzeigen</button> : null}
+      {shownHints.length < 2 && !solutionVisible ? <Button variant="ghost" size="sm" onClick={() => void openHint()}>Hinweis öffnen</Button> : null}
+      {!solutionVisible && instance.fullSolution ? <Button variant="ghost" size="sm" onClick={() => void revealSolution()}>Lösung dieser Variante anzeigen</Button> : null}
       {solutionVisible && instance.fullSolution ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div> : null}
       <p><a href="#/learn">Zurück zum Lernen</a></p>
     </section>

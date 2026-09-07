@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { validateProjectReport } from '../../assets/js/domain/project_report.mjs';
 import type { CatalogData } from '../app/types';
 import { recordProjectReport } from '../adapters/project-session';
+import { Button } from './Button';
 
 interface ValidationResult {
   ok: boolean;
@@ -25,6 +26,7 @@ export function ProjectView({ catalog, projectId }: { catalog: CatalogData; proj
   const [manifest, setManifest] = useState<CheckManifest | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [reportStatus, setReportStatus] = useState<string | null>(null);
+  const reportInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (!project) return;
     let active = true;
@@ -83,7 +85,8 @@ export function ProjectView({ catalog, projectId }: { catalog: CatalogData; proj
       </div>
       <section class="report-panel" aria-labelledby="report-title">
         <div><p class="card-kicker">Schritt 3</p><h2 id="report-title">Report lokal prüfen</h2><p>Die Datei wird nur in diesem Browser gelesen und nicht hochgeladen.</p></div>
-        <label class="button button-secondary" for="report-file" aria-disabled={!manifest}>{manifest ? 'Report auswählen' : 'Manifest wird geladen'}<input id="report-file" type="file" accept="application/json,.json" disabled={!manifest} onChange={importReport} /></label>
+        <Button variant="secondary" type="button" disabled={!manifest} onClick={() => reportInput.current?.click()}>{manifest ? 'Report auswählen' : 'Manifest wird geladen'}</Button>
+        <input ref={reportInput} id="report-file" type="file" aria-label="Report auswählen" accept="application/json,.json" disabled={!manifest} onChange={importReport} />
         <div class="report-result" role="status">
           {validation?.ok && <><strong>Report strukturell gültig</strong><p>Status: {reportStatus}. Integrität: Selbstbericht. Kein automatischer Mastery-Nachweis.</p></>}
           {validation && !validation.ok && <><strong>Report abgelehnt</strong><ul>{validation.errors.map((error) => <li key={error}>{error}</li>)}</ul></>}

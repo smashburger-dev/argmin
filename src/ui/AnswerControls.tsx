@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'preact/hooks';
 import { MathInput } from './MathInput';
 import { MathMarkup } from './MathMarkup';
+import { Button } from './Button';
 
 interface Fragment {
   id: string;
@@ -93,7 +94,7 @@ export function AnswerControls({ exercise, onAnswer }: { exercise: AnswerableExe
       setOrder(next);
       onAnswer(next);
     };
-    return <div class="parsons-control"><h2>Verwendete Zeilen</h2><ol>{order.map((id, index) => <li key={id}><code>{byId.get(id)?.text}</code><span><button type="button" onClick={() => move(index, -1)} disabled={index === 0} aria-label={`${id} nach oben`}>↑</button><button type="button" onClick={() => move(index, 1)} disabled={index === order.length - 1} aria-label={`${id} nach unten`}>↓</button><button type="button" onClick={() => remove(id)}>Aussortieren</button></span></li>)}</ol>{excluded.length > 0 && <div class="excluded-lines"><h3>Aussortiert</h3>{excluded.map((fragment) => <button type="button" key={fragment.id} onClick={() => restore(fragment.id)}><code>{fragment.text}</code><span>Zurückholen</span></button>)}</div>}</div>;
+    return <div class="parsons-control"><h2>Verwendete Zeilen</h2><ol>{order.map((id, index) => <li key={id}><code>{byId.get(id)?.text}</code><span><Button size="sm" onClick={() => move(index, -1)} disabled={index === 0} aria-label={`${id} nach oben`}>↑</Button><Button size="sm" onClick={() => move(index, 1)} disabled={index === order.length - 1} aria-label={`${id} nach unten`}>↓</Button><Button size="sm" onClick={() => remove(id)}>Aussortieren</Button></span></li>)}</ol>{excluded.length > 0 && <div class="excluded-lines"><h3>Aussortiert</h3>{excluded.map((fragment) => <Button size="sm" key={fragment.id} onClick={() => restore(fragment.id)}><code>{fragment.text}</code><span>Zurückholen</span></Button>)}</div>}</div>;
   }
   return <p>Dieser Aufgabentyp öffnet im Codeworkspace.</p>;
 }

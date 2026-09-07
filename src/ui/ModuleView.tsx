@@ -1,5 +1,6 @@
 import type { CatalogData } from '../app/types';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
+import { Button } from './Button';
 
 const difficultyLabel = {
   intro: 'Einstieg',
@@ -63,9 +64,9 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
                       : 'Falltyp, Seed und Profil. Ohne JSON-Kopie.'}</p>
                   </div>
                   {href
-                    ? <a class="button button-secondary" href={href}>Aufgabe öffnen</a>
+                    ? <Button href={href}>Aufgabe öffnen</Button>
                     : familyHref
-                      ? <a class="button button-secondary" href={familyHref}>Variante öffnen</a>
+                      ? <Button href={familyHref}>Variante öffnen</Button>
                       : <span class="muted">Noch nicht instantiierbar</span>}
                 </article>
               );
@@ -86,7 +87,7 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
                 <p>Neue Aufgaben sind Falltyp, Seed und Profil. Keine JSON-Kopie.</p>
               </div>
               {placement.familyId
-                ? <a class="button button-secondary" href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>Üben</a>
+                ? <Button href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>Üben</Button>
                 : <span class="muted">Noch nicht instantiierbar</span>}
             </article>
           ))}</div>

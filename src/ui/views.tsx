@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { loadSources, loadTools } from '../adapters/content-repository';
+import { Button } from './Button';
+import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 /** Loads a route-scoped content section once per session. null while the
  *  sidecar chunk is in flight — views render an honest loading state. */
@@ -57,9 +59,9 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
             <h2>Standort bestimmen</h2>
             <p>Starte mit kurzen Algebra- und Python-Ankern. Danach erklärt die Plattform jede Empfehlung.</p>
           </div>
-          <div class="primary-card-footer">
+          <div class="actions">
             <span class="time-chip">15 bis 20 Min.</span>
-            <a class="button button-primary" href="#/diagnostic">Diagnose starten</a>
+            <Button variant="primary" href="#/diagnostic">Diagnose starten</Button>
           </div>
         </article>
         <article class="status-card">
@@ -242,7 +244,7 @@ export function CompetencyView({ catalog, progress, competencyId }: {
       <section class="activity-section" aria-labelledby="activity-title">
         <div class="section-heading"><div><p class="eyebrow">Üben und nachweisen</p><h2 id="activity-title">Aufgaben</h2></div><span>{exercises.length} verfügbar</span></div>
         {exercises.length > 0
-          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.activityType} · {exercise.estimatedMinutes} Min.</p><h3>{exercise.prompt}</h3><p>{exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.'}</p></div><a class="button button-secondary" href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</a></article>)}</div>
+          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.activityType} · {exercise.estimatedMinutes} Min.</p><h3>{exercise.prompt}</h3><p>{exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.'}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
           : <div class="empty-state"><h2>Noch keine Aufgabenfamilie</h2><p>Diese Lücke bleibt im Foundations-Manifest sichtbar.</p></div>}
       </section>
     </section>
@@ -253,7 +255,7 @@ export function ToolsView(_: { catalog: CatalogData }) {
   const tools = useSection(loadTools);
   if (tools === 'failed') return <section class="view" aria-labelledby="tools-title"><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1>{sectionError('Werkzeugkarten')}</section>;
   if (!tools) return <section class="view" aria-labelledby="tools-title"><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p role="status">Werkzeugkarten werden geladen.</p></section>;
-  return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug hat einen sichtbaren Zweck, Grenzen und einen nativen Einstieg. Externe Repositories bleiben Quellen; sie werden nicht ungeprüft ausgeführt.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="tool-actions">{tool.routes.map((route) => <a class="button button-secondary" key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</a>)}</div></article>)}</div></section>;
+  return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug hat einen sichtbaren Zweck, Grenzen und einen nativen Einstieg. Externe Repositories bleiben Quellen; sie werden nicht ungeprüft ausgeführt.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="actions">{tool.routes.map((route) => <Button key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</Button>)}</div></article>)}</div></section>;
 }
 
 function sourceWeeksLabel(weeks: unknown) {
@@ -273,8 +275,8 @@ function SourceCard({ source }: { source: SourceSummary }) {
         <div><dt>Status</dt><dd>{source.extractionStatus}</dd></div>
         <div><dt>Verwendet in</dt><dd>{sourceWeeksLabel(source.weeks)}</dd></div>
       </dl>
-      <div class="source-actions">
-        {external ? <a class="button button-secondary" href={source.canonicalUrl} target="_blank" rel="noreferrer">Originalquelle öffnen</a> : null}
+      <div class="actions">
+        {external ? <Button href={source.canonicalUrl} target="_blank" rel="noreferrer">Originalquelle öffnen</Button> : null}
         {!external ? <span class="muted">Kein Direktlink in diesem Profil</span> : null}
       </div>
     </article>
@@ -293,7 +295,7 @@ export function SourcesView(_: { catalog: CatalogData }) {
           <h1 id="sources-title" tabIndex={-1}>Lektüren</h1>
           <p class="lede">Öffentliche Quellen und Referenzen begleiten die Lektionen. Eine Quelle ist noch keine Lernaktivität; ihre Rolle wird in Lektionen und Modulen ausgewiesen.</p>
         </div>
-        <a class="button button-secondary" href="#/learn">Zum Kompetenzkatalog</a>
+        <Button href="#/learn">Zum Kompetenzkatalog</Button>
       </header>
       <div class="source-grid">{sources.map((source) => <SourceCard source={source} key={source.sourceId} />)}</div>
     </section>
@@ -311,7 +313,7 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
       {recommendations.length > 0
         ? <div class="diagnostic-grid">{recommendations.map((recommendation, index) => { const competency = labels.get(recommendation.competencyId); return <article class="diagnostic-card" key={recommendation.competencyId}><span>{String(index + 1).padStart(2, '0')} · {typeLabels[recommendation.type]}</span><h2>{competency?.title ?? recommendation.competencyId}</h2><p>{competency?.description}</p><small>{recommendation.reasonCodes.join(' · ')}</small><a href={`#/competency/${recommendation.competencyId}`}>Bereich ansehen</a></article>; })}</div>
         : <div class="empty-state"><h2>Foundations aktuell belegt</h2><p>Öffne Review für fällige Abrufe oder wähle frei den nächsten Lernpfad.</p></div>}
-      <aside class="reason-panel"><p class="eyebrow">Auswertung</p><h2>Jede Empfehlung bleibt erklärbar</h2><p>Reason-Codes unterscheiden fehlende Evidence, schwache Kompetenz, fälligen Review und aktuellen Nachweis. Selbsteinschätzung allein öffnet oder schließt kein Gate.</p><a class="button button-primary" href={firstAnchor ? routeForDefinition(firstAnchor) : '#/learn'}>Ersten Algebra-Anker ausführen</a></aside>
+      <aside class="reason-panel"><p class="eyebrow">Auswertung</p><h2>Jede Empfehlung bleibt erklärbar</h2><p>Reason-Codes unterscheiden fehlende Evidence, schwache Kompetenz, fälligen Review und aktuellen Nachweis. Selbsteinschätzung allein öffnet oder schließt kein Gate.</p><Button variant="primary" href={firstAnchor ? routeForDefinition(firstAnchor) : '#/learn'}>Ersten Algebra-Anker ausführen</Button></aside>
     </section>
   );
 }
@@ -323,7 +325,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
     <section class="view" aria-labelledby="review-title">
       <header class="view-header"><p class="eyebrow">Abruf statt Wiederlesen</p><h1 id="review-title" tabIndex={-1}>Review</h1><p class="lede">Fällige Aufgaben-Reviews aus allen Kompetenzen an einem Ort. Das ist die Aufgabe-Ebene: jede einzelne Aufgabe hat ihren eigenen Fälligkeitstermin aus den Expanding-Slots. Die aggregierte Kompetenz-Frische ist separat im Fortschritt sichtbar.</p></header>
       {progress.dueReviews.length === 0
-        ? <div class="empty-state"><h2>Keine Aufgaben-Reviews fällig</h2><p>Nach einem unabhängigen Treffer plant die Plattform den nächsten Abruf. Aufgaben mit Variantengenerator öffnen bei jedem Review eine frische Instanz mit neuen Werten.</p><a class="button button-secondary" href="#/learn">Inhalte erkunden</a></div>
+        ? <div class="empty-state"><h2>Keine Aufgaben-Reviews fällig</h2><p>Nach einem unabhängigen Treffer plant die Plattform den nächsten Abruf. Aufgaben mit Variantengenerator öffnen bei jedem Review eine frische Instanz mit neuen Werten.</p><Button href="#/learn">Inhalte erkunden</Button></div>
         : <>
           <div class="competency-summary" aria-live="polite">
             <strong>{executable.length}</strong>
@@ -342,7 +344,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               const freshRoute = definition.familyId && definition.seeded
                 ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
                 : route;
-              return <article class="review-card" key={review.exerciseId}><div><p class="card-kicker">Aufgaben-Review fällig</p><h2>{definition.title ?? review.exerciseId}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><a class="button button-primary" href={freshRoute}>Wiederholen</a></article>;
+              return <article class="review-card" key={review.exerciseId}><div><p class="card-kicker">Aufgaben-Review fällig</p><h2>{definition.title ?? review.exerciseId}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}
             {archived.map((review) => (
               <article class="review-card" key={review.exerciseId}>
@@ -389,7 +391,7 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
         <div class="section-heading"><div><p class="eyebrow">Nach dem letzten Kursblock</p><h2 id="post-course-title">Reviews laufen weiter</h2></div></div>
         <p>Der Planer plant fällige Reviews weiter ein, ohne künstliche Treffer zu erzeugen. Aktuell sind {progress.dueReviews.length} Aufgaben-Reviews fällig und {progress.scheduledReviewCount} Aufgaben insgesamt in der Review-Planung. Ein qualifizierter Treffer — richtig, höchstens ein Hinweis, keine vorherige Lösungsanzeige — erneuert jeweils die Gültigkeit.</p>
       </section>
-      {progress.attemptsCount === 0 && <div class="empty-state"><h2>Noch keine Evidence</h2><p>Beginne mit der Diagnose oder öffne eine der {catalog.competencies.length} Kompetenzen.</p><a class="button button-primary" href="#/diagnostic">Diagnose starten</a></div>}
+      {progress.attemptsCount === 0 && <div class="empty-state"><h2>Noch keine Evidence</h2><p>Beginne mit der Diagnose oder öffne eine der {catalog.competencies.length} Kompetenzen.</p><Button variant="primary" href="#/diagnostic">Diagnose starten</Button></div>}
     </section>
   );
 }
@@ -400,6 +402,8 @@ export function SettingsView({ catalog, progress, onSave }: {
   onSave: (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => Promise<void>;
 }) {
   const [status, setStatus] = useState('');
+  const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
+  const importInput = useRef<HTMLInputElement>(null);
   const downloadProgress = async () => {
     const blob = new Blob([await exportProgressJson()], { type: 'application/json' });
     const href = URL.createObjectURL(blob);
@@ -419,9 +423,21 @@ export function SettingsView({ catalog, progress, onSave }: {
       setStatus(error instanceof Error ? error.message : String(error));
     }
   };
+  const chooseTheme = (preference: ThemePreference) => {
+    setThemePreference(preference);
+    saveThemePreference(preference);
+  };
   return (
     <section class="view" aria-labelledby="settings-title">
       <header class="view-header"><p class="eyebrow">Lokal und übersteuerbar</p><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p class="lede">Zielpfad, Zeitbudget und optionale Adapter bleiben unter deiner Kontrolle.</p></header>
+      <section class="settings-panel" aria-labelledby="theme-title">
+        <div><p class="card-kicker">Darstellung</p><h2 id="theme-title">Farbschema</h2><p>Wähle, ob die Oberfläche dem System folgt oder hell beziehungsweise dunkel bleibt.</p></div>
+        <div class="segmented" role="radiogroup" aria-label="Farbschema">
+          {([['system', 'System'], ['light', 'Hell'], ['dark', 'Dunkel']] as const).map(([value, label]) => (
+            <button type="button" role="radio" aria-checked={themePreference === value} class={themePreference === value ? 'is-active' : undefined} onClick={() => chooseTheme(value)}>{label}</button>
+          ))}
+        </div>
+      </section>
       <form class="settings-panel" onSubmit={async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -434,14 +450,14 @@ export function SettingsView({ catalog, progress, onSave }: {
         <label><span>Reviewabstände in Wochen</span><input name="reviewSlots" type="text" inputMode="numeric" defaultValue={progress.reviewSlotsWeeks.join(', ')} aria-describedby="review-slots-note" /></label>
         <p id="review-slots-note" class="privacy-note">Aufsteigend, zum Beispiel 2, 5, 11. Das sind lokale Planungsheuristiken. Die kompetenzspezifische Evidence-Frische bleibt ein getrennt sichtbarer Status.</p>
         <p class="privacy-note">Fortschritt bleibt standardmäßig in diesem Browser. Es werden keine API-Schlüssel oder Telemetriedaten gespeichert.</p>
-        <button class="button button-primary" type="submit">Lokal speichern</button>
+        <Button variant="primary" type="submit">Lokal speichern</Button>
         <p class="save-status" role="status">{status}</p>
       </form>
-      <section class="settings-panel transfer-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="transfer-actions"><button class="button button-secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</button><label class="button button-secondary" for="progress-import">JSON importieren</label><input id="progress-import" type="file" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
+      <section class="settings-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</Button><Button variant="secondary" type="button" onClick={() => importInput.current?.click()}>JSON importieren</Button><input ref={importInput} id="progress-import" type="file" aria-label="JSON importieren" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
     </section>
   );
 }
 
 export function PlaceholderView({ title }: { title: string }) {
-  return <section class="view"><header class="view-header"><p class="eyebrow">Freier Zugriff</p><h1 tabIndex={-1}>{title}</h1><p class="lede">Dieser Lernfluss wird im parallelen UI-Schnitt aufgebaut.</p></header><a class="button button-secondary" href="#/learn">Zur Kompetenzkarte</a></section>;
+  return <section class="view"><header class="view-header"><p class="eyebrow">Freier Zugriff</p><h1 tabIndex={-1}>{title}</h1><p class="lede">Dieser Lernfluss wird im parallelen UI-Schnitt aufgebaut.</p></header><Button href="#/learn">Zur Kompetenzkarte</Button></section>;
 }
