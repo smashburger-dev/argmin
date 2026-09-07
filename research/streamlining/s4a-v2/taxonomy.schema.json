@@ -41,7 +41,7 @@
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
     },
     "disposition": {
-      "description": "Die acht Dispositionen aus docs/idle-task-pre-s2b-integration.md Abschnitt 6.",
+      "description": "Die acht Dispositionen aus den früheren Authoring-Notizen, Abschnitt 6.",
       "enum": [
         "resolved-with-code-evidence",
         "resolved-with-source-evidence",

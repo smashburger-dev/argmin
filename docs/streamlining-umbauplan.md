@@ -174,7 +174,7 @@ Preact wird der einzige Shell. Am Ende ist `index.html` der einzige Einstieg. `n
 
 ## Quantitative Zielwerte
 
-Session S0 hat die exakten Nenner in `docs/session-2026-09-01-s0-baseline.md` eingefroren:
+Session S0 hat die exakten Nenner in einer historischen Baseline-Notiz eingefroren:
 
 | Metrik | S0-Baseline | S6-Ziel |
 |---|---:|---:|
@@ -209,7 +209,7 @@ Jede neue Session:
 9. Lässt Schemas, Katalog, zentrale Registry, Lockfile, Package-Scripts und Build-Entrypoints beim Orchestrator, sofern eine Session sie nicht ausdrücklich zuweist.
 10. Prüft zuerst die betroffenen Tests, dann den vollständigen Gate-Satz am Checkpoint.
 11. Prüft Browserverhalten am echten Artefakt. Ein Build allein genügt nicht.
-12. Erstellt am Sessionende einen Digest unter `docs/session-<datum>-<session-id>-<thema>.md`.
+12. Erstellt am Sessionende einen Digest als archivierte Sitzungsnotiz.
 13. Commit, Push und Löschungen brauchen die jeweils dokumentierte Freigabe.
 14. Aktualisiert den Graph nur, wenn eine spätere graphabhängige Analyse nötig ist und die Aktualisierung freigegeben wurde.
 
@@ -222,10 +222,10 @@ Jede neue Session:
 | S1A | 1 | FSRS vollständig entfernen | Inventar abgeschlossen; Variante A freigegeben; wartet auf S0R und S1B-Repair |
 | S1B | 1 | Numbas vollständig entfernen oder einzigartigen Inhalt ersetzen | Commit `f257b57` isoliert; Korrektur vor Integration freigegeben |
 | S2A | 2 | Preact-Parität ohne Wochenfunktionen, Journal und Acceptance-Ersatz | abgeschlossen in isolierter Worktree; Commit und Integration offen |
-| I0 | Integration | S0R, S1A, S1B, S2A, S4A-v1/v2 auf einen grünen Pre-S2B-Branch bringen | S4A-v2 abgeschlossen in Commit `101b344` (132 Familien, Assembler grün); Doku-Handoff und Clean-Checkout-Abnahme laufen; Continuation `docs/idle-task-pre-s2b-continuation.md` |
-| S2B | 2 | Preact zum einzigen Einstieg machen, Legacy-Shell löschen | abgeschlossen auf `streamline/integration-pre-s2b`; Digest `docs/session-2026-09-03-s2b-preact-entry.md` |
+| I0 | Integration | S0R, S1A, S1B, S2A, S4A-v1/v2 auf einen grünen Pre-S2B-Branch bringen | S4A-v2 abgeschlossen in Commit `101b344` (132 Familien, Assembler grün); Doku-Handoff und Clean-Checkout-Abnahme laufen |
+| S2B | 2 | Preact zum einzigen Einstieg machen, Legacy-Shell löschen | abgeschlossen auf `streamline/integration-pre-s2b` |
 | S3A | 3 | LearningPolicy und gemeinsame Ereignisnormalisierung | abgeschlossen |
-| S3B | 3 | LearningLedger, ein Event-Builder, alte Importpfade entfernen | implementiert, Commit offen; Digest `docs/session-2026-09-03-s3b-learning-ledger.md` |
+| S3B | 3 | LearningLedger, ein Event-Builder, alte Importpfade entfernen | implementiert, Commit offen |
 | S4A | 4 | Vollständige Content- und Aufgabenfamilien-Taxonomie | v1 integriert; v2 abgeschlossen (7 Shards, 7 Domänenreviews, 4 Cross-Reviews, Adversarial-Review, Commit `101b344`); Noa-Queue mit 36 Punkten offen |
 | S4B | 4 | LearningModule und normalisiertes Authoring-Modell | committet `c9b31d4` (Review-Fixes: ModuleView faul, Vor/Zurück nach Modul, Chunkmuster; JS 78.1) |
 | S4C | 4 | ExerciseFamily-Vertrag und neue Generator-Baseline | implementiert, uncommitted (GP2 auf `classify-git-operation`, 512er-Korpus, JS 78.1); Commit und GP2-Abweichung freigeben |
@@ -247,7 +247,7 @@ Eine Session darf weiter geteilt werden, wenn sie mehr als einen sauber verifizi
 
 Ziel: Den aktuellen, bereits umfangreich verifizierten Refactorstand reproduzieren, exakt messen und als projektbezogenen Git-Rückfallpunkt sichern. Keine Refactor-Änderung.
 
-Ergebnis: abgeschlossen in Commit `1998d57`. Der projektbezogene Arbeitsbaum war danach sauber. Alle statischen Zähler, Node-, Python-, Content-, Build-, Public-, Audit- und CDP-Gates wurden reproduziert. Der vollständige Release-Gesamtloop blieb wegen der in `docs/session-2026-09-01-s0-baseline.md` dokumentierten E2E-Abweichungen A bis C nicht durchgehend grün. Diese Abweichungen gehören zu S2A und werden nicht als erreichte grüne Baseline umgedeutet.
+Ergebnis: abgeschlossen in Commit `1998d57`. Der projektbezogene Arbeitsbaum war danach sauber. Alle statischen Zähler, Node-, Python-, Content-, Build-, Public-, Audit- und CDP-Gates wurden reproduziert. Der vollständige Release-Gesamtloop blieb wegen der in der historischen Baseline-Notiz dokumentierten E2E-Abweichungen A bis C nicht durchgehend grün. Diese Abweichungen gehören zu S2A und werden nicht als erreichte grüne Baseline umgedeutet.
 
 Ablauf:
 
@@ -309,7 +309,7 @@ Der eigene S0R-Repair-Commit ist freigegeben. Ein Push ist nicht freigegeben.
 
 Startprompt:
 
-> Lies `AGENTS.md`, `docs/streamlining-umbauplan.md` und `docs/session-2026-09-01-s0-baseline.md`. Führe ausschließlich S0R aus. Repariere den durch die Root-Ignore-Regel verursachten Clean-Checkout-Defekt der fünf Pyodide-Vertragsdateien. Tracke die drei Quelldateien gezielt, behandle Matrix und Receipt als generierte Artefakte, erzeuge die Matrix vor beiden E2E-Einstiegen und entferne die harte Unit-Test-Vorbedingung eines bereits vorhandenen Browser-Receipts, ohne den echten Worker-Beweis zu schwächen. Verifiziere den fertigen Commit in einer zweiten sauberen Arbeitskopie. Der Repair-Commit ist genehmigt, ein Push nicht.
+> Lies `AGENTS.md` und `docs/streamlining-umbauplan.md` sowie die historische Baseline-Notiz. Führe ausschließlich S0R aus. Repariere den durch die Root-Ignore-Regel verursachten Clean-Checkout-Defekt der fünf Pyodide-Vertragsdateien. Tracke die drei Quelldateien gezielt, behandle Matrix und Receipt als generierte Artefakte, erzeuge die Matrix vor beiden E2E-Einstiegen und entferne die harte Unit-Test-Vorbedingung eines bereits vorhandenen Browser-Receipts, ohne den echten Worker-Beweis zu schwächen. Verifiziere den fertigen Commit in einer zweiten sauberen Arbeitskopie. Der Repair-Commit ist genehmigt, ein Push nicht.
 
 ## Session S1A: FSRS entfernen
 
@@ -349,7 +349,7 @@ Erhalten werden Today, Lernen, Kompetenzen, Lektionen, Aufgaben, Reviews, Fortsc
 
 Die beiden Legacy-CDP-Treiber werden Assertion für Assertion inventarisiert. Jede einzigartige Nutzer- oder IndexedDB-Assertion wird in bestehende Playwright-Suiten oder einen gemeinsamen Browservertrag übertragen. Kein zweites paralleles E2E-Gerüst einführen.
 
-S2A besitzt außerdem die drei S0-Abweichungen aus `docs/session-2026-09-01-s0-baseline.md`: Firefox-Timeout beim migrierten Legacy-Grader, WebKit-Persistenzrace bei `weeklyMinutes` und die reihenfolgenabhängige Lazy-Chunk-Beobachtung im Chromium-Buildlauf. Für jede Abweichung gilt der Diagnosezyklus Reproduktion, Root Cause, kleinster Fix, isolierte Wiederholung und Volllast-Wiederholung. Tests dürfen nicht durch höhere Timeouts, zusätzliche Sleeps oder schwächere Assertions grün gemacht werden, solange keine belegte technische Notwendigkeit vorliegt.
+S2A besitzt außerdem die drei S0-Abweichungen aus der historischen Baseline-Notiz: Firefox-Timeout beim migrierten Legacy-Grader, WebKit-Persistenzrace bei `weeklyMinutes` und die reihenfolgenabhängige Lazy-Chunk-Beobachtung im Chromium-Buildlauf. Für jede Abweichung gilt der Diagnosezyklus Reproduktion, Root Cause, kleinster Fix, isolierte Wiederholung und Volllast-Wiederholung. Tests dürfen nicht durch höhere Timeouts, zusätzliche Sleeps oder schwächere Assertions grün gemacht werden, solange keine belegte technische Notwendigkeit vorliegt.
 
 OWNED PATHS für Write-Agents dürfen nur disjunkt vergeben werden, etwa `src/ui/` und `tests/e2e/`. Zentrale Router-, Package- und Builddateien bleiben beim Orchestrator.
 
