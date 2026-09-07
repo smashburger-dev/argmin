@@ -96,7 +96,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Merkmalsauswahl"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "Du willst in einer linearen Regression unwichtige Merkmale wirklich streichen. Welcher Unterschied zwischen Ridge (L2) und Lasso (L1) trifft das?",
+          "fullSolution": "Nur L1 (Lasso) erzeugt typischerweise exakte Nullen. Ridge schrumpft stetig, lässt kleine Gewichte aber ungleich null."
+        },
+        {
+          "parameters": {
+            "setting": "Fit-Ergebnis"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nach dem Fit sind bei Verfahren A viele Gewichte exakt 0, bei Verfahren B alle klein aber ungleich 0. Welche Zuordnung ist korrekt?",
+          "fullSolution": "Exakte Nullen sprechen für Lasso (L1). Kleine, nicht verschwindende Gewichte sprechen für Ridge (L2)."
+        },
+        {
+          "parameters": {
+            "setting": "korrelierte Merkmale"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            }
+          ],
+          "prompt": "Bei vielen korrelierten Sensoren willst du eher schrumpfen als hart selektieren. Was unterscheidet Ridge und Lasso zentral?",
+          "fullSolution": "Ridge teilt den Effekt und schrumpft ohne harte Nullen. Lasso tendiert dazu, aus einer korrelierten Gruppe Merkmale auf null zu setzen."
+        },
+        {
+          "parameters": {
+            "setting": "logistische Regression"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "Dieselbe L1/L2-Unterscheidung gilt auch in einer logistischen Regression mit Penalty. Was ist der zentrale Unterschied?",
+          "fullSolution": "Die Strafform bleibt: L2 schrumpft, L1 kann Gewichte exakt auf null setzen. Der Problemtyp (Klasse vs. Zahl) ändert das nicht."
+        },
+        {
+          "parameters": {
+            "setting": "hohe Dimension"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "p ist größer als n, du brauchst ein dünn besetztes lineares Modell. Welcher Unterschied zwischen Ridge und Lasso ist zentral?",
+          "fullSolution": "Lasso kann Koeffizienten auf null setzen und so Merkmale streichen. Ridge allein liefert in der Regel keine exakte Sparsity."
+        },
+        {
+          "parameters": {
+            "setting": "Interpretierbarkeit"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Bericht soll nur Merkmale mit Gewicht ungleich null zeigen. Welcher Regularisierer liefert das typischerweise?",
+          "fullSolution": "L1/Lasso erzeugt exakte Nullen, die du weglassen kannst. Ridge lässt fast alle Merkmale mit kleinem Gewicht stehen."
+        },
+        {
+          "parameters": {
+            "setting": "Strafform"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            }
+          ],
+          "prompt": "L2 straft $w^2$, L1 straft $|w|$. Was folgt daraus für die Koeffizienten einer linearen Regression?",
+          "fullSolution": "Die Ecke der L1-Strafe bei null erzeugt Sparsity. L2 erreicht null nur asymptotisch und schrumpft stetig."
+        },
+        {
+          "parameters": {
+            "setting": "lambda-Größe"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jemand behauptet, Lasso sei nur „Ridge mit größerem $\\lambda$“. Was ist der zentrale Unterschied?",
+          "fullSolution": "Der Unterschied liegt in der Strafform, nicht in der Größe von $\\lambda$. Beide haben ein eigenes $\\lambda$; nur L1 setzt typischerweise exakt auf null."
+        },
+        {
+          "parameters": {
+            "setting": "Pipeline-Wahl"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide setzen Koeffizienten exakt auf null; sie unterscheiden sich nur im Rechenaufwand.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Ridge schrumpft Koeffizienten gegen null, setzt sie aber generell nicht exakt auf null; Lasso kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Lasso schrumpft stärker, weil lambda bei Lasso immer größer gewählt werden muss.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ridge funktioniert nur bei Klassifikation, Lasso nur bei Regression.",
+              "correct": false
+            }
+          ],
+          "prompt": "Konzept-Check: Was ist der zentrale Unterschied zwischen Ridge (L2) und Lasso (L1), wenn beide auf dieselbe lineare Regression angewendet werden?",
+          "fullSolution": "Ridge schrumpft ohne harte Nullen, Lasso kann Merkmale durch exakte Nullen streichen. $\\lambda$ ist in beiden Fällen ein Hyperparameter."
+        }
+      ]
     },
     {
       "caseId": "regularizer-elastic-net",
@@ -160,7 +450,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Mischstrafe"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum wird Elastic Net oft gewählt, wenn Merkmale korrelieren und trotzdem einige Gewichte null werden sollen?",
+          "fullSolution": "L1 liefert Nullen, L2 hält korrelierte Gruppen stabiler. Elastic Net mischt beides."
+        },
+        {
+          "parameters": {
+            "setting": "Formel"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Die Strafe enthält $\\lambda\\big(\\alpha\\sum|w|+(1-\\alpha)\\sum w^2\\big)$. Welche Aussage beschreibt das Verfahren?",
+          "fullSolution": "Das ist Elastic Net: Mischgewicht $\\alpha$ zwischen Lasso und Ridge."
+        },
+        {
+          "parameters": {
+            "setting": "Gruppe"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            }
+          ],
+          "prompt": "Lasso allein streicht aus einer korrelierten Gruppe oft nur ein Merkmal hart. Welche Methode mildert das durch eine zusätzliche L2-Strafe?",
+          "fullSolution": "Elastic Net: L1 für Sparsity, L2 gegen zu harte Auswahl in korrelierten Blöcken."
+        },
+        {
+          "parameters": {
+            "setting": "nicht OLS"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jemand nennt Elastic Net „normale kleinste Quadrate“. Welche Aussage ist korrekt?",
+          "fullSolution": "OLS hat keine L1/L2-Strafe. Elastic Net addiert beide Penalty-Terme zur Verlustfunktion."
+        },
+        {
+          "parameters": {
+            "setting": "nicht gleiche Gewichte"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Führt Elastic Net dazu, dass alle Koeffizienten identisch werden?",
+          "fullSolution": "Nein. Es schrumpft und kann einzelne Gewichte auf null setzen, erzwingt aber keine Gleichheit aller Koeffizienten."
+        },
+        {
+          "parameters": {
+            "setting": "Modellklasse"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ist Elastic Net auf Entscheidungsbäume beschränkt?",
+          "fullSolution": "Nein. Es ist eine Regularisierung für lineare (und verwandte) Modelle, keine Baummethode."
+        },
+        {
+          "parameters": {
+            "setting": "Hyperparameter"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            }
+          ],
+          "prompt": "Elastic Net hat typischerweise $\\lambda$ und ein Mischverhältnis. Was leistet die Mischung fachlich?",
+          "fullSolution": "Sie gewichtet L1-Sparsity gegen L2-Schrumpfung. Beides zusammen ist der Kern von Elastic Net."
+        },
+        {
+          "parameters": {
+            "setting": "Pipeline"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Du brauchst Feature-Selektion und willst korrelierte Laborwerte nicht komplett gegeneinander ausspielen. Welche Beschreibung trifft Elastic Net?",
+          "fullSolution": "Mischung aus L1 (Nullen) und L2 (stabile Schrumpfung korrelierter Features)."
+        },
+        {
+          "parameters": {
+            "setting": "Kurzdefinition"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Welche Aussage beschreibt Elastic Net am besten, unabhängig vom Datensatz?",
+          "fullSolution": "Elastic Net = L1 plus L2. Sparsity und Schrumpfung in einem Hyperparameter-Paar."
+        }
+      ]
     },
     {
       "caseId": "regularizer-validation-lambda",
@@ -224,7 +804,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "setting": "Testset-Rolle"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Team will $\\lambda$ so wählen, dass die Test-Accuracy maximal wird, und dafür das Testset in der Schleife nutzen. Warum ist das methodisch falsch?",
+          "fullSolution": "$\\lambda$-Wahl ist Modellselektion. Das Testset darf dafür nicht verbraucht werden, sonst ist die Testschätzung nicht mehr unabhängig."
+        },
+        {
+          "parameters": {
+            "setting": "kein Gewicht"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ist $\\lambda$ ein Koeffizient, den der Gradientenabstieg wie $w$ schätzt — und deshalb keine Validierung braucht?",
+          "fullSolution": "Nein. $\\lambda$ ist ein Hyperparameter. Ihn auf dem Testset zu tunen zerstört die Unabhängigkeit der Endbewertung."
+        },
+        {
+          "parameters": {
+            "setting": "Train vs Val"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Die Verlustfunktion auf Train enthält $\\lambda$, trotzdem wählt man $\\lambda$ nicht durch Minimieren des Trainingsverlusts allein. Warum typischerweise per Validierung und nicht per Testset?",
+          "fullSolution": "Trainingsverlust belohnt zu großes $\\lambda$ nicht fair für Generalisierung. Validierung vergleicht Kandidaten; das Testset bleibt die letzte, unberührte Schätzung."
+        },
+        {
+          "parameters": {
+            "setting": "CV"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            }
+          ],
+          "prompt": "k-fache CV wählt $\\lambda$ auf Validierungsfolds. Warum nicht dieselbe Rolle dem Testset geben?",
+          "fullSolution": "Sonst ist die Testzahl eine getunte Größe. CV darf nur Daten nutzen, die nicht die finale unabhängige Bewertung sind."
+        },
+        {
+          "parameters": {
+            "setting": "Optimism"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Was passiert, wenn $\\lambda$ so lange gedreht wird, bis die Testmetrik glänzt?",
+          "fullSolution": "Die Testmetrik wird optimistisch. Genau deshalb gehört die Wahl auf Validierung, das Testset bleibt unberührt."
+        },
+        {
+          "parameters": {
+            "setting": "Datenbedarf"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Braucht die $\\lambda$-Wahl Daten — und dürfen das Testdaten sein?",
+          "fullSolution": "Ja, sie braucht Vergleichsdaten (Validierung/CV). Testdaten sind dafür tabu, weil sie die Endbewertung tragen."
+        },
+        {
+          "parameters": {
+            "setting": "Ridge-Pipeline"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "In einer Ridge-Pipeline stehen Split, Skalierung, $\\lambda$-Gitter. Wo darf das Gitter nicht ausgewertet werden?",
+          "fullSolution": "Nicht auf dem Testset. $\\lambda$ ist Modellselektion und gehört in Validierung oder innere CV."
+        },
+        {
+          "parameters": {
+            "setting": "Lasso-Gitter"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Lasso-Gitter wird nach der besten Test-F1 ausgewählt. Warum ist das die falsche Fläche?",
+          "fullSolution": "Test-F1 ist dann keine unabhängige Schätzung mehr. Das Gitter gehört auf Validierung."
+        },
+        {
+          "parameters": {
+            "setting": "Kurzfrage"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Weil Validierung keine Daten benötigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum gehört die $\\lambda$-Wahl in die Validierung (oder innere CV) und nicht in eine Schleife über das Testset?",
+          "fullSolution": "Hyperparameter-Wahl auf dem Testset macht die Testschätzung abhängig. Validierung trägt die Selektion, Test die Endbewertung."
+        }
+      ]
     }
   ]
 }
