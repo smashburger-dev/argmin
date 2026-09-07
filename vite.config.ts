@@ -8,7 +8,7 @@ export default defineConfig({
     base: './',
     publicDir: false,
     plugins: [
-      preact(),
+      preact({ exclude: [/node_modules/, /\/vendor\//] }),
     ],
     resolve: {
       alias: {
