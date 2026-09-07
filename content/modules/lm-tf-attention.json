@@ -4,7 +4,7 @@
   "version": 1,
   "locale": "de",
   "title": "Attention und Transformer-Grundlagen",
-  "description": "die Rollen von Queries, Keys und Values in Scaled Dot-Product Attention erklären und Shape-Verträge prüfen stabiles zeilenweises Softmax und Maskierung (kausal, Padding) mit −∞ vor dem Softmax korrekt anwenden eine kleine Attention vollständig per Hand rechnen und Multi-Head als Reshape der Projektionen beschreiben",
+  "description": "Queries, Keys und Values verstehen, Softmax und Maskierung sauber anwenden und eine kleine Attention per Hand rechnen.",
   "competencyIds": [
     "c-dl-attention"
   ],

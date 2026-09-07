@@ -13,6 +13,7 @@ type Props = {
   download?: string;
   target?: string;
   rel?: string;
+  hidden?: boolean;
 };
 
 export function Button({
@@ -28,10 +29,11 @@ export function Button({
   download,
   target,
   rel,
+  hidden,
 }: Props) {
   const classValue = ['btn', `btn-${variant}`, `btn-${size}`, className].filter(Boolean).join(' ');
   if (href) {
-    return <a class={classValue} href={href} aria-label={ariaLabel} download={download} target={target} rel={rel}>{children}</a>;
+    return <a class={classValue} href={href} aria-label={ariaLabel} download={download} target={target} rel={rel} hidden={hidden}>{children}</a>;
   }
-  return <button class={classValue} type={type} disabled={disabled} onClick={onClick as JSX.MouseEventHandler<HTMLButtonElement>} aria-label={ariaLabel}>{children}</button>;
+  return <button class={classValue} type={type} disabled={disabled} hidden={hidden} onClick={onClick as JSX.MouseEventHandler<HTMLButtonElement>} aria-label={ariaLabel}>{children}</button>;
 }

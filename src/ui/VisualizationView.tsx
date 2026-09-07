@@ -20,6 +20,6 @@ export function VisualizationView({ visualizationId }: { visualizationId: string
   return <section class="view" aria-labelledby="visualization-title">
     <header class="view-header"><p class="eyebrow">Interaktive Visualisierung</p><h1 id="visualization-title" tabIndex={-1}>{visualization.spec.title}</h1></header>
     <VisualizationBlock id={visualizationId} spec={visualization.spec} />
-    <nav class="catalog-links"><a href={`#/lesson/${visualization.lessonId}`}>Zur Lektion</a><a href="#/tools">Werkzeuge</a></nav>
+    <nav class="visualization-links"><a href={`#/lesson/${visualization.lessonId}`}>Zur Lektion</a><a href="#/tools">Werkzeuge</a></nav>
   </section>;
 }

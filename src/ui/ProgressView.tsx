@@ -10,7 +10,7 @@ function hasEvidence(state: EvidenceState | undefined) {
   return state === 'demonstrated' || state === 'retained';
 }
 
-function moduleState(competencyIds: string[], states: Record<string, EvidenceState>) {
+export function moduleState(competencyIds: string[], states: Record<string, EvidenceState>) {
   const moduleStates = competencyIds.map((id) => states[id] ?? 'unassessed');
   if (moduleStates.some((state) => state === 'review_due')) return 'Fällig';
   if (moduleStates.length > 0 && moduleStates.every((state) => evidencedStates.includes(state))) return 'Nachgewiesen';
