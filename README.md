@@ -14,7 +14,9 @@ Das war's. Kein Account, keine Installation, keine Kosten. Dein Fortschritt blei
 
 - **46 Lektionen und über 250 Aufgaben** in kleinen, verständlichen Schritten — Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI
 - **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren
+  - Mit an Bord: NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph) — alles läuft lokal in deinem Browser
 - **Üben, bis es sitzt.** Viele Aufgaben erzeugen immer neue Varianten, du kannst also so oft üben, wie du willst
+  - Jede Variante entsteht aus einem Startwert („Seed“): dieselbe Zahl ergibt überall dieselbe Aufgabe. Du kannst eine Variante also teilen, wiederholen oder mit anderen vergleichen — ganz ohne Server
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft — keine KI, die rät, ob du richtig liegst
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 - **Angenehm für die Augen.** Ruhiges Design, hell oder dunkel, funktioniert auch offline
