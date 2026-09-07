@@ -1277,7 +1277,7 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const scenarioRng = rng(seed >>> 0);
+  const scenarioRng = rng(((seed * 2654435761) + 97) >>> 0);
   const scenario = REQUIRED_SCENARIOS[caseId][randInt(scenarioRng, 0, 3)];
   const fragments = caseId === 'specific-except-with-issue'
     ? [
