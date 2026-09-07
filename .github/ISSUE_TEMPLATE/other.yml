@@ -1,0 +1,12 @@
+name: Frage oder Sonstiges
+description: Passt in keine andere Kategorie — Fragen, Feedback, Mitmach-Angebote.
+title: ""
+labels: ["question"]
+body:
+  - type: textarea
+    id: text
+    attributes:
+      label: Worum geht es?
+      description: Schreib einfach los. Wir antworten so schnell wir können.
+    validations:
+      required: true

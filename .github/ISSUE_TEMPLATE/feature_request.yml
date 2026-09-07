@@ -1,0 +1,37 @@
+name: Idee oder Wunsch
+description: Ein neues Thema, eine Funktion oder eine Verbesserung, die dir beim Lernen helfen würde.
+title: "[Idee] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideen sind willkommen — auch halbfertige. Ein paar Sätze reichen.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Was fehlt dir oder stört dich gerade?
+      placeholder: "Beim Wiederholen weiß ich nicht, welche Aufgaben ich zuletzt falsch hatte."
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Deine Idee
+      description: Wie könnte argmin das lösen?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Bereich
+      options:
+        - Lerninhalte (neue Lektion, neues Thema, mehr Aufgaben)
+        - Bedienung und Design
+        - Wiederholen, Fortschritt, Wochenplan
+        - Technik (Offline, Export, Performance)
+        - Weiß ich nicht
+  - type: textarea
+    id: extra
+    attributes:
+      label: Beispiele oder Skizzen (optional)

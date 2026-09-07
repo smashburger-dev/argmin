@@ -1,0 +1,56 @@
+name: Fehler melden
+description: Etwas funktioniert nicht wie erwartet (Anzeige, Aufgabe, Prüfung, Fortschritt …).
+title: "[Fehler] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke, dass du dir die Zeit nimmst! Du musst nichts Technisches wissen — beschreib einfach, was passiert ist.
+  - type: textarea
+    id: what
+    attributes:
+      label: Was ist passiert?
+      description: Beschreib in eigenen Worten, was schiefging.
+      placeholder: "Ich habe auf „Prüfen“ geklickt und es kam keine Rückmeldung."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Was hättest du erwartet?
+      placeholder: "Ich hätte erwartet, dass mir angezeigt wird, ob meine Antwort richtig ist."
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Wo ist es passiert?
+      description: Am einfachsten den Link aus der Adresszeile kopieren (z. B. `…/#/lesson/…`), oder den Namen der Lektion/Aufgabe nennen.
+      placeholder: "https://smashburger-dev.github.io/argmin/#/…"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Wie kann man es nachstellen?
+      placeholder: |
+        1. Lektion „…“ öffnen
+        2. Aufgabe „…“ starten
+        3. Antwort eingeben und „Prüfen“ klicken
+  - type: dropdown
+    id: env
+    attributes:
+      label: Wo nutzt du argmin?
+      options:
+        - Im Browser auf smashburger-dev.github.io/argmin
+        - Lokal (npm run dev:next / build-next)
+        - Weiß ich nicht
+  - type: input
+    id: browser
+    attributes:
+      label: Browser und Gerät
+      placeholder: "z. B. Firefox auf Windows, Safari auf iPhone"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshot oder Sonstiges
+      description: Bilder kannst du einfach hier hineinziehen.
