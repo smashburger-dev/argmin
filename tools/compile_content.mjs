@@ -99,7 +99,31 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
       .join('; ');
     throw new Error(`${schemaName}: ${details}`);
   }
+  if (schemaName === 'exercise-family-cases') validateChoiceContracts(value);
   return true;
+}
+
+function validateChoiceContracts(document) {
+  for (const item of document.cases || []) {
+    validateChoiceContract(`${document.familyId}:${item.caseId}`, item);
+    for (const [index, variant] of (item.variants || []).entries()) {
+      validateChoiceContract(`${document.familyId}:${item.caseId}:variant-${index + 1}`, variant);
+    }
+  }
+}
+
+function validateChoiceContract(label, item) {
+  const hasChoices = Object.hasOwn(item, 'choices');
+  const correctChoice = item.expected?.correctChoice;
+  const hasCorrectChoice = typeof correctChoice === 'string';
+  if (hasChoices !== hasCorrectChoice) {
+    throw new Error(`${label}: choices und expected.correctChoice müssen gemeinsam vorhanden sein`);
+  }
+  if (!hasChoices) return;
+  const correct = item.choices.filter((choice) => choice.correct === true);
+  if (correct.length !== 1 || correct[0].id !== correctChoice) {
+    throw new Error(`${label}: choices brauchen genau eine korrekte Antwort passend zu expected.correctChoice`);
+  }
 }
 
 function loadCollection(contentRoot, files, property, schemaName, projectRoot) {

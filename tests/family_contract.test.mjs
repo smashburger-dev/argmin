@@ -221,14 +221,19 @@ test('static families expose only their authored profile and placements are vali
     for (const placement of module.placements || []) registry.assertFamilyPlacement(placement);
   }
   for (const doc of docs.filter((item) => item.contract)) {
-    assert.throws(
-      () => registry.assertFamilyPlacement({
-        familyId: doc.familyId,
-        role: 'practice-space',
-        difficulty: doc.cases[0].difficultyProfile,
-      }),
-      /Statische Familien dürfen nicht im Übungsraum platziert werden/,
-    );
+    const placement = {
+      familyId: doc.familyId,
+      role: 'practice-space',
+      difficulty: doc.cases[0].difficultyProfile,
+    };
+    if (doc.cases.some((item) => item.variants?.length)) {
+      assert.doesNotThrow(() => registry.assertFamilyPlacement(placement));
+    } else {
+      assert.throws(
+        () => registry.assertFamilyPlacement(placement),
+        /Statische Familien dürfen nicht im Übungsraum platziert werden/,
+      );
+    }
   }
 });
 
