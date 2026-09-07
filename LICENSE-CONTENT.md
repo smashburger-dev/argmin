@@ -7,7 +7,7 @@ Sofern eine Datei keine abweichende Lizenz nennt, stehen die eigenständig entwi
 Empfohlene Angabe:
 
 ```text
-KI-Lernplattform contributors, 2026, CC BY 4.0
+argmin contributors, 2026, CC BY 4.0
 ```
 
 Bei Änderungen muss die Angabe die Bearbeitung kenntlich machen. Der vollständige rechtsverbindliche Lizenztext steht unter:
