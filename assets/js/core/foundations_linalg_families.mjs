@@ -4,7 +4,7 @@
 
 import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, solveShape } from './linalg_numpy_fresh_generators.mjs';
 import { drawFamilyInstance } from './generator_draw_kit.mjs';
-import { rank, solveLinear2 } from './w05_generators.mjs';
+import { rank, solveLinear2 } from './linalg_generators.mjs';
 import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];

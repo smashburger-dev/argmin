@@ -15,7 +15,7 @@ Stand: 2026-08-25 (erweitert um LM-R2/LM-R4/LM-R5-Felder). Gilt für alle Aufgab
 
 ## 3. Parametrisierte Aufgaben
 
-1. Generator in `assets/js/core/w05_generators.mjs` / `w01_generators.mjs` (Muster; wird pro Woche erweitert) — deterministischer Seed, keine Zufallsabbrüche.
+1. Generator in `assets/js/core/linalg_generators.mjs` / `foundations_generators.mjs` (Muster; wird pro Thema erweitert) — deterministischer Seed, keine Zufallsabbrüche.
 2. **Invarianten dokumentieren und im Test erzwingen**: z. B. `genLinear2` — det ≠ 0, ganzzahlige Lösung in [-9,9], keine Division durch null; `genMatmulEntry` — |c_ij| ≤ 50 für Kopfrechnen.
 3. Referenzsolver separat (`solveLinear2`, `solveLinearEquation`) und im Test gegen die Generator-Erwartung kreuzprüfen.
 4. Eingabevalidator (`parseIntegerAnswer`, `parseIntegerPair`) — Validierung ist Feedback-Stufe 1, keine Exception im Grader.
@@ -87,7 +87,7 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 
 ## 7. Seed-Generator-Pattern und lokale Lesezugänge
 
-**Generatoren** (`assets/js/core/w01_generators.mjs` als Muster):
+**Generatoren** (`assets/js/core/foundations_generators.mjs` als Muster):
 
 - Familiengeneratoren exportieren identisches `rng()`-Verhalten (mulberry32) — Browser und Node ziehen dieselben Instanzen.
 - Signatur `genX(seed) -> { parameters, expected, prompt }`: `prompt` ist der **komplette deutsche Aufgabentext** als Plain Text mit Unicode-Mathematik (z. B. `log₂(64)`, `3^4`, `·`) — bewusst **ohne** `$...$`-KaTeX, damit der Prompt nach „Neue Zahlen“ ohne Math-Neurendering austauschbar ist.

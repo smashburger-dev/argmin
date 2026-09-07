@@ -1,13 +1,13 @@
 // Session-B fresh-variation generators for linear algebra and NumPy
 // competencies (W5, ADR-0015). The two matrix/system families wrap the
-// existing, property-tested generators from w05_generators.mjs — same seeds,
+// existing, property-tested generators from linalg_generators.mjs — same seeds,
 // same numbers, same solvers — and only add the seeded prompt and
 // fullSolution that the fresh-evidence definitions need. The determinant
 // and shape families are new procedural generators with their own
 // independent reference solvers.
 
-import { rng, randInt, nonzeroInt } from './w01_generators.mjs';
-import { genMatmulEntry, genLinear2 } from './w05_generators.mjs';
+import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
+import { genMatmulEntry, genLinear2 } from './linalg_generators.mjs';
 
 
 const matrixText = (m) => m.map((row) => `[${row.map((v) => String(v).padStart(3)).join('  ')}]`).join('\n');

@@ -1,10 +1,10 @@
-# KI-Lernplattform
+# argmin
 
-Eine deutschsprachige, kompetenzbasierte Lernplattform für KI, Data Science und Programmierpraxis.
+Kostenlose, offene KI-Lernplattform (Deutsch)
 
 ## Sofort loslegen
 
-[KI-Lernplattform öffnen](https://smashburger-dev.github.io/ki-lernplattform/)
+[argmin öffnen](https://smashburger-dev.github.io/argmin/)
 
 Läuft komplett im Browser, kein Account, Fortschritt bleibt auf deinem Gerät.
 
@@ -22,13 +22,26 @@ Läuft komplett im Browser, kein Account, Fortschritt bleibt auf deinem Gerät.
 Voraussetzung ist Node.js 22.
 
 ```bash
-git clone https://github.com/smashburger-dev/ki-lernplattform.git
-cd ki-lernplattform
+git clone https://github.com/smashburger-dev/argmin.git
+cd argmin
 npm ci
 npm run dev:next
 ```
 
 Öffne danach <http://127.0.0.1:4173/>. Nicht über `file://` öffnen: Module-Worker und Fetch brauchen einen Origin, und die TypeScript-Quellen laufen nur über Vite.
+
+## Aufbau
+
+| Verzeichnis | Inhalt |
+| --- | --- |
+| `assets/js/` | Laufzeit, Grader und Domänenlogik |
+| `content/` | Kompetenzen, Module, Lektionen und Aufgabenfamilien |
+| `schemas/` | JSON-Schemas für Inhalte und Verträge |
+| `src/` | Preact-App und Oberfläche |
+| `tests/` | Node- und Browser-Tests |
+| `tools/` | Kompilierung, Validierung und Builds |
+| `vendor/` | Vendored Runtimes |
+| `docs/` | Architektur, Authoring und Lizenzen |
 
 ## Testen und Bauen
 

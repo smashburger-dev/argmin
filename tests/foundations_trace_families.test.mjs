@@ -30,7 +30,7 @@ import { validateSourceDocument } from '../tools/compile_content.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
+const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
 const CONTENT_TYPE_ARCHETYPE = {
   'predict-output': 'output-predict-lines',
   'code-trace': 'state-trace-vars',
@@ -382,7 +382,7 @@ test('taxonomy crosscheck covers every shard case and documents every refinement
 });
 
 test('trace contracts follow the shard word-for-word (solution, reference, errors)', () => {
-  const shard = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/shards/foundations.json'), 'utf8'));
+  const shard = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-shard.json'), 'utf8'));
   const byFamily = new Map();
   for (const candidate of shard.entries) {
     const familyId = candidate.cognitiveFamily.familyId;

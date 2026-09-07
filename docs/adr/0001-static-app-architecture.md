@@ -15,7 +15,7 @@ Vier Spikes am 2026-08-24 über `http://localhost:8765`:
 1. KaTeX 0.18.4 offline (Fonts lokal): **bestanden** — Formel rendert, `.katex-html` vorhanden.
 2. JSXGraph 1.13.2 offline: **bestanden** — Board + Tastatur-Zahlenfelder, Version im Status.
 3. Pyodide 314.0.5 im Module-Worker: **bestanden** — 7 Fälle inkl. Endlosschleifen-Abbruch (Details ADR-0003).
-4. Numbas v10.0 generische Runtime, lokal gebaut: Offline-Ressourcenladung vollständig verifiziert (Serverlog); der Exam-START bleibt in den verfügbaren Testbrowsern hängend (MathJax.startup.promise löst nicht) — Details und Konsequenz in ADR-0002. Spikes bleiben als `spikes/*.html` reproduzierbar.
+4. Numbas v10.0 generische Runtime, lokal gebaut: Offline-Ressourcenladung vollständig verifiziert (Serverlog); der Exam-START bleibt in den verfügbaren Testbrowsern hängend (MathJax.startup.promise löst nicht) — Details und Konsequenz in ADR-0002. Die damaligen Prototypen dienten nur der Integrationsprüfung.
 
 ## Lizenz
 Alle Komponenten permissiv: MIT (KaTeX), MIT/LGPL dual — MIT gewählt (JSXGraph), MPL-2.0 (Pyodide), Apache-2.0 (Numbas), Apache-2.0 (MathJax 4). Details: `docs/dependency-matrix.md`.

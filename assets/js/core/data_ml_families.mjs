@@ -25,20 +25,20 @@ import {
   genDropoutCount,
   genLinearParamCount,
   genSgdSteps,
-} from './w18_w21_generators.mjs';
+} from './deep_learning_generators.mjs';
 import {
   genAttentionShape,
   genGreedyToken,
   genLoraParamCount,
   genRelativeGain,
   genVocabAfterMerges,
-} from './w22_w26_generators.mjs';
+} from './transformer_generators.mjs';
 import {
   genRecallAtK,
   genF1orPrecision,
   genInjectionFlagCount,
   genAllowedActionCount,
-} from './w27_w30_generators.mjs';
+} from './genai_research_generators.mjs';
 import {
   genProtocolShifts,
   genCardAudit,
@@ -49,7 +49,7 @@ import {
   protocolShiftFlags,
   countCardDefects,
   subgroupRatePerMille,
-} from './w31_w39_generators.mjs';
+} from './capstone_generators.mjs';
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 

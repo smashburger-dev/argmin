@@ -1,6 +1,5 @@
 // Review scheduler: pure functions that turn attempt history into timed
-// mastery validity and review due dates (ADR-0008, decision template
-// research/lernmethodik/of3-algorithmen.md). One mode per OF-3:
+// mastery validity and review due dates (ADR-0008). One mode per OF-3:
 //   - 'expanding': manually planned expanding-retrieval slots at
 //     +2/+5/+11 weeks after the last qualified hit.
 // No I/O, no Date.now() defaults beyond documented call sites — everything

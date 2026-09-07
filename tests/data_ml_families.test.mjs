@@ -44,7 +44,7 @@ import {
   genDropoutCount,
   genLinearParamCount,
   genSgdSteps,
-} from '../assets/js/core/w18_w21_generators.mjs';
+} from '../assets/js/core/deep_learning_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 

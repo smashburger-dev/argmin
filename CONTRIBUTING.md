@@ -1,4 +1,4 @@
-# Mitmachen
+# Zu argmin beitragen
 
 ## Lokal starten
 

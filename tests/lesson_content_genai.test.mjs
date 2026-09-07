@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
 import {
   genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount,
-} from '../assets/js/core/w27_w30_generators.mjs';
+} from '../assets/js/core/genai_research_generators.mjs';
 
 // Content contract tests for weeks 27-30 (RAG, evaluation, defensive GenAI
 // security, prototype). The packs are registered in content/catalog.json;

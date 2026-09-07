@@ -25,7 +25,7 @@ import { assertModuleBindings } from '../assets/js/domain/learning_module.mjs';
 import { validateSourceDocument } from '../tools/compile_content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
+const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
 const SOLVER_TABLE = {
   'diff-unstaged': 'git diff',
   'diff-staged': 'git diff --staged',

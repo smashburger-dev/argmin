@@ -13,7 +13,7 @@ Status: Angenommen (beide Spikes bestanden 2026-08-24).
 - **D3/plotly**: für die mathematischen Zwecke (Vektoren, Transformationen, Gradient) schwerer und weniger zielgerichtet als JSXGraph.
 
 ## Getesteter Integrationsweg
-Spike `spikes/katex-jsxgraph-spike.html`: KaTeX-Rendering verifiziert (`.katex-html` + Math-Role im A11y-Tree, offline-Fonts geladen); JSXGraph-Board mit Vektorpfeil, Drag UND Zahlenfelder synchronisiert, `Skalarprodukt` live.
+Ein früherer Prototyp verifizierte KaTeX-Rendering (`.katex-html` + Math-Role im A11y-Tree, Offline-Fonts geladen); ein JSXGraph-Board mit Vektorpfeil, Drag UND Zahlenfeldern blieb synchronisiert, `Skalarprodukt` live.
 
 ## Lizenz / Offline / Bundle / Wartung / Aufwand / Rückbau
 MIT bzw. MIT-gewählt; vollständig offline; je ~1 MB nur bei Bedarf (KaTeX initial, JSXGraph lazy); beide aktiv (2026er Releases); Aufwand gering; Rückbau: Vendor-Ordner + eine Skript-Zeile.

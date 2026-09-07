@@ -78,8 +78,8 @@ import { validateSourceDocument } from '../tools/compile_content.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
-const shard = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/shards/foundations.json'), 'utf8'));
+const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
+const shard = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-shard.json'), 'utf8'));
 
 const FAMILIES = [
   { contract: LINEAR_ISOLATE_CONTRACT, generate: generateLinearIsolateFamily, solve: solveLinearIsolate },

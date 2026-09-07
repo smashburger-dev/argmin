@@ -1,4 +1,4 @@
-# KI-Lernplattform
+# argmin
 
 ## Product contract
 
@@ -20,7 +20,7 @@
 - Build, audit, validation, and browser acceptance tools: `tools/`
 - Node tests: `tests/`
 - Vendored runtimes: `vendor/`
-- Generated combined release candidate: `build-next/`
+- GitHub Actions workflows: `.github/workflows/`
 
 ## Verification
 
@@ -51,29 +51,5 @@ node tools/validate_content.mjs --dir build-next
 
 ## Skill routing
 
-- Use `diagnosing-bugs` for worker failures, grader defects, IndexedDB migrations, test failures, and performance regressions.
-- Use `animate` only for intentional learner-facing motion. Use `find-animation-opportunities` for a read-only motion scan.
-- Suggest `/ui-ux-pro-max` for an explicit learning-interface, accessibility, or responsive-design review.
-- Suggest `/monid` only for user-requested external source retrieval. Never make it a runtime dependency or an authoritative grader.
-
-## Graphify
-
-The project graph is `graphify-out/graph.json` relative to this directory.
-
-- Use Graphify first for exact symbols, imports, calls, module ownership, architecture paths, and blast radius.
-- Use targeted search and file reads first for visible copy, curriculum content, HTML, CSS, and literal data. Use Graphify after an exact identifier is known.
-- Validate that seeds and `source_file` paths belong to `ki-lernplattform` before trusting a result.
-- The code graph excludes `vendor/` and generated release files.
-- Read `graphify-out/GRAPH_REPORT.md` only for broad architecture review.
-- Treat the graph as stale after uncommitted code changes and update it only before another graph-dependent answer.
-
-## Retrieval and cost workflow
-
-- Clarify first if the request is broad or multi-phase. Noa is a Creative Director; ask, don't lecture.
-- Use Graphify for exact symbols and ownership. Prefer rare identifiers.
-- Let Fast Context retrieve before doing broad manual reads.
-- For large files, logs, datasets, or fetched docs, use Context Mode: process in sandbox, `ctx_index`, then `ctx_search`.
-- Before content/test/build loops, read `~/.config/devin/skills/affected-test-runner/SKILL.md` and `~/.config/devin/skills/fast-then-full/SKILL.md`.
-- For routine or multi-phase work, read `~/.config/devin/skills/model-router/SKILL.md` and agree on the right model.
-- If the request spans more than one phase, read `~/.config/devin/skills/phase-splitter/SKILL.md` and propose a split.
-- When a work unit finishes, read `~/.config/devin/skills/scope-summarizer/SKILL.md` and write a digest.
+- Use `shrink-complexity` for minimal, focused refactors without unnecessary churn.
+- Suggest `/ui-ux-pro-max` for explicit learning-interface, accessibility, or responsive-design reviews.
