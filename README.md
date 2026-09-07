@@ -10,7 +10,7 @@ Läuft komplett im Browser, kein Account, Fortschritt bleibt auf deinem Gerät.
 
 ## Was drin ist
 
-- 46 Kompetenzen, 46 Lektionen und 258 Aufgaben von Mathe über Lineare Algebra und ML bis Deep Learning, Transformer und GenAI
+- 46 Kompetenzen, 46 Lektionen und über 250 Aufgaben von Mathe über Lineare Algebra und ML bis Deep Learning, Transformer und GenAI
 - Python im Browser via Pyodide und NumPy, dazu KaTeX und JSXGraph
 - Generierte Aufgabenvarianten mit deterministischen Gradern; kein LLM bewertet deine Antworten
 - Spaced Repetition und ein deterministischer Wochenplan
