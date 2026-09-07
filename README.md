@@ -66,6 +66,8 @@ npm run dev:next
 
 Öffne anschließend <http://127.0.0.1:4173/> im Browser. (Bitte nicht als `file://` öffnen — die App braucht einen lokalen Server, den `npm run dev:next` für dich startet.)
 
+**Mitbauen mit oder ohne KI-Agent.** In [WIP.md](WIP.md) steht, was gerade offen ist: pro Punkt Ziel, betroffene Dateien, Prüfbefehle und wann es fertig ist. Damit kannst du (oder dein Agent) direkt loslegen, ohne erst das ganze Repo zu lesen.
+
 ## Wie das Projekt aufgebaut ist
 
 | Ordner | Was drin ist |
