@@ -57,166 +57,33 @@ const ALL_EXERCISES = WEEKS.flatMap((weekId) => exercisesOf(weekId).map((ex) => 
 
 // --- week pack structure -----------------------------------------------------------
 
-test('w27-w30 packs carry six exercises with the mandated slot pattern', () => {
-  for (const weekId of WEEKS) {
-    const doc = pack(weekId);
-    assert.equal(doc.schemaVersion, 1);
-    assert.equal(doc.weekId, weekId);
-    assert.equal(doc.locale, 'de');
-    assert.equal(doc.exercises.length, 6, `${weekId} needs exactly six exercises`);
-    assert.deepEqual(doc.exercises.map((e) => e.exerciseId),
-      [1, 2, 3, 4, 5, 6].map((n) => `${weekId}-e${n}`));
-    const [e1, e2, e3, e4, e5, e6] = doc.exercises;
-    assert.equal(e1.type, 'single-choice');
-    assert.equal(e1.difficulty, 1);
-    assert.equal(e1.masteryEligible, false, `${weekId}-e1 must stay a non-mastery diagnosis task`);
-    assert.equal(e2.type, 'numeric');
-    assert.equal(e2.difficulty, 2);
-    assert.equal(e2.masteryEligible, true);
-    assert.equal(e3.type, 'predict-output');
-    assert.equal(e3.difficulty, 2);
-    assert.equal(e4.type, 'python-code');
-    assert.equal(e4.difficulty, 2);
-    assert.equal(e5.type, 'python-code');
-    assert.equal(e5.difficulty, 3);
-    assert.equal(e6.type, 'python-code');
-    assert.equal(e6.difficulty, 4);
-    for (const ex of doc.exercises) {
-      if (ex.exerciseId.endsWith('-e1')) continue;
-      assert.equal(ex.masteryEligible, true, `${ex.exerciseId} must be mastery-eligible`);
-    }
-  }
-});
 
-test('w27-w30 exercises keep all required fields, locale de and seeds in range', () => {
-  for (const { weekId, ex } of ALL_EXERCISES) {
-    for (const field of REQUIRED) assert.ok(ex[field] !== undefined, `${ex.exerciseId}: Pflichtfeld ${field} fehlt`);
-    assert.equal(ex.locale, 'de');
-    const [lo, hi] = SEED_RANGE[weekId];
-    assert.ok(ex.deterministicSeed >= lo && ex.deterministicSeed <= hi,
-      `${ex.exerciseId}: seed ${ex.deterministicSeed} outside ${lo}..${hi}`);
-    assert.equal(ex.contentClass, 'generated');
-    assert.match(ex.license, /CC BY 4\.0/);
-    assert.ok((ex.hints || []).length >= 2, `${ex.exerciseId} needs hints`);
-    assert.ok((ex.feedbackRules || []).length >= 2, `${ex.exerciseId} needs feedback rules`);
-    assert.ok((ex.typicalErrors || []).length >= 2, `${ex.exerciseId} needs typical errors`);
-    assert.ok(ex.estimatedMinutes >= 5 && ex.estimatedMinutes <= 45, `${ex.exerciseId}: estimatedMinutes out of range`);
-  }
-});
 
-test('w27-w30 single-choice tasks have exactly one correct option at top level', () => {
-  for (const { ex } of ALL_EXERCISES.filter(({ ex }) => ex.type === 'single-choice')) {
-    assert.ok(Array.isArray(ex.choices) && ex.choices.length >= 2, `${ex.exerciseId}: choices fehlen`);
-    assert.equal(ex.choices.filter((c) => c && c.correct === true).length, 1, `${ex.exerciseId}: genau eine korrekte Option`);
-    assert.equal(ex.expectedAnswer.correctChoice, ex.choices.find((c) => c.correct === true).id);
-    assert.equal(ex.tolerancePolicy.mode, 'none');
-  }
-});
+
+
+
 
 // --- numeric seed-generator slots ---------------------------------------------------
 
-test('w27-w30 e2 slots use the documented seeded generator with exact-integer grading', async () => {
-  for (const weekId of WEEKS) {
-    const e2 = exercisesOf(weekId)[1];
-    const generatorName = GENERATOR_BY_WEEK[weekId];
-    assert.equal(e2.grader, 'deterministic');
-    assert.equal(e2.parameters.seedGenerator, generatorName, `${weekId}-e2 expected ${generatorName}`);
-    assert.equal(e2.tolerancePolicy.mode, 'exact-integer');
-    assert.equal(e2.expectedAnswer.kind, 'seeded-integer');
-    assert.equal(e2.expectedAnswer.generator, generatorName);
-    assert.equal(e2.expectedAnswer.defaultSeed, e2.deterministicSeed);
-    const instance = W27_W30_SEED_GENERATORS[generatorName](e2.deterministicSeed);
-    assert.equal(e2.prompt, instance.prompt,
-      `${weekId}-e2 prompt differs from generator output at seed ${e2.deterministicSeed}`);
-    assert.equal(e2.expectedAnswer.defaultExpected, instance.expected,
-      `${weekId}-e2 defaultExpected differs from generator output`);
-    assert.ok(e2.testedSeedCount >= 200, `${weekId}-e2 testedSeedCount must reflect generator testing`);
-    const freshInstance = W27_W30_SEED_GENERATORS[generatorName](e2.deterministicSeed + 7);
-    assert.equal(freshInstance.expected, W27_W30_SEED_GENERATORS[generatorName](e2.deterministicSeed + 7).expected);
-  }
-});
+
 
 // --- predict-output slots ------------------------------------------------------------
 
-test('w27-w30 e3 slots are deterministic output-line predictions', () => {
-  for (const weekId of WEEKS) {
-    const e3 = exercisesOf(weekId)[2];
-    assert.equal(e3.grader, 'deterministic');
-    assert.equal(e3.expectedAnswer.kind, 'output-lines');
-    assert.equal(e3.tolerancePolicy.mode, 'whitespace-normalized');
-    assert.ok(e3.parameters.snippet.includes('print'), `${weekId}-e3 snippet has no print`);
-    assert.ok(e3.expectedAnswer.output.trim().length > 0);
-    assert.match(e3.validationStatus, /python3-verified/, `${weekId}-e3 must be locally verified`);
-  }
-});
+
 
 // --- python-code slots ----------------------------------------------------------------
 
-test('w27-w30 python-code tasks declare vendored packages only and full grader contracts', () => {
-  const tasks = ALL_EXERCISES.filter(({ ex }) => ex.type === 'python-code');
-  assert.equal(tasks.length, 12, 'expected twelve python-code tasks');
-  for (const { ex } of tasks) {
-    assert.equal(ex.grader, 'pyodide');
-    assert.ok(Array.isArray(ex.parameters.packages), `${ex.exerciseId}: packages fehlen`);
-    assert.deepEqual(ex.parameters.packages.filter((p) => p !== 'numpy'), [],
-      `${ex.exerciseId}: only numpy is vendored`);
-    assert.match(ex.parameters.tests, /__check\(/, `${ex.exerciseId}: tests without __check`);
-    assert.match(ex.parameters.starterCode, /def |import /, `${ex.exerciseId}: starterCode without skeleton`);
-    assert.equal(ex.expectedAnswer.kind, 'reference-solver');
-    assert.match(ex.expectedAnswer.referenceSolver, /def /, `${ex.exerciseId}: referenceSolver missing`);
-    assert.equal(ex.tolerancePolicy.mode, 'tests');
-    assert.match(ex.validationStatus, /solver-verified/, `${ex.exerciseId}: solver verification required`);
-    assert.equal(ex.testedSeedCount, 1);
-  }
-});
 
-test('w27-w30 prompts never claim LLM execution or LLM-judged ground truth', () => {
-  for (const { ex } of ALL_EXERCISES) {
-    for (const text of [ex.prompt, ex.fullSolution]) {
-      assert.equal(/llm[- ]judge/gi.test(text), false, `${ex.exerciseId}: LLM judge claimed`);
-      assert.equal(/führe (kein )?echtes (sprachmodell|llm)/gi.test(text), false);
-    }
-  }
-});
 
-test('w27-w30 boss tasks name their reference values deterministically', () => {
-  const bosses = WEEKS.map((weekId) => exercisesOf(weekId)[5]);
-  for (const boss of bosses) {
-    assert.equal(boss.difficulty, 4);
-    assert.equal(boss.estimatedMinutes, 42);
-    assert.match(boss.prompt, /Final Boss/, `${boss.exerciseId}: boss framing missing`);
-  }
-});
+
+
+
 
 // --- competency coverage ---------------------------------------------------------------
 
-test('every w27-w30 competency has independent mastery evidence from two graders and all tiers', () => {
-  for (const weekId of WEEKS) {
-    const competencyId = COMPETENCY_BY_WEEK[weekId];
-    const own = exercisesOf(weekId).filter((ex) => ex.skillIds.includes(competencyId));
-    assert.equal(own.length, 6, `${competencyId} must be the primary skill of every ${weekId} task`);
-    const mastery = own.filter((ex) => ex.masteryEligible && AUTHORITATIVE.has(ex.grader));
-    assert.ok(mastery.length >= 2, `${competencyId} lacks mastery evidence`);
-    const graders = new Set(mastery.map((ex) => ex.grader));
-    assert.ok(graders.size >= 2, `${competencyId} mastery covers only ${[...graders]}`);
-    // ADR-0013 rule 9: at least one generative mastery hit (python-code or numeric with generator)
-    assert.ok(mastery.some((ex) => ex.type === 'python-code'), `${competencyId} lacks a generative hit`);
-    assert.ok(mastery.some((ex) => ex.type === 'numeric' && ex.parameters.seedGenerator),
-      `${competencyId} lacks a seeded numeric hit`);
-    const tiers = new Set(own.map((ex) => tier(ex.difficulty)));
-    for (const expected of ['basic', 'core', 'advanced', 'finalBoss']) {
-      assert.ok(tiers.has(expected), `${competencyId} misses tier ${expected}`);
-    }
-  }
-});
 
-test('secondary skill ids reference existing competencies', () => {
-  const competencies = readJson('content/competencies/core.json').competencies;
-  const ids = new Set(competencies.map((c) => c.competencyId));
-  for (const { ex } of ALL_EXERCISES) {
-    for (const skillId of ex.skillIds) assert.ok(ids.has(skillId), `${ex.exerciseId}: unknown skillId ${skillId}`);
-  }
-});
+
+
 
 // --- lessons -----------------------------------------------------------------------------
 

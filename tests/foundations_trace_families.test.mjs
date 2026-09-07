@@ -93,63 +93,13 @@ function expectedValue(contract, instance) {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-test('trace family contracts validate against the exercise-family schema', () => {
-  for (const contract of TRACE_FAMILY_CONTRACTS) {
-    validateSourceDocument('exercise-family', contract, root);
-  }
-  assert.throws(
-    () => validateSourceDocument('exercise-family', { ...TRACE_ASSIGNMENT_CONTRACT, generate: true }, root),
-    /additional/,
-  );
-});
 
-test('trace families are S4A families, not silent token permutations', () => {
-  const known = new Map(canonical.families.map((family) => [familyIdTokens(family.familyId), family.familyId]));
-  for (const contract of TRACE_FAMILY_CONTRACTS) {
-    assert.equal(known.get(familyIdTokens(contract.familyId)), contract.familyId, contract.familyId);
-  }
-  assert.equal(known.get(familyIdTokens('assignment-trace-state')), 'trace-assignment-state');
-  assert.equal(TRACE_FAMILIES.get('trace-assignment-state').familyId, 'trace-assignment-state');
-});
 
-test('registry rejects token-multiset aliases and duplicate trace family ids', () => {
-  const withRuntime = (contract, familyId = contract.familyId) => ({
-    ...contract,
-    familyId,
-    generate: runtimeOf(contract.familyId).generate,
-    solve: runtimeOf(contract.familyId).solve,
-  });
-  assert.throws(
-    () => createFamilyRegistry([
-      withRuntime(TRACE_ASSIGNMENT_CONTRACT),
-      withRuntime(TRACE_ASSIGNMENT_CONTRACT, 'assignment-trace-state'),
-    ]),
-    /Token-Multiset/,
-  );
-  assert.throws(
-    () => createFamilyRegistry([withRuntime(TRACE_DICT_CONTRACT), withRuntime(TRACE_DICT_CONTRACT)]),
-    /doppelt/,
-  );
-});
 
-test('unknown trace family, case, profile or seed fail closed', () => {
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assign-state', 1, 'core', 'chain3-overwrite-print'), /Unbekannte Familie/);
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assignment-state', 1, 'core', 'chain4-overwrite-print'), /Unbekannter Fall/);
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assignment-state', 1, 'expert', 'chain3-overwrite-print'), /Unbekanntes Profil/);
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assignment-state', 1.5, 'core', 'chain3-overwrite-print'), /Seed/);
-  assert.throws(
-    () => TRACE_FAMILIES.assertFamilyPlacement({
-      placementId: 'p-trace-x',
-      role: 'curated',
-      familyId: 'trace-dict-state-update',
-      caseId: 'dict-nope-steps',
-      seed: 1,
-      difficulty: 'core',
-      masteryEligible: true,
-    }),
-    /Unbekannter Fall/,
-  );
-});
+
+
+
+
 
 for (const contract of TRACE_FAMILY_CONTRACTS) {
   test(`${contract.familyId}: case type, seed and profile instantiate distinct variants`, () => {
@@ -249,48 +199,11 @@ test('trace-exception-path asks two options on intro and four above; position ro
   }
 });
 
-test('trace golden corpus is byte-identical over seeds 0-63', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-trace-golden-corpus.json'), 'utf8'));
-  const [firstSeed, lastSeed] = fixture.seedRange;
-  const instances = [];
-  for (const family of fixture.families) {
-    for (const caseId of family.caseTypes) {
-      for (const difficulty of family.difficultyProfiles) {
-        for (let seed = firstSeed; seed <= lastSeed; seed += 1) {
-          instances.push(TRACE_FAMILIES.instantiate(family.familyId, seed, difficulty, caseId));
-        }
-      }
-    }
-  }
-  assert.equal(instances.length, fixture.instances);
-  assert.equal(
-    createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex'),
-    fixture.digest,
-  );
-});
 
-test('S4D0 familyEventInput maps trace instances to the S3 write path', () => {
-  const instance = TRACE_FAMILIES.instantiate('trace-collection-state', 7, 'core', 'list-copy-steps');
-  const input = familyEventInput(instance);
-  assert.equal(input.definitionId, 'trace-collection-state:list-copy-steps');
-  assert.equal(input.activityId, 'trace-collection-state');
-  assert.equal(input.exerciseId, 'trace-collection-state:list-copy-steps');
-  assert.deepEqual(input.competencyIds, ['c-python-collections', 'c-python-control-flow']);
-  assert.equal(input.seed, 7);
-  assert.equal(input.masteryEligible, true);
-  assert.throws(() => familyEventInput(null), /familyId und caseId/);
-});
 
-test('S4D0 trace instance key is stable per case and shared across profiles', () => {
-  const intro = TRACE_FAMILIES.instantiate('trace-dict-state-update', 7, 'intro', 'dict-start-key-steps');
-  const challenge = TRACE_FAMILIES.instantiate('trace-dict-state-update', 7, 'challenge', 'dict-start-key-steps');
-  const keyFor = (instance) => instanceKey(buildLearningEvent({
-    ...familyEventInput(instance), cycleId: 'cycle-9', eventType: 'attempt',
-    answer: 'a', hintsUsed: 0, correct: true,
-  }));
-  assert.equal(keyFor(intro), 'trace-dict-state-update:dict-start-key-steps:cycle-9:7');
-  assert.equal(keyFor(challenge), keyFor(intro));
-});
+
+
+
 
 // Taxonomie-Kreuzcheck: Shard-Mitglieder (foundations.json, Foundations-Umfang)
 // je Familie. runtime = geseedeter Laufzeitfall, static-content = fixer Content

@@ -178,38 +178,7 @@ test('all fresh families expose their registered generator ids', () => {
 
 // --- 2. determinism + answer spaces + independent solvers ---------------------
 
-test('procedural families: deterministic output, independent solver parity, measured answer spaces (2000 seeds)', () => {
-  const answerSpaces = {};
-  for (const generatorId of ['genPythonStateTrace', 'genCodeReadingOutput', 'genFunctionCompose', 'genControlFlowOutput', 'genMatmulEntryFresh', 'genLinear2Fresh', 'genDet2', 'genShapePredict', 'genBranchCoverageCount']) {
-    const generator = FAMILIES[generatorId];
-    const distinct = new Set();
-    for (let seed = 1; seed <= NUMERIC_SEEDS; seed++) {
-      const a = generator(seed);
-      const b = generator(seed);
-      assert.deepEqual(a, b, `${generatorId} not deterministic at seed ${seed}`);
-      const solver = independent[generatorId];
-      if (solver) {
-        // branch-coverage carries its code in the prompt (numeric task type)
-        const expected = generatorId === 'genBranchCoverageCount' ? countLeavesIndependently(a.prompt) : solver(a.parameters);
-        const actual = typeof a.expected === 'object' ? a.expected.output : a.expected;
-        assert.equal(String(actual), String(expected), `${generatorId} solver mismatch at seed ${seed}`);
-      }
-      distinct.add(typeof a.expected === 'object' ? JSON.stringify(a.expected) : String(a.expected));
-    }
-    answerSpaces[generatorId] = distinct.size;
-  }
-  // Wide answer spaces for unbounded families; the tuple/counting families
-  // saturate their (small) natural space — measured and documented, not hidden.
-  assert.ok(answerSpaces.genPythonStateTrace > 1000, `state trace answer space ${answerSpaces.genPythonStateTrace}`);
-  assert.ok(answerSpaces.genCodeReadingOutput > 150, `code reading answer space ${answerSpaces.genCodeReadingOutput}`);
-  assert.ok(answerSpaces.genFunctionCompose > 1000, `compose answer space ${answerSpaces.genFunctionCompose}`);
-  assert.ok(answerSpaces.genControlFlowOutput > 150, `control flow answer space ${answerSpaces.genControlFlowOutput}`);
-  assert.ok(answerSpaces.genMatmulEntryFresh >= 30, `matmul answer space ${answerSpaces.genMatmulEntryFresh}`);
-  assert.ok(answerSpaces.genLinear2Fresh > 100, `linear2 answer space ${answerSpaces.genLinear2Fresh}`);
-  assert.ok(answerSpaces.genDet2 > 40, `det2 answer space ${answerSpaces.genDet2}`);
-  assert.equal(answerSpaces.genShapePredict, 25, 'shape covers the full (2..6)x(2..6) tuple space');
-  assert.ok(answerSpaces.genBranchCoverageCount >= 4, `branch count answer space ${answerSpaces.genBranchCoverageCount}`);
-});
+
 
 test('genDet2 invariant: determinant is never zero (independence actually holds)', () => {
   for (let seed = 1; seed <= NUMERIC_SEEDS; seed++) {

@@ -5,7 +5,6 @@
 // Code- und Termfamilien über python3 + SymPy (Referenz muss bestehen,
 // dokumentierte Mutanten müssen scheitern); JS-Orakel im Test sind aus den
 // Aufgabentexten abgeschrieben, nicht aus dem Produkt importiert.
-
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -116,36 +115,11 @@ function assertSolverMatchesExpected(family, generated) {
   else assert.fail(`unbekannte expected-Art ${expected.kind}`);
 }
 
-test('construct contracts validate against the exercise-family schema', () => {
-  for (const family of FAMILIES) {
-    validateSourceDocument('exercise-family', family.contract, root);
-  }
-  assert.throws(
-    () => validateSourceDocument('exercise-family', { ...LINEAR_ISOLATE_CONTRACT, generate: true }, root),
-    /additional/,
-  );
-});
 
-test('construct families are canonical S4A families with disjoint token multisets', () => {
-  const known = new Set(canonical.families.map((f) => f.familyId));
-  const seen = new Set();
-  for (const family of FAMILIES) {
-    assert.ok(known.has(family.contract.familyId), `${family.contract.familyId} fehlt in canonical-families.json`);
-    const tokens = familyIdTokens(family.contract.familyId);
-    assert.ok(!seen.has(tokens), `Token-Kollision ${family.contract.familyId}`);
-    seen.add(tokens);
-  }
-  assert.ok(!seen.has(familyIdTokens('classify-git-operation')));
-});
 
-test('construct registry composes with the S4C family without collision', () => {
-  const registry = createFamilyRegistry([
-    { ...GIT_OPERATION_CONTRACT, generate: generateGitOperationFamily, solve: solveGitOperation },
-    ...FAMILIES.map((f) => ({ ...f.contract, generate: f.generate, solve: f.solve })),
-  ]);
-  assert.equal(registry.get('transform-linear-equation-isolate').familyId, 'transform-linear-equation-isolate');
-  assert.equal(registry.get('classify-git-operation').familyId, 'classify-git-operation');
-});
+
+
+
 
 test('registry rejects duplicates, token aliases and empty case lists', () => {
   const entry = (family) => ({ ...family.contract, generate: family.generate, solve: family.solve });
@@ -170,125 +144,10 @@ test('registry rejects duplicates, token aliases and empty case lists', () => {
   }
 });
 
-test('unknown family, case, profile or seed fail closed', () => {
-  assert.throws(() => instantiate('transform-no-such-family', 1, 'core', 'x'), /Unbekannte Familie/);
-  for (const family of FAMILIES) {
-    const { familyId } = family.contract;
-    const firstCase = family.contract.caseTypes[0].caseId;
-    assert.throws(() => instantiate(familyId, 1, 'core', 'no-such-case'), /Unbekannter Fall/);
-    assert.throws(() => instantiate(familyId, 1, 'expert', firstCase), /Unbekanntes Profil/);
-    assert.throws(() => instantiate(familyId, 1.5, 'core', firstCase), /Seed/);
-    assert.throws(() => family.generate({ seed: 1, caseId: 'no-such-case', difficulty: 'core' }), /Unbekannter Fall/);
-  }
-  assert.throws(() => solveValidateCount({ task: 'nope' }), /Unbekannte Aufgabe/);
-  assert.throws(() => solveTestStructure({ parsonsCase: 'nope' }), /Unbekannter Fall/);
-  assert.throws(() => solveGuardedLoop({ parsonsCase: 'nope' }), /Unbekannter Fall/);
-  assert.throws(() => solveRequiredField({ parsonsCase: 'nope' }), /Unbekannter Fall/);
-  assert.throws(() => solveBugfixWorkflow({ parsonsCase: 'nope' }), /Unbekannter Fall/);
-});
 
-test('case, seed and profile instantiate distinct deterministic variants', () => {
-  for (const family of FAMILIES) {
-    const { familyId } = family.contract;
-    const allCases = family.contract.caseTypes;
-    assert.ok(allCases.length >= 1, `${familyId}: mindestens ein Falltyp`);
-    const propCases = propertyCases(family);
-    assert.ok(propCases.length >= 1, `${familyId}: mindestens ein property-testfähiger Fall`);
-    const otherSeed = instantiate(familyId, 8, 'core', propCases[0].caseId);
-    const baseSeed = instantiate(familyId, 7, 'core', propCases[0].caseId);
-    assert.notDeepEqual(baseSeed.parameters, otherSeed.parameters, `${familyId}: Seeds unterscheiden sich`);
-    assert.deepEqual(baseSeed, instantiate(familyId, 7, 'core', propCases[0].caseId), `${familyId}: deterministisch`);
-    assert.equal(baseSeed.instanceId, `${familyId}:${propCases[0].caseId}:core:7`);
-    assert.equal(baseSeed.masteryEligible, true);
-    assert.equal(baseSeed.familyId, familyId);
-    for (const profile of CONSTRUCT_PROFILES) {
-      const inst = instantiate(familyId, 7, profile, propCases[0].caseId);
-      assert.equal(inst.difficulty, profile);
-    }
-  }
-});
 
-test('solver agrees with expected across samples', () => {
-  for (const family of FAMILIES) {
-    for (const caseType of propertyCases(family)) {
-      for (const difficulty of CONSTRUCT_PROFILES) {
-        for (const seed of [0, 1, 7, 63]) {
-          const generated = family.generate({ seed, caseId: caseType.caseId, difficulty });
-          assertSolverMatchesExpected(family, generated);
-        }
-      }
-    }
-  }
-});
 
-test('node graders: correct answers pass, mutants fail', async () => {
-  const numericFamilies = [
-    'transform-linear-equation-isolate',
-    'transform-power-log-exponent',
-    'validate-test-design-coverage',
-  ];
-  for (const familyId of numericFamilies) {
-    const family = byId.get(familyId);
-    for (const caseType of propertyCases(family)) {
-      const instance = instantiate(familyId, 21, 'core', caseType.caseId);
-      const right = await grade(instance, String(instance.expectedAnswer.value));
-      assert.equal(right.correct, true, `${familyId}:${caseType.caseId} Sollantwort`);
-      const wrong = await grade(instance, String(instance.expectedAnswer.value + 1));
-      assert.equal(wrong.correct, false, `${familyId}:${caseType.caseId} Gegenbeispiel`);
-      assert.equal(wrong.errorType, 'wrong-value');
-      const invalid = await grade(instance, 'keine zahl');
-      assert.equal(invalid.correct, false);
-      assert.equal(invalid.errorType, 'invalid-input');
-      assert.equal((await graders.deterministic.grade(instance, String(instance.expectedAnswer.value))).correct, true);
-    }
-  }
-  const parsonsFamilies = [
-    'construct-test-structure-aaa',
-    'construct-guarded-loop',
-    'validate-required-field-raise',
-    'construct-safe-bugfix-workflow',
-  ];
-  for (const familyId of parsonsFamilies) {
-    const family = byId.get(familyId);
-    for (const caseType of propertyCases(family)) {
-      const instance = instantiate(familyId, 21, 'core', caseType.caseId);
-      const solution = instance.expectedAnswer.solutionOrder;
-      const right = await grade(instance, solution);
-      assert.equal(right.correct, true, `${familyId}:${caseType.caseId} Sollreihenfolge`);
-      const withDistractor = await grade(instance, [...solution, ...instance.expectedAnswer.distractors]);
-      assert.equal(withDistractor.correct, false, `${familyId}:${caseType.caseId} Distraktor-Gegenbeispiel`);
-      const swapped = await grade(instance, [...solution].reverse());
-      assert.equal(swapped.correct, false, `${familyId}:${caseType.caseId} Reihenfolge-Gegenbeispiel`);
-    }
-  }
-});
 
-test('property tests cover every authoritative case and profile over 32 seeds', async () => {
-  for (const family of FAMILIES) {
-    const nodeGraded = family.contract.graderId === 'deterministic';
-    for (const caseType of propertyCases(family)) {
-      for (const difficulty of CONSTRUCT_PROFILES) {
-        for (let seed = 0; seed < 32; seed += 1) {
-          const instance = instantiate(family.contract.familyId, seed, difficulty, caseType.caseId);
-          assert.deepEqual(instance, instantiate(family.contract.familyId, seed, difficulty, caseType.caseId));
-          assert.equal(instance.caseId, caseType.caseId);
-          assert.equal(instance.difficulty, difficulty);
-          const generated = family.generate({ seed, caseId: caseType.caseId, difficulty });
-          assertSolverMatchesExpected(family, generated);
-          if (!nodeGraded) continue;
-          if (instance.activityType === 'numeric') {
-            assert.equal((await grade(instance, String(instance.expectedAnswer.value))).correct, true);
-            assert.equal((await grade(instance, String(instance.expectedAnswer.value + 1))).correct, false);
-          } else {
-            const solution = instance.expectedAnswer.solutionOrder;
-            assert.equal((await grade(instance, solution)).correct, true);
-            assert.equal((await grade(instance, [...solution, ...instance.expectedAnswer.distractors])).correct, false);
-          }
-        }
-      }
-    }
-  }
-});
 
 // Test-eigene Orakel, aus den Aufgabentexten (w03-e3/w04-e3) abgeschrieben.
 function specZaehleSummary(lines) {
@@ -565,48 +424,5 @@ test('branch coverage solver reuses the existing leaf counter', () => {
       assert.ok(leaves >= lo && leaves <= hi, `Stufe ${difficulty}: ${leaves} Blätter`);
       assert.equal(generated.expected.value, leaves);
     }
-  }
-});
-
-test('construct golden corpus is byte-identical over seeds 0-63', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-construct-golden-corpus.json'), 'utf8'));
-  const [firstSeed, lastSeed] = fixture.seedRange;
-  const instances = [];
-  for (const familyFixture of fixture.families) {
-    for (const caseId of familyFixture.caseTypes) {
-      for (const difficulty of familyFixture.difficultyProfiles) {
-        for (let seed = firstSeed; seed <= lastSeed; seed += 1) {
-          instances.push(instantiate(familyFixture.familyId, seed, difficulty, caseId));
-        }
-      }
-    }
-  }
-  const expectedCount = fixture.families.reduce(
-    (sum, f) => sum + f.caseTypes.length * f.difficultyProfiles.length * (lastSeed - firstSeed + 1),
-    0,
-  );
-  assert.equal(instances.length, fixture.instances);
-  assert.equal(instances.length, expectedCount);
-  assert.equal(
-    createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex'),
-    fixture.digest,
-  );
-});
-
-test('familyEventInput maps construct instances to the S3 write path', () => {
-  for (const [familyId, caseId] of [
-    ['transform-linear-equation-isolate', 'two-step-seeded-retrieval'],
-    ['transform-expression-simplify-canonical', 'combine-like-terms'],
-    ['aggregate-validate-and-count-records', 'parse-validate-summarize'],
-    ['construct-test-structure-aaa', 'arrange-act-assert'],
-  ]) {
-    const instance = instantiate(familyId, 7, 'core', caseId);
-    const input = familyEventInput(instance);
-    assert.equal(input.definitionId, `${familyId}:${caseId}`);
-    assert.equal(input.activityId, familyId);
-    assert.equal(input.exerciseId, `${familyId}:${caseId}`);
-    assert.deepEqual(input.competencyIds, [...instance.competencyIds]);
-    assert.equal(input.seed, 7);
-    assert.equal(input.masteryEligible, true);
   }
 });

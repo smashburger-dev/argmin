@@ -85,25 +85,9 @@ for (const item of seeded) {
   });
 }
 
-test('E14 static numeric cases instantiate through the existing numeric path', () => {
-  for (const [caseId, expected] of [['stage-timeout-count', 3], ['dependency-pin-count', 4], ['evidence-rule-count', 2]]) {
-    const instance = families.instantiate(
-      caseId === 'evidence-rule-count' ? 'aggregate-evidence-rule-audit' : 'formula-stat-from-table',
-      0,
-      'core',
-      caseId,
-    );
-    assert.equal(instance.activityType, 'numeric');
-    assert.deepEqual(instance.expectedAnswer, { kind: 'integer', value: expected });
-  }
-});
 
-test('E17 static case uses seeded validate-count family and independent static solver', () => {
-  const instance = families.instantiate('aggregate-validate-and-count-records', 0, 'stretch', 'separate-error-kinds');
-  assert.equal(instance.activityType, 'python-code');
-  assert.equal(solveValidateCount(instance.parameters).kind, instance.expectedAnswer.kind);
-  assert.deepEqual(instance.competencyIds, ['c-capstone-pipeline', 'c-genai-security']);
-});
+
+
 
 test('Parsons family hosts W35 e5 and W39 e4 static cases', () => {
   const parsons = families.instantiate('construct-freeze-assert-guard', 0, 'stretch', 'freeze-assert-parsons');

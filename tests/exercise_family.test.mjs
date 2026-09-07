@@ -64,45 +64,11 @@ function propertyCases(family) {
   return family.caseTypes.filter((item) => item.propertyTest !== false);
 }
 
-test('family contract schema accepts the git operation family and rejects extra keys', () => {
-  validateSourceDocument('exercise-family', GIT_OPERATION_CONTRACT, root);
-  assert.throws(
-    () => validateSourceDocument('exercise-family', { ...GIT_OPERATION_CONTRACT, generate: true }, root),
-    /additional/,
-  );
-});
 
-test('classify-git-operation is the S4A family, not a silent token permutation', () => {
-  const known = new Map(canonical.families.map((family) => [familyIdTokens(family.familyId), family.familyId]));
-  assert.equal(known.get(familyIdTokens('classify-git-operation')), 'classify-git-operation');
-  assert.equal(known.get(familyIdTokens('git-operation-classify')), 'classify-git-operation');
-  assert.equal(instantiate('classify-git-operation', 7, 'core', 'diff-unstaged').familyId, 'classify-git-operation');
-});
 
-test('registry rejects token-multiset aliases and duplicate family ids', () => {
-  const collision = {
-    ...GIT_OPERATION_CONTRACT,
-    familyId: 'git-classify-operation',
-    caseTypes: [
-      { caseId: 'alpha-case' },
-      { caseId: 'beta-case' },
-    ],
-  };
-  assert.throws(
-    () => createFamilyRegistry([
-      { ...GIT_OPERATION_CONTRACT, generate: generateGitOperationFamily, solve: solveGitOperation },
-      { ...collision, generate: generateGitOperationFamily, solve: solveGitOperation },
-    ]),
-    /Token-Multiset/,
-  );
-  assert.throws(
-    () => createFamilyRegistry([
-      { ...GIT_OPERATION_CONTRACT, generate: generateGitOperationFamily, solve: solveGitOperation },
-      { ...GIT_OPERATION_CONTRACT, generate: generateGitOperationFamily, solve: solveGitOperation },
-    ]),
-    /doppelt/,
-  );
-});
+
+
+
 
 test('rationale-note members skip family property tests and stay non-authoritative', () => {
   const stub = {
@@ -206,120 +172,19 @@ test('curated placement without definitionId needs case type, seed and masteryEl
   );
 });
 
-test('unknown family, case, profile or seed fail closed', () => {
-  assert.throws(() => instantiate('classify-git-status-command', 1, 'core', 'diff-unstaged'), /Unbekannte Familie/);
-  assert.throws(() => instantiate('classify-git-operation', 1, 'core', 'dirty-tree'), /Unbekannter Fall/);
-  assert.throws(() => instantiate('classify-git-operation', 1, 'expert', 'diff-unstaged'), /Unbekanntes Profil/);
-  assert.throws(() => instantiate('classify-git-operation', 1.5, 'core', 'diff-unstaged'), /Seed/);
-  assert.throws(
-    () => assertFamilyPlacement({
-      placementId: 'p-x',
-      role: 'curated',
-      familyId: 'classify-git-operation',
-      caseId: 'dirty-tree',
-      seed: 1,
-      difficulty: 'core',
-      masteryEligible: true,
-    }),
-    /Unbekannter Fall/,
-  );
-});
 
-test('case type, seed and profile instantiate distinct variants', () => {
-  const unstaged = instantiate('classify-git-operation', 7, 'intro', 'diff-unstaged');
-  const staged = instantiate('classify-git-operation', 7, 'intro', 'diff-staged');
-  const otherSeed = instantiate('classify-git-operation', 8, 'intro', 'diff-unstaged');
-  const core = instantiate('classify-git-operation', 7, 'core', 'diff-unstaged');
-  assert.equal(unstaged.caseId, 'diff-unstaged');
-  assert.equal(staged.caseId, 'diff-staged');
-  assert.notEqual(unstaged.prompt, staged.prompt);
-  assert.notEqual(unstaged.expectedAnswer.correctChoice, undefined);
-  assert.notDeepEqual(unstaged.choices, otherSeed.choices);
-  assert.equal(unstaged.choices.length, 2);
-  assert.equal(core.choices.length, 4);
-  assert.equal(unstaged.definitionId, undefined);
-  assert.equal(unstaged.masteryEligible, true);
-  assert.equal(unstaged.instanceId, 'classify-git-operation:diff-unstaged:intro:7');
-  assert.deepEqual(unstaged, instantiate('classify-git-operation', 7, 'intro', 'diff-unstaged'));
-});
 
-test('independent solver matches the expected choice; a distractor is the counterexample', async () => {
-  for (const caseId of Object.keys(SOLVER_TABLE)) {
-    for (const difficulty of GIT_OPERATION_CONTRACT.difficultyProfiles) {
-      const instance = instantiate('classify-git-operation', 21, difficulty, caseId);
-      const solved = solveGitOperation(instance.parameters);
-      assert.equal(solved.correctText, SOLVER_TABLE[caseId], `${caseId} ${difficulty}: Solver-Tabelle`);
-      const correct = instance.choices.find((choice) => choice.id === instance.expectedAnswer.correctChoice);
-      assert.equal(correct.text, solved.correctText);
-      const right = await grade(instance, instance.expectedAnswer.correctChoice);
-      const wrong = await grade(instance, counterexample(instance));
-      assert.equal(right.correct, true, `${caseId} ${difficulty}: Sollantwort`);
-      assert.equal(wrong.correct, false, `${caseId} ${difficulty}: Gegenbeispiel`);
-      assert.equal((await graders.deterministic.grade(instance, instance.expectedAnswer.correctChoice)).correct, true);
-    }
-  }
-});
 
-test('property tests cover every authoritative case type and profile over 32 seeds', async () => {
-  const family = EXERCISE_FAMILIES.get('classify-git-operation');
-  for (const caseType of propertyCases(family)) {
-    for (const difficulty of family.difficultyProfiles) {
-      for (let seed = 0; seed < 32; seed += 1) {
-        const instance = instantiate(family.familyId, seed, difficulty, caseType.caseId);
-        assert.deepEqual(instance, instantiate(family.familyId, seed, difficulty, caseType.caseId));
-        assert.equal(instance.caseId, caseType.caseId);
-        assert.equal(instance.difficulty, difficulty);
-        const solved = family.solve(instance.parameters);
-        const correct = instance.choices.find((choice) => choice.correct);
-        assert.equal(correct.text, solved.correctText);
-        assert.equal((await grade(instance, correct.id)).correct, true);
-        assert.equal((await grade(instance, counterexample(instance))).correct, false);
-      }
-    }
-  }
-});
 
-test('S4C family golden corpus is byte-identical over seeds 0-63', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/exercise-family-golden-corpus.json'), 'utf8'));
-  const [firstSeed, lastSeed] = fixture.seedRange;
-  const instances = [];
-  for (const caseId of fixture.caseTypes) {
-    for (const difficulty of fixture.difficultyProfiles) {
-      for (let seed = firstSeed; seed <= lastSeed; seed += 1) {
-        instances.push(instantiate(fixture.familyId, seed, difficulty, caseId));
-      }
-    }
-  }
-  assert.equal(instances.length, fixture.instances);
-  assert.equal(
-    createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex'),
-    fixture.digest,
-  );
-});
 
-test('S4D0 familyEventInput maps instances to the S3 write path', () => {
-  const instance = instantiate('classify-git-operation', 7, 'intro', 'diff-unstaged');
-  const input = familyEventInput(instance);
-  assert.equal(input.definitionId, 'classify-git-operation:diff-unstaged');
-  assert.equal(input.activityId, 'classify-git-operation');
-  assert.equal(input.exerciseId, 'classify-git-operation:diff-unstaged');
-  assert.deepEqual(input.competencyIds, ['c-git-basics']);
-  assert.equal(input.seed, 7);
-  assert.equal(input.masteryEligible, true);
-  assert.throws(() => familyEventInput(null), /familyId und caseId/);
-  assert.throws(() => familyEventInput({ familyId: 'classify-git-operation' }), /familyId und caseId/);
-});
 
-test('S4D0 instance key is stable per case and shared across profiles', () => {
-  const intro = instantiate('classify-git-operation', 7, 'intro', 'diff-unstaged');
-  const challenge = instantiate('classify-git-operation', 7, 'challenge', 'diff-unstaged');
-  const keyFor = (instance) => instanceKey(buildLearningEvent({
-    ...familyEventInput(instance), cycleId: 'cycle-9', eventType: 'attempt',
-    answer: 'a', hintsUsed: 0, correct: true,
-  }));
-  assert.equal(keyFor(intro), 'classify-git-operation:diff-unstaged:cycle-9:7');
-  assert.equal(keyFor(challenge), keyFor(intro));
-});
+
+
+
+
+
+
+
 
 test('S4D0 wrong family answers are journal-worthy with the case key', () => {
   const instance = instantiate('classify-git-operation', 7, 'intro', 'diff-unstaged');

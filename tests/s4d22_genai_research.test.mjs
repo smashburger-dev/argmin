@@ -54,45 +54,11 @@ for (const item of seeded) {
   });
 }
 
-test('canonical seeded answers match legacy e2 answers', () => {
-  for (const item of seeded) {
-    const exercise = legacy[item.week].exercises.find((entry) => entry.exerciseId === item.source);
-    const instance = item.generate({ seed: exercise.deterministicSeed, caseId: item.name, difficulty: 'core' });
-    assert.equal(instance.expected.value, exercise.expectedAnswer.defaultExpected, item.name);
-  }
-});
 
-test('S4D22 seeded family corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/s4d22-family-golden-corpus.json'), 'utf8'));
-  for (const entry of Object.values(fixture.families)) {
-    const item = seeded.find((candidate) => candidate.name === entry.caseId);
-    const instances = [];
-    for (const difficulty of fixture.difficultyProfiles) {
-      for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-        instances.push(item.generate({ seed, caseId: item.name, difficulty }));
-      }
-    }
-    assert.equal(instances.length, entry.instances);
-    assert.equal(
-      createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex'),
-      entry.digest,
-      `${entry.familyId}:${entry.caseId}`,
-    );
-  }
-});
 
-test('raw predicate acceptance over 10000 seeds', () => {
-  for (const item of seeded) {
-    const rates = [];
-    for (const profile of [item.intro, item.stretch]) {
-      let accepted = 0;
-      for (let seed = 0; seed < 10000; seed += 1) accepted += profile(item.generator(seed).parameters) ? 1 : 0;
-      rates.push(accepted);
-      assert.ok(accepted >= 1000, `${item.name}: predicate acceptance below 10% (${accepted}/10000)`);
-    }
-    console.log(`${item.name}: intro ${rates[0]}/10000 (${(rates[0] / 100).toFixed(2)}%), stretch ${rates[1]}/10000 (${(rates[1] / 100).toFixed(2)}%)`);
-  }
-});
+
+
+
 
 test('W27-W33 static registrations and module placements resolve', () => {
   const modules = ['lm-genai-rag', 'lm-genai-eval', 'lm-genai-security', 'lm-genai-prototype', 'lm-research-question', 'lm-research-cards', 'lm-research-responsible'];

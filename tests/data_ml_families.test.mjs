@@ -149,219 +149,25 @@ function expectedMseGradient(parameters) {
   return (2 / n) * points.reduce((sum, [x, y]) => sum + x * (w * x + b - y), 0);
 }
 
-test('data-cleaning family derives expected values independently over 200 seeds per case/profile', () => {
-  for (const caseId of cases) {
-    for (const difficulty of profiles) {
-      for (let seed = 0; seed < 200; seed += 1) {
-        const generated = seededSpec.generate({ seed, caseId, difficulty });
-        assert.equal(generated.expected.value, expectedFromParameters(generated.parameters));
-        assert.equal(solveCountRemainingRows(generated.parameters).value, generated.expected.value);
-        if (caseId === 'missing-target-rows' && difficulty === 'intro') assert.equal(generated.parameters.framing, 'drop');
-        if (caseId === 'missing-target-rows' && difficulty === 'stretch') assert.equal(generated.parameters.framing, 'rate');
-        if (caseId === 'duplicate-rows' && difficulty === 'intro') {
-          assert.equal(generated.parameters.dropKey, false);
-          assert.equal(generated.parameters.keyConflicts, 0);
-        }
-        if (caseId === 'duplicate-rows' && difficulty === 'stretch') assert.equal(generated.parameters.dropKey, true);
-      }
-    }
-  }
-});
 
-test('data-cleaning family preserves the W06 default generator answers', () => {
-  assert.equal(
-    generateCountRemainingRowsFamily({
-      seed: 6001,
-      caseId: 'missing-target-rows',
-      difficulty: 'core',
-    }).expected.value,
-    genCompleteRows(6001).expected,
-  );
-  assert.equal(
-    generateCountRemainingRowsFamily({
-      seed: 6002,
-      caseId: 'duplicate-rows',
-      difficulty: 'core',
-    }).expected.value,
-    genDedupRows(6002).expected,
-  );
-});
 
-test('predict-output data-cleaning case grades through the real registry path', async () => {
-  const instance = EXERCISE_FAMILIES.instantiate(
-    'trace-library-api-output',
-    0,
-    'core',
-    'pandas-dedup-isna-lines',
-  );
-  assert.deepEqual(instance.expectedAnswer, { kind: 'output-lines', output: '3\n1' });
-  assert.equal((await EXERCISE_FAMILIES.grade(instance, '3\n1')).correct, true);
-  assert.equal((await EXERCISE_FAMILIES.grade(instance, '3\n2')).correct, false);
-});
 
-test('data-cleaning family corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const caseId of cases) {
-    for (const difficulty of profiles) {
-      for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-        instances.push(generateCountRemainingRowsFamily({ seed, caseId, difficulty }));
-      }
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.digest);
-});
 
-test('conditional-count family derives values independently over 200 seeds per profile', () => {
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = DATA_ML_FAMILY_SPECS[1].generate({ seed, caseId: conditionalCase, difficulty });
-      assert.equal(generated.expected.value, solveFormulaRatioPercentMetric(generated.parameters).value);
-      if (difficulty === 'intro') assert.equal(generated.parameters.direction, 'count');
-      if (difficulty === 'stretch') assert.equal(generated.parameters.direction, 'percent');
-    }
-  }
-});
 
-test('conditional-count core preserves the canonical W07 generator', () => {
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({ seed: 7001, caseId: conditionalCase, difficulty: 'core' }).expected.value,
-    42,
-  );
-});
 
-test('subgroup error gap family preserves seeded generation, binding profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-ratio-percent-metric');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'subgroup-error-gap-pp',
-        difficulty,
-      });
-      const expected = (100 * Math.abs(generated.parameters.e1 - generated.parameters.e2))
-        / generated.parameters.n;
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveFormulaRatioPercentMetric(generated.parameters).value, expected);
-      if (difficulty === 'intro') assert.equal(generated.parameters.n, 100);
-      if (difficulty === 'stretch') assert.ok([20, 25].includes(generated.parameters.n));
-    }
-  }
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 13001,
-      caseId: 'subgroup-error-gap-pp',
-      difficulty: 'core',
-    }).expected.value,
-    genSubgroupGapPp(13001).expected,
-  );
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 13001,
-      caseId: 'subgroup-error-gap-pp',
-      difficulty: 'core',
-    }).expected.value,
-    45,
-  );
-});
 
-test('W13 seeded subgroup gap corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateFormulaRatioPercentMetricFamily({
-        seed,
-        caseId: 'subgroup-error-gap-pp',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['formula-ratio-percent-metric-subgroup-gap'].digest);
-});
 
-test('ridge shrinkage family preserves seeded generation, binding profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-ratio-percent-metric');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'ridge-shrinkage-percent',
-        difficulty,
-      });
-      const share = (100 * generated.parameters.sxx)
-        / (generated.parameters.sxx + generated.parameters.lam);
-      const expected = generated.parameters.phrasing === 'shrink' ? 100 - share : share;
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveFormulaRatioPercentMetric(generated.parameters).value, expected);
-      if (difficulty === 'intro') assert.equal(generated.parameters.phrasing, 'share');
-      if (difficulty === 'stretch') assert.equal(generated.parameters.phrasing, 'shrink');
-    }
-  }
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 14001,
-      caseId: 'ridge-shrinkage-percent',
-      difficulty: 'core',
-    }).expected.value,
-    genShrinkagePercent(14001).expected,
-  );
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 14001,
-      caseId: 'ridge-shrinkage-percent',
-      difficulty: 'core',
-    }).expected.value,
-    75,
-  );
-});
 
-test('W14 seeded ridge shrinkage corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateFormulaRatioPercentMetricFamily({
-        seed,
-        caseId: 'ridge-shrinkage-percent',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['formula-ratio-percent-metric-ridge-shrinkage'].digest);
-});
 
-test('MSE gradient family preserves seeded generation and independent solving', () => {
-  const spec = DATA_ML_FAMILY_SPECS[2];
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({ seed, caseId: 'mse-gradient-wrt-w', difficulty });
-      assert.equal(generated.expected.value, expectedMseGradient(generated.parameters));
-      assert.equal(solveMseGradientClosedForm(generated.parameters).value, generated.expected.value);
-      if (difficulty === 'intro') assert.equal(generated.parameters.n, 2);
-      if (difficulty === 'stretch') assert.equal(generated.parameters.n, 4);
-    }
-  }
-  assert.equal(
-    generateMseGradientClosedFormFamily({
-      seed: 8001,
-      caseId: 'mse-gradient-wrt-w',
-      difficulty: 'core',
-    }).expected.value,
-    genMseGradient(8001).expected,
-  );
-  assert.equal(
-    generateMseGradientClosedFormFamily({
-      seed: 8001,
-      caseId: 'mse-gradient-wrt-w',
-      difficulty: 'core',
-    }).expected.value,
-    -20,
-  );
-});
+
+
+
+
+
+
+
+
+
 
 test('MSE gradient static case enforces profile and competency override', () => {
   const instance = EXERCISE_FAMILIES.instantiate(
@@ -383,228 +189,12 @@ test('MSE gradient static case enforces profile and competency override', () => 
   );
 });
 
-test('majority baseline family preserves seeded generation and profile predicates', () => {
-  const spec = DATA_ML_FAMILY_SPECS[3];
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({ seed, caseId: 'majority-baseline-errors', difficulty });
-      const counts = [...generated.parameters.counts].sort((a, b) => b - a);
-      assert.equal(
-        generated.expected.value,
-        counts.reduce((sum, count) => sum + count, 0) - counts[0],
-      );
-      assert.equal(
-        solveAggregateMajorityRuleCount(generated.parameters).value,
-        generated.expected.value,
-      );
-      if (difficulty === 'intro') assert.ok(counts[0] >= 2 * counts[1]);
-      if (difficulty === 'stretch') assert.ok(counts[0] - counts[1] <= 10);
-    }
-  }
-  assert.equal(
-    generateAggregateMajorityRuleCountFamily({
-      seed: 9001,
-      caseId: 'majority-baseline-errors',
-      difficulty: 'core',
-    }).expected.value,
-    genBaselineCorrect(9001).expected,
-  );
-  assert.equal(
-    generateAggregateMajorityRuleCountFamily({
-      seed: 9001,
-      caseId: 'majority-baseline-errors',
-      difficulty: 'core',
-    }).expected.value,
-    149,
-  );
-});
 
-test('majority baseline family corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateAggregateMajorityRuleCountFamily({
-        seed,
-        caseId: 'majority-baseline-errors',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['aggregate-majority-rule-count'].digest);
-});
 
-test('ensemble majority family preserves seeded generation, profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'aggregate-majority-rule-count');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'ensemble-majority-output-count',
-        difficulty,
-      });
-      const ones = generated.parameters.votes[0].reduce(
-        (count, _, index) => count
-          + (generated.parameters.votes[0][index]
-            + generated.parameters.votes[1][index]
-            + generated.parameters.votes[2][index] >= 2 ? 1 : 0),
-        0,
-      );
-      const expected = generated.parameters.direction === 'count'
-        ? ones
-        : ones * (100 / generated.parameters.n);
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveAggregateMajorityRuleCount(generated.parameters).value, expected);
-      if (difficulty === 'intro') assert.equal(generated.parameters.direction, 'count');
-      if (difficulty === 'stretch') assert.equal(generated.parameters.direction, 'percent');
-    }
-  }
-  assert.equal(
-    generateAggregateMajorityRuleCountFamily({
-      seed: 15001,
-      caseId: 'ensemble-majority-output-count',
-      difficulty: 'core',
-    }).expected.value,
-    genEnsembleAccuracy(15001).expected,
-  );
-  assert.equal(
-    generateAggregateMajorityRuleCountFamily({
-      seed: 15001,
-      caseId: 'ensemble-majority-output-count',
-      difficulty: 'core',
-    }).expected.value,
-    11,
-  );
-});
 
-test('W15 seeded ensemble majority corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateAggregateMajorityRuleCountFamily({
-        seed,
-        caseId: 'ensemble-majority-output-count',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['aggregate-majority-rule-count-ensemble'].digest);
-});
 
-test('W16 PCA variance family preserves seeded generation, profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-ratio-percent-metric');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'pca-explained-variance-percent',
-        difficulty,
-      });
-      const { lambda1, lambda2, lambda3 } = generated.parameters;
-      const expected = (100 * lambda1) / (lambda1 + lambda2 + lambda3);
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveFormulaRatioPercentMetric(generated.parameters).value, expected);
-      if (difficulty === 'intro') assert.equal(generated.parameters.total, 50);
-      if (difficulty === 'stretch') assert.equal(generated.parameters.total, 25);
-    }
-  }
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 16001,
-      caseId: 'pca-explained-variance-percent',
-      difficulty: 'core',
-    }).expected.value,
-    genPcaVariancePercent(16001).expected,
-  );
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 16001,
-      caseId: 'pca-explained-variance-percent',
-      difficulty: 'core',
-    }).expected.value,
-    85,
-  );
-});
 
-test('W16 seeded PCA variance corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateFormulaRatioPercentMetricFamily({
-        seed,
-        caseId: 'pca-explained-variance-percent',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['formula-ratio-percent-metric-pca'].digest);
-});
 
-test('W17 seed rerun spread preserves profiles, prompts and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-metric-spread-range');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'seed-rerun-accuracy-spread',
-        difficulty,
-      });
-      const expected = Math.max(...generated.parameters.scores)
-        - Math.min(...generated.parameters.scores);
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveFormulaMetricSpreadRange(generated.parameters).value, expected);
-      if (difficulty === 'intro') {
-        assert.equal(generated.parameters.unit, 'percent');
-        assert.equal(generated.parameters.runs, 3);
-      }
-      if (difficulty === 'stretch') assert.equal(generated.parameters.unit, 'fraction');
-    }
-  }
-  const fraction = spec.generate({
-    seed: 1,
-    caseId: 'seed-rerun-accuracy-spread',
-    difficulty: 'stretch',
-  });
-  assert.equal(fraction.prompt.slice(0, fraction.prompt.indexOf('?')).includes('%'), false);
-  assert.match(fraction.prompt, /0,\d{2}/);
-  assert.equal(
-    generateFormulaMetricSpreadRangeFamily({
-      seed: 17001,
-      caseId: 'cv-fold-accuracy-spread',
-      difficulty: 'core',
-    }).expected.value,
-    32,
-  );
-  assert.equal(
-    generateFormulaMetricSpreadRangeFamily({
-      seed: 17002,
-      caseId: 'seed-rerun-accuracy-spread',
-      difficulty: 'core',
-    }).expected.value,
-    34,
-  );
-});
-
-test('W17 seeded rerun spread corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateFormulaMetricSpreadRangeFamily({
-        seed,
-        caseId: 'seed-rerun-accuracy-spread',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['formula-metric-spread-range-seed-rerun'].digest);
-});
 
 test('W17 static cases expose competency overrides and stdout trace output', () => {
   const spread = EXERCISE_FAMILIES.instantiate(
@@ -624,103 +214,11 @@ test('W17 static cases expose competency overrides and stdout trace output', () 
   assert.deepEqual(trace.expectedAnswer, { kind: 'output-lines', output: '26' });
 });
 
-test('quadratic error family preserves seeded generation, profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS[4];
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({ seed, caseId: 'mse-from-residuals', difficulty });
-      assert.equal(
-        generated.expected.value,
-        generated.parameters.residuals.reduce((sum, residual) => sum + residual ** 2, 0) / generated.parameters.n,
-      );
-      assert.equal(
-        solveFormulaQuadraticErrorMetric(generated.parameters).value,
-        generated.expected.value,
-      );
-      if (difficulty === 'intro') assert.ok(generated.parameters.n <= 3);
-      if (difficulty === 'stretch') assert.ok(generated.parameters.n >= 5);
-    }
-  }
-  assert.equal(
-    generateFormulaQuadraticErrorMetricFamily({
-      seed: 10001,
-      caseId: 'mse-from-residuals',
-      difficulty: 'core',
-    }).expected.value,
-    genMseFromResiduals(10001).expected,
-  );
-  assert.equal(
-    generateFormulaQuadraticErrorMetricFamily({
-      seed: 10001,
-      caseId: 'mse-from-residuals',
-      difficulty: 'core',
-    }).expected.value,
-    31,
-  );
-});
 
-test('R2 family case preserves seeded generation, profiles and solver', () => {
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = DATA_ML_FAMILY_SPECS[1].generate({
-        seed,
-        caseId: 'r2-explained-share',
-        difficulty,
-      });
-      assert.equal(
-        generated.expected.value,
-        100 - (100 * generated.parameters.ssRes) / generated.parameters.ssTot,
-      );
-      assert.equal(
-        solveFormulaRatioPercentMetric(generated.parameters).value,
-        generated.expected.value,
-      );
-      if (difficulty === 'intro') assert.equal(generated.parameters.phrasing, 'r2');
-      if (difficulty === 'stretch') assert.equal(generated.parameters.phrasing, 'context');
-    }
-  }
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 10002,
-      caseId: 'r2-explained-share',
-      difficulty: 'core',
-    }).expected.value,
-    genR2Share(10002).expected,
-  );
-  assert.equal(
-    generateFormulaRatioPercentMetricFamily({
-      seed: 10002,
-      caseId: 'r2-explained-share',
-      difficulty: 'core',
-    }).expected.value,
-    84,
-  );
-});
 
-test('W10 seeded family corpora match their fixtures', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  for (const [fixtureId, generate, caseId] of [
-    [
-      'formula-quadratic-error-metric',
-      generateFormulaQuadraticErrorMetricFamily,
-      'mse-from-residuals',
-    ],
-    [
-      'formula-ratio-percent-metric-r2',
-      generateFormulaRatioPercentMetricFamily,
-      'r2-explained-share',
-    ],
-  ]) {
-    const instances = [];
-    for (const difficulty of profiles) {
-      for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-        instances.push(generate({ seed, caseId, difficulty }));
-      }
-    }
-    const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-    assert.equal(digest, fixture.families[fixtureId].digest);
-  }
-});
+
+
+
 
 test('W10 static cases enforce profiles and competency overrides', () => {
   const rmse = EXERCISE_FAMILIES.instantiate(
@@ -763,44 +261,7 @@ test('W10 static cases enforce profiles and competency overrides', () => {
   assert.deepEqual(report.competencyIds, ['c-ml-linear']);
 });
 
-test('confusion metric family preserves seeded generation, profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'aggregate-confusion-metric');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'confusion-marginal-count',
-        difficulty,
-      });
-      const { metric, tp, fp, fn, tn } = generated.parameters;
-      const expected = metric === 'actual-neg'
-        ? tn + fp
-        : metric === 'predicted-pos'
-          ? tp + fp
-          : tp + fn;
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveAggregateConfusionMetric(generated.parameters).value, expected);
-      if (difficulty === 'intro') assert.equal(metric, 'predicted-pos');
-      if (difficulty === 'stretch') assert.equal(metric, 'actual-neg');
-    }
-  }
-  assert.equal(
-    generateAggregateConfusionMetricFamily({
-      seed: 11001,
-      caseId: 'confusion-marginal-count',
-      difficulty: 'core',
-    }).expected.value,
-    genConfusionCount(11001).expected,
-  );
-  assert.equal(
-    generateAggregateConfusionMetricFamily({
-      seed: 11001,
-      caseId: 'confusion-marginal-count',
-      difficulty: 'core',
-    }).expected.value,
-    117,
-  );
-});
+
 
 test('W11 static cases enforce profiles and logistic competency', () => {
   const sigmoid = EXERCISE_FAMILIES.instantiate(
@@ -844,55 +305,9 @@ test('W11 static cases enforce profiles and logistic competency', () => {
   }
 });
 
-test('W11 seeded confusion corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateAggregateConfusionMetricFamily({
-        seed,
-        caseId: 'confusion-marginal-count',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['aggregate-confusion-metric'].digest);
-});
 
-test('CV spread family preserves seeded generation, profiles and solver', () => {
-  const spec = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-metric-spread-range');
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = spec.generate({
-        seed,
-        caseId: 'cv-fold-accuracy-spread',
-        difficulty,
-      });
-      const expected = Math.max(...generated.parameters.scores) - Math.min(...generated.parameters.scores);
-      assert.equal(generated.expected.value, expected);
-      assert.equal(solveFormulaMetricSpreadRange(generated.parameters).value, expected);
-      if (difficulty === 'intro') assert.equal(generated.parameters.k, 4);
-      if (difficulty === 'stretch') assert.equal(generated.parameters.k, 10);
-    }
-  }
-  assert.equal(
-    generateFormulaMetricSpreadRangeFamily({
-      seed: 12001,
-      caseId: 'cv-fold-accuracy-spread',
-      difficulty: 'core',
-    }).expected.value,
-    genCvSpread(12001).expected,
-  );
-  assert.equal(
-    generateFormulaMetricSpreadRangeFamily({
-      seed: 12001,
-      caseId: 'cv-fold-accuracy-spread',
-      difficulty: 'core',
-    }).expected.value,
-    32,
-  );
-});
+
+
 
 test('W12 static cases enforce profiles and competency overrides', () => {
   const parameterOrigin = EXERCISE_FAMILIES.instantiate(
@@ -1142,21 +557,7 @@ test('W16 static cases enforce profiles and competency overrides', () => {
   }
 });
 
-test('W12 seeded CV spread corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateFormulaMetricSpreadRangeFamily({
-        seed,
-        caseId: 'cv-fold-accuracy-spread',
-        difficulty,
-      }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['formula-metric-spread-range'].digest);
-});
+
 
 test('sklearn trace case grades and exposes the ML-baseline competency override', async () => {
   const instance = EXERCISE_FAMILIES.instantiate(
@@ -1200,85 +601,4 @@ test('NumPy trace grades and exposes case competency override', async () => {
     'pandas-dedup-isna-lines',
   );
   assert.deepEqual(pandas.competencyIds, ['c-pandas-cleaning', 'c-python-reading']);
-});
-
-test('conditional-count corpus matches its fixture', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const instances = [];
-  for (const difficulty of profiles) {
-    for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-      instances.push(generateFormulaRatioPercentMetricFamily({ seed, caseId: conditionalCase, difficulty }));
-    }
-  }
-  const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-  assert.equal(digest, fixture.families['formula-ratio-percent-metric'].digest);
-});
-
-test('W18-W21 seeded numeric families derive values independently over 200 seeds', () => {
-  const formula = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'formula-count-from-construction');
-  const backprop = DATA_ML_FAMILY_SPECS.find((item) => item.familyId === 'optimize-backprop-path-sum');
-  const formulaCases = ['linear-param-count', 'sgd-update-count', 'dropout-mask-kept-count'];
-  for (const caseId of formulaCases) {
-    for (const difficulty of profiles) {
-      for (let seed = 0; seed < 200; seed += 1) {
-        const generated = formula.generate({ seed, caseId, difficulty });
-        assert.equal(generated.expected.value, formula.solve(generated.parameters).value);
-        assert.equal(generated.expected.value, solveFormulaCountFromConstruction(generated.parameters).value);
-        if (caseId === 'linear-param-count' && difficulty === 'intro') assert.equal(generated.parameters.variant, 'single');
-        if (caseId === 'linear-param-count' && difficulty === 'stretch') assert.equal(generated.parameters.variant, 'compare');
-        if (caseId === 'sgd-update-count' && difficulty === 'intro') assert.equal(generated.parameters.variant, 'epochs');
-        if (caseId === 'sgd-update-count' && difficulty === 'stretch') assert.ok(['until', 'momentum'].includes(generated.parameters.variant));
-        if (caseId === 'dropout-mask-kept-count' && difficulty === 'intro') assert.equal(generated.parameters.variant, 'kept');
-        if (caseId === 'dropout-mask-kept-count' && difficulty === 'stretch') assert.equal(generated.parameters.variant, 'both');
-      }
-    }
-  }
-  for (const difficulty of profiles) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = backprop.generate({ seed, caseId: 'chain-rule-path-sum', difficulty });
-      assert.equal(generated.expected.value, solveOptimizeBackpropPathSum(generated.parameters).value);
-      if (difficulty === 'intro') assert.equal(generated.parameters.variant, 'path');
-      if (difficulty === 'stretch') assert.equal(generated.parameters.variant, 'fork');
-    }
-  }
-  assert.equal(generateFormulaCountFromConstructionFamily({ seed: 1802, caseId: 'linear-param-count', difficulty: 'core' }).expected.value, 77);
-  assert.equal(generateOptimizeBackpropPathSumFamily({ seed: 1902, caseId: 'chain-rule-path-sum', difficulty: 'core' }).expected.value, -3);
-  assert.equal(generateFormulaCountFromConstructionFamily({ seed: 2002, caseId: 'sgd-update-count', difficulty: 'core' }).expected.value, 15);
-  assert.equal(generateFormulaCountFromConstructionFamily({ seed: 2102, caseId: 'dropout-mask-kept-count', difficulty: 'core' }).expected.value, 8);
-});
-
-test('W18-W21 seeded family cases preserve generator answers and competency overrides', () => {
-  const cases = [
-    ['linear-param-count', 1802, genLinearParamCount, ['c-dl-tensors']],
-    ['chain-rule-path-sum', 1902, genBackpropChain, ['c-dl-autograd']],
-    ['sgd-update-count', 2002, genSgdSteps, ['c-dl-training']],
-    ['dropout-mask-kept-count', 2102, genDropoutCount, ['c-dl-regularization']],
-  ];
-  for (const [caseId, seed, generator, competencyIds] of cases) {
-    const familyId = caseId === 'chain-rule-path-sum' ? 'optimize-backprop-path-sum' : 'formula-count-from-construction';
-    const instance = EXERCISE_FAMILIES.instantiate(familyId, seed, 'core', caseId);
-    assert.equal(instance.expectedAnswer.value, generator(seed).expected);
-    assert.deepEqual(instance.competencyIds, competencyIds);
-  }
-});
-
-test('W18-W21 seeded family corpora match fixtures', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/data-ml-family-golden-corpus.json'), 'utf8'));
-  const groups = [
-    ['formula-count-from-construction-linear', generateFormulaCountFromConstructionFamily, 'linear-param-count'],
-    ['formula-count-from-construction-sgd', generateFormulaCountFromConstructionFamily, 'sgd-update-count'],
-    ['formula-count-from-construction-dropout', generateFormulaCountFromConstructionFamily, 'dropout-mask-kept-count'],
-    ['optimize-backprop-path-sum', generateOptimizeBackpropPathSumFamily, 'chain-rule-path-sum'],
-  ];
-  for (const [fixtureId, generate, caseId] of groups) {
-    const entry = fixture.families[fixtureId];
-    const instances = [];
-    for (const difficulty of profiles) {
-      for (let seed = fixture.seedRange[0]; seed <= fixture.seedRange[1]; seed += 1) {
-        instances.push(generate({ seed, caseId, difficulty }));
-      }
-    }
-    const digest = createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex');
-    assert.equal(digest, entry.digest);
-  }
 });

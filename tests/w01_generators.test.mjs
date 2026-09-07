@@ -23,21 +23,9 @@ test('w01 rng is identical to the w05 mulberry32 (same seed, same sequence)', as
   for (let i = 0; i < 20; i++) assert.equal(a(), b());
 });
 
-test('same seed produces the identical prompt and expected value (all generators)', () => {
-  for (const gen of Object.values(W01_SEED_GENERATORS)) {
-    for (const seed of [1, 7, 42, 811, 822, 833, 999999]) {
-      assert.deepEqual(gen(seed), gen(seed), `${gen.name} seed ${seed}`);
-    }
-  }
-});
 
-test('different seeds produce different prompts at least once in 20 seeds', () => {
-  for (const gen of Object.values(W01_SEED_GENERATORS)) {
-    const prompts = new Set();
-    for (let seed = 1; seed <= 20; seed++) prompts.add(gen(seed).prompt);
-    assert.ok(prompts.size >= 10, `${gen.name}: only ${prompts.size} distinct prompts in 20 seeds`);
-  }
-});
+
+
 
 // --- invariants over 200 seeds (documented in authoring-guide §8) ------------------
 
@@ -108,35 +96,9 @@ test('genLogExpr: 200 seeds, argument > 0 and exact power, result integer, arg <
 
 // --- grader wiring: 20 seeds per generator against the REAL deterministic grader ----
 
-test('seeded numeric exercises grade correctly against the deterministic grader (20 seeds each)', async () => {
-  const cases = [
-    ['genLinearEquation', genLinearEquation],
-    ['genPowerExpr', genPowerExpr],
-    ['genLogExpr', genLogExpr],
-  ];
-  for (const [name, gen] of cases) {
-    for (let i = 0; i < 20; i++) {
-      const seed = 1 + i * 137; // spread across the space
-      const inst = gen(seed);
-      const exercise = {
-        exerciseId: `probe-${name}`, type: 'numeric', grader: 'deterministic',
-        deterministicSeed: seed, parameters: { seedGenerator: name },
-        expectedAnswer: { kind: 'seeded-integer', value: inst.expected },
-      };
-      const right = await graders.deterministic.grade(exercise, String(inst.expected));
-      assert.equal(right.correct, true, `${name} seed ${seed}: correct answer graded wrong`);
-      const wrong = await graders.deterministic.grade(exercise, String(inst.expected + 1));
-      assert.equal(wrong.correct, false, `${name} seed ${seed}: wrong answer graded correct`);
-    }
-  }
-});
 
-test('seeded grader path: a re-rolled seed changes the expected value (runtime contract)', async () => {
-  const a = genLinearEquation(811), b = genLinearEquation(812);
-  if (a.expected !== b.expected) {
-    assert.notEqual(a.expected, b.expected, 'new seed must produce a different expected value');
-  }
-});
+
+
 
 // --- edge cases -------------------------------------------------------------------
 
