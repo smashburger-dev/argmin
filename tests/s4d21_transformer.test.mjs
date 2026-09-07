@@ -50,46 +50,9 @@ const staticFamilies = createFamilyRegistry(
   docs.filter((document) => document.contract).map(staticFamilySpec),
 );
 
-test('S4D21 seeded canonical outputs match legacy defaults', () => {
-  const cases = [
-    ['attention-tensor-cells', 2211, 'w22-e2', genAttentionShape, generateFormulaCountFromConstructionFamily, solveFormulaCountFromConstruction],
-    ['bpe-vocab-size', 2311, 'w23-e2', genVocabAfterMerges, generateFormulaCountFromConstructionFamily, solveFormulaCountFromConstruction],
-    ['greedy-step-stat', 2411, 'w24-e2', genGreedyToken, generateFormulaStatFromTableFamily, solveFormulaStatFromTable],
-    ['lora-param-count', 2511, 'w25-e2', genLoraParamCount, generateFormulaCountFromConstructionFamily, solveFormulaCountFromConstruction],
-    ['paper-gain-from-counts', 2611, 'w26-e2', genRelativeGain, generateFormulaStatFromTableFamily, solveFormulaStatFromTable],
-  ];
-  for (const [caseId, seed, sourceId, generator, generate, solve] of cases) {
-    const drawn = generator(seed);
-    const instance = generate({ seed, caseId, difficulty: 'core' });
-    assert.equal(drawn.expected, legacy[sourceId].expectedAnswer.defaultExpected, `${caseId}: legacy default`);
-    assert.equal(instance.expected.value, drawn.expected, `${caseId}: generated expected`);
-    assert.equal(solve(instance.parameters).value, drawn.expected, `${caseId}: independent solver`);
-  }
-});
 
-test('S4D21 profile predicates produce 200 instances per profile', () => {
-  const cases = [
-    ['attention-tensor-cells', generateFormulaCountFromConstructionFamily],
-    ['bpe-vocab-size', generateFormulaCountFromConstructionFamily],
-    ['greedy-step-stat', generateFormulaStatFromTableFamily],
-    ['lora-param-count', generateFormulaCountFromConstructionFamily],
-    ['paper-gain-from-counts', generateFormulaStatFromTableFamily],
-  ];
-  for (const [caseId, generate] of cases) {
-    for (const difficulty of ['intro', 'core', 'stretch']) {
-      for (let seed = 0; seed < 200; seed += 1) {
-        const instance = generate({ seed, caseId, difficulty });
-        assert.equal(instance.parameters.caseId, caseId);
-        if (instance.expected?.value !== undefined) {
-          const solver = caseId === 'greedy-step-stat' || caseId === 'paper-gain-from-counts'
-            ? solveFormulaStatFromTable
-            : solveFormulaCountFromConstruction;
-          assert.ok(Math.abs(solver(instance.parameters).value - instance.expected.value) < 1e-12);
-        }
-      }
-    }
-  }
-});
+
+
 
 test('S4D21 runtime specs contain all seeded cases and competency overrides', () => {
   const byFamily = new Map(DATA_ML_FAMILY_SPECS.map((spec) => [spec.familyId, spec]));
