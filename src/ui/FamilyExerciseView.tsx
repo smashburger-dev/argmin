@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
@@ -5,9 +6,10 @@ import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
 import { AnswerControls } from './AnswerControls';
-import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
 import { TraceTableView } from './TraceTableView';
+
+const CodeEditor = lazy(() => import('./CodeEditor').then((module) => ({ default: module.CodeEditor })));
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
@@ -70,6 +72,11 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
         setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
         setInstance(next);
+        if (next.activityType === 'python-code') {
+          void import('../../assets/js/runtime/pyodide_runner.js')
+            .then((module) => module.pyodideRunner.ensureWorker())
+            .catch(() => {});
+        }
       } catch (error) {
         if (active) setFailed(error instanceof Error ? error.message : String(error));
       }
@@ -173,7 +180,7 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
       </header>
       <div class="lede"><MathMarkup html={instance.prompt} /></div>
       {isCode
-        ? <CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} />
+        ? <Suspense fallback={<p role="status">Editor wird geladen.</p>}><CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} /></Suspense>
         : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
       <button class="button button-primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</button>
       {failed ? <p role="alert" class="content-error">{failed}</p> : null}
