@@ -1,5 +1,9 @@
-import { existsSync, lstatSync, readdirSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+
+export function readJson(path) {
+  return JSON.parse(readFileSync(path, 'utf8'));
+}
 
 function sortedEntries(dir) {
   return readdirSync(dir, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));
