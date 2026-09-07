@@ -3,7 +3,6 @@
 // { correct, verdictText, errorType, diagnosis? } (async allowed).
 
 import { parseIntegerAnswer, parseIntegerPair, genMatmulEntry, genDot, solveLinear2, matmul, dot, rank } from './w05_generators.mjs';
-import { resolveSeedGenerator } from './seed_generator_registry.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
 // never pay for the pyodide runner module in their chunk.
 const loadPyodideRunner = () => import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner);
@@ -14,27 +13,24 @@ function expectedNumeric(exercise) {
   // Fixed instances in the exercise JSON are authoritative: an explicit
   // expectedAnswer.value (w01 diagnose tasks) wins over everything else.
   const ea = exercise.expectedAnswer;
-  // Instantiated generated exercises carry kind 'seeded-integer' with the
-  // expected value resolved by instantiateLegacyExercise (the instance
-  // parameters replace the raw seedGenerator reference). Both forms are
-  // authoritative exact-integer answers.
-  if (ea && (ea.kind === 'integer' || ea.kind === 'seeded-integer') && Number.isInteger(ea.value)) return ea.value;
-  // Generator + seed is used when parameters carry no fixed instance; the
-  // seeded retrieval generators (w01) follow the CURRENT seed — the runtime
-  // passes the re-rolled seed through exercise.deterministicSeed.
+  const fixed = ea && (ea.kind === 'integer' || ea.kind === 'seeded-integer') && Number.isInteger(ea.value)
+    ? ea.value
+    : null;
+  if (fixed !== null) return fixed;
   const p = exercise.parameters || {};
-  if (p.seedGenerator) return resolveSeedGenerator(p.seedGenerator)(exercise.deterministicSeed).expected;
-  if (Array.isArray(p.A) && typeof p.expectedRank === 'number') {
-    return rank(p.A);
-  }
-  if (Array.isArray(p.A) && Array.isArray(p.B) && Array.isArray(p.entry)) {
-    return matmul(p.A, p.B)[p.entry[0] - 1][p.entry[1] - 1];
-  }
-  if (Array.isArray(p.u) && Array.isArray(p.v)) {
-    return dot(p.u, p.v);
-  }
+  const parameterValue = numericParameterValue(p);
+  if (parameterValue !== null) return parameterValue;
   const gen = { 'w05-e1': genMatmulEntry, 'w05-e3': genDot }[exercise.exerciseId];
   return gen ? gen(exercise.deterministicSeed).expected : null;
+}
+
+function numericParameterValue(parameters) {
+  if (Array.isArray(parameters.A) && typeof parameters.expectedRank === 'number') return rank(parameters.A);
+  if (Array.isArray(parameters.A) && Array.isArray(parameters.B) && Array.isArray(parameters.entry)) {
+    return matmul(parameters.A, parameters.B)[parameters.entry[0] - 1][parameters.entry[1] - 1];
+  }
+  if (Array.isArray(parameters.u) && Array.isArray(parameters.v)) return dot(parameters.u, parameters.v);
+  return null;
 }
 
 function gradeNumeric(exercise, raw) {
@@ -58,50 +54,29 @@ function diagnoseNumeric(exercise, value) {
   return null;
 }
 
-/** Seeded instance for the raw-JSON path (legacy shell): when a week-pack
- *  exercise carries parameters.seedGenerator, the generator follows the
- *  CURRENT deterministicSeed (re-rolled instances included). Instantiated
- *  exercises (Next shell) carry concrete parameters and never hit this. */
-function seededInstance(exercise) {
-  const name = exercise.parameters && exercise.parameters.seedGenerator;
-  if (typeof name !== 'string' || !name) return null;
-  return resolveSeedGenerator(name)(exercise.deterministicSeed);
-}
-
-/** Seeded-override read shared by the type graders: the generated instance
- *  replaces the exercise's own field only when the generator provides it. */
-const seededField = (exercise, pick, fallback) => {
-  const seeded = seededInstance(exercise);
-  const generated = seeded === null ? undefined : pick(seeded);
-  return generated !== undefined ? generated : fallback();
-};
-
 function gradeChoice(exercise, choiceId) {
-  const choices = seededField(exercise, (s) => (Array.isArray(s.choices) ? s.choices : undefined), () => exercise.choices) || [];
+  const choices = exercise.choices || [];
   const choice = choices.find((c) => c.id === choiceId);
   if (!choice) return { correct: false, verdictText: 'Bitte eine Auswahl treffen.', errorType: 'invalid-input' };
-  if (!choices.some((c) => c.correct)) {
-    return { correct: false, verdictText: 'Interner Fehler: keine korrekte Option konfiguriert.', errorType: 'grader-error' };
-  }
+  if (!choices.some((c) => c.correct)) return { correct: false, verdictText: 'Interner Fehler: keine korrekte Option konfiguriert.', errorType: 'grader-error' };
   const correct = Boolean(choice.correct);
-  let diagnosis = null;
-  for (const rule of exercise.feedbackRules || []) {
-    const equals = String(rule.if).match(/^choice === '([^']+)'$/);
-    const differs = String(rule.if).match(/^choice !== '([^']+)'$/);
-    if (!correct && ((equals && choiceId === equals[1]) || (differs && choiceId !== differs[1]))) diagnosis = rule.then;
-  }
-  return { correct, verdictText: correct ? 'Richtig begründet.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-choice', diagnosis };
+  const diagnosis = (exercise.feedbackRules || []).reduce((result, rule) => {
+    const equals = String(rule.if).match(/^choice === '([^']+)'$/); const differs = String(rule.if).match(/^choice !== '([^']+)'$/);
+    return !correct && ((equals && choiceId === equals[1]) || (differs && choiceId !== differs[1])) ? rule.then : result;
+  }, null);
+  return {
+    correct,
+    verdictText: correct ? 'Richtig begründet.' : 'Nicht richtig.',
+    errorType: correct ? null : 'wrong-choice',
+    diagnosis,
+  };
 }
 
 function gradePair(exercise, raw) {
   const p = parseIntegerPair(raw);
   if (!p.ok) return { correct: false, verdictText: p.error, errorType: 'invalid-input' };
-  const { A, b } = seededField(exercise, (s) => s.parameters, () => exercise.parameters) || {};
-  let expected;
-  try { expected = solveLinear2(A, b); } catch {
-    return { correct: false, verdictText: 'Interner Fehler: Aufgabe fehlerhaft konfiguriert.', errorType: 'grader-error' };
-  }
-  if (!Array.isArray(expected) || expected.length !== 2 || expected.some((value) => !Number.isFinite(value))) {
+  const expected = expectedPair(exercise);
+  if (!expected) {
     return { correct: false, verdictText: 'Interner Fehler: Aufgabe fehlerhaft konfiguriert.', errorType: 'grader-error' };
   }
   const correct = p.value[0] === expected[0] && p.value[1] === expected[1];
@@ -112,6 +87,16 @@ function gradePair(exercise, raw) {
     errorType: correct ? null : (swapped ? 'swapped' : 'wrong-value'),
     diagnosis: swapped ? 'Die Reihenfolge ist getauscht — gesucht ist (x, y).' : null,
   };
+}
+
+function expectedPair(exercise) {
+  const { A, b } = exercise.parameters || {};
+  try {
+    const expected = solveLinear2(A, b);
+    return Array.isArray(expected) && expected.length === 2 && expected.every(Number.isFinite) ? expected : null;
+  } catch {
+    return null;
+  }
 }
 
 // --- pyodide (python code) -----------------------------------------------------
@@ -343,19 +328,24 @@ function splitTopLevel(inner) {
   let start = 0;
   for (let i = 0; i < inner.length; i++) {
     const ch = inner[i];
-    if (quote) {
-      if (ch === quote) quote = null;
-    } else if (ch === "'") quote = ch;
-    else if (ch === '[' || ch === '{') depth += 1;
-    else if (ch === ']' || ch === '}') depth -= 1;
-    else if (ch === ',' && depth === 0) {
+    if (ch === ',' && !quote && depth === 0) {
       parts.push(inner.slice(start, i).trim());
       start = i + 1;
+    } else {
+      ({ quote, depth } = advanceSplitState(ch, quote, depth));
     }
   }
   const last = inner.slice(start).trim();
   if (last) parts.push(last);
   return parts;
+}
+
+function advanceSplitState(ch, quote, depth) {
+  if (quote) return { quote: ch === quote ? null : quote, depth };
+  if (ch === "'") return { quote: ch, depth };
+  if (ch === '[' || ch === '{') return { quote: null, depth: depth + 1 };
+  if (ch === ']' || ch === '}') return { quote: null, depth: depth - 1 };
+  return { quote: null, depth };
 }
 
 function canonicalRepr(raw) {
@@ -385,33 +375,28 @@ function gradeVariable(variable, raw) {
     const got = canonicalRepr(raw);
     return { ok: got !== null, wrong: got !== null && got !== canonicalRepr(variable.value) };
   }
+  if (typeof variable.value === 'string') {
+    const got = String(raw ?? '').trim().replace(/^(['"])(.*)\1$/s, '$2');
+    return { ok: got.length > 0, wrong: got.length > 0 && got !== variable.value };
+  }
   const parsed = parseIntegerAnswer(raw);
   return { ok: parsed.ok, wrong: parsed.ok && parsed.value !== variable.value };
 }
 
 function gradeCodeTrace(exercise, answers) {
-  const source = seededField(exercise, (s) => s.parameters, () => exercise.parameters);
+  const source = exercise.parameters;
   const vars = (source && source.variables) || [];
   if (!vars.length) {
     return { correct: false, verdictText: 'Interner Fehler: Trace-Variablen fehlen.', errorType: 'grader-error' };
   }
   const hasRepr = vars.some((v) => v.type === 'repr');
-  const wrong = [];
-  let invalid = null;
-  for (const v of vars) {
-    const result = gradeVariable(v, answers ? answers[v.name] : null);
-    if (!result.ok) { invalid = v.name; break; }
-    if (result.wrong) wrong.push(v.name);
-  }
-  if (invalid) {
-    return {
-      correct: false,
-      verdictText: hasRepr
-        ? `'${invalid}' ist leer oder unlesbar — trage den Wert in Python-Schreibweise ein, z. B. [1, 2] oder {'a': 1}.`
-        : `'${invalid}' ist keine ganze Zahl — der getracete Wert ist immer ganzzahlig.`,
-      errorType: 'invalid-input',
-    };
-  }
+  const { invalid, wrong } = inspectTraceVariables(vars, answers);
+  return invalid ? { correct: false, verdictText: hasRepr ? `'${invalid}' ist leer oder unlesbar — trage den Wert in Python-Schreibweise ein, z. B. [1, 2] oder {'a': 1}.`
+      : `'${invalid}' ist keine ganze Zahl — der getracete Wert ist immer ganzzahlig.`, errorType: 'invalid-input' }
+    : traceGradeResult(exercise, wrong);
+}
+
+function traceGradeResult(exercise, wrong) {
   const correct = wrong.length === 0;
   let diagnosis = null;
   if (!correct) {
@@ -421,6 +406,16 @@ function gradeCodeTrace(exercise, answers) {
     }
   }
   return { correct, verdictText: correct ? 'Richtig — alle Variablenwerte stimmen.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-value', diagnosis };
+}
+
+function inspectTraceVariables(vars, answers) {
+  const wrong = [];
+  for (const variable of vars) {
+    const result = gradeVariable(variable, answers ? answers[variable.name] : null);
+    if (!result.ok) return { invalid: variable.name, wrong };
+    if (result.wrong) wrong.push(variable.name);
+  }
+  return { invalid: null, wrong };
 }
 
 /** Predict-output: predicted stdout, compared normalized — whitespace and
@@ -441,11 +436,7 @@ function gradePredictOutput(exercise, raw) {
   if (raw == null || !String(raw).trim()) {
     return { correct: false, verdictText: 'Bitte die erwartete Ausgabe eingeben.', errorType: 'invalid-input' };
   }
-  const expectedOutput = seededField(
-    exercise,
-    (s) => (s.expected && typeof s.expected.output === 'string' ? s.expected.output : undefined),
-    () => exercise.expectedAnswer.output,
-  );
+  const expectedOutput = exercise.expectedAnswer.output;
   const expected = normalizeOutput(expectedOutput);
   const got = normalizeOutput(raw);
   const correct = got === expected;

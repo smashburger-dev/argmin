@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-multi-head-attention",
+  "contract": {
+    "familyId": "optimize-multi-head-attention",
+    "familyGroup": "optimize-update",
+    "summary": "Zerlegt projizierte Q/K/V in Köpfe, rechnet je Kopf skalierte Attention mit Maske, konkateniert und projiziert die Ausgabe.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "multi-head-attention",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-attention",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "multi-head-attention",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w22-e6"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    \"\"\"Project, split into n_heads heads, per-head scaled attention, concat, output projection.\"\"\"\n    X = np.asarray(X, dtype=float)\n    ...\n    # d_model % n_heads != 0 -> ValueError\n    # per head h: slice columns [h*d_head, (h+1)*d_head) of Q, K, V\n    # scores = Q_h @ K_h.T / sqrt(d_head); optional mask -> -inf before softmax\n    # concat all heads along axis=1, then multiply by Wo\n    ...\n",
+        "tests": "def __ref_mha(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    n, d_model = len(X), len(X[0])\n    d_head = d_model // n_heads\n    Q = [[sum(X[i][a] * Wq[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n    K = [[sum(X[i][a] * Wk[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n    V = [[sum(X[i][a] * Wv[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n    outs = []\n    for h in range(n_heads):\n        lo, hi = h * d_head, (h + 1) * d_head\n        rows = []\n        for i in range(n):\n            s = [sum(Q[i][a] * K[j][a] for a in range(lo, hi)) / math.sqrt(d_head) for j in range(n)]\n            if mask is not None:\n                s = [s[j] if mask[i][j] else float('-inf') for j in range(len(s))]\n            m = max(s)\n            ex = [math.exp(v - m) for v in s]\n            tot = sum(ex)\n            w = [e / tot for e in ex]\n            rows.append([sum(w[j] * V[j][c] for j in range(n)) for c in range(lo, hi)])\n        outs.append(rows)\n    concat = [[outs[h][i][c - h * d_head] for h in range(n_heads) for c in range(h * d_head, (h + 1) * d_head)] for i in range(n)]\n    return [[sum(concat[i][a] * Wo[a][b] for a in range(d_model)) for b in range(d_model)] for i in range(n)]\n\nX = [[1, 1, 0, 0], [0, 0, 1, 1], [1, 0, 1, 0]]\nWq = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWk = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWv = [[2, 0, 1, 0], [0, 2, 0, 1], [1, 0, 2, 0], [0, 1, 0, 2]]\nWo = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nout = multi_head_attention(X, Wq, Wk, Wv, Wo, 2)\n__check('Form n x d_model', out.shape == (3, 4))\n__check('gegen Referenz 2 Koepfe', np.allclose(out, __ref_mha(X, Wq, Wk, Wv, Wo, 2), atol=1e-9))\ncausal = [[True, False, False], [True, True, False], [True, True, True]]\n__check('gegen Referenz mit kausaler Maske', np.allclose(multi_head_attention(X, Wq, Wk, Wv, Wo, 2, mask=causal), __ref_mha(X, Wq, Wk, Wv, Wo, 2, mask=causal), atol=1e-9))\n__check('gegen Referenz 4 Koepfe', np.allclose(multi_head_attention(X, Wq, Wk, Wv, Wo, 4), __ref_mha(X, Wq, Wk, Wv, Wo, 4), atol=1e-9))\nrng = np.random.default_rng(7)\nXr = rng.integers(-2, 3, size=(3, 4)).tolist()\nWqr = rng.integers(-1, 2, size=(4, 4)).tolist()\nWkr = rng.integers(-1, 2, size=(4, 4)).tolist()\nWvr = rng.integers(-2, 3, size=(4, 4)).tolist()\nWor = rng.integers(-1, 2, size=(4, 4)).tolist()\n__check('unbekannte Instanz gegen Referenz', np.allclose(multi_head_attention(Xr, Wqr, Wkr, Wvr, Wor, 2), __ref_mha(Xr, Wqr, Wkr, Wvr, Wor, 2), atol=1e-9))\none = multi_head_attention(X, Wq, Wk, Wv, Wo, 1)\n__check('1 Kopf = einfache Attention mit Projektion', np.allclose(one, __ref_mha(X, Wq, Wk, Wv, Wo, 1), atol=1e-9))\ntry:\n    multi_head_attention(X, Wq, Wk, Wv, Wo, 3)\n    __check('nicht teilbar -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('nicht teilbar -> ValueError', True)\n__check('Doppelaufruf deterministisch', np.array_equal(multi_head_attention(X, Wq, Wk, Wv, Wo, 2), multi_head_attention(X, Wq, Wk, Wv, Wo, 2)))"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import math\nimport numpy as np\n\ndef multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    \"\"\"Project, split into n_heads heads, per-head scaled attention, concat, output projection.\"\"\"\n    X = np.asarray(X, dtype=float)\n    Wq = np.asarray(Wq, dtype=float)\n    Wk = np.asarray(Wk, dtype=float)\n    Wv = np.asarray(Wv, dtype=float)\n    Wo = np.asarray(Wo, dtype=float)\n    n, d_model = X.shape\n    if d_model % n_heads != 0:\n        raise ValueError(\"d_model muss durch n_heads teilbar sein\")\n    d_head = d_model // n_heads\n    Q, K, V = X @ Wq, X @ Wk, X @ Wv\n    heads = []\n    for h in range(n_heads):\n        sl = slice(h * d_head, (h + 1) * d_head)\n        scores = (Q[:, sl] @ K[:, sl].T) / np.sqrt(d_head)\n        if mask is not None:\n            keep = np.asarray(mask, dtype=bool)\n            scores = np.where(keep, scores, -np.inf)\n        scores = scores - scores.max(axis=1, keepdims=True)\n        w = np.exp(scores)\n        w = w / w.sum(axis=1, keepdims=True)\n        heads.append(w @ V[:, sl])\n    concat = np.concatenate(heads, axis=1)\n    return concat @ Wo\n"
+      },
+      "prompt": "Final Boss Multi-Head: Implementiere <code>multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None)</code>. Vertrag: $X$ ist $(n, d_{\\text{model}})$; die Projektionen $XW_Q$, $XW_K$, $XW_V$ werden in <code>n_heads</code> Köpfe der Breite $d_{\\text{model}}/n_{\\text{heads}}$ <strong>zerlegt (Reshape/Slicing, keine neuen Projektionen)</strong>; jeder Kopf rechnet eigene skalierte Attention (Divisor $\\sqrt{d_{\\text{head}}}$, stabiles zeilenweises Softmax); optionale <code>mask</code> $(n, n)$ gilt in jedem Kopf; die Kopfausgaben werden konkateniert ($(n, d_{\\text{model}})$) und mit $W_O$ projiziert. Nicht teilbares $d_{\\text{model}}$ wirft <code>ValueError</code>. Der Testcode hält eine unabhängige Schleifen-Referenz (inkl. Kopfzerlegung und Projektion) und prüft 1, 2 und 4 Köpfe, kausale Maske, eine unbekannte Instanz und Determinismus.",
+      "fullSolution": "import math\nimport numpy as np\n\ndef multi_head_attention(X, Wq, Wk, Wv, Wo, n_heads, mask=None):\n    \"\"\"Project, split into n_heads heads, per-head scaled attention, concat, output projection.\"\"\"\n    X = np.asarray(X, dtype=float)\n    Wq = np.asarray(Wq, dtype=float)\n    Wk = np.asarray(Wk, dtype=float)\n    Wv = np.asarray(Wv, dtype=float)\n    Wo = np.asarray(Wo, dtype=float)\n    n, d_model = X.shape\n    if d_model % n_heads != 0:\n        raise ValueError(\"d_model muss durch n_heads teilbar sein\")\n    d_head = d_model // n_heads\n    Q, K, V = X @ Wq, X @ Wk, X @ Wv\n    heads = []\n    for h in range(n_heads):\n        sl = slice(h * d_head, (h + 1) * d_head)\n        scores = (Q[:, sl] @ K[:, sl].T) / np.sqrt(d_head)\n        if mask is not None:\n            keep = np.asarray(mask, dtype=bool)\n            scores = np.where(keep, scores, -np.inf)\n        scores = scores - scores.max(axis=1, keepdims=True)\n        w = np.exp(scores)\n        w = w / w.sum(axis=1, keepdims=True)\n        heads.append(w @ V[:, sl])\n    concat = np.concatenate(heads, axis=1)\n    return concat @ Wo\n# Kopfzerlegung als Slice-Sicht auf die Projektionen; die Tests vergleichen gegen\n# eine unabhaengige Schleifen-Referenz fuer 1, 2 und 4 Koepfe (mit und ohne Maske).",
+      "hints": [
+        "Erst projizieren (X @ Wq usw.), dann spaltenweise in Köpfe schneiden: Slice [h·d_head : (h+1)·d_head] aus Q, K und V.",
+        "Pro Kopf Divisor np.sqrt(d_head) — nicht sqrt(d_model); am Ende np.concatenate(heads, axis=1) @ Wo."
+      ],
+      "feedbackRules": [
+        {
+          "if": "whole-matrix-scale",
+          "then": "Jeder Kopf wird durch sqrt(d_model/n_heads) geteilt, nicht durch sqrt(d_model)."
+        },
+        {
+          "if": "concat-order",
+          "then": "Die Kopfausgaben werden in Kopf-Reihenfolge konkateniert, bevor Wo multipliziert wird."
+        },
+        {
+          "if": "divisibility-unchecked",
+          "then": "d_model % n_heads != 0 muss ValueError werfen, bevor irgendein Kopf gerechnet wird."
+        }
+      ],
+      "typicalErrors": [
+        "falscher Skalierungsdivisor pro Kopf",
+        "Köpfe vor statt nach der Projektion gesplittet",
+        "Konkatenation und Ausgabeprojektion in falscher Reihenfolge"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

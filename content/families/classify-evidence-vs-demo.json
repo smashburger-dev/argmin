@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-evidence-vs-demo",
+  "contract": {
+    "familyId": "classify-evidence-vs-demo",
+    "familyGroup": "classify-concept",
+    "summary": "Unterscheidet Evidenz für eine reproduzierbare Pipeline von einer bloßen Demo.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "evidence-vs-demo",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "evidence-vs-demo",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w39-e1"
+      ],
+      "parameters": {
+        "thema": "Work Evidence vs. Mastery"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Abschluss der Capstone: Die Demo und die Retrospektive sind fertig und sehen stark aus. Was belegen sie in dieser Plattform?",
+      "fullSolution": "Demo und Retrospektive sind Work Evidence: Sie dokumentieren geleistete Arbeit und Grenzen, aber Mastery entsteht ausschließlich aus den deterministisch geprüften Teiltests (mindestens zwei unabhängige Treffer, zwei Definitionen, 14 Tage Abstand, keine disqualifizierte Instanz). Genau deshalb meldet der Projekt-Report integrity: self-reported. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was kann deterministisch geprüft werden — und was bleibt Dokumentation von Arbeit?",
+        "Mastery hängt an Teiltests mit Evidenzregeln, nicht an Präsentationen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Eine Demo ersetzt keine geprüften Teiltests: Sie zeigt Ergebnisse, aber keine unabhängig wiederholbare Evidenz."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "„Nur Arbeitsevidenz, aber ohne Wert“ stimmt nicht: Work Evidence dokumentiert den Prozess ehrlich — sie ist nur kein Mastery-Beweis."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Abgenommen wird über die Verträge (Tests, Manifest, Reproduktion) — die Demo ergänzt, sie ersetzt nicht."
+        }
+      ],
+      "typicalErrors": [
+        "Demo als Mastery-Nachweis gewertet",
+        "Retrospektive als Ersatz für Teiltests gehalten",
+        "Work Evidence als wertlos abgetan"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Mastery-Nachweis: Eine überzeugende Demo ersetzt die Teiltests, weil sie das Ergebnis live zeigt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Gar nichts — Demo und Retrospektive zählen in keiner Form und können übersprungen werden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Sie ersetzen die Abnahme der Verträge, wenn die Präsentation alle Phasen zeigt.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "demo-vs-evidence",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w38-e1"
+      ],
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "prompt": "Overclaim erkennen: Welche README-Aussage über den eigenen Prototyp ist eine unzulässige Übertreibung?",
+      "parameters": {
+        "thema": "Overclaim-Detektor"
+      },
+      "hints": [
+        "Welche Aussage verspricht eine Sicherheit, die mit fünf Fixtur-Dokumenten und einem Regel-Detektor nicht belegt ist?",
+        "Ehrliche Aussagen benennen den gemessenen Rahmen — unehrliche behaupten Allgemeingültigkeit."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Das ist eine belegte Aussage über die gelieferten Fixtures — genau so liest sich ehrliche Berichterstattung."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Eine bekannte Schwäche offenzulegen ist das Gegenteil eines Overclaims."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Status-Einschränkung des Runners ist korrekt dokumentiert — kein Overclaim."
+        }
+      ],
+      "typicalErrors": [
+        "Allgemeinsicherheit aus Fixtur-Tests abgeleitet",
+        "ehrliche Grenzdokumentation als Schwäche vermieden",
+        "absolute Behauptungen statt bezogener Aussagen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "fullSolution": "„Sicher gegen Prompt-Injection“ ist der Overclaim: Belegt ist nur, dass der Regel-Detektor die gelieferten Fixtures blockiert — Angriffe außerhalb der Regeln bleiben möglich. Die anderen Aussagen benennen ihren Rahmen. Genau solche Phrasen fängt der Overclaim-Detektor („produktionsreif“, „sicher gegen“, „halluziniert nie“, „getestet gegen alle“). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "choices": [
+        {
+          "id": "a",
+          "text": "„Der Prototyp ist sicher gegen Prompt-Injection.“",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "„Der Regel-Detektor blockiert die sieben gelieferten Angriffs-Fixtures; Benign-Fälle bleiben frei.“",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "„Zwei der acht Golden-Set-Queries treffen kein Dokument — das ist eine bekannte lexikalische Lücke.“",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "„Der Runner-Report ist selbstberichtete Arbeitsevidenz und kein Zertifikat.“",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

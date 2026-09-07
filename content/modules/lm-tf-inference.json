@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-tf-inference",
+  "version": 1,
+  "locale": "de",
+  "title": "Reproduzierbare Toy-Modell-Inferenz",
+  "description": "die Pipeline Tokenisierung, Forward-Pass mit gestellten Fixtur-Gewichten, Logits und Greedy-Decoding als deterministische Kette beschreiben Greedy Decoding mit argmax, max_len und eos einschließlich der Kopier- und Stoppverträge implementieren Determinismus durch feste Seeds und Doppelaufruf-Tests nachweisen und die Grenze zur echten LLM-Inferenz benennen",
+  "competencyIds": [
+    "c-dl-inference"
+  ],
+  "requires": [
+    "c-dl-attention",
+    "c-dl-tokenizer"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-tf-inference"
+  ],
+  "placements": [
+    {
+      "placementId": "p-tf-inference-strategy",
+      "role": "curated",
+      "familyId": "classify-decoding-strategy",
+      "caseId": "greedy-decoding",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-tf-inference",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-tf-inference-stat",
+      "role": "curated",
+      "familyId": "formula-stat-from-table",
+      "caseId": "greedy-step-stat",
+      "seed": 2411,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-inference",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-inference-trace",
+      "role": "curated",
+      "familyId": "optimize-decode-greedy-loop",
+      "caseId": "greedy-loop-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-inference",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-inference-loop",
+      "role": "curated",
+      "familyId": "optimize-decode-greedy-loop",
+      "caseId": "greedy-decode-function",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 20,
+      "lessonId": "l-tf-inference",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-inference-toy",
+      "role": "curated",
+      "familyId": "optimize-softmax-attention-mask",
+      "caseId": "toy-forward-pass",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-tf-inference",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-inference-pipeline",
+      "role": "curated",
+      "familyId": "compose-toy-inference-pipeline",
+      "caseId": "toy-inference-pipeline",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 45,
+      "lessonId": "l-tf-inference",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-inference-practice",
+      "role": "practice-space",
+      "familyId": "formula-stat-from-table",
+      "caseId": "greedy-step-stat",
+      "seed": 2411,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-tf-inference"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

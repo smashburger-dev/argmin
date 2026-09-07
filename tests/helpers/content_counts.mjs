@@ -7,6 +7,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { catalogRoot, discoverJson, discoverProjects } from '../../tools/content_roots.mjs';
+import { compileContent } from '../../tools/compile_content.mjs';
 
 export function expectedPublicCounts(projectRoot) {
   const contentRoot = join(projectRoot, 'content');
@@ -25,7 +26,8 @@ export function expectedPublicCounts(projectRoot) {
   const tools = collection(discoverJson(contentRoot, catalogRoot(catalog, 'tools')), 'tools')
     .filter((item) => item.releaseStatus !== 'local-only');
   const reviews = collection(discoverJson(contentRoot, catalogRoot(catalog, 'reviews')), 'reviews');
-  const lessons = objects(discoverJson(contentRoot, catalogRoot(catalog, 'lessons')))
+  const lessons = objects(discoverJson(contentRoot, catalogRoot(catalog, 'lessons'))
+    .filter((file) => !file.endsWith('.viz.json')))
     .filter((item) => item.releaseStatus !== 'local-only');
   const explanations = objects(discoverJson(contentRoot, catalogRoot(catalog, 'explanations')))
     .filter((item) => item.releaseStatus !== 'local-only');
@@ -34,11 +36,7 @@ export function expectedPublicCounts(projectRoot) {
   const modules = objects(discoverJson(contentRoot, catalogRoot(catalog, 'modules')))
     .filter((item) => item.releaseStatus !== 'local-only');
 
-  const legacyExercises = catalog.legacy.exerciseFiles
-    .flatMap((file) => read(file).exercises || [])
-    .filter((exercise) => exercise.active !== false);
-  const authoredExercises = objects(discoverJson(contentRoot, catalogRoot(catalog, 'exerciseDefinitions')))
-    .filter((item) => item.active !== false && item.releaseStatus !== 'local-only');
+  const bundle = compileContent({ projectRoot, profile: 'public' });
 
   return {
     competencies: competencies.length,
@@ -50,7 +48,7 @@ export function expectedPublicCounts(projectRoot) {
     explanations: explanations.length,
     projects: projects.length,
     modules: modules.length,
-    exercises: legacyExercises.length + authoredExercises.length,
-    curriculumWeeks: read(catalog.legacy.curriculumFile).weeks.length,
+    exercises: bundle.familyActivities.length,
+    curriculumWeeks: 0,
   };
 }

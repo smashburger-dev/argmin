@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-missingness",
+  "contract": {
+    "familyId": "classify-missingness",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet zielabhängige Missingness als Verzerrungsrisiko beim Löschen fehlender Zielwerte ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "target-dependent-missingness",
+        "propertyTest": false
+      },
+      {
+        "caseId": "missingness-device-censoring",
+        "propertyTest": false
+      },
+      {
+        "caseId": "missingness-income-survey",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-pandas-cleaning"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "target-dependent-missingness",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w06-e1"
+      ],
+      "parameters": {
+        "thema": "zielabhängige Missingness"
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "In einer Kundentabelle fehlt der Zielwert „Umsatz“ genau bei den Kunden mit sehr hohen Umsätzen, weil diese keine Einwilligung zur Weitergabe gegeben haben. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
+      "fullSolution": "Das Fehlen hängt vom Zielwert ab (zielabhängige Missingness, kein MCAR). Löschen entfernt genau die hohen Umsätze, der Mittelwert der Verbleibenden liegt darunter — systematische Unterschätzung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Frage zuerst: Hängt das Fehlen vom Zielwert selbst ab — MCAR oder nicht?",
+        "Welche Umsätze fehlen danach systematisch im Datensatz, und in welche Richtung verschiebt das den Mittelwert?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "MCAR heißt „completely at random“ — hier fehlen die Werte gerade bei hohen Umsätzen, also nicht zufällig."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Unverzerrtheit hängt von der Missingness-Mechanik ab, nicht von der Zeilenzahl. Eine große verzerrte Stichprobe bleibt verzerrt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Hohe Umsätze fehlen ja gerade — sie werden eher unter- als doppelt gezählt."
+        }
+      ],
+      "typicalErrors": [
+        "MCAR angenommen, ohne zu fragen, warum Werte fehlen",
+        "Verzerrung mit kleiner Stichprobe verwechselt",
+        "Löschen als neutral behandelt, weil „nur Zeilen entfernt“ werden"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die verbleibenden Daten unterschätzen den durchschnittlichen Umsatz systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nichts — Zeilen löschen ist bei MCAR immer unverzerrt, und das ist hier gegeben.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Schätzer bleibt unverzerrt, solange genügend Zeilen übrig bleiben.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Der Mittelwert wird überschätzt, weil hohe Umsätze doppelt gezählt werden.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "missingness-device-censoring",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "thema": "zielabhängige Missingness"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "In einem Krankenhaus fallen Laborwerte genau dann aus, wenn ein Messgerät bei extremen Werten abschaltet. Was ist die sauberste Diagnose?",
+      "fullSolution": "Das Fehlen hängt vom Messwert beziehungsweise seinem Extrembereich ab und ist daher nicht MCAR. Eine naive Löschung kann die Verteilung systematisch verzerren.",
+      "hints": [
+        "Frage, ob das Fehlen unabhängig vom nicht beobachteten Wert ist.",
+        "Ein gerätebedingtes Ausfallen bei Extremwerten verändert gerade die Randbereiche."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Das Gerät schaltet gerade bei extremen Messwerten ab; das Fehlen hängt damit vom Wertbereich ab und ist nicht MCAR."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Auch wenn mehr als die Hälfte der Werte bleibt, können systematisch fehlende Extremwerte die beobachtete Verteilung verschieben."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein Abschalten des Sensors erzeugt zunächst fehlende Werte, aber keinen Ersatzwert; Imputation wäre ein zusätzlicher Verarbeitungsschritt."
+        }
+      ],
+      "typicalErrors": [
+        "Wertabhängiges Abschalten eines Sensors fälschlich als vollständig zufälliges Fehlen klassifiziert.",
+        "Den Anteil vorhandener Werte als Beleg für unverzerrtes Löschen verwendet.",
+        "Das Entstehen eines fehlenden Messwerts mit dessen späterer Imputation verwechselt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das ist MCAR, weil das Gerät zufällig ausfällt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Das Löschen ist immer harmlos, solange mehr als die Hälfte der Werte bleibt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Fehlen ist wertabhängig; Löschen kann Extremwerte systematisch entfernen.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Das ist automatisch Imputation durch den Sensor.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "missingness-income-survey",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "thema": "zielabhängige Missingness"
+      },
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Bei einer freiwilligen Umfrage fehlt das Einkommen besonders häufig bei sehr hohen Einkommen. Welche Folgerung ist korrekt?",
+      "fullSolution": "Die Ausfälle hängen plausibel vom nicht beobachteten Einkommen ab. Complete-Case-Analysen können den Mittelwert nach unten verzerren; die Missingness-Mechanik muss untersucht werden.",
+      "hints": [
+        "Vergleiche die Antwortwahrscheinlichkeit mit dem vermuteten fehlenden Wert.",
+        "Hohe Einkommen, die systematisch fehlen, verändern den Mittelwert der Beobachteten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Freiwilligkeit erklärt nicht die konkrete Abhängigkeit vom Einkommen: Im Szenario fehlen gerade sehr hohe Einkommen häufiger."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Richtung ist entscheidend, weil das Überwiegen fehlender hoher Werte den Mittelwert der beobachteten Einkommen nach unten ziehen kann."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Medianimputation ersetzt die fehlenden hohen Einkommen nicht neutral; dafür müssten Missingness-Annahme und Imputationsmodell begründet werden."
+        }
+      ],
+      "typicalErrors": [
+        "Freiwillige Teilnahme pauschal als MCAR-Annahme für die Einkommenswerte behandelt.",
+        "Systematisch fehlende hohe Einkommen ohne Blick auf die Verzerrungsrichtung zusammengezählt.",
+        "Eine Medianimputation als voraussetzungsfreie Reparatur wertabhängiger Ausfälle angenommen."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Daten sind MCAR, weil jede Person freiwillig teilnehmen durfte.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur die Anzahl der Antworten zählt; die Richtung der Ausfälle ist egal.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die fehlenden Einkommen können durch den Median ersetzt werden, ohne Annahmen zu prüfen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Missingness ist wahrscheinlich wertabhängig und kann den Mittelwert nach unten verzerren.",
+          "correct": true
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

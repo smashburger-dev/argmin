@@ -385,3 +385,7 @@ h3 { margin: 0; font-size: 21px; line-height: 1.08; letter-spacing: -.025em; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+.visualization-block { margin: 24px 0; }
+.visualization-block figcaption { margin: 0 0 10px; font-size: 15px; line-height: 1.5; color: var(--muted); }
+.visualization-block figcaption strong { color: var(--ink); }
+.viz-board { width: 100%; aspect-ratio: 16 / 10; min-height: 300px; border: 1px solid var(--ink); background: #fff; }

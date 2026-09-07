@@ -9,7 +9,7 @@
       "commercialUseAllowed": true,
       "derivativesAllowed": true,
       "shareAlikeLicense": null,
-      "allowedProfiles": ["public", "local-private", "hosted"],
+      "allowedProfiles": ["public"],
       "attribution": "KI-Lernplattform, 2026",
       "sourceUrl": null,
       "verifiedAt": "2026-08-29"

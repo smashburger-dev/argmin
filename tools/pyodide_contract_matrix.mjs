@@ -14,7 +14,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildPythonTests, buildSympyEquivalenceRun } from '../assets/js/core/graders.js';
-import { catalogRoot, discoverJson } from './content_roots.mjs';
+import { compileContent } from './compile_content.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -31,78 +32,17 @@ export function contractKey(exercise) {
 }
 
 export function buildPyodideContractMatrix(projectRoot = root) {
-  const contentRoot = join(projectRoot, 'content');
-  const catalog = JSON.parse(readFileSync(join(contentRoot, 'catalog.json'), 'utf8'));
   const definitions = [];
-  for (const packFile of catalog.legacy.exerciseFiles) {
-    const pack = JSON.parse(readFileSync(join(contentRoot, packFile), 'utf8'));
-    for (const exercise of pack.exercises || []) {
-      // pyodide-sympy runs the same module-worker contract (graders.js
-      // registers it with needsWorker: true) — excluding it here would
-      // leave 3 definitions without browser-receipt coverage.
-      if (exercise.grader !== 'pyodide' && exercise.grader !== 'pyodide-sympy') continue;
-      // pyodide-sympy definitions verify through the exact equivalence
-      // program the grader ships: the reference run proves the expected
-      // expression equivalent to itself, the spec's broken run proves a
-      // non-sympy program cannot fake the receipt.
-      if (exercise.grader === 'pyodide-sympy') {
-        const run = buildSympyEquivalenceRun(exercise.expectedAnswer?.expression ?? '', exercise.expectedAnswer?.expression ?? '');
-        definitions.push({
-          definitionId: exercise.exerciseId,
-          weekId: pack.weekId,
-          competencyIds: exercise.skillIds || [],
-          packages: run.packages,
-          tests: run.tests,
-          referenceSolver: run.code,
-          contract: contractKey(exercise),
-        });
-        continue;
-      }
-      definitions.push({
-        definitionId: exercise.exerciseId,
-        weekId: pack.weekId,
-        competencyIds: exercise.skillIds || [],
-        packages: exercise.parameters?.packages || [],
-        tests: buildPythonTests(exercise),
-        referenceSolver: exercise.expectedAnswer?.referenceSolver || exercise.fullSolution || '',
-        contract: contractKey(exercise),
-      });
-    }
-  }
-  // Authored exercise definitions carry the same worker contract under
-  // graderId; without them the matrix would under-report pyodide families.
-  // Their solutions are stored as HTML in fullSolution — extract the code.
-  const htmlToCode = (html) => String(html || '')
-    .replace(/<pre[^>]*>/gi, '').replace(/<code[^>]*>/gi, '').replace(/<\/code>/gi, '').replace(/<\/pre>/gi, '')
-    .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')
-    .replace(/&gt;/g, '>').replace(/&lt;/g, '<').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').trim();
-  for (const definitionFile of discoverJson(contentRoot, catalogRoot(catalog, 'exerciseDefinitions'))) {
-    const definition = JSON.parse(readFileSync(join(contentRoot, definitionFile), 'utf8'));
-    if (definition.graderId !== 'pyodide' && definition.graderId !== 'pyodide-sympy') continue;
-    if (definition.graderId === 'pyodide-sympy') {
-      const run = buildSympyEquivalenceRun(definition.expectedAnswer?.expression ?? '', definition.expectedAnswer?.expression ?? '');
-      definitions.push({
-        definitionId: definition.definitionId,
-        weekId: definition.legacyWeekId || null,
-        competencyIds: definition.competencyIds || [],
-        packages: run.packages,
-        tests: run.tests,
-        referenceSolver: run.code,
-        contract: contractKey({ ...definition, grader: definition.graderId }),
-      });
-      continue;
-    }
-    definitions.push({
-      definitionId: definition.definitionId,
-      weekId: definition.legacyWeekId || null,
-      competencyIds: definition.competencyIds || [],
-      packages: definition.parameters?.packages || [],
-      tests: buildPythonTests({ ...definition, grader: definition.graderId }),
-      referenceSolver: definition.expectedAnswer?.referenceSolver
-        || htmlToCode(definition.fullSolution)
-        || '',
-      contract: contractKey({ ...definition, grader: definition.graderId }),
-    });
+  const bundle = compileContent({ projectRoot, profile: 'public' });
+  for (const activity of bundle.familyActivities) {
+    const instance = EXERCISE_FAMILIES.instantiate(
+      activity.familyId,
+      activity.seed,
+      activity.difficulty,
+      activity.caseId,
+    );
+    if (instance.graderId !== 'pyodide' && instance.graderId !== 'pyodide-sympy') continue;
+    definitions.push(buildDefinition(activity, instance));
   }
   for (const definition of definitions) {
     definition.verificationHash = createHash('sha256').update(JSON.stringify({
@@ -122,7 +62,16 @@ export function buildPyodideContractMatrix(projectRoot = root) {
     }
     entry.definitionIds.push(definition.definitionId);
   }
-  return { schemaVersion: 1, generatedFrom: 'content/exercises/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions };
+  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions };
+}
+
+function buildDefinition(activity, instance) {
+  const base = { definitionId: activity.definitionId, competencyIds: activity.competencyIds, contract: contractKey({ ...instance, grader: instance.graderId }) };
+  if (instance.graderId === 'pyodide-sympy') {
+    const run = buildSympyEquivalenceRun(instance.expectedAnswer?.expression ?? '', instance.expectedAnswer?.expression ?? '');
+    return { ...base, packages: run.packages, tests: run.tests, referenceSolver: run.code };
+  }
+  return { ...base, packages: instance.parameters?.packages || [], tests: buildPythonTests({ ...instance, grader: instance.graderId }), referenceSolver: instance.expectedAnswer?.referenceSolver || instance.fullSolution || '' };
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];

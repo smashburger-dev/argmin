@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-question-quality",
+  "contract": {
+    "familyId": "classify-question-quality",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Fragestellung ihrer Qualitätsklasse zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "question-quality-check",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-research-question"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "question-quality-check",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w31-e1"
+      ],
+      "parameters": {
+        "thema": "Prüfbare Forschungsfrage erkennen"
+      },
+      "competencyIds": [
+        "c-research-question"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "„Steigt der Anteil korrekt beantworteter Fixtur-Fragen (recall@5 als fester Endpunkt), wenn die Chunkgröße von 200 auf 400 Zeichen verdoppelt wird?“",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "„Ist das System insgesamt besser geeignet als die alte Version?“",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "„Wie fühlen sich Nutzende bei kürzeren Antworten im Vergleich zu langen?“",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "„Warum sind kleinere Chunks einfach besser für alle Anfragen?“",
+          "correct": false
+        }
+      ],
+      "prompt": "Vier Formulierungen einer Forschungsfrage für den RAG-Prototypen sind im Umlauf. Welche ist im Sinne des Forschungsprotokolls prüfbar (feste Metrik, fester Vergleich, falsifizierbare Vorhersage)?",
+      "fullSolution": "Nur Variante a nennt eine feste Metrik (Anteil korrekt beantworteter Fixtur-Fragen als recall@5-Endpunkt), einen gezielten Vergleich (Chunkgröße 200 gegen 400) und ist widerlegbar: Bleibt der Anteil gleich oder sinkt er, ist die Vermutung falsifiziert. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Prüfbar heißt: Es gibt eine feste Metrik und einen festen Vergleich — und es könnte einen Messwert geben, der die Vermutung widerlegt.",
+        "Absolute Behauptungen, Gefühlsfragen und Fragen, die ihr Ergebnis bereits voraussetzen, sind keine prüfbaren Forschungsfragen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "„insgesamt besser geeignet“ nennt keine Metrik und keinen Vergleich — die Frage kann durch keinen Messwert widerlegt werden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Gefühlsfragen messen keine feste Metrik; ohne Operationalisierung (was wird wie gezählt) bleibt keine falsifizierbare Vorhersage."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Frage setzt das Ergebnis („besser“) bereits voraus und enthält mit „einfach besser“ eine absolute Behauptung — nicht prüfbar."
+        }
+      ],
+      "typicalErrors": [
+        "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)",
+        "falsifizierbar mit interessant verwechselt",
+        "Metrik und Vergleich für denselben Begriff gehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

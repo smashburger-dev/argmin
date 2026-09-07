@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-benchmark-reading",
+  "contract": {
+    "familyId": "classify-benchmark-reading",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Benchmark-Befund der richtigen Lesart zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "benchmark-absolute-gain",
+        "propertyTest": false
+      },
+      {
+        "caseId": "benchmark-absolute-relative",
+        "propertyTest": false
+      },
+      {
+        "caseId": "benchmark-imbalanced-accuracy",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-papers"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "benchmark-absolute-gain",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w26-e1"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-papers"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "GLUE stieg von 7,7 % auf 80,5 % — die Baseline steht in der Klammer.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "GLUE stieg auf 80,5 % — ein absoluter Zuwachs von 7,7 Punkten (nicht 7,7 % relativ, was rechnerisch etwa 10,6 % wären).",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "GLUE stieg um 7,7 % relativ auf 80,5 % — „point absolute“ heißt Prozent relativ.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "GLUE erreichte 80,5 Punkte und damit 7,7 % der möglichen 100 % — der Zuwachs ist nicht angegeben.",
+          "correct": false
+        }
+      ],
+      "prompt": "Das BERT-Abstract meldet: „pushing the GLUE score to 80.5% (7.7% point absolute improvement)“. Welche Weitererzählung des Ergebnisses ist korrekt?",
+      "fullSolution": "„7.7% point absolute“ heißt +7,7 Punkte auf der GLUE-Skala (72,8 → 80,5). Relativ wären das rund 10,6 % — die absolute Punkte-Lesart ist hier die im Abstract gemeinte. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "„point absolute improvement“ benennt die Maßeinheit des Zuwachses: Punkte der Metrik, nicht Prozent der Baseline.",
+        "Zur Kontrolle die relative Lesart durchrechnen: 7,7 Punkte auf 72,8 Baseline sind deutlich mehr als 7,7 %."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'c'",
+          "then": "„absolute“ Punkte sind keine relative Prozentangabe — 7,7 % relativ wären nur ~5,6 Punkte auf der 72,8er-Baseline gewesen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Klammer nennt den Zuwachs gegenüber dem bisherigen Bestwert, nicht einen Anteil der Skala."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "In der Klammer steht die Verbesserung, nicht der alte Wert; die Baseline ist 80,5 − 7,7 = 72,8."
+        }
+      ],
+      "typicalErrors": [
+        "absolut (Punkte) mit relativ (%) verwechselt",
+        "Baseline aus Klammer statt Differenz gelesen",
+        "Einheit der Metrik ignoriert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "benchmark-absolute-relative",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "before": 0.62,
+        "after": 0.7
+      },
+      "competencyIds": [
+        "c-dl-papers"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der Gewinn beträgt 8 Prozent, weil 0,70 minus 0,62 gleich 0,08 ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Der Gewinn beträgt 12,9 Prozentpunkte, weil 0,08 durch 0,62 geteilt wird.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Es sind 8 Prozentpunkte absolut und ungefähr 12,9 Prozent relativ.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Es gibt keinen Gewinn, weil beide Werte unter 1 liegen.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Modell steigt von Accuracy $0{,}62$ auf $0{,}70$. Welche Einordnung ist rechnerisch korrekt?",
+      "fullSolution": "Der absolute Gewinn beträgt $0{,}70-0{,}62=0{,}08$, also 8 Prozentpunkte. Relativ zum Ausgangswert ist das $0{,}08/0{,}62\\approx12{,}9\\%$.",
+      "hints": [
+        "Prozentpunkte sind eine Differenz auf der Wahrscheinlichkeitsskala.",
+        "Für den relativen Gewinn teile die Differenz durch den alten Wert 0,62."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Differenz 0,08 entspricht 8 Prozentpunkten; 8 Prozent relativ wäre eine andere Bezugsgröße."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Division durch 0,62 liefert den relativen Prozentsatz 12,9 %, nicht Prozentpunkte auf der Accuracy-Skala."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Beide Werte liegen zwar unter 1, aber 0,70 ist gegenüber 0,62 um 0,08 höher."
+        }
+      ],
+      "typicalErrors": [
+        "Prozentpunkte und relative Prozente sprachlich gleichgesetzt",
+        "den alten Benchmarkwert als 1 statt als Bezugsgröße 0,62 verwendet",
+        "eine positive Differenz wegen der Normierung auf 1 verworfen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "benchmark-imbalanced-accuracy",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "negativeShare": 0.95,
+        "positiveShare": 0.05,
+        "accuracy": 0.95
+      },
+      "competencyIds": [
+        "c-dl-papers"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "95 % Accuracy beweist, dass beide Klassen gleich gut erkannt werden.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Accuracy ist hier mit dem Mehrheits-Baselinewert vereinbar und sagt nichts über den positiven Recall.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Ein Modell ohne positive Treffer hat automatisch 5 % Accuracy.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Bei unausgeglichenen Klassen ist Accuracy mathematisch immer null.",
+          "correct": false
+        }
+      ],
+      "prompt": "In einem Datensatz sind 95 % der Fälle negativ und 5 % positiv. Ein Modell erreicht 95 % Accuracy, erkennt aber keinen positiven Fall. Welche Aussage ist sauber?",
+      "fullSolution": "Die Accuracy kann hier allein durch die Mehrheitsklasse 95 % erreichen. Für die positive Klasse braucht man zusätzlich etwa Recall, Precision oder eine Confusion-Matrix.",
+      "hints": [
+        "Vergleiche die Accuracy mit der Häufigkeit der negativen Mehrheitsklasse.",
+        "Prüfe separat, ob die fünf Prozent positiven Fälle erkannt werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die 95 % können exakt vom Raten der 95-%-Mehrheitsklasse stammen; Klassenmetriken fehlen."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Kein positiver Treffer bedeutet nicht, dass nur die positive Quote zählt: Die 95 % negativen Fälle können korrekt sein."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Unausgeglichenheit macht Accuracy nicht null, sondern kann sie gerade als irreführende Mehrheitsquote erscheinen lassen."
+        }
+      ],
+      "typicalErrors": [
+        "Mehrheits-Baseline mit ausgewogener Klassenleistung verwechselt",
+        "positive Trefferquote aus der Gesamt-Accuracy abgeleitet",
+        "Klassenimbalance als Verbot statt als Interpretationsrisiko behandelt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

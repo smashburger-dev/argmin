@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-eval-hazard",
+  "contract": {
+    "familyId": "classify-eval-hazard",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Evaluationssituation dem passenden Eval-Hazard zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "eval-hazard-taxonomy",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-genai-eval"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "eval-hazard-taxonomy",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w28-e1"
+      ],
+      "parameters": {
+        "thema": "Fehlertaxonomie: erfundener Beleg"
+      },
+      "competencyIds": [
+        "c-genai-eval"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "falsch-faktisch — die genannte Frist ist falsch.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "quellos — die Antwort kommt ohne Beleg aus.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "formatfehler — die Antwort ist unbrauchbar formatiert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "halluziniert — der zitierte Beleg steht nicht in der zulässigen Quellenliste, die Quelle ist erfunden.",
+          "correct": true
+        }
+      ],
+      "prompt": "Eine RAG-Antwort nennt die richtige Frist in Tagen und formuliert sauber — aber als Beleg zitieren sie die Quelle „blog-x“, die nicht in der zulässigen Quellenliste der Eval-Frage steht. Welches Label der Fehlertaxonomie passt?",
+      "fullSolution": "Der Beleg existiert nicht in der zulässigen Quellenliste, die Antwort erfindet eine Quelle → halluziniert (Beleg-Ebene). Inhalt und Format sind in Ordnung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Prüfe die Labels in ihrer Bedeutung: Wo geht es um den Inhalt der Aussage, wo um den Beleg?",
+        "Der Inhalt stimmt — das Problem ist ausschließlich die Herkunft des Zitats."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "falsch-faktisch verlangt eine inhaltlich falsche Aussage (falsche Zahl/Fakt) — hier stimmt die Frist."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "quellos wäre richtig, wenn KEIN Beleg angegeben wäre — hier steht einer, nur ein unerlaubter."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein Formatfehler liegt bei leerer oder unbrauchbarer Antwort vor — diese Antwort ist formatiert."
+        }
+      ],
+      "typicalErrors": [
+        "Inhaltsfehler und Belegfehler vermischt",
+        "das Fehlen eines Kriteriums mit dem Verstoß gegen ein anderes verwechselt",
+        "Labels frei assoziiert statt das definierte Labelset durchzugehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

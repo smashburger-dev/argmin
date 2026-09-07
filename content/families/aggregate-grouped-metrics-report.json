@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-grouped-metrics-report",
+  "contract": {
+    "familyId": "aggregate-grouped-metrics-report",
+    "familyGroup": "aggregate-count",
+    "summary": "Berechnet gruppenweise Kennzahlen und Anteile und füllt daraus einen strukturierten Bericht ohne Kausaldeutung.",
+    "taskArchetype": "code-test",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "hypothesis-report-groups",
+        "propertyTest": false
+      },
+      {
+        "caseId": "subgroup-error-rates-numpy",
+        "propertyTest": false
+      },
+      {
+        "caseId": "categorize-errors-report",
+        "propertyTest": false
+      },
+      {
+        "caseId": "subgroup-recall-report",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline",
+      "c-genai-security",
+      "c-ml-erroranalysis"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "hypothesis-report-groups",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w07-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef hypothesis_report(metric_a, metric_b, labels):\n    \"\"\"Return {'r', 'medians', 'share', 'verdict'} describing directions, not causes.\"\"\"\n    # normalize inputs, validate lengths and exactly two groups\n    # compute r, per-group medians of metric_a, share of rows with a > b\n    # derive three verdict lines from the statistics\n    ...\n",
+        "tests": "rep = hypothesis_report([1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 9.0], [\"ctrl\", \"ctrl\", \"test\", \"test\"])\n__check('r gerundet', abs(rep[\"r\"] - round(float(np.corrcoef([1.0, 2.0, 3.0, 4.0], [2.0, 4.0, 6.0, 9.0])[0, 1]), 3)) < 1e-12)\n__check('median ctrl', abs(rep[\"medians\"][\"ctrl\"] - 1.5) < 1e-9)\n__check('median test', abs(rep[\"medians\"][\"test\"] - 3.5) < 1e-9)\n__check('share a > b', abs(rep[\"share\"] - 0.0) < 1e-9)\n__check('verdict korrelation', any(\"positiv\" in line for line in rep[\"verdict\"]))\n__check('verdict median gruppe', any(\"test\" in line for line in rep[\"verdict\"]))\nrep2 = hypothesis_report([5.0, 3.0, 8.0, 1.0], [2.0, 2.0, 1.0, 0.5], [\"a\", \"b\", \"a\", \"b\"])\n__check('share a > b 100%', abs(rep2[\"share\"] - 1.0) < 1e-9)\nrep3 = hypothesis_report([1.0, 2.0, 3.0, 4.0], [4.0, 3.0, 2.0, 1.0], [\"a\", \"a\", \"b\", \"b\"])\n__check('verdict negativ', any(\"negativ\" in line for line in rep3[\"verdict\"]))\n__check('r = -1 bei antiproportional', abs(rep3[\"r\"] - (-1.0)) < 1e-9)\n__check('median gruppe b vor a', any(\"staerkerer median: b\" == line for line in rep3[\"verdict\"]))\ntry:\n    hypothesis_report([1.0, 2.0], [1.0], [\"a\", \"b\"])\n    __check('Laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laengenfehler -> ValueError', True)\ntry:\n    hypothesis_report([1.0, 2.0], [1.0, 2.0], [\"a\", \"a\"])\n    __check('eine Gruppe -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('eine Gruppe -> ValueError', True)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef hypothesis_report(metric_a, metric_b, labels):\n    a = np.asarray(metric_a, dtype=float)\n    b = np.asarray(metric_b, dtype=float)\n    if not (a.shape == b.shape and len(labels) == a.size):\n        raise ValueError(\"Eingabelaengen passen nicht zusammen\")\n    distinct = sorted(set(labels))\n    if len(distinct) != 2:\n        raise ValueError(\"genau zwei Gruppen erwartet\")\n    r = float(np.corrcoef(a, b)[0, 1])\n    label_arr = np.asarray(labels)\n    medians = {}\n    for label in distinct:\n        medians[label] = float(np.median(a[label_arr == label]))\n    share = float(np.mean(a > b))\n    lines = [\n        \"korrelation: \" + (\"positiv\" if r > 0 else \"negativ\" if r < 0 else \"null\"),\n        \"staerkerer median: \" + (distinct[0] if medians[distinct[0]] >= medians[distinct[1]] else distinct[1]),\n        \"anteil a > b: \" + str(int(round(100 * share))) + \" %\",\n    ]\n    return {\n        \"r\": round(r, 3),\n        \"medians\": {k: round(v, 3) for k, v in medians.items()},\n        \"share\": round(share, 3),\n        \"verdict\": lines,\n    }"
+      },
+      "prompt": "Final Boss EDA-Bericht: Implementiere <code>hypothesis_report(metric_a, metric_b, labels)</code>. Eingabe: drei gleich lange Folgen — <code>metric_a</code> und <code>metric_b</code> sind Zahlenlisten, <code>labels</code> ordnet jede Zeile einer Gruppe zu und enthält genau zwei verschiedene Werte. Rückgabe: ein Dictionary mit <code>\"r\"</code> (Korrelation zwischen metric_a und metric_b, gerundet auf 3 Dezimalen), <code>\"medians\"</code> (Dictionary Gruppe → Median von metric_a innerhalb der Gruppe, je auf 3 Dezimalen gerundet), <code>\"share\"</code> (Anteil der Zeilen mit metric_a &gt; metric_b, auf 3 Dezimalen gerundet) und <code>\"verdict\"</code>: eine Liste von genau drei Zeilen — <code>\"korrelation: positiv\"</code> bzw. <code>\"negativ\"</code> bzw. <code>\"null\"</code> je nach Vorzeichen von r, <code>\"staerkerer median: &lt;gruppe&gt;\"</code> für die Gruppe mit dem größeren Median von metric_a (bei Gleichheit die alphabetisch erste) und <code>\"anteil a &gt; b: &lt;ganzzahl&gt; %\"</code>. Wirf <code>ValueError</code>, wenn die Längen nicht zusammenpassen oder labels nicht genau zwei verschiedene Werte hat. Der Bericht beschreibt Richtungen — keine Kausalaussagen.",
+      "fullSolution": "def hypothesis_report(metric_a, metric_b, labels):\n    a = np.asarray(metric_a, dtype=float)\n    b = np.asarray(metric_b, dtype=float)\n    if not (a.shape == b.shape and len(labels) == a.size):\n        raise ValueError(\"Eingabelaengen passen nicht zusammen\")\n    distinct = sorted(set(labels))\n    if len(distinct) != 2:\n        raise ValueError(\"genau zwei Gruppen erwartet\")\n    r = float(np.corrcoef(a, b)[0, 1])\n    label_arr = np.asarray(labels)\n    medians = {}\n    for label in distinct:\n        medians[label] = float(np.median(a[label_arr == label]))\n    share = float(np.mean(a > b))\n    lines = [\n        \"korrelation: \" + (\"positiv\" if r > 0 else \"negativ\" if r < 0 else \"null\"),\n        \"staerkerer median: \" + (distinct[0] if medians[distinct[0]] >= medians[distinct[1]] else distinct[1]),\n        \"anteil a > b: \" + str(int(round(100 * share))) + \" %\",\n    ]\n    return {\n        \"r\": round(r, 3),\n        \"medians\": {k: round(v, 3) for k, v in medians.items()},\n        \"share\": round(share, 3),\n        \"verdict\": lines,\n    }\n\n# report([1,2,3,4], [2,4,6,9], [\"ctrl\",\"ctrl\",\"test\",\"test\"]):\n# r 0.994, medians {'ctrl': 1.5, 'test': 3.5}, share 0.0,\n# verdict ['korrelation: positiv', 'staerkerer median: test', 'anteil a > b: 0 %']",
+      "hints": [
+        "Erst normalisieren und validieren (Längen, genau zwei Gruppen), dann Kennzahlen berechnen: r über np.corrcoef, Gruppenmediane über Masken wie np.asarray(labels) == label, Anteil über np.mean(a > b).",
+        "Die verdict-Zeilen werden aus den ungerundeten Kennzahlen abgeleitet (Vorzeichen von r, Vergleich der Mediane) — gerundet wird nur für die Rückgabewerte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "valueerror-missing",
+          "then": "Die Längenprüfung und die Zwei-Gruppen-Prüfung müssen vor jeder Berechnung stehen und ValueError werfen."
+        },
+        {
+          "if": "groups-not-sorted",
+          "then": "Bei Mediangleichheit entscheidet die alphabetisch erste Gruppe — distinct vorher sortieren."
+        },
+        {
+          "if": "causal-language",
+          "then": "Das verdict beschreibt Richtungen (positiv/negativ, stärkerer Median), nie Ursachen."
+        }
+      ],
+      "typicalErrors": [
+        "Kausalaussagen im verdict statt Richtungsbeschreibung",
+        "Median über alle Zeilen statt gruppenweise berechnet",
+        "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      }
+    },
+    {
+      "caseId": "subgroup-error-rates-numpy",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "competencyIds": [
+        "c-ml-erroranalysis"
+      ],
+      "sourceLineage": [
+        "w13-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef subgroup_error_rates(y_true, y_pred, groups):\n    # return {group: errors / count} as float per group\n    # ValueError if the three inputs differ in length\n    ...\n\ndef largest_gap(rates):\n    # difference between the highest and the lowest rate; ValueError on empty dict\n    ...\n",
+        "tests": "import numpy as np\n\ny_true = [1, 0, 1, 0, 1, 0, 1, 1, 0, 0]\ny_pred = [1, 0, 1, 0, 1, 1, 0, 0, 0, 0]\ngroups = ['A', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'C', 'C']\nrates = subgroup_error_rates(y_true, y_pred, groups)\n__check('drei Gruppen als Schluessel', set(str(k) for k in rates.keys()) == {'A', 'B', 'C'})\n__check('Fehlerrate A = 0/4 = 0.0', abs(float(rates['A']) - 0.0) < 1e-12)\n__check('Fehlerrate B = 3/4 = 0.75', abs(float(rates['B']) - 0.75) < 1e-12)\n__check('Fehlerrate C = 0/2 = 0.0', abs(float(rates['C']) - 0.0) < 1e-12)\n__check('largest_gap = 0.75 - 0.0 = 0.75', abs(largest_gap(rates) - 0.75) < 1e-12)\n__check('eine Gruppe: Rate 1/2', subgroup_error_rates([1, 0], [1, 1], ['X', 'X']) == {'X': 0.5})\n__check('largest_gap mit einer Gruppe = 0', abs(largest_gap({'X': 0.5})) < 1e-12)\ntry:\n    subgroup_error_rates([1, 0], [1], ['X', 'X'])\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError geworfen')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, 'falscher Fehlertyp: ' + type(e).__name__)\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef subgroup_error_rates(y_true, y_pred, groups):\n    '''Error rate per group {group: errors / count}; ValueError on length mismatch.'''\n    y_true = list(y_true)\n    y_pred = list(y_pred)\n    groups = list(groups)\n    if not (len(y_true) == len(y_pred) == len(groups)):\n        raise ValueError('y_true, y_pred and groups must have equal length')\n    stats = {}\n    for t, p, g in zip(y_true, y_pred, groups):\n        if g not in stats:\n            stats[g] = [0, 0]\n        stats[g][1] += 1\n        if t != p:\n            stats[g][0] += 1\n    return {g: errors / total for g, (errors, total) in stats.items()}\n\ndef largest_gap(rates):\n    '''Difference between the highest and the lowest rate.'''\n    if not rates:\n        raise ValueError('rates must not be empty')\n    values = [float(v) for v in rates.values()]\n    return float(max(values) - min(values))\n"
+      },
+      "prompt": "Implementiere die Teilgruppen-Analyse. `subgroup_error_rates(y_true, y_pred, groups)`: drei gleich lange Eingänge (Listen oder 1-d-Arrays); Rückgabe ein dict, das jeder vorkommenden Gruppe ihre Fehlerrate `fehler / anzahl` als float zuordnet; bei unterschiedlich langen Eingängen wirf `ValueError`. `largest_gap(rates)`: nimmt das Ergebnis-dict und gibt die Differenz zwischen höchster und niedrigster Fehlerrate als float zurück; für ein leeres dict wirf `ValueError`. Kontrolle: y_true = [1,0,1,0,1,0,1,1,0,0], y_pred = [1,0,1,0,1,1,0,0,0,0], groups = ['A','A','A','A','B','B','B','B','C','C'] → A 0/4, B 3/4, C 0/2, largest_gap 0.75.",
+      "fullSolution": "import numpy as np\n\ndef subgroup_error_rates(y_true, y_pred, groups):\n    '''Error rate per group {group: errors / count}; ValueError on length mismatch.'''\n    y_true = list(y_true)\n    y_pred = list(y_pred)\n    groups = list(groups)\n    if not (len(y_true) == len(y_pred) == len(groups)):\n        raise ValueError('y_true, y_pred and groups must have equal length')\n    stats = {}\n    for t, p, g in zip(y_true, y_pred, groups):\n        if g not in stats:\n            stats[g] = [0, 0]\n        stats[g][1] += 1\n        if t != p:\n            stats[g][0] += 1\n    return {g: errors / total for g, (errors, total) in stats.items()}\n\ndef largest_gap(rates):\n    '''Difference between the highest and the lowest rate.'''\n    if not rates:\n        raise ValueError('rates must not be empty')\n    values = [float(v) for v in rates.values()]\n    return float(max(values) - min(values))\n",
+      "hints": [
+        "Sammle pro Gruppe zwei Zähler in einem Dictionary: Anzahl der Beispiele und Anzahl der Fehler (t != p).",
+        "Die Rate bildet sich erst am Ende: Fehlerzähler durch Anzahlzähler je Gruppe teilen — largest_gap ist dann max minus min über die Werte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "counts-instead-of-rates",
+          "then": "Zurückgegeben werden Raten (Fehler / Anzahl), nicht die rohen Fehlerzahlen — die Gruppengröße muss eingehen."
+        },
+        {
+          "if": "gap-absolute-only",
+          "then": "largest_gap vergleicht höchste und niedrigste Rate der gegebenen Gruppen — nicht den Abstand zu einer vorgegebenen Gruppe."
+        },
+        {
+          "if": "length-check-missing",
+          "then": "Die Längenprüfung der drei Eingänge muss ValueError werfen, bevor gezählt wird."
+        }
+      ],
+      "typicalErrors": [
+        "absolute Fehlerzahlen statt Raten vergleichen",
+        "Gruppen als eigene Schleifen statt Zähler-dict",
+        "Längenprüfung weglassen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      }
+    },
+    {
+      "caseId": "categorize-errors-report",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "competencyIds": [
+        "c-ml-erroranalysis"
+      ],
+      "sourceLineage": [
+        "w13-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def categorize_errors(errors):\n    # errors: list of {'id', 'kind', 'group'}\n    # return counts by kind, counts by group, share by group (count / total),\n    # and extreme_groups {'highest', 'lowest', 'difference'}\n    # ties go to first-seen order; ValueError on missing keys or empty list\n    ...\n\ndef model_card_stub(metrics_by_group):\n    # higher metric is better; worst_group has the LOWEST value\n    # return {'intended_use', 'metric_by_group', 'worst_group', 'known_limitation'}\n    ...\n",
+        "tests": "errors = [\n    {'id': 1, 'kind': 'drift', 'group': 'A'},\n    {'id': 2, 'kind': 'label_noise', 'group': 'B'},\n    {'id': 3, 'kind': 'subgroup', 'group': 'B'},\n    {'id': 4, 'kind': 'drift', 'group': 'B'},\n    {'id': 5, 'kind': 'label_noise', 'group': 'B'},\n    {'id': 6, 'kind': 'subgroup', 'group': 'B'},\n    {'id': 7, 'kind': 'drift', 'group': 'C'},\n    {'id': 8, 'kind': 'subgroup', 'group': 'C'},\n]\nr = categorize_errors(errors)\n__check('counts_by_kind exakt', dict(r['counts_by_kind']) == {'drift': 3, 'label_noise': 2, 'subgroup': 3})\n__check('counts_by_group exakt', dict(r['counts_by_group']) == {'A': 1, 'B': 5, 'C': 2})\n__check('Anteile: A 0.125, B 0.625, C 0.25', all(abs(float(r['share_by_group'][g]) - v) < 1e-12 for g, v in [('A', 0.125), ('B', 0.625), ('C', 0.25)]))\nex = r['extreme_groups']\n__check('extreme_groups: hoechste B, tiefste A, Differenz 0.5', str(ex['highest']) == 'B' and str(ex['lowest']) == 'A' and abs(float(ex['difference']) - 0.5) < 1e-12)\ncard = model_card_stub({'A': 0.9, 'B': 0.55, 'C': 0.8})\n__check('Modellkarte: worst_group ist B', str(card['worst_group']) == 'B')\n__check('Modellkarte: known_limitation nennt Gruppe B', 'B' in str(card['known_limitation']))\n__check('Modellkarte: Metriken uebernommen', dict(card['metric_by_group']) == {'A': 0.9, 'B': 0.55, 'C': 0.8})\ncard2 = model_card_stub({'fern': 0.7, 'nah': 0.95})\n__check('anderes Dict: worst_group fern', str(card2['worst_group']) == 'fern')\ntry:\n    categorize_errors([{'id': 9, 'kind': 'drift'}])\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError geworfen')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, 'falscher Fehlertyp: ' + type(e).__name__)\ntry:\n    categorize_errors([])\n    __check('ValueError bei leerer Liste', False, 'kein ValueError geworfen')\nexcept ValueError:\n    __check('ValueError bei leerer Liste', True)\nexcept Exception as e:\n    __check('ValueError bei leerer Liste', False, 'falscher Fehlertyp: ' + type(e).__name__)\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def categorize_errors(errors):\n    '''Summarize errors by kind and group; identify extreme error-share groups.'''\n    if not errors:\n        raise ValueError('errors must not be empty')\n    counts_by_kind = {}\n    counts_by_group = {}\n    for e in errors:\n        if 'kind' not in e or 'group' not in e:\n            raise ValueError('each error needs kind and group')\n        counts_by_kind[e['kind']] = counts_by_kind.get(e['kind'], 0) + 1\n        counts_by_group[e['group']] = counts_by_group.get(e['group'], 0) + 1\n    total = len(errors)\n    share_by_group = {g: c / total for g, c in counts_by_group.items()}\n    highest = max(share_by_group, key=lambda g: share_by_group[g])\n    lowest = min(share_by_group, key=lambda g: share_by_group[g])\n    return {\n        'counts_by_kind': counts_by_kind,\n        'counts_by_group': counts_by_group,\n        'share_by_group': share_by_group,\n        'extreme_groups': {\n            'highest': highest,\n            'lowest': lowest,\n            'difference': float(share_by_group[highest] - share_by_group[lowest]),\n        },\n    }\n\ndef model_card_stub(metrics_by_group):\n    '''Minimal model card stub naming the group with the lowest metric.'''\n    worst = min(metrics_by_group, key=lambda g: metrics_by_group[g])\n    return {\n        'intended_use': 'Defekt-Klassifikation in der Pilotwerk',\n        'metric_by_group': dict(metrics_by_group),\n        'worst_group': worst,\n        'known_limitation': 'Schwaecheste Teilgruppe: {} (Metrik {})'.format(worst, metrics_by_group[worst]),\n    }\n"
+      },
+      "prompt": "Final Boss: Fehlerkategorisierung und Modellkarte. `categorize_errors(errors)` bekommt eine Liste von dicts `{'id': int, 'kind': str, 'group': str}`. Rückgabe: `{'counts_by_kind': {kind: anzahl}, 'counts_by_group': {gruppe: anzahl}, 'share_by_group': {gruppe: fehler_der_gruppe / gesamtfehler}, 'extreme_groups': {'highest': gruppe, 'lowest': gruppe, 'difference': anteil_hoch - anteil_tief}}`. Bei Gleichstand entscheidet die Reihenfolge des ersten Auftretens; fehlt bei einem Fehler 'kind' oder 'group', oder ist die Liste leer, wirf `ValueError`. `model_card_stub(metrics_by_group)` bekommt ein dict `gruppe -> metrik` (höher = besser, z. B. Accuracy) und gibt `{'intended_use': 'Defekt-Klassifikation in der Pilotwerk', 'metric_by_group': kopie, 'worst_group': gruppe_mit_kleinster_metrik, 'known_limitation': 'Schwaecheste Teilgruppe: <gruppe> (Metrik <wert>)'}` zurück.",
+      "fullSolution": "def categorize_errors(errors):\n    '''Summarize errors by kind and group; identify extreme error-share groups.'''\n    if not errors:\n        raise ValueError('errors must not be empty')\n    counts_by_kind = {}\n    counts_by_group = {}\n    for e in errors:\n        if 'kind' not in e or 'group' not in e:\n            raise ValueError('each error needs kind and group')\n        counts_by_kind[e['kind']] = counts_by_kind.get(e['kind'], 0) + 1\n        counts_by_group[e['group']] = counts_by_group.get(e['group'], 0) + 1\n    total = len(errors)\n    share_by_group = {g: c / total for g, c in counts_by_group.items()}\n    highest = max(share_by_group, key=lambda g: share_by_group[g])\n    lowest = min(share_by_group, key=lambda g: share_by_group[g])\n    return {\n        'counts_by_kind': counts_by_kind,\n        'counts_by_group': counts_by_group,\n        'share_by_group': share_by_group,\n        'extreme_groups': {\n            'highest': highest,\n            'lowest': lowest,\n            'difference': float(share_by_group[highest] - share_by_group[lowest]),\n        },\n    }\n\ndef model_card_stub(metrics_by_group):\n    '''Minimal model card stub naming the group with the lowest metric.'''\n    worst = min(metrics_by_group, key=lambda g: metrics_by_group[g])\n    return {\n        'intended_use': 'Defekt-Klassifikation in der Pilotwerk',\n        'metric_by_group': dict(metrics_by_group),\n        'worst_group': worst,\n        'known_limitation': 'Schwaecheste Teilgruppe: {} (Metrik {})'.format(worst, metrics_by_group[worst]),\n    }\n",
+      "hints": [
+        "Zwei Zähler-dicts in einem Durchlauf füllen (kind und group), daraus die Anteile als count / len(errors) ableiten — max und min über die Anteile bestimmen die extreme Gruppen.",
+        "In der Modellkarte ist weniger mehr: min über die Metrikwerte liefert die schwächste Gruppe, und der Limitationstext muss den Gruppennamen enthalten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "share-of-kind",
+          "then": "share_by_group bezieht sich auf GRUPPEN-Anteile an allen Fehlern — die Anteile je kind stehen nicht im Rückgabe-dict."
+        },
+        {
+          "if": "worst-is-max",
+          "then": "In metrics_by_group ist höher besser: worst_group ist der MINIMALE Metrikwert, nicht der maximale."
+        },
+        {
+          "if": "missing-key-validation",
+          "then": "Fehlt 'kind' oder 'group' in einem Fehler-dict, muss ValueError geworfen werden — auch für die leere Liste."
+        }
+      ],
+      "typicalErrors": [
+        "Anteile auf kind statt Gruppe beziehen",
+        "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen",
+        "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      }
+    },
+    {
+      "caseId": "subgroup-recall-report",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w37-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def subgroup_recall(datensaetze):\n    \"\"\"{label: mittelwert_recall} mit sortierten Labels und round(…, 6).\"\"\"\n    ...\n\n",
+        "tests": "D = [\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n]\n__check('vier gruppen', set(subgroup_recall(D)) == {\"versand\", \"recht\", \"rabatt\", \"garantie\"})\n__check('werte exakt', subgroup_recall(D) == {\"versand\": 1.0, \"recht\": 0.5, \"rabatt\": 0.5, \"garantie\": 1.0})\n__check('leere liste', subgroup_recall([]) == {})\n__check('label fehlt -> alle', subgroup_recall([{\"recall\": 0.25}, {\"recall\": 0.75}]) == {\"alle\": 0.5})\n__check('dritte gruppe', subgroup_recall([{\"subgroup\": \"b\", \"recall\": 0.1}, {\"subgroup\": \"b\", \"recall\": 0.2}, {\"subgroup\": \"b\", \"recall\": 0.3}]) == {\"b\": 0.2})"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def subgroup_recall(datensaetze):\n    werte = {}\n    for datensatz in datensaetze:\n        werte.setdefault(datensatz.get(\"subgroup\", \"alle\"), []).append(datensatz[\"recall\"])\n    return {label: round(sum(v) / len(v), 6) for label, v in sorted(werte.items())}\n\n# subgroup_recall(D) -> {'versand': 1.0, 'recht': 0.5, 'rabatt': 0.5, 'garantie': 1.0}"
+      },
+      "prompt": "Baue die Subgruppen-Auswertung: <code>subgroup_recall(datensaetze)</code> erhält eine Liste <code>{\"subgroup\": label, \"recall\": wert}</code> und liefert <code>{label: mittelwert}</code> über alle Datensätze der Gruppe (auf 6 Stellen gerundet, Labels sortiert). Leere Liste → leeres Dict. Fehlt das subgroup-Feld, gilt <code>\"alle\"</code>. Runde mit round(x, 6).",
+      "fullSolution": "def subgroup_recall(datensaetze):\n    werte = {}\n    for datensatz in datensaetze:\n        werte.setdefault(datensatz.get(\"subgroup\", \"alle\"), []).append(datensatz[\"recall\"])\n    return {label: round(sum(v) / len(v), 6) for label, v in sorted(werte.items())}\n\n# Zwei Gruppen landen bei 0.5 — das ist der Befund, nicht ein Bug.",
+      "hints": [
+        "Sammle je Label erst eine Liste von Recall-Werten, bilde dann Mittelwert und round(x, 6).",
+        "sorted(werte.items()) sortiert das Endergebnis direkt nach Label."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mean-over-all",
+          "then": "Der Gesamt-Mittelwert versteckt Gruppen-Zusammenbrüche — genau die soll die Subgruppen-Tabelle sichtbar machen."
+        },
+        {
+          "if": "division-single",
+          "then": "Mittelwert heißt Summe geteilt durch die Anzahl der Einträge DER GRUPPE, nicht durch die Gesamtzahl."
+        },
+        {
+          "if": "missing-label-crash",
+          "then": "datensatz.get('subgroup', 'alle') fängt fehlende Labels ab, ohne zu crashen."
+        }
+      ],
+      "typicalErrors": [
+        "über alle Datensätze gemittelt statt je Gruppe",
+        "fehlendes Label crashen lassen",
+        "unsortierte Labels zurückgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

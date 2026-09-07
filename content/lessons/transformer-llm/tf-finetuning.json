@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-tf-finetuning",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Fine-Tuning-Strategien und LoRA-Mathematik",
   "objectives": [
@@ -14,6 +14,7 @@
   "estimatedMinutes": 85,
   "blocks": [
     { "blockId": "tf-finetuning-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-finetuning.md" },
+    { "blockId": "tf-finetuning-viz", "type": "visualization", "contentRef": "lessons/transformer-llm/lr-warmup-cosine.viz.json" },
     { "blockId": "tf-finetuning-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-finetuning-checkpoint.md" }
   ],
   "sourceRefs": [

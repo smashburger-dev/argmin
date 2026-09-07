@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-tree-best-split",
+  "contract": {
+    "familyId": "optimize-tree-best-split",
+    "familyGroup": "optimize-update",
+    "summary": "Bestimmt den besten Binär-Split über die Gini-Impurity mit Kandidatenschwellen auf Mitten und deterministischer Gleichstandsregel.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "gini-best-binary-split",
+        "propertyTest": false
+      },
+      {
+        "caseId": "gini-three-class-candidates",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-ensembles",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "gini-best-binary-split",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w15-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef gini(labels):\n    \"\"\"Return 1 - sum(p_k^2) over class shares; empty list raises ValueError.\"\"\"\n    labels = list(labels)\n    # Anteile zaehlen und Formel anwenden\n    ...\n\ndef best_split(x, y):\n    \"\"\"Return (threshold, weighted_gini) for a depth-1 split; ties -> lowest threshold.\"\"\"\n    x = [float(v) for v in x]\n    y = list(y)\n    # 1) Laengen pruefen, 2) nach x sortieren, 3) Kandidatenmitten testen\n    ...\n",
+        "tests": "import numpy as np\n\n__check('Gini ausgeglichen', abs(gini([0, 0, 1, 1]) - 0.5) < 1e-12)\n__check('Gini rein', gini([1, 1, 1]) == 0.0)\n__check('Gini 3:1', abs(gini([0, 0, 0, 1]) - 0.375) < 1e-12)\n__s = best_split([1, 2, 3, 4], [0, 0, 1, 1])\n__check('perfekter Split bei 2.5', abs(__s[0] - 2.5) < 1e-12 and abs(__s[1]) < 1e-12, str(__s))\n__t = best_split([1, 2, 3, 4], [0, 1, 0, 1])\n__check('Tie-Break kleinster Schwellenwert', abs(__t[0] - 1.5) < 1e-12 and abs(__t[1] - 1.0 / 3.0) < 1e-12, str(__t))\n__u = best_split([3, 1, 2, 4], [1, 0, 0, 1])\n__check('Eingabereihenfolge egal', abs(__u[0] - 2.5) < 1e-12 and abs(__u[1]) < 1e-12, str(__u))\ntry:\n    best_split([1, 2], [0])\n    __check('Laengenpruefung', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laengenpruefung', True)\nexcept Exception as e:\n    __check('Laengenpruefung', False, type(e).__name__)\ntry:\n    gini([])\n    __check('leere Labels abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Labels abgelehnt', True)\nexcept Exception as e:\n    __check('leere Labels abgelehnt', False, type(e).__name__)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef gini(labels):\n    labels = list(labels)\n    n = len(labels)\n    if n == 0:\n        raise ValueError(\"labels must not be empty\")\n    return 1.0 - sum((labels.count(c) / n) ** 2 for c in set(labels))\n\ndef best_split(x, y):\n    x = [float(v) for v in x]\n    y = list(y)\n    if len(x) != len(y):\n        raise ValueError(\"x and y must have the same length\")\n    if len(x) < 2:\n        raise ValueError(\"need at least two points\")\n    order = sorted(range(len(x)), key=lambda i: x[i])\n    xs = [x[i] for i in order]\n    ys = [y[i] for i in order]\n    n = len(xs)\n    best = None  # (threshold, weighted gini)\n    for i in range(n - 1):\n        if xs[i] == xs[i + 1]:\n            continue\n        t = (xs[i] + xs[i + 1]) / 2.0\n        left = ys[: i + 1]\n        right = ys[i + 1:]\n        g = len(left) / n * gini(left) + len(right) / n * gini(right)\n        if best is None or g < best[1] - 1e-12 or (abs(g - best[1]) <= 1e-12 and t < best[0]):\n            best = (t, g)\n    return best\n\n# gini([0,0,1,1]) -> 0.5; best_split([1,2,3,4],[0,0,1,1]) -> (2.5, 0.0)"
+      },
+      "prompt": "Implementiere die Baumbasis: `gini(labels)` berechnet $1 - \\sum_k p_k^2$ aus den Klassenanteilen eines Knotens (0/1-Labels) und wirft `ValueError` bei leerer Liste. `best_split(x, y)` sucht für Tiefe 1 den besten Schwellenwert: Kandidaten sind die Mitten zwischen aufeinanderfolgenden verschiedenen x-Werten (nach Sortieren), bewertet wird der gewichtete Gini (Anteile mal Knoten-Gini). Rückgabe ist das Tupel `(threshold, gini)`; bei Gleichstand gewinnt der kleinste Schwellenwert. `ValueError`, wenn `len(x) != len(y)` oder weniger als zwei Punkte. Deterministisch — ohne Zufall.",
+      "fullSolution": "import numpy as np\n\ndef gini(labels):\n    labels = list(labels)\n    n = len(labels)\n    if n == 0:\n        raise ValueError(\"labels must not be empty\")\n    return 1.0 - sum((labels.count(c) / n) ** 2 for c in set(labels))\n\ndef best_split(x, y):\n    x = [float(v) for v in x]\n    y = list(y)\n    if len(x) != len(y):\n        raise ValueError(\"x and y must have the same length\")\n    if len(x) < 2:\n        raise ValueError(\"need at least two points\")\n    order = sorted(range(len(x)), key=lambda i: x[i])\n    xs = [x[i] for i in order]\n    ys = [y[i] for i in order]\n    n = len(xs)\n    best = None  # (threshold, weighted gini)\n    for i in range(n - 1):\n        if xs[i] == xs[i + 1]:\n            continue\n        t = (xs[i] + xs[i + 1]) / 2.0\n        left = ys[: i + 1]\n        right = ys[i + 1:]\n        g = len(left) / n * gini(left) + len(right) / n * gini(right)\n        if best is None or g < best[1] - 1e-12 or (abs(g - best[1]) <= 1e-12 and t < best[0]):\n            best = (t, g)\n    return best\n\n# gini([0,0,1,1]) -> 0.5; best_split([1,2,3,4],[0,0,1,1]) -> (2.5, 0.0)",
+      "hints": [
+        "Ein Knoten mit n Punkten und n_k Punkten der Klasse k hat die Anteile p_k = n_k/n — gewichte beim Split mit len(left)/n und len(right)/n.",
+        "Sortiere Paare (x, y) nach x; überspringe gleiche Nachbarwerte; bei nahezu gleichem Gini entscheidet der kleinere Schwellenwert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-gini",
+          "then": "Gini nutzt Anteile (n_k/n), nicht die Anzahlen n_k selbst."
+        },
+        {
+          "if": "wrong-threshold",
+          "then": "Kandidaten sind Mitten benachbarter x-Werte — z. B. für x = 1, 2, 3, 4 die Werte 1.5, 2.5, 3.5."
+        },
+        {
+          "if": "tie-break-failed",
+          "then": "Bei Gleichstand (Gini fast identisch) muss der kleinste Schwellenwert bleiben — vergleiche mit Toleranz, nicht exakt."
+        }
+      ],
+      "typicalErrors": [
+        "Anzahlen statt Anteile in die Gini-Formel",
+        "Schwellen auf Datenpunkten statt auf Mitten testen",
+        "Gleichstand nicht deterministisch auflösen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "gini-three-class-candidates",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef gini(labels):\n    ...\n\ndef best_split(x, y):\n    ...\n",
+        "tests": "__check(\"three classes\", abs(gini([0, 1, 2]) - 2.0 / 3.0) < 1e-12)\n__check(\"best middle\", abs(best_split([0, 1, 2, 3], [0, 0, 1, 1])[0] - 1.5) < 1e-12)\n__check(\"weighted zero\", abs(best_split([0, 1, 2, 3], [0, 0, 1, 1])[1]) < 1e-12)\n__check(\"duplicate x skipped\", best_split([1, 1, 2], [0, 1, 1])[0] == 1.5)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def gini(labels):\n    labels = list(labels); n = len(labels)\n    if n == 0: raise ValueError(\"labels must not be empty\")\n    return 1.0 - sum((labels.count(c) / n) ** 2 for c in set(labels))\n\ndef best_split(x, y):\n    x = [float(v) for v in x]; y = list(y)\n    if len(x) != len(y): raise ValueError(\"x and y must have the same length\")\n    if len(x) < 2: raise ValueError(\"need at least two points\")\n    order = sorted(range(len(x)), key=lambda i: x[i]); xs = [x[i] for i in order]; ys = [y[i] for i in order]; n = len(xs); best = None\n    for i in range(n - 1):\n        if xs[i] == xs[i + 1]: continue\n        t = (xs[i] + xs[i + 1]) / 2.0; left = ys[:i + 1]; right = ys[i + 1:]\n        g = len(left) / n * gini(left) + len(right) / n * gini(right)\n        if best is None or g < best[1] - 1e-12 or (abs(g - best[1]) <= 1e-12 and t < best[0]): best = (t, g)\n    return best"
+      },
+      "prompt": "Implementiere Gini und die deterministische beste Binärschwelle wie im Familienvertrag, diesmal mit drei Klassen und doppelten x-Werten.",
+      "fullSolution": "def gini(labels):\n    labels = list(labels); n = len(labels)\n    if n == 0: raise ValueError(\"labels must not be empty\")\n    return 1.0 - sum((labels.count(c) / n) ** 2 for c in set(labels))\n\ndef best_split(x, y):\n    x = [float(v) for v in x]; y = list(y)\n    if len(x) != len(y): raise ValueError(\"x and y must have the same length\")\n    if len(x) < 2: raise ValueError(\"need at least two points\")\n    order = sorted(range(len(x)), key=lambda i: x[i]); xs = [x[i] for i in order]; ys = [y[i] for i in order]; n = len(xs); best = None\n    for i in range(n - 1):\n        if xs[i] == xs[i + 1]: continue\n        t = (xs[i] + xs[i + 1]) / 2.0; left = ys[:i + 1]; right = ys[i + 1:]\n        g = len(left) / n * gini(left) + len(right) / n * gini(right)\n        if best is None or g < best[1] - 1e-12 or (abs(g - best[1]) <= 1e-12 and t < best[0]): best = (t, g)\n    return best",
+      "hints": [
+        "Gini summiert quadrierte Klassenanteile, nicht Klassenanzahlen.",
+        "Sortiere x und y gemeinsam, überspringe gleiche Nachbarn und wähle bei Gleichstand die kleinste Schwelle."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-gini",
+          "then": "Gini verwendet Klassenanteile p_k und quadriert diese."
+        },
+        {
+          "if": "wrong-candidates",
+          "then": "Schwellen liegen in den Mitten verschiedener benachbarter x-Werte."
+        },
+        {
+          "if": "wrong-tie",
+          "then": "Der Vertrag verlangt bei numerischem Gleichstand die kleinste Schwelle."
+        }
+      ],
+      "typicalErrors": [
+        "Klassenanzahlen statt Anteile verwendet",
+        "x und y nicht gemeinsam sortiert",
+        "gleiche x-Werte als Schwelle benutzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

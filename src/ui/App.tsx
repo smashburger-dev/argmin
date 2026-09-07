@@ -2,16 +2,11 @@ import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
 import { loadProgressSnapshot, saveLearningPreferences, type ProgressSnapshot } from '../adapters/local-progress';
-import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ProgressView, ReviewFindingsView, ReviewView, RoadmapView, SettingsView, SourcesView, TodayView, ToolsView } from './views';
+import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ProgressView, ReviewFindingsView, ReviewView, SettingsView, SourcesView, TodayView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
 import { VisualizationView } from './VisualizationView';
 
-// Route-lazy exercise surface: the grader + seed-generator stack travels in
-// the exercise chunk instead of the initial payload (ADR-0015; same pattern
-// as the code workspace).
-const ExerciseView = lazy(() => import('./ExerciseView').then((module) => ({ default: module.ExerciseView })));
-const LabView = lazy(() => import('./LabView').then((module) => ({ default: module.LabView })));
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
 const FamilyExerciseView = lazy(() => import('./FamilyExerciseView').then((module) => ({ default: module.FamilyExerciseView })));
 
@@ -73,7 +68,7 @@ export function App() {
 
   const [section = 'today', routeId = ''] = route.split('/');
   const familyRef = section === 'family' ? route.split('/').slice(1).join('/') : '';
-  const activeNavigation = ['competency', 'diagnostic', 'lesson', 'module', 'exercise', 'lab', 'project', 'sources', 'tools', 'roadmap', 'visualization', 'quality'].includes(section) ? 'learn' : section;
+  const activeNavigation = ['competency', 'diagnostic', 'lesson', 'module', 'project', 'sources', 'tools', 'visualization', 'quality'].includes(section) ? 'learn' : section;
 
   const savePreferences = async (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => {
     const safeMinutes = Math.min(2400, Math.max(30, Math.round(weeklyMinutes / 15) * 15));
@@ -96,13 +91,10 @@ export function App() {
               : section === 'sources' ? <SourcesView catalog={catalog} />
                 : section === 'tools' ? <ToolsView catalog={catalog} />
                   : section === 'quality' ? <ReviewFindingsView catalog={catalog} />
-                    : section === 'roadmap' ? <RoadmapView catalog={catalog} />
                     : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
-              : section === 'lab' ? <Suspense fallback={<section class="view"><p role="status">Codeworkspace wird geladen.</p></section>}><LabView key={routeId} catalog={catalog} exerciseId={routeId} /></Suspense>
                 : section === 'module' ? <Suspense fallback={<section class="view"><p role="status">Modul wird geladen.</p></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} /></Suspense>
                 : section === 'family' ? <Suspense fallback={<section class="view"><p role="status">Variante wird geladen.</p></section>}><FamilyExerciseView key={familyRef} familyRef={familyRef} /></Suspense>
                 : section === 'lesson' ? <LessonView catalog={catalog} lessonId={routeId} />
-                  : section === 'exercise' ? <Suspense fallback={<section class="view"><p role="status">Aufgabe wird geladen.</p></section>}><ExerciseView key={routeId} catalog={catalog} exerciseId={routeId} /></Suspense>
                     : section === 'project' ? <ProjectView catalog={catalog} projectId={routeId} />
                     : section === 'competency' ? <CompetencyView catalog={catalog} progress={progress} competencyId={routeId} />
                 : <PlaceholderView title="Nicht gefunden" />;
@@ -125,7 +117,7 @@ export function App() {
               <span>{item.label}</span>
             </a>
           ))}
-          <div class="nav-foot"><span>Ohne Account nutzbar</span><a href="#/roadmap">Roadmap</a><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/quality">Qualität</a></div>
+          <div class="nav-foot"><span>Ohne Account nutzbar</span><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/quality">Qualität</a></div>
         </nav>
         <main id="main-content">{view}</main>
       </div>

@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-ensemble-predictor-comparison",
+  "contract": {
+    "familyId": "construct-ensemble-predictor-comparison",
+    "familyGroup": "construct-program",
+    "summary": "Konstruiert Mehrheits-Voting, Baum-Vorhersage und Intercept-loose lineare Baseline und vergleicht die Verfahren über RMSE.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "voting-tree-linear-rmse",
+        "propertyTest": false
+      },
+      {
+        "caseId": "voting-tie-and-tree",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-ml-ensembles",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "voting-tree-linear-rmse",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w15-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef majority_vote(preds):\n    \"\"\"Return the per-example majority (0/1) across all models in preds.\"\"\"\n    ...\n\ndef tree_predict(node, x):\n    \"\"\"Return the leaf value of the nested dict tree for input x.\"\"\"\n    ...\n\ndef compare_models(x, y, node, model_preds):\n    \"\"\"Return {'tree': rmse, 'voting': rmse, 'linear': rmse} on identical data.\"\"\"\n    xa = np.asarray(x, dtype=float)\n    ya = np.asarray(y, dtype=float)\n    # 1) Baum-Vorhersagen je x, 2) Mehrheit, 3) lineare Baseline w*x\n    ...\n",
+        "tests": "import numpy as np\n\n__check('Mehrheit dreier Modelle', majority_vote([[1, 0, 1], [1, 0, 0], [0, 0, 1]]) == [1, 0, 1])\n__check('Einstimmigkeit', majority_vote([[0, 1], [0, 1], [0, 1]]) == [0, 1])\n__node = {'feature': 0, 'threshold': 3.5,\n          'left': {'feature': 0, 'threshold': 1.5, 'left': {'leaf': 0}, 'right': {'leaf': 1}},\n          'right': {'feature': 0, 'threshold': 5.5, 'left': {'leaf': 1}, 'right': {'leaf': 0}}}\n__check('Baum: Blatt ganz links', tree_predict(__node, [1.0]) == 0)\n__check('Baum: Mittelzone', tree_predict(__node, [2.0]) == 1 and tree_predict(__node, [4.0]) == 1)\n__check('Baum: Blatt ganz rechts', tree_predict(__node, [6.0]) == 0)\n__x = [1, 2, 3, 4, 5, 6]\n__y = [0, 1, 1, 1, 1, 0]\n__models = [[0, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1], [0, 0, 0, 1, 1, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - 0.554700196225229) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE positiv', __res['voting'] > 0.0, str(__res))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef majority_vote(preds):\n    n_models = len(preds)\n    n = len(preds[0])\n    out = []\n    for j in range(n):\n        ones = sum(int(preds[i][j]) for i in range(n_models))\n        out.append(1 if ones * 2 >= n_models else 0)\n    return out\n\ndef tree_predict(node, x):\n    if \"leaf\" in node:\n        return node[\"leaf\"]\n    if x[node[\"feature\"]] <= node[\"threshold\"]:\n        return tree_predict(node[\"left\"], x)\n    return tree_predict(node[\"right\"], x)\n\ndef rmse(pred, y):\n    pred = np.asarray(pred, dtype=float)\n    y = np.asarray(y, dtype=float)\n    return float(np.sqrt(np.mean((pred - y) ** 2)))\n\ndef compare_models(x, y, node, model_preds):\n    x = [float(v) for v in x]\n    tree_pred = [tree_predict(node, [v]) for v in x]\n    vote_pred = majority_vote(model_preds)\n    xa = np.asarray(x, dtype=float)\n    ya = np.asarray(y, dtype=float)\n    w = float((xa @ ya) / (xa @ xa))  # 1D least squares through origin\n    lin_pred = w * xa\n    return {\"tree\": rmse(tree_pred, ya), \"voting\": rmse(vote_pred, ya), \"linear\": rmse(lin_pred, ya)}\n\n# compare_models([1..6], [0,1,1,1,1,0], node, 3 stumps) ->\n# {'tree': 0.0, 'voting': 0.577..., 'linear': 0.554...}"
+      },
+      "prompt": "Final Boss Ensembles: Implementiere drei Funktionen. `majority_vote(preds)` erhält eine Liste von Modellvorhersagen (je eine Liste von 0/1) und gibt die Mehrheitsentscheidung pro Beispiel zurück (1, wenn mindestens die Hälfte der Modelle 1 ausgibt). `tree_predict(node, x)` läuft rekursiv durch einen Baum als Dictionary: Blätter haben die Form `{'leaf': wert}`, innere Knoten `{'feature': i, 'threshold': t, 'left': ..., 'right': ...}` mit Übergang links bei `x[i] <= t`. `compare_models(x, y, node, model_preds)` berechnet auf identischen Daten die RMSEs `{'tree': ..., 'voting': ..., 'linear': ...}`, wobei die lineare Baseline die 1D-Kleinste-Quadrate-Lösung durch den Ursprung ist: $w = \\sum x_i y_i / \\sum x_i^2$, Vorhersage $w\\cdot x$. RMSE = Wurzel aus dem mittleren quadratischen Fehler.",
+      "fullSolution": "import numpy as np\n\ndef majority_vote(preds):\n    n_models = len(preds)\n    n = len(preds[0])\n    out = []\n    for j in range(n):\n        ones = sum(int(preds[i][j]) for i in range(n_models))\n        out.append(1 if ones * 2 >= n_models else 0)\n    return out\n\ndef tree_predict(node, x):\n    if \"leaf\" in node:\n        return node[\"leaf\"]\n    if x[node[\"feature\"]] <= node[\"threshold\"]:\n        return tree_predict(node[\"left\"], x)\n    return tree_predict(node[\"right\"], x)\n\ndef rmse(pred, y):\n    pred = np.asarray(pred, dtype=float)\n    y = np.asarray(y, dtype=float)\n    return float(np.sqrt(np.mean((pred - y) ** 2)))\n\ndef compare_models(x, y, node, model_preds):\n    x = [float(v) for v in x]\n    tree_pred = [tree_predict(node, [v]) for v in x]\n    vote_pred = majority_vote(model_preds)\n    xa = np.asarray(x, dtype=float)\n    ya = np.asarray(y, dtype=float)\n    w = float((xa @ ya) / (xa @ xa))  # 1D least squares through origin\n    lin_pred = w * xa\n    return {\"tree\": rmse(tree_pred, ya), \"voting\": rmse(vote_pred, ya), \"linear\": rmse(lin_pred, ya)}\n\n# compare_models([1..6], [0,1,1,1,1,0], node, 3 stumps) ->\n# {'tree': 0.0, 'voting': 0.577..., 'linear': 0.554...}",
+      "hints": [
+        "Mehrheit ohne if-Kaskade: Einsen zählen und mit der Hälfte der Modellanzahl vergleichen — bei 3 Modellen heißt >= 2 Einsen die Ausgabe 1.",
+        "tree_predict endet bei 'leaf' im Knoten; compare_models nutzt dieselbe RMSE-Hilfsfunktion für alle drei Modelle."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-voting",
+          "then": "Die Mehrheit wird pro Beispiel (Spalte) bestimmt, nicht über alle Beispiele hinweg."
+        },
+        {
+          "if": "wrong-tree",
+          "then": "Links bei x[i] <= threshold — Achtung bei genauem Gleichstand; die Tests nutzen eindeutige Werte."
+        },
+        {
+          "if": "wrong-linear",
+          "then": "Die Baseline hat keinen Achsenabschnitt: w = sum(x*y)/sum(x*x), Vorhersage w*x — nicht np.polyfit mit Intercept."
+        }
+      ],
+      "typicalErrors": [
+        "Mehrheit über Zeilen statt Spalten",
+        "lineare Baseline mit Intercept fitten",
+        "RMSE ohne Wurzel zurückgeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "voting-tie-and-tree",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef majority_vote(preds):\n    ...\n\ndef tree_predict(node, x):\n    ...\n\ndef rmse(pred, y):\n    ...\n\ndef compare_models(x, y, node, model_preds):\n    ...\n",
+        "tests": "__check(\"tie counts as one\", majority_vote([[1, 0], [0, 0]]) == [1, 0])\nnode = {\"feature\": 0, \"threshold\": 2.5, \"left\": {\"leaf\": 0.0}, \"right\": {\"leaf\": 2.0}}\n__check(\"tree boundary\", tree_predict(node, [2.5]) == 0.0 and tree_predict(node, [3.0]) == 2.0)\nr = compare_models([1, 2, 3, 4], [0, 0, 2, 2], node, [[0, 0, 2, 2], [0, 0, 0, 2]])\n__check(\"tree rmse\", abs(r[\"tree\"]) < 1e-12)\n__check(\"keys\", set(r) == {\"tree\", \"voting\", \"linear\"})"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef majority_vote(preds):\n    n_models = len(preds); n = len(preds[0])\n    return [1 if sum(int(preds[i][j]) for i in range(n_models)) * 2 >= n_models else 0 for j in range(n)]\n\ndef tree_predict(node, x):\n    if \"leaf\" in node: return node[\"leaf\"]\n    return tree_predict(node[\"left\"] if x[node[\"feature\"]] <= node[\"threshold\"] else node[\"right\"], x)\n\ndef rmse(pred, y):\n    pred = np.asarray(pred, dtype=float); y = np.asarray(y, dtype=float)\n    return float(np.sqrt(np.mean((pred - y) ** 2)))\n\ndef compare_models(x, y, node, model_preds):\n    xa = np.asarray([float(v) for v in x], dtype=float); ya = np.asarray(y, dtype=float)\n    tree_pred = [tree_predict(node, [v]) for v in xa]\n    vote_pred = majority_vote(model_preds); w = float((xa @ ya) / (xa @ xa))\n    return {\"tree\": rmse(tree_pred, ya), \"voting\": rmse(vote_pred, ya), \"linear\": rmse(w * xa, ya)}"
+      },
+      "prompt": "Implementiere Mehrheits-Voting mit Gleichstand zugunsten von 1, rekursive Baumvorhersage mit linker Grenze bei <= und den Vergleich über drei RMSE-Werte.",
+      "fullSolution": "def majority_vote(preds):\n    n_models = len(preds); n = len(preds[0])\n    return [1 if sum(int(preds[i][j]) for i in range(n_models)) * 2 >= n_models else 0 for j in range(n)]\n\ndef tree_predict(node, x):\n    if \"leaf\" in node: return node[\"leaf\"]\n    return tree_predict(node[\"left\"] if x[node[\"feature\"]] <= node[\"threshold\"] else node[\"right\"], x)\n\ndef rmse(pred, y):\n    pred = np.asarray(pred, dtype=float); y = np.asarray(y, dtype=float)\n    return float(np.sqrt(np.mean((pred - y) ** 2)))\n\ndef compare_models(x, y, node, model_preds):\n    xa = np.asarray([float(v) for v in x], dtype=float); ya = np.asarray(y, dtype=float)\n    tree_pred = [tree_predict(node, [v]) for v in xa]\n    vote_pred = majority_vote(model_preds); w = float((xa @ ya) / (xa @ xa))\n    return {\"tree\": rmse(tree_pred, ya), \"voting\": rmse(vote_pred, ya), \"linear\": rmse(w * xa, ya)}",
+      "hints": [
+        "Zähle Vorhersagen pro Beispiel und verwende die explizite Gleichstandsregel.",
+        "Bei `x[i] == threshold` geht der Baum links; RMSE enthält die Quadratwurzel."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-vote",
+          "then": "Die Mehrheit wird spaltenweise und bei Gleichstand mit 1 bestimmt."
+        },
+        {
+          "if": "wrong-boundary",
+          "then": "Die linke Baumkante ist bei <= inklusive."
+        },
+        {
+          "if": "wrong-rmse",
+          "then": "RMSE ist die Wurzel des mittleren quadratischen Fehlers."
+        }
+      ],
+      "typicalErrors": [
+        "über Beispiele statt Modelle abstimmen",
+        "Grenzfall falsch zuordnen",
+        "MSE statt RMSE zurückgeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

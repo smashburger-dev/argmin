@@ -11,9 +11,7 @@
     "version",
     "sourceRightsFile",
     "sourcesFile",
-    "coverageMatrixFile",
-    "roots",
-    "legacy"
+    "roots"
   ],
   "properties": {
     "schemaVersion": { "const": 1 },
@@ -31,33 +29,24 @@
         "tracks",
         "milestones",
         "lessons",
-        "exerciseDefinitions",
         "explanations",
         "projects",
         "tools",
         "reviews",
-        "modules"
+        "modules",
+        "families"
       ],
       "properties": {
         "competencies": { "$ref": "#/$defs/dirPath" },
         "tracks": { "$ref": "#/$defs/dirPath" },
         "milestones": { "$ref": "#/$defs/dirPath" },
         "lessons": { "$ref": "#/$defs/dirPath" },
-        "exerciseDefinitions": { "$ref": "#/$defs/dirPath" },
         "explanations": { "$ref": "#/$defs/dirPath" },
         "projects": { "$ref": "#/$defs/dirPath" },
         "tools": { "$ref": "#/$defs/dirPath" },
         "reviews": { "$ref": "#/$defs/dirPath" },
-        "modules": { "$ref": "#/$defs/dirPath" }
-      }
-    },
-    "legacy": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["curriculumFile", "exerciseFiles"],
-      "properties": {
-        "curriculumFile": { "$ref": "#/$defs/jsonPath" },
-        "exerciseFiles": { "$ref": "#/$defs/jsonPaths" }
+        "modules": { "$ref": "#/$defs/dirPath" },
+        "families": { "$ref": "#/$defs/dirPath" }
       }
     }
   },

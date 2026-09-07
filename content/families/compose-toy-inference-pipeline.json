@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "familyId": "compose-toy-inference-pipeline",
+  "contract": {
+    "familyId": "compose-toy-inference-pipeline",
+    "familyGroup": "construct-program",
+    "summary": "Komponiert Tokenizer, Toy-Forward-Pass und Greedy-Dekodierung zu einer deterministischen Inferenz-Pipeline mit Rückdekodierung.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "toy-inference-pipeline",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-inference",
+      "c-dl-attention",
+      "c-dl-tokenizer"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "toy-inference-pipeline",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w24-e6"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n# VOCAB is part of the starter code\nVOCAB = {\"<eos>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"e\": 4, \"l\": 5, \"o\": 6, \"s\": 7, \"t\": 8}\n\n\ndef pipeline(text, weights, max_len, eos_id):\n    \"\"\"Encode -> autoregressive toy forward -> greedy argmax until eos or max_len.\"\"\"\n    # 1) word-wise char ids + </w> per word (no leading <eos>)\n    # 2) while len(ids) < max_len: logits over the WHOLE sequence\n    #    (embed -> causal attention with 1/sqrt(d) -> mean over positions -> Wout),\n    #    append int(np.argmax(logits)), stop on eos_id\n    # 3) decode ids to text (</w> -> \" \", <eos> -> \"<eos>\") and strip\n    ...\n",
+        "tests": "E = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1], [1, 1, 0, 0], [0, 0, 1, 1], [0, 1, 1, 0], [1, 0, 1, 0], [1, 1, 1, 0]]\nWq = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWk = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWv = [[1, 2, 0, 0], [2, 1, 0, 0], [0, 0, 1, 2], [0, 0, 2, 1]]\nWout = [[0, 1, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0]]\nWEIGHTS = {\"E\": E, \"Wq\": Wq, \"Wk\": Wk, \"Wv\": Wv, \"Wout\": Wout}\n\ndef __ref_run(text, weights, max_len, eos_id):\n    import math\n    E, Wq, Wk, Wv, Wout = weights[\"E\"], weights[\"Wq\"], weights[\"Wk\"], weights[\"Wv\"], weights[\"Wout\"]\n    V = {\"<eos>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"e\": 4, \"l\": 5, \"o\": 6, \"s\": 7, \"t\": 8}\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(V[ch])\n        ids.append(V[\"</w>\"])\n    d = len(E[0])\n    while len(ids) < max_len:\n        X = [E[i] for i in ids]\n        n = len(X)\n        Q = [[sum(X[i][a] * Wq[a][b] for a in range(d)) for b in range(d)] for i in range(n)]\n        K = [[sum(X[i][a] * Wk[a][b] for a in range(d)) for b in range(d)] for i in range(n)]\n        Vp = [[sum(X[i][a] * Wv[a][b] for a in range(d)) for b in range(d)] for i in range(n)]\n        ctx = []\n        for i in range(n):\n            s = [sum(Q[i][a] * K[j][a] for a in range(d)) / math.sqrt(d) if j <= i else float('-inf') for j in range(n)]\n            m = max(s)\n            ex = [math.exp(v - m) for v in s]\n            tot = sum(ex)\n            w = [e / tot for e in ex]\n            ctx.append([sum(w[j] * Vp[j][c] for j in range(n)) for c in range(d)])\n        mean = [sum(ctx[i][c] for i in range(n)) / n for c in range(d)]\n        logits = [sum(mean[a] * Wout[a][b] for a in range(d)) for b in range(len(Wout[0]))]\n        best = 0\n        for j in range(1, len(logits)):\n            if logits[j] > logits[best]:\n                best = j\n        ids.append(best)\n        if best == eos_id:\n            break\n    return ids\n\nout = pipeline(\"a\", WEIGHTS, 8, 0)\n__check('tokens gegen Referenz', out[\"tokens\"] == __ref_run(\"a\", WEIGHTS, 8, 0))\n__check('tokenfolge Ended mit eos oder max_len', len(out[\"tokens\"]) <= 8 and out[\"tokens\"][-1] == 0)\nout2 = pipeline(\"las\", WEIGHTS, 12, 0)\n__check('laengerer start gegen Referenz', out2[\"tokens\"] == __ref_run(\"las\", WEIGHTS, 12, 0))\n__check('Doppelaufruf identisch tokens', pipeline(\"a\", WEIGHTS, 8, 0)[\"tokens\"] == pipeline(\"a\", WEIGHTS, 8, 0)[\"tokens\"])\n__check('Doppelaufruf identisch text', pipeline(\"a\", WEIGHTS, 8, 0)[\"text\"] == pipeline(\"a\", WEIGHTS, 8, 0)[\"text\"])\n__check('max_len wird respektiert', len(pipeline(\"a\", WEIGHTS, 3, 0)[\"tokens\"]) <= 3)\n__check('rueckgabe strukturiert', set(out.keys()) == {\"tokens\", \"text\"} and isinstance(out[\"text\"], str))"
+      },
+      "competencyIds": [
+        "c-dl-inference",
+        "c-dl-attention",
+        "c-dl-tokenizer"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\n# VOCAB is part of the starter code\nVOCAB = {\"<eos>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"e\": 4, \"l\": 5, \"o\": 6, \"s\": 7, \"t\": 8}\n\ndef pipeline(text, weights, max_len, eos_id):\n    \"\"\"Encode -> autoregressive toy forward -> greedy argmax until eos or max_len.\"\"\"\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    E = np.asarray(weights[\"E\"], dtype=float)\n    Wq = np.asarray(weights[\"Wq\"], dtype=float)\n    Wk = np.asarray(weights[\"Wk\"], dtype=float)\n    Wv = np.asarray(weights[\"Wv\"], dtype=float)\n    Wout = np.asarray(weights[\"Wout\"], dtype=float)\n\n    def forward(cur):\n        X = E[cur]\n        n, d = X.shape\n        scores = (X @ Wq) @ (X @ Wk).T / np.sqrt(d)\n        keep = np.tril(np.ones((n, n), dtype=bool))\n        scores = np.where(keep, scores, -np.inf)\n        scores = scores - scores.max(axis=1, keepdims=True)\n        w = np.exp(scores)\n        w = w / w.sum(axis=1, keepdims=True)\n        ctx = w @ (X @ Wv)\n        return ctx.mean(axis=0) @ Wout\n\n    while len(ids) < max_len:\n        nxt = int(np.argmax(forward(list(ids))))\n        ids.append(nxt)\n        if nxt == eos_id:\n            break\n    inv = {v: k for k, v in VOCAB.items()}\n    tokens = []\n    for i in ids:\n        if i == eos_id:\n            tokens.append(\"<eos>\")\n            continue\n        tok = inv[i]\n        if tok == \"</w>\":\n            tokens.append(\" \")\n        else:\n            tokens.append(tok)\n    return {\"tokens\": ids, \"text\": \"\".join(tokens).strip()}\n"
+      },
+      "prompt": "Final Boss Toy-Pipeline: Implementiere <code>pipeline(text, weights, max_len, eos_id)</code>. <strong>Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.</strong> Vertrag: (1) Tokenisieren mit dem festen <code>VOCAB</code> aus dem Startercode — wortweise Zeichen-IDs plus <code>&lt;/w&gt;</code> je Wort (kein zusätzliches <code>&lt;eos&gt;</code> am Anfangszustand). (2) Autoregressive Schleife: solange die Folge kürzer als <code>max_len</code> ist, berechne die Logits über die <em>gesamte aktuelle Folge</em> (Embedding → ein kausaler Attention-Kopf mit Divisor $\\sqrt{d}$ → Zeilenmittel → $W_{\\text{out}}$), hänge <code>int(np.argmax(logits))</code> an (Gleichstand: kleinste ID) und stoppe bei <code>eos_id</code>. (3) Rückgabe: <code>{\"tokens\": [...], \"text\": \"...\"}</code>, wobei <code>text</code> die dekodierten Symbole sind (<code>&lt;/w&gt;</code> → Leerzeichen, <code>&lt;eos&gt;</code> → „&lt;eos&gt;“, führende/folgende Leerzeichen entfernen). Der Testcode vergleicht gegen eine unabhängige Referenz-Pipeline mit denselben Gewichtsliteralen und erzwingt zwei identische Doppelaufrufe.",
+      "fullSolution": "import numpy as np\n\n# VOCAB is part of the starter code\nVOCAB = {\"<eos>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"e\": 4, \"l\": 5, \"o\": 6, \"s\": 7, \"t\": 8}\n\ndef pipeline(text, weights, max_len, eos_id):\n    \"\"\"Encode -> autoregressive toy forward -> greedy argmax until eos or max_len.\"\"\"\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    E = np.asarray(weights[\"E\"], dtype=float)\n    Wq = np.asarray(weights[\"Wq\"], dtype=float)\n    Wk = np.asarray(weights[\"Wk\"], dtype=float)\n    Wv = np.asarray(weights[\"Wv\"], dtype=float)\n    Wout = np.asarray(weights[\"Wout\"], dtype=float)\n\n    def forward(cur):\n        X = E[cur]\n        n, d = X.shape\n        scores = (X @ Wq) @ (X @ Wk).T / np.sqrt(d)\n        keep = np.tril(np.ones((n, n), dtype=bool))\n        scores = np.where(keep, scores, -np.inf)\n        scores = scores - scores.max(axis=1, keepdims=True)\n        w = np.exp(scores)\n        w = w / w.sum(axis=1, keepdims=True)\n        ctx = w @ (X @ Wv)\n        return ctx.mean(axis=0) @ Wout\n\n    while len(ids) < max_len:\n        nxt = int(np.argmax(forward(list(ids))))\n        ids.append(nxt)\n        if nxt == eos_id:\n            break\n    inv = {v: k for k, v in VOCAB.items()}\n    tokens = []\n    for i in ids:\n        if i == eos_id:\n            tokens.append(\"<eos>\")\n            continue\n        tok = inv[i]\n        if tok == \"</w>\":\n            tokens.append(\" \")\n        else:\n            tokens.append(tok)\n    return {\"tokens\": ids, \"text\": \"\".join(tokens).strip()}\n# pipeline(\"a\", WEIGHTS, 8, 0) -> {\"tokens\": [2, 1, 0], \"text\": \"a <eos>\"}\n# zwei Aufrufe mit denselben Gewichten liefern identische Ergebnisse.",
+      "hints": [
+        "Die Logits werden in jedem Schritt über die komplette bisherige Folge berechnet — nicht nur über das letzte Token.",
+        "Argmax-Gleichstand geht an die kleinste ID (np.argmax macht das); danach wie in greedy_decode stoppen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "static-context",
+          "then": "Der Kontext wächst mit jedem Token: forward immer mit der vollständigen aktuellen Folge aufrufen."
+        },
+        {
+          "if": "seed-used",
+          "then": "Die Pipeline darf keinen Zufall enthalten — Determinismus ist hier Teil des Vertrags (Doppelaufruf-Test)."
+        },
+        {
+          "if": "eos-off-by-one",
+          "then": "max_len begrenzt die Gesamtfolge inklusive Start-Tokens; eos wird mitgezählt."
+        }
+      ],
+      "typicalErrors": [
+        "Logits nur aus dem letzten Token berechnet",
+        "Zufallszustand in die Pipeline eingebracht",
+        "Startfolge zur max_len-Grenze falsch gezählt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

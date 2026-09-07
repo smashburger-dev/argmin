@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-freeze-assert-guard",
+  "contract": {
+    "familyId": "construct-freeze-assert-guard",
+    "familyGroup": "construct-program",
+    "summary": "Schützt eingefrorene Berichte durch einen expliziten Gleichheits- und Abweichungsvertrag.",
+    "taskArchetype": "program-ordering",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "freeze-assert-parsons",
+        "propertyTest": false
+      },
+      {
+        "caseId": "demo-from-frozen-report",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline",
+      "c-python-functions"
+    ],
+    "graderId": "deterministic",
+    "activityType": "parsons"
+  },
+  "cases": [
+    {
+      "caseId": "freeze-assert-parsons",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w35-e5"
+      ],
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p1",
+            "text": "def assert_frozen(dateien, pins):"
+          },
+          {
+            "id": "p2",
+            "text": "    verstoesse = []"
+          },
+          {
+            "id": "p3",
+            "text": "    for name, pin in pins.items():"
+          },
+          {
+            "id": "p4",
+            "text": "        if name not in dateien:"
+          },
+          {
+            "id": "p5",
+            "text": "            verstoesse.append(name + \": fehlt\")"
+          },
+          {
+            "id": "p6",
+            "text": "        elif pin is not None and sha256(dateien[name]) != pin:"
+          },
+          {
+            "id": "p7",
+            "text": "            verstoesse.append(name + \": hash weicht ab\")"
+          },
+          {
+            "id": "p8",
+            "text": "    if verstoesse:"
+          },
+          {
+            "id": "p9",
+            "text": "        raise AssertionError(\"; \".join(verstoesse))"
+          },
+          {
+            "id": "d1",
+            "text": "        return {\"status\": \"fehler\", \"verstoesse\": []}"
+          },
+          {
+            "id": "d2",
+            "text": "    return {\"status\": \"ok\", \"verstoesse\": verstoesse}"
+          }
+        ],
+        "initialOrder": [
+          "p3",
+          "p1",
+          "d2",
+          "p6",
+          "p4",
+          "p2",
+          "p9",
+          "d1",
+          "p5",
+          "p7",
+          "p8"
+        ]
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5",
+          "p6",
+          "p7",
+          "p8",
+          "p9"
+        ],
+        "distractors": [
+          "d1",
+          "d2"
+        ]
+      },
+      "prompt": "Freeze-Check als Parsons-Problem: Bringe die Zeilen in die richtige Reihenfolge, sodass <code>assert_frozen(dateien, pins)</code> Verstöße sammelt und bei Abweichungen mit <code>AssertionError</code> scheitert — ohne stillen Fallback. Zwei Zeilen gehören nicht zur Lösung.",
+      "fullSolution": "Reihenfolge: Signatur, Liste anlegen, über pins iterieren, fehlt-Zweig, hash-Zweig, am Ende bei Verstößen raise AssertionError. Die Rückgabe-Zeilen (d1/d2) sind bewusst draußen: Ein Freeze-Assert kehrt entweder still zurück oder scheitert laut — es liefert kein Fehlerobjekt.",
+      "hints": [
+        "Zuerst sammeln, dann entscheiden: Die Schleife füllt verstoesse, der raise kommt ganz am Schluss.",
+        "Die beiden Rückgabe-Zeilen sind der stille Fallback — genau den verbietet der Freeze-Vertrag."
+      ],
+      "feedbackRules": [
+        {
+          "if": "raise-zu-frueh",
+          "then": "Der raise gehört nach die Schleife — sonst meldet assert_frozen nur den ersten Verstoß und verschweigt den Rest."
+        },
+        {
+          "if": "fallback-drin",
+          "then": "Eine Rückgabe mit status 'fehler' und leerer Liste ist der stille Fallback: Der Aufrufer sieht ein Ergebnis statt eines Abbruchs."
+        }
+      ],
+      "typicalErrors": [
+        "raise in die Schleife gezogen (nur erster Verstoß sichtbar)",
+        "Fehler-Objekt statt Assertion zurückgegeben",
+        "hash-Prüfung vor der Anwesenheitsprüfung"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "parsons",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "demo-from-frozen-report",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w39-e4"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def demo_aus_bericht(bericht, frisch):\n    \"\"\"Eingefrorene Werte zurueckgeben — oder bei Abweichung laut scheitern.\"\"\"\n    ...\n\n",
+        "tests": "BERICHT = {\"recall_at_k\": 0.75, \"answered\": 6}\n__check('identisch ok', demo_aus_bericht(BERICHT, {\"answered\": 6, \"recall_at_k\": 0.75}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {\"recall_at_k\": 0.9, \"answered\": 6})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {\"recall_at_k\": 0.75, \"answered\": 6})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def demo_aus_bericht(bericht, frisch):\n    if bericht != frisch:\n        raise AssertionError(\"demo-abweichung\")\n    return {\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}\n\n# Gleicher Inhalt -> eingefrorene Werte; Abweichung -> AssertionError, kein Ersatzwert"
+      },
+      "prompt": "Demo-Disziplin: <code>demo_aus_bericht(bericht, frisch)</code> erhält die eingefrorenen Messwerte (dict) und eine frisch berechnete Kopie. Stimmen beide überein (==), liefert die Funktion <code>{\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}</code>. Weichen sie ab, wirft sie <code>AssertionError(\"demo-abweichung\")</code> — kein stiller Fallback auf alte Werte. Die Funktion verändert weder bericht noch frisch.",
+      "fullSolution": "def demo_aus_bericht(bericht, frisch):\n    if bericht != frisch:\n        raise AssertionError(\"demo-abweichung\")\n    return {\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}\n\n# Ein Vergleich, ein Fehlerweg, ein Rückgabewert — die Demo lügt nicht.",
+      "hints": [
+        "Ein einziger !=-Vergleich prüft dicts tief — Python vergleicht verschachtelt.",
+        "Zurückgegeben wird der EINGEFRORENE Bericht, nicht die frische Kopie."
+      ],
+      "feedbackRules": [
+        {
+          "if": "returns-fresh",
+          "then": "Zurückgegeben wird der eingefrorene Bericht — die Demo erzählt den Freeze, nicht den Drift."
+        },
+        {
+          "if": "silent-merge",
+          "then": "Abweichungen zusammenzuführen oder zu ignorieren ist der stille Fallback — hier wird gelaut scheitern verlangt."
+        },
+        {
+          "if": "mutates-input",
+          "then": "Die Funktion darf bericht und frisch nicht verändern — sonst zerstört sie genau den Freeze, den sie schützen soll."
+        }
+      ],
+      "typicalErrors": [
+        "frische Werte statt der eingefrorenen zurückgegeben",
+        "Abweichung still geschluckt",
+        "Eingaben verändert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

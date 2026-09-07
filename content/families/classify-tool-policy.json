@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-tool-policy",
+  "contract": {
+    "familyId": "classify-tool-policy",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Tool-Einsatz der passenden Policy-Klasse zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "tool-policy-least-privilege",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-genai-prototype"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "tool-policy-least-privilege",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w30-e1"
+      ],
+      "parameters": {
+        "thema": "Least Privilege Konfiguration"
+      },
+      "competencyIds": [
+        "c-genai-prototype"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Unbekannte Werkzeuge werden automatisch mit eingeschränkten Rechten eingebunden, damit nichts blockiert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Alle Werkzeuge werden erlaubt, und im Systemprompt steht: „Missbrauche die Mail-Funktion nicht.“",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Mail ist erlaubt, aber ein Filter prüft jede gesendete Nachricht nachträglich auf vertrauliche Inhalte.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein interner Prototyp soll Anfragen nur aus festen FAQ-Dokumenten beantworten und Resultate als Bericht exportieren dürfen — nichts anderes. Welche Beschreibung ist Least Privilege?",
+      "fullSolution": "Least Privilege: nur Suchen/Lesen und ein auf ‚bericht‘ eingeschränkter Export; Mail und Hook sind gar nicht erst registriert. Was die Policy nicht kennt, wird abgelehnt. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was ist die minimale Menge an Werkzeugen und Rechten, die der Prototyp wirklich braucht?",
+        "Wie wird mit Werkzeugen umgegangen, die die Policy nicht kennt — und wie mit denen, die sie nie braucht?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'c'",
+          "then": "Bitten im Prompt ist keine Berechtigungsgrenze: untrusted Input (z. B. aus dem Retrieval) kann dieselben Wörter enthalten — die Policy muss technisch greifen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Mail zu erlauben und nur die Folgen zu filtern, hält den Abflusskanal offen — strukturell schließen schlägt detektivisch erkennen."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Unbekannte Werkzeuge automatisch einzubinden weitet die Angriffsfläche aus — Allowlist heißt: unbekannt ist verboten."
+        }
+      ],
+      "typicalErrors": [
+        "Policy durch Prompt-Bitten ersetzt",
+        "Kanäle offen gelassen und auf Filter vertraut",
+        "unbekannte Werkzeuge automatisch mit Rechten versehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

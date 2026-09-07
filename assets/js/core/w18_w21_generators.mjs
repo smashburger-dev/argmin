@@ -210,12 +210,3 @@ export function genDropoutCount(seed) {
     };
   });
 }
-
-// --- registry ------------------------------------------------------------------------
-
-export const W18_W21_SEED_GENERATORS = {
-  genLinearParamCount,
-  genBackpropChain,
-  genSgdSteps,
-  genDropoutCount,
-};

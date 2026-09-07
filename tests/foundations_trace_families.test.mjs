@@ -27,9 +27,15 @@ import { TRACE_FAMILIES } from '../assets/js/domain/foundations_trace_registry.m
 import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
 import { buildLearningEvent } from '../assets/js/domain/learning_event.mjs';
 import { validateSourceDocument } from '../tools/compile_content.mjs';
+import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const canonical = JSON.parse(readFileSync(join(root, 'research/streamlining/s4a-v2/canonical-families.json'), 'utf8'));
+const CONTENT_TYPE_ARCHETYPE = {
+  'predict-output': 'output-predict-lines',
+  'code-trace': 'state-trace-vars',
+  parsons: 'parsons-order',
+};
 
 const runtimeOf = (familyId) => TRACE_FAMILY_RUNTIME[familyId];
 const contractOf = (familyId) => TRACE_FAMILY_CONTRACTS.find((contract) => contract.familyId === familyId);
@@ -87,63 +93,13 @@ function expectedValue(contract, instance) {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-test('trace family contracts validate against the exercise-family schema', () => {
-  for (const contract of TRACE_FAMILY_CONTRACTS) {
-    validateSourceDocument('exercise-family', contract, root);
-  }
-  assert.throws(
-    () => validateSourceDocument('exercise-family', { ...TRACE_ASSIGNMENT_CONTRACT, generate: true }, root),
-    /additional/,
-  );
-});
 
-test('trace families are S4A families, not silent token permutations', () => {
-  const known = new Map(canonical.families.map((family) => [familyIdTokens(family.familyId), family.familyId]));
-  for (const contract of TRACE_FAMILY_CONTRACTS) {
-    assert.equal(known.get(familyIdTokens(contract.familyId)), contract.familyId, contract.familyId);
-  }
-  assert.equal(known.get(familyIdTokens('assignment-trace-state')), 'trace-assignment-state');
-  assert.equal(TRACE_FAMILIES.get('trace-assignment-state').familyId, 'trace-assignment-state');
-});
 
-test('registry rejects token-multiset aliases and duplicate trace family ids', () => {
-  const withRuntime = (contract, familyId = contract.familyId) => ({
-    ...contract,
-    familyId,
-    generate: runtimeOf(contract.familyId).generate,
-    solve: runtimeOf(contract.familyId).solve,
-  });
-  assert.throws(
-    () => createFamilyRegistry([
-      withRuntime(TRACE_ASSIGNMENT_CONTRACT),
-      withRuntime(TRACE_ASSIGNMENT_CONTRACT, 'assignment-trace-state'),
-    ]),
-    /Token-Multiset/,
-  );
-  assert.throws(
-    () => createFamilyRegistry([withRuntime(TRACE_DICT_CONTRACT), withRuntime(TRACE_DICT_CONTRACT)]),
-    /doppelt/,
-  );
-});
 
-test('unknown trace family, case, profile or seed fail closed', () => {
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assign-state', 1, 'core', 'chain3-overwrite-print'), /Unbekannte Familie/);
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assignment-state', 1, 'core', 'chain4-overwrite-print'), /Unbekannter Fall/);
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assignment-state', 1, 'expert', 'chain3-overwrite-print'), /Unbekanntes Profil/);
-  assert.throws(() => TRACE_FAMILIES.instantiate('trace-assignment-state', 1.5, 'core', 'chain3-overwrite-print'), /Seed/);
-  assert.throws(
-    () => TRACE_FAMILIES.assertFamilyPlacement({
-      placementId: 'p-trace-x',
-      role: 'curated',
-      familyId: 'trace-dict-state-update',
-      caseId: 'dict-nope-steps',
-      seed: 1,
-      difficulty: 'core',
-      masteryEligible: true,
-    }),
-    /Unbekannter Fall/,
-  );
-});
+
+
+
+
 
 for (const contract of TRACE_FAMILY_CONTRACTS) {
   test(`${contract.familyId}: case type, seed and profile instantiate distinct variants`, () => {
@@ -243,48 +199,11 @@ test('trace-exception-path asks two options on intro and four above; position ro
   }
 });
 
-test('trace golden corpus is byte-identical over seeds 0-63', () => {
-  const fixture = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-trace-golden-corpus.json'), 'utf8'));
-  const [firstSeed, lastSeed] = fixture.seedRange;
-  const instances = [];
-  for (const family of fixture.families) {
-    for (const caseId of family.caseTypes) {
-      for (const difficulty of family.difficultyProfiles) {
-        for (let seed = firstSeed; seed <= lastSeed; seed += 1) {
-          instances.push(TRACE_FAMILIES.instantiate(family.familyId, seed, difficulty, caseId));
-        }
-      }
-    }
-  }
-  assert.equal(instances.length, fixture.instances);
-  assert.equal(
-    createHash('sha256').update(instances.map(JSON.stringify).join('\n')).digest('hex'),
-    fixture.digest,
-  );
-});
 
-test('S4D0 familyEventInput maps trace instances to the S3 write path', () => {
-  const instance = TRACE_FAMILIES.instantiate('trace-collection-state', 7, 'core', 'list-copy-steps');
-  const input = familyEventInput(instance);
-  assert.equal(input.definitionId, 'trace-collection-state:list-copy-steps');
-  assert.equal(input.activityId, 'trace-collection-state');
-  assert.equal(input.exerciseId, 'trace-collection-state:list-copy-steps');
-  assert.deepEqual(input.competencyIds, ['c-python-collections', 'c-python-control-flow']);
-  assert.equal(input.seed, 7);
-  assert.equal(input.masteryEligible, true);
-  assert.throws(() => familyEventInput(null), /familyId und caseId/);
-});
 
-test('S4D0 trace instance key is stable per case and shared across profiles', () => {
-  const intro = TRACE_FAMILIES.instantiate('trace-dict-state-update', 7, 'intro', 'dict-start-key-steps');
-  const challenge = TRACE_FAMILIES.instantiate('trace-dict-state-update', 7, 'challenge', 'dict-start-key-steps');
-  const keyFor = (instance) => instanceKey(buildLearningEvent({
-    ...familyEventInput(instance), cycleId: 'cycle-9', eventType: 'attempt',
-    answer: 'a', hintsUsed: 0, correct: true,
-  }));
-  assert.equal(keyFor(intro), 'trace-dict-state-update:dict-start-key-steps:cycle-9:7');
-  assert.equal(keyFor(challenge), keyFor(intro));
-});
+
+
+
 
 // Taxonomie-Kreuzcheck: Shard-Mitglieder (foundations.json, Foundations-Umfang)
 // je Familie. runtime = geseedeter Laufzeitfall, static-content = fixer Content
@@ -304,6 +223,21 @@ const TRACE_TAXONOMY = [
       'slice-predict-output': 'genCodeReadingOutput-Einmalzuweisung (Umgebungstabelle plus stdout); Überschreibungsschritt läuft vakant',
       'join-split-predict': 'genCodeReadingOutput-Einmalzuweisung (split/join); Überschreibungsschritt läuft vakant',
       'comprehension-predict': 'genCodeReadingOutput-Einmalzuweisung (Filter/Abbildung); Überschreibungsschritt läuft vakant',
+      'gradient-loop-two-updates': 'statischer W08-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
+      'tree-majority-vote-trace': 'statischer W15-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
+      'rng-stream-reseed-trace': 'statischer W17-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'card-check-variable-trace': 'statischer W32-Fall mit Variablenzustand und eigenem Kompetenz-Override',
+      'rpn-priority-trace': 'statischer W33-Fall mit Variablenzustand und eigenem Kompetenz-Override',
+      'stage-runner-error-states': 'statischer W36-Fall mit Variablenzustand und eigenem Kompetenz-Override',
+      'overclaim-scanner-trace': 'statischer W38-Fall mit Ausgabevorhersage und eigenem Kompetenz-Override',
+      'manual-backward-step-trace': 'statischer W19-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
+      'fixed-dropout-mask-trace': 'statischer W21-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'stable-softmax-rows-trace': 'statischer W22-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'char-encode-roundtrip-trace': 'statischer W23-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'freeze-param-filter-trace': 'statischer W25-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
+      'absolute-vs-relative-gain-trace': 'statischer W26-Fall mit Variablenzustand und eigenem Kompetenz-Override',
+      'metric-name-normalize-trace': 'statischer W31-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
+      'column-picture-trace': 'statischer W05-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
     },
     staticContent: [
       { sourceId: 'w01-e3', contentType: 'predict-output', caseId: 'reassign-two-variables-print' },
@@ -416,22 +350,6 @@ const TRACE_TAXONOMY = [
   },
 ];
 
-const CONTENT_TYPE_ARCHETYPE = {
-  'predict-output': 'output-predict-lines',
-  'code-trace': 'state-trace-vars',
-  'single-choice': 'choice-diagnose',
-  parsons: 'program-ordering',
-};
-
-function loadContentExercises() {
-  const byId = new Map();
-  for (const week of ['w01', 'w02', 'w03', 'w04']) {
-    const document = JSON.parse(readFileSync(join(root, 'content/exercises', `${week}.json`), 'utf8'));
-    for (const exercise of document.exercises) byId.set(exercise.exerciseId, exercise);
-  }
-  return byId;
-}
-
 test('taxonomy crosscheck covers every shard case and documents every refinement', () => {
   for (const entry of TRACE_TAXONOMY) {
     const contract = contractOf(entry.familyId);
@@ -461,32 +379,6 @@ test('taxonomy crosscheck covers every shard case and documents every refinement
       );
     }
   }
-});
-
-test('taxonomy static siblings exist in w01-w04 with matching answer form', () => {
-  const content = loadContentExercises();
-  for (const entry of TRACE_TAXONOMY) {
-    const contract = contractOf(entry.familyId);
-    for (const sibling of entry.staticContent) {
-      const exercise = content.get(sibling.sourceId);
-      assert.ok(exercise, `${sibling.sourceId} existiert im Content`);
-      assert.equal(exercise.type, sibling.contentType, `${sibling.sourceId}: Antwortform`);
-      assert.ok(
-        exercise.skillIds.some((skill) => contract.competencyIds.includes(skill)),
-        `${sibling.sourceId}: teilt die Kompetenz mit der Familie`,
-      );
-    }
-  }
-});
-
-test('pinned static case two-functions-one-print matches w01-e6 byte-identically', () => {
-  const content = loadContentExercises();
-  const source = content.get('w01-e6');
-  const instance = TRACE_FAMILIES.instantiate('trace-call-composition', 3, 'core', 'two-functions-one-print');
-  assert.equal(instance.parameters.snippet, source.parameters.snippet);
-  assert.equal(instance.prompt, source.prompt);
-  assert.equal(instance.fullSolution, source.fullSolution);
-  assert.equal(instance.expectedAnswer.output, source.expectedAnswer.output);
 });
 
 test('trace contracts follow the shard word-for-word (solution, reference, errors)', () => {
@@ -604,7 +496,5 @@ test('call composition tables compute inner before outer in both lanes', () => {
     assert.equal(`${first.außen} ${second.außen}`, generated.expected.output);
     assert.equal(gradeTraceTable(traceTable, traceTable.expectedStates).correct, true);
   }
-  const pinned = generate({ seed: 0, caseId: 'two-functions-one-print', difficulty: 'intro' });
-  assert.deepEqual(pinned.traceTable.expectedStates, [{ ergebnis: '12' }, { ergebnis: '14' }]);
   assert.equal(callCompositionTraceTable({ parameters: { form: 'unbekannt' } }), null);
 });

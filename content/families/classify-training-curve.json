@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-training-curve",
+  "contract": {
+    "familyId": "classify-training-curve",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Trainingskurvenverlauf seinem Diagnosemuster zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "training-curve-diagnosis",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-curve-overfit",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-curve-underfit",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-training"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "training-curve-diagnosis",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w20-e1"
+      ],
+      "competencyIds": [
+        "c-dl-training"
+      ],
+      "parameters": {
+        "thema": "Overfitting-Signal in Lernkurven"
+      },
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Underfitting: beide Verluste sind zu hoch, das Modell ist zu schwach und braucht mehr Kapazität.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Lernrate zu groß: die Werte oszillieren stark oder explodieren — das ist das typische Instabilitätsmuster.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Leakage: der Validierungsverlust liegt unter dem Trainingsverlust, also sind Validierungsdaten ins Training gesickert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Overfitting ab etwa Epoche 3: der Trainingsverlust fällt weiter, der Validierungsverlust steigt wieder — das Modell memoriert Trainingsrauschen; frühes Stoppen oder Regularisierung sind Kandidaten.",
+          "correct": true
+        }
+      ],
+      "prompt": "Während einer Trainingsschleife zeigt die Lernkurve als Zahlenliste: Trainingsverlust $[0{,}80,\\ 0{,}55,\\ 0{,}41,\\ 0{,}33,\\ 0{,}28,\\ 0{,}24]$, Validierungsverlust $[0{,}85,\\ 0{,}60,\\ 0{,}48,\\ 0{,}52,\\ 0{,}61,\\ 0{,}73]$. Was ist die korrekte Diagnose?",
+      "fullSolution": "Trainingsverlust fällt monoton (0,80 → 0,24), Validierungsverlust fällt bis Epoche 3 (0,48) und steigt dann (0,73). Genau das Auseinanderlaufen ist das Overfitting-Signal; Gegenmaßnahmen: Early Stopping um Epoche 3 oder Regularisierung (Woche 21). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Vergleiche die RICHTUNG der beiden Kurven getrennt: Was tut der Trainingsverlust über die Epochen, was der Validierungsverlust?",
+        "Gesundes Lernen: beide fallen. Auseinanderlaufen (train fällt, val steigt) ist das Overfitting-Muster; Oszillation oder Explosion deutet auf die Lernrate."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Underfitting zeigt beide Kurven hoch und flach — hier fällt der Trainingsverlust kontinuierlich bis 0,24."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Zu große Lernraten erkennt man an oszillierenden oder explodierenden Werten — beide Listen hier sind monoton in ihre Richtung."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Validierungsverlust liegt durchgehend ÜBER dem Trainingsverlust — das Muster von Leakage wäre das Gegenteil."
+        }
+      ],
+      "typicalErrors": [
+        "nur den Trainingsverlust betrachtet und „gesundes Lernen“ diagnostiziert",
+        "steigenden Validierungsverlust als Lernratenproblem gelesen",
+        "Overfitting mit Underfitting verwechselt, weil der finale Validierungsverlust hoch ist"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "training-curve-overfit",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-training"
+      ],
+      "parameters": {
+        "epoch": 20,
+        "trainLoss": 0.12,
+        "validationLoss": 0.68
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Datenleck ist mathematisch bewiesen, sobald die Lücke 0,56 beträgt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Nach 20 Epochen liegt der Trainingsverlust bei $0{,}12$, der Validierungsverlust aber bei $0{,}68$; beide Kurven waren anfangs gemeinsam gefallen. Welche Diagnose passt?",
+      "fullSolution": "Der Trainingsverlust ist niedrig, während die Validierung deutlich schlechter ist und sich auseinanderentwickelt hat. Das spricht für Overfitting; Regularisierung, Daten oder Early Stopping sind mögliche Gegenmaßnahmen.",
+      "hints": [
+        "Vergleiche nicht nur den Trainingswert, sondern die Lücke zur Validierung.",
+        "Ein auseinanderlaufender Val-Verlust nach anfänglicher Verbesserung ist ein Overfitting-Signal."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Underfitting würde typischerweise auch einen hohen Trainingsfehler zeigen; hier ist die Trainingsanpassung mit 0,12 sehr gut."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Der gemeinsame Anfangsfall schließt späteres Auseinanderlaufen nicht aus; der aktuelle Abstand beträgt 0,56."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Lücke ist ein Overfitting-Hinweis, beweist aber allein kein Datenleck."
+        }
+      ],
+      "typicalErrors": [
+        "niedrigen Trainingsverlust als Underfitting fehlinterpretiert",
+        "frühen gemeinsamen Kurvenabfall mit dauerhaft guter Generalisierung verwechselt",
+        "jede Train-Val-Lücke als sicheren Datenleck-Beweis bezeichnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "training-curve-underfit",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-training"
+      ],
+      "parameters": {
+        "trainLoss": 0.62,
+        "validationLoss": 0.65
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Overfitting, weil der Validierungsverlust größer als der Trainingsverlust ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Perfekte Anpassung, weil die Differenz nur 0,03 beträgt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein Datenleck ist bewiesen, weil Training und Validierung ähnlich aussehen.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein lineares Modell erreicht auf Training und Validierung Verluste von $0{,}62$ beziehungsweise $0{,}65$; beide Werte bleiben über viele Epochen hoch und nahe beieinander. Was ist am plausibelsten?",
+      "fullSolution": "Hohe, ähnliche Trainings- und Validierungsverluste mit wenig Lücke sprechen eher für Underfitting oder ein zu schwaches Modell. Mehr Modellkapazität oder bessere Merkmale wären naheliegende Prüfungen.",
+      "hints": [
+        "Eine kleine Lücke ist nicht automatisch gut, wenn beide Fehler hoch bleiben.",
+        "Suche nach dem Muster hoch-hoch statt niedrig-hoch."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Eine kleine Differenz von 0,03 bei zwei hohen Verlusten ist kein typisches Overfitting-Muster; dort wäre vor allem der Trainingsfehler niedrig."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ähnliche Werte bedeuten hier nicht gute Anpassung: 0,62 und 0,65 bleiben beide hoch."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ähnliche Kurven können auch bei Underfitting entstehen; sie beweisen kein Leck."
+        }
+      ],
+      "typicalErrors": [
+        "kleine Train-Val-Lücke unabhängig von ihrer Höhe als Erfolg gewertet",
+        "jeden höheren Validierungsverlust mit Overfitting gleichgesetzt",
+        "Kurvenähnlichkeit als Beweis für Datenleck interpretiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

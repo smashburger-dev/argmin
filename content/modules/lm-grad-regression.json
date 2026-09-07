@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-grad-regression",
+  "version": 1,
+  "locale": "de",
+  "title": "Gradientenabstieg und lineare Regression aus Grundoperationen",
+  "description": "Lerne Gradientenabstieg und lineare Regression aus den zugrunde liegenden Ableitungen und Updates herzuleiten.",
+  "competencyIds": [
+    "c-grad-regression"
+  ],
+  "requires": [
+    "c-algebra",
+    "c-linalg-matrices",
+    "c-numpy-basics"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-grad-regression"
+  ],
+  "placements": [
+    {
+      "placementId": "p-grad-regression-update-rule",
+      "role": "curated",
+      "familyId": "optimize-gradient-update-rule",
+      "caseId": "sign-and-scale-of-update",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-grad-regression",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-grad-regression-mse-gradient",
+      "role": "curated",
+      "familyId": "optimize-mse-gradient-closed-form",
+      "caseId": "mse-gradient-wrt-w",
+      "seed": 8001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-grad-regression",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-grad-regression-trace-updates",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "gradient-loop-two-updates",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-grad-regression",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-grad-regression-mse-numpy",
+      "role": "curated",
+      "familyId": "optimize-mse-gradient-closed-form",
+      "caseId": "grad-mse-numpy-reference",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-grad-regression",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-grad-regression-fit-loop",
+      "role": "curated",
+      "familyId": "optimize-gradient-update-rule",
+      "caseId": "fit-linear-gradient-loop",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-grad-regression",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-grad-regression-practice-space",
+      "role": "practice-space",
+      "familyId": "optimize-mse-gradient-closed-form",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

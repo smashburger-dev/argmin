@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-dl-tensors",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Tensoren, Layer und Dimensionsverträge",
   "objectives": [
@@ -18,6 +18,11 @@
       "blockId": "dl-tensors-core",
       "type": "worked-example",
       "contentRef": "lessons/deep-learning/dl-tensors.md"
+    },
+    {
+      "blockId": "dl-tensors-viz",
+      "type": "visualization",
+      "contentRef": "lessons/deep-learning/activations.viz.json"
     },
     {
       "blockId": "dl-tensors-checkpoint",

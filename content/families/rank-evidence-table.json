@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "rank-evidence-table",
+  "contract": {
+    "familyId": "rank-evidence-table",
+    "familyGroup": "aggregate-count",
+    "summary": "Baut eine Evidenztabelle mit absolutem und relativem Gewinn samt Verdikt und sortiert sie nach fester Regel.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "evidence-table-ranking",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-papers",
+      "c-ml-cv"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "evidence-table-ranking",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w26-e6"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def evidence_table(papers):\n    \"\"\"Rows per paper: absolute delta, relative percent (rounded), verdict; sorted by\n    relative gain desc, ties by paperId ascending.\"\"\"\n    # per paper: absolute = system - baseline\n    # relative_pct = int(round(100 * absolute / baseline)) or 0 if baseline == 0\n    # verdict: \"improved\" / \"flat\" / \"regressed\" from system vs baseline\n    # sort by (-relative_pct, paperId)\n    ...\n",
+        "tests": "PAPERS = [\n    {\"paperId\": \"attn-2017\", \"metric\": \"BLEU EN-DE\", \"baseline\": 26.4, \"system\": 28.4},\n    {\"paperId\": \"bert-2018\", \"metric\": \"GLUE\", \"baseline\": 72.8, \"system\": 80.5},\n    {\"paperId\": \"lora-2021\", \"metric\": \"trainierbare Parameter (Mio.)\", \"baseline\": 175000.0, \"system\": 17.5},\n    {\"paperId\": \"gpt3-2020\", \"metric\": \"F1 Demo\", \"baseline\": 60.0, \"system\": 60.0},\n]\ntable = evidence_table(PAPERS)\n__check('vier Zeilen', len(table) == 4)\n__check('Sortierung nach relativ absteigend', [r[\"paperId\"] for r in table] == [\"bert-2018\", \"attn-2017\", \"gpt3-2020\", \"lora-2021\"])\n__check('bert absolut', abs(table[0][\"absolute\"] - 7.7) < 1e-9)\n__check('bert relativ 11', table[0][\"relative_pct\"] == 11)\n__check('attn absolut 2', abs(table[1][\"absolute\"] - 2.0) < 1e-9)\n__check('attn gerundet 8', table[1][\"relative_pct\"] == 8)\n__check('flat verdict', table[2][\"verdict\"] == \"flat\")\n__check('regressed verdict', table[3][\"verdict\"] == \"regressed\")\n__check('lora relativ negativ gerundet', table[3][\"relative_pct\"] == -100)\nTIE = [\n    {\"paperId\": \"b-paper\", \"metric\": \"m\", \"baseline\": 40.0, \"system\": 50.0},\n    {\"paperId\": \"a-paper\", \"metric\": \"m\", \"baseline\": 80.0, \"system\": 100.0},\n]\n__check('Tie-Break nach paperId', [r[\"paperId\"] for r in evidence_table(TIE)] == [\"a-paper\", \"b-paper\"])\n__check('leere Liste', evidence_table([]) == [])\nFEHLER = [{\"paperId\": \"f-1\", \"metric\": \"Fehlerrate\", \"baseline\": 10.0, \"system\": 8.0}]\nrow = evidence_table(FEHLER)[0]\n__check('niedriger ist besser bleibt Zahlensache', row[\"absolute\"] == -2.0 and row[\"verdict\"] == \"regressed\")\n__check('Zeilenstruktur', set(row.keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})"
+      },
+      "competencyIds": [
+        "c-dl-papers",
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def evidence_table(papers):\n    \"\"\"Rows per paper: absolute delta, relative percent (rounded), verdict; sorted by\n    relative gain desc, ties by paperId ascending.\"\"\"\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"],\n                     \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\n"
+      },
+      "prompt": "Final Boss Evidenztabelle: Implementiere <code>evidence_table(papers)</code>. Eingabe: Liste von Dictionaries <code>{\"paperId\": str, \"metric\": str, \"baseline\": Zahl, \"system\": Zahl}</code>. Rückgabe: je Paper eine Zeile <code>{\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"}</code> mit <code>absolute = system − baseline</code>, <code>relative_pct = int(round(100·absolute/baseline))</code> (0, falls <code>baseline</code> gleich 0), <code>verdict</code> aus <code>\"improved\"</code> (system &gt; baseline), <code>\"flat\"</code> (gleich) oder <code>\"regressed\"</code> (kleiner). Sortiert wird nach <code>relative_pct</code> absteigend, bei Gleichstand nach <code>paperId</code> aufsteigend. Die Tabelle ist Zahlensache: bei Metriken, bei denen kleinere Werte besser sind (z. B. Fehlerraten), fällt das Urteil entsprechend „regressed“ aus — genau das macht die Tabelle als Frühwarnung nützlich. Der Testcode umfasst Paper-artige Zahlenpaare (BLEU- und GLUE-artig, LoRA-Parameterzahlen, Fehlerrate), Tie-Break, Grenzfälle und die Zeilenstruktur.",
+      "fullSolution": "def evidence_table(papers):\n    \"\"\"Rows per paper: absolute delta, relative percent (rounded), verdict; sorted by\n    relative gain desc, ties by paperId ascending.\"\"\"\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"],\n                     \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\n# evidence_table(PAPERS) sortiert zunaechst bert-2018 (+7.7 Punkte, relativ 11 %),\n# dann attn-2017 (+2.0, relativ 8 %), dann gpt3-2020 (flat), zuletzt lora-2021\n# (Parameterzahl gesunken -> im Zahlenvertrag \"regressed\").",
+      "hints": [
+        "Erst alle Zeilen berechnen, dann sortieren — Schlüssel (-relative_pct, paperId).",
+        "Rundung mit int(round(...)); bei baseline 0 ist relative_pct definiert als 0."
+      ],
+      "feedbackRules": [
+        {
+          "if": "sort-ascending",
+          "then": "Absteigend nach relativem Gewinn sortieren — der stärkste relative Zugewinn steht zuerst."
+        },
+        {
+          "if": "tie-ignored",
+          "then": "Bei gleichem relative_pct entscheidet paperId aufsteigend."
+        },
+        {
+          "if": "direction-ignored",
+          "then": "Das verdict folgt dem Zahlenvergleich — kleiner-is-besser-Metriken zeigen sich hier als „regressed“ und müssen im Text interpretiert werden."
+        }
+      ],
+      "typicalErrors": [
+        "aufsteigend statt absteigend sortiert",
+        "Tie-Break übersehen",
+        "Verdikt ohne Zahlenvergleich vergeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

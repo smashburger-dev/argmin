@@ -1,7 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { W31_W39_SEED_GENERATORS } from '../assets/js/core/w31_w39_generators.mjs';
+import {
+  genProtocolShifts, genCardAudit, genSubgroupCost, genBaselineLedger, genPipelineStages, genEvalRates,
+} from '../assets/js/core/w31_w39_generators.mjs';
+import { legacyOracle } from './helpers/legacy_oracle.mjs';
+
+const W31_W39_SEED_GENERATORS = {
+  genProtocolShifts, genCardAudit, genSubgroupCost, genBaselineLedger, genPipelineStages, genEvalRates,
+};
 
 // Property tests for the W31-W39 seeded generators (ADR-0014), mirroring the
 // house rules enforced for the other generator modules:
@@ -196,7 +203,7 @@ const SHIPPED_E2 = [
 
 for (const [week, name] of SHIPPED_E2) {
   test(`w31-w39 ${name}: no seed drift against content/exercises/${week}.json`, () => {
-    const pkg = JSON.parse(readFileSync(new URL(`../content/exercises/${week}.json`, import.meta.url), 'utf8'));
+    const pkg = legacyOracle.weeks[week];
     const exercise = pkg.exercises.find((e) => e.exerciseId === `${week}-e2`);
     assert.ok(exercise, `${week}-e2 missing`);
     assert.equal(exercise.parameters.seedGenerator, name);

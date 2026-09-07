@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-fairness-aggregation",
+  "contract": {
+    "familyId": "classify-fairness-aggregation",
+    "familyGroup": "classify-concept",
+    "summary": "Erkennt, warum Gesamtmetriken Fehler kleiner Teilgruppen verdecken können.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "overall-accuracy-hides-subgroups",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-erroranalysis"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "overall-accuracy-hides-subgroups",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w13-e1"
+      ],
+      "parameters": {
+        "overallAccuracy": 0.94
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Eine hohe Gesamtmetrik kann große Fehler in kleinen Teilgruppen verbergen — die Metrik muss je Teilgruppe berichtet werden.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Gesamtmetriken sind Zufallswerte und ohne wiederholte Messung bedeutungslos.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Teilgruppenmetriken sind per Definition immer höher als die Gesamtmetrik — ein Vergleich lohnt sich nicht.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Teilgruppen dürfen aus Datenschutzgründen nie ausgewertet werden.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Ein Defekt-Klassifikator erreicht 94 % Accuracy insgesamt. Warum reicht diese einzelne Gesamtmetrik für die Fehleranalyse nicht aus?",
+      "fullSolution": "Ein gewichteter Durchschnitt lässt eine kleine Gruppe fast verschwinden: 94 % insgesamt können bedeuten, dass eine kleine Teilgruppe zu 60 % falsch eingestuft wird. Deshalb werden Metriken je Teilgruppe berichtet und die größte Lücke explizit benannt.",
+      "hints": [
+        "Wie gewichtet ein Durchschnitt die Gruppen? Was passiert mit einer kleinen Gruppe, wenn die große fast fehlerfrei ist?",
+        "Denke an ein Beispiel: 95 Beispiele aus Gruppe A ohne Fehler, 5 aus Gruppe B mit 4 Fehlern."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Gesamtmetriken sind wohldefinierte Messwerte — das Problem ist ihre verdeckende Wirkung, nicht mangelnde Messgenauigkeit."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Teilgruppenraten können über oder unter dem Gesamtwert liegen — genau die Differenz (Lücke) ist das Analyseergebnis."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der Datenschutz begrenzt, welche Merkmale erhoben werden dürfen — ausgewertet werden Teilgruppen aber gerade, um Benachteiligung zu erkennen."
+        }
+      ],
+      "typicalErrors": [
+        "Durchschnittseffekt kleiner Gruppen unterschätzen",
+        "Gesamtmetrik als Aussage über alle Teilgruppen missdeuten",
+        "Teilgruppenanalyse mit Datenschutz verwechseln"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "fairness-aggregation",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w33-e1"
+      ],
+      "parameters": {
+        "thema": "Subgruppenmetriken begründen"
+      },
+      "competencyIds": [
+        "c-research-responsible"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Weil die Gesamtgenauigkeit falsch gerechnet ist und durch Subgruppenwerte ersetzt werden muss.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Weil es eine formale Anforderung ist, ohne dass sich an den Messwerten etwas ändert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Weil eine gute Gesamtkennzahl große FPR-Unterschiede zwischen Gruppen verstecken kann — ungleiche Behandlung wird nur getrennt sichtbar.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Weil nur ein Sprachmodell die Fairness einer Gruppe verlässlich bewerten kann.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Detektor erreicht über alle Fälle gemessen eine Genauigkeit von 0,9. Warum berichtet Responsible AI zusätzlich die False-Positive-Raten pro Gruppe?",
+      "fullSolution": "Gesamtmetriken können Subgruppenungleichheit vollständig verstecken: Zwei Gruppen mit FPR 0,25 und 0,10 können zusammen eine gute Gesamtkennzahl liefern, während harmlose Fälle der einen Gruppe mehr als doppelt so oft fälschlich blockiert werden. Der getrennte Ausweis macht das messbar und deterministisch nachrechenbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Über alle Fälle gemittelte Kennzahlen können sehr unterschiedliche Verteilungen in Teilgruppen haben — was bleibt unsichtbar?",
+        "FPR ist der Anteil harmloser Fälle, die fälschlich verworfen werden; zwei Gruppen können hier stark abweichen, obwohl die Gesamtkennzahl gut aussieht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Gesamtgenauigkeit wird durch Subgruppenausweis nicht ersetzt, sondern ergänzt — beide zusammen sind die ehrliche Berichtsform."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Subgruppenausweis ist keine Formalie: Eine FPR-Differenz kann bei gleicher Gesamtkennzahl eine erhebliche Ungleichbehandlung anzeigen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Umgekehrt: Ein Sprachmodell als Bewerter wäre selbst fehleranfällig und nicht deterministisch — die Raten sind exakt berechenbar."
+        }
+      ],
+      "typicalErrors": [
+        "Gesamtgenauigkeit als Fairheitsbeweis genommen",
+        "Subgruppenmetriken als optionalen Zusatz statt Pflicht verstanden"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

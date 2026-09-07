@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-eda-distributions",
+  "version": 1,
+  "locale": "de",
+  "title": "Verteilungen, Korrelation und bedingte Anteile",
+  "description": "Lerne Verteilungen zu beschreiben, Korrelation einzuordnen und bedingte Anteile sicher zu berechnen.",
+  "competencyIds": [
+    "c-eda-viz"
+  ],
+  "requires": [
+    "c-pandas-cleaning"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-eda-distributions"
+  ],
+  "placements": [
+    {
+      "placementId": "p-eda-distributions-classify-confounding",
+      "role": "curated",
+      "familyId": "classify-confounding",
+      "caseId": "temperature-confounder",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-eda-distributions",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-eda-distributions-formula-ratio-percent-metric",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "conditional-count-percent",
+      "seed": 7001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-eda-distributions",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-eda-distributions-trace-library-api-output",
+      "role": "curated",
+      "familyId": "trace-library-api-output",
+      "caseId": "numpy-median-histogram-corrcoef",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-eda-distributions",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-eda-distributions-descriptive-stats-numpy",
+      "role": "curated",
+      "familyId": "formula-descriptive-stats-numpy",
+      "caseId": "describe-and-bins",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-eda-distributions",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-eda-distributions-grouped-metrics-report",
+      "role": "curated",
+      "familyId": "aggregate-grouped-metrics-report",
+      "caseId": "hypothesis-report-groups",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-eda-distributions",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-eda-distributions-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-ratio-percent-metric",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

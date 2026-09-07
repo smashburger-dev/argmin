@@ -13,11 +13,13 @@
 import {
   genPythonStateTrace,
   genCodeReadingOutput,
+  TRANSFORM_MODES,
   genFunctionCompose,
   genControlFlowOutput,
   genCollectionStepTrace,
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
+import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -61,79 +63,117 @@ function assignmentStateNumbers(caseId, parameters) {
   return [parameters.n0, parameters.k1, parameters.f1, parameters.g1];
 }
 
+const stateShapeProfiles = (caseId) => ({
+  intro: (parameters) => maxAbs(assignmentStateNumbers(caseId, parameters)) <= 6,
+  stretch: (parameters) => hasNegative(assignmentStateNumbers(caseId, parameters)),
+  challenge: (parameters) => {
+    const numbers = assignmentStateNumbers(caseId, parameters);
+    return hasNegative(numbers) && maxAbs(numbers) >= 8;
+  },
+});
+const ASSIGNMENT_PROFILE_PREDICATES = {
+  ...Object.fromEntries(Object.keys(ASSIGNMENT_STATE_SHAPES).map((id) => [id, stateShapeProfiles(id)])),
+  'slice-predict-output': {
+    intro: (p) => p.b - p.a <= 3,
+    stretch: (p) => p.a >= 3,
+    challenge: (p) => p.b - p.a >= 5,
+  },
+  'join-split-predict': {
+    intro: (p) => p.j - p.i === 2,
+    stretch: (p) => p.j - p.i >= 3,
+    challenge: (p) => p.i === 0 && p.j === p.parts.length,
+  },
+  'comprehension-predict': {
+    intro: (p) => p.threshold <= -1 && p.factor === 2,
+    stretch: (p) => p.threshold >= 1,
+    challenge: (p) => p.factor >= 3 && p.threshold >= 0,
+  },
+  'method-chain-transform': {
+    intro: (p) => p.mode === 0,
+    stretch: (p) => p.mode === 1,
+    challenge: (p) => p.mode === 2,
+  },
+};
+
 function assignmentProfileAccepts(caseId, difficulty) {
   if (difficulty === 'core') return null;
-  if (ASSIGNMENT_STATE_SHAPES[caseId]) {
-    if (difficulty === 'intro') {
-      return (parameters) => maxAbs(assignmentStateNumbers(caseId, parameters)) <= 6;
-    }
-    if (difficulty === 'stretch') {
-      return (parameters) => hasNegative(assignmentStateNumbers(caseId, parameters));
-    }
-    return (parameters) => {
-      const numbers = assignmentStateNumbers(caseId, parameters);
-      return hasNegative(numbers) && maxAbs(numbers) >= 8;
-    };
-  }
-  if (caseId === 'slice-predict-output') {
-    if (difficulty === 'intro') return (parameters) => parameters.b - parameters.a <= 3;
-    if (difficulty === 'stretch') return (parameters) => parameters.a >= 3;
-    return (parameters) => parameters.b - parameters.a >= 5;
-  }
-  if (caseId === 'join-split-predict') {
-    if (difficulty === 'intro') return (parameters) => parameters.j - parameters.i === 2;
-    if (difficulty === 'stretch') return (parameters) => parameters.j - parameters.i >= 3;
-    return (parameters) => parameters.i === 0 && parameters.j === parameters.parts.length;
-  }
-  if (caseId === 'comprehension-predict') {
-    if (difficulty === 'intro') return (parameters) => parameters.threshold <= -1 && parameters.factor === 2;
-    if (difficulty === 'stretch') return (parameters) => parameters.threshold >= 1;
-    return (parameters) => parameters.factor >= 3 && parameters.threshold >= 0;
-  }
-  if (difficulty === 'intro') return (parameters) => parameters.mode === 0;
-  if (difficulty === 'stretch') return (parameters) => parameters.mode === 1;
-  return (parameters) => parameters.mode === 1 && parameters.word.length >= 12;
+  const predicates = ASSIGNMENT_PROFILE_PREDICATES[caseId]
+    || ASSIGNMENT_PROFILE_PREDICATES['method-chain-transform'];
+  return predicates[difficulty] || predicates.challenge;
 }
+
+const TRACE_ASSIGNMENT_STATIC_KEYS = {
+  'gradient-loop-two-updates': 'output',
+  'tree-majority-vote-trace': 'kind',
+  'rng-stream-reseed-trace': 'output',
+  'manual-backward-step-trace': 'kind',
+  'fixed-dropout-mask-trace': 'output',
+  'stable-softmax-rows-trace': 'output',
+  'char-encode-roundtrip-trace': 'output',
+  'freeze-param-filter-trace': 'output',
+  'absolute-vs-relative-gain-trace': 'kind',
+  'metric-name-normalize-trace': 'output',
+  'stage-runner-error-states': 'kind',
+  'column-picture-trace': 'kind',
+  'overclaim-scanner-trace': 'output',
+  'card-check-variable-trace': 'kind',
+  'rpn-priority-trace': 'kind',
+};
+
+const solveAssignmentReassign = (parameters) => {
+  const b = parameters.a0 + parameters.k1;
+  const a = b - parameters.k2;
+  return { output: `${a} ${b}` };
+};
+const solveAssignmentChain = (parameters) => {
+  const y = parameters.x0 * parameters.k1;
+  const z = y - parameters.x0;
+  const x = z + parameters.k2;
+  return { output: `${x} ${y} ${z}` };
+};
+const solveAssignmentAccumulate = (parameters) => {
+  const n1 = parameters.n0 + parameters.k1;
+  const m = n1 * parameters.f1;
+  const n = m - parameters.g1;
+  return { output: `${n} ${m}` };
+};
+const solveAssignmentSlice = (parameters) => ({ output: parameters.word.slice(parameters.a, parameters.b) });
+const solveAssignmentJoin = (parameters) => ({ output: parameters.parts.slice(parameters.i, parameters.j).join(parameters.sep ?? '-') });
+const solveAssignmentComprehension = (parameters) => {
+  const out = parameters.nums
+    .filter((n) => n > parameters.threshold)
+    .map((n) => n * parameters.factor);
+  return { output: `[${out.join(', ')}]` };
+};
+const solveAssignmentTransform = (parameters) => {
+  const clean = parameters.word.trim();
+  return { output: TRANSFORM_MODES[parameters.mode].apply(clean) };
+};
+const TRACE_ASSIGNMENT_SOLVERS = {
+  reassign: solveAssignmentReassign,
+  chain3: solveAssignmentChain,
+  accumulate: solveAssignmentAccumulate,
+  slice: solveAssignmentSlice,
+  join: solveAssignmentJoin,
+  comprehension: solveAssignmentComprehension,
+  transform: solveAssignmentTransform,
+};
 
 /** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
 export function solveTraceAssignment(parameters) {
-  const { shape } = parameters;
-  if (shape === 'reassign') {
-    const b = parameters.a0 + parameters.k1;
-    const a = b - parameters.k2;
-    return { output: `${a} ${b}` };
-  }
-  if (shape === 'chain3') {
-    const y = parameters.x0 * parameters.k1;
-    const z = y - parameters.x0;
-    const x = z + parameters.k2;
-    return { output: `${x} ${y} ${z}` };
-  }
-  if (shape === 'accumulate') {
-    const n1 = parameters.n0 + parameters.k1;
-    const m = n1 * parameters.f1;
-    const n = m - parameters.g1;
-    return { output: `${n} ${m}` };
-  }
-  if (shape === 'slice') return { output: parameters.word.slice(parameters.a, parameters.b) };
-  if (shape === 'join') return { output: parameters.parts.slice(parameters.i, parameters.j).join('-') };
-  if (shape === 'comprehension') {
-    const out = parameters.nums
-      .filter((n) => n > parameters.threshold)
-      .map((n) => n * parameters.factor);
-    return { output: `[${out.join(', ')}]` };
-  }
-  if (shape === 'transform') {
-    const clean = parameters.word.trim();
-    const out = parameters.mode === 0
-      ? clean.toUpperCase()
-      : clean.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
-    return { output: out };
-  }
-  throw new Error(`trace-assignment-state: unbekannte Form ${shape}`);
+  const staticKey = TRACE_ASSIGNMENT_STATIC_KEYS[parameters.caseId];
+  if (staticKey) return { [staticKey]: staticCaseBody('trace-assignment-state', parameters.caseId).expected[staticKey] };
+  const solver = TRACE_ASSIGNMENT_SOLVERS[parameters.shape];
+  if (solver) return solver(parameters);
+  throw new Error(`trace-assignment-state: unbekannte Form ${parameters.shape}`);
 }
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
+  if (TRACE_ASSIGNMENT_STATIC_KEYS[caseId]) {
+    const body = staticCaseBody('trace-assignment-state', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+  }
   const stateShape = ASSIGNMENT_STATE_SHAPES[caseId];
   const readingShape = ASSIGNMENT_READING_SHAPES[caseId];
   if (!stateShape && !readingShape) throw new Error(`Unbekannter Fall ${caseId}`);
@@ -170,6 +210,81 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
     { caseId: 'join-split-predict' },
     { caseId: 'comprehension-predict' },
     { caseId: 'method-chain-transform' },
+    {
+      caseId: 'gradient-loop-two-updates',
+      propertyTest: false,
+      competencyIds: ['c-grad-regression', 'c-python-reading'],
+    },
+    {
+      caseId: 'tree-majority-vote-trace',
+      propertyTest: false,
+      competencyIds: ['c-ml-ensembles', 'c-python-reading'],
+    },
+    {
+      caseId: 'column-picture-trace',
+      propertyTest: false,
+      competencyIds: ['c-linalg-matrices', 'c-python-reading'],
+    },
+    {
+      caseId: 'rng-stream-reseed-trace',
+      propertyTest: false,
+      competencyIds: ['c-ml-repro', 'c-numpy-basics'],
+    },
+    {
+      caseId: 'manual-backward-step-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-autograd', 'c-python-reading'],
+    },
+    {
+      caseId: 'fixed-dropout-mask-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-regularization', 'c-numpy-basics'],
+    },
+    {
+      caseId: 'stable-softmax-rows-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-attention', 'c-python-basics'],
+    },
+    {
+      caseId: 'char-encode-roundtrip-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-tokenizer', 'c-python-basics'],
+    },
+    {
+      caseId: 'freeze-param-filter-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-finetuning', 'c-python-basics'],
+    },
+    {
+      caseId: 'absolute-vs-relative-gain-trace',
+      propertyTest: false,
+      competencyIds: ['c-dl-papers', 'c-python-basics'],
+    },
+    {
+      caseId: 'card-check-variable-trace',
+      propertyTest: false,
+      competencyIds: ['c-research-cards', 'c-python-reading'],
+    },
+    {
+      caseId: 'rpn-priority-trace',
+      propertyTest: false,
+      competencyIds: ['c-research-responsible', 'c-python-reading'],
+    },
+    {
+      caseId: 'metric-name-normalize-trace',
+      propertyTest: false,
+      competencyIds: ['c-research-question', 'c-python-reading'],
+    },
+    {
+      caseId: 'stage-runner-error-states',
+      propertyTest: false,
+      competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
+    },
+    {
+      caseId: 'overclaim-scanner-trace',
+      propertyTest: false,
+      competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
+    },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-reading', 'c-python-basics'],
@@ -182,17 +297,6 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
 // (beide Kompositionsreihenfolgen in einer Printzeile); zweiter Falltyp ist
 // die gepinnte statische Quelle w01-e6 (zwei unabhängige Aufrufe, Autorität
 // fix, propertyTest: false) — gleiche Antwortform, gleicher Lösungsweg.
-
-// Gepinnte Fakten aus content/exercises/w01.json (w01-e6, unverändert): Der
-// Solver rechnet daraus, statt die Antwort zu übernehmen.
-const TWO_FUNCTIONS_STATIC = {
-  form: 'area-perimeter',
-  a: 3,
-  b: 4,
-  snippet: 'def flaeche(a, b):\n    return a * b\n\ndef umfang(a, b):\n    return 2 * (a + b)\n\nprint(flaeche(3, 4), umfang(3, 4))',
-  prompt: 'Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.',
-  fullSolution: 'flaeche(3, 4) = 3 · 4 = 12; umfang(3, 4) = 2 · (3 + 4) = 14. Ausgabe: <code>12 14</code>.',
-};
 
 function callCompositionProfileAccepts(difficulty) {
   if (difficulty === 'core') return null;
@@ -221,20 +325,9 @@ export function solveTraceCallComposition(parameters) {
 export function generateTraceCallCompositionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (caseId === 'two-functions-one-print') {
-    const generated = {
-      parameters: {
-        caseId,
-        difficulty,
-        form: TWO_FUNCTIONS_STATIC.form,
-        a: TWO_FUNCTIONS_STATIC.a,
-        b: TWO_FUNCTIONS_STATIC.b,
-        snippet: TWO_FUNCTIONS_STATIC.snippet,
-      },
-      expected: { output: '12 14' },
-      prompt: TWO_FUNCTIONS_STATIC.prompt,
-      fullSolution: TWO_FUNCTIONS_STATIC.fullSolution,
-    };
-    return { ...generated, traceTable: callCompositionTraceTable(generated) };
+    const body = staticCaseBody('trace-call-composition', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
   if (caseId !== 'both-orders-linear-functions') throw new Error(`Unbekannter Fall ${caseId}`);
   const drawn = drawTraceInstance(genFunctionCompose, {
@@ -638,40 +731,40 @@ function exceptionCodeOf(prompt) {
 }
 
 /** Unabhängiger Solver: korrekter Antworttext aus Fall und Code. */
+const solveExceptionValueError = () => ({ correctText: 'ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' });
+const solveExceptionTypeConcat = () => ({ correctText: 'TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' });
+const solveExceptionKeyError = () => ({ correctText: 'KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' });
+const solveExceptionFileNotFound = () => ({ correctText: 'FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' });
+const solveExceptionIndexError = () => ({ correctText: 'IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' });
+const solveExceptionTypeLen = () => ({ correctText: 'TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' });
+const solveExceptionNoErrorInt = (parameters) => {
+  const value = String(parameters.code).match(/"(\d+)"/)?.[1];
+  if (value === undefined) throw new Error('trace-exception-path: kein Int-Literal im Code');
+  return { correctText: `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.` };
+};
+const solveExceptionNoErrorMul = (parameters) => {
+  const digits = String(parameters.code).match(/"(\d+)"/)?.[1];
+  const times = Number(String(parameters.code).split('*')[1]);
+  if (digits === undefined || !Number.isSafeInteger(times)) {
+    throw new Error('trace-exception-path: kein String-Multiplikand im Code');
+  }
+  return { correctText: `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".` };
+};
+const TRACE_EXCEPTION_SOLVERS = {
+  valueerror: solveExceptionValueError,
+  'typeerror-concat': solveExceptionTypeConcat,
+  keyerror: solveExceptionKeyError,
+  filenotfound: solveExceptionFileNotFound,
+  indexerror: solveExceptionIndexError,
+  'typeerror-len': solveExceptionTypeLen,
+  'no-error-int': solveExceptionNoErrorInt,
+  'no-error-mul': solveExceptionNoErrorMul,
+};
+
 export function solveTraceException(parameters) {
-  const { caseId } = parameters;
-  if (caseId === 'valueerror') {
-    return { correctText: 'ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' };
-  }
-  if (caseId === 'typeerror-concat') {
-    return { correctText: 'TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' };
-  }
-  if (caseId === 'keyerror') {
-    return { correctText: 'KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' };
-  }
-  if (caseId === 'filenotfound') {
-    return { correctText: 'FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' };
-  }
-  if (caseId === 'indexerror') {
-    return { correctText: 'IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' };
-  }
-  if (caseId === 'typeerror-len') {
-    return { correctText: 'TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' };
-  }
-  if (caseId === 'no-error-int') {
-    const value = String(parameters.code).match(/"(\d+)"/)?.[1];
-    if (value === undefined) throw new Error('trace-exception-path: kein Int-Literal im Code');
-    return { correctText: `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.` };
-  }
-  if (caseId === 'no-error-mul') {
-    const digits = String(parameters.code).match(/"(\d+)"/)?.[1];
-    const times = Number(String(parameters.code).split('*')[1]);
-    if (digits === undefined || !Number.isSafeInteger(times)) {
-      throw new Error('trace-exception-path: kein String-Multiplikand im Code');
-    }
-    return { correctText: `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".` };
-  }
-  throw new Error(`trace-exception-path: unbekannter Fall ${caseId}`);
+  const solver = TRACE_EXCEPTION_SOLVERS[parameters.caseId];
+  if (!solver) throw new Error(`trace-exception-path: unbekannter Fall ${parameters.caseId}`);
+  return solver(parameters);
 }
 
 export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {

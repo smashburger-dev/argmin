@@ -271,13 +271,3 @@ export function genRelativeGain(seed) {
     };
   });
 }
-
-// --- registry -----------------------------------------------------------------------------
-
-export const W22_W26_SEED_GENERATORS = {
-  genAttentionShape,
-  genVocabAfterMerges,
-  genGreedyToken,
-  genLoraParamCount,
-  genRelativeGain,
-};

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-ml-regularization",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Ridge und Lasso: Schrumpfen statt Überanpassen",
   "objectives": [
@@ -12,7 +12,10 @@
   "competencyIds": ["c-ml-regularization"],
   "requires": ["c-ml-cv", "c-ml-linear"],
   "estimatedMinutes": 55,
-  "blocks": [{ "blockId": "ml-regularization-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-regularization.md" }],
+  "blocks": [
+    { "blockId": "ml-regularization-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-regularization.md" },
+    { "blockId": "ml-regularization-viz", "type": "visualization", "contentRef": "lessons/data-ml/ridge-shrink.viz.json" }
+  ],
   "sourceRefs": [
     { "sourceId": "islr-book", "role": "primary", "locator": "Ch 6 Linear Model Selection and Regularization (nur Zitation)" },
     { "sourceId": "sklearn-user-guide", "role": "practice", "locator": "Ridge regression / Lasso — nur Lektüre" },

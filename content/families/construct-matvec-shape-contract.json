@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-matvec-shape-contract",
+  "contract": {
+    "familyId": "construct-matvec-shape-contract",
+    "familyGroup": "construct-program",
+    "summary": "Sequenziert eine Matrix-Vektor-Operation mit vorangestelltem Dimensionsvertrag: Normalisierung, Assert-Prüfung, erst dann die Operation.",
+    "taskArchetype": "program-ordering",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "matvec-contract-order",
+        "propertyTest": false
+      },
+      {
+        "caseId": "matvec-code-reference",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-numpy-basics",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "parsons"
+  },
+  "cases": [
+    {
+      "caseId": "matvec-contract-order",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e14"
+      ],
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p1",
+            "text": "def matvec(A, v):"
+          },
+          {
+            "id": "p2",
+            "text": "    A = np.asarray(A)"
+          },
+          {
+            "id": "p3",
+            "text": "    v = np.asarray(v)"
+          },
+          {
+            "id": "p4",
+            "text": "    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]"
+          },
+          {
+            "id": "p5",
+            "text": "    return A @ v"
+          },
+          {
+            "id": "d1",
+            "text": "    assert v.ndim == 2 and A.ndim == 1 and v.shape[1] == A.shape[0]"
+          },
+          {
+            "id": "d2",
+            "text": "    return v @ A"
+          }
+        ],
+        "initialOrder": [
+          "p1",
+          "d1",
+          "p3",
+          "p5",
+          "p2",
+          "d2",
+          "p4"
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5"
+        ],
+        "distractors": [
+          "d1",
+          "d2"
+        ]
+      },
+      "prompt": "Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` (Begleiter zu w05-e8) in die richtige Reihenfolge. Zwei Zeilen sind Distraktoren, die nicht zur Lösung gehören — sortiere sie aus.",
+      "fullSolution": "Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert)."
+    },
+    {
+      "caseId": "matvec-code-reference",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e8"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef matvec(A, v):\n    \"\"\"Return A @ v after checking shapes.\"\"\"\n    # pruefe Shapes, dann berechne\n    ...\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def matvec(A, v):\n    A = np.asarray(A); v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v"
+      },
+      "prompt": "Implementiere `matvec(A, v)`, das $A\\,v$ mit NumPy berechnet und VOR der Berechnung prüft, dass `A` 2-dimensional, `v` 1-dimensional und `A.shape[1] == v.shape[0]` ist — sonst `AssertionError`. Der Testcode ist von deiner Eingabe getrennt und prüft Wert und Shape-Verhalten.",
+      "fullSolution": "import numpy as np\n\ndef matvec(A, v):\n    A = np.asarray(A)\n    v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v\n\n# matvec([[1,2],[3,4]], [1,1]) -> array([3, 7])",
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "final-boss-authored",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-linalg-final-boss-01"
+      ],
+      "competencyIds": [
+        "c-linalg-matrices",
+        "c-linalg-systems",
+        "c-linalg-gauss",
+        "c-linalg-independence",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef shape_safe_matmul(A, B):\n    pass\n\n\ndef gauss_rank(A):\n    pass\n\n\ndef solve_system(A, b):\n    pass\n",
+        "tests": "import numpy as np\n\n__check('2x3 @ 3x2', np.array_equal(shape_safe_matmul([[1,2,3],[4,5,6]], [[1,0],[0,1],[1,1]]), np.array([[4,5],[10,11]])))\n__check('rechteckiges Produkt', np.array_equal(shape_safe_matmul([[2,-1]], [[3],[4]]), np.array([[2]])))\ntry:\n    shape_safe_matmul([[1,2]], [[1,2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('inkompatible Shapes abgelehnt', True)\nexcept Exception as exc:\n    __check('inkompatible Shapes abgelehnt', False, type(exc).__name__)\n__check('Rang 2 bei abhängiger Zeile', gauss_rank([[1,0,1],[0,1,1],[1,1,2]]) == 2)\n__check('Rang 3 bei Vollrang', gauss_rank([[2,1,0],[0,3,1],[1,0,2]]) == 3)\n__check('Rang 1 bei Vielfachen', gauss_rank([[1,2],[2,4],[-3,-6]]) == 1)\n__s1 = solve_system([[2,1],[1,-3]], [5,-8])\n__check('2x2-System', np.allclose(__s1, np.array([1,3])))\n__s2 = solve_system([[3,1,0],[1,4,1],[0,2,5]], [7,12,17])\n__check('3x3-System', np.allclose(np.asarray([[3,1,0],[1,4,1],[0,2,5]]) @ np.asarray(__s2), np.array([7,12,17])))"
+      },
+      "expected": {
+        "kind": "python-tests",
+        "requiredFunctions": [
+          "shape_safe_matmul",
+          "gauss_rank",
+          "solve_system"
+        ],
+        "referenceSolver": "def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef gauss_rank(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) > 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)"
+      },
+      "prompt": "Implementiere drei Funktionen: `shape_safe_matmul(A, B)` prüft 2D-Shapes und multipliziert Matrizen; `gauss_rank(A)` bestimmt den Rang über Pivot-Elimination; `solve_system(A, b)` löst ein quadratisches System mit eindeutiger Lösung. Die Tests enthalten rechteckige Matrizen, abhängige Zeilen und Fehlerfälle.",
+      "fullSolution": "<pre><code>def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef gauss_rank(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) &gt; 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)</code></pre>",
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "tolerancePolicy": {
+        "mode": "deterministic-tests",
+        "absoluteTolerance": 1e-8
+      },
+      "hints": [
+        "Normalisiere Eingaben zuerst mit `np.asarray`; prüfe danach ndim und innere Dimensionen.",
+        "Für den Rang: Suche pro Spalte einen von null verschiedenen Pivot, vertausche Zeilen und eliminiere darunter.",
+        "Trenne Shape-Validierung, Rangalgorithmus und Systemlösung in drei kleine Verträge."
+      ],
+      "feedbackRules": [],
+      "typicalErrors": [
+        "Shape-Prüfung nach statt vor der Operation",
+        "Pivotspalte ohne Zeilentausch überspringen",
+        "nur einen bekannten Testfall hartcodieren"
+      ]
+    }
+  ]
+}

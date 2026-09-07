@@ -1,5 +1,5 @@
 // Single owner of the fail-closed content policy constants shared by the
-// public-build validators and the open-core export (ADR-0011/0016). The
+// public-build validators.
 // OUTPUT marker union is the strictest set any consumer ever shipped:
 // adopting it everywhere can only reject more, never less — the
 // cs50p-psets-harvard gap in the export scan and the .pyc/.jpeg binary
@@ -29,6 +29,3 @@ export const CANARY_NAME = /private|canary|secret/i;
 /** Binary artifacts are hashed and size-counted but never decoded as UTF-8
  *  text (scanning them for private markers produces false results). */
 export const BINARY_EXT = /\.(wasm|woff2?|ttf|zip|whl|exe|png|jpe?g|svg|ico|wav|pyc)$/i;
-
-/** Canonical manifest/hash format for every produced integrity artifact. */
-export const SHA256_HEX = /^[a-f0-9]{64}$/;

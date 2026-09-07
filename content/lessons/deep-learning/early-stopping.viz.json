@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Early Stopping",
+  "caption": "Ziehe t: Trainings- und Validierungsfehler zeigen, warum ein früher Stopp sinnvoll sein kann.",
+  "boundingbox": [-1, 5, 21, -1],
+  "sliders": [{ "name": "t", "label": "t", "range": [0, 20], "value": 8, "step": 0.1 }],
+  "objects": [
+    { "kind": "functiongraph", "expr": "exp(-0.3*x)", "label": "Training", "color": "#16713a" },
+    { "kind": "functiongraph", "expr": "exp(-0.3*x)+0.004*x^2", "label": "Validierung", "color": "#294bd6" },
+    { "kind": "point", "at": ["t", "exp(-0.3*t)+0.004*t^2"], "label": "Stopp", "color": "#b72f2a" },
+    { "kind": "text", "at": [1, -0.5], "text": "Val = {exp(-0.3*t)+0.004*t^2}", "color": "#294bd6" }
+  ]
+}

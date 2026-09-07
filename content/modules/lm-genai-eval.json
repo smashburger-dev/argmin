@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-genai-eval",
+  "version": 1,
+  "locale": "de",
+  "title": "Evaluation generativer Antworten: Gold-Antworten, Taxonomie, deterministische Metriken",
+  "description": "feste Evaluationsfragen mit Gold-Antworten und Quellenbelegen anlegen und vor der Messung einfrieren Antwortfehler mit einem geschlossenen Labelset (falsch-faktisch, unvollständig, halluziniert, quellos, off-topic, Formatfehler) deterministisch klassifizieren und von Retrieval-Fehlern trennen Exact Match, Contains, Zitat-Precision/Recall, Token-F1 und Konfusionsmatrix-zu-Precision/Recall/F1 ohne LLM-Judge berechnen",
+  "competencyIds": [
+    "c-genai-eval"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-ml-erroranalysis"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-genai-eval"
+  ],
+  "placements": [
+    {
+      "placementId": "p-genai-eval-1",
+      "role": "curated",
+      "familyId": "classify-eval-hazard",
+      "caseId": "eval-hazard-taxonomy",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-genai-eval",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-genai-eval-2",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "answer-filter-precision-recall-f1",
+      "seed": 2811,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-eval",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-eval-3",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "metric-code-output-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-eval",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-eval-4",
+      "role": "curated",
+      "familyId": "classify-rule-cascade-priority",
+      "caseId": "error-taxonomy-classify",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-genai-eval",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-eval-5",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "confusion-from-rows",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-genai-eval",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-eval-6",
+      "role": "curated",
+      "familyId": "aggregate-detector-eval-compare",
+      "caseId": "run-eval-compare-rulesets",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-genai-eval",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-eval-practice",
+      "role": "practice-space",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "answer-filter-precision-recall-f1",
+      "seed": 2811,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-genai-eval"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

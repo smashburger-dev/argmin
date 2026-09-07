@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-genai-prototype",
+  "version": 1,
+  "locale": "de",
+  "title": "Minimaler abgesicherter GenAI-Prototyp: Stub-Generator, Fixtur-Kontrollen, ehrliche Grenzen",
+  "description": "Retrieval, deterministische Evaluation und Sicherheitskontrollen zu einem minimalen Prototyp mit Stub-Generator zusammenfügen Least Privilege, erlaubte/verbotene Aktionen und nachvollziehbare Fehler umsetzen und mit einer Ablation (mit/ohne Kontrolle) messen ein Threat Model für den eigenen Prototyp führen und die Grenze zu einem produktiven LLM-System offen dokumentieren",
+  "competencyIds": [
+    "c-genai-prototype"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-genai-eval",
+    "c-genai-security"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-genai-prototype"
+  ],
+  "placements": [
+    {
+      "placementId": "p-genai-prototype-1",
+      "role": "curated",
+      "familyId": "classify-tool-policy",
+      "caseId": "tool-policy-least-privilege",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-genai-prototype",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-genai-prototype-2",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "allowed-action-count",
+      "seed": 3011,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-prototype",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-prototype-3",
+      "role": "curated",
+      "familyId": "trace-stub-doc-sentence-select",
+      "caseId": "stub-doc-sentence-select",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-prototype",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-prototype-4",
+      "role": "curated",
+      "familyId": "construct-stub-prototype-contract",
+      "caseId": "stub-prototype-contract",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-genai-prototype",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-prototype-5",
+      "role": "curated",
+      "familyId": "construct-secure-prototype-contract",
+      "caseId": "secure-prototype-contract",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-genai-prototype",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-prototype-6",
+      "role": "curated",
+      "familyId": "reproduce-pipeline-status-report",
+      "caseId": "pipeline-status-report",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-genai-prototype",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-prototype-practice",
+      "role": "practice-space",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "allowed-action-count",
+      "seed": 3011,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-genai-prototype"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

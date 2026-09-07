@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-shape-contract",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "shapes-w18-broadcast-axes",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w18-e3"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\nX = np.zeros((4, 3))\nW = np.zeros((3, 5))\nH = X @ W\nprint(H.shape)\nb = np.arange(5.0)\nprint((H + b).shape)\nprint(H.ndim, W.ndim, b.ndim)"
+      },
+      "expected": {
+        "output": "(4, 5)\n(4, 5)\n2 2 1"
+      },
+      "prompt": "Formen lesen: Was gibt dieses NumPy-Programm aus? Sage die Ausgaben der drei <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis: <code>b</code> hat die Form <code>(5,)</code> und broadcastet zeilenweise.",
+      "fullSolution": "$(4,3) @ (3,5)$ spannt die 3 auf: <code>H.shape</code> ist <code>(4, 5)</code>. <code>H + b</code> broadcastet <code>(5,)</code> als <code>(1, 5)</code> auf alle 4 Zeilen, Form bleibt <code>(4, 5)</code>. Die Achsenzahlen: <code>H.ndim = 2</code>, <code>W.ndim = 2</code>, <code>b.ndim = 1</code>. Ausgabe: <code>(4, 5)</code>, <code>(4, 5)</code>, <code>2 2 1</code>."
+    }
+  ]
+}

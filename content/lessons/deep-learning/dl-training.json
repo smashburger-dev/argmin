@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-dl-training",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Training Loops: Loss, Lernrate, Lernkurven",
   "objectives": [
@@ -18,6 +18,11 @@
       "blockId": "dl-training-core",
       "type": "worked-example",
       "contentRef": "lessons/deep-learning/dl-training.md"
+    },
+    {
+      "blockId": "dl-training-viz",
+      "type": "visualization",
+      "contentRef": "lessons/deep-learning/lr-step.viz.json"
     },
     {
       "blockId": "dl-training-checkpoint",

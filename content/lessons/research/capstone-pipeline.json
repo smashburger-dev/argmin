@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-capstone-pipeline",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Reproduzierbare Capstone-Pipeline: Manifest, Stages, feste Evaluation, Red-Team, Demo",
   "objectives": [
@@ -22,6 +22,11 @@
       "blockId": "capstone-pipeline-core",
       "type": "worked-example",
       "contentRef": "lessons/research/capstone-pipeline.md"
+    },
+    {
+      "blockId": "capstone-pipeline-viz",
+      "type": "visualization",
+      "contentRef": "lessons/research/chunk-overlap.viz.json"
     },
     {
       "blockId": "capstone-pipeline-check",

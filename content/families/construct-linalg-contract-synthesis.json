@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-linalg-contract-synthesis",
+  "contract": {
+    "familyId": "construct-linalg-contract-synthesis",
+    "familyGroup": "construct-program",
+    "summary": "Implementiert Shape-Vertrag, Pivot-Rang und Systemlöser als drei getrennte Funktionverträge in einer Synthese mit rechteckigen und abhängigen Fällen.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "synthesis-three-contracts",
+        "propertyTest": false
+      },
+      {
+        "caseId": "synthesis-singular-guard",
+        "propertyTest": false
+      },
+      {
+        "caseId": "synthesis-row-swap",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-numpy-basics",
+      "c-linalg-gauss"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "synthesis-three-contracts",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Erst rechnen, dann die Shapes prüfen — das Ergebnis verrät Fehler von selbst.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Rang ohne Zeilentausch: Pivotspalte mit Null oben wird übersprungen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein hartkodierter Testfall je Funktion als Beleg.",
+          "correct": false
+        }
+      ],
+      "prompt": "Drei Verträge in einer Synthese: Shape prüfen und `matvec` rechnen, Rang per Elimination mit Zeilentausch, System per `solve` mit Shape-Prüfung. Welche Implementierung erfüllt alle drei?",
+      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle."
+    },
+    {
+      "caseId": "synthesis-singular-guard",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "`solve` immer aufrufen und eine NumPy-Ausnahme als Vertragsprüfung verwenden.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur prüfen, ob A quadratisch ist; jede quadratische Matrix besitzt eine Inverse.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Den Rang ignorieren und für singuläre Fälle eine beliebige Lösung zurückgeben.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+          "correct": true
+        }
+      ],
+      "prompt": "Ein Vertrag soll `solve(A,b)` für quadratische Matrizen bereitstellen. Welche Kombination schützt auch singuläre Eingaben korrekt?",
+      "fullSolution": "Zuerst Shape und Quadratform prüfen, dann den Rang beziehungsweise die Singulärität prüfen und erst bei einer eindeutigen Lösung `solve` aufrufen; Fehler werden explizit gemeldet.",
+      "hints": [
+        "Shape-Prüfung beantwortet noch nicht, ob ein quadratisches System lösbar ist.",
+        "Eine singuläre Matrix kann quadratisch sein und trotzdem keine eindeutige Lösung besitzen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Eine rohe NumPy-Ausnahme beschreibt nicht den Vertrag und unterscheidet keine Formverletzung von einer singulären Eingabe; die Prüfungen müssen explizit erfolgen."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Quadratisch bedeutet nur gleiche Zeilen- und Spaltenzahl; eine quadratische Matrix kann wie bei abhängigen Zeilen singulär und nicht invertierbar sein."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Bei einer singulären Matrix darf die Routine keine beliebige Lösung als eindeutige Lösung ausgeben; der Vertrag muss den nicht eindeutigen Fall melden."
+        }
+      ],
+      "typicalErrors": [
+        "Bibliotheksausnahme mit einer verständlichen, vorgelagerten Vertragsdiagnose gleichgesetzt.",
+        "Quadratische Form fälschlich als Beweis für Invertierbarkeit verwendet.",
+        "Bei singulären Eingaben eine beliebige Antwort statt einer eindeutigen Lösbarkeitsprüfung akzeptiert."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    },
+    {
+      "caseId": "synthesis-row-swap",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Nullzeile überspringen und die aktuelle Spalte als Pivot zählen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Durch null teilen und die entstehende Unendlichkeit als Pivot verwenden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Matrix transponieren, bis zufällig ein Pivot oben steht.",
+          "correct": false
+        }
+      ],
+      "prompt": "Eine Rangroutine trifft in der aktuellen Pivotspalte auf eine Null. Welche Implementierung erfüllt den Elimination-Vertrag?",
+      "fullSolution": "Sie sucht unterhalb der Pivotposition eine geeignete Nichtnullzeile, tauscht sie nach oben und eliminiert danach; gibt es keine, geht sie zur nächsten Spalte weiter.",
+      "hints": [
+        "Ein Null-Pivot bedeutet nicht automatisch, dass alle verbleibenden Zeilen nutzlos sind.",
+        "Zeilentausch ist nötig, bevor durch den Pivot geteilt oder eliminiert wird."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Eine Null in der aktuellen Pivotposition ist noch keine Nullzeile; eine darunterliegende Nichtnullzeile kann den benötigten Pivot liefern."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Durch null zu teilen ist nicht zulässig und erzeugt keinen gültigen Pivot; zuerst muss eine geeignete Zeile getauscht oder die Spalte übersprungen werden."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Transponieren verändert die Eingabematrix und garantiert keinen Pivot an der gewünschten Stelle; der Vertrag verlangt einen Zeilentausch in der Restmatrix."
+        }
+      ],
+      "typicalErrors": [
+        "Null-Pivot und vollständig verschwindende Zeile als denselben Zustand behandelt.",
+        "Eine Division durch den Null-Pivot als zulässigen Eliminationsschritt angenommen.",
+        "Eine strukturelle Änderung durch Transponieren mit dem erlaubten Zeilentausch verwechselt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    }
+  ]
+}

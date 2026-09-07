@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "fit-mlp-val-curve-argmin",
+  "contract": {
+    "familyId": "fit-mlp-val-curve-argmin",
+    "familyGroup": "fit-model",
+    "summary": "Trainiert ein MLP mit einem rng in fester Reihenfolge, führt Trainings- und Validierungsverlust pro Epoche und leitet best_val_epoch als Argmin ab.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "mlp-val-curve-argmin",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-training",
+      "c-dl-autograd"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "mlp-val-curve-argmin",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w20-e6"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-dl-autograd"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef train_mlp_regression(X, y, hidden, lr, epochs, seed, val_fraction=0.25):\n    \"\"\"Train a small 2-layer MLP (ReLU) with full-batch SGD; return curves.\n\n    One rng = np.random.default_rng(seed) drives BOTH init (first) and the\n    split permutation (afterwards): the LAST k = round(n * f) permutation\n    indices are validation, the rest train. Per epoch, record train and val\n    loss of the CURRENT model first, then update on train data only.\n    Return {'train_loss', 'val_loss', 'best_val_epoch': int(argmin(val_loss))}.\n    Raise ValueError if k leaves no data on either side.\n    \"\"\"\n    # 1) init W1, b1, W2, b2 from rng; permute for the split\n    # 2) loop epochs: forward both splits, record losses, backward on train\n    # 3) argmin over val_loss as int\n    ...\n",
+        "tests": "rng = np.random.default_rng(2026)\nn = 200\nX = rng.normal(size=(n, 3))\ny = np.sin(X[:, :1]) * 0.8 + 0.1 * rng.normal(size=(n, 1))\nres1 = train_mlp_regression(X, y, 8, 0.01, 80, 42)\nres2 = train_mlp_regression(X, y, 8, 0.01, 80, 42)\n__check('Determinismus', res1 == res2)\n__check('Schluessel', set(res1.keys()) == {\"train_loss\", \"val_loss\", \"best_val_epoch\"})\n__check('Laengen', len(res1[\"train_loss\"]) == 80 and len(res1[\"val_loss\"]) == 80)\n__check('Trainingsverlust faellt', res1[\"train_loss\"][-1] < res1[\"train_loss\"][0])\n__check('Val auf getrennten Daten', res1[\"val_loss\"][0] != res1[\"train_loss\"][0])\n__check('best_val_epoch int im Bereich', isinstance(res1[\"best_val_epoch\"], int) and 0 <= res1[\"best_val_epoch\"] < 80)\n__check('best_val_epoch ist Argmin', res1[\"best_val_epoch\"] == int(np.argmin(res1[\"val_loss\"])))\nres3 = train_mlp_regression(X, y, 8, 0.01, 80, 43)\n__check('Anderer Seed -> anderer Lauf', res3[\"train_loss\"][0] != res1[\"train_loss\"][0])\ntry:\n    train_mlp_regression(X, y, 8, 0.01, 80, 42, val_fraction=0.0)\n    __check('Split Vertrag -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Split Vertrag -> ValueError', True)\ntry:\n    train_mlp_regression(X, y, 8, 0.01, 80, 42, val_fraction=1.0)\n    __check('Split Vertrag 1.0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Split Vertrag 1.0 -> ValueError', True)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\n\ndef train_mlp_regression(X, y, hidden, lr, epochs, seed, val_fraction=0.25):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    n, d = X.shape\n    k = int(round(n * val_fraction))\n    if k < 1 or k > n - 1:\n        raise ValueError(\"val_fraction muss beide Seiten nichtleer lassen\")\n    rng = np.random.default_rng(seed)\n    W1 = rng.normal(size=(d, hidden)) * 0.5\n    b1 = np.zeros(hidden)\n    W2 = rng.normal(size=(hidden, 1)) * 0.5\n    b2 = np.zeros(1)\n    perm = rng.permutation(n)\n    val_idx = perm[n - k:]\n    train_idx = perm[:n - k]\n    Xtr, ytr = X[train_idx], y[train_idx]\n    Xva, yva = X[val_idx], y[val_idx]\n    train_loss = []\n    val_loss = []\n    m = ytr.size\n    for _ in range(int(epochs)):\n        h_tr = np.maximum(0.0, Xtr @ W1 + b1)\n        out_tr = h_tr @ W2 + b2\n        train_loss.append(float(np.mean((out_tr - ytr) ** 2)))\n        h_va = np.maximum(0.0, Xva @ W1 + b1)\n        out_va = h_va @ W2 + b2\n        val_loss.append(float(np.mean((out_va - yva) ** 2)))\n        delta2 = (2.0 / m) * (out_tr - ytr)\n        dW2 = h_tr.T @ delta2\n        db2 = delta2.sum(axis=0)\n        delta1 = (delta2 @ W2.T) * (h_tr > 0)\n        dW1 = Xtr.T @ delta1\n        db1 = delta1.sum(axis=0)\n        W1 = W1 - lr * dW1\n        b1 = b1 - lr * db1\n        W2 = W2 - lr * dW2\n        b2 = b2 - lr * db2\n    return {\"train_loss\": train_loss, \"val_loss\": val_loss, \"best_val_epoch\": int(np.argmin(val_loss))}"
+      },
+      "prompt": "Final Boss Trainingsschleife: ein kleines MLP auf synthetischen Daten mit Validierung — ehrlich in Toy-Größe ($n \\le 300$, Full-Batch, kein Framework, kein GPU-Claim). <code>train_mlp_regression(X, y, hidden, lr, epochs, seed, val_fraction=0.25)</code>: Initialisiere aus <code>rng = np.random.default_rng(seed)</code> zuerst <code>W1 = rng.normal(size=(d, hidden)) * 0.5</code>, <code>b1 = Nullen</code>, <code>W2 = rng.normal(size=(hidden, 1)) * 0.5</code>, <code>b2 = Nullen</code> und ziehe danach mit demselben <code>rng</code> die Split-Permutation (letzte $k = \\mathrm{round}(n \\cdot f)$ Indizes = Validierung, Rest = Training; $1 \\le k \\le n-1$, sonst <code>ValueError</code>). Pro Epoche (Epochenbeginn): notiere Trainings- und Validierungsverlust des aktuellen Modells, dann ein Full-Batch-SGD-Update nur auf Trainingsdaten (Backward wie in Woche 19: $\\mathrm{delta2} = \\frac{2}{m}(\\hat{y} - y)$, ReLU-Maske). Rückgabe: <code>{\"train_loss\": [...], \"val_loss\": [...], \"best_val_epoch\": int}</code> mit <code>best_val_epoch = argmin(val_loss)</code>. Der Test prüft Determinismus bei Doppelaufruf, Längen, dass der Trainingsverlust fällt, dass Validierung auf getrennten Indizes gerechnet wird (anderer Wert als Trainingsverlust in Epoche 0) und dass <code>best_val_epoch</code> im Bereich liegt.",
+      "fullSolution": "def train_mlp_regression(X, y, hidden, lr, epochs, seed, val_fraction=0.25):\n    n, d = X.shape\n    k = int(round(n * val_fraction))\n    if k < 1 or k > n - 1:\n        raise ValueError(\"val_fraction muss beide Seiten nichtleer lassen\")\n    rng = np.random.default_rng(seed)\n    W1 = rng.normal(size=(d, hidden)) * 0.5\n    b1 = np.zeros(hidden)\n    W2 = rng.normal(size=(hidden, 1)) * 0.5\n    b2 = np.zeros(1)\n    perm = rng.permutation(n)\n    val_idx, train_idx = perm[n - k:], perm[:n - k]\n    Xtr, ytr, Xva, yva = X[train_idx], y[train_idx], X[val_idx], y[val_idx]\n    train_loss, val_loss = [], []\n    m = ytr.size\n    for _ in range(int(epochs)):\n        h_tr = np.maximum(0.0, Xtr @ W1 + b1)\n        out_tr = h_tr @ W2 + b2\n        train_loss.append(float(np.mean((out_tr - ytr) ** 2)))\n        h_va = np.maximum(0.0, Xva @ W1 + b1)\n        val_loss.append(float(np.mean((h_va @ W2 + b2 - yva) ** 2)))\n        delta2 = (2.0 / m) * (out_tr - ytr)\n        dW2 = h_tr.T @ delta2\n        db2 = delta2.sum(axis=0)\n        delta1 = (delta2 @ W2.T) * (h_tr > 0)\n        dW1 = Xtr.T @ delta1\n        db1 = delta1.sum(axis=0)\n        W1, b1 = W1 - lr * dW1, b1 - lr * db1\n        W2, b2 = W2 - lr * dW2, b2 - lr * db2\n    return {\"train_loss\": train_loss, \"val_loss\": val_loss, \"best_val_epoch\": int(np.argmin(val_loss))}\n\n# Deterministischer Doppelaufruf, Trainingsverlust faellt, Validierung auf getrennten Indizes",
+      "hints": [
+        "EIN rng für alles, in fester Reihenfolge: erst die vier Initialisierungen, danach perm = rng.permutation(n). Die LETZTEN k Indizes sind Validierung — dokumentierte Reihenfolge macht den Lauf reproduzierbar.",
+        "Pro Epoche: beide Verluste des aktuellen Modells notieren (Validierung ohne Update!), dann Backward + Update nur auf Trainingsdaten. best_val_epoch = int(np.argmin(val_loss))."
+      ],
+      "feedbackRules": [
+        {
+          "if": "val-updated-too",
+          "then": "Updates laufen nur über Trainingsdaten — der Validierungsverlust misst sonst dasselbe Modell wie der Trainingsverlust."
+        },
+        {
+          "if": "rng-order-deviates",
+          "then": "Die Test-Referenz erwartet die dokumentierte rng-Reihenfolge (erst Init, dann Permutation) — andere Reihenfolge bricht die Determinismus-Erwartung der Plattform nicht, aber den Vertrag dieser Aufgabe."
+        },
+        {
+          "if": "best-epoch-off-by-one",
+          "then": "argmin liefert 0-basierte Indizes; best_val_epoch ist ein int im Bereich [0, epochs)."
+        }
+      ],
+      "typicalErrors": [
+        "Updates auch auf Validierungsdaten gerechnet",
+        "zwei rng-Quellen oder andere Reihenfolge als dokumentiert",
+        "argmin 1-basiert oder als np.int64 statt int zurückgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

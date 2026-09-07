@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-assignment-state",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "gradient-loop-two-updates",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w08-e3"
+      ],
+      "competencyIds": [
+        "c-grad-regression",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "w, b, lr = 2.0, 4.0, 0.1\nfor grad_w, grad_b in [(3.0, -6.0), (1.5, -3.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))"
+      },
+      "expected": {
+        "output": "1.55 4.9"
+      },
+      "prompt": "Abstiegsschleife lesen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen. Die Schleife macht zwei vollständige Updates für <code>w</code> und <code>b</code>.",
+      "fullSolution": "Durchlauf 1: $w = 2{,}0 - 0{,}1 \\cdot 3{,}0 = 1{,}7$, $b = 4{,}0 - 0{,}1 \\cdot (-6{,}0) = 4{,}6$. Durchlauf 2: $w = 1{,}7 - 0{,}1 \\cdot 1{,}5 = 1{,}55$, $b = 4{,}6 - 0{,}1 \\cdot (-3{,}0) = 4{,}9$. Ausgabe: <code>1.55 4.9</code>.",
+      "hints": [
+        "Pro Durchlauf werden w und b beide aktualisiert: abziehen von lr · Gradient. Minus mal Minus gibt Plus — b steigt hier.",
+        "Erster Durchlauf: w = 2,0 − 0,3, b = 4,0 + 0,6. Diese neuen Werte sind der Start des zweiten Durchlaufs."
+      ],
+      "feedbackRules": [
+        {
+          "if": "one-step-only",
+          "then": "Die Schleife läuft zweimal — beide Updates anwenden, mit den Werten aus dem ersten Durchlauf weiterrechnen."
+        },
+        {
+          "if": "sign-flipped",
+          "then": "b ← b − 0,1 · (−6) = b + 0,6 und b ← b − 0,1 · (−3) = b + 0,3 — negatives Gradienten-Update erhöht b."
+        }
+      ],
+      "typicalErrors": [
+        "nur einen Schleifendurchlauf gerechnet",
+        "negatives Gradienten-Update als Subtraktion gelesen",
+        "w- und b-Updates vermischt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "tree-majority-vote-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w15-e3"
+      ],
+      "competencyIds": [
+        "c-ml-ensembles",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((4, 3))\npred_b = predict((6, 3))\npred_c = predict((6, 5))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0",
+        "variables": [
+          {
+            "name": "votes",
+            "value": 1
+          },
+          {
+            "name": "pred",
+            "value": 0
+          }
+        ]
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Entscheidungsbaum von Hand ausführen: Der Code implementiert einen Baum der Tiefe 2 als if/else-Kette und kombiniert drei Vorhersagen per Mehrheitsentscheidung. Welche Werte haben <code>votes</code> und <code>pred</code> nach Ablauf? Gehe die Aufrufe einzeln durch.",
+      "fullSolution": "predict((4,3)): 4 <= 5, aber 3 > 2 → 0. predict((6,3)): 6 > 5 und 3 <= 4 → 0. predict((6,5)): 6 > 5 und 5 > 4 → 1. votes = 0 + 0 + 1 = 1, pred = 0 (weil 1 < 2).",
+      "hints": [
+        "Für jeden Aufruf zuerst die äußere Frage (x[0] <= 5) klären, dann die passende innere Frage.",
+        "pred_a = predict((4, 3)) geht in den linken Ast, aber x[1] = 3 > 2 — die anderen beiden Aufrufe starten im rechten Ast."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:votes",
+          "then": "Zähle die Einsen der drei Aufrufe: nur ein Aufruf liefert 1."
+        },
+        {
+          "if": "value:pred",
+          "then": "votes = 1 ist kleiner als 2 — die Mehrheitsregel (votes >= 2) gibt deshalb 0."
+        }
+      ],
+      "typicalErrors": [
+        "innere Fragen des falschen Astes auswerten",
+        "pred als 1 lesen, weil irgendein Modell 1 liefert",
+        "die Mehrheitsschwelle als strikt größer 2 lesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "rng-stream-reseed-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w17-e3"
+      ],
+      "competencyIds": [
+        "c-ml-repro",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\n\nrng = np.random.default_rng(7)\na = rng.integers(0, 10, size=3)\nb = rng.integers(0, 10, size=3)\nc = np.random.default_rng(7).integers(0, 10, size=3)\nprint(a[0] + b[0] + c[0])"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "26"
+      },
+      "prompt": "Zufallsströme vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(a[0] + b[0] + c[0])</code> vorher, ohne den Code auszuführen. Beachte, dass <code>c</code> von einem <b>neuen</b> Generator mit demselben Seed gezogen wird und <code>b</code> vom bereits benutzten <code>rng</code>.",
+      "fullSolution": "default_rng(7) beginnt mit [9, 6, 6]: a = [9, 6, 6]. Der nächste Aufruf im selben Generator setzt die Folge fort: b = [8, 5, 7]. Ein neuer Generator mit Seed 7 startet von vorn: c = [9, 6, 6]. Ausgabe: 9 + 8 + 9 = <code>26</code>.",
+      "hints": [
+        "Ein neuer default_rng(7) startet die Folge von vorn — welche Beziehung gilt deshalb zwischen a und c?",
+        "Im selben rng läuft die Folge weiter: b ist die zweite Ziehung. Die Zahlen (Seed 7, Bereich 0–10) sind a = [9, 6, 6], b = [8, 5, 7]."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 24",
+          "then": "24 entsteht, wenn man b[0] wie einen frischen Seed-7-Strom als 9 liest — b ist aber die Fortsetzung von rng."
+        },
+        {
+          "if": "value === 30",
+          "then": "Hast du a[0] zweimal mit b[0] = 12 gerechnet? Prüfe die erste Ziehung jeder Liste."
+        }
+      ],
+      "typicalErrors": [
+        "Fortsetzung im selben Generator wie Neustart behandeln",
+        "Indizes 0 mit 1 verwechseln",
+        "den dritten Generator als Fortsetzung lesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "manual-backward-step-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e3"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "grad_out = 6        # dL/dz (Upstream)\nlocal = -2          # dz/dw (lokal)\ngrad_w = grad_out * local\nw = 4.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 1.0 - 0.5 * grad_b",
+        "variables": [
+          {
+            "name": "grad_w",
+            "value": -12
+          },
+          {
+            "name": "w",
+            "value": 10
+          },
+          {
+            "name": "grad_b",
+            "value": 6
+          },
+          {
+            "name": "b",
+            "value": -2
+          }
+        ]
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Einen manuellen Backward-Schritt nachvollziehen: Welche Werte haben <code>grad_w</code>, <code>w</code>, <code>grad_b</code> und <code>b</code> nach Ablauf des Programms? Trage die vier ganzzahligen Werte ein (der Upstream-Gradient ist $\\partial L/\\partial z = 6$, der lokale Gradient $\\partial z / \\partial w = -2$; SGD-Update mit $\\mathrm{lr} = 0{,}5$ entgegen dem Gradienten).",
+      "fullSolution": "$\\mathrm{grad}_w = 6 \\cdot (-2) = -12$; $w = 4{,}0 - 0{,}5 \\cdot (-12) = 10{,}0$. $\\mathrm{grad}_b = 6 \\cdot 1 = 6$; $b = 1{,}0 - 0{,}5 \\cdot 6 = -2{,}0$. Als Ganzzahlen: −12, 10, 6, −2.",
+      "hints": [
+        "Kettenregel: $\\partial L / \\partial w = \\partial L / \\partial z \\cdot \\partial z / \\partial w$. Für den Bias ist der lokale Gradient 1 — warum?",
+        "Update: $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}_w$. Achte auf die Vorzeichen: was passiert bei negativem Gradienten und positiver Lernrate?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:grad_w+value:w",
+          "then": "grad_w ist das Produkt aus Upstream und lokal (6 · (−2) = −12); w folgt daraus mit entgegengesetztem Update-Vorzeichen."
+        },
+        {
+          "if": "value:grad_b+value:b",
+          "then": "grad_b übernimmt den Upstream unverändert (lokaler Gradient 1); b = 1,0 − 0,5 · 6 = −2,0."
+        }
+      ],
+      "typicalErrors": [
+        "Vorzeichen im Update gedreht (Abstieg statt Aufstieg)",
+        "den lokalen Gradienten ohne Upstream verwendet",
+        "Bias-Gradient als 0 statt Upstream · 1 gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "fixed-dropout-mask-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w21-e3"
+      ],
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-numpy-basics"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\nmask = np.array([True, False, False, True, True, False, True, False])\nx = np.arange(1, 9)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))"
+      },
+      "expected": {
+        "output": "17\n4"
+      },
+      "prompt": "Feste Maske lesen: Was gibt dieses NumPy-Programm aus? Sage die Ausgaben der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Maske ist explizit gegeben — kein Zufall, kein Seed nötig.",
+      "fullSolution": "True steht an den Positionen 0, 3, 4, 6 — behalten werden die Werte 1, 4, 5, 7 mit Summe 17. Die Maske hat 4 Einsen. Ausgabe: <code>17</code> und <code>4</code>.",
+      "hints": [
+        "Boolean-Indexierung behält genau die Positionen mit True: Welche Werte von x bleiben stehen?",
+        "mask.sum() zählt True als 1 — die Anzahl der Einsen. kept.sum() ist die Summe der BEHALTENEN Werte, nicht der Positionen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Behalten bleiben die Werte an den True-Positionen: 1, 4, 5, 7 — Summe 17."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Vier True-Einträge in der Maske: int(mask.sum()) ist 4."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Summe der erhaltenen Werte, dann die Anzahl der erhaltenen Positionen."
+        }
+      ],
+      "typicalErrors": [
+        "Summe der Indizes statt der Werte gerechnet",
+        "gedroppte statt behaltene Werte summiert",
+        "Anzahl der behaltenen Werte mit ihrer Summe verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "stable-softmax-rows-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w22-e3"
+      ],
+      "parameters": {
+        "snippet": "import math\n\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\n\nprint(row_softmax([2, 0]))\nprint(row_softmax([0, 1, 1]))"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "[0.881, 0.119]\n[0.155, 0.422, 0.422]"
+      },
+      "prompt": "Stabiles Softmax lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. <code>row_softmax</code> zieht das Zeilenmaximum ab und rundet auf 3 Nachkommastellen.",
+      "fullSolution": "Zeile 1: Scores $(0, -2)$, Gewichte $\\frac{1}{1+e^{-2}} \\approx 0{,}881$ und $0{,}119$. Zeile 2: Scores $(-1, 0, 0)$ mit $e^{-1} \\approx 0{,}368$: Gewichte $\\approx (0{,}155, 0{,}422, 0{,}422)$. Ausgabe: <code>[0.881, 0.119]</code> und <code>[0.155, 0.422, 0.422]</code>.",
+      "hints": [
+        "Softmax zeilenweise: erst das Zeilenmaximum abziehen (numerische Stabilität), dann exponentieren und durch die Zeilensumme teilen.",
+        "Zeile 2 enthält zwei identische Scores — was passiert mit ihren Gewichten, und welche Summe ergibt die Zeile insgesamt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die erste print-Zeile liefert eine 2er-Liste, die zweite eine 3er-Liste."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — je eine pro print-Aufruf."
+        }
+      ],
+      "typicalErrors": [
+        "Maximum nicht abgezogen (Scores direkt exponentiiert)",
+        "über die falsche Achse normalisiert",
+        "gerundete Werte in falscher Reihenfolge notiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "char-encode-roundtrip-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w23-e3"
+      ],
+      "parameters": {
+        "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\n\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\n\nids = encode(\"cab\")\nprint(ids)\nprint(len(set(ids)) == len(ids))"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "[0, 4, 2, 3, 1]\nTrue"
+      },
+      "prompt": "Encode lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. <code>encode</code> stellt jedes Wort als Zeichen-IDs mit <code>&lt;pad&gt;</code> am Anfang und <code>&lt;/w&gt;</code> am Wortende dar.",
+      "fullSolution": "„cab“: <code>&lt;pad&gt;</code>=0, dann c=4, a=2, b=3, dann <code>&lt;/w&gt;</code>=1 → <code>[0, 4, 2, 3, 1]</code>. Alle fünf IDs sind verschieden → <code>True</code>.",
+      "hints": [
+        "Erst der feste <code>&lt;pad&gt;</code>-Index, dann die Zeichen von links, dann der End-of-Word-Marker.",
+        "Der zweite print prüft, ob alle IDs verschieden sind — Anfangs- und Endmarker zählen mit."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die ID-Liste hat 5 Einträge: pad, drei Zeichen, Marker."
+        },
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Liste, dann True/False."
+        }
+      ],
+      "typicalErrors": [
+        "Zeichenreihenfolge beim Ablesen vertauscht",
+        "Marker-IDs vergessen",
+        "set-Vergleich als False eingeschätzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "freeze-param-filter-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w25-e3"
+      ],
+      "parameters": {
+        "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\n\nparams = freeze([\"backbone.w1\", \"backbone.w2\", \"head.w3\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])"
+      },
+      "competencyIds": [
+        "c-dl-finetuning",
+        "c-python-basics"
+      ],
+      "expected": {
+        "output": "1\nbackbone.w1"
+      },
+      "prompt": "Freeze-Logik lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Parameter, deren Name mit „backbone“ beginnt, gelten als eingefroren (kein Training).",
+      "fullSolution": "freeze markiert backbone.w1 und backbone.w2 als False (eingefroren), head.w3 als True → erste Zeile <code>1</code>. Sortierte eingefrorene Namen: <code>[\"backbone.w1\", \"backbone.w2\"]</code> → zweite Zeile <code>backbone.w1</code>.",
+      "hints": [
+        "Drei Parameter, zwei mit „backbone“-Präfix — nur der head bleibt trainierbar.",
+        "sorted() liefert die eingefrorenen Namen aufsteigend; [0] nimmt den lexikographisch ersten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Zwei Ausgabezeilen: erst die Anzahl trainierbarer Parameter, dann der erste eingefrorene Name."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Trainierbar ist nur head.w3 — die backbone-Parameter stehen auf False."
+        }
+      ],
+      "typicalErrors": [
+        "Präfix-Logik invertiert",
+        "sortierte Reihenfolge von Strings unterschätzt",
+        "Anzahl statt Index verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "absolute-vs-relative-gain-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w26-e3"
+      ],
+      "parameters": {
+        "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(72, 78)\na2, r2 = gains(250, 262)",
+        "variables": [
+          {
+            "name": "a1",
+            "value": 6
+          },
+          {
+            "name": "r1",
+            "value": 8
+          },
+          {
+            "name": "a2",
+            "value": 12
+          },
+          {
+            "name": "r2",
+            "value": 5
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-dl-papers",
+        "c-python-basics"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Code-Tracing absolut vs. relativ: Was sind die Werte der Variablen <code>a1</code>, <code>r1</code>, <code>a2</code>, <code>r2</code>, nachdem dieses Programm gelaufen ist? <code>absolut</code> zählt Einheiten (z. B. Prozentpunkte), <code>relativ</code> rundet 100·(neu − alt)/alt auf eine ganze Zahl.",
+      "fullSolution": "gains(72, 78): absolut = 6, relativ = round(8,33…) = 8. gains(250, 262): absolut = 12, relativ = round(4,8) = 5. Also a1 = 6, r1 = 8, a2 = 12, r2 = 5 — dieselben Zahlen, zwei ehrliche Lesarten.",
+      "hints": [
+        "Erst die Differenz: 78 − 72 und 262 − 250; das sind die absoluten Werte.",
+        "Relativ: 100·6/72 = 8,33… → round → 8; 100·12/250 = 4,8 → round → 5."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:a1+value:r1",
+          "then": "a1 ist die Differenz in Punkten (6), r1 der gerundete relative Anteil (8) — nicht umgekehrt."
+        },
+        {
+          "if": "value:r2",
+          "then": "round(4.8) = 5 — Python rundet hier kaufmännisch auf die nächste ganze Zahl."
+        }
+      ],
+      "typicalErrors": [
+        "absolut und relativ vertauscht",
+        "round()-Verhalten bei ,5-Werten missverstanden",
+        "relative Basis (alt statt neu) verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "card-check-variable-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w32-e3"
+      ],
+      "parameters": {
+        "snippet": "card = {\"name\": \"faq-korpus\", \"zweck\": \"support\", \"split_train\": 0.8, \"split_dev\": 0.1, \"split_test\": 0.1}\npflicht = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\"]\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt",
+        "variables": [
+          {
+            "name": "n_fehlt",
+            "value": 3
+          },
+          {
+            "name": "promille",
+            "value": 1000
+          },
+          {
+            "name": "felder",
+            "value": 8
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-research-cards",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Code lesen und die Endwerte der Variablen angeben: Eine Kartenprüfung zählt fehlende Pflichtfelder und prüft die Split-Summe. Was stehen für <code>n_fehlt</code>, <code>promille</code> und <code>felder</code> am Ende?",
+      "fullSolution": "n_fehlt = 3 (herkunft, lizenz, n_beispiele fehlen als Schlüssel). summe = round(0.8 + 0.1 + 0.1, 3) = 1.0 → promille = 1000. felder = len(card) + n_fehlt = 5 + 3 = 8.",
+      "hints": [
+        "n_fehlt zählt die Pflichtfelder, die als Schlüssel nicht im Dict stehen — herkunft, lizenz und n_beispiele.",
+        "Die drei split_-Schlüssel summieren sich auf 1,0; promille ist der Anteil in Tausendsteln als ganze Zahl."
+      ],
+      "feedbackRules": [
+        {
+          "if": "n_fehlt-wrong",
+          "then": "f not in card prüft Schlüssel-Existenz: herkunft, lizenz, n_beispiele fehlen → drei Felder."
+        },
+        {
+          "if": "promille-wrong",
+          "then": "0.8 + 0.1 + 0.1 = 1.0 (nach round auf 3 Stellen) → 1.0 · 1000 = 1000 Tausendstel."
+        },
+        {
+          "if": "felder-wrong",
+          "then": "len(card) = 5 erfasste Schlüssel plus 3 fehlende Pflichtfelder = 8."
+        }
+      ],
+      "typicalErrors": [
+        "Leerstring- und fehlende Schlüssel verwechselt (hier steht kein leerer Wert)",
+        "Summe vor dem Runden weiterverwendet",
+        "len(card) ohne die fehlenden Felder gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "rpn-priority-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w33-e3"
+      ],
+      "parameters": {
+        "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(4, 2, 2)\nr2 = rpn(5, 3, 1)\nr3 = rpn(3, 1, 2)\nhoechste = max(r1, r2, r3)",
+        "variables": [
+          {
+            "name": "r1",
+            "value": 16
+          },
+          {
+            "name": "r2",
+            "value": 15
+          },
+          {
+            "name": "r3",
+            "value": 6
+          },
+          {
+            "name": "hoechste",
+            "value": 16
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-research-responsible",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Code lesen und die Endwerte angeben: Eine RPN-Priorisierung (Risiko · Prävalenz · Kontrolle) wird für drei Risikoeinträge eines Registers durchgerechnet. Was stehen für <code>r1</code>, <code>r2</code>, <code>r3</code> und <code>hoechste</code> am Ende?",
+      "fullSolution": "r1 = 4 · 2 · 2 = 16, r2 = 5 · 3 · 1 = 15, r3 = 3 · 1 · 2 = 6, hoechste = max(16, 15, 6) = 16.",
+      "hints": [
+        "Jeder Wert ist das Produkt dreier kleiner Zahlen.",
+        "Eintrag zwei hat die hoechste Einzelzahl, aber die niedrigste Kontrollstufe."
+      ],
+      "feedbackRules": [
+        {
+          "if": "r2-wrong",
+          "then": "r2 = 5 · 3 · 1 = 15 — die Kontrollstufe 1 drückt das Produkt trotz hoher Prävalenz."
+        },
+        {
+          "if": "hoechste-wrong",
+          "then": "max(16, 15, 6) = 16 — das Datenleck bleibt oberster Eintrag, knapp vor der Injektion."
+        }
+      ],
+      "typicalErrors": [
+        "Produkte in falscher Reihenfolge zugeteilt",
+        "max auf die Eingabewerte statt die RPN-Werte angewandt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "metric-name-normalize-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w31-e3"
+      ],
+      "parameters": {
+        "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\ne = extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner die Überlappung, desto geringer die recall@5-Quote\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])"
+      },
+      "competencyIds": [
+        "c-research-question",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "die chunkgröße\nder anteil korrekter antworten\ndie überlappung\ndie recall@5-quote"
+      },
+      "prompt": "Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Funktion zerlegt eine Je-desto-Hypothese in unabhängige Variable (UV) und abhängige Variable (DV).",
+      "fullSolution": "Erster Aufruf: vorderer = „Je größer die Chunkgröße“ → [2:] = „die Chunkgröße“ → <code>die chunkgröße</code>; hinterer = „höher der Anteil korrekter Antworten“ → [1:] = <code>der anteil korrekter antworten</code>. Zweiter Aufruf entsprechend <code>die überlappung</code> und <code>die recall@5-quote</code>.",
+      "hints": [
+        "vorderer.split()[2:] lässt „Je“ und das erste Wort (die Richtung wie „größer“) weg — der Rest ist die UV.",
+        "hinterer.split()[1:] lässt das erste Wort nach „desto“ (die Richtung) weg; alles wird kleingeschrieben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "direction-included",
+          "then": "Die Richtungsadjektive („größer“, „geringer“) gehören nicht zu UV oder DV — split()[2:] beziehungsweise split()[1:] schneiden sie ab."
+        },
+        {
+          "if": "case-wrong",
+          "then": "Beide Variable werden mit .lower() kleingeschrieben — „Chunkgröße“ wird zu „chunkgröße“."
+        }
+      ],
+      "typicalErrors": [
+        "Richtungsadjektiv mit in die Variable aufgenommen",
+        "Groß-/Kleinschreibung nicht mitgerechnet",
+        "den Punkt am Satzende mit in die DV übernommen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "stage-runner-error-states",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w36-e3"
+      ],
+      "parameters": {
+        "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\n\ndef ok_fn():\n    return 7\n\ndef kaputt_fn():\n    raise ValueError(\"daten weg\")\n\ndef langsam_fn():\n    return 1\n\nuhr = iter([0, 40, 100, 100, 200])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)",
+        "variables": [
+          {
+            "name": "status_zeile",
+            "value": "ok fehler timeout"
+          },
+          {
+            "name": "summe",
+            "value": 7
+          }
+        ]
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Stage-Runner mit zwei Fehlerzuständen lesen: Der Code fängt ValueError als „fehler“ und Budgetüberschreitung als „timeout“ ab. Welche Werte haben <code>status_zeile</code> und <code>summe</code> nach Ablauf? Die Uhr liefert nacheinander 0, 40, 100, 100, 200 (Millisekunden).",
+      "fullSolution": "a: start 0, fn ok, Ende 40 → Dauer 40 ≤ 50 → ok, wert 7. b: start 100, fn wirft ValueError → status fehler — die Uhr wird danach NICHT mehr aufgerufen, es gibt keinen wert-Schlüssel. c: start 100, Ende 200 → Dauer 100 > 50 → timeout. status_zeile = \"ok fehler timeout\", summe = 7 + 0 + 0 = 7.",
+      "hints": [
+        "Wie oft liest die Uhr bei einer Ausnahme? Der except-Zweig kehrt zurück, bevor die Endzeit gelesen wird.",
+        "b und c tragen keinen wert-Schlüssel — get(\"wert\", 0) fängt das ab."
+      ],
+      "feedbackRules": [
+        {
+          "if": "zweiter-uhr-aufruf-bei-exception",
+          "then": "Nach ValueError gibt die Stage sofort zurück: Nur EIN clock()-Aufruf — die 100 gehört zum Start von c, nicht zum Ende von b."
+        },
+        {
+          "if": "timeout-mit-wert",
+          "then": "Der Timeout-Bericht hat keinen wert-Schlüssel — summe greift dafür auf 0 zurück."
+        }
+      ],
+      "typicalErrors": [
+        "den gedachten Endpunkt für die Exception mitgezählt (Uhr wird nur einmal gelesen)",
+        "timeout-Eintrag mit wert angenommen",
+        "Dauer von 100 auf die falschen Messpunkte gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "overclaim-scanner-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w38-e3"
+      ],
+      "parameters": {
+        "snippet": "PHRASEN = [\"produktionsreif\", \"sicher gegen\", \"halluziniert nie\"]\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = \"Unser Prototyp ist produktionsreif und halluziniert nie bei Versandanfragen.\"\nprint(scan(text, PHRASEN))\nprint(len(scan(\"Der Stub kopiert nur Saetze.\", PHRASEN)))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "['halluziniert nie', 'produktionsreif']\n0"
+      },
+      "prompt": "Overclaim-Scanner lesen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen.",
+      "fullSolution": "Kleinschreibung, dann Teilstring-Suche je Phrase: gefunden sind „produktionsreif“ und „halluziniert nie“, sortiert <code>['halluziniert nie', 'produktionsreif']</code>. Der zweite Satz ist sauber → <code>0</code>. „sicher gegen“ fehlt im Text und fehlt deshalb in der Liste.",
+      "hints": [
+        "Der Vergleich läuft kleingeschrieben — Großschreibung im Text stört nicht.",
+        "sorted() ordnet die Funde alphabetisch; „halluziniert nie“ steht vor „produktionsreif“."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Gefunden werden „produktionsreif“ und „halluziniert nie“ — sortiert steht „halluziniert nie“ zuerst."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Der zweite Text enthält keine der Phrasen → leere Liste → Länge 0."
+        }
+      ],
+      "typicalErrors": [
+        "Groß-/Kleinschreibung beim Vergleich ignoriert",
+        "Fundreihenfolge statt alphabetisch ausgegeben",
+        "leere Liste als None gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "column-picture-trace",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w05-e15"
+      ],
+      "competencyIds": [
+        "c-linalg-matrices",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "spalte1 = (2, 1)\nspalte2 = (1, 3)\nx = (1, 2)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]",
+        "variables": [
+          {
+            "name": "b0",
+            "value": 4
+          },
+          {
+            "name": "b1",
+            "value": 7
+          }
+        ]
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Spaltenbild von Hand getracet: Was haben <code>b0</code> und <code>b1</code> nach Ablauf des Codes für Werte? Das ist genau $b = A\\,x$ mit $A=(\\text{spalte1}\\,|\\,\\text{spalte2})$.",
+      "fullSolution": "b0 = 1·2 + 2·1 = 4 und b1 = 1·1 + 2·3 = 7 — also b = (4, 7), exakt das Spaltenbild $b = x_1 a_1 + x_2 a_2$.",
+      "hints": [
+        "Was leistet jeder Koeffizient von x — welche Spalte gewichtet er, und welche Komponente?",
+        "b0 = 1·(erste Komponente von spalte1) + 2·(erste Komponente von spalte2); für b1 entsprechend die zweiten Komponenten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value:b0+value:b1",
+          "then": "Prüfe die Indizes: b0 nutzt die jeweils ERSTEN Komponenten beider Spalten, b1 die jeweils zweiten."
+        }
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    }
+  ]
+}

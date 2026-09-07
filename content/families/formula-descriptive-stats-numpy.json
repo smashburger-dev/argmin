@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-descriptive-stats-numpy",
+  "contract": {
+    "familyId": "formula-descriptive-stats-numpy",
+    "familyGroup": "formula-apply",
+    "summary": "Implementiert deskriptive Kennzahlen und Histogramm-Bins mit NumPy.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "describe-and-bins",
+        "propertyTest": false
+      },
+      {
+        "caseId": "describe-outlier-bins",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-eda-viz",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "describe-and-bins",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w07-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef describe(values):\n    \"\"\"Return {'n', 'mean', 'median', 'std'} with population std (ddof=0).\"\"\"\n    ...\n\n\ndef bin_counts(values, edges):\n    \"\"\"Return counts per bin with np.histogram edge rules (last edge inclusive).\"\"\"\n    ...\n",
+        "tests": "d = describe([2, 4, 4, 4, 5, 5, 7, 9])\n__check('n', d[\"n\"] == 8)\n__check('mean', abs(d[\"mean\"] - 5.0) < 1e-9)\n__check('median', abs(d[\"median\"] - 4.5) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std([2, 4, 4, 4, 5, 5, 7, 9]))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts([2, 4, 4, 4, 5, 5, 7, 9], [0, 4, 9]), np.array([1, 7])))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([5.0, 9.0, 9.0], [0, 5, 9]), np.array([0, 3])))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 8.0], [0, 2, 4, 9]), np.array([1, 0, 1])))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef describe(values):\n    values = np.asarray(values, dtype=float)\n    return {\n        \"n\": int(values.size),\n        \"mean\": float(np.mean(values)),\n        \"median\": float(np.median(values)),\n        \"std\": float(np.std(values)),\n    }\n\n\ndef bin_counts(values, edges):\n    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]"
+      },
+      "prompt": "Implementiere zwei Zusammenfassungs-Funktionen mit NumPy. <code>describe(values)</code> bekommt eine Liste oder ein Array von Zahlen und gibt ein Dictionary mit <code>\"n\"</code> (Anzahl der Werte, int), <code>\"mean\"</code>, <code>\"median\"</code> und <code>\"std\"</code> zurück (floats; Standardabweichung als Bevölkerungswert, also <code>ddof=0</code> wie im NumPy-Standard). <code>bin_counts(values, edges)</code> bekommt Werte und Bin-Kanten und gibt die Anzahlen pro Bin zurück — mit den Kantenregeln von <code>np.histogram</code>: halboffene Bins $[e_k, e_{k+1})$, nur der letzte Bin schließt die rechte Kante ein. Der Testcode prüft beide Funktionen getrennt von deiner Eingabe.",
+      "fullSolution": "def describe(values):\n    values = np.asarray(values, dtype=float)\n    return {\n        \"n\": int(values.size),\n        \"mean\": float(np.mean(values)),\n        \"median\": float(np.median(values)),\n        \"std\": float(np.std(values)),\n    }\n\n\ndef bin_counts(values, edges):\n    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]\n\n# describe([2, 4, 4, 4, 5, 5, 7, 9]) -> {'n': 8, 'mean': 5.0, 'median': 4.5, 'std': 2.0}\n# bin_counts([2, 4, 4, 4, 5, 5, 7, 9], [0, 4, 9]) -> array([1, 7])",
+      "hints": [
+        "Erst mit np.asarray(values, dtype=float) normalisieren, dann die Aggregationen — .size liefert n, np.std nutzt standardmäßig ddof=0.",
+        "bin_counts muss die Kantenregeln von np.histogram treffen: bins-Argument als Kanten übergeben und die Anzahlen ([0]-Index) zurückgeben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "std-ddof-wrong",
+          "then": "Sample-Standardabweichung mit ddof=1 ist hier falsch — gefragt ist der Bevölkerungswert ddof=0."
+        },
+        {
+          "if": "bin-edges-inclusive",
+          "then": "Nur der letzte Bin schließt die rechte Kante ein: [0, 4) und [4, 9] — die 4 zählt in den zweiten Bin."
+        },
+        {
+          "if": "n-type-wrong",
+          "then": "\"n\" muss ein Python-int sein (int(...)), kein NumPy-Skalar, falls der Test auf == 8 mit Typ prüft."
+        }
+      ],
+      "typicalErrors": [
+        "ddof=1 statt ddof=0 verwendet",
+        "Bin-Kanten als inklusive Intervalle links und rechts gelesen",
+        "len(values) statt .size nach der Array-Umwandlung gemischt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      }
+    },
+    {
+      "caseId": "describe-outlier-bins",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef describe(values):\n    ...\n\ndef bin_counts(values, edges):\n    ...\n",
+        "tests": "d = describe([1, 2, 2, 4, 8])\n__check(\"n\", d[\"n\"] == 5)\n__check(\"mean\", abs(d[\"mean\"] - 3.4) < 1e-9)\n__check(\"median\", abs(d[\"median\"] - 2.0) < 1e-9)\n__check(\"std\", abs(d[\"std\"] - float(np.std([1, 2, 2, 4, 8]))) < 1e-12)\n__check(\"bins\", np.array_equal(bin_counts([1, 2, 2, 4, 8], [0, 2, 4, 8]), np.array([1, 2, 2])))\n__check(\"last edge\", np.array_equal(bin_counts([4.0, 8.0], [0, 4, 8]), np.array([0, 2])))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef describe(values):\n    values = np.asarray(values, dtype=float)\n    return {\"n\": int(values.size), \"mean\": float(np.mean(values)), \"median\": float(np.median(values)), \"std\": float(np.std(values))}\n\ndef bin_counts(values, edges):\n    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]"
+      },
+      "prompt": "Implementiere `describe(values)` und `bin_counts(values, edges)` wie im bestehenden Vertrag, aber prüfe deine Lösung an einer asymmetrischen kleinen Stichprobe mit einem Ausreißer und drei Histogramm-Bins.",
+      "fullSolution": "def describe(values):\n    values = np.asarray(values, dtype=float)\n    return {\"n\": int(values.size), \"mean\": float(np.mean(values)), \"median\": float(np.median(values)), \"std\": float(np.std(values))}\n\ndef bin_counts(values, edges):\n    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]",
+      "hints": [
+        "Normalisiere zuerst in ein Float-Array; `np.std` nutzt bereits `ddof=0`.",
+        "Übergebe die Kanten unverändert an `np.histogram`; nur die letzte rechte Kante ist inklusive."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-summary",
+          "then": "Die vier Kennzahlen müssen aus demselben normalisierten Array berechnet werden."
+        },
+        {
+          "if": "wrong-ddof",
+          "then": "Der Vertrag verlangt die Populations-Standardabweichung mit ddof=0."
+        },
+        {
+          "if": "wrong-bins",
+          "then": "Die Bin-Grenzen folgen den Regeln von np.histogram."
+        }
+      ],
+      "typicalErrors": [
+        "Mittelwert statt Median verwechselt",
+        "ddof=1 verwendet",
+        "rechte Bin-Kante falsch behandelt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

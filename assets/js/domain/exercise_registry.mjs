@@ -1,5 +1,4 @@
-import { instantiateLegacyExercise } from '../core/legacy_exercise_adapter.mjs';
-import { createFamilyRegistry, familyHint, familyIdTokens } from './family_registry.mjs';
+import { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
 import {
   GIT_OPERATION_CONTRACT,
   generateGitOperationFamily,
@@ -9,10 +8,11 @@ import { FOUNDATIONS_CHOICE_FAMILY_SPECS } from '../core/foundations_choice_fami
 import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mjs';
 import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
 import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
+import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
 
-export { createFamilyRegistry, familyHint, familyIdTokens };
+export { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec };
 
-export const EXERCISE_FAMILIES = createFamilyRegistry([
+const jsFamilySpecs = [
   {
     ...GIT_OPERATION_CONTRACT,
     generate: generateGitOperationFamily,
@@ -26,7 +26,19 @@ export const EXERCISE_FAMILIES = createFamilyRegistry([
   ...TRACE_FAMILY_SPECS,
   // S4D5: Skalarprodukt-Familie (linalg).
   ...LINALG_FAMILY_SPECS,
-]);
+  // S4D8: Datenbereinigung.
+  ...DATA_ML_FAMILY_SPECS,
+];
+
+export let EXERCISE_FAMILIES = createFamilyRegistry(jsFamilySpecs);
+
+export function configureExerciseFamilies(staticDocs = []) {
+  EXERCISE_FAMILIES = createFamilyRegistry([
+    ...jsFamilySpecs,
+    ...staticDocs.filter((doc) => doc?.contract).map(staticFamilySpec),
+  ]);
+  return EXERCISE_FAMILIES;
+}
 
 export const instantiate = (familyId, seed, difficulty, caseId) => (
   EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId)
@@ -53,35 +65,3 @@ export function familyEventInput(instance) {
 }
 export const grade = (instance, answer) => EXERCISE_FAMILIES.grade(instance, answer);
 export const assertFamilyPlacement = (placement) => EXERCISE_FAMILIES.assertFamilyPlacement(placement);
-
-export class ExerciseRegistry {
-  constructor(definitions) {
-    this.byId = new Map();
-    for (const definition of definitions) {
-      if (!definition?.definitionId || this.byId.has(definition.definitionId)) {
-        throw new Error(`fehlende oder doppelte Definition ${definition?.definitionId || '(leer)'}`);
-      }
-      this.byId.set(definition.definitionId, definition);
-    }
-  }
-
-  get size() {
-    return this.byId.size;
-  }
-
-  get(definitionId) {
-    return this.byId.get(definitionId) || null;
-  }
-
-  forCompetency(competencyId) {
-    return [...this.byId.values()]
-      .filter((definition) => definition.competencyIds.includes(competencyId))
-      .sort((a, b) => a.definitionId.localeCompare(b.definitionId));
-  }
-
-  instantiate(definitionId, seed) {
-    const definition = this.byId.get(definitionId);
-    if (!definition) throw new Error(`Unbekannte Definition ${definitionId}`);
-    return instantiateLegacyExercise(definition, seed ?? definition.deterministicSeed);
-  }
-}

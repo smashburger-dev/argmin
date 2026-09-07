@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-training-loop-count",
+  "contract": {
+    "familyId": "trace-training-loop-count",
+    "familyGroup": "trace-state",
+    "summary": "Tracet Schrittzählung und Parameter-Updates einer Trainingsloop mit Aufrund-Arithmetik.",
+    "taskArchetype": "output-predict-lines",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "training-loop-count",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-loop-drop-last",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-loop-early-stop-counter",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-training",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "training-loop-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w20-e3"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "n, B, epochs = 90, 40, 3\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 10.0\nfor g in [4.0, 4.0, 4.0]:\n    w = w - 0.5 * g\nprint(w)"
+      },
+      "expected": {
+        "output": "9\n4.0"
+      },
+      "prompt": "Trainingsschleife lesen: Was gibt dieses Programm aus? Sage die Ausgaben der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis: <code>-(-n // B)</code> ist Aufrunden in Ganzzahlarithmetik; <code>w</code> startet als float.",
+      "fullSolution": "Batches: $\\lceil 90/40 \\rceil = 3$ pro Epoche, über 3 Epochen $3 \\cdot 3 = 9$ Updates. Parameter: $w = 10{,}0 - 3 \\cdot (0{,}5 \\cdot 4{,}0) = 4{,}0$. Ausgabe: <code>9</code> und <code>4.0</code>.",
+      "hints": [
+        "Pro Epoche: aufrunden(90/40) = 3 Batches — auch wenn der letzte nur 30 Beispiele hat. Drei Epochen multiplizieren das.",
+        "Jeder der drei Updates zieht 0,5 · 4 = 2 ab: 10,0 − 2 − 2 − 2. Achtung: print eines floats zeigt die .0-Endung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "−(−90 // 40) = −(−3) = 3 pro Epoche (Ganzzahl-Aufrunden); über 3 Epochen 9."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "w bleibt float: 10.0 − 3 · 2.0 = 4.0 — die Ausgabe lautet 4.0, nicht 4."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — erst die Schrittzahl, dann der Parameterwert."
+        }
+      ],
+      "typicalErrors": [
+        "abgerundet (2 Batches) und 6 ausgegeben",
+        "die float-Endung .0 in der Vorhersage unterschlagen",
+        "Update nur einmal statt dreimal gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "training-loop-drop-last",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "n, bs, epochs = 10, 4, 2\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)"
+      },
+      "expected": {
+        "output": "[0, 4, 8]\n4"
+      },
+      "prompt": "Lies die Batchschleife: Welche Starts erzeugt <code>range(0, n, bs)</code>, und welche davon bleiben bei einer Drop-last-Prüfung vollständig?",
+      "fullSolution": "range erzeugt die Starts [0, 4, 8]. Der letzte Start 8 hätte nur zwei Elemente und wird durch start + bs <= n verworfen; pro Epoche bleiben zwei Batches, also vier über zwei Epochen.",
+      "hints": [
+        "Schreibe zuerst die von range erzeugten Startwerte auf.",
+        "Bei Drop-last zählt nur ein Start mit start + bs <= n; multipliziere danach mit den zwei Epochen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Die Starts sind [0, 4, 8], weil range bis kleiner als n läuft und 8 noch erzeugt wird."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Der Start 8 bildet keinen vollständigen Viererbatch; zwei vollständige Batches pro Epoche ergeben 4."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Die Ausgabe besteht aus einer Listenzeile und einer Schrittzahlzeile."
+        }
+      ],
+      "typicalErrors": [
+        "den letzten unvollständigen Batch als vollständig gezählt",
+        "range-Ende mit einem inklusiven n verwechselt",
+        "die Epochenzahl nicht auf die zwei gültigen Batches angewendet"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "training-loop-early-stop-counter",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "losses = [0.80, 0.60, 0.60, 0.595, 0.594]\nmin_delta = 0.01\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)"
+      },
+      "expected": {
+        "output": "4\n0.6"
+      },
+      "prompt": "Ein Early-Stopping-Zähler verwendet <code>min_delta=0,01</code> und <code>patience=2</code>. Welche zwei Werte werden ausgegeben?",
+      "fullSolution": "0,80 verbessert sich auf 0,60. Die folgenden Verluste 0,60 und 0,595 verbessern den Bestwert nicht um mehr als 0,01; beim vierten Durchlauf erreicht wait daher 2. Der Abbruch erfolgt in Epoche 4, der beste Verlust bleibt 0,6.",
+      "hints": [
+        "Eine Verbesserung muss strikt größer als min_delta sein.",
+        "Zähle die nicht ausreichenden Verbesserungen ab dem Bestwert 0,60 und stoppe bei wait=2."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "0,595 − 0,60 ist keine Verbesserung von mehr als 0,01; der Zähler erreicht in Epoche 4 den Wert 2."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Der beste bisherige Verlust bleibt 0,6, weil spätere Werte nicht unter 0,59 fallen."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Das Programm druckt zuerst die Epoche und danach den besten Loss."
+        }
+      ],
+      "typicalErrors": [
+        "min_delta als inklusive statt als strikte Schwelle behandelt",
+        "patience nach einer echten Verbesserung nicht zurückgesetzt",
+        "den aktuellen Loss statt den bisher besten Loss ausgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

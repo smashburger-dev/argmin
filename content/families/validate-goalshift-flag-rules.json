@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-goalshift-flag-rules",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "detect-goal-shift",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w31-e6"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def detect_goal_shift(v1, v2):\n    \"\"\"Alphabetisch sortierte Liste der ausgeloesten Goal-Shift-Flags.\"\"\"\n    ...\n\n",
+        "tests": "A = {\"metrik\": \"recall@5\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\"]}\n__check('identische version -> keine flags', detect_goal_shift(A, dict(A)) == [])\n__check('nur metrik', detect_goal_shift(A, {\"metrik\": \"token-f1\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\"]}) == [\"metrik_geaendert\"])\n__check('schwelle und primaer demoted', detect_goal_shift(A, {\"metrik\": \"recall@5\", \"schwelle\": 0.6, \"primaer\": \"zitattreue\", \"sekundaer\": [\"antwortquote\", \"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\"]}) == [\"primaer_demoted\", \"schwelle_geaendert\"])\n__check('nur subgruppe nach freeze', detect_goal_shift(A, {\"metrik\": \"recall@5\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\", \"wochenende\"]}) == [\"subgruppe_nach_freeze\"])\n__check('alle vier flags sortiert', detect_goal_shift(A, {\"metrik\": \"token-f1\", \"schwelle\": 0.6, \"primaer\": \"zitattreue\", \"sekundaer\": [\"antwortquote\", \"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\", \"mobil\", \"wochenende\"]}) == [\"metrik_geaendert\", \"primaer_demoted\", \"schwelle_geaendert\", \"subgruppe_nach_freeze\"])\n__check('entfernte subgruppe ist kein flag', detect_goal_shift(A, {\"metrik\": \"recall@5\", \"schwelle\": 0.75, \"primaer\": \"antwortquote\", \"sekundaer\": [\"bearbeitungszeit\"], \"subgruppen\": [\"neukunden\"]}) == [])\n__check('fehlende felder gelten als leer', detect_goal_shift({}, {\"metrik\": \"token-f1\"}) == [\"metrik_geaendert\"])\nprint(\"ok w31-e6\")"
+      },
+      "competencyIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def detect_goal_shift(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)"
+      },
+      "prompt": "Final Boss Goal-Shift-Detektor: Implementiere <code>detect_goal_shift(v1, v2)</code> für zwei Protokoll-Versionen mit den Feldern metrik, schwelle, primaer, sekundaer (Liste) und subgruppen (Liste). Rückgabe ist die alphabetisch sortierte Liste der ausgelösten Flags: <code>metrik_geaendert</code> (v1.metrik != v2.metrik), <code>schwelle_geaendert</code> (v1.schwelle != v2.schwelle), <code>primaer_demoted</code> (v1.primaer kommt in v2.sekundaer vor), <code>subgruppe_nach_freeze</code> (v2.subgruppen enthält eine Gruppe, die v1.subgruppen nicht enthält). Fehlende Felder gelten als leer beziehungsweise leere Liste. Der Testcode bringt drei Protokollpaarungen inklusive einer unveränderten Kopie mit.",
+      "fullSolution": "def detect_goal_shift(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n\n# identische Version -> [], alle vier Aenderungen -> sortierte Viererliste (lokal python3-verifiziert)",
+      "hints": [
+        "primaer_demoted prüft den alten primären Endpunkt gegen die sekundaer-Liste der NEUEN Version — nicht umgekehrt.",
+        "subgruppe_nach_freeze zählt nur ergänzte Gruppen in v2; entfernte Gruppen lösen das Flag nicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "direction-wrong",
+          "then": "Die Richtungen sind Teil des Vertrags: primaer_demoted über v1.primaer in v2.sekundaer, subgruppe_nach_freeze über neue Gruppen in v2."
+        },
+        {
+          "if": "unsorted",
+          "then": "Die Rückgabe ist alphabetisch sortiert — ['metrik_geaendert', 'primaer_demoted', 'schwelle_geaendert', 'subgruppe_nach_freeze']."
+        },
+        {
+          "if": "missing-field-crash",
+          "then": "Fehlende Felder müssen über .get(...) mit leerer Liste als Default gelesen werden, nicht mit []-Indexierung abstürzen."
+        }
+      ],
+      "typicalErrors": [
+        "Vergleichsrichtung von primaer_demoted und subgruppe_nach_freeze vertauscht",
+        "entfernte Subgruppen fälschlich als Flag gewertet",
+        "bei fehlenden Feldern abgestürzt statt Default zu verwenden"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

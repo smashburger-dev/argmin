@@ -119,7 +119,12 @@ test('(d) source-rights.json ships ki-lernplattform-original and all rightsIds o
     ...readdirSync(join(ROOT, 'content', 'lessons', 'research'))
       .filter((name) => name.endsWith('.json'))
       .map((name) => join('content', 'lessons', 'research', name)),
-    ...Array.from({ length: 9 }, (_, index) => join('content', 'exercises', `w${31 + index}.json`)),
+    ...readdirSync(join(ROOT, 'content', 'families'))
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => join('content', 'families', name)),
+    ...readdirSync(join(ROOT, 'content', 'modules'))
+      .filter((name) => name.endsWith('.json'))
+      .map((name) => join('content', 'modules', name)),
     join('content', 'projects', 'rag-capstone', 'project.json'),
     join('content', 'projects', 'rag-capstone', 'phases.json'),
   ];

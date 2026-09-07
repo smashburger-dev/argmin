@@ -42,6 +42,7 @@ import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
+import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -97,8 +98,6 @@ export const LINEAR_ISOLATE_CONTRACT = {
 };
 
 /** Verankerung w01-e1: fixe Diagnoseinstanz, keine Seed-Variation. */
-export const LINEAR_FIXED_INSTANCE = { a: 5, b: -7, c: 28 };
-
 /** Unabhängiger Solver: Lösung allein aus den Fallparametern. */
 export function solveLinearIsolate(parameters) {
   if (parameters.shape === 'both-sides') {
@@ -144,14 +143,9 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
   if (caseId === 'two-step-fixed-instance') {
-    const { a, b, c } = LINEAR_FIXED_INSTANCE;
-    const value = solveLinearIsolate({ shape: 'simple', a, b, c }).value;
-    return {
-      parameters: { shape: 'simple', a, b, c, anchor: 'w01-e1' },
-      expected: { kind: 'integer', value },
-      prompt: `Diagnose Algebra: Löse die Gleichung $${a}x ${signed(b).replace('+ ', '+').replace('- ', '-')} = ${c}$ und gib $x$ als ganze Zahl ein.`,
-      fullSolution: `$${a}x ${signed(b)} = ${c} \\Rightarrow ${a}x = ${c - b} \\Rightarrow x = ${value}$.`,
-    };
+    const body = staticCaseBody('transform-linear-equation-isolate', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
   if (caseId === 'two-step-seeded-retrieval') {
     const p = drawLinearSimple(seed, LINEAR_SIMPLE_TIERS[tier]);
@@ -529,6 +523,11 @@ export const VALIDATE_COUNT_CONTRACT = {
   caseTypes: [
     { caseId: 'parse-validate-summarize' },
     { caseId: 'seen-scope-and-narrow-except' },
+    {
+      caseId: 'separate-error-kinds',
+      propertyTest: false,
+      competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
+    },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-files-errors'],
@@ -536,7 +535,7 @@ export const VALIDATE_COUNT_CONTRACT = {
   activityType: 'python-code',
 };
 
-/** Referenz w03-e3 (wörtlich aus content/exercises/w03.json). */
+/** Referenz für den kanonischen Zeilenprüfungsfall. */
 export const ZAEHLE_REFERENZ = `def zaehle_zeilen(zeilen):
     gueltig = 0
     ungueltig = 0
@@ -555,7 +554,7 @@ export const ZAEHLE_REFERENZ = `def zaehle_zeilen(zeilen):
         summe += int(zahl)
     return {"gueltig": gueltig, "ungueltig": ungueltig, "summe": summe}`;
 
-/** Kuratiertes Bündel w03-e3 (wörtlich aus content/exercises/w03.json). */
+/** Kuratiertes Bündel für den kanonischen Zeilenprüfungsfall. */
 export const ZAEHLE_TESTS = `def check(zeilen, erwartet, label):
     ergebnis = zaehle_zeilen(zeilen)
     __check(label, ergebnis == erwartet, 'erhalten ' + repr(ergebnis) + ', erwartet ' + repr(erwartet))
@@ -656,6 +655,9 @@ export const INSPECT_STARTER = `def inspect_rows(rows):
 export function solveValidateCount(parameters) {
   if (parameters.task === 'zaehle') return { referenceCode: ZAEHLE_REFERENZ };
   if (parameters.task === 'inspect') return { referenceCode: INSPECT_REFERENZ };
+  if (parameters.caseId === 'separate-error-kinds') {
+    return { kind: staticCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
+  }
   throw new Error(`Unbekannte Aufgabe ${parameters.task}`);
 }
 
@@ -751,6 +753,21 @@ const EXTRA_COUNTS = [0, 1, 2, 3];
 export function generateValidateCountFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
+  if (caseId === 'separate-error-kinds') {
+    const body = staticCaseBody('aggregate-validate-and-count-records', caseId);
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      ...generated
+    } = body;
+    return {
+      ...generated,
+      masteryEligible: body.masteryEligible,
+      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+    };
+  }
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   if (caseId === 'parse-validate-summarize') {
     const extraRows = zaehleExtraRows(seed, extraCount);
@@ -823,12 +840,12 @@ export const REGRESSION_SUITE_CONTRACT = {
   activityType: 'python-code',
 };
 
-/** Referenzfunktion w04-e3 (wörtlich aus content/exercises/w04.json). */
+/** Referenzfunktion für den kanonischen Palindromfall. */
 export const PALINDROM_REFERENZ = `def ist_palindrom(s):
     normalisiert = "".join(s.lower().split())
     return normalisiert == normalisiert[::-1]`;
 
-/** Referenzsuite w04-e3 (fünf Prüfungen, wörtlich aus w04-e3). */
+/** Referenzsuite für den kanonischen Palindromfall. */
 export const PALINDROM_SUITE_REFERENZ = `def teste_palindrom():
     pruefungen = 0
     assert ist_palindrom("Anna") is True
@@ -853,7 +870,7 @@ export const PALINDROM_SUITE_EXTENDED_REFERENZ = `${PALINDROM_SUITE_REFERENZ.spl
     pruefungen += 1
     return pruefungen`;
 
-/** Kuratiertes Bündel w04-e3 (wörtlich aus content/exercises/w04.json). */
+/** Kuratiertes Bündel für den kanonischen Palindromfall. */
 export const PALINDROM_TESTS = `__check("Anna ist Palindrom", ist_palindrom("Anna") is True)
 __check("Lager ist kein Palindrom", ist_palindrom("Lager") is False)
 __check("leerer Text ist Palindrom", ist_palindrom("") is True)
@@ -1173,8 +1190,8 @@ export function generateGuardedLoopFamily({ seed, caseId, difficulty }) {
 
 // --- Familie 8: validate-required-field-raise (program-ordering) --------------
 // Shard-Fall specific-except-with-issue (f-files-parsons-01) plus
-// parametrischer Geschwisterfall required-key-with-issue (gleicher
-// Pflichtfeld-Vertrag, anderes Feld).
+// parametrischer Geschwisterfall required-key-with-issue (Szenario-Tabelle
+// mit deterministisch gezogenem Feld).
 
 export const REQUIRED_FIELD_CONTRACT = {
   familyId: 'validate-required-field-raise',
@@ -1186,6 +1203,10 @@ export const REQUIRED_FIELD_CONTRACT = {
   caseTypes: [
     { caseId: 'specific-except-with-issue' },
     { caseId: 'required-key-with-issue' },
+    { caseId: 'paper-card-required-fields', propertyTest: false, competencyIds: ['c-dl-papers'] },
+    { caseId: 'protocol-validator', propertyTest: false, competencyIds: ['c-research-question', 'c-python-functions'] },
+    { caseId: 'validate-card-fields', propertyTest: false, competencyIds: ['c-research-cards', 'c-python-functions'] },
+    { caseId: 'readme-required-headings', propertyTest: false, competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-python-files-errors'],
@@ -1193,20 +1214,18 @@ export const REQUIRED_FIELD_CONTRACT = {
   activityType: 'parsons',
 };
 
-const REQUIRED_FRAGMENTS = {
+const REQUIRED_SCENARIOS = {
   'specific-except-with-issue': [
-    { id: 'p1', text: 'try:' },
-    { id: 'p2', text: '    age = parse_age(row["age"])' },
-    { id: 'p3', text: 'except ValueError as error:' },
-    { id: 'p4', text: '    issues.append({"row": row_number, "kind": "invalid-age", "detail": str(error)})' },
-    { id: 'd1', text: 'except Exception: pass' },
+    { field: 'age', parser: 'parse_age', kind: 'invalid-age', noun: 'ein Altersfeld' },
+    { field: 'price', parser: 'parse_price', kind: 'invalid-price', noun: 'ein Preisfeld' },
+    { field: 'year', parser: 'parse_year', kind: 'invalid-year', noun: 'ein Jahresfeld' },
+    { field: 'score', parser: 'parse_score', kind: 'invalid-score', noun: 'ein Punktefeld' },
   ],
   'required-key-with-issue': [
-    { id: 'p1', text: 'try:' },
-    { id: 'p2', text: '    email = row["email"]' },
-    { id: 'p3', text: 'except KeyError as error:' },
-    { id: 'p4', text: '    issues.append({"row": row_number, "kind": "missing-email", "detail": str(error)})' },
-    { id: 'd1', text: 'except Exception: pass' },
+    { field: 'email', kind: 'missing-email', noun: 'die E-Mail' },
+    { field: 'id', kind: 'missing-id', noun: 'die ID' },
+    { field: 'name', kind: 'missing-name', noun: 'den Namen' },
+    { field: 'date', kind: 'missing-date', noun: 'das Datum' },
   ],
 };
 
@@ -1217,6 +1236,16 @@ const REQUIRED_ORDERS = {
 
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
+  if (parameters.caseId === 'paper-card-required-fields') {
+    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  }
+  if (
+    parameters.caseId === 'protocol-validator'
+    || parameters.caseId === 'validate-card-fields'
+    || parameters.caseId === 'readme-required-headings'
+  ) {
+    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  }
   const order = REQUIRED_ORDERS[parameters.parsonsCase];
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
@@ -1225,21 +1254,59 @@ export function solveRequiredField(parameters) {
 export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
+  if (
+    caseId === 'paper-card-required-fields'
+    || caseId === 'protocol-validator'
+    || caseId === 'validate-card-fields'
+    || caseId === 'readme-required-headings'
+  ) {
+    const body = staticCaseBody('validate-required-field-raise', caseId);
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      ...generated
+    } = body;
+    return {
+      ...generated,
+      masteryEligible: body.masteryEligible,
+      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+    };
+  }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
+  const scenarioRng = rng(((seed * 2654435761) + 97) >>> 0);
+  const scenario = REQUIRED_SCENARIOS[caseId][randInt(scenarioRng, 0, 3)];
+  const fragments = caseId === 'specific-except-with-issue'
+    ? [
+      { id: 'p1', text: 'try:' },
+      { id: 'p2', text: `    ${scenario.field} = ${scenario.parser}(row["${scenario.field}"])` },
+      { id: 'p3', text: 'except ValueError as error:' },
+      { id: 'p4', text: `    issues.append({"row": row_number, "kind": "${scenario.kind}", "detail": str(error)})` },
+      { id: 'd1', text: 'except Exception: pass' },
+    ]
+    : [
+      { id: 'p1', text: 'try:' },
+      { id: 'p2', text: `    ${scenario.field} = row["${scenario.field}"]` },
+      { id: 'p3', text: 'except KeyError as error:' },
+      { id: 'p4', text: `    issues.append({"row": row_number, "kind": "${scenario.kind}", "detail": str(error)})` },
+      { id: 'd1', text: 'except Exception: pass' },
+    ];
   const prompt = caseId === 'specific-except-with-issue'
-    ? 'Ordne die Schritte, um ein Altersfeld zu prüfen und einen erwarteten ValueError als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.'
-    : 'Ordne die Schritte, um ein Pflichtfeld zu prüfen und einen fehlenden Schlüssel als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.';
+    ? `Ordne die Schritte, um ${scenario.noun} zu prüfen und einen erwarteten ValueError als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.`
+    : `Ordne die Schritte, um ${scenario.noun} als Pflichtfeld zu prüfen und einen fehlenden Schlüssel als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.`;
   return parsonsGenerate({
     seed,
     difficulty,
     parsonsCase: caseId,
-    fragments: REQUIRED_FRAGMENTS[caseId],
+    fragments,
     solutionOrder: REQUIRED_ORDERS[caseId],
     distractors: ['d1'],
     prompt,
     fullSolution: 'try umschließt den riskanten Zugriff. Der spezifische except-Zweig ergänzt den Issue mit Zeilenkontext; die breite Exception-Zeile ist der Distraktor.',
+    extraParameters: { field: scenario.field },
   });
 }
 
@@ -1341,25 +1408,14 @@ export const TEST_DESIGN_COVERAGE_CONTRACT = {
   activityType: 'numeric',
 };
 
-/** Verankerung w04-e2: fünf Rückgabewerte brauchen fünf Testfälle. */
-export const COVERAGE_FIXED_ANSWER = 5;
-
-const COVERAGE_PROMPT_FIXED = `Eine Funktion <code>note(punkte)</code> ist so definiert:
-
-<code>if punkte >= 90: return "a"
-elif punkte >= 80: return "b"
-elif punkte >= 70: return "c"
-elif punkte >= 60: return "d"
-else: return "f"</code>
-
-Wie viele Testfälle braucht man mindestens, damit jede Verzweigung (jeder Rückgabewert) mindestens einmal erreicht wird?`;
-
 /** Blattzahl-Stufen je Profil (Teilmengen der 2–5-Antworträume). */
 export const COVERAGE_LEAF_TIERS = [[2, 3], [3, 4], [4, 4], [4, 5]];
 
 /** Unabhängiger Solver: statisch 5, sonst Blattzahl des Entscheidungsbaums. */
 export function solveTestDesignCoverage(parameters) {
-  if (parameters.shape === 'elif-chain-five') return { value: COVERAGE_FIXED_ANSWER };
+  if (parameters.caseId === 'elif-chain-five-outcomes') {
+    return { value: staticCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
+  }
   return { value: countBranchCoverageLeaves(parameters.branchShape) };
 }
 
@@ -1367,12 +1423,9 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'elif-chain-five-outcomes') {
-    return {
-      parameters: { shape: 'elif-chain-five', anchor: 'w04-e2' },
-      expected: { kind: 'integer', value: COVERAGE_FIXED_ANSWER },
-      prompt: COVERAGE_PROMPT_FIXED,
-      fullSolution: 'Fünf Rückgabewerte (a, b, c, d, f) brauchen fünf verschiedene Eingaben, z. B. 95, 85, 75, 65, 10 — Minimum fünf Testfälle.',
-    };
+    const body = staticCaseBody('validate-test-design-coverage', caseId);
+    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+    return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
   if (caseId === 'nested-if-decision-tree') {
     const [lo, hi] = COVERAGE_LEAF_TIERS[profileTier(difficulty)];

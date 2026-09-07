@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-attention-mask",
+  "contract": {
+    "familyId": "construct-attention-mask",
+    "familyGroup": "construct-program",
+    "summary": "Konstruiert Attention-Masken als boolesche Matrizen nach Sichtbarkeitsregeln und führt das vertragsgeprüfte, stabile maskierte Softmax aus.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "construct-causal-padding-mask",
+        "propertyTest": false
+      },
+      {
+        "caseId": "construct-padding-mask-softmax",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch",
+      "core"
+    ],
+    "competencyIds": [
+      "c-dl-attention",
+      "c-numpy-basics"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "construct-causal-padding-mask",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w22-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef causal_mask(n):\n    \"\"\"Lower-triangular boolean mask: True where key j may be seen by query i (j <= i).\"\"\"\n    ...\n\n\ndef padding_mask(lengths, L):\n    \"\"\"True where position j is a real token (j < lengths[i]); raise ValueError outside [0, L].\"\"\"\n    ...\n\n\ndef masked_softmax(S, mask=None):\n    \"\"\"Row-wise stable softmax over scores S; mask True = visible; ValueError on fully masked rows.\"\"\"\n    ...\n",
+        "tests": "__check('kausale Maske 3x3', causal_mask(3).tolist() == [[True, False, False], [True, True, False], [True, True, True]])\n__check('kausale Maske Diagonale True', bool(causal_mask(4).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([2, 3, 0], 3).tolist() == [[True, True, False], [True, True, True], [False, False, False]])\nw = masked_softmax([[2.0, 0.0]])\n__check('stabile Zeile [2, 0]', np.allclose(w, [[0.881, 0.119]], atol=1e-3))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\ntry:\n    padding_mask([4], 3)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef causal_mask(n):\n    \"\"\"Lower-triangular boolean mask: True where key j may be seen by query i (j <= i).\"\"\"\n    return np.tril(np.ones((int(n), int(n)), dtype=bool))\n\ndef padding_mask(lengths, L):\n    \"\"\"True where position j is a real token (j < lengths[i]); raise ValueError outside [0, L].\"\"\"\n    lengths = [int(x) for x in lengths]\n    if any(l < 0 or l > int(L) for l in lengths):\n        raise ValueError(\"lengths must be within [0, L]\")\n    return np.array([[j < l for j in range(int(L))] for l in lengths], dtype=bool)\n\ndef masked_softmax(S, mask=None):\n    \"\"\"Row-wise stable softmax over scores S; mask True = visible; ValueError on fully masked rows.\"\"\"\n    S = np.asarray(S, dtype=float)\n    if S.ndim != 2:\n        raise ValueError(\"S must be 2-d\")\n    scores = S.copy()\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        if keep.shape != scores.shape:\n            raise ValueError(\"mask shape must match S\")\n        if bool((keep.sum(axis=1) == 0).any()):\n            raise ValueError(\"fully masked row\")\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    return w / w.sum(axis=1, keepdims=True)\n"
+      },
+      "prompt": "Masken-Bausteine: Implementiere drei Funktionen. <code>causal_mask(n)</code> liefert die $(n, n)$-Bool-Matrix mit <code>True</code> genau dort, wo Key $j$ für Query $i$ sichtbar ist ($j \\le i$). <code>padding_mask(lengths, L)</code> liefert für Sequenzlängen <code>lengths</code> die $(\\texttt{len(lengths)}, L)$-Bool-Matrix mit <code>True</code> an echten Token-Positionen ($j < \\texttt{lengths}[i]$); Längen außerhalb $[0, L]$ werfen <code>ValueError</code>. <code>masked_softmax(S, mask=None)</code> normalisiert eine Score-Matrix zeilenweise und stabil; <code>mask</code> ist <code>True</code> = sichtbar; eine komplett verdeckte Zeile ($0$ sichtbare Zellen) und eine Maskenform, die nicht zu $S$ passt, werfen <code>ValueError</code>. Der Testcode prüft Handwerte (u. a. Scores 1000 gegen 999), Zeilensummen und alle Fehlerfälle.",
+      "fullSolution": "import numpy as np\n\ndef causal_mask(n):\n    \"\"\"Lower-triangular boolean mask: True where key j may be seen by query i (j <= i).\"\"\"\n    return np.tril(np.ones((int(n), int(n)), dtype=bool))\n\ndef padding_mask(lengths, L):\n    \"\"\"True where position j is a real token (j < lengths[i]); raise ValueError outside [0, L].\"\"\"\n    lengths = [int(x) for x in lengths]\n    if any(l < 0 or l > int(L) for l in lengths):\n        raise ValueError(\"lengths must be within [0, L]\")\n    return np.array([[j < l for j in range(int(L))] for l in lengths], dtype=bool)\n\ndef masked_softmax(S, mask=None):\n    \"\"\"Row-wise stable softmax over scores S; mask True = visible; ValueError on fully masked rows.\"\"\"\n    S = np.asarray(S, dtype=float)\n    if S.ndim != 2:\n        raise ValueError(\"S must be 2-d\")\n    scores = S.copy()\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        if keep.shape != scores.shape:\n            raise ValueError(\"mask shape must match S\")\n        if bool((keep.sum(axis=1) == 0).any()):\n            raise ValueError(\"fully masked row\")\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    return w / w.sum(axis=1, keepdims=True)\n# causal_mask(3) -> [[True, False, False], [True, True, False], [True, True, True]]\n# masked_softmax([[2.0, 0.0]]) -> [[0.881, 0.119]]; komplett verdeckte Zeile -> ValueError.",
+      "hints": [
+        "causal_mask ist untere Dreiecksmatrix inklusive Diagonale — np.tril hilft; padding_mask prüft die Längen, bevor sie baut.",
+        "masked_softmax: Formprüfung, dann komplett verdeckte Zeilen erkennen ((mask.sum(axis=1) == 0).any()), Scores via np.where auf −∞, Zeilenmaximum abziehen, normalisieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "partial-row-rejected",
+          "then": "Nur Zeilen ohne eine einzige sichtbare Zelle sind illegal — teilweise maskierte Zeilen sind der Normalfall."
+        },
+        {
+          "if": "mask-shape-unchecked",
+          "then": "Die Maskenform muss vor der Anwendung gegen S geprüft werden."
+        },
+        {
+          "if": "overflow",
+          "then": "Ohne Abziehen des Zeilenmaximums liefert exp(1000) inf — Stabilität ist Teil des Vertrags."
+        }
+      ],
+      "typicalErrors": [
+        "teilweise maskierte Zeilen fälschlich abgelehnt",
+        "Maskenform ungeprüft angewendet",
+        "Overflow bei großen Scores ohne Maximum-Subtraktion"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "construct-padding-mask-softmax",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef padding_mask(lengths, L):\n    ...\n\n\ndef masked_softmax(S, mask):\n    ...\n",
+        "tests": "__check('Padding-Maske', padding_mask([1, 3, 2], 3).tolist() == [[True, False, False], [True, True, True], [True, True, False]])\nw = masked_softmax([[2.0, 0.0, -4.0]], [[True, True, False]])\n__check('maskiertes Gewicht null', np.allclose(w, [[0.881, 0.119, 0.0]], atol=1e-3))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([4], 3)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef padding_mask(lengths, L):\n    lengths = [int(x) for x in lengths]\n    if any(length < 0 or length > int(L) for length in lengths):\n        raise ValueError(\"lengths must be within [0, L]\")\n    return np.array([[j < length for j in range(int(L))] for length in lengths], dtype=bool)\n\ndef masked_softmax(S, mask):\n    scores = np.asarray(S, dtype=float)\n    keep = np.asarray(mask, dtype=bool)\n    if scores.ndim != 2 or keep.shape != scores.shape:\n        raise ValueError(\"mask shape must match S\")\n    if bool((keep.sum(axis=1) == 0).any()):\n        raise ValueError(\"fully masked row\")\n    scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    weights = np.exp(scores)\n    return weights / weights.sum(axis=1, keepdims=True)\n"
+      },
+      "prompt": "Implementiere eine Padding-Maske und einen stabilen maskierten Softmax. Echte Tokenpositionen bleiben sichtbar; eine komplett verdeckte Zeile ist ein Fehler.",
+      "fullSolution": "Die Padding-Maske markiert genau $j < \\texttt{lengths}[i]$. Der Softmax setzt unsichtbare Scores auf $-\\infty$, zieht pro Zeile das Maximum ab und verweigert leere sichtbare Zeilen.",
+      "hints": [
+        "Prüfe jede Länge vor dem Erzeugen der Bool-Matrix.",
+        "Nach dem Maskieren Maximum abziehen; eine Zeile ohne True darf nicht normalisiert werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "bad-padding",
+          "then": "Bei length=1 wird nur Position 0 sichtbar; Positionen 1 und 2 bleiben im konkreten Test False."
+        },
+        {
+          "if": "unstable-softmax",
+          "then": "Scores 1000 und 999 benötigen die Maximum-Subtraktion, damit keine Inf-Werte entstehen."
+        },
+        {
+          "if": "empty-row-accepted",
+          "then": "Eine vollständig maskierte Zeile besitzt keine Normalisierungsmasse und muss ValueError auslösen."
+        }
+      ],
+      "typicalErrors": [
+        "Paddingpositionen als sichtbar markiert",
+        "Softmax vor statt nach der Maskierung normalisiert",
+        "leere sichtbare Zeile durch Nullsumme geteilt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

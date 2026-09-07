@@ -3,6 +3,7 @@ import { familyEventInput, familyHint } from '../../assets/js/domain/exercise_re
 import { gradeTraceTable } from '../../assets/js/core/foundations_trace_families.mjs';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
+import { MathMarkup } from './MathMarkup';
 
 // S4D1: Trace-Tabelle als Interaktionsvariante von output-predict-lines.
 // Kein neuer Archetyp: Lösungsweg und Evidence bleiben gleich, nur die
@@ -22,6 +23,7 @@ export interface TraceTableInstance {
   seed: number;
   difficulty: string;
   prompt: string;
+  parameters?: { snippet?: unknown };
   traceTable: TraceTableData;
   fullSolution?: string;
 }
@@ -110,7 +112,8 @@ export function TraceTableView({ instance, summary }: { instance: TraceTableInst
         <p class="eyebrow">{instance.familyId} · {instance.caseId} · Seed {instance.seed}</p>
         <h1 id="trace-title" tabIndex={-1}>Zustandstabelle</h1>
       </header>
-      <p>{instance.prompt}</p>
+      <div class="lede"><MathMarkup html={instance.prompt} /></div>
+      {typeof instance.parameters?.snippet === 'string' ? <pre><code>{instance.parameters.snippet}</code></pre> : null}
       <p>Trage nach jeder Zeile die Werte aller Variablen ein. Noch unbelegte Zellen bleiben leer.</p>
       <table>
         <thead>

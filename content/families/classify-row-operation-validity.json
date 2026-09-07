@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-row-operation-validity",
+  "contract": {
+    "familyId": "classify-row-operation-validity",
+    "familyGroup": "classify-concept",
+    "summary": "Beurteilt Zeilenoperationen nach Lösungsmengenerhalt über Umkehrbarkeit und Mitführung der rechten Seite.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "valid-operation-rhs",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch",
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-linalg-gauss"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "valid-operation-rhs",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "II $\\leftarrow$ II $-$ 2·I, rechte Seite mitgeführt: $-3x-5y=-18$.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "I $\\leftarrow$ 0·I, danach ist das System einfacher.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "II $\\leftarrow$ II $-$ 2·(linke Seite von I), rechte Seite bleibt $-8$.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "II streichen — I allein bestimmt die Lösung.",
+          "correct": false
+        }
+      ],
+      "prompt": "System: $2x+y=5$, $x-3y=-8$. Welche Zeilenoperation erhält garantiert die Lösungsmenge?",
+      "fullSolution": "Nur umkehrbare Operationen mit vollständiger Gleichung erhalten die Lösungsmenge: $(x-3y)-2(2x+y) = -8-10$ gibt $-3x-5y=-18$. Nullskalierung ist nicht umkehrbar, vergessene rechte Seite und gestrichene Zeilen ändern die Menge."
+    },
+    {
+      "caseId": "row-operation-choice-contract",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "f-gauss-operation-choice-01"
+      ],
+      "competencyIds": [
+        "c-linalg-gauss"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "row-add"
+      },
+      "choices": [
+        {
+          "id": "row-add",
+          "text": "$Z_2 \\leftarrow Z_2-2Z_1$",
+          "correct": true
+        },
+        {
+          "id": "zero-row",
+          "text": "$Z_2 \\leftarrow 0\\cdot Z_2$",
+          "correct": false
+        },
+        {
+          "id": "left-only",
+          "text": "Nur die Koeffizienten links verändern, nicht die rechte Seite",
+          "correct": false
+        },
+        {
+          "id": "delete",
+          "text": "Eine unbequeme Gleichung löschen",
+          "correct": false
+        }
+      ],
+      "prompt": "Welche Zeilenoperation erhält die Lösungsmenge eines linearen Gleichungssystems sicher?",
+      "fullSolution": "Das Addieren eines Vielfachen einer Zeile zu einer anderen ist umkehrbar und erhält die Lösungsmenge. Alle Teile der Gleichung, einschließlich rechter Seite, werden mitgeführt.",
+      "hints": [
+        "Die neue Zeile muss aus umkehrbaren Operationen auf vollständigen Gleichungen entstehen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "zero-row",
+          "then": "Multiplikation mit null vernichtet Information und ist nicht umkehrbar."
+        }
+      ],
+      "typicalErrors": [
+        "mit null skalieren",
+        "rechte Seite nicht transformieren"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

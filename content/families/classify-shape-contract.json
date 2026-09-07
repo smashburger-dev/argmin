@@ -1,0 +1,255 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-shape-contract",
+  "contract": {
+    "familyId": "classify-shape-contract",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einer Layer-Rechnung XW + b die resultierende Form und die Broadcast-Regel für den Bias zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "shape-bias-broadcast-mc",
+        "propertyTest": false
+      },
+      {
+        "caseId": "shape-transformer-qkv",
+        "propertyTest": false
+      },
+      {
+        "caseId": "shape-token-batch-flatten",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-tensors"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "shape-bias-broadcast-mc",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w18-e1"
+      ],
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "parameters": {
+        "thema": "Dimensionsvertrag der Matrizenmultiplikation"
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Operation ist unzulässig — $(32, 8)$ und $(8, 16)$ passen nicht zusammen, Broadcast regelt das nicht.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$(32, 16)$ — die Batch-Dimension bleibt außen, die Feature-Dimension wird von 8 auf 16 umprojiziert; $b$ wird zeilenweise broadcastet.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "$(8, 16)$ — das Ergebnis erbt die Form der Gewichtsmatrix, der Batch geht verloren.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$(32, 8)$ — der Bias ändert die Form nicht, also bleibt die Eingabeform stehen.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Batch hat die Form $X \\in \\mathbb{R}^{32 \\times 8}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{8 \\times 16}$ und der Bias $b \\in \\mathbb{R}^{16}$. Welche Form hat $XW + b$, und warum?",
+      "fullSolution": "Matrizenmultiplikation: $(32, 8) \\cdot (8, 16) \\to (32, 16)$ — die gemeinsame Dimension 8 wird aufgespannt, die Batch-Dimension 32 bleibt außen. $b \\in \\mathbb{R}^{16}$ wird über Broadcasting zu jeder der 32 Zeilen addiert und ändert die Form nicht. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Bei $XW$ muss die Spaltenzahl von $X$ zur Zeilenzahl von $W$ passen — welche der beiden Dimensionen „verbraucht“ wird und welche bleibt?",
+        "Ergebnisform einer Matrizenmultiplikation: (Zeilen des linken, Spalten des rechten) Operanden. Der Bias $(16,)$ broadcastet nur, er erzeugt keine neue Dimension."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'c'",
+          "then": "Die Batch-Dimension ist Zeilen des linken Operanden — sie bleibt immer erhalten, hier 32."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die innere Dimension 8 wird bei der Multiplikation aufgespannt und verschwindet; das Ergebnis trägt die Spaltenzahl von W."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "$(32, 8) @ (8, 16)$ ist gerade der erlaubte Fall: innere Dimensionen stimmen überein."
+        }
+      ],
+      "typicalErrors": [
+        "Form der Gewichtsmatrix statt des Ergebnisses angegeben",
+        "Bias als formgebend statt nur broadcastet gelesen",
+        "passende innere Dimensionen fälschlich für unzulässig gehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "shape-transformer-qkv",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "parameters": {
+        "X": [
+          2,
+          5,
+          12
+        ],
+        "WQ": [
+          12,
+          4
+        ]
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$(2,12,5)$",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$(5,4)$",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$(2,5,4)$",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "$(12,4)$",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(2,5,12)$; $W_Q$ hat Shape $(12,4)$. Welche Shape besitzt $Q=XW_Q$?",
+      "fullSolution": "Die letzte Achse von X wird mit der ersten Achse von $W_Q$ kontrahiert: $(2,5,12)\\cdot(12,4)$ ergibt $Q$ mit Shape $(2,5,4)$.",
+      "hints": [
+        "Batch- und Sequenzachsen bleiben erhalten.",
+        "Nur die letzte X-Dimension 12 wird durch die Ausgabespalten 4 ersetzt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "$(2,12,5)$ vertauscht die Sequenzachse mit der Eingabebreite; Multiplikation ersetzt 12 durch 4."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "$(5,4)$ würde die Batchachse verlieren; jede der zwei Batchinstanzen erhält eine eigene Ausgabe."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$(12,4)$ ist nur die Gewichtsform von $W_Q$ und nicht die Ergebnisform mit Batch und Sequenz."
+        }
+      ],
+      "typicalErrors": [
+        "Kontraktionsachse mit der Sequenzachse vertauscht",
+        "Batchdimension beim Matrixprodukt entfernt",
+        "Gewichtsmatrixform als Aktivierungsform ausgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "shape-token-batch-flatten",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "parameters": {
+        "batch": 3,
+        "tokens": 7,
+        "embeddingDim": 16
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$(3,16,7)$",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$(3,7,16)$",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "$(7,16)$",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$(3,7)$",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(3,7)$; ein Embedding mit Breite $d=16$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+      "fullSolution": "Jede der $3\\times7$ Tokenpositionen erhält einen 16-dimensionalen Vektor. Die neue Shape ist daher $(3,7,16)$.",
+      "hints": [
+        "Embedding fügt eine letzte Featureachse hinzu.",
+        "Batch 3 und Sequenzlänge 7 bleiben unverändert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "$(3,16,7)$ legt die Embeddingbreite zwischen Batch und Sequenz; die Featureachse wird konventionell angehängt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "$(7,16)$ unterschlägt die Batchdimension mit drei unabhängigen Sequenzen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$(3,7)$ ist die ID-Shape vor dem Embedding und enthält noch keine 16 Featurewerte."
+        }
+      ],
+      "typicalErrors": [
+        "Embeddingbreite an die falsche Achsenposition gesetzt",
+        "Batchachse beim Einbetten weggelassen",
+        "Vorher-Shape der Token-IDs als Ergebnis beibehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

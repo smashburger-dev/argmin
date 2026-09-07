@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
-import { loadRoadmapWeeks, loadReviews, loadSources, loadTools } from '../adapters/content-repository';
+import { loadReviews, loadSources, loadTools } from '../adapters/content-repository';
 
 /** Loads a route-scoped content section once per session. null while the
  *  sidecar chunk is in flight — views render an honest loading state. */
@@ -29,7 +29,6 @@ import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
 import { buildWeeklyLearningPlan } from '../adapters/learning-plan';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
-import { freshReviewRoute } from '../../assets/js/domain/review_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 
 const minutesLabel = (minutes: number) => minutes >= 60
@@ -195,7 +194,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           </button>
         ))}
       </div>
-      <nav class="catalog-links" aria-label="Weitere Katalogansichten"><a href="#/sources">Öffentliche Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/quality">Qualitätsreviews</a><a href="#/roadmap">39-Wochen-Projektion</a></nav>
+      <nav class="catalog-links" aria-label="Weitere Katalogansichten"><a href="#/sources">Öffentliche Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/quality">Qualitätsreviews</a></nav>
       <div class="competency-summary" aria-live="polite">
         <strong>{visible.length}</strong>
         <span>sichtbare Kompetenzknoten</span>
@@ -266,18 +265,12 @@ export function ToolsView(_: { catalog: CatalogData }) {
   return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug hat einen sichtbaren Zweck, Grenzen und einen nativen Einstieg. Externe Repositories bleiben Quellen; sie werden nicht ungeprüft ausgeführt.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="tool-actions">{tool.routes.map((route) => <a class="button button-secondary" key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</a>)}</div></article>)}</div></section>;
 }
 
-function localReadingHref(path?: string) {
-  if (!path || path.startsWith('/') || path.split(/[\\/]/).includes('..')) return null;
-  return `/${path}`;
-}
-
 function sourceWeeksLabel(weeks: unknown) {
   if (Array.isArray(weeks) && weeks.length) return `Woche ${weeks.join(', ')}`;
   return 'Referenzkatalog';
 }
 
 function SourceCard({ source }: { source: SourceSummary }) {
-  const localHref = localReadingHref(source.localPath);
   const external = /^https?:\/\//.test(source.canonicalUrl);
   return (
     <article class="source-card" id={`source-${source.sourceId}`}>
@@ -290,9 +283,8 @@ function SourceCard({ source }: { source: SourceSummary }) {
         <div><dt>Verwendet in</dt><dd>{sourceWeeksLabel(source.weeks)}</dd></div>
       </dl>
       <div class="source-actions">
-        {localHref ? <a class="button button-primary" href={localHref} target="_blank" rel="noopener">Lokale Lesefassung öffnen</a> : null}
         {external ? <a class="button button-secondary" href={source.canonicalUrl} target="_blank" rel="noreferrer">Originalquelle öffnen</a> : null}
-        {!localHref && !external ? <span class="muted">Kein Direktlink in diesem Profil</span> : null}
+        {!external ? <span class="muted">Kein Direktlink in diesem Profil</span> : null}
       </div>
     </article>
   );
@@ -308,7 +300,7 @@ export function SourcesView(_: { catalog: CatalogData }) {
         <div>
           <p class="eyebrow">Quellen und Referenzen</p>
           <h1 id="sources-title" tabIndex={-1}>Lektüren</h1>
-          <p class="lede">Das aktive Inhaltsprofil bestimmt, welche Quellen und lokalen Lesefassungen sichtbar sind. Eine Quelle ist noch keine Lernaktivität; ihre Rolle wird in Lektionen und Wochen ausgewiesen.</p>
+          <p class="lede">Öffentliche Quellen und Referenzen begleiten die Lektionen. Eine Quelle ist noch keine Lernaktivität; ihre Rolle wird in Lektionen und Modulen ausgewiesen.</p>
         </div>
         <a class="button button-secondary" href="#/learn">Zum Kompetenzkatalog</a>
       </header>
@@ -317,18 +309,11 @@ export function SourcesView(_: { catalog: CatalogData }) {
   );
 }
 
-export function RoadmapView(_: { catalog: CatalogData }) {
-  const legacyWeeks = useSection(loadRoadmapWeeks);
-  if (legacyWeeks === 'failed') return <section class="view" aria-labelledby="roadmap-title"><h1 id="roadmap-title" tabIndex={-1}>Roadmap</h1>{sectionError('Wochenprojektionen')}</section>;
-  if (!legacyWeeks) return <section class="view" aria-labelledby="roadmap-title"><h1 id="roadmap-title" tabIndex={-1}>Roadmap</h1><p role="status">Wochenprojektion wird geladen.</p></section>;
-  return <section class="view" aria-labelledby="roadmap-title"><header class="view-header"><p class="eyebrow">Getestete Planungsprojektion</p><h1 id="roadmap-title" tabIndex={-1}>Roadmap</h1><p class="lede">Die 39 Wochen sind keine feste Lerndauer und kein Gate. Der Kompetenzkatalog bleibt kanonisch; diese Ansicht macht den vorhandenen und den noch skizzierten Legacy-Plan transparent.</p></header><div class="roadmap-list">{legacyWeeks.map((week) => <article class="roadmap-card" key={week.weekId}><div><p class="card-kicker">Woche {week.number} · {week.phaseId}</p><h2>{week.title}</h2><p>{week.detailed ? 'Detailliert migriert' : 'Planungsskizze ohne freigegebenen Inhalt'}</p></div></article>)}</div></section>;
-}
-
 export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const recommendations = buildFoundationsDiagnosis(catalog, progress).slice(0, 4);
   const labels = new Map(catalog.competencies.map((item) => [item.competencyId, item]));
   const typeLabels = { review: 'Kompetenz-Frische fällig', lesson: 'Kompetenz stärken', diagnostic: 'Evidence fehlt' };
-  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'w01-e1');
+  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'transform-linear-equation-isolate:two-step-fixed-instance');
   return (
     <section class="view" aria-labelledby="diagnostic-title">
       <header class="view-header"><p class="eyebrow">Formative Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>
@@ -342,9 +327,6 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
 
 export function ReviewView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const byId = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
-  // Retired definitions stay visible as archived entries (history preserved)
-  // but never get an exercise route — the fallback `#/exercise/<id>` anchor
-  // for unknown ids would be a dead link.
   const { executable, archived } = partitionReviewQueue(progress.dueReviews, byId.keys());
   return (
     <section class="view" aria-labelledby="review-title">
@@ -366,7 +348,9 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               const definition = byId.get(review.exerciseId);
               if (!definition) return null; // unreachable after the partition; keeps the type narrowing honest
               const route = routeForDefinition(definition);
-              const freshRoute = freshReviewRoute(route, definition.generatorId, `${review.exerciseId}:${review.nextDueAt}`);
+              const freshRoute = definition.familyId && definition.seeded
+                ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
+                : route;
               return <article class="review-card" key={review.exerciseId}><div><p class="card-kicker">Aufgaben-Review fällig</p><h2>{definition.title ?? review.exerciseId}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><a class="button button-primary" href={freshRoute}>Wiederholen</a></article>;
             })}
             {archived.map((review) => (
@@ -412,7 +396,7 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
       </section>
       <section class="post-course" aria-labelledby="post-course-title">
         <div class="section-heading"><div><p class="eyebrow">Nach dem letzten Kursblock</p><h2 id="post-course-title">Reviews laufen weiter</h2></div></div>
-        <p>Die 39 Wochen sind eine Planungsprojektion und kein Enddatum: Der Planer plant fällige Reviews auch nach Kursende weiter ein, ohne künstliche Treffer zu erzeugen. Aktuell sind {progress.dueReviews.length} Aufgaben-Reviews fällig und {progress.scheduledReviewCount} Aufgaben insgesamt in der Review-Planung. Ein qualifizierter Treffer — richtig, höchstens ein Hinweis, keine vorherige Lösungsanzeige — erneuert jeweils die Gültigkeit.</p>
+        <p>Der Planer plant fällige Reviews weiter ein, ohne künstliche Treffer zu erzeugen. Aktuell sind {progress.dueReviews.length} Aufgaben-Reviews fällig und {progress.scheduledReviewCount} Aufgaben insgesamt in der Review-Planung. Ein qualifizierter Treffer — richtig, höchstens ein Hinweis, keine vorherige Lösungsanzeige — erneuert jeweils die Gültigkeit.</p>
       </section>
       {progress.attemptsCount === 0 && <div class="empty-state"><h2>Noch keine Evidence</h2><p>Beginne mit der Diagnose oder öffne eine der {catalog.competencies.length} Kompetenzen.</p><a class="button button-primary" href="#/diagnostic">Diagnose starten</a></div>}
     </section>

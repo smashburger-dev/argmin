@@ -70,36 +70,6 @@ export function genRecallAtK(seed) {
 
 // --- W27: chunking arithmetic --------------------------------------------------------
 
-export function genChunkCount(seed) {
-  const random = rng(seed);
-  return clean(random, (r) => {
-    const shape = pick(r, ['count-chars', 'count-words', 'last-start']);
-    const size = randInt(r, 12, 40);
-    const overlap = randInt(r, 1, Math.max(1, size - 2));
-    const step = size - overlap;
-    const count = until(r, (rr) => randInt(rr, 2, 12), (c) => (c - 1) * step <= 120);
-    const tail = randInt(r, 1, step);
-    const length = (count - 1) * step + tail;
-    const unit = shape === 'count-words' ? 'Wörter' : 'Zeichen';
-    const setting = shape === 'count-words'
-      ? `Ein Protokolltext umfasst ${length} Wörter und wird wortweise in Blöcke der Größe ${size} mit Überlappung ${overlap} zerlegt`
-      : `Ein Hilfetext umfasst ${length} Zeichen und wird in Fenster der Größe ${size} mit Überlappung ${overlap} zerlegt`;
-    const mechanics = `(Start bei 0, dann um Größe − Überlappung = ${step} weiter, solange der Start unter der Gesamtlänge liegt)`;
-    const answer = shape === 'last-start' ? (count - 1) * step : count;
-    const question = shape === 'last-start'
-      ? 'Bei welchem Zeichenindex startet das letzte Fenster?'
-      : 'Wie viele Chunks entstehen?';
-    return {
-      parameters: { shape, length, size, overlap, step, count },
-      expected: answer,
-      prompt: `${setting} ${mechanics}. ${question}`,
-      fullSolution: shape === 'last-start'
-        ? `Schrittweite = ${size} − ${overlap} = ${step}. Fensterzahl = ⌈${length}/${step}⌉ = ${count}, also startet das letzte Fenster bei (${count} − 1) · ${step} = ${answer}.`
-        : `Schrittweite = ${size} − ${overlap} = ${step}. Chunks = ⌈${length}/${step}⌉ = ${count}; das letzte Fenster ist nur ${tail} ${unit} lang.`,
-    };
-  });
-}
-
 // --- W28: precision / recall / F1 from integer confusion counts ---------------------
 
 export function genF1orPrecision(seed) {
@@ -261,13 +231,3 @@ export function genAllowedActionCount(seed) {
     };
   });
 }
-
-// --- registry -------------------------------------------------------------------------
-
-export const W27_W30_SEED_GENERATORS = {
-  genRecallAtK,
-  genChunkCount,
-  genF1orPrecision,
-  genInjectionFlagCount,
-  genAllowedActionCount,
-};

@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-backprop-path-rule",
+  "contract": {
+    "familyId": "classify-backprop-path-rule",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Kettenregel-Situation der richtigen Verknüpfungsregel auf Pfaden und über parallele Zweige zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "backprop-path-rule",
+        "propertyTest": false
+      },
+      {
+        "caseId": "backprop-chain-rule",
+        "propertyTest": false
+      },
+      {
+        "caseId": "backprop-detached-branch",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-autograd"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "backprop-path-rule",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w19-e1"
+      ],
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "parameters": {
+        "thema": "lokale vs. globale Gradienten"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\partial L / \\partial x = \\partial L / \\partial z + \\partial z / \\partial x = -2 + 3 = 1$ — Beiträge an Gabelungen werden addiert, also auch hier.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$\\partial L / \\partial x = -2 / 3$ — der lokale Gradient dividiert den Upstream.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = -2 \\cdot 3 = -6$ — lokal mal upstream (Kettenregel).",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "$\\partial L / \\partial x = \\partial z / \\partial x = 3$ — der lokale Gradient ist bereits die endgültige Antwort.",
+          "correct": false
+        }
+      ],
+      "prompt": "Backpropagation überträgt Gradienten rückwärts durch den Rechengraphen. Ein Knoten $z$ hängt von $x$ ab mit lokalem Gradienten $\\partial z / \\partial x = 3$; von oben kommt der Upstream-Gradient $\\partial L / \\partial z = -2$. Wie entsteht $\\partial L / \\partial x$ korrekt?",
+      "fullSolution": "Kettenregel auf einem Pfad: $\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = (-2) \\cdot 3 = -6$. Addition steht nur für Gabelungen mit mehreren Wegen nach $L$. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Der lokale Gradient sagt, wie sich $z$ ändert, wenn $x$ wackelt. Wer sagt dir, wie sich $L$ ändert, wenn $z$ wackelt?",
+        "Kettenregel entlang eines Pfades: multiplizieren. Addiert wird nur über verschiedene Pfade, die beide in $L$ münden — hier gibt es aber nur einen Pfad."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'd'",
+          "then": "Der lokale Gradient allein ignoriert, wie stark der Verlust auf $z$ reagiert — der Upstream-Gradient muss hineinmultipliziert werden."
+        },
+        {
+          "if": "choice === 'a'",
+          "then": "Addiert wird über mehrere Pfade vom selben Knoten zu $L$ — nicht lokal und upstream desselben Pfades."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Division gehört zur Umkehrung (impliziten Ableitung), nicht zur Kettenregel — hier wird multipliziert."
+        }
+      ],
+      "typicalErrors": [
+        "Upstream-Gradient vergessen und nur den lokalen Gradienten angeben",
+        "Multiplikation mit Addition verwechselt",
+        "das Vorzeichen des Upstream-Gradienten unterschlagen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "backprop-chain-rule",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "parameters": {
+        "x": 2,
+        "scale": 3
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$dy/dx=12$, weil $dy/dh=3$ und $dh/dx=4$ multipliziert werden.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "$dy/dx=7$, weil die lokalen Ableitungen addiert werden.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$dy/dx=6$, weil nur der Faktor 3 zählt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$dy/dx=4$, weil nur die Ableitung von $x^2$ zählt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Rechenweg ist $x\\rightarrow h=x^2\\rightarrow y=3h$ mit $x=2$. Welche Aussage über $\\frac{dy}{dx}$ ist korrekt?",
+      "fullSolution": "Die lokalen Ableitungen sind $dh/dx=2x=4$ und $dy/dh=3$. Nach der Kettenregel ist $dy/dx=3\\cdot4=12$.",
+      "hints": [
+        "Multipliziere die lokalen Ableitungen entlang des gerichteten Pfads.",
+        "Setze $x=2$ erst in $2x$ ein und multipliziere danach mit 3."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Entlang des einzigen Pfads werden die lokalen Ableitungen multipliziert: $3\\cdot4=12$, nicht $3+4=7$."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Faktor 3 ist nur $dy/dh$; der vorgelagerte Faktor $dh/dx=2x=4$ muss ebenfalls eingehen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Ableitung $4$ beschreibt nur $h$ nach $x$; für $y=3h$ kommt noch der Faktor 3 hinzu."
+        }
+      ],
+      "typicalErrors": [
+        "Kettenregel durch Addition der lokalen Ableitungen ersetzt",
+        "den äußeren Multiplikationsfaktor im Gradientenpfad übersprungen",
+        "die Zwischenvariable h nicht in die Ableitungskette einbezogen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "backprop-detached-branch",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "parameters": {
+        "x": 3
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$dz/dx=0$, weil <code>stop_gradient</code> den gesamten Ausdruck blockiert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$dz/dx=12$, weil beide Vorkommen von $u$ gleich aussehen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$dz/dx=6$, weil nur der erste $u$-Zweig rückwärts differenziert wird.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "$dz/dx=3$, weil der Gradient den Exponenten nicht berücksichtigt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Modell berechnet $u=x^2$ und setzt danach $z=u+\\operatorname{stop\\_gradient}(u)$. Welche Aussage über $dz/dx$ bei $x=3$ stimmt?",
+      "fullSolution": "Der normale $u$-Zweig liefert $du/dx=2x=6$. Der abgetrennte Zweig liefert keinen Gradienten, daher ist $dz/dx=6$ statt 12.",
+      "hints": [
+        "Markiere, welcher Summand den Rechengraphen unterbricht.",
+        "Nur der nicht abgetrennte $u=x^2$-Zweig trägt $2x$ bei."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "<code>stop_gradient</code> gilt nur für den zweiten Summanden; der erste $u=x^2$-Pfad liefert weiterhin $2\\cdot3=6$."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die beiden Vorwärtswerte sind gleich, aber der zweite Pfad ist abgetrennt; deshalb wird $2x$ nur einmal gezählt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Ableitung von $x^2$ ist $2x$; bei $x=3$ ergibt der aktive Pfad deshalb 6 und nicht den Rohwert 3."
+        }
+      ],
+      "typicalErrors": [
+        "identische Vorwärtswerte mit identischen Gradienten gleichgesetzt",
+        "stop_gradient fälschlich auf beide Summanden ausgedehnt",
+        "die Potenzregel bei x=3 durch den Eingabewert ersetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

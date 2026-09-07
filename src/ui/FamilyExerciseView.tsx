@@ -1,7 +1,9 @@
-import { useState } from 'preact/hooks';
-import { EXERCISE_FAMILIES, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { useEffect, useState } from 'preact/hooks';
+import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
+import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
 import { AnswerControls } from './AnswerControls';
 import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
@@ -9,10 +11,15 @@ import { TraceTableView } from './TraceTableView';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
 // Route: #/family/:familyId/:caseId/:seed/:difficulty, '-' heißt Zufall.
-// S4D2: Antwort-Inputs je Aktivitätstyp (gemeinsam mit ExerciseView),
+// S4D2: Antwort-Inputs je Aktivitätstyp,
 // domänenspezifische Hinweise mit Ledger-Zählung, Offenlegung mit
 // Mastery-Disqualifikation. Trace-Tabelle bleibt eigene Variante.
-function parseFamilyRef(ref: string) {
+function parseFamilyRef(ref: string): {
+  familyId: string;
+  caseId?: string;
+  seed: number;
+  difficulty: string;
+} {
   const [familyId = '', casePart = '', seedPart = '', difficulty = ''] = String(ref).split('/');
   if (!familyId) throw new Error('Familie fehlt.');
   if (!difficulty) throw new Error('Profil fehlt.');
@@ -25,6 +32,8 @@ function parseFamilyRef(ref: string) {
   return { familyId, caseId, seed, difficulty };
 }
 
+configureExerciseFamilies(loadFamilyIndex());
+
 export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
   const [answer, setAnswer] = useState<unknown>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
@@ -36,20 +45,44 @@ export function FamilyExerciseView({ familyRef }: { familyRef: string }) {
   const [masteryNote, setMasteryNote] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
+  const [instance, setInstance] = useState<ReturnType<typeof EXERCISE_FAMILIES.instantiate> | null>(null);
+  const [summary, setSummary] = useState('');
 
-  let parsed;
+  let parsed: ReturnType<typeof parseFamilyRef> | null = null;
+  let parseError: unknown = null;
   try {
     parsed = parseFamilyRef(familyRef);
   } catch (error) {
-    return <section class="view"><h1 tabIndex={-1}>Variante nicht gefunden</h1><p role="alert" class="content-error">{error instanceof Error ? error.message : String(error)}</p></section>;
+    parseError = error;
   }
-  let instance;
-  try {
-    instance = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
-  } catch (error) {
-    return <section class="view"><h1 tabIndex={-1}>Variante nicht gefunden</h1><p role="alert" class="content-error">{error instanceof Error ? error.message : String(error)}</p></section>;
+
+  useEffect(() => {
+    let active = true;
+    setInstance(null);
+    setFailed(null);
+    if (!parsed) return () => { active = false; };
+    void (async () => {
+      try {
+        const body = await loadFamilyCases(parsed.familyId);
+        if (body) registerStaticCases(parsed.familyId, body.cases);
+        const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
+        if (!active) return;
+        setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
+        setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
+        setInstance(next);
+      } catch (error) {
+        if (active) setFailed(error instanceof Error ? error.message : String(error));
+      }
+    })();
+    return () => { active = false; };
+  }, [familyRef]);
+
+  if (parseError) {
+    return <section class="view"><h1 tabIndex={-1}>Variante nicht gefunden</h1><p role="alert" class="content-error">{parseError instanceof Error ? parseError.message : String(parseError)}</p></section>;
   }
-  const summary = EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '';
+  if (!instance) {
+    return <section class="view"><h1 tabIndex={-1}>{failed ? 'Variante nicht gefunden' : 'Variante wird geladen'}</h1>{failed ? <p role="alert" class="content-error">{failed}</p> : <p>Bitte kurz warten.</p>}</section>;
+  }
 
   // S4D1: Trace-Tabelle als Interaktionsvariante, sobald der Generator
   // Zustände kennt (instance.traceTable). Sonst normale Familienübung.

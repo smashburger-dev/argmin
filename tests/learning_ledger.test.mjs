@@ -227,11 +227,8 @@ test('journal store is not equivalent to attempt derivation, so it stays', () =>
 
 test('live recorders do not build instance or cycle themselves', () => {
   const files = [
-    'src/adapters/exercise-session.ts',
     'src/adapters/python-workspace.ts',
     'src/adapters/project-session.ts',
-    'src/ui/ExerciseView.tsx',
-    'src/ui/LabView.tsx',
     'src/ui/ProjectView.tsx',
   ];
   for (const relative of files) {

@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-ensembles",
+  "version": 1,
+  "locale": "de",
+  "title": "Entscheidungsbäume und Ensembles: Gini, Bagging, Majority Voting",
+  "description": "Lerne Gini-Splits zu berechnen, Bagging und Majority Voting zu begründen und Ensemblemodelle fair mit Baselines zu vergleichen.",
+  "competencyIds": [
+    "c-ml-ensembles"
+  ],
+  "requires": [
+    "c-ml-cv"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-ensembles"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-ensembles-effect",
+      "role": "curated",
+      "familyId": "classify-ensemble-effect",
+      "caseId": "bagging-variance-reduction",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-ensembles",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-ensembles-majority",
+      "role": "curated",
+      "familyId": "aggregate-majority-rule-count",
+      "caseId": "ensemble-majority-output-count",
+      "seed": 15001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-ensembles",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-ensembles-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "tree-majority-vote-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-ensembles",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-ensembles-split",
+      "role": "curated",
+      "familyId": "optimize-tree-best-split",
+      "caseId": "gini-best-binary-split",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-ml-ensembles",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-ensembles-comparison",
+      "role": "curated",
+      "familyId": "construct-ensemble-predictor-comparison",
+      "caseId": "voting-tree-linear-rmse",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 40,
+      "lessonId": "l-ml-ensembles",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-ensembles-practice-space",
+      "role": "practice-space",
+      "familyId": "aggregate-majority-rule-count",
+      "caseId": "ensemble-majority-output-count",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

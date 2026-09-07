@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-parameter-origin",
+  "contract": {
+    "familyId": "classify-parameter-origin",
+    "familyGroup": "classify-concept",
+    "summary": "Unterscheidet gelernte Modellparameter von vorab gewählten Hyperparametern.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "hyperparameter-vs-parameter",
+        "propertyTest": false
+      },
+      {
+        "caseId": "parameter-tree-depth",
+        "propertyTest": false
+      },
+      {
+        "caseId": "parameter-linear-weight",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-cv"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "hyperparameter-vs-parameter",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w12-e1"
+      ],
+      "parameters": {
+        "topic": "Hyperparameter vs. Parameter"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Was ist der wesentliche Unterschied zwischen Hyperparametern und Parametern eines Modells?",
+      "fullSolution": "Parameter (Gewichte, Intercepts) entstehen aus dem Training auf Daten; Hyperparameter (Fold-Anzahl k, Regularisierungsstärke, Lernrate) werden vor dem Training festgelegt und steuern den Lernprozess — ihre Wahl gehört in die Cross-Validation, nicht in den Gradientenabstieg.",
+      "hints": [
+        "Frage dich bei jeder Größe: Wird sie aus Daten berechnet oder muss sie jemand vorab entscheiden?",
+        "Die Fold-Anzahl k oder eine Regularisierungsstärke stehen nicht in der Verlustfunktion als gelernte Gewichte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Genau umgekehrt: Gewichte (Parameter) werden gelernt, Hyperparameter steuern das Lernen und werden vorab gewählt."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Modellgewichte lernt der Algorithmus; was das Lernen selbst steuert (Lernrate, k, Stärke), muss von außen gesetzt werden."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Auch einfache Verfahren haben Hyperparameter — etwa die Regularisierungsstärke bei regularisierter Regression oder k bei k-Nächste-Nachbarn."
+        }
+      ],
+      "typicalErrors": [
+        "Hyperparameter und Parameter vertauschen",
+        "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln",
+        "glauben, einfache Modelle hätten keine Hyperparameter"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hyperparameter werden aus den Trainingsdaten optimiert, Parameter werden vor dem Training manuell festgelegt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Es gibt keinen Unterschied — beide werden beim Training gelernt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Hyperparameter werden vor dem Training festgelegt und steuern den Lernprozess (z. B. Fold-Anzahl, Regularisierungsstärke); Parameter (z. B. Gewichte) werden aus den Trainingsdaten gelernt.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Hyperparameter gibt es nur bei neuronalen Netzen; lineare Regression hat keine.",
+          "correct": false
+        }
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    },
+    {
+      "caseId": "parameter-tree-depth",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "topic": "Hyperparameter vs. Parameter"
+      },
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Bei einem Entscheidungsbaum wird die maximale Tiefe per Cross-Validation aus den Werten 3, 5 und 8 gewählt. Was ist die Tiefe?",
+      "fullSolution": "Die maximale Tiefe wird vor dem Training gewählt und per Validierung abgestimmt; sie ist ein Hyperparameter, kein gelernter Modellparameter.",
+      "hints": [
+        "Frage, ob der Wert aus den Trainingsbeispielen im Baum gelernt oder vorab festgelegt wird.",
+        "Cross-Validation vergleicht Hyperparameter-Kandidaten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Tiefe 3, 5 oder 8 wird vor dem Fit per Cross-Validation gewählt; sie ist kein Gewichtsparameter, der an jedem Knoten entsteht."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Eine Validierung kann Messwerte liefern, aber die ausgewählte maximale Tiefe beschreibt die Modellkapazität und ist kein Messfehler."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die Tiefe ist eine Einstellung des Modells und nicht der vorherzusagende Zielwert; Zielwerte stammen aus den Beispielen."
+        }
+      ],
+      "typicalErrors": [
+        "Eine vorab getestete Baumtiefe als lokal gelerntes Knotengewicht bezeichnet.",
+        "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt.",
+        "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Ein Messfehler der Validierungsdaten.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ein Zielwert des Modells.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
+          "correct": true
+        }
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    },
+    {
+      "caseId": "parameter-linear-weight",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "topic": "Hyperparameter vs. Parameter"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Bei einer linearen Regression werden die Koeffizienten nach dem Fit aus den Trainingsdaten berechnet. Wie ordnest du sie ein?",
+      "fullSolution": "Die Koeffizienten werden aus den Trainingsdaten gelernt und sind Modellparameter. Die Lernroutine schätzt sie, statt dass sie vorab gesetzt werden.",
+      "hints": [
+        "Trenne Werte, die der Fit berechnet, von Werten, die die Fit-Prozedur steuern.",
+        "Koeffizienten gehören zur Modellfunktion nach dem Training."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Koeffizienten werden nach dem Fit aus Trainingsdaten geschätzt und gehören damit zur gelernten Modellfunktion; ihre numerische Form macht sie nicht zu Hyperparametern."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Dass ein Koeffizient aus Trainingsdaten gelernt wird, ist der normale Fit und noch kein Leakage; Leakage würde eine unzulässige Informationsquelle beschreiben."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Koeffizienten bestimmen direkt die Vorhersage der linearen Funktion und sind deshalb keine wirkungslosen Metadaten."
+        }
+      ],
+      "typicalErrors": [
+        "Modellparameter allein wegen ihres Zahlenformats als Hyperparameter bezeichnet.",
+        "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet.",
+        "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hyperparameter, weil sie Zahlen sind.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Datenleakage, weil sie aus den Daten stammen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Gelernte Modellparameter.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
+          "correct": false
+        }
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    }
+  ]
+}

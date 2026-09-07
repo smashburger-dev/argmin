@@ -4,35 +4,30 @@
   "beschreibung": "Phasenvertrag nach ADR-0014 Design A: eine Capstone, fünf Wochen. Jede Woche hat genau eine Testdatei und ein Deliverable; die Tests laufen alle über dasselbe eine pytest-Kommando.",
   "phases": [
     {
-      "weekId": "w35",
       "phaseId": "w35-scope",
       "titel": "Scope-Freeze, Manifest, Datenfluss-Stages",
       "testFile": "tests/test_w35_scope.py",
       "deliverable": "Manifest und Stages stehen: check-manifest pinnt golden/, config/, tests/ und src/w30_core.py per sha256; topo-sortierte Stages mit Zyklenerkennung; assert_frozen() läuft grün."
     },
     {
-      "weekId": "w36",
       "phaseId": "w36-integration",
       "titel": "Hauptfunktion und Integrationsverträge",
       "testFile": "tests/test_w36_pipeline.py",
       "deliverable": "Config-getriebene Hauptfunktion run() mit festen IO-Schlüsseln je Stage, Fehlerzuständen und Timeouts über eine virtuelle Uhr; keine stillen Fallbacks (Sentinel-Status statt Ersatzwerten)."
     },
     {
-      "weekId": "w37",
       "phaseId": "w37-eval-redteam",
       "titel": "Feste Evaluation und defensives Red-Team",
       "testFile": "tests/test_w37_eval_redteam.py",
       "deliverable": "Golden-Set-Hash-Unveränderlichkeit, getrennte Retrieval- und Antwortfehler, exakte Subgruppenmetriken, Angriffs-Fixtures nur gegen den eigenen Toy-Prototyp, Regressionstabelle gegen die W34-Baseline, Regelwerk-Verdict."
     },
     {
-      "weekId": "w38",
       "phaseId": "w38-repro",
       "titel": "Reproduktion und Dokumentation",
       "testFile": "tests/test_w38_repro.py",
       "deliverable": "Frischer Doppellauf mit identischem Digest, README mit den sechs Pflichtüberschriften, gepinnte Versionen ohne Bereichs-Specs, Overclaim-Detektor über README und Karten."
     },
     {
-      "weekId": "w39",
       "phaseId": "w39-artifacts",
       "titel": "Abschluss-Artefakte und Demo",
       "testFile": "tests/test_w39_artifacts.py",

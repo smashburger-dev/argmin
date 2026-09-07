@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "familyId": "validate-data-quality-contract",
+  "contract": {
+    "familyId": "validate-data-quality-contract",
+    "familyGroup": "validate-contract",
+    "summary": "Implementiert Datenqualitätsverträge mit Schema-, Typ-, Bereichs- und Duplikatprüfungen.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "profile-table-schema-counts",
+        "propertyTest": false
+      },
+      {
+        "caseId": "validate-rows-contract-errors",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-pandas-cleaning"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "profile-table-schema-counts",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w06-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def profile_table(rows):\n    \"\"\"Return {'total', 'missing', 'sentinel', 'duplicate_ids'} or raise ValueError.\"\"\"\n    # check schema per row first, then count\n    ...\n",
+        "tests": "rows = [\n    {\"id\": \"a\", \"wert\": 3},\n    {\"id\": \"b\", \"wert\": None},\n    {\"id\": \"a\", \"wert\": -1},\n    {\"id\": \"c\", \"wert\": -1},\n    {\"id\": \"d\", \"wert\": 7},\n    {\"id\": \"b\", \"wert\": 0},\n]\np = profile_table(rows)\n__check('total', p[\"total\"] == 6)\n__check('missing', p[\"missing\"] == 1)\n__check('sentinel', p[\"sentinel\"] == 2)\n__check('duplicate_ids distinct', p[\"duplicate_ids\"] == 2)\ntry:\n    profile_table([{\"id\": \"a\", \"wert\": 3}, {\"id\": \"b\"}])\n    __check('fehlende Spalte -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlende Spalte -> ValueError', True)\ntry:\n    profile_table([{\"id\": \"a\", \"wert\": \"3\"}])\n    __check('falscher Typ -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falscher Typ -> ValueError', True)\ntry:\n    profile_table([{\"id\": \"a\", \"wert\": True}])\n    __check('bool -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('bool -> ValueError', True)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def profile_table(rows):\n    REQUIRED = {\"id\", \"wert\"}\n    total = 0\n    missing = 0\n    sentinel = 0\n    counts = {}\n    for row in rows:\n        if not isinstance(row, dict) or set(row.keys()) != REQUIRED:\n            raise ValueError(\"schema violation: expected columns id, wert\")\n        rid, wert = row[\"id\"], row[\"wert\"]\n        if not isinstance(rid, str):\n            raise ValueError(\"schema violation: id must be str\")\n        if wert is not None and (not isinstance(wert, int) or isinstance(wert, bool)):\n            raise ValueError(\"schema violation: wert must be int or None\")\n        total += 1\n        if wert is None:\n            missing += 1\n        elif wert == -1:\n            sentinel += 1\n        counts[rid] = counts.get(rid, 0) + 1\n    duplicate_ids = sum(1 for c in counts.values() if c > 1)\n    return {\"total\": total, \"missing\": missing, \"sentinel\": sentinel, \"duplicate_ids\": duplicate_ids}"
+      },
+      "prompt": "Implementiere <code>profile_table(rows)</code>. Eingabe: <code>rows</code> ist eine Liste von Dictionaries mit genau den Spalten <code>\"id\"</code> (immer str) und <code>\"wert\"</code> (int oder None). Rückgabe: ein Dictionary mit <code>\"total\"</code> (Anzahl der Zeilen), <code>\"missing\"</code> (Anzahl Zeilen mit wert None), <code>\"sentinel\"</code> (Anzahl Zeilen mit wert -1) und <code>\"duplicate_ids\"</code> (Anzahl verschiedener ids, die in mehr als einer Zeile vorkommen). Schema-Verstöße führen zu <code>ValueError</code>, und zwar bevor irgendein Ergebnis zurückgegeben wird: falsche oder fehlende Spalten, id kein str, wert weder int noch None; <code>bool</code> gilt nicht als int. Der Testcode ist von deiner Eingabe getrennt und prüft Werte und Fehlerverhalten.",
+      "fullSolution": "def profile_table(rows):\n    REQUIRED = {\"id\", \"wert\"}\n    total = 0\n    missing = 0\n    sentinel = 0\n    counts = {}\n    for row in rows:\n        if not isinstance(row, dict) or set(row.keys()) != REQUIRED:\n            raise ValueError(\"schema violation: expected columns id, wert\")\n        rid, wert = row[\"id\"], row[\"wert\"]\n        if not isinstance(rid, str):\n            raise ValueError(\"schema violation: id must be str\")\n        if wert is not None and (not isinstance(wert, int) or isinstance(wert, bool)):\n            raise ValueError(\"schema violation: wert must be int or None\")\n        total += 1\n        if wert is None:\n            missing += 1\n        elif wert == -1:\n            sentinel += 1\n        counts[rid] = counts.get(rid, 0) + 1\n    duplicate_ids = sum(1 for c in counts.values() if c > 1)\n    return {\"total\": total, \"missing\": missing, \"sentinel\": sentinel, \"duplicate_ids\": duplicate_ids}\n\n# profile_table aus dem Test: total 6, missing 1, sentinel 2, duplicate_ids 2",
+      "hints": [
+        "Prüfe pro Zeile zuerst das Spaltenset und die Typen — ValueError vor dem Zählen. bool ist eine Unterklasse von int und muss explizit ausgeschlossen werden.",
+        "Zähle fehlende und Sentinel-Werte in einem Durchlauf; für duplicate_ids sammle id-Häufigkeiten in einem Dictionary und zähle danach alle ids mit Häufigkeit > 1."
+      ],
+      "feedbackRules": [
+        {
+          "if": "valueerror-missing",
+          "then": "Der ValueError bei Schema-Verstoß fehlt oder wird erst nach dem Zählen geworfen."
+        },
+        {
+          "if": "bool-accepted",
+          "then": "True/False sind Instanzen von int (Unterklasse) — isinstance(wert, bool) muss gesondert abgelehnt werden."
+        },
+        {
+          "if": "duplicate-rows-vs-ids",
+          "then": "duplicate_ids zählt verschiedene ids mit mehr als einer Zeile, nicht die Anzahl zusätzlicher Zeilen."
+        }
+      ],
+      "typicalErrors": [
+        "Schema-Prüfung nach dem Zählen ausgeführt oder weggelassen",
+        "bool versehentlich als int akzeptiert",
+        "Sentinel -1 nicht von fehlendem None unterschieden"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "validate-rows-contract-errors",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w06-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def validate_rows(rows, contract):\n    \"\"\"Check rows against the contract; return list of (i, column, kind) errors.\"\"\"\n    # 1) column set per row: mismatch -> (i, None, \"columns\"), skip row\n    # 2) per column in contract order: None/type check, then range\n    # 3) after the row pass: unique columns -> (i, col, \"duplicate\")\n    ...\n",
+        "tests": "contract = {\n    \"columns\": [\"id\", \"alter\", \"umsatz\"],\n    \"types\": {\"id\": \"str\", \"alter\": \"int\", \"umsatz\": \"number\"},\n    \"nullable\": [\"umsatz\"],\n    \"ranges\": {\"alter\": [18, 99]},\n    \"unique\": [\"id\"],\n}\nok_rows = [\n    {\"id\": \"k1\", \"alter\": 34, \"umsatz\": 120.5},\n    {\"id\": \"k2\", \"alter\": 41, \"umsatz\": None},\n    {\"id\": \"k3\", \"alter\": 29, \"umsatz\": 90},\n]\n__check('fehlerfreie Tabelle', validate_rows(ok_rows, contract) == [])\nbad_rows = [\n    {\"id\": \"k1\", \"alter\": 34, \"umsatz\": 120.5},\n    {\"id\": \"k2\", \"alter\": \"41\", \"umsatz\": 3.0},\n    {\"id\": \"k3\", \"alter\": 17, \"umsatz\": 2.0},\n    {\"id\": \"k1\", \"alter\": 52, \"umsatz\": None},\n    {\"alter\": 52, \"umsatz\": 1.0},\n    {\"id\": \"k9\", \"umsatz\": 1.0},\n    {\"id\": True, \"alter\": 30, \"umsatz\": 1.0},\n    {\"id\": \"k7\", \"alter\": None, \"umsatz\": 1.0},\n    {\"id\": \"k8\", \"alter\": 30, \"umsatz\": \"viel\"},\n]\nerrs = validate_rows(bad_rows, contract)\n__check('Anzahl Fehler', len(errs) == 8)\n__check('Typfehler alter', (1, \"alter\", \"type\") in errs)\n__check('Bereichsfehler alter', (2, \"alter\", \"range\") in errs)\n__check('Duplikat id', (3, \"id\", \"duplicate\") in errs)\n__check('fehlende Spalte Zeile 4', (4, None, \"columns\") in errs)\n__check('fehlende Spalte Zeile 5', (5, None, \"columns\") in errs)\n__check('bool ist kein str', (6, \"id\", \"type\") in errs)\n__check('None nicht nullable', (7, \"alter\", \"type\") in errs)\n__check('umsatz kein number', (8, \"umsatz\", \"type\") in errs)\n__check('Bereichsgrenze inklusiv', validate_rows([{\"id\": \"k1\", \"alter\": 18, \"umsatz\": 1.0}, {\"id\": \"k2\", \"alter\": 99, \"umsatz\": 1.0}], contract) == [])"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def validate_rows(rows, contract):\n    columns = list(contract[\"columns\"])\n    types = contract.get(\"types\", {})\n    nullable = set(contract.get(\"nullable\", []))\n    ranges = contract.get(\"ranges\", {})\n    errors = []\n    for i, row in enumerate(rows):\n        if not isinstance(row, dict) or set(row.keys()) != set(columns):\n            errors.append((i, None, \"columns\"))\n            continue\n        for col in columns:\n            value = row[col]\n            if value is None:\n                if col not in nullable:\n                    errors.append((i, col, \"type\"))\n                continue\n            expected = types.get(col)\n            ok = True\n            if expected == \"str\":\n                ok = isinstance(value, str)\n            elif expected == \"int\":\n                ok = isinstance(value, int) and not isinstance(value, bool)\n            elif expected == \"number\":\n                ok = isinstance(value, (int, float)) and not isinstance(value, bool)\n            if not ok:\n                errors.append((i, col, \"type\"))\n                continue\n            if col in ranges:\n                lo, hi = ranges[col]\n                if not (lo <= value <= hi):\n                    errors.append((i, col, \"range\"))\n    for col in contract.get(\"unique\", []):\n        seen = set()\n        for i, row in enumerate(rows):\n            if not isinstance(row, dict) or set(row.keys()) != set(columns):\n                continue\n            value = row.get(col)\n            if value in seen:\n                errors.append((i, col, \"duplicate\"))\n            else:\n                seen.add(value)\n    return errors"
+      },
+      "prompt": "Final Boss Datenqualitätsvertrag: Implementiere <code>validate_rows(rows, contract)</code>. Eingabe: <code>rows</code> ist eine Liste von Dictionaries; <code>contract</code> hat die Schlüssel <code>columns</code> (Liste der erwarteten Spalten — genau diese, keine fehlenden, keine zusätzlichen), <code>types</code> (Abbildung Spalte → <code>\"str\"</code> | <code>\"int\"</code> | <code>\"number\"</code>; <code>\"int\"</code> und <code>\"number\"</code> lehnen bool ab, <code>\"number\"</code> akzeptiert int und float), <code>nullable</code> (Liste der Spalten, in denen None erlaubt ist), <code>ranges</code> (Abbildung Spalte → [min, max] mit inklusiven Grenzen, nur für vorhandene numerische Werte) und <code>unique</code> (Liste der Spalten, deren Werte zeilenweise eindeutig sein müssen). Rückgabe: Liste von Fehler-Tupeln <code>(zeilenindex, spalte, art)</code> mit art aus <code>\"columns\"</code>, <code>\"type\"</code>, <code>\"range\"</code>, <code>\"duplicate\"</code>. Regeln: falsches Spaltenset einer Zeile → genau <code>(i, None, \"columns\")</code>, keine weiteren Prüfungen für diese Zeile; None außerhalb von nullable → <code>(i, spalte, \"type\")</code>; Typ- und Bereichsprüfung erfolgen je Zeile in der Reihenfolge von <code>columns</code>; nach dem Zeilendurchlauf wird jede <code>unique</code>-Spalte geprüft — jede Wiederholung nach dem ersten Auftreten ergibt <code>(i, spalte, \"duplicate\")</code>. Fehlerfreie Eingaben geben <code>[]</code> zurück. Der Testcode enthält eine fehlerfreie Tabelle und eine Tabelle mit allen Fehlerarten.",
+      "fullSolution": "def validate_rows(rows, contract):\n    columns = list(contract[\"columns\"])\n    types = contract.get(\"types\", {})\n    nullable = set(contract.get(\"nullable\", []))\n    ranges = contract.get(\"ranges\", {})\n    errors = []\n    for i, row in enumerate(rows):\n        if not isinstance(row, dict) or set(row.keys()) != set(columns):\n            errors.append((i, None, \"columns\"))\n            continue\n        for col in columns:\n            value = row[col]\n            if value is None:\n                if col not in nullable:\n                    errors.append((i, col, \"type\"))\n                continue\n            expected = types.get(col)\n            ok = True\n            if expected == \"str\":\n                ok = isinstance(value, str)\n            elif expected == \"int\":\n                ok = isinstance(value, int) and not isinstance(value, bool)\n            elif expected == \"number\":\n                ok = isinstance(value, (int, float)) and not isinstance(value, bool)\n            if not ok:\n                errors.append((i, col, \"type\"))\n                continue\n            if col in ranges:\n                lo, hi = ranges[col]\n                if not (lo <= value <= hi):\n                    errors.append((i, col, \"range\"))\n    for col in contract.get(\"unique\", []):\n        seen = set()\n        for i, row in enumerate(rows):\n            if not isinstance(row, dict) or set(row.keys()) != set(columns):\n                continue\n            value = row.get(col)\n            if value in seen:\n                errors.append((i, col, \"duplicate\"))\n            else:\n                seen.add(value)\n    return errors\n\n# bad_rows aus dem Test liefern 8 Fehler: type/range/columns/duplicate wie oben spezifiziert",
+      "hints": [
+        "Arbeite in zwei Durchläufen: erst Zeilen gegen Spaltenset, Typen und Bereiche, danach separat die unique-Spalten mit einem seen-Set.",
+        "None ist nur in nullable erlaubt und ergibt sonst einen type-Fehler; bool ist eine Unterklasse von int und muss für \"int\"/\"number\" explizit ausgeschlossen werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "columns-error-missing",
+          "then": "Bei falschem Spaltensatz darf die Zeile keine weiteren Fehler liefern — weiter zur nächsten Zeile."
+        },
+        {
+          "if": "duplicate-early",
+          "then": "Duplikatfehler werden erst nach dem vollständigen Zeilendurchlauf gemeldet, sonst verschieben sie die Fehlerliste."
+        },
+        {
+          "if": "range-on-none",
+          "then": "Bereiche werden nur für vorhandene numerische Werte geprüft — None darf nicht in den Range-Vergleich gehen."
+        }
+      ],
+      "typicalErrors": [
+        "bool als int akzeptiert, weil isinstance(True, int) gilt",
+        "None in den Bereichs-Vergleich einbezogen und gegen min/max geprüft",
+        "Duplikate während des Zeilendurchlaufs gemeldet statt in einem zweiten Durchlauf"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

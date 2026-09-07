@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-capstone-baseline",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Baseline: Hashes, Fehler-Ledger und Vergleichbarkeit",
+  "description": "Eine reproduzierbare Capstone-Baseline hashfixieren, Fehler-Ledger lesen und Berichte gegen stille Abweichungen schützen.",
+  "competencyIds": [
+    "c-research-capstone"
+  ],
+  "requires": [
+    "c-genai-prototype",
+    "c-research-responsible"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-capstone-baseline"
+  ],
+  "placements": [
+    {
+      "placementId": "p-capstone-34-e1",
+      "role": "curated",
+      "familyId": "classify-hash-semantics",
+      "caseId": "hash-semantics-baseline",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-capstone-baseline",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-capstone-34-e2",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "baseline-ledger-rates",
+      "seed": 3411,
+      "difficulty": "core",
+      "estimatedMinutes": 9,
+      "lessonId": "l-capstone-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-34-e3",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "ledger-rates-output-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-capstone-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-34-e4",
+      "role": "curated",
+      "familyId": "reproduce-canonical-hash-verify",
+      "caseId": "canonical-hash-verify",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-capstone-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-34-e5",
+      "role": "curated",
+      "familyId": "reproduce-run-digest-assert",
+      "caseId": "run-digest-assert",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 27,
+      "lessonId": "l-capstone-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-34-e6",
+      "role": "curated",
+      "familyId": "validate-report-guard-compose",
+      "caseId": "baseline-report",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 40,
+      "lessonId": "l-capstone-baseline",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-capstone-34-practice",
+      "role": "practice-space",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "baseline-ledger-rates",
+      "seed": 3411,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-capstone-baseline"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

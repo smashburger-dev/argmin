@@ -22,16 +22,16 @@ Stand: 2026-08-25 (erweitert um LM-R2/LM-R4/LM-R5-Felder). Gilt für alle Aufgab
 5. Property-Tests in `tests/`: mindestens 200 Seeds je Generator; fehlgeschlagene Seeds werden als Regressionstest fixiert.
 6. Grenzfalltests: vertauschte Paare, Vorzeichenfehler, leere/unsinnige Eingaben — typische Fehlertypen in `feedbackRules` abbilden.
 
-### Unit-Schema (Lerneinheiten, ab W1)
+### Learning-Module-Schema
 
-Jede Unit in `curriculum.json` trägt zusätzlich:
+Jedes LearningModule trägt Placements mit Family-ID, Case-ID, Seed,
+Schwierigkeitsprofil und den dafür freigegebenen Kompetenzen. Quellen bleiben
+am Placement bzw. an der Lektion referenziert; lokale Pfade werden im
+Public-Build entfernt.
 
-- `unitExerciseIds` (optional): Übungsaufgaben-IDs, die zu dieser Unit gehören. Der Validator prüft Referenz-Existenz; die Unit-Seite (`#/unit/<unitId>`) rendert sie als Teaser.
-- `sources[].locatorPath` (optional): maschinenlesbarer Lesezugang, relativer Pfad ab Plattform-Root, muss mit `library/` oder `library-private/` beginnen. `locator` bleibt Menschtext. **Validator**: Root-Build prüft `existsSync`; Public-Build lehnt das Feld grundsätzlich ab (Bibliothek ist private-build-only, `tools/build_public.mjs` strippt es).
+Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die UI verlinkt diese Originalquelle in einem neuen Tab; lokale Lesepfade und private Volltextkopien gehören nicht zum Public-Profil.
 
-Dazu in `content/sources.json` je Quelle optional `localPath` (representativer Einstiegspfad, dieselben Regeln wie `locatorPath`). Auflösung in der UI (Hilfsfunktion `sourceAccessLinks`): `locatorPath` gewinnt über `localPath` → Link „Lokal lesen“ (neuer Tab); sonst `canonicalUrl` → „Online öffnen“.
-
-### Seed-Generatoren für Abrufaufgaben (Muster W1)
+### Seed-Generatoren für Familienfälle
 
 - `parameters.seedGenerator: 'genLinearEquation'|'genPowerExpr'|'genLogExpr'` + `deterministicSeed` in der Aufgabe; der Grader (`expectedNumeric`) berechnet `expected` aus Generator + **aktuellem** Seed.
 - Der im JSON dokumentierte `prompt` ist die Generator-Ausgabe zum Default-Seed (Test erzwingt Identität — kein Seed-Drift).
@@ -74,31 +74,22 @@ Verbindliche, in der Aufgabenansicht sichtbare Policy (`exercise_runtime.js` + `
 
 Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-Eintrag mit `event` und `hintsUsed` persistiert und in der Statuszeile der Aufgabe angezeigt.
 
-## 6. Kumulative Gate-Anteile (LM-R2, ab Woche 9)
+## 6. Aufnahme-Checkliste
 
-`gate.cumulativeExerciseRefs` = Array von `{weekId, skillId}` mit optionalem `future: true` + `note`. Regeln:
-
-- Referenzen zeigen auf **frühere** Wochen und wählen die Belegaufgabe über `skillIds` (erste aktive Aufgabe der Zielwoche mit dem Skill).
-- Noch nicht ausgearbeitete Zielwochen müssen `future: true` tragen (der Validator lehnt unmarkierte Referenzen ab).
-- Bei der Realisierung: **neue Seeds** je Rückgriff (Autoringregel der W6-Pipeline; begründet in `research/lernmethodik/requirements.md` LM-R2).
-- `future`-Referenzen blockieren das Gate nicht (geplante Platzhalter).
-
-## 7. Aufnahme-Checkliste
-
-- [ ] Validator grün (`node tools/validate_content.mjs`) — läuft über ALLE `content/exercises/wNN.json`
+- [ ] Validator grün (`node tools/validate_content.mjs`) — prüft Katalog, Module, Lektionen und Familien
 - [ ] Generator-Property-Tests grün (`node --test tests/…`)
 - [ ] typische falsche Antworten geprüft (auch im Browser einmal wirklich falsch antworten)
 - [ ] Quellenlinie + Lizenz eingetragen
 - [ ] Seed dokumentiert, `testedSeedCount` wahrheitsgemäß
 - [ ] öffnende Lösung nur nach Versuch sichtbar (UI-Test)
-- [ ] bei neuen Typen: Pilotaufgabe als Grader-Beweis (Muster w05-e14..e16)
-- [ ] bei Units mit Lesepfad: `locatorPath` zeigt auf eine existierende Seite (Validator), Public-Build bleibt frei davon
+- [ ] bei neuen Typen: Pilotfall als Grader-Beweis
+- [ ] bei Lektionen mit Lesepfad: `locatorPath` zeigt auf eine existierende Seite (Validator), Public-Build bleibt frei davon
 
-## 8. Seed-Generator-Pattern und lokale Lesezugänge (W1-Muster)
+## 7. Seed-Generator-Pattern und lokale Lesezugänge
 
 **Generatoren** (`assets/js/core/w01_generators.mjs` als Muster):
 
-- Eine Datei pro Woche; identisches `rng()` (mulberry32) wie `w05_generators.mjs` exportieren — Browser und Node ziehen dieselben Instanzen.
+- Familiengeneratoren exportieren identisches `rng()`-Verhalten (mulberry32) — Browser und Node ziehen dieselben Instanzen.
 - Signatur `genX(seed) -> { parameters, expected, prompt }`: `prompt` ist der **komplette deutsche Aufgabentext** als Plain Text mit Unicode-Mathematik (z. B. `log₂(64)`, `3^4`, `·`) — bewusst **ohne** `$...$`-KaTeX, damit der Prompt nach „Neue Zahlen“ ohne Math-Neurendering austauschbar ist.
 - `expected` wird IMMER von einem exportierten Referenzsolver berechnet (`solveLinearEquation`, `logInt`, …), nie hardcodet; die Invarianten (ganzzahlig, handrechenbare Bereiche, kein Divisions-Normalfall, Log-Argument > 0 und echte Potenz der Basis) stehen als Docstring am Generator UND werden im Property-Test über ≥ 200 Seeds erzwungen.
 - Antworten bleiben standardmäßig ganzzahlig; für Deep-Learning-/Metrik-Aufgaben sind toleranzbasierte Dezimalantworten erlaubt (Rundung auf 3 Stellen, dokumentierte `tolerancePolicy`, Referenzsolver rechnet den Sollwert) (`parseIntegerAnswer`), damit Eingabe-UI und Grader einheitlich bleiben; „kurze Dezimalbrüche“ sind als Bereich erlaubt, aber nicht nötig.
@@ -106,22 +97,25 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 
 **Lokale Lesezugänge** (Konvention, private-build-only):
 
-- Die Plattform spiegelt die Staging-Bibliothek über zwei Symlinks: `ki-lernplattform/library -> ../research/ki-lernroadmap/library-staging/sources` und `ki-lernplattform/library-private -> ../research/ki-lernroadmap/library-staging/private-extracts`. **Symlinks nie verändern; Pfade nie im Public-Build** (`tools/build_public.mjs` strippt `localPath`/`locatorPath`, der Validator lehnt sie im Public-Modus ab, PRIVATE_MARKERS-Zeile nicht entfernen).
-- `sources.json`: `localPath` = representativer Einstieg (z. B. Tutorial-Index). `curriculum.json`: `sources[].locatorPath` = konkrete Zielseite der Unit (Menschtext bleibt im `locator`).
-- UI: „Lokal lesen“ öffnet die gespiegelte Seite in einem NEUEN TAB (`target="_blank" rel="noopener"`) — volle Lesewerkzeuge (Suchen, Zoom, eigene Styles der gespiegelten Seite); kein iframe, weil die gespiegelten Seiten eigene relative Assets mitbringen und im iframe brechen würden. Fallback „Online öffnen“ über `canonicalUrl`.
-- In Code/Content niemals wörtliche `/library/`-Pfade notieren — URLs werden aus `localPath` konkateniert, sonst schlägt der Canary-Scan des Builds an.
+- Fremde Ressourcen werden ausschließlich über ihre öffentlichen `canonicalUrl`-Links referenziert. Private Volltexte, lokale Bibliothekspfade und lokale Overlays gehören nicht in dieses Repository.
 
-## 9. Neuer public-first Content-Vertrag
+## 8. Neuer public-first Content-Vertrag
+
+### Visualisierungsblock
+
+Ein Visualisierungsblock verweist auf eine typisierte JSON-Datei mit der Endung
+`.viz.json` unter `content/lessons/`. Die Datei beschreibt eine lokale
+JSXGraph-Szene mit Boundingbox, optionalen Slidern und mindestens einem Objekt.
+Ausdrücke werden beim Content-Compile validiert; Slider-Namen sind die einzigen
+freien Variablen. Der Block steht direkt nach dem Worked Example und verwendet
+`type: "visualization"` sowie eine maschinenlesbare `blockId`.
 
 - `content/catalog.json` deklariert Content-Wurzeln. Der Compiler entdeckt nur darunter, sortiert deterministisch und lehnt verwaiste Dateien ab. Membership steht im LearningModule, nicht in zentralen Dateilisten.
 - Kompetenzen, Tracks und Milestones liegen unter `content/competencies/`, `content/tracks/` und `content/milestones/`. Ihre Objektformen stehen unter `schemas/`.
 - `requires` bildet ausschließlich echte Voraussetzungen und muss azyklisch sein. `supports`, `related` und `usedBy` stehen getrennt unter `relations`.
 - Neue Inhalte referenzieren maschinenlesbare Rechte aus `content/source-rights.json`. Ein Public-Recht benötigt Redistribution, kommerzielle Nutzung und Bearbeitung. Reine Links dürfen zusätzlich im Legacy-Quellenregister stehen.
-- `content/curriculum.json` sowie `content/exercises/w01.json` und `w05.json` sind Legacy-Quellen. `tools/migrate_legacy_content.mjs` erzeugt ihr versioniertes Kompetenzmapping.
-- Bei Legacy-W1 ist `expectedAnswer.generator` ein Seed-Generator. Bei Legacy-W5 bezeichnet dasselbe Feld einen Referenzsolver für eine feste Instanz. `legacy_exercise_adapter.mjs` hält diese Rollen als `generatorId` und `referenceSolverId` getrennt.
-- `node tools/compile_content.mjs --profile public` muss vor einem Public-Build bestehen. Lokale Overlays sind nur mit `--profile local-private --overlay <datei>` zulässig und dürfen keine Basis-ID überschreiben.
-- Der Public-Build entfernt private Quellenobjekte und Unit-Referenzen, neutralisiert nur intern nutzbare Quellenlinien und baut den Suchindex neu. Jede `*.local.json`-Datei lässt den Build scheitern.
+- `node tools/compile_content.mjs` muss vor einem Release-Build bestehen. Der Build entfernt private Quellenobjekte und prüft öffentliche Quellenlinien. Jede private oder lokale Marker-Referenz lässt den Build scheitern.
 - Kanonische Lektionen bestehen aus einer JSON-Datei unter `content/lessons/` und referenziertem Markdown. Der Compiler schaltet Raw-HTML aus. Der Browser rendert nur eine feste Element- und Attribut-Allowlist.
-- Kanonische Aufgaben liegen einzeln unter `content/exercise-definitions/` und werden über die deklarierte Wurzel entdeckt. `solver-verified` ist erst nach einem Test mit Sollantwort und mindestens einem Gegenbeispiel zulässig. Neue Varianten gehören als Placement (Falltyp, Seed, Profil) in ein LearningModule, nicht als JSON-Kopie.
-- Der Foundations-Vertragstest verlangt für jede Kompetenz mindestens so viele mastery-fähige Definitionen, wie `minimumDistinctDefinitions` vorgibt. Weitere Milestones übernehmen dieses Gate erst nach vollständigem Authoring.
+- Kanonische Aktivitäten liegen als Familienfälle unter `content/families/` und werden über Placements in LearningModules entdeckt. `solver-verified` ist erst nach einem Test mit Sollantwort und mindestens einem Gegenbeispiel zulässig.
+- Der Foundations-Vertragstest verlangt für jede Kompetenz ausreichend mastery-fähige Familienfälle gemäß `minimumDistinctDefinitions`.
 - Lokale Projekte deklarieren Starterdateien und das exakte erlaubte Kommando. Der Compiler prüft Projektidentität, Pfade und Testdatei-Hashes. Projekt-Reports bleiben Selbstberichte ohne Mastery-Evidence.

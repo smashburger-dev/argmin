@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-task-type",
+  "contract": {
+    "familyId": "classify-task-type",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Vorhersageaufgabe als Regression, Klassifikation oder unüberwachtes Lernen ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "failure-next-cycle-supervised",
+        "propertyTest": false
+      },
+      {
+        "caseId": "task-house-price",
+        "propertyTest": false
+      },
+      {
+        "caseId": "task-customer-segments",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-baseline"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "failure-next-cycle-supervised",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w09-e1"
+      ],
+      "parameters": {
+        "scenario": "Ausfall ja/nein mit historischen Labels",
+        "target": "Ausfall im nächsten Zyklus"
+      },
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Binäre Klassifikation: Das Ziel ist eine Kategorie (fällt aus / fällt nicht aus), und es gibt gelabelte historische Beispiele.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Regression: „Ja\" und „Nein\" lassen sich als 1 und 0 in eine Zahl überführen, damit ist das Ziel stetig.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Beides gleich gut möglich — der ML-Algorithmus entscheidet automatisch, ob Regression oder Klassifikation passt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Weder noch: Ohne vordefinierte Gruppen ist das eine Clustering-Aufgabe.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Werkzeugbetrieb will vorhersagen, ob ein Teil im nächsten Wartungszyklus ausfällt (ja/nein). Die Historie enthält pro Teil das Ergebnis des letzten Zyklus. Wie ist das Problem korrekt formuliert?",
+      "fullSolution": "Das Ziel „fällt aus / fällt nicht aus\" ist eine Kategorie mit historischen Labels — das ist binäre Klassifikation (überwachtes Lernen). Die 0/1-Kodierung ändert nichts am Kategoriecharakter; der Algorithmus ratet den Problemtyp nicht, und Clustering käme nur ohne Zielvariable in Frage.",
+      "hints": [
+        "Welche Art von Wert soll am Ende ausgegeben werden — eine Zahl auf einer Skala oder eine Kategorie?",
+        "Es gibt Labels aus der Historie. Datensätze mit gelabeltem Ziel nennt man überwacht; Clustering arbeitet ohne Zielvariable."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "0/1-Kodierung macht eine Kategorie nicht stetig: Zwischen „fällt aus\" und „fällt nicht aus\" gibt es keine Zwischenwerte mit Bedeutung."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Problemtyp wird durch die Zielvariable festgelegt, nicht vom Algorithmus geraten — Regression und Klassifikation messen unterschiedliche Fehler."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Clustering ist unüberwacht und hat kein Ziel. Hier existiert aber ein gelabeltes Ziel aus der Historie."
+        }
+      ],
+      "typicalErrors": [
+        "Zielart nach Datentyp statt nach Bedeutung der Variable entscheiden",
+        "überwachtes und unüberwachtes Lernen verwechseln",
+        "Kategorien als stetiges Ziel behandeln, weil sie als Zahlen kodiert sind"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "task-house-price",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "scenario": "Ausfall ja/nein mit historischen Labels",
+        "target": "Ausfall im nächsten Zyklus"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Unüberwachtes Clustering, weil mehrere Merkmale eingehen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Binäre Klassifikation, weil jeder Verkauf ein einzelnes Ergebnis ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Überwachte Regression, weil ein stetiger Preis aus gelabelten Beispielen gelernt wird.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Bestärkendes Lernen, weil das Haus eine Entscheidung darstellt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Modell soll den Verkaufspreis eines Hauses aus Fläche, Lage und Baujahr vorhersagen. Historische Verkaufspreise sind vorhanden. Welche Aufgabenart liegt vor?",
+      "fullSolution": "Der Zielwert ist eine stetige Zahl und historische Zielwerte sind vorhanden: überwachte Regression.",
+      "hints": [
+        "Achte auf den Datentyp des Zielwerts, nicht auf die Zahl der Merkmale.",
+        "Labels machen die Aufgabe überwacht; ein stetiger Zielwert bedeutet Regression."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Merkmale Fläche, Lage und Baujahr sind Eingaben; der vorhandene Verkaufspreis ist die stetige Zielvariable, daher liegt kein Clustering vor."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Ein Verkaufspreis ist nicht automatisch eine binäre Klasse: Im Szenario wird ein kontinuierlicher Betrag aus historischen Preisen geschätzt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das Szenario beschreibt keine Belohnungen oder Aktionen, sondern das Lernen aus gelabelten Hausverkäufen; bestärkendes Lernen passt deshalb nicht."
+        }
+      ],
+      "typicalErrors": [
+        "Die Zahl der Eingangsmerkmale mit dem Fehlen von Zielwerten verwechselt.",
+        "Einen stetigen Hauspreis ohne Begründung in zwei Klassen eingeteilt.",
+        "Eine Preisvorhersage fälschlich als Folge von Entscheidungen mit Belohnungen modelliert."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "task-customer-segments",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "scenario": "Ausfall ja/nein mit historischen Labels",
+        "target": "Ausfall im nächsten Zyklus"
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Überwachte Regression auf eine unbekannte Zielvariable.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Unüberwachtes Clustering, weil Gruppen ohne Labels entdeckt werden.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Klassifikation, weil jeder Kunde genau einer Gruppe zugeordnet wird.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Regression, weil Kaufprofile Zahlen enthalten.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Händler besitzt Kundendaten ohne Zielvariable und möchte Gruppen ähnlicher Kaufprofile entdecken. Welche Aufgabenart passt?",
+      "fullSolution": "Ohne vorgegebene Zielvariable und mit dem Ziel, Gruppen zu entdecken, handelt es sich um unüberwachtes Clustering.",
+      "hints": [
+        "Suche zuerst nach einer vorhandenen Zielvariable.",
+        "Gruppen entdecken ist etwas anderes, als eine bekannte Kategorie vorherzusagen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Im Händlerbeispiel ist gerade keine Zielvariable vorgegeben; eine unbekannte Zielvariable macht die Aufgabe nicht zu überwachter Regression."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Dass jeder Kunde später einer Gruppe zugeordnet wird, erzeugt keine bekannten Klassenlabels; die Gruppen werden erst aus den Profilähnlichkeiten entdeckt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Numerische Kaufprofile sind lediglich Merkmale; ohne Zielwert wird nicht automatisch ein numerischer Zielwert regressiert."
+        }
+      ],
+      "typicalErrors": [
+        "Die fehlende Zielvariable des Händlerdatensatzes übersehen.",
+        "Die Ausgabe von Cluster-IDs mit vorgegebenen Klassenzielen verwechselt.",
+        "Numerische Eingabespalten fälschlich als kontinuierliches Vorhersageziel interpretiert."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

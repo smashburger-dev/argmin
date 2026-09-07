@@ -1,9 +1,9 @@
-import { existsSync, lstatSync, readdirSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-export const OBJECT_ROOT_KEYS = ['lessons', 'exerciseDefinitions', 'explanations', 'modules'];
-export const COLLECTION_ROOT_KEYS = ['competencies', 'tracks', 'milestones', 'tools', 'reviews'];
-export const PROJECT_ROOT_KEY = 'projects';
+export function readJson(path) {
+  return JSON.parse(readFileSync(path, 'utf8'));
+}
 
 function sortedEntries(dir) {
   return readdirSync(dir, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));
@@ -31,19 +31,12 @@ export function listRootFiles(contentRoot, rootDir) {
   return walkPrefixed(abs, rootDir, []);
 }
 
-export function isLocalJson(path) {
-  return path.endsWith('.local.json');
-}
-
 export function isSourceJson(path) {
-  return path.endsWith('.json') && !isLocalJson(path);
+  return path.endsWith('.json');
 }
 
 export function discoverJson(contentRoot, rootDir) {
-  const files = listRootFiles(contentRoot, rootDir);
-  const local = files.filter(isLocalJson);
-  if (local.length) throw new Error(`Lokale Overlay-Datei unter deklarierter Wurzel: ${local.join(', ')}`);
-  return files.filter(isSourceJson);
+  return listRootFiles(contentRoot, rootDir).filter(isSourceJson);
 }
 
 export function discoverProjects(contentRoot, rootDir) {

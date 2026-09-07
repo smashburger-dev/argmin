@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-genai-security",
+  "version": 1,
+  "locale": "de",
+  "title": "Defensive GenAI-Sicherheit: Injektion erkennen, Abfluss begrenzen, Rechte prüfen",
+  "description": "Prompt-Injection in synthetischen, deutschsprachigen Beispielen regelbasiert erkennen und die Detektorqualität mit Precision/Recall messen Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (untrusted Retrieval → Modell → Tool) analysieren und Least-Privilege-Policies prüfen Threat-Model-Entscheidungen treffen, Befunde auf die OWASP GenAI LLM Top 10 (nur verlinkt/paraphrasiert) beziehen und als Security-Regressionstests festschreiben",
+  "competencyIds": [
+    "c-genai-security"
+  ],
+  "requires": [
+    "c-genai-rag",
+    "c-testing-debugging"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "research-evaluation"
+  ],
+  "lessonIds": [
+    "l-genai-security"
+  ],
+  "placements": [
+    {
+      "placementId": "p-genai-security-1",
+      "role": "curated",
+      "familyId": "classify-attack-surface",
+      "caseId": "attack-surface-taxonomy",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-genai-security",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-genai-security-2",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "injection-filter-counts",
+      "seed": 2911,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-security",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-security-3",
+      "role": "curated",
+      "familyId": "trace-substring-flag-sum",
+      "caseId": "substring-flag-sum",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-genai-security",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-security-4",
+      "role": "curated",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "contains-injection-rules",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-genai-security",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-security-5",
+      "role": "curated",
+      "familyId": "classify-rule-cascade-priority",
+      "caseId": "permission-policy-check",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 28,
+      "lessonId": "l-genai-security",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-security-6",
+      "role": "curated",
+      "familyId": "aggregate-detector-eval-compare",
+      "caseId": "detector-table-best-f1",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-genai-security",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-genai-security-practice",
+      "role": "practice-space",
+      "familyId": "aggregate-confusion-metric",
+      "caseId": "injection-filter-counts",
+      "seed": 2911,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-genai-security"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

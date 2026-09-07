@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-hash-semantics",
+  "contract": {
+    "familyId": "classify-hash-semantics",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Hash-Fixierung als Integritäts- und Vergleichbarkeitsregel einer Capstone-Baseline ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "hash-semantics-baseline",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-research-capstone"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "hash-semantics-baseline",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w34-e1"
+      ],
+      "parameters": {
+        "thema": "Golden-Set-Integrität"
+      },
+      "competencyIds": [
+        "c-research-capstone"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Warum wird das Golden Set der Capstone-Baseline mit einem sha256-Wert über eine kanonische Serialisierung hashfixiert?",
+      "fullSolution": "Der Hash macht den Zustand des Sets prüfbar: Dieselben Einträge in anderer Reihenfolge ergeben denselben Wert, jede inhaltliche Änderung (Gold-Antwort, Fall, Feld) einen anderen. Steht in Woche 39 derselbe Wert wie heute, sind die Baseline-Zahlen noch über demselben Set vergleichbar — hat er sich geändert, ist jede Vorher-Nachher-Aussage wertlos. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Was passiert mit Vorher-Nachher-Aussagen, wenn sich das Evaluationsset zwischen zwei Läufen unbemerkt ändert?",
+        "Der Hash beweist einen Zustand — Umsortieren soll ihn nicht ändern, jede inhaltliche Änderung schon."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Ein Hash verschlüsselt nichts — er ist eine Prüfsumme des Zustands, keine Vertraulichkeit."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Ein Hash verhindert keine Änderungen — er macht sie sichtbar, sobald der Wert nicht mehr stimmt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Metriken werden aus den Fällen berechnet, nicht aus dem Hash — der Hash sichert die Vergleichbarkeit der Läufe."
+        }
+      ],
+      "typicalErrors": [
+        "Hash als Verschlüsselung oder Schutz vor Änderung missverstanden",
+        "Reihenfolge-Invarianz und Änderungssensitivität für unvereinbar gehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Er verschlüsselt die Gold-Antworten, damit niemand die Lösungen lesen kann.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Er verhindert, dass jemand das Set überhaupt ändern kann.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Er berechnet die Metriken schneller, indem er statt der Fälle nur den Hash auswertet.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Er beweist den Zustand des Sets: gleiche Einträge in anderer Reihenfolge bleiben gleich, jede inhaltliche Änderung wird sichtbar — nur so bleiben Läufe vergleichbar.",
+          "correct": true
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

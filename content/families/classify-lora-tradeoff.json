@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-lora-tradeoff",
+  "contract": {
+    "familyId": "classify-lora-tradeoff",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine LoRA-Konfiguration ihrem Trade-off zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "lora-tradeoff",
+        "propertyTest": false
+      },
+      {
+        "caseId": "lora-parameter-count",
+        "propertyTest": false
+      },
+      {
+        "caseId": "lora-alpha-rank",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-finetuning"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "lora-tradeoff",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w25-e1"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-finetuning"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Basisgewichte $W$ bleiben eingefroren; trainiert wird nur $\\Delta W = \\frac{\\alpha}{r}BA$ mit kleinem Rang $r$ — beim Einsatz lässt sich $\\Delta W$ direkt in $W$ einrechnen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Alle Modellparameter werden mit sehr kleiner Lernrate aktualisiert, damit sich wenig ändert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Netz wird gestutzt (Pruning): unwichtige Zeilen von $W$ werden entfernt und die Reste neu trainiert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Gewichte werden quantisiert und nur die Quantisierungsfehler trainiert.",
+          "correct": false
+        }
+      ],
+      "prompt": "Was ist die Kernidee von LoRA (Low-Rank Adaptation)?",
+      "fullSolution": "LoRA friert $W$ ein und lernt $\\Delta W = \\frac{\\alpha}{r}BA$ mit Rang $r \\ll \\min(d_{in}, d_{out})$; $\\Delta W$ lässt sich in $W$ einrechnen, dadurch entsteht keine zusätzliche Inferenz-Latenz. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "LoRA nennt sich Low-Rank: Was wird an Stelle der vollen Matrix gelernt, und was passiert beim Inferenz-Einsatz?",
+        "Zwei kleine Faktoren $B$ und $A$ mit Rang $r$ ersetzen das Update; eingefroren heißt: $W$ bekommt keine Gradienten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Kleine Lernrate ist trotzdem Full Fine-Tuning — LoRA friert $W$ komplett ein."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Pruning entfernt Gewichte dauerhaft; LoRA ergänzt ein Rang-r-Update und lässt $W$ unangetastet."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Quantisierung ist eine eigene Methode (z. B. QLoRA kombiniert beide) — nicht die LoRA-Kernidee."
+        }
+      ],
+      "typicalErrors": [
+        "LoRA mit Full Fine-Tuning bei kleiner Lernrate verwechselt",
+        "LoRA mit Pruning verwechselt",
+        "eingefrorene Basis übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "lora-parameter-count",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "dIn": 1024,
+        "dOut": 2048,
+        "rank": 8
+      },
+      "competencyIds": [
+        "c-dl-finetuning"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "2.097.152, weil LoRA die volle Gewichtsmatrix zweimal speichert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "16.384, weil nur $r\\cdot d_{in}$ gezählt wird.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "8.192, weil nur $r^2$ und ein Bias zählen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "24.576, weil $r(d_{in}+d_{out})=8(1024+2048)$ gilt.",
+          "correct": true
+        }
+      ],
+      "prompt": "Eine lineare Schicht hat $d_{in}=1024$, $d_{out}=2048$ und LoRA-Rang $r=8$. Wie viele trainierbare LoRA-Parameter ersetzen die volle Matrix?",
+      "fullSolution": "LoRA trainiert $A\\in\\mathbb{R}^{8\\times1024}$ und $B\\in\\mathbb{R}^{2048\\times8}$. Das sind $8(1024+2048)=24.576$ Parameter statt $1024\\cdot2048=2.097.152$.",
+      "hints": [
+        "Zähle $r\\cdot d_{in}$ für A und $d_{out}\\cdot r$ für B.",
+        "Vergleiche die Summe der beiden Faktoren mit dem Produkt der vollen Schicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "2.097.152 ist die volle Matrixgröße $1024\\cdot2048$; LoRA trainiert stattdessen nur die beiden Rangfaktoren."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "16.384 zählt nur A; B benötigt zusätzlich $2048\\cdot8=16.384$ Parameter."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "LoRA speichert keine reine $8\\times8$-Matrix; beide Faktoren tragen jeweils eine Modellbreite bei."
+        }
+      ],
+      "typicalErrors": [
+        "volle Matrixgröße als LoRA-Budget ausgegeben",
+        "den B-Faktor mit d_out beim Zählen ausgelassen",
+        "LoRA-Rang mit einer quadratischen Parameterzahl verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "lora-alpha-rank",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "alpha": 16,
+        "rank": 4
+      },
+      "competencyIds": [
+        "c-dl-finetuning"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "4",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "12",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "20",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "64",
+          "correct": false
+        }
+      ],
+      "prompt": "Für eine LoRA-Schicht gelten Skalierungsparameter $\\alpha=16$ und Rang $r=4$. Welcher Faktor multipliziert $BA$ in $\\Delta W=(\\alpha/r)BA$?",
+      "fullSolution": "Der Skalierungsfaktor ist $\\alpha/r=16/4=4$. Er vervierfacht das Low-Rank-Produkt $BA$, bevor es zu den Basisgewichten addiert wird.",
+      "hints": [
+        "Setze beide Zahlen direkt in den Bruch ein.",
+        "Der Rang steht im Nenner des LoRA-Skalierungsfaktors."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "12 ist die Differenz $16-4$; LoRA verwendet hier aber den Quotienten $\\alpha/r$."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "20 ist die Summe der Parameter; die Delta-Skalierung wird durch $16/4=4$ bestimmt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "64 ist das Produkt $16\\cdot4$; der Rang steht im Nenner und reduziert den Faktor auf 4."
+        }
+      ],
+      "typicalErrors": [
+        "LoRA-Skalierung als Differenz von alpha und Rang berechnet",
+        "alpha und Rang addiert statt dividiert",
+        "den Rang in den Zähler verschoben"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

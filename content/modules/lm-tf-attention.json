@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-tf-attention",
+  "version": 1,
+  "locale": "de",
+  "title": "Attention und Transformer-Grundlagen",
+  "description": "die Rollen von Queries, Keys und Values in Scaled Dot-Product Attention erklären und Shape-Verträge prüfen stabiles zeilenweises Softmax und Maskierung (kausal, Padding) mit −∞ vor dem Softmax korrekt anwenden eine kleine Attention vollständig per Hand rechnen und Multi-Head als Reshape der Projektionen beschreiben",
+  "competencyIds": [
+    "c-dl-attention"
+  ],
+  "requires": [
+    "c-dl-tensors",
+    "c-linalg-matrices"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "mathematical-foundations"
+  ],
+  "lessonIds": [
+    "l-tf-attention"
+  ],
+  "placements": [
+    {
+      "placementId": "p-tf-attention-roles",
+      "role": "curated",
+      "familyId": "classify-attention-roles",
+      "caseId": "attention-role-values",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-tf-attention",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-tf-attention-shape",
+      "role": "curated",
+      "familyId": "formula-count-from-construction",
+      "caseId": "attention-tensor-cells",
+      "seed": 2211,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-attention",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-attention-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "stable-softmax-rows-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-tf-attention",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-attention-softmax",
+      "role": "curated",
+      "familyId": "optimize-softmax-attention-mask",
+      "caseId": "scaled-dot-product-attention",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-tf-attention",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-attention-mask",
+      "role": "curated",
+      "familyId": "construct-attention-mask",
+      "caseId": "construct-causal-padding-mask",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 25,
+      "lessonId": "l-tf-attention",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-attention-multi-head",
+      "role": "curated",
+      "familyId": "optimize-multi-head-attention",
+      "caseId": "multi-head-attention",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-tf-attention",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-tf-attention-practice",
+      "role": "practice-space",
+      "familyId": "formula-count-from-construction",
+      "caseId": "attention-tensor-cells",
+      "seed": 2211,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-tf-attention"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

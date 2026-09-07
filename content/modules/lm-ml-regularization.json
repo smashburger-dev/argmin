@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-ml-regularization",
+  "version": 1,
+  "locale": "de",
+  "title": "Ridge und Lasso: Schrumpfen statt Überanpassen",
+  "description": "Lerne Ridge und Lasso über geschlossene Formeln anzuwenden, Regularisierung leakage-frei vorzubereiten und den Einfluss von Lambda zu beurteilen.",
+  "competencyIds": [
+    "c-ml-regularization"
+  ],
+  "requires": [
+    "c-ml-cv",
+    "c-ml-linear"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-ml-regularization"
+  ],
+  "placements": [
+    {
+      "placementId": "p-ml-regularization-effect",
+      "role": "curated",
+      "familyId": "classify-regularizer-effect",
+      "caseId": "l1-vs-l2-effect",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-regularization-shrinkage",
+      "role": "curated",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "ridge-shrinkage-percent",
+      "seed": 14001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-regularization-leakage",
+      "role": "curated",
+      "familyId": "classify-cv-leakage",
+      "caseId": "target-encoding-leakage",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-regularization-ridge",
+      "role": "curated",
+      "familyId": "formula-ridge-lasso-closed-form",
+      "caseId": "ridge-normal-equation",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-regularization-lasso",
+      "role": "curated",
+      "familyId": "formula-ridge-lasso-closed-form",
+      "caseId": "lasso-soft-threshold",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 40,
+      "lessonId": "l-ml-regularization",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-regularization-practice-space",
+      "role": "practice-space",
+      "familyId": "formula-ratio-percent-metric",
+      "caseId": "ridge-shrinkage-percent",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

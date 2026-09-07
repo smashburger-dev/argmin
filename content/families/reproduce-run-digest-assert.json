@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "familyId": "reproduce-run-digest-assert",
+  "contract": {
+    "familyId": "reproduce-run-digest-assert",
+    "familyGroup": "reproduce-hash",
+    "summary": "Sichert einen eingefrorenen Lauf-Digest gegen stille Abweichungen.",
+    "taskArchetype": "code-test",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "run-digest-assert",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-python-functions",
+      "c-research-capstone"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "run-digest-assert",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w34-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef run_baseline(config):\n    \"\"'{'werte': .., 'digest': ..} mit Doppel-Lauf-Assert ueber den Digest.'\"\"\n    ...\n\n",
+        "tests": "CONFIG = {\n    \"k\": 5,\n    \"faelle\": [\n        {\"id\": \"faq-03\", \"relevante\": [\"faq-3\"], \"top\": [\"faq-3\", \"faq-7\"], \"korrekt\": True},\n        {\"id\": \"faq-11\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\", \"faq-3\"], \"korrekt\": False},\n        {\"id\": \"faq-19\", \"relevante\": [\"faq-7\"], \"top\": [\"faq-7\"], \"korrekt\": True},\n        {\"id\": \"vertrag-02\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\"], \"korrekt\": True},\n        {\"id\": \"vertrag-07\", \"relevante\": [\"vertrag-2\"], \"top\": [\"faq-3\"], \"korrekt\": False},\n    ],\n}\nr = run_baseline(CONFIG)\n__check('werte der baseline', r[\"werte\"] == {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75})\n__check('exakter digest', r[\"digest\"] == \"728a5e258971cd2fb9f7456d88cef6f8559ae1c6fbdd1b0c6ba8ff26fb1ad0a7\")\n__check('doppel-lauf gleich', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"][0][\"korrekt\"] = False\n__check('digest reagiert auf aenderung', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\nK_CONFIG = json.loads(json.dumps(CONFIG))\nK_CONFIG[\"k\"] = 1\nK_CONFIG[\"faelle\"][0][\"top\"] = [\"faq-7\", \"faq-3\"]\n__check('k wirkt auf recall', run_baseline(K_CONFIG)[\"werte\"][\"recall_at_k\"] == 0.6)\nprint(\"ok w34-e5\")"
+      },
+      "competencyIds": [
+        "c-research-capstone",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\n\ndef _baseline_werte(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3),\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\n\n\ndef run_baseline(config):\n    werte, digest = _baseline_werte(config)\n    werte2, digest2 = _baseline_werte(config)\n    assert digest == digest2, \"nicht reproduzierbar\"\n    return {\"werte\": werte, \"digest\": digest}"
+      },
+      "prompt": "Implementiere die Baseline mit Reproduzierbarkeits-Assert. <code>run_baseline(config)</code> erhält <code>{\"k\": .., \"faelle\": [...]}</code>; jeder Fall ist <code>{\"id\": .., \"relevante\": [doc-ids], \"top\": [doc-ids], \"korrekt\": bool}</code>. Auswertung: recall_at_k = Anteil der Fälle, bei denen mindestens ein relevantes Dokument in den ersten k Einträgen von top liegt; antwort_naiv = korrekt/alle Fälle; antwort_getrennt = korrekt/Fälle mit Treffer — alle auf 3 Dezimalstellen gerundet. Baue zusätzlich einen Digest als sha256 über <code>json.dumps(werte, sort_keys=True, separators=(\",\", \":\"))</code>. Die Funktion muss die Auswertung zweimal unabhängig durchführen und per <code>assert</code> vergleichen (Digest-Gleichheit, sonst AssertionError) und <code>{\"werte\": werte, \"digest\": digest}</code> zurückgeben. Der Testcode bringt eine Konfiguration mit und prüft exakte Werte, Doppel-Lauf-Gleichheit und Digest-Empfindlichkeit.",
+      "fullSolution": "import hashlib\nimport json\n\ndef _baseline_werte(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3),\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\n\ndef run_baseline(config):\n    werte, digest = _baseline_werte(config)\n    werte2, digest2 = _baseline_werte(config)\n    assert digest == digest2, \"nicht reproduzierbar\"\n    return {\"werte\": werte, \"digest\": digest}\n\n# Fixture: recall 4/5 = 0.8, naiv 3/5 = 0.6, getrennt 3/4 = 0.75, digest 728a5e25…d0a7 (lokal python3-verifiziert)",
+      "hints": [
+        "Treffer prüft set(relevante) & set(top[:k]) — erst k abschneiden, dann die Schnittmenge bilden.",
+        "Führe die Auswertung zweimal aus und vergleiche die Digests mit assert, bevor du zurückgibst; der Digest läuft über json.dumps der gerundeten Werte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "slice-after-intersect",
+          "then": "top[:k] kommt vor der Schnittmenge: Wer erst schneidet und dann k anwendet, zählt Treffer falsch."
+        },
+        {
+          "if": "no-assert",
+          "then": "Ohne den Doppel-Lauf-Assert ist die Reproduzierbarkeit nur behauptet — der Vertrag verlangt den Vergleich im Lauf."
+        },
+        {
+          "if": "naiv-uses-treffer",
+          "then": "antwort_naiv teilt durch alle Fälle, antwort_getrennt nur durch Trefferfälle — die Nenner sind die Kernunterscheidung der Woche."
+        }
+      ],
+      "typicalErrors": [
+        "k erst nach der Schnittmengenbildung angewandt",
+        "Assert über die Digests vergessen",
+        "naive und bereinigte Quote im Nenner vertauscht"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "pipeline-freeze-report",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w35-e6"
+      ],
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "prompt": "Final Boss Scope-Freeze: Implementiere <code>run_pipeline(config)</code> mit Hash-Prüfung und byte-identischem Wiederholungslauf. config: <code>{\"daten\": [woerter], \"min_laenge\": int, \"pins\": {\"daten\": sha256}}</code>. Ablauf: (1) Freeze: sha256 über die kanonische JSON-Serialisierung von <code>daten</code> (sortierte Schlüssel, keine Leerzeichen, utf-8) muss dem Pin entsprechen — sonst <code>AssertionError(\"freeze verletzt: daten\")</code>. (2) Stages ausführen: normalisieren (klein), filtern (Länge ≥ min_laenge), je Anfangsbuchstabe zählen. (3) Bericht <code>{\"anzahl\": n, \"anfangsbuchstaben\": {buchstabe: n}}</code> mit sortierten Schlüsseln. (4) Rückgabe <code>{\"status\": \"ok\", \"bericht\": bericht, \"digest\": sha256-ueber-kanonisches-json(bericht)}</code>. Alles deterministisch: zweiter Aufruf mit gleichem config liefert dasselbe Ergebnis-Objekt.",
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    \"\"\"Stabile Serialisierung: sortierte Schluessel, keine Leerraeume.\"\"\"\n    ...\n\n\ndef run_pipeline(config):\n    \"\"\"Freeze pruefen, Stages ausfuehren, Bericht und Digest liefern.\"\"\"\n    ...\n\n",
+        "tests": "import hashlib\nimport json\n\nDATEN = [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Birne\"]\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht anzahl', erg[\"bericht\"][\"anzahl\"] == 4)\n__check('bericht anfangsbuchstaben', erg[\"bericht\"][\"anfangsbuchstaben\"] == {\"a\": 1, \"b\": 2, \"z\": 1})\n__check('digest stimmt', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf identisch', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Kirsche\"], \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) >= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# run_pipeline(CFG) -> bericht {'anzahl': 4, 'anfangsbuchstaben': {'a': 1, 'b': 2, 'z': 1}}\n# digest 'fbb1966dc2acf0e6088a2e43477336601cd59f4904d95ae978dec4bd5612f1b5'; Doppellauf identisch"
+      },
+      "hints": [
+        "Kanalisation zuerst: kanon() mit sort_keys=True und separators=(',', ':') — derselbe Vertrag wie im Projekt.",
+        "Der Digest des Berichts entsteht über dieselbe kanonische Serialisierung wie der Freeze-Hash der Daten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "freeze-nach-arbeit",
+          "then": "Erst pinnen, dann rechnen: Wer nach der Ausführung prüft, hat den manipulierten Lauf schon durchgelassen."
+        },
+        {
+          "if": "digest-random-ish",
+          "then": "Der Digest ist deterministisch aus dem Bericht abgeleitet — wenn er zwischen Läufen schwankt, steckt Zufall oder Reihenfolge in die Serialisierung."
+        },
+        {
+          "if": "silently-continues",
+          "then": "Bei Freeze-Verletzung wird AssertionError geworfen, kein Bericht mit Ersatzwerten — kein stiller Fallback."
+        }
+      ],
+      "typicalErrors": [
+        "Hash-Prüfung nach der Verarbeitung eingebaut",
+        "nicht-kanonische Serialisierung (Leerzeichen, unsortierte Schlüssel)",
+        "bei Abweichung Ersatzwerte geliefert statt AssertionError"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "fullSolution": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) >= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# Freeze zuerst, Stages rein deterministic, Digest kanonisch — Doppellauf liefert dasselbe Objekt.",
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "reproduction-verdict-rules",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w38-e6"
+      ],
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-ml-repro"
+      ],
+      "prompt": "Final Boss Reproduktion: <code>repro_check(readme, laeufe, phrasen)</code>. laeufe ist eine Liste von Ergebnis-Dicts. (1) Digest je Lauf: sha256 über die kanonische JSON-Serialisierung (sortierte Schlüssel, keine Leerzeichen, utf-8). (2) <code>{\"digest_identisch\": bool}</code> — True nur wenn ALLE Läufe denselben Digest haben. (3) <code>{\"digests\": [digest, …]</code> in Laufreihenfolge. (4) <code>{\"overclaims\": funde}</code> — die in readme (kleingeschrieben) gefundenen Phrasen, sortiert. (5) <code>{\"verdict\": \"angenommen\"}</code> nur wenn Digeste identisch UND keine Overclaims, sonst <code>\"abgelehnt\"</code>. Leere laeufe → digest_identisch True (Vakuum).",
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    \"\"\"Stabile Serialisierung: sortierte Schluessel, keine Leerraeume.\"\"\"\n    ...\n\n\ndef repro_check(readme, laeufe, phrasen):\n    \"\"\"Digest-Vergleich ueber alle Laeufe plus Overclaim-Scan des README.\"\"\"\n    ...\n\n",
+        "tests": "import hashlib\nimport json\n\nLAUF = {\"metriken\": {\"recall_at_k\": 0.75, \"answered\": 6}}\nGLEICH = [{\"metriken\": {\"recall_at_k\": 0.75, \"answered\": 6}}, {\"metriken\": {\"answered\": 6, \"recall_at_k\": 0.75}}]\nbericht = repro_check(\"Ehrlicher Bericht mit bekannten Grenzen.\", GLEICH, [\"produktionsreif\", \"sicher gegen\"])\n__check('identisch trotz schluesselreihenfolge', bericht[\"digest_identisch\"] is True)\n__check('zwei digests', len(bericht[\"digests\"]) == 2 and bericht[\"digests\"][0] == bericht[\"digests\"][1])\n__check('digestwert', bericht[\"digests\"][0] == hashlib.sha256(json.dumps(LAUF, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest())\n__check('keine overclaims', bericht[\"overclaims\"] == [])\n__check('verdict angenommen', bericht[\"verdict\"] == \"angenommen\")\nVERSCHIEDEN = [LAUF, {\"metriken\": {\"recall_at_k\": 0.9, \"answered\": 6}}]\nbericht = repro_check(\"Guter Text.\", VERSCHIEDEN, [\"produktionsreif\"])\n__check('digest weicht ab', bericht[\"digest_identisch\"] is False and bericht[\"verdict\"] == \"abgelehnt\")\nbericht = repro_check(\"Das System ist produktionsreif.\", [LAUF], [\"produktionsreif\"])\n__check('overclaim lehnt ab', bericht[\"overclaims\"] == [\"produktionsreif\"] and bericht[\"verdict\"] == \"abgelehnt\")\n__check('vakuum-laufen', repro_check(\"Text.\", [], [\"produktionsreif\"])[\"digest_identisch\"] is True)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef repro_check(readme, laeufe, phrasen):\n    digests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\n    identisch = all(d == digests[0] for d in digests) if digests else True\n    t = readme.lower()\n    overclaims = sorted(p for p in phrasen if p in t)\n    verdict = \"angenommen\" if identisch and not overclaims else \"abgelehnt\"\n    return {\"digest_identisch\": identisch, \"digests\": digests, \"overclaims\": overclaims, \"verdict\": verdict}\n\n# Kanonik gleicht Schluesselreihenfolge aus; Verdikt kombiniert Reproduktion und ehrlichen Text"
+      },
+      "hints": [
+        "Die kanonische Serialisierung ist der Punkt: Umsortierte Schlüssel dürfen den Digest nicht ändern.",
+        "verdict kombiniert beide Verträge — Identische Digests allein reichen bei Overclaims nicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-sensitivity",
+          "then": "Ohne sort_keys=True ändern JSON-Schlüsselreihenfolgen den Digest — dann misst du Serialisierung, nicht Reproduktion."
+        },
+        {
+          "if": "empty-crash",
+          "then": "Bei leeren laeufen ist identisch True (Vakuum) — ein Crash über all([]) mit digests[0] ist der klassische Randfehler."
+        },
+        {
+          "if": "overclaim-ignored",
+          "then": "Overclaims im README disqualifizieren den Bericht — auch bei perfekter Reproduktion."
+        }
+      ],
+      "typicalErrors": [
+        "Serialisierung ohne sort_keys (Schein-Abweichung)",
+        "leere Laufliste crashen lassen",
+        "Overclaims ignoriert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "fullSolution": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef repro_check(readme, laeufe, phrasen):\n    digests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\n    identisch = all(d == digests[0] for d in digests) if digests else True\n    t = readme.lower()\n    overclaims = sorted(p for p in phrasen if p in t)\n    verdict = \"angenommen\" if identisch and not overclaims else \"abgelehnt\"\n    return {\"digest_identisch\": identisch, \"digests\": digests, \"overclaims\": overclaims, \"verdict\": verdict}\n\n# Doppellauf-Digest + Overclaim-Scan = Reproduktionsvertrag der Dokumentation.",
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

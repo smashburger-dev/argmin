@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-linalg-matrices",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Matrizen und Matrixprodukte mit Dimensionsvertrag",
   "objectives": ["Matrix-Shapes vor einer Operation prüfen", "einen Produkteintrag als Zeile-mal-Spalte berechnen", "Matrixprodukt und elementweise Multiplikation unterscheiden"],
   "competencyIds": ["c-linalg-matrices"],
   "requires": ["c-algebra-basics"],
   "estimatedMinutes": 50,
-  "blocks": [{ "blockId": "linalg-matrices-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/matrices.md" }],
+  "blocks": [
+    { "blockId": "linalg-matrices-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/matrices.md" },
+    { "blockId": "matrices-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/column-picture.viz.json" }
+  ],
   "sourceRefs": [
     { "sourceId": "mit-ocw-18-06sc", "role": "reference", "locator": "Lecture 3: Multiplication and Inverse Matrices" },
     { "sourceId": "serlo-mathe", "role": "practice", "locator": "Themenportal Matrixrechnung" }

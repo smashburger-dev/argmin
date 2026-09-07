@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-confounding",
+  "contract": {
+    "familyId": "classify-confounding",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet starke Korrelationen mit möglicher Drittvariable korrekt ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "temperature-confounder",
+        "propertyTest": false
+      },
+      {
+        "caseId": "confounder-exercise-sleep",
+        "propertyTest": false
+      },
+      {
+        "caseId": "confounder-ad-spend-season",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-eda-viz"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "temperature-confounder",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w07-e1"
+      ],
+      "parameters": {
+        "r": 0.9,
+        "confounder": "Sommertemperatur"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beide Größen werden vermutlich von einer gemeinsamen Drittvariable getrieben (z. B. Sommertemperatur) — Korrelation allein belegt keine Kausalität.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Eisverkäufe verursachen Badeunfälle, denn $r \\approx 0{,}9$ ist fast maximal.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die starke Korrelation widerlegt jeden kausalen Einfluss zwischen den Größen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$r \\approx 0{,}9$ beweist, dass der Zusammenhang exakt linear und kausal ist.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?",
+      "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (**Confounder**). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "hints": [
+        "Suche eine Größe, die beide Variablen gemeinsam erklärt — was passiert gleichzeitig im Sommer?",
+        "$r$ misst nur die Stärke des linearen Zusammenhangs; über Ursache sagt er nichts."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Ein hoher $r$ sagt nichts über Ursache — hier fehlt die gemeinsame Drittvariable im Argument."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Korrelation kann Kausalität weder beweisen noch widerlegen; sie ist stumm zur Richtung."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$r \\approx 0{,}9$ heißt starke, aber nicht exakte Linearität — und Kausalität folgt nie allein aus $r$."
+        }
+      ],
+      "typicalErrors": [
+        "aus Korrelation direkt Kausalität geschlossen",
+        "Korrelation als Kausalitäts-Widerlegung gelesen",
+        "Confounder nicht gesucht, weil $r$ „fast 1“ ist"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    },
+    {
+      "caseId": "confounder-exercise-sleep",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "r": 0.9,
+        "confounder": "Sommertemperatur"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Mehr Bewegung verursacht sicher besseren Schlaf.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Arbeitsstress kann als Confounder beide Größen beeinflussen; Korrelation beweist keine Kausalität.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Ein Confounder ist ausgeschlossen, sobald die Korrelation positiv ist.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Korrelation beweist, dass Schlaf die Bewegung verursacht.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Mehr Bewegung und bessere Schlafqualität treten gemeinsam auf. Menschen mit weniger Arbeitsstress bewegen sich aber auch häufiger. Was darfst du aus der Korrelation schließen?",
+      "fullSolution": "Arbeitsstress ist eine plausible Drittvariable, die Bewegung und Schlaf beeinflusst. Die Korrelation allein belegt daher keinen kausalen Effekt der Bewegung.",
+      "hints": [
+        "Suche eine Variable, die beide beobachteten Größen beeinflusst.",
+        "Eine gemeinsame Ursache kann einen beobachteten Zusammenhang erzeugen, ohne dass eine Richtung bewiesen ist."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der geringere Arbeitsstress beeinflusst laut Szenario zugleich Bewegung und Schlaf; die positive Korrelation allein beweist deshalb keinen Bewegungseffekt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Eine positive Korrelation schließt Arbeitsstress als gemeinsame Ursache nicht aus; gerade die dritte Variable macht die Kausalrichtung unsicher."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Aus den beobachteten Werten folgt keine umgekehrte Schlaf-zu-Bewegung-Kausalität, weil der genannte Arbeitsstress beide Größen erklären kann."
+        }
+      ],
+      "typicalErrors": [
+        "Beobachtete Korrelation zwischen Bewegung und Schlaf als sicheren Kausaleffekt gelesen.",
+        "Eine positive Korrelation fälschlich als Ausschluss jeder Drittvariable behandelt.",
+        "Ohne zeitliche oder experimentelle Evidenz eine umgekehrte Kausalrichtung behauptet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    },
+    {
+      "caseId": "confounder-ad-spend-season",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "r": 0.9,
+        "confounder": "Sommertemperatur"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der gesamte Dezemberumsatz ist der kausale Werbeeffekt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Saison kann kein Confounder sein, weil sie keine Modellvariable ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Hohe Korrelation reicht für eine kausale Budgetentscheidung.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Saison kann beide Größen treiben; der Werbeeffekt muss unter Kontrolle der Saison geschätzt werden.",
+          "correct": true
+        }
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Werbung und Online-Umsatz steigen im Dezember stark. Gleichzeitig ist Dezember die umsatzstärkste Saison. Welche Aussage ist methodisch sauber?",
+      "fullSolution": "Saison ist eine plausible Drittvariable. Ohne Kontrolle der Saison kann der Werbeeffekt überschätzt werden; die Korrelation isoliert die Ursache nicht.",
+      "hints": [
+        "Frage, welche Variable mit Werbung und Umsatz gemeinsam schwankt.",
+        "Ein zeitlicher gemeinsamer Trend ist ein möglicher Confounder."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der starke Dezemberumsatz enthält den saisonalen Effekt; er kann deshalb nicht vollständig dem gleichzeitig erhöhten Werbebudget zugerechnet werden."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Saison ist auch ohne explizite Modellspalte eine beobachtbare Drittvariable; ihr gleichzeitiger Einfluss auf Werbung und Umsatz kann konfundieren."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die hohe Dezemberkorrelation trennt Werbewirkung und Saison nicht; für eine Budgetentscheidung muss der Saisoneffekt kontrolliert werden."
+        }
+      ],
+      "typicalErrors": [
+        "Einen gemeinsamen Dezemberanstieg vollständig der Werbung zugeschrieben.",
+        "Eine kalenderbasierte Drittvariable fälschlich nur dann als Confounder zugelassen, wenn sie bereits im Modell steht.",
+        "Hohe Korrelation ohne Kontrolle der umsatzstarken Saison als kausalen Beleg verwendet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    }
+  ]
+}

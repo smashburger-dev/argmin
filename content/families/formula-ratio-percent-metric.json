@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-ratio-percent-metric",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "compare-systems-metric",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w26-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "def compare_systems(rows):\n    \"\"\"Baseline vs system correctness counts from (baseline_ok, system_ok) rows.\"\"\"\n    # validate each row (exactly 2 entries, else ValueError)\n    # count correct predictions per system, delta = system - baseline\n    # relative_percent = int(round(100 * delta / baseline)) or 0 if baseline == 0\n    ...\n",
+        "tests": "ROWS = [(True, True), (True, False), (False, True), (False, False), (True, True), (False, True)]\nr = compare_systems(ROWS)\n__check('n', r[\"n\"] == 6)\n__check('baseline korrekt', r[\"baseline_correct\"] == 3)\n__check('system korrekt', r[\"system_correct\"] == 4)\n__check('delta korrekt', r[\"delta_correct\"] == 1)\n__check('relativ ganzzahlig', r[\"relative_percent\"] == 33)\nr2 = compare_systems([(True, True), (True, True), (True, True), (True, True)])\n__check('alles richtig: delta 0', r2[\"delta_correct\"] == 0 and r2[\"relative_percent\"] == 0)\nr3 = compare_systems([(False, False), (False, True), (False, True), (False, False), (False, True), (False, True), (False, True), (False, True)])\n__check('baseline null: relativ definiert als 0', r3[\"baseline_correct\"] == 0 and r3[\"relative_percent\"] == 0 and r3[\"delta_correct\"] == 6 and r3[\"system_correct\"] == 6)\nr4 = compare_systems([(True, False), (True, False)])\n__check('verschaerfung negativ', r4[\"delta_correct\"] == -2 and r4[\"relative_percent\"] == -100)\nr5 = compare_systems([])\n__check('leere Liste', r5[\"n\"] == 0 and r5[\"relative_percent\"] == 0)\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n__check('glue-Zahlen stimmen', compare_systems([(False, True)] * 25 + [(True, True)] * 15 + [(True, False)] * 10) == {\"n\": 50, \"baseline_correct\": 25, \"system_correct\": 40, \"delta_correct\": 15, \"relative_percent\": 60})"
+      },
+      "competencyIds": [
+        "c-dl-papers",
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def compare_systems(rows):\n    \"\"\"Baseline vs system correctness counts from (baseline_ok, system_ok) rows.\"\"\"\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError(\"jede Zeile braucht zwei Eintraege\")\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system,\n            \"delta_correct\": delta, \"relative_percent\": relative}\n"
+      },
+      "prompt": "Metrik aus Zeilenlisten: Implementiere <code>compare_systems(rows)</code>. Eingabe: Liste von Tupeln <code>(baseline_ok, system_ok)</code> mit booleschen Korrektheitsmarken je Testbeispiel. Rückgabe: ein Dictionary mit <code>\"n\"</code>, <code>\"baseline_correct\"</code>, <code>\"system_correct\"</code>, <code>\"delta_correct\"</code> (Differenz der korrekten Anzahlen) und <code>\"relative_percent\"</code> — die relative Verbesserung als <code>int(round(100·delta/baseline))</code>; ist <code>baseline_correct</code> gleich 0, ist der relative Wert per Definition 0 (kein Bezugswert). Zeilen, die keine 2 Elemente haben, werfen <code>ValueError</code>. Der Testcode prüft eine Paper-artige Zeilenliste, Grenzfälle (leer, alles richtig, Baseline 0, Verschlechterung) und die Fehlerbehandlung.",
+      "fullSolution": "def compare_systems(rows):\n    \"\"\"Baseline vs system correctness counts from (baseline_ok, system_ok) rows.\"\"\"\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError(\"jede Zeile braucht zwei Eintraege\")\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system,\n            \"delta_correct\": delta, \"relative_percent\": relative}\n# compare_systems([(True, True), (True, False), (False, True), (False, False),\n#                    (True, True), (False, True)])\n# -> {\"n\": 6, \"baseline_correct\": 3, \"system_correct\": 4,\n#     \"delta_correct\": 1, \"relative_percent\": 33}",
+      "hints": [
+        "Zwei Zähler in einem Durchlauf über die Zeilen; delta = system − baseline kann negativ sein.",
+        "relative_percent nur bei baseline > 0 berechnen und auf int runden — sonst 0."
+      ],
+      "feedbackRules": [
+        {
+          "if": "relative-unrounded",
+          "then": "relative_percent ist eine ganze Zahl: int(round(100·delta/baseline))."
+        },
+        {
+          "if": "zero-baseline-crash",
+          "then": "baseline_correct == 0 ist per Definition relative_percent = 0 — keine Division durch null."
+        },
+        {
+          "if": "row-schema-unchecked",
+          "then": "Zeilen mit anderer Länge als 2 werfen ValueError."
+        }
+      ],
+      "typicalErrors": [
+        "relative Verbesserung nicht gerundet bzw. als float",
+        "Division durch null bei Baseline 0",
+        "Zeilenform ungeprüft"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "ledger-rates-output-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w34-e3"
+      ],
+      "parameters": {
+        "snippet": "faelle = [(\"q1\", True, True), (\"q2\", True, False), (\"q3\", False, False), (\"q4\", True, True), (\"q5\", True, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))"
+      },
+      "competencyIds": [
+        "c-research-capstone",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "4\n0.5\n0.4"
+      },
+      "prompt": "Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tupel sind (kennung, retrieval_treffer, antwort_korrekt).",
+      "fullSolution": "treffer = q1, q2, q4, q5 → <code>4</code>. korrekt = q1, q4 → bereinigt 2/4 = <code>0.5</code>, naiv 2/5 = <code>0.4</code>.",
+      "hints": [
+        "treffer enthält nur Fälle mit f[1] True; korrekt filtert darunter nach f[2] — der q3-Fall zählt in keiner Antwortquote.",
+        "Zweite Zeile ist die bereinigte Quote (korrekt/treffer), dritte die naive (korrekt/alle) — jeweils auf 3 Stellen gerundet."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Treffer sind q1, q2, q4, q5 — q3 hat f[1] False und zählt nicht."
+        },
+        {
+          "if": "third-line-wrong",
+          "then": "Naiv teilt durch alle fünf Fälle: 2/5 = 0.4 — die bereinigte Quote 2/4 = 0.5 steht eine Zeile darüber."
+        }
+      ],
+      "typicalErrors": [
+        "Retrieval-Fehlerfälle in die bereinigte Quote genommen",
+        "naive und bereinigte Zeile vertauscht",
+        "Rundung auf 3 Stellen vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "subgroup-recall-output-trace",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w37-e3"
+      ],
+      "parameters": {
+        "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {\n    \"versand\": (2, 2),\n    \"recht\": (2, 1),\n    \"rabatt\": (2, 1),\n    \"garantie\": (2, 2),\n}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"versand\"], werte[\"rabatt\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "1.0 0.5\n75.0"
+      },
+      "prompt": "Subgruppen-Recall von Hand ausführen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. gruppen enthält je Subgruppe (gesamt, getroffen).",
+      "fullSolution": "werte = {versand: 1.0, recht: 0.5, rabatt: 0.5, garantie: 1.0} → erste Zeile <code>1.0 0.5</code>. Mittel = 3.0/4 = 0.75 → 75.0 in der zweiten Zeile. Genau diese Verteilung (zwei Gruppen bei 0,5) ist der Subgruppen-Befund des Capstone-Golden-Sets.",
+      "hints": [
+        "Berechne zuerst die vier Einzelwerte: versand 2/2, recht 2/1, rabatt 2/1, garantie 2/2.",
+        "Der Mittelwert der vier Subgruppen-Werte ist nicht der Gesamt-Recall — hier ist er zufällig gleich, weil alle Gruppen gleich groß sind."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "versand = 2/2 = 1.0, rabatt = 1/2 = 0.5 — Python druckt das als „1.0 0.5“."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Summe 3.0 über 4 Gruppen → 0.75 → 75.0 nach round(…, 1)."
+        }
+      ],
+      "typicalErrors": [
+        "Mittelwert der Anzahlen statt der Quotienten gebildet",
+        "round auf ganze Stellen angewendet",
+        "leere Gruppe mit 0.5 statt 0.0 belegt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

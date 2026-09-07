@@ -102,15 +102,12 @@ let contentContextMemo = null;
 async function loadContentContext() {
   if (!contentContextMemo) {
     contentContextMemo = (async () => {
-      const [mappingResponse, catalogResponse] = await Promise.all([
-        fetch('content/legacy/exercise-competency-map.json'),
-        fetch('content/catalog.json'),
-      ]);
-      if (!mappingResponse.ok || !catalogResponse.ok) throw new Error('Progress-Migrationskontext nicht ladbar');
-      const [mapping, catalog] = await Promise.all([mappingResponse.json(), catalogResponse.json()]);
+      const catalogResponse = await fetch('content/catalog.json');
+      if (!catalogResponse.ok) throw new Error('Progress-Migrationskontext nicht ladbar');
+      const catalog = await catalogResponse.json();
       return {
         contentVersion: `catalog:${catalog.version}`,
-        competencyIdsByExercise: new Map(mapping.exercises.map((item) => [item.exerciseId, item.competencyIds])),
+        competencyIdsByExercise: new Map(),
       };
     })();
     // A transient fetch failure must not poison the session: drop the
@@ -181,14 +178,13 @@ function tx(dbPromise, store, mode, fn) {
 // array, every record a plain object, key paths well-formed. A payload that
 // fails any rule is rejected as a whole (fail-closed, no partial writes).
 
-const WEEK_ID_RE = /^w\d{2}$/;
 const ACTIVITY_ID_RE = /^[a-z0-9][a-z0-9-]*$/;
 
 const STORE_VALIDATORS = {
   weeks: {
     key: 'weekId',
-    valid: (r) => WEEK_ID_RE.test(r.weekId),
-    keyError: 'weekId muss der Form wNN entsprechen',
+    valid: () => true,
+    keyError: '',
   },
   attempts: {
     key: 'exerciseId',

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-data-cleaning",
+  "version": 1,
+  "locale": "de",
+  "title": "Datenbereinigung tabellarischer Daten",
+  "description": "Bereinige tabellarische Daten nachvollziehbar und prüfe ihre Qualität mit klaren Verträgen.",
+  "competencyIds": [
+    "c-pandas-cleaning"
+  ],
+  "requires": [
+    "c-numpy-basics",
+    "c-python-collections",
+    "c-python-files-errors"
+  ],
+  "trackIds": [
+    "applied-ai"
+  ],
+  "lessonIds": [
+    "l-data-cleaning"
+  ],
+  "placements": [
+    {
+      "placementId": "p-data-cleaning-classify-missingness",
+      "role": "curated",
+      "familyId": "classify-missingness",
+      "caseId": "target-dependent-missingness",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-data-cleaning",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-data-cleaning-missing-target-rows",
+      "role": "curated",
+      "familyId": "count-remaining-rows-cleaning-rule",
+      "caseId": "missing-target-rows",
+      "seed": 6001,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-data-cleaning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-data-cleaning-duplicate-rows",
+      "role": "curated",
+      "familyId": "count-remaining-rows-cleaning-rule",
+      "caseId": "duplicate-rows",
+      "seed": 6002,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-data-cleaning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-data-cleaning-trace-library-api-output",
+      "role": "curated",
+      "familyId": "trace-library-api-output",
+      "caseId": "pandas-dedup-isna-lines",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-data-cleaning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-data-cleaning-profile-table-schema-counts",
+      "role": "curated",
+      "familyId": "validate-data-quality-contract",
+      "caseId": "profile-table-schema-counts",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 25,
+      "lessonId": "l-data-cleaning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-data-cleaning-validate-rows-contract-errors",
+      "role": "curated",
+      "familyId": "validate-data-quality-contract",
+      "caseId": "validate-rows-contract-errors",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 42,
+      "lessonId": "l-data-cleaning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-data-cleaning-practice-space",
+      "role": "practice-space",
+      "familyId": "count-remaining-rows-cleaning-rule",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-stub-doc-sentence-select",
+  "contract": {
+    "familyId": "trace-stub-doc-sentence-select",
+    "familyGroup": "trace-state",
+    "summary": "Verfolgt die Dokument- und Satzauswahl eines ehrlichen Stub-Generators über Begriffsschnitte und sagt die Antwortsätze oder den konstanten Fehlstring voraus.",
+    "taskArchetype": "output-predict-lines",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "stub-doc-sentence-select",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-genai-prototype",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "stub-doc-sentence-select",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w30-e3"
+      ],
+      "parameters": {
+        "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = [\n    \"Die Lieferzeit betraegt drei Werktage. Der Versand erfolgt mit DHL.\",\n    \"Die Garantie deckt Herstellungsfehler. Sturzschäden sind ausgenommen.\",\n]\nprint(antwort(\"Wie erfolgt der Versand?\", DOCS))\nprint(antwort(\"Gibt es einen Parkplatz?\", DOCS))"
+      },
+      "competencyIds": [
+        "c-genai-prototype",
+        "c-python-reading"
+      ],
+      "expected": {
+        "kind": "output-lines",
+        "output": "Der Versand erfolgt mit DHL\nkein treffer"
+      },
+      "prompt": "Stub-Generator lesen und vorhersagen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Der Stub wählt das Dokument mit den meisten gemeinsamen Begriffen (Länge ≥ 4) und daraus den ersten Satz mit Anfragetreffer.",
+      "fullSolution": "Dokument 0 punktet mit {erfolgt, versand}; der erste Satz trifft nicht, der zweite („Der Versand erfolgt mit DHL“) schon → <code>Der Versand erfolgt mit DHL</code>. Zweite Anfrage: kein gemeinsamer Begriff → <code>kein treffer</code>. Der Stub formuliert nichts neu — er kopiert belegt.",
+      "hints": [
+        "Welche Begriffe (Länge ≥ 4) teilen sich Anfrage und Dokument 1? Und welche Satz des Dokuments trifft?",
+        "Beim zweiten Aufruf prüfe den Maximal-Score — was passiert bei 0?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Die Anfrage teilt erfolgt und Versand nur mit dem ERSTEN Satz von Dokument 0 — also wird der zweite Satz zurückgegeben (nach strip)."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Parkplatz/einen/gibt teilt mit keinem Dokument einen Begriff → max(punkte) == 0 → kein treffer."
+        }
+      ],
+      "typicalErrors": [
+        "ersten Satz statt des ersten treffenden Satzes genommen",
+        "leeren TrefferScore als Fehler gelesen statt kein treffer",
+        "strip() beim Satz vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

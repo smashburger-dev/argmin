@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-svm-margin",
+  "contract": {
+    "familyId": "classify-svm-margin",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Margin-Aussagen der Hard-Margin-SVM der geometrischen Definition (Korridorbreite 2/||w||, Stützvektoren als Randpunkte) zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "hard-margin-width",
+        "propertyTest": false
+      },
+      {
+        "caseId": "svm-soft-margin-slack",
+        "propertyTest": false
+      },
+      {
+        "caseId": "svm-support-boundary",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-svm-pca"
+    ],
+    "graderId": "deterministic",
+    "activityType": "single-choice"
+  },
+  "cases": [
+    {
+      "caseId": "hard-margin-width",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "w16-e1"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Konzept-Check SVM: Was beschreibt der Margin einer Hard-Margin-SVM im zweidimensionalen Fall? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Der Margin ist die Breite des Korridors um die Trenngerade, in dem kein Trainingspunkt liegt. Als kleinste-Norm-Formulierung: minimiere ||w||², der Margin ist 2/||w||. Die Punkte auf dem Rand sind die Stützvektoren.",
+      "hints": [
+        "Denk an die geometrische Vorstellung: Um die Trenngerade liegt ein leerer Streifen.",
+        "Die SVM minimiert die Norm des Normalenvektors der Trenngeraden — überlege, wie diese Norm mit der Breite des leeren Korridors zusammenhängt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der Punktabstand ist nicht der Margin — der Korridor wird von der Geraden aus gemessen, nicht von Punkt zu Punkt."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Stützvektoren liegen am Korriderrand und definieren die Lösung — der Margin selbst ist aber eine Breite, keine Anzahl."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Margin ist eine geometrische Größe des Modells, keine Performanzmetrik."
+        }
+      ],
+      "typicalErrors": [
+        "Margin mit Punktabstand oder Klassengenauigkeit verwechseln",
+        "Zusammenhang kleines ||w|| und großer Margin umkehren",
+        "Stützvektoren als alle Trainingspunkte verstehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Den Abstand zwischen den beiden klassennächsten Punkten der Klassen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Anzahl der Stützvektoren, die die Trenngerade definieren.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Genauigkeit des Klassifikators auf den Trainingsdaten.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Breite des Korridors um die Trenngerade, den kein Trainingspunkt durchquert; sie beträgt 2/||w|| — kleines ||w|| heißt großer Margin.",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "caseId": "svm-soft-margin-slack",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Was erlaubt eine Soft-Margin-SVM durch Slack-Variablen?",
+      "fullSolution": "Slack-Variablen erlauben einzelne Margin-Verletzungen gegen eine Kostenstrafe. Das Modell tauscht damit harte Trennbarkeit gegen Robustheit gegenüber Ausreißern.",
+      "hints": [
+        "Soft Margin bedeutet nicht, dass die Margin verschwindet.",
+        "Die Kostenstrafe entscheidet, wie stark Verletzungen bestraft werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Slack-Variablen behalten alle Trainingspunkte im Optimierungsproblem; sie messen nur, wie stark einzelne Punkte die Margin verletzen."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Eine Soft-Margin-SVM erlaubt Verletzungen nicht kostenlos: Die Slack-Summe wird über den Kostenparameter bestraft."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die SVM bleibt ein überwachtes Verfahren mit Klassenlabels; Slack verändert die Trennbedingung, nicht den Aufgabentyp."
+        }
+      ],
+      "typicalErrors": [
+        "Slack-Variablen mit dem Entfernen problematischer Trainingspunkte verwechselt.",
+        "Die Kostenstrafe für Margin-Verletzungen aus der Soft-Margin-Idee entfernt.",
+        "Eine überwachte Trennaufgabe wegen ihrer Robustheitskomponente als Clustering eingeordnet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Sie entfernt alle Trainingspunkte aus der Optimierung.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Sie maximiert Fehler ohne jede Strafe.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Sie erlaubt Margin-Verletzungen, die über eine Kostenstrafe kontrolliert werden.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Sie macht aus der SVM ein unüberwachtes Clustering.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "caseId": "svm-support-boundary",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Welche Rolle haben Support Vectors in einer linearen SVM?",
+      "fullSolution": "Support Vectors liegen auf der Margin oder verletzen sie und bestimmen dadurch die Lage der optimalen Trennebene. Punkte weit außerhalb haben typischerweise keinen direkten Einfluss.",
+      "hints": [
+        "Nicht jeder Trainingspunkt bestimmt die Grenze gleich stark.",
+        "Die Randpunkte tragen die aktiven Nebenbedingungen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Support Vectors entstehen aus den aktiven Randbedingungen der Trainingsoptimierung; sie werden nicht für einen zufälligen Validierungssplit ausgewählt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Punkte weit außerhalb der Margin tragen typischerweise keine aktive Nebenbedingung und sind deshalb gerade nicht die bestimmenden Support Vectors."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Support Vectors können korrekt klassifizierte Trainingspunkte auf der Margin sein; sie sind weder auf Testdaten beschränkt noch nur Fehlklassifikationen."
+        }
+      ],
+      "typicalErrors": [
+        "Geometrisch bestimmende Trainingspunkte mit zufällig gezogenen Validierungspunkten verwechselt.",
+        "Nur Punkte weit innerhalb der korrekten Seite als randbestimmend betrachtet.",
+        "Support-Vektor-Begriff fälschlich auf Testfehler und nicht auf die Trainingslösung bezogen."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Sie sind zufällig gewählte Punkte für einen Validierungssplit.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Sie liegen an der Margin oder verletzen sie und bestimmen damit die Lösung.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Sie sind alle Punkte auf der richtigen Seite, weit vom Rand entfernt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Sie sind nur die falsch klassifizierten Testpunkte.",
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

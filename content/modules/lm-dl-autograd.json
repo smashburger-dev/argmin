@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lm-dl-autograd",
+  "version": 1,
+  "locale": "de",
+  "title": "Backpropagation als Kettenregel im Rechengraph",
+  "description": "Lerne Backpropagation als Kettenregel, prüfe Gradienten numerisch und implementiere reine Trainingsschritte.",
+  "competencyIds": [
+    "c-dl-autograd"
+  ],
+  "requires": [
+    "c-dl-tensors",
+    "c-grad-regression"
+  ],
+  "trackIds": [
+    "applied-ai",
+    "mathematical-foundations"
+  ],
+  "lessonIds": [
+    "l-dl-autograd"
+  ],
+  "placements": [
+    {
+      "placementId": "p-dl-autograd-classify",
+      "role": "curated",
+      "familyId": "classify-backprop-path-rule",
+      "caseId": "backprop-path-rule",
+      "seed": 0,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-dl-autograd",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-dl-autograd-chain",
+      "role": "curated",
+      "familyId": "optimize-backprop-path-sum",
+      "caseId": "chain-rule-path-sum",
+      "seed": 1902,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-autograd",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-autograd-trace",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "manual-backward-step-trace",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-dl-autograd",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-autograd-grad-linear",
+      "role": "curated",
+      "familyId": "optimize-backprop-gradient-check",
+      "caseId": "linear-mse-gradients",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 22,
+      "lessonId": "l-dl-autograd",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-autograd-grad-mlp",
+      "role": "curated",
+      "familyId": "optimize-backprop-gradient-check",
+      "caseId": "mlp-backprop-relu-mse",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 32,
+      "lessonId": "l-dl-autograd",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-autograd-step",
+      "role": "curated",
+      "familyId": "optimize-sgd-step-pure-update",
+      "caseId": "pure-train-step",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 42,
+      "lessonId": "l-dl-autograd",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-dl-autograd-practice",
+      "role": "practice-space",
+      "familyId": "optimize-backprop-path-sum",
+      "caseId": "chain-rule-path-sum",
+      "seed": 1902,
+      "difficulty": "core",
+      "estimatedMinutes": 0,
+      "lessonId": "l-dl-autograd"
+    }
+  ],
+  "projectIds": [],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

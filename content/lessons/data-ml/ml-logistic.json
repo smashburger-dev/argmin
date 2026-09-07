@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-ml-logistic",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Logistische Regression und Klassifikationsmetriken",
   "objectives": [
@@ -13,7 +13,8 @@
   "requires": ["c-ml-linear"],
   "estimatedMinutes": 55,
   "blocks": [
-    { "blockId": "ml-logistic-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-logistic.md" }
+    { "blockId": "ml-logistic-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-logistic.md" },
+    { "blockId": "ml-logistic-viz", "type": "visualization", "contentRef": "lessons/data-ml/sigmoid-threshold.viz.json" }
   ],
   "sourceRefs": [
     { "sourceId": "openintro-statistics", "role": "primary", "locator": "Ch 9 Multiple and Logistic Regression" },

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "familyId": "fit-weight-decay-ablation",
+  "contract": {
+    "familyId": "fit-weight-decay-ablation",
+    "familyGroup": "fit-model",
+    "summary": "Führt eine faire Weight-Decay-Ablation durch: zweimal train_decay mit identischem Seed, reiner MSE in der Historie, λ·w nur im Gradienten.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "weight-decay-ablation",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge"
+    ],
+    "competencyIds": [
+      "c-dl-regularization",
+      "c-ml-cv"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "weight-decay-ablation",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w21-e6"
+      ],
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-ml-cv"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef train_decay(X, y, lam, lr, epochs, seed):\n    \"\"\"Full-batch SGD on MSE + lam * L2 for y_hat = X @ w.\n\n    grad = (2/n) * X.T @ (X @ w - y) + lam * w; init w from\n    np.random.default_rng(seed).normal(size=(d, 1)) * 0.1.\n    Return {'w': final weights, 'loss_history': [MSE at epoch start]}.\n    \"\"\"\n    # init from seed, loop: record plain MSE (without the penalty term!),\n    # then compute the gradient WITH lam * w and update\n    ...\n\n\ndef compare_decay(X, y, lam, lr, epochs, seed):\n    \"\"\"Fair ablation: same seed and data, lam vs 0.\n\n    Return {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'}\n    as floats; norms are np.linalg.norm(w) of the final weights.\n    \"\"\"\n    ...\n",
+        "tests": "rng = np.random.default_rng(2106)\nn = 100\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.05, 0.05, 400, 42)\nrun2 = train_decay(X, y, 0.05, 0.05, 400, 42)\n__check('Determinismus', np.array_equal(run1[\"w\"], run2[\"w\"]) and run1[\"loss_history\"] == run2[\"loss_history\"])\n__check('Schluessel train', set(run1.keys()) == {\"w\", \"loss_history\"})\n__check('Verlaufslaenge', len(run1[\"loss_history\"]) == 400)\n__check('Verlust faellt', run1[\"loss_history\"][-1] < run1[\"loss_history\"][0])\n__check('w-Form', run1[\"w\"].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 400, 42)\ncmp = compare_decay(X, y, 0.05, 0.05, 400, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {\"norm_plain\", \"norm_decay\", \"final_loss_plain\", \"final_loss_decay\"})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp[\"norm_plain\"] - float(np.linalg.norm(plain[\"w\"]))) < 1e-12 and abs(cmp[\"final_loss_plain\"] - plain[\"loss_history\"][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.05, 0.05, 400, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp[\"norm_decay\"] < cmp[\"norm_plain\"])\n__check('Norm-Werte plausibel', cmp[\"norm_decay\"] > 0.0 and cmp[\"norm_plain\"] > cmp[\"norm_decay\"])\ncmp_small = compare_decay(X, y, 0.001, 0.05, 400, 43)\n__check('Kleines lambda schrumpft weniger', cmp_small[\"norm_decay\"] > cmp[\"norm_decay\"] or abs(cmp_small[\"norm_decay\"] - cmp[\"norm_decay\"]) < 1e-3)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\n\ndef train_decay(X, y, lam, lr, epochs, seed):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    n, d = X.shape\n    rng = np.random.default_rng(seed)\n    w = rng.normal(size=(d, 1)) * 0.1\n    loss_history = []\n    for _ in range(int(epochs)):\n        pred = X @ w\n        loss_history.append(float(np.mean((pred - y) ** 2)))\n        grad = (2.0 / n) * (X.T @ (pred - y)) + lam * w\n        w = w - lr * grad\n    return {\"w\": w, \"loss_history\": loss_history}\n\n\ndef compare_decay(X, y, lam, lr, epochs, seed):\n    decayed = train_decay(X, y, lam, lr, epochs, seed)\n    plain = train_decay(X, y, 0.0, lr, epochs, seed)\n    return {\n        \"norm_plain\": float(np.linalg.norm(plain[\"w\"])),\n        \"norm_decay\": float(np.linalg.norm(decayed[\"w\"])),\n        \"final_loss_plain\": float(plain[\"loss_history\"][-1]),\n        \"final_loss_decay\": float(decayed[\"loss_history\"][-1]),\n    }"
+      },
+      "prompt": "Final Boss faire Ablation: misst Weight Decay wirklich etwas — oder nur der Zufall? <code>train_decay(X, y, lam, lr, epochs, seed)</code> trainiert ein lineares Modell $\\hat{y} = Xw$ mit Full-Batch-SGD auf den MSE mit L2-Term: Gradient $\\frac{2}{n} X^\\top (Xw - y) + \\lambda w$, Update $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}$, Start $w = $ <code>rng.normal(size=(d, 1)) * 0.1</code> aus <code>np.random.default_rng(seed)</code>. Rückgabe: <code>{\"w\": finales w, \"loss_history\": [MSE zu Epochenbeginn]}</code>. <code>compare_decay(X, y, lam, lr, epochs, seed)</code> fährt die <em>faire</em> Ablation: zweimal <code>train_decay</code> mit demselben Seed — einmal mit $\\lambda$ und einmal mit $\\lambda = 0$ — und gibt <code>{\"norm_plain\": float, \"norm_decay\": float, \"final_loss_plain\": float, \"final_loss_decay\": float}</code> zurück (Norm: $\\lVert w \\rVert_2$ als float). Der Test prüft Determinismus, dass $\\lambda = 0$ zum identischen Plain-Lauf führt, dass die Gewichte mit Decay kleiner bleiben und dass beide Verläufe fallen.",
+      "fullSolution": "def train_decay(X, y, lam, lr, epochs, seed):\n    rng = np.random.default_rng(seed)\n    w = rng.normal(size=(X.shape[1], 1)) * 0.1\n    loss_history = []\n    for _ in range(int(epochs)):\n        pred = X @ w\n        loss_history.append(float(np.mean((pred - y) ** 2)))\n        grad = (2.0 / X.shape[0]) * (X.T @ (pred - y)) + lam * w\n        w = w - lr * grad\n    return {\"w\": w, \"loss_history\": loss_history}\n\ndef compare_decay(X, y, lam, lr, epochs, seed):\n    decayed = train_decay(X, y, lam, lr, epochs, seed)\n    plain = train_decay(X, y, 0.0, lr, epochs, seed)\n    return {\n        \"norm_plain\": float(np.linalg.norm(plain[\"w\"])),\n        \"norm_decay\": float(np.linalg.norm(decayed[\"w\"])),\n        \"final_loss_plain\": float(plain[\"loss_history\"][-1]),\n        \"final_loss_decay\": float(decayed[\"loss_history\"][-1]),\n    }\n\n# Gleicher Seed: nur lambda unterscheidet die Laeufe; Decay haelt die Gewichtsnorm kleiner",
+      "hints": [
+        "loss_history notiert den reinen MSE (ohne Strafterm!) zu Epochenbeginn; der Gradient dagegen MIT λ·w — Verlust und Gradient haben hier bewusst verschiedene Definitionen.",
+        "compare_decay ruft train_decay zweimal mit demselben Seed auf — Seed und Daten fix, nur λ unterscheidet sich: das ist die ganze Faire-Ablation-Disziplin."
+      ],
+      "feedbackRules": [
+        {
+          "if": "penalty-in-loss",
+          "then": "Im loss_history steht der reine MSE — die Strafe gehört nur in den Gradienten, sonst vergleichst du Äpfel mit Birnen."
+        },
+        {
+          "if": "different-seeds",
+          "then": "Zwei verschiedene Seeds machen die Ablation unfair: Init-Rauschen und Datenvertrag müssen identisch sein, nur λ darf sich ändern."
+        },
+        {
+          "if": "norm-not-float",
+          "then": "np.linalg.norm liefert np.float64 — die Vergleichswerte müssen mit float() in echte Python-floats gegossen werden."
+        }
+      ],
+      "typicalErrors": [
+        "Strafterm in den notierten Verlust eingebaut",
+        "für die Ablation verschiedene Seeds verwendet",
+        "Normen als np.float64 statt float zurückgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

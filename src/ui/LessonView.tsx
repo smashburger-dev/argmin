@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import type { CatalogData, Lesson } from '../app/types';
 import { getLesson, loadSources } from '../adapters/content-repository';
 import { MathMarkup } from './MathMarkup';
+import { VisualizationBlock } from './VisualizationBlock';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 
 export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lessonId: string }) {
@@ -54,7 +55,11 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
         <article class="lesson-prose" aria-busy={!lesson && !loadError}>
           {loadError && <p role="alert" class="content-error">Lektion konnte nicht geladen werden: {loadError}</p>}
           {!loadError && !lesson && <p role="status">Lektionsinhalt wird geladen.</p>}
-          {lesson?.blocks.map((block) => <section class={`lesson-block lesson-block-${block.type}`} key={block.blockId}><MathMarkup html={block.html} /></section>)}
+          {lesson?.blocks.map((block) => <section class={`lesson-block lesson-block-${block.type}`} key={block.blockId}>
+            {block.type === 'visualization' && block.viz
+              ? <VisualizationBlock id={block.visualizationId || block.blockId} spec={block.viz} />
+              : <MathMarkup html={block.html} />}
+          </section>)}
         </article>
         <aside class="lesson-side" aria-labelledby="practice-title">
           <p class="card-kicker">Direkt prüfen</p>

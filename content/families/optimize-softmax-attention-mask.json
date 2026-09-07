@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-softmax-attention-mask",
+  "contract": {
+    "familyId": "optimize-softmax-attention-mask",
+    "familyGroup": "optimize-update",
+    "summary": "Berechnet Softmax-Aufmerksamkeit inklusive Maskierung der verbotenen Positionen.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "scaled-dot-product-attention",
+        "propertyTest": false
+      },
+      {
+        "caseId": "toy-forward-pass",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-attention",
+      "c-numpy-basics",
+      "c-dl-inference"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "scaled-dot-product-attention",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w22-e4"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef attention(Q, K, V, mask=None):\n    \"\"\"Scaled dot-product attention; mask True = visible, False = blocked.\"\"\"\n    Q = np.asarray(Q, dtype=float)\n    K = np.asarray(K, dtype=float)\n    V = np.asarray(V, dtype=float)\n    # scores = Q @ K.T / sqrt(d_k); apply mask as -inf BEFORE the softmax\n    # stable row softmax: subtract the row maximum, then normalize\n    ...\n",
+        "tests": "def __ref_attention(Q, K, V, mask=None):\n    n, d_k = len(Q), len(Q[0])\n    out = []\n    for i in range(n):\n        s = [sum(Q[i][a] * K[j][a] for a in range(d_k)) / math.sqrt(d_k) for j in range(len(K))]\n        if mask is not None:\n            s = [s[j] if mask[i][j] else float('-inf') for j in range(len(s))]\n        m = max(s)\n        ex = [math.exp(v - m) for v in s]\n        tot = sum(ex)\n        w = [e / tot for e in ex]\n        out.append([sum(w[j] * V[j][c] for j in range(len(V))) for c in range(len(V[0]))])\n    return out\n\nQ = [[1, 1, 0, 0], [0, 0, 1, 1]]\nK = [[1, 1, 0, 0], [0, 0, 1, 1]]\nV = [[2, 0], [0, 2]]\nout = attention(Q, K, V)\n__check('Handrechnung Zeile 1', np.allclose(out[0], [1.4621171572600098, 0.5378828427399903], atol=1e-9))\n__check('Handrechnung Zeile 2', np.allclose(out[1], [0.5378828427399903, 1.4621171572600098], atol=1e-9))\n__check('Form der Ausgabe', out.shape == (2, 2))\n\ncausal = [[True, False], [True, True]]\nout_m = attention(Q, K, V, mask=causal)\n__check('Kausale Maske: Zeile 2 unveraendert', np.allclose(out_m[1], out[1], atol=1e-12))\n__check('Kausale Maske: Zeile 1 sieht nur Key 1', np.allclose(out_m[0], [2.0, 0.0], atol=1e-12))\n\nrng = np.random.default_rng(42)\nQr = rng.integers(-3, 4, size=(3, 4)).astype(float)\nKr = rng.integers(-3, 4, size=(4, 4)).astype(float)\nVr = rng.integers(-5, 6, size=(4, 2)).astype(float)\n__check('gegen Referenz unmaskiert', np.allclose(attention(Qr, Kr, Vr), __ref_attention(Qr.tolist(), Kr.tolist(), Vr.tolist()), atol=1e-9))\nmr = np.tril(np.ones((3, 4), dtype=bool))\nmr[0, 0] = True\n__check('gegen Referenz mit Maske', np.allclose(attention(Qr, Kr, Vr, mask=mr), __ref_attention(Qr.tolist(), Kr.tolist(), Vr.tolist(), mask=mr.tolist()), atol=1e-9))\n__check('Padding-Maske: Value-Zeile unvermischt', np.allclose(attention([[1.0, 0.0]], [[0.0, 1.0], [1.0, 0.0]], [[7.0, 0.0], [0.0, 9.0]], mask=[[False, True]])[0], [0.0, 9.0], atol=1e-12))"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import math\nimport numpy as np\n\ndef attention(Q, K, V, mask=None):\n    \"\"\"Scaled dot-product attention; mask True = visible, False = blocked.\"\"\"\n    Q = np.asarray(Q, dtype=float)\n    K = np.asarray(K, dtype=float)\n    V = np.asarray(V, dtype=float)\n    d_k = Q.shape[1]\n    scores = Q @ K.T / np.sqrt(d_k)\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    w = w / w.sum(axis=1, keepdims=True)\n    return w @ V\n"
+      },
+      "prompt": "Implementiere <code>attention(Q, K, V, mask=None)</code> — Scaled Dot-Product Attention als Funktion. Vertrag: $Q$ liegt als $(n, d_k)$-Matrix vor, $K$ als $(m, d_k)$, $V$ als $(m, d_v)$; die Scores sind $QK^\\top/\\sqrt{d_k}$; das Softmax ist zeilenweise und stabil (Zeilenmaximum abziehen); <code>mask</code> ist optional eine boolesche Matrix $(n, m)$ mit <code>True</code> = sichtbar, <code>False</code> = blockiert — blockierte Scores werden <em>vor</em> dem Softmax auf $-\\infty$ gesetzt. Rückgabe: $A = \\mathrm{softmax}(QK^\\top/\\sqrt{d_k})V$ als $(n, d_v)$-Array. Listen als Eingabe sind erlaubt. Der Testcode enthält eine unabhängige Python-Referenz und prüft Handwerte, Maskenfälle und unbekannte Instanzen.",
+      "fullSolution": "import math\nimport numpy as np\n\ndef attention(Q, K, V, mask=None):\n    \"\"\"Scaled dot-product attention; mask True = visible, False = blocked.\"\"\"\n    Q = np.asarray(Q, dtype=float)\n    K = np.asarray(K, dtype=float)\n    V = np.asarray(V, dtype=float)\n    d_k = Q.shape[1]\n    scores = Q @ K.T / np.sqrt(d_k)\n    if mask is not None:\n        keep = np.asarray(mask, dtype=bool)\n        scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    w = w / w.sum(axis=1, keepdims=True)\n    return w @ V\n# Die Tests vergleichen gegen eine unabhaengige Python-Schleifen-Referenz:\n# attention([[1,1,0,0],[0,0,1,1]], ...) mit V=[[2,0],[0,2]] liefert Zeile 1\n# ~ [1.462, 0.538]; mit kausaler Maske sieht Zeile 1 nur Key 1 -> [2, 0].",
+      "hints": [
+        "Scores als Q @ K.T / np.sqrt(d_k); Maske über np.where(mask, scores, -np.inf) vor dem Softmax.",
+        "Stabiles Softmax: scores -= scores.max(axis=1, keepdims=True), dann np.exp und Normalisierung je Zeile; am Ende weights @ V."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mask-after-softmax",
+          "then": "Die Maske muss vor dem Softmax wirken — nach der Normalisierung sind die Gewichte schon verteilt."
+        },
+        {
+          "if": "no-row-max",
+          "then": "Ohne Abziehen des Zeilenmaximums läuft exp bei großen Scores über — np.exp(s - s.max(axis=1, keepdims=True))."
+        },
+        {
+          "if": "wrong-scale",
+          "then": "Es wird durch np.sqrt(d_k) geteilt, nicht durch d_k."
+        }
+      ],
+      "typicalErrors": [
+        "Maske nach dem Softmax oder als 0 statt −∞ eingetragen",
+        "Zeilenmaximum nicht abgezogen (Overflow bei großen Scores)",
+        "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "toy-forward-pass",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w24-e5"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef toy_forward(ids, weights):\n    \"\"\"Toy forward pass with fixture weights: embed -> one causal attention block -> logits.\"\"\"\n    E = np.asarray(weights[\"E\"], dtype=float)\n    Wq = np.asarray(weights[\"Wq\"], dtype=float)\n    Wk = np.asarray(weights[\"Wk\"], dtype=float)\n    Wv = np.asarray(weights[\"Wv\"], dtype=float)\n    Wout = np.asarray(weights[\"Wout\"], dtype=float)\n    # stages: embed -> one causal attention block -> logits\n    # (score scaling, stable row softmax and masking follow the lesson;\n    #  the context is pooled over positions before the output projection)\n    ...\n",
+        "tests": "E = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1], [1, 1, 0, 0], [0, 0, 1, 1]]\nWq = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWk = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]\nWv = [[1, 2, 0, 0], [2, 1, 0, 0], [0, 0, 1, 2], [0, 0, 2, 1]]\nWout = [[1, 0, 0, 0, 1, 0], [0, 1, 0, 1, 0, 0], [0, 0, 1, 0, 1, 0], [0, 0, 0, 1, 0, 1]]\nWEIGHTS = {\"E\": E, \"Wq\": Wq, \"Wk\": Wk, \"Wv\": Wv, \"Wout\": Wout}\n\ndef __ref_forward(ids, weights):\n    import math\n    E, Wq, Wk, Wv, Wout = weights[\"E\"], weights[\"Wq\"], weights[\"Wk\"], weights[\"Wv\"], weights[\"Wout\"]\n    n, d = len(ids), len(E[0])\n    X = [E[i] for i in ids]\n    Q = [[sum(X[i][a] * Wq[a][b] for a in range(d)) for b in range(d)] for i in range(n)]\n    K = [[sum(X[i][a] * Wk[a][b] for a in range(d)) for b in range(d)] for i in range(n)]\n    V = [[sum(X[i][a] * Wv[a][b] for a in range(d)) for b in range(d)] for i in range(n)]\n    ctx = []\n    for i in range(n):\n        s = [sum(Q[i][a] * K[j][a] for a in range(d)) / math.sqrt(d) if j <= i else float('-inf') for j in range(n)]\n        m = max(s)\n        ex = [math.exp(v - m) for v in s]\n        tot = sum(ex)\n        w = [e / tot for e in ex]\n        ctx.append([sum(w[j] * V[j][c] for j in range(n)) for c in range(d)])\n    mean = [sum(ctx[i][c] for i in range(n)) / n for c in range(d)]\n    return [sum(mean[a] * Wout[a][b] for a in range(d)) for b in range(len(Wout[0]))]\n\nlogits = toy_forward([0, 1, 2], WEIGHTS)\n__check('Form: ein Logit je Vokabulareintrag', np.asarray(logits).shape == (6,))\n__check('gegen Referenz [0,1,2]', np.allclose(logits, __ref_forward([0, 1, 2], WEIGHTS), atol=1e-9))\n__check('gegen Referenz [4,5]', np.allclose(toy_forward([4, 5], WEIGHTS), __ref_forward([4, 5], WEIGHTS), atol=1e-9))\n__check('gegen Referenz einzeltoken', np.allclose(toy_forward([3], WEIGHTS), __ref_forward([3], WEIGHTS), atol=1e-9))\n__check('argmax der Referenz gleich', int(np.argmax(logits)) == int(np.argmax(__ref_forward([0, 1, 2], WEIGHTS))))\n__check('Doppelaufruf identisch', np.array_equal(toy_forward([0, 1, 2], WEIGHTS), toy_forward([0, 1, 2], WEIGHTS)))\nW2 = {\"E\": E, \"Wq\": Wq, \"Wk\": Wk, \"Wv\": [[2 * v for v in row] for row in Wv], \"Wout\": Wout}\n__check('andere Gewichte andere Logits', not np.allclose(toy_forward([0, 1, 2], WEIGHTS), toy_forward([0, 1, 2], W2), atol=1e-9))"
+      },
+      "competencyIds": [
+        "c-dl-inference",
+        "c-dl-attention"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef toy_forward(ids, weights):\n    \"\"\"Toy forward pass with fixture weights: embed -> one causal attention block -> logits.\"\"\"\n    E = np.asarray(weights[\"E\"], dtype=float)\n    Wq = np.asarray(weights[\"Wq\"], dtype=float)\n    Wk = np.asarray(weights[\"Wk\"], dtype=float)\n    Wv = np.asarray(weights[\"Wv\"], dtype=float)\n    Wout = np.asarray(weights[\"Wout\"], dtype=float)\n    X = E[list(ids)]\n    n, d = X.shape\n    scores = (X @ Wq) @ (X @ Wk).T / np.sqrt(d)\n    keep = np.tril(np.ones((n, n), dtype=bool))\n    scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    w = w / w.sum(axis=1, keepdims=True)\n    ctx = w @ (X @ Wv)\n    return ctx.mean(axis=0) @ Wout\n"
+      },
+      "prompt": "Toy-Forward-Pass: Implementiere <code>toy_forward(ids, weights)</code>. <strong>Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.</strong> Vertrag: <code>weights</code> ist ein Dictionary mit den Fixtur-Literalen <code>\"E\"</code> (V×d-Embedding), <code>\"Wq\"</code>, <code>\"Wk\"</code>, <code>\"Wv\"</code> (je d×d) und <code>\"Wout\"</code> (d×V). Ablauf: Embedding-Zeilen $X = E[\\texttt{ids}]$; ein einzelner Attention-Kopf auf den Projektionen $XW_Q$, $XW_K$, $XW_V$ mit Divisor $\\sqrt{d}$ und <strong>kausaler Maske</strong> ($-\\infty$ vor dem zeilenweise stabilen Softmax); Kontext zeilenweise mischen; Logits = Zeilenmittel des Kontexts mal $W_{\\text{out}}$ (Vektor der Länge V). Rückgabe: 1-d-Array. Der Testcode hält eine unabhängige Python-Schleifen-Referenz und prüft Handrechnung, Form, Determinismus (Doppelaufruf) und ein Anti-Hardcoding-Argument (andere Gewichte → andere Logits).",
+      "fullSolution": "import numpy as np\n\ndef toy_forward(ids, weights):\n    \"\"\"Toy forward pass with fixture weights: embed -> one causal attention block -> logits.\"\"\"\n    E = np.asarray(weights[\"E\"], dtype=float)\n    Wq = np.asarray(weights[\"Wq\"], dtype=float)\n    Wk = np.asarray(weights[\"Wk\"], dtype=float)\n    Wv = np.asarray(weights[\"Wv\"], dtype=float)\n    Wout = np.asarray(weights[\"Wout\"], dtype=float)\n    X = E[list(ids)]\n    n, d = X.shape\n    scores = (X @ Wq) @ (X @ Wk).T / np.sqrt(d)\n    keep = np.tril(np.ones((n, n), dtype=bool))\n    scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    w = np.exp(scores)\n    w = w / w.sum(axis=1, keepdims=True)\n    ctx = w @ (X @ Wv)\n    return ctx.mean(axis=0) @ Wout\n# toy_forward([0, 1, 2], WEIGHTS) -> 6 Logits; Doppelaufruf liefert byte-identische\n# Ergebnisse (fixe Gewichte, kein Zufall) - der Test erzwingt beides gegen die Referenz.",
+      "hints": [
+        "Die kausale Maske ist untere Dreiecksmatrix (np.tril); maskierte Scores über np.where auf −∞, dann Zeilenmaximum abziehen.",
+        "Logits: ctx.mean(axis=0) @ Wout — ein Vektor mit einem Wert je Vokabulareintrag."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mask-missing",
+          "then": "Ohne kausale Maske sieht jedes Token die Zukunft — der Toy-Decoder verletzt dann seinen Vertrag."
+        },
+        {
+          "if": "axis-mixup",
+          "then": "Der Zeilenmittelwert ist ctx.mean(axis=0); axis=1 wäre der Positionsmittel pro Merkmal."
+        },
+        {
+          "if": "scale-forgotten",
+          "then": "Die Scores werden durch np.sqrt(d) geteilt — d ist die Embedding-Breite."
+        }
+      ],
+      "typicalErrors": [
+        "kausale Maske vergessen",
+        "Mittelung über die falsche Achse",
+        "Skalierung durch sqrt(d) unterschlagen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

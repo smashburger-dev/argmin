@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-validate-and-count-records",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "separate-error-kinds",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w37-e5"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def trenne_fehler(datensaetze):\n    \"\"\"Zaehlt retrieval_fehler, antwort_fehler und sauber — jede Query genau einmal.\"\"\"\n    ...\n\n",
+        "tests": "D = [\n    {\"retrieval\": \"ok\", \"antwort\": \"ok\"},\n    {\"retrieval\": \"leer\", \"antwort\": \"kein_treffer\"},\n    {\"retrieval\": \"ok\", \"antwort\": \"blockiert\"},\n    {\"retrieval\": \"ok\", \"antwort\": \"kein_treffer\"},\n    {\"retrieval\": \"leer\", \"antwort\": \"kein_treffer\"},\n    {\"retrieval\": \"ok\", \"antwort\": \"ok\"},\n]\n__check('zaehlung', trenne_fehler(D) == {\"retrieval_fehler\": 2, \"antwort_fehler\": 2, \"sauber\": 2})\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('blockiert ist antwortfehler', trenne_fehler([{\"retrieval\": \"ok\", \"antwort\": \"blockiert\"}]) == {\"retrieval_fehler\": 0, \"antwort_fehler\": 1, \"sauber\": 0})\n__check('leer', trenne_fehler([]) == {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe stimmt', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == 6)"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def trenne_fehler(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n\n# D -> {'retrieval_fehler': 2, 'antwort_fehler': 2, 'sauber': 2}"
+      },
+      "prompt": "Fehlerarten trennen: <code>trenne_fehler(datensaetze)</code> erhält <code>{\"retrieval\": \"ok\"|\"leer\", \"antwort\": \"ok\"|\"kein_treffer\"|\"blockiert\"}</code>. Rückgabe <code>{\"retrieval_fehler\": n, \"antwort_fehler\": n, \"sauber\": n}</code>. Regeln: retrieval „leer“ zählt als Retrievalfehler (egal was die Antwort sagt); bei retrieval „ok“ zählt antwort „blockiert“ ODER „kein_treffer“ als Antwortfehler; nur („ok“, „ok“) ist sauber. Jeder Datensatz zählt genau einmal.",
+      "fullSolution": "def trenne_fehler(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n\n# Genau eine Kategorie pro Query — die Ursache bleibt benennbar.",
+      "hints": [
+        "Erst die Retrieval-Ebene entscheiden lassen, dann die Antwort-Ebene — elif ist dein Freund.",
+        "„leer“ plus „kein_treffer“ ist EIN Fehler an der Wurzel (Retrieval), nicht zwei."
+      ],
+      "feedbackRules": [
+        {
+          "if": "double-counted",
+          "then": "Wer leer UND kein_treffer zählt, bestraft dieselbe Query zweimal — die Wurzel ist das Retrieval."
+        },
+        {
+          "if": "blockiert-als-retrieval",
+          "then": "„blockiert“ ist ein Sicherheitsentscheid auf der Antwortebene — das Retrieval lieferte ja etwas."
+        },
+        {
+          "if": "unbekannte-status",
+          "then": "Der Vertrag kennt genau retrieval ok|leer und antwort ok|kein_treffer|blockiert — außerhalb liegt kein definierter Zustand."
+        }
+      ],
+      "typicalErrors": [
+        "dieselbe Query doppelt gezählt",
+        "blockiert der Retrieval-Ebene zugeordnet",
+        "beide Ebenen in einen Topf geworfen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

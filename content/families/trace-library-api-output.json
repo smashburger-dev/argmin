@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-library-api-output",
+  "contract": {
+    "familyId": "trace-library-api-output",
+    "familyGroup": "trace-state",
+    "summary": "Sagt die exakte Ausgabe eines dokumentierten Bibliotheks-Snippets (pandas, NumPy, scikit-learn) voraus.",
+    "taskArchetype": "predict-output",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "pandas-dedup-isna-lines",
+        "propertyTest": false
+      },
+      {
+        "caseId": "numpy-median-histogram-corrcoef",
+        "propertyTest": false
+      },
+      {
+        "caseId": "sklearn-split-no-shuffle",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-pandas-cleaning",
+      "c-python-reading"
+    ],
+    "graderId": "deterministic",
+    "activityType": "predict-output"
+  },
+  "cases": [
+    {
+      "caseId": "pandas-dedup-isna-lines",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w06-e3"
+      ],
+      "parameters": {
+        "snippet": "import pandas as pd\ndf = pd.DataFrame({\"id\": [1, 2, 2, 3], \"ziel\": [10, 20, 20, None]})\nprint(len(df.drop_duplicates()))\nprint(int(df[\"ziel\"].isna().sum()))"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "3\n1"
+      },
+      "prompt": "pandas lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: pandas läuft im Browser nicht — hier zählt api-reading, die dokumentierten Bedeutungen von <code>drop_duplicates()</code> (erster Vorkommen bleibt) und <code>isna()</code>.",
+      "fullSolution": "Die Zeilen (2, 20.0) und (2, 20.0) sind in allen Spalten identisch: drop_duplicates() behält die erste, also bleiben 3 Zeilen (len → 3). In der Spalte ziel fehlt genau ein Wert (None → NaN): isna().sum() ist 1. Ausgabe: <code>3</code> und <code>1</code>.",
+      "hints": [
+        "drop_duplicates() vergleicht alle Spalten und behält die erste Zeile jedes identischen Paares. Welche Zeile ist hier komplett identisch?",
+        "isna() markiert fehlende Werte (None wird in der Zielspalte zu NaN); sum() zählt sie. Nur eine Zeile hat keinen Zielwert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Es sind zwei Ausgabezeilen — eine je print: erst die Länge nach drop_duplicates, dann die Anzahl fehlender Zielwerte."
+        },
+        {
+          "if": "first-line-wrong",
+          "then": "Die Zeilen (2, 20) und (2, 20) sind exakte Duplikate, also fällt genau eine von vier Zeilen weg."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "None in der Spalte ziel zählt als genau ein fehlender Wert."
+        }
+      ],
+      "typicalErrors": [
+        "drop_duplicates auf eine einzelne Spalte bezogen statt auf alle Spalten",
+        "None nicht als fehlender Wert gezählt",
+        "Zeilen- mit Wertanzahl verwechselt (len gegen sum)"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "numpy-median-histogram-corrcoef",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "competencyIds": [
+        "c-eda-viz",
+        "c-numpy-basics"
+      ],
+      "sourceLineage": [
+        "w07-e3"
+      ],
+      "parameters": {
+        "snippet": "import numpy as np\nx = np.array([2, 4, 4, 4, 5, 5, 7, 9])\ny = np.array([1, 2, 3, 3, 4, 5, 6, 8])\nprint(round(float(np.median(x)), 1))\nprint(np.histogram(x, bins=[0, 4, 9])[0])\nprint(round(float(np.corrcoef(x, y)[0, 1]), 2))"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "4.5\n[1 7]\n0.97"
+      },
+      "prompt": "NumPy-Zusammenfassungen lesen: Was gibt dieses Programm aus? Sage die Ausgabe der drei <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Achte auf die Kanten-Regel von <code>np.histogram</code> und auf das Runden.",
+      "fullSolution": "Sortiert ist x = (2, 4, 4, 4, 5, 5, 7, 9); der Median ist (4+5)/2 = 4.5. Histogramm-Kanten [0, 4, 9]: Bin [0, 4) enthält nur die 2 (die 4 zählt noch nicht), Bin [4, 9] enthält 4, 4, 4, 5, 5, 7, 9 → 7 Werte, also [1 7]. np.corrcoef(x, y)[0, 1] ≈ 0.9746, gerundet auf 2 Stellen 0.97. Ausgabe: <code>4.5</code>, <code>[1 7]</code>, <code>0.97</code>.",
+      "hints": [
+        "8 Werte, gerade Anzahl: der Median ist das Mittel der beiden mittleren Werte der sortierten Liste.",
+        "np.histogram mit Kanten [0, 4, 9] bildet die Bins [0, 4) und [4, 9] — nur der letzte Bin schließt seine rechte Kante ein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output-lines-mismatch",
+          "then": "Drei print-Zeilen → drei Ausgabezeilen: Median, Bin-Anzahlen, gerundete Korrelation."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Die drei 4en fallen in [4, 9], nicht in [0, 4) — zusammen mit 5, 5, 7, 9 sind das 7 Werte."
+        },
+        {
+          "if": "third-line-wrong",
+          "then": "np.corrcoef liefert eine 2x2-Matrix; [0, 1] ist r. Nicht runden vergessen: auf 2 Stellen ergibt sich 0.97."
+        }
+      ],
+      "typicalErrors": [
+        "Bin-Kanten links und rechts inklusiv gelesen",
+        "corrcoef-Matrix statt Eintrag [0, 1] weiterverwendet",
+        "Median bei gerader Anzahl als einzelner Wert statt Mittel der mittleren beiden"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "sklearn-split-no-shuffle",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w09-e3"
+      ],
+      "competencyIds": [
+        "c-ml-baseline",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "from sklearn.model_selection import train_test_split\nX = [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9]]\nX_train, X_test = train_test_split(X, test_size=0.25,\n                                   random_state=0, shuffle=False)\nprint([x[0] for x in X_test])"
+      },
+      "expected": {
+        "kind": "output-lines",
+        "output": "[7, 8, 9]"
+      },
+      "prompt": "sklearn lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: scikit-learn läuft im Browser nicht — hier zählt API-Reading für <code>train_test_split</code>.",
+      "fullSolution": "n = 10, Testanteil ceil(0,25 · 10) = 3. Mit <code>shuffle=False</code> wird nicht gemischt: die letzten 3 Zeilen [7], [8], [9] bilden <code>X_test</code>. Der Listenausdruck gibt die erste Spalte jeder Testzeile aus: <code>[7, 8, 9]</code>.",
+      "hints": [
+        "test_size=0.25 bei 10 Zeilen: der Testanteil wird aufgerundet (ceil(0,25 · 10) = 3 Zeilen). Mit shuffle=False bleibt die Reihenfolge erhalten.",
+        "Mit shuffle=False geht der letzte Block in den Test. Die Ausgabe ist Python-Listennotation der ersten Spalte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "output === '[0, 1, 2]'",
+          "then": "Das ist der erste Block. Ohne Shuffling bildet der letzte Block den Test — und der Testanteil wird aufgerundet."
+        },
+        {
+          "if": "output === '[0, 1, 2, 3, 4, 5, 6]'",
+          "then": "Das ist die Trainingsmenge. Gesucht ist der Test-Teil (kleiner, am Ende)."
+        },
+        {
+          "if": "output === '[2, 3, 4]'",
+          "then": "Die Blockgrenze ist falsch: ceil(0,25 · 10) = 3 Zeilen, nicht 2 — und ohne Shuffling liegt der Testblock am Ende."
+        }
+      ],
+      "typicalErrors": [
+        "Testanteil abrunden statt aufzurunden",
+        "mit shuffle=False den ersten Block als Test annehmen",
+        "vergessen, dass die innere Liste entpackt wird (x[0])"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

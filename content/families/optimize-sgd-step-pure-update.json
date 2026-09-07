@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-sgd-step-pure-update",
+  "contract": {
+    "familyId": "optimize-sgd-step-pure-update",
+    "familyGroup": "optimize-update",
+    "summary": "Implementiert einen vollständigen SGD-Trainingsschritt als reine Funktion: Verlust vor dem Update, Update in neue Parameter, Eingabe unverändert.",
+    "taskArchetype": "code-tests",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "pure-train-step",
+        "propertyTest": false
+      },
+      {
+        "caseId": "sgd-momentum-step",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-autograd",
+      "c-grad-regression"
+    ],
+    "graderId": "pyodide",
+    "activityType": "python-code"
+  },
+  "cases": [
+    {
+      "caseId": "pure-train-step",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e6"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef train_step(X, y, params, lr):\n    \"\"\"One SGD step on the 2-layer MLP; return (loss, new_params).\n\n    loss is the MSE of the CURRENT params (before the update); new_params is\n    a fresh dict with updated copies — never mutate the input dict.\n    \"\"\"\n    # 1) forward: hidden = relu(X @ W1 + b1); out = hidden @ W2 + b2\n    # 2) loss = float(np.mean((out - y) ** 2))\n    # 3) backward (delta2/dW2/db1/... as in the lesson)\n    # 4) new_params = {k: params[k] - lr * grad_k} for all four entries\n    ...\n",
+        "tests": "rng = np.random.default_rng(1906)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    \"W1\": rng.normal(size=(3, 8)) * 0.5,\n    \"b1\": np.zeros(8),\n    \"W2\": rng.normal(size=(8, 1)) * 0.5,\n    \"b2\": np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot[\"W1\"] + snapshot[\"b1\"]) @ snapshot[\"W2\"] + snapshot[\"b2\"] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, \"W2\": snapshot[\"W2\"].copy()}; Wp[\"W2\"][0, 0] += h\nWm = {**snapshot, \"W2\": snapshot[\"W2\"].copy()}; Wm[\"W2\"][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot[\"W2\"][0, 0] - params_step[\"W2\"][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust deutlich', last < 0.5 * first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1][\"W1\"], train_step(X, y, params, 0.01)[1][\"W1\"]))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef train_step(X, y, params, lr):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    W1 = np.asarray(params[\"W1\"], dtype=float)\n    b1 = np.asarray(params[\"b1\"], dtype=float)\n    W2 = np.asarray(params[\"W2\"], dtype=float)\n    b2 = np.asarray(params[\"b2\"], dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    out = hidden @ W2 + b2\n    loss = float(np.mean((out - y) ** 2))\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    new_params = {\n        \"W1\": W1 - lr * dW1,\n        \"b1\": b1 - lr * db1,\n        \"W2\": W2 - lr * dW2,\n        \"b2\": b2 - lr * db2,\n    }\n    return loss, new_params"
+      },
+      "prompt": "Final Boss Autograd: ein kompletter Trainings-Teilschritt aus einer Hand. <code>train_step(X, y, params, lr)</code> bekommt <code>params = {\"W1\": ..., \"b1\": ..., \"W2\": ..., \"b2\": ...}</code> (2-Layer-MLP mit ReLU, $L = \\mathrm{mean}((\\hat{y} - y)^2)$) und führt Vorwärts, Backward und ein SGD-Update <code>p ← p − lr · grad</code> für alle vier Parameter aus. Rückgabe: Tupel <code>(loss, new_params)</code> — <code>loss</code> als float des <em>aktuellen</em> Modells vor dem Update, <code>new_params</code> als neues Dictionary mit denselben Schlüsseln und Formen (das Eingabe-Dictionary darf nicht verändert werden). Der Test prüft: <code>lr = 0</code> ändert nichts; ein kleiner Schritt senkt den Verlust; das Update von <code>W2[0,0]</code> stimmt mit der zentralen Differenz aus deinem eigenen Schritt überein; 40 Schritte senken den Verlust deutlich.",
+      "fullSolution": "import numpy as np\n\ndef train_step(X, y, params, lr):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    W1 = np.asarray(params[\"W1\"], dtype=float)\n    b1 = np.asarray(params[\"b1\"], dtype=float)\n    W2 = np.asarray(params[\"W2\"], dtype=float)\n    b2 = np.asarray(params[\"b2\"], dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    out = hidden @ W2 + b2\n    loss = float(np.mean((out - y) ** 2))\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    new_params = {\n        \"W1\": W1 - lr * dW1,\n        \"b1\": b1 - lr * db1,\n        \"W2\": W2 - lr * dW2,\n        \"b2\": b2 - lr * db2,\n    }\n    return loss, new_params\n\n# lr=0 identisch, kleiner Schritt senkt, Update matcht die zentrale Differenz, 40 Schritte halbieren den Verlust",
+      "hints": [
+        "Alles in einer Funktion: forward für loss, dieselben Zwischengrößen für die Gradienten, dann ein frisches Dictionary mit p − lr · grad — die Eingabe bleibt unangetastet.",
+        "Für den numerischen Check: bei lr = 0 ist der zurückgegebene Verlust genau L der übergebenen Parameter — damit kann der Test (L(W2+h) − L(W2−h))/2h bilden und mit deiner Schrittweite vergleichen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "mutates-input",
+          "then": "new_params muss ein neues Dictionary mit neuen Arrays sein; In-place-Updates zerstören den lr=0-Test."
+        },
+        {
+          "if": "loss-after-update",
+          "then": "loss beschreibt das Modell VOR dem Update — sonst stimmt die numerische Vergleichsrechnung nicht."
+        },
+        {
+          "if": "update-sign-flipped",
+          "then": "Abstieg: p ← p − lr · grad. Mit Plus steigt der Verlust und der 40-Schritte-Test fällt durch."
+        }
+      ],
+      "typicalErrors": [
+        "Eingabe-Dictionary in-place verändert",
+        "Verlust nach dem Update statt davor zurückgegeben",
+        "Update in Gradientenrichtung (Plus statt Minus)"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "sgd-momentum-step",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef momentum_step(params, grads, velocity, lr, momentum):\n    ...\n",
+        "tests": "params = {\"w\": np.array([1.0, -2.0]), \"b\": np.array([0.5])}\ngrads = {\"w\": np.array([2.0, -4.0]), \"b\": np.array([1.0])}\nvelocity = {\"w\": np.array([0.5, 1.0]), \"b\": np.array([0.0])}\nnew_params, new_velocity = momentum_step(params, grads, velocity, 0.1, 0.9)\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], [2.45, -3.1]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], [0.755, -1.69]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], [0.4]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [1.0, -2.0]) and np.array_equal(velocity[\"w\"], [0.5, 1.0]))\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef momentum_step(params, grads, velocity, lr, momentum):\n    new_velocity = {key: momentum * np.asarray(velocity[key], dtype=float) + np.asarray(grads[key], dtype=float) for key in params}\n    new_params = {key: np.asarray(params[key], dtype=float) - lr * new_velocity[key] for key in params}\n    return new_params, new_velocity\n"
+      },
+      "prompt": "Implementiere einen reinen Momentum-SGD-Schritt für Dictionaries aus NumPy-Arrays: $v_{neu}=\\mu v+g$ und $p_{neu}=p-lr\\,v_{neu}$.",
+      "fullSolution": "Für jeden Schlüssel wird zuerst die neue Geschwindigkeit aus altem Momentum und aktuellem Gradienten berechnet. Danach entsteht ein neues Parameter-Dictionary; weder Parameter noch alte Geschwindigkeiten werden verändert.",
+      "hints": [
+        "Berechne v neu und verwende genau dieses v für das Minus-Update.",
+        "Kopiere die Arrays durch die Rechnung; prüfe die Eingaben nach dem Aufruf unverändert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "momentum-omitted",
+          "then": "Für w gilt 0,9·[0,5,1]+[2,-4]=[2,45,-3,1]; der alte Geschwindigkeitswert ist nicht optional."
+        },
+        {
+          "if": "plus-update",
+          "then": "Mit lr=0,1 wird [1,-2] minus 0,1·[2,45,-3,1] zu [0,755,-1,69]."
+        },
+        {
+          "if": "input-mutated",
+          "then": "Der Test vergleicht params und velocity nach dem Aufruf mit ihren ursprünglichen Arrays; In-place-Schreiben wäre hier falsch."
+        }
+      ],
+      "typicalErrors": [
+        "Momentumterm nicht in die neue Geschwindigkeit aufgenommen",
+        "Gradientenupdate mit Plus statt Minus ausgeführt",
+        "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    }
+  ]
+}

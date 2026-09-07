@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Normaldichte",
+  "caption": "Ziehe μ und s: Du siehst, wie Lage und Streuung der Normalverteilung die Dichtekurve verändern.",
+  "boundingbox": [-6, 0.6, 8, -0.1],
+  "sliders": [
+    { "name": "mu", "label": "μ", "range": [-2, 3], "value": 0, "step": 0.1 },
+    { "name": "s", "label": "s", "range": [0.5, 2], "value": 1, "step": 0.1 }
+  ],
+  "objects": [
+    { "kind": "functiongraph", "expr": "exp(-(x-mu)^2/(2*s^2))/(s*sqrt(2*pi))", "color": "#294bd6" },
+    { "kind": "segment", "from": ["mu", 0], "to": ["mu", 0.6], "dash": true, "color": "#b72f2a" },
+    { "kind": "text", "at": [-5.5, -0.05], "text": "Mittelwert μ = {mu}", "color": "#b72f2a" }
+  ]
+}

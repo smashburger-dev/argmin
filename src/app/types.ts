@@ -48,7 +48,6 @@ export interface Milestone {
   estimatedMinutes: number;
   competencyIds: string[];
   lessonIds: string[];
-  exerciseDefinitionIds: string[];
   projectIds: string[];
   coverage: MilestoneCoverage[];
   releaseStatus: string;
@@ -65,12 +64,11 @@ export interface ExerciseSummary {
   referenceSolverId: string | null;
   competencyIds: string[];
   estimatedMinutes: number;
-  difficulty: number;
+  difficulty: number | string;
   deterministicSeed: number;
   masteryEligible: boolean;
   active: boolean;
   releaseStatus: string;
-  legacyWeekId: string | null;
   parameters: Record<string, unknown>;
   choices: Array<{ id: string; text: string; correct: boolean }>;
   expectedAnswer: Record<string, unknown>;
@@ -84,6 +82,10 @@ export interface ExerciseSummary {
   testedSeedCount: number;
   starterCode?: string;
   packages?: string[];
+  familyId?: string;
+  caseId?: string;
+  seed?: number;
+  seeded?: boolean;
 }
 
 export interface LessonBlock {
@@ -91,6 +93,36 @@ export interface LessonBlock {
   type: string;
   contentRef: string;
   html: string;
+  viz?: VisualizationSpec;
+  visualizationId?: string;
+}
+
+export type VisualizationExpr = number | string;
+export type VisualizationCoord = [VisualizationExpr, VisualizationExpr];
+export interface VisualizationSlider {
+  name: string;
+  range: [number, number];
+  value: number;
+  step?: number;
+  label?: string;
+}
+export type VisualizationObject =
+  | { kind: 'functiongraph'; expr: string; domain?: VisualizationCoord; label?: string; color?: string; dash?: boolean }
+  | { kind: 'point'; at: VisualizationCoord; label?: string; color?: string }
+  | { kind: 'arrow' | 'segment'; from: VisualizationCoord; to: VisualizationCoord; label?: string; color?: string; dash?: boolean }
+  | { kind: 'text'; at: VisualizationCoord; text: string; color?: string }
+  | { kind: 'polygon'; points: VisualizationCoord[]; color?: string }
+  | { kind: 'curve'; points: VisualizationCoord[]; color?: string; dash?: boolean };
+export interface VisualizationSpec {
+  schemaVersion: 1;
+  engine: 'jsxgraph';
+  title: string;
+  caption: string;
+  boundingbox: [number, number, number, number];
+  axis?: boolean;
+  keepAspectRatio?: boolean;
+  sliders?: VisualizationSlider[];
+  objects: VisualizationObject[];
 }
 
 export interface Lesson {
@@ -174,7 +206,6 @@ export interface SourceSummary {
   title: string;
   author: string;
   canonicalUrl: string;
-  localPath?: string;
   contentClass: string;
   license: string;
   attribution: string;
@@ -182,16 +213,6 @@ export interface SourceSummary {
   weeks: number[];
   extractionStatus: string;
   qaStatus: string;
-}
-
-export interface LegacyWeekSummary {
-  weekId: string;
-  number: number;
-  phaseId: string;
-  title: string;
-  detailed: boolean;
-  goals: string[];
-  learningUnits?: Array<Record<string, unknown>>;
 }
 
 export interface ExercisePlacement {
@@ -235,4 +256,10 @@ export interface CatalogData {
   exercises: ExerciseSummary[];
   explanations: ExplanationCard[];
   projects: ProjectDefinition[];
+}
+
+export interface VisualizationSummary {
+  visualizationId: string;
+  lessonId: string;
+  spec: VisualizationSpec;
 }

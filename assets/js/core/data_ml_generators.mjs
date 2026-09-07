@@ -265,6 +265,34 @@ export function genCvSpread(seed) {
   });
 }
 
+export function genSeedSpread(seed) {
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const context = pick(r, ['Textklassifikation', 'Defektvorhersage', 'Preisschätzung', 'Abbruchprognose']);
+    const runs = pick(r, [3, 5, 8]);
+    const unit = pick(r, ['percent', 'fraction']);
+    const draw = (rr) => Array.from({ length: runs }, () => randInt(rr, 55, 95));
+    const scores = until(r, draw, (values) => Math.max(...values) - Math.min(...values) >= 2);
+    const maximum = Math.max(...scores);
+    const minimum = Math.min(...scores);
+    const spread = maximum - minimum;
+    const renderedScores = unit === 'percent'
+      ? `${scores.join(' %, ')} %`
+      : scores.map((score) => (score / 100).toFixed(2).replace('.', ',')).join(', ');
+    const conversion = unit === 'fraction'
+      ? ` Als Anteile: ${(maximum / 100).toFixed(2).replace('.', ',')} = ${maximum} % und ${(minimum / 100).toFixed(2).replace('.', ',')} = ${minimum} %.`
+      : '';
+    return {
+      parameters: { context, runs, scores, unit },
+      expected: spread,
+      prompt: unit === 'percent'
+        ? `Dasselbe Modell wird mit ${runs} verschiedenen Seeds trainiert und liefert die Test-Accuracy-Werte ${renderedScores}. Wie groß ist die Seed-Spannweite (bester minus schlechtester Lauf) in Prozentpunkten?`
+        : `Dasselbe Modell wird mit ${runs} verschiedenen Seeds trainiert und liefert die Test-Accuracy-Werte ${renderedScores} (als Anteile). Wie groß ist die Seed-Spannweite in Prozentpunkten?`,
+      fullSolution: `Maximum = ${maximum} %, Minimum = ${minimum} %. Spannweite = ${spread} Prozentpunkte (Seed-Sensitivität; ein reproduzierbarer Lauf mit festem Seed hätte Spannweite 0).${conversion}`,
+    };
+  });
+}
+
 // --- W13: subgroup error analysis -------------------------------------------------
 
 export function genSubgroupGapPp(seed) {
@@ -370,21 +398,3 @@ export function genPcaVariancePercent(seed) {
     };
   });
 }
-
-// --- registry ------------------------------------------------------------------------
-
-export const DATA_ML_SEED_GENERATORS = {
-  genCompleteRows,
-  genDedupRows,
-  genConditionalCount,
-  genMseGradient,
-  genBaselineCorrect,
-  genMseFromResiduals,
-  genR2Share,
-  genConfusionCount,
-  genCvSpread,
-  genSubgroupGapPp,
-  genShrinkagePercent,
-  genEnsembleAccuracy,
-  genPcaVariancePercent,
-};
