@@ -16,12 +16,35 @@ export interface JournalEntry {
   errorType: string;
 }
 
+export interface LastAttempt {
+  definitionId: string;
+  occurredAt: string;
+}
+
+type AttemptRecord = {
+  definitionId?: string;
+  exerciseId?: string;
+  occurredAt?: string;
+  ts?: string;
+};
+
+function latestAttempt(attempts: AttemptRecord[]): ProgressSnapshot['lastAttempt'] {
+  return attempts.reduce<ProgressSnapshot['lastAttempt']>((latest, attempt) => {
+    const definitionId = attempt.definitionId || attempt.exerciseId;
+    const occurredAt = attempt.occurredAt || attempt.ts;
+    const occurredAtMs = occurredAt ? Date.parse(occurredAt) : Number.NaN;
+    if (!definitionId || !occurredAt || !Number.isFinite(occurredAtMs)) return latest;
+    return !latest || occurredAtMs > Date.parse(latest.occurredAt) ? { definitionId, occurredAt } : latest;
+  }, null);
+}
+
 /** Two retention timelines (ADR-0015): `dueReviews` is the task-review
  *  queue (one definition, nextDueAt from the expanding-slot scheduler),
  *  while `evidenceDueAt` is the aggregated competency freshness deadline
  *  from the EvidenceEngine (demonstrated → review_due after it lapses). */
 export interface ProgressSnapshot {
   attemptsCount: number;
+  lastAttempt: LastAttempt | null;
   dueReviews: DueReview[];
   scheduledReviewCount: number;
   journal: JournalEntry[];
@@ -34,6 +57,7 @@ export interface ProgressSnapshot {
 
 const emptySnapshot = (catalog: CatalogData): ProgressSnapshot => ({
   attemptsCount: 0,
+  lastAttempt: null,
   dueReviews: [],
   scheduledReviewCount: 0,
   journal: [],
@@ -60,6 +84,7 @@ export async function loadProgressSnapshot(catalog: CatalogData): Promise<Progre
     .filter((entry) => typeof entry.nextDueAt === 'string' && entry.nextDueAt <= nowIso)
     .sort((a, b) => a.nextDueAt.localeCompare(b.nextDueAt));
   const evidence = evaluated.evidenceByCompetency as Record<string, { state: EvidenceState; dueAt: string | null }>;
+  const lastAttempt = latestAttempt(attempts as AttemptRecord[]);
   // Report the slots the scheduler will actually use: an unvalidatable
   // stored list (descending, duplicates, > 52 weeks) is silently repaired
   // by resolveReviewParams — showing the raw stored value would claim a
@@ -67,6 +92,7 @@ export async function loadProgressSnapshot(catalog: CatalogData): Promise<Progre
   const activeSlots = resolveReviewParams(reviewParams).expandingSlotsWeeks;
   return {
     attemptsCount: attempts.length,
+    lastAttempt,
     dueReviews,
     scheduledReviewCount: Object.keys(evaluated.reviewsByDefinition).length,
     journal: journal as ProgressSnapshot['journal'],

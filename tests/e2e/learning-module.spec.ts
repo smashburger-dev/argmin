@@ -11,8 +11,26 @@ test('golden path 1: git module is reachable without a week route', async ({ pag
   await expect(page.getByRole('heading', { level: 1, name: 'Git als überprüfbares Arbeitsprotokoll' })).toBeVisible();
   await expect(page.getByText(`${gitModule.derivedMinutes} Min.`)).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Lektionen' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Frei üben' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben & Üben' })).toBeVisible();
+  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
+  await expect(page.getByRole('button', { name: 'Aufgaben & Üben' })).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('link', { name: 'Aufgabe öffnen' }).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Lektionen' }).click();
+  await expect(page.locator('#module-exercises')).toBeHidden();
+  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
   await page.getByRole('link', { name: /(?:Aufgabe|Variante) öffnen/ }).first().click();
   await expect(page).toHaveURL(/#\/(?:exercise|family)\//);
+});
+
+test('module panels switch between lessons and exercises', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Module panel behavior runs in Chromium.');
+  await page.goto('/index.html#/module/lm-git-basics');
+  const exercises = page.getByRole('button', { name: 'Aufgaben & Üben' });
+  await exercises.click();
+  await expect(exercises).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('link', { name: 'Aufgabe öffnen' }).first()).toBeVisible();
+  const lessons = page.getByRole('button', { name: 'Lektionen' });
+  await lessons.click();
+  await expect(lessons).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#module-exercises')).toBeHidden();
 });
