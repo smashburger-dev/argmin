@@ -91,7 +91,315 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "metric": "recall@10",
+            "a": 128,
+            "b": 256
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Ist das System insgesamt besser geeignet als die alte Version?“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Steigt recall@10 auf den 40 Fixtur-Queries, wenn die Chunkgröße von 128 auf 256 Zeichen steigt?“",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "„Wie fühlen sich Nutzende bei kürzeren Antworten im Vergleich zu langen?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Warum sind kleinere Chunks einfach besser für alle Anfragen?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Vier Formulierungen für ein Chunkgrößen-Experiment. Welche ist prüfbar (feste Metrik, fester Vergleich, falsifizierbar)?",
+          "fullSolution": "recall@10, 128 vs 256, Fixtur-Set. Die anderen sind vage, Gefühl oder Petitio."
+        },
+        {
+          "parameters": {
+            "metric": "MRR",
+            "a": "BM25",
+            "b": "TF-IDF"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Welcher Retriever fühlt sich moderner an?“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Ist die Suche einfach besser geworden?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Liegt MRR auf dem eingefrorenen Golden Set bei BM25 höher als bei TF-IDF, k=5 fest?“",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "„Warum ist BM25 grundsätzlich überlegen?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Retriever-Vergleich. Welche Forschungsfrage erfüllt das Protokoll?",
+          "fullSolution": "MRR, festes Set, zwei Systeme, widerlegbar."
+        },
+        {
+          "parameters": {
+            "metric": "FPR",
+            "a": 0.2,
+            "b": 0.4
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Ist der Detektor insgesamt reifer?“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Wie sicher fühlt sich das Team?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Warum sind höhere Schwellen immer besser?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Sinkt die False-Positive-Rate auf den 30 Benign-Fixtures, wenn der Schwellwert von 0,2 auf 0,4 steigt?“",
+              "correct": true
+            }
+          ],
+          "prompt": "Schwellwert-Studie. Welche Frage ist prüfbar?",
+          "fullSolution": "FPR, 30 Fixtures, 0,2 vs 0,4. Falsifizierbar, falls FPR nicht sinkt."
+        },
+        {
+          "parameters": {
+            "metric": "Hits@3",
+            "a": "deutsch",
+            "b": "englisch"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Unterscheidet sich Hits@3 auf 20 parallelen Queries zwischen deutschem und englischem Query-Text, Index unverändert?“",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "„Ist Mehrsprachigkeit insgesamt gelöst?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Wie angenehm ist Deutsch vs. Englisch?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Warum ist Deutsch einfach besser?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Welche Formulierung ist im Sinne des Protokolls prüfbar?",
+          "fullSolution": "Hits@3, 20 Paare, zwei Query-Sprachen. Kein Allsatz."
+        },
+        {
+          "parameters": {
+            "metric": "latency-p95",
+            "a": 200,
+            "b": 400
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Ist das System flüssiger geworden?“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Steigt p95-Latenz des Retrievals in Millisekunden, wenn die Chunkgröße von 200 auf 400 steigt, bei sonst gleichem Index?“",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "„Wie geduldig wirken Nutzende?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Warum sind große Chunks immer langsamer und trotzdem besser?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Vier Kandidaten. Welche Frage ist fest, vergleichend, falsifizierbar?",
+          "fullSolution": "p95, 200 vs 400. Gefühl und „immer besser“ fallen raus."
+        },
+        {
+          "parameters": {
+            "metric": "exact-match",
+            "a": "extractive",
+            "b": "template"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Welche Variante ist insgesamt geeigneter?“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Welche Antwortlänge fühlt sich richtiger an?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Ist Exact-Match auf 25 Fixtur-Antworten höher, wenn der Stub extractive Spans statt fester Templates nutzt?“",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "„Warum sind Templates einfach unterlegen?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Antwortformat-Experiment ohne echtes LLM. Prüfbare Frage?",
+          "fullSolution": "Exact-Match, 25 Fixtures, zwei Stub-Modi."
+        },
+        {
+          "parameters": {
+            "metric": "recall@5",
+            "a": "stopwords-an",
+            "b": "aus"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Wird die Suche dadurch besser?“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Empfinden Tester weniger Rauschen?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Warum müssen Stopwörter immer weg?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Ändert sich recall@5 auf dem Golden Set, wenn Stopwortfilter an- vs. ausgeschaltet wird, k=5 fest?“",
+              "correct": true
+            }
+          ],
+          "prompt": "Welche Forschungsfrage ist protokollkonform prüfbar?",
+          "fullSolution": "recall@5, ein Schalter, festes Set. „Besser“ ohne Metrik nicht."
+        },
+        {
+          "parameters": {
+            "metric": "coverage",
+            "a": 5,
+            "b": 10
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Steigt der Anteil Queries mit mindestens einem Goldtreffer (coverage@k), wenn k von 5 auf 10 steigt?“",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "„Ist das System insgesamt besser geeignet als die alte Version?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Wie fühlen sich Nutzende bei mehr Treffern?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Warum sind größere k einfach besser für alle Anfragen?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Vier Formulierungen. Welche ist prüfbar?",
+          "fullSolution": "coverage@k, k=5 vs 10. Vage Gesamturteile und Petitio sind es nicht."
+        },
+        {
+          "parameters": {
+            "metric": "nDCG@5",
+            "a": 150,
+            "b": 300
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Steigt nDCG@5 auf den 40 Fixtur-Queries, wenn die Chunkgröße von 150 auf 300 Zeichen steigt?“",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "„Ist das Retrieval insgesamt überzeugender geworden?“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Wie zufrieden wirken Tester mit längeren Chunks?“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Warum sind 300-Zeichen-Chunks einfach besser für alle Anfragen?“",
+              "correct": false
+            }
+          ],
+          "prompt": "Für denselben RAG-Prototypen kursieren vier Forschungsfragen. Welche erfüllt feste Metrik, festen Vergleich und Falsifizierbarkeit?",
+          "fullSolution": "nDCG@5, 150 vs 300, festes Set. Vage Gesamturteile und Petitio sind nicht prüfbar."
+        }
+      ]
     }
   ]
 }

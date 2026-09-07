@@ -91,7 +91,324 @@
         }
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "files": [
+              "golden.json",
+              "attacks.json",
+              "exp.toml"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur den eigenen Quellcode einfrieren; Daten und Konfiguration dürfen weiterlaufen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Nichts einfrieren — Schwellen bei jedem Lauf neu.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur das README einfrieren.",
+              "correct": false
+            }
+          ],
+          "prompt": "Vor dem ersten Pipeline-Commit: Welche Artefakte gehören in den Scope-Freeze (Hashes im Manifest)?",
+          "fullSolution": "Messvertrag: Golden, Fixtures, Config, Tests, Prototypkern. Nicht nur Code, nicht nur README."
+        },
+        {
+          "parameters": {
+            "files": [
+              "qrels.json",
+              "tools.yaml"
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur src/ pinnen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Erwartungen jedes Mal neu aus dem letzten Score ableiten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "README.md als einziger Vertrag.",
+              "correct": false
+            }
+          ],
+          "prompt": "Was muss im Manifest stehen, bevor ihr retrieve.py anfasst?",
+          "fullSolution": "Die Dateien, gegen die „besser“ definiert ist, plus Tests und Kern. Code allein reicht nicht."
+        },
+        {
+          "parameters": {
+            "files": [
+              "golden/",
+              "tests/test_runner.py"
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur Python-Dateien.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nichts; Schwellen aus dem aktuellen Lauf.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur die Doku.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            }
+          ],
+          "prompt": "Capstone-Kickoff: Freeze-Inhalt vor Implementierung — was gehört hinein?",
+          "fullSolution": "Golden, Fixtures, Experimentconfig, Tests, Prototyp. Änderung = neue Version."
+        },
+        {
+          "parameters": {
+            "files": [
+              "manifest+sha256"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nur den Quellcode; Daten dürfen wandern.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nichts einfrieren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur README, weil prüfbar genug.",
+              "correct": false
+            }
+          ],
+          "prompt": "assert_frozen() soll Abweichungen hörbar machen. Was muss dafür vorher im Scope-Freeze stehen?",
+          "fullSolution": "Alles, was die Messung definiert, mit sha256 — nicht bloß eine Prosa-README."
+        },
+        {
+          "parameters": {
+            "files": [
+              "benign.json",
+              "attack.json",
+              "pyproject-eval"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur den eigenen Quellcode einfrieren; Daten und Konfiguration dürfen weiterlaufen, damit man während der Entwicklung nachjustieren kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Nichts einfrieren — Erwartungen und Schwellen legt man bei jedem Lauf neu fest.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur das README einfrieren, weil es als Dokument den Vertrag bereits vollständig prüfbar macht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bevor die Detektor-Pipeline gebaut wird: Was gehört in den Freeze?",
+          "fullSolution": "Benign/Attack/Config/Tests/Kern. Nachjustieren der Daten ohne neue Version wäre bewegliches Ziel."
+        },
+        {
+          "parameters": {
+            "files": [
+              "eval.yaml",
+              "golden.csv"
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur app.py.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Schwellen live aus Accuracy ableiten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "README-Hash genügt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Startschuss Implementierung. Scope-Freeze umfasst …?",
+          "fullSolution": "Die eval-steuernden Dateien plus Tests plus Prototypkern, versioniert."
+        },
+        {
+          "parameters": {
+            "files": [
+              "fixtures/",
+              "config/",
+              "tests/"
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur Git-History des Codes.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Kein Freeze bis nach der Demo.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur CONTRIBUTING.md.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            }
+          ],
+          "prompt": "Was muss vor Pipeline-Code im Manifest hängen, damit später assert_frozen() Sinn hat?",
+          "fullSolution": "Fixtures, Config, Tests, Kern — nicht erst nach der Demo."
+        },
+        {
+          "parameters": {
+            "files": [
+              "prototype-lock"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nur Quellcode, Daten offen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nichts.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur README.",
+              "correct": false
+            }
+          ],
+          "prompt": "Der GenAI-Kern soll gepinnt sein. Reicht das allein als Scope-Freeze vor der Implementierung?",
+          "fullSolution": "Nein — ohne Golden/Config/Tests/Fixtures ist „besser“ undefiniert. Der Freeze ist die ganze Menge, inklusive Kern."
+        },
+        {
+          "parameters": {
+            "files": [
+              "capstone-start"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Nur den eigenen Quellcode einfrieren; Daten und Konfiguration dürfen weiterlaufen, damit man während der Entwicklung nachjustieren kann.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Nichts einfrieren — Erwartungen und Schwellen legt man bei jedem Lauf neu fest, je nachdem, was die Pipeline gerade hergibt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur das README einfrieren, weil es als Dokument den Vertrag bereits vollständig prüfbar macht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Capstone-Start: Was gehört in den Scope-Freeze, bevor die erste Stage implementiert wird?",
+          "fullSolution": "Wie die Basisfrage, Zeitpunkt „erste Stage“. Inhalt der Menge bleibt."
+        }
+      ]
     }
   ]
 }

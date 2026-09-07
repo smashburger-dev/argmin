@@ -91,7 +91,297 @@
         }
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "artifact": "screencast"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mastery-Nachweis: Der Screencast ersetzt die Teiltests, weil man das Ergebnis sieht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Gar nichts — Videos zählen nie und können entfallen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Sie ersetzen die Vertragsabnahme, sobald alle Phasen im Film vorkommen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Zum Capstone-Ende liegt ein 4-Minuten-Screencast der Happy Path plus eine Retrospektive. Was belegen sie hier?",
+          "fullSolution": "Arbeitsevidenz, integrity self-reported. Mastery nur aus Teiltests mit Evidenzregeln."
+        },
+        {
+          "parameters": {
+            "artifact": "folien"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Folien sind der Mastery-Beweis.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Folien sind wertlos und sollen entfallen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Wer alle Phasen zeigt, hat die Verträge abgenommen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Stakeholder-Folien und Retro sind poliert. Was gilt auf dieser Plattform?",
+          "fullSolution": "Work Evidence, kein Ersatz für deterministische Tests."
+        },
+        {
+          "parameters": {
+            "artifact": "live-notebook"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Live-Zellen ersetzen Runner-Reports.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Demos dürfen übersprungen werden, sie zählen nichts.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Vorführung nimmt Manifest und Tests ab.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            }
+          ],
+          "prompt": "In der Abschlussrunde läuft ein Notebook live, die Retro ist ehrlich. Was belegen Demo und Retro?",
+          "fullSolution": "Dokumentierte Arbeit. Mastery bleibt an geprüften Instanzen."
+        },
+        {
+          "parameters": {
+            "artifact": "gif"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Mastery, weil das GIF den Erfolg zeigt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nichts, GIFs sind unzulässig.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "GIFs ersetzen assert_frozen().",
+              "correct": false
+            }
+          ],
+          "prompt": "README zeigt ein UI-GIF, die Retrospektive listet Grenzen. Was belegen sie?",
+          "fullSolution": "Work Evidence. Self-reported, keine zwei unabhängigen Tester-Treffer."
+        },
+        {
+          "parameters": {
+            "artifact": "messeposter"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mastery-Nachweis durch öffentliche Präsentation.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Poster zählen in keiner Form.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Poster ersetzen Golden-Set-Hashes.",
+              "correct": false
+            }
+          ],
+          "prompt": "Capstone-Poster und Retro sind fertig. Was belegen sie in dieser Plattform?",
+          "fullSolution": "Arbeit und Grenzen, nicht Mastery."
+        },
+        {
+          "parameters": {
+            "artifact": "muendliche-retro"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mündliche Retro = Mastery.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Retro ohne Wert, weglassen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Retro ersetzt die 14-Tage-Regel.",
+              "correct": false
+            }
+          ],
+          "prompt": "Die Demo überzeugt, die Retro ist klar. Welchen Status haben beide?",
+          "fullSolution": "Work Evidence. Mastery braucht qualifizierte Testhits."
+        },
+        {
+          "parameters": {
+            "artifact": "architekturskizze"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Skizze beweist Mastery der Pipeline.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Skizzen zählen nicht und stören nur.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Skizze nimmt den Runner ab.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            }
+          ],
+          "prompt": "Architekturskizze plus Demo-Video sind stark. Was belegen sie hier?",
+          "fullSolution": "Prozessdokumentation, kein deterministischer Nachweis."
+        },
+        {
+          "parameters": {
+            "artifact": "meeting"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Wer im Meeting überzeugt, hat Mastery.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Demos sind verboten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Meeting ersetzt Teiltests.",
+              "correct": false
+            }
+          ],
+          "prompt": "Im Abschlussmeeting wirkt alles rund: Demo und Retro. Was folgt für den Evidenzstatus?",
+          "fullSolution": "Self-reported work evidence. Tests bleiben maßgeblich."
+        },
+        {
+          "parameters": {
+            "artifact": "capstone-demo"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Mastery-Nachweis: Eine überzeugende Demo ersetzt die Teiltests, weil sie das Ergebnis live zeigt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Gar nichts — Demo und Retrospektive zählen in keiner Form und können übersprungen werden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Sie ersetzen die Abnahme der Verträge, wenn die Präsentation alle Phasen zeigt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Capstone-Abschluss: Demo-Walkthrough und Retrospektive sind fertig und wirken überzeugend. Was belegen sie in dieser Plattform?",
+          "fullSolution": "Work Evidence, nicht Mastery — dieselbe Regel wie in der Basisfrage."
+        }
+      ]
     },
     {
       "caseId": "demo-vs-evidence",
@@ -161,7 +451,297 @@
         "correctChoice": "a"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "claim": "produktionsreif"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Der Regel-Detektor blockiert die sieben gelieferten Angriffs-Fixtures; Benign-Fälle bleiben frei.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Der Prototyp ist produktionsreif.“",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "„Zwei der acht Golden-Set-Queries treffen kein Dokument — das ist eine bekannte lexikalische Lücke.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Der Runner-Report ist selbstberichtete Arbeitsevidenz und kein Zertifikat.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Overclaim erkennen: Welche README-Zeile über den eigenen Fixtur-Prototyp ist unzulässig übertrieben?",
+          "fullSolution": "„produktionsreif“ liegt außerhalb des gemessenen Rahmens. Die anderen Sätze sind begrenzt und ehrlich."
+        },
+        {
+          "parameters": {
+            "claim": "halluziniert nie"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Recall@5 auf den 40 Golden-Queries liegt bei 0,62.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Zwei Queries bleiben ohne Treffer.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Das System halluziniert nie.“",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "„Der Report ist kein Zertifikat.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Welche Aussage über den RAG-Stub ist ein Overclaim?",
+          "fullSolution": "Absolute Sicherheit („nie“) ist unbelegt. Gemessene Recall-Zahlen sind der Rahmen."
+        },
+        {
+          "parameters": {
+            "claim": "alle angriffe"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Sieben gelieferte Fixtures werden blockiert.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Bekannte lexikalische Lücke bei zwei Queries.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Arbeitsevidenz, kein Zertifikat.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Getestet gegen alle Prompt-Injection-Angriffe.“",
+              "correct": true
+            }
+          ],
+          "prompt": "README-Entwurf. Welche Zeile fängt der Overclaim-Detektor zu Recht?",
+          "fullSolution": "„alle Angriffe“ ist Allquantor ohne Beleg. Fixtures ≠ Universum."
+        },
+        {
+          "parameters": {
+            "claim": "enterprise-zertifiziert"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Der Prototyp ist enterprise-ready und zertifiziert.“",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "„Der Detektor trifft die gelieferten Fixtures.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Zwei Queries ohne Treffer sind dokumentiert.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Runner-Report ist self-reported.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Welche Prototyp-Aussage ist unzulässige Übertreibung?",
+          "fullSolution": "Zertifikat/Enterprise ist nicht aus fünf Dokumenten ableitbar."
+        },
+        {
+          "parameters": {
+            "claim": "findet jedes dokument"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Recall@5 = 0,70 auf dem eingefrorenen Golden Set.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Der Retriever findet jedes relevante Dokument.“",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "„Zwei Misses sind als Lücke benannt.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Kein Zertifikat, nur Runner-Output.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Overclaim: welche Formulierung verspricht mehr, als das Golden Set trägt?",
+          "fullSolution": "„jedes relevante Dokument“ ist Allaussage. Recall auf einem Set ist der ehrliche Rahmen."
+        },
+        {
+          "parameters": {
+            "claim": "ersetzt audit"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Fixtures A–G werden vom Regel-Detektor gehalten.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Lücke: zwei Queries ohne Hit.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Die Pipeline ersetzt ein Security-Audit.“",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "„integrity: self-reported.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Welche README-Aussage ist Overclaim?",
+          "fullSolution": "Ein Fixtur-Detektor ist kein Audit."
+        },
+        {
+          "parameters": {
+            "claim": "keine grenzen"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Sieben Fixtures blockiert, Benign frei.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Zwei Golden-Queries ohne Treffer.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Report ist Arbeitsevidenz.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Es gibt keine bekannten Grenzen.“",
+              "correct": true
+            }
+          ],
+          "prompt": "Welche Zeile ist die unzulässige Übertreibung?",
+          "fullSolution": "Grenzen zu leugnen ist Overclaim; sie zu nennen ist ehrlich."
+        },
+        {
+          "parameters": {
+            "claim": "100-prozent-sicher"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Der Prototyp ist 100 % sicher gegen Prompt-Injection.“",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "„Der Regel-Detektor blockiert die gelieferten Angriffs-Fixtures.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Zwei Queries treffen kein Dokument — dokumentierte Lücke.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "„Der Runner-Report ist kein Zertifikat.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Overclaim erkennen: welche Aussage über den eigenen Prototyp ist unzulässig?",
+          "fullSolution": "Prozent-Sicherheit aus Fixtures ist unbelegt — nah am Basisbeispiel, andere Zahl/Formulierung."
+        },
+        {
+          "parameters": {
+            "claim": "sicher-gegen-injection"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "„Sieben Angriffs-Fixtures werden regelbasiert blockiert; Benign-Fälle bleiben frei.“",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "„Zwei der acht Golden-Set-Queries treffen kein Dokument — bekannte lexikalische Lücke.“",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "„Unser Bot ist sicher gegen Prompt-Injection.“",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "„Der Runner-Report ist selbstberichtete Arbeitsevidenz und kein Zertifikat.“",
+              "correct": false
+            }
+          ],
+          "prompt": "Vier README-Kandidaten. Welche ist der Overclaim über den Fixtur-Prototyp?",
+          "fullSolution": "Unqualifiziertes „sicher gegen“ wie in der Basisfrage, anderer Satzbau. Belegte Fixture-Sätze bleiben ehrlich."
+        }
+      ]
     }
   ]
 }
