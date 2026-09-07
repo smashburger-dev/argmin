@@ -105,6 +105,30 @@ function resolveCaseId(family, seed, caseId) {
 // Richtung bei ganzen Zahlen, Parsons-Erstzeile, Trace-Zeilenzeiger.
 // Null, wenn nichts ableitbar ist. Offenlegung läuft nicht hierüber,
 // sondern als solution-revealed-Ereignis in der Ansicht.
+const hintForChoice = ({ choices }) => {
+  if (!Array.isArray(choices)) return undefined;
+  const wrong = choices.find((choice) => !choice.correct);
+  return wrong ? `„${wrong.text}“ scheidet aus.` : null;
+};
+const hintForNumeric = ({ expectedAnswer }, { answer, correct }) => {
+  if (!(expectedAnswer && expectedAnswer.kind === 'integer' && correct === false)) return undefined;
+  const want = expectedAnswer.value;
+  const got = Number(answer);
+  if (Number.isFinite(got) && got !== want) return got < want ? 'Gesucht ist eine größere Zahl.' : 'Gesucht ist eine kleinere Zahl.';
+  return null;
+};
+const hintForParsons = ({ parameters, expectedAnswer }, { correct }) => {
+  if (!(expectedAnswer && Array.isArray(expectedAnswer.solutionOrder) && correct === false)) return undefined;
+  const fragments = parameters && Array.isArray(parameters.fragments) ? parameters.fragments : [];
+  const first = fragments.find((fragment) => fragment && fragment.id === expectedAnswer.solutionOrder[0]);
+  return first ? `Beginne mit: „${first.text}“.` : null;
+};
+const ACTIVITY_HINTS = {
+  'single-choice': hintForChoice,
+  numeric: hintForNumeric,
+  parsons: hintForParsons,
+};
+
 /**
  * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown }} instance
  * @param {{ level?: number, answer?: unknown, correct?: boolean | null, firstBadRow?: number | null }} context
@@ -115,21 +139,11 @@ export function familyHint(
 ) {
   if (level === 1) return typeof summary === 'string' && summary ? summary : null;
   if (level !== 2) return null;
-  if (activityType === 'single-choice' && Array.isArray(choices)) {
-    const wrong = choices.find((choice) => !choice.correct);
-    return wrong ? `„${wrong.text}“ scheidet aus.` : null;
-  }
-  if (activityType === 'numeric' && expectedAnswer && expectedAnswer.kind === 'integer' && correct === false) {
-    const want = expectedAnswer.value;
-    const got = Number(answer);
-    if (Number.isFinite(got) && got !== want) return got < want ? 'Gesucht ist eine größere Zahl.' : 'Gesucht ist eine kleinere Zahl.';
-    return null;
-  }
-  if (activityType === 'parsons' && expectedAnswer && Array.isArray(expectedAnswer.solutionOrder) && correct === false) {
-    const fragments = parameters && Array.isArray(parameters.fragments) ? parameters.fragments : [];
-    const first = fragments.find((fragment) => fragment && fragment.id === expectedAnswer.solutionOrder[0]);
-    return first ? `Beginne mit: „${first.text}“.` : null;
-  }
+  const activityHint = ACTIVITY_HINTS[activityType]?.(
+    { choices, parameters, expectedAnswer },
+    { answer, correct },
+  );
+  if (activityHint !== undefined) return activityHint;
   if (traceTable && Number.isInteger(firstBadRow) && firstBadRow >= 0) {
     return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
   }

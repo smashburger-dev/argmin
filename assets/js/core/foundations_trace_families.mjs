@@ -62,135 +62,124 @@ function assignmentStateNumbers(caseId, parameters) {
   return [parameters.n0, parameters.k1, parameters.f1, parameters.g1];
 }
 
+const acceptsReassignIntro = (parameters) => maxAbs(assignmentStateNumbers('reassign-two-variables-print', parameters)) <= 6;
+const acceptsReassignStretch = (parameters) => hasNegative(assignmentStateNumbers('reassign-two-variables-print', parameters));
+const acceptsReassignChallenge = (parameters) => {
+  const numbers = assignmentStateNumbers('reassign-two-variables-print', parameters);
+  return hasNegative(numbers) && maxAbs(numbers) >= 8;
+};
+const acceptsChainIntro = (parameters) => maxAbs(assignmentStateNumbers('chain3-overwrite-print', parameters)) <= 6;
+const acceptsChainStretch = (parameters) => hasNegative(assignmentStateNumbers('chain3-overwrite-print', parameters));
+const acceptsChainChallenge = (parameters) => {
+  const numbers = assignmentStateNumbers('chain3-overwrite-print', parameters);
+  return hasNegative(numbers) && maxAbs(numbers) >= 8;
+};
+const acceptsAccumulateIntro = (parameters) => maxAbs(assignmentStateNumbers('accumulate-reassign-print', parameters)) <= 6;
+const acceptsAccumulateStretch = (parameters) => hasNegative(assignmentStateNumbers('accumulate-reassign-print', parameters));
+const acceptsAccumulateChallenge = (parameters) => {
+  const numbers = assignmentStateNumbers('accumulate-reassign-print', parameters);
+  return hasNegative(numbers) && maxAbs(numbers) >= 8;
+};
+const acceptsSliceIntro = (parameters) => parameters.b - parameters.a <= 3;
+const acceptsSliceStretch = (parameters) => parameters.a >= 3;
+const acceptsSliceChallenge = (parameters) => parameters.b - parameters.a >= 5;
+const acceptsJoinIntro = (parameters) => parameters.j - parameters.i === 2;
+const acceptsJoinStretch = (parameters) => parameters.j - parameters.i >= 3;
+const acceptsJoinChallenge = (parameters) => parameters.i === 0 && parameters.j === parameters.parts.length;
+const acceptsComprehensionIntro = (parameters) => parameters.threshold <= -1 && parameters.factor === 2;
+const acceptsComprehensionStretch = (parameters) => parameters.threshold >= 1;
+const acceptsComprehensionChallenge = (parameters) => parameters.factor >= 3 && parameters.threshold >= 0;
+const acceptsTransformIntro = (parameters) => parameters.mode === 0;
+const acceptsTransformStretch = (parameters) => parameters.mode === 1;
+const acceptsTransformChallenge = (parameters) => parameters.mode === 1 && parameters.word.length >= 12;
+const ASSIGNMENT_PROFILE_PREDICATES = {
+  'reassign-two-variables-print': { intro: acceptsReassignIntro, stretch: acceptsReassignStretch, challenge: acceptsReassignChallenge },
+  'chain3-overwrite-print': { intro: acceptsChainIntro, stretch: acceptsChainStretch, challenge: acceptsChainChallenge },
+  'accumulate-reassign-print': { intro: acceptsAccumulateIntro, stretch: acceptsAccumulateStretch, challenge: acceptsAccumulateChallenge },
+  'slice-predict-output': { intro: acceptsSliceIntro, stretch: acceptsSliceStretch, challenge: acceptsSliceChallenge },
+  'join-split-predict': { intro: acceptsJoinIntro, stretch: acceptsJoinStretch, challenge: acceptsJoinChallenge },
+  'comprehension-predict': { intro: acceptsComprehensionIntro, stretch: acceptsComprehensionStretch, challenge: acceptsComprehensionChallenge },
+  'method-chain-transform': { intro: acceptsTransformIntro, stretch: acceptsTransformStretch, challenge: acceptsTransformChallenge },
+};
+
 function assignmentProfileAccepts(caseId, difficulty) {
   if (difficulty === 'core') return null;
-  if (ASSIGNMENT_STATE_SHAPES[caseId]) {
-    if (difficulty === 'intro') {
-      return (parameters) => maxAbs(assignmentStateNumbers(caseId, parameters)) <= 6;
-    }
-    if (difficulty === 'stretch') {
-      return (parameters) => hasNegative(assignmentStateNumbers(caseId, parameters));
-    }
-    return (parameters) => {
-      const numbers = assignmentStateNumbers(caseId, parameters);
-      return hasNegative(numbers) && maxAbs(numbers) >= 8;
-    };
-  }
-  if (caseId === 'slice-predict-output') {
-    if (difficulty === 'intro') return (parameters) => parameters.b - parameters.a <= 3;
-    if (difficulty === 'stretch') return (parameters) => parameters.a >= 3;
-    return (parameters) => parameters.b - parameters.a >= 5;
-  }
-  if (caseId === 'join-split-predict') {
-    if (difficulty === 'intro') return (parameters) => parameters.j - parameters.i === 2;
-    if (difficulty === 'stretch') return (parameters) => parameters.j - parameters.i >= 3;
-    return (parameters) => parameters.i === 0 && parameters.j === parameters.parts.length;
-  }
-  if (caseId === 'comprehension-predict') {
-    if (difficulty === 'intro') return (parameters) => parameters.threshold <= -1 && parameters.factor === 2;
-    if (difficulty === 'stretch') return (parameters) => parameters.threshold >= 1;
-    return (parameters) => parameters.factor >= 3 && parameters.threshold >= 0;
-  }
-  if (difficulty === 'intro') return (parameters) => parameters.mode === 0;
-  if (difficulty === 'stretch') return (parameters) => parameters.mode === 1;
-  return (parameters) => parameters.mode === 1 && parameters.word.length >= 12;
+  const predicates = ASSIGNMENT_PROFILE_PREDICATES[caseId]
+    || { intro: acceptsTransformIntro, stretch: acceptsTransformStretch, challenge: acceptsTransformChallenge };
+  return predicates[difficulty] || predicates.challenge;
 }
+
+const TRACE_ASSIGNMENT_STATIC_KEYS = {
+  'gradient-loop-two-updates': 'output',
+  'tree-majority-vote-trace': 'kind',
+  'rng-stream-reseed-trace': 'output',
+  'manual-backward-step-trace': 'kind',
+  'fixed-dropout-mask-trace': 'output',
+  'stable-softmax-rows-trace': 'output',
+  'char-encode-roundtrip-trace': 'output',
+  'freeze-param-filter-trace': 'output',
+  'absolute-vs-relative-gain-trace': 'kind',
+  'metric-name-normalize-trace': 'output',
+  'stage-runner-error-states': 'kind',
+  'column-picture-trace': 'kind',
+  'overclaim-scanner-trace': 'output',
+  'card-check-variable-trace': 'kind',
+  'rpn-priority-trace': 'kind',
+};
+
+const solveAssignmentReassign = (parameters) => {
+  const b = parameters.a0 + parameters.k1;
+  const a = b - parameters.k2;
+  return { output: `${a} ${b}` };
+};
+const solveAssignmentChain = (parameters) => {
+  const y = parameters.x0 * parameters.k1;
+  const z = y - parameters.x0;
+  const x = z + parameters.k2;
+  return { output: `${x} ${y} ${z}` };
+};
+const solveAssignmentAccumulate = (parameters) => {
+  const n1 = parameters.n0 + parameters.k1;
+  const m = n1 * parameters.f1;
+  const n = m - parameters.g1;
+  return { output: `${n} ${m}` };
+};
+const solveAssignmentSlice = (parameters) => ({ output: parameters.word.slice(parameters.a, parameters.b) });
+const solveAssignmentJoin = (parameters) => ({ output: parameters.parts.slice(parameters.i, parameters.j).join('-') });
+const solveAssignmentComprehension = (parameters) => {
+  const out = parameters.nums
+    .filter((n) => n > parameters.threshold)
+    .map((n) => n * parameters.factor);
+  return { output: `[${out.join(', ')}]` };
+};
+const solveAssignmentTransform = (parameters) => {
+  const clean = parameters.word.trim();
+  const out = parameters.mode === 0
+    ? clean.toUpperCase()
+    : clean.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+  return { output: out };
+};
+const TRACE_ASSIGNMENT_SOLVERS = {
+  reassign: solveAssignmentReassign,
+  chain3: solveAssignmentChain,
+  accumulate: solveAssignmentAccumulate,
+  slice: solveAssignmentSlice,
+  join: solveAssignmentJoin,
+  comprehension: solveAssignmentComprehension,
+  transform: solveAssignmentTransform,
+};
 
 /** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
 export function solveTraceAssignment(parameters) {
-  if (parameters.caseId === 'gradient-loop-two-updates') {
-    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
-  }
-  if (parameters.caseId === 'tree-majority-vote-trace') {
-    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
-  }
-  if (parameters.caseId === 'rng-stream-reseed-trace') {
-    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
-  }
-  if (parameters.caseId === 'manual-backward-step-trace') {
-    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
-  }
-  if (parameters.caseId === 'fixed-dropout-mask-trace') {
-    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
-  }
-  if (
-    ['stable-softmax-rows-trace', 'char-encode-roundtrip-trace', 'freeze-param-filter-trace']
-      .includes(parameters.caseId)
-  ) {
-    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
-  }
-  if (parameters.caseId === 'absolute-vs-relative-gain-trace') {
-    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
-  }
-  if (parameters.caseId === 'metric-name-normalize-trace') {
-    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
-  }
-  if (parameters.caseId === 'stage-runner-error-states') {
-    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
-  }
-  if (parameters.caseId === 'column-picture-trace') {
-    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
-  }
-  if (parameters.caseId === 'overclaim-scanner-trace') {
-    return { output: staticCaseBody('trace-assignment-state', parameters.caseId).expected.output };
-  }
-  if (parameters.caseId === 'card-check-variable-trace' || parameters.caseId === 'rpn-priority-trace') {
-    return { kind: staticCaseBody('trace-assignment-state', parameters.caseId).expected.kind };
-  }
-  const { shape } = parameters;
-  if (shape === 'reassign') {
-    const b = parameters.a0 + parameters.k1;
-    const a = b - parameters.k2;
-    return { output: `${a} ${b}` };
-  }
-  if (shape === 'chain3') {
-    const y = parameters.x0 * parameters.k1;
-    const z = y - parameters.x0;
-    const x = z + parameters.k2;
-    return { output: `${x} ${y} ${z}` };
-  }
-  if (shape === 'accumulate') {
-    const n1 = parameters.n0 + parameters.k1;
-    const m = n1 * parameters.f1;
-    const n = m - parameters.g1;
-    return { output: `${n} ${m}` };
-  }
-  if (shape === 'slice') return { output: parameters.word.slice(parameters.a, parameters.b) };
-  if (shape === 'join') return { output: parameters.parts.slice(parameters.i, parameters.j).join('-') };
-  if (shape === 'comprehension') {
-    const out = parameters.nums
-      .filter((n) => n > parameters.threshold)
-      .map((n) => n * parameters.factor);
-    return { output: `[${out.join(', ')}]` };
-  }
-  if (shape === 'transform') {
-    const clean = parameters.word.trim();
-    const out = parameters.mode === 0
-      ? clean.toUpperCase()
-      : clean.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
-    return { output: out };
-  }
-  throw new Error(`trace-assignment-state: unbekannte Form ${shape}`);
+  const staticKey = TRACE_ASSIGNMENT_STATIC_KEYS[parameters.caseId];
+  if (staticKey) return { [staticKey]: staticCaseBody('trace-assignment-state', parameters.caseId).expected[staticKey] };
+  const solver = TRACE_ASSIGNMENT_SOLVERS[parameters.shape];
+  if (solver) return solver(parameters);
+  throw new Error(`trace-assignment-state: unbekannte Form ${parameters.shape}`);
 }
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
-  if (
-    caseId === 'gradient-loop-two-updates'
-    || caseId === 'tree-majority-vote-trace'
-    || caseId === 'rng-stream-reseed-trace'
-    || caseId === 'manual-backward-step-trace'
-    || caseId === 'fixed-dropout-mask-trace'
-    || caseId === 'stable-softmax-rows-trace'
-    || caseId === 'char-encode-roundtrip-trace'
-    || caseId === 'freeze-param-filter-trace'
-    || caseId === 'absolute-vs-relative-gain-trace'
-    || caseId === 'card-check-variable-trace'
-    || caseId === 'rpn-priority-trace'
-    || caseId === 'metric-name-normalize-trace'
-    || caseId === 'stage-runner-error-states'
-    || caseId === 'overclaim-scanner-trace'
-    || caseId === 'column-picture-trace'
-  ) {
+  if (TRACE_ASSIGNMENT_STATIC_KEYS[caseId]) {
     const body = staticCaseBody('trace-assignment-state', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
@@ -752,40 +741,40 @@ function exceptionCodeOf(prompt) {
 }
 
 /** Unabhängiger Solver: korrekter Antworttext aus Fall und Code. */
+const solveExceptionValueError = () => ({ correctText: 'ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' });
+const solveExceptionTypeConcat = () => ({ correctText: 'TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' });
+const solveExceptionKeyError = () => ({ correctText: 'KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' });
+const solveExceptionFileNotFound = () => ({ correctText: 'FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' });
+const solveExceptionIndexError = () => ({ correctText: 'IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' });
+const solveExceptionTypeLen = () => ({ correctText: 'TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' });
+const solveExceptionNoErrorInt = (parameters) => {
+  const value = String(parameters.code).match(/"(\d+)"/)?.[1];
+  if (value === undefined) throw new Error('trace-exception-path: kein Int-Literal im Code');
+  return { correctText: `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.` };
+};
+const solveExceptionNoErrorMul = (parameters) => {
+  const digits = String(parameters.code).match(/"(\d+)"/)?.[1];
+  const times = Number(String(parameters.code).split('*')[1]);
+  if (digits === undefined || !Number.isSafeInteger(times)) {
+    throw new Error('trace-exception-path: kein String-Multiplikand im Code');
+  }
+  return { correctText: `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".` };
+};
+const TRACE_EXCEPTION_SOLVERS = {
+  valueerror: solveExceptionValueError,
+  'typeerror-concat': solveExceptionTypeConcat,
+  keyerror: solveExceptionKeyError,
+  filenotfound: solveExceptionFileNotFound,
+  indexerror: solveExceptionIndexError,
+  'typeerror-len': solveExceptionTypeLen,
+  'no-error-int': solveExceptionNoErrorInt,
+  'no-error-mul': solveExceptionNoErrorMul,
+};
+
 export function solveTraceException(parameters) {
-  const { caseId } = parameters;
-  if (caseId === 'valueerror') {
-    return { correctText: 'ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' };
-  }
-  if (caseId === 'typeerror-concat') {
-    return { correctText: 'TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' };
-  }
-  if (caseId === 'keyerror') {
-    return { correctText: 'KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' };
-  }
-  if (caseId === 'filenotfound') {
-    return { correctText: 'FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' };
-  }
-  if (caseId === 'indexerror') {
-    return { correctText: 'IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' };
-  }
-  if (caseId === 'typeerror-len') {
-    return { correctText: 'TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' };
-  }
-  if (caseId === 'no-error-int') {
-    const value = String(parameters.code).match(/"(\d+)"/)?.[1];
-    if (value === undefined) throw new Error('trace-exception-path: kein Int-Literal im Code');
-    return { correctText: `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.` };
-  }
-  if (caseId === 'no-error-mul') {
-    const digits = String(parameters.code).match(/"(\d+)"/)?.[1];
-    const times = Number(String(parameters.code).split('*')[1]);
-    if (digits === undefined || !Number.isSafeInteger(times)) {
-      throw new Error('trace-exception-path: kein String-Multiplikand im Code');
-    }
-    return { correctText: `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".` };
-  }
-  throw new Error(`trace-exception-path: unbekannter Fall ${caseId}`);
+  const solver = TRACE_EXCEPTION_SOLVERS[parameters.caseId];
+  if (!solver) throw new Error(`trace-exception-path: unbekannter Fall ${parameters.caseId}`);
+  return solver(parameters);
 }
 
 export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
