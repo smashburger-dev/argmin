@@ -75,11 +75,14 @@ test('S4D0 family variant opens, grades, records and journals across reload', as
 
   await page.getByRole('link', { name: 'Fortschritt' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Fortschritt' })).toBeVisible();
-  const journalSection = page.locator('.activity-section').filter({ hasText: 'Fehlerjournal' });
-  await expect(journalSection.getByText('classify-git-operation:diff-unstaged · wrong-choice')).toBeVisible();
+  const journalSection = page.locator('.journal');
+  await journalSection.locator('summary').click();
+  await expect(journalSection.getByText('Konzeptfrage · Einstieg · wrong-choice')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { level: 1, name: 'Fortschritt' })).toBeVisible();
-  await expect(page.locator('.activity-section').filter({ hasText: 'Fehlerjournal' }).getByText('classify-git-operation:diff-unstaged · wrong-choice')).toBeVisible();
+  const reloadedJournal = page.locator('.journal');
+  await reloadedJournal.locator('summary').click();
+  await expect(reloadedJournal.getByText('Konzeptfrage · Einstieg · wrong-choice')).toBeVisible();
 });
 
 test('S4D1 trace table fills row by row and records the first deviating row', async ({ page, browserName }) => {
