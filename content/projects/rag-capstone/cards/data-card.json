@@ -1,7 +1,7 @@
 {
-  "name": "FAQ-Fixturkorpus (GenAI-Prototyp-Kern)",
+  "name": "FAQ-Fixturkorpus des GenAI-Prototyps",
   "zweck": "TODO(Lernende:r): Beschreibe, wofür dieser Korpus im Capstone verwendet wird und wofür ausdrücklich nicht.",
-  "provenienz": "Eingefrorene GenAI-Prototyp-Fixtur: fünf deutschsprachige FAQ-Dokumente inklusive einer synthetischen Injektions-Fixture, byte-identisch gepinnt über src/w30_core.py (sha256 im check-manifest.json).",
+  "provenienz": "Eingefrorene Fixtur des GenAI-Prototyps: fünf deutschsprachige FAQ-Dokumente inklusive einer synthetischen Injektions-Fixture, byte-identisch gepinnt über src/w30_core.py (sha256 im check-manifest.json).",
   "zeitraum": "TODO(Lernende:r): Zeitpunkt des Einfrierens und Stand der Datei nennen.",
   "subgruppen": ["versand", "garantie", "recht", "rabatt"],
   "bekannte_limitierungen": [

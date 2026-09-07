@@ -75,7 +75,7 @@
         },
         {
           "if": "choice === 'a'",
-          "then": "Echtes RAG formuliert Antworten neu; nur der Stub-Prototyp von Lektion „Minimaler abgesicherter GenAI-Prototyp“ kopiert Sätze. Kopieren wäre zudem keine Generierung."
+          "then": "Echtes RAG formuliert Antworten neu; nur der Stub-Prototyp aus der Lektion „Minimaler abgesicherter GenAI-Prototyp“ kopiert Sätze. Kopieren wäre zudem keine Generierung."
         },
         {
           "if": "choice === 'b'",

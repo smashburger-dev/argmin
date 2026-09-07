@@ -11,7 +11,7 @@ Zwei Eigenschaften machen den Hash wertvoll:
 - **Reihenfolge-Invarianz**: Dieselben Einträge in anderer Reihenfolge ergeben denselben Hash — Umsortieren ist kein inhaltlicher Eingriff.
 - **Änderungssensitivität**: Eine veränderte Gold-Antwort, ein gelöschter Fall, ein neues Feld — jeder davon ändert den Hash.
 
-Damit ist der Hash dein Integritätsbeweis: Steht in der Abschlussphase derselbe sha256-Wert wie heute, misst du noch über demselben Set, und die Zahlen sind vergleichbar. Hat er sich geändert, ist jede Vorher-Nachher-Aussage über Antwortquoten wertlos, bis geklärt ist, was sich geändert hat. Das ist dasselbe Prinzip wie das Manifest im GenAI-Prototyp-Projekt, nur auf das Evaluationsset angewandt.
+Damit ist der Hash dein Integritätsbeweis: Steht in der Abschlussphase derselbe sha256-Wert wie heute, misst du noch über demselben Set, und die Zahlen sind vergleichbar. Hat er sich geändert, ist jede Vorher-Nachher-Aussage über Antwortquoten wertlos, bis geklärt ist, was sich geändert hat. Das ist dasselbe Prinzip wie das Manifest im Projekt des GenAI-Prototyps, nur auf das Evaluationsset angewandt.
 
 ## Die Fehlerliste: Retrieval und Antwort getrennt
 

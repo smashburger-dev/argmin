@@ -1,10 +1,9 @@
 # RAG-Capstone: reproduzierbare Pipeline von Scope-Freeze bis Demo
 
 Dieses Projekt erweitert den GenAI-Prototyp (`p-rag-secure-prototype`) zu einer
-fünfphasigen Capstone-Pipeline: Scope-Freeze (Scope-Freeze-Phase), Integration (Integrationsphase), feste
-Evaluation mit defensivem Red-Team (Evaluationsphase), Reproduktion (Reproduktionsphase) und
-Abschluss-Artefakte (Abschlussphase). Der GenAI-Prototyp-Kern liegt byte-identisch und per sha256
-gepinnt als `src/w30_core.py` bei; er wird erweitert, nicht verändert.
+fünfphasigen Capstone-Pipeline: Scope-Freeze, Integration, feste
+Evaluation mit defensivem Red-Team, Reproduktion und Abschluss-Artefakte. Der Kern des GenAI-Prototyps liegt als
+`src/w30_core.py` byte-identisch und per sha256 gepinnt vor; er wird erweitert, nicht verändert.
 
 ## Setup
 
@@ -50,7 +49,7 @@ Angaben. Karteninhalte sind Work Evidence, kein Mastery-Beweis.
 
 ## Phasenplan
 
-| Lektion | Phase | Testdatei | Kern |
+| Phase | Kennung | Testdatei | Kern |
 |---|---|---|---|
 | Scope-Freeze-Phase | w35-scope | `tests/test_w35_scope.py` | Manifest, Hashes, Stages, topo-sort |
 | Integrationsphase | w36-integration | `tests/test_w36_pipeline.py` | `run()`, IO-Verträge, virtuelle Uhr |
@@ -81,4 +80,4 @@ Selbstlern-Nachweis (`integrity: self-reported`), kein Zertifikat.
   mitzuziehen, scheitert an `assert_frozen()` — so soll es sein.
 
 Demo und Retrospektive zählen als Work Evidence; Mastery entsteht nur aus den
-deterministisch geprüften Teiltests der Phasenpakete.
+deterministisch geprüften Teiltests der Phasen.

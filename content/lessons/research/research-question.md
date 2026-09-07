@@ -40,14 +40,14 @@ Jede dieser Änderungen einzeln kann gut begründet sein. Aber sie alle gemeinsa
 
 ## Worked Example am GenAI-Prototyp
 
-Nimm den RAG-Prototyp mit seinem deterministischen Stub-Generator, der über die eingefrorenen Fixtur-Queries läuft und dabei die Injektions-Fixture erkennt und blockiert. Die Ablation aus GenAI-Prototyp kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne — die Differenz ist beabsichtigte Verweigerung, kein Defekt. Eine prüfbare Frage daraus:
+Nimm den RAG-Prototyp mit seinem deterministischen Stub-Generator, der über die eingefrorenen Fixtur-Queries läuft und dabei die Injektions-Fixture erkennt und blockiert. Die Ablation aus dem GenAI-Prototyp kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne — die Differenz ist beabsichtigte Verweigerung, kein Defekt. Eine prüfbare Frage daraus:
 
 - **Frage**: Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgröße von 200 auf 400 Zeichen verdoppert wird?
 - **Hypothese (Je-desto)**: Je größer die Chunkgröße, desto höher der Anteil korrekt beantworteter Fixtur-Fragen.
 - **UV**: Chunkgröße (200 vs. 400). **DV**: Anteil korrekt beantworteter Fixtur-Fragen.
 - **Metrik und Schwelle**: recall@5 als primärer Endpunkt, Erfolgsschwelle 0,75; bearbeitungszeit und ablehnungsquote als sekundäre Endpunkte.
 - **Subgruppen vor Freeze**: neukunden-Fragen und mobil formulierte Fragen.
-- **Baseline**: unveränderter GenAI-Prototyp-Lauf mit Chunkgröße 200.
+- **Baseline**: unveränderter Lauf des GenAI-Prototyps mit Chunkgröße 200.
 - **Abbruchregel**: nach zwei aufeinanderfolgenden Läufen ohne Änderung der Kennzahl wird abgebrochen — weiterer Tuning-Aufwand ist nicht mehr Teil des Experiments.
 - **datum_prereg** liegt vor **datum_hauptlauf**; erst danach startet der Hauptlauf.
 

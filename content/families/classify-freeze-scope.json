@@ -41,7 +41,7 @@
         "correctChoice": "a"
       },
       "prompt": "Capstone-Start: Was gehört in den Scope-Freeze, BEVOR die Implementierung der Pipeline beginnt?",
-      "fullSolution": "In den Freeze gehören Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte GenAI-Prototyp-Kern — jeweils mit sha256 im Manifest. Änderungen sind möglich, aber sie brauchen eine neue Version und ein neues Manifest; assert_frozen() macht Abweichungen hörbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "In den Freeze gehören Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — jeweils mit sha256 im Manifest. Änderungen sind möglich, aber sie brauchen eine neue Version und ein neues Manifest; assert_frozen() macht Abweichungen hörbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "Welche Dateien bestimmen, was „besser“ heißt — und welche dürfen sich nach dem Messbeginn nicht mehr ändern?",
         "Wie macht man eine Änderung sichtbar, statt sie zu verhindern?"
@@ -71,7 +71,7 @@
       "choices": [
         {
           "id": "a",
-          "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte GenAI-Prototyp-Kern — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+          "text": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
           "correct": true
         },
         {

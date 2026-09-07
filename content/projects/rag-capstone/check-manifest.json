@@ -12,11 +12,11 @@
     },
     {
       "path": "config/experiment.json",
-      "sha256": "30988437b7b1e329889af5300943afb83d44568cf79bd4e737a771b77bd91368"
+      "sha256": "bc2cebc7dd2fdf6a82a259ff02ff87117853d4b46565e0a91cb430ec2af66f60"
     },
     {
       "path": "golden/golden_set.json",
-      "sha256": "d935349aff826977f90c08c9c657a01e1391b495803a3a3c22fbd2a06ea082f5"
+      "sha256": "b326029d334c923da2742b11da24fc3d6d9c760bb46e4f1bee29dcd4b8912385"
     },
     {
       "path": "golden/injection_fixtures.json",

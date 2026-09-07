@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "projectId": "p-rag-capstone",
-  "beschreibung": "Phasenvertrag nach ADR-0014 Design A: eine Capstone, fünf Lektionen. Jede Lektion hat genau eine Testdatei und ein Deliverable; die Tests laufen alle über dasselbe eine pytest-Kommando.",
+  "beschreibung": "Phasenvertrag nach ADR-0014 Design A: ein Capstone-Projekt mit fünf Phasen. Jede Phase hat genau eine Testdatei und ein Deliverable; die Tests laufen alle über dasselbe pytest-Kommando.",
   "phases": [
     {
       "phaseId": "w35-scope",

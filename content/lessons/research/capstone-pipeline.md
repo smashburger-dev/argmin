@@ -1,8 +1,8 @@
 # Reproduzierbare Capstone-Pipeline
 
-Die Capstone-Phasen bauen **eine** Pipeline weiterentwickelt — kein neues
+Die Capstone-Phasen entwickeln **eine** Pipeline weiter — kein neues
 Miniprojekt pro Lektion. Der Stoff ist die Pipeline selbst: ein eingefrorener
-Datenfluss über den GenAI-Prototyp-Kern (`src/w30_core.py`, byte-identisch und per
+Datenfluss über den Kern des GenAI-Prototyps (`src/w30_core.py`, byte-identisch und per
 sha256 gepinnt), eine config-getriebene Hauptfunktion, eine feste Evaluation,
 ein defensives Red-Team gegen den **eigenen** Toy-Prototyp und am Ende
 Artefakte, die ein Dritter nachvollziehen kann. Wilson et al. nennen das
@@ -14,7 +14,7 @@ jemand, der dein Ergebnis ohne dich neu erzeugen soll?
 
 Bevor Implementierung losgeht, wird festgezurrt, was sich nicht mehr ändern
 darf: Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und
-der gepinnte GenAI-Prototyp-Kern. Das `check-manifest.json` hält für jede dieser Dateien
+der gepinnte Kern des GenAI-Prototyps. Das `check-manifest.json` hält für jede dieser Dateien
 den sha256 fest; Lernenden-Dateien stehen dort mit `sha256: null` und werden
 nur auf Anwesenheit geprüft — du darfst an `src/pipeline.py` arbeiten, an
 `golden/` nicht. `assert_frozen()` rechnet die Hashes bei jedem Lauf nach und
@@ -43,7 +43,7 @@ kein `sleep`, und die Tests steuern die Zeit von Hand.
 ## Feste Evaluation: einmarshen, nicht nachjustieren
 
 Die Evaluation steht vor der Optimierung fest: acht Queries über dem
-ungeänderten GenAI-Prototyp-Korpus, davon die vier GenAI-Prototyp-Queries wörtlich als Teilmenge,
+ungeänderten Korpus des GenAI-Prototyps, davon die vier Queries des GenAI-Prototyps wörtlich als Teilmenge,
 Subgruppen-Labels an jeder Query, Schwellen und Capstone-Baseline in der
 Konfiguration. Gemessen wird beides getrennt: **Retrievalfehler** (kein
 Dokument gefunden, `retrieval_status: leer`) sind andere Fehler als
@@ -57,7 +57,7 @@ unter den Teppich.
 ## Defensives Red-Team gegen den eigenen Prototyp
 
 Das Red-Team richtet sich **nur gegen den eigenen Toy-Prototyp**: die
-gelieferten Fixtures mit der Domäne `example.invalid`, Regelphrasen aus GenAI-Prototyp,
+gelieferten Fixtures mit der Domäne `example.invalid`, Regelphrasen aus dem GenAI-Prototyp,
 Least-Privilege-Policy. Anfrage **und** bestes Dokument werden geprüft — die
 klassische Route steckt im Dokument. Benign-Fälle ohne Regelphrase dürfen
 nicht blockiert werden, sonst misst der Detektor seine Scheingenauigkeit.
@@ -110,7 +110,7 @@ und das Anzeigen einer Lösung disqualifiziert genau diese Instanz.
 
 Demo, Retrospektive, Karteninhalte und Selbstberichte dokumentieren Arbeit —
 sie sind **Work Evidence, nie Mastery**. Mastery entsteht in dieser Plattform
-ausschließlich aus den deterministisch geprüften Teiltests der Phasenpakete
+ausschließlich aus den deterministisch geprüften Teiltests der Phasen
 (≥ 2 unabhängige Treffer, ≥ 2 Definitionen, ≥ 14 Tage Abstand, keine
 disqualifizierte Instanz). Der Projekt-Runner-Report trägt deshalb
 `integrity: self-reported`: Er ist ein lokaler Nachweis, kein Zertifikat —
@@ -120,7 +120,7 @@ selbst.
 
 ## Phasen-Worked-Examples (Capstone-Phasen)
 
-Die fünf Capstone-Phasen teilen sich diese Lektion. Damit jede Phase beim
+Diese Lektion bündelt die fünf Capstone-Phasen. Damit jede Phase beim
 Einstieg ein frisches Beispiel hat, hier ein kompaktes Worked Example je
 Phase — jeweils direkt am Projekt `p-rag-capstone` nachlesbar
 (`content/projects/rag-capstone/`, Dateien in Klammern).

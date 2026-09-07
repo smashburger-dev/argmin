@@ -21,7 +21,7 @@ Für eine Schichtmatrix $W \in \mathbb{R}^{d_{\text{out}}\times d_{\text{in}}}$:
 | Full FT | $d_{\text{out}} \cdot d_{\text{in}}$ | $262\,144$ |
 | LoRA | $r\,(d_{\text{in}} + d_{\text{out}})$ | $4\,096$ (ca. 1,6 %) |
 
-Das LoRA-Paper meldet für GPT-3 175B gegenüber Adam-Full-FT **10 000× weniger trainierbare Parameter und 3× weniger GPU-Speicher** bei gleicher oder besserer Qualität (RoBERTa, DeBERTa, GPT-2, GPT-3) — Abstract-Fakten, die wir die nächste Lektion als Evidenzkarten wiederlesen.
+Das LoRA-Paper meldet für GPT-3 175B gegenüber Adam-Full-FT **10 000× weniger trainierbare Parameter und 3× weniger GPU-Speicher** bei gleicher oder besserer Qualität (RoBERTa, DeBERTa, GPT-2, GPT-3) — Abstract-Fakten, die wir in der nächsten Lektion als Evidenzkarten wiederlesen.
 
 ## Toy-Head-FT: das Ehrlich-Ausführbare
 

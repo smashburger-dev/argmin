@@ -1,6 +1,6 @@
 # Toy-Inferenz: Eine komplette Pipeline im Kleinen
 
-Was passiert, wenn ein Sprachmodell aufgerufen wird? Immer dieselbe Pipeline: **Tokenisieren → Forward-Pass → Logits → Dekodieren**. Diese Lektion baust du sie — aber mit einem ehrlichen Etikett.
+Was passiert, wenn ein Sprachmodell aufgerufen wird? Immer dieselbe Pipeline: **Tokenisieren → Forward-Pass → Logits → Dekodieren**. In dieser Lektion baust du diese Pipeline nach — aber mit einem ehrlichen Etikett.
 
 > **Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.**
 

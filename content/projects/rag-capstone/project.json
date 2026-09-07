@@ -4,7 +4,7 @@
   "version": 1,
   "locale": "de",
   "title": "RAG-Capstone: reproduzierbare Pipeline von Scope-Freeze bis Demo",
-  "description": "Fünf Phasen eine Pipeline weiterentwickeln: eingefrorenes Manifest und Stages, config-getriebene Hauptfunktion mit sichtbaren Fehlerzuständen, feste Evaluation mit Subgruppen und defensivem Red-Team gegen den eigenen Toy-Prototyp, Doppellauf-Reproduktion und Abschluss-Artefakte aus eingefrorenen Messwerten.",
+  "description": "Eine Pipeline über fünf Phasen weiterentwickeln: eingefrorenes Manifest und Stages, config-getriebene Hauptfunktion mit sichtbaren Fehlerzuständen, feste Evaluation mit Subgruppen und defensivem Red-Team gegen den eigenen Toy-Prototyp, Doppellauf-Reproduktion und Abschluss-Artefakte aus eingefrorenen Messwerten.",
   "runnerMode": "local",
   "competencyIds": [
     "c-capstone-pipeline"
