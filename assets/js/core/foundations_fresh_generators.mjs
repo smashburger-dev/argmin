@@ -167,7 +167,7 @@ export function genCodeReadingOutput(seed) {
       fullSolution: `Die Bedingung behält ${pyRepr(nums.filter((n) => n > threshold))}; danach multipliziert jedes erhaltene z mit ${factor}. Ergebnis: ${pyRepr(out)}.`,
     };
   }
-  const wordBase = [
+  const word = [
     '  lern plan  ',
     ' abruf uebung ',
     '  daten bank ',
@@ -180,10 +180,12 @@ export function genCodeReadingOutput(seed) {
     ' ziel wert ',
     ' spalten namen ',
     ' ergebnis sichern ',
-  ][randInt(r, 0, 11)];
+    ' modell pruefen ',
+    ' daten ordnen ',
+    ' test ergebnis ',
+    ' lern ziel ',
+  ][randInt(r, 0, 15)];
   const mode = randInt(r, 0, 2);
-  const padding = randInt(r, 1, 3);
-  const word = `${' '.repeat(padding)}${wordBase.trim()}${' '.repeat(padding)}`;
   const { method, apply } = TRANSFORM_MODES[mode];
   const clean = word.trim();
   const out = apply(clean);

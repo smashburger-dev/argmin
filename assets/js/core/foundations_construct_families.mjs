@@ -1234,13 +1234,6 @@ const REQUIRED_ORDERS = {
   'required-key-with-issue': ['p1', 'p2', 'p3', 'p4'],
 };
 
-const REQUIRED_WORDINGS = [
-  'Die erwartete Ausnahme soll sichtbar als Issue enden.',
-  'Der Fehler muss eng abgefangen und mit Zeilenkontext dokumentiert werden.',
-  'Andere Fehler dürfen nicht stillschweigend verschwinden.',
-  'Die breite Ausnahme bleibt deshalb außerhalb der Lösung.',
-];
-
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
   if (parameters.caseId === 'paper-card-required-fields') {
@@ -1286,7 +1279,6 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   }
   const scenarioRng = rng(seed >>> 0);
   const scenario = REQUIRED_SCENARIOS[caseId][randInt(scenarioRng, 0, 3)];
-  const wording = REQUIRED_WORDINGS[randInt(scenarioRng, 0, 3)];
   const fragments = caseId === 'specific-except-with-issue'
     ? [
       { id: 'p1', text: 'try:' },
@@ -1303,8 +1295,8 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
       { id: 'd1', text: 'except Exception: pass' },
     ];
   const prompt = caseId === 'specific-except-with-issue'
-    ? `Ordne die Schritte, um ${scenario.noun} zu prüfen und einen erwarteten ValueError als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler ${wording}`
-    : `Ordne die Schritte, um ${scenario.noun} als Pflichtfeld zu prüfen und einen fehlenden Schlüssel als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler ${wording}`;
+    ? `Ordne die Schritte, um ${scenario.noun} zu prüfen und einen erwarteten ValueError als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.`
+    : `Ordne die Schritte, um ${scenario.noun} als Pflichtfeld zu prüfen und einen fehlenden Schlüssel als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.`;
   return parsonsGenerate({
     seed,
     difficulty,
