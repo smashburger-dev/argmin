@@ -12,10 +12,20 @@
       {
         "caseId": "dropout-regime",
         "propertyTest": false
+      },
+      {
+        "caseId": "dropout-inverted-scale",
+        "propertyTest": false
+      },
+      {
+        "caseId": "dropout-eval-mode",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-regularization"
@@ -86,6 +96,144 @@
         "Maske auch zur Vorhersage angewendet",
         "Skalierung zur falschen Zeit (Inference mit p statt Training mit 1/p)",
         "Maske als dauerhafte Löschung gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "dropout-inverted-scale",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "parameters": {
+        "dropoutRate": 0.2
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Mit $0,2$, weil nur die Dropout-Rate skaliert wird.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Mit $1,25$, weil $1/(1-0,2)=1/0,8$ gilt.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Mit $0,8$, weil die Keep-Probability direkt der Faktor ist.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Mit $5$, weil $1/0,2$ die Überlebenden kompensiert.",
+          "correct": false
+        }
+      ],
+      "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}2$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+      "fullSolution": "Die Keep-Probability ist $1-p=0,8$. Inverted Dropout multipliziert überlebende Werte mit $1/(1-p)=1/0,8=1,25$, damit der Erwartungswert gleich bleibt.",
+      "hints": [
+        "Berechne zuerst die Keep-Probability.",
+        "Der Trainingsfaktor ist der Kehrwert von $1-p$, nicht von $p$."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "0,2 ist die Dropout-Rate; der Faktor muss die 80 % überlebenden Aktivierungen auf den ursprünglichen Erwartungswert hochskalieren."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "0,8 beschreibt den Anteil der Überlebenden, nicht die Inverted-Dropout-Skalierung; benötigt wird der Kehrwert 1,25."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der Kehrwert von p würde mit 5 die falsche Größe verwenden; maßgeblich ist 1-p=0,8."
+        }
+      ],
+      "typicalErrors": [
+        "Dropout-Rate mit Keep-Probability verwechselt",
+        "Keep-Probability statt ihres Kehrwerts als Trainingsfaktor eingesetzt",
+        "den Kehrwert der Dropout-Rate gebildet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "dropout-eval-mode",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "parameters": {
+        "dropoutRate": 0.5
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Genau die Hälfte der Einheiten wird auch bei jeder Vorhersage entfernt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Aktivierungen werden im Eval-Modus nochmals mit 2 multipliziert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Es wird keine Zufallsmaske angewendet; die volle Aktivierung wird deterministisch genutzt.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Dropout vertauscht im Eval-Modus automatisch die Klassenlabels.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Netz wurde mit Dropout-Rate $p=0{,}5$ trainiert. Was geschieht bei der Vorhersage im korrekt aktivierten Eval-Modus?",
+      "fullSolution": "Im Eval-Modus werden keine Einheiten zufällig entfernt. Bei Inverted Dropout ist die Trainingsskalierung bereits berücksichtigt; die volle Aktivierung wird deterministisch verwendet.",
+      "hints": [
+        "Unterscheide train() und eval() statt nur die Rate p anzusehen.",
+        "Zufälliges Maskieren gehört zum Training, nicht zum stabilen Vorhersagelauf."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Rate 0,5 gilt für die zufällige Trainingsmaske; im Eval-Modus bleibt die Vorhersage ohne solche Ausfälle."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Bei Inverted Dropout erfolgt die Kompensation während des Trainings; eine zweite Multiplikation im Eval-Modus wäre falsch."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Dropout verändert Aktivierungen, aber weder Klassenlabels noch deren Reihenfolge."
+        }
+      ],
+      "typicalErrors": [
+        "Trainingsmaske im Eval-Modus beibehalten",
+        "Inverted-Skalierung zweimal angewendet",
+        "Regularisierungseffekt mit Labeltransformation verwechselt"
       ],
       "tolerancePolicy": {
         "mode": "none"

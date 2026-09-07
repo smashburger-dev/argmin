@@ -12,10 +12,20 @@
       {
         "caseId": "greedy-decoding",
         "propertyTest": false
+      },
+      {
+        "caseId": "decoding-temperature-low",
+        "propertyTest": false
+      },
+      {
+        "caseId": "decoding-top-k",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-inference"
@@ -84,6 +94,144 @@
         "Greedy mit Sampling verwechselt",
         "Determinismus von Argmax missverstanden",
         "Greedy mit Beam Search verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "decoding-temperature-low",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "temperature": 0.5
+      },
+      "competencyIds": [
+        "c-dl-inference"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Tokenreihenfolge wird zufällig neu gemischt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Alle Token erhalten exakt dieselbe Wahrscheinlichkeit.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Wahrscheinlichkeitsverteilung wird zwingend flacher.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+          "correct": true
+        }
+      ],
+      "prompt": "Ein Decoder verwendet dieselben Logits, aber Temperatur $T=0{,}5$ statt $T=1$. Welche Wirkung ist zu erwarten?",
+      "fullSolution": "Die Logits werden durch $T$ geteilt; bei $T<1$ werden Unterschiede vergrößert. Die Softmax wird dadurch spitzer und bevorzugt die wahrscheinlichsten Tokens stärker.",
+      "hints": [
+        "Teile jeden Logit durch 0,5, bevor du Softmax anwendest.",
+        "Ein kleinerer Temperaturwert verstärkt statt glättet die Abstände."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Temperatur skaliert die Logits vor Softmax und mischt keine Tokenpositionen zufällig."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Gleiche Wahrscheinlichkeiten entstünden bei gleichen Logits, nicht durch das Teilen durch $T=0,5$."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Glättung tritt bei $T>1$ auf; $T=0,5$ vergrößert die relativen Logit-Abstände."
+        }
+      ],
+      "typicalErrors": [
+        "Temperatur als Zufallsseed statt als Logit-Skalierung behandelt",
+        "kleines T mit flacher statt spitzer Softmax verbunden",
+        "Decoding-Verteilung und Tokenreihenfolge verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "decoding-top-k",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "k": 2
+      },
+      "competencyIds": [
+        "c-dl-inference"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Alle Tokens außer den zwei wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Top-k setzt die beiden wahrscheinlichsten Tokens immer auf je 0,5.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Top-k wählt stets deterministisch den ersten Kandidaten.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Top-k verändert nur die Temperatur, aber nicht die erlaubten Tokens.",
+          "correct": false
+        }
+      ],
+      "prompt": "Beim Top-k-Decoding wird für $k=2$ nach der Softmax nur aus den zwei höchstwahrscheinlichen Tokens gezogen. Welche Aussage trifft zu?",
+      "fullSolution": "Top-k sortiert die Kandidaten nach ihrer Modellwahrscheinlichkeit und behält nur die zwei höchsten. Die verbleibenden Wahrscheinlichkeiten werden für die Auswahl renormalisiert.",
+      "hints": [
+        "k=2 bedeutet genau zwei erlaubte Kandidaten pro Schritt.",
+        "Nach dem Abschneiden muss die verbleibende Masse wieder auf 1 skaliert werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Die beiden Werte werden renormalisiert, aber ihre ursprünglichen relativen Wahrscheinlichkeiten müssen nicht gleich sein."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Top-k lässt zwei Kandidaten zu; deterministische Auswahl wäre Greedy-Decoding."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Top-k schneidet die Kandidatenmenge auf zwei Tokens, statt nur einen Temperaturparameter zu ändern."
+        }
+      ],
+      "typicalErrors": [
+        "Top-k mit Top-1 beziehungsweise Greedy verwechselt",
+        "Renormalisierung als Gleichverteilung missverstanden",
+        "Kandidatenfilterung fälschlich als reine Temperaturanpassung gelesen"
       ],
       "tolerancePolicy": {
         "mode": "none"

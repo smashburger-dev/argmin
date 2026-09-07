@@ -12,10 +12,15 @@
       {
         "caseId": "construct-causal-padding-mask",
         "propertyTest": false
+      },
+      {
+        "caseId": "construct-padding-mask-softmax",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "stretch"
+      "stretch",
+      "core"
     ],
     "competencyIds": [
       "c-dl-attention",
@@ -71,6 +76,59 @@
         "teilweise maskierte Zeilen fälschlich abgelehnt",
         "Maskenform ungeprüft angewendet",
         "Overflow bei großen Scores ohne Maximum-Subtraktion"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "construct-padding-mask-softmax",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef padding_mask(lengths, L):\n    ...\n\n\ndef masked_softmax(S, mask):\n    ...\n",
+        "tests": "__check('Padding-Maske', padding_mask([1, 3, 2], 3).tolist() == [[True, False, False], [True, True, True], [True, True, False]])\nw = masked_softmax([[2.0, 0.0, -4.0]], [[True, True, False]])\n__check('maskiertes Gewicht null', np.allclose(w, [[0.881, 0.119, 0.0]], atol=1e-3))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([4], 3)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n"
+      },
+      "competencyIds": [
+        "c-dl-attention",
+        "c-numpy-basics"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef padding_mask(lengths, L):\n    lengths = [int(x) for x in lengths]\n    if any(length < 0 or length > int(L) for length in lengths):\n        raise ValueError(\"lengths must be within [0, L]\")\n    return np.array([[j < length for j in range(int(L))] for length in lengths], dtype=bool)\n\ndef masked_softmax(S, mask):\n    scores = np.asarray(S, dtype=float)\n    keep = np.asarray(mask, dtype=bool)\n    if scores.ndim != 2 or keep.shape != scores.shape:\n        raise ValueError(\"mask shape must match S\")\n    if bool((keep.sum(axis=1) == 0).any()):\n        raise ValueError(\"fully masked row\")\n    scores = np.where(keep, scores, -np.inf)\n    scores = scores - scores.max(axis=1, keepdims=True)\n    weights = np.exp(scores)\n    return weights / weights.sum(axis=1, keepdims=True)\n"
+      },
+      "prompt": "Implementiere eine Padding-Maske und einen stabilen maskierten Softmax. Echte Tokenpositionen bleiben sichtbar; eine komplett verdeckte Zeile ist ein Fehler.",
+      "fullSolution": "Die Padding-Maske markiert genau $j < \\texttt{lengths}[i]$. Der Softmax setzt unsichtbare Scores auf $-\\infty$, zieht pro Zeile das Maximum ab und verweigert leere sichtbare Zeilen.",
+      "hints": [
+        "Prüfe jede Länge vor dem Erzeugen der Bool-Matrix.",
+        "Nach dem Maskieren Maximum abziehen; eine Zeile ohne True darf nicht normalisiert werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "bad-padding",
+          "then": "Bei length=1 wird nur Position 0 sichtbar; Positionen 1 und 2 bleiben im konkreten Test False."
+        },
+        {
+          "if": "unstable-softmax",
+          "then": "Scores 1000 und 999 benötigen die Maximum-Subtraktion, damit keine Inf-Werte entstehen."
+        },
+        {
+          "if": "empty-row-accepted",
+          "then": "Eine vollständig maskierte Zeile besitzt keine Normalisierungsmasse und muss ValueError auslösen."
+        }
+      ],
+      "typicalErrors": [
+        "Paddingpositionen als sichtbar markiert",
+        "Softmax vor statt nach der Maskierung normalisiert",
+        "leere sichtbare Zeile durch Nullsumme geteilt"
       ],
       "tolerancePolicy": {
         "mode": "tests"

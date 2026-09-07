@@ -12,10 +12,15 @@
       {
         "caseId": "early-stopping-roundtrip",
         "propertyTest": false
+      },
+      {
+        "caseId": "early-stopping-min-delta-roundtrip",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "stretch"
+      "stretch",
+      "core"
     ],
     "competencyIds": [
       "c-dl-regularization",
@@ -71,6 +76,59 @@
         "Gleichstand zählt als Verbesserung und verschiebt die beste Epoche nach hinten",
         "patience-Grenze um eins daneben (>= statt >)",
         "Arrays ohne tolist in den Zustand gelegt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "early-stopping-min-delta-roundtrip",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-regularization",
+        "c-ml-cv"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef early_stop_epoch(val_losses, patience, min_delta):\n    ...\n\n\ndef to_state(model):\n    ...\n\n\ndef from_state(state):\n    ...\n",
+        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef early_stop_epoch(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\n\ndef to_state(model):\n    return {name: np.asarray(value).tolist() for name, value in model.items()}\n\ndef from_state(state):\n    return {name: np.asarray(value, dtype=np.float64) for name, value in state.items()}\n"
+      },
+      "prompt": "Erweitere Early Stopping um eine strikte <code>min_delta</code>-Schwelle und halte zusätzlich den JSON-sicheren Array-Round-Trip ein.",
+      "fullSolution": "Ein neuer Bestwert wird nur akzeptiert, wenn der Verlust um mehr als min_delta fällt. Nach patience nicht ausreichenden Epochen wird der bisher beste Index zurückgegeben; to_state und from_state bewahren Schlüssel, Formen und float64-Werte.",
+      "hints": [
+        "Vergleiche best_loss - loss strikt mit min_delta und setze wait nur nach einer echten Verbesserung zurück.",
+        "Für den Zustand zuerst arr.tolist(), beim Laden np.asarray(..., dtype=np.float64) verwenden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "min-delta-inclusive",
+          "then": "Der Verlust 0,505 verbessert 0,50 nur um 0,005 und überschreitet min_delta=0,01 nicht; wait steigt."
+        },
+        {
+          "if": "patience-reset-missed",
+          "then": "Der Wert 0,48 ist mehr als 0,01 besser als 0,50 und setzt wait in Epoche 3 zurück."
+        },
+        {
+          "if": "array-state",
+          "then": "to_state muss verschachtelte Listen liefern, sonst ist der Zustand nicht JSON-serialisierbar."
+        }
+      ],
+      "typicalErrors": [
+        "min_delta als mindestens statt als strikt größer interpretiert",
+        "wait trotz echter Verbesserung nicht zurückgesetzt",
+        "NumPy-Arrays unverändert in den JSON-Zustand gelegt"
       ],
       "tolerancePolicy": {
         "mode": "tests"

@@ -12,10 +12,20 @@
       {
         "caseId": "attention-role-values",
         "propertyTest": false
+      },
+      {
+        "caseId": "attention-role-batch",
+        "propertyTest": false
+      },
+      {
+        "caseId": "attention-role-padding",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-attention"
@@ -84,6 +94,152 @@
         "Rollen von Q/K/V verwechselt",
         "Value mit Maske verwechselt",
         "Skalierung der Values zugeschrieben"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "attention-role-batch",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "B": 2,
+        "T": 4,
+        "d": 12,
+        "dk": 3,
+        "dv": 5
+      },
+      "competencyIds": [
+        "c-dl-attention"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$V$ erzeugt die $4\\times4$-Sichtbarkeitsmatrix.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$V$ liefert pro Position einen 5-dimensionalen Inhalt, den die $4\\times4$-Gewichte mischen.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "$V$ bestimmt allein die Skalierung durch $1/\\sqrt{3}$.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$V$ enthält die Queries mit Shape $(2,4,3)$.",
+          "correct": false
+        }
+      ],
+      "prompt": "Eine Batch-Attention erhält $X$ mit Shape $(B,T,d)=(2,4,12)$ und projiziert auf $d_k=3$ sowie $d_v=5$. Welche Aussage über die Value-Rolle stimmt?",
+      "fullSolution": "$QK^\\top$ liefert pro Batch eine $4\\times4$-Scorematrix; die Softmax-Gewichte mischen anschließend die vier Value-Zeilen. Bei $V$ mit Shape $(2,4,5)$ entsteht eine Ausgabe mit Shape $(2,4,5)$.",
+      "hints": [
+        "Bestimme zuerst die Scoreform aus den beiden Sequenzachsen $T=4$.",
+        "Values liefern die Inhalte; die Gewichte stammen aus Query-Key-Scores."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Sichtbarkeit wird durch eine Maske beziehungsweise die Scorematrix geregelt; $V$ hat hier Shape $(2,4,5)$ und nicht $(2,4,4)$."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die Skalierung $1/\\sqrt{d_k}=1/\\sqrt{3}$ gehört zu den Query-Key-Scores; die fünf Value-Kanäle werden dadurch nicht skaliert."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Queries haben in diesem Beispiel Shape $(2,4,3)$; die Values tragen dagegen die fünf Inhaltsdimensionen."
+        }
+      ],
+      "typicalErrors": [
+        "Die Scorematrix mit der Value-Ausgabe verwechselt",
+        "die fünf Value-Kanäle fälschlich auf drei Query-Kanäle reduziert",
+        "die Query-Rolle an V statt an Q gebunden"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "attention-role-padding",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "lengths": [
+          3,
+          5
+        ],
+        "maxLength": 5
+      },
+      "competencyIds": [
+        "c-dl-attention"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$V$ wird für die kürzere Sequenz vollständig durch Null ersetzt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$V$ entscheidet, ob Position 4 überhaupt sichtbar ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$V$ legt die Zeilenanzahl der Padding-Maske fest.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$V$ liefert die Inhalte der sichtbaren Keys; die Maske entfernt nur unzulässige Gewichte.",
+          "correct": true
+        }
+      ],
+      "prompt": "Für zwei Sequenzen mit Längen $3$ und $5$ wird eine Padding-Maske vor dem Softmax angewendet. Welche Rolle bleibt der Value-Matrix $V$ trotz der ausgeblendeten Padding-Positionen?",
+      "fullSolution": "Die Maske setzt die Scores der Padding-Keys auf unzulässig; danach gewichten die verbleibenden Softmax-Werte die entsprechenden Zeilen von $V$. $V$ definiert also weiterhin die Inhalte, nicht die Sichtbarkeitsregel.",
+      "hints": [
+        "Eine Maske entscheidet, welche Keys sichtbar sind.",
+        "Frage getrennt: Wer erzeugt Gewichte, und welche Vektoren werden mit ihnen gemischt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Bei Länge 3 werden nur die Padding-Scores ab Position 3 ausgeblendet; die echten drei Value-Zeilen bleiben verwendbar."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Ob Position 4 sichtbar ist, entscheidet bei Länge 3 die Padding-Maske, nicht ein Eintrag in $V$."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die Maske hat hier die Batch- und Sequenzdimensionen der zwei beziehungsweise fünf Positionen; $V$ legt ihre Shape nicht fest."
+        }
+      ],
+      "typicalErrors": [
+        "Padding als Änderung der Value-Vektoren statt der Scores behandelt",
+        "die maximale Länge fünf mit der Anzahl der Value-Kanäle verwechselt",
+        "Maskenfunktion und Inhaltsmatrix im Attention-Ablauf vertauscht"
       ],
       "tolerancePolicy": {
         "mode": "none"

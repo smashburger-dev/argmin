@@ -12,10 +12,15 @@
       {
         "caseId": "char-encode-roundtrip",
         "propertyTest": false
+      },
+      {
+        "caseId": "subword-unk-roundtrip",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-tokenizer",
@@ -71,6 +76,57 @@
         "<eos> pro Wort statt einmal am Ende",
         "Marker als Leerzeichen am Satzende",
         "unbekannte IDs stillschweigend überlesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "subword-unk-roundtrip",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\n\n\ndef encode(tokens, vocab):\n    ...\n\n\ndef decode(ids, inverse_vocab):\n    ...\n",
+        "tests": "vocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\nids = encode([\"hello\", \"new\", \"world\"], vocab)\n__check('unbekanntes Token', ids == [2, 1, 3])\n__check('Round-Trip bekannt', decode(ids, inverse) == [\"hello\", \"<unk>\", \"world\"])\n__check('Pad bleibt erhalten', decode(encode([\"<pad>\"], vocab), inverse) == [\"<pad>\"])\n"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def encode(tokens, vocab):\n    return [vocab.get(token, vocab[\"<unk>\"]) for token in tokens]\n\ndef decode(ids, inverse_vocab):\n    return [inverse_vocab[int(index)] for index in ids]\n"
+      },
+      "prompt": "Implementiere eine deterministische Token-zu-ID- und ID-zu-Token-Rundreise mit einem festen Vokabular. Unbekannte Tokens müssen auf <code>&lt;unk&gt;</code> fallen.",
+      "fullSolution": "encode verwendet die vorhandene <code>&lt;unk&gt;</code>-ID für nicht bekannte Tokens. decode liest die Integer-IDs über das inverse Vokabular zurück; dadurch bleibt auch ein unbekannter Token als <code>&lt;unk&gt;</code> sichtbar.",
+      "hints": [
+        "Nutze vocab.get mit der bekannten UNK-ID.",
+        "Das inverse Vokabular wird aus ID zu Token aufgebaut; IDs nicht in der Eingabeliste gehen nicht verloren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "unknown-crash",
+          "then": "Das Token new fehlt im konkreten Vokabular und muss auf ID 1 statt auf einen Absturz abgebildet werden."
+        },
+        {
+          "if": "roundtrip-loses-unk",
+          "then": "Die Rückgabe für ID 1 muss <code>&lt;unk&gt;</code> enthalten, damit die unbekannte Stelle erkennbar bleibt."
+        },
+        {
+          "if": "pad-remapped",
+          "then": "Die feste ID 0 gehört im Test zu <code>&lt;pad&gt;</code> und darf nicht mit der UNK-ID vertauscht werden."
+        }
+      ],
+      "typicalErrors": [
+        "unbekannte Tokens mit KeyError statt UNK behandelt",
+        "UNK beim Decoding durch ein normales Wort ersetzt",
+        "Pad- und UNK-IDs vertauscht"
       ],
       "tolerancePolicy": {
         "mode": "tests"

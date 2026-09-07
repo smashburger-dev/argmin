@@ -12,10 +12,15 @@
       {
         "caseId": "bpe-merge-apply",
         "propertyTest": false
+      },
+      {
+        "caseId": "bpe-merge-tie-order",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "stretch"
+      "stretch",
+      "core"
     ],
     "competencyIds": [
       "c-dl-tokenizer",
@@ -71,6 +76,57 @@
         "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)",
         "überlappende Vorkommen doppelt verschmolzen",
         "End-of-Word-Marker unterschlagen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "bpe-merge-tie-order",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def apply_merges(symbols, merges):\n    ...\n",
+        "tests": "__check('Tie folgt Tabellenreihenfolge', apply_merges([\"a\", \"b\", \"c\"], [(\"a\", \"b\"), (\"b\", \"c\")]) == [\"ab\", \"c\"])\n__check('zweiter Merge sieht erstes Ergebnis', apply_merges([\"a\", \"b\", \"c\"], [(\"a\", \"b\"), (\"ab\", \"c\")]) == [\"abc\"])\n__check('nicht ueberlappend', apply_merges([\"a\", \"a\", \"a\"], [(\"a\", \"a\")]) == [\"aa\", \"a\"])\n__check('kein Merge unveraendert', apply_merges([\"x\", \"y\"], [(\"a\", \"b\")]) == [\"x\", \"y\"])\n"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer",
+        "c-python-collections"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def apply_merges(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n"
+      },
+      "prompt": "Wende eine geordnete BPE-Mergetabelle auf eine Symbolfolge an. Bei einem Tie entscheidet die Tabellenreihenfolge; Treffer werden links-nach-rechts und nicht überlappend zusammengeführt.",
+      "fullSolution": "Jeder Merge läuft über die aktuelle Symbolfolge. Ein Treffer erzeugt ein kombiniertes Symbol und springt um zwei Positionen weiter; danach wird der nächste Merge auf die neue Folge angewendet.",
+      "hints": [
+        "Arbeite mit einer neuen Ausgabeliste pro Mergerunde.",
+        "Nach einem Treffer zwei Eingabesymbole verbrauchen; so wird aa a nicht zu einem überlappenden Dreifach-Merge."
+      ],
+      "feedbackRules": [
+        {
+          "if": "table-reordered",
+          "then": "Bei [a,b,c] und den zwei Kandidaten wird zuerst (a,b) nach Tabellenreihenfolge verarbeitet, nicht der zweite Pair-Kandidat."
+        },
+        {
+          "if": "overlapping-merged",
+          "then": "Die Folge [a,a,a] ergibt mit (a,a) genau [aa,a], weil das erste Paar die nächste Position überspringt."
+        },
+        {
+          "if": "new-pair-skipped",
+          "then": "Nach (a,b) entsteht ab; der folgende Merge (ab,c) darf dieses neue Symbol in der nächsten Runde verwenden."
+        }
+      ],
+      "typicalErrors": [
+        "Mergetabelle nach eigener Häufigkeitsannahme sortiert",
+        "überlappende Symbole mehrfach im selben Durchlauf verbraucht",
+        "neu entstandenes Paar nicht in der nächsten Mergerunde berücksichtigt"
       ],
       "tolerancePolicy": {
         "mode": "tests"
