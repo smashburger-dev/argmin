@@ -99,7 +99,304 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "logits": [
+              1.2,
+              4.0,
+              0.1
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es zieht ein Token zufällig, proportional zu den Softmax-Wahrscheinlichkeiten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es wählt gelegentlich das Token mit der niedrigsten Punktzahl, um Wiederholungen zu vermeiden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es generiert mehrere Kandidatenfolgen parallel und wählt am Ende die beste.",
+              "correct": false
+            }
+          ],
+          "prompt": "Logits $[1{,}2,\\ 4{,}0,\\ 0{,}1]$. Was tut Greedy Decoding in diesem Schritt?",
+          "fullSolution": "Argmax wählt Index 1 (Wert 4,0). Kein Sampling, kein Beam."
+        },
+        {
+          "parameters": {
+            "logits": [
+              0.51,
+              0.49
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es zieht proportional zu 0,51 und 0,49.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Es nimmt das seltenere Token zur Diversity.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es startet Beam-2, weil der Abstand klein ist.",
+              "correct": false
+            }
+          ],
+          "prompt": "Zwei Tokens mit Logits $0{,}51$ und $0{,}49$. Greedy?",
+          "fullSolution": "Immer das 0,51-Token, ohne Zufall. Knappheit ändert die Regel nicht."
+        },
+        {
+          "parameters": {
+            "task": "ocr"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es sammelt aus den Top-5.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es würfelt mit Temperatur 1,2.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Es hält vier Hypothesen (Beam 4).",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein OCR-Decoder soll reproduzierbare Zeichen liefern. Welche Strategie ist Greedy?",
+          "fullSolution": "Pro Schritt argmax. Sampling und Beam sind andere Verfahren."
+        },
+        {
+          "parameters": {
+            "do_sample": false
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Top-k=50 bleibt aktiv.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Temperatur skaliert weiter die Würfel.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beam-Search startet automatisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Chat-Modell setzt <code>do_sample=False</code>. Welches Decoding ist das?",
+          "fullSolution": "Greedy-Argmax, reproduzierbar. Sampling-Schalter aus bedeutet nicht Beam."
+        },
+        {
+          "parameters": {
+            "task": "code-complete"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es zieht multinomial trotz gleicher Logits unterschiedlich.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Greedy ist Beam mit $k=\\infty$.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Greedy braucht Temperatur $0{,}7$.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Code-LM ergänzt <code>return</code>. Greedy vs. Sampling bei identischen Logits?",
+          "fullSolution": "Greedy liefert immer dasselbe Token. Temperatur gehört zum Sampling."
+        },
+        {
+          "parameters": {
+            "task": "mt-local-vs-global"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Greedy maximiert immer den Satzscore exakt über alle $|V|^T$ Folgen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Greedy ist Exhaustive Search.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Greedy speichert alle Präfixe wie Beam.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum ist reines Greedy nicht dasselbe wie „beste Sequenz“, obwohl es pro Schritt das Maximum nimmt?",
+          "fullSolution": "Lokal argmax $\\neq$ globaler Sequenzscore. Die Schrittregel selbst bleibt: ein Token, das Maximum, determiniert."
+        },
+        {
+          "parameters": {
+            "stop": "eos"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Stop, sobald irgendein Token in Top-5 EOS ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Greedy ignoriert EOS immer.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Stop nach genau 4 Tokens (Beam-Konvention).",
+              "correct": false
+            }
+          ],
+          "prompt": "Greedy mit EOS-Token. Welche Beschreibung der Strategie bleibt richtig?",
+          "fullSolution": "Weiter argmax bis EOS oder max_len. Kein Top-5-Lookahead."
+        },
+        {
+          "parameters": {
+            "vs": "beam-2"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Greedy hält unendlich viele Präfixe.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Beam-2 ist Sampling mit $k=2$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bei $T=1$ sind Greedy und Beam identisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            }
+          ],
+          "prompt": "Unterschied Greedy vs. Beam-2 — was bleibt die Greedy-Regel?",
+          "fullSolution": "Greedy hält 1 Präfix und nimmt argmax. Beam hält 2 Kandidatenfolgen."
+        },
+        {
+          "parameters": {
+            "task": "definition-pin"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es zieht ein Token zufällig, proportional zu den Softmax-Wahrscheinlichkeiten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es wählt gelegentlich das Token mit der niedrigsten Punktzahl.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es generiert mehrere Kandidatenfolgen parallel und wählt am Ende die beste.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Decoder hat in Schritt $t$ die Logits $[2{,}1,\\ 0{,}4,\\ 1{,}8]$ und arbeitet greedy. Was zeichnet die Strategie aus?",
+          "fullSolution": "Argmax $\\to$ 2,1. Deterministisch, kein Nucleus, kein Beam."
+        }
+      ]
     },
     {
       "caseId": "decoding-temperature-low",
@@ -168,7 +465,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "temperature": 0.2
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Tokenreihenfolge wird zufällig neu gemischt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alle Token erhalten exakt dieselbe Wahrscheinlichkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Wahrscheinlichkeitsverteilung wird zwingend flacher.",
+              "correct": false
+            }
+          ],
+          "prompt": "Dieselben Logits, aber $T=0{,}2$ statt $T=1$. Welche Wirkung ist zu erwarten?",
+          "fullSolution": "Division der Logits durch 0,2 vergrößert Abstände. Softmax spitzer, nicht flacher."
+        },
+        {
+          "parameters": {
+            "temperature": 0.7
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Tokenpositionen werden permutiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Softmax wird uniform.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "T<1 ist dasselbe wie top-k.",
+              "correct": false
+            }
+          ],
+          "prompt": "Sampling mit $T=0{,}7$. Effekt gegenüber $T=1$?",
+          "fullSolution": "Spitzer. $T<1$ schneidet keine Tokens hart ab (das wäre top-k)."
+        },
+        {
+          "parameters": {
+            "temperature": 0.3,
+            "task": "form-field"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Reihenfolge der Tokens im Prompt ändert sich.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Klassen werden gleich wahrscheinlich.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "T unter 1 macht Softmax ungültig.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Formularfeld soll stabile Ziffern; der Decoder nutzt $T=0{,}3$. Was passiert mit der Softmax?",
+          "fullSolution": "Schärfer, Mode wird wahrscheinlicher. Softmax bleibt definiert."
+        },
+        {
+          "parameters": {
+            "temperature": 0.8,
+            "compare": 1.2
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Tokenreihenfolge wird neu gemischt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "0,8 und 1,2 sind identisch, T skaliert nur die Lernrate.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur ganzzahlige T ändern etwas; 0,8 ist wirkungslos.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            }
+          ],
+          "prompt": "Vergleich $T=0{,}8$ gegen $T=1{,}2$ bei gleichen Logits. Welche Aussage zur Schärfe?",
+          "fullSolution": "0,8 ist schärfer als 1,2. $T>1$ glättet, $T<1$ spitzt."
+        },
+        {
+          "parameters": {
+            "temperature": 0.5,
+            "logits": [
+              2,
+              1,
+              0
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "p(max) fällt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "p bleibt exakt gleich, T ist nur ein Seed.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Softmax wird zur Uniformverteilung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Logits $[2,\\ 1,\\ 0]$, $T=0{,}5$ statt 1. Was passiert mit $p$ des Maximums?",
+          "fullSolution": "Sie steigt. $z/T$ spreizt 2 vs. 0 stärker als bei $T=1$."
+        },
+        {
+          "parameters": {
+            "temperature": 0.4
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Seltene Tokens werden häufiger gezogen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Negative Logits werden positiv.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "EOS wird verboten.",
+              "correct": false
+            }
+          ],
+          "prompt": "$T=0{,}4$ beim Sampling, gleiche Logits wie bei $T=1$. Vergleich?",
+          "fullSolution": "Seltene Tokens noch seltener. Keine Vorzeichenflip-Regel, kein EOS-Verbot."
+        },
+        {
+          "parameters": {
+            "temperature": 0.1,
+            "limit": true
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Sequenz wird zufällig umsortiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Wahrscheinlichkeiten werden 0.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "T→0 schaltet auf top-k ohne Renormierung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Sehr kleines $T=0{,}1$ (Richtung $T\\to 0^+$). Was passiert mit der Softmax-Form?",
+          "fullSolution": "Immer spitzer, Grenze Einheitsmasse auf einem argmax-Token. Das ist der Trend von $T<1$, noch nicht „Greedy ohne Verteilung“ als Algorithmuswechsel."
+        },
+        {
+          "parameters": {
+            "temperature": 0.6,
+            "vs_greedy": true
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "T<1 ist mathematisch identisch zu argmax ohne Restverteilung.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "T<1 schaltet Softmax ab.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "T<1 erzwingt Beam.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            }
+          ],
+          "prompt": "Warum bleibt $T=0{,}6$-Sampling trotz Schärfe etwas anderes als Greedy?",
+          "fullSolution": "Es bleibt eine (spitze) Verteilung zum Ziehen. Greedy würfelt nicht. Die qualitative Wirkung von $T<1$ ist trotzdem: spitzer."
+        },
+        {
+          "parameters": {
+            "temperature": 0.25
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Tokenreihenfolge wird zufällig neu gemischt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alle Token erhalten exakt dieselbe Wahrscheinlichkeit.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Wahrscheinlichkeitsverteilung wird zwingend flacher.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Decoder verwendet dieselben Logits, aber Temperatur $T=0{,}25$ statt $T=1$. Welche Wirkung ist zu erwarten?",
+          "fullSolution": "Logits$/0{,}25$ spreizen. Softmax spitzer, Top-Tokens stärker — das Gegenteil von $T>1$."
+        }
+      ]
     },
     {
       "caseId": "decoding-top-k",
@@ -237,7 +833,305 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "k": 5
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Top-k setzt die fünf wahrscheinlichsten Tokens immer auf je $0{,}2$.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Tokens außer den fünf wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Top-k wählt stets deterministisch den ersten Kandidaten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Top-k verändert nur die Temperatur, aber nicht die erlaubten Tokens.",
+              "correct": false
+            }
+          ],
+          "prompt": "Top-k-Decoding mit $k=5$: nach der Softmax wird nur aus den fünf höchsten Tokens gezogen. Welche Aussage trifft zu?",
+          "fullSolution": "Harter Schnitt, Rest 0, dann Renorm der fünf. Nicht Uniform 1/5, nicht Greedy, nicht bloße Temperatur."
+        },
+        {
+          "parameters": {
+            "k": 8
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die acht Sieger werden auf je $1/8$ gesetzt unabhängig von den Rohmassen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Top-8 ist Greedy mit acht Gewinnern gleichzeitig.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alle Tokens außer den acht wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "k ersetzt die Temperatur und lässt den Schwanz stehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Dialog-Modell, top-k $=8$. Was passiert mit Token 9 und schlechter?",
+          "fullSolution": "Wahrscheinlichkeit 0, die acht Restmassen werden neu normiert."
+        },
+        {
+          "parameters": {
+            "k": 3,
+            "masses": [
+              0.4,
+              0.1,
+              0.1,
+              0.4
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die drei behalten 0,4, 0,1, 0,1 unverändert (Summe 0,6).",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Es wird 1, 0, 0 daraus (Greedy).",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es wird zwingend Uniform $1/3$, unabhängig von den Massen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Alle Tokens außer den drei wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            }
+          ],
+          "prompt": "Nach Softmax: drei Top-Tokens $0{,}4, 0{,}1, 0{,}1$, Restmasse $0{,}4$, $k=3$. Was gilt für die gestrichenen Tokens?",
+          "fullSolution": "Ihre Wahrscheinlichkeit wird 0. Die drei Sieger werden auf Summe 1 renormalisiert (nicht automatisch uniform)."
+        },
+        {
+          "parameters": {
+            "k": 40,
+            "temperature": 0.9
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Tokens außer den 40 wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Top-k ersetzt Softmax vollständig.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Renorm vor dem Schnitt macht den Schnitt wirkungslos.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "k wirkt nur auf die Batch-Achse.",
+              "correct": false
+            }
+          ],
+          "prompt": "$k=40$ und zusätzlich $T=0{,}9$. Was bleibt die Top-k-Aussage über unerlaubte Tokens?",
+          "fullSolution": "Nach (skalierter) Softmax: Schnitt auf 40, Rest 0, Renorm. Temperatur allein würde den Schwanz nicht hart kappen."
+        },
+        {
+          "parameters": {
+            "k": 10
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die zehn werden auf je $0{,}1$ gesetzt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Tokens außer den zehn wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Top-10 wählt deterministisch Token 1.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur T ändert sich, alle Tokens bleiben erlaubt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Beim Top-k-Decoding mit $k=10$ wird nur aus den zehn höchsten Tokens gezogen. Welche Aussage trifft zu?",
+          "fullSolution": "Die anderen $|V|-10$ Tokens haben Auswahlwahrscheinlichkeit 0. Renorm der zehn, nicht Greedy."
+        },
+        {
+          "parameters": {
+            "k": 50,
+            "vs_p": true
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "k zählt Masse wie Nucleus-p.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Top-50 ist identisch zu Greedy.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alle Tokens außer den 50 wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Top-50 ändert $d_{model}$.",
+              "correct": false
+            }
+          ],
+          "prompt": "top-k $=50$ vs. Nucleus (top-p). Welche k-spezifische Aussage stimmt?",
+          "fullSolution": "k zählt Tokens: alles hinter Platz 50 hat Wahrscheinlichkeit 0. p würde Masse zählen, nicht eine feste Tokenzahl."
+        },
+        {
+          "parameters": {
+            "k": 20
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die 20 Sieger werden auf je $0{,}05$ gesetzt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Top-20 ist deterministisches Greedy.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur die Temperatur ändert sich.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Alle Tokens außer den 20 wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            }
+          ],
+          "prompt": "Top-k mit $k=20$. Welche Aussage über die restlichen Tokens trifft zu?",
+          "fullSolution": "Auswahlwahrscheinlichkeit 0, danach Renorm der 20. Weder Uniform noch Greedy."
+        },
+        {
+          "parameters": {
+            "k": 7
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alle Tokens außer den sieben wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die sieben werden auf je $1/7$ gesetzt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Top-7 wählt stets den ersten Kandidaten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "k ändert nur T, alle Tokens bleiben erlaubt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Beim Top-k-Decoding wird für $k=7$ nach der Softmax nur aus den sieben höchstwahrscheinlichen Tokens gezogen. Welche Aussage trifft zu?",
+          "fullSolution": "Die übrigen Tokens haben Wahrscheinlichkeit 0; die sieben werden renormalisiert. Das ist nicht Greedy und nicht Uniform."
+        },
+        {
+          "parameters": {
+            "k": 4
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Top-k setzt die vier wahrscheinlichsten Tokens immer auf je $0{,}25$.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Tokens außer den vier wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Top-k wählt stets deterministisch den ersten Kandidaten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Top-k verändert nur die Temperatur, aber nicht die erlaubten Tokens.",
+              "correct": false
+            }
+          ],
+          "prompt": "Beim Top-k-Decoding wird für $k=4$ nach der Softmax nur aus den vier höchstwahrscheinlichen Tokens gezogen. Welche Aussage trifft zu?",
+          "fullSolution": "Harter Schnitt auf vier Kandidaten, Rest null, dann Renorm. Relative Massen der Vier bleiben, sie werden nicht zwingend gleich."
+        }
+      ]
     }
   ]
 }

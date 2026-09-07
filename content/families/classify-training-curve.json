@@ -101,7 +101,434 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "train": [
+              0.9,
+              0.62,
+              0.44,
+              0.32,
+              0.25,
+              0.2
+            ],
+            "val": [
+              0.93,
+              0.65,
+              0.5,
+              0.54,
+              0.63,
+              0.76
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting ab etwa Epoche 3: der Trainingsverlust fällt weiter, der Validierungsverlust steigt wieder — das Modell memoriert Trainingsrauschen; frühes Stoppen oder Regularisierung sind Kandidaten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Underfitting: beide Verluste sind zu hoch, das Modell ist zu schwach und braucht mehr Kapazität.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Lernrate zu groß: die Werte oszillieren stark oder explodieren — das ist das typische Instabilitätsmuster.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Leakage: der Validierungsverlust liegt unter dem Trainingsverlust, also sind Validierungsdaten ins Training gesickert.",
+              "correct": false
+            }
+          ],
+          "prompt": "Lernkurve als Zahlenliste: Trainingsverlust $[0{,}90,\\ 0{,}62,\\ 0{,}44,\\ 0{,}32,\\ 0{,}25,\\ 0{,}20]$, Validierungsverlust $[0{,}93,\\ 0{,}65,\\ 0{,}50,\\ 0{,}54,\\ 0{,}63,\\ 0{,}76]$. Was ist die korrekte Diagnose?",
+          "fullSolution": "Train fällt monoton (0,90 → 0,20). Val fällt bis Epoche 3 (0,50) und steigt dann (0,76). Das Auseinanderlaufen ist Overfitting; Early Stopping um Epoche 3 oder Regularisierung."
+        },
+        {
+          "parameters": {
+            "train": [
+              1.1,
+              0.7,
+              0.48,
+              0.35,
+              0.26,
+              0.19
+            ],
+            "val": [
+              1.12,
+              0.74,
+              0.55,
+              0.51,
+              0.59,
+              0.71
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: beide Verluste sind zu hoch und flach.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Overfitting ab etwa Epoche 4: der Trainingsverlust fällt weiter, der Validierungsverlust steigt wieder — das Modell memoriert Trainingsrauschen; frühes Stoppen oder Regularisierung sind Kandidaten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Lernrate zu groß: oszillierende oder explodierende Werte.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Leakage: der Validierungsverlust liegt unter dem Trainingsverlust.",
+              "correct": false
+            }
+          ],
+          "prompt": "Trainingsverlust $[1{,}10,\\ 0{,}70,\\ 0{,}48,\\ 0{,}35,\\ 0{,}26,\\ 0{,}19]$, Validierungsverlust $[1{,}12,\\ 0{,}74,\\ 0{,}55,\\ 0{,}51,\\ 0{,}59,\\ 0{,}71]$. Was ist die korrekte Diagnose?",
+          "fullSolution": "Val-Minimum in Epoche 4 (0,51), danach Anstieg bei weiter fallendem Train. Overfitting-Signal, nicht Instabilität (keine Oszillation)."
+        },
+        {
+          "parameters": {
+            "train": [
+              0.75,
+              0.5,
+              0.36,
+              0.27,
+              0.21,
+              0.16
+            ],
+            "val": [
+              0.78,
+              0.53,
+              0.42,
+              0.47,
+              0.56,
+              0.69
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: beide Kurven hoch und flach.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lernrate zu groß: Explosion oder starkes Pendeln.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Overfitting ab etwa Epoche 3: Train fällt weiter, Val steigt wieder — Early Stopping oder Regularisierung sind Kandidaten.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Leakage: Val liegt durchgehend unter Train.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Klassifikator loggt Train $[0{,}75,\\ 0{,}50,\\ 0{,}36,\\ 0{,}27,\\ 0{,}21,\\ 0{,}16]$ und Val $[0{,}78,\\ 0{,}53,\\ 0{,}42,\\ 0{,}47,\\ 0{,}56,\\ 0{,}69]$. Welche Diagnose passt?",
+          "fullSolution": "Val-Tief bei 0,42 (Epoche 3), danach Anstieg auf 0,69 bei weiter fallendem Train. Klassisches Overfitting, kein Leakage (Val bleibt über Train)."
+        },
+        {
+          "parameters": {
+            "train": [
+              2.0,
+              1.2,
+              0.8,
+              0.55,
+              0.4,
+              0.3
+            ],
+            "val": [
+              2.1,
+              1.25,
+              0.9,
+              0.88,
+              1.05,
+              1.3
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: beide Verluste bleiben hoch und flach.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lernrate zu groß: die Werte oszillieren stark oder explodieren.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Leakage: der Validierungsverlust liegt unter dem Trainingsverlust.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Overfitting ab etwa Epoche 4: der Trainingsverlust fällt weiter, der Validierungsverlust steigt wieder — frühes Stoppen oder Regularisierung sind Kandidaten.",
+              "correct": true
+            }
+          ],
+          "prompt": "Cross-Entropy Train $[2{,}00,\\ 1{,}20,\\ 0{,}80,\\ 0{,}55,\\ 0{,}40,\\ 0{,}30]$, Val $[2{,}10,\\ 1{,}25,\\ 0{,}90,\\ 0{,}88,\\ 1{,}05,\\ 1{,}30]$. Was ist die korrekte Diagnose?",
+          "fullSolution": "Val fällt bis 0,88 und steigt dann, Train fällt weiter auf 0,30. Overfitting ab Epoche 4."
+        },
+        {
+          "parameters": {
+            "train": [
+              0.64,
+              0.41,
+              0.29,
+              0.22,
+              0.17,
+              0.13
+            ],
+            "val": [
+              0.66,
+              0.44,
+              0.34,
+              0.38,
+              0.49,
+              0.62
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting ab etwa Epoche 3: Train fällt weiter, Val steigt wieder — das Modell memoriert Trainingsrauschen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Underfitting: beide Verluste sind zu hoch, das Modell ist zu schwach.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Lernrate zu groß: Instabilität durch Oszillation oder Explosion.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Leakage: Val liegt unter Train, Validierungsdaten sind ins Training gesickert.",
+              "correct": false
+            }
+          ],
+          "prompt": "MSE-Kurven Train $[0{,}64,\\ 0{,}41,\\ 0{,}29,\\ 0{,}22,\\ 0{,}17,\\ 0{,}13]$, Val $[0{,}66,\\ 0{,}44,\\ 0{,}34,\\ 0{,}38,\\ 0{,}49,\\ 0{,}62]$. Was ist die korrekte Diagnose?",
+          "fullSolution": "Val-Minimum 0,34, danach Anstieg. Train monoton nach unten. Overfitting, nicht Underfitting (Train wird klein)."
+        },
+        {
+          "parameters": {
+            "train": [
+              0.88,
+              0.58,
+              0.4,
+              0.29,
+              0.22,
+              0.17,
+              0.13
+            ],
+            "val": [
+              0.9,
+              0.61,
+              0.46,
+              0.44,
+              0.5,
+              0.6,
+              0.74
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: beide Kurven hoch und flach.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Overfitting ab etwa Epoche 4: Train fällt weiter, Val steigt wieder — Early Stopping oder Regularisierung.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Lernrate zu groß: oszillierende oder explodierende Verluste.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Leakage: Val unter Train.",
+              "correct": false
+            }
+          ],
+          "prompt": "Sieben Epochen, Train $[0{,}88,\\ 0{,}58,\\ 0{,}40,\\ 0{,}29,\\ 0{,}22,\\ 0{,}17,\\ 0{,}13]$, Val $[0{,}90,\\ 0{,}61,\\ 0{,}46,\\ 0{,}44,\\ 0{,}50,\\ 0{,}60,\\ 0{,}74]$. Welche Diagnose?",
+          "fullSolution": "Val-Tief in Epoche 4 (0,44), danach Auseinanderlaufen. Gesundes Lernen wäre gemeinsames Fallen."
+        },
+        {
+          "parameters": {
+            "train": [
+              0.51,
+              0.33,
+              0.24,
+              0.18,
+              0.14,
+              0.11
+            ],
+            "val": [
+              0.55,
+              0.36,
+              0.31,
+              0.35,
+              0.44,
+              0.57
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: beide Verluste bleiben hoch.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lernrate zu groß: Explosion oder Pendeln.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Overfitting ab etwa Epoche 3: Train fällt, Val steigt nach einem Tief — Memorieren, nicht Instabilität.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Leakage: Val durchgehend unter Train.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Fine-Tuning loggt Train $[0{,}51,\\ 0{,}33,\\ 0{,}24,\\ 0{,}18,\\ 0{,}14,\\ 0{,}11]$ und Val $[0{,}55,\\ 0{,}36,\\ 0{,}31,\\ 0{,}35,\\ 0{,}44,\\ 0{,}57]$. Was ist die korrekte Diagnose?",
+          "fullSolution": "Val-Minimum 0,31, dann Anstieg bei weiter fallendem Train. Overfitting-Muster."
+        },
+        {
+          "parameters": {
+            "train": [
+              1.4,
+              0.95,
+              0.68,
+              0.5,
+              0.38,
+              0.28
+            ],
+            "val": [
+              1.45,
+              0.98,
+              0.72,
+              0.7,
+              0.82,
+              0.99
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: beide Verluste zu hoch und flach.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lernrate zu groß: Oszillation oder Explosion.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Leakage: Val liegt unter Train.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Overfitting ab etwa Epoche 4: Train fällt weiter, Val steigt wieder — Early Stopping oder Regularisierung.",
+              "correct": true
+            }
+          ],
+          "prompt": "Token-NLL Train $[1{,}40,\\ 0{,}95,\\ 0{,}68,\\ 0{,}50,\\ 0{,}38,\\ 0{,}28]$, Val $[1{,}45,\\ 0{,}98,\\ 0{,}72,\\ 0{,}70,\\ 0{,}82,\\ 0{,}99]$. Was ist die korrekte Diagnose?",
+          "fullSolution": "Val fällt bis 0,70 und steigt dann. Train fällt weiter. Overfitting, keine LR-Explosion (monotone Richtungen)."
+        },
+        {
+          "parameters": {
+            "train": [
+              0.7,
+              0.48,
+              0.35,
+              0.27,
+              0.21,
+              0.17
+            ],
+            "val": [
+              0.74,
+              0.52,
+              0.41,
+              0.45,
+              0.55,
+              0.68
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting ab etwa Epoche 3: der Trainingsverlust fällt weiter, der Validierungsverlust steigt wieder.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Underfitting: beide Verluste sind zu hoch, das Modell braucht mehr Kapazität.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Lernrate zu groß: oszillierende oder explodierende Werte.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Leakage: Val liegt unter Train.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nach sechs Epochen steht Train $[0{,}70,\\ 0{,}48,\\ 0{,}35,\\ 0{,}27,\\ 0{,}21,\\ 0{,}17]$ gegen Val $[0{,}74,\\ 0{,}52,\\ 0{,}41,\\ 0{,}45,\\ 0{,}55,\\ 0{,}68]$. Welche Diagnose ist korrekt?",
+          "fullSolution": "Val-Tief 0,41, danach Anstieg auf 0,68 bei fallendem Train. Overfitting-Signal."
+        }
+      ]
     },
     {
       "caseId": "training-curve-overfit",
@@ -172,7 +599,315 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "epoch": 15,
+            "trainLoss": 0.08,
+            "validationLoss": 0.55
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist mathematisch bewiesen, sobald die Lücke 0,47 beträgt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nach 15 Epochen liegt der Trainingsverlust bei $0{,}08$, der Validierungsverlust bei $0{,}55$; beide Kurven fielen anfangs gemeinsam. Welche Diagnose passt?",
+          "fullSolution": "Niedriger Train, deutlich höherer Val nach gemeinsamem Start: Overfitting. Die Lücke beweist kein Leakage."
+        },
+        {
+          "parameters": {
+            "epoch": 30,
+            "trainLoss": 0.05,
+            "validationLoss": 0.72
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist bewiesen, sobald die Lücke 0,67 beträgt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nach 30 Epochen: Train $0{,}05$, Val $0{,}72$. Früher fielen beide. Welche Diagnose passt?",
+          "fullSolution": "Train fast null, Val hoch: Overfitting, nicht Underfitting (Underfitting hätte hohen Train-Fehler)."
+        },
+        {
+          "parameters": {
+            "epoch": 12,
+            "trainLoss": 0.18,
+            "validationLoss": 0.49
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Datenleck ist mathematisch bewiesen, sobald die Lücke 0,31 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            }
+          ],
+          "prompt": "Nach 12 Epochen Train $0{,}18$ gegen Val $0{,}49$; der gemeinsame Abfall stoppte, Val steigt. Welche Diagnose passt?",
+          "fullSolution": "Auseinanderlaufen nach gemeinsamem Fall: Overfitting. Lücke 0,31 ist Hinweis, kein Leakage-Beweis."
+        },
+        {
+          "parameters": {
+            "epoch": 25,
+            "trainLoss": 0.09,
+            "validationLoss": 0.81
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist bewiesen durch die Lücke 0,72.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein CNN erreicht nach 25 Epochen Train-CE $0{,}09$ und Val-CE $0{,}81$. Anfangs fielen beide. Welche Diagnose passt?",
+          "fullSolution": "Große Train-Val-Lücke bei kleinem Train: Overfitting. Früher gemeinsamer Fall rettet die Generalisierung nicht."
+        },
+        {
+          "parameters": {
+            "epoch": 40,
+            "trainLoss": 0.04,
+            "validationLoss": 0.6
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist bewiesen, sobald die Lücke 0,56 beträgt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Transformer-Fine-Tuning, Epoche 40: Train $0{,}04$, Val $0{,}60$. Welche Diagnose passt?",
+          "fullSolution": "Sehr gute Train-Anpassung, schlechte Val: Overfitting. Kleiner Train-Verlust ist das Gegenteil von Underfitting."
+        },
+        {
+          "parameters": {
+            "epoch": 8,
+            "trainLoss": 0.22,
+            "validationLoss": 0.58
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist mathematisch bewiesen, sobald die Lücke 0,36 beträgt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Schon nach 8 Epochen Train $0{,}22$ vs. Val $0{,}58$, nachdem beide zuerst sanken. Welche Diagnose passt?",
+          "fullSolution": "Auch früh kann Overfitting starten, sobald Val steigt und Train weiter fällt."
+        },
+        {
+          "parameters": {
+            "epoch": 18,
+            "trainLoss": 0.11,
+            "validationLoss": 0.47
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Datenleck ist bewiesen durch die Lücke 0,36.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            }
+          ],
+          "prompt": "Nach 18 Epochen Train-MSE $0{,}11$, Val-MSE $0{,}47$. Anfangs gemeinsam fallend. Welche Diagnose passt?",
+          "fullSolution": "Niedrig-hoch nach gemeinsamem Start: Overfitting, kein Leakage-Beweis aus der Differenz allein."
+        },
+        {
+          "parameters": {
+            "epoch": 22,
+            "trainLoss": 0.07,
+            "validationLoss": 0.91
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist mathematisch bewiesen, sobald die Lücke 0,84 beträgt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nach 22 Epochen Train $0{,}07$ und Val $0{,}91$. Welche Diagnose passt?",
+          "fullSolution": "Extreme Lücke bei winzigem Train: Overfitting. Underfitting würde Train nicht so klein machen."
+        },
+        {
+          "parameters": {
+            "epoch": 16,
+            "trainLoss": 0.14,
+            "validationLoss": 0.66
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting, weil der Trainingsverlust bereits klein ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Overfitting: Das Modell passt die Trainingsdaten deutlich besser als die Validierungsdaten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Generalisierung, weil beide Kurven am Anfang fielen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Datenleck ist bewiesen, sobald die Lücke 0,52 beträgt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Epoche 16: Trainverlust $0{,}14$, Valverlust $0{,}66$; der frühe gemeinsame Abfall ist vorbei. Welche Diagnose passt?",
+          "fullSolution": "Auseinanderlaufen mit gutem Train-Fit: Overfitting."
+        }
+      ]
     },
     {
       "caseId": "training-curve-underfit",
@@ -242,7 +977,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "trainLoss": 0.71,
+            "validationLoss": 0.74
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Overfitting, weil der Validierungsverlust größer als der Trainingsverlust ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,03 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil Training und Validierung ähnlich aussehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein flaches Netz bleibt über viele Epochen bei Train $0{,}71$ und Val $0{,}74$. Was ist am plausibelsten?",
+          "fullSolution": "Hoch-hoch mit kleiner Lücke: Underfitting. Die 0,03-Differenz ist kein Overfitting."
+        },
+        {
+          "parameters": {
+            "trainLoss": 0.88,
+            "validationLoss": 0.9
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting, weil Val größer als Train ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,02 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil die Kurven ähnlich sind.",
+              "correct": false
+            }
+          ],
+          "prompt": "Lineare Regression auf einem nichtlinearen Problem: Train $0{,}88$, Val $0{,}90$, beide flach. Was ist am plausibelsten?",
+          "fullSolution": "Beide Fehler hoch und nah: zu schwaches Modell / Underfitting, kein Leakage."
+        },
+        {
+          "parameters": {
+            "trainLoss": 1.2,
+            "validationLoss": 1.18
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting, weil zwei Verluste existieren.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Anpassung, weil Val sogar etwas unter Train liegt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Datenleck ist bewiesen, weil die Werte ähnlich sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            }
+          ],
+          "prompt": "Cross-Entropy bleibt bei Train $1{,}20$ und Val $1{,}18$ über 40 Epochen. Was ist am plausibelsten?",
+          "fullSolution": "Beide hoch: Underfitting. Val knapp unter Train beweist kein Leakage (Rauschen möglich) und keine gute Anpassung."
+        },
+        {
+          "parameters": {
+            "trainLoss": 0.55,
+            "validationLoss": 0.57
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Overfitting, weil Val größer als Train ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,02 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil Training und Validierung ähnlich aussehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Baum der Tiefe 2 erreicht Train $0{,}55$ und Val $0{,}57$, ohne weitere Verbesserung. Was ist am plausibelsten?",
+          "fullSolution": "Kapazität zu klein: hoch-hoch, kleine Lücke. Mehr Tiefe/Merkmale prüfen, nicht Early-Stopping gegen Overfit."
+        },
+        {
+          "parameters": {
+            "trainLoss": 0.95,
+            "validationLoss": 0.97
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting, weil der Validierungsverlust größer als der Trainingsverlust ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,02 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil Training und Validierung ähnlich aussehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "LogLoss Train $0{,}95$, Val $0{,}97$, beide Kurven fast horizontal. Was ist am plausibelsten?",
+          "fullSolution": "Kaum Lernfortschritt auf Train: Underfitting. Ähnlichkeit der Kurven ist hier kein Leck."
+        },
+        {
+          "parameters": {
+            "trainLoss": 0.4,
+            "validationLoss": 0.42
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting, weil Val größer als Train ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,02 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil die Kurven ähnlich sind.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bei einem schwierigen Tabellendatensatz bleiben MSE-Train $0{,}40$ und Val $0{,}42$ nach vielen Epochen. Das lineare Modell ändert sich kaum. Was ist am plausibelsten?",
+          "fullSolution": "Beide Werte hoch und nah: eher Underfitting (zu lineare Hypothese) als Overfit."
+        },
+        {
+          "parameters": {
+            "trainLoss": 2.05,
+            "validationLoss": 2.1
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting, weil Val größer als Train ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Anpassung, weil die Differenz klein ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Datenleck ist bewiesen, weil Training und Validierung ähnlich aussehen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Sprachmodell-Kopf bleibt bei NLL Train $2{,}05$ und Val $2{,}10$ stehen. Was ist am plausibelsten?",
+          "fullSolution": "Hohe, ähnliche Verluste: Underfitting oder zu schwacher Kopf, nicht Overfitting (dafür wäre Train viel kleiner)."
+        },
+        {
+          "parameters": {
+            "trainLoss": 0.67,
+            "validationLoss": 0.69
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Overfitting, weil Val größer als Train ist.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,02 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil die Kurven ähnlich sind.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nach Regularisierung mit sehr großem $\\lambda$ liegen Train und Val bei $0{,}67$ bzw. $0{,}69$. Was ist am plausibelsten?",
+          "fullSolution": "Zu starke Strafe kann Underfitting erzeugen: beide Fehler hoch, Lücke klein."
+        },
+        {
+          "parameters": {
+            "trainLoss": 0.58,
+            "validationLoss": 0.61
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Overfitting, weil der Validierungsverlust größer als der Trainingsverlust ist.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Perfekte Anpassung, weil die Differenz nur 0,03 beträgt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Underfitting: Beide Verluste bleiben hoch, ohne dass das Modell die Trainingsdaten gut erklärt.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein Datenleck ist bewiesen, weil Training und Validierung ähnlich aussehen.",
+              "correct": false
+            }
+          ],
+          "prompt": "Train $0{,}58$ und Val $0{,}61$ bleiben über viele Epochen hoch und nah beieinander. Was ist am plausibelsten?",
+          "fullSolution": "Muster hoch-hoch statt niedrig-hoch: Underfitting. Kleine Lücke heißt hier nicht Erfolg."
+        }
+      ]
     }
   ]
 }
