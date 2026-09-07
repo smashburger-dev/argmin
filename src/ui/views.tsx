@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { CatalogData, Competency, EvidenceState, ExerciseSummary, SourceSummary } from '../app/types';
+import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
@@ -28,91 +28,10 @@ function sectionError(view: string) {
   return <p role="alert" class="content-error">{view} konnten nicht geladen werden — bitte die Seite neu laden (Abschnittsdatei fehlt oder Verbindung unterbrochen).</p>;
 }
 import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
-import { buildWeeklyLearningPlan } from '../adapters/learning-plan';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
-import { activityLabel, difficultyLabelFor } from './exercise-context';
-
-const minutesLabel = (minutes: number) => minutes >= 60
-  ? `${Math.round(minutes / 60)} Std.`
-  : `${minutes} Min.`;
-
-function learnerExerciseLabel(exercise: Pick<ExerciseSummary, 'activityType' | 'difficulty'> | undefined) {
-  return exercise
-    ? `${activityLabel(exercise.activityType)} · ${difficultyLabelFor(exercise.difficulty)}`
-    : 'Aufgabe';
-}
-
-export function TodayView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
-  const foundation = catalog.milestones.find((item) => item.milestoneId === 'ms-foundations');
-  const foundationStates = (foundation?.competencyIds || []).map((id) => progress.evidenceStates[id]);
-  const foundationEvidence = foundationStates.filter((state) => state === 'demonstrated' || state === 'retained').length;
-  const foundationPercent = foundationStates.length ? Math.round(foundationEvidence / foundationStates.length * 100) : 0;
-  const plan = useMemo(() => buildWeeklyLearningPlan(catalog, progress), [catalog, progress]);
-  const exerciseById = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
-  const { executable: executableReviews, archived: archivedReviews } = partitionReviewQueue(progress.dueReviews, exerciseById.keys());
-  return (
-    <section class="view" aria-labelledby="today-title">
-      <header class="view-header">
-        <p class="eyebrow">Dein Lernfenster</p>
-        <h1 id="today-title" tabIndex={-1}>Heute</h1>
-        <p class="lede">Eine klare nächste Handlung. Der gesamte Kurs bleibt frei zugänglich.</p>
-      </header>
-      <div class="today-grid">
-        <article class="primary-card">
-          <div>
-            <p class="card-kicker">Empfohlen</p>
-            <h2>Standort bestimmen</h2>
-            <p>Starte mit kurzen Algebra- und Python-Ankern. Danach erklärt die Plattform jede Empfehlung.</p>
-          </div>
-          <div class="actions">
-            <span class="time-chip">15 bis 20 Min.</span>
-            <Button variant="primary" href="#/diagnostic">Diagnose starten</Button>
-          </div>
-        </article>
-        <article class="status-card">
-          <p class="card-kicker">Wiederholen</p>
-          <h2>{executableReviews.length || archivedReviews.length
-            ? `${executableReviews.length} fällig${archivedReviews.length ? ` · ${archivedReviews.length} archiviert` : ''}`
-            : 'Noch nichts fällig'}</h2>
-          <p>{executableReviews.length
-            ? `Als Nächstes: ${executableReviews.slice(0, 3).map((item) => learnerExerciseLabel(exerciseById.get(item.exerciseId))).join(', ')}.`
-            : archivedReviews.length
-              ? 'Alle fälligen Reviews betreffen entfernte Aufgaben. Nicht mehr verfügbar – Verlauf bleibt erhalten.'
-              : 'Fällige Aufgaben-Reviews erscheinen hier; Aufgaben mit Variantengenerator öffnen dann eine frische Instanz.'}</p>
-          <a class="text-link" href="#/review">Review-Queue öffnen</a>
-        </article>
-        <article class="status-card">
-          <p class="card-kicker">Aktueller Milestone</p>
-          <h2>{foundation?.title ?? 'Foundations'}</h2>
-          <p>{foundation?.description}</p>
-          <div class="meter" aria-label={`Foundations: ${foundationPercent} Prozent belegt`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={foundationPercent} role="meter">
-            <span style={{ width: `${foundationPercent}%` }} />
-          </div>
-          <p class="meter-label">{foundationEvidence} von {foundationStates.length} Kompetenzen mit aktuellem Beleg.</p>
-          <a class="text-link" href="#/project/p-foundations-data-checker">CLI-Projekt öffnen</a>
-        </article>
-        <article class="status-card compact-card">
-          <p class="card-kicker">Wochenbudget</p>
-          <p class="budget-number">{progress.weeklyMinutes} <span>Min.</span></p>
-          <p>Das Budget ist editierbar. 600 Minuten sind keine Pflicht.</p>
-          <a class="text-link" href="#/settings">Budget anpassen</a>
-        </article>
-      </div>
-      <section class="weekly-plan" aria-labelledby="weekly-plan-title"><div class="section-heading"><div><p class="eyebrow">Deterministischer Vorschlag</p><h2 id="weekly-plan-title">Dein Wochenplan</h2></div><span>{plan.totalMinutes} von {plan.availableMinutes} Min. verplant</span></div><p class="plan-policy">Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Diese Quote und die Reviewintervalle sind konfigurierbare Produktheuristiken, keine optimalen Lernkonstanten.</p>{plan.days.some((day) => day.items.length) ? <div class="plan-days">{plan.days.filter((day) => day.items.length).map((day) => <article class="plan-day" key={day.day}><p class="card-kicker">Tag {day.day} · {day.minutes} Min.</p><ol>{day.items.map((item) => <li key={item.activityId}><a href={item.route}><strong>{item.type === 'exercise' || item.type === 'review' ? learnerExerciseLabel(exerciseById.get(item.activityId)) : item.title}</strong><span>{item.estimatedMinutes} Min. · {item.reasonCodes.includes('review-due') ? 'fälliger Review' : item.reasonCodes.includes('strengthen-competency') ? 'Kompetenz stärken' : 'Kompetenz aufbauen'}</span></a></li>)}</ol></article>)}</div> : <div class="empty-state"><h3>Kein Plan im aktuellen Budget</h3><p>Erhöhe das Wochenbudget oder wähle den nächsten Bereich frei im Katalog.</p></div>}</section>
-      <aside class="reason-panel" aria-labelledby="reason-title">
-        <p class="eyebrow">Warum dieser Start?</p>
-        <h2 id="reason-title">Erst messen, dann empfehlen</h2>
-        <ol>
-          <li>Kurze Aufgaben liefern belastbarere Hinweise als Selbsteinschätzung allein.</li>
-          <li>Fehlende Voraussetzungen werden vor neuen Themen sichtbar.</li>
-          <li>Du kannst jede Empfehlung überspringen und direkt lernen.</li>
-        </ol>
-      </aside>
-    </section>
-  );
-}
+import { learnerExerciseLabel, minutesLabel } from './learner-labels';
 
 const stateLabels = {
   unassessed: 'Noch nicht geprüft',
@@ -364,41 +283,6 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
             ))}
           </div>
         </>}
-    </section>
-  );
-}
-
-export function ProgressView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
-  const states = Object.values(progress.evidenceStates);
-  const demonstrated = states.filter((state) => state === 'demonstrated').length;
-  const retained = states.filter((state) => state === 'retained').length;
-  const due = states.filter((state) => state === 'review_due').length;
-  const learning = states.filter((state) => state === 'learning').length;
-  const unassessed = states.filter((state) => state === 'unassessed').length;
-  const freshnessDue = Object.entries(progress.evidenceDueAt).filter(([, value]) => value && new Date(value).getTime() <= Date.now()).length;
-  return (
-    <section class="view" aria-labelledby="progress-title">
-      <header class="view-header"><p class="eyebrow">Belege statt Punkte</p><h1 id="progress-title" tabIndex={-1}>Fortschritt</h1><p class="lede">Lokale Lernereignisse werden als aktueller Kompetenzzustand und fällige Reviews zusammengefasst.</p></header>
-      <div class="stat-grid">
-        <article><strong>{progress.attemptsCount}</strong><span>Lernereignisse</span></article>
-        <article><strong>{demonstrated}</strong><span>direkt nachgewiesen</span></article>
-        <article><strong>{retained}</strong><span>verzögert bestätigt</span></article>
-        <article><strong>{learning}</strong><span>im Aufbau</span></article>
-        <article><strong>{due}</strong><span>Kompetenz-Frische abgelaufen</span></article>
-        <article><strong>{unassessed}</strong><span>noch ungeprüft</span></article>
-      </div>
-      <p class="plan-policy"><strong>Zwei getrennte Zeitachsen:</strong> <strong>Aufgaben-Review</strong> meint eine einzelne Aufgabe mit eigenem Fälligkeitstermin aus den Expanding-Slots (Woche+2/+5/+11). <strong>Kompetenz-Frische</strong> meint den aggregierten Nachweis über unabhängige Treffer verschiedener Aufgabefamilien — sie läuft auf die kompetenzspezifische Frist ({freshnessDue} Kompetenzen derzeit überschritten) und wird dann als „Review fällig“ markiert, bis ein neuer qualifizierter Treffer sie erneuert.</p>
-      <section class="activity-section" aria-labelledby="journal-title">
-        <h2 id="journal-title">Fehlerjournal ({progress.journal.length})</h2>
-        {progress.journal.length
-          ? <ul class="journal-list">{progress.journal.slice(-10).reverse().map((entry, index) => <li key={entry.id ?? index}>{entry.ts.slice(0, 16)} · {entry.exerciseId} · {entry.errorType}</li>)}</ul>
-          : <p>Noch keine Journaleinträge.</p>}
-      </section>
-      <section class="post-course" aria-labelledby="post-course-title">
-        <div class="section-heading"><div><p class="eyebrow">Nach dem letzten Kursblock</p><h2 id="post-course-title">Reviews laufen weiter</h2></div></div>
-        <p>Der Planer plant fällige Reviews weiter ein, ohne künstliche Treffer zu erzeugen. Aktuell sind {progress.dueReviews.length} Aufgaben-Reviews fällig und {progress.scheduledReviewCount} Aufgaben insgesamt in der Review-Planung. Ein qualifizierter Treffer — richtig, höchstens ein Hinweis, keine vorherige Lösungsanzeige — erneuert jeweils die Gültigkeit.</p>
-      </section>
-      {progress.attemptsCount === 0 && <div class="empty-state"><h2>Noch keine Evidence</h2><p>Beginne mit der Diagnose oder öffne eine der {catalog.competencies.length} Kompetenzen.</p><Button variant="primary" href="#/diagnostic">Diagnose starten</Button></div>}
     </section>
   );
 }

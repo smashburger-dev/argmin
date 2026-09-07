@@ -2,10 +2,12 @@ import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
 import { loadProgressSnapshot, saveLearningPreferences, type ProgressSnapshot } from '../adapters/local-progress';
-import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ProgressView, ReviewView, SettingsView, SourcesView, TodayView, ToolsView } from './views';
+import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ReviewView, SettingsView, SourcesView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
 import { VisualizationView } from './VisualizationView';
+import { ProgressView } from './ProgressView';
+import { TodayView } from './TodayView';
 import { Button } from './Button';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
