@@ -104,6 +104,16 @@ export async function loadProgressSnapshot(catalog: CatalogData): Promise<Progre
   };
 }
 
+export async function loadOnboardingDone(): Promise<boolean> {
+  if (!progress) return true;
+  return (await progress.getSetting('onboardingDone')) === true;
+}
+
+export async function saveOnboardingDone(): Promise<void> {
+  if (!progress) return;
+  await progress.setSetting('onboardingDone', true);
+}
+
 export async function saveLearningPreferences(weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]): Promise<void> {
   if (!progress) return;
   await Promise.all([

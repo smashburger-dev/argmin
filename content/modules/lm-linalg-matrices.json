@@ -11,7 +11,8 @@
   "requires": [],
   "trackIds": [
     "common-core",
-    "applied-ai"
+    "applied-ai",
+    "mathematical-foundations"
   ],
   "lessonIds": [
     "l-linalg-matrices"

@@ -183,6 +183,8 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
   const exerciseById = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
   const competencyById = new Map(catalog.competencies.map((competency) => [competency.competencyId, competency]));
   const { executable: executableReviews } = partitionReviewQueue(progress.dueReviews, exerciseById.keys());
+  const activeTrack = catalog.tracks.find((item) => item.trackId === progress.trackId) ?? catalog.tracks[0];
+  const trackDone = activeTrack ? activeTrack.competencyIds.every((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')) : false;
   const primary = recommendation(progress, plan, executableReviews, exerciseById, competencyById);
   const nextNonReview = plan.days.flatMap((day) => day.items).find((item) => item.type !== 'review');
   return (
@@ -220,6 +222,11 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           <Carousel label="Wochenplan-Tage">
             {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} competencyById={competencyById} key={day.day} />)}
           </Carousel>
+        ) : trackDone ? (
+          <div class="empty-state">
+            <h3>Pfad geschafft</h3>
+            <p>Alle Kompetenzen in diesem Pfad sind nachgewiesen. Reviews halten sie frisch — oder du wechselst den Pfad in den <a href="#/settings">Einstellungen</a>.</p>
+          </div>
         ) : (
           <div class="empty-state">
             <h3>Kein Plan im aktuellen Budget</h3>

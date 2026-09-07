@@ -14,7 +14,8 @@
     "c-numpy-basics"
   ],
   "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "mathematical-foundations"
   ],
   "lessonIds": [
     "l-grad-regression"

@@ -75,13 +75,13 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
         <p class="lede">Was du nachgewiesen hast, was fällig ist — alles lokal in diesem Browser.</p>
       </header>
       <section class="progress-summary" aria-label="Fortschrittsübersicht" data-tour="progress-overview">
+        <div class="meter" aria-label={`${percent} Prozent Kompetenzen nachgewiesen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
+          <span style={{ width: `${percent}%` }} />
+        </div>
         <div class="progress-summary-stats">
           <div><strong>{demonstrated} von {catalog.competencies.length}</strong><span>Kompetenzen nachgewiesen</span></div>
           <div><strong>{executableReviews.length}</strong><span>Reviews fällig</span></div>
           <div><strong>{progress.attemptsCount}</strong><span>Lernereignisse</span></div>
-        </div>
-        <div class="meter" aria-label={`${percent} Prozent Kompetenzen nachgewiesen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
-          <span style={{ width: `${percent}%` }} />
         </div>
       </section>
       {dueCompetencies.length > 0 ? (

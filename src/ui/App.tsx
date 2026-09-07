@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
-import { loadProgressSnapshot, saveLearningPreferences, type ProgressSnapshot } from '../adapters/local-progress';
+import { loadOnboardingDone, loadProgressSnapshot, saveLearningPreferences, saveOnboardingDone, type ProgressSnapshot } from '../adapters/local-progress';
 import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ReviewView, SettingsView, SourcesView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
@@ -9,6 +9,7 @@ import { VisualizationView } from './VisualizationView';
 import { ProgressView } from './ProgressView';
 import { TodayView } from './TodayView';
 import { Button } from './Button';
+import { OnboardingOverlay } from './OnboardingOverlay';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
@@ -91,6 +92,7 @@ export function App() {
     reviewSlotsWeeks: [2, 5, 11],
   });
   const [progressReady, setProgressReady] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const progressRequest = useRef(0);
   const refreshProgress = useCallback(async () => {
@@ -119,6 +121,15 @@ export function App() {
     };
   }, [refreshProgress]);
 
+  useEffect(() => {
+    let live = true;
+    const forced = new URLSearchParams(location.search).has('fresh');
+    void loadOnboardingDone()
+      .then((done) => { if (live) setShowOnboarding((forced || !navigator.webdriver) && !done); })
+      .catch(() => { if (live) setShowOnboarding(false); });
+    return () => { live = false; };
+  }, []);
+
   const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const section = route.split('/')[0] || 'today';
@@ -141,6 +152,17 @@ export function App() {
     await saveLearningPreferences(safeMinutes, trackId, safeSlots);
     await refreshProgress();
   };
+
+  const finishOnboarding = useCallback(async (trackId: string, weeklyMinutes: number) => {
+    await savePreferences(weeklyMinutes, trackId, progress.reviewSlotsWeeks);
+    await saveOnboardingDone();
+    setShowOnboarding(false);
+  }, [progress.reviewSlotsWeeks, savePreferences]);
+
+  const skipOnboarding = useCallback(async () => {
+    await saveOnboardingDone();
+    setShowOnboarding(false);
+  }, []);
 
   const toggleTheme = () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -171,7 +193,12 @@ export function App() {
     <div class="app-shell">
       <header class="topbar">
         <a class="brand" href="#/today" aria-label="argmin, zur Heute-Ansicht">
-          <span class="brand-mark" aria-hidden="true">am</span>
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+              <path d="M5 8 Q5 27 18 27 Q31 27 31 8" />
+              <circle cx="18" cy="27" r="4.2" fill="currentColor" stroke="none" />
+            </svg>
+          </span>
           <span><strong>argmin</strong><small>KI lernen, lokal &amp; gratis</small></span>
         </a>
         <div class="topbar-meta"><span class="local-status"><span aria-hidden="true" />Lokal</span><span class="catalog-version">Katalog {catalog.version}</span><Button variant="ghost" size="sm" class="theme-toggle" aria-label="Farbschema wechseln" onClick={toggleTheme}>{themePreference === 'dark' ? '☀' : '☾'}</Button></div>
@@ -194,6 +221,14 @@ export function App() {
         <span>{catalog.competencies.length} Kompetenzen</span>
         <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more"><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a></nav>
       </footer>
+      {showOnboarding ? (
+        <OnboardingOverlay
+          catalog={catalog}
+          initialTrackId={progress.trackId}
+          onDone={(trackId, weeklyMinutes) => void finishOnboarding(trackId, weeklyMinutes)}
+          onSkip={() => void skipOnboarding()}
+        />
+      ) : null}
     </div>
   );
 }

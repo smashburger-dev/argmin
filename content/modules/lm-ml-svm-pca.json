@@ -13,7 +13,8 @@
     "c-linalg-independence"
   ],
   "trackIds": [
-    "applied-ai"
+    "applied-ai",
+    "mathematical-foundations"
   ],
   "lessonIds": [
     "l-ml-svm-pca"
