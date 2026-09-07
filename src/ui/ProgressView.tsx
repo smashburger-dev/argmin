@@ -18,9 +18,10 @@ export function moduleState(competencyIds: string[], states: Record<string, Evid
   return '';
 }
 
-function ModuleProgress({ module, progress }: {
+function ModuleProgress({ module, progress, quiet }: {
   module: CatalogData['learningModules'][number];
   progress: ProgressSnapshot;
+  quiet: boolean;
 }) {
   const evidenced = module.competencyIds.filter((id) => hasEvidence(progress.evidenceStates[id])).length;
   const percent = module.competencyIds.length ? Math.round(evidenced / module.competencyIds.length * 100) : 0;
@@ -29,14 +30,18 @@ function ModuleProgress({ module, progress }: {
     <a class="module-progress" href={`#/module/${module.moduleId}`}>
       <span class="module-progress-copy">
         <strong>{module.title}</strong>
-        <small>{evidenced} von {module.competencyIds.length} Kompetenzen nachgewiesen · {module.estimatedMinutes} Min.</small>
+        <small>{quiet
+          ? `${module.estimatedMinutes} Min. · ${module.competencyIds.length === 1 ? '1 Kompetenz' : `${module.competencyIds.length} Kompetenzen`}`
+          : `${evidenced} von ${module.competencyIds.length} Kompetenzen nachgewiesen · ${module.estimatedMinutes} Min.`}</small>
       </span>
-      <span class="module-progress-meter">
-        <span class={`meter ${state === 'Fällig' ? 'meter-warning' : ''}`} aria-label={`${module.title}: ${percent} Prozent belegt`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
-          <span style={{ width: `${percent}%` }} />
+      {quiet ? null : (
+        <span class="module-progress-meter">
+          <span class={`meter ${state === 'Fällig' ? 'meter-warning' : ''}`} aria-label={`${module.title}: ${percent} Prozent belegt`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
+            <span style={{ width: `${percent}%` }} />
+          </span>
+          {state ? <span class={`tag ${state === 'Fällig' ? 'tag-warning' : ''}`}>{state}</span> : null}
         </span>
-        {state ? <span class={`tag ${state === 'Fällig' ? 'tag-warning' : ''}`}>{state}</span> : null}
-      </span>
+      )}
     </a>
   );
 }
@@ -69,7 +74,7 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
         <h1 id="progress-title" tabIndex={-1}>Fortschritt</h1>
         <p class="lede">Was du nachgewiesen hast, was fällig ist — alles lokal in diesem Browser.</p>
       </header>
-      <section class="progress-summary" aria-label="Fortschrittsübersicht">
+      <section class="progress-summary" aria-label="Fortschrittsübersicht" data-tour="progress-overview">
         <div class="progress-summary-stats">
           <div><strong>{demonstrated} von {catalog.competencies.length}</strong><span>Kompetenzen nachgewiesen</span></div>
           <div><strong>{executableReviews.length}</strong><span>Reviews fällig</span></div>
@@ -103,9 +108,9 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
           <span>{track?.title ?? 'Alle Module'}</span>
         </div>
         <div class="module-progress-list">
-          {trackModules.map((module) => <ModuleProgress module={module} progress={progress} key={module.moduleId} />)}
+          {trackModules.map((module) => <ModuleProgress module={module} progress={progress} quiet={progress.attemptsCount === 0} key={module.moduleId} />)}
           {otherModules.length > 0 ? <h3 class="module-group-title">Weitere Module</h3> : null}
-          {otherModules.map((module) => <ModuleProgress module={module} progress={progress} key={module.moduleId} />)}
+          {otherModules.map((module) => <ModuleProgress module={module} progress={progress} quiet={progress.attemptsCount === 0} key={module.moduleId} />)}
         </div>
       </section>
       <details class="journal">

@@ -15,35 +15,43 @@ function reasonLabel(item: LearningPlanItem) {
   return 'Kompetenz aufbauen';
 }
 
-function itemTitle(item: LearningPlanItem, exerciseById: Map<string, CatalogData['exercises'][number]>) {
-  return item.type === 'exercise' || item.type === 'review'
-    ? learnerExerciseLabel(exerciseById.get(item.activityId))
-    : item.title;
+function itemTitle(
+  item: LearningPlanItem,
+  exerciseById: Map<string, CatalogData['exercises'][number]>,
+  competencyById: Map<string, CatalogData['competencies'][number]>,
+) {
+  if (item.type !== 'exercise' && item.type !== 'review') return item.title;
+  const exercise = exerciseById.get(item.activityId);
+  const base = learnerExerciseLabel(exercise);
+  const competency = exercise?.competencyIds.map((id) => competencyById.get(id)?.title).find(Boolean);
+  return competency ? `${base} · ${competency}` : base;
 }
 
-function PlanItem({ item, exerciseById }: {
+function PlanItem({ item, exerciseById, competencyById }: {
   item: LearningPlanItem;
   exerciseById: Map<string, CatalogData['exercises'][number]>;
+  competencyById: Map<string, CatalogData['competencies'][number]>;
 }) {
   return (
     <li>
       <a href={item.route}>
-        <strong>{itemTitle(item, exerciseById)}</strong>
+        <strong>{itemTitle(item, exerciseById, competencyById)}</strong>
         <span>{item.estimatedMinutes} Min. · {reasonLabel(item)}</span>
       </a>
     </li>
   );
 }
 
-function PlanDay({ day, exerciseById }: {
+function PlanDay({ day, exerciseById, competencyById }: {
   day: { day: number; minutes: number; items: LearningPlanItem[] };
   exerciseById: Map<string, CatalogData['exercises'][number]>;
+  competencyById: Map<string, CatalogData['competencies'][number]>;
 }) {
   return (
     <article class="plan-day">
       <p class="card-kicker">Tag {day.day} · {day.minutes} Min.</p>
       <ol>
-        {day.items.map((item) => <PlanItem item={item} exerciseById={exerciseById} key={item.activityId} />)}
+        {day.items.map((item) => <PlanItem item={item} exerciseById={exerciseById} competencyById={competencyById} key={item.activityId} />)}
       </ol>
     </article>
   );
@@ -68,16 +76,17 @@ function MilestoneCard({ catalog, progress }: { catalog: CatalogData; progress: 
   );
 }
 
-function FollowUpCard({ executableReviews, nextNonReview, exerciseById }: {
+function FollowUpCard({ executableReviews, nextNonReview, exerciseById, competencyById }: {
   executableReviews: Array<{ exerciseId: string }>;
   nextNonReview: LearningPlanItem | undefined;
   exerciseById: Map<string, CatalogData['exercises'][number]>;
+  competencyById: Map<string, CatalogData['competencies'][number]>;
 }) {
   if (executableReviews.length > 0) {
     return nextNonReview ? (
       <article class="status-card">
         <p class="card-kicker">Nächster Schritt danach</p>
-        <h2>{itemTitle(nextNonReview, exerciseById)}</h2>
+        <h2>{itemTitle(nextNonReview, exerciseById, competencyById)}</h2>
         <p>{reasonLabel(nextNonReview)}</p>
         <a class="text-link" href={nextNonReview.route}>Öffnen</a>
       </article>
@@ -125,6 +134,7 @@ function recommendation(
   plan: ReturnType<typeof buildWeeklyLearningPlan>,
   reviews: Array<{ exerciseId: string }>,
   exerciseById: Map<string, CatalogData['exercises'][number]>,
+  competencyById: Map<string, CatalogData['competencies'][number]>,
 ) {
   if (reviews.length > 0) {
     const minutes = reviews.slice(0, 3).reduce((total, review) => total + (exerciseById.get(review.exerciseId)?.estimatedMinutes ?? 10), 0);
@@ -151,7 +161,7 @@ function recommendation(
   if (firstItem) {
     return {
       kicker: 'Weiterlernen',
-      title: itemTitle(firstItem, exerciseById),
+      title: itemTitle(firstItem, exerciseById, competencyById),
       text: reasonLabel(firstItem),
       href: firstItem.route,
       action: 'Öffnen',
@@ -171,8 +181,9 @@ function recommendation(
 export function TodayView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const plan = useMemo(() => buildWeeklyLearningPlan(catalog, progress), [catalog, progress]);
   const exerciseById = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
+  const competencyById = new Map(catalog.competencies.map((competency) => [competency.competencyId, competency]));
   const { executable: executableReviews } = partitionReviewQueue(progress.dueReviews, exerciseById.keys());
-  const primary = recommendation(progress, plan, executableReviews, exerciseById);
+  const primary = recommendation(progress, plan, executableReviews, exerciseById, competencyById);
   const nextNonReview = plan.days.flatMap((day) => day.items).find((item) => item.type !== 'review');
   return (
     <section class="view" aria-labelledby="today-title">
@@ -181,7 +192,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
         <h1 id="today-title" tabIndex={-1}>Heute</h1>
       </header>
       <div class="today-grid">
-        <article class="primary-card">
+        <article class="primary-card" data-tour="today-primary">
           <div>
             <p class="card-kicker">{primary.kicker}</p>
             <h2>{primary.title}</h2>
@@ -193,20 +204,21 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           </div>
         </article>
         <MilestoneCard catalog={catalog} progress={progress} />
-        <FollowUpCard executableReviews={executableReviews} nextNonReview={nextNonReview} exerciseById={exerciseById} />
+        <FollowUpCard executableReviews={executableReviews} nextNonReview={nextNonReview} exerciseById={exerciseById} competencyById={competencyById} />
         <LastWorkedCard progress={progress} exerciseById={exerciseById} catalog={catalog} />
       </div>
-      <section class="weekly-plan" aria-labelledby="weekly-plan-title">
+      <section class="weekly-plan" aria-labelledby="weekly-plan-title" data-tour="today-plan">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Deterministischer Vorschlag</p>
+            <p class="eyebrow">Vorschlag für die Woche</p>
             <h2 id="weekly-plan-title">Dein Wochenplan</h2>
           </div>
           <span>{plan.totalMinutes} von {plan.availableMinutes} Min. · <a href="#/settings">Budget anpassen</a></span>
         </div>
+        {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan — nach der Diagnose wird er genauer.</p> : null}
         {plan.days.some((day) => day.items.length) ? (
           <Carousel label="Wochenplan-Tage">
-            {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} key={day.day} />)}
+            {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} competencyById={competencyById} key={day.day} />)}
           </Carousel>
         ) : (
           <div class="empty-state">

@@ -31,7 +31,7 @@ export function Button({
   rel,
   hidden,
 }: Props) {
-  const classValue = ['btn', `btn-${variant}`, `btn-${size}`, className].filter(Boolean).join(' ');
+  const classValue = ['btn', `btn-${variant}`, size === 'sm' ? 'btn-sm' : '', className].filter(Boolean).join(' ');
   if (href) {
     return <a class={classValue} href={href} aria-label={ariaLabel} download={download} target={target} rel={rel} hidden={hidden}>{children}</a>;
   }

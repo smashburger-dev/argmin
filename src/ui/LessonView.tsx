@@ -66,11 +66,16 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
             : <MathMarkup html={block.html} />}
         </section>)}
       </article>
-      <section class="lesson-tasks" aria-labelledby="practice-title">
+      <section class="lesson-tasks" aria-labelledby="practice-title" data-tour="lesson-tasks">
         <p class="card-kicker">Direkt prüfen</p>
         <h2 id="practice-title">Passende Aufgaben</h2>
         {relatedExercises.length > 0
-          ? <div class="side-cards">{relatedExercises.slice(0, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong>{activityLabel(exercise.activityType)}</strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Starten</Button></article>)}</div>
+          ? <>
+              <div data-tour="lesson-cta">
+                <Button variant="primary" class="lesson-cta" href={routeForDefinition(relatedExercises[0]!)}><span>Jetzt prüfen:&nbsp;</span><MathMarkup inline html={relatedExercises[0]!.title || activityLabel(relatedExercises[0]!.activityType)} /></Button>
+              </div>
+              <div class="side-cards">{relatedExercises.slice(1, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong><MathMarkup inline html={exercise.title || activityLabel(exercise.activityType)} /></strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Öffnen</Button></article>)}</div>
+            </>
           : <p>Zu dieser Lektion gibt es noch keine Aufgaben — sie kommen bald. Lies in Ruhe weiter.</p>}
         {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}
       </section>
@@ -80,9 +85,13 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
           <ul>{sourceLinks.map(({ reference, source }) => source && <li key={`${reference.sourceId}:${reference.locator}`}><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.title}<span>{reference.role} · {reference.locator}</span></a></li>)}</ul>
         </details>
       ) : null}
-      <nav class="lesson-pagination" aria-label="Lektionsnavigation">
+      <nav class="lesson-pagination" aria-label="Lektionsnavigation" data-tour="lesson-next">
         {previous ? <a href={`#/lesson/${previous.lessonId}`}><span>Zurück</span><strong>{previous.title}</strong></a> : <span />}
-        {next ? <a href={`#/lesson/${next.lessonId}`}><span>Weiter</span><strong>{next.title}</strong></a> : <a href="#/project/p-foundations-data-checker"><span>Weiter</span><strong>CLI-Projekt</strong></a>}
+        {next
+          ? <a href={`#/lesson/${next.lessonId}`}><span>Weiter</span><strong>{next.title}</strong></a>
+          : homeModule
+            ? <a href={`#/module/${homeModule.moduleId}`}><span>Zurück zum Modul</span><strong>{homeModule.title}</strong></a>
+            : <span />}
       </nav>
     </section>
   );

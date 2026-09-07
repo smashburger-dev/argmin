@@ -8,8 +8,14 @@ const allowedTags = new Set([
 const droppedTags = new Set(['script', 'style', 'iframe', 'object', 'embed', 'svg', 'math']);
 const safeHref = (value: string) => /^(https?:|mailto:|#|\/|\.\/|\.\.\/)/i.test(value);
 
+function renderInlineCode(text: string, key: string): ComponentChildren {
+  const parts = text.split(/`([^`]+)`/g);
+  if (parts.length === 1) return text;
+  return parts.map((part, index) => (index % 2 === 1 ? h('code', { key: `${key}-${index}` }, part) : part));
+}
+
 function renderNode(node: ChildNode, key: string): ComponentChildren {
-  if (node.nodeType === 3) return node.textContent || '';
+  if (node.nodeType === 3) return renderInlineCode(node.textContent || '', key);
   if (node.nodeType !== 1) return null;
   const element = node as HTMLElement;
   const tag = element.tagName.toLowerCase();

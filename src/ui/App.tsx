@@ -24,6 +24,25 @@ const navigation = [
 
 const currentRoute = () => location.hash.replace(/^#\//, '') || 'today';
 
+const routeTitles: Record<string, string> = {
+  today: 'Heute',
+  learn: 'Lernen',
+  review: 'Review',
+  progress: 'Fortschritt',
+  settings: 'Einstellungen',
+  diagnostic: 'Diagnose',
+  sources: 'Lektüren',
+  tools: 'Werkzeuge',
+  visualization: 'Visualisierung',
+  module: 'Modul',
+  family: 'Aufgabe',
+  lesson: 'Lektion',
+  project: 'Projekt',
+  competency: 'Kompetenz',
+};
+
+const learnSections = ['competency', 'family', 'lesson', 'module', 'project', 'visualization'];
+
 export function App() {
   const catalog = useMemo(loadCatalog, []);
   const [route, setRoute] = useState(currentRoute);
@@ -68,13 +87,18 @@ export function App() {
     };
   }, [refreshProgress]);
 
+  const mainRef = useRef<HTMLElement>(null);
   useEffect(() => {
+    const section = route.split('/')[0] || 'today';
+    document.title = `${routeTitles[section] ?? 'argmin'} – argmin`;
+    window.scrollTo(0, 0);
+    mainRef.current?.focus({ preventScroll: true });
     requestAnimationFrame(() => document.querySelector<HTMLElement>('main h1')?.focus());
   }, [route]);
 
   const [section = 'today', routeId = ''] = route.split('/');
   const familyRef = section === 'family' ? route.split('/').slice(1).join('/') : '';
-  const activeNavigation = ['competency', 'diagnostic', 'lesson', 'module', 'project', 'sources', 'tools', 'visualization'].includes(section) ? 'learn' : section;
+  const activeNavigation = learnSections.includes(section) ? 'learn' : section;
 
   const savePreferences = async (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => {
     const safeMinutes = Math.min(2400, Math.max(30, Math.round(weeklyMinutes / 15) * 15));
@@ -121,7 +145,7 @@ export function App() {
         <div class="topbar-meta"><span class="local-status"><span aria-hidden="true" />Lokal</span><span class="catalog-version">Katalog {catalog.version}</span><Button variant="ghost" size="sm" class="theme-toggle" aria-label="Farbschema wechseln" onClick={toggleTheme}>{themePreference === 'dark' ? '☀' : '☾'}</Button></div>
       </header>
       <div class="app-body">
-        <nav class="main-nav" aria-label="Hauptnavigation">
+        <nav class="main-nav" aria-label="Hauptnavigation" data-tour="nav-main">
           <p class="nav-label">Lernen</p>
           {navigation.map((item) => (
             <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined} key={item.route}>
@@ -131,9 +155,13 @@ export function App() {
           ))}
           <div class="nav-foot"><span>Ohne Account nutzbar</span><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a></div>
         </nav>
-        <main id="main-content">{view}</main>
+        <main id="main-content" ref={mainRef} tabIndex={-1}>{view}</main>
       </div>
-      <footer class="mobile-context" aria-label="Lokaler Status"><span>Local-first</span><span>{catalog.competencies.length} Kompetenzen</span></footer>
+      <footer class="mobile-context" aria-label="Lokaler Status">
+        <span>Local-first</span>
+        <span>{catalog.competencies.length} Kompetenzen</span>
+        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more"><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a></nav>
+      </footer>
     </div>
   );
 }

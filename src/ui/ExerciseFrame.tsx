@@ -1,4 +1,5 @@
 import type { ComponentChildren } from 'preact';
+import { useEffect, useRef } from 'preact/hooks';
 import type { ExerciseContext } from './exercise-context';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Button } from './Button';
@@ -30,6 +31,16 @@ export function ExerciseFrame({
 }: Props) {
   const backLabel = ctx.lessonHref ? 'Zurück zur Lektion' : ctx.moduleHref ? 'Zum Modul' : 'Zum Lernen';
   const backHref = ctx.lessonHref || ctx.moduleHref || '#/learn';
+  const feedbackBox = useRef<HTMLDivElement>(null);
+  const hadFeedback = useRef(false);
+  useEffect(() => {
+    const present = feedback !== undefined && feedback !== null && feedback !== false;
+    if (present && !hadFeedback.current) {
+      feedbackBox.current?.focus({ preventScroll: true });
+      feedbackBox.current?.scrollIntoView({ block: 'nearest' });
+    }
+    hadFeedback.current = present;
+  });
   return (
     <section class="view exercise-view" aria-labelledby="exercise-title">
       <Breadcrumbs items={[
@@ -47,13 +58,13 @@ export function ExerciseFrame({
       </header>
       <div class="exercise-layout">
         <div class="exercise-main">
-          <article class="prompt-card">
+          <article class="prompt-card" data-tour="exercise-prompt">
             <div class="prompt-content">{prompt}</div>
             {snippet ? <pre><code>{snippet}</code></pre> : null}
           </article>
-          <div class="exercise-answer">{answer}</div>
-          <div class="actions">{actions}</div>
-          {feedback ? <div class="exercise-feedback">{feedback}</div> : null}
+          <div class="exercise-answer" data-tour="exercise-answer">{answer}</div>
+          <div class="actions" data-tour="exercise-check">{actions}</div>
+          {feedback ? <div class="exercise-feedback" data-tour="exercise-feedback" role="status" tabIndex={-1} ref={feedbackBox}>{feedback}</div> : null}
           {hints.length > 0 && (
             <div class="hint-stack">
               {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}

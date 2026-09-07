@@ -3,6 +3,7 @@ import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../a
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
+import { MathMarkup } from './MathMarkup';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 /** Loads a route-scoped content section once per session. null while the
@@ -32,7 +33,7 @@ import { exportProgressJson, importProgressJson } from '../adapters/progress-adm
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
-import { learnerExerciseLabel, minutesLabel } from './learner-labels';
+import { countLabel, learnerExerciseLabel, minutesLabel, reasonCodeLabel } from './learner-labels';
 import { moduleState } from './ProgressView';
 
 const stateLabels = {
@@ -64,6 +65,13 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
     });
     return track ? orderModulesForTrack(matching, track) : matching;
   }, [catalog.learningModules, query, track]);
+  const exerciseCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const module of catalog.learningModules || []) {
+      counts.set(module.moduleId, catalog.exercises.filter((exercise) => exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
+    }
+    return counts;
+  }, [catalog.exercises, catalog.learningModules]);
   return (
     <section class="view" aria-labelledby="learn-title">
       <header class="view-header split-header">
@@ -82,7 +90,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           />
         </label>
       </header>
-      <div class="track-strip" aria-label="Lernpfade">
+      <div class="track-strip" aria-label="Lernpfade" data-tour="learn-tracks">
         {catalog.tracks.map((track) => (
           <button
             type="button"
@@ -103,7 +111,8 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
         {modules.length > 0 ? (
           <ol class="module-path">
             {modules.map((module, index) => {
-              const state = moduleState(module.competencyIds, progress.evidenceStates) || 'Im Aufbau';
+              const state = moduleState(module.competencyIds, progress.evidenceStates)
+                || countLabel(exerciseCounts.get(module.moduleId) ?? 0, 'Aufgabe', 'Aufgaben');
               const competencyLabel = module.competencyIds.length === 1 ? 'Kompetenz' : 'Kompetenzen';
               return (
                 <li key={module.moduleId}>
@@ -154,7 +163,7 @@ export function CompetencyView({ catalog, progress, competencyId }: {
       <section class="activity-section" aria-labelledby="activity-title">
         <div class="section-heading"><div><p class="eyebrow">Üben und nachweisen</p><h2 id="activity-title">Aufgaben</h2></div><span>{exercises.length} verfügbar</span></div>
         {exercises.length > 0
-          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.estimatedMinutes} Min.</p><h3>{learnerExerciseLabel(exercise)}</h3><p>{exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.'}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
+          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.estimatedMinutes} Min.</p><h3>{learnerExerciseLabel(exercise)}</h3><p>{exercise.title ? <MathMarkup inline html={exercise.title} /> : (exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.')}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
           : <div class="empty-state"><h2>Noch keine Aufgabenfamilie</h2><p>Diese Lücke bleibt im Foundations-Manifest sichtbar.</p></div>}
       </section>
     </section>
@@ -221,7 +230,7 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
     <section class="view" aria-labelledby="diagnostic-title">
       <header class="view-header"><p class="eyebrow">Formative Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>
       {recommendations.length > 0
-        ? <div class="diagnostic-grid">{recommendations.map((recommendation, index) => { const competency = labels.get(recommendation.competencyId); return <article class="diagnostic-card" key={recommendation.competencyId}><span>{String(index + 1).padStart(2, '0')} · {typeLabels[recommendation.type]}</span><h2>{competency?.title ?? recommendation.competencyId}</h2><p>{competency?.description}</p><small>{recommendation.reasonCodes.join(' · ')}</small><a href={`#/competency/${recommendation.competencyId}`}>Bereich ansehen</a></article>; })}</div>
+        ? <div class="diagnostic-grid">{recommendations.map((recommendation, index) => { const competency = labels.get(recommendation.competencyId); return <article class="diagnostic-card" key={recommendation.competencyId}><span>{String(index + 1).padStart(2, '0')} · {typeLabels[recommendation.type]}</span><h2>{competency?.title ?? recommendation.competencyId}</h2><p>{competency?.description}</p><small>{recommendation.reasonCodes.map(reasonCodeLabel).join(' · ')}</small><a href={`#/competency/${recommendation.competencyId}`}>Bereich ansehen</a></article>; })}</div>
         : <div class="empty-state"><h2>Foundations aktuell belegt</h2><p>Öffne Review für fällige Abrufe oder wähle frei den nächsten Lernpfad.</p></div>}
       <aside class="reason-panel"><p class="eyebrow">Auswertung</p><h2>Jede Empfehlung bleibt erklärbar</h2><p>Reason-Codes unterscheiden fehlende Evidence, schwache Kompetenz, fälligen Review und aktuellen Nachweis. Selbsteinschätzung allein öffnet oder schließt kein Gate.</p><Button variant="primary" href={firstAnchor ? routeForDefinition(firstAnchor) : '#/learn'}>Ersten Algebra-Anker ausführen</Button></aside>
     </section>
@@ -246,7 +255,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               <span>archiviert</span>
             </>}
           </div>
-          <div class="review-list">
+          <div class="review-list" data-tour="review-queue">
             {executable.map((review) => {
               const definition = byId.get(review.exerciseId);
               if (!definition) return null; // unreachable after the partition; keeps the type narrowing honest

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Breadcrumbs } from './Breadcrumbs';
+import { MathMarkup } from './MathMarkup';
 import { activityLabel, difficultyLabelFor } from './exercise-context';
 
 function exerciseForPlacement(catalog: CatalogData, placement: CatalogData['learningModules'][number]['placements'][number]) {
@@ -70,7 +71,7 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
           </section>
         )}
         {hasExercises && (
-          <section class={`module-panel${open === 'exercises' ? ' open' : ''}`} aria-labelledby="module-exercise-title">
+          <section class={`module-panel${open === 'exercises' ? ' open' : ''}`} aria-labelledby="module-exercise-title" data-tour="module-tasks">
             <div class="module-panel-head">
               <p class="eyebrow">Üben</p>
               <h2 id="module-exercise-title">
@@ -93,7 +94,7 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
                       <div>
                         <p class="card-kicker">{difficultyLabelFor(placement.difficulty)} · {exercise?.masteryEligible ? 'Kompetenzbeleg möglich' : 'Übung'}</p>
                         <h3>{`${activityLabel(exercise?.activityType || family?.activityType)} · ${difficultyLabelFor(placement.difficulty)}`}</h3>
-                        <p>{exercise?.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Bearbeitungsnachweis, kein Mastery-Beleg.'}</p>
+                        <p>{exercise?.title ? <MathMarkup inline html={exercise.title} /> : (exercise?.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Bearbeitungsnachweis, kein Mastery-Beleg.')}</p>
                       </div>
                       <div class="actions vertical">
                         {href ? <Button variant="primary" href={href}>Aufgabe öffnen</Button> : <span class="muted">Bald verfügbar</span>}
