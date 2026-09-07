@@ -24,6 +24,20 @@ export function validateNextBuild(buildDir) {
   const files = walk(root).map((path) => relative(root, path).replaceAll('\\', '/')).sort();
   if (!files.includes('index.html')) throw new Error('index.html fehlt');
   const unifiedBuild = files.includes('content/catalog.json');
+  validateBuildTree(root, files, unifiedBuild);
+  const html = readFileSync(join(root, 'index.html'), 'utf8');
+  if (!/http-equiv=["']Content-Security-Policy["']/i.test(html)) throw new Error('Content-Security-Policy fehlt');
+  if (/<script\b[^>]*\bsrc=["']https?:/i.test(html)) throw new Error('externes Skript im Next-Build');
+  if (/<link\b[^>]*\bhref=["']https?:/i.test(html)) throw new Error('externe Stylesheet- oder Icon-Quelle im Next-Build');
+  const initialJsFiles = initialJavaScriptFiles(html);
+  const sizes = measureBuildFiles(root, files, initialJsFiles, unifiedBuild);
+  if (!initialJsFiles.size || [...initialJsFiles].some((file) => !files.includes(file))) throw new Error('initialer JavaScript-Entry fehlt');
+  if (sizes.jsGzipBytes > 150 * 1024) throw new Error(`Initiales JavaScript-Budget überschritten: ${sizes.jsGzipBytes} Bytes gzip`);
+  if (sizes.cssGzipBytes > 40 * 1024) throw new Error(`CSS-Budget überschritten: ${sizes.cssGzipBytes} Bytes gzip`);
+  return { files: files.length, jsFiles: files.filter((file) => file.endsWith('.js') && (!unifiedBuild || /^assets\/[^/]+\.js$/.test(file))).length, cssFiles: files.filter((file) => file.endsWith('.css') && (!unifiedBuild || /^assets\/[^/]+\.css$/.test(file))).length, ...sizes };
+}
+
+function validateBuildTree(root, files, unifiedBuild) {
   if (!unifiedBuild) {
     for (const file of files) {
       // Vite benennt geteilte Chunks [name]-[hash].js; name darf Punkte
@@ -46,11 +60,9 @@ export function validateNextBuild(buildDir) {
     for (const file of runtimeFiles) if (!files.includes(file)) throw new Error(`Next-Laufzeitdatei fehlt: ${file}`);
     validateProjectReleaseTree(root);
   }
-  const html = readFileSync(join(root, 'index.html'), 'utf8');
-  if (!/http-equiv=["']Content-Security-Policy["']/i.test(html)) throw new Error('Content-Security-Policy fehlt');
-  if (/<script\b[^>]*\bsrc=["']https?:/i.test(html)) throw new Error('externes Skript im Next-Build');
-  if (/<link\b[^>]*\bhref=["']https?:/i.test(html)) throw new Error('externe Stylesheet- oder Icon-Quelle im Next-Build');
+}
 
+function initialJavaScriptFiles(html) {
   const initialJsFiles = new Set(
     [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)]
       .map((match) => match[1].replace(/^\.\//, '').replace(/^\//, '')),
@@ -63,9 +75,11 @@ export function validateNextBuild(buildDir) {
   for (const match of html.matchAll(/<link\b[^>]*\bhref=["']([^"']+)["'][^>]*\brel=["']modulepreload["']/gi)) {
     initialJsFiles.add(match[1].replace(/^\.\//, '').replace(/^\//, ''));
   }
-  let jsGzipBytes = 0;
-  let totalJsGzipBytes = 0;
-  let cssGzipBytes = 0;
+  return initialJsFiles;
+}
+
+function measureBuildFiles(root, files, initialJsFiles, unifiedBuild) {
+  let jsGzipBytes = 0; let totalJsGzipBytes = 0; let cssGzipBytes = 0;
   for (const file of files) {
     const bytes = readFileSync(join(root, file));
     if (!binaryExtensions.test(file)) {
@@ -83,20 +97,7 @@ export function validateNextBuild(buildDir) {
     }
     if (nextCss) cssGzipBytes += gzipSync(bytes).length;
   }
-  if (!initialJsFiles.size || [...initialJsFiles].some((file) => !files.includes(file))) throw new Error('initialer JavaScript-Entry fehlt');
-  // Budget 150 KiB gzip (ADR-0013): the initial chunk carries the app shell
-  // plus the slim content index (@content-index). Lesson and exercise bodies
-  // load per route through lazily imported chunks, each capped below.
-  if (jsGzipBytes > 150 * 1024) throw new Error(`Initiales JavaScript-Budget überschritten: ${jsGzipBytes} Bytes gzip`);
-  if (cssGzipBytes > 40 * 1024) throw new Error(`CSS-Budget überschritten: ${cssGzipBytes} Bytes gzip`);
-  return {
-    files: files.length,
-    jsFiles: files.filter((file) => file.endsWith('.js') && (!unifiedBuild || /^assets\/[^/]+\.js$/.test(file))).length,
-    cssFiles: files.filter((file) => file.endsWith('.css') && (!unifiedBuild || /^assets\/[^/]+\.css$/.test(file))).length,
-    jsGzipBytes,
-    totalJsGzipBytes,
-    cssGzipBytes,
-  };
+  return { jsGzipBytes, totalJsGzipBytes, cssGzipBytes };
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
