@@ -26,10 +26,12 @@ export function Carousel({
   };
   return (
     <div class="carousel">
-      <div class="carousel-controls">
-        <Button hidden={slides.length < 2} variant="ghost" size="sm" aria-label={prevLabel} onClick={() => scroll(-1)}>‹</Button>
-        <Button hidden={slides.length < 2} variant="ghost" size="sm" aria-label={nextLabel} onClick={() => scroll(1)}>›</Button>
-      </div>
+      {slides.length >= 2 && (
+        <div class="carousel-controls">
+          <Button variant="ghost" size="sm" aria-label={prevLabel} onClick={() => scroll(-1)}>‹</Button>
+          <Button variant="ghost" size="sm" aria-label={nextLabel} onClick={() => scroll(1)}>›</Button>
+        </div>
+      )}
       <div class="carousel-track" role="list" aria-label={label} ref={track}>
         {slides.map((child, index) => <div class="carousel-slide" role="listitem" key={index}>{child}</div>)}
       </div>

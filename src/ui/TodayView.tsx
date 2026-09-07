@@ -204,10 +204,6 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           </div>
           <span>{plan.totalMinutes} von {plan.availableMinutes} Min. · <a href="#/settings">Budget anpassen</a></span>
         </div>
-        <details class="policy">
-          <summary>Wie entsteht der Plan?</summary>
-          <p>Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Die Quote und Reviewabstände sind konfigurierbare Produktheuristiken.</p>
-        </details>
         {plan.days.some((day) => day.items.length) ? (
           <Carousel label="Wochenplan-Tage">
             {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} key={day.day} />)}
@@ -218,6 +214,10 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
             <p>Erhöhe das Wochenbudget oder wähle den nächsten Bereich frei im Katalog.</p>
           </div>
         )}
+        <details class="policy">
+          <summary>Wie entsteht der Plan?</summary>
+          <p>Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Die Quote und Reviewabstände sind konfigurierbare Produktheuristiken.</p>
+        </details>
       </section>
       {progress.attemptsCount === 0 ? (
         <aside class="reason-panel" aria-labelledby="reason-title">
