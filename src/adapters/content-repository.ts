@@ -4,10 +4,8 @@ import type { CatalogData, ExerciseSummary, LearningModule, Lesson, ReviewRecord
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
-// bodies load per route through profile-local dynamic imports, so the initial
-// chunk no longer grows linearly with content. Both build profiles (public,
-// local-private) resolve @content-index/@content-chunks through the vite
-// alias; this module is the single shared runtime adapter.
+// Bodies load per route through dynamic imports, so the initial chunk no
+// longer grows linearly with content.
 
 interface CompiledIndex {
   catalogId: string;

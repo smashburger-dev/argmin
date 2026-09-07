@@ -14,10 +14,6 @@ export function createPublicContent(input) {
   const result = clone(input);
   const sources = result.sources || { sources: [] };
   sources.sources = (sources.sources || []).filter((source) => source.contentClass !== 'private');
-  for (const source of sources.sources) {
-    delete source.localFile;
-    delete source.localPath;
-  }
   result.sources = sources;
   const sanitized = sanitizePublicValue(result);
   if (privateOutputMarkers.test(JSON.stringify(sanitized))) throw new Error('Public-Inhalt enthält privaten Quellenmarker');

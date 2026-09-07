@@ -10,8 +10,6 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
 const publicBundle = compileContent({ projectRoot: root, profile: 'public' });
 const publicSplit = buildSplitArtifacts(publicBundle);
-const localBundle = compileContent({ projectRoot: root, profile: 'local-private' });
-const localSplit = buildSplitArtifacts(localBundle);
 
 test('split index plus bodies plus sections rebuild every lesson, activity and family exactly', () => {
   const sectionKeys = ['sources', 'tools', 'reviews'];
@@ -81,14 +79,8 @@ test('repo split stays current against a fresh compile when present', (t) => {
   assert.equal(readFileSync(join(splitDir, 'chunks.ts'), 'utf8'), publicSplit.chunks);
 });
 
-test('public split excludes local-only content while local covers its own families', () => {
+test('public split excludes private markers', () => {
   assert.equal(publicSplit.index.profile, 'public');
-  assert.equal(localSplit.index.profile, 'local-private');
-  const publicFamilies = new Set(publicBundle.families.map((family) => family.familyId));
-  const localFamilies = new Set(localBundle.families.map((family) => family.familyId));
-  for (const id of publicFamilies) assert.ok(localFamilies.has(id), `public family ${id} missing locally`);
   assert.doesNotMatch(JSON.stringify(publicSplit.index), privateMarkers);
   assert.doesNotMatch(publicSplit.chunks, privateMarkers);
-  const registered = new Set([...localSplit.chunks.matchAll(/import\('\.\/families\/([^']+)\.json'\)/g)].map((match) => match[1]));
-  assert.deepEqual([...registered].sort(), [...localFamilies].sort());
 });

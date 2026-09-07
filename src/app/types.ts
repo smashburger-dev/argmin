@@ -176,7 +176,6 @@ export interface SourceSummary {
   title: string;
   author: string;
   canonicalUrl: string;
-  localPath?: string;
   contentClass: string;
   license: string;
   attribution: string;

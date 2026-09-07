@@ -129,11 +129,13 @@ test('S4D7 code family runs pyodide tests in the browser', async ({ page, browse
   await page.goto('/index.html#/family/construct-matvec-shape-contract/matvec-code-reference/7/core');
   await expect(page.getByRole('heading', { level: 1, name: 'Variante üben' })).toBeVisible();
   const reference = await page.evaluate(async () => {
-    const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
-      EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { expectedAnswer: { referenceSolver: string } } };
+    const response = await fetch('/content/families/construct-matvec-shape-contract.json');
+    const family = await response.json() as {
+      cases: Array<{ caseId: string; expected?: { referenceSolver?: string } }>;
     };
-    return EXERCISE_FAMILIES.instantiate('construct-matvec-shape-contract', 7, 'core', 'matvec-code-reference').expectedAnswer.referenceSolver;
+    return family.cases.find((item) => item.caseId === 'matvec-code-reference')?.expected?.referenceSolver;
   });
+  if (!reference) throw new Error('Referenzsolver für matvec-code-reference fehlt');
   const editor = page.getByRole('textbox', { name: 'Python-Codeeditor' });
   await expect(editor).toBeVisible();
   await editor.fill(reference);

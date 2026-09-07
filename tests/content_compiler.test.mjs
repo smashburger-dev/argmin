@@ -51,59 +51,6 @@ test('public compiler is deterministic and excludes private-only legacy content'
   assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|locatorPath|localPath|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/);
 });
 
-test('local-private compiler retains private-only exercises and merges an explicit overlay', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'ki-content-overlay-'));
-  const overlayPath = join(dir, 'overlay.json');
-  try {
-    writeFileSync(overlayPath, JSON.stringify({
-      schemaVersion: 1,
-      overlayId: 'test-private',
-      sourceRights: [{
-        sourceId: 'local-test-source',
-        title: 'Lokale Testquelle',
-        licenseExpression: 'LicenseRef-Private',
-        redistributionAllowed: false,
-        commercialUseAllowed: false,
-        derivativesAllowed: false,
-        allowedProfiles: ['local-private'],
-        attribution: 'Lokaler Test',
-        sourceUrl: null,
-      }],
-      competencies: [{
-        competencyId: 'c-local-test',
-        locale: 'de',
-        title: 'Lokale Testkompetenz',
-        description: 'Nur im lokalen Overlay.',
-        domain: 'local',
-        level: 'apply',
-        requires: [],
-        relations: [],
-        trackIds: ['common-core'],
-        estimatedMinutes: 10,
-        evidencePolicy: { minimumIndependentHits: 1, minimumDistinctDefinitions: 1, delayedHitRequired: false, minimumDelayDays: 0, freshnessDays: 30 },
-        rightsId: 'local-test-source',
-        releaseStatus: 'local-only',
-      }],
-      tracks: [],
-      milestones: [],
-      lessons: [],
-      familyActivities: [],
-      explanations: [],
-      projects: [],
-    }));
-    const bundle = compileContent({ projectRoot: root, profile: 'local-private', overlayPath });
-    assert.equal(bundle.familyActivities.length, expectedPublicCounts(root).exercises);
-    assert.equal(bundle.competencies.some((competency) => competency.competencyId === 'c-local-test'), true);
-    assert.deepEqual(bundle.overlays, ['test-private']);
-    assert.throws(
-      () => compileContent({ projectRoot: root, profile: 'public', overlayPath }),
-      /overlay.*local-private/i,
-    );
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
-});
-
 test('competency validator rejects unknown prerequisites and cycles', () => {
   assert.throws(
     () => validateCompetencyGraph([{ competencyId: 'c-a', requires: ['c-missing'] }]),
