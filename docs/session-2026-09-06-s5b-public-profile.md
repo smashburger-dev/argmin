@@ -1,7 +1,7 @@
 # S5B — Public-Profil und GitHub-Actions-CI
 
-Stand: 2026-09-07  
-Branch: `devin/1788768004-s5b-public-profile`  
+Stand: 2026-09-07
+Branch: `devin/1788768004-s5b-public-profile`
 Basis: `origin/devin/1788706319-s4d8a-static-cases` (`4355373`)
 
 ## Ergebnis
@@ -144,10 +144,10 @@ aufgelöst:
 ## Diff-Übersicht gegen die Basis
 
 ```text
-33 versionierte Pfade geändert
-131 Zeilen hinzugefügt
-1768 Zeilen entfernt
-Netto: −1637 Zeilen
+34 versionierte Pfade geändert
+288 Zeilen hinzugefügt
+1770 Zeilen entfernt
+Netto: −1482 Zeilen
 ```
 
 Der abschließende Arbeitsbaum enthält die E2E-Testanpassung und diesen
