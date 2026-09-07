@@ -2,9 +2,9 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
 
-export default defineConfig(() => {
-  const projectRoot = import.meta.dirname;
-  return {
+const projectRoot = import.meta.dirname;
+
+export default defineConfig({
     base: './',
     publicDir: false,
     plugins: [
@@ -23,5 +23,4 @@ export default defineConfig(() => {
         input: resolve(projectRoot, 'index.html'),
       },
     },
-  };
 });

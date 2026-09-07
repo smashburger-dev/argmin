@@ -356,7 +356,11 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
   let fingerprint = null;
   if (cache === 'memo') {
     fingerprint = compileInputFingerprint(projectRoot);
-    if (compileCache.has(fingerprint)) return structuredClone(compileCache.get(fingerprint));
+    if (compileCache.has(fingerprint)) {
+      const cached = compileCache.get(fingerprint);
+      configureExerciseFamilies(cached.families || []);
+      return structuredClone(cached);
+    }
   }
   const contractVersion = schemaContracts(projectRoot).contractVersion;
   const contentRoot = join(projectRoot, 'content');
