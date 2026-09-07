@@ -1,6 +1,6 @@
 # Sicherheit
 
-argmin läuft komplett in deinem Browser: kein Server, kein Account, keine Übertragung deiner Daten. Trotzdem kann Software Fehler haben — danke, wenn du uns hilfst, sie zu finden.
+argmin läuft komplett in deinem Browser: kein Server, kein Account, keine Übertragung deiner Daten. Trotzdem kann Software Fehler haben! Danke, wenn du dabei hilfst, sie zu finden.
 
 ## Ein Sicherheitsproblem melden
 
