@@ -12,10 +12,15 @@
       {
         "caseId": "describe-and-bins",
         "propertyTest": false
+      },
+      {
+        "caseId": "describe-outlier-bins",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "challenge"
     ],
     "competencyIds": [
       "c-eda-viz",
@@ -71,6 +76,55 @@
       "tolerancePolicy": {
         "mode": "tests"
       }
+    },
+    {
+      "caseId": "describe-outlier-bins",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef describe(values):\n    ...\n\ndef bin_counts(values, edges):\n    ...\n",
+        "tests": "d = describe([1, 2, 2, 4, 8])\n__check(\"n\", d[\"n\"] == 5)\n__check(\"mean\", abs(d[\"mean\"] - 3.4) < 1e-9)\n__check(\"median\", abs(d[\"median\"] - 2.0) < 1e-9)\n__check(\"std\", abs(d[\"std\"] - float(np.std([1, 2, 2, 4, 8]))) < 1e-12)\n__check(\"bins\", np.array_equal(bin_counts([1, 2, 2, 4, 8], [0, 2, 4, 8]), np.array([1, 2, 2])))\n__check(\"last edge\", np.array_equal(bin_counts([4.0, 8.0], [0, 4, 8]), np.array([0, 2])))"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef describe(values):\n    values = np.asarray(values, dtype=float)\n    return {\"n\": int(values.size), \"mean\": float(np.mean(values)), \"median\": float(np.median(values)), \"std\": float(np.std(values))}\n\ndef bin_counts(values, edges):\n    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]"
+      },
+      "prompt": "Implementiere `describe(values)` und `bin_counts(values, edges)` wie im bestehenden Vertrag, aber prüfe deine Lösung an einer asymmetrischen kleinen Stichprobe mit einem Ausreißer und drei Histogramm-Bins.",
+      "fullSolution": "def describe(values):\n    values = np.asarray(values, dtype=float)\n    return {\"n\": int(values.size), \"mean\": float(np.mean(values)), \"median\": float(np.median(values)), \"std\": float(np.std(values))}\n\ndef bin_counts(values, edges):\n    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]",
+      "hints": [
+        "Normalisiere zuerst in ein Float-Array; `np.std` nutzt bereits `ddof=0`.",
+        "Übergebe die Kanten unverändert an `np.histogram`; nur die letzte rechte Kante ist inklusive."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-summary",
+          "then": "Die vier Kennzahlen müssen aus demselben normalisierten Array berechnet werden."
+        },
+        {
+          "if": "wrong-ddof",
+          "then": "Der Vertrag verlangt die Populations-Standardabweichung mit ddof=0."
+        },
+        {
+          "if": "wrong-bins",
+          "then": "Die Bin-Grenzen folgen den Regeln von np.histogram."
+        }
+      ],
+      "typicalErrors": [
+        "Mittelwert statt Median verwechselt",
+        "ddof=1 verwendet",
+        "rechte Bin-Kante falsch behandelt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
     }
   ]
 }

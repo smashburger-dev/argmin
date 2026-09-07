@@ -12,10 +12,20 @@
       {
         "caseId": "accuracy-drop-without-code-change",
         "propertyTest": false
+      },
+      {
+        "caseId": "error-label-definition-shift",
+        "propertyTest": false
+      },
+      {
+        "caseId": "error-stable-subgroup",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch",
+      "challenge"
     ],
     "competencyIds": [
       "c-ml-erroranalysis"
@@ -85,6 +95,142 @@
         "Zeitlichen Einbruch als Zufall deuten",
         "Drift mit Label-Noise verwechseln",
         "ohne Hinweis auf Gruppen einen Subgruppenfehler annehmen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "error-label-definition-shift",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "accuracyBefore": 0.96,
+        "accuracyAfter": 0.81,
+        "codeChanged": false
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Reiner Input-Drift ohne Änderung am Ziel.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Zufälliger Label-Noise, obwohl die Regel systematisch geändert wurde.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Label- beziehungsweise Konzept-Drift durch die geänderte Zieldefinition.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Nur ein numerischer Rundungsfehler.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Die Eingabeverteilung bleibt stabil, aber eine Geschäftsregel ändert die Definition des positiven Labels. Danach fällt die Genauigkeit stark. Welcher Fehler ist am plausibelsten?",
+      "fullSolution": "Die Labeldefinition hat sich verschoben. Das ist Label- beziehungsweise Konzept-Drift, nicht primär Input-Drift.",
+      "hints": [
+        "Vergleiche, ob sich Eingaben oder die Bedeutung des Labels geändert hat.",
+        "Eine neue Zieldefinition verändert die Beziehung zwischen Eingabe und Label."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Eingabeverteilung bleibt laut Szenario stabil; geändert wird die Bedeutung des positiven Labels, daher liegt nicht primär Input-Drift vor."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Geschäftsregel ändert das Label systematisch und nicht zufällig pro Beispiel; das ist mehr als unabhängiges Label-Rauschen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der starke Genauigkeitsabfall folgt auf die neue Zieldefinition und ist kein Rundungsartefakt der unveränderten Eingabewerte."
+        }
+      ],
+      "typicalErrors": [
+        "Eine unveränderte Eingabeverteilung trotz geänderter Zieldefinition als Input-Drift bezeichnet.",
+        "Systematische Labeländerung mit zufälligem, unabhängigen Rauschen gleichgesetzt.",
+        "Eine semantische Änderung des positiven Labels auf numerische Rundungsfehler reduziert."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "error-stable-subgroup",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "accuracyBefore": 0.96,
+        "accuracyAfter": 0.81,
+        "codeChanged": false
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Zeitlicher Daten-Drift, weil jede Gruppenabweichung Drift ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Stabiler Subgruppenfehler, der separat untersucht und gemessen werden muss.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Label-Noise ohne Bezug zur Gruppe.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Kein Problem, weil die Gesamtgenauigkeit gut ist.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Die Gesamtgenauigkeit war schon immer gut, aber eine bestimmte Sprachgruppe hat dauerhaft deutlich mehr Fehler. Welche Diagnose passt?",
+      "fullSolution": "Das Muster ist ein stabiler Subgruppenfehler beziehungsweise Fairness-Risiko. Es gibt keinen Hinweis auf einen zeitlichen Drift, sondern auf ungleiche Fehler nach Gruppe.",
+      "hints": [
+        "Frage, ob der Unterschied neu ist oder dauerhaft besteht.",
+        "Ein gruppenspezifisches Muster ist keine allgemeine Metrikverschlechterung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Sprachgruppe hat dauerhaft mehr Fehler; ohne zeitliche Verschiebung ist das kein Hinweis auf einen neuen Daten-Drift."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Das Fehler-Muster hängt ausdrücklich an einer Sprachgruppe und ist damit nicht als gruppenunabhängiges zufälliges Label-Rauschen erklärt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Eine gute Gesamtgenauigkeit kann die dauerhaft schlechtere Sprachgruppenleistung verdecken; sie macht das Fairness-Risiko nicht harmlos."
+        }
+      ],
+      "typicalErrors": [
+        "Ein zeitlich stabiles Gruppenmuster fälschlich als zeitlichen Daten-Drift diagnostiziert.",
+        "Systematische gruppenspezifische Fehler als ungerichtetes Label-Rauschen verbucht.",
+        "Aggregierte Genauigkeit als ausreichenden Gegenbeweis gegen Subgruppenrisiken verwendet."
       ],
       "tolerancePolicy": {
         "mode": "none"

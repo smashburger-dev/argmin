@@ -12,10 +12,20 @@
       {
         "caseId": "repro-contract-violation",
         "propertyTest": false
+      },
+      {
+        "caseId": "repro-environment-version",
+        "propertyTest": false
+      },
+      {
+        "caseId": "repro-random-split-undocumented",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-repro"
@@ -84,6 +94,140 @@
         "Dokumentation (Manifest, README) mit Reproduzierbarkeit verwechseln",
         "Seed-Setzung als ausreichend ansehen, obwohl der Split frei läuft",
         "Vorab-Metrik als optional ansehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "repro-environment-version",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-repro"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Ein Experiment speichert Seed und Split, aber nicht die Version der Vorverarbeitungsbibliothek. Warum ist das ein Reproduktionsrisiko?",
+      "fullSolution": "Unterschiedliche Bibliotheksversionen können Vorverarbeitung, numerische Details oder Defaults ändern. Ohne Versionsangabe ist die Umgebung nicht vollständig festgelegt.",
+      "hints": [
+        "Ein Seed kontrolliert Zufall, nicht automatisch Bibliotheksimplementierungen.",
+        "Zum Reproduktionsvertrag gehört auch die ausführbare Umgebung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der Seed kontrolliert Zufallsentscheidungen, aber nicht geänderte Vorverarbeitungsdefaults oder numerische Details einer anderen Bibliotheksversion."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der fehlende Versionsstand verletzt direkt die Reproduzierbarkeit der Umgebung und nicht bloß einen separaten Speichervertrag."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein README ist nicht automatisch maschinenlesbar oder vollständig fixiert; der Vertrag braucht eine konkrete Versionsangabe für die Vorverarbeitungsbibliothek."
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+          "correct": false
+        }
+      ],
+      "typicalErrors": [
+        "Zufallsseed fälschlich als vollständige Fixierung der Softwareumgebung betrachtet.",
+        "Reproduzierbarkeit auf Datenablage reduziert und Versionsinformationen ausgeblendet.",
+        "Freitextdokumentation mit einer überprüfbaren, maschinenlesbaren Umgebungsangabe gleichgesetzt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "repro-random-split-undocumented",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-repro"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Ein Training setzt einen Seed, erzeugt aber bei jedem Lauf einen neuen Train/Test-Split und speichert ihn nicht. Was ist verletzt?",
+      "fullSolution": "Der Seed allein reicht nicht, wenn Split-Erzeugung oder Split-Artefakt nicht deterministisch reproduziert werden. Die Datenaufteilung gehört in den Vertrag.",
+      "hints": [
+        "Frage, ob derselbe Datensatz in Training und Test landet.",
+        "Reproduzierbarkeit verlangt dieselbe Aufteilung, nicht nur irgendeinen Seed."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Ein statistisch gültiger Split ist nicht zwingend derselbe Split; ohne gespeicherte Aufteilung können Training und Test bei jedem Lauf andere Zeilen enthalten."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Modellarchitektur kann vollständig dokumentiert sein, während der konkrete Train/Test-Split weiterhin fehlt; das Problem liegt in der Datenaufteilung."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Eine unveränderte Metrikdefinition sagt nichts über die verwendeten Zeilen aus; der nicht dokumentierte Split bleibt ein Reproduktionsfehler."
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nichts, weil jeder Split statistisch gültig ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+          "correct": false
+        }
+      ],
+      "typicalErrors": [
+        "Statistische Gültigkeit eines neuen Splits mit Identität des ursprünglichen Splits verwechselt.",
+        "Dokumentation der Architektur fälschlich als Ersatz für die Datenaufteilung behandelt.",
+        "Metrikdefinition und konkrete Trainings- und Testzeilen nicht auseinandergehalten."
       ],
       "tolerancePolicy": {
         "mode": "none"

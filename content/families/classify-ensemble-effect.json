@@ -12,10 +12,20 @@
       {
         "caseId": "bagging-variance-reduction",
         "propertyTest": false
+      },
+      {
+        "caseId": "ensemble-random-forest",
+        "propertyTest": false
+      },
+      {
+        "caseId": "ensemble-boosting-errors",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-ensembles"
@@ -81,6 +91,134 @@
         "Varianzreduktion mit Biasreduktion verwechseln",
         "Bootstrap als Datensynthese verstehen",
         "Korrelation der Basis-Modelle ignorieren"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "ensemble-random-forest",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Jeder Baum wird absichtlich auf denselben Fehler optimiert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Aggregation vieler decorrelierter Bäume mittelt Schwankungen und reduziert Varianz.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Bagging erhöht Varianz, weil mehr Modelle beteiligt sind.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Der Effekt entsteht nur durch eine größere Lernrate.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Warum reduziert ein Random Forest typischerweise die Varianz gegenüber einem einzelnen tiefen Baum?",
+      "fullSolution": "Viele decorrelierte Bäume werden auf Bootstrap-Stichproben trainiert und ihre Vorhersagen aggregiert. Das mittelt zufällige Schwankungen und reduziert Varianz.",
+      "hints": [
+        "Denke an das Mitteln vieler teilweise unabhängiger Schätzungen.",
+        "Bootstrap und zufällige Featureauswahl sollen die Bäume decorrelieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Bootstrap-Stichproben und zufällige Featureauswahl sollen die Bäume entkoppeln; sie werden nicht absichtlich auf exakt denselben Fehlerverlauf festgelegt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Mehr Bäume erhöhen nicht automatisch die Varianz: Die Aggregation der teilweise decorrelierten Vorhersagen mittelt gerade zufällige Schwankungen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der Varianzgewinn stammt aus Bagging und Diversität der Bäume, nicht aus einer Lernratenänderung wie bei einem Gradientenverfahren."
+        }
+      ],
+      "typicalErrors": [
+        "Random-Forest-Diversität mit identischem Fehlerfokus aller Einzelbäume verwechselt.",
+        "Die Varianzreduktion durch Aggregation als bloßen Nachteil zusätzlicher Modelle missverstanden.",
+        "Bagging-Mechanismus fälschlich mit der Lernrate eines iterativen Optimierers erklärt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "ensemble-boosting-errors",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Alle Modelle werden unabhängig trainiert und anschließend zufällig eines ausgewählt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Boosting verwirft jedes Modell nach dem Training.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Boosting verändert nur die Feature-Skalierung.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Spätere Lerner fokussieren Fehler der bisherigen Modelle und werden kombiniert.",
+          "correct": true
+        }
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Was ist die typische Idee von Boosting bei einer Folge schwacher Lerner?",
+      "fullSolution": "Jeder neue Lerner konzentriert sich stärker auf bisher schlecht erklärte Beispiele beziehungsweise Residuen. Die Modelle werden sequentiell kombiniert, um Bias zu reduzieren.",
+      "hints": [
+        "Boosting arbeitet sequentiell, nicht mit vollständig unabhängigen Bootstrap-Modellen.",
+        "Achte darauf, worauf der nächste Lerner seinen Fokus legt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Boosting kombiniert die Lerner sequentiell und richtet spätere Modelle auf bisher schlecht erklärte Beispiele; es wählt nicht zufällig nur ein Modell aus."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die schwachen Lerner bleiben Teil der kombinierten Vorhersage; Boosting verwirft sie nicht nach jedem Trainingsschritt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der nächste Lerner reagiert auf Fehler oder Residuen der Vorgänger; eine reine Änderung der Feature-Skalierung beschreibt diese Sequenz nicht."
+        }
+      ],
+      "typicalErrors": [
+        "Sequentielle Fehlerkorrektur mit zufälliger Auswahl eines Einzelmodells verwechselt.",
+        "Die additive Kombination der bereits trainierten Lerner übersehen.",
+        "Boosting fälschlich als reine Merkmalsvorverarbeitung ohne Residuenfokus beschrieben."
       ],
       "tolerancePolicy": {
         "mode": "none"

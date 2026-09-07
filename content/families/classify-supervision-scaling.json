@@ -12,10 +12,20 @@
       {
         "caseId": "supervised-vs-unsupervised-scaling",
         "propertyTest": false
+      },
+      {
+        "caseId": "scaling-pca-label-free",
+        "propertyTest": false
+      },
+      {
+        "caseId": "scaling-svm-standardization",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch",
+      "challenge"
     ],
     "competencyIds": [
       "c-ml-svm-pca"
@@ -84,6 +94,134 @@
         {
           "id": "d",
           "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "caseId": "scaling-pca-label-free",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Welche Aussage verbindet PCA und Skalierung korrekt?",
+      "fullSolution": "PCA ist unüberwacht und maximiert Varianzrichtungen. Unterschiedliche Einheiten können Varianzen dominieren, daher ist Standardisierung oft sinnvoll und muss aus dem Trainingsteil bestimmt werden.",
+      "hints": [
+        "Labels sind für PCA nicht nötig.",
+        "Varianz hängt an der Einheit; gleiche Größenordnungen verhindern Dominanz eines Merkmals."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "PCA sucht Varianzrichtungen in den Eingabemerkmalen und benötigt im beschriebenen Fall keine Zielwerte; Überwachung ist hier nicht die Begründung."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Varianz hängt von der Einheit ab: Ein Merkmal in großen Einheiten kann PCA dominieren, weshalb die Aussage die Skalierungsfrage verneint."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "PCA und k-Means sind beide ohne Labels möglich; die Aussage schreibt PCA fälschlich eine Zielvariable zu."
+        }
+      ],
+      "typicalErrors": [
+        "Eine Varianzzerlegung ohne Zielvariable fälschlich als überwachte Vorhersageaufgabe eingeordnet.",
+        "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert.",
+        "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
+          "correct": true
+        }
+      ]
+    },
+    {
+      "caseId": "scaling-svm-standardization",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Warum sollte eine SVM mit RBF-Kernel Merkmale typischerweise standardisieren?",
+      "fullSolution": "Distanzen und damit Kernelwerte hängen an den Merkmalskalen. Ein Merkmal mit großer Einheit kann die Geometrie dominieren; die Skalierungsparameter werden nur aus dem Training gelernt.",
+      "hints": [
+        "Der Kernel vergleicht Abstände im Merkmalsraum.",
+        "Skalierungsstatistiken dürfen keine Information aus Validierung oder Test verwenden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Standardisierung erzeugt keine Labels; sie verändert nur die Skalen der Merkmale, auf denen die RBF-Distanzen berechnet werden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein RBF-Kernel verarbeitet reelle Merkmale und verlangt keine Ganzzahlen; der relevante Punkt ist die vergleichbare Distanzskala."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Eine SVM bleibt überwacht, weil sie Trainingslabels nutzt; fehlende Standardisierung ändert nicht den Aufgabentyp."
+        }
+      ],
+      "typicalErrors": [
+        "Vorverarbeitung mit der Erzeugung von Zielmarkierungen verwechselt.",
+        "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt.",
+        "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Weil Standardisierung die Labels automatisch erzeugt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
           "correct": false
         }
       ]

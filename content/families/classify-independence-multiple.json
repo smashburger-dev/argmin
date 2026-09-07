@@ -12,13 +12,20 @@
       {
         "caseId": "dependent-pair-double",
         "propertyTest": false
+      },
+      {
+        "caseId": "independent-pair-negative",
+        "propertyTest": false
+      },
+      {
+        "caseId": "dependent-triple-span",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
       "intro",
       "core",
-      "stretch",
-      "challenge"
+      "stretch"
     ],
     "competencyIds": [
       "c-linalg-independence"
@@ -73,6 +80,152 @@
       ],
       "prompt": "Sind $b_1=(1,2)$, $b_2=(2,4)$ linear unabhängig?",
       "fullSolution": "Wegen $b_2 = 2b_1$ gilt $(-2)\\,b_1 + 1\\,b_2 = 0$ mit Koeffizienten $\\neq 0$ — die Menge ist linear abhängig."
+    },
+    {
+      "caseId": "independent-pair-negative",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "vectors": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nein, weil beide Vektoren in $\\mathbb{R}^2$ liegen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nein, weil $v=3u$ gilt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ja; kein skalarer Faktor macht aus $u$ den Vektor $v$.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Das lässt sich nur mit einer Determinante einer $3\\times3$-Matrix entscheiden.",
+          "correct": false
+        }
+      ],
+      "prompt": "Sind $u=(1,2)$ und $v=(2,3)$ linear unabhängig?",
+      "fullSolution": "Ja. Wäre $v=\\lambda u$, müsste gleichzeitig $\\lambda=2$ aus der ersten und $\\lambda=1{,}5$ aus der zweiten Komponente gelten — ein Widerspruch.",
+      "hints": [
+        "Suche nach einem einzigen gemeinsamen Faktor für beide Komponenten.",
+        "Wenn kein Faktor passt, gibt es für ein Vektorpaar nur die triviale Nullkombination."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Dass beide Vektoren in $\\mathbb{R}^2$ liegen, sagt nichts über ihre Abhängigkeit; entscheidend ist, ob ein gemeinsamer Skalar beide Komponenten trifft."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "$3u=(3,6)$ und ist damit nicht $v=(2,3)$; der behauptete Faktor 3 erklärt das gegebene Vektorpaar nicht."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Für zwei Vektoren genügt der Vergleich der Komponenten beziehungsweise der Skalarfaktor; eine $3\\times3$-Determinante ist hier nicht erforderlich."
+        }
+      ],
+      "typicalErrors": [
+        "Gemeinsamen Vektorraum und lineare Unabhängigkeit als dieselbe Aussage behandelt.",
+        "Einen unpassenden gemeinsamen Faktor für $(1,2)$ und $(2,3)$ verwendet.",
+        "Das kleine Vektorpaar mit einem nicht benötigten Determinantenverfahren für $3\\times3$-Matrizen geprüft."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    },
+    {
+      "caseId": "dependent-triple-span",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "vectors": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            4
+          ]
+        ]
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ja, weil kein Vektor der Nullvektor ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nein, weil $v_3=v_1+v_2$ gilt.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Ja, weil drei Vektoren in $\\mathbb{R}^3$ immer eine Basis bilden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nein, aber nur weil $v_1$ und $v_2$ parallel sind.",
+          "correct": false
+        }
+      ],
+      "prompt": "Sind $v_1=(1,0,1)$, $v_2=(0,1,1)$ und $v_3=(1,1,2)$ linear unabhängig?",
+      "fullSolution": "Nein: $v_3=v_1+v_2$. Damit gibt es die nichttriviale Nullkombination $v_1+v_2-v_3=0$.",
+      "hints": [
+        "Prüfe, ob einer der Vektoren als Kombination der anderen geschrieben werden kann.",
+        "Eine solche Darstellung liefert direkt eine nichttriviale Nullkombination."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Nichtverschwindende Vektoren können trotzdem abhängig sein; hier gilt konkret $v_3=v_1+v_2$."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Drei Vektoren in $\\mathbb{R}^3$ bilden nicht automatisch eine Basis; die explizite Summe der ersten beiden erzeugt hier den dritten."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$v_1$ und $v_2$ sind nicht parallel, aber die Dreiermenge ist wegen $v_3=v_1+v_2$ abhängig."
+        }
+      ],
+      "typicalErrors": [
+        "Jeden einzelnen Nichtnullvektor fälschlich als Beleg für Unabhängigkeit der ganzen Menge gelesen.",
+        "Die mögliche Abhängigkeit von drei Vektoren in $\\mathbb{R}^3$ durch die Dimensionszahl ausgeschlossen.",
+        "Paarweise Nichtparallelität mit Unabhängigkeit einer gesamten Vektormenge verwechselt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
     }
   ]
 }

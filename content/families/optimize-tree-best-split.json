@@ -12,10 +12,15 @@
       {
         "caseId": "gini-best-binary-split",
         "propertyTest": false
+      },
+      {
+        "caseId": "gini-three-class-candidates",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-ensembles",
@@ -67,6 +72,55 @@
         "Anzahlen statt Anteile in die Gini-Formel",
         "Schwellen auf Datenpunkten statt auf Mitten testen",
         "Gleichstand nicht deterministisch auflösen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "gini-three-class-candidates",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\ndef gini(labels):\n    ...\n\ndef best_split(x, y):\n    ...\n",
+        "tests": "__check(\"three classes\", abs(gini([0, 1, 2]) - 2.0 / 3.0) < 1e-12)\n__check(\"best middle\", abs(best_split([0, 1, 2, 3], [0, 0, 1, 1])[0] - 1.5) < 1e-12)\n__check(\"weighted zero\", abs(best_split([0, 1, 2, 3], [0, 0, 1, 1])[1]) < 1e-12)\n__check(\"duplicate x skipped\", best_split([1, 1, 2], [0, 1, 1])[0] == 1.5)"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def gini(labels):\n    labels = list(labels); n = len(labels)\n    if n == 0: raise ValueError(\"labels must not be empty\")\n    return 1.0 - sum((labels.count(c) / n) ** 2 for c in set(labels))\n\ndef best_split(x, y):\n    x = [float(v) for v in x]; y = list(y)\n    if len(x) != len(y): raise ValueError(\"x and y must have the same length\")\n    if len(x) < 2: raise ValueError(\"need at least two points\")\n    order = sorted(range(len(x)), key=lambda i: x[i]); xs = [x[i] for i in order]; ys = [y[i] for i in order]; n = len(xs); best = None\n    for i in range(n - 1):\n        if xs[i] == xs[i + 1]: continue\n        t = (xs[i] + xs[i + 1]) / 2.0; left = ys[:i + 1]; right = ys[i + 1:]\n        g = len(left) / n * gini(left) + len(right) / n * gini(right)\n        if best is None or g < best[1] - 1e-12 or (abs(g - best[1]) <= 1e-12 and t < best[0]): best = (t, g)\n    return best"
+      },
+      "prompt": "Implementiere Gini und die deterministische beste Binärschwelle wie im Familienvertrag, diesmal mit drei Klassen und doppelten x-Werten.",
+      "fullSolution": "def gini(labels):\n    labels = list(labels); n = len(labels)\n    if n == 0: raise ValueError(\"labels must not be empty\")\n    return 1.0 - sum((labels.count(c) / n) ** 2 for c in set(labels))\n\ndef best_split(x, y):\n    x = [float(v) for v in x]; y = list(y)\n    if len(x) != len(y): raise ValueError(\"x and y must have the same length\")\n    if len(x) < 2: raise ValueError(\"need at least two points\")\n    order = sorted(range(len(x)), key=lambda i: x[i]); xs = [x[i] for i in order]; ys = [y[i] for i in order]; n = len(xs); best = None\n    for i in range(n - 1):\n        if xs[i] == xs[i + 1]: continue\n        t = (xs[i] + xs[i + 1]) / 2.0; left = ys[:i + 1]; right = ys[i + 1:]\n        g = len(left) / n * gini(left) + len(right) / n * gini(right)\n        if best is None or g < best[1] - 1e-12 or (abs(g - best[1]) <= 1e-12 and t < best[0]): best = (t, g)\n    return best",
+      "hints": [
+        "Gini summiert quadrierte Klassenanteile, nicht Klassenanzahlen.",
+        "Sortiere x und y gemeinsam, überspringe gleiche Nachbarn und wähle bei Gleichstand die kleinste Schwelle."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-gini",
+          "then": "Gini verwendet Klassenanteile p_k und quadriert diese."
+        },
+        {
+          "if": "wrong-candidates",
+          "then": "Schwellen liegen in den Mitten verschiedener benachbarter x-Werte."
+        },
+        {
+          "if": "wrong-tie",
+          "then": "Der Vertrag verlangt bei numerischem Gleichstand die kleinste Schwelle."
+        }
+      ],
+      "typicalErrors": [
+        "Klassenanzahlen statt Anteile verwendet",
+        "x und y nicht gemeinsam sortiert",
+        "gleiche x-Werte als Schwelle benutzt"
       ],
       "tolerancePolicy": {
         "mode": "tests"
