@@ -4,6 +4,7 @@ import { gradeTraceTable } from '../../assets/js/core/foundations_trace_families
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { MathMarkup } from './MathMarkup';
+import { Button } from './Button';
 
 // S4D1: Trace-Tabelle als Interaktionsvariante von output-predict-lines.
 // Kein neuer Archetyp: Lösungsweg und Evidence bleiben gleich, nur die
@@ -141,9 +142,10 @@ export function TraceTableView({ instance, summary }: { instance: TraceTableInst
           ))}
         </tbody>
       </table>
-      <button class="button button-primary" disabled={busy || revealed || verdict?.correct === true} onClick={submit}>Tabelle prüfen</button>
+      <div class="actions">
+      <Button variant="primary" disabled={busy || revealed || verdict?.correct === true} onClick={submit}>Tabelle prüfen</Button>
       {' '}
-      <button class="button" disabled={revealed || verdict?.correct === true} onClick={() => void (async () => {
+      <Button disabled={revealed || verdict?.correct === true} onClick={() => void (async () => {
         if (!window.confirm('Lösung ansehen? Diese Variante kann danach keinen Kompetenznachweis mehr liefern.')) return;
         setRevealed(true);
         setVerdict(null);
@@ -156,7 +158,8 @@ export function TraceTableView({ instance, summary }: { instance: TraceTableInst
             revealedSolution: true,
           });
         }
-      })()}>Lösung zeigen</button>
+      })()}>Lösung zeigen</Button>
+      </div>
       {failed ? <p role="alert" class="content-error">{failed}</p> : null}
       {verdict && verdict.correct ? <h2>Richtig, alle Zustände stimmen.</h2> : null}
       {verdict && !verdict.correct && verdict.firstBadRow !== null
@@ -164,7 +167,7 @@ export function TraceTableView({ instance, summary }: { instance: TraceTableInst
         : null}
       {revealed ? <p>Offenlegung, kein Beleg. Versuche die nächste Variante aus dem Kopf.</p> : null}
       <div class="hint-stack">{shownHints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}</div>
-      {shownHints.length < 2 && !revealed && verdict?.correct !== true ? <button class="text-button" type="button" onClick={() => void openHint()}>Hinweis öffnen</button> : null}
+      {shownHints.length < 2 && !revealed && verdict?.correct !== true ? <Button variant="ghost" size="sm" onClick={() => void openHint()}>Hinweis öffnen</Button> : null}
       {verdict?.correct === true && masteryNote ? <p>Kann als Kompetenzbeleg zählen.</p> : null}
       {verdict?.correct === true && reviewDueAt ? <p>Nächstes Review: {reviewDueAt}</p> : null}
       <p><a href="#/learn">Zurück zum Lernen</a></p>

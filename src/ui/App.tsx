@@ -6,6 +6,8 @@ import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ProgressVie
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
 import { VisualizationView } from './VisualizationView';
+import { Button } from './Button';
+import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
 const FamilyExerciseView = lazy(() => import('./FamilyExerciseView').then((module) => ({ default: module.FamilyExerciseView })));
@@ -35,6 +37,7 @@ export function App() {
     reviewSlotsWeeks: [2, 5, 11],
   });
   const [progressReady, setProgressReady] = useState(false);
+  const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const progressRequest = useRef(0);
   const refreshProgress = useCallback(async () => {
     const request = ++progressRequest.current;
@@ -80,6 +83,13 @@ export function App() {
     await refreshProgress();
   };
 
+  const toggleTheme = () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    const preference: ThemePreference = next;
+    setThemePreference(preference);
+    saveThemePreference(preference);
+  };
+
   const view = section === 'today' ? <TodayView catalog={catalog} progress={progress} />
     : section === 'learn' ? <LearnView catalog={catalog} progress={progress} />
       : section === 'review' ? <ReviewView catalog={catalog} progress={progress} />
@@ -105,7 +115,7 @@ export function App() {
           <span class="brand-mark" aria-hidden="true">KL</span>
           <span><strong>KI-Lernplattform</strong><small>Local-first Lernsystem</small></span>
         </a>
-        <div class="topbar-meta"><span class="local-status"><span aria-hidden="true" />Lokal</span><span class="catalog-version">Katalog {catalog.version}</span></div>
+        <div class="topbar-meta"><span class="local-status"><span aria-hidden="true" />Lokal</span><span class="catalog-version">Katalog {catalog.version}</span><Button variant="ghost" size="sm" class="theme-toggle" aria-label="Farbschema wechseln" onClick={toggleTheme}>{themePreference === 'dark' ? '☀' : '☾'}</Button></div>
       </header>
       <div class="app-body">
         <nav class="main-nav" aria-label="Hauptnavigation">
