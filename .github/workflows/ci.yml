@@ -18,10 +18,10 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install sympy
+      - run: npm run build:release
       - run: npm test
       - run: npm run test:project-runner
       - run: npm run typecheck
-      - run: npm run build:release
 
   e2e:
     runs-on: ubuntu-latest
