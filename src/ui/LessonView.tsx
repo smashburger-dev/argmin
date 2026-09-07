@@ -5,6 +5,7 @@ import { MathMarkup } from './MathMarkup';
 import { VisualizationBlock } from './VisualizationBlock';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Breadcrumbs } from './Breadcrumbs';
+import { Button } from './Button';
 import { activityLabel, difficultyLabelFor } from './exercise-context';
 
 export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lessonId: string }) {
@@ -36,7 +37,6 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
   const relatedExercises = placed.length
     ? placed
     : catalog.exercises.filter((exercise) => exercise.competencyIds.some((id) => summary.competencyIds.includes(id)));
-  const practiceSpaces = (homeModule?.placements || []).filter((placement) => placement.role === 'practice-space' && placement.familyId);
   const sourceLinks = summary.sourceRefs.map((reference) => ({ reference, source: (sources || []).find((source) => source.sourceId === reference.sourceId) })).filter((item) => item.source);
   // Didaktische Reihenfolge sitzt im Modul (S4B): Vor/Zurück folgt der
   // Modulreihenfolge, wenn die Lektion ein Zuhause hat, sonst den Nachbarn.
@@ -71,9 +71,9 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
           <p class="card-kicker">Direkt prüfen</p>
           <h2 id="practice-title">Passende Aufgaben</h2>
           {relatedExercises.length > 0
-            ? <ul>{relatedExercises.slice(0, 5).map((exercise) => <li key={exercise.definitionId}><a href={routeForDefinition(exercise)}><strong>{activityLabel(exercise.activityType)} · {difficultyLabelFor(exercise.difficulty)}</strong><span>{exercise.estimatedMinutes} Min.</span></a></li>)}</ul>
+            ? <div class="side-cards">{relatedExercises.slice(0, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong>{activityLabel(exercise.activityType)}</strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Starten</Button></article>)}</div>
             : <p>Für diese neue Kompetenz werden die unabhängigen Aufgabenfamilien noch ergänzt.</p>}
-          {practiceSpaces.length > 0 && <div class="lesson-practice"><h3>Übungsplatz</h3><ul>{practiceSpaces.map((placement) => <li key={placement.placementId}><a href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>{catalog.families?.find((family) => family.familyId === placement.familyId)?.summary || 'Freie Aufgabe'}<span>Variante üben</span></a></li>)}</ul></div>}
+          {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}
           {sourceLinks.length ? <div class="lesson-sources"><h3>Weiterlesen und prüfen</h3><ul>{sourceLinks.map(({ reference, source }) => source && <li key={`${reference.sourceId}:${reference.locator}`}><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.title}<span>{reference.role} · {reference.locator}</span></a></li>)}</ul></div> : null}
           <p class="lesson-note">Lies nicht alles noch einmal. Löse zuerst eine Aufgabe ohne Vorlage und kehre nur zur konkreten Lücke zurück.</p>
         </aside>

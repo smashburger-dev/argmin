@@ -29,6 +29,7 @@ export function App() {
   const [route, setRoute] = useState(currentRoute);
   const [progress, setProgress] = useState<ProgressSnapshot>({
     attemptsCount: 0,
+    lastAttempt: null,
     dueReviews: [],
     scheduledReviewCount: 0,
     journal: [],
