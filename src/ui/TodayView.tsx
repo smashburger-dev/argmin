@@ -4,6 +4,7 @@ import type { ProgressSnapshot } from '../adapters/local-progress';
 import { buildWeeklyLearningPlan, type LearningPlanItem } from '../adapters/learning-plan';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 import { Button } from './Button';
+import { Carousel } from './Carousel';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
 
 function reasonLabel(item: LearningPlanItem) {
@@ -178,9 +179,9 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           <p>Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Die Quote und Reviewabstände sind konfigurierbare Produktheuristiken.</p>
         </details>
         {plan.days.some((day) => day.items.length) ? (
-          <div class="plan-days">
+          <Carousel label="Wochenplan-Tage">
             {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} key={day.day} />)}
-          </div>
+          </Carousel>
         ) : (
           <div class="empty-state">
             <h3>Kein Plan im aktuellen Budget</h3>

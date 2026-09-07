@@ -31,7 +31,9 @@ import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
+import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
+import { moduleState } from './ProgressView';
 
 const stateLabels = {
   unassessed: 'Noch nicht geprüft',
@@ -50,60 +52,31 @@ const domainLabels: Record<string, string> = {
   tooling: 'Werkzeuge',
 };
 
-function CompetencyCard({ competency, all, state }: { competency: Competency; all: Map<string, Competency>; state: EvidenceState }) {
-  return (
-    <article class="competency-card">
-      <div class="competency-meta">
-        <span>{domainLabels[competency.domain] ?? competency.domain}</span>
-        <span>{minutesLabel(competency.estimatedMinutes)}</span>
-      </div>
-      <h3>{competency.title}</h3>
-      <p>{competency.description}</p>
-      <div class="prerequisites">
-        <span class={`state-dot state-${state}`} aria-hidden="true" />
-        <span>{stateLabels[state]}</span>
-      </div>
-      {competency.requires.length > 0 && (
-        <p class="requires">Voraussetzung: {competency.requires.map((id) => all.get(id)?.title ?? id).join(', ')}</p>
-      )}
-      <a class="card-link" href={`#/competency/${competency.competencyId}`} aria-label={`${competency.title} öffnen`}>Öffnen</a>
-    </article>
-  );
-}
-
 export function LearnView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const [activeTrack, setActiveTrack] = useState(progress.trackId);
   const [query, setQuery] = useState('');
-  const byId = useMemo(() => new Map(catalog.competencies.map((item) => [item.competencyId, item])), [catalog.competencies]);
-  const visible = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase('de');
-    return catalog.competencies.filter((competency) => {
-      const inTrack = competency.trackIds.includes(activeTrack);
-      const searchable = `${competency.title} ${competency.description} ${domainLabels[competency.domain] ?? competency.domain}`.toLocaleLowerCase('de');
-      return inTrack && (!needle || searchable.includes(needle));
-    });
-  }, [activeTrack, catalog.competencies, query]);
+  const track = catalog.tracks.find((item) => item.trackId === activeTrack) ?? catalog.tracks[0];
   const modules = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase('de');
-    return (catalog.learningModules || []).filter((module) => {
-      const inTrack = module.trackIds.includes(activeTrack);
+    const matching = (catalog.learningModules || []).filter((module) => {
       const searchable = `${module.title} ${module.description}`.toLocaleLowerCase('de');
-      return inTrack && (!needle || searchable.includes(needle));
+      return !needle || searchable.includes(needle);
     });
-  }, [activeTrack, catalog.learningModules, query]);
+    return track ? orderModulesForTrack(matching, track) : matching;
+  }, [catalog.learningModules, query, track]);
   return (
     <section class="view" aria-labelledby="learn-title">
       <header class="view-header split-header">
         <div>
-          <p class="eyebrow">Kompetenzkarte</p>
+          <p class="eyebrow">Lernpfad</p>
           <h1 id="learn-title" tabIndex={-1}>Lernen</h1>
-          <p class="lede">Wähle frei oder folge der erklärten Empfehlung.</p>
+          <p class="lede">Module in sinnvoller Reihenfolge — du kannst jederzeit frei springen.</p>
         </div>
         <label class="search-field">
-          <span>Kompetenzen suchen</span>
+          <span>Module suchen</span>
           <input
             type="search"
-            placeholder="Python, Algebra, NumPy"
+            placeholder="Algebra, Tensoren, RAG"
             value={query}
             onInput={(event) => setQuery(event.currentTarget.value)}
           />
@@ -122,21 +95,32 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           </button>
         ))}
       </div>
-      <nav class="catalog-links" aria-label="Weitere Katalogansichten"><a href="#/sources">Öffentliche Lektüren</a><a href="#/tools">Werkzeuge</a></nav>
-      <div class="competency-summary" aria-live="polite">
-        <strong>{visible.length}</strong>
-        <span>sichtbare Kompetenzknoten</span>
-        <span class="summary-separator" aria-hidden="true" />
-        <strong>{catalog.milestones.length}</strong>
-        <span>Milestones</span>
-        <span class="summary-separator" aria-hidden="true" />
-        <strong>{modules.length}</strong>
-        <span>Module</span>
-      </div>
-      {modules.length > 0 && <section class="activity-section" aria-labelledby="learn-module-title"><div class="section-heading"><div><p class="eyebrow">Module</p><h2 id="learn-module-title">Module in diesem Pfad</h2></div><span>{modules.length}</span></div><div class="lesson-list">{modules.map((module) => <a href={`#/module/${module.moduleId}`} key={module.moduleId}><span>{module.estimatedMinutes} Min.</span><strong>{module.title}</strong><p>{module.description}</p></a>)}</div></section>}
-      {visible.length > 0
-        ? <div class="competency-grid">{visible.map((competency) => <CompetencyCard competency={competency} all={byId} state={progress.evidenceStates[competency.competencyId] ?? 'unassessed'} key={competency.competencyId} />)}</div>
-        : <div class="empty-state"><h2>Keine passende Kompetenz</h2><p>Ändere den Suchbegriff oder wähle einen anderen Lernpfad.</p></div>}
+      <section class="activity-section" aria-labelledby="learn-module-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">Lernpfad</p><h2 id="learn-module-title">Module in diesem Pfad</h2></div>
+          <span>{modules.length}</span>
+        </div>
+        {modules.length > 0 ? (
+          <ol class="module-path">
+            {modules.map((module, index) => {
+              const state = moduleState(module.competencyIds, progress.evidenceStates) || 'Im Aufbau';
+              const competencyLabel = module.competencyIds.length === 1 ? 'Kompetenz' : 'Kompetenzen';
+              return (
+                <li key={module.moduleId}>
+                  <a href={`#/module/${module.moduleId}`}>
+                    <span class="module-step" aria-hidden="true">{index + 1}</span>
+                    <div>
+                      <strong>{module.title}</strong>
+                      <p>{module.description}</p>
+                    </div>
+                    <span class="module-meta">{module.estimatedMinutes} Min. · {module.competencyIds.length} {competencyLabel} <span class="tag">{state}</span></span>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        ) : <div class="empty-state"><h2>Kein passendes Modul</h2><p>Ändere den Suchbegriff oder wähle einen anderen Lernpfad.</p></div>}
+      </section>
     </section>
   );
 }
