@@ -1190,8 +1190,8 @@ export function generateGuardedLoopFamily({ seed, caseId, difficulty }) {
 
 // --- Familie 8: validate-required-field-raise (program-ordering) --------------
 // Shard-Fall specific-except-with-issue (f-files-parsons-01) plus
-// parametrischer Geschwisterfall required-key-with-issue (gleicher
-// Pflichtfeld-Vertrag, anderes Feld).
+// parametrischer Geschwisterfall required-key-with-issue (Szenario-Tabelle
+// mit deterministisch gezogenem Feld).
 
 export const REQUIRED_FIELD_CONTRACT = {
   familyId: 'validate-required-field-raise',
@@ -1214,20 +1214,18 @@ export const REQUIRED_FIELD_CONTRACT = {
   activityType: 'parsons',
 };
 
-const REQUIRED_FRAGMENTS = {
+const REQUIRED_SCENARIOS = {
   'specific-except-with-issue': [
-    { id: 'p1', text: 'try:' },
-    { id: 'p2', text: '    age = parse_age(row["age"])' },
-    { id: 'p3', text: 'except ValueError as error:' },
-    { id: 'p4', text: '    issues.append({"row": row_number, "kind": "invalid-age", "detail": str(error)})' },
-    { id: 'd1', text: 'except Exception: pass' },
+    { field: 'age', parser: 'parse_age', kind: 'invalid-age', noun: 'ein Altersfeld' },
+    { field: 'price', parser: 'parse_price', kind: 'invalid-price', noun: 'ein Preisfeld' },
+    { field: 'year', parser: 'parse_year', kind: 'invalid-year', noun: 'ein Jahresfeld' },
+    { field: 'score', parser: 'parse_score', kind: 'invalid-score', noun: 'ein Punktefeld' },
   ],
   'required-key-with-issue': [
-    { id: 'p1', text: 'try:' },
-    { id: 'p2', text: '    email = row["email"]' },
-    { id: 'p3', text: 'except KeyError as error:' },
-    { id: 'p4', text: '    issues.append({"row": row_number, "kind": "missing-email", "detail": str(error)})' },
-    { id: 'd1', text: 'except Exception: pass' },
+    { field: 'email', kind: 'missing-email', noun: 'die E-Mail' },
+    { field: 'id', kind: 'missing-id', noun: 'die ID' },
+    { field: 'name', kind: 'missing-name', noun: 'den Namen' },
+    { field: 'date', kind: 'missing-date', noun: 'das Datum' },
   ],
 };
 
@@ -1279,18 +1277,36 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
+  const scenarioRng = rng(((seed * 2654435761) + 97) >>> 0);
+  const scenario = REQUIRED_SCENARIOS[caseId][randInt(scenarioRng, 0, 3)];
+  const fragments = caseId === 'specific-except-with-issue'
+    ? [
+      { id: 'p1', text: 'try:' },
+      { id: 'p2', text: `    ${scenario.field} = ${scenario.parser}(row["${scenario.field}"])` },
+      { id: 'p3', text: 'except ValueError as error:' },
+      { id: 'p4', text: `    issues.append({"row": row_number, "kind": "${scenario.kind}", "detail": str(error)})` },
+      { id: 'd1', text: 'except Exception: pass' },
+    ]
+    : [
+      { id: 'p1', text: 'try:' },
+      { id: 'p2', text: `    ${scenario.field} = row["${scenario.field}"]` },
+      { id: 'p3', text: 'except KeyError as error:' },
+      { id: 'p4', text: `    issues.append({"row": row_number, "kind": "${scenario.kind}", "detail": str(error)})` },
+      { id: 'd1', text: 'except Exception: pass' },
+    ];
   const prompt = caseId === 'specific-except-with-issue'
-    ? 'Ordne die Schritte, um ein Altersfeld zu prüfen und einen erwarteten ValueError als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.'
-    : 'Ordne die Schritte, um ein Pflichtfeld zu prüfen und einen fehlenden Schlüssel als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.';
+    ? `Ordne die Schritte, um ${scenario.noun} zu prüfen und einen erwarteten ValueError als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.`
+    : `Ordne die Schritte, um ${scenario.noun} als Pflichtfeld zu prüfen und einen fehlenden Schlüssel als Issue zu speichern. Eine Zeile verschluckt zu viele Fehler.`;
   return parsonsGenerate({
     seed,
     difficulty,
     parsonsCase: caseId,
-    fragments: REQUIRED_FRAGMENTS[caseId],
+    fragments,
     solutionOrder: REQUIRED_ORDERS[caseId],
     distractors: ['d1'],
     prompt,
     fullSolution: 'try umschließt den riskanten Zugriff. Der spezifische except-Zweig ergänzt den Issue mit Zeilenkontext; die breite Exception-Zeile ist der Distraktor.',
+    extraParameters: { field: scenario.field },
   });
 }
 

@@ -74,14 +74,15 @@ const independent = {
   },
   genCodeReadingOutput: (p) => {
     if (p.shape === 'slice') return p.word.slice(p.a, p.b);
-    if (p.shape === 'join') return p.parts.slice(p.i, p.j).join('-');
+    if (p.shape === 'join') return p.parts.slice(p.i, p.j).join(p.sep ?? '-');
     if (p.shape === 'comprehension') {
       const out = p.nums.filter((n) => n > p.threshold).map((n) => n * p.factor);
       return `[${out.join(', ')}]`;
     }
-    return p.mode === 0
-      ? p.word.trim().toUpperCase()
-      : p.word.trim().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+    const clean = p.word.trim();
+    if (p.mode === 0) return clean.toUpperCase();
+    if (p.mode === 1) return clean.split(' ').map((word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`).join(' ');
+    return `${clean[0].toUpperCase()}${clean.slice(1).toLowerCase()}`;
   },
   genFunctionCompose: (p) => {
     const f = (x) => p.fa * x + p.fb;
