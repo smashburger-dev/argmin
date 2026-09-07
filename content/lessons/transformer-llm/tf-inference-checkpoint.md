@@ -6,4 +6,4 @@ Fragen zum Selbsttest:
 2. Warum reicht für die Tokenwahl argmax, obwohl Logits keine Wahrscheinlichkeiten sind?
 3. Was genau beweist der Doppelaufruf-Test — und was beweist er ausdrücklich nicht über Sprachfähigkeit?
 
-Danach: eine Einstiegsaufgabe zum Warmwerden, [Implementiere greedy_decode(step_fn, init_ids, max_len, eos). Vertrag: Die …](#/family/optimize-decode-greedy-loop/greedy-decode-function/0/core) für die Schleifenverträge, [Final Boss Toy-Pipeline: Implementiere pipeline(text, weights, max_len, …](#/family/compose-toy-inference-pipeline/toy-inference-pipeline/0/challenge) für die ganze Pipeline.
+Danach: eine Einstiegsaufgabe zum Warmwerden, gefolgt von der [Kernaufgabe](#/family/optimize-decode-greedy-loop/greedy-decode-function/0/core) für die Schleifenverträge und der [Herausforderung](#/family/compose-toy-inference-pipeline/toy-inference-pipeline/0/challenge) für die ganze Pipeline.

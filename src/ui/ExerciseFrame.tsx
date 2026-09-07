@@ -53,7 +53,7 @@ export function ExerciseFrame({
           {feedback ? <div class="exercise-feedback">{feedback}</div> : null}
           {hints.length > 0 && (
             <div class="hint-stack">
-              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong>{hint}</p>)}
+              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}
             </div>
           )}
           {solution}
@@ -66,7 +66,7 @@ export function ExerciseFrame({
             {ctx.nextTaskHref && ctx.nextTaskTitle ? <Button variant="secondary" href={ctx.nextTaskHref}>Nächste Aufgabe: {ctx.nextTaskTitle}</Button> : null}
             <Button variant="ghost" href={backHref}>{backLabel}</Button>
           </div>
-          <p class="exercise-side-note">Nach dem Prüfen zählt eine neue Variante als eigener Versuch.</p>
+          <p class="exercise-side-note">Jede neue Variante ist ein eigener Versuch.</p>
         </aside>
       </div>
     </section>

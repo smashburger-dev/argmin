@@ -215,6 +215,18 @@ main { min-width: 0; }
 .lesson-prose h2 { margin: var(--s7) 0 var(--s3); }
 .lesson-prose h2:first-child { margin-top: 0; }
 .lesson-prose p { margin: 0 0 var(--s4); }
+.lesson-prose a[href^="#/family/"] {
+  display: inline-flex;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+.lesson-prose a[href^="#/family/"]:hover { border-color: var(--accent); }
 .lesson-prose ul, .lesson-prose ol { padding-left: var(--s5); }
 .lesson-prose li { margin-bottom: var(--s2); }
 .lesson-prose code { padding: .1em .3em; border-radius: 4px; background: var(--surface-2); font-size: .88em; }

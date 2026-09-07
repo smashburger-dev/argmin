@@ -78,4 +78,4 @@ A + bias
 
 ## Direkter Check
 
-Ordne zuerst die Implementierung in [Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` (Begleiter zu …](#/family/construct-matvec-shape-contract/matvec-contract-order/0/intro). Trace danach [Spaltenbild von Hand getracet: Was haben b0 und b1 nach Ablauf des Codes für …](#/family/trace-assignment-state/column-picture-trace/0/intro) und implementiere schließlich `matvec` im [Browser-Labor](#/lab/w05-e8).
+Ordne zuerst die Implementierung in der [Einstiegsaufgabe](#/family/construct-matvec-shape-contract/matvec-contract-order/0/intro). Trace danach die [Einstiegsaufgabe](#/family/trace-assignment-state/column-picture-trace/0/intro) und implementiere schließlich `matvec` im [Browser-Labor](#/lab/w05-e8).

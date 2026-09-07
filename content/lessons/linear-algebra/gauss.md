@@ -77,4 +77,4 @@ ist ein Widerspruch: Es gibt keine Lösung. Eine Zeile $0=0$ enthält dagegen ke
 
 ## Direkter Check
 
-Löse [Löse das Gleichungssystem \[ 2x + y = 5, \qquad x - 3y = -8 \] und gib die …](#/family/transform-system-2x2-elimination/system-w05-e6/0/core) und danach [Übung zur Gauß-Elimination mit anderen Zahlen als w05-e6: Löse \[ -x - 3y = …](#/family/transform-system-2x2-elimination/system-w05-e11/0/core). Beide werden als exakte ganzzahlige Paare geprüft.
+Löse die [Kernaufgabe](#/family/transform-system-2x2-elimination/system-w05-e6/0/core) und danach die [Kernaufgabe](#/family/transform-system-2x2-elimination/system-w05-e11/0/core). Beide werden als exakte ganzzahlige Paare geprüft.
