@@ -160,7 +160,8 @@ function validateProjectPackage(contentRoot, file, project) {
   if (project.runnerMode === 'browser') return;
   const sourceFile = resolveContentPath(contentRoot, file);
   const directory = dirname(sourceFile);
-  validateProjectFiles(directory, project.projectId, project.starterFiles, 'Starterdatei'); validateProjectFiles(directory, project.projectId, project.solutionFiles, 'Lösungsdatei');
+  validateProjectFiles(directory, project.projectId, project.starterFiles, 'Starterdatei');
+  validateProjectFiles(directory, project.projectId, project.solutionFiles, 'Lösungsdatei');
   const manifestPath = projectPath(directory, 'check-manifest.json');
   if (!existsSync(manifestPath)) throw new Error(`${project.projectId}: check-manifest.json fehlt`);
   const manifest = readJson(manifestPath);
@@ -179,7 +180,9 @@ function validateManifestFiles(directory, projectId, files) {
   for (const required of files) {
     const path = projectPath(directory, required.path);
     if (!existsSync(path)) throw new Error(`${projectId}: Pflichtdatei fehlt: ${required.path}`);
-    if (required.sha256) { const actual = createHash('sha256').update(readFileSync(path)).digest('hex'); if (actual !== required.sha256) throw new Error(`${projectId}: Hash stimmt nicht: ${required.path}`); }
+    if (!required.sha256) continue;
+    const actual = createHash('sha256').update(readFileSync(path)).digest('hex');
+    if (actual !== required.sha256) throw new Error(`${projectId}: Hash stimmt nicht: ${required.path}`);
   }
 }
 
