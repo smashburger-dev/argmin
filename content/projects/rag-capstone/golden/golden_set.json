@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "experimentId": "rag-capstone-e2e-v1",
-  "beschreibung": "Eingefrorenes Golden Set: Obermenge der vier W30-Queries (wörtlich aus src/w30_core.py) mit Subgruppen-Labels und zusaetzlichen Faellen, ueber dem ungeaenderten W30-Fixturkorpus (fuenf Dokumente).",
+  "beschreibung": "Eingefrorenes Golden Set: Obermenge der vier GenAI-Prototyp-Queries (wörtlich aus src/w30_core.py) mit Subgruppen-Labels und zusaetzlichen Faellen, ueber dem ungeaenderten GenAI-Prototyp-Fixturkorpus (fuenf Dokumente).",
   "docs_quelle": "src/w30_core.py DOCS (ungeaendert)",
   "queries": [
     {

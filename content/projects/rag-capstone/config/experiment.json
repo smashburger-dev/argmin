@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "experimentId": "rag-capstone-e2e-v1",
-  "beschreibung": "Eingefrorene Experimentkonfiguration: Seeds, Regeln, Schwellen und Preise. Nach dem Scope-Freeze (W35) ist diese Datei per Hash gepinnt; jede Änderung braucht eine neue Versionsnummer und ein neues Manifest.",
+  "beschreibung": "Eingefrorene Experimentkonfiguration: Seeds, Regeln, Schwellen und Preise. Nach dem Scope-Freeze (Scope-Freeze-Phase) ist diese Datei per Hash gepinnt; jede Änderung braucht eine neue Versionsnummer und ein neues Manifest.",
   "seeds": {
     "pipeline": 35001,
     "ablation": 35002,
@@ -27,7 +27,7 @@
     "max_kosten_eur": 0.5
   },
   "baseline": {
-    "quelle": "w34-baseline (W30-Teilmenge, vier Queries)",
+    "quelle": "Capstone-Baseline (GenAI-Prototyp-Teilmenge, vier Queries)",
     "queries": "w30_teilmenge",
     "recall_at_k": 0.75,
     "answered": 3

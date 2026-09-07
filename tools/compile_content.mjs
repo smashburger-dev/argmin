@@ -33,12 +33,12 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights', 'visualization',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
-const CATALOG_ROOTS = { competencies: ['competencies', 'competency'], tracks: ['tracks', 'track'], milestones: ['milestones', 'milestone'], tools: ['tools', 'tool-card'], reviews: ['reviews', 'review-findings'] };
+const CATALOG_ROOTS = { competencies: ['competencies', 'competency'], tracks: ['tracks', 'track'], milestones: ['milestones', 'milestone'], tools: ['tools', 'tool-card'] };
 const CATALOG_OBJECTS = { lessons: ['lessons', 'lessonId', 'lesson'], explanations: ['explanations', 'explanationId', 'explanation-card'], learningModules: ['modules', 'moduleId', 'learning-module'] };
-const CATALOG_ASSERTION_ROOTS = ['competencies', 'tracks', 'milestones', 'tools', 'reviews', 'explanations', 'learningModules', 'families'];
+const CATALOG_ASSERTION_ROOTS = ['competencies', 'tracks', 'milestones', 'tools', 'explanations', 'learningModules', 'families'];
 
 const canonicalize = (value) => {
   if (Array.isArray(value)) return value.map(canonicalize);
@@ -363,7 +363,6 @@ export function validateCompiledContent(bundle) {
   };
   validateFamilyReferences(bundle.families || [], ids.competencies);
   uniqueBy(bundle.tools, 'toolId', 'Werkzeuge');
-  uniqueBy(bundle.reviews, 'reviewId', 'Reviews');
   validateCompetencyGraph(bundle.competencies);
   validateCompetencies(bundle, ids);
   validateTracksAndMilestones(bundle, ids);
@@ -534,7 +533,7 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
   return {
     schemaVersion: 1, catalogId: catalog.catalogId, catalogVersion: catalog.version, contractVersion, contentVersion: '',
     profile: 'public', locale: catalog.locale, overlays: [], sourceRights: entities.sourceRights, sources: entities.sources,
-    competencies: entities.competencies, tracks: entities.tracks, milestones: entities.milestones, tools: entities.tools, reviews: entities.reviews,
+    competencies: entities.competencies, tracks: entities.tracks, milestones: entities.milestones, tools: entities.tools,
     lessons: entities.lessons, visualizations, familyActivities, explanations: entities.explanations, projects: entities.projects,
     learningModules: entities.learningModules, families: entities.families,
   };
@@ -604,13 +603,12 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
 const SECTION_FIELDS = {
   sources: 'sources',
   tools: 'tools',
-  reviews: 'reviews',
   visualizations: 'visualizations',
 };
 
 export function buildSplitArtifacts(bundle) {
-  const { sources, tools, reviews, visualizations, ...lightBundle } = bundle;
-  const sections = { sources: { sources }, tools: { tools }, reviews: { reviews }, visualizations: { visualizations } };
+  const { sources, tools, visualizations, ...lightBundle } = bundle;
+  const sections = { sources: { sources }, tools: { tools }, visualizations: { visualizations } };
   const index = {
     ...lightBundle,
     lessons: bundle.lessons.map((lesson) => ({ ...lesson, blocks: [] })),

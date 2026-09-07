@@ -1,21 +1,21 @@
 # Die forschungsbasierte Capstone-Baseline
 
-Die Forschungsphase läuft auf einen Abschluss zu: eine **Baseline**, die den ganzen Prototypen von der Frage bis zur Messung trägt. Diese Woche verbindet alles — preregisterierte Frage, Karten, Risikoprüfung — zu einem Zahlensatz, der reproduzierbar ist. Der Kern dreht sich um drei Artefakte: Golden Set, Fehlerliste, Doppel-Lauf.
+Die Forschungsphase läuft auf einen Abschluss zu: eine **Baseline**, die den ganzen Prototypen von der Frage bis zur Messung trägt. Diese Lektion verbindet alles — preregisterierte Frage, Karten, Risikoprüfung — zu einem Zahlensatz, der reproduzierbar ist. Der Kern dreht sich um drei Artefakte: Golden Set, Fehlerliste, Doppel-Lauf.
 
 ## Das Golden Set und sein Hash
 
-Ein Golden Set ist die eingefrorene Fragenmenge mit Gold-Antworten und zulässigen Belegen — das Testset deiner Studie, wie in Woche 28 eingeführt. Der Zusatz dieser Woche: Der Zustand des Sets wird **hashfixiert**. Über eine kanonische Serialisierung (Einträge sortiert nach Kennung, Felder sortiert, kompakte Trennzeichen) bildest du einen sha256-Wert, der den exakten Inhalt abbildet.
+Ein Golden Set ist die eingefrorene Fragenmenge mit Gold-Antworten und zulässigen Belegen — das Testset deiner Studie, wie in der Lektion „Evaluation generativer Antworten“ eingeführt. Der Zusatz dieser Lektion: Der Zustand des Sets wird **hashfixiert**. Über eine kanonische Serialisierung (Einträge sortiert nach Kennung, Felder sortiert, kompakte Trennzeichen) bildest du einen sha256-Wert, der den exakten Inhalt abbildet.
 
 Zwei Eigenschaften machen den Hash wertvoll:
 
 - **Reihenfolge-Invarianz**: Dieselben Einträge in anderer Reihenfolge ergeben denselben Hash — Umsortieren ist kein inhaltlicher Eingriff.
 - **Änderungssensitivität**: Eine veränderte Gold-Antwort, ein gelöschter Fall, ein neues Feld — jeder davon ändert den Hash.
 
-Damit ist der Hash dein Integritätsbeweis: Steht in Woche 39 derselbe sha256-Wert wie heute, misst du noch über demselben Set, und die Zahlen sind vergleichbar. Hat er sich geändert, ist jede Vorher-Nachher-Aussage über Antwortquoten wertlos, bis geklärt ist, was sich geändert hat. Das ist dasselbe Prinzip wie das Manifest im W30-Projekt, nur auf das Evaluationsset angewandt.
+Damit ist der Hash dein Integritätsbeweis: Steht in der Abschlussphase derselbe sha256-Wert wie heute, misst du noch über demselben Set, und die Zahlen sind vergleichbar. Hat er sich geändert, ist jede Vorher-Nachher-Aussage über Antwortquoten wertlos, bis geklärt ist, was sich geändert hat. Das ist dasselbe Prinzip wie das Manifest im GenAI-Prototyp-Projekt, nur auf das Evaluationsset angewandt.
 
 ## Die Fehlerliste: Retrieval und Antwort getrennt
 
-Die Fehlerliste führt jeden Fall mit einer Fehlerart nach der Taxonomie aus Woche 28 — aber mit der Trennung aus Woche 27 als erster Weiche: Lag ein relevantes Dokument in den Top k?
+Die Fehlerliste führt jeden Fall mit einer Fehlerart nach der Taxonomie aus der Lektion „Evaluation generativer Antworten“ — aber mit der Trennung aus der Lektion „RAG: Retrieval messbar machen“ als erster Weiche: Lag ein relevantes Dokument in den Top k?
 
 - **Retrieval-Fehler**: Das richtige Dokument war nicht dabei. Die Antwortbewertung dieses Falls sagt nichts über den Generator; der Fall zählt nicht in die Antwort-Genauigkeit.
 - **Antwortfehler**: Das Retrieval traf, die Antwort ist trotzdem fehlerhaft (falsch-faktisch, unvollständig, quellos, halluziniert, off-topic, Formatfehler).
@@ -24,15 +24,15 @@ Daraus entstehen zwei Kennzahlen über denselben Lauf: die **bereinigte Antwort-
 
 ## Der Doppel-Lauf: Reproduzierbarkeit als Assert
 
-Eine Baseline ist nur so glaubwürdig wie ihre Wiederholbarkeit. Der Mechanismus ist ein einfacher Doppel-Lauf: dieselbe Konfiguration zweimal unabhängig auswerten, beide Male einen Digest über die Kennzahlen bilden und mit einem Assert vergleichen. Stimmen die Digests nicht überein, ist die Baseline ungültig — dann steckt Zustand (Uhrzeit, Zufall, Reihenfolge, zwischengespeicherte Dateien) im Lauf, der dort nicht hineingehört. Der W30-Prototyp ist hier der Anspruch selbst: kein Netzwerk, kein Zufall, keine Uhrzeit — zwei Läufe liefern identische Tabellen. Das Assert macht diese Eigenschaft zur geprüften, nicht zur behaupteten.
+Eine Baseline ist nur so glaubwürdig wie ihre Wiederholbarkeit. Der Mechanismus ist ein einfacher Doppel-Lauf: dieselbe Konfiguration zweimal unabhängig auswerten, beide Male einen Digest über die Kennzahlen bilden und mit einem Assert vergleichen. Stimmen die Digests nicht überein, ist die Baseline ungültig — dann steckt Zustand (Uhrzeit, Zufall, Reihenfolge, zwischengespeicherte Dateien) im Lauf, der dort nicht hineingehört. Der GenAI-Prototyp ist hier der Anspruch selbst: kein Netzwerk, kein Zufall, keine Uhrzeit — zwei Läufe liefern identische Tabellen. Das Assert macht diese Eigenschaft zur geprüften, nicht zur behaupteten.
 
 ## Der Bericht verweigert sich
 
-Der wichtigste Vertrag dieser Woche: **Messwerte ohne Protokoll, Karten und Fehlerliste gibt es nicht.** Der Bericht setzt den Zahlensatz nur zusammen, wenn drei Dinge vorliegen: die preregisterierte Metrik im Protokoll, die Karten (Daten- und Modellkarte), und die getrennte Fehlerliste. Fehlt eines davon, liefert die Funktion eine Absage mit einer Liste der fehlenden Teile — und bewusst **keine** Messwerte. Das ist die Anti-Overclaiming-Maschine: Ein Zahlensatz ohne diese drei Kontexte ist immer Overclaiming, egal wie richtig die Zahlen gerechnet sind, weil niemand prüfen kann, wonach gemessen wurde.
+Der wichtigste Vertrag dieser Lektion: **Messwerte ohne Protokoll, Karten und Fehlerliste gibt es nicht.** Der Bericht setzt den Zahlensatz nur zusammen, wenn drei Dinge vorliegen: die preregisterierte Metrik im Protokoll, die Karten (Daten- und Modellkarte), und die getrennte Fehlerliste. Fehlt eines davon, liefert die Funktion eine Absage mit einer Liste der fehlenden Teile — und bewusst **keine** Messwerte. Das ist die Anti-Overclaiming-Maschine: Ein Zahlensatz ohne diese drei Kontexte ist immer Overclaiming, egal wie richtig die Zahlen gerechnet sind, weil niemand prüfen kann, wonach gemessen wurde.
 
-## Worked Example am W30-Prototypen
+## Worked Example am GenAI-Prototyp
 
-Übertragen auf den W30-Prototypen (deterministischer Stub, recall@k über eingefrorene Queries, Injektions-Fixture, Ablation 0,6 mit Kontrolle gegen 0,8 ohne):
+Übertragen auf den GenAI-Prototyp (deterministischer Stub, recall@k über eingefrorene Queries, Injektions-Fixture, Ablation 0,6 mit Kontrolle gegen 0,8 ohne):
 
 - **Golden Set**: die eingefrorenen Fixtur-Queries mit Gold-Antworten und zulässigen Belegen; sha256 über die kanonische Serialisierung, protokolliert im Versuchslog.
 - **Baseline-Konfiguration**: unverändertes Retrieval (Top 5), Stub-Generator, Kontrolle an — genau der Lauf, den die Ablation als 0,6 ausgewiesen hat.

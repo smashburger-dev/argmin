@@ -3,7 +3,7 @@
   "moduleId": "lm-research-responsible",
   "version": 1,
   "locale": "de",
-  "title": "Responsible AI: Subgruppenmetriken, Schwellenwerte unter Paritätsband, Betriebskosten",
+  "title": "Responsible AI",
   "description": "False-Positive-Raten und Auswahlraten pro Subgruppe berechnen und Differenzen exakt in Tausendsteln ausweisen Schwellenwerte nach der festen Reihenfolge Paritätsband zuerst, dann F1, wählen und Betriebskosten je 1.000 Anfragen deterministisch berechnen Risiken mit RPN priorisieren und den Responsible-Bericht nur mit Subgruppen, Parität, Kosten und Restrisiko zustande bringen",
   "competencyIds": [
     "c-research-responsible"

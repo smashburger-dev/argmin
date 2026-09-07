@@ -3,7 +3,7 @@
   "lessonId": "l-responsible-ai",
   "version": 1,
   "locale": "de",
-  "title": "Responsible AI: Subgruppenmetriken, Schwellenwerte unter Paritätsband, Betriebskosten",
+  "title": "Responsible AI",
   "objectives": [
     "False-Positive-Raten und Auswahlraten pro Subgruppe berechnen und Differenzen exakt in Tausendsteln ausweisen",
     "Schwellenwerte nach der festen Reihenfolge Paritätsband zuerst, dann F1, wählen und Betriebskosten je 1.000 Anfragen deterministisch berechnen",

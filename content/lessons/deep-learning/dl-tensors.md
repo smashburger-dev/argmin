@@ -1,6 +1,6 @@
 # Tensoren, Layer und Dimensionsverträge
 
-Ein neuronales Netz ist zuerst einmal Buchhaltung über Formen. Ein **Tensor** ist ein numerisches Array mit einer festen Form (Shape); ein Batch von $n$ Beispielen mit $d$ Features ist eine Matrix der Form $(n, d)$. Diese Woche baut den Forward-Pass eines kleinen Netzes **mit NumPy** — ehrlich gesagt: ohne Framework. Kein torch, kein TensorFlow; alles, was du hier lernst, läuft als reine Array-Arithmetik. Frameworks sind später Lektüre, nicht Ausführungsumgebung.
+Ein neuronales Netz ist zuerst einmal Buchhaltung über Formen. Ein **Tensor** ist ein numerisches Array mit einer festen Form (Shape); ein Batch von $n$ Beispielen mit $d$ Features ist eine Matrix der Form $(n, d)$. Diese Lektion baut den Forward-Pass eines kleinen Netzes **mit NumPy** — ehrlich gesagt: ohne Framework. Kein torch, kein TensorFlow; alles, was du hier lernst, läuft als reine Array-Arithmetik. Frameworks sind später Lektüre, nicht Ausführungsumgebung.
 
 ## Der Dimensionsvertrag der Matrizenmultiplikation
 

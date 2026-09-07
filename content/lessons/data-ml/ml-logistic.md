@@ -16,7 +16,7 @@ $$
 L = -\sum_i \left[ y_i \log p_i + (1 - y_i)\log(1 - p_i) \right],
 $$
 
-wobei $p_i = \sigma(w^\top x_i)$ die vorhergesagte Wahrscheinlichkeit für Klasse 1 ist. Ein stark falsches Selbstvertrauen wird überproportional bestraft: Für $y_i = 1$ und $p_i = 0{,}1$ wächst der Beitrag $-\log(0{,}1) \approx 2{,}3$ stark an. Anders als bei der linearen Regression gibt es **keine geschlossene Lösung** — die Koeffizienten werden mit Gradientenabstieg gelernt, genau wie in Woche 8 von Hand geübt.
+wobei $p_i = \sigma(w^\top x_i)$ die vorhergesagte Wahrscheinlichkeit für Klasse 1 ist. Ein stark falsches Selbstvertrauen wird überproportional bestraft: Für $y_i = 1$ und $p_i = 0{,}1$ wächst der Beitrag $-\log(0{,}1) \approx 2{,}3$ stark an. Anders als bei der linearen Regression gibt es **keine geschlossene Lösung** — die Koeffizienten werden mit Gradientenabstieg gelernt, genau wie in der Lektion „Gradientenabstieg und lineare Regression“ von Hand geübt.
 
 scikit-learns `LogisticRegression` und `predict_proba` liest du als API-Kompetenz — im Browser dieser Plattform läuft sklearn nicht.
 

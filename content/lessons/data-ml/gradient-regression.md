@@ -1,4 +1,4 @@
-# Gradientenabstieg und lineare Regression aus Grundoperationen
+# Gradientenabstieg und lineare Regression
 
 ## Ableitung als Steigungsrate
 

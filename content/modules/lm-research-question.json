@@ -3,7 +3,7 @@
   "moduleId": "lm-research-question",
   "version": 1,
   "locale": "de",
-  "title": "Forschungsfrage und Experimentprotokoll: prüfbare Fragen, Preregistrierung, Goal-Shift-Erkennung",
+  "title": "Forschungsfrage und Experimentprotokoll",
   "description": "Forschungsfragen auf Prüfbarkeit prüfen (feste Metrik, fester Vergleich, Baseline) und Je-desto-Hypothesen in UV und DV zerlegen ein Protokoll mit Metrik, Erfolgsschwelle, primärem Endpunkt, Subgruppen und Abbruchregel vor dem Hauptlauf festlegen protokollversionen deterministisch auf Goal-Shifts prüfen (metrik_geaendert, schwelle_geaendert, primaer_demoted, subgruppe_nach_freeze)",
   "competencyIds": [
     "c-research-question"

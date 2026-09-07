@@ -41,7 +41,7 @@
         "correctChoice": "d"
       },
       "prompt": "Warum wird das Golden Set der Capstone-Baseline mit einem sha256-Wert über eine kanonische Serialisierung hashfixiert?",
-      "fullSolution": "Der Hash macht den Zustand des Sets prüfbar: Dieselben Einträge in anderer Reihenfolge ergeben denselben Wert, jede inhaltliche Änderung (Gold-Antwort, Fall, Feld) einen anderen. Steht in Woche 39 derselbe Wert wie heute, sind die Baseline-Zahlen noch über demselben Set vergleichbar — hat er sich geändert, ist jede Vorher-Nachher-Aussage wertlos. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Der Hash macht den Zustand des Sets prüfbar: Dieselben Einträge in anderer Reihenfolge ergeben denselben Wert, jede inhaltliche Änderung (Gold-Antwort, Fall, Feld) einen anderen. Steht in der Lektion „Abschlussphase“ derselbe Wert wie heute, sind die Baseline-Zahlen noch über demselben Set vergleichbar — hat er sich geändert, ist jede Vorher-Nachher-Aussage wertlos. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "Was passiert mit Vorher-Nachher-Aussagen, wenn sich das Evaluationsset zwischen zwei Läufen unbemerkt ändert?",
         "Der Hash beweist einen Zustand — Umsortieren soll ihn nicht ändern, jede inhaltliche Änderung schon."

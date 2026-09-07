@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
 import { loadProgressSnapshot, saveLearningPreferences, type ProgressSnapshot } from '../adapters/local-progress';
-import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ProgressView, ReviewFindingsView, ReviewView, SettingsView, SourcesView, TodayView, ToolsView } from './views';
+import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ProgressView, ReviewView, SettingsView, SourcesView, TodayView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
 import { VisualizationView } from './VisualizationView';
@@ -68,7 +68,7 @@ export function App() {
 
   const [section = 'today', routeId = ''] = route.split('/');
   const familyRef = section === 'family' ? route.split('/').slice(1).join('/') : '';
-  const activeNavigation = ['competency', 'diagnostic', 'lesson', 'module', 'project', 'sources', 'tools', 'visualization', 'quality'].includes(section) ? 'learn' : section;
+  const activeNavigation = ['competency', 'diagnostic', 'lesson', 'module', 'project', 'sources', 'tools', 'visualization'].includes(section) ? 'learn' : section;
 
   const savePreferences = async (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => {
     const safeMinutes = Math.min(2400, Math.max(30, Math.round(weeklyMinutes / 15) * 15));
@@ -90,8 +90,7 @@ export function App() {
             : section === 'diagnostic' ? <DiagnosticView catalog={catalog} progress={progress} />
               : section === 'sources' ? <SourcesView catalog={catalog} />
                 : section === 'tools' ? <ToolsView catalog={catalog} />
-                  : section === 'quality' ? <ReviewFindingsView catalog={catalog} />
-                    : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
+                  : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
                 : section === 'module' ? <Suspense fallback={<section class="view"><p role="status">Modul wird geladen.</p></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} /></Suspense>
                 : section === 'family' ? <Suspense fallback={<section class="view"><p role="status">Variante wird geladen.</p></section>}><FamilyExerciseView key={familyRef} familyRef={familyRef} /></Suspense>
                 : section === 'lesson' ? <LessonView catalog={catalog} lessonId={routeId} />
@@ -117,7 +116,7 @@ export function App() {
               <span>{item.label}</span>
             </a>
           ))}
-          <div class="nav-foot"><span>Ohne Account nutzbar</span><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/quality">Qualität</a></div>
+          <div class="nav-foot"><span>Ohne Account nutzbar</span><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a></div>
         </nav>
         <main id="main-content">{view}</main>
       </div>

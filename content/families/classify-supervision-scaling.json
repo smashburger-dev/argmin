@@ -49,7 +49,7 @@
       "fullSolution": "SVM ist überwacht (Labels), PCA und k-Means unüberwacht. Alle drei reagieren auf Merkmals-Skalen: SVM und k-Means über Distanzen, PCA über Varianzen — deshalb vorher standardisieren (Statistiken nur aus dem Trainingsteil).",
       "hints": [
         "Überwacht heißt: Es gibt eine Zielvariable (Labels), aus der gelernt wird. Welche der drei Verfahren benutzt Labels?",
-        "k ist ein Hyperparameter wie λ in Woche 14 — das Vorgeben von k ist kein Label."
+        "k ist ein Hyperparameter wie λ in der Lektion „Ridge und Lasso“ — das Vorgeben von k ist kein Label."
       ],
       "feedbackRules": [
         {

@@ -74,7 +74,6 @@ const ALLOWED_FILES = [
   'content/tracks/core.json',
   'content/milestones/core.json',
   'content/tools/core.json',
-  'content/reviews/core.json',
   'content/foundations/inventory.md',
   'content/lessons/foundations/algebra.json',
   'content/lessons/foundations/algebra.md',

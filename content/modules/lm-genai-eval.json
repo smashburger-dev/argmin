@@ -3,7 +3,7 @@
   "moduleId": "lm-genai-eval",
   "version": 1,
   "locale": "de",
-  "title": "Evaluation generativer Antworten: Gold-Antworten, Taxonomie, deterministische Metriken",
+  "title": "Evaluation generativer Antworten",
   "description": "feste Evaluationsfragen mit Gold-Antworten und Quellenbelegen anlegen und vor der Messung einfrieren Antwortfehler mit einem geschlossenen Labelset (falsch-faktisch, unvollständig, halluziniert, quellos, off-topic, Formatfehler) deterministisch klassifizieren und von Retrieval-Fehlern trennen Exact Match, Contains, Zitat-Precision/Recall, Token-F1 und Konfusionsmatrix-zu-Precision/Recall/F1 ohne LLM-Judge berechnen",
   "competencyIds": [
     "c-genai-eval"

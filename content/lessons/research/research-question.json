@@ -3,7 +3,7 @@
   "lessonId": "l-research-question",
   "version": 1,
   "locale": "de",
-  "title": "Forschungsfrage und Experimentprotokoll: prüfbare Fragen, Preregistrierung, Goal-Shift-Erkennung",
+  "title": "Forschungsfrage und Experimentprotokoll",
   "objectives": [
     "Forschungsfragen auf Prüfbarkeit prüfen (feste Metrik, fester Vergleich, Baseline) und Je-desto-Hypothesen in UV und DV zerlegen",
     "ein Protokoll mit Metrik, Erfolgsschwelle, primärem Endpunkt, Subgruppen und Abbruchregel vor dem Hauptlauf festlegen",

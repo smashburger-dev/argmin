@@ -109,7 +109,7 @@
       "fullSolution": "import numpy as np\n\ndef mlp_forward(X, W1, b1, W2, b2):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    hidden = np.maximum(0.0, X @ W1 + b1)\n    return hidden, hidden @ W2 + b2\n\ndef mlp_backward(X, W1, b1, W2, b2, y):\n    X = np.asarray(X, dtype=float)\n    W1 = np.asarray(W1, dtype=float)\n    b1 = np.asarray(b1, dtype=float)\n    W2 = np.asarray(W2, dtype=float)\n    b2 = np.asarray(b2, dtype=float)\n    y = np.asarray(y, dtype=float)\n    hidden, out = mlp_forward(X, W1, b1, W2, b2)\n    m = out.size\n    delta2 = (2.0 / m) * (out - y)\n    dW2 = hidden.T @ delta2\n    db2 = delta2.sum(axis=0)\n    delta1 = (delta2 @ W2.T) * (hidden > 0)\n    dW1 = X.T @ delta1\n    db1 = delta1.sum(axis=0)\n    return dW1, db1, dW2, db2\n\n# Alle vier Gradienten stimmen mit der zentralen Differenz auf < 1e-6 ueberein",
       "hints": [
         "Erst forward: H und ŷ brauchst du für die Rückwärtsrechnung wieder. Der Ausgabefehler startet als delta2 aus dem quadrierten Mittelwert über die m Ausgabeeinträge — Faktor selbst herleiten.",
-        "Durch ReLU zurück: Der lokale Gradient ist 1, wo die Aktivierung positiv war, sonst 0 — als Maske (H > 0) multiplizierbar. Wie delta1 weiter zu dW1 und db1 führt, folgt aus demselben Transpositions-/Summenvertrag wie in der Vorwoche."
+        "Durch ReLU zurück: Der lokale Gradient ist 1, wo die Aktivierung positiv war, sonst 0 — als Maske (H > 0) multiplizierbar. Wie delta1 weiter zu dW1 und db1 führt, folgt aus demselben Transpositions-/Summenvertrag wie in der vorherigen Lektion."
       ],
       "feedbackRules": [
         {

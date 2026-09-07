@@ -1,6 +1,6 @@
 # Toy-Inferenz: Eine komplette Pipeline im Kleinen
 
-Was passiert, wenn ein Sprachmodell aufgerufen wird? Immer dieselbe Pipeline: **Tokenisieren → Forward-Pass → Logits → Dekodieren**. Diese Woche baust du sie — aber mit einem ehrlichen Etikett.
+Was passiert, wenn ein Sprachmodell aufgerufen wird? Immer dieselbe Pipeline: **Tokenisieren → Forward-Pass → Logits → Dekodieren**. Diese Lektion baust du sie — aber mit einem ehrlichen Etikett.
 
 > **Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.**
 
@@ -8,14 +8,14 @@ Wir laden keine Modellgewichte, rufen keine API, nutzen kein Netzwerk. Die Gewic
 
 ## Station 1: Tokenisieren
 
-Ein fester Zeichen-Tokenizer (Vokabular aus der letzten Woche, mit `<eos>`) übersetzt den Text in eine Indizesliste. Encode ist deterministisch: gleicher Text, gleiche Indizes — keine Zufälligkeit an dieser Station.
+Ein fester Zeichen-Tokenizer (Vokabular aus der letzten Lektion, mit `<eos>`) übersetzt den Text in eine Indizesliste. Encode ist deterministisch: gleicher Text, gleiche Indizes — keine Zufälligkeit an dieser Station.
 
 ## Station 2: Forward-Pass mit gestellten Gewichten
 
 Das Toy-Modell besteht aus genau drei Teilen, alle Matrizen sind Literale:
 
 1. **Embedding**: Zeile $i$ der Matrix $E \in \mathbb{R}^{V \times d}$ ersetzt jeden Token-Index durch einen Vektor der Länge $d$ — die Eingabe wird zur Matrix $X \in \mathbb{R}^{n \times d}$.
-2. **Ein Attention-Block**: $\mathrm{heads} = \mathrm{softmax}(XW_Q(XW_K)^\top/\sqrt{d})$ mit $W_V$ für die Values — mit kausaler Maske, weil ein Decodermodell nur die Vergangenheit sehen darf. Skalierung durch $\sqrt{d}$ wie in Woche 22; wählen wir $d$ als Quadratzahl (etwa $d = 4$), bleibt die Division ganzzahlig.
+2. **Ein Attention-Block**: $\mathrm{heads} = \mathrm{softmax}(XW_Q(XW_K)^\top/\sqrt{d})$ mit $W_V$ für die Values — mit kausaler Maske, weil ein Decodermodell nur die Vergangenheit sehen darf. Skalierung durch $\sqrt{d}$ wie in der Lektion „Attention und Transformer-Grundlagen“; wählen wir $d$ als Quadratzahl (etwa $d = 4$), bleibt die Division ganzzahlig.
 3. **Logits**: Eine letzte Projektion $W_{\text{out}} \in \mathbb{R}^{d \times V}$ macht aus der letzten Position (oder dem Positionsmittel) einen Vektor von Rohwerten — **Logits**, eines pro Vokabulareintrag.
 
 ## Station 3: Logits lesen

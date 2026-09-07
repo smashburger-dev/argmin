@@ -1,6 +1,6 @@
 # Forschungsfrage und Experimentprotokoll
 
-Die Wochen 27 bis 30 haben dir Werkzeuge gebaut: Retrieval, Fixtur-Evaluation, defensive Kontrolle, ein Prototyp. Ab dieser Woche behandelst du dieses Werkzeug wie ein Forschungsgegenstand. Der erste Schritt ist nicht das Experiment, sondern die **Forschungsfrage** — und zwar eine, die scheitern kann.
+Die Lektionen zu Retrieval, Evaluation und defensiven Kontrollen haben dir Werkzeuge gebaut: Retrieval, Fixtur-Evaluation, defensive Kontrolle, ein Prototyp. Ab dieser Lektion behandelst du dieses Werkzeug wie ein Forschungsgegenstand. Der erste Schritt ist nicht das Experiment, sondern die **Forschungsfrage** — und zwar eine, die scheitern kann.
 
 ## Was eine Frage prüfbar macht
 
@@ -8,7 +8,7 @@ Eine Frage ist nur dann prüfbar, wenn drei Dinge feststehen, bevor irgendein La
 
 1. **Eine feste Metrik** mit festem Namen und Berechnungsvorschrift, z. B. recall@k über eingefrorene Queries — nicht „das System wirkt besser“.
 2. **Ein fester Vergleich**: eine unabhängige Variable (UV), die du gezielt veränderst, und eine abhängige Variable (DV), an der du die Wirkung misst.
-3. **Eine Baseline**, gegen die der Vergleich läuft — beim W30-Prototyp ist das der unveränderte Lauf mit dem deterministischen Stub-Generator.
+3. **Eine Baseline**, gegen die der Vergleich läuft — beim GenAI-Prototyp ist das der unveränderte Lauf mit dem deterministischen Stub-Generator.
 
 Eine klassische deutsche Formulierung für Hypothesen ist das Je-desto-Muster: „Je größer die Chunkgröße, desto höher der Anteil korrekt beantworteter Fixtur-Fragen.“ Die Wörter zwischen „Je“ und dem Komma benennen die UV samt Richtung, die Wörter nach „desto“ die DV samt erwarteter Richtung. Alles, was sich nicht so zerlegen lässt, ist noch keine Hypothese, sondern eine Vermutung.
 
@@ -38,16 +38,16 @@ Trotz Preregistrierung passiert es: Nachdem erste Ergebnisse sichtbar sind, „e
 
 Jede dieser Änderungen einzeln kann gut begründet sein. Aber sie alle gemeinsam zu ändern und dann trotzdem „die Hypothese war richtig“ zu berichten, ist Overclaiming: Du berichtest über ein anderes Ziel als das preregisterierte. Deterministisch erkennbar sind alle vier — ein Vergleich zweier Protokoll-Dicts genügt, ohne jedes Sprachmodell.
 
-## Worked Example am W30-Prototypen
+## Worked Example am GenAI-Prototyp
 
-Nimm den W30-RAG-Prototypen mit seinem deterministischen Stub-Generator, der über die eingefrorenen Fixtur-Queries läuft und dabei die Injektions-Fixture erkennt und blockiert. Die Ablation aus W30 kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne — die Differenz ist beabsichtigte Verweigerung, kein Defekt. Eine prüfbare Frage daraus:
+Nimm den RAG-Prototyp mit seinem deterministischen Stub-Generator, der über die eingefrorenen Fixtur-Queries läuft und dabei die Injektions-Fixture erkennt und blockiert. Die Ablation aus GenAI-Prototyp kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne — die Differenz ist beabsichtigte Verweigerung, kein Defekt. Eine prüfbare Frage daraus:
 
 - **Frage**: Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgröße von 200 auf 400 Zeichen verdoppert wird?
 - **Hypothese (Je-desto)**: Je größer die Chunkgröße, desto höher der Anteil korrekt beantworteter Fixtur-Fragen.
 - **UV**: Chunkgröße (200 vs. 400). **DV**: Anteil korrekt beantworteter Fixtur-Fragen.
 - **Metrik und Schwelle**: recall@5 als primärer Endpunkt, Erfolgsschwelle 0,75; bearbeitungszeit und ablehnungsquote als sekundäre Endpunkte.
 - **Subgruppen vor Freeze**: neukunden-Fragen und mobil formulierte Fragen.
-- **Baseline**: unveränderter W30-Lauf mit Chunkgröße 200.
+- **Baseline**: unveränderter GenAI-Prototyp-Lauf mit Chunkgröße 200.
 - **Abbruchregel**: nach zwei aufeinanderfolgenden Läufen ohne Änderung der Kennzahl wird abgebrochen — weiterer Tuning-Aufwand ist nicht mehr Teil des Experiments.
 - **datum_prereg** liegt vor **datum_hauptlauf**; erst danach startet der Hauptlauf.
 

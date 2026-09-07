@@ -56,7 +56,7 @@ Sie schlagen sie **nicht** automatisch, wenn:
 
 ## Vergleichen unter identischen Splits
 
-Wie in Woche 12: Der Vergleich Baum vs. Ensemble vs. lineare Baseline läuft auf **denselben Splits** mit demselben Seed. Verschiedene Splits pro Modell machen den Vergleich zufällig. Und: Ein einzelner Lauf ist ein Stichprobenwert — die Streuung über Wiederholungen gehört in den Bericht (Vorgriff Woche 17).
+Wie in der Lektion „Cross-Validation und Leakage-Kontrolle“: Der Vergleich Baum vs. Ensemble vs. lineare Baseline läuft auf **denselben Splits** mit demselben Seed. Verschiedene Splits pro Modell machen den Vergleich zufällig. Und: Ein einzelner Lauf ist ein Stichprobenwert — die Streuung über Wiederholungen gehört in den Bericht (Vorgriff auf die Lektion „Reproduzierbarkeit: Seeds, Splits und Manifeste“).
 
 ## Typische Fehler
 

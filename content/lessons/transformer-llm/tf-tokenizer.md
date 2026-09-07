@@ -51,4 +51,4 @@ Die Maskierung aus der Attention-Lektion ist der Unterschied im Kern: Decoder nu
 
 ## Direkter Check
 
-Zähle in [w23-e2](#/exercise/w23-e2) Vokabulargrößen nach. Lies in [w23-e3](#/exercise/w23-e3) einen Encode-Ablauf vorher. In [w23-e4](#/exercise/w23-e4) baust du Encode/Decode mit Round-Trip-Garantie; [w23-e5](#/exercise/w23-e5) wendet eine feste Mergetabelle an; [w23-e6](#/exercise/w23-e6) lernt Merges mit gepinntem Tie-Break — der Endgegner der Woche.
+Zähle in [w23-e2](#/exercise/w23-e2) Vokabulargrößen nach. Lies in [w23-e3](#/exercise/w23-e3) einen Encode-Ablauf vorher. In [w23-e4](#/exercise/w23-e4) baust du Encode/Decode mit Round-Trip-Garantie; [w23-e5](#/exercise/w23-e5) wendet eine feste Mergetabelle an; [w23-e6](#/exercise/w23-e6) lernt Merges mit gepinntem Tie-Break — der Endgegner der Lektion.

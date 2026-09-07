@@ -30,11 +30,11 @@ Verantwortung schließt ein, was ein System kostet — vor allem, wenn Kontrolle
 
 Risiken sammelst du in einem Register und priorisierst mit der RPN = Risiko · Prävalenz · Kontrolle (jeweils eine kleine ganzzahlige Skala). Ein Beispiel mit drei Einträgen: Datenleck mit 4 · 2 · 2 = 16, Prompt-Injektion mit 5 · 3 · 1 = 15, Overclaiming im Bericht mit 3 · 1 · 2 = 6. Das Datenleck und die Injektion liegen nah beieinander — die Reihenfolge sagt dir, wo Schutzmaßnahmen zuerst hin gehören.
 
-Ehrlichkeitsregel dieser Plattform: Das Register ist **Arbeitsevidenz, kein Mastery-Beweis**. RPN-Werte sind Einschätzungen von Menschen, ihre Skalen sind Produkt-Heuristiken. Was deterministisch prüfbar ist, sind die Subgruppenmetriken, die Schwellenentscheidung und die Kostentabelle — der Boss der Woche verlangt genau diese drei zusammen mit einem Restrisiko-Eintrag, sonst verweigert er den Bericht.
+Ehrlichkeitsregel dieser Plattform: Das Register ist **Arbeitsevidenz, kein Mastery-Beweis**. RPN-Werte sind Einschätzungen von Menschen, ihre Skalen sind Produkt-Heuristiken. Was deterministisch prüfbar ist, sind die Subgruppenmetriken, die Schwellenentscheidung und die Kostentabelle — der Boss der Lektion verlangt genau diese drei zusammen mit einem Restrisiko-Eintrag, sonst verweigert er den Bericht.
 
-## Worked Example am W30-Prototypen
+## Worked Example am GenAI-Prototyp
 
-Der W30-RAG-Prototyp läuft mit deterministischem Stub-Generator über eingefrorene Fixtur-Queries und blockiert eine Injektions-Fixture in Anfragen und Dokumentpositionen. Die Ablation kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne. Verantwortungsvoll ausgewiesen heißt das:
+Der RAG-Prototyp läuft mit deterministischem Stub-Generator über eingefrorene Fixtur-Queries und blockiert eine Injektions-Fixture in Anfragen und Dokumentpositionen. Die Ablation kennt zwei Zahlen: recall 0,6 mit Kontrolle, 0,8 ohne. Verantwortungsvoll ausgewiesen heißt das:
 
 - **Subgruppen**: Fixtur-Queries in kurzer und langer Formulierung getrennt auswerten — landet die Blockade der Injektions-Fixture überwiegend bei kurzen Anfragen, steigt dort die FPR, ohne dass der Gesamt-recall es zeigt.
 - **Schwellenwert**: der Injektions-Detektor arbeitet mit fester Regelstrenge; das Paritätsband für die Auswahlraten der beiden Query-Gruppen wird vor der Messung festgelegt.

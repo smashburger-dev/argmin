@@ -165,27 +165,6 @@ export interface ProjectDefinition {
   estimatedMinutes?: number;
 }
 
-export interface ReviewFinding {
-  findingId: string;
-  severity: 'critical' | 'high' | 'medium' | 'low' | 'positive';
-  evidence: string[];
-  uncertainty: string;
-  recommendation: string;
-  suggestedImplementation: string;
-  affectedContent: string[];
-  humanReviewRequired: boolean;
-  implementationStatus: string;
-}
-
-export interface ReviewRecord {
-  reviewId: string;
-  title: string;
-  scope: string;
-  status: string;
-  summary: string;
-  findings: ReviewFinding[];
-}
-
 export interface ToolCard {
   toolId: string;
   title: string;

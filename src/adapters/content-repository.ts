@@ -1,6 +1,6 @@
 import contentIndex from '@content-index';
 import { familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
-import type { CatalogData, ExerciseSummary, LearningModule, Lesson, ReviewRecord, SourceSummary, ToolCard, VisualizationSummary } from '../app/types';
+import type { CatalogData, ExerciseSummary, LearningModule, Lesson, SourceSummary, ToolCard, VisualizationSummary } from '../app/types';
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
@@ -43,7 +43,6 @@ interface CompiledIndex {
 interface SectionIndex {
   sources: { sources: SourceSummary[] };
   tools: { tools: ToolCard[] };
-  reviews: { reviews: ReviewRecord[] };
   visualizations: { visualizations: VisualizationSummary[] };
 }
 
@@ -151,9 +150,6 @@ export async function loadSources(): Promise<SourceSummary[]> {
 }
 export async function loadTools(): Promise<ToolCard[]> {
   return (await sectionFile('tools')).tools;
-}
-export async function loadReviews(): Promise<ReviewRecord[]> {
-  return (await sectionFile('reviews')).reviews;
 }
 export async function loadVisualizations(): Promise<VisualizationSummary[]> {
   return (await sectionFile('visualizations')).visualizations;

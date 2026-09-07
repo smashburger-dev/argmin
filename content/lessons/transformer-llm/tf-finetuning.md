@@ -1,6 +1,6 @@
 # Fine-Tuning: Strategien, LoRA-Mathematik, ehrliches Experimentdesign
 
-Ein vortrainiertes Modell an eine Aufgabe anpassen — dafür gibt es drei Standardstrategien mit sehr unterschiedlichen Kosten. Diese Woche rechnen wir die Mathematik exakt durch und führen das aus, was ehrlich ausführbar ist: **Toy-Head-Only-Feinabstimmung und LoRA-Arithmetik an einem Mini-Netz**. Keine Aufgabe dieser Woche behauptet, ein echtes großes Modell feinabgestimmt zu haben — das bleibt ein protokolliertes lokales Experiment.
+Ein vortrainiertes Modell an eine Aufgabe anpassen — dafür gibt es drei Standardstrategien mit sehr unterschiedlichen Kosten. Diese Lektion rechnen wir die Mathematik exakt durch und führen das aus, was ehrlich ausführbar ist: **Toy-Head-Only-Feinabstimmung und LoRA-Arithmetik an einem Mini-Netz**. Keine Aufgabe dieser Lektion behauptet, ein echtes großes Modell feinabgestimmt zu haben — das bleibt ein protokolliertes lokales Experiment.
 
 ## Drei Anpassungsstrategien
 
@@ -21,7 +21,7 @@ Für eine Schichtmatrix $W \in \mathbb{R}^{d_{\text{out}}\times d_{\text{in}}}$:
 | Full FT | $d_{\text{out}} \cdot d_{\text{in}}$ | $262\,144$ |
 | LoRA | $r\,(d_{\text{in}} + d_{\text{out}})$ | $4\,096$ (ca. 1,6 %) |
 
-Das LoRA-Paper meldet für GPT-3 175B gegenüber Adam-Full-FT **10 000× weniger trainierbare Parameter und 3× weniger GPU-Speicher** bei gleicher oder besserer Qualität (RoBERTa, DeBERTa, GPT-2, GPT-3) — Abstract-Fakten, die wir nächste Woche als Evidenzkarten wiederlesen.
+Das LoRA-Paper meldet für GPT-3 175B gegenüber Adam-Full-FT **10 000× weniger trainierbare Parameter und 3× weniger GPU-Speicher** bei gleicher oder besserer Qualität (RoBERTa, DeBERTa, GPT-2, GPT-3) — Abstract-Fakten, die wir die nächste Lektion als Evidenzkarten wiederlesen.
 
 ## Toy-Head-FT: das Ehrlich-Ausführbare
 
@@ -50,7 +50,7 @@ Full FT eines großen Modells braucht vielfache Speicher- und Rechenzeit pro Auf
 - „Eingefroren“ behauptet, aber der Optimierer bekommt doch alle Parameter (Freeze-Checksumme fehlt).
 - Zwei Änderungen gleichzeitig (Rang und Lernrate) und dem Rang den Effekt zugeschrieben.
 - Metrik oder Schwellwert nach dem ersten Lauf gewählt.
-- Validierung auf Trainingsdaten — das bekannteste Leakage aus Woche 12.
+- Validierung auf Trainingsdaten — das bekannteste Leakage aus der Lektion „Cross-Validation und Leakage-Kontrolle“.
 
 ## Direkter Check
 

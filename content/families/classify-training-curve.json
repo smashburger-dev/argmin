@@ -73,7 +73,7 @@
         }
       ],
       "prompt": "Während einer Trainingsschleife zeigt die Lernkurve als Zahlenliste: Trainingsverlust $[0{,}80,\\ 0{,}55,\\ 0{,}41,\\ 0{,}33,\\ 0{,}28,\\ 0{,}24]$, Validierungsverlust $[0{,}85,\\ 0{,}60,\\ 0{,}48,\\ 0{,}52,\\ 0{,}61,\\ 0{,}73]$. Was ist die korrekte Diagnose?",
-      "fullSolution": "Trainingsverlust fällt monoton (0,80 → 0,24), Validierungsverlust fällt bis Epoche 3 (0,48) und steigt dann (0,73). Genau das Auseinanderlaufen ist das Overfitting-Signal; Gegenmaßnahmen: Early Stopping um Epoche 3 oder Regularisierung (Woche 21). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Trainingsverlust fällt monoton (0,80 → 0,24), Validierungsverlust fällt bis Epoche 3 (0,48) und steigt dann (0,73). Genau das Auseinanderlaufen ist das Overfitting-Signal; Gegenmaßnahmen: Early Stopping um Epoche 3 oder Regularisierung (Lektion „Regularisierung und faire Ablation“). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "Vergleiche die RICHTUNG der beiden Kurven getrennt: Was tut der Trainingsverlust über die Epochen, was der Validierungsverlust?",
         "Gesundes Lernen: beide fallen. Auseinanderlaufen (train fällt, val steigt) ist das Overfitting-Muster; Oszillation oder Explosion deutet auf die Lernrate."

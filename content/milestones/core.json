@@ -242,7 +242,7 @@
     {
       "milestoneId": "ms-data-ml-classic-ml",
       "locale": "de",
-      "title": "Daten und klassisches ML (W6-W17)",
+      "title": "Daten und klassisches ML",
       "description": "Datenbereinigung, EDA, Regression aus Grundoperationen, Baselines, Klassifikationsmetriken, Cross-Validation, Fehleranalyse, Regularisierung, Ensembles, SVM/PCA und ein reproduzierbarer Modellvergleich – browserseitig mit Standardbibliothek und NumPy (ADR-0012).",
       "estimatedMinutes": 5760,
       "competencyIds": [
@@ -403,7 +403,7 @@
     {
       "milestoneId": "ms-dl-genai",
       "locale": "de",
-      "title": "Deep Learning und GenAI-Systeme (W18-W30)",
+      "title": "Deep Learning und GenAI-Systeme",
       "description": "Tensoren, Backpropagation, Training, Regularisierung, Attention, Tokenisierung, Toy-Inferenz, Fine-Tuning-Konzepte, Paper-Synthese, RAG-Retrieval, Evaluation ohne LLM-Grader, defensive GenAI-Sicherheit und ein abgesicherter Prototyp – browserseitig mit Standardbibliothek und NumPy (ADR-0013).",
       "estimatedMinutes": 7800,
       "competencyIds": [
@@ -576,8 +576,8 @@
     {
       "milestoneId": "ms-research-capstone",
       "locale": "de",
-      "title": "Forschung und Capstone (W31-W39)",
-      "description": "Forschungsfrage und Preregistrierung, Daten-/Modell-/Systemkarten, Responsible AI mit Subgruppen- und Kostenmetriken, Capstone-Baseline mit eingefrorenem Golden Set sowie eine reproduzierbare Multi-Wochen-Pipeline mit fester Evaluation, defensivem Red-Team gegen den eigenen Toy-Prototyp und ehrlicher Dokumentation (ADR-0014).",
+      "title": "Forschung und Capstone",
+      "description": "Forschungsfrage und Preregistrierung, Daten-/Modell-/Systemkarten, Responsible AI mit Subgruppen- und Kostenmetriken, Capstone-Baseline mit eingefrorenem Golden Set sowie eine reproduzierbare mehrstufige Capstone-Pipeline mit fester Evaluation, defensivem Red-Team gegen den eigenen Toy-Prototyp und ehrlicher Dokumentation (ADR-0014).",
       "estimatedMinutes": 5400,
       "competencyIds": [
         "c-research-question",

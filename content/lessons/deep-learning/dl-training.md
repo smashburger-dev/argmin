@@ -1,6 +1,6 @@
 # Training Loops: Loss, Lernrate, Lernkurven
 
-Ein Training ist eine Schleife mit vier Bausteinen: Vorwärts (Loss), rückwärts (Gradienten), Update (Optimizer), Buchhaltung (Lernkurve). Diese Woche baust du solche Schleifen auf kleinen synthetischen Daten — $n \le 300$, Tabellar-Features, erzeugt mit `np.random.default_rng(seed)`. Kein GPU-Training, kein Modepaket: Toy-Größen, ehrlich benannt, aber die Mechanik ist dieselbe wie im Großen.
+Ein Training ist eine Schleife mit vier Bausteinen: Vorwärts (Loss), rückwärts (Gradienten), Update (Optimizer), Buchhaltung (Lernkurve). Diese Lektion baust du solche Schleifen auf kleinen synthetischen Daten — $n \le 300$, Tabellar-Features, erzeugt mit `np.random.default_rng(seed)`. Kein GPU-Training, kein Modepaket: Toy-Größen, ehrlich benannt, aber die Mechanik ist dieselbe wie im Großen.
 
 ## Loss: MSE und BCE
 
@@ -44,7 +44,7 @@ Feste Seeds machen all das reproduzierbar: `rng = np.random.default_rng(seed)` f
 ## Typische Fehler
 
 - Lernrate als einzige Ursache lesen, wenn fehlende Standardisierung die eigentliche ist.
-- Validierungsverlust auf Trainingsgewichten mitteln, nachdem in den Validierungsdaten skaliert wurde (Leakage aus Woche 12).
+- Validierungsverlust auf Trainingsgewichten mitteln, nachdem in den Validierungsdaten skaliert wurde (Leakage aus der Lektion „Cross-Validation und Leakage-Kontrolle“).
 - Schritte statt Epochen zählen und Werte nicht vergleichbar machen.
 - BCE ohne Clipping auf Wahrscheinlichkeiten $0$ oder $1$ fahren.
 - Ohne festen Seed zwei Läufe "vergleichen".

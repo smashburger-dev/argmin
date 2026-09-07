@@ -62,7 +62,7 @@
           "correct": false
         }
       ],
-      "prompt": "Diese Plattform misst in Woche 27 nur das Retrieval — die Antwortgenerierung eines echten Sprachmodells läuft bewusst nicht im Browser. Was ist der Kerngrund für diese Trennung?",
+      "prompt": "Diese Plattform misst in der Lektion „RAG: Retrieval messbar machen“ nur das Retrieval — die Antwortgenerierung eines echten Sprachmodells läuft bewusst nicht im Browser. Was ist der Kerngrund für diese Trennung?",
       "fullSolution": "Retrieval ist deterministisch, läuft offline und ist mit Recall@k/MRR gegen ein Golden Set messbar. Antwortgenerierung bräuchte ein echtes Modell — sie wird separat über Fixtures und lokale Projekte geprüft. Nur die Trennung macht Fehlerursachen zuordenbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "Was ist an einer Retrieval-Stufe deterministisch und offline messbar — und was bräuchte eine echte Antwortgenerierung?",
@@ -75,11 +75,11 @@
         },
         {
           "if": "choice === 'a'",
-          "then": "Echtes RAG formuliert Antworten neu; nur der Stub-Prototyp von Woche 30 kopiert Sätze. Kopieren wäre zudem keine Generierung."
+          "then": "Echtes RAG formuliert Antworten neu; nur der Stub-Prototyp von Lektion „Minimaler abgesicherter GenAI-Prototyp“ kopiert Sätze. Kopieren wäre zudem keine Generierung."
         },
         {
           "if": "choice === 'b'",
-          "then": "Auch für Antworten existieren deterministische Metriken (Woche 28) — nur die Ausführung eines echten Generators fehlt im Browser."
+          "then": "Auch für Antworten existieren deterministische Metriken (Lektion „Evaluation generativer Antworten“) — nur die Ausführung eines echten Generators fehlt im Browser."
         }
       ],
       "typicalErrors": [

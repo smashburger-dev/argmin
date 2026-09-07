@@ -32,7 +32,6 @@
         "explanations",
         "projects",
         "tools",
-        "reviews",
         "modules",
         "families"
       ],
@@ -44,7 +43,6 @@
         "explanations": { "$ref": "#/$defs/dirPath" },
         "projects": { "$ref": "#/$defs/dirPath" },
         "tools": { "$ref": "#/$defs/dirPath" },
-        "reviews": { "$ref": "#/$defs/dirPath" },
         "modules": { "$ref": "#/$defs/dirPath" },
         "families": { "$ref": "#/$defs/dirPath" }
       }

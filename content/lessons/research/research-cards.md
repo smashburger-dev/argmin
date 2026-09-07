@@ -4,7 +4,7 @@ Eine Datenkarte oder Modellkarte ist kein Marketingtext, sondern ein **Vertrag**
 
 ## Pflichtfelder: der minimale Vertragsinhalt
 
-Jede Karte dieser Woche hat einen festen Pflichtfeldsatz. Für eine Datenkarte: name, zweck, herkunft, zeitraum, lizenz, n_beispiele, split_train, split_dev, bekannte_luecken, kontakt. Für eine Modellkarte: name, zweck, version, trainingsdaten, metrik, schwellenwert, bekannte_grenzen, kontakt.
+Jede Karte dieser Lektion hat einen festen Pflichtfeldsatz. Für eine Datenkarte: name, zweck, herkunft, zeitraum, lizenz, n_beispiele, split_train, split_dev, bekannte_luecken, kontakt. Für eine Modellkarte: name, zweck, version, trainingsdaten, metrik, schwellenwert, bekannte_grenzen, kontakt.
 
 Drei Regeln gelten für jedes Pflichtfeld:
 
@@ -26,9 +26,9 @@ Der zweite, oft übersehene Teil des Vertrags: Karten stehen nie allein. Datenka
 
 Jeder dieser Widersprüche ist ein Gleichheitsvergleich zwischen zwei Feldern — trivial zu automatisieren und trotzdem entscheidend, weil ein Bericht über ein System nur so glaubwürdig ist wie die Übereinstimmung seiner eigenen Dokumente. Die Widerspruchsliste ist die Grundlage des Audits: Sie nennt, was zuerst zu reparieren ist, bevor irgendein Messwert zitiert wird.
 
-## Worked Example am W30-Prototypen
+## Worked Example am GenAI-Prototyp
 
-Der W30-RAG-Prototyp (deterministischer Stub-Generator, eingefrorene Fixtur-Queries, Injektions-Fixture, Ablation mit recall 0,6 unter Kontrolle gegen 0,8 ohne) hätte drei Karten:
+Der RAG-Prototyp (deterministischer Stub-Generator, eingefrorene Fixtur-Queries, Injektions-Fixture, Ablation mit recall 0,6 unter Kontrolle gegen 0,8 ohne) hätte drei Karten:
 
 - **Datenkarte**: name „faq-korpus“, zweck „Antwortvorschläge für Support-Fragen“, herkunft „Forum-Export, bereinigt“, zeitraum „Jahreswechsel“, lizenz „CC BY 4.0“, n_beispiele „1200“, split_train „0,8“, split_dev „0,1“, bekannte_luecken „Dokumente enthalten synthetische Injektions-Fixture; Umlaute uneinheitlich“, kontakt „team-support“.
 - **Modellkarte**: name „rag-stub“, zweck „Antwortvorschlag“, version „1.2.0“, trainingsdaten „faq-korpus“ (muss mit der Datenkarte übereinstimmen!), metrik „recall@5“, schwellenwert „0,75“, bekannte_grenzen „kein echtes Sprachmodell — Formulierung erfolgt nicht neu, der Stub wählt Sätze aus den Dokumenten“, kontakt „team-support“.

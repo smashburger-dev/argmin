@@ -3,7 +3,7 @@
   "moduleId": "lm-ml-ensembles",
   "version": 1,
   "locale": "de",
-  "title": "Entscheidungsbäume und Ensembles: Gini, Bagging, Majority Voting",
+  "title": "Entscheidungsbäume und Ensembles",
   "description": "Lerne Gini-Splits zu berechnen, Bagging und Majority Voting zu begründen und Ensemblemodelle fair mit Baselines zu vergleichen.",
   "competencyIds": [
     "c-ml-ensembles"
