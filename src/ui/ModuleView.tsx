@@ -1,17 +1,43 @@
 import type { CatalogData } from '../app/types';
+import { useEffect, useState } from 'preact/hooks';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Breadcrumbs } from './Breadcrumbs';
 import { activityLabel, difficultyLabelFor } from './exercise-context';
 
+function exerciseForPlacement(catalog: CatalogData, placement: CatalogData['learningModules'][number]['placements'][number]) {
+  return placement.definitionId
+    ? catalog.exercises.find((item) => item.definitionId === placement.definitionId)
+    : catalog.exercises.find((item) => item.familyId === placement.familyId && item.caseId === placement.caseId);
+}
+
+function routeForPlacement(catalog: CatalogData, placement: CatalogData['learningModules'][number]['placements'][number]) {
+  const exercise = exerciseForPlacement(catalog, placement);
+  if (exercise) return routeForDefinition(exercise);
+  if (!placement.familyId) return null;
+  return `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`;
+}
+
 export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; moduleId: string }) {
   const module = catalog.learningModules.find((item) => item.moduleId === moduleId);
-  if (!module) return <section class="view"><h1 tabIndex={-1}>Modul nicht gefunden</h1></section>;
+  const [open, setOpen] = useState<'lessons' | 'exercises'>(module?.lessonIds.length ? 'lessons' : 'exercises');
   const lessonById = new Map(catalog.lessons.map((item) => [item.lessonId, item]));
-  const exerciseById = new Map(catalog.exercises.map((item) => [item.definitionId, item]));
   const competencyById = new Map(catalog.competencies.map((item) => [item.competencyId, item]));
-  const curated = module.placements.filter((item) => item.role === 'curated');
-  const practice = module.placements.filter((item) => item.role === 'practice-space');
+  const curated = module?.placements.filter((item) => item.role === 'curated') ?? [];
+  const practice = module?.placements.filter((item) => item.role === 'practice-space') ?? [];
+  useEffect(() => {
+    setOpen(module?.lessonIds.length ? 'lessons' : 'exercises');
+  }, [moduleId]);
+  useEffect(() => {
+    if (module?.lessonIds.length === 1 && curated.length === 0) location.hash = `#/lesson/${module.lessonIds[0]}`;
+  }, [module?.moduleId, module?.lessonIds, curated.length]);
+  if (!module) return <section class="view"><h1 tabIndex={-1}>Modul nicht gefunden</h1></section>;
+  const practiceByFamily = new Map(practice.map((item) => [item.familyId, item]));
+  const curatedFamilies = new Set(curated.map((item) => item.familyId));
+  const standalonePractice = practice.filter((item) => !curatedFamilies.has(item.familyId));
+  const hasLessons = module.lessonIds.length > 0;
+  const hasExercises = curated.length + practice.length > 0;
+  const assignedPracticeFamilies = new Set<string>();
   return (
     <section class="view" aria-labelledby="module-title">
       <header class="view-header">
@@ -21,77 +47,81 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
         <p class="lede">{module.description}</p>
       </header>
       <p class="requires">Kompetenz: {module.competencyIds.map((id) => competencyById.get(id)?.title ?? id).join(', ')}</p>
-      {module.lessonIds.length > 0 && (
-        <section class="activity-section" aria-labelledby="module-lesson-title">
-          <div class="section-heading">
-            <div><p class="eyebrow">Lesen</p><h2 id="module-lesson-title">Lektionen</h2></div>
-            <span>{module.lessonIds.length}</span>
-          </div>
-          <div class="lesson-list">
-            {module.lessonIds.map((lessonId) => {
-              const lesson = lessonById.get(lessonId);
-              return lesson
-                ? <a href={`#/lesson/${lesson.lessonId}`} key={lesson.lessonId}><span>{lesson.estimatedMinutes} Min.</span><strong>{lesson.title}</strong><p>{lesson.objectives[0]}</p></a>
-                : null;
-            })}
-          </div>
-        </section>
-      )}
-      <section class="activity-section" aria-labelledby="module-curated-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">Kuratiert</p><h2 id="module-curated-title">Aufgaben</h2></div>
-          <span>{curated.length}</span>
-        </div>
-        {curated.length > 0
-          ? <div class="activity-list">{curated.map((placement) => {
-              const exercise = placement.definitionId
-                ? exerciseById.get(placement.definitionId)
-                : catalog.exercises.find((item) => item.familyId === placement.familyId && item.caseId === placement.caseId);
-              const family = catalog.families?.find((item) => item.familyId === placement.familyId);
-              const title = `${activityLabel(exercise?.activityType || family?.activityType)} · ${difficultyLabelFor(placement.difficulty)}`;
-              const href = exercise ? routeForDefinition(exercise) : null;
-              const familyHref = !exercise && placement.familyId
-                ? `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`
-                : null;
-              return (
-                <article class="activity-card" key={placement.placementId}>
-                  <div>
-                    <p class="card-kicker">{difficultyLabelFor(placement.difficulty)} · {exercise?.masteryEligible ? 'Kompetenzbeleg möglich' : 'Übung'}</p>
-                    <h3>{title}</h3>
-                    <p>{exercise
-                      ? (exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Bearbeitungsnachweis, kein Mastery-Beleg.')
-                      : 'Jede Öffnung erzeugt eine neue Variante.'}</p>
-                  </div>
-                  {href
-                    ? <Button href={href}>Aufgabe öffnen</Button>
-                    : familyHref
-                      ? <Button href={familyHref}>Variante öffnen</Button>
-                      : <span class="muted">Bald verfügbar</span>}
-                </article>
-              );
-            })}</div>
-          : <div class="empty-state"><h2>Keine kuratierten Aufgaben</h2><p>Dieses Modul hat noch keine Platzierung.</p></div>}
-      </section>
-      {practice.length > 0 && (
-        <section class="activity-section" aria-labelledby="module-practice-title">
-          <div class="section-heading">
-            <div><p class="eyebrow">Übungsplatz</p><h2 id="module-practice-title">Frei üben</h2></div>
-            <span>{practice.length}</span>
-          </div>
-          <div class="activity-list">{practice.map((placement) => (
-            <article class="activity-card" key={placement.placementId}>
-              <div>
-                <p class="card-kicker">{difficultyLabelFor(placement.difficulty)} · Übung</p>
-                <h3>{catalog.families?.find((family) => family.familyId === placement.familyId)?.summary || 'Freie Aufgabe'}</h3>
-                <p>Jede Öffnung erzeugt eine neue Variante.</p>
+      <div class="module-panels">
+        {hasLessons && (
+          <section class={`module-panel${open === 'lessons' ? ' open' : ''}`} aria-labelledby="module-lesson-title">
+            <div class="module-panel-head">
+              <p class="eyebrow">Lesen</p>
+              <h2 id="module-lesson-title">
+                <button type="button" aria-expanded={open === 'lessons'} aria-controls="module-lessons" onClick={() => setOpen('lessons')}>Lektionen</button>
+              </h2>
+              <span>{module.lessonIds.length}</span>
+            </div>
+            <div id="module-lessons" hidden={open !== 'lessons'}>
+              <div class="lesson-list">
+                {module.lessonIds.map((lessonId) => {
+                  const lesson = lessonById.get(lessonId);
+                  return lesson
+                    ? <a href={`#/lesson/${lesson.lessonId}`} key={lesson.lessonId}><span>{lesson.estimatedMinutes} Min.</span><strong>{lesson.title}</strong><p>{lesson.objectives[0]}</p></a>
+                    : null;
+                })}
               </div>
-              {placement.familyId
-                ? <Button href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>Üben</Button>
-                : <span class="muted">Bald verfügbar</span>}
-            </article>
-          ))}</div>
-        </section>
-      )}
+            </div>
+          </section>
+        )}
+        {hasExercises && (
+          <section class={`module-panel${open === 'exercises' ? ' open' : ''}`} aria-labelledby="module-exercise-title">
+            <div class="module-panel-head">
+              <p class="eyebrow">Üben</p>
+              <h2 id="module-exercise-title">
+                <button type="button" aria-expanded={open === 'exercises'} aria-controls="module-exercises" onClick={() => setOpen('exercises')}>Aufgaben & Üben</button>
+              </h2>
+              <span>{curated.length + standalonePractice.length}</span>
+            </div>
+            <div id="module-exercises" hidden={open !== 'exercises'}>
+              <div class="activity-list">
+                {curated.map((placement) => {
+                  const exercise = exerciseForPlacement(catalog, placement);
+                  const family = catalog.families?.find((item) => item.familyId === placement.familyId);
+                  const practicePlacement = placement.familyId && practiceByFamily.has(placement.familyId) && !assignedPracticeFamilies.has(placement.familyId)
+                    ? practiceByFamily.get(placement.familyId)
+                    : undefined;
+                  if (practicePlacement && placement.familyId) assignedPracticeFamilies.add(placement.familyId);
+                  const href = routeForPlacement(catalog, placement);
+                  return (
+                    <article class="activity-card" key={placement.placementId}>
+                      <div>
+                        <p class="card-kicker">{difficultyLabelFor(placement.difficulty)} · {exercise?.masteryEligible ? 'Kompetenzbeleg möglich' : 'Übung'}</p>
+                        <h3>{`${activityLabel(exercise?.activityType || family?.activityType)} · ${difficultyLabelFor(placement.difficulty)}`}</h3>
+                        <p>{exercise?.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Bearbeitungsnachweis, kein Mastery-Beleg.'}</p>
+                      </div>
+                      <div class="actions vertical">
+                        {href ? <Button variant="primary" href={href}>Aufgabe öffnen</Button> : <span class="muted">Bald verfügbar</span>}
+                        {practicePlacement && <Button variant="ghost" href={`#/family/${practicePlacement.familyId}/-/-/${practicePlacement.difficulty}`}>Neue Variante</Button>}
+                      </div>
+                    </article>
+                  );
+                })}
+                {standalonePractice.map((placement) => {
+                  const family = catalog.families?.find((item) => item.familyId === placement.familyId);
+                  return (
+                    <article class="activity-card" key={placement.placementId}>
+                      <div>
+                        <p class="card-kicker">Übungsplatz</p>
+                        <h3>{activityLabel(family?.activityType)} · {difficultyLabelFor(placement.difficulty)}</h3>
+                        <p>Jede Öffnung erzeugt eine neue Variante.</p>
+                      </div>
+                      {placement.familyId
+                        ? <Button variant="primary" href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>Üben</Button>
+                        : <span class="muted">Bald verfügbar</span>}
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
     </section>
   );
 }

@@ -3,8 +3,10 @@ import type { CatalogData } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { buildWeeklyLearningPlan, type LearningPlanItem } from '../adapters/learning-plan';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
+import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
+import { activityLabel, difficultyLabelFor } from './exercise-context';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
 
 function reasonLabel(item: LearningPlanItem) {
@@ -91,6 +93,33 @@ function FollowUpCard({ executableReviews, nextNonReview, exerciseById }: {
   );
 }
 
+function relativeDay(occurredAt: string) {
+  const elapsedDays = Math.floor((Date.now() - Date.parse(occurredAt)) / 86400000);
+  if (elapsedDays <= 0) return 'heute';
+  if (elapsedDays === 1) return 'gestern';
+  return `vor ${elapsedDays} Tagen`;
+}
+
+function LastWorkedCard({ progress, exerciseById, catalog }: {
+  progress: ProgressSnapshot;
+  exerciseById: Map<string, CatalogData['exercises'][number]>;
+  catalog: CatalogData;
+}) {
+  const lastAttempt = progress.lastAttempt;
+  const exercise = lastAttempt ? exerciseById.get(lastAttempt.definitionId) : undefined;
+  if (!lastAttempt || !exercise) return null;
+  const module = catalog.learningModules.find((item) => item.placements.some((placement) => placement.definitionId === exercise.definitionId));
+  const competency = catalog.competencies.find((item) => exercise.competencyIds.includes(item.competencyId));
+  return (
+    <article class="status-card">
+      <p class="card-kicker">Zuletzt bearbeitet</p>
+      <h2>{activityLabel(exercise.activityType)} · {difficultyLabelFor(exercise.difficulty)}</h2>
+      <p>{module?.title ?? competency?.title} · {relativeDay(lastAttempt.occurredAt)}</p>
+      <a class="text-link" href={routeForDefinition(exercise)}>Weitermachen</a>
+    </article>
+  );
+}
+
 function recommendation(
   progress: ProgressSnapshot,
   plan: ReturnType<typeof buildWeeklyLearningPlan>,
@@ -165,6 +194,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
         </article>
         <MilestoneCard catalog={catalog} progress={progress} />
         <FollowUpCard executableReviews={executableReviews} nextNonReview={nextNonReview} exerciseById={exerciseById} />
+        <LastWorkedCard progress={progress} exerciseById={exerciseById} catalog={catalog} />
       </div>
       <section class="weekly-plan" aria-labelledby="weekly-plan-title">
         <div class="section-heading">

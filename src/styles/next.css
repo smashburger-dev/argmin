@@ -103,7 +103,7 @@ main { min-width: 0; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3); margin-top: var(--s5); }
 
 .today-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .75fr); gap: var(--s4); }
-.primary-card, .status-card, .reason-panel, .empty-state, .settings-panel, .source-card, .tool-card, .unit-card, .roadmap-card, .activity-card, .diagnostic-card, .review-card, .lesson-list a, .project-panel, .report-panel, .deliverables, .exercise-work, .exercise-feedback, .editor-panel, .output-panel, .lesson-prose, .lesson-side, .lesson-pagination > a, .visualization-controls, .progress-summary, .module-progress, .module-path > li, .policy, .journal { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.primary-card, .status-card, .reason-panel, .empty-state, .settings-panel, .source-card, .tool-card, .unit-card, .roadmap-card, .activity-card, .diagnostic-card, .review-card, .lesson-list a, .project-panel, .report-panel, .deliverables, .exercise-work, .exercise-feedback, .editor-panel, .output-panel, .lesson-prose, .lesson-side, .lesson-pagination > a, .visualization-controls, .progress-summary, .module-progress, .module-path > li, .module-panel, .policy, .journal { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
 .primary-card { min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; gap: var(--s6); padding: clamp(24px, 4vw, 48px); background: var(--grad-hero); color: var(--text); }
 .primary-card .card-kicker { color: var(--accent-hover); }
 .primary-card h2 { max-width: 600px; font-size: clamp(28px, 4vw, 36px); }
@@ -149,6 +149,22 @@ main { min-width: 0; }
 .prerequisite-panel li { display: flex; justify-content: space-between; gap: var(--s5); padding-top: var(--s3); border-top: 1px solid var(--border); }
 .prerequisite-panel li span { color: var(--text-2); font-size: 13px; }
 .activity-section { margin-top: var(--s7); }
+.module-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); align-items: start; transition: grid-template-columns .25s ease; }
+.module-panels:has(.module-panel.open:first-child) { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.module-panels:has(.module-panel.open:last-child) { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
+.module-panels:has(.module-panel:only-child) { grid-template-columns: 1fr !important; }
+.module-panel { padding: var(--s5); }
+.module-panel-head { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s4); color: var(--text-2); }
+.module-panel-head .eyebrow { grid-column: 1 / -1; }
+.module-panel-head h2 button { all: unset; cursor: pointer; font: inherit; color: inherit; }
+.module-panel-head h2 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.module-panel-head h2 button::after { content: ''; position: absolute; inset: 0; }
+.module-panel.open .module-panel-head { color: var(--text); }
+.module-panel-head h2 { margin: 0; }
+.module-panel-head .eyebrow { margin-bottom: var(--s2); }
+.module-panel > [hidden] { display: none; }
+.module-panel .lesson-list { grid-template-columns: 1fr; margin-top: var(--s4); }
+.module-panel .activity-list { margin-top: var(--s4); }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: var(--s5); margin-bottom: var(--s4); }
 .section-heading > span { color: var(--text-2); font-size: 13px; }
 .activity-list, .roadmap-list, .unit-list, .review-list { display: grid; gap: var(--s3); }
@@ -234,7 +250,7 @@ main { min-width: 0; }
 .objectives { max-width: 72ch; margin-top: var(--s3); padding: var(--s5); border: 1px solid var(--border); border-radius: var(--radius); background: var(--accent-soft); }
 .objectives h2 { font-size: 18px; }
 .objectives ul { display: grid; gap: var(--s2); margin: var(--s4) 0 0; padding-left: var(--s5); font-size: 16px; line-height: 1.45; }
-.lesson-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; align-items: start; gap: var(--s5); }
+.lesson-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: start; gap: var(--s5); }
 .lesson-prose { min-width: 0; max-width: 72ch; padding: clamp(24px, 4vw, 48px); font: 18px/1.75 var(--sans); }
 .lesson-prose .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .lesson-block { min-width: 0; max-width: 100%; overflow-x: auto; }
@@ -261,9 +277,11 @@ main { min-width: 0; }
 .lesson-prose table { width: 100%; margin: var(--s5) 0; border-collapse: collapse; font-size: 14px; }
 .lesson-prose th, .lesson-prose td { padding: 9px; border: 1px solid var(--border); text-align: left; }
 .lesson-side { position: sticky; top: 88px; padding: var(--s5); }
-.lesson-side ul { display: grid; gap: var(--s2); margin: var(--s4) 0; padding: 0; list-style: none; }
-.lesson-side li a { display: flex; justify-content: space-between; gap: var(--s3); padding: 10px 0; border-top: 1px solid var(--border); color: var(--accent-hover); font-size: 13px; text-decoration: none; }
-.lesson-side li span { color: var(--text-2); }
+.side-cards { display: grid; gap: var(--s3); margin: var(--s4) 0; }
+.side-card { display: grid; gap: var(--s1); padding: var(--s4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); }
+.side-card strong { font-size: 16px; }
+.side-card span { color: var(--text-2); font-size: 14px; }
+.side-card .btn { justify-self: start; margin-top: var(--s2); }
 .lesson-sources { margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--border); }
 .lesson-sources h3 { font-size: 15px; }
 .lesson-sources li a { display: grid; }
@@ -402,7 +420,7 @@ main { min-width: 0; }
   .view { padding: var(--s6) 16px 100px; }
   .split-header { display: block; }
   .search-field { margin-top: var(--s5); }
-  .today-grid, .diagnostic-grid, .competency-detail-grid, .project-grid, .report-panel, .lesson-list, .lesson-pagination, .source-grid, .tool-grid { grid-template-columns: minmax(0, 1fr); }
+  .today-grid, .module-panels, .module-panels:has(.module-panel.open:first-child), .module-panels:has(.module-panel.open:last-child), .diagnostic-grid, .competency-detail-grid, .project-grid, .report-panel, .lesson-list, .lesson-pagination, .source-grid, .tool-grid { grid-template-columns: minmax(0, 1fr); }
   .carousel-controls { position: static; justify-content: flex-end; margin-bottom: var(--s2); }
   .module-path > li > a { grid-template-columns: 36px minmax(0, 1fr); }
   .module-meta { grid-column: 2; white-space: normal; }
