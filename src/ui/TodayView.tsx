@@ -90,9 +90,12 @@ function FollowUpCard({ executableReviews, nextNonReview, exerciseById }: {
   );
 }
 
-function recommendation(catalog: CatalogData, progress: ProgressSnapshot, plan: ReturnType<typeof buildWeeklyLearningPlan>) {
-  const exerciseById = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
-  const { executable: reviews } = partitionReviewQueue(progress.dueReviews, exerciseById.keys());
+function recommendation(
+  progress: ProgressSnapshot,
+  plan: ReturnType<typeof buildWeeklyLearningPlan>,
+  reviews: Array<{ exerciseId: string }>,
+  exerciseById: Map<string, CatalogData['exercises'][number]>,
+) {
   if (reviews.length > 0) {
     const minutes = reviews.slice(0, 3).reduce((total, review) => total + (exerciseById.get(review.exerciseId)?.estimatedMinutes ?? 10), 0);
     return {
@@ -139,12 +142,12 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
   const plan = useMemo(() => buildWeeklyLearningPlan(catalog, progress), [catalog, progress]);
   const exerciseById = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
   const { executable: executableReviews } = partitionReviewQueue(progress.dueReviews, exerciseById.keys());
-  const primary = recommendation(catalog, progress, plan);
+  const primary = recommendation(progress, plan, executableReviews, exerciseById);
   const nextNonReview = plan.days.flatMap((day) => day.items).find((item) => item.type !== 'review');
   return (
     <section class="view" aria-labelledby="today-title">
       <header class="view-header">
-        <p class="eyebrow">Heute</p>
+        <p class="eyebrow">Dein Lernfenster</p>
         <h1 id="today-title" tabIndex={-1}>Heute</h1>
       </header>
       <div class="today-grid">
