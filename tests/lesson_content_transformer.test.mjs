@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   genAttentionShape, genVocabAfterMerges, genGreedyToken, genLoraParamCount, genRelativeGain,
-} from '../assets/js/core/w22_w26_generators.mjs';
+} from '../assets/js/core/transformer_generators.mjs';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
 // Contract tests for the W22-W26 transformer-LLM content.

@@ -3,9 +3,8 @@
 // Jede Familie ordnet eine Beobachtung anhand eines Konzeptsystems einer
 // Klasse zu (Referenzmodell = das Konzeptsystem, Lösungsweg = Zuordnen).
 // Alle Inhalte sind wörtlich aus den autoritativen Family-Shards übernommen.
-// Falltypen sind die kanonischen Shard-Fälle aus
-// research/streamlining/s4a-v2/shards/foundations.json (authorityMode dort
-// überall static, außer seeded-error-pattern-cases: seeded).
+// Falltypen sind kanonische Foundations-Fälle (authorityMode überall static,
+// außer seeded-error-pattern-cases: seeded).
 //
 // authorityMode der Verträge ist überall static (S4D1-Vorgabe): auch der
 // seeded-error-pattern-cases-Fall ist auf die autorisierte Default-Instanz
@@ -292,7 +291,7 @@ export function solveExceptionPlacement(parameters) {
 }
 
 // --- Verträge (S4C-Format, reine Daten ohne Funktionen) ----------------------
-// summaries wörtlich aus canonical-families.json / shards/foundations.json,
+// summaries wörtlich aus den Foundations-Vertragsdaten,
 // competencyIds aus den Quelldefinitionen (test-attitude trägt zwei Claims).
 
 const DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];

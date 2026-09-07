@@ -1,14 +1,13 @@
 # ADR-0008: Review-Scheduling mit Expanding Retrieval; FSRS bleibt Experiment
 
 Status: Angenommen 2026-08-25, produktive Policy korrigiert 2026-08-29, FSRS-Experiment am 2026-09-02 vollständig entfernt (S1A). Datum: 2026-08-25.
-Entscheidungsvorlage: `research/lernmethodik/of3-algorithmen.md` (OF-3-Lückenschluss der
-Evidenzsynthese `KI_Lernmethodik_Evidenzsynthese.md`). Implementiert LM-R1 und LM-R3
-aus `research/lernmethodik/requirements.md`.
+Die frühere Entscheidungsvorlage schloss die OF-3-Lücke der Evidenzsynthese
+`KI_Lernmethodik_Evidenzsynthese.md`. Implementiert LM-R1 und LM-R3.
 
 ## Kontext
 
 Die Ist-Annahme „einmal bewiesen gilt für immer" (masteryFromAttempts ohne Zeitdimension,
-G-02/G-05 in `research/lernmethodik/gap-matrix.md`) widerspricht Vergessensverläufen
+G-02/G-05 in der früheren Gap-Matrix) widerspricht Vergessensverläufen
 (@murre<dros><2015>) und dem Testrepetitionseffekt (@yang<testing><2021>;
 @rowland<metaanalyse><2014>). Der in ADR-0005 genannte `reviewQueue`-Store wurde nie
 angelegt (G-28). OF-3 fragte, welcher Scheduling-Algorithmus die Lücke schließt:
@@ -33,7 +32,7 @@ Produktiv läuft genau ein Scheduler:
    erfordert ein neues ADR samt neuer Vendoring-Entscheidung.
 
 Nicht übernommen: HLR, MCM/DASH, ACT-R/Punkt-Prozess — Begründung und
-Empfehlungsmatrix in `research/lernmethodik/of3-algorithmen.md`.
+Empfehlungsmatrix standen in der früheren Entscheidungsvorlage.
 
 ## Belege
 

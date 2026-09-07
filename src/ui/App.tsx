@@ -114,9 +114,9 @@ export function App() {
   return (
     <div class="app-shell">
       <header class="topbar">
-        <a class="brand" href="#/today" aria-label="KI-Lernplattform, zur Heute-Ansicht">
-          <span class="brand-mark" aria-hidden="true">KL</span>
-          <span><strong>KI-Lernplattform</strong><small>Local-first Lernsystem</small></span>
+        <a class="brand" href="#/today" aria-label="argmin, zur Heute-Ansicht">
+          <span class="brand-mark" aria-hidden="true">am</span>
+          <span><strong>argmin</strong><small>KI lernen, lokal &amp; gratis</small></span>
         </a>
         <div class="topbar-meta"><span class="local-status"><span aria-hidden="true" />Lokal</span><span class="catalog-version">Katalog {catalog.version}</span><Button variant="ghost" size="sm" class="theme-toggle" aria-label="Farbschema wechseln" onClick={toggleTheme}>{themePreference === 'dark' ? '☀' : '☾'}</Button></div>
       </header>

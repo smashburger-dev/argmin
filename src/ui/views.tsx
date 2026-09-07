@@ -284,7 +284,7 @@ export function SettingsView({ catalog, progress, onSave }: {
     const href = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = href;
-    link.download = 'ki-lernplattform-fortschritt.json';
+    link.download = 'argmin-fortschritt.json';
     link.click();
     URL.revokeObjectURL(href);
     setStatus('Export erstellt.');

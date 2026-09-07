@@ -86,8 +86,8 @@ function FollowUpCard({ executableReviews, nextNonReview, exerciseById }: {
   return (
     <article class="status-card">
       <p class="card-kicker">Wiederholen</p>
-      <h2>Keine Reviews fällig</h2>
-      <p>Fällige Aufgaben-Reviews erscheinen hier, sobald ein Abruf ansteht.</p>
+      <h2>Nichts zu wiederholen</h2>
+      <p>Gut so. Sobald eine Aufgabe zur Wiederholung dran ist, erscheint sie hier.</p>
       <a class="text-link" href="#/review">Review-Queue öffnen</a>
     </article>
   );
@@ -211,12 +211,12 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
         ) : (
           <div class="empty-state">
             <h3>Kein Plan im aktuellen Budget</h3>
-            <p>Erhöhe das Wochenbudget oder wähle den nächsten Bereich frei im Katalog.</p>
+            <p>Gib dir in den Einstellungen etwas mehr Zeit pro Woche oder such dir unter Lernen einfach das nächste Thema aus.</p>
           </div>
         )}
         <details class="policy">
           <summary>Wie entsteht der Plan?</summary>
-          <p>Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Die Quote und Reviewabstände sind konfigurierbare Produktheuristiken.</p>
+          <p>Der Plan verteilt dein Wochenbudget aus den Einstellungen auf die Tage. Bis zu 35 Prozent davon sind für Wiederholungen reserviert, der Rest für neue Lektionen und Aufgaben. Wiederholungsabstände kannst du in den Einstellungen anpassen.</p>
         </details>
       </section>
       {progress.attemptsCount === 0 ? (

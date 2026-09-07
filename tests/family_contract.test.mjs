@@ -23,7 +23,7 @@ const registry = configureExerciseFamilies(docs);
 const bundle = compileContent({ projectRoot: root, profile: 'public' });
 const competencyIds = new Set(bundle.competencies.map((item) => item.competencyId));
 const canonical = JSON.parse(readFileSync(
-  join(root, 'research/streamlining/s4a-v2/canonical-families.json'),
+  join(root, 'tests/fixtures/canonical-families.json'),
   'utf8',
 )).families;
 const docsById = new Map(docs.map((doc) => [doc.familyId, doc]));

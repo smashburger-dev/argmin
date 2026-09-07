@@ -2,7 +2,7 @@
 // implementations live here. Each adapter: grade(exercise, answer, ctx) ->
 // { correct, verdictText, errorType, diagnosis? } (async allowed).
 
-import { parseIntegerAnswer, parseIntegerPair, genMatmulEntry, genDot, solveLinear2, matmul, dot, rank } from './w05_generators.mjs';
+import { parseIntegerAnswer, parseIntegerPair, genMatmulEntry, genDot, solveLinear2, matmul, dot, rank } from './linalg_generators.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
 // never pay for the pyodide runner module in their chunk.
 const loadPyodideRunner = () => import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner);

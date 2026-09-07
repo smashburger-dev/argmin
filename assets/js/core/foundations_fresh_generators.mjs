@@ -1,5 +1,5 @@
 // Session-B fresh-variation generators for the foundations competencies
-// (W1-W4, ADR-0015). Same contract as w01_generators.mjs: every generator
+// (Foundations, ADR-0015). Same contract as foundations_generators.mjs: every generator
 // returns { parameters, expected, prompt, fullSolution, choices? } where
 // `expected` comes from an independent reference solver, never hardcoded,
 // and `prompt` is complete German exercise text (plain text + unicode).
@@ -17,7 +17,7 @@
 // validated fail-closed by the family runtime; code-trace
 // variables may carry `type: 'repr'` (canonical Python literals).
 
-import { rng, randInt, nonzeroInt } from './w01_generators.mjs';
+import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
 
 
 /** Python repr for the values our generators produce. Sets are rendered

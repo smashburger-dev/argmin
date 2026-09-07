@@ -1,6 +1,6 @@
-// The canonical integer helpers live in w01 (byte-pinned rng); re-exported
+// The canonical integer helpers live in foundations (byte-pinned rng); re-exported
 // here so every family module has ONE import site.
-export { rng, randInt } from './w01_generators.mjs';
+export { rng, randInt } from './foundations_generators.mjs';
 
 /** Binds until/clean to one family's retry bounds, error scope and leak-guard
  *  strictness — the per-file constants that keep RNG consumption identical. */

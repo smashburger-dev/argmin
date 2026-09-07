@@ -1,7 +1,5 @@
 // S4D1 Konstrukt-Familien: ExerciseFamily-Runtime für die Foundations-
 // Konstruktions- und Prüf-Familien (10 kognitive Familien aus
-// research/streamlining/s4a-v2/shards/foundations.json).
-//
 // Vertragsform wie der frühere S4C-Familienvertrag:
 // Jede Familie liefert CONTRACT (Schema schemas/exercise-family.schema.json),
 // generate({ seed, caseId, difficulty }) -> { parameters, expected, prompt,
@@ -37,7 +35,7 @@ import {
   powerLawProduct,
   powerLawPower,
   logInt,
-} from './w01_generators.mjs';
+} from './foundations_generators.mjs';
 import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
