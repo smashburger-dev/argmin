@@ -63,13 +63,7 @@ pre { overflow: auto; }
 .main-nav > a { min-height: 44px; display: flex; align-items: center; gap: var(--s3); padding: 10px 12px; border-radius: var(--radius-sm); color: var(--text-2); text-decoration: none; font-size: 15px; font-weight: 500; }
 .main-nav > a:hover { background: var(--surface-2); color: var(--text); }
 .main-nav > a[aria-current="page"] { background: var(--accent-soft); color: var(--text); }
-.nav-icon { width: 16px; height: 16px; flex: 0 0 auto; border: 1.5px solid currentColor; }
-.nav-icon-today { border-radius: 50%; }
-.nav-icon-learn { border-width: 0 0 1.5px 1.5px; transform: rotate(-45deg); }
-.nav-icon-review { border-radius: 50%; border-right-color: transparent; }
-.nav-icon-progress { border-width: 0 0 1.5px 1.5px; position: relative; }
-.nav-icon-progress::after { content: ""; position: absolute; width: 5px; height: 5px; right: -3px; top: -3px; border-radius: 50%; background: currentColor; }
-.nav-icon-settings { transform: rotate(45deg); }
+.main-nav > a svg { width: 16px; height: 16px; flex: 0 0 auto; }
 .nav-foot { margin-top: auto; padding: var(--s4) var(--s3) 0; border-top: 1px solid var(--border); color: var(--text-2); font-size: 13px; line-height: 1.5; }
 .nav-foot span, .nav-foot a { display: block; }
 .nav-foot a { margin-top: var(--s2); font-weight: 600; }
@@ -104,7 +98,7 @@ main { min-width: 0; }
 .lesson-cta > span:last-child { min-width: 0; }
 
 .today-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .75fr); gap: var(--s4); }
-.primary-card, .status-card, .reason-panel, .empty-state, .settings-panel, .source-card, .tool-card, .unit-card, .roadmap-card, .activity-card, .diagnostic-card, .review-card, .lesson-list a, .project-panel, .report-panel, .deliverables, .exercise-work, .exercise-feedback, .editor-panel, .output-panel, .lesson-prose, .lesson-tasks, .lesson-pagination > a, .visualization-controls, .progress-summary, .module-progress, .module-path > li, .module-panel, .policy, .journal { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.primary-card, .status-card, .reason-panel, .empty-state, .settings-panel, .source-card, .tool-card, .unit-card, .roadmap-card, .activity-card, .diagnostic-card, .review-card, .lesson-list a, .project-panel, .report-panel, .deliverables, .exercise-work, .exercise-feedback, .editor-panel, .output-panel, .lesson-prose, .lesson-tasks, .lesson-pagination > a, .visualization-controls, .progress-summary, .module-progress, .module-path > li, .policy, .journal { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
 .primary-card { min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; gap: var(--s6); padding: clamp(24px, 4vw, 48px); background: var(--surface); color: var(--text); }
 .primary-card .card-kicker { color: var(--accent-hover); }
 .primary-card h2 { max-width: 600px; font-size: clamp(28px, 4vw, 36px); }
@@ -136,6 +130,9 @@ main { min-width: 0; }
 .track-strip { display: inline-flex; max-width: 100%; gap: 2px; overflow-x: auto; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-2); }
 .track-chip { min-height: 36px; flex: 0 0 auto; padding: 8px 13px; border: 0; border-radius: 999px; background: transparent; color: var(--text-2); cursor: pointer; font-size: 14px; }
 .track-chip.active { background: var(--surface); box-shadow: var(--shadow-sm); color: var(--text); }
+.track-intro { margin-top: var(--s4); }
+.track-intro p { max-width: 68ch; margin: 0 0 var(--s1); color: var(--text-2); line-height: 1.55; }
+.track-intro span { color: var(--text-2); font-size: 13px; }
 .competency-summary { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s2); margin: var(--s5) 0; color: var(--text-2); font-size: 14px; }
 .competency-summary strong { color: var(--text); font-size: 24px; }
 .summary-separator { width: 1px; height: 24px; margin: 0 var(--s2); background: var(--border); }
@@ -150,22 +147,8 @@ main { min-width: 0; }
 .prerequisite-panel li { display: flex; justify-content: space-between; gap: var(--s5); padding-top: var(--s3); border-top: 1px solid var(--border); }
 .prerequisite-panel li span { color: var(--text-2); font-size: 13px; }
 .activity-section { margin-top: var(--s7); }
-.module-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); align-items: start; transition: grid-template-columns .25s ease; }
-.module-panels:has(.module-panel.open:first-child) { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
-.module-panels:has(.module-panel.open:last-child) { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
-.module-panels:has(.module-panel:only-child) { grid-template-columns: 1fr !important; }
-.module-panel { padding: var(--s5); }
-.module-panel-head { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s4); color: var(--text-2); }
-.module-panel-head .eyebrow { grid-column: 1 / -1; }
-.module-panel-head h2 button { all: unset; cursor: pointer; font: inherit; color: inherit; }
-.module-panel-head h2 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-.module-panel-head h2 button::after { content: ''; position: absolute; inset: 0; }
-.module-panel.open .module-panel-head { color: var(--text); }
-.module-panel-head h2 { margin: 0; }
-.module-panel-head .eyebrow { margin-bottom: var(--s2); }
-.module-panel > [hidden] { display: none; }
-.module-panel .lesson-list { grid-template-columns: 1fr; margin-top: var(--s4); }
-.module-panel .activity-list { margin-top: var(--s4); }
+.module-sections { display: grid; gap: var(--s7); margin-top: var(--s5); }
+.module-sections .lesson-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: var(--s5); margin-bottom: var(--s4); }
 .section-heading > span { color: var(--text-2); font-size: 13px; }
 .activity-list, .roadmap-list, .unit-list, .review-list { display: grid; gap: var(--s3); }
@@ -285,7 +268,7 @@ main { min-width: 0; }
 .lesson-sources { max-width: 80ch; }
 .lesson-sources li a { display: grid; }
 .lesson-sources li span { font-weight: 500; line-height: 1.45; }
-.lesson-pagination { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); margin-top: var(--s4); }
+.lesson-pagination { max-width: 80ch; display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); margin-top: var(--s4); }
 .lesson-pagination > a { min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; padding: var(--s4); text-decoration: none; }
 .lesson-pagination > a:last-child { text-align: right; }
 .project-panel, .report-panel, .deliverables { padding: clamp(24px, 4vw, 40px); }
@@ -413,7 +396,7 @@ main:focus { outline: none; }
   .main-nav { position: fixed; z-index: 30; inset: auto 0 0; height: 68px; flex-direction: row; justify-content: space-around; gap: 0; padding: 6px 4px max(6px, env(safe-area-inset-bottom)); border: 1px solid var(--border); background: color-mix(in srgb, var(--surface) 94%, transparent); backdrop-filter: blur(14px); }
   .nav-label, .nav-foot { display: none; }
   .main-nav > a { min-width: 58px; min-height: 54px; flex-direction: column; justify-content: center; gap: 4px; padding: 5px; font-size: 10px; }
-  .nav-icon { width: 14px; height: 14px; }
+  .main-nav > a svg { width: 18px; height: 18px; }
   .view { padding-bottom: 110px; }
   .diagnostic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lab-layout, .lesson-header, .exercise-layout, .visualization-layout { grid-template-columns: minmax(0, 1fr); }
@@ -431,7 +414,7 @@ main:focus { outline: none; }
   .view { padding: var(--s6) 16px 100px; }
   .split-header { display: block; }
   .search-field { margin-top: var(--s5); }
-  .today-grid, .module-panels, .module-panels:has(.module-panel.open:first-child), .module-panels:has(.module-panel.open:last-child), .diagnostic-grid, .competency-detail-grid, .project-grid, .report-panel, .lesson-list, .lesson-pagination, .source-grid, .tool-grid { grid-template-columns: minmax(0, 1fr); }
+  .today-grid, .diagnostic-grid, .competency-detail-grid, .project-grid, .report-panel, .lesson-list, .lesson-pagination, .source-grid, .tool-grid, .module-sections .lesson-list { grid-template-columns: minmax(0, 1fr); }
   .module-path > li > a { grid-template-columns: 36px minmax(0, 1fr); }
   .module-meta { grid-column: 2; white-space: normal; }
   .progress-summary-stats, .module-progress { grid-template-columns: minmax(0, 1fr); }

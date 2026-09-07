@@ -71,7 +71,7 @@ function MilestoneCard({ catalog, progress }: { catalog: CatalogData; progress: 
         <span style={{ width: `${percent}%` }} />
       </div>
       <p class="meter-label">{evidenceCount} von {competencyIds.length} Kompetenzen mit aktuellem Beleg.</p>
-      <a class="text-link" href="#/project/p-foundations-data-checker">CLI-Projekt öffnen</a>
+      <a class="text-link" href="#/learn">Im Lernpfad weiter →</a>
     </article>
   );
 }

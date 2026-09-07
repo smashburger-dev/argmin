@@ -14,12 +14,44 @@ import { readThemePreference, saveThemePreference, type ThemePreference } from '
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
 const FamilyExerciseView = lazy(() => import('./FamilyExerciseView').then((module) => ({ default: module.FamilyExerciseView })));
 
+const iconProps = {
+  width: 16,
+  height: 16,
+  viewBox: '0 0 16 16',
+  fill: 'none',
+  stroke: 'currentColor',
+  'stroke-width': 1.4,
+  'stroke-linecap': 'round',
+  'stroke-linejoin': 'round',
+  'aria-hidden': true,
+} as const;
+
 const navigation = [
-  { route: 'today', label: 'Heute' },
-  { route: 'learn', label: 'Lernen' },
-  { route: 'review', label: 'Review' },
-  { route: 'progress', label: 'Fortschritt' },
-  { route: 'settings', label: 'Einstellungen' },
+  {
+    route: 'today', label: 'Heute', icon: (
+      <svg {...iconProps}><rect x="2.5" y="3.5" width="11" height="10" rx="2" /><path d="M2.5 6.5h11M5.5 2v2.5M10.5 2v2.5" /></svg>
+    ),
+  },
+  {
+    route: 'learn', label: 'Lernen', icon: (
+      <svg {...iconProps}><path d="M8 4.5C6 3.5 4 3.5 2.5 4v8c1.5-.5 3.5-.5 5.5.5 2-1 4-1 5.5-.5v-8c-1.5-.5-3.5-.5-5.5.5zM8 4.5v8" /></svg>
+    ),
+  },
+  {
+    route: 'review', label: 'Review', icon: (
+      <svg {...iconProps}><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9M13.5 2.5v2.6h-2.6" /></svg>
+    ),
+  },
+  {
+    route: 'progress', label: 'Fortschritt', icon: (
+      <svg {...iconProps}><path d="M3 13V9M8 13V5M13 13V7" /></svg>
+    ),
+  },
+  {
+    route: 'settings', label: 'Einstellungen', icon: (
+      <svg {...iconProps}><path d="M2.5 5.5h11M2.5 10.5h11" /><circle cx="6" cy="5.5" r="1.6" /><circle cx="10" cy="10.5" r="1.6" /></svg>
+    ),
+  },
 ];
 
 const currentRoute = () => location.hash.replace(/^#\//, '') || 'today';
@@ -149,7 +181,7 @@ export function App() {
           <p class="nav-label">Lernen</p>
           {navigation.map((item) => (
             <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined} key={item.route}>
-              <span class={`nav-icon nav-icon-${item.route}`} aria-hidden="true" />
+              {item.icon}
               <span>{item.label}</span>
             </a>
           ))}

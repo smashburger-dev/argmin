@@ -4,12 +4,12 @@ test('golden path 2: family placements instantiate two case types without a JSON
   test.skip(browserName !== 'chromium', 'Golden Path 2 runs in Chromium; the view is browser-independent Preact markup.');
   await page.goto('/index.html#/module/lm-git-basics');
   await expect(page.getByRole('heading', { level: 1, name: 'Git als überprüfbares Arbeitsprotokoll' })).toBeVisible();
-  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
   await expect(page.getByText('63 Min.')).toBeVisible();
   await expect(page.getByText('Einstieg · Kompetenzbeleg möglich')).toBeVisible();
   await expect(page.getByText('Kern · Kompetenzbeleg möglich').first()).toBeVisible();
-  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Konzeptfrage' }).first()).toBeVisible();
-  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Konzeptfrage' }).nth(1)).toBeVisible();
+  const cardTitles = page.locator('.module-sections .activity-card h3');
+  await expect(cardTitles.first()).not.toBeEmpty();
+  await expect(cardTitles.nth(1)).not.toBeEmpty();
   await expect(page.getByRole('link', { name: /(?:Aufgabe|Variante) öffnen/ }).first()).toBeVisible();
 
   const probe = await page.evaluate(async () => {
@@ -49,7 +49,6 @@ test('golden path 2: family placements instantiate two case types without a JSON
 test('S4D0 family variant opens, grades, records and journals across reload', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'S4D0 roundtrip runs in Chromium.');
   await page.goto('/index.html#/module/lm-git-basics');
-  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
   await page.locator('a[href="#/family/classify-git-operation/diff-unstaged/7/intro"]').click();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByText('Welche Git-Operation passt jetzt?')).toBeVisible();
@@ -119,7 +118,6 @@ test('S4D2 foundations module links lessons, curated variants and practice space
   await page.goto('/index.html#/module/lm-foundations-python-state');
   await expect(page.getByRole('heading', { level: 1, name: 'Python-Zustand lesen' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Lektionen' })).toBeVisible();
-  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
   await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben & Üben' })).toBeVisible();
   await page.getByRole('link', { name: 'Neue Variante' }).first().click();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

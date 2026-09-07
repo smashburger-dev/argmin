@@ -72,6 +72,11 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
     }
     return counts;
   }, [catalog.exercises, catalog.learningModules]);
+  const trackFacts = useMemo(() => {
+    const inTrack = (catalog.learningModules || []).filter((module) => track && module.trackIds.includes(track.trackId));
+    const minutes = inTrack.reduce((total, module) => total + module.estimatedMinutes, 0);
+    return { count: inTrack.length, minutes };
+  }, [catalog.learningModules, track]);
   return (
     <section class="view" aria-labelledby="learn-title">
       <header class="view-header split-header">
@@ -103,6 +108,12 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           </button>
         ))}
       </div>
+      {track ? (
+        <div class="track-intro">
+          <p>{track.description}</p>
+          <span>{trackFacts.count} {trackFacts.count === 1 ? 'Modul' : 'Module'} · {minutesLabel(trackFacts.minutes)} · {track.competencyIds.length} Kompetenzen</span>
+        </div>
+      ) : null}
       <section class="activity-section" aria-labelledby="learn-module-title">
         <div class="section-heading">
           <div><p class="eyebrow">Lernpfad</p><h2 id="learn-module-title">Module in diesem Pfad</h2></div>
