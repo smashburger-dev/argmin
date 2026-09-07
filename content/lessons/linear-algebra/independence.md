@@ -54,4 +54,4 @@ ist die dritte Zeile die Summe der ersten beiden. Sie bringt keine neue unabhän
 
 ## Direkter Check
 
-Starte mit [w05-e4](#/exercise/w05-e4), berechne danach ein Skalarprodukt in [w05-e3](#/exercise/w05-e3) und bestimme schließlich den Rang in [w05-e10](#/exercise/w05-e10).
+Starte mit [Sind $b_1=(1,2)$, $b_2=(2,4)$ linear unabhängig?](#/family/classify-independence-multiple/dependent-pair-double/0/intro), berechne danach ein Skalarprodukt in [Gegeben $u=(2,-1,3)$ und $v=(1,4,-2)$. Berechne das Skalarprodukt $u^\top v$.](#/family/formula-scalar-product/dot-product-w05-e3/0/intro) und bestimme schließlich den Rang in der [Kernaufgabe](#/family/transform-rank-dependence-rowops/rank-3x3-staircase/0/core).

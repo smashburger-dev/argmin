@@ -102,7 +102,7 @@ export function App() {
                 : section === 'tools' ? <ToolsView catalog={catalog} />
                   : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
                 : section === 'module' ? <Suspense fallback={<section class="view"><p role="status">Modul wird geladen.</p></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} /></Suspense>
-                : section === 'family' ? <Suspense fallback={<section class="view"><p role="status">Variante wird geladen.</p></section>}><FamilyExerciseView key={familyRef} familyRef={familyRef} /></Suspense>
+                : section === 'family' ? <Suspense fallback={<section class="view"><p role="status">Variante wird geladen.</p></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>
                 : section === 'lesson' ? <LessonView catalog={catalog} lessonId={routeId} />
                     : section === 'project' ? <ProjectView catalog={catalog} projectId={routeId} />
                     : section === 'competency' ? <CompetencyView catalog={catalog} progress={progress} competencyId={routeId} />

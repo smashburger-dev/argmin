@@ -72,4 +72,4 @@ Beim Vertauschen wechseln die verwendeten Zeilen und Spalten. Selbst wenn beide 
 
 ## Direkter Check
 
-Berechne zuerst einen Eintrag in [w05-e1](#/exercise/w05-e1), prüfe danach die Dimensionsregel in [w05-e2](#/exercise/w05-e2) und trace zum Schluss das Spaltenbild in [w05-e15](#/exercise/w05-e15).
+Berechne zuerst einen Eintrag in der [Einstiegsaufgabe](#/family/formula-scalar-product/matmul-entry-w05-e1/0/intro), prüfe danach die Dimensionsregel in der [Einstiegsaufgabe](#/family/classify-matrix-shape/shape-product-drawn/0/intro) und trace zum Schluss das Spaltenbild in der [Einstiegsaufgabe](#/family/trace-assignment-state/column-picture-trace/0/intro).

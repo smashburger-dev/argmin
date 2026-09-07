@@ -56,4 +56,4 @@ Wenn Retrieval und Generierung zusammen gemessen werden, kannst du Fehlerursache
 
 ## Direkter Check
 
-Berechne in [w27-e2](#/exercise/w27-e2) Recall-Werte aus generierten Rankings. In [w27-e4](#/exercise/w27-e4) implementierst du `chunk` und die gepinnte Normalisierung exakt; [w27-e5](#/exercise/w27-e5) verlangt TF-IDF-Kosinus-Suche und `recall_at_k` auf einer festen Dokumentmenge; der Boss [w27-e6](#/exercise/w27-e6) baut daraus einen bewertbaren Mini-Retrieval-Index mit Recall@k und MRR gegen Referenzwerte.
+Berechne in einer Einstiegsaufgabe Recall-Werte aus generierten Rankings. In der [Kernaufgabe](#/family/construct-normalize-chunk-contract/normalize-chunk-contract/0/core) implementierst du `chunk` und die gepinnte Normalisierung exakt; die [Vertiefungsaufgabe](#/family/aggregate-retrieval-ranking-metric/retrieval-ranking-recall/0/stretch) verlangt TF-IDF-Kosinus-Suche und `recall_at_k` auf einer festen Dokumentmenge; die [Herausforderung](#/family/aggregate-retrieval-ranking-metric/retrieval-evaluate-queries/0/challenge) als Boss baut daraus einen bewertbaren Mini-Retrieval-Index mit Recall@k und MRR gegen Referenzwerte.

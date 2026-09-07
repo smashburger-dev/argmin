@@ -85,4 +85,4 @@ Weil der MSE eine konvexe quadratische Funktion ist, konvergiert sorgfältiger G
 
 ## Direkter Check
 
-Bearbeite [w08-e1](#/exercise/w08-e1) (Update-Regel), dann die Abrufinstanz [w08-e2](#/exercise/w08-e2). Sage die Ausgabe der Abstiegsschleife in [w08-e3](#/exercise/w08-e3) vorher, implementiere `grad_mse` und `num_grad` mit Übereinstimmung unter $10^{-6}$ in [w08-e4](#/exercise/w08-e4) und schließe mit dem Abgleich gegen `lstsq` in [w08-e5](#/exercise/w08-e5) ab.
+Bearbeite die [Einstiegsaufgabe](#/family/optimize-gradient-update-rule/sign-and-scale-of-update/0/intro) (Update-Regel), dann die Abrufinstanz dieser Lektion. Sage die Ausgabe der Abstiegsschleife in der [Kernaufgabe](#/family/trace-assignment-state/gradient-loop-two-updates/0/core) vorher, implementiere `grad_mse` und `num_grad` mit Übereinstimmung unter $10^{-6}$ in der [Kernaufgabe](#/family/optimize-mse-gradient-closed-form/grad-mse-numpy-reference/0/core) und schließe mit dem Abgleich gegen `lstsq` in der [Vertiefungsaufgabe](#/family/optimize-gradient-update-rule/fit-linear-gradient-loop/0/stretch) ab.

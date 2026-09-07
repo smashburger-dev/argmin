@@ -43,4 +43,4 @@ Dieser Prototyp ist **kein produktives LLM-System**, und die Grenzen gehören in
 
 ## Direkter Check
 
-In [w30-e2](#/exercise/w30-e2) zählst du erlaubte Aktionen unter einer Richtlinie ab. [w30-e4](#/exercise/w30-e4) baut `build_prototype` mit `answer` und `metrics`; [w30-e5](#/exercise/w30-e5) ergänzt `audit` und `request_action` zur vollen Kontrolle; der Boss [w30-e6](#/exercise/w30-e6) misst die Ablation mit/ohne Kontrolle gegen Referenzwerte. Das Runner-Projekt **rag-secure-prototype** führt dasselbe lokal mit pytest aus.
+In einer Einstiegsaufgabe zählst du erlaubte Aktionen unter einer Richtlinie ab. Die [Kernaufgabe](#/family/construct-stub-prototype-contract/stub-prototype-contract/0/core) baut `build_prototype` mit `answer` und `metrics`; die [Vertiefungsaufgabe](#/family/construct-secure-prototype-contract/secure-prototype-contract/0/stretch) ergänzt `audit` und `request_action` zur vollen Kontrolle; die [Herausforderung](#/family/reproduce-pipeline-status-report/pipeline-status-report/0/challenge) als Boss misst die Ablation mit/ohne Kontrolle gegen Referenzwerte. Das Runner-Projekt **rag-secure-prototype** führt dasselbe lokal mit pytest aus.

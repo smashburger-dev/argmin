@@ -76,4 +76,4 @@ Der bedingte Anteil und der unbedingte Anteil unterscheiden sich — genau das i
 
 ## Direkter Check
 
-Bearbeite [w07-e1](#/exercise/w07-e1) (Confounder-Konzept), dann die Abrufinstanz [w07-e2](#/exercise/w07-e2). Sage die Ausgabe des NumPy-Schnipsels in [w07-e3](#/exercise/w07-e3) vorher, implementiere `describe` und `bin_counts` in [w07-e4](#/exercise/w07-e4) und baue den Bericht als Final Boss in [w07-e5](#/exercise/w07-e5).
+Bearbeite die [Einstiegsaufgabe](#/family/classify-confounding/temperature-confounder/0/intro) (Confounder-Konzept), dann die Abrufinstanz dieser Lektion. Sage die Ausgabe des NumPy-Schnipsels in der [Kernaufgabe](#/family/trace-library-api-output/numpy-median-histogram-corrcoef/0/core) vorher, implementiere `describe` und `bin_counts` in der [Kernaufgabe](#/family/formula-descriptive-stats-numpy/describe-and-bins/0/core) und baue den Bericht als Final Boss in der [Vertiefungsaufgabe](#/family/aggregate-grouped-metrics-report/hypothesis-report-groups/0/stretch).

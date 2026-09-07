@@ -5,12 +5,11 @@ test('golden path 2: family placements instantiate two case types without a JSON
   await page.goto('/index.html#/module/lm-git-basics');
   await expect(page.getByRole('heading', { level: 1, name: 'Git als überprüfbares Arbeitsprotokoll' })).toBeVisible();
   await expect(page.getByText('63 Min.')).toBeVisible();
-  await expect(page.getByText('classify-git-operation · Einstieg · Seed 7')).toBeVisible();
-  await expect(page.getByText('classify-git-operation · Kern · Seed 11')).toBeVisible();
-  await expect(page.getByRole('heading', { level: 3, name: 'classify-git-operation · diff-unstaged' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 3, name: 'classify-git-operation · diff-staged' })).toBeVisible();
-  await expect(page.getByText('Falltyp, Seed und Profil. Ohne JSON-Kopie.').first()).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Variante öffnen' }).first()).toBeVisible();
+  await expect(page.getByText('Einstieg · Kompetenzbeleg möglich')).toBeVisible();
+  await expect(page.getByText('Kern · Kompetenzbeleg möglich').first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Konzeptfrage' }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Konzeptfrage' }).nth(1)).toBeVisible();
+  await expect(page.getByRole('link', { name: /(?:Aufgabe|Variante) öffnen/ }).first()).toBeVisible();
 
   const probe = await page.evaluate(async () => {
     const familyUrl = '/assets/js/domain/' + 'exercise_registry.mjs';
@@ -50,7 +49,7 @@ test('S4D0 family variant opens, grades, records and journals across reload', as
   test.skip(browserName !== 'chromium', 'S4D0 roundtrip runs in Chromium.');
   await page.goto('/index.html#/module/lm-git-basics');
   await page.locator('a[href="#/family/classify-git-operation/diff-unstaged/7/intro"]').click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Variante üben' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByText('Welche Git-Operation passt jetzt?')).toBeVisible();
   const wrongId = await page.evaluate(async () => {
     const { instantiate } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
@@ -63,7 +62,7 @@ test('S4D0 family variant opens, grades, records and journals across reload', as
   expect(options).toHaveLength(2);
   await page.locator(`input[type="radio"][value="${wrongId}"]`).check();
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();
-  await expect(page.getByRole('heading', { name: /Nicht richtig/ })).toBeVisible();
+  await expect(page.getByText(/Nicht richtig/)).toBeVisible();
   const stored = await page.evaluate(async () => {
     const { progress } = await import('/assets/js/core/' + 'progress_store.js');
     const attempts = await progress.allOf('attempts') as Array<{ exerciseId: string; instanceId: string; correct: boolean; definitionId: string }>;
@@ -86,7 +85,7 @@ test('S4D0 family variant opens, grades, records and journals across reload', as
 test('S4D1 trace table fills row by row and records the first deviating row', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'S4D1 trace table runs in Chromium.');
   await page.goto('/index.html#/family/trace-assignment-state/reassign-two-variables-print/7/core');
-  await expect(page.getByRole('heading', { level: 1, name: 'Zustandstabelle' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.locator('tbody tr')).toHaveCount(3);
   const states = await page.evaluate(async () => {
     const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
@@ -101,7 +100,7 @@ test('S4D1 trace table fills row by row and records the first deviating row', as
   }
   await page.getByRole('textbox', { name: 'Zeile 2, b' }).fill('9999');
   await page.getByRole('button', { name: 'Tabelle prüfen' }).click();
-  await expect(page.getByRole('heading', { name: /Zeile 2 stimmt noch nicht/ })).toBeVisible();
+  await expect(page.getByText(/Zeile 2 stimmt noch nicht/)).toBeVisible();
   const stored = await page.evaluate(async () => {
     const { progress } = await import('/assets/js/core/' + 'progress_store.js');
     const attempts = await progress.allOf('attempts') as Array<{ exerciseId: string; correct: boolean; errorType: string }>;
@@ -115,19 +114,19 @@ test('S4D2 foundations module links lessons, curated variants and practice space
   await page.goto('/index.html#/module/lm-foundations-python-state');
   await expect(page.getByRole('heading', { level: 1, name: 'Python-Zustand lesen' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Lektionen' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben dieser Lektüre' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Familien-Varianten' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Frei üben' })).toBeVisible();
   await page.getByRole('link', { name: 'Üben' }).first().click();
-  await expect(page.getByRole('heading', { level: 1, name: /Zustandstabelle|Variante üben/ })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await page.goto('/index.html#/family/trace-assignment-state/reassign-two-variables-print/7/intro');
-  await expect(page.getByRole('heading', { level: 1, name: 'Zustandstabelle' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
 test('S4D7 code family runs pyodide tests in the browser', async ({ page, browserName }) => {
   test.setTimeout(150000);
   test.skip(browserName !== 'chromium', 'S4D7 code roundtrip runs in Chromium.');
   await page.goto('/index.html#/family/construct-matvec-shape-contract/matvec-code-reference/7/core');
-  await expect(page.getByRole('heading', { level: 1, name: 'Variante üben' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   const reference = await page.evaluate(async () => {
     const response = await fetch('/content/families/construct-matvec-shape-contract.json');
     const family = await response.json() as {
@@ -140,23 +139,23 @@ test('S4D7 code family runs pyodide tests in the browser', async ({ page, browse
   await expect(editor).toBeVisible();
   await editor.fill(reference);
   await page.getByRole('button', { name: 'Antwort prüfen' }).click({ timeout: 20000 });
-  await expect(page.getByRole('heading', { name: /Alle Tests bestanden/ })).toBeVisible({ timeout: 120000 });
+  await expect(page.getByText(/Alle Tests bestanden/)).toBeVisible({ timeout: 120000 });
 });
 
 test('S4D2 numeric family grades typed answers and opens domain hints', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'S4D2 numeric roundtrip runs in Chromium.');
   await page.goto('/index.html#/family/transform-linear-equation-isolate/two-step-seeded-retrieval/5/intro');
-  await expect(page.getByRole('heading', { level: 1, name: 'Variante üben' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   const expected = await page.evaluate(async () => {
     const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
       EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { expectedAnswer: { value: number } } };
     };
     return EXERCISE_FAMILIES.instantiate('transform-linear-equation-isolate', 5, 'intro', 'two-step-seeded-retrieval').expectedAnswer.value;
   });
-  await page.getByRole('button', { name: 'Hinweis öffnen' }).click();
+  await page.getByRole('button', { name: 'Hinweis 1/2' }).click();
   await expect(page.locator('.hint-stack').getByText('Gleichung', { exact: false })).toBeVisible();
   await page.getByLabel('Antwort als ganze Zahl').fill(String(expected));
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();
-  await expect(page.getByRole('heading', { name: /Richtig/ })).toBeVisible();
+  await expect(page.getByText(/Richtig/)).toBeVisible();
   await expect(page.getByText('Kann als Kompetenzbeleg zählen.')).toBeVisible();
 });

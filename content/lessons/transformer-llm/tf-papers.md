@@ -51,4 +51,4 @@ Gegenüberstellen lohnt: BERTs „+7,7“ ist absolut in Punkten (GLUE), nicht r
 
 ## Direkter Check
 
-Übe absolut/relativ in [w26-e2](#/exercise/w26-e2) und [w26-e3](#/exercise/w26-e3). Baue Metriken aus Zeilenlisten in [w26-e4](#/exercise/w26-e4), prüfe Paper-Karten strukturell in [w26-e5](#/exercise/w26-e5); [w26-e6](#/exercise/w26-e6) erstellt die sortierte Evidenztabelle als Endgegner.
+Übe absolut/relativ in einer Einstiegsaufgabe und bearbeite die [Kernaufgabe](#/family/trace-assignment-state/absolute-vs-relative-gain-trace/0/core). Baue Metriken aus Zeilenlisten in der [Kernaufgabe](#/family/formula-ratio-percent-metric/compare-systems-metric/0/core), prüfe Paper-Karten strukturell in der [Vertiefungsaufgabe](#/family/validate-required-field-raise/paper-card-required-fields/0/stretch); die [Herausforderung](#/family/rank-evidence-table/evidence-table-ranking/0/challenge) erstellt die sortierte Evidenztabelle als Endgegner.

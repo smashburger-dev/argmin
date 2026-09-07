@@ -6,4 +6,4 @@ Fragen zum Selbsttest:
 2. Warum reicht für die Tokenwahl argmax, obwohl Logits keine Wahrscheinlichkeiten sind?
 3. Was genau beweist der Doppelaufruf-Test — und was beweist er ausdrücklich nicht über Sprachfähigkeit?
 
-Danach: [w24-e2](#/exercise/w24-e2) zum Warmwerden, [w24-e4](#/exercise/w24-e4) für die Schleifenverträge, [w24-e6](#/exercise/w24-e6) für die ganze Pipeline.
+Danach: eine Einstiegsaufgabe zum Warmwerden, gefolgt von der [Kernaufgabe](#/family/optimize-decode-greedy-loop/greedy-decode-function/0/core) für die Schleifenverträge und der [Herausforderung](#/family/compose-toy-inference-pipeline/toy-inference-pipeline/0/challenge) für die ganze Pipeline.

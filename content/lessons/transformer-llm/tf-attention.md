@@ -72,4 +72,4 @@ Zeile 1: $\frac{(2{,}718,\,1)}{3{,}718} \approx (0{,}731,\,0{,}269)$. Zeile 2 is
 
 ## Direkter Check
 
-Prüfe in [w22-e2](#/exercise/w22-e2) Shape- und Maskenzählungen. Rechne in [w22-e3](#/exercise/w22-e3) ein stabiles Softmax per Hand nach. In [w22-e4](#/exercise/w22-e4) implementierst du `attention(Q, K, V, mask)` mit Maskenfall; [w22-e5](#/exercise/w22-e5) verlangt Masken-Bausteine mit Fehlerbehandlung; [w22-e6](#/exercise/w22-e6) ist der Multi-Head-Endgegner.
+Prüfe in einer Einstiegsaufgabe Shape- und Maskenzählungen. Rechne in der [Kernaufgabe](#/family/trace-assignment-state/stable-softmax-rows-trace/0/core) ein stabiles Softmax per Hand nach. In der [Kernaufgabe](#/family/optimize-softmax-attention-mask/scaled-dot-product-attention/0/core) implementierst du `attention(Q, K, V, mask)` mit Maskenfall; die [Vertiefungsaufgabe](#/family/construct-attention-mask/construct-causal-padding-mask/0/stretch) verlangt Masken-Bausteine mit Fehlerbehandlung; die [Herausforderung](#/family/optimize-multi-head-attention/multi-head-attention/0/challenge) ist der Multi-Head-Endgegner.

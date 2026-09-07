@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   compileContent,
+  validateLessonExerciseLinks,
   validateCompetencyGraph,
   validateCompiledContent,
   validateSourceDocument,
@@ -51,6 +52,38 @@ test('public compiler is deterministic and excludes private-only legacy content'
   }
   assert.equal(first.familyActivities.some((activity) => activity.definitionId === 'w05-e7'), false);
   assert.doesNotMatch(JSON.stringify(first), /library-private|private-extracts|locatorPath|localPath|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/);
+});
+
+test('lesson links accept known family cases and reject unknown or legacy routes', () => {
+  const families = [
+    {
+      familyId: 'family-one',
+      cases: [{ caseId: 'case-one' }],
+    },
+  ];
+  assert.doesNotThrow(
+    () => validateLessonExerciseLinks(
+      'lesson-one',
+      '<p><a href="#/family/family-one/case-one/0/core">Kernaufgabe</a></p>',
+      families,
+    ),
+  );
+  assert.throws(
+    () => validateLessonExerciseLinks(
+      'lesson-one',
+      '<p><a href="#/family/family-one/missing-case/0/core">Kernaufgabe</a></p>',
+      families,
+    ),
+    /lesson-one: Unbekannter Familienfall #\/family\/family-one\/missing-case\/0\/core/,
+  );
+  assert.throws(
+    () => validateLessonExerciseLinks(
+      'lesson-one',
+      '<p><a href="#/exercise/w06-e1">Legacy</a></p>',
+      families,
+    ),
+    /lesson-one: Legacy-Aufgabenlink #\/exercise\/w06-e1 ist nicht erlaubt/,
+  );
 });
 
 test('competency validator rejects unknown prerequisites and cycles', () => {

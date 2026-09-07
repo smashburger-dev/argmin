@@ -46,4 +46,4 @@ Sicherheit, die nicht getestet wird, verrottet bei der nächsten Refactorierung.
 
 ## Direkter Check
 
-In [w29-e2](#/exercise/w29-e2) zählst du Filter-Ergebnisse aus einem gelabelten Korpus ab. [w29-e4](#/exercise/w29-e4) implementiert `contains_injection` samt numerischer Precision/Recall-Bewertung; [w29-e5](#/exercise/w29-e5) prüft Toolberechtigungen gegen eine Least-Privilege-Policy; der Boss [w29-e6](#/exercise/w29-e6) vergibt eine Metrik-Tabelle über drei Regelwerke gegen Referenzwerte.
+In einer Einstiegsaufgabe zählst du Filter-Ergebnisse aus einem gelabelten Korpus ab. Die [Kernaufgabe](#/family/aggregate-confusion-metric/contains-injection-rules/0/core) implementiert `contains_injection` samt numerischer Precision/Recall-Bewertung; die [Vertiefungsaufgabe](#/family/classify-rule-cascade-priority/permission-policy-check/0/stretch) prüft Toolberechtigungen gegen eine Least-Privilege-Policy; die [Herausforderung](#/family/aggregate-detector-eval-compare/detector-table-best-f1/0/challenge) als Boss vergibt eine Metrik-Tabelle über drei Regelwerke gegen Referenzwerte.

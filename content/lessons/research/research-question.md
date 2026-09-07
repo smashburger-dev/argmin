@@ -62,4 +62,4 @@ Würde nach dem ersten Lauf die Schwelle von 0,75 auf 0,6 gesenkt, weil 0,75 „
 
 ## Direkter Check
 
-In [w31-e2](#/exercise/w31-e2) zählst du Goal-Shift-Flags zwischen zwei Protokollversionen. [w31-e4](#/exercise/w31-e4) prüft Fragen auf Prüfbarkeit und zerlegt Je-desto-Hypothesen in UV und DV; [w31-e5](#/exercise/w31-e5) validiert ein Protokoll auf Pflichtfelder und Datumreihenfolge; der Boss [w31-e6](#/exercise/w31-e6) implementiert die volle Goal-Shift-Erkennung für zwei Versionen.
+In einer Einstiegsaufgabe zählst du Goal-Shift-Flags zwischen zwei Protokollversionen. Die [Kernaufgabe](#/family/validate-text-normalize-match/text-normalize-match/0/core) prüft Fragen auf Prüfbarkeit und zerlegt Je-desto-Hypothesen in UV und DV; die [Vertiefungsaufgabe](#/family/validate-required-field-raise/protocol-validator/0/stretch) validiert ein Protokoll auf Pflichtfelder und Datumreihenfolge; die [Herausforderung](#/family/validate-goalshift-flag-rules/detect-goal-shift/0/challenge) als Boss implementiert die volle Goal-Shift-Erkennung für zwei Versionen.

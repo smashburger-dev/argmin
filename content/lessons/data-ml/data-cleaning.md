@@ -66,4 +66,4 @@ Jeder Schritt ändert die Zeilenzahl nachvollziehbar; nichts wird still interpol
 
 ## Direkter Check
 
-Bearbeite [w06-e1](#/exercise/w06-e1) (Konzeptfrage Verzerrung), danach die Abrufinstanzen [w06-e2](#/exercise/w06-e2) und [w06-e6](#/exercise/w06-e6). Dann implementiere `profile_table` in [w06-e4](#/exercise/w06-e4) und den Datenqualitätsvertrag als Final Boss in [w06-e5](#/exercise/w06-e5).
+Bearbeite die [Einstiegsaufgabe](#/family/classify-missingness/target-dependent-missingness/0/intro) (Konzeptfrage Verzerrung), danach die Abrufinstanzen dieser Lektion. Dann implementiere `profile_table` in der [Kernaufgabe](#/family/validate-data-quality-contract/profile-table-schema-counts/0/core) und den Datenqualitätsvertrag als Final Boss in der [Vertiefungsaufgabe](#/family/validate-data-quality-contract/validate-rows-contract-errors/0/stretch).

@@ -59,4 +59,4 @@ Warum trotzdem kein echtes Modell? Ein reales LLM hat Milliarden trainierter Gew
 
 ## Direkter Check
 
-Übe argmax-Entscheidungen in [w24-e2](#/exercise/w24-e2) und [w24-e3](#/exercise/w24-e3). Implementiere die Schleife in [w24-e4](#/exercise/w24-e4), den Toy-Forward-Pass in [w24-e5](#/exercise/w24-e5) und die komplette Pipeline mit Determinismus-Doppelaufruf in [w24-e6](#/exercise/w24-e6).
+Übe argmax-Entscheidungen in einer Einstiegsaufgabe und bearbeite die [Kernaufgabe](#/family/optimize-decode-greedy-loop/greedy-loop-trace/0/core). Implementiere die Schleife in der [Kernaufgabe](#/family/optimize-decode-greedy-loop/greedy-decode-function/0/core), den Toy-Forward-Pass in der [Vertiefungsaufgabe](#/family/optimize-softmax-attention-mask/toy-forward-pass/0/stretch) und schließlich die komplette Pipeline mit Determinismus-Doppelaufruf in der [Herausforderung](#/family/compose-toy-inference-pipeline/toy-inference-pipeline/0/challenge).

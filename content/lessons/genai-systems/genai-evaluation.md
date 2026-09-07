@@ -53,4 +53,4 @@ Werkzeuge wie RAGAS nutzen Sprachmodelle als Bewerter. Das ist nützliche Lektü
 
 ## Direkter Check
 
-In [w28-e2](#/exercise/w28-e2) berechnest du Precision/F1 aus ganzzahligen Konfusionsmatrizen. [w28-e4](#/exercise/w28-e4) implementiert den Klassifikator mit vorgegebenem Regelwerk plus Zitat-Precision; [w28-e5](#/exercise/w28-e5) wandelt Zeilenlisten in Konfusionsmatrizen und Metriken; der Boss [w28-e6](#/exercise/w28-e6) evaluatiert 20 Fixtur-Antworten unter zwei Regelwerken und vergleicht sie.
+In einer Einstiegsaufgabe berechnest du Precision/F1 aus ganzzahligen Konfusionsmatrizen. Die [Kernaufgabe](#/family/classify-rule-cascade-priority/error-taxonomy-classify/0/core) implementiert den Klassifikator mit vorgegebenem Regelwerk plus Zitat-Precision; die [Vertiefungsaufgabe](#/family/aggregate-confusion-metric/confusion-from-rows/0/stretch) wandelt Zeilenlisten in Konfusionsmatrizen und Metriken; die [Herausforderung](#/family/aggregate-detector-eval-compare/run-eval-compare-rulesets/0/challenge) als Boss evaluatiert 20 Fixtur-Antworten unter zwei Regelwerken und vergleicht sie.

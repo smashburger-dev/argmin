@@ -47,4 +47,4 @@ Zurückgeladen ergeben sich gleiche Formen und exakt gleiche Werte (`np.array_eq
 
 ## Direkter Check
 
-Zähle in [w21-e2](#/exercise/w21-e2) Masken in Ganzzahlen. Lies in [w21-e3](#/exercise/w21-e3) eine feste Maske als Ausgabe vorher. In [w21-e4](#/exercise/w21-e4) implementierst du Dropout-Forward und Weight-Decay-Update exakt; [w21-e5](#/exercise/w21-e5) baut Early Stopping und Save/Load, und [w21-e6](#/exercise/w21-e6) fährt eine faire Ablation mit fixem Seed und Split.
+Zähle in einer Einstiegsaufgabe Masken in Ganzzahlen. Lies in der [Kernaufgabe](#/family/trace-assignment-state/fixed-dropout-mask-trace/0/core) eine feste Maske als Ausgabe vorher. In der [Kernaufgabe](#/family/optimize-training-primitive-contract/dropout-weight-decay-primitives/0/core) implementierst du Dropout-Forward und Weight-Decay-Update exakt; die [Vertiefungsaufgabe](#/family/fit-early-stopping-roundtrip/early-stopping-roundtrip/0/stretch) baut Early Stopping und Save/Load, und die [Herausforderung](#/family/fit-weight-decay-ablation/weight-decay-ablation/0/challenge) fährt eine faire Ablation mit fixem Seed und Split.

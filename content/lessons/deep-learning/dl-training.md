@@ -51,4 +51,4 @@ Feste Seeds machen all das reproduzierbar: `rng = np.random.default_rng(seed)` f
 
 ## Direkter Check
 
-Rechne in [w20-e2](#/exercise/w20-e2) Update- und Schrittzahlen in Ganzzahlen. Lies in [w20-e3](#/exercise/w20-e3) eine Trainingsschleife als Ausgabe vorher. In [w20-e4](#/exercise/w20-e4) implementierst du MSE, BCE und Batching; [w20-e5](#/exercise/w20-e5) baut Split und eine lineare SGD-Schleife mit Lernkurve, und [w20-e6](#/exercise/w20-e6) trainiert ein kleines MLP mit Validierung und bester Epoche.
+Rechne in einer Einstiegsaufgabe Update- und Schrittzahlen in Ganzzahlen. Lies in der [Kernaufgabe](#/family/trace-training-loop-count/training-loop-count/0/core) eine Trainingsschleife als Ausgabe vorher. In der [Kernaufgabe](#/family/optimize-training-primitive-contract/loss-and-batch-primitives/0/core) implementierst du MSE, BCE und Batching; die [Vertiefungsaufgabe](#/family/fit-seeded-split-sgd-linear/seeded-split-sgd-linear/0/stretch) baut Split und eine lineare SGD-Schleife mit Lernkurve, und die [Herausforderung](#/family/fit-mlp-val-curve-argmin/mlp-val-curve-argmin/0/challenge) trainiert ein kleines MLP mit Validierung und bester Epoche.

@@ -60,4 +60,4 @@ Die Initialisierung entscheidet über das lokale Optimum — deshalb gehört der
 
 ## Direkter Check
 
-Klär die Konzepte in [w16-e1](#/exercise/w16-e1) und [w16-e3](#/exercise/w16-e3), rechne den Varianzanteil in [w16-e2](#/exercise/w16-e2) und implementiere PCA plus k-Means in [w16-e4](#/exercise/w16-e4). Transfer: [w16-e5](#/exercise/w16-e5) verkettet Skalieren, PCA und Clustering.
+Klär die Konzepte in der [Einstiegsaufgabe](#/family/classify-svm-margin/hard-margin-width/0/intro) und der [Kernaufgabe](#/family/classify-supervision-scaling/supervised-vs-unsupervised-scaling/0/core), rechne den Varianzanteil in einer Einstiegsaufgabe und implementiere PCA plus k-Means in der [Kernaufgabe](#/family/fit-pca-kmeans-pipeline/pca-eigh-projection/0/core). Transfer: [Vertiefungsaufgabe](#/family/fit-pca-kmeans-pipeline/standardize-pca-kmeans/0/stretch) verkettet Skalieren, PCA und Clustering.

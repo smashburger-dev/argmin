@@ -57,4 +57,4 @@ Klein n wird genannt, Einsatzgrenzen werden nicht kleingeredet, und die schwäch
 
 ## Direkter Check
 
-Berechne in [w13-e2](#/exercise/w13-e2) eine Subgruppen-Lücke in Prozentpunkten. Klassifiziere den Fehlertyp in [w13-e3](#/exercise/w13-e3). In [w13-e4](#/exercise/w13-e4) implementierst du subgroup_error_rates und largest_gap; [w13-e5](#/exercise/w13-e5) verlangt die Fehlerkategorisierung plus Modellkarten-Stub.
+Berechne in einer Einstiegsaufgabe eine Subgruppen-Lücke in Prozentpunkten. Klassifiziere den Fehlertyp in der [Kernaufgabe](#/family/classify-error-drift/accuracy-drop-without-code-change/0/core). In der [Kernaufgabe](#/family/aggregate-grouped-metrics-report/subgroup-error-rates-numpy/0/core) implementierst du subgroup_error_rates und largest_gap; die [Vertiefungsaufgabe](#/family/aggregate-grouped-metrics-report/categorize-errors-report/0/stretch) verlangt die Fehlerkategorisierung plus Modellkarten-Stub.

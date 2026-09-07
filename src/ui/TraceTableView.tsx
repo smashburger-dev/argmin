@@ -5,6 +5,9 @@ import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
+import { ExerciseFrame } from './ExerciseFrame';
+import { getExerciseContext } from './exercise-context';
+import type { CatalogData } from '../app/types';
 
 // S4D1: Trace-Tabelle als Interaktionsvariante von output-predict-lines.
 // Kein neuer Archetyp: Lösungsweg und Evidence bleiben gleich, nur die
@@ -23,6 +26,7 @@ export interface TraceTableInstance {
   caseId: string;
   seed: number;
   difficulty: string;
+  activityType: string;
   prompt: string;
   parameters?: { snippet?: unknown };
   traceTable: TraceTableData;
@@ -39,7 +43,7 @@ function emptyStates(rows: number, vars: string[]): Array<Record<string, string>
   return Array.from({ length: rows }, () => Object.fromEntries(vars.map((name) => [name, ''])));
 }
 
-export function TraceTableView({ instance, summary }: { instance: TraceTableInstance; summary?: string }) {
+export function TraceTableView({ catalog, instance, summary }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string }) {
   const table = instance.traceTable;
   const rows = table.lines.length;
   const [cells, setCells] = useState<Array<Record<string, string>>>(() => emptyStates(rows, table.stateVars));
@@ -107,14 +111,25 @@ export function TraceTableView({ instance, summary }: { instance: TraceTableInst
     }
   };
 
-  return (
-    <section class="view" aria-labelledby="trace-title">
-      <header class="view-header">
-        <p class="eyebrow">{instance.familyId} · {instance.caseId} · Seed {instance.seed}</p>
-        <h1 id="trace-title" tabIndex={-1}>Zustandstabelle</h1>
-      </header>
-      <div class="lede"><MathMarkup html={instance.prompt} /></div>
-      {typeof instance.parameters?.snippet === 'string' ? <pre><code>{instance.parameters.snippet}</code></pre> : null}
+  const ctx = getExerciseContext(catalog, instance, summary || 'Aufgabe');
+  const feedback = failed
+    ? <p role="alert" class="content-error">{failed}</p>
+    : verdict?.correct
+      ? <div class="feedback-box correct">
+          <p class="feedback-title">Richtig, alle Zustände stimmen.</p>
+          {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
+          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {new Date(reviewDueAt).toLocaleDateString('de-DE')}</p> : null}
+        </div>
+      : verdict
+        ? <div class="feedback-box incorrect">
+            <p class="feedback-title">Zeile {verdict.firstBadRow === null ? '?' : verdict.firstBadRow + 1} stimmt noch nicht{verdict.firstBadVar ? ` (${verdict.firstBadVar})` : ''}.</p>
+            <p class="feedback-detail">Prüfe die Zuweisung in dieser Zeile.</p>
+          </div>
+        : revealed
+          ? <div class="feedback-box incorrect"><p class="feedback-title">Offenlegung, kein Beleg.</p><p class="feedback-detail">Versuche die nächste Variante aus dem Kopf.</p></div>
+          : null;
+  const answer = (
+    <>
       <p>Trage nach jeder Zeile die Werte aller Variablen ein. Noch unbelegte Zellen bleiben leer.</p>
       <table>
         <thead>
@@ -142,35 +157,39 @@ export function TraceTableView({ instance, summary }: { instance: TraceTableInst
           ))}
         </tbody>
       </table>
-      <div class="actions">
-      <Button variant="primary" disabled={busy || revealed || verdict?.correct === true} onClick={submit}>Tabelle prüfen</Button>
-      {' '}
-      <Button disabled={revealed || verdict?.correct === true} onClick={() => void (async () => {
-        if (!window.confirm('Lösung ansehen? Diese Variante kann danach keinen Kompetenznachweis mehr liefern.')) return;
-        setRevealed(true);
-        setVerdict(null);
-        if (learningLedger) {
-          await learningLedger.record({
-            ...familyEventInput(instance as never),
-            eventType: 'solution-revealed',
-            event: 'solution-revealed',
-            hintsUsed: shownHints.length,
-            revealedSolution: true,
-          });
-        }
-      })()}>Lösung zeigen</Button>
-      </div>
-      {failed ? <p role="alert" class="content-error">{failed}</p> : null}
-      {verdict && verdict.correct ? <h2>Richtig, alle Zustände stimmen.</h2> : null}
-      {verdict && !verdict.correct && verdict.firstBadRow !== null
-        ? <h2>Zeile {verdict.firstBadRow + 1} stimmt noch nicht{verdict.firstBadVar ? ` (${verdict.firstBadVar})` : ''}. Prüfe die Zuweisung in dieser Zeile.</h2>
-        : null}
-      {revealed ? <p>Offenlegung, kein Beleg. Versuche die nächste Variante aus dem Kopf.</p> : null}
-      <div class="hint-stack">{shownHints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}</div>
-      {shownHints.length < 2 && !revealed && verdict?.correct !== true ? <Button variant="ghost" size="sm" onClick={() => void openHint()}>Hinweis öffnen</Button> : null}
-      {verdict?.correct === true && masteryNote ? <p>Kann als Kompetenzbeleg zählen.</p> : null}
-      {verdict?.correct === true && reviewDueAt ? <p>Nächstes Review: {reviewDueAt}</p> : null}
-      <p><a href="#/learn">Zurück zum Lernen</a></p>
-    </section>
+    </>
+  );
+  return (
+    <ExerciseFrame
+      ctx={ctx}
+      eyebrow={`${ctx.difficultyLabel} · Variante ${instance.seed}`}
+      prompt={<MathMarkup html={instance.prompt} />}
+      snippet={typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
+      answer={answer}
+      actions={
+        <>
+          <Button variant="primary" disabled={busy || revealed || verdict?.correct === true} onClick={submit}>Tabelle prüfen</Button>
+          {shownHints.length < 2 && !revealed && verdict?.correct !== true ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/2</Button> : null}
+          {!revealed && verdict?.correct !== true ? <Button variant="ghost" onClick={() => void (async () => {
+            if (!window.confirm('Lösung ansehen? Diese Variante kann danach keinen Kompetenznachweis mehr liefern.')) return;
+            setRevealed(true);
+            setVerdict(null);
+            if (learningLedger) {
+              await learningLedger.record({
+                ...familyEventInput(instance as never),
+                eventType: 'solution-revealed',
+                event: 'solution-revealed',
+                hintsUsed: shownHints.length,
+                revealedSolution: true,
+              });
+            }
+          })()}>Lösung anzeigen</Button> : null}
+        </>
+      }
+      feedback={feedback}
+      hints={shownHints}
+      solution={revealed ? <div class="solution-panel"><h2>Lösung</h2><p>Die erwarteten Zustände stehen jetzt in der Tabelle.</p></div> : undefined}
+      done={revealed || verdict?.correct === true}
+    />
   );
 }

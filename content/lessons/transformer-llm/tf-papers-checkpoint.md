@@ -7,4 +7,4 @@ Selbsttest:
 3. Welche zwei Angaben fehlen auf einer Paper-Karte, deren Evidenz-Slot nur „deutlich besser“ enthält?
 4. Ein Papier vergleicht mit festgehaltenem Seed und gewinnt um 0,3 Punkte F1 — welche zwei Nachfragen stellst du, bevor du den Claim übernimmst?
 
-Weiter mit [w26-e2](#/exercise/w26-e2) bis [w26-e6](#/exercise/w26-e6).
+Weiter mit den Einstiegs- bis Vertiefungsaufgaben dieser Lektion.

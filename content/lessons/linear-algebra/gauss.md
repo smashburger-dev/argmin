@@ -77,4 +77,4 @@ ist ein Widerspruch: Es gibt keine Lösung. Eine Zeile $0=0$ enthält dagegen ke
 
 ## Direkter Check
 
-Löse [w05-e6](#/exercise/w05-e6) und danach [w05-e11](#/exercise/w05-e11). Beide werden als exakte ganzzahlige Paare geprüft.
+Löse die [Kernaufgabe](#/family/transform-system-2x2-elimination/system-w05-e6/0/core) und danach die [Kernaufgabe](#/family/transform-system-2x2-elimination/system-w05-e11/0/core). Beide werden als exakte ganzzahlige Paare geprüft.

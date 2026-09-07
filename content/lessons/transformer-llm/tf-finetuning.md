@@ -54,4 +54,4 @@ Full FT eines großen Modells braucht vielfache Speicher- und Rechenzeit pro Auf
 
 ## Direkter Check
 
-Zähle LoRA-Parameter in [w25-e2](#/exercise/w25-e2). Rechne $\Delta W$ exakt in [w25-e4](#/exercise/w25-e4) (`lora_delta`, `apply_lora`). In [w25-e5](#/exercise/w25-e5) trainierst du nur den Kopf am Toy-MLP mit Freeze-Checksumme und Val-Schwellwert; [w25-e6](#/exercise/w25-e6) ist der LoRA-Gradienten-Endgegner.
+Zähle LoRA-Parameter in einer Einstiegsaufgabe. Rechne $\Delta W$ exakt in der [Kernaufgabe](#/family/formula-lora-delta-apply/lora-delta-apply/0/core) (`lora_delta`, `apply_lora`). In der [Vertiefungsaufgabe](#/family/optimize-gradient-update-rule/head-only-finetune/0/stretch) trainierst du nur den Kopf am Toy-MLP mit Freeze-Checksumme und Val-Schwellwert; die [Herausforderung](#/family/optimize-gradient-update-rule/lora-fit-toy/0/challenge) ist der LoRA-Gradienten-Endgegner.

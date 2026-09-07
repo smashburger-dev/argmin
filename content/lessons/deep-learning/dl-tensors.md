@@ -61,4 +61,4 @@ assert mlp_forward(X, W1, np.zeros(16), np.zeros((16, 3)), np.zeros(3)).shape ==
 
 ## Direkter Check
 
-Zähle in [w18-e2](#/exercise/w18-e2) Parameter eines Layers und eines kleinen MLP. Lies in [w18-e3](#/exercise/w18-e3) Formen und Broadcasting ab. In [w18-e4](#/exercise/w18-e4) implementierst du ein lineares Layer mit Dimensionskontrolle; [w18-e5](#/exercise/w18-e5) baut den MLP-Forward mit ReLU, und [w18-e6](#/exercise/w18-e6) verallgemeinert auf beliebig tiefe Netze mit strikten Verträgen.
+Zähle in einer Einstiegsaufgabe Parameter eines Layers und eines kleinen MLP. Lies in der [Kernaufgabe](#/family/validate-shape-contract/shapes-w18-broadcast-axes/0/core) Formen und Broadcasting ab. In der [Kernaufgabe](#/family/fit-forward-layer-chain-contract/linear-forward-contract/0/core) implementierst du ein lineares Layer mit Dimensionskontrolle; die [Vertiefungsaufgabe](#/family/fit-forward-layer-chain-contract/mlp-forward-relu/0/stretch) baut den MLP-Forward mit ReLU, und die [Herausforderung](#/family/fit-forward-layer-chain-contract/deep-forward-chain/0/challenge) verallgemeinert auf beliebig tiefe Netze mit strikten Verträgen.

@@ -11,8 +11,8 @@ test('golden path 1: git module is reachable without a week route', async ({ pag
   await expect(page.getByRole('heading', { level: 1, name: 'Git als überprüfbares Arbeitsprotokoll' })).toBeVisible();
   await expect(page.getByText(`${gitModule.derivedMinutes} Min.`)).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Lektionen' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben dieser Lektüre' })).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Familien-Varianten' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Frei üben' })).toBeVisible();
   await page.getByRole('link', { name: /(?:Aufgabe|Variante) öffnen/ }).first().click();
   await expect(page).toHaveURL(/#\/(?:exercise|family)\//);
 });
