@@ -23,7 +23,7 @@ Das heißt: Gleicher Seed, gleiche Aufgabe. Überall, auf jedem Gerät, ohne Ser
 
 **→ [argmin öffnen](https://smashburger-dev.github.io/argmin/)**
 
-Das war's. Kein Account, keine Installation, keine Kosten. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät — und du kannst ihn jederzeit als Datei sichern oder auf ein anderes Gerät mitnehmen.
+Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kannst ihn jederzeit als Datei sichern oder auf ein anderes Gerät mitnehmen.
 
 ## Was dich erwartet
 
