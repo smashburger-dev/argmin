@@ -1,9 +1,9 @@
-import { existsSync, lstatSync, readdirSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-export const OBJECT_ROOT_KEYS = ['lessons', 'explanations', 'modules'];
-export const COLLECTION_ROOT_KEYS = ['competencies', 'tracks', 'milestones', 'tools', 'reviews'];
-export const PROJECT_ROOT_KEY = 'projects';
+export function readJson(path) {
+  return JSON.parse(readFileSync(path, 'utf8'));
+}
 
 function sortedEntries(dir) {
   return readdirSync(dir, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name));

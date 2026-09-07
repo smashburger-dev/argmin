@@ -29,9 +29,3 @@ export function normalizeWorkspacePayload({ files = [], entrypoint = null } = {}
   if (normalized.length && entrypoint === null) throw new Error('Entrypoint fehlt');
   return { files: normalized, entrypoint, totalBytes };
 }
-
-export const WORKSPACE_LIMITS = Object.freeze({
-  maxFiles: MAX_FILES,
-  maxFileBytes: MAX_FILE_BYTES,
-  maxTotalBytes: MAX_TOTAL_BYTES,
-});

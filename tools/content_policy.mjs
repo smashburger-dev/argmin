@@ -29,6 +29,3 @@ export const CANARY_NAME = /private|canary|secret/i;
 /** Binary artifacts are hashed and size-counted but never decoded as UTF-8
  *  text (scanning them for private markers produces false results). */
 export const BINARY_EXT = /\.(wasm|woff2?|ttf|zip|whl|exe|png|jpe?g|svg|ico|wav|pyc)$/i;
-
-/** Canonical manifest/hash format for every produced integrity artifact. */
-export const SHA256_HEX = /^[a-f0-9]{64}$/;

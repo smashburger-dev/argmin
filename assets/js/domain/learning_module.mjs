@@ -1,6 +1,5 @@
 const mapBy = (items, key) => new Map((items || []).map((item) => [item[key], item]));
 
-export const PLACEMENT_ROLES = ['curated', 'practice-space'];
 export const DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
 function requireId(map, id, moduleId, kind) {
