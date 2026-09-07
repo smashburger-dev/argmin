@@ -29,7 +29,7 @@ Schwierigkeitsprofil und den dafür freigegebenen Kompetenzen. Quellen bleiben
 am Placement bzw. an der Lektion referenziert; lokale Pfade werden im
 Public-Build entfernt.
 
-Dazu in `content/sources.json` je Quelle optional `localPath` (representativer Einstiegspfad, dieselben Regeln wie `locatorPath`). Auflösung in der UI (Hilfsfunktion `sourceAccessLinks`): `locatorPath` gewinnt über `localPath` → Link „Lokal lesen“ (neuer Tab); sonst `canonicalUrl` → „Online öffnen“.
+Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die UI verlinkt diese Originalquelle in einem neuen Tab; lokale Lesepfade und private Volltextkopien gehören nicht zum Public-Profil.
 
 ### Seed-Generatoren für Familienfälle
 
@@ -97,10 +97,7 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 
 **Lokale Lesezugänge** (Konvention, private-build-only):
 
-- Die Plattform spiegelt die Staging-Bibliothek über zwei Symlinks: `ki-lernplattform/library -> ../research/ki-lernroadmap/library-staging/sources` und `ki-lernplattform/library-private -> ../research/ki-lernroadmap/library-staging/private-extracts`. **Symlinks nie verändern; Pfade nie im Public-Build** (`tools/build_public.mjs` strippt `localPath`/`locatorPath`, der Validator lehnt sie im Public-Modus ab, PRIVATE_MARKERS-Zeile nicht entfernen).
-- `sources.json`: `localPath` = repräsentativer Einstieg (z. B. Tutorial-Index). Lektionen tragen `sources[].locatorPath` als konkrete Zielseite (Menschtext bleibt im `locator`).
-- UI: „Lokal lesen“ öffnet die gespiegelte Seite in einem NEUEN TAB (`target="_blank" rel="noopener"`) — volle Lesewerkzeuge (Suchen, Zoom, eigene Styles der gespiegelten Seite); kein iframe, weil die gespiegelten Seiten eigene relative Assets mitbringen und im iframe brechen würden. Fallback „Online öffnen“ über `canonicalUrl`.
-- In Code/Content niemals wörtliche `/library/`-Pfade notieren — URLs werden aus `localPath` konkateniert, sonst schlägt der Canary-Scan des Builds an.
+- Fremde Ressourcen werden ausschließlich über ihre öffentlichen `canonicalUrl`-Links referenziert. Private Volltexte, lokale Bibliothekspfade und lokale Overlays gehören nicht in dieses Repository.
 
 ## 8. Neuer public-first Content-Vertrag
 
@@ -108,8 +105,7 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 - Kompetenzen, Tracks und Milestones liegen unter `content/competencies/`, `content/tracks/` und `content/milestones/`. Ihre Objektformen stehen unter `schemas/`.
 - `requires` bildet ausschließlich echte Voraussetzungen und muss azyklisch sein. `supports`, `related` und `usedBy` stehen getrennt unter `relations`.
 - Neue Inhalte referenzieren maschinenlesbare Rechte aus `content/source-rights.json`. Ein Public-Recht benötigt Redistribution, kommerzielle Nutzung und Bearbeitung. Reine Links dürfen zusätzlich im Legacy-Quellenregister stehen.
-- `node tools/compile_content.mjs --profile public` muss vor einem Public-Build bestehen. Lokale Overlays sind nur mit `--profile local-private --overlay <datei>` zulässig und dürfen keine Basis-ID überschreiben.
-- Der Public-Build entfernt private Quellenobjekte und Unit-Referenzen, neutralisiert nur intern nutzbare Quellenlinien und baut den Suchindex neu. Jede `*.local.json`-Datei lässt den Build scheitern.
+- `node tools/compile_content.mjs` muss vor einem Release-Build bestehen. Der Build entfernt private Quellenobjekte und prüft öffentliche Quellenlinien. Jede private oder lokale Marker-Referenz lässt den Build scheitern.
 - Kanonische Lektionen bestehen aus einer JSON-Datei unter `content/lessons/` und referenziertem Markdown. Der Compiler schaltet Raw-HTML aus. Der Browser rendert nur eine feste Element- und Attribut-Allowlist.
 - Kanonische Aktivitäten liegen als Familienfälle unter `content/families/` und werden über Placements in LearningModules entdeckt. `solver-verified` ist erst nach einem Test mit Sollantwort und mindestens einem Gegenbeispiel zulässig.
 - Der Foundations-Vertragstest verlangt für jede Kompetenz ausreichend mastery-fähige Familienfälle gemäß `minimumDistinctDefinitions`.

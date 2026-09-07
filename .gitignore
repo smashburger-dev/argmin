@@ -1,5 +1,4 @@
 # Generated outputs
-/build-public/
 /build-next/
 /.next-ui/
 /.next-local-ui/
@@ -26,10 +25,6 @@
 # Generated contract artifacts stay ignored independently of the root rules.
 /tests/e2e/pyodide-contract-matrix.json
 /tests/e2e/pyodide-contract-receipt.json
-
-# Local source-library mirrors
-/library
-/library-private
 
 # Browser acceptance profiles and local scratch data
 /.tmp-acceptance-*/

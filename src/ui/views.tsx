@@ -265,18 +265,12 @@ export function ToolsView(_: { catalog: CatalogData }) {
   return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug hat einen sichtbaren Zweck, Grenzen und einen nativen Einstieg. Externe Repositories bleiben Quellen; sie werden nicht ungeprüft ausgeführt.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="tool-actions">{tool.routes.map((route) => <a class="button button-secondary" key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</a>)}</div></article>)}</div></section>;
 }
 
-function localReadingHref(path?: string) {
-  if (!path || path.startsWith('/') || path.split(/[\\/]/).includes('..')) return null;
-  return `/${path}`;
-}
-
 function sourceWeeksLabel(weeks: unknown) {
   if (Array.isArray(weeks) && weeks.length) return `Woche ${weeks.join(', ')}`;
   return 'Referenzkatalog';
 }
 
 function SourceCard({ source }: { source: SourceSummary }) {
-  const localHref = localReadingHref(source.localPath);
   const external = /^https?:\/\//.test(source.canonicalUrl);
   return (
     <article class="source-card" id={`source-${source.sourceId}`}>
@@ -289,9 +283,8 @@ function SourceCard({ source }: { source: SourceSummary }) {
         <div><dt>Verwendet in</dt><dd>{sourceWeeksLabel(source.weeks)}</dd></div>
       </dl>
       <div class="source-actions">
-        {localHref ? <a class="button button-primary" href={localHref} target="_blank" rel="noopener">Lokale Lesefassung öffnen</a> : null}
         {external ? <a class="button button-secondary" href={source.canonicalUrl} target="_blank" rel="noreferrer">Originalquelle öffnen</a> : null}
-        {!localHref && !external ? <span class="muted">Kein Direktlink in diesem Profil</span> : null}
+        {!external ? <span class="muted">Kein Direktlink in diesem Profil</span> : null}
       </div>
     </article>
   );
@@ -307,7 +300,7 @@ export function SourcesView(_: { catalog: CatalogData }) {
         <div>
           <p class="eyebrow">Quellen und Referenzen</p>
           <h1 id="sources-title" tabIndex={-1}>Lektüren</h1>
-          <p class="lede">Das aktive Inhaltsprofil bestimmt, welche Quellen und lokalen Lesefassungen sichtbar sind. Eine Quelle ist noch keine Lernaktivität; ihre Rolle wird in Lektionen und Wochen ausgewiesen.</p>
+          <p class="lede">Öffentliche Quellen und Referenzen begleiten die Lektionen. Eine Quelle ist noch keine Lernaktivität; ihre Rolle wird in Lektionen und Modulen ausgewiesen.</p>
         </div>
         <a class="button button-secondary" href="#/learn">Zum Kompetenzkatalog</a>
       </header>

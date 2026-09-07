@@ -33,7 +33,6 @@ const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
   'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
 ];
-const profiles = new Set(['public', 'local-private']);
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
 
 const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
@@ -53,15 +52,6 @@ const uniqueBy = (items, key, label) => {
   }
   return seen;
 };
-const mergeUnique = (base, extra, key, label) => {
-  const ids = new Set(base.map((item) => item[key]));
-  for (const item of extra) {
-    if (!item?.[key] || ids.has(item[key])) throw new Error(`${label}: Overlay-Kollision ${item?.[key] || '(leer)'}`);
-    ids.add(item[key]);
-  }
-  return [...base, ...extra];
-};
-
 function resolveContentPath(contentRoot, path, allowedExtensions = ['.json']) {
   if (typeof path !== 'string' || !allowedExtensions.some((extension) => path.endsWith(extension)) || isAbsolute(path) || path.split(/[\\/]/).includes('..')) {
     throw new Error(`Ungültiger Katalogpfad ${JSON.stringify(path)}`);
@@ -265,6 +255,15 @@ function validateSourceRights(bundle) {
   }
 }
 
+function validateSources(sources) {
+  for (const source of sources) {
+    if (source.contentClass !== 'open' && source.contentClass !== 'link-only') continue;
+    if (!/^https:\/\//.test(source.canonicalUrl || '')) {
+      throw new Error(`${source.sourceId}: öffentliche Quelle braucht eine HTTPS-URL`);
+    }
+  }
+}
+
 function validateLearningModules(bundle, ids) {
   indexLearningModules(bundle.learningModules || []);
   for (const module of bundle.learningModules || []) {
@@ -274,7 +273,7 @@ function validateLearningModules(bundle, ids) {
 }
 
 export function validateCompiledContent(bundle) {
-  if (!profiles.has(bundle.profile)) throw new Error(`Unbekanntes Buildprofil ${bundle.profile}`);
+  if (bundle.profile !== 'public') throw new Error(`Unbekanntes Buildprofil ${bundle.profile}`);
   for (const family of bundle.families || []) registerStaticCases(family.familyId, family.cases || []);
   configureExerciseFamilies(bundle.families || []);
   const ids = {
@@ -303,6 +302,7 @@ export function validateCompiledContent(bundle) {
   validateLessons(bundle, ids);
   validateLearningModules(bundle, ids);
   validateSourceRights(bundle);
+  validateSources(bundle.sources);
   if (bundle.profile === 'public' && privateMarkers.test(JSON.stringify(bundle))) {
     throw new Error('Public-Bundle enthält privaten Marker');
   }
@@ -314,16 +314,9 @@ export function validateCompiledContent(bundle) {
 // hashes every input that can change the output (content/, schemas/, tool
 // and generator sources); hits return a structuredClone.
 const compileCache = new Map();
-function compileInputFingerprint(projectRoot, profile, overlayPath) {
+function compileInputFingerprint(projectRoot) {
   const hash = createHash('sha256');
-  hash.update(`${projectRoot}\u0000${profile}\u0000${overlayPath ?? ''}`);
-  if (overlayPath) {
-    const overlayFile = resolve(overlayPath);
-    if (existsSync(overlayFile)) {
-      hash.update('overlay');
-      hash.update(readFileSync(overlayFile));
-    }
-  }
+  hash.update(projectRoot);
   const codeRoot = join(projectRoot, 'tools');
   const codeFiles = [];
   if (existsSync(codeRoot)) {
@@ -359,12 +352,10 @@ function compileInputFingerprint(projectRoot, profile, overlayPath) {
   return hash.digest('hex');
 }
 
-export function compileContent({ projectRoot = defaultProjectRoot, profile = 'public', overlayPath = null, cache = 'memo' } = {}) {
-  if (!profiles.has(profile)) throw new Error(`Unbekanntes Buildprofil ${profile}`);
-  if (overlayPath && profile !== 'local-private') throw new Error('Ein Overlay ist nur im Profil local-private erlaubt');
+export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo' } = {}) {
   let fingerprint = null;
   if (cache === 'memo') {
-    fingerprint = compileInputFingerprint(projectRoot, profile, overlayPath);
+    fingerprint = compileInputFingerprint(projectRoot);
     if (compileCache.has(fingerprint)) return structuredClone(compileCache.get(fingerprint));
   }
   const contractVersion = schemaContracts(projectRoot).contractVersion;
@@ -429,46 +420,15 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     projectPackageClaims(contentRoot, projectFiles),
   );
 
-  sourceRights = sourceRights.filter((rights) => rights.allowedProfiles?.includes(profile));
-  sources = profile === 'public'
-    ? sanitizePublicValue(sources.filter((source) => source.contentClass !== 'private').map((source) => {
-      const publicSource = { ...source };
-      delete publicSource.localFile;
-      delete publicSource.localPath;
-      return publicSource;
-    }))
-    : sources;
+  sources = sanitizePublicValue(sources.filter((source) => source.contentClass !== 'private'));
   competencies = competencies.filter((item) => item.releaseStatus !== 'local-only');
   tracks = tracks.filter((item) => item.releaseStatus !== 'local-only');
   milestones = milestones.filter((item) => item.releaseStatus !== 'local-only');
-  tools = profile === 'public' ? tools.filter((item) => item.releaseStatus !== 'local-only') : tools;
+  tools = tools.filter((item) => item.releaseStatus !== 'local-only');
   lessons = lessons.filter((item) => item.releaseStatus !== 'local-only');
   explanations = explanations.filter((item) => item.releaseStatus !== 'local-only');
   projects = projects.filter((item) => item.releaseStatus !== 'local-only');
   learningModules = learningModules.filter((item) => item.releaseStatus !== 'local-only');
-
-  const overlays = [];
-  if (overlayPath) {
-    const overlay = readJson(resolve(overlayPath));
-    if (overlay.schemaVersion !== 1 || !overlay.overlayId) throw new Error('Overlay ist ungültig');
-    validateSourceDocument('source-rights', { schemaVersion: 1, sources: overlay.sourceRights || [] }, projectRoot);
-    validateSourceDocument('competency', { schemaVersion: 1, locale: 'de', competencies: overlay.competencies || [] }, projectRoot);
-    validateSourceDocument('track', { schemaVersion: 1, locale: 'de', tracks: overlay.tracks || [] }, projectRoot);
-    validateSourceDocument('milestone', { schemaVersion: 1, locale: 'de', milestones: overlay.milestones || [] }, projectRoot);
-    for (const lesson of overlay.lessons || []) validateSourceDocument('lesson', lesson, projectRoot);
-    for (const explanation of overlay.explanations || []) validateSourceDocument('explanation-card', explanation, projectRoot);
-    for (const project of overlay.projects || []) validateSourceDocument('project', project, projectRoot);
-    for (const module of overlay.learningModules || []) validateSourceDocument('learning-module', module, projectRoot);
-    overlays.push(overlay.overlayId);
-    sourceRights = mergeUnique(sourceRights, overlay.sourceRights || [], 'sourceId', 'Quellenrechte');
-    competencies = mergeUnique(competencies, overlay.competencies || [], 'competencyId', 'Kompetenzen');
-    tracks = mergeUnique(tracks, overlay.tracks || [], 'trackId', 'Tracks');
-    milestones = mergeUnique(milestones, overlay.milestones || [], 'milestoneId', 'Milestones');
-    lessons = mergeUnique(lessons, overlay.lessons || [], 'lessonId', 'Lektionen');
-    explanations = mergeUnique(explanations, overlay.explanations || [], 'explanationId', 'Erklärungen');
-    projects = mergeUnique(projects, overlay.projects || [], 'projectId', 'Projekte');
-    learningModules = mergeUnique(learningModules, overlay.learningModules || [], 'moduleId', 'LearningModules');
-  }
 
   lessons = compileLessonContent(contentRoot, lessons);
   learningModules = learningModules.map((module) => compileLearningModule(module, {
@@ -483,9 +443,9 @@ export function compileContent({ projectRoot = defaultProjectRoot, profile = 'pu
     catalogVersion: catalog.version,
     contractVersion,
     contentVersion: '',
-    profile,
+    profile: 'public',
     locale: catalog.locale,
-    overlays,
+    overlays: [],
     sourceRights,
     sources,
     competencies,
@@ -651,14 +611,11 @@ export function writeSplitArtifacts(bundle, splitDir) {
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
 if (isMain) {
-  const valueAfter = (flag, fallback = null) => {
-    const index = process.argv.indexOf(flag);
-    return index >= 0 ? process.argv[index + 1] : fallback;
-  };
-  const profile = valueAfter('--profile', 'public');
-  const overlayPath = valueAfter('--overlay');
-  const output = resolve(valueAfter('--out', join(defaultProjectRoot, `.content-build/${profile}/content-bundle.json`)));
-  const bundle = compileContent({ projectRoot: defaultProjectRoot, profile, overlayPath });
+  const outputFlag = process.argv.indexOf('--out');
+  const output = resolve(outputFlag >= 0
+    ? process.argv[outputFlag + 1]
+    : join(defaultProjectRoot, '.content-build/public/content-bundle.json'));
+  const bundle = compileContent({ projectRoot: defaultProjectRoot });
   mkdirSync(dirname(output), { recursive: true });
   writeFileSync(output, JSON.stringify(bundle, null, 2) + '\n');
   const splitDir = join(dirname(output), 'split');

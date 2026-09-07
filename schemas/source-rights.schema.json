@@ -29,7 +29,7 @@
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
-            "items": { "enum": ["public", "local-private", "hosted"] }
+            "items": { "const": "public" }
           },
           "attribution": { "type": "string", "minLength": 1 },
           "sourceUrl": { "type": ["string", "null"] },

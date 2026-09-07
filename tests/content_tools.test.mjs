@@ -7,7 +7,6 @@ import { compileContent } from '../tools/compile_content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const publicBundle = compileContent({ projectRoot: root, profile: 'public' });
-const localBundle = compileContent({ projectRoot: root, profile: 'local-private' });
 
 test('tool cards preserve public runtimes, repositories and visualization routes', () => {
   assert.equal(publicBundle.tools.length, 7);
@@ -31,10 +30,4 @@ test('all lesson readings resolve to public source cards', () => {
     assert.ok(lesson.sourceRefs.length > 0, `${lesson.lessonId} has no reading`);
     for (const reference of lesson.sourceRefs) assert.ok(sourceIds.has(reference.sourceId), `${lesson.lessonId} references ${reference.sourceId}`);
   }
-});
-
-test('local reading paths stay profile-bound', () => {
-  assert.equal(publicBundle.sources.some((source) => source.localPath || source.localFile), false);
-  if (localBundle.sources.length > publicBundle.sources.length) assert.ok(localBundle.sources.some((source) => source.localPath));
-  else assert.equal(localBundle.sources.some((source) => source.localPath || source.localFile), false);
 });

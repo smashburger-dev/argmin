@@ -1,6 +1,6 @@
 # KI-Lernplattform
 
-Lokale, deutschsprachige Lernplattform mit einem kompetenzbasierten Katalog und der bisherigen 39-Wochen-Roadmap als transparente Planungsprojektion. Foundations, Lineare Algebra/NumPy, klassisches ML, Deep-Learning- und GenAI-Grundlagen (W1-W30) bilden den ausgearbeiteten Kern; die neun Capstone-Wochen bleiben Draft. Kein CDN ist zur Laufzeit erforderlich. Fortschritt bleibt in IndexedDB.
+Öffentliche, deutschsprachige Lernplattform mit einem kompetenzbasierten Katalog. Foundations, Lineare Algebra/NumPy, klassisches ML, Deep-Learning- und GenAI-Grundlagen bilden den ausgearbeiteten Kern; die Capstone-Inhalte bleiben Draft. Kein CDN ist zur Laufzeit erforderlich. Fortschritt bleibt in IndexedDB.
 
 ## Starten
 
@@ -13,14 +13,6 @@ npm run dev:next
 
 Nicht über `file://` öffnen (Module-Worker und Fetch brauchen einen Origin). Die TypeScript-Quellen laufen nur über Vite; `python3 -m http.server` startet die App nicht.
 
-Lokales Profil mit privaten Quellenmetadaten und lokalen Lesepfaden:
-
-```bash
-npm run dev:local
-# Browser: http://127.0.0.1:4174/index.html#/sources
-npm run build:local
-```
-
 ## Testen und Bauen
 
 ```bash
@@ -32,13 +24,11 @@ npm run test:e2e:build                      # gebaute Ausgabe: Chromium inklusiv
 npm run test:project-runner                 # sicherer pytest-Runner-Vertrag ohne pytest-Installation
 npm run verify:release                      # alle Release-Gates in fester Reihenfolge
 node tools/migrate_legacy_content.mjs       # Legacy-Exercise-zu-Kompetenz-Mapping erneuern
-node tools/compile_content.mjs --profile public  # reproduzierbares Public-Content-Bundle
+node tools/compile_content.mjs                 # reproduzierbares Public-Content-Bundle
 npm run coverage:build                    # maschinenlesbare Matrix und lesbaren Bericht erneuern
 npm run coverage:check                    # veraltete Coverage-Artefakte ablehnen
-node tools/validate_content.mjs             # Legacy-Inhalte plus neuer Kompetenzkatalog
-node tools/validate_content.mjs --legacy    # nur den alten 39-Wochen-Vertrag prüfen
-node tools/build_public.mjs                 # fail-closed Content-Baum nach build-public/ (kein App-Shell)
-node tools/validate_content.mjs --dir build-public   # Bundle-, Leak-, Lizenz-, Mengen- und Hashprüfung
+node tools/validate_content.mjs             # Content-, Leak-, Lizenz- und Bundle-Prüfung
+node tools/validate_content.mjs --dir build-next # Release-Bundle prüfen
 node tools/build_search_index.mjs           # privaten Autoren-Suchindex neu bauen
 python3 tools/pdf_audit.py audit            # reproducibler PDF-Audit (docs/pdf-catalog.json, pdfinfo-Abgleich)
 python3 tools/pdf_audit.py selftest         # gezielter Test der Seitenzählung
@@ -61,7 +51,6 @@ vendor/               gepinnte Runtimes plus maschinenlesbare Drittanbieter-Noti
 docs/                 ADRs, Dependency-Matrix, Lizenzregister, PDF-Katalog, Authoring-Guide
 tools/                Compiler, Migration, Public-Transformation, Audit und Browser-Abnahme
 tests/                Unit-, Property-, Contract- und Negativtests
-build-public/         generierter fail-closed Content-Baum ohne App-Shell
 build-next/           kombinierter Release-Build mit Preact-Shell
 ```
 

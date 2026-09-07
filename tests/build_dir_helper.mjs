@@ -8,7 +8,7 @@ const root = join(fileURLToPath(new URL('..', import.meta.url)));
 
 export function makeBuildDir() {
   const dir = mkdtempSync(join(tmpdir(), 'ki-public-'));
-  cpSync(join(root, 'build-public'), dir, { recursive: true });
+  cpSync(join(root, 'build-next'), dir, { recursive: true });
   return dir;
 }
 
