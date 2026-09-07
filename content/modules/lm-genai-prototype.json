@@ -3,7 +3,7 @@
   "moduleId": "lm-genai-prototype",
   "version": 1,
   "locale": "de",
-  "title": "Minimaler abgesicherter GenAI-Prototyp: Stub-Generator, Fixtur-Kontrollen, ehrliche Grenzen",
+  "title": "Minimaler abgesicherter GenAI-Prototyp",
   "description": "Retrieval, deterministische Evaluation und Sicherheitskontrollen zu einem minimalen Prototyp mit Stub-Generator zusammenfügen Least Privilege, erlaubte/verbotene Aktionen und nachvollziehbare Fehler umsetzen und mit einer Ablation (mit/ohne Kontrolle) messen ein Threat Model für den eigenen Prototyp führen und die Grenze zu einem produktiven LLM-System offen dokumentieren",
   "competencyIds": [
     "c-genai-prototype"

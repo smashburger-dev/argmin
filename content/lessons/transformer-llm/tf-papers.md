@@ -1,6 +1,6 @@
 # Paper synthetisieren: Frage, Methode, Evidenz, Grenzen
 
-Ein Paper zu lesen heißt nicht, es zu glauben. Diese Woche übst du das Zerlegen in **Forschungsfrage, Methode, Datensatz, Ergebnisse, Limitationen** — und das Zuordnen von **Claims** (Behauptungen) zu **Evidence** (Zahlen, aus denen sie stammen). Mastery in dieser Woche kommt ausschließlich aus deterministischen Rech- und Struktur-Aufgaben; Papierkarten und Freitext bleiben Bearbeitungsnachweise.
+Ein Paper zu lesen heißt nicht, es zu glauben. Diese Lektion übst du das Zerlegen in **Forschungsfrage, Methode, Datensatz, Ergebnisse, Limitationen** — und das Zuordnen von **Claims** (Behauptungen) zu **Evidence** (Zahlen, aus denen sie stammen). Mastery in dieser Lektion kommt ausschließlich aus deterministischen Rech- und Struktur-Aufgaben; Papierkarten und Freitext bleiben Bearbeitungsnachweise.
 
 ## Die fünf Slots einer Paper-Karte
 

@@ -3,7 +3,7 @@
   "lessonId": "l-capstone-pipeline",
   "version": 2,
   "locale": "de",
-  "title": "Reproduzierbare Capstone-Pipeline: Manifest, Stages, feste Evaluation, Red-Team, Demo",
+  "title": "Reproduzierbare Capstone-Pipeline",
   "objectives": [
     "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
     "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",

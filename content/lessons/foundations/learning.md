@@ -19,7 +19,7 @@ Ein Hinweis kann Lernen beschleunigen, beweist aber weniger unabhängigen Abruf.
 
 Wiederhole nicht, weil eine Zahl täglich steigen soll. Wiederhole, wenn ein Nachweis fällig wird oder ein Fehlerbild erneut geprüft werden muss. Die Abstände im aktuellen Plan sind eine einstellbare Arbeitshypothese. Eigene Retention-Daten müssen später zeigen, ob sie für diesen Kurs passen.
 
-## Wochenentscheidung
+## Lernentscheidung
 
 Am Ende einer Sitzung reicht eine kurze Entscheidung:
 

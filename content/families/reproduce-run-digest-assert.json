@@ -62,7 +62,7 @@
         },
         {
           "if": "naiv-uses-treffer",
-          "then": "antwort_naiv teilt durch alle Fälle, antwort_getrennt nur durch Trefferfälle — die Nenner sind die Kernunterscheidung der Woche."
+          "then": "antwort_naiv teilt durch alle Fälle, antwort_getrennt nur durch Trefferfälle — die Nenner sind die Kernunterscheidung der Lektion."
         }
       ],
       "typicalErrors": [

@@ -3,7 +3,7 @@
   "moduleId": "lm-research-cards",
   "version": 1,
   "locale": "de",
-  "title": "Daten- und Modellkarten: Pflichtfelder, Konsistenz, keine Geheimnisse",
+  "title": "Daten- und Modellkarten",
   "description": "Daten- und Modellkarten als Vertrag mit festen Pflichtfeldern erfassen und fehlende oder leere Felder deterministisch zählen Karten, Systemkarte und Forschungsprotokoll auf Widersprüche prüfen (Name, Metrik, Schwellenwert, Umfang, Modell) Kartenwerte auf geleakte API-Schluessel, Token und Bearer-Anmeldedaten scannen, Split-Summen und Semver prüfen",
   "competencyIds": [
     "c-research-cards"

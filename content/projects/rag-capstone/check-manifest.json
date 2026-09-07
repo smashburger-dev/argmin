@@ -12,11 +12,11 @@
     },
     {
       "path": "config/experiment.json",
-      "sha256": "52165e021c438961545ff828ce53ae27c16806a198b8dc282c8419b2ff777248"
+      "sha256": "bc2cebc7dd2fdf6a82a259ff02ff87117853d4b46565e0a91cb430ec2af66f60"
     },
     {
       "path": "golden/golden_set.json",
-      "sha256": "387c8b8ba6f94909734dac18e06c1ddca95a2fef0291daa583584f19e1251891"
+      "sha256": "b326029d334c923da2742b11da24fc3d6d9c760bb46e4f1bee29dcd4b8912385"
     },
     {
       "path": "golden/injection_fixtures.json",
@@ -24,7 +24,7 @@
     },
     {
       "path": "golden/expected_results.json",
-      "sha256": "6cc7a37386f36893cf5f773c957840ab8cdc8fa08643826c48fe549baa73f05d"
+      "sha256": "48e6a0d6ed92f516d3134cc22cfd95188b19ffb7760c48feecaebe47e36b5c47"
     },
     {
       "path": "tests/test_w35_scope.py",

@@ -6,7 +6,7 @@ Vervollständige `ridge_fit`, `compare` und `repro_check` in `src/compare.py`. D
 
 1. **Fester Seed**: Alle Zufallsquellen kommen aus `np.random.default_rng(seed)` — Daten und Split aus demselben Seed, kein globaler Zufallszustand.
 2. **Fixer Split**: `split_indices(n, seed)` leitet die Train-/Test-Indizes deterministisch aus dem Seed ab. Gleicher Seed, gleicher Split — verschiedene Seeds führen zu verschiedenen Splits.
-3. **Metrik vorab**: Die Metrik ist RMSE auf dem Testteil. Verglichen werden Mittelwert-Baseline und Ridge (λ = 1, geschlossene Formel aus Woche 14) auf denselben Daten.
+3. **Metrik vorab**: Die Metrik ist RMSE auf dem Testteil. Verglichen werden Mittelwert-Baseline und Ridge (λ = 1, geschlossene Formel aus der Lektion „Ridge und Lasso“) auf denselben Daten.
 4. **Wiederholungslauf**: `repro_check(seed)` ist nur dann `True`, wenn zwei `compare`-Läufe mit demselben Seed exakt dasselbe Ergebnis-Dictionary liefern.
 5. **Manifest**: `check-manifest.json` hält Testpfade und den Hash der Testdatei fest. Ergänze im README deine Umgebung (Python-/NumPy-Version).
 

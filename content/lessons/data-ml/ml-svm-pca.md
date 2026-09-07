@@ -16,7 +16,7 @@ Konzeptbeispiel: Punkte $(1,1)$ mit Klasse $+1$ und $(-1,-1)$ mit Klasse $-1$. D
 
 ## Kernel-Trick (Konzept)
 
-Nicht linear trennbare Punkte können nach einer Abbildung $\phi$ in einen höherdimensionalen Raum linear trennbar werden. Der **Kernel-Trick** rechnet die dafür nötigen Skalarprodukte $\phi(x_i)^{T}\phi(x_j)$ direkt als Kernel-Funktion (z. B. RBF), ohne die Koordinaten jemals auszuweisen. Für diese Woche reicht die Lesekompetenz: `SVC(kernel='rbf')` in sklearn heißt genau das.
+Nicht linear trennbare Punkte können nach einer Abbildung $\phi$ in einen höherdimensionalen Raum linear trennbar werden. Der **Kernel-Trick** rechnet die dafür nötigen Skalarprodukte $\phi(x_i)^{T}\phi(x_j)$ direkt als Kernel-Funktion (z. B. RBF), ohne die Koordinaten jemals auszuweisen. Für diese Lektion reicht die Lesekompetenz: `SVC(kernel='rbf')` in sklearn heißt genau das.
 
 ## PCA Schritt für Schritt
 
@@ -34,7 +34,7 @@ $$X = \begin{pmatrix}1&1\\2&2\\3&3\end{pmatrix}\;\xrightarrow{\text{zentriert}}\
 
 $$C = \frac{1}{3-1}\begin{pmatrix}2&2\\2&2\end{pmatrix} = \begin{pmatrix}1&1\\1&1\end{pmatrix}$$
 
-Eigenwerte: $\lambda_1 = 2$, $\lambda_2 = 0$. Die erste Hauptkomponente ist die Diagonale $(1/\sqrt{2},\,1/\sqrt{2})$ und erklärt $2/(2+0) = 100\,\%$ der Varianz — die zweite Richtung ist exakt abhängig (Rückbindung: lineare Abhängigkeit aus der Lineare-Algebra-Woche).
+Eigenwerte: $\lambda_1 = 2$, $\lambda_2 = 0$. Die erste Hauptkomponente ist die Diagonale $(1/\sqrt{2},\,1/\sqrt{2})$ und erklärt $2/(2+0) = 100\,\%$ der Varianz — die zweite Richtung ist exakt abhängig (Rückbindung: lineare Abhängigkeit aus der Lineare-Algebra-Lektion).
 
 ## k-Means mit fester Initialisierung
 

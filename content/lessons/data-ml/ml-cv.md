@@ -16,7 +16,7 @@ Alle $n$ Indizes erscheinen genau einmal; gleicher Seed liefert gleiche Folds.
 ## Hyperparameter statt Parameter
 
 - **Parameter** (z. B. die Gewichte $w$) werden aus den Trainingsdaten gelernt.
-- **Hyperparameter** (z. B. die Fold-Anzahl $k$, ein Schwellenwert oder die Nachbarzahl k (die Regularisierungsstärke kommt erst in Woche 14)) werden *vor* dem Training festgelegt und steuern das Lernen selbst.
+- **Hyperparameter** (z. B. die Fold-Anzahl $k$, ein Schwellenwert oder die Nachbarzahl $k$; die Regularisierungsstärke kommt erst in der Lektion „Ridge und Lasso“) werden *vor* dem Training festgelegt und steuern das Lernen selbst.
 
 Hyperparameter dürfen nicht auf dem finalen Testset gewählt werden — sonst misst du Anpassung an dieses Testset. Cross-Validation auf den Trainingsdaten ist der Standardweg: Wähle die Einstellung mit dem besten Mittelwert über die Folds.
 

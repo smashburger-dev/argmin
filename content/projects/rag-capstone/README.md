@@ -1,10 +1,9 @@
 # RAG-Capstone: reproduzierbare Pipeline von Scope-Freeze bis Demo
 
-Dieses Projekt erweitert den W30-Prototypen (`p-rag-secure-prototype`) zu einer
-fünfphasigen Capstone-Pipeline: Scope-Freeze (W35), Integration (W36), feste
-Evaluation mit defensivem Red-Team (W37), Reproduktion (W38) und
-Abschluss-Artefakte (W39). Der W30-Kern liegt byte-identisch und per sha256
-gepinnt als `src/w30_core.py` bei; er wird erweitert, nicht verändert.
+Dieses Projekt erweitert den GenAI-Prototyp (`p-rag-secure-prototype`) zu einer
+fünfphasigen Capstone-Pipeline: Scope-Freeze, Integration, feste
+Evaluation mit defensivem Red-Team, Reproduktion und Abschluss-Artefakte. Der Kern des GenAI-Prototyps liegt als
+`src/w30_core.py` byte-identisch und per sha256 gepinnt vor; er wird erweitert, nicht verändert.
 
 ## Setup
 
@@ -33,7 +32,7 @@ bestehen aus reinen `assert`-Anweisungen und laufen deshalb auch direkt unter
 ## Konfiguration
 
 `config/experiment.json` ist eingefroren: Seeds, `k`, Injektionsregeln, Policy,
-Schwellen, W34-Baseline, Token-Preise und die Pflichtüberschriften dieses
+Schwellen, Capstone-Baseline, Token-Preise und die Pflichtüberschriften dieses
 README. `check-manifest.json` pinnt `golden/`, `config/`, `tests/` und
 `src/w30_core.py` per sha256; Lernenden-Dateien (`src/pipeline.py` & Co., Karten)
 stehen dort mit `sha256: null` auf Anwesenheitsprüfung. `assert_frozen()`
@@ -50,13 +49,13 @@ Angaben. Karteninhalte sind Work Evidence, kein Mastery-Beweis.
 
 ## Phasenplan
 
-| Woche | Phase | Testdatei | Kern |
+| Phase | Kennung | Testdatei | Kern |
 |---|---|---|---|
-| W35 | w35-scope | `tests/test_w35_scope.py` | Manifest, Hashes, Stages, topo-sort |
-| W36 | w36-integration | `tests/test_w36_pipeline.py` | `run()`, IO-Verträge, virtuelle Uhr |
-| W37 | w37-eval-redteam | `tests/test_w37_eval_redteam.py` | Subgruppen, Red-Team, Verdict |
-| W38 | w38-repro | `tests/test_w38_repro.py` | Doppellauf-Digest, Overclaim-Scan |
-| W39 | w39-artifacts | `tests/test_w39_artifacts.py` | Demo, Diagnose, Abnahmebericht |
+| Scope-Freeze-Phase | w35-scope | `tests/test_w35_scope.py` | Manifest, Hashes, Stages, topo-sort |
+| Integrationsphase | w36-integration | `tests/test_w36_pipeline.py` | `run()`, IO-Verträge, virtuelle Uhr |
+| Evaluationsphase | w37-eval-redteam | `tests/test_w37_eval_redteam.py` | Subgruppen, Red-Team, Verdict |
+| Reproduktionsphase | w38-repro | `tests/test_w38_repro.py` | Doppellauf-Digest, Overclaim-Scan |
+| Abschlussphase | w39-artifacts | `tests/test_w39_artifacts.py` | Demo, Diagnose, Abnahmebericht |
 
 ## Limitations
 
@@ -81,4 +80,4 @@ Selbstlern-Nachweis (`integrity: self-reported`), kein Zertifikat.
   mitzuziehen, scheitert an `assert_frozen()` — so soll es sein.
 
 Demo und Retrospektive zählen als Work Evidence; Mastery entsteht nur aus den
-deterministisch geprüften Teiltests der Wochenpakete.
+deterministisch geprüften Teiltests der Phasen.

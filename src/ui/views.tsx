@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
-import { loadReviews, loadSources, loadTools } from '../adapters/content-repository';
+import { loadSources, loadTools } from '../adapters/content-repository';
 
 /** Loads a route-scoped content section once per session. null while the
  *  sidecar chunk is in flight — views render an honest loading state. */
@@ -194,7 +194,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           </button>
         ))}
       </div>
-      <nav class="catalog-links" aria-label="Weitere Katalogansichten"><a href="#/sources">Öffentliche Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/quality">Qualitätsreviews</a></nav>
+      <nav class="catalog-links" aria-label="Weitere Katalogansichten"><a href="#/sources">Öffentliche Lektüren</a><a href="#/tools">Werkzeuge</a></nav>
       <div class="competency-summary" aria-live="polite">
         <strong>{visible.length}</strong>
         <span>sichtbare Kompetenzknoten</span>
@@ -249,15 +249,6 @@ export function CompetencyView({ catalog, progress, competencyId }: {
   );
 }
 
-export function ReviewFindingsView(_: { catalog: CatalogData }) {
-  const reviews = useSection(loadReviews);
-  if (reviews === 'failed') return <section class="view" aria-labelledby="reviews-title"><h1 id="reviews-title" tabIndex={-1}>Reviews</h1>{sectionError('Review-Befunde')}</section>;
-  if (!reviews) return <section class="view" aria-labelledby="reviews-title"><h1 id="reviews-title" tabIndex={-1}>Reviews</h1><p role="status">Review-Befunde werden geladen.</p></section>;
-  const blocked = reviews.filter((review) => review.status === 'blocked').length;
-  const human = reviews.flatMap((review) => review.findings).filter((finding) => finding.humanReviewRequired).length;
-  return <section class="view" aria-labelledby="reviews-title"><header class="view-header"><p class="eyebrow">Reproduzierbarer Qualitätsstand</p><h1 id="reviews-title" tabIndex={-1}>Reviews</h1><p class="lede">Die Fach- und Methodikreviews sind Befunde, keine automatische Freigabe. Evidenzpfade, Unsicherheit und Umsetzungsstatus bleiben sichtbar.</p></header><div class="stat-grid"><article><strong>{reviews.length}</strong><span>Reviews</span></article><article><strong>{blocked}</strong><span>blockierte Ausbauphasen</span></article><article><strong>{human}</strong><span>Human-Review-Pflichten</span></article></div><div class="review-findings-list">{reviews.map((review) => <details class="review-finding-card" key={review.reviewId}><summary><span><small>{review.status}</small><strong>{review.title}</strong></span><span>{review.findings.length} Befunde</span></summary><div class="review-finding-body"><p>{review.summary}</p><p class="muted">Scope: {review.scope}</p>{review.findings.map((finding) => <article class={`finding finding-${finding.severity}`} key={finding.findingId}><div class="finding-meta"><span>{finding.severity}</span><span>{finding.implementationStatus}</span>{finding.humanReviewRequired ? <span>Human Review</span> : null}</div><h2>{finding.findingId}</h2><p><strong>Empfehlung:</strong> {finding.recommendation}</p><p><strong>Umsetzung:</strong> {finding.suggestedImplementation}</p><p><strong>Unsicherheit:</strong> {finding.uncertainty || 'Keine zusätzliche Unsicherheit notiert.'}</p><p><strong>Evidenz:</strong> {finding.evidence.map((path) => <code key={path}>{path}</code>)}</p></article>)}</div></details>)}</div></section>;
-}
-
 export function ToolsView(_: { catalog: CatalogData }) {
   const tools = useSection(loadTools);
   if (tools === 'failed') return <section class="view" aria-labelledby="tools-title"><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1>{sectionError('Werkzeugkarten')}</section>;
@@ -266,7 +257,7 @@ export function ToolsView(_: { catalog: CatalogData }) {
 }
 
 function sourceWeeksLabel(weeks: unknown) {
-  if (Array.isArray(weeks) && weeks.length) return `Woche ${weeks.join(', ')}`;
+  if (Array.isArray(weeks) && weeks.length) return `Referenzabschnitte ${weeks.join(', ')}`;
   return 'Referenzkatalog';
 }
 

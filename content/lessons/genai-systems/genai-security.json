@@ -3,7 +3,7 @@
   "lessonId": "l-genai-security",
   "version": 1,
   "locale": "de",
-  "title": "Defensive GenAI-Sicherheit: Injektion erkennen, Abfluss begrenzen, Rechte prüfen",
+  "title": "Defensive GenAI-Sicherheit",
   "objectives": [
     "Prompt-Injection in synthetischen, deutschsprachigen Beispielen regelbasiert erkennen und die Detektorqualität mit Precision/Recall messen",
     "Datenabfluss-Kanäle und Toolberechtigungen über Vertrauensgrenzen (untrusted Retrieval → Modell → Tool) analysieren und Least-Privilege-Policies prüfen",

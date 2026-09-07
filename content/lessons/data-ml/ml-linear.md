@@ -6,7 +6,7 @@ $$
 \hat{y} = w_0 + w_1 x_1 + \dots + w_d x_d.
 $$
 
-Die **Koeffizienten** $w$ werden so gewählt, dass die Summe der quadrierten Fehler klein wird — das ist das Kleinste-Quadrate-Kriterium aus der Gradientenwoche, jetzt in geschlossener Form über eine **Design-Matrix** $A$ mit vorangestellter Einsen-Spalte für den Intercept $w_0$.
+Die **Koeffizienten** $w$ werden so gewählt, dass die Summe der quadrierten Fehler klein wird — das ist das Kleinste-Quadrate-Kriterium aus der Lektion zum Gradientenabstieg, jetzt in geschlossener Form über eine **Design-Matrix** $A$ mit vorangestellter Einsen-Spalte für den Intercept $w_0$.
 
 ## Fehlermaße von Hand
 
@@ -47,7 +47,7 @@ w, _, _, _ = np.linalg.lstsq(A, y, rcond=None)
 # w = [1., 2.]
 ```
 
-`lstsq` löst das Kleinste-Quadrate-Problem direkt — vergleiche es mit deinem Gradientenabstieg aus der Vorwoche: Beide müssen auf dasselbe $w$ konvergieren.
+`lstsq` löst das Kleinste-Quadrate-Problem direkt — vergleiche es mit deinem Gradientenabstieg aus der vorherigen Lektion: Beide müssen auf dasselbe $w$ konvergieren.
 
 ## Residuenanalyse
 

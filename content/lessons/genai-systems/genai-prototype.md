@@ -1,14 +1,14 @@
 # Minimaler abgesicherter GenAI-Prototyp
 
-Woche 30 fügt zusammen, was die drei Wochen davor getrennt geübt haben: Retrieval (W27), deterministische Evaluation (W28) und defensive Kontrollen (W29). Das Ergebnis ist ein **minimaler Prototyp** — bewusst klein, vollständig deterministisch und mit einem Stub statt eines echten Sprachmodells. Das ist kein MVP eines Produkts, sondern ein Laboraufbau: Er beweist, dass die Kontrollen greifen, bevor irgendetwas Leistungsstarkes (und Undurchsichtiges) dazukommt.
+Lektion „Minimaler abgesicherter GenAI-Prototyp“ fügt zusammen, was die drei Lektionen davor getrennt geübt haben: Retrieval (Lektion „RAG: Retrieval messbar machen“), deterministische Evaluation (Lektion „Evaluation generativer Antworten“) und defensive Kontrollen (Lektion „Defensive GenAI-Sicherheit“). Das Ergebnis ist ein **minimaler Prototyp** — bewusst klein, vollständig deterministisch und mit einem Stub statt eines echten Sprachmodells. Das ist kein MVP eines Produkts, sondern ein Laboraufbau: Er beweist, dass die Kontrollen greifen, bevor irgendetwas Leistungsstarkes (und Undurchsichtiges) dazukommt.
 
 ## Der Bauplan
 
 Der Prototyp besteht aus vier Bausteinen mit klaren Verträgen:
 
-1. **Retrieval**: die TF-IDF-/Termüberlappungssuche aus Woche 27 mit gepinnter Normalisierung und Tie-Break über den Dokumentindex.
+1. **Retrieval**: die TF-IDF-/Termüberlappungssuche aus der Lektion „RAG: Retrieval messbar machen“ mit gepinnter Normalisierung und Tie-Break über den Dokumentindex.
 2. **Stub-Generator**: kein LLM. Der Stub wählt aus dem besten Dokument den ersten Satz, der einen Anfrageterm enthält. Findet er nichts, antwortet er fest „kein treffer“ — ein nachvollziehbarer Fehler statt erfundener Glätte.
-3. **Kontrollen**: Injektionsprüfung auf Anfrage *und* bestes Dokument (Regelwerk aus Woche 29) plus Tool-Policy.
+3. **Kontrollen**: Injektionsprüfung auf Anfrage *und* bestes Dokument (Regelwerk aus der Lektion „Defensive GenAI-Sicherheit“) plus Tool-Policy.
 4. **Fixtur-Evaluation**: ein eingefrorenes Query-Set mit relevanten Dokumenten, so dass `metrics()` jederzeit Recall@k reproduzierbar ausgeben kann.
 
 Warum ein Stub? Weil jede Verhaltensaussage über einen echten Generator („der Assistent formuliert höflich“) eine echte Modellausführung bräuchte — die hier nicht läuft. Der Stub macht die Pipeline *messbar*: Änderst du Retrieval oder Kontrolle, siehst du die Wirkung sofort in festen Zahlen.
@@ -35,7 +35,7 @@ Das liest sich richtig: Kontrolle *kostet* sichtbar Recall auf der Injektions-Qu
 
 ## Threat Model für den Prototyp
 
-Dasselbe schriftliche Format wie in Woche 29, jetzt bezogen auf das eigene System: Assets (Fixtur-Dokumente, Policy-Datei, Nutzervertrauen), Kanäle hinein (Queries, abgerufene Dokumente inklusive der Injektions-Fixture) und hinaus (Antworten, Tool-Aufrufe), Befunde (Injektions-Doc wird geflaggt; verbotene Aktion abgelehnt) und Kosten der Kontrolle (Recall-Dämpfung aus der Ablation). Das Threat Model ist die Erklärungsfolie für die Tests — jeder Testfall sollte einem Eintrag entsprechen.
+Dasselbe schriftliche Format wie in der Lektion „Defensive GenAI-Sicherheit“, jetzt bezogen auf das eigene System: Assets (Fixtur-Dokumente, Policy-Datei, Nutzervertrauen), Kanäle hinein (Queries, abgerufene Dokumente inklusive der Injektions-Fixture) und hinaus (Antworten, Tool-Aufrufe), Befunde (Injektions-Doc wird geflaggt; verbotene Aktion abgelehnt) und Kosten der Kontrolle (Recall-Dämpfung aus der Ablation). Das Threat Model ist die Erklärungsfolie für die Tests — jeder Testfall sollte einem Eintrag entsprechen.
 
 ## Grenzen offen dokumentieren
 

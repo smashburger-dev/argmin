@@ -1,8 +1,8 @@
-# Reproduzierbare Capstone-Pipeline: Manifest, Stages, feste Evaluation, Red-Team, Demo
+# Reproduzierbare Capstone-Pipeline
 
-Die Wochen 35 bis 39 bauen **eine** Pipeline weiterentwickelt — kein neues
-Miniprojekt pro Woche. Der Stoff ist die Pipeline selbst: ein eingefrorener
-Datenfluss über den W30-Kern (`src/w30_core.py`, byte-identisch und per
+Die Capstone-Phasen entwickeln **eine** Pipeline weiter — kein neues
+Miniprojekt pro Lektion. Der Stoff ist die Pipeline selbst: ein eingefrorener
+Datenfluss über den Kern des GenAI-Prototyps (`src/w30_core.py`, byte-identisch und per
 sha256 gepinnt), eine config-getriebene Hauptfunktion, eine feste Evaluation,
 ein defensives Red-Team gegen den **eigenen** Toy-Prototyp und am Ende
 Artefakte, die ein Dritter nachvollziehen kann. Wilson et al. nennen das
@@ -14,7 +14,7 @@ jemand, der dein Ergebnis ohne dich neu erzeugen soll?
 
 Bevor Implementierung losgeht, wird festgezurrt, was sich nicht mehr ändern
 darf: Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und
-der gepinnte W30-Kern. Das `check-manifest.json` hält für jede dieser Dateien
+der gepinnte Kern des GenAI-Prototyps. Das `check-manifest.json` hält für jede dieser Dateien
 den sha256 fest; Lernenden-Dateien stehen dort mit `sha256: null` und werden
 nur auf Anwesenheit geprüft — du darfst an `src/pipeline.py` arbeiten, an
 `golden/` nicht. `assert_frozen()` rechnet die Hashes bei jedem Lauf nach und
@@ -43,8 +43,8 @@ kein `sleep`, und die Tests steuern die Zeit von Hand.
 ## Feste Evaluation: einmarshen, nicht nachjustieren
 
 Die Evaluation steht vor der Optimierung fest: acht Queries über dem
-ungeänderten W30-Korpus, davon die vier W30-Queries wörtlich als Teilmenge,
-Subgruppen-Labels an jeder Query, Schwellen und W34-Baseline in der
+ungeänderten Korpus des GenAI-Prototyps, davon die vier Queries des GenAI-Prototyps wörtlich als Teilmenge,
+Subgruppen-Labels an jeder Query, Schwellen und Capstone-Baseline in der
 Konfiguration. Gemessen wird beides getrennt: **Retrievalfehler** (kein
 Dokument gefunden, `retrieval_status: leer`) sind andere Fehler als
 **Antwortfehler** (blockiert oder kein Treffer auf der Antwortebene). Wer
@@ -57,7 +57,7 @@ unter den Teppich.
 ## Defensives Red-Team gegen den eigenen Prototyp
 
 Das Red-Team richtet sich **nur gegen den eigenen Toy-Prototyp**: die
-gelieferten Fixtures mit der Domäne `example.invalid`, Regelphrasen aus W30,
+gelieferten Fixtures mit der Domäne `example.invalid`, Regelphrasen aus dem GenAI-Prototyp,
 Least-Privilege-Policy. Anfrage **und** bestes Dokument werden geprüft — die
 klassische Route steckt im Dokument. Benign-Fälle ohne Regelphrase dürfen
 nicht blockiert werden, sonst misst der Detektor seine Scheingenauigkeit.
@@ -110,7 +110,7 @@ und das Anzeigen einer Lösung disqualifiziert genau diese Instanz.
 
 Demo, Retrospektive, Karteninhalte und Selbstberichte dokumentieren Arbeit —
 sie sind **Work Evidence, nie Mastery**. Mastery entsteht in dieser Plattform
-ausschließlich aus den deterministisch geprüften Teiltests der Wochenpakete
+ausschließlich aus den deterministisch geprüften Teiltests der Phasen
 (≥ 2 unabhängige Treffer, ≥ 2 Definitionen, ≥ 14 Tage Abstand, keine
 disqualifizierte Instanz). Der Projekt-Runner-Report trägt deshalb
 `integrity: self-reported`: Er ist ein lokaler Nachweis, kein Zertifikat —
@@ -118,14 +118,14 @@ und genau diese Grenze offen zu legen ist Teil der Abschlussnote an dich
 selbst.
 
 
-## Phasen-Worked-Examples (W36–W39)
+## Phasen-Worked-Examples (Capstone-Phasen)
 
-Die fünf Capstone-Wochen teilen sich diese Lektion. Damit jede Phase beim
+Diese Lektion bündelt die fünf Capstone-Phasen. Damit jede Phase beim
 Einstieg ein frisches Beispiel hat, hier ein kompaktes Worked Example je
 Phase — jeweils direkt am Projekt `p-rag-capstone` nachlesbar
 (`content/projects/rag-capstone/`, Dateien in Klammern).
 
-**W36 — Hauptfunktion und Integration: virtuelle Uhr statt sleep.** Der Stub
+**Integrationsphase — Hauptfunktion und Integration: virtuelle Uhr statt sleep.** Der Stub
 `langsam()` soll nach 200 virtuellen Millisekunden fertig sein, das Budget
 liegt bei 120. `call_with_timeout(fn, 120, clock)` zieht eine injizierte Uhr
 und liefert den Zustand `"timeout:retrieval"` statt still `NO_HIT`
@@ -133,7 +133,7 @@ und liefert den Zustand `"timeout:retrieval"` statt still `NO_HIT`
 erzwingt denselben Abbruch ohne eine einzige reale Wartezeit — Zeitverhalten
 ist damit deterministisch prüfbar.
 
-**W37 — Feste Evaluation: der Hash, der den Vergleich verweigert.** Der zweite
+**Evaluationsphase — Feste Evaluation: der Hash, der den Vergleich verweigert.** Der zweite
 Eval-Lauf verbessert Recall von 0,75 auf 0,80 — aber der sha256 über das
 Golden Set weicht ab: Jemand hat eine Query „korrigiert".
 `verify_golden_hash` verweigert den Vergleich, bis das Set wieder dem
@@ -141,14 +141,14 @@ eingefrorenen Stand entspricht; erst dann wertet das Regelwerk aus und
 entscheidet `angenommen/abgelehnt/abgebrochen`
 (`golden/golden_set.json`, `tests/test_w37_eval_redteam.py`).
 
-**W38 — Reproduktion und Dokumentation: der Doppellauf-Digest.** `repro_check()`
+**Reproduktionsphase — Reproduktion und Dokumentation: der Doppellauf-Digest.** `repro_check()`
 führt die Pipeline zweimal in zwei frischen Verzeichnissen aus und vergleicht
 die Artefakt-Digests — nur „reproduzierbar: ja" mit übereinstimmenden Digests
 zählt (`tests/test_w38_repro.py`). Der erste README-Entwurf behauptet
 „produktionsreif und sicher gegen Injektion"; der Overclaim-Scanner markiert
 beide Phrasen und verlangt Limitationen statt Werbetext.
 
-**W39 — Demo und Diagnose aus eingefrorenen Messwerten.** `demo_metrics()`
+**Abschlussphase — Demo und Diagnose aus eingefrorenen Messwerten.** `demo_metrics()`
 liest Recall 0,75 → 0,80, Kosten und Subgruppenwerte ausschließlich aus den
 eingefrorenen Berichten — ein Assert gegen das Manifest verhindert heimliche
 Neuberechnung mit anderen Seeds. `final_diagnosis(events)` listet am Ende,

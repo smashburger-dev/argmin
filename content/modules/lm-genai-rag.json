@@ -3,7 +3,7 @@
   "moduleId": "lm-genai-rag",
   "version": 1,
   "locale": "de",
-  "title": "RAG: Retrieval messbar machen — getrennt von der Antwortbildung",
+  "title": "RAG: Retrieval messbar machen",
   "description": "Dokumente deterministisch chunken (Größe, Overlap, Fensterarithmetik) und einen Inverted-Index mit gepinnter Normalisierung aufbauen Retrieval als eigene, messbare Stufe behandeln: top-k, Recall@k und MRR gegen ein festes Golden Set eine deterministische Retrieval-Baseline (Bag-of-Words-Kosinus bzw. TF-IDF) in reinem Python/NumPy implementieren und die Antwortbildung bewusst als Stub/Fixtur halten",
   "competencyIds": [
     "c-genai-rag"

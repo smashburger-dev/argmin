@@ -3,7 +3,7 @@
   "moduleId": "lm-capstone-baseline",
   "version": 1,
   "locale": "de",
-  "title": "Capstone-Baseline: Hashes, Fehler-Ledger und Vergleichbarkeit",
+  "title": "Capstone-Baseline",
   "description": "Eine reproduzierbare Capstone-Baseline hashfixieren, Fehler-Ledger lesen und Berichte gegen stille Abweichungen schützen.",
   "competencyIds": [
     "c-research-capstone"

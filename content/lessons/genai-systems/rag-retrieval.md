@@ -40,11 +40,11 @@ $$\mathrm{Recall}@k = \frac{|\,\text{top-}k \cap \text{relevant}\,|}{|\text{rele
 
 $$\mathrm{MRR} = \frac{1}{|Q|}\sum_{q \in Q} \frac{1}{\mathrm{rank}_q},$$
 
-— wie schnell ein relevantes Dokument oben steht. Beide Metriken bewerten ausschließlich das Ranking. Ob die daraufhin geformte Antwort gut ist, ist eine zweite, getrennte Evaluation (Woche 28).
+— wie schnell ein relevantes Dokument oben steht. Beide Metriken bewerten ausschließlich das Ranking. Ob die daraufhin geformte Antwort gut ist, ist eine zweite, getrennte Evaluation (Lektion „Evaluation generativer Antworten“).
 
 ## Warum die Trennung zählt
 
-Wenn Retrieval und Generierung zusammen gemessen werden, kannst du Fehlerursachen nicht zuordnen: War das richtige Dokument nicht dabei (Retrieval-Fehler) oder wurde es falsch zusammengefasst (Antwort-Fehler)? Erst die getrennte Messung macht die Pipeline debuggbar. Deshalb gilt in dieser Woche: Retrieval echt und deterministisch, Antwortbildung als Stub — ein Stub wählt z. B. den ersten Satz des besten Dokuments, der einen Anfrageterm enthält, und meldet "kein treffer" ehrlich zurück, wenn nichts passt.
+Wenn Retrieval und Generierung zusammen gemessen werden, kannst du Fehlerursachen nicht zuordnen: War das richtige Dokument nicht dabei (Retrieval-Fehler) oder wurde es falsch zusammengefasst (Antwort-Fehler)? Erst die getrennte Messung macht die Pipeline debuggbar. Deshalb gilt in dieser Lektion: Retrieval echt und deterministisch, Antwortbildung als Stub — ein Stub wählt z. B. den ersten Satz des besten Dokuments, der einen Anfrageterm enthält, und meldet "kein treffer" ehrlich zurück, wenn nichts passt.
 
 ## Typische Fehler
 

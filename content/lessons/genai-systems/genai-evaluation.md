@@ -21,11 +21,11 @@ Der Default ist wichtig: Regelwerke weisen Fehler nach, sie bescheinigen keine K
 
 ## Retrieval- und Antwortfehler trennen
 
-Vor jeder Antwortmessung steht die Frage aus Woche 27: Lag das richtige Dokument überhaupt in den top-$k$? Wenn nicht, ist der Fall ein **Retrieval-Fehler**, und die Antwortbewertung sagt nichts über den Generator. Erst wenn das Retrieval traf, ist das Label ein **Antwortfehler** derselben Kategorie. In der Praxis heißt das: pro Fall zuerst `recall@k` prüfen, dann klassifizieren — sonst verbesserst du einen Generator für Fehler, die das Retrieval verursacht hat.
+Vor jeder Antwortmessung steht die Frage aus der Lektion „RAG: Retrieval messbar machen“: Lag das richtige Dokument überhaupt in den top-$k$? Wenn nicht, ist der Fall ein **Retrieval-Fehler**, und die Antwortbewertung sagt nichts über den Generator. Erst wenn das Retrieval traf, ist das Label ein **Antwortfehler** derselben Kategorie. In der Praxis heißt das: pro Fall zuerst `recall@k` prüfen, dann klassifizieren — sonst verbesserst du einen Generator für Fehler, die das Retrieval verursacht hat.
 
 ## Deterministische Metriken
 
-Alle Metriken dieser Woche sind ohne Sprachmodell berechenbar:
+Alle Metriken dieser Lektion sind ohne Sprachmodell berechenbar:
 
 - **Exact Match**: Anteil der Antworten mit $\mathrm{trim}(a) = \mathrm{trim}(g)$. Streng, aber glasklar.
 - **Contains**: Ist die Gold-Antwort Teilmenge der Antwort? Toleranter gegenüber Umformulierungen, anfällig für lange Antworten.

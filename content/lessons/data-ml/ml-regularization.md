@@ -48,9 +48,9 @@ Bei normierten Features ($s = 1$, wie in Aufgabe w14-e4) vereinfacht sich das zu
 
 Das ist der Kernunterschied: **Lasso setzt Koeffizienten exakt auf null** (automatische Feature-Selektion), Ridge schrumpft sie nur gegen null.
 
-## λ wählen: Cross-Validation (Rückbindung Woche 12)
+## λ wählen: Cross-Validation (Rückbindung an die Lektion „Cross-Validation und Leakage-Kontrolle“)
 
-$\lambda$ ist ein Hyperparameter und wird wie in Woche 12 gewählt: $\lambda$-Grid aufstellen, $k$-fold Cross-Validation **auf den Trainingsdaten**, das $\lambda$ mit der besten mittleren Validierungsleistung nehmen, dann final trainieren. Das Testset wird dafür nicht angefasst.
+$\lambda$ ist ein Hyperparameter und wird wie in der Lektion „Cross-Validation und Leakage-Kontrolle“ gewählt: $\lambda$-Grid aufstellen, $k$-fold Cross-Validation **auf den Trainingsdaten**, das $\lambda$ mit der besten mittleren Validierungsleistung nehmen, dann final trainieren. Das Testset wird dafür nicht angefasst.
 
 ## Feature Engineering vor Ridge
 

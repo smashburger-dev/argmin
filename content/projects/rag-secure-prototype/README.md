@@ -4,7 +4,7 @@ Vervollständige `contains_injection`, `audit`, `answer`, `request_action`, `met
 
 ## Ziel
 
-Dieses Projekt fügt die Wochen 27–29 zusammen: deterministisches Retrieval, Fixtur-Evaluation und defensive Sicherheitskontrollen — in einem **minimalen Prototyp mit Stub-Generator**. Der Stub formuliert nichts neu: Er wählt aus dem besten Dokument den ersten Satz, der einen Anfragebegriff enthält, und meldet sonst fest `"kein treffer"` oder `"abgelehnt: injektionsverdacht"`.
+Dieses Projekt fügt die Retrieval-, Evaluations- und Sicherheitslektionen zusammen: deterministisches Retrieval, Fixtur-Evaluation und defensive Sicherheitskontrollen — in einem **minimalen Prototyp mit Stub-Generator**. Der Stub formuliert nichts neu: Er wählt aus dem besten Dokument den ersten Satz, der einen Anfragebegriff enthält, und meldet sonst fest `"kein treffer"` oder `"abgelehnt: injektionsverdacht"`.
 
 ## Der Kontrakt dieses Projekts
 

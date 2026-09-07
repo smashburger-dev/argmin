@@ -3,7 +3,7 @@
   "moduleId": "lm-grad-regression",
   "version": 1,
   "locale": "de",
-  "title": "Gradientenabstieg und lineare Regression aus Grundoperationen",
+  "title": "Gradientenabstieg und lineare Regression",
   "description": "Lerne Gradientenabstieg und lineare Regression aus den zugrunde liegenden Ableitungen und Updates herzuleiten.",
   "competencyIds": [
     "c-grad-regression"

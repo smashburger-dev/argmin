@@ -12,7 +12,7 @@ Das ist die ganze Mechanik: **lokal mal upstream**. Über einen Pfad mit Kanten 
 
 ## Backward-Pass für ein 2-Layer-MLP
 
-Netz wie in Woche 18: $H = \mathrm{ReLU}(XW_1 + b_1)$, $\hat{y} = HW_2 + b_2$, Verlust $L = \frac{1}{n}\sum_i (\hat{y}_i - y_i)^2$ (MSE, Regression mit einer Ausgabe). Rückwärts, Schritt für Schritt:
+Netz wie in der Lektion „Tensoren, Layer und Dimensionsverträge“: $H = \mathrm{ReLU}(XW_1 + b_1)$, $\hat{y} = HW_2 + b_2$, Verlust $L = \frac{1}{n}\sum_i (\hat{y}_i - y_i)^2$ (MSE, Regression mit einer Ausgabe). Rückwärts, Schritt für Schritt:
 
 ```python
 delta2 = (2.0 / n) * (y_hat - y)          # dL/d(y_hat), Form (n, 1)
