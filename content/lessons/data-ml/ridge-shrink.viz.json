@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Ridge-Schrumpfung",
+  "caption": "Ziehe λ: Mit stärkerer Regularisierung wandert das Minimum der Verlustfunktion näher zu null.",
+  "boundingbox": [-5, 16, 7, -2],
+  "sliders": [{ "name": "lam", "label": "λ", "range": [0, 5], "value": 1, "step": 0.1 }],
+  "objects": [
+    { "kind": "functiongraph", "expr": "(x-3)^2+lam*x^2", "label": "Verlust", "color": "#294bd6" },
+    { "kind": "point", "at": ["3/(1+lam)", "(3/(1+lam)-3)^2+lam*(3/(1+lam))^2"], "label": "w*", "color": "#b72f2a" },
+    { "kind": "text", "at": [-4, -1], "text": "w* = {3/(1+lam)}", "color": "#294bd6" }
+  ]
+}

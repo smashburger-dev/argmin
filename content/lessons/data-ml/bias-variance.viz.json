@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Bias-Varianz-Zerlegung",
+  "caption": "Ziehe k: Bias² sinkt, Varianz steigt, und der markierte Punkt zeigt den Gesamtfehler.",
+  "boundingbox": [-1, 5, 12, -1],
+  "sliders": [{ "name": "k", "label": "k", "range": [0, 10], "value": 3, "step": 0.1 }],
+  "objects": [
+    { "kind": "functiongraph", "expr": "4/(x+1)", "domain": [0, 10], "label": "Bias²", "color": "#16713a" },
+    { "kind": "functiongraph", "expr": "0.3*x", "label": "Varianz", "color": "#9c4b00" },
+    { "kind": "functiongraph", "expr": "4/(x+1)+0.3*x", "domain": [0, 10], "label": "Summe", "color": "#294bd6" },
+    { "kind": "point", "at": ["k", "4/(k+1)+0.3*k"], "color": "#b72f2a" },
+    { "kind": "text", "at": [0, -0.5], "text": "Gesamtfehler = {4/(k+1)+0.3*k}", "color": "#294bd6" }
+  ]
+}

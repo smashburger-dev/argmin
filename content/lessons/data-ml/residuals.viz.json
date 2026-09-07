@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Residuen einer Regression",
+  "caption": "Ziehe m und b: Die gestrichelten Strecken zeigen die Residuen zwischen Messpunkten und Regressionsgerade.",
+  "boundingbox": [-1, 8, 6, -2],
+  "sliders": [
+    { "name": "m", "label": "m", "range": [0.2, 2], "value": 1, "step": 0.1 },
+    { "name": "b", "label": "b", "range": [-1, 2], "value": 0, "step": 0.1 }
+  ],
+  "objects": [
+    { "kind": "point", "at": [1, 2], "color": "#b72f2a" },
+    { "kind": "point", "at": [2, 2.5], "color": "#b72f2a" },
+    { "kind": "point", "at": [3, 4], "color": "#b72f2a" },
+    { "kind": "point", "at": [4, 5.5], "color": "#b72f2a" },
+    { "kind": "functiongraph", "expr": "m*x+b", "color": "#294bd6" },
+    { "kind": "segment", "from": [1, 2], "to": [1, "m*1+b"], "dash": true, "color": "#9c4b00" },
+    { "kind": "segment", "from": [2, 2.5], "to": [2, "m*2+b"], "dash": true, "color": "#9c4b00" },
+    { "kind": "segment", "from": [3, 4], "to": [3, "m*3+b"], "dash": true, "color": "#9c4b00" },
+    { "kind": "segment", "from": [4, 5.5], "to": [4, "m*4+b"], "dash": true, "color": "#9c4b00" },
+    { "kind": "text", "at": [0, -1], "text": "MSE = ((2-(m+b))^2+(2.5-(2*m+b))^2+(4-(3*m+b))^2+(5.5-(4*m+b))^2)/4", "color": "#294bd6" }
+  ]
+}

@@ -7,6 +7,7 @@ import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { sanitizePublicValue } from './public_content.mjs';
 import { renderMarkdown } from './markdown_content.mjs';
+import { compileExpression, compileTemplate } from '../assets/js/domain/expression_eval.mjs';
 import { validateCompetencyGraph } from '../assets/js/domain/competency_graph.mjs';
 import { assertFamilyPlacement, configureExerciseFamilies, EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
@@ -32,7 +33,7 @@ export { validateCompetencyGraph };
 const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
+  'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights', 'visualization',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
 const CATALOG_ROOTS = { competencies: ['competencies', 'competency'], tracks: ['tracks', 'track'], milestones: ['milestones', 'milestone'], tools: ['tools', 'tool-card'], reviews: ['reviews', 'review-findings'] };
@@ -140,16 +141,65 @@ function assertUniqueCheckpoints(lessons) {
   }
 }
 
-function compileLessonContent(contentRoot, lessons) {
+function compileLessonContent(contentRoot, lessons, projectRoot) {
+  const visualizationIds = new Map();
   return lessons.map((lesson) => ({
     ...lesson,
     blocks: lesson.blocks.map((block) => {
-      if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown zeigen`);
+      if (block.type === 'visualization') {
+        if (!block.contentRef.endsWith('.viz.json')) throw new Error(`${lesson.lessonId}: Visualisierungsreferenz muss auf .viz.json zeigen`);
+        const specPath = resolveContentPath(contentRoot, block.contentRef, ['.viz.json']);
+        const spec = readJson(specPath);
+        validateSourceDocument('visualization', spec, projectRoot);
+        const visualizationId = block.contentRef.split('/').pop().slice(0, -'.viz.json'.length);
+        if (!/^[a-z0-9][a-z0-9-]*$/.test(visualizationId)) throw new Error(`${lesson.lessonId}: Ungültige Visualisierungs-ID ${visualizationId}`);
+        const previous = visualizationIds.get(visualizationId);
+        if (previous) throw new Error(`Visualisierungs-ID ${visualizationId} doppelt: ${previous} und ${lesson.lessonId}`);
+        visualizationIds.set(visualizationId, lesson.lessonId);
+        validateVisualizationExpressions(spec, lesson.lessonId, visualizationId);
+        return { ...block, html: '', viz: spec, visualizationId };
+      }
+      if (!block.contentRef.endsWith('.md')) throw new Error(`${lesson.lessonId}: Content-Referenz muss auf Markdown oder .viz.json zeigen`);
       const source = readFileSync(resolveContentPath(contentRoot, block.contentRef, ['.md']), 'utf8');
       const html = renderMarkdown(source).replace(/^<h1>[^<]*<\/h1>\n/, '');
       return { ...block, html };
     }),
   }));
+}
+
+function validateVisualizationExpressions(spec, lessonId, visualizationId) {
+  const names = (spec.sliders || []).map((slider) => slider.name);
+  for (const slider of spec.sliders || []) {
+    if (!(slider.range[0] < slider.range[1])) {
+      throw new Error(`${lessonId}:${visualizationId}: Slider ${slider.name} benötigt min < max`);
+    }
+    if (slider.value < slider.range[0] || slider.value > slider.range[1]) {
+      throw new Error(`${lessonId}:${visualizationId}: Slider ${slider.name} value liegt außerhalb des Bereichs`);
+    }
+  }
+  const compileValue = (value) => {
+    if (typeof value === 'number') return;
+    compileExpression(value, names);
+  };
+  const compileCoord = (coord) => coord.forEach(compileValue);
+  for (const object of spec.objects) {
+    if (object.kind === 'functiongraph') {
+      compileExpression(object.expr, [...names, 'x']);
+      if (!/\bx\b/.test(object.expr)) throw new Error(`${lessonId}/${visualizationId}: functiongraph "${object.expr}" verwendet x nicht`);
+      (object.domain || []).forEach(compileValue);
+    } else if (object.kind === 'point') {
+      compileCoord(object.at);
+    } else if (object.kind === 'arrow' || object.kind === 'segment') {
+      compileCoord(object.from);
+      compileCoord(object.to);
+    } else if (object.kind === 'text') {
+      compileCoord(object.at);
+      compileTemplate(object.text, names);
+    } else {
+      object.points.forEach(compileCoord);
+    }
+  }
+  return `${lessonId}:${visualizationId}`;
 }
 
 function validateProjectPackages(contentRoot, files, projects) {
@@ -398,7 +448,7 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
   const entities = loadCatalogEntities(contentRoot, catalog, files, projectRoot);
   validateLoadedCatalog(contentRoot, catalog, files, entities);
   filterPublicEntities(entities);
-  const bundle = compileCatalogBundle(contentRoot, catalog, contractVersion, entities);
+  const bundle = compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities);
   validateCompiledContent(bundle);
   const hashInput = { ...bundle, contentVersion: undefined };
   bundle.contentVersion = createHash('sha256').update(JSON.stringify(canonicalize(hashInput))).digest('hex');
@@ -407,9 +457,11 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
 }
 
 function discoverCatalogFiles(contentRoot, catalog) {
+  const lessonFiles = discoverJson(contentRoot, catalogRoot(catalog, 'lessons')).filter((file) => !file.endsWith('.viz.json'));
   return {
     ...Object.fromEntries(Object.keys(CATALOG_ROOTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, key))])),
     ...Object.fromEntries(Object.keys(CATALOG_OBJECTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, CATALOG_OBJECTS[key][0]))])),
+    lessons: lessonFiles,
     projects: discoverProjects(contentRoot, catalogRoot(catalog, 'projects')),
     families: discoverJson(contentRoot, catalogRoot(catalog, 'families')),
   };
@@ -472,15 +524,18 @@ function filterPublicEntities(entities) {
   }
 }
 
-function compileCatalogBundle(contentRoot, catalog, contractVersion, entities) {
-  entities.lessons = compileLessonContent(contentRoot, entities.lessons);
+function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities) {
+  entities.lessons = compileLessonContent(contentRoot, entities.lessons, projectRoot);
+  const visualizations = entities.lessons.flatMap((lesson) => lesson.blocks
+    .filter((block) => block.type === 'visualization' && block.viz && block.visualizationId)
+    .map((block) => ({ visualizationId: block.visualizationId, lessonId: lesson.lessonId, spec: block.viz })));
   entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, { lessons: entities.lessons, definitions: [], projects: entities.projects }));
   const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
   return {
     schemaVersion: 1, catalogId: catalog.catalogId, catalogVersion: catalog.version, contractVersion, contentVersion: '',
     profile: 'public', locale: catalog.locale, overlays: [], sourceRights: entities.sourceRights, sources: entities.sources,
     competencies: entities.competencies, tracks: entities.tracks, milestones: entities.milestones, tools: entities.tools, reviews: entities.reviews,
-    lessons: entities.lessons, familyActivities, explanations: entities.explanations, projects: entities.projects,
+    lessons: entities.lessons, visualizations, familyActivities, explanations: entities.explanations, projects: entities.projects,
     learningModules: entities.learningModules, families: entities.families,
   };
 }
@@ -550,11 +605,12 @@ const SECTION_FIELDS = {
   sources: 'sources',
   tools: 'tools',
   reviews: 'reviews',
+  visualizations: 'visualizations',
 };
 
 export function buildSplitArtifacts(bundle) {
-  const { sources, tools, reviews, ...lightBundle } = bundle;
-  const sections = { sources: { sources }, tools: { tools }, reviews: { reviews } };
+  const { sources, tools, reviews, visualizations, ...lightBundle } = bundle;
+  const sections = { sources: { sources }, tools: { tools }, reviews: { reviews }, visualizations: { visualizations } };
   const index = {
     ...lightBundle,
     lessons: bundle.lessons.map((lesson) => ({ ...lesson, blocks: [] })),

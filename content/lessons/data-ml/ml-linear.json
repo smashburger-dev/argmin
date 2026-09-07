@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-ml-linear",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Lineare Regression: Fit, Fehlermaße und Residuenanalyse",
   "objectives": [
@@ -13,7 +13,8 @@
   "requires": ["c-ml-baseline", "c-grad-regression"],
   "estimatedMinutes": 55,
   "blocks": [
-    { "blockId": "ml-linear-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-linear.md" }
+    { "blockId": "ml-linear-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-linear.md" },
+    { "blockId": "ml-linear-viz", "type": "visualization", "contentRef": "lessons/data-ml/residuals.viz.json" }
   ],
   "sourceRefs": [
     { "sourceId": "islr-book", "role": "primary", "locator": "Ch 3 Linear Regression (nur Zitation/Verweis)" },

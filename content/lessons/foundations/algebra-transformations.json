@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-algebra-transformations",
-  "version": 2,
+  "version": 3,
   "locale": "de",
   "title": "Terme strukturiert umformen",
   "objectives": ["Klammern mit dem Distributivgesetz auflösen", "gleichartige Terme erkennen und zusammenfassen", "eine Umformung mit Einsetzen kontrollieren"],
   "competencyIds": ["c-algebra"],
   "requires": ["c-algebra-basics"],
   "estimatedMinutes": 35,
-  "blocks": [{ "blockId": "algebra-transformations-core", "type": "worked-example", "contentRef": "lessons/foundations/algebra-transformations.md" }],
+  "blocks": [
+    { "blockId": "algebra-transformations-core", "type": "worked-example", "contentRef": "lessons/foundations/algebra-transformations.md" },
+    { "blockId": "algebra-transformations-viz", "type": "visualization", "contentRef": "lessons/foundations/distributive-law.viz.json" }
+  ],
   "sourceRefs": [
     { "sourceId": "serlo-algebra-grundlagen-w01", "role": "practice", "locator": "Äquivalenzumformungen und Potenzgesetz-Aufgaben" },
     { "sourceId": "wikibooks-mfnf", "role": "reference", "locator": "Terme und Gleichungen" }

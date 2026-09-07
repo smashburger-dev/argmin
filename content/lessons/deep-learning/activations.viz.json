@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Aktivierungsfunktionen",
+  "caption": "Ziehe z: Du vergleichst ReLU, tanh und Sigmoid am selben Eingangswert.",
+  "boundingbox": [-5, 1.5, 5, -1.5],
+  "sliders": [{ "name": "z", "label": "z", "range": [-4, 4], "value": 1, "step": 0.1 }],
+  "objects": [
+    { "kind": "functiongraph", "expr": "relu(x)", "label": "ReLU", "color": "#16713a" },
+    { "kind": "functiongraph", "expr": "tanh(x)", "label": "tanh", "color": "#9c4b00" },
+    { "kind": "functiongraph", "expr": "sigmoid(x)", "label": "Sigmoid", "color": "#294bd6" },
+    { "kind": "point", "at": ["z", "relu(z)"], "color": "#16713a" },
+    { "kind": "point", "at": ["z", "tanh(z)"], "color": "#9c4b00" },
+    { "kind": "point", "at": ["z", "sigmoid(z)"], "color": "#294bd6" },
+    { "kind": "text", "at": [-4.5, -1.2], "text": "ReLU={relu(z)}, tanh={tanh(z)}, σ={sigmoid(z)}", "color": "#294bd6" }
+  ]
+}

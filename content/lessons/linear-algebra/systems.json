@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-linalg-systems",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Gleichungssysteme als Spaltenbild lesen",
   "objectives": ["Ax=b als Gleichungen und Spaltenkombination deuten", "Koeffizienten eines Zielvektors bestimmen", "eine Lösung in beiden Darstellungen prüfen"],
   "competencyIds": ["c-linalg-systems"],
   "requires": ["c-algebra-basics", "c-linalg-matrices"],
   "estimatedMinutes": 50,
-  "blocks": [{ "blockId": "linalg-systems-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems.md" }],
+  "blocks": [
+    { "blockId": "linalg-systems-core", "type": "worked-example", "contentRef": "lessons/linear-algebra/systems.md" },
+    { "blockId": "systems-viz", "type": "visualization", "contentRef": "lessons/linear-algebra/two-lines.viz.json" }
+  ],
   "sourceRefs": [
     { "sourceId": "mit-ocw-18-06sc", "role": "reference", "locator": "Lecture 1: The Geometry of Linear Equations" },
     { "sourceId": "wikibooks-mfnf", "role": "remedial", "locator": "Lineare Gleichungssysteme und Linearkombinationen" }

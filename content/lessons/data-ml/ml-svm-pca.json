@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-ml-svm-pca",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Margins, PCA und k-Means: Abstände ohne Ambiguität",
   "objectives": [
@@ -12,7 +12,10 @@
   "competencyIds": ["c-ml-svm-pca"],
   "requires": ["c-ml-cv", "c-linalg-independence"],
   "estimatedMinutes": 60,
-  "blocks": [{ "blockId": "ml-svm-pca-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-svm-pca.md" }],
+  "blocks": [
+    { "blockId": "ml-svm-pca-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-svm-pca.md" },
+    { "blockId": "ml-svm-pca-viz", "type": "visualization", "contentRef": "lessons/data-ml/pca-axis.viz.json" }
+  ],
   "sourceRefs": [
     { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "SVM, PCA (decomposition), Clustering (k-Means) — nur Lektüre" },
     { "sourceId": "islr-book", "role": "practice", "locator": "Ch 9 SVM, Ch 12 Unsupervised (nur Zitation)" },

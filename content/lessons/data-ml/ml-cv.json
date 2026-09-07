@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-ml-cv",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Cross-Validation und Leakage-Kontrolle",
   "objectives": [
@@ -13,7 +13,8 @@
   "requires": ["c-ml-logistic"],
   "estimatedMinutes": 55,
   "blocks": [
-    { "blockId": "ml-cv-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-cv.md" }
+    { "blockId": "ml-cv-core", "type": "worked-example", "contentRef": "lessons/data-ml/ml-cv.md" },
+    { "blockId": "ml-cv-viz", "type": "visualization", "contentRef": "lessons/data-ml/bias-variance.viz.json" }
   ],
   "sourceRefs": [
     { "sourceId": "sklearn-user-guide", "role": "primary", "locator": "Cross-validation: evaluating estimator performance — nur Lektüre" },

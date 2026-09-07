@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-tf-attention",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Attention und Transformer-Grundlagen",
   "objectives": [
@@ -14,6 +14,7 @@
   "estimatedMinutes": 75,
   "blocks": [
     { "blockId": "tf-attention-core", "type": "worked-example", "contentRef": "lessons/transformer-llm/tf-attention.md" },
+    { "blockId": "tf-attention-viz", "type": "visualization", "contentRef": "lessons/transformer-llm/softmax-temperature.viz.json" },
     { "blockId": "tf-attention-check", "type": "checkpoint", "contentRef": "lessons/transformer-llm/tf-attention-checkpoint.md" }
   ],
   "sourceRefs": [

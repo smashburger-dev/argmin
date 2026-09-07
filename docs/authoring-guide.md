@@ -101,6 +101,15 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 
 ## 8. Neuer public-first Content-Vertrag
 
+### Visualisierungsblock
+
+Ein Visualisierungsblock verweist auf eine typisierte JSON-Datei mit der Endung
+`.viz.json` unter `content/lessons/`. Die Datei beschreibt eine lokale
+JSXGraph-Szene mit Boundingbox, optionalen Slidern und mindestens einem Objekt.
+Ausdrücke werden beim Content-Compile validiert; Slider-Namen sind die einzigen
+freien Variablen. Der Block steht direkt nach dem Worked Example und verwendet
+`type: "visualization"` sowie eine maschinenlesbare `blockId`.
+
 - `content/catalog.json` deklariert Content-Wurzeln. Der Compiler entdeckt nur darunter, sortiert deterministisch und lehnt verwaiste Dateien ab. Membership steht im LearningModule, nicht in zentralen Dateilisten.
 - Kompetenzen, Tracks und Milestones liegen unter `content/competencies/`, `content/tracks/` und `content/milestones/`. Ihre Objektformen stehen unter `schemas/`.
 - `requires` bildet ausschließlich echte Voraussetzungen und muss azyklisch sein. `supports`, `related` und `usedBy` stehen getrennt unter `relations`.

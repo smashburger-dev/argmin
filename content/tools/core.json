@@ -78,7 +78,7 @@
       "summary": "Eine tastaturbedienbare JSXGraph-Ansicht zeigt A·x als Linearkombination zweier Matrixspalten.",
       "kind": "visualization",
       "competencyIds": ["c-linalg-systems", "c-linalg-matrices"],
-      "routes": [{ "label": "Visualisierung öffnen", "href": "#/visualization/w05-viz1", "type": "internal" }],
+      "routes": [{ "label": "Visualisierung öffnen", "href": "#/visualization/column-picture", "type": "internal" }],
       "sourceRefs": ["mit-ocw-18-06sc", "wikibooks-mfnf"],
       "capabilities": ["Koeffizienten per Zahleneingabe verändern", "Ergebnisvektor live berechnen", "Spalten- und Ergebnisvektoren vergleichen"],
       "limitations": ["Zunächst nur eine feste 2×2-Matrix", "Visualisierung ersetzt keinen unabhängigen Nachweis"],

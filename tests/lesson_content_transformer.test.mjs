@@ -341,7 +341,11 @@ test('transformer-llm lessons pair a worked example with a checkpoint block', as
     assert.ok(types.includes('checkpoint') || types.includes('explanation'),
       `${lesson.file} lacks checkpoint/explanation block`);
     for (const block of doc.blocks) {
-      assert.ok(block.contentRef.endsWith('.md'), `${lesson.file}: contentRef must be markdown`);
+      if (block.type === 'visualization') {
+        assert.ok(block.contentRef.endsWith('.viz.json'), `${lesson.file}: visualization contentRef must be .viz.json`);
+      } else {
+        assert.ok(block.contentRef.endsWith('.md'), `${lesson.file}: contentRef must be markdown`);
+      }
       assert.ok(existsSync(join(root, 'content', block.contentRef)),
         `${lesson.file}: missing content file ${block.contentRef}`);
     }

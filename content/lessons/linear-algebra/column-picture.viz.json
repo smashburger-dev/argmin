@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Spaltenbild von A·x",
+  "caption": "Ziehe x₁ und x₂: Der blaue Vektor b ist die Linearkombination x₁·a₁ + x₂·a₂ der Spalten von A = [[2, 1], [1, 3]].",
+  "boundingbox": [-6, 8, 8, -5],
+  "keepAspectRatio": true,
+  "sliders": [
+    { "name": "x1", "label": "x₁", "range": [-3, 3], "value": 1, "step": 0.1 },
+    { "name": "x2", "label": "x₂", "range": [-3, 3], "value": 0, "step": 0.1 }
+  ],
+  "objects": [
+    { "kind": "arrow", "from": [0, 0], "to": [2, 1], "label": "a₁", "color": "#16713a" },
+    { "kind": "arrow", "from": [0, 0], "to": [1, 3], "label": "a₂", "color": "#9c4b00" },
+    { "kind": "segment", "from": ["2*x1", "x1"], "to": ["2*x1+x2", "x1+3*x2"], "color": "#5b5a53", "dash": true },
+    { "kind": "arrow", "from": [0, 0], "to": ["2*x1+x2", "x1+3*x2"], "label": "b", "color": "#294bd6" },
+    { "kind": "text", "at": [-5.5, -3.5], "text": "b = A·x = ({2*x1+x2} ; {x1+3*x2})", "color": "#294bd6" }
+  ]
+}

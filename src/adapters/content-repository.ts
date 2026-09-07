@@ -1,6 +1,6 @@
 import contentIndex from '@content-index';
 import { familyChunks, lessonChunks, sectionChunks } from '@content-chunks';
-import type { CatalogData, ExerciseSummary, LearningModule, Lesson, ReviewRecord, SourceSummary, ToolCard } from '../app/types';
+import type { CatalogData, ExerciseSummary, LearningModule, Lesson, ReviewRecord, SourceSummary, ToolCard, VisualizationSummary } from '../app/types';
 
 // ContentRepository (ADR-0013): the initial bundle carries only the catalog
 // index (competencies, tracks, milestones, summaries). Lesson and exercise
@@ -44,13 +44,14 @@ interface SectionIndex {
   sources: { sources: SourceSummary[] };
   tools: { tools: ToolCard[] };
   reviews: { reviews: ReviewRecord[] };
+  visualizations: { visualizations: VisualizationSummary[] };
 }
 
 type LessonBody = { lessonId: string; blocks: Lesson['blocks'] };
 type FamilyCases = { familyId: string; cases: Array<Record<string, unknown>> };
 
 export class ContentUnavailableError extends Error {
-  constructor(public readonly contentId: string, kind: 'lesson' | 'exercise', cause: unknown) {
+  constructor(public readonly contentId: string, kind: 'lesson' | 'exercise' | 'visualization', cause: unknown) {
     super(`Inhalt ${kind} ${contentId} konnte nicht geladen werden: ${String((cause as Error)?.message || cause)}`);
     this.name = 'ContentUnavailableError';
   }
@@ -153,6 +154,16 @@ export async function loadTools(): Promise<ToolCard[]> {
 }
 export async function loadReviews(): Promise<ReviewRecord[]> {
   return (await sectionFile('reviews')).reviews;
+}
+export async function loadVisualizations(): Promise<VisualizationSummary[]> {
+  return (await sectionFile('visualizations')).visualizations;
+}
+
+export async function getVisualization(visualizationId: string): Promise<VisualizationSummary> {
+  const visualizations = await loadVisualizations();
+  const visualization = visualizations.find((item) => item.visualizationId === visualizationId);
+  if (!visualization) throw new ContentUnavailableError(visualizationId, 'visualization', new Error('Visualisierung existiert im Katalog nicht'));
+  return visualization;
 }
 
 export async function getLesson(lessonId: string): Promise<Lesson> {

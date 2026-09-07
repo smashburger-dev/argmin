@@ -26,7 +26,8 @@ export function expectedPublicCounts(projectRoot) {
   const tools = collection(discoverJson(contentRoot, catalogRoot(catalog, 'tools')), 'tools')
     .filter((item) => item.releaseStatus !== 'local-only');
   const reviews = collection(discoverJson(contentRoot, catalogRoot(catalog, 'reviews')), 'reviews');
-  const lessons = objects(discoverJson(contentRoot, catalogRoot(catalog, 'lessons')))
+  const lessons = objects(discoverJson(contentRoot, catalogRoot(catalog, 'lessons'))
+    .filter((file) => !file.endsWith('.viz.json')))
     .filter((item) => item.releaseStatus !== 'local-only');
   const explanations = objects(discoverJson(contentRoot, catalogRoot(catalog, 'explanations')))
     .filter((item) => item.releaseStatus !== 'local-only');
