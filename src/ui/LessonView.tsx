@@ -57,27 +57,29 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
         <h1 id="lesson-title" tabIndex={-1}>{summary.title}</h1>
         <div class="objectives" aria-labelledby="objectives-title"><h2 id="objectives-title">Danach kannst du</h2><ul>{summary.objectives.map((objective) => <li key={objective}>{objective}</li>)}</ul></div>
       </header>
-      <div class="lesson-layout">
-        <article class="lesson-prose" aria-busy={!lesson && !loadError}>
-          {loadError && <p role="alert" class="content-error">Lektion konnte nicht geladen werden: {loadError}</p>}
-          {!loadError && !lesson && <p role="status">Lektionsinhalt wird geladen.</p>}
-          {lesson?.blocks.map((block) => <section class={`lesson-block lesson-block-${block.type}`} key={block.blockId}>
-            {block.type === 'visualization' && block.viz
-              ? <VisualizationBlock id={block.visualizationId || block.blockId} spec={block.viz} />
-              : <MathMarkup html={block.html} />}
-          </section>)}
-        </article>
-        <aside class="lesson-side" aria-labelledby="practice-title">
-          <p class="card-kicker">Direkt prüfen</p>
-          <h2 id="practice-title">Passende Aufgaben</h2>
-          {relatedExercises.length > 0
-            ? <div class="side-cards">{relatedExercises.slice(0, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong>{activityLabel(exercise.activityType)}</strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Starten</Button></article>)}</div>
-            : <p>Für diese neue Kompetenz werden die unabhängigen Aufgabenfamilien noch ergänzt.</p>}
-          {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}
-          {sourceLinks.length ? <div class="lesson-sources"><h3>Weiterlesen und prüfen</h3><ul>{sourceLinks.map(({ reference, source }) => source && <li key={`${reference.sourceId}:${reference.locator}`}><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.title}<span>{reference.role} · {reference.locator}</span></a></li>)}</ul></div> : null}
-          <p class="lesson-note">Lies nicht alles noch einmal. Löse zuerst eine Aufgabe ohne Vorlage und kehre nur zur konkreten Lücke zurück.</p>
-        </aside>
-      </div>
+      <article class="lesson-prose" aria-busy={!lesson && !loadError}>
+        {loadError && <p role="alert" class="content-error">Lektion konnte nicht geladen werden: {loadError}</p>}
+        {!loadError && !lesson && <p role="status">Lektionsinhalt wird geladen.</p>}
+        {lesson?.blocks.map((block) => <section class={`lesson-block lesson-block-${block.type}`} key={block.blockId}>
+          {block.type === 'visualization' && block.viz
+            ? <VisualizationBlock id={block.visualizationId || block.blockId} spec={block.viz} />
+            : <MathMarkup html={block.html} />}
+        </section>)}
+      </article>
+      <section class="lesson-tasks" aria-labelledby="practice-title">
+        <p class="card-kicker">Direkt prüfen</p>
+        <h2 id="practice-title">Passende Aufgaben</h2>
+        {relatedExercises.length > 0
+          ? <div class="side-cards">{relatedExercises.slice(0, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong>{activityLabel(exercise.activityType)}</strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Starten</Button></article>)}</div>
+          : <p>Für diese neue Kompetenz werden die unabhängigen Aufgabenfamilien noch ergänzt.</p>}
+        {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}
+      </section>
+      {sourceLinks.length ? (
+        <details class="policy lesson-sources">
+          <summary>Quellen ({sourceLinks.length})</summary>
+          <ul>{sourceLinks.map(({ reference, source }) => source && <li key={`${reference.sourceId}:${reference.locator}`}><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.title}<span>{reference.role} · {reference.locator}</span></a></li>)}</ul>
+        </details>
+      ) : null}
       <nav class="lesson-pagination" aria-label="Lektionsnavigation">
         {previous ? <a href={`#/lesson/${previous.lessonId}`}><span>Zurück</span><strong>{previous.title}</strong></a> : <span />}
         {next ? <a href={`#/lesson/${next.lessonId}`}><span>Weiter</span><strong>{next.title}</strong></a> : <a href="#/project/p-foundations-data-checker"><span>Weiter</span><strong>CLI-Projekt</strong></a>}
