@@ -94,7 +94,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "gradW": 2,
+            "lr": 0.5
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 1$ — in Gradientenrichtung.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 1$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w - 2$ — Lernrate nicht multipliziert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow 0{,}5 \\cdot w$ — altes $w$ entfällt.",
+              "correct": false
+            }
+          ],
+          "prompt": "MSE-Gradient bzgl. $w$ ist $+2$, $\\mathrm{lr}=0{,}5$. Korrektes Update?",
+          "fullSolution": "$w \\leftarrow w - 0{,}5\\cdot 2 = w-1$."
+        },
+        {
+          "parameters": {
+            "gradW": 5,
+            "lr": 0.2
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 1$ — Plus statt Minus.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 5$ — ohne $\\mathrm{lr}$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w - 1$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow 0{,}2\\, w$.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gradient $+5$, Lernrate $0{,}2$. Wie lautet $w \\leftarrow \\,$?",
+          "fullSolution": "$0{,}2\\cdot 5=1$, Minus: $w-1$."
+        },
+        {
+          "parameters": {
+            "gradW": 8,
+            "lr": 0.05
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 0{,}4$.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 8$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow 0{,}05\\, w$.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow w - 0{,}4$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            }
+          ],
+          "prompt": "Beim MSE-Abstieg: $\\partial\\mathrm{MSE}/\\partial w = +8$, $\\mathrm{lr}=0{,}05$. Update?",
+          "fullSolution": "$w-0{,}05\\cdot 8=w-0{,}4$."
+        },
+        {
+          "parameters": {
+            "gradW": -3,
+            "lr": 0.2
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 0{,}6$ — der Schritt ist $w - \\mathrm{lr}\\cdot\\mathrm{grad}$, hier minus mal negativ.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 0{,}6$ — Vorzeichen des Gradienten ignoriert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w + 3$ — Lernrate vergessen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow -0{,}2\\, w$.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gradient bzgl. $w$ ist $-3$, $\\mathrm{lr}=0{,}2$. Korrektes Update?",
+          "fullSolution": "$w - 0{,}2\\cdot(-3)=w+0{,}6$. Weiter entgegen dem Gradienten."
+        },
+        {
+          "parameters": {
+            "gradW": 10,
+            "lr": 0.01
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 0{,}1$.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 0{,}1$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w - 10$.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow 0{,}01\\, w$.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gradient $+10$, $\\mathrm{lr}=0{,}01$. Wie wird $w$ aktualisiert?",
+          "fullSolution": "$w-0{,}1$."
+        },
+        {
+          "parameters": {
+            "gradW": 1,
+            "lr": 0.5
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 0{,}5$.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 1$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w - 0{,}5$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow 0{,}5\\, w$.",
+              "correct": false
+            }
+          ],
+          "prompt": "MSE, Gradient $+1$, Lernrate $0{,}5$. Korrektes $w$-Update?",
+          "fullSolution": "$w-0{,}5\\cdot 1=w-0{,}5$."
+        },
+        {
+          "parameters": {
+            "gradW": 6,
+            "lr": 0.25
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 1{,}5$.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 6$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow 0{,}25\\, w$.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow w - 1{,}5$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            }
+          ],
+          "prompt": "Gradient $+6$, $\\mathrm{lr}=0{,}25$. Update-Regel?",
+          "fullSolution": "$0{,}25\\cdot 6=1{,}5$, Minus."
+        },
+        {
+          "parameters": {
+            "gradW": -4,
+            "lr": 0.1
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 0{,}4$ — $w - \\mathrm{lr}\\cdot\\mathrm{grad}$ mit negativem Gradienten.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 0{,}4$ — Plus/Minus vertauscht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w + 4$ — ohne Lernrate.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow 0{,}1\\, w$.",
+              "correct": false
+            }
+          ],
+          "prompt": "Gradient $-4$, $\\mathrm{lr}=0{,}1$. Wie lautet das korrekte Update für $w$?",
+          "fullSolution": "$w-0{,}1\\cdot(-4)=w+0{,}4$."
+        },
+        {
+          "parameters": {
+            "gradW": 3,
+            "lr": 0.2
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "$w \\leftarrow w + 0{,}6$ — der Schritt geht in Gradientenrichtung.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "$w \\leftarrow w - 0{,}6$ — der Schritt geht um $\\mathrm{lr} \\cdot \\mathrm{grad}$ entgegen dem Gradienten.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "$w \\leftarrow w - 3$ — die Lernrate wird nicht mit dem Gradienten multipliziert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "$w \\leftarrow 0{,}2 \\cdot w$ — der alte Wert von $w$ geht vollständig verloren.",
+              "correct": false
+            }
+          ],
+          "prompt": "Beim Gradientenabstieg auf den MSE ist der Gradient bzgl. $w$ aktuell $+3$ und $\\mathrm{lr}=0{,}2$. Wie lautet das korrekte Update für $w$?",
+          "fullSolution": "$w-0{,}2\\cdot 3=w-0{,}6$. Gleiche Regel wie $0{,}1\\cdot 4=0{,}4$."
+        }
+      ]
     },
     {
       "caseId": "fit-linear-gradient-loop",
