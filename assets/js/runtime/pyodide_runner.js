@@ -30,9 +30,9 @@ export class PyodideRunner {
         const message = 'worker error: ' + (e.message || 'unbekannt');
         this.restart('WorkerError', message);
       };
+      this.worker.postMessage({ type: 'init' });
     }
     if (!this.ready) {
-      this.worker.postMessage({ type: 'init' });
       return new Promise((res, rej) => this.readyWaiters.push([res, rej]));
     }
     return Promise.resolve();
