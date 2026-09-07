@@ -185,6 +185,7 @@ function validateVisualizationExpressions(spec, lessonId, visualizationId) {
   for (const object of spec.objects) {
     if (object.kind === 'functiongraph') {
       compileExpression(object.expr, [...names, 'x']);
+      if (!/\bx\b/.test(object.expr)) throw new Error(`${lessonId}/${visualizationId}: functiongraph "${object.expr}" verwendet x nicht`);
       (object.domain || []).forEach(compileValue);
     } else if (object.kind === 'point') {
       compileCoord(object.at);

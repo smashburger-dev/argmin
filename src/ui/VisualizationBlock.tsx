@@ -59,11 +59,13 @@ export function buildBoard(board: JxgBoard, spec: VisualizationSpec) {
   const pair = ([x, y]: Coord): [() => number, () => number] => [coord(x), coord(y)];
   spec.objects.forEach((object, index) => {
     const color = ('color' in object && object.color) || COLORS_BY_INDEX(index);
-    const style = { strokeColor: color, fillColor: color, highlightStrokeColor: color, highlightFillColor: color, dash: 'dash' in object && object.dash ? 2 : 0, fixed: true };
+    const filled = object.kind === 'point';
+    const style = { strokeColor: color, fillColor: filled ? color : 'none', highlightStrokeColor: color, highlightFillColor: filled ? color : 'none', dash: 'dash' in object && object.dash ? 2 : 0, fixed: true };
     if (object.kind === 'functiongraph') {
       const f = compileExpression(object.expr, [...names, 'x']);
       const domain = object.domain ? pair(object.domain) : [() => xmin, () => xmax];
-      board.create('functiongraph', [(x: number) => f({ ...scope(), x }), domain[0], domain[1]], { ...style, strokeWidth: 3, name: object.label || '', withLabel: Boolean(object.label) });
+      // Parametric curve with JS functions: 'functiongraph' would route its x-term through JessieCode, which needs eval (blocked by the CSP).
+      board.create('curve', [(x: number) => x, (x: number) => f({ ...scope(), x }), domain[0], domain[1]], { ...style, strokeWidth: 3, name: object.label || '', withLabel: Boolean(object.label) });
     } else if (object.kind === 'point') {
       board.create('point', pair(object.at), { ...style, size: 4, name: object.label || '', withLabel: Boolean(object.label), label: { fontSize: 14 } });
     } else if (object.kind === 'arrow' || object.kind === 'segment') {

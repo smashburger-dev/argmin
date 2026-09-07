@@ -6,7 +6,7 @@
   "boundingbox": [-1, 18, 5, -8],
   "sliders": [{ "name": "w", "label": "w", "range": [0, 4], "value": 1, "step": 0.1 }],
   "objects": [
-    { "kind": "functiongraph", "expr": "((w*1-2)^2+(w*2-4)^2+(w*3-6)^2)/3", "label": "MSE(w)", "color": "#294bd6" },
+    { "kind": "functiongraph", "expr": "((x*1-2)^2+(x*2-4)^2+(x*3-6)^2)/3", "label": "MSE(w)", "color": "#294bd6" },
     { "kind": "point", "at": ["w", "((w*1-2)^2+(w*2-4)^2+(w*3-6)^2)/3"], "color": "#b72f2a" },
     { "kind": "functiongraph", "expr": "((2*(w-2)*1+2*(2*w-4)*2+2*(3*w-6)*3)/3)*(x-w)+((w*1-2)^2+(w*2-4)^2+(w*3-6)^2)/3", "domain": ["w-1", "w+1"], "dash": true, "color": "#9c4b00" },
     { "kind": "text", "at": [-0.5, -5], "text": "Gradient = {(2*(w-2)*1+2*(2*w-4)*2+2*(3*w-6)*3)/3}", "color": "#294bd6" }
