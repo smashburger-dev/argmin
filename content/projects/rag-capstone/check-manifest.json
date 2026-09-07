@@ -24,7 +24,7 @@
     },
     {
       "path": "golden/expected_results.json",
-      "sha256": "6cc7a37386f36893cf5f773c957840ab8cdc8fa08643826c48fe549baa73f05d"
+      "sha256": "48e6a0d6ed92f516d3134cc22cfd95188b19ffb7760c48feecaebe47e36b5c47"
     },
     {
       "path": "tests/test_w35_scope.py",

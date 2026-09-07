@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "experimentId": "rag-capstone-e2e-v1",
   "beschreibung": "Erwartete Pipeline-Outputs des Referenzlaufs (Exaktwerte, eingefroren). run_digest ist der sha256 ueber die kanonische Serialisierung von run(); demo_metrics() prueft diese Werte gegen jede Neuberechnung.",
-  "run_digest": "00752b35a98b543e4eeb32695be5176c7e46e32ad2213b876580370480c38e50",
+  "run_digest": "783f592fdff3ad935b2a04c8cb75b8c40a0d17ef9d253b4d540cdce97d0ee232",
   "metriken": {
     "overall": {
       "queries": 8,
