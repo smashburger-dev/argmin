@@ -77,12 +77,12 @@ export const STRING_IMMUTABILITY_CASES = [
   {
     caseId: 'string-item-assignment-typeerror',
     sourceId: 'w02-e3',
-    prompt: 'Was passiert beim Ausführen dieses Programms?\n\n<code>name = "Noa"\nname[0] = "M"\nprint(name)</code>',
+    prompt: 'Was passiert beim Ausführen dieses Programms?\n\n<code>name = "Ada"\nname[0] = "M"\nprint(name)</code>',
     correct: 'Das Programm bricht mit einem TypeError ab: Strings unterstützen keine Zuweisung an einzelne Zeichen.',
     distractors: [
-      'Es gibt "Moa" aus, weil das erste Zeichen ersetzt wird.',
-      'Es gibt "MNoa" aus, weil das Zeichen eingefügt statt ersetzt wird.',
-      'Es gibt "Noa" aus, weil Zuweisungen an Strings still ignoriert werden.',
+      'Es gibt "Mda" aus, weil das erste Zeichen ersetzt wird.',
+      'Es gibt "MAda" aus, weil das Zeichen eingefügt statt ersetzt wird.',
+      'Es gibt "Ada" aus, weil Zuweisungen an Strings still ignoriert werden.',
     ],
     solution: 'name[0] = "M" wirft TypeError: \'str\' object does not support item assignment. Strings sind unveränderlich; jede Änderung erzeugt einen neuen String. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.',
   },
