@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: argmin ausprobieren
+    url: https://smashburger-dev.github.io/argmin/
+    about: Die Lernplattform läuft direkt im Browser — kein Account, keine Installation.
+  - name: Mitmachen (CONTRIBUTING)
+    url: https://github.com/smashburger-dev/argmin/blob/main/CONTRIBUTING.md
+    about: So kannst du Lektionen, Aufgaben oder Code beitragen.

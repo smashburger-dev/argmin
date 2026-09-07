@@ -1,0 +1,41 @@
+name: Inhaltlicher Fehler
+description: Eine Erklärung ist unklar oder falsch, eine Aufgabe hat eine falsche Lösung, ein Tippfehler …
+title: "[Inhalt] "
+labels: ["content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Super, dass dir das aufgefallen ist. Inhaltliche Rückmeldungen sind für argmin am wertvollsten — egal ob Tippfehler oder falsche Lösung.
+  - type: input
+    id: where
+    attributes:
+      label: Welche Lektion oder Aufgabe?
+      description: Titel oder Link aus der Adresszeile.
+      placeholder: "Lektion „Rang einer Matrix“ / https://smashburger-dev.github.io/argmin/#/…"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Worum geht es?
+      options:
+        - Tippfehler oder Formulierung
+        - Erklärung ist unklar oder zu knapp
+        - Aufgabe oder Lösung ist fachlich falsch
+        - Eine richtige Antwort wird als falsch gewertet (oder umgekehrt)
+        - Etwas anderes
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: Was ist falsch oder unklar?
+      description: Zitier gern die betroffene Stelle.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Vorschlag (optional)
+      description: Wie würdest du es formulieren oder korrigieren?
