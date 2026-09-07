@@ -92,9 +92,9 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
       ) : null}
       {progress.attemptsCount === 0 ? (
         <div class="empty-state">
-          <h2>Noch keine Evidence</h2>
-          <p>Beginne mit der Diagnose oder öffne eine der {catalog.competencies.length} Kompetenzen.</p>
-          <Button variant="primary" href="#/diagnostic">Diagnose starten</Button>
+          <h2>Hier ist noch alles offen</h2>
+          <p>Sobald du deine erste Aufgabe löst, siehst du hier deinen Fortschritt. Starte mit der kurzen Einstufung oder wähle eine der {catalog.competencies.length} Kompetenzen.</p>
+          <Button variant="primary" href="#/diagnostic">Einstufung starten</Button>
         </div>
       ) : null}
       <section class="activity-section" aria-labelledby="modules-title">
@@ -114,7 +114,7 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
           <ul>
             {journal.map((entry, index) => <li key={entry.id ?? index}>{formatJournalDate(entry.ts)} · {journalExerciseLabel(exerciseById.get(entry.exerciseId))} · {entry.errorType}</li>)}
           </ul>
-        ) : <p>Noch keine Journaleinträge.</p>}
+        ) : <p>Noch keine Einträge — Fehler, die du beim Üben machst, landen hier, damit du sie gezielt wiederholen kannst.</p>}
       </details>
       <details class="policy">
         <summary>Wie wird gezählt?</summary>

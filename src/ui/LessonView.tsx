@@ -71,7 +71,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
         <h2 id="practice-title">Passende Aufgaben</h2>
         {relatedExercises.length > 0
           ? <div class="side-cards">{relatedExercises.slice(0, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong>{activityLabel(exercise.activityType)}</strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Starten</Button></article>)}</div>
-          : <p>Für diese neue Kompetenz werden die unabhängigen Aufgabenfamilien noch ergänzt.</p>}
+          : <p>Zu dieser Lektion gibt es noch keine Aufgaben — sie kommen bald. Lies in Ruhe weiter.</p>}
         {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}
       </section>
       {sourceLinks.length ? (

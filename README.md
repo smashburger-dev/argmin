@@ -1,25 +1,35 @@
 # argmin
 
-Kostenlose, offene KI-Lernplattform (Deutsch)
+**KI verstehen, Schritt für Schritt — kostenlos, auf Deutsch, direkt im Browser.**
 
-## Sofort loslegen
+argmin ist eine offene Lernplattform für alle, die verstehen wollen, wie künstliche Intelligenz wirklich funktioniert: von den Mathe-Grundlagen über Lineare Algebra und Machine Learning bis zu Deep Learning, Transformern und GenAI. Kein Vorwissen nötig — du fängst dort an, wo du stehst.
 
-[argmin öffnen](https://smashburger-dev.github.io/argmin/)
+## Einfach loslegen
 
-Läuft komplett im Browser, kein Account, Fortschritt bleibt auf deinem Gerät.
+**→ [argmin öffnen](https://smashburger-dev.github.io/argmin/)**
 
-## Was drin ist
+Das war's. Kein Account, keine Installation, keine Kosten. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät — und du kannst ihn jederzeit als Datei sichern oder auf ein anderes Gerät mitnehmen.
 
-- 46 Kompetenzen, 46 Lektionen und über 250 Aufgaben von Mathe über Lineare Algebra und ML bis Deep Learning, Transformer und GenAI
-- Python im Browser via Pyodide und NumPy, dazu KaTeX und JSXGraph
-- Generierte Aufgabenvarianten mit deterministischen Gradern; kein LLM bewertet deine Antworten
-- Spaced Repetition und ein deterministischer Wochenplan
-- Helles und dunkles Farbschema
-- Offline-fähig und ohne CDN zur Laufzeit
+## Was dich erwartet
 
-## Lokal starten (für Entwickler)
+- **46 Lektionen und über 250 Aufgaben** in kleinen, verständlichen Schritten — Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI
+- **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren
+- **Üben, bis es sitzt.** Viele Aufgaben erzeugen immer neue Varianten, du kannst also so oft üben, wie du willst
+- **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft — keine KI, die rät, ob du richtig liegst
+- **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
+- **Angenehm für die Augen.** Ruhiges Design, hell oder dunkel, funktioniert auch offline
 
-Voraussetzung ist Node.js 22.
+## Mitmachen
+
+argmin lebt davon, dass Menschen mitdenken. Du musst nicht programmieren können, um zu helfen:
+
+- Dir ist ein Tippfehler, eine unklare Erklärung oder ein Fehler aufgefallen? [Öffne ein Issue](https://github.com/smashburger-dev/argmin/issues/new) — jede Rückmeldung hilft.
+- Du möchtest eine Lektion oder Aufgabe verbessern oder schreiben? In [CONTRIBUTING.md](CONTRIBUTING.md) steht, wie das geht.
+- Du willst am Code mitarbeiten? Willkommen — unten steht, wie du lokal startest.
+
+## Lokal starten (für Entwickler:innen)
+
+Du brauchst nur [Node.js 22](https://nodejs.org/). Dann:
 
 ```bash
 git clone https://github.com/smashburger-dev/argmin.git
@@ -28,22 +38,22 @@ npm ci
 npm run dev:next
 ```
 
-Öffne danach <http://127.0.0.1:4173/>. Nicht über `file://` öffnen: Module-Worker und Fetch brauchen einen Origin, und die TypeScript-Quellen laufen nur über Vite.
+Öffne anschließend <http://127.0.0.1:4173/> im Browser. (Bitte nicht als `file://` öffnen — die App braucht einen lokalen Server, den `npm run dev:next` für dich startet.)
 
-## Aufbau
+## Wie das Projekt aufgebaut ist
 
-| Verzeichnis | Inhalt |
+| Ordner | Was drin ist |
 | --- | --- |
-| `assets/js/` | Laufzeit, Grader und Domänenlogik |
-| `content/` | Kompetenzen, Module, Lektionen und Aufgabenfamilien |
-| `schemas/` | JSON-Schemas für Inhalte und Verträge |
-| `src/` | Preact-App und Oberfläche |
-| `tests/` | Node- und Browser-Tests |
-| `tools/` | Kompilierung, Validierung und Builds |
-| `vendor/` | Vendored Runtimes |
-| `docs/` | Architektur, Authoring und Lizenzen |
+| `content/` | Alle Lerninhalte: Kompetenzen, Module, Lektionen, Aufgabenfamilien |
+| `src/` | Die Oberfläche (Preact) |
+| `assets/js/` | Aufgabenlogik, Prüfung der Antworten, Lernplanung |
+| `schemas/` | JSON-Schemas, die die Inhalte beschreiben |
+| `tests/` | Automatische Tests (Node und Browser) |
+| `tools/` | Skripte zum Kompilieren, Prüfen und Bauen |
+| `vendor/` | Mitgelieferte Bibliotheken (Pyodide, KaTeX, JSXGraph …) |
+| `docs/` | Architektur-Entscheidungen, Autoren-Leitfaden, Lizenzen |
 
-## Testen und Bauen
+## Prüfen und Bauen
 
 ```bash
 node --test tests/
@@ -56,10 +66,6 @@ node tools/compile_content.mjs && node tools/validate_content.mjs
 node tools/validate_content.mjs --dir build-next
 ```
 
-## Mitmachen
-
-Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für lokale Einrichtung, Content-Autorenschaft und die Pflichtprüfungen vor einem Pull Request.
-
 ## Lizenz
 
-Code: MIT ([LICENSE](LICENSE)). Inhalte: CC-BY-4.0 ([LICENSE-CONTENT.md](LICENSE-CONTENT.md)).
+Der Code steht unter MIT ([LICENSE](LICENSE)), die Lerninhalte unter CC-BY-4.0 ([LICENSE-CONTENT.md](LICENSE-CONTENT.md)). Du darfst also beides frei nutzen, teilen und weiterentwickeln.
