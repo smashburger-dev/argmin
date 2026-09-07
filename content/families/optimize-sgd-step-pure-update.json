@@ -135,7 +135,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([2.0, 0.0]), \"b\": np.array([1.0])}\ngrads = {\"w\": np.array([1.0, 2.0]), \"b\": np.array([0.5])}\nvelocity = {\"w\": np.array([0.0, 0.0]), \"b\": np.array([1.0])}\nlr, mu = 0.2, 0.8\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [2.0, 0.0]) and np.array_equal(velocity[\"w\"], [0.0, 0.0]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.2, μ=0.8, Start w=[2.0, 0.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([0.0, 1.0]), \"b\": np.array([-1.0])}\ngrads = {\"w\": np.array([4.0, -2.0]), \"b\": np.array([2.0])}\nvelocity = {\"w\": np.array([1.0, 0.0]), \"b\": np.array([0.5])}\nlr, mu = 0.05, 0.9\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [0.0, 1.0]) and np.array_equal(velocity[\"w\"], [1.0, 0.0]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.05, μ=0.9, Start w=[0.0, 1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([3.0, -1.0]), \"b\": np.array([0.0])}\ngrads = {\"w\": np.array([0.0, 1.0]), \"b\": np.array([3.0])}\nvelocity = {\"w\": np.array([0.2, 0.2]), \"b\": np.array([0.0])}\nlr, mu = 0.1, 0.5\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [3.0, -1.0]) and np.array_equal(velocity[\"w\"], [0.2, 0.2]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.1, μ=0.5, Start w=[3.0, -1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([1.0, 1.0]), \"b\": np.array([2.0])}\ngrads = {\"w\": np.array([-1.0, 1.0]), \"b\": np.array([-2.0])}\nvelocity = {\"w\": np.array([0.0, -0.5]), \"b\": np.array([0.25])}\nlr, mu = 0.25, 0.7\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [1.0, 1.0]) and np.array_equal(velocity[\"w\"], [0.0, -0.5]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.25, μ=0.7, Start w=[1.0, 1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([5.0, -3.0]), \"b\": np.array([0.5])}\ngrads = {\"w\": np.array([2.0, 2.0]), \"b\": np.array([1.0])}\nvelocity = {\"w\": np.array([1.0, -1.0]), \"b\": np.array([0.0])}\nlr, mu = 0.01, 0.99\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [5.0, -3.0]) and np.array_equal(velocity[\"w\"], [1.0, -1.0]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.01, μ=0.99, Start w=[5.0, -3.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([-1.0, -1.0]), \"b\": np.array([4.0])}\ngrads = {\"w\": np.array([0.5, 0.5]), \"b\": np.array([0.5])}\nvelocity = {\"w\": np.array([0.0, 1.0]), \"b\": np.array([0.0])}\nlr, mu = 0.3, 0.6\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [-1.0, -1.0]) and np.array_equal(velocity[\"w\"], [0.0, 1.0]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.3, μ=0.6, Start w=[-1.0, -1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([0.4, 0.8]), \"b\": np.array([-0.2])}\ngrads = {\"w\": np.array([0.2, -0.4]), \"b\": np.array([0.8])}\nvelocity = {\"w\": np.array([0.1, 0.1]), \"b\": np.array([0.1])}\nlr, mu = 0.15, 0.85\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [0.4, 0.8]) and np.array_equal(velocity[\"w\"], [0.1, 0.1]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.15, μ=0.85, Start w=[0.4, 0.8]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([10.0, 0.0]), \"b\": np.array([1.0])}\ngrads = {\"w\": np.array([1.0, 0.0]), \"b\": np.array([1.0])}\nvelocity = {\"w\": np.array([0.0, 0.0]), \"b\": np.array([0.0])}\nlr, mu = 0.1, 0.9\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [10.0, 0.0]) and np.array_equal(velocity[\"w\"], [0.0, 0.0]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.1, μ=0.9, Start w=[10.0, 0.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nparams = {\"w\": np.array([1.5, -0.5]), \"b\": np.array([0.25])}\ngrads = {\"w\": np.array([3.0, 1.0]), \"b\": np.array([-1.0])}\nvelocity = {\"w\": np.array([0.5, -0.5]), \"b\": np.array([0.5])}\nlr, mu = 0.05, 0.8\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [1.5, -0.5]) and np.array_equal(velocity[\"w\"], [0.5, -0.5]))\n"
+          },
+          "prompt": "Ein Momentum-Schritt: lr=0.05, μ=0.8, Start w=[1.5, -0.5]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
+        }
+      ]
     }
   ]
 }

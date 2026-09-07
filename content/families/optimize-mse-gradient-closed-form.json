@@ -54,7 +54,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([0.0, 1.0, 2.0])\ny = np.array([1.0, 1.0, 4.0])\nw, b = 0.5, 0.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 2.0, 1e-6) - (2.0 * 2.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[0.0, 1.0, 2.0], y=[1.0, 1.0, 4.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=0.5, b=0.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([1.0, 3.0, 5.0])\ny = np.array([2.0, 5.0, 11.0])\nw, b = 1.0, 1.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 4.0, 1e-6) - (2.0 * 4.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[1.0, 3.0, 5.0], y=[2.0, 5.0, 11.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=1.0, b=1.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([2.0, 2.0, 4.0])\ny = np.array([0.0, 2.0, 6.0])\nw, b = 0.0, 1.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, -1.0, 1e-6) - (2.0 * -1.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[2.0, 2.0, 4.0], y=[0.0, 2.0, 6.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=0.0, b=1.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([1.0, 2.0, 4.0])\ny = np.array([3.0, 3.0, 9.0])\nw, b = 2.0, -1.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 1.0, 1e-6) - (2.0 * 1.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[1.0, 2.0, 4.0], y=[3.0, 3.0, 9.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=2.0, b=-1.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([0.5, 1.5, 2.5])\ny = np.array([1.0, 2.0, 4.0])\nw, b = 1.0, 0.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 2.5, 1e-6) - (2.0 * 2.5)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[0.5, 1.5, 2.5], y=[1.0, 2.0, 4.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=1.0, b=0.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([1.0, 1.0, 1.0])\ny = np.array([2.0, 4.0, 0.0])\nw, b = 0.0, 0.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 5.0, 1e-6) - (2.0 * 5.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[1.0, 1.0, 1.0], y=[2.0, 4.0, 0.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=0.0, b=0.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([3.0, 4.0, 5.0])\ny = np.array([3.0, 8.0, 10.0])\nw, b = 1.0, 0.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 2.0, 1e-6) - (2.0 * 2.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[3.0, 4.0, 5.0], y=[3.0, 8.0, 10.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=1.0, b=0.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([1.0, 4.0, 7.0])\ny = np.array([0.0, 6.0, 9.0])\nw, b = 0.5, 1.0\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 3.0, 1e-6) - (2.0 * 3.0)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[1.0, 4.0, 7.0], y=[0.0, 6.0, 9.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=0.5, b=1.0 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nx = np.array([2.0, 3.0, 6.0])\ny = np.array([4.0, 5.0, 8.0])\nw, b = 1.0, -0.5\ndw, db = grad_mse(w, b, x, y)\nr = w * x + b - y\nn = x.size\ndw_exp = float(2.0 / n * np.sum(x * r))\ndb_exp = float(2.0 / n * np.sum(r))\n__check('dw analytisch', abs(dw - dw_exp) < 1e-9)\n__check('db analytisch', abs(db - db_exp) < 1e-9)\n__check('quadratfunktion num_grad', abs(num_grad(lambda t: t * t, 1.5, 1e-6) - (2.0 * 1.5)) < 1e-6)\nf_w = lambda u: float(np.mean((u * x + b - y) ** 2))\n__check('num_grad stimmt mit grad_mse ueberein', abs(num_grad(f_w, w, 1e-6) - dw) < 1e-6)\nf_b = lambda u: float(np.mean((w * x + u - y) ** 2))\n__check('num_grad stimmt mit db ueberein', abs(num_grad(f_b, b, 1e-6) - db) < 1e-6)\ndw2, db2 = grad_mse(0.0, 0.0, x, y)\n__check('bei 0/0 definiert', isinstance(dw2, float) and isinstance(db2, float))\n"
+          },
+          "prompt": "Wertepaare x=[2.0, 3.0, 6.0], y=[4.0, 5.0, 8.0]. Implementiere `grad_mse` und `num_grad`; die Tests prüfen die Ableitung bei w=1.0, b=-0.5 gegen $(2/n)\\sum r$ bzw. $(2/n)\\sum x r$."
+        }
+      ]
     }
   ]
 }
