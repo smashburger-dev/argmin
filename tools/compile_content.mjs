@@ -35,6 +35,9 @@ const schemaNames = [
   'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'review-findings', 'source-rights',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
+const CATALOG_ROOTS = { competencies: ['competencies', 'competency'], tracks: ['tracks', 'track'], milestones: ['milestones', 'milestone'], tools: ['tools', 'tool-card'], reviews: ['reviews', 'review-findings'] };
+const CATALOG_OBJECTS = { lessons: ['lessons', 'lessonId', 'lesson'], explanations: ['explanations', 'explanationId', 'explanation-card'], learningModules: ['modules', 'moduleId', 'learning-module'] };
+const CATALOG_ASSERTION_ROOTS = ['competencies', 'tracks', 'milestones', 'tools', 'reviews', 'explanations', 'learningModules', 'families'];
 
 const canonicalize = (value) => {
   if (Array.isArray(value)) return value.map(canonicalize);
@@ -157,12 +160,11 @@ function validateProjectPackage(contentRoot, file, project) {
   if (project.runnerMode === 'browser') return;
   const sourceFile = resolveContentPath(contentRoot, file);
   const directory = dirname(sourceFile);
-  validateProjectFiles(directory, project.projectId, project.starterFiles, 'Starterdatei');
-  validateProjectFiles(directory, project.projectId, project.solutionFiles, 'Lösungsdatei');
+  validateProjectFiles(directory, project.projectId, project.starterFiles, 'Starterdatei'); validateProjectFiles(directory, project.projectId, project.solutionFiles, 'Lösungsdatei');
   const manifestPath = projectPath(directory, 'check-manifest.json');
   if (!existsSync(manifestPath)) throw new Error(`${project.projectId}: check-manifest.json fehlt`);
   const manifest = readJson(manifestPath);
-  validateProjectManifest(project, manifest);
+  if (manifest.schemaVersion !== 1 || manifest.projectId !== project.projectId || String(manifest.projectVersion) !== String(project.version)) throw new Error(`${project.projectId}: Check-Manifest-Identität stimmt nicht`);
   const expectedArgs = ['-m', 'pytest', '-q', '--disable-warnings', '--maxfail=1', ...(manifest.testPaths || [])];
   const command = project.allowedCommands.find((item) => item.program === 'python');
   if (!command || JSON.stringify(command.args) !== JSON.stringify(expectedArgs)) throw new Error(`${project.projectId}: pytest-Kommando stimmt nicht`);
@@ -170,25 +172,14 @@ function validateProjectPackage(contentRoot, file, project) {
 }
 
 function validateProjectFiles(directory, projectId, files, label) {
-  for (const path of files) {
-    if (!existsSync(projectPath(directory, path))) throw new Error(`${projectId}: ${label} fehlt: ${path}`);
-  }
-}
-
-function validateProjectManifest(project, manifest) {
-  if (manifest.schemaVersion !== 1 || manifest.projectId !== project.projectId || String(manifest.projectVersion) !== String(project.version)) {
-    throw new Error(`${project.projectId}: Check-Manifest-Identität stimmt nicht`);
-  }
+  for (const path of files) if (!existsSync(projectPath(directory, path))) throw new Error(`${projectId}: ${label} fehlt: ${path}`);
 }
 
 function validateManifestFiles(directory, projectId, files) {
   for (const required of files) {
     const path = projectPath(directory, required.path);
     if (!existsSync(path)) throw new Error(`${projectId}: Pflichtdatei fehlt: ${required.path}`);
-    if (required.sha256) {
-      const actual = createHash('sha256').update(readFileSync(path)).digest('hex');
-      if (actual !== required.sha256) throw new Error(`${projectId}: Hash stimmt nicht: ${required.path}`);
-    }
+    if (required.sha256) { const actual = createHash('sha256').update(readFileSync(path)).digest('hex'); if (actual !== required.sha256) throw new Error(`${projectId}: Hash stimmt nicht: ${required.path}`); }
   }
 }
 
@@ -259,21 +250,25 @@ function validateToolsExplanationsProjects(bundle, ids) {
 }
 
 function validateTool(tool, profile, ids) {
-  if (!ids.rights.has(tool.rightsId)) throw new Error(`${tool.toolId}: unbekannte Rechte ${tool.rightsId}`);
+  assertRights(tool, tool.toolId, ids);
   checkReferences(tool, tool.toolId, tool.competencyIds || [], ids.competencies, 'Kompetenz');
-  for (const sourceId of tool.sourceRefs || []) if (!ids.sources.has(sourceId)) throw new Error(`${tool.toolId}: unbekannte Quelle ${sourceId}`);
+  checkReferences(tool, tool.toolId, tool.sourceRefs || [], ids.sources, 'Quelle');
   if (profile === 'public' && (tool.availability !== 'public' || tool.releaseStatus === 'local-only')) throw new Error(`${tool.toolId}: lokales Werkzeug im Public-Bundle`);
 }
 
 function validateExplanation(explanation, ids) {
-  if (!ids.rights.has(explanation.rightsId)) throw new Error(`${explanation.explanationId}: unbekannte Rechte ${explanation.rightsId}`);
+  assertRights(explanation, explanation.explanationId, ids);
   checkReferences(explanation, explanation.explanationId, explanation.competencyIds || [], ids.competencies, 'Kompetenz');
-  for (const sourceId of explanation.sourceRefs || []) if (!ids.sources.has(sourceId)) throw new Error(`${explanation.explanationId}: unbekannte Quelle ${sourceId}`);
+  checkReferences(explanation, explanation.explanationId, explanation.sourceRefs || [], ids.sources, 'Quelle');
 }
 
 function validateProject(project, ids) {
-  if (!ids.rights.has(project.rightsId)) throw new Error(`${project.projectId}: unbekannte Rechte ${project.rightsId}`);
+  assertRights(project, project.projectId, ids);
   checkReferences(project, project.projectId, [...(project.competencyIds || []), ...(project.requires || [])], ids.competencies, 'Kompetenz');
+}
+
+function assertRights(entity, id, ids) {
+  if (!ids.rights.has(entity.rightsId)) throw new Error(`${id}: unbekannte Rechte ${entity.rightsId}`);
 }
 
 function validateSourceRights(bundle) {
@@ -304,10 +299,18 @@ function validateLearningModules(bundle, ids) {
 
 export function validateCompiledContent(bundle) {
   if (bundle.profile !== 'public') throw new Error(`Unbekanntes Buildprofil ${bundle.profile}`);
-  prepareFamilyRegistry(bundle.families || []);
-  const ids = compiledContentIds(bundle);
+  for (const family of bundle.families || []) registerStaticCases(family.familyId, family.cases || []);
+  configureExerciseFamilies(bundle.families || []);
+  const ids = {
+    rights: uniqueBy(bundle.sourceRights, 'sourceId', 'Quellenrechte'), sources: uniqueBy(bundle.sources, 'sourceId', 'Quellen'),
+    competencies: uniqueBy(bundle.competencies, 'competencyId', 'Kompetenzen'), tracks: uniqueBy(bundle.tracks, 'trackId', 'Tracks'),
+    milestones: uniqueBy(bundle.milestones, 'milestoneId', 'Milestones'), lessons: uniqueBy(bundle.lessons, 'lessonId', 'Lektionen'),
+    projects: uniqueBy(bundle.projects, 'projectId', 'Projekte'), explanations: uniqueBy(bundle.explanations, 'explanationId', 'Erklärungen'),
+    modules: uniqueBy(bundle.learningModules || [], 'moduleId', 'LearningModules'),
+  };
   validateFamilyReferences(bundle.families || [], ids.competencies);
-  validateUniqueCollections(bundle);
+  uniqueBy(bundle.tools, 'toolId', 'Werkzeuge');
+  uniqueBy(bundle.reviews, 'reviewId', 'Reviews');
   validateCompetencyGraph(bundle.competencies);
   validateCompetencies(bundle, ids);
   validateTracksAndMilestones(bundle, ids);
@@ -322,25 +325,6 @@ export function validateCompiledContent(bundle) {
   return true;
 }
 
-function prepareFamilyRegistry(families) {
-  for (const family of families) registerStaticCases(family.familyId, family.cases || []);
-  configureExerciseFamilies(families);
-}
-
-function compiledContentIds(bundle) {
-  return {
-    rights: uniqueBy(bundle.sourceRights, 'sourceId', 'Quellenrechte'),
-    sources: uniqueBy(bundle.sources, 'sourceId', 'Quellen'),
-    competencies: uniqueBy(bundle.competencies, 'competencyId', 'Kompetenzen'),
-    tracks: uniqueBy(bundle.tracks, 'trackId', 'Tracks'),
-    milestones: uniqueBy(bundle.milestones, 'milestoneId', 'Milestones'),
-    lessons: uniqueBy(bundle.lessons, 'lessonId', 'Lektionen'),
-    projects: uniqueBy(bundle.projects, 'projectId', 'Projekte'),
-    explanations: uniqueBy(bundle.explanations, 'explanationId', 'Erklärungen'),
-    modules: uniqueBy(bundle.learningModules || [], 'moduleId', 'LearningModules'),
-  };
-}
-
 function validateFamilyReferences(families, competencies) {
   for (const family of families) {
     checkReferences(family.contract, family.familyId, family.contract?.competencyIds || [], competencies, 'Kompetenz');
@@ -348,11 +332,6 @@ function validateFamilyReferences(families, competencies) {
       checkReferences(item, `${family.familyId}:${item.caseId}`, item.competencyIds || [], competencies, 'Kompetenz');
     }
   }
-}
-
-function validateUniqueCollections(bundle) {
-  uniqueBy(bundle.tools, 'toolId', 'Werkzeuge');
-  uniqueBy(bundle.reviews, 'reviewId', 'Reviews');
 }
 
 // In-process memoization: compileContent is pure and deterministic per
@@ -426,16 +405,10 @@ export function compileContent({ projectRoot = defaultProjectRoot, cache = 'memo
 
 function discoverCatalogFiles(contentRoot, catalog) {
   return {
-    competencyFiles: discoverJson(contentRoot, catalogRoot(catalog, 'competencies')),
-    trackFiles: discoverJson(contentRoot, catalogRoot(catalog, 'tracks')),
-    milestoneFiles: discoverJson(contentRoot, catalogRoot(catalog, 'milestones')),
-    toolFiles: discoverJson(contentRoot, catalogRoot(catalog, 'tools')),
-    reviewFiles: discoverJson(contentRoot, catalogRoot(catalog, 'reviews')),
-    lessonFiles: discoverJson(contentRoot, catalogRoot(catalog, 'lessons')),
-    explanationFiles: discoverJson(contentRoot, catalogRoot(catalog, 'explanations')),
-    projectFiles: discoverProjects(contentRoot, catalogRoot(catalog, 'projects')),
-    moduleFiles: discoverJson(contentRoot, catalogRoot(catalog, 'modules')),
-    familyFiles: discoverJson(contentRoot, catalogRoot(catalog, 'families')),
+    ...Object.fromEntries(Object.keys(CATALOG_ROOTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, key))])),
+    ...Object.fromEntries(Object.keys(CATALOG_OBJECTS).map((key) => [key, discoverJson(contentRoot, catalogRoot(catalog, CATALOG_OBJECTS[key][0]))])),
+    projects: discoverProjects(contentRoot, catalogRoot(catalog, 'projects')),
+    families: discoverJson(contentRoot, catalogRoot(catalog, 'families')),
   };
 }
 
@@ -443,28 +416,18 @@ function loadCatalogEntities(contentRoot, catalog, files, projectRoot) {
   const sourceRightsDocument = readJson(resolveContentPath(contentRoot, catalog.sourceRightsFile));
   validateSourceDocument('source-rights', sourceRightsDocument, projectRoot);
   const sourcesDocument = readJson(resolveContentPath(contentRoot, catalog.sourcesFile));
-  const competencies = loadCollection(contentRoot, files.competencyFiles, 'competencies', 'competency', projectRoot);
-  const tracks = loadCollection(contentRoot, files.trackFiles, 'tracks', 'track', projectRoot);
-  const milestones = loadCollection(contentRoot, files.milestoneFiles, 'milestones', 'milestone', projectRoot);
-  const tools = loadCollection(contentRoot, files.toolFiles, 'tools', 'tool-card', projectRoot);
-  const reviews = loadCollection(contentRoot, files.reviewFiles, 'reviews', 'review-findings', projectRoot);
-  const lessons = loadObjects(contentRoot, files.lessonFiles, 'lessonId', 'lesson', projectRoot);
-  const explanations = loadObjects(contentRoot, files.explanationFiles, 'explanationId', 'explanation-card', projectRoot);
-  const projects = loadObjects(contentRoot, files.projectFiles, 'projectId', 'project', projectRoot);
-  const learningModules = loadObjects(contentRoot, files.moduleFiles, 'moduleId', 'learning-module', projectRoot);
-  const families = files.familyFiles.map((file) => loadFamilyDocument(contentRoot, file, projectRoot));
+  const collections = Object.fromEntries(Object.entries(CATALOG_ROOTS).map(([key, [property, schemaName]]) => [key, loadCollection(contentRoot, files[key], property, schemaName, projectRoot)]));
+  const objects = Object.fromEntries(Object.entries(CATALOG_OBJECTS).map(([key, [, idField, schemaName]]) => [key, loadObjects(contentRoot, files[key], idField, schemaName, projectRoot)]));
+  const projects = loadObjects(contentRoot, files.projects, 'projectId', 'project', projectRoot);
+  const families = files.families.map((file) => loadFamilyDocument(contentRoot, file, projectRoot));
   return {
     sourceRights: sourceRightsDocument.sources,
     sources: sourcesDocument.sources || [],
-    competencies,
-    tracks,
-    milestones,
-    tools,
-    reviews,
-    lessons,
-    explanations,
+    ...collections,
+    lessons: objects.lessons,
+    explanations: objects.explanations,
     projects,
-    learningModules,
+    learningModules: objects.learningModules,
     families,
   };
 }
@@ -472,9 +435,7 @@ function loadCatalogEntities(contentRoot, catalog, files, projectRoot) {
 function loadFamilyDocument(contentRoot, file, projectRoot) {
   const value = readJson(resolveContentPath(contentRoot, file));
   validateSourceDocument('exercise-family-cases', value, projectRoot);
-  if (value.familyId !== file.split('/').pop().replace(/\.json$/, '')) {
-    throw new Error(`${file}: familyId stimmt nicht mit Dateinamen überein`);
-  }
+  if (value.familyId !== file.split('/').pop().replace(/\.json$/, '')) throw new Error(`${file}: familyId stimmt nicht mit Dateinamen überein`);
   const caseIds = value.cases.map((item) => item.caseId);
   if (new Set(caseIds).size !== caseIds.length) throw new Error(`${value.familyId}: Fall doppelt`);
   registerStaticCases(value.familyId, value.cases);
@@ -483,39 +444,22 @@ function loadFamilyDocument(contentRoot, file, projectRoot) {
 
 function validateLoadedCatalog(contentRoot, catalog, files, entities) {
   configureExerciseFamilies(entities.families);
-  validateProjectPackages(contentRoot, files.projectFiles, entities.projects);
+  validateProjectPackages(contentRoot, files.projects, entities.projects);
   assertUniqueCheckpoints(entities.lessons);
   assertCatalogRoots(contentRoot, catalog, files);
   assertCatalogOrphans(contentRoot, catalog, files, entities);
 }
 
 function assertCatalogRoots(contentRoot, catalog, files) {
-  const fileKeys = {
-    competencies: 'competencyFiles',
-    tracks: 'trackFiles',
-    milestones: 'milestoneFiles',
-    tools: 'toolFiles',
-    reviews: 'reviewFiles',
-    explanations: 'explanationFiles',
-    modules: 'moduleFiles',
-    families: 'familyFiles',
-  };
-  for (const [key, fileKey] of Object.entries(fileKeys)) {
-    assertJsonRoot(contentRoot, catalogRoot(catalog, key), files[fileKey]);
+  for (const key of CATALOG_ASSERTION_ROOTS) {
+    const rootKey = CATALOG_OBJECTS[key]?.[0] || key;
+    assertJsonRoot(contentRoot, catalogRoot(catalog, rootKey), files[key]);
   }
 }
 
 function assertCatalogOrphans(contentRoot, catalog, files, entities) {
-  assertNoOrphans(
-    catalogRoot(catalog, 'lessons'),
-    listRootFiles(contentRoot, catalogRoot(catalog, 'lessons')),
-    lessonClaims(files.lessonFiles, entities.lessons),
-  );
-  assertNoOrphans(
-    catalogRoot(catalog, 'projects'),
-    listRootFiles(contentRoot, catalogRoot(catalog, 'projects')),
-    projectPackageClaims(contentRoot, files.projectFiles),
-  );
+  assertNoOrphans(catalogRoot(catalog, 'lessons'), listRootFiles(contentRoot, catalogRoot(catalog, 'lessons')), lessonClaims(files.lessons, entities.lessons));
+  assertNoOrphans(catalogRoot(catalog, 'projects'), listRootFiles(contentRoot, catalogRoot(catalog, 'projects')), projectPackageClaims(contentRoot, files.projects));
 }
 
 function filterPublicEntities(entities) {
@@ -527,34 +471,14 @@ function filterPublicEntities(entities) {
 
 function compileCatalogBundle(contentRoot, catalog, contractVersion, entities) {
   entities.lessons = compileLessonContent(contentRoot, entities.lessons);
-  entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, {
-    lessons: entities.lessons,
-    definitions: [],
-    projects: entities.projects,
-  }));
+  entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, { lessons: entities.lessons, definitions: [], projects: entities.projects }));
   const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
   return {
-    schemaVersion: 1,
-    catalogId: catalog.catalogId,
-    catalogVersion: catalog.version,
-    contractVersion,
-    contentVersion: '',
-    profile: 'public',
-    locale: catalog.locale,
-    overlays: [],
-    sourceRights: entities.sourceRights,
-    sources: entities.sources,
-    competencies: entities.competencies,
-    tracks: entities.tracks,
-    milestones: entities.milestones,
-    tools: entities.tools,
-    reviews: entities.reviews,
-    lessons: entities.lessons,
-    familyActivities,
-    explanations: entities.explanations,
-    projects: entities.projects,
-    learningModules: entities.learningModules,
-    families: entities.families,
+    schemaVersion: 1, catalogId: catalog.catalogId, catalogVersion: catalog.version, contractVersion, contentVersion: '',
+    profile: 'public', locale: catalog.locale, overlays: [], sourceRights: entities.sourceRights, sources: entities.sources,
+    competencies: entities.competencies, tracks: entities.tracks, milestones: entities.milestones, tools: entities.tools, reviews: entities.reviews,
+    lessons: entities.lessons, familyActivities, explanations: entities.explanations, projects: entities.projects,
+    learningModules: entities.learningModules, families: entities.families,
   };
 }
 
@@ -603,33 +527,17 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   if (seen.has(definitionId)) return null;
   const family = EXERCISE_FAMILIES.get(placement.familyId);
   if (!family) throw new Error(`Unbekannte Familie ${placement.familyId}`);
-  const instance = EXERCISE_FAMILIES.instantiate(
-    placement.familyId,
-    placement.seed ?? 0,
-    placement.difficulty,
-    placement.caseId,
-  );
+  const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
   const familyDocument = familyDocuments.get(placement.familyId);
   const familyTitle = familyDocument?.contract?.summary || family.summary;
   const staticCase = familyDocument?.cases?.some((entry) => entry.caseId === placement.caseId);
-  const title = instance.title
-    || stripPromptMarkup(instance.prompt, 80)
-    || familyTitle;
+  const title = instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
   seen.add(definitionId);
   return {
-    definitionId,
-    familyId: placement.familyId,
-    caseId: placement.caseId,
-    seed: placement.seed ?? 0,
-    difficulty: placement.difficulty,
-    title,
-    activityType: instance.kind ?? instance.activityType,
-    competencyIds: [...(instance.competencyIds || [])],
-    estimatedMinutes: placement.estimatedMinutes ?? 8,
-    masteryEligible: instance.masteryEligible === true,
-    seeded: !staticCase && family.authorityMode === 'seeded',
-    moduleId: module.moduleId,
-    lessonId: placement.lessonId ?? null,
+    definitionId, familyId: placement.familyId, caseId: placement.caseId, seed: placement.seed ?? 0, difficulty: placement.difficulty, title,
+    activityType: instance.kind ?? instance.activityType, competencyIds: [...(instance.competencyIds || [])],
+    estimatedMinutes: placement.estimatedMinutes ?? 8, masteryEligible: instance.masteryEligible === true,
+    seeded: !staticCase && family.authorityMode === 'seeded', moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
   };
 }
 

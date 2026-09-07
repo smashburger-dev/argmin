@@ -15,15 +15,31 @@ export class PlanEngine {
   }
 
   build(request) {
-    const { availableMinutes, availableDays, states, path } = normalizePlanRequest(this.graph, request);
+    const availableMinutes = Math.max(0, Math.floor(Number(request.availableMinutes) || 0));
+    const availableDays = Math.max(1, Math.floor(Number(request.availableDays) || 1));
+    const states = Object.fromEntries(this.graph.topologicalOrder().map((id) => [id, request.evidenceByCompetency[id]?.state || 'unassessed']));
+    const path = this.graph.pathTo(request.goalCompetencyIds);
     const items = [];
     const scheduledIds = new Set();
     let totalMinutes = 0;
-    const add = createPlanAdder(items, scheduledIds, () => totalMinutes, (value) => { totalMinutes = value; }, availableMinutes);
+    const add = (activity, reasonCodes) => {
+      if (scheduledIds.has(activity.activityId)) return true;
+      const minutes = Math.max(1, Math.floor(Number(activity.estimatedMinutes) || 1));
+      if (totalMinutes + minutes > availableMinutes) return false;
+      items.push({ activityId: activity.activityId, type: activity.type, competencyIds: [...activity.competencyIds], estimatedMinutes: minutes, reasonCodes,
+        ...(activity.type === 'review' && activity.dueAt !== undefined ? { dueAt: activity.dueAt } : {}) });
+      scheduledIds.add(activity.activityId);
+      totalMinutes += minutes;
+      return true;
+    };
     const { reviewMinutes, reviews } = scheduleReviews(request.activities, availableMinutes, this.reviewBudgetRatio, add);
     scheduleCompetencyActivities(this.graph, path, states, request.activities, add);
     const days = Array.from({ length: availableDays }, (_, index) => ({ day: index + 1, minutes: 0, items: [] }));
-    distributePlanItems(days, items);
+    for (const item of items) {
+      const day = days.reduce((best, candidate) => candidate.minutes < best.minutes ? candidate : best, days[0]);
+      day.items.push(item);
+      day.minutes += item.estimatedMinutes;
+    }
     return {
       goalCompetencyIds: [...request.goalCompetencyIds],
       availableMinutes,
@@ -35,36 +51,6 @@ export class PlanEngine {
       days,
     };
   }
-}
-
-function normalizePlanRequest(graph, request) {
-  return {
-    availableMinutes: Math.max(0, Math.floor(Number(request.availableMinutes) || 0)),
-    availableDays: Math.max(1, Math.floor(Number(request.availableDays) || 1)),
-    states: Object.fromEntries(graph.topologicalOrder().map((id) => [id, request.evidenceByCompetency[id]?.state || 'unassessed'])),
-    path: graph.pathTo(request.goalCompetencyIds),
-  };
-}
-
-function createPlanAdder(items, scheduledIds, getTotalMinutes, setTotalMinutes, availableMinutes) {
-  return (activity, reasonCodes) => {
-    if (scheduledIds.has(activity.activityId)) return true;
-    const minutes = Math.max(1, Math.floor(Number(activity.estimatedMinutes) || 1));
-    if (getTotalMinutes() + minutes > availableMinutes) return false;
-    items.push({
-      activityId: activity.activityId,
-      type: activity.type,
-      competencyIds: [...activity.competencyIds],
-      estimatedMinutes: minutes,
-      reasonCodes,
-      // Task-review due date travels with the plan item (ADR-0015): the
-      // adapter surfaces it as reviewDueAt and derives fresh-instance links.
-      ...(activity.type === 'review' && activity.dueAt !== undefined ? { dueAt: activity.dueAt } : {}),
-    });
-    scheduledIds.add(activity.activityId);
-    setTotalMinutes(getTotalMinutes() + minutes);
-    return true;
-  };
 }
 
 function scheduleReviews(activities, availableMinutes, reviewBudgetRatio, add) {
@@ -91,13 +77,5 @@ function scheduleCompetencyActivities(graph, path, states, activities, add) {
     for (const activity of candidates) {
       if (!add(activity, [states[competencyId] === 'learning' ? 'strengthen-competency' : 'build-competency'])) break;
     }
-  }
-}
-
-function distributePlanItems(days, items) {
-  for (const item of items) {
-    const day = days.reduce((best, candidate) => candidate.minutes < best.minutes ? candidate : best, days[0]);
-    day.items.push(item);
-    day.minutes += item.estimatedMinutes;
   }
 }

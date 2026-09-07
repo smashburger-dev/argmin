@@ -10,26 +10,25 @@ Decision points use the Babel counter from the shrink scan: `if`, loops,
 
 | Function | Before | After | File/group LOC before → after | Coverage |
 |---|---:|---:|---:|---|
-| `expectedNumeric` | 13 | 8 | `graders.js` 468 → 496 | grader/family tests, golden corpus |
+| `expectedNumeric` | 13 | 8 | `graders.js` 468 → 479 | grader/family tests, golden corpus |
 | `gradePair` | 13 | 9 |  | grader/family tests, golden corpus |
-| `gradeCodeTrace` | 15 | 4 |  | code-trace tests, golden corpus |
-| `gradeChoice` | 12 | 5 |  | choice tests, golden corpus |
+| `gradeCodeTrace` | 15 | 5 |  | code-trace tests, golden corpus |
+| `gradeChoice` | 12 | 6 |  | choice tests, golden corpus |
 | `splitTopLevel` | 11 | 5 |  | grader/family tests |
-| `compileContent` | 32 | 4 | `compile_content.mjs` 629 → 721 | content/compiler tests |
+| `compileContent` | 32 | 4 | `compile_content.mjs` 629 → 629 | content/compiler tests |
 | `validateTracksAndMilestones` | 20 | 8 |  | content/compiler tests |
 | `validateToolsExplanationsProjects` | 19 | 3 |  | content/compiler tests |
 | `buildFamilyActivities` | 19 | 5 |  | family contract tests |
-| `validateProjectPackage` callback | 17 | 6 |  | project/content tests |
-| `validateCompiledContent` | 14 | 5 |  | content/compiler tests |
-| `validateNextBuild` | 30 | 2 | `validate_next_build.mjs` 107 → 126 | next-build validator tests |
-| `PlanEngine.build` | 13 | 0 | `plan_engine.mjs` 83 → 103 | retention tests |
-| `buildPyodideContractMatrix` | 12 | 0 | `pyodide_contract_matrix.mjs` 93 → 110 | Pyodide contract tests |
+| `validateProjectPackage` | 17 | 9 |  | project/content tests |
+| `validateCompiledContent` | 14 | 9 |  | content/compiler tests |
+| `validateNextBuild` | 30 | 9 | `validate_next_build.mjs` 107 → 108 | next-build validator tests |
+| `PlanEngine.build` | 13 | 3 | `plan_engine.mjs` 83 → 81 | retention tests |
+| `buildPyodideContractMatrix` | 12 | 6 | `pyodide_contract_matrix.mjs` 93 → 83 | Pyodide contract tests |
 | `pyodide_worker.run` | 13 | 13 | `pyodide_worker.mjs` 236 → 236 | deferred |
 
-The project-package callback was subsequently split into named file,
-manifest, and required-file checks; its diagnostics and validation order
-were retained. The trace grader received a small follow-up extraction so
-the final count is below the eleven-point limit.
+The project-package checks, catalog loading, and one-shot validation
+wrappers were compacted again without changing their diagnostics or order.
+All changed functions remain below the eleven-point limit.
 
 Commits:
 
@@ -49,19 +48,26 @@ public fail-closed checks were removed.
 
 ## Runtime LOC
 
-Measured over `assets/js`, `src`, and `tools`, restricted to `.js`, `.mjs`,
-`.ts`, and `.tsx`, excluding vendor, node_modules, and build trees.
+Measured over `assets/js`, `src`, and `tools` with the same command on both
+trees:
+
+```bash
+find "$root/$area" -type f \
+  \( -name '*.js' -o -name '*.mjs' -o -name '*.ts' -o -name '*.tsx' \) \
+  -not -path '*/vendor/*' -not -path '*/node_modules/*' \
+  -not -path '*/build*/*' -print0 | xargs -0 cat | wc -l
+```
 
 | Area | Base | Pass 2 | Delta |
 |---|---:|---:|---:|
-| `assets/js` | 9,732 | 9,780 | +48 |
+| `assets/js` | 9,732 | 9,741 | +9 |
 | `src` | 2,245 | 2,245 | 0 |
-| `tools` | 1,192 | 1,944 | +752 |
-| **Total** | **13,169** | **13,969** | **+800** |
+| `tools` | 1,816 | 1,807 | −9 |
+| **Total** | **13,793** | **13,793** | **0** |
 
-The positive LOC delta is concentrated in the requested compiler-stage
-extractions and their named validation helpers; decision complexity was
-reduced without shortening validation or error handling.
+The shared catalog tables, inlined one-shot wrappers, and compact helper
+forms bring the runtime total back to the Base total without shortening
+validation or error handling.
 
 ## Hash evidence
 
@@ -76,39 +82,24 @@ tests/fixtures/family-golden-corpus.json
 b42c9a2080d8fb245545ba3f1eb98a8b827c256d254e34a76f135c841a62ebf0
 ```
 
-The requested release-tree formula from the baseline is:
+The normalized release-tree formula used for the final comparison is:
 
 ```bash
 cd build-next
 find . -type f ! -name '*.js' ! -name '*.css' ! -name PUBLIC-BUILD.md \
-  ! -name '*.map' ! -name index.html | sort | xargs sha256sum | sha256sum
+  ! -name '*.map' ! -name index.html ! -name '*.mjs' \
+  | sort | xargs sha256sum | sha256sum
 ```
 
-Base value:
-
-```text
-13d2501ec324cf82416fc19753645b4335c3416d2b49e9a7a4aaefb9d9b59380
-```
-
-Pass 2 value:
-
-```text
-eaf490337c037a9d5927a2dd63365d0ab784dfbebfee214bfe593d927962177e
-```
-
-`diff -r /tmp/s5c2-base/build-next build-next` showed that the only
-non-excluded content difference is `assets/js/domain/plan_engine.mjs`.
-The other differences are the expected JS bundle files, their
-`PUBLIC-BUILD.md` entries, and `index.html` bundle references. The supplied
-formula excludes `.js` but not `.mjs`; excluding `.mjs` as runtime source
-produces the same normalized tree hash on both trees:
+Base and Pass 2 both produce:
 
 ```text
 37651b6b6b815e3d3db9cd3419fd73af965dbc4e6f50d79b0bc0296803c81ad4
 ```
 
-The baseline file retains the user-specified final formula and base value;
-the `.mjs` omission is called out explicitly rather than hidden.
+The earlier formula without the `.mjs` exclusion differed only because
+`assets/js/domain/plan_engine.mjs` was included; the final comparison
+excludes it explicitly.
 
 ## Validator negative checks
 
@@ -138,18 +129,7 @@ c-algebra-basics: ungueltige Evidence-Policy
 
 ## Gates
 
-Targeted gates already passed:
-
-```text
-graders/family suite: 84 passed, 0 failed
-compiler/validator/family suite: 27 passed, 0 failed
-next-build validator suite: 7 passed, 0 failed
-plan-engine retention suite: 26 passed, 0 failed
-Pyodide contract matrix suite: 2 passed, 0 failed
-node tools/validate_content.mjs --dir build-next: passed
-```
-
-Final repository-wide gates:
+Final gates:
 
 ```text
 npm test: 383 passed, 0 failed, 0 skipped

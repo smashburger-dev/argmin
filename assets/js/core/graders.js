@@ -60,22 +60,16 @@ function gradeChoice(exercise, choiceId) {
   if (!choice) return { correct: false, verdictText: 'Bitte eine Auswahl treffen.', errorType: 'invalid-input' };
   if (!choices.some((c) => c.correct)) return { correct: false, verdictText: 'Interner Fehler: keine korrekte Option konfiguriert.', errorType: 'grader-error' };
   const correct = Boolean(choice.correct);
+  const diagnosis = (exercise.feedbackRules || []).reduce((result, rule) => {
+    const equals = String(rule.if).match(/^choice === '([^']+)'$/); const differs = String(rule.if).match(/^choice !== '([^']+)'$/);
+    return !correct && ((equals && choiceId === equals[1]) || (differs && choiceId !== differs[1])) ? rule.then : result;
+  }, null);
   return {
     correct,
     verdictText: correct ? 'Richtig begründet.' : 'Nicht richtig.',
     errorType: correct ? null : 'wrong-choice',
-    diagnosis: choiceDiagnosis(exercise, choiceId, correct),
+    diagnosis,
   };
-}
-
-function choiceDiagnosis(exercise, choiceId, correct) {
-  let diagnosis = null;
-  for (const rule of exercise.feedbackRules || []) {
-    const equals = String(rule.if).match(/^choice === '([^']+)'$/);
-    const differs = String(rule.if).match(/^choice !== '([^']+)'$/);
-    if (!correct && ((equals && choiceId === equals[1]) || (differs && choiceId !== differs[1]))) diagnosis = rule.then;
-  }
-  return diagnosis;
 }
 
 function gradePair(exercise, raw) {
@@ -397,11 +391,21 @@ function gradeCodeTrace(exercise, answers) {
   }
   const hasRepr = vars.some((v) => v.type === 'repr');
   const { invalid, wrong } = inspectTraceVariables(vars, answers);
-  if (invalid) {
-    return invalidTraceResult(invalid, hasRepr);
-  }
+  return invalid ? { correct: false, verdictText: hasRepr ? `'${invalid}' ist leer oder unlesbar — trage den Wert in Python-Schreibweise ein, z. B. [1, 2] oder {'a': 1}.`
+      : `'${invalid}' ist keine ganze Zahl — der getracete Wert ist immer ganzzahlig.`, errorType: 'invalid-input' }
+    : traceGradeResult(exercise, wrong);
+}
+
+function traceGradeResult(exercise, wrong) {
   const correct = wrong.length === 0;
-  return traceGradeResult(exercise, correct, wrong);
+  let diagnosis = null;
+  if (!correct) {
+    diagnosis = `Falsche Werte für: ${wrong.join(', ')}. Tipp: Zeile für Zeile neu durchgehen und nach jeder Zuweisung den neuen Wert notieren.`;
+    for (const rule of exercise.feedbackRules || []) {
+      if (rule.if === wrong.map((w) => `value:${w}`).join('+')) diagnosis = rule.then;
+    }
+  }
+  return { correct, verdictText: correct ? 'Richtig — alle Variablenwerte stimmen.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-value', diagnosis };
 }
 
 function inspectTraceVariables(vars, answers) {
@@ -412,27 +416,6 @@ function inspectTraceVariables(vars, answers) {
     if (result.wrong) wrong.push(variable.name);
   }
   return { invalid: null, wrong };
-}
-
-function invalidTraceResult(invalid, hasRepr) {
-  return {
-    correct: false,
-    verdictText: hasRepr
-      ? `'${invalid}' ist leer oder unlesbar — trage den Wert in Python-Schreibweise ein, z. B. [1, 2] oder {'a': 1}.`
-      : `'${invalid}' ist keine ganze Zahl — der getracete Wert ist immer ganzzahlig.`,
-    errorType: 'invalid-input',
-  };
-}
-
-function traceGradeResult(exercise, correct, wrong) {
-  let diagnosis = null;
-  if (!correct) {
-    diagnosis = `Falsche Werte für: ${wrong.join(', ')}. Tipp: Zeile für Zeile neu durchgehen und nach jeder Zuweisung den neuen Wert notieren.`;
-    for (const rule of exercise.feedbackRules || []) {
-      if (rule.if === wrong.map((w) => `value:${w}`).join('+')) diagnosis = rule.then;
-    }
-  }
-  return { correct, verdictText: correct ? 'Richtig — alle Variablenwerte stimmen.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-value', diagnosis };
 }
 
 /** Predict-output: predicted stdout, compared normalized — whitespace and
