@@ -1,6 +1,6 @@
 # S4A-v2 Familienmodell — verbindlicher Vertrag vor dem Shard-Dispatch
 
-Stand: 2026-09-02 (Arbeitsblock A der Continuation, `docs/idle-task-pre-s2b-continuation.md`).
+Stand: 2026-09-02 (Arbeitsblock A der Continuation).
 Basis: `design/design-comparison.md` Abschnitt 3 und 4 (Hybrid-Empfehlung nach adversarialem Vier-Wege-Vergleich), `design/research-basis.md`, `research/streamlining/s4a/summary.md` (v1: 268 Quellen, 256 Familien, 623 Feedbackregeln, 348 unkonsumiert), `canonical-families.json` (64-Familien-Hypothese), `archetypes.json`, `taxonomy.schema.json`, `assemble-v2.mjs`, `selftest.mjs`.
 
 Dieses Dokument ist der verbindliche Modellvertrag für alle S4A-v2-Implementer, Reviewer und den Cross-Domain-Council. Die vier Designentwürfe unter `design/` sind historische Einzelvorschläge; wo ihre Prosa von diesem Dokument oder der Registry abweicht, verliert die Prosa.

@@ -3,7 +3,7 @@
 Stand: 2026-09-02. Adversarialer Review (design-it-twice). Grundlage: `research-basis.md`,
 `design-cognitive-first.md` (C), `design-interaction-first.md` (I), `design-competency-first.md` (K),
 `design-orthogonal-check.md` (O), `research/streamlining/s4a/summary.md` (v1: 268 Definitionen,
-256 Familien, 623 Feedbackregeln, 348 unkonsumiert), `docs/idle-task-pre-s2b-integration.md`
+256 Familien, 623 Feedbackregeln, 348 unkonsumiert) und die früheren Authoring-Notizen,
 Abschnitt 6. Alle Kompressionszahlen in Abschnitt 2 wurden gegen v1 nachgerechnet, nicht übernommen.
 
 ## 1. Bewertungsmatrix

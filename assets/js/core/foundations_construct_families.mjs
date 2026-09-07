@@ -2,7 +2,7 @@
 // Konstruktions- und Prüf-Familien (10 kognitive Familien aus
 // research/streamlining/s4a-v2/shards/foundations.json).
 //
-// Vertragsform wie S4C (docs/session-2026-09-04-s4c-exercise-family.md):
+// Vertragsform wie der frühere S4C-Familienvertrag:
 // Jede Familie liefert CONTRACT (Schema schemas/exercise-family.schema.json),
 // generate({ seed, caseId, difficulty }) -> { parameters, expected, prompt,
 // fullSolution, choices? } und solve(parameters) als unabhängige
