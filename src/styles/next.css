@@ -154,7 +154,8 @@ main { min-width: 0; }
 .module-panels:has(.module-panel.open:last-child) { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); }
 .module-panels:has(.module-panel:only-child) { grid-template-columns: 1fr !important; }
 .module-panel { padding: var(--s5); }
-.module-panel-head { position: relative; width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); padding: 0; color: var(--text-2); text-align: left; }
+.module-panel-head { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--s4); color: var(--text-2); }
+.module-panel-head .eyebrow { grid-column: 1 / -1; }
 .module-panel-head h2 button { all: unset; cursor: pointer; font: inherit; color: inherit; }
 .module-panel-head h2 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .module-panel-head h2 button::after { content: ''; position: absolute; inset: 0; }
