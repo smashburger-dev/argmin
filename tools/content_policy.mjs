@@ -1,5 +1,5 @@
 // Single owner of the fail-closed content policy constants shared by the
-// public-build validators and the open-core export (ADR-0011/0016). The
+// public-build validators. The
 // OUTPUT marker union is the strictest set any consumer ever shipped:
 // adopting it everywhere can only reject more, never less — the
 // cs50p-psets-harvard gap in the export scan and the .pyc/.jpeg binary
