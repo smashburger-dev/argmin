@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Matrix als Transformation",
+  "caption": "Ziehe a und d: Das Einheitsquadrat wird durch A mit b=0,5 und c=0 zu einem Parallelogramm.",
+  "boundingbox": [-2, 7, 7, -2],
+  "sliders": [
+    { "name": "a", "label": "a", "range": [0.5, 3], "value": 1.5, "step": 0.1 },
+    { "name": "d", "label": "d", "range": [0.5, 3], "value": 1.5, "step": 0.1 }
+  ],
+  "objects": [
+    { "kind": "polygon", "points": [[0, 0], [1, 0], [1, 1], [0, 1]], "color": "#5b5a53" },
+    { "kind": "polygon", "points": [[0, 0], ["a", 0], ["a+0.5", "d"], [0.5, "d"]], "color": "#294bd6" },
+    { "kind": "text", "at": [0, -1], "text": "det(A) = {a*d-0.5*0}", "color": "#294bd6" }
+  ]
+}

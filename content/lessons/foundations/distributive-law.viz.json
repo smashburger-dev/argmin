@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Distributivgesetz als Flächenzerlegung",
+  "caption": "Ziehe a, b und c: Die Gesamtfläche a·(b+c) erscheint als Summe zweier Rechtecke.",
+  "boundingbox": [-1, 7, 7, -2],
+  "sliders": [
+    { "name": "a", "label": "a", "range": [1, 5], "value": 3, "step": 0.1 },
+    { "name": "b", "label": "b", "range": [1, 5], "value": 2, "step": 0.1 },
+    { "name": "c", "label": "c", "range": [1, 5], "value": 1, "step": 0.1 }
+  ],
+  "objects": [
+    { "kind": "polygon", "points": [[0, 0], ["b", 0], ["b", "a"], [0, "a"]], "color": "#16713a" },
+    { "kind": "polygon", "points": [["b", 0], ["b+c", 0], ["b+c", "a"], ["b", "a"]], "color": "#9c4b00" },
+    { "kind": "text", "at": [0.2, -1], "text": "a·(b+c) = {a*b} + {a*c} = {a*(b+c)}", "color": "#294bd6" }
+  ]
+}

@@ -100,7 +100,7 @@ test('w27-w30 lessons follow the canonical lesson contract with allowed readings
     const doc = readJson(`content/lessons/genai-systems/${lesson.file}.json`);
     assert.equal(doc.schemaVersion, 1);
     assert.equal(doc.lessonId, lesson.id);
-    assert.equal(doc.version, 1);
+    assert.equal(doc.version, lesson.file === 'genai-evaluation' ? 2 : 1);
     assert.equal(doc.locale, 'de');
     assert.deepEqual(doc.competencyIds, [lesson.competency]);
     assert.equal(doc.rightsId, 'ki-lernplattform-original');
@@ -113,7 +113,8 @@ test('w27-w30 lessons follow the canonical lesson contract with allowed readings
     assert.ok(types.includes('worked-example'), `${lesson.id}: worked-example block missing`);
     assert.ok(types.includes('checkpoint') || types.includes('explanation'), `${lesson.id}: checkpoint missing`);
     for (const block of doc.blocks) {
-      assert.ok(block.blockId && block.contentRef.endsWith('.md'), `${lesson.id}: contentRef must point at markdown`);
+      const expectedSuffix = block.type === 'visualization' ? '.viz.json' : '.md';
+      assert.ok(block.blockId && block.contentRef.endsWith(expectedSuffix), `${lesson.id}: invalid content reference`);
       assert.ok(existsSync(join(root, 'content', block.contentRef)), `${lesson.id}: ${block.contentRef} fehlt`);
     }
     assert.ok(doc.sourceRefs.length >= 3, `${lesson.id}: needs readings`);

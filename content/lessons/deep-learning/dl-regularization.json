@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-dl-regularization",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Regularisierung, faire Ablation, Save/Load",
   "objectives": [
@@ -19,6 +19,11 @@
       "blockId": "dl-regularization-core",
       "type": "worked-example",
       "contentRef": "lessons/deep-learning/dl-regularization.md"
+    },
+    {
+      "blockId": "dl-regularization-viz",
+      "type": "visualization",
+      "contentRef": "lessons/deep-learning/early-stopping.viz.json"
     },
     {
       "blockId": "dl-regularization-checkpoint",

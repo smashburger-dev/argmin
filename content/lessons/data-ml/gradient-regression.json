@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-grad-regression",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Gradientenabstieg und lineare Regression aus Grundoperationen",
   "objectives": [
@@ -13,7 +13,8 @@
   "requires": ["c-algebra", "c-linalg-matrices", "c-numpy-basics"],
   "estimatedMinutes": 60,
   "blocks": [
-    { "blockId": "gradient-regression-core", "type": "worked-example", "contentRef": "lessons/data-ml/gradient-regression.md" }
+    { "blockId": "gradient-regression-core", "type": "worked-example", "contentRef": "lessons/data-ml/gradient-regression.md" },
+    { "blockId": "gradient-regression-viz", "type": "visualization", "contentRef": "lessons/data-ml/mse-bowl.viz.json" }
   ],
   "sourceRefs": [
     { "sourceId": "devries-ml", "role": "primary", "locator": "Kapitel Lineare Regression und Gradientenabstieg (deutschsprachiges Skript)" },

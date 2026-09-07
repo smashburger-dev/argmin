@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-eda-distributions",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Verteilungen, Korrelation und bedingte Anteile",
   "objectives": [
@@ -13,7 +13,8 @@
   "requires": ["c-pandas-cleaning"],
   "estimatedMinutes": 55,
   "blocks": [
-    { "blockId": "eda-distributions-core", "type": "worked-example", "contentRef": "lessons/data-ml/eda-distributions.md" }
+    { "blockId": "eda-distributions-core", "type": "worked-example", "contentRef": "lessons/data-ml/eda-distributions.md" },
+    { "blockId": "eda-distributions-viz", "type": "visualization", "contentRef": "lessons/data-ml/normal-density.viz.json" }
   ],
   "sourceRefs": [
     { "sourceId": "openintro-statistics", "role": "primary", "locator": "Ch 2 Summarizing Data; Ch 3 Probability (bedingte Wahrscheinlichkeit); Ch 4 Distributions" },

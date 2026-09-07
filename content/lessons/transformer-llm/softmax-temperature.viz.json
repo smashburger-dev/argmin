@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Softmax-Temperatur",
+  "caption": "Ziehe T: Die Temperatur verteilt die Softmax-Wahrscheinlichkeiten der Logits (2, 1, 0) unterschiedlich stark.",
+  "boundingbox": [-1, 1.2, 5, -0.2],
+  "sliders": [{ "name": "temp", "label": "T", "range": [0.2, 3], "value": 1, "step": 0.1 }],
+  "objects": [
+    { "kind": "segment", "from": [0, 0], "to": ["exp(2/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))", 0], "color": "#b72f2a" },
+    { "kind": "segment", "from": [1.5, 0], "to": ["1.5+exp(1/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))", 0], "color": "#16713a" },
+    { "kind": "segment", "from": [3, 0], "to": ["3+exp(0/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))", 0], "color": "#294bd6" },
+    { "kind": "text", "at": [0, 0.8], "text": "p₁ = {exp(2/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#b72f2a" },
+    { "kind": "text", "at": [0, 0.55], "text": "p₂ = {exp(1/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#16713a" },
+    { "kind": "text", "at": [0, 0.3], "text": "p₃ = {exp(0/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#294bd6" }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Schnittpunkt zweier Geraden",
+  "caption": "Ziehe c₁ und c₂: Der Schnittpunkt zeigt die Lösung des linearen Gleichungssystems.",
+  "boundingbox": [-5, 8, 8, -5],
+  "sliders": [
+    { "name": "c1", "label": "c₁", "range": [-3, 3], "value": 1, "step": 0.1 },
+    { "name": "c2", "label": "c₂", "range": [-3, 3], "value": -1, "step": 0.1 }
+  ],
+  "objects": [
+    { "kind": "functiongraph", "expr": "(c1-2*x)/1", "label": "L₁", "color": "#16713a" },
+    { "kind": "functiongraph", "expr": "(c2+1*x)/2", "label": "L₂", "color": "#9c4b00" },
+    { "kind": "point", "at": ["(2*c1-c2)/3", "(c1+c2)/3"], "label": "S", "color": "#294bd6" },
+    { "kind": "text", "at": [-4, -3.5], "text": "Lösung ({(2*c1-c2)/3} ; {(c1+c2)/3})", "color": "#294bd6" }
+  ]
+}

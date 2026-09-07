@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "engine": "jsxgraph",
+  "title": "Zeilenoperation",
+  "caption": "Ziehe λ: Die zweite Zeile wird als Zeile2' = Zeile2 − λ·Zeile1 verschoben, der Schnittpunkt bleibt erhalten.",
+  "boundingbox": [-5, 8, 8, -5],
+  "sliders": [{ "name": "lambda", "label": "λ", "range": [-2, 0.8], "value": 0.5, "step": 0.1 }],
+  "objects": [
+    { "kind": "functiongraph", "expr": "x+1", "label": "Zeile 1", "color": "#16713a" },
+    { "kind": "functiongraph", "expr": "((2-lambda)*x+3-lambda)/(1-lambda)", "label": "Zeile 2'", "color": "#294bd6" },
+    { "kind": "point", "at": [2, 3], "label": "S", "color": "#b72f2a" },
+    { "kind": "text", "at": [-4, -3], "text": "Zeile2' = Zeile2 − λ·Zeile1", "color": "#294bd6" }
+  ]
+}

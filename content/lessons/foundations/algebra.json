@@ -1,14 +1,17 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-foundations-algebra",
-  "version": 2,
+  "version": 3,
   "locale": "de",
   "title": "Algebra-Grundlagen sicher prüfen",
   "objectives": ["Lineare Gleichungen schrittweise äquivalent umformen", "Potenz- und Logarithmusaufgaben über Definitionen prüfen", "Vorzeichen- und Operationsfehler lokalisieren"],
   "competencyIds": ["c-algebra-basics"],
   "requires": [],
   "estimatedMinutes": 45,
-  "blocks": [{ "blockId": "algebra-core", "type": "worked-example", "contentRef": "lessons/foundations/algebra.md" }],
+  "blocks": [
+    { "blockId": "algebra-core", "type": "worked-example", "contentRef": "lessons/foundations/algebra.md" },
+    { "blockId": "algebra-viz", "type": "visualization", "contentRef": "lessons/foundations/linear-function.viz.json" }
+  ],
   "sourceRefs": [
     { "sourceId": "serlo-algebra-grundlagen-w01", "role": "practice", "locator": "Lineare Gleichungen, Potenzen und Logarithmen mit Aufgaben" },
     { "sourceId": "wikibooks-mfnf", "role": "remedial", "locator": "Algebra-Grundlagen als optionale Wiederholung" }

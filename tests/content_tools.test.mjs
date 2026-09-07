@@ -12,7 +12,7 @@ test('tool cards preserve public runtimes, repositories and visualization routes
   assert.equal(publicBundle.tools.length, 7);
   assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-browser-python-workspace' && tool.routes.some((route) => route.href === '#/lab/w05-e8')));
   assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-sympy-equivalence' && tool.routes.some((route) => route.href === '#/exercise/w01-e2')));
-  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-matrix-column-visualization' && tool.routes.some((route) => route.href === '#/visualization/w05-viz1')));
+  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-matrix-column-visualization' && tool.routes.some((route) => route.href === '#/visualization/column-picture')));
   assert.ok(publicBundle.tools.some((tool) => tool.kind === 'repository' && tool.sourceRefs.includes('dlwp-notebooks')));
   assert.equal(publicBundle.tools.some((tool) => tool.availability === 'local-only'), false);
 });

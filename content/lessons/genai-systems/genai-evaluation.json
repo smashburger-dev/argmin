@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "lessonId": "l-genai-eval",
-  "version": 1,
+  "version": 2,
   "locale": "de",
   "title": "Evaluation generativer Antworten: Gold-Antworten, Taxonomie, deterministische Metriken",
   "objectives": [
@@ -22,6 +22,11 @@
       "blockId": "genai-eval-core",
       "type": "worked-example",
       "contentRef": "lessons/genai-systems/genai-evaluation.md"
+    },
+    {
+      "blockId": "genai-eval-viz",
+      "type": "visualization",
+      "contentRef": "lessons/genai-systems/precision-recall-threshold.viz.json"
     },
     {
       "blockId": "genai-eval-check",

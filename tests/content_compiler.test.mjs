@@ -31,7 +31,9 @@ test('public compiler is deterministic and excludes private-only legacy content'
   assert.equal(first.learningModules.length, expectedCounts.modules);
   assert.equal(first.projects.length, expectedCounts.projects);
   assert.equal(first.explanations.length, expectedCounts.explanations);
-  assert.equal(first.lessons.every((lesson) => lesson.blocks.every((block) => block.html?.length > 0)), true);
+  assert.equal(first.lessons.every((lesson) => lesson.blocks.every((block) => (
+    block.type === 'visualization' ? block.html === '' && block.viz : block.html?.length > 0
+  ))), true);
   assert.doesNotMatch(JSON.stringify(first.lessons), /<script|href=\\"javascript:/i);
   assert.equal(first.familyActivities.length, expectedCounts.exercises);
   for (const competencyId of ['c-python-control-flow', 'c-python-collections', 'c-python-files-errors', 'c-testing-debugging', 'c-git-basics']) {
@@ -84,7 +86,7 @@ test('JSON Schema validation rejects malformed source documents', () => {
 test('all declared schemas use JSON Schema 2020-12', () => {
   const names = [
     'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
-    'exercise-family', 'explanation-card', 'project', 'source-rights',
+    'exercise-family', 'explanation-card', 'project', 'source-rights', 'visualization',
   ];
   for (const name of names) {
     const schema = readJson(join(root, `schemas/${name}.schema.json`));

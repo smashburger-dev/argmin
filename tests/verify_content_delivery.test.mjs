@@ -12,7 +12,7 @@ const publicBundle = compileContent({ projectRoot: root, profile: 'public' });
 const publicSplit = buildSplitArtifacts(publicBundle);
 
 test('split index plus bodies plus sections rebuild every lesson, activity and family exactly', () => {
-  const sectionKeys = ['sources', 'tools', 'reviews'];
+  const sectionKeys = ['sources', 'tools', 'reviews', 'visualizations'];
   for (const key of Object.keys(publicBundle)) {
     if (key === 'lessons' || key === 'families' || sectionKeys.includes(key)) continue;
     assert.deepEqual(publicSplit.index[key], publicBundle[key], `index field ${key} differs`);
@@ -52,7 +52,7 @@ test('written split artifacts match chunks.ts registration exactly and stay insi
     const families = [...source.matchAll(/import\('\.\/families\/([^']+)\.json'\)/g)].map((match) => match[1]);
     const sections = [...source.matchAll(/import\('\.\/sections\/([^']+)\.json'\)/g)].map((match) => match[1]);
     assert.equal(imports.length, publicBundle.lessons.length + publicBundle.families.length + sections.length);
-    assert.deepEqual(sections.sort(), ['reviews', 'sources', 'tools']);
+    assert.deepEqual(sections.sort(), ['reviews', 'sources', 'tools', 'visualizations']);
     for (const path of imports) {
       assert.match(path, /^\.\/(?:lessons|families|sections)\/[A-Za-z0-9][A-Za-z0-9._-]{0,96}\.json$/);
       assert.ok(existsSync(join(splitDir, path)));
