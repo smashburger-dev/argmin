@@ -12,10 +12,20 @@
       {
         "caseId": "question-quality-check",
         "propertyTest": false
+      },
+      {
+        "caseId": "question-measurable-comparison",
+        "propertyTest": false
+      },
+      {
+        "caseId": "question-falsifiable-hypothesis",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-research-question"
@@ -86,6 +96,147 @@
         "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)",
         "falsifizierbar mit interessant verwechselt",
         "Metrik und Vergleich für denselben Begriff gehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "question-measurable-comparison",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "metric": "recall@5",
+        "comparison": "chunk-size"
+      },
+      "competencyIds": [
+        "c-research-question"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Warum ist unser RAG-System insgesamt gut?",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Wie verändert Chunkgröße 256 gegenüber 512 die Recall@5 auf demselben Testset?",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Ist die beste Chunkgröße immer die, die sich am modernsten anfühlt?",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Welche Pipeline ist objektiv perfekt?",
+          "correct": false
+        }
+      ],
+      "prompt": "Welche Forschungsfrage ist für einen kontrollierten RAG-Vergleich am besten messbar und falsifizierbar?",
+      "fullSolution": "„Wie verändert eine Chunkgröße von 256 gegenüber 512 die Recall@5 auf demselben Testset?“ nennt Manipulation, Vergleich, Metrik und Auswertungsbestand.",
+      "hints": [
+        "Eine gute Frage nennt die veränderliche Bedingung und eine beobachtbare Metrik.",
+        "Suche nach einem Ergebnis, das auch die Hypothese widerlegen könnte."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "„Gut“ bleibt ohne Messgröße und Vergleich offen; die Frage liefert keinen klaren Widerlegungsmaßstab."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "„Am modernsten“ ist weder eine operationalisierte Bedingung noch eine falsifizierbare Qualitätsdefinition."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "„Objektiv perfekt“ setzt einen absoluten Anspruch ohne Metrik, Baseline oder mögliche Gegenbeobachtung."
+        }
+      ],
+      "typicalErrors": [
+        "Qualitätsadjektiv ohne Messmetrik als Forschungsfrage verwendet",
+        "Modernität mit falsifizierbarer Bedingung verwechselt",
+        "Perfektionsbehauptung ohne Widerlegungsregel formuliert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "question-falsifiable-hypothesis",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "metric": "answer-accuracy",
+        "threshold": 0.8,
+        "baseline": "no-rerank"
+      },
+      "competencyIds": [
+        "c-research-question"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Reranking fühlt sich für Nutzer meistens besser an.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Reranking ist die beste Stufe für jede Anwendung.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Reranking könnte eventuell die Antwortqualität verbessern.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Reranking erhöht die Answer-Accuracy gegenüber no-rerank um mindestens 0,05.",
+          "correct": true
+        }
+      ],
+      "prompt": "Welche Hypothese lässt sich mit einem festen Testset sauber widerlegen?",
+      "fullSolution": "Eine Hypothese wie „Reranking erhöht die Answer-Accuracy gegenüber no-rerank um mindestens 0,05“ legt Vergleich und Schwelle fest; ein kleinerer oder negativer Effekt würde sie widerlegen.",
+      "hints": [
+        "Eine Schwelle macht die behauptete Verbesserung prüfbar.",
+        "Frage, welches Ergebnis die Aussage klar falsch machen würde."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "„Fühlt sich besser an“ beschreibt kein festgelegtes Messverfahren und keine Grenze für eine Widerlegung."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "„Für jede Anwendung“ ist eine unbegrenzte Universalbehauptung ohne operationalisierte Prüfpopulation."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "„Könnte eventuell“ enthält weder Richtungsschwelle noch Baseline, an der ein Gegenbeispiel ansetzen könnte."
+        }
+      ],
+      "typicalErrors": [
+        "subjektives Erleben ohne Messprotokoll als Hypothese behandelt",
+        "universelle Geltung mit testbarer Population verwechselt",
+        "Möglichkeitsaussage ohne Schwelle als falsifizierbar eingestuft"
       ],
       "tolerancePolicy": {
         "mode": "none"

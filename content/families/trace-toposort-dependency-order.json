@@ -12,10 +12,19 @@
       {
         "caseId": "toposort-dependency-order",
         "propertyTest": false
+      },
+      {
+        "caseId": "toposort-sorted-and-cycle",
+        "propertyTest": false
+      },
+      {
+        "caseId": "toposort-two-valid-orders",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-capstone-pipeline",
@@ -63,6 +72,102 @@
         "Einfügungsreihenfolge statt alphabetischer Tie-Break gelesen",
         "berichte vor ihren Voraussetzungen eingeplant",
         "set(stages[n]) & offen als Vergleich mit allen Stufen missverstanden"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "toposort-sorted-and-cycle",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "from collections import defaultdict\n\ndef topo(edges, nodes):\n    outgoing = defaultdict(list)\n    indegree = {node: 0 for node in nodes}\n    for left, right in edges:\n        outgoing[left].append(right)\n        indegree[right] += 1\n    ready = sorted(node for node in nodes if indegree[node] == 0)\n    order = []\n    while ready:\n        node = ready.pop(0)\n        order.append(node)\n        for nxt in sorted(outgoing[node]):\n            indegree[nxt] -= 1\n            if indegree[nxt] == 0:\n                ready.append(nxt)\n                ready.sort()\n    return order if len(order) == len(nodes) else \"Zyklus\"\n\nprint(topo([(\"build\", \"test\"), (\"lint\", \"test\")], [\"test\", \"lint\", \"build\"]))\nprint(topo([(\"a\", \"b\"), (\"b\", \"a\")], [\"a\", \"b\"]))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "['build', 'lint', 'test']\nZyklus"
+      },
+      "prompt": "Ein Toposort wählt bei mehreren bereiten Knoten alphabetisch und gibt bei unvollständiger Ordnung <code>Zyklus</code> aus. Welche zwei Ausgaben entstehen?",
+      "fullSolution": "build und lint haben anfangs Grad 0; sorted setzt build vor lint. Beide reduzieren den Grad von test, das danach folgt. Im zweiten Graphen bleiben a und b zyklisch, daher ist die Ordnung unvollständig und Zyklus wird ausgegeben.",
+      "hints": [
+        "Initialisiere die bereiten Knoten sortiert und sortiere nach jedem neuen Eintrag erneut.",
+        "Ein Zyklus verhindert, dass die Länge der Ausgabe die Anzahl aller Knoten erreicht."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "build und lint sind beide startbereit; die sortierte Auswahl nimmt build, dann lint, danach test."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Bei a→b und b→a erreicht kein Knoten Grad 0; len(order) bleibt kleiner als len(nodes), also Zyklus."
+        },
+        {
+          "if": "sort-ignored",
+          "then": "Die Abhängigkeiten erlauben mehrere gültige Ordnungen, aber der Code erzwingt mit sorted die deterministische Reihenfolge."
+        }
+      ],
+      "typicalErrors": [
+        "gültige Toposort-Reihenfolge als eindeutig vorgegeben betrachtet",
+        "Zyklus wegen fehlender Startknoten als leere Liste ausgegeben",
+        "bereitgestellte Knoten nicht nach dem expliziten Tie-Break sortiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "toposort-two-valid-orders",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def topo(edges, nodes):\n    incoming = {node: 0 for node in nodes}\n    outgoing = {node: [] for node in nodes}\n    for left, right in edges:\n        outgoing[left].append(right)\n        incoming[right] += 1\n    ready = sorted(node for node in nodes if incoming[node] == 0)\n    result = []\n    while ready:\n        node = ready.pop(0)\n        result.append(node)\n        for nxt in outgoing[node]:\n            incoming[nxt] -= 1\n            if incoming[nxt] == 0:\n                ready.append(nxt)\n                ready.sort()\n    return result if len(result) == len(nodes) else \"Zyklus\"\n\nprint(topo([(\"a\", \"c\"), (\"b\", \"c\")], [\"c\", \"b\", \"a\"]))\nprint(topo([(\"b\", \"c\"), (\"a\", \"c\")], [\"c\", \"b\", \"a\"]))"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "['a', 'b', 'c']\n['a', 'b', 'c']"
+      },
+      "prompt": "Zwei Graphen erlauben jeweils a vor b oder b vor a, weil beide vor c kommen müssen. Welche deterministische Ordnung erzeugt der sortierte Toposort?",
+      "fullSolution": "Anfangs sind a und b bereit. sorted wählt a vor b; danach wird c erst nach beiden Vorgängern freigeschaltet. Die Eingabereihenfolge der Kanten ändert die Ausgabe nicht.",
+      "hints": [
+        "Die beiden Knoten ohne Vorgänger werden alphabetisch in ready eingeordnet.",
+        "c darf erst nach a und b erscheinen, unabhängig von der Kantenreihenfolge."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-order-wrong",
+          "then": "a und b sind beide startbereit, aber sorted und pop(0) wählen a zuerst; c folgt als letzter Knoten."
+        },
+        {
+          "if": "second-order-wrong",
+          "then": "Die umgedrehte Kantenreihenfolge verändert keine Vorgängermengen und damit nicht die deterministische Ausgabe."
+        },
+        {
+          "if": "dependency-skipped",
+          "then": "c hat anfangs Eingangsgrad zwei und darf erst nach den beiden Reduktionen in ready gelangen."
+        }
+      ],
+      "typicalErrors": [
+        "Eingabereihenfolge der Kanten als Tie-Break verwendet",
+        "c vor einem seiner Vorgänger in die Ordnung gesetzt",
+        "alphabetische Sortierung der ready-Liste nur einmal angenommen"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"

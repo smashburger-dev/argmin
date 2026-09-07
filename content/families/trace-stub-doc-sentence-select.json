@@ -12,10 +12,19 @@
       {
         "caseId": "stub-doc-sentence-select",
         "propertyTest": false
+      },
+      {
+        "caseId": "stub-doc-sentence-tie",
+        "propertyTest": false
+      },
+      {
+        "caseId": "stub-doc-sentence-no-hit",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-genai-prototype",
@@ -63,6 +72,102 @@
         "ersten Satz statt des ersten treffenden Satzes genommen",
         "leeren TrefferScore als Fehler gelesen statt kein treffer",
         "strip() beim Satz vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "stub-doc-sentence-tie",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def begriffe(s):\n    return {w for w in s.lower().split() if len(w) >= 4}\ndef auswahl(anfrage, docs):\n    q = begriffe(anfrage)\n    scores = [len(q & begriffe(d)) for d in docs]\n    best = scores.index(max(scores))\n    return docs[best].split('.')[0].strip()\n\ndocs = [\"Der Vertrag nennt eine Frist. Zahlung erfolgt monatlich.\", \"Die Frist gilt für zwei Jahre. Kontakt steht im Portal.\"]\nprint(auswahl(\"Welche Frist?\", docs))\nprint(auswahl(\"Welche Frist?\", list(reversed(docs))))"
+      },
+      "competencyIds": [
+        "c-genai-prototype",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "Der Vertrag nennt eine Frist\nDie Frist gilt für zwei Jahre"
+      },
+      "prompt": "Ein Stub wählt bei gleicher Keyword-Punktzahl den ersten Treffer. Welche zwei Sätze gibt das Programm bei derselben Frage und zwei Dokumentreihenfolgen aus?",
+      "fullSolution": "Beide Dokumente teilen genau den Begriff Frist mit der Anfrage und erhalten dadurch denselben Score. index(max(scores)) nimmt jeweils den ersten Dokumenteintrag; beim gedrehten Array ändert sich daher der Satz.",
+      "hints": [
+        "Bestimme den Score jedes Dokuments mit Begriffslänge mindestens 4.",
+        "Bei einem Tie entscheidet index(max(scores)) die aktuelle Listenreihenfolge."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Im ersten Array steht der Vertrag zuerst; sein Satz „Der Vertrag nennt eine Frist“ wird bei gleichem Score gewählt."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Nach list(reversed(...)) steht das Frist-Dokument zuerst und liefert „Die Frist gilt für zwei Jahre“."
+        },
+        {
+          "if": "tie-missed",
+          "then": "Gleiche Scores werden nicht alphabetisch aufgelöst; index(max(scores)) nimmt den ersten Listenplatz."
+        }
+      ],
+      "typicalErrors": [
+        "Keyword-Tie als eindeutige inhaltliche Rangfolge gelesen",
+        "reversed()-Aufruf bei der zweiten Ausgabe ignoriert",
+        "den kompletten Dokumenttext statt des ersten Satzes ausgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "stub-doc-sentence-no-hit",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def begriffe(s):\n    return {w for w in s.lower().split() if len(w) >= 4}\ndef auswahl(anfrage, docs):\n    q = begriffe(anfrage)\n    scores = [len(q & begriffe(d)) for d in docs]\n    if max(scores) == 0:\n        return \"kein treffer\"\n    best = scores.index(max(scores))\n    return docs[best].split('.')[0].strip()\n\ndocs = [\"Die Zahlung erfolgt monatlich.\", \"Das Portal zeigt die Adresse.\"]\nprint(auswahl(\"Welche Farbe?\", docs))\nprint(auswahl(\"Wann erfolgt Zahlung?\", docs))"
+      },
+      "competencyIds": [
+        "c-genai-prototype",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "kein treffer\nDie Zahlung erfolgt monatlich"
+      },
+      "prompt": "Der Stub gibt bei Score 0 einen festen No-hit-Text zurück, sonst den ersten Satz des ersten Bestdokuments. Welche zwei Zeilen entstehen?",
+      "fullSolution": "Farbe teilt mit keinem Dokument einen Begriff der Mindestlänge vier, daher entsteht kein treffer. Die zweite Anfrage teilt erfolgt und Zahlung mit Dokument 0 und liefert dessen ersten Satz.",
+      "hints": [
+        "Berechne zuerst die gemeinsame Begriffmenge der ersten Frage.",
+        "Bei einem positiven Score wird kein Satz durchsucht, sondern direkt der erste Satz des Gewinnerdokuments genommen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Farbe und die Dokumentbegriffe überschneiden sich nicht; max(scores) ist 0 und der Stub gibt kein treffer aus."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "erfolgt und Zahlung treffen Dokument 0; split('.')[0].strip() liefert dessen vollständigen ersten Satz."
+        },
+        {
+          "if": "zero-score-ignored",
+          "then": "Der explizite max(scores)==0-Zweig kommt vor der Dokumentauswahl und muss für die erste Anfrage greifen."
+        }
+      ],
+      "typicalErrors": [
+        "No-hit-Zweig trotz Score null übersprungen",
+        "nur ein gemeinsames Wort statt beide Dokumentbegriffe geprüft",
+        "Satzpunkt oder Leerraum beim ersten Dokumentabschnitt falsch behandelt"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"

@@ -12,6 +12,10 @@
       {
         "caseId": "parity-threshold-selection",
         "propertyTest": false
+      },
+      {
+        "caseId": "parity-threshold-selection-v2",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -69,6 +73,59 @@
         "bestes f1 vor dem Paritätsfilter gewählt",
         "Gleichstand über Listenposition statt kleinere Schwelle aufgelöst",
         "Kosten aus gerundeten Einzelwerten summiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "parity-threshold-selection-v2",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef equal_opportunity_difference(y_true, y_pred, groups):\n    ...\n",
+        "tests": "y_true = np.array([1, 1, 1, 1, 0, 0, 0, 0])\ny_pred = np.array([1, 0, 1, 1, 1, 0, 0, 0])\ngroups = np.array([\"A\", \"A\", \"B\", \"B\", \"A\", \"A\", \"B\", \"B\"])\n__check(\"TPR A\", np.isclose(equal_opportunity_difference(y_true, y_pred, groups)[\"tpr\"][\"A\"], 0.5))\n__check(\"TPR B\", np.isclose(equal_opportunity_difference(y_true, y_pred, groups)[\"tpr\"][\"B\"], 1.0))\n__check(\"EO difference\", np.isclose(equal_opportunity_difference(y_true, y_pred, groups)[\"difference\"], 0.5))\ntry:\n    equal_opportunity_difference([1, 0], [1], [\"A\", \"B\"])\n    __check(\"Laengenfehler\", False)\nexcept ValueError:\n    __check(\"Laengenfehler\", True)\n"
+      },
+      "competencyIds": [
+        "c-research-responsible",
+        "c-genai-eval"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef equal_opportunity_difference(y_true, y_pred, groups):\n    y_true = np.asarray(y_true)\n    y_pred = np.asarray(y_pred)\n    groups = np.asarray(groups)\n    if not (len(y_true) == len(y_pred) == len(groups)):\n        raise ValueError(\"gleich lange Arrays erforderlich\")\n    tpr = {}\n    for group in sorted(set(groups.tolist())):\n        positives = y_true[groups == group] == 1\n        if positives.sum() == 0:\n            raise ValueError(\"Gruppe ohne positive Beispiele\")\n        tpr[group] = float(np.mean(y_pred[groups == group][positives] == 1))\n    values = list(tpr.values())\n    return {\"tpr\": tpr, \"difference\": float(max(values) - min(values))}\n"
+      },
+      "prompt": "Implementiere die Equal-Opportunity-Differenz: Berechne pro Gruppe die True-Positive-Rate und gib die Spannweite zwischen größter und kleinster Rate zurück.",
+      "fullSolution": "Die True-Positive-Rate wird nur auf den tatsächlich positiven Beispielen jeder Gruppe berechnet. Die Equal-Opportunity-Differenz ist max(TPR) minus min(TPR); Gruppen ohne positive Beispiele werden abgelehnt.",
+      "hints": [
+        "Filtere innerhalb jeder Gruppe zuerst auf y_true == 1.",
+        "Die Differenz vergleicht die extremen Gruppenraten, nicht die Gesamt-Accuracy."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-positive-denominator",
+          "then": "Equal Opportunity betrachtet hier nur positive Beispiele; Negative dürfen den TPR-Nenner nicht vergrößern."
+        },
+        {
+          "if": "missing-group-order",
+          "then": "Sortierte Gruppenschlüssel machen das Ergebnis stabil, ändern aber nicht die TPR-Berechnung."
+        },
+        {
+          "if": "lengths-ignored",
+          "then": "Unterschiedliche Array-Längen müssen vor jeder Gruppenrechnung als Vertragsfehler auffallen."
+        }
+      ],
+      "typicalErrors": [
+        "True-Positive-Rate mit Accuracy pro Gruppe verwechselt",
+        "negative Beispiele in den TPR-Nenner eingerechnet",
+        "unterschiedliche Eingabelängen stillschweigend abgeschnitten"
       ],
       "tolerancePolicy": {
         "mode": "tests"

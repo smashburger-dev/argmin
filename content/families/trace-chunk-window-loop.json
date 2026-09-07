@@ -12,10 +12,19 @@
       {
         "caseId": "chunk-window-loop",
         "propertyTest": false
+      },
+      {
+        "caseId": "chunk-window-overlap-rest",
+        "propertyTest": false
+      },
+      {
+        "caseId": "chunk-window-short-input",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-genai-rag",
@@ -63,6 +72,102 @@
         "Schrittweite ohne Overlap gerechnet (8//4 statt ⌈8/2⌉)",
         "Starts bis 8 einschließlich gezählt",
         "das letzte Fenster auf volle Größe aufgefüllt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "chunk-window-overlap-rest",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\n\ntext = \"abcdefghij\"\nparts = chunk(text, 5, 2)\nprint(len(parts))\nprint(parts[-1])"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "4\nj"
+      },
+      "prompt": "Lies die überlappenden Fenster und bestimme Anzahl und letzten Rest: Was gibt das Programm aus? Das Fenster hat Größe 5 und Overlap 2.",
+      "fullSolution": "Die Schrittweite beträgt 3. Starts 0, 3, 6 und 9 sind kleiner als 10; der letzte Slice ab 9 enthält nur noch „j“. Daher erscheinen 4 und j.",
+      "hints": [
+        "Berechne size − overlap = 3 und notiere alle Starts kleiner als 10.",
+        "Ein Slice am letzten Start muss nicht fünf Zeichen lang sein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Die Starts 0, 3, 6, 9 liefern vier Schleifendurchläufe; der Rest wird nicht verworfen."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Beim Start 9 reicht text[9:14] nur für das einzelne Zeichen j."
+        },
+        {
+          "if": "overlap-ignored",
+          "then": "Overlap 2 macht die Schrittweite 3 und erzeugt dadurch vier statt zwei Fenster."
+        }
+      ],
+      "typicalErrors": [
+        "Fensterfortschritt als volle Größe 5 gerechnet",
+        "den Rest ab Index 9 wegen unvollständiger Länge entfernt",
+        "überlappende Startposition 3 aus der Folge gestrichen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "chunk-window-short-input",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\n\nparts = chunk(\"abcdef\", 4, 0)\nprint(len(parts))\nprint(parts[-1])"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "2\nef"
+      },
+      "prompt": "Ein Chunker arbeitet ohne Overlap mit Größe 4. Welche Anzahl und welcher letzte Chunk werden für <code>abcdef</code> ausgegeben?",
+      "fullSolution": "Ohne Overlap beträgt die Schrittweite 4. Die Starts 0 und 4 liefern abc und ef; danach ist start 8 nicht mehr kleiner als 6. Somit lauten die Zeilen 2 und ef.",
+      "hints": [
+        "Bei overlap=0 ist der nächste Start genau um size verschoben.",
+        "Der zweite Slice beginnt bei Index 4 und enthält nur die verbleibenden Zeichen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "count-wrong",
+          "then": "Die Starts 0 und 4 sind gültig; der dritte Start 8 liegt bereits hinter der sechs Zeichen langen Eingabe."
+        },
+        {
+          "if": "last-chunk-wrong",
+          "then": "text[4:8] liefert ef und wird nicht auf vier Zeichen aufgefüllt."
+        },
+        {
+          "if": "zero-overlap-misread",
+          "then": "Overlap 0 bedeutet keine Wiederholung, nicht das Überspringen des zweiten Fensters."
+        }
+      ],
+      "typicalErrors": [
+        "sechs Zeichen durch ganzzahlige Division fälschlich auf ein Fenster reduziert",
+        "kurzen Endchunk als ungültigen Batch verworfen",
+        "Overlap null als vollständigen Fenstersprung über die Daten hinaus gelesen"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"

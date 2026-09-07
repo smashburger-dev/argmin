@@ -12,10 +12,20 @@
       {
         "caseId": "rag-stage-separation",
         "propertyTest": false
+      },
+      {
+        "caseId": "rag-stage-pipeline-order",
+        "propertyTest": false
+      },
+      {
+        "caseId": "rag-stage-rerank-boundary",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-genai-rag"
@@ -86,6 +96,151 @@
         "Generierung und Retrieval als eine ununterscheidbare Blackbox behandelt",
         "geglaubt, Antworten müssten aus Retrieval kopiert werden",
         "Messbarkeit nur auf einer Seite der Pipeline gesehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "rag-stage-pipeline-order",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "stages": [
+          "chunking",
+          "embedding",
+          "retrieval",
+          "reranking",
+          "generation"
+        ]
+      },
+      "competencyIds": [
+        "c-genai-rag"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Chunking → Embedding → Retrieval → Reranking → Generation",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Generation → Chunking → Retrieval → Embedding → Reranking",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Reranking → Generation → Embedding → Chunking → Retrieval",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Retrieval → Generation → Reranking → Chunking → Embedding",
+          "correct": false
+        }
+      ],
+      "prompt": "Welche Reihenfolge beschreibt eine typische RAG-Pipeline vom Dokument bis zur Antwort am treffendsten?",
+      "fullSolution": "Dokumente werden in Chunks geteilt, eingebettet, per Retrieval gesucht, bei Bedarf rerankt und erst danach durch Generation in eine Antwort überführt.",
+      "hints": [
+        "Reranking kann nur Kandidaten sortieren, die bereits abgerufen wurden.",
+        "Generation formuliert aus dem bereitgestellten Kontext, nicht aus ungechunkten Rohdateien."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Generation steht am Ende der beschriebenen Kette; vor der Suche müssen Dokumente vorbereitet und eingebettet werden."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Reranking braucht eine Kandidatenliste aus dem Retrieval und kann nicht vor Chunking und Suche beginnen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Nach der Generation ist ein Reranking der Antwort keine Ersetzung für die vorgelagerte Kandidatensuche."
+        }
+      ],
+      "typicalErrors": [
+        "Antwortgenerierung an den Anfang der Retrieval-Kette gesetzt",
+        "Reranking ohne vorherige Kandidatenmenge eingeplant",
+        "Dokumentaufbereitung nach der Suchphase angeordnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "rag-stage-rerank-boundary",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "retrievedCandidates": 20,
+        "rerankTop": 5
+      },
+      "competencyIds": [
+        "c-genai-rag"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Chunking, weil aus Dokumenten kleinere Abschnitte entstehen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Embedding, weil der Cross-Encoder neue Vektoren speichert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Reranking, weil vorhandene Treffer nach einem genaueren Score neu geordnet werden.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Generation, weil jede Scoreberechnung bereits eine Antwort formuliert.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Retriever liefert 20 Kandidaten, danach bewertet ein Cross-Encoder die fünf besten für den Kontext. Welche Stufe ist das?",
+      "fullSolution": "Das erneute Bewerten und Ordnen einer bereits abgerufenen Kandidatenmenge ist Reranking. Es ist nicht dasselbe wie das initiale Retrieval und erzeugt noch keine Antwort.",
+      "hints": [
+        "Die Kandidaten sind schon gefunden; nun wird ihre Reihenfolge verfeinert.",
+        "Eine Textantwort entsteht erst in der Generationsstufe."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die 20 Kandidaten existieren bereits; das Beschreiben ihrer Reihenfolge verändert keine Dokumentgrenzen."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Ein internes Modell kann Repräsentationen nutzen, aber die beobachtete Pipelineaktion ist das Neuordnen vorhandener Treffer."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein Score ist noch kein Antworttext; Generation verarbeitet den ausgewählten Kontext erst im nächsten Schritt."
+        }
+      ],
+      "typicalErrors": [
+        "Kandidatenneuordnung mit Dokumentsegmentierung verwechselt",
+        "jede Vektorrepräsentation als Pipeline-Stufe Embedding etikettiert",
+        "Ranking-Score als bereits generierte Antwort interpretiert"
       ],
       "tolerancePolicy": {
         "mode": "none"

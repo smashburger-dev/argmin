@@ -12,10 +12,20 @@
       {
         "caseId": "freeze-scope",
         "propertyTest": false
+      },
+      {
+        "caseId": "freeze-scope-version-seed",
+        "propertyTest": false
+      },
+      {
+        "caseId": "freeze-scope-dependency-lock",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-capstone-pipeline"
@@ -87,6 +97,150 @@
         {
           "id": "d",
           "text": "Nur das README einfrieren, weil es als Dokument den Vertrag bereits vollständig prüfbar macht.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "freeze-scope-version-seed",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "modelVersion": "2026.08",
+        "seed": 41,
+        "promptVersion": "p7"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Ein Experiment vergleicht zwei Modellstände mit kontrolliertem Zufall. Welche Angabe ist für denselben Lauf zwingend als Freeze-Metadatum festzuhalten?",
+      "fullSolution": "Der konkrete Modellstand und der Seed müssen eindeutig festgehalten werden; der Prompt kann zusätzlich relevant sein, ist aber kein Ersatz für die Ausführungsparameter.",
+      "hints": [
+        "Der Vergleich soll denselben Code- und Zufallsstand nachvollziehbar machen.",
+        "Ein Prompt-Label allein identifiziert weder Gewichte noch Zufallsfolge."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Eine Überschrift beschreibt das Thema, aber keinen reproduzierbaren Modell- oder Zufallsstand."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Tokenanzahl ist ein beobachtetes Resultat und sagt nicht, welche Gewichte oder Zufallsfolge aktiv waren."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die ausführende Person ist Provenance, aber kein Ersatz für Modellversion und Seed des kontrollierten Laufs."
+        }
+      ],
+      "typicalErrors": [
+        "Berichtstext mit Experimentkonfiguration verwechselt",
+        "Outputumfang als Freeze-Surrogat verwendet",
+        "Personenmetadaten anstelle technischer Ursachen dokumentiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nur die Überschrift des Experimentberichts.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur die Anzahl der ausgegebenen Tokens.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ausschließlich der Nutzername des Ausführenden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Modellversion und Seed, ergänzt um ihre eindeutigen Werte.",
+          "correct": true
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "freeze-scope-dependency-lock",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "dependencyLock": [
+          "numpy==2.2.6",
+          "tokenizer==4.1"
+        ],
+        "seed": 9
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Eine Pipeline nutzt einen Tokenizer und numerische Bibliotheken. Welche Ergänzung schützt den Freeze vor stillen Laufzeitänderungen?",
+      "fullSolution": "Ein aufgelöstes Dependency-Lock mit exakten Versionen ergänzt den Seed und den Modellstand. Schwammige Angaben wie „aktuelle Bibliothek“ erlauben keine stabile Wiederholung.",
+      "hints": [
+        "Prüfe, ob der Tokenizer bei gleichem Input dieselben IDs erzeugen muss.",
+        "Versionsbereiche wie >= erlauben spätere, möglicherweise inkompatible Auflösungen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "„Neueste“ ist absichtlich veränderlich und kann Tokenisierung oder Numerik zwischen zwei Läufen ändern."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Name ohne Version identifiziert nicht den konkreten Codepfad, der die IDs und Ergebnisse erzeugt."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein Lockfile kontrolliert Bibliothekscode, aber nicht die Zufallsfolge; der Seed bleibt ein eigener Freeze-Baustein."
+        }
+      ],
+      "typicalErrors": [
+        "veränderliche Latest-Anweisung als Versionspin interpretiert",
+        "Bibliotheksnamen ohne konkrete Auflösung dokumentiert",
+        "Dependency-Lock als Ersatz für Zufallssteuerung bewertet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ein Kommentar, dass stets die neueste Bibliothek installiert werden soll.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Ein Lockfile mit den konkret aufgelösten Versionen aller relevanten Abhängigkeiten.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Eine zusätzliche Ausgabe des aktuellen Tokenizer-Namens ohne Versionsnummer.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Das Weglassen des Seeds, weil das Lockfile alle Zufallsquellen ersetzt.",
           "correct": false
         }
       ],

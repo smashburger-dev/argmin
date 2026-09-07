@@ -12,6 +12,10 @@
       {
         "caseId": "secure-prototype-contract",
         "propertyTest": false
+      },
+      {
+        "caseId": "secure-prototype-contract-limits",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -69,6 +73,57 @@
         "nur die Anfrage, nicht das Top-Dokument geprüft",
         "blockierte Query trotzdem beantwortet",
         "Policy-Entscheidungsreihenfolge verletzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "secure-prototype-contract-limits",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def run_tool(name, payload, allowed_tools, max_chars):\n    ...\n",
+        "tests": "__check(\"Allowlist\", run_tool(\"search_docs\", \"abc\", [\"search_docs\"], 10) == {\"tool\": \"search_docs\", \"payload\": \"abc\"})\ntry:\n    run_tool(\"delete_file\", \"x\", [\"search_docs\"], 10)\n    __check(\"verbotenes Tool\", False)\nexcept PermissionError:\n    __check(\"verbotenes Tool\", True)\ntry:\n    run_tool(\"search_docs\", \"01234567890\", [\"search_docs\"], 10)\n    __check(\"Laengenlimit\", False)\nexcept ValueError:\n    __check(\"Laengenlimit\", True)\ntry:\n    run_tool(\"search_docs\", \"abc\", [\"search_docs\"], 0)\n    __check(\"ungueltiges Limit\", False)\nexcept ValueError:\n    __check(\"ungueltiges Limit\", True)\n"
+      },
+      "competencyIds": [
+        "c-genai-prototype",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def run_tool(name, payload, allowed_tools, max_chars):\n    if name not in set(allowed_tools):\n        raise PermissionError(\"Tool nicht erlaubt\")\n    if int(max_chars) <= 0:\n        raise ValueError(\"max_chars muss positiv sein\")\n    payload = str(payload)\n    if len(payload) > int(max_chars):\n        raise ValueError(\"payload zu lang\")\n    return {\"tool\": name, \"payload\": payload}\n"
+      },
+      "prompt": "Baue einen kleinen Tool-Vertrag: Nur Namen aus einer Allowlist dürfen laufen, Payloads haben ein positives Längenlimit und das Ergebnis bleibt nachvollziehbar.",
+      "fullSolution": "Zuerst wird der Toolname gegen die Allowlist geprüft, dann das positive Limit und die Payload-Länge. Verbotene Tools lösen PermissionError aus, ungültige Grenzen oder Payloads ValueError.",
+      "hints": [
+        "Autorisierung des Namens und Validierung der Eingabe sind getrennte Prüfungen.",
+        "Ein leeres oder negatives Limit ist selbst eine ungültige Policy."
+      ],
+      "feedbackRules": [
+        {
+          "if": "allowlist-first",
+          "then": "Die Allowlist entscheidet vor jeder Ausführung, ob der Toolname überhaupt zugelassen ist."
+        },
+        {
+          "if": "length-boundary",
+          "then": "Payloads mit genau elf Zeichen überschreiten das Limit 10 und müssen vor dem Ergebnisbau abgelehnt werden."
+        },
+        {
+          "if": "invalid-policy",
+          "then": "Ein Limit von 0 würde jede Eingabe unklar behandeln; der Vertrag verlangt dafür einen sichtbaren ValueError."
+        }
+      ],
+      "typicalErrors": [
+        "Allowlist-Prüfung erst nach der Toolausführung vorgenommen",
+        "Payload-Limit nur dokumentiert statt technisch erzwungen",
+        "ungültige Sicherheitsgrenze als normale Konfiguration akzeptiert"
       ],
       "tolerancePolicy": {
         "mode": "tests"

@@ -12,10 +12,20 @@
       {
         "caseId": "eval-hazard-taxonomy",
         "propertyTest": false
+      },
+      {
+        "caseId": "eval-hazard-retrieval-leakage",
+        "propertyTest": false
+      },
+      {
+        "caseId": "eval-hazard-split-boundary",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-genai-eval"
@@ -86,6 +96,146 @@
         "Inhaltsfehler und Belegfehler vermischt",
         "das Fehlen eines Kriteriums mit dem Verstoß gegen ein anderes verwechselt",
         "Labels frei assoziiert statt das definierte Labelset durchzugehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "eval-hazard-retrieval-leakage",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "testSetInIndex": true,
+        "metric": "recall@5"
+      },
+      "competencyIds": [
+        "c-genai-eval"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das ist unproblematisch, weil nur die Antwortmetrik und nicht die Modellgewichte geändert werden.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Testdokumente im Index sind nur dann kritisch, wenn sie exakt dieselbe Reihenfolge haben.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Retrieval-Leakage verbessert höchstens die Laufzeit, nicht die Aussagekraft.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Der Testbestand im Index kann Treffer und Recall vorab verraten und macht die Evaluation verzerrt.",
+          "correct": true
+        }
+      ],
+      "prompt": "Ein Retrieval-Index wird vor der Evaluation gebaut und enthält auch alle Dokumente aus dem Test-Set. Welche Diagnose ist korrekt?",
+      "fullSolution": "Die Testdokumente gelangen in den Retrieval-Kontext und können die Messung künstlich verbessern. Das ist eine Leakage-Gefahr; der Index muss aus dem erlaubten Trainings- beziehungsweise Entwicklungsbestand gebaut werden.",
+      "hints": [
+        "Prüfe, ob Testwissen während der Messung erreichbar ist.",
+        "Ein späteres Auswerten schützt nicht, wenn der Testinhalt schon im Index steckt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Auch ohne Gewichtsupdate erhält das System während der Bewertung Testinformationen; genau das verfälscht die Retrieval-Metrik."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Reihenfolge ist nicht der entscheidende Punkt: Schon die Erreichbarkeit derselben Testinhalte erzeugt die Leckage."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein Testdokument kann den passenden Kontext liefern und dadurch Recall erhöhen; die Aussagekraft leidet, nicht nur die Laufzeit."
+        }
+      ],
+      "typicalErrors": [
+        "Leakage ausschließlich als Gewichtsaktualisierung verstanden",
+        "Index-Reihenfolge statt Datenherkunft als Risiko betrachtet",
+        "verbesserte Trefferquote mit unverfälschter Evaluation gleichgesetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "eval-hazard-split-boundary",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "duplicateAcrossSplits": true,
+        "evaluation": "held-out"
+      },
+      "competencyIds": [
+        "c-genai-eval"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die beiden Absätze sind sicher unabhängig, wenn ihre Dateinamen verschieden sind.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Überschneidung kann den Test zu leicht machen und muss bereinigt oder offengelegt werden.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Duplikate sind nur bei Klassifikation relevant, nicht bei Retrieval.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Testmetrik bleibt unverändert aussagekräftig, solange das Modell eingefroren ist.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein nahezu identischer Absatz steht einmal im Training und einmal im Held-out-Test. Was muss vor dem Benchmark geklärt werden?",
+      "fullSolution": "Nahe Duplikate können dem Modell oder Retriever dieselbe Information aus dem Training erneut zugänglich machen. Die Split-Grenze muss dedupliziert oder als Einschränkung des Benchmarks dokumentiert werden.",
+      "hints": [
+        "Held-out bedeutet nicht nur eine andere Dateibezeichnung.",
+        "Vergleiche den Informationsgehalt der beiden Absätze, nicht bloß ihre IDs."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Verschiedene Dateinamen ändern nicht den nahezu identischen Informationsgehalt, der die Hold-out-Annahme verletzt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Ein Retriever profitiert besonders direkt von wiederverwendetem Wortlaut; die Gefahr betrifft daher gerade diesen Aufbau."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Ein eingefrorenes Modell kann den geleakten Inhalt trotzdem abrufen; Freeze und unabhängiger Test beantworten verschiedene Fragen."
+        }
+      ],
+      "typicalErrors": [
+        "Dateinamen als Beweis für unabhängige Splits gelesen",
+        "Retrieval-Leakage auf trainierbare Gewichte beschränkt",
+        "Modell-Freeze mit sauberer Testtrennung verwechselt"
       ],
       "tolerancePolicy": {
         "mode": "none"

@@ -12,6 +12,10 @@
       {
         "caseId": "stub-prototype-contract",
         "propertyTest": false
+      },
+      {
+        "caseId": "stub-prototype-contract-sources",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -69,6 +73,57 @@
         "Stub formuliert frei statt zu kopieren",
         "Dokument- und Satz-Auswahl in einem Schritt vermischt",
         "kein treffer durch erfundenen Satz ersetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "stub-prototype-contract-sources",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def answer_with_sources(question, docs):\n    ...\n",
+        "tests": "docs = [\n    {\"id\": \"faq-1\", \"text\": \"Die Frist endet am Freitag.\"},\n    {\"id\": \"faq-2\", \"text\": \"Der Versand erfolgt mit DHL.\"},\n]\nresult = answer_with_sources(\"Wann endet die Frist?\", docs)\n__check(\"Antwort aus Quelle\", result == {\"answer\": \"Die Frist endet am Freitag.\", \"sources\": [\"faq-1\"]})\n__check(\"Kein Treffer\", answer_with_sources(\"Welche Farbe hat das Logo?\", docs) == {\"answer\": \"kein treffer\", \"sources\": []})\ntry:\n    answer_with_sources(\"Frist?\", [{\"id\": \"faq-3\", \"text\": \"\"}])\n    __check(\"Leerer Beleg\", False)\nexcept ValueError:\n    __check(\"Leerer Beleg\", True)\n"
+      },
+      "competencyIds": [
+        "c-genai-prototype",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def answer_with_sources(question, docs):\n    if any(not str(doc[\"text\"]).strip() for doc in docs):\n        raise ValueError(\"Quelle leer\")\n    if any(not str(doc[\"text\"]).strip() for doc in docs):\n        raise ValueError(\"Quelle leer\")\n    q = {word.lower().strip(\"?!.,\") for word in str(question).split() if len(word.strip(\"?!.,\"))\n         >= 4}\n    ranked = []\n    for doc in docs:\n        terms = {word.lower().strip(\"?!.,\") for word in str(doc[\"text\"]).split()\n                 if len(word.strip(\"?!.,\")) >= 4}\n        ranked.append((len(q & terms), doc))\n    if not ranked or max(score for score, _ in ranked) == 0:\n        return {\"answer\": \"kein treffer\", \"sources\": []}\n    best_score, best = max(ranked, key=lambda item: item[0])\n    if not best[\"text\"].strip():\n        raise ValueError(\"Quelle leer\")\n    return {\"answer\": best[\"text\"], \"sources\": [best[\"id\"]]}\n"
+      },
+      "prompt": "Implementiere einen belegten Antwort-Stub: Wähle ein Dokument nach gemeinsamen Begriffen, gib dessen Text unverändert zurück und nenne die verwendete Quellen-ID.",
+      "fullSolution": "Die Antwort enthält exakt den Text des bestbewerteten Dokuments und eine Liste mit dessen ID. Ohne gemeinsamen Begriff wird kein Treffer behauptet; leere Quellen sind fehlerhaft.",
+      "hints": [
+        "Dokumenttext und Quellen-ID müssen aus demselben Gewinner stammen.",
+        "Ein No-hit-Ergebnis ist besser als eine erfundene Antwort."
+      ],
+      "feedbackRules": [
+        {
+          "if": "source-pair",
+          "then": "Antwort und Quellenliste müssen auf dasselbe Dokument zeigen; ein fremder Beleg macht die Antwort nicht nachvollziehbar."
+        },
+        {
+          "if": "no-hit",
+          "then": "Ohne gemeinsamen Begriff liefert der Vertrag „kein treffer“ und eine leere Quellenliste statt Halluzination."
+        },
+        {
+          "if": "empty-source",
+          "then": "Ein Dokument ohne Inhalt ist kein belastbarer Beleg und muss vor der Rückgabe als ValueError auffallen."
+        }
+      ],
+      "typicalErrors": [
+        "Antworttext und Quellen-ID aus verschiedenen Dokumenten kombiniert",
+        "fehlenden Treffer durch erfundenen Inhalt ersetzt",
+        "leeres Quelldokument als gültigen Beleg ausgegeben"
       ],
       "tolerancePolicy": {
         "mode": "tests"

@@ -12,10 +12,20 @@
       {
         "caseId": "provenance-duty",
         "propertyTest": false
+      },
+      {
+        "caseId": "provenance-model-card-fields",
+        "propertyTest": false
+      },
+      {
+        "caseId": "provenance-change-trail",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-research-cards"
@@ -85,6 +95,150 @@
       "typicalErrors": [
         "Karten als Zierdokument statt Prüfgrundlage verstanden",
         "Vollständigkeit mit positiver Darstellung verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "provenance-model-card-fields",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "cardFields": [
+          "source",
+          "license",
+          "updatedAt"
+        ]
+      },
+      "competencyIds": [
+        "c-research-cards"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nur der Name des Modells, weil Datenherkunft für die Card nebensächlich ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur die Anzahl der Trainingszeilen ohne Herkunftsangabe.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Eine freie Behauptung, dass alle Quellen öffentlich seien.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Konkrete Datenquelle, Lizenzinformation und Änderungsdatum.",
+          "correct": true
+        }
+      ],
+      "prompt": "Eine Model Card beschreibt einen Datensatz, der in einem Prototyp verwendet wird. Welche Provenance-Angaben sind besonders belastbar?",
+      "fullSolution": "Quelle, Lizenz und Änderungsdatum machen nachvollziehbar, woher das Material stammt, wie es genutzt werden darf und wann der Stand erhoben wurde.",
+      "hints": [
+        "Provenance verbindet Herkunft, Nutzungsrecht und zeitlichen Stand.",
+        "Ein Modellname allein beantwortet keine Lizenzfrage."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der Modellname beschreibt das Artefakt, aber nicht die Rechte und den zeitlichen Stand der verwendeten Daten."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Eine Zeilenzahl ist eine Statistik ohne Herkunft; sie ermöglicht keine Prüfung der Lizenz oder Aktualität."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Eine pauschale Öffentlichkeitsbehauptung ersetzt weder eine benannte Quelle noch einen nachprüfbaren Lizenzhinweis."
+        }
+      ],
+      "typicalErrors": [
+        "Modellidentität mit Datenprovenance gleichgesetzt",
+        "Mengenangabe als Herkunftsnachweis gewertet",
+        "Lizenz durch eine unbelegte Public-Domain-Annahme ersetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "provenance-change-trail",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "source": "faq-export",
+        "license": "CC-BY",
+        "updatedAt": "2026-08-31"
+      },
+      "competencyIds": [
+        "c-research-cards"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nur „Webdaten“ ohne URL, Lizenz oder Datum.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur das Datum, weil Quellen und Lizenzen unverändert angenommen werden können.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "FAQ-Export, CC-BY und 31.08.2026 als zusammengehörige Provenance-Felder.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Eine nachträgliche Erinnerung des Entwicklers ohne dokumentierten Datenstand.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein FAQ-Export wird am 31.08.2026 aktualisiert und unter CC-BY bezogen. Welche Dokumentation unterstützt spätere Nachprüfung?",
+      "fullSolution": "Die Card sollte den konkreten FAQ-Export als Quelle, die CC-BY-Lizenz und das Änderungsdatum 31.08.2026 festhalten. So lässt sich der damalige Datenstand mit den Nutzungsbedingungen verknüpfen.",
+      "hints": [
+        "Verknüpfe den benannten Export mit Recht und Zeitpunkt.",
+        "Ein Datum ohne Quelle sagt nicht, welcher Inhalt aktualisiert wurde."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "„Webdaten“ identifiziert weder den konkreten Export noch seine erlaubte Nutzung oder den Stand."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Ein Datum verankert den Zeitpunkt, aber ohne Quelle und Lizenz bleibt die rechtliche und inhaltliche Prüfung offen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Eine Erinnerung ist nicht reproduzierbar; der konkrete Export und seine Metadaten müssen am Artefakt dokumentiert werden."
+        }
+      ],
+      "typicalErrors": [
+        "allgemeine Webherkunft als konkrete Quelle eingetragen",
+        "Änderungsdatum ohne Lizenzkontext dokumentiert",
+        "mündliche Erinnerung als Provenance-Artefakt behandelt"
       ],
       "tolerancePolicy": {
         "mode": "none"

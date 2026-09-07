@@ -12,6 +12,10 @@
       {
         "caseId": "text-normalize-match",
         "propertyTest": false
+      },
+      {
+        "caseId": "text-normalize-match-nfkc",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -69,6 +73,57 @@
         "Prüfreihenfolge vertauscht (Metrik vor absoluten Wörtern)",
         "Groß-/Kleinschreibung nicht normalisiert",
         "ValueError für ungeeignete Hypothesen vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "text-normalize-match-nfkc",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import unicodedata\n\n\ndef normalize_text(text):\n    ...\n\n\ndef contains_normalized(needle, haystack):\n    ...\n",
+        "tests": "__check(\"NFKC\", normalize_text(\"ＡＢＣ\") == \"abc\")\n__check(\"Unicode-Komposition\", normalize_text(\"Cafe\\u0301\") == \"café\")\n__check(\"Satzzeichen\", normalize_text(\"Hallo, Welt!\") == \"hallo welt\")\n__check(\"Treffer\", contains_normalized(\"ＣＡＦＥ́\", \"Café und Tee\"))\n__check(\"Kein Treffer\", not contains_normalized(\"Kakao\", \"Café und Tee\"))\n"
+      },
+      "competencyIds": [
+        "c-research-question",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import unicodedata\n\ndef normalize_text(text):\n    text = unicodedata.normalize(\"NFKC\", str(text)).casefold()\n    chars = []\n    for char in text:\n        chars.append(\" \" if unicodedata.category(char).startswith(\"P\") else char)\n    return \" \".join(\"\".join(chars).split())\n\ndef contains_normalized(needle, haystack):\n    return normalize_text(needle) in normalize_text(haystack)\n"
+      },
+      "prompt": "Implementiere Unicode-NFKC-Normalisierung, Casefolding und Satzzeichenbereinigung für robuste Textvergleiche.",
+      "fullSolution": "NFKC vereinheitlicht kompatible Unicode-Formen, casefold normalisiert Groß-/Kleinschreibung und Satzzeichen werden durch Leerzeichen ersetzt. Danach werden Leerraumfolgen reduziert und normalisierte Teilstrings verglichen.",
+      "hints": [
+        "Normalisiere beide Vergleichsseiten mit derselben Funktion.",
+        "Satzzeichen ersetzen statt Wörter direkt zusammenzukleben; anschließend Leerraum kollabieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "nfkc-first",
+          "then": "Die Vollbreitbuchstaben ＡＢＣ werden erst durch NFKC zu ABC und danach durch casefold zu abc."
+        },
+        {
+          "if": "punctuation-space",
+          "then": "Satzzeichen werden zu Leerzeichen, damit „Hallo, Welt!“ nicht zu einem verklebten Token wird."
+        },
+        {
+          "if": "same-normalizer",
+          "then": "Ein Treffer ist nur stabil, wenn needle und haystack denselben Unicode- und Casefold-Pfad durchlaufen."
+        }
+      ],
+      "typicalErrors": [
+        "Unicode-Kompatibilitätsformen nur per ASCII-Encode behandelt",
+        "Satzzeichen entfernt ohne trennenden Leerraum",
+        "nur die Suchphrase statt beide Vergleichstexte normalisiert"
       ],
       "tolerancePolicy": {
         "mode": "tests"

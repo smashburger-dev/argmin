@@ -12,10 +12,20 @@
       {
         "caseId": "hash-semantics-baseline",
         "propertyTest": false
+      },
+      {
+        "caseId": "hash-content-metadata",
+        "propertyTest": false
+      },
+      {
+        "caseId": "hash-collision-manipulation",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-research-capstone"
@@ -87,6 +97,146 @@
           "id": "d",
           "text": "Er beweist den Zustand des Sets: gleiche Einträge in anderer Reihenfolge bleiben gleich, jede inhaltliche Änderung wird sichtbar — nur so bleiben Läufe vergleichbar.",
           "correct": true
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "hash-content-metadata",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "hashInput": "file-bytes",
+        "metadataDiffers": true
+      },
+      "competencyIds": [
+        "c-research-capstone"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Zwei Dateien enthalten exakt dieselben Bytes, aber unterschiedliche Änderungszeiten im Dateisystem. Was gilt für einen Hash über den Dateiinhalt?",
+      "fullSolution": "Ein Hash über die Bytes bleibt gleich, weil die Dateimetadaten nicht Teil des Hashinputs sind. Ein Metadatenvergleich kann trotzdem Unterschiede melden; beide Prüfungen beantworten verschiedene Fragen.",
+      "hints": [
+        "Identifiziere zuerst, was tatsächlich in die Hashfunktion eingeht.",
+        "Dateizeit und Bytefolge liegen in getrennten Vergleichsebenen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Die Änderungszeit wird nicht gehasht, wenn der Hashinput ausdrücklich nur aus den Datei-Bytes besteht."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Gleiche Inhalte sagen nichts über Rechte oder Zeiten aus; dafür braucht es separate Metadatenfelder."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Gleiche Eingaben sind kein Hashkollisionsfall: Eine Kollision bezeichnet verschiedene Eingaben mit demselben Digest."
+        }
+      ],
+      "typicalErrors": [
+        "Dateimetadaten ungefragt in den Byte-Hash hineingedacht",
+        "Inhaltsgleichheit als Rechtegleichheit interpretiert",
+        "gleiche Hashwerte bei gleicher Eingabe als Kollision bezeichnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der Byte-Hash muss verschieden sein, weil jede Änderungszeit Teil einer Datei ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Gleiche Bytes beweisen automatisch, dass auch alle Dateirechte identisch sind.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Inhalts-Hash ist gleich; die abweichenden Änderungszeiten werden nur durch eine Metadatenprüfung sichtbar.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Ein Hash kann keine zwei gleichen Bytefolgen akzeptieren und meldet zwingend eine Kollision.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "hash-collision-manipulation",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "verification": "digest-mismatch",
+        "threat": "modified-bytes"
+      },
+      "competencyIds": [
+        "c-research-capstone"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Ein verifizierter Release-Digest weicht nach dem Transport vom erwarteten Wert ab. Welche Aussage ist am saubersten?",
+      "fullSolution": "Der Mismatch zeigt, dass die geprüften Eingabebytes nicht mit dem erwarteten Artefakt übereinstimmen. Das ist ein Manipulations- oder Übertragungsfehler-Signal; es beweist weder eine Hashkollision noch deren Ursache.",
+      "hints": [
+        "Ein Digestvergleich sagt zuerst nur gleich oder ungleich.",
+        "Kollision und veränderte Eingabe sind unterschiedliche Begriffe."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Eine Kollision wäre derselbe Digest für verschiedene Eingaben; hier liegt zunächst nur ein anderer Digest vor."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Hash wird über den festgelegten Inhalt berechnet, nicht über den Dateinamen; ein Mismatch ist gerade ein Inhaltssignal."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Den Sollwert an das unbekannte Artefakt anzupassen würde die Verifikation abschalten statt die Abweichung zu klären."
+        }
+      ],
+      "typicalErrors": [
+        "Digest-Abweichung als Beweis für eine Kollision überinterpretiert",
+        "Hashinput auf Dateinamen reduziert",
+        "Sollwert nach einer Abweichung unkritisch überschrieben"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die geprüften Bytes stimmen nicht mit dem erwarteten Artefakt überein; Ursache und Manipulationsweg müssen separat untersucht werden.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Der Mismatch beweist eine absichtliche Hashkollision.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Mismatch ist bedeutungslos, weil Hashes nur Dateinamen vergleichen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Der erwartete Digest muss automatisch an die neue Datei angepasst werden.",
+          "correct": false
         }
       ],
       "activityType": "single-choice",

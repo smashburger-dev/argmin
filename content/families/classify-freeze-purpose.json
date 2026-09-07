@@ -12,10 +12,20 @@
       {
         "caseId": "freeze-purpose",
         "propertyTest": false
+      },
+      {
+        "caseId": "freeze-reproducibility-bundle",
+        "propertyTest": false
+      },
+      {
+        "caseId": "freeze-output-boundary",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-capstone-pipeline",
@@ -89,6 +99,152 @@
         {
           "id": "d",
           "text": "Damit niemand die Testfragen lesen und auswendig lernen kann.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "freeze-reproducibility-bundle",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "freeze": [
+          "modelVersion",
+          "seed",
+          "dependencies"
+        ]
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Ein Forschungsartefakt soll reproduzierbar eingefroren werden. Welche Kombination gehört in den Freeze?",
+      "fullSolution": "Die Modellversion, der Zufallsseed und die exakten Abhängigkeiten bestimmen gemeinsam, welche Berechnung wiederholbar ist. Ein aktueller Ausgabesatz ist dagegen ein Ergebnis und kein Ersatz für diese Konfiguration.",
+      "hints": [
+        "Suche nach Ursachen, die den Rechenlauf verändern können.",
+        "Seed, Modellstand und Bibliotheksversionen wirken auf denselben Lauf ein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Ein Output dokumentiert nicht, unter welchen Modell- und Laufzeitbedingungen er entstand; für Reproduktion braucht es den Ursachenbund."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Gleicher Seed erzeugt bei anderem Modellcode oder anderer Bibliothek nicht zwingend denselben Lauf."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der Seed steuert Zufallsentscheidungen und kann ohne ihn trotz identischer Modellversion abweichende Ergebnisse liefern."
+        }
+      ],
+      "typicalErrors": [
+        "Ergebnisdatei mit reproduzierbarer Konfiguration verwechselt",
+        "Zufallsseed als alleinige Freeze-Information behandelt",
+        "Abhängigkeiten aus dem Reproduzierbarkeitsvertrag entfernt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Modellversion, Zufallsseed und aufgelöste Abhängigkeiten gehören gemeinsam in den Freeze.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nur der letzte Output muss gespeichert werden; Konfigurationen sind nachträglich rekonstruierbar.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ein Seed genügt, selbst wenn Modellcode und Bibliotheken später wechseln.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nur die sichtbare Modellversion zählt; Zufallsquellen sind keine Reproduzierbarkeitsdaten.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "freeze-output-boundary",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "modelVersion": "v3.2",
+        "seed": 17,
+        "dependencyLock": true
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-genai-security"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Welche Aussage trennt den Freeze-Umfang korrekt von einem einzelnen aktuellen Ergebnis?",
+      "fullSolution": "Version, Seed und Dependency-Lock beschreiben die ausführbare Umgebung; ein aktueller Output kann zusätzlich archiviert werden, ersetzt diese Angaben aber nicht. Der Freeze ist deshalb ein Ursachenvertrag und keine Momentaufnahme.",
+      "hints": [
+        "Frage, ob eine Information den Lauf reproduziert oder nur dessen Resultat zeigt.",
+        "Ein Output kann sich ändern, obwohl der Freeze gleich bleibt, etwa durch Eingabedaten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Der Output zeigt das Ergebnis dieses Laufs, aber nicht sicher die genaue Modell-, Seed- und Bibliothekskonfiguration."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Eingabeartefakte können separat versioniert werden; sie sind nicht dasselbe wie der minimale Ausführungs-Freeze."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Modellversion und Seed sind keine verlässlich aus jedem Ergebnis rekonstruierbaren Metadaten und müssen explizit festgehalten werden."
+        }
+      ],
+      "typicalErrors": [
+        "Ausgabearchiv als vollständigen Reproduktionsvertrag behandelt",
+        "Eingabedaten und Laufzeit-Freeze nicht getrennt",
+        "Modellversion oder Seed aus dem Freeze herausgerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ein gespeicherter Output ersetzt Version, Seed und Dependency-Lock vollständig.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Der Freeze muss jede spätere Eingabedatei enthalten, sonst ist er grundsätzlich ungültig.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Freeze hält die ausführbaren Ursachen fest; Ergebnisse werden separat als Artefakte archiviert.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Nur die Abhängigkeiten gehören hinein, weil Modellversion und Seed aus dem Output ablesbar sind.",
           "correct": false
         }
       ],

@@ -12,6 +12,10 @@
       {
         "caseId": "canonical-hash-verify",
         "propertyTest": false
+      },
+      {
+        "caseId": "canonical-hash-verify-order",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -69,6 +73,57 @@
         "Eingabereihenfolge nicht wegkanonisiert",
         "json.dumps-Parameter vergessen (ensure_ascii, separators)",
         "über etwas anderes als die Serialisierung gehasht"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "canonical-hash-verify-order",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "import hashlib\nimport json\n\n\ndef canonical_hash(items):\n    ...\n",
+        "tests": "ITEMS = [\n    {\"id\": \"b\", \"text\": \"Ähre\", \"score\": 2},\n    {\"id\": \"a\", \"text\": \"Alpha\", \"score\": 1},\n]\nfirst = canonical_hash(ITEMS)\nsecond = canonical_hash(list(reversed(ITEMS)))\n__check(\"Hash stabil bei Reihenfolge\", first == second)\n__check(\"Hash-Digest\", first == \"09f748bbbe344565ab66a038373dd0bcd969f18292a99b24cac2c71887f21bb1\")\nchanged = canonical_hash([{\"id\": \"a\", \"text\": \"Alpha\", \"score\": 9}, {\"id\": \"b\", \"text\": \"Ähre\", \"score\": 2}])\n__check(\"Aenderung erkannt\", changed != first)\n__check(\"Leere Liste\", canonical_hash([]) == hashlib.sha256(b\"[]\").hexdigest())\n"
+      },
+      "competencyIds": [
+        "c-research-capstone",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import hashlib\nimport json\n\ndef canonical_hash(items):\n    canonical = json.dumps(sorted(items, key=lambda item: item[\"id\"]),\n                            sort_keys=True, ensure_ascii=False,\n                            separators=(\",\", \":\"))\n    return hashlib.sha256(canonical.encode(\"utf-8\")).hexdigest()\n"
+      },
+      "prompt": "Implementiere einen kanonischen SHA-256-Hash für JSON-Einträge: nach <code>id</code> sortieren, Schlüssel sortieren, UTF-8 ohne ASCII-Escapes und kompakte Separatoren verwenden.",
+      "fullSolution": "Die kanonische JSON-Zeichenkette wird aus den nach id sortierten Einträgen mit sort_keys=True, ensure_ascii=False und separators=(',', ':') gebaut. Genau diese UTF-8-Bytes werden gehasht.",
+      "hints": [
+        "Sortiere sowohl die Eintragsreihenfolge als auch die Schlüssel.",
+        "Umlaute bleiben mit ensure_ascii=False als UTF-8-Zeichen erhalten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-canonical",
+          "then": "Das Sortieren nach id entfernt die Eingabereihenfolge als Hashquelle; reversed(items) muss denselben Digest ergeben."
+        },
+        {
+          "if": "unicode-canonical",
+          "then": "ensure_ascii=False ist hier Teil des Vertrags, damit Ähre nicht als Unicode-Escape serialisiert wird."
+        },
+        {
+          "if": "digest-input",
+          "then": "Gehasht werden die kompakten kanonischen UTF-8-Bytes, nicht die Python-Liste oder nur ihre IDs."
+        }
+      ],
+      "typicalErrors": [
+        "Eingabereihenfolge unverändert in den Digest übernommen",
+        "Unicode-Escaping und kompakte Separatoren nicht festgelegt",
+        "Hash über Python-Repräsentation statt kanonischem JSON gebildet"
       ],
       "tolerancePolicy": {
         "mode": "tests"

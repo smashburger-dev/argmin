@@ -12,10 +12,19 @@
       {
         "caseId": "substring-flag-sum",
         "propertyTest": false
+      },
+      {
+        "caseId": "substring-overlap-casefold",
+        "propertyTest": false
+      },
+      {
+        "caseId": "substring-pattern-counts",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-genai-security",
@@ -63,6 +72,102 @@
         "mehrfache Regel-Treffer pro Beispiel doppelt gezählt",
         "Groß-/Kleinschreibung beim Substring-Vergleich vergessen",
         "sum() über Booleans als String gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "substring-overlap-casefold",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def treffer(text, pattern):\n    text = text.lower()\n    pattern = pattern.lower()\n    return sum(text.startswith(pattern, i) for i in range(len(text)))\n\nprint(treffer(\"ababa\", \"aba\"))\nprint(treffer(\"xxBABaba\", \"bab\"))"
+      },
+      "competencyIds": [
+        "c-genai-security",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "2\n2"
+      },
+      "prompt": "Der Detektor zählt case-insensitive Substring-Treffer an jedem Startindex, auch wenn sich Treffer überlappen. Welche zwei Werte werden ausgegeben?",
+      "fullSolution": "In ababa beginnt aba bei 0 und 2, also zweimal. Nach Kleinschreibung enthält xxBABaba das Muster bab bei den Startpositionen 2 und 5, ebenfalls zweimal.",
+      "hints": [
+        "Prüfe jeden Startindex mit startswith statt nur die nicht überlappenden Blöcke zu zählen.",
+        "Vor dem Vergleich werden Text und Muster kleingeschrieben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "aba startet in ababa bei Index 0 und erneut bei Index 2; der zweite Treffer überlappt den ersten."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "BAB und das spätere bab werden nach lower() beide als bab erkannt."
+        },
+        {
+          "if": "overlap-dropped",
+          "then": "Die Schleife springt nicht um die Musterlänge weiter, sondern prüft jeden Index und bewahrt den überlappenden Treffer."
+        }
+      ],
+      "typicalErrors": [
+        "Substringsuche nach dem ersten Treffer beendet",
+        "Großschreibung im Mustervergleich beibehalten",
+        "überlappende Starts durch nichtüberlappende Slices ersetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "substring-pattern-counts",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "snippet": "def count_flags(text, patterns):\n    text = text.casefold()\n    return sum(text.count(pattern.casefold()) for pattern in patterns)\n\nprint(count_flags(\"Warnung: TEST test\", [\"test\", \"warn\"]))\nprint(count_flags(\"abab\", [\"ab\", \"ba\"]))"
+      },
+      "competencyIds": [
+        "c-genai-security",
+        "c-python-reading"
+      ],
+      "expected": {
+        "output": "3\n3"
+      },
+      "prompt": "Zähle case-insensitive Treffer je Muster mit <code>str.count</code>. Wie lauten die Summen für die beiden Eingaben?",
+      "fullSolution": "In Warnung: TEST test findet test zweimal und warn einmal, zusammen 3. In abab zählt str.count zwei ab-Vorkommen und ein ba-Vorkommen, zusammen 3.",
+      "hints": [
+        "casefold macht TEST und test gleich.",
+        "str.count zählt pro Muster nichtüberlappende Vorkommen; die Summen laufen anschließend über alle Muster."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-sum-wrong",
+          "then": "Das erste Muster trifft zweimal und warn einmal; die Summe der Musterzahlen ist deshalb 3."
+        },
+        {
+          "if": "second-sum-wrong",
+          "then": "Für abab liefert count('ab') zwei und count('ba') eins; zusammen sind es drei."
+        },
+        {
+          "if": "count-overlap-confused",
+          "then": "Diese Variante nutzt str.count und zählt innerhalb eines Musters keine überlappenden Starts."
+        }
+      ],
+      "typicalErrors": [
+        "Casefolding vor der Mustersuche ausgelassen",
+        "Treffer eines Musters nur einmal pro Text angenommen",
+        "überlappende startswith-Logik auf str.count übertragen"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"

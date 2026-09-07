@@ -12,10 +12,20 @@
       {
         "caseId": "silent-fallback-hazard",
         "propertyTest": false
+      },
+      {
+        "caseId": "silent-fallback-except-pass",
+        "propertyTest": false
+      },
+      {
+        "caseId": "silent-fallback-default-value",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-capstone-pipeline"
@@ -87,6 +97,146 @@
         {
           "id": "d",
           "text": "Es fehlt nur ein globales try/except um die Hauptfunktion, dann ist die Pipeline robust.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "silent-fallback-except-pass",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "handler": "except-pass",
+        "failure": "parse-error"
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Ein Parser enthält <code>except Exception: pass</code> und liefert danach einen leeren Datensatz. Welche Diagnose ist sicherheitsrelevant?",
+      "fullSolution": "Der Fehler wird verschluckt und als scheinbar gültiger leerer Datensatz weitergereicht. Ein fail-closed Pfad muss den Fehler sichtbar machen oder die Verarbeitung abbrechen, statt einen stillen Fallback zu akzeptieren.",
+      "hints": [
+        "Suche nach dem Übergang von Ausnahme zu scheinbar normalem Ergebnis.",
+        "Ein leerer Datensatz kann fachlich etwas anderes bedeuten als „Parsing fehlgeschlagen“."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Ein leerer Fallback kann Prüfungen umgehen oder falsche Entscheidungen auslösen; sein Risiko hängt nicht von der Anzahl der Zeilen ab."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Das Verschlucken verändert den beobachtbaren Fehlerpfad und damit die fachliche Bedeutung des Resultats, nicht nur den Stil."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Abfangen ohne Diagnose erhöht nicht die Korrektheit; es verschleiert gerade, ob der Parser überhaupt erfolgreich war."
+        }
+      ],
+      "typicalErrors": [
+        "leeren Rückgabewert pauschal als sichere Datenmenge bewertet",
+        "Ausnahmebehandlung auf Formatstil reduziert",
+        "Fehlerunterdrückung mit erhöhter Robustheit verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Der Code ist sicher, weil leere Daten niemals gefährlich sind.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Das ist nur ein Stilproblem ohne Einfluss auf Diagnosen oder Entscheidungen.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Parser wird automatisch robuster, weil jede Ausnahme abgefangen wird.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Ausnahme wird unsichtbar und der leere Fallback kann als gültiges Ergebnis fehlinterpretiert werden.",
+          "correct": true
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "silent-fallback-default-value",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "missingField": "threshold",
+        "default": 0.5
+      },
+      "competencyIds": [
+        "c-capstone-pipeline"
+      ],
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Eine Konfiguration erwartet <code>threshold</code>, verwendet bei fehlendem Feld aber stillschweigend den Default 0,5. Welche Änderung verbessert die Diagnose?",
+      "fullSolution": "Wenn das Feld für die Entscheidung erforderlich ist, sollte der fehlende Wert einen sichtbaren Validierungsfehler auslösen oder ausdrücklich als optional dokumentiert werden. Ein stiller Default kann eine falsche Policy aktivieren.",
+      "hints": [
+        "Frage, ob der Default fachlich sicher für jede Konfiguration ist.",
+        "Ein sichtbarer Fehler trennt fehlende Eingabe von einer bewusst gesetzten 0,5."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Geheimhaltung macht die implizite Policy nicht nachvollziehbar; ein sicherer Fallback braucht sichtbare Semantik."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Null ist für ein Threshold-Feld eine zusätzliche, möglicherweise gefährliche Policy und kein neutraler Ersatz."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Das Entfernen der Validierung vergrößert die unbemerkte Fehlkonfiguration statt sie zu begrenzen."
+        }
+      ],
+      "typicalErrors": [
+        "Pflichtfeld und optionalen Default nicht unterschieden",
+        "Nullwert als universell neutralen Ersatz angenommen",
+        "fehlende Validierung mit weniger Risiko gleichgesetzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Den Default geheim halten, damit Nutzer ihn nicht ausnutzen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Fehlende Pflichtfelder ablehnen oder den optionalen Default explizit protokollieren und dokumentieren.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Jedes fehlende Feld automatisch mit 0 ersetzen, um weitere Fehler zu vermeiden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Validierung entfernen, weil Defaults alle Konfigurationen vereinheitlichen.",
           "correct": false
         }
       ],

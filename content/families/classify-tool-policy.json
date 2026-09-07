@@ -12,10 +12,20 @@
       {
         "caseId": "tool-policy-least-privilege",
         "propertyTest": false
+      },
+      {
+        "caseId": "tool-policy-allowlist-confirm",
+        "propertyTest": false
+      },
+      {
+        "caseId": "tool-policy-argument-boundary",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-genai-prototype"
@@ -86,6 +96,152 @@
         "Policy durch Prompt-Bitten ersetzt",
         "Kanäle offen gelassen und auf Filter vertraut",
         "unbekannte Werkzeuge automatisch mit Rechten versehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "tool-policy-allowlist-confirm",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "allowed": [
+          "search_docs",
+          "read_file"
+        ],
+        "writeNeedsConfirmation": true
+      },
+      "competencyIds": [
+        "c-genai-prototype"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nur explizit erlaubte Tools freischalten und jede Schreibaktion vor Ausführung bestätigen lassen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Alle Tools freischalten und nur verdächtige Argumente im Nachhinein protokollieren.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Schreibaktionen ohne Nachfrage ausführen, wenn die Anfrage vom Nutzer stammt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Eine lange Blocklist genügt, weil unbekannte Tools standardmäßig harmlos sind.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Agent darf Dokumente suchen, Dateien lesen und Dateien schreiben. Welche Tool-Policy folgt Least Privilege?",
+      "fullSolution": "Die erlaubten Tools stehen in einer engen Allowlist; Schreibaktionen benötigen zusätzlich eine ausdrückliche Bestätigung. Nicht aufgeführte oder riskante Aktionen werden abgelehnt.",
+      "hints": [
+        "Allowlist statt frei formulierter Verbotsliste verwenden.",
+        "Schreiben verändert Zustand und braucht daher eine zusätzliche Zustimmung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Nachträgliches Protokollieren verhindert keine nicht erlaubte Aktion; Least Privilege beginnt mit einer engen Allowlist."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Nutzerherkunft ersetzt keine Schreibbestätigung; ein Schreibtool kann dauerhafte oder externe Folgen haben."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Unbekannte Tools dürfen nicht als harmlos gelten, sonst öffnet jede neue Fähigkeit eine ungeprüfte Lücke."
+        }
+      ],
+      "typicalErrors": [
+        "Blocklist mit Allowlist verwechselt",
+        "Nutzerwunsch als ausreichende Schreibfreigabe interpretiert",
+        "unbekannte Werkzeuge standardmäßig vertrauenswürdig behandelt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "tool-policy-argument-boundary",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "allowed": [
+          "search_docs"
+        ],
+        "maxQueryLength": 200,
+        "writeNeedsConfirmation": true
+      },
+      "competencyIds": [
+        "c-genai-prototype"
+      ],
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nur der Funktionsname ist relevant; Argumente werden vom Tool selbst sicher interpretiert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Eine maximale Länge ist unnötig, solange das Tool auf der Allowlist steht.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Allowlist und Vorab-Argumentprüfung müssen zusammen gelten, hier einschließlich der 200-Zeichen-Grenze.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Lange Queries sind sicher, wenn sie aus einem vertrauenswürdigen Nutzerkonto kommen.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Suchtool ist erlaubt, aber seine Query darf höchstens 200 Zeichen haben. Was gehört zusätzlich zur Tool-Policy?",
+      "fullSolution": "Die Allowlist muss mit einer Argumentvalidierung kombiniert werden: Query-Länge, erwarteter Typ und zulässige Zielressourcen werden vor dem Aufruf geprüft. Schreibrechte bleiben separat bestätigungspflichtig.",
+      "hints": [
+        "Toolname allein kontrolliert noch nicht seine Parameter.",
+        "Validiere Eingaben vor dem externen Effekt, nicht erst nach der Suche."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Ein erlaubter Funktionsname sagt nichts darüber, ob Parameterformat und Umfang den Sicherheitsvertrag einhalten."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Die Allowlist beantwortet „welches Tool“, die Längengrenze beantwortet „mit welchen Eingaben“; beides ist nötig."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Kontovertrauen ersetzt keine Ressourcenbegrenzung; auch legitime Nutzer können versehentlich überlange oder riskante Eingaben senden."
+        }
+      ],
+      "typicalErrors": [
+        "Toolidentität als vollständige Parameterfreigabe verstanden",
+        "Allowlist ohne Eingabegrenzen eingesetzt",
+        "Kontoberechtigung mit sicherer Query-Größe verwechselt"
       ],
       "tolerancePolicy": {
         "mode": "none"

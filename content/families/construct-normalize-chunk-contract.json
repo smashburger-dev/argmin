@@ -12,6 +12,10 @@
       {
         "caseId": "normalize-chunk-contract",
         "propertyTest": false
+      },
+      {
+        "caseId": "normalize-chunk-contract-overlap",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -69,6 +73,57 @@
         "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt",
         "Fenster mit fester Anzahl statt while-Schleife erzeugt",
         "overlap ≥ size erlaubt und Endlosschleife riskiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "normalize-chunk-contract-overlap",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def chunk(text, size, overlap):\n    ...\n",
+        "tests": "__check(\"Fenster mit Overlap\", chunk(\"abcdefghij\", 4, 1) == [\"abcd\", \"defg\", \"ghij\", \"j\"])\n__check(\"letzter Rest\", chunk(\"abcdef\", 4, 2)[-1] == \"ef\")\ntry:\n    chunk(\"abc\", 0, 0)\n    __check(\"ungueltige Groesse\", False)\nexcept ValueError:\n    __check(\"ungueltige Groesse\", True)\ntry:\n    chunk(\"abc\", 3, 3)\n    __check(\"ungueltige Schrittweite\", False)\nexcept ValueError:\n    __check(\"ungueltige Schrittweite\", True)\n"
+      },
+      "competencyIds": [
+        "c-genai-rag",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def chunk(text, size, overlap):\n    text = str(text)\n    size = int(size)\n    overlap = int(overlap)\n    if size <= 0 or overlap < 0 or overlap >= size:\n        raise ValueError(\"size/overlap ungueltig\")\n    step = size - overlap\n    return [text[start:start + size] for start in range(0, len(text), step)]\n"
+      },
+      "prompt": "Implementiere einen deterministischen Chunker mit positiver Größe und einem Overlap, der kleiner als die Größe sein muss. Der letzte Rest bleibt erhalten.",
+      "fullSolution": "Die Schrittweite ist size minus overlap. Validierung verhindert eine nichtpositive Schrittweite; range erzeugt danach alle Starts und der letzte Slice darf kürzer sein.",
+      "hints": [
+        "Prüfe size und overlap vor der Schleife.",
+        "Verwende die Schrittweite size - overlap und verwerfe keinen kurzen letzten Slice."
+      ],
+      "feedbackRules": [
+        {
+          "if": "overlap-step",
+          "then": "Die nächste Startposition entsteht aus size - overlap; ein Overlap von 1 bei size 4 ergibt Schrittweite 3."
+        },
+        {
+          "if": "last-rest",
+          "then": "Der letzte Abschnitt darf kürzer als size sein und wird nicht aufgefüllt oder entfernt."
+        },
+        {
+          "if": "invalid-range",
+          "then": "Bei overlap >= size würde die Schleife nicht sinnvoll vorankommen; dieser Vertrag muss einen ValueError auslösen."
+        }
+      ],
+      "typicalErrors": [
+        "Overlap zur Fenstergröße addiert statt subtrahiert",
+        "unvollständiges Schlussfenster abgeschnitten",
+        "nichtpositive Schrittweite ohne Fehler akzeptiert"
       ],
       "tolerancePolicy": {
         "mode": "tests"
