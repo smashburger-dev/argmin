@@ -12,10 +12,16 @@
       {
         "caseId": "pure-train-step",
         "propertyTest": false
+      },
+      {
+        "caseId": "sgd-momentum-step",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "challenge"
+      "challenge",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-autograd",
@@ -71,6 +77,59 @@
         "Eingabe-Dictionary in-place verändert",
         "Verlust nach dem Update statt davor zurückgegeben",
         "Update in Gradientenrichtung (Plus statt Minus)"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide"
+    },
+    {
+      "caseId": "sgd-momentum-step",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "parameters": {
+        "packages": [
+          "numpy"
+        ],
+        "starterCode": "import numpy as np\n\n\ndef momentum_step(params, grads, velocity, lr, momentum):\n    ...\n",
+        "tests": "params = {\"w\": np.array([1.0, -2.0]), \"b\": np.array([0.5])}\ngrads = {\"w\": np.array([2.0, -4.0]), \"b\": np.array([1.0])}\nvelocity = {\"w\": np.array([0.5, 1.0]), \"b\": np.array([0.0])}\nnew_params, new_velocity = momentum_step(params, grads, velocity, 0.1, 0.9)\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], [2.45, -3.1]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], [0.755, -1.69]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], [0.4]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [1.0, -2.0]) and np.array_equal(velocity[\"w\"], [0.5, 1.0]))\n"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "import numpy as np\n\ndef momentum_step(params, grads, velocity, lr, momentum):\n    new_velocity = {key: momentum * np.asarray(velocity[key], dtype=float) + np.asarray(grads[key], dtype=float) for key in params}\n    new_params = {key: np.asarray(params[key], dtype=float) - lr * new_velocity[key] for key in params}\n    return new_params, new_velocity\n"
+      },
+      "prompt": "Implementiere einen reinen Momentum-SGD-Schritt für Dictionaries aus NumPy-Arrays: $v_{neu}=\\mu v+g$ und $p_{neu}=p-lr\\,v_{neu}$.",
+      "fullSolution": "Für jeden Schlüssel wird zuerst die neue Geschwindigkeit aus altem Momentum und aktuellem Gradienten berechnet. Danach entsteht ein neues Parameter-Dictionary; weder Parameter noch alte Geschwindigkeiten werden verändert.",
+      "hints": [
+        "Berechne v neu und verwende genau dieses v für das Minus-Update.",
+        "Kopiere die Arrays durch die Rechnung; prüfe die Eingaben nach dem Aufruf unverändert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "momentum-omitted",
+          "then": "Für w gilt 0,9·[0,5,1]+[2,-4]=[2,45,-3,1]; der alte Geschwindigkeitswert ist nicht optional."
+        },
+        {
+          "if": "plus-update",
+          "then": "Mit lr=0,1 wird [1,-2] minus 0,1·[2,45,-3,1] zu [0,755,-1,69]."
+        },
+        {
+          "if": "input-mutated",
+          "then": "Der Test vergleicht params und velocity nach dem Aufruf mit ihren ursprünglichen Arrays; In-place-Schreiben wäre hier falsch."
+        }
+      ],
+      "typicalErrors": [
+        "Momentumterm nicht in die neue Geschwindigkeit aufgenommen",
+        "Gradientenupdate mit Plus statt Minus ausgeführt",
+        "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
       ],
       "tolerancePolicy": {
         "mode": "tests"

@@ -12,10 +12,20 @@
       {
         "caseId": "subword-oov-robustness",
         "propertyTest": false
+      },
+      {
+        "caseId": "subword-unknown-piece",
+        "propertyTest": false
+      },
+      {
+        "caseId": "subword-boundary-sharing",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-tokenizer"
@@ -84,6 +94,153 @@
         "OOV mit Subwords für unvermeidlich gehalten",
         "dynamische Vokabularerweiterung zur Laufzeit angenommen",
         "Round-Trip-Eigenschaft missachtet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "subword-unknown-piece",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "knownPieces": [
+          "un",
+          "believ",
+          "able"
+        ],
+        "word": "unbelievable"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Subword-Vokabular kennt die Stücke <code>un</code>, <code>believ</code> und <code>able</code>, aber nicht das neue Stück <code>unbelievable</code>. Was ist der Hauptvorteil?",
+      "fullSolution": "Das unbekannte Gesamtwort kann in bekannte Subwords zerlegt werden, statt vollständig als OOV-Token zu scheitern. Das Vokabular muss deshalb nicht jedes vollständige Wort enthalten.",
+      "hints": [
+        "Vergleiche ein unbekanntes Gesamtwort mit bekannten Teilstücken.",
+        "Subwords reduzieren OOV-Fälle, sie garantieren aber nicht immer perfekte Segmentierung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Ein fixes Vokabular erzeugt keine neue ID zur Laufzeit; gerade die Zerlegung in un, believ und able vermeidet das."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Die Zerlegung kann mehrere Tokens erzeugen und verändert damit die Sequenzlänge durchaus."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Die Bedeutung verteilt sich hier über mehrere Stücke; kein einzelnes Subword muss das ganze Wort bedeuten."
+        }
+      ],
+      "typicalErrors": [
+        "Subword-Zerlegung mit dynamischer Vokabularerweiterung verwechselt",
+        "OOV-Robustheit fälschlich als konstante Sequenzlänge verstanden",
+        "Teiltoken als vollständige Wortsemantik interpretiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "subword-boundary-sharing",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "words": [
+          "play",
+          "player",
+          "replay"
+        ]
+      },
+      "competencyIds": [
+        "c-dl-tokenizer"
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Geteilte Stücke können Wissen zwischen play, player und replay wiederverwenden.",
+          "correct": true
+        }
+      ],
+      "prompt": "Ein Korpus enthält <code>play</code>, <code>player</code> und <code>replay</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+      "fullSolution": "Gemeinsame Stücke wie <code>play</code> oder ein Präfix/Suffix können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden.",
+      "hints": [
+        "Suche nach wiederkehrenden Teilstrings in den drei Wörtern.",
+        "Sharing betrifft Teilstücke, nicht zwingend die vollständigen Wortgrenzen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Gerade player und replay können aus mehreren Stücken bestehen; eine Ein-Token-Garantie gibt es nicht."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Subwords bewahren Unterschiede durch zusätzliche Stücke; sie löschen nicht die Morphologie."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Der Zweck ist die Wiederverwendung vorhandener Subword-Embeddings statt eines neuen Vollwort-Vektors."
+        }
+      ],
+      "typicalErrors": [
+        "Subword-Tokenisierung mit Ein-Wort-ein-Token gleichgesetzt",
+        "gemeinsame Stücke als Verlust statt als geteilte Repräsentation gelesen",
+        "OOV-Lösung fälschlich als vollständige Embedding-Neuerzeugung beschrieben"
       ],
       "tolerancePolicy": {
         "mode": "none"

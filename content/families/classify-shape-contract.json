@@ -12,10 +12,20 @@
       {
         "caseId": "shape-bias-broadcast-mc",
         "propertyTest": false
+      },
+      {
+        "caseId": "shape-transformer-qkv",
+        "propertyTest": false
+      },
+      {
+        "caseId": "shape-token-batch-flatten",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-tensors"
@@ -86,6 +96,154 @@
         "Form der Gewichtsmatrix statt des Ergebnisses angegeben",
         "Bias als formgebend statt nur broadcastet gelesen",
         "passende innere Dimensionen fälschlich für unzulässig gehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "shape-transformer-qkv",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "parameters": {
+        "X": [
+          2,
+          5,
+          12
+        ],
+        "WQ": [
+          12,
+          4
+        ]
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$(2,12,5)$",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$(5,4)$",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "$(2,5,4)$",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "$(12,4)$",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Batch $X$ hat Shape $(B,T,d)=(2,5,12)$; $W_Q$ hat Shape $(12,4)$. Welche Shape besitzt $Q=XW_Q$?",
+      "fullSolution": "Die letzte Achse von X wird mit der ersten Achse von $W_Q$ kontrahiert: $(2,5,12)\\cdot(12,4)$ ergibt $Q$ mit Shape $(2,5,4)$.",
+      "hints": [
+        "Batch- und Sequenzachsen bleiben erhalten.",
+        "Nur die letzte X-Dimension 12 wird durch die Ausgabespalten 4 ersetzt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "$(2,12,5)$ vertauscht die Sequenzachse mit der Eingabebreite; Multiplikation ersetzt 12 durch 4."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "$(5,4)$ würde die Batchachse verlieren; jede der zwei Batchinstanzen erhält eine eigene Ausgabe."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$(12,4)$ ist nur die Gewichtsform von $W_Q$ und nicht die Ergebnisform mit Batch und Sequenz."
+        }
+      ],
+      "typicalErrors": [
+        "Kontraktionsachse mit der Sequenzachse vertauscht",
+        "Batchdimension beim Matrixprodukt entfernt",
+        "Gewichtsmatrixform als Aktivierungsform ausgegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "shape-token-batch-flatten",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "parameters": {
+        "batch": 3,
+        "tokens": 7,
+        "embeddingDim": 16
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "$(3,16,7)$",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$(3,7,16)$",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "$(7,16)$",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$(3,7)$",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Tokenizer liefert IDs mit Shape $(B,T)=(3,7)$; ein Embedding mit Breite $d=16$ ersetzt jede ID durch einen Vektor. Welche Shape hat die eingebettete Sequenz?",
+      "fullSolution": "Jede der $3\\times7$ Tokenpositionen erhält einen 16-dimensionalen Vektor. Die neue Shape ist daher $(3,7,16)$.",
+      "hints": [
+        "Embedding fügt eine letzte Featureachse hinzu.",
+        "Batch 3 und Sequenzlänge 7 bleiben unverändert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "$(3,16,7)$ legt die Embeddingbreite zwischen Batch und Sequenz; die Featureachse wird konventionell angehängt."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "$(7,16)$ unterschlägt die Batchdimension mit drei unabhängigen Sequenzen."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "$(3,7)$ ist die ID-Shape vor dem Embedding und enthält noch keine 16 Featurewerte."
+        }
+      ],
+      "typicalErrors": [
+        "Embeddingbreite an die falsche Achsenposition gesetzt",
+        "Batchachse beim Einbetten weggelassen",
+        "Vorher-Shape der Token-IDs als Ergebnis beibehalten"
       ],
       "tolerancePolicy": {
         "mode": "none"

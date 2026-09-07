@@ -12,10 +12,19 @@
       {
         "caseId": "training-loop-count",
         "propertyTest": false
+      },
+      {
+        "caseId": "training-loop-drop-last",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-loop-early-stop-counter",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "core"
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-dl-training",
@@ -66,6 +75,102 @@
         "abgerundet (2 Batches) und 6 ausgegeben",
         "die float-Endung .0 in der Vorhersage unterschlagen",
         "Update nur einmal statt dreimal gerechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "training-loop-drop-last",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "n, bs, epochs = 10, 4, 2\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)"
+      },
+      "expected": {
+        "output": "[0, 4, 8]\n4"
+      },
+      "prompt": "Lies die Batchschleife: Welche Starts erzeugt <code>range(0, n, bs)</code>, und welche davon bleiben bei einer Drop-last-Prüfung vollständig?",
+      "fullSolution": "range erzeugt die Starts [0, 4, 8]. Der letzte Start 8 hätte nur zwei Elemente und wird durch start + bs <= n verworfen; pro Epoche bleiben zwei Batches, also vier über zwei Epochen.",
+      "hints": [
+        "Schreibe zuerst die von range erzeugten Startwerte auf.",
+        "Bei Drop-last zählt nur ein Start mit start + bs <= n; multipliziere danach mit den zwei Epochen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "Die Starts sind [0, 4, 8], weil range bis kleiner als n läuft und 8 noch erzeugt wird."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Der Start 8 bildet keinen vollständigen Viererbatch; zwei vollständige Batches pro Epoche ergeben 4."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Die Ausgabe besteht aus einer Listenzeile und einer Schrittzahlzeile."
+        }
+      ],
+      "typicalErrors": [
+        "den letzten unvollständigen Batch als vollständig gezählt",
+        "range-Ende mit einem inklusiven n verwechselt",
+        "die Epochenzahl nicht auf die zwei gültigen Batches angewendet"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "training-loop-early-stop-counter",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-dl-training",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "snippet": "losses = [0.80, 0.60, 0.60, 0.595, 0.594]\nmin_delta = 0.01\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)"
+      },
+      "expected": {
+        "output": "4\n0.6"
+      },
+      "prompt": "Ein Early-Stopping-Zähler verwendet <code>min_delta=0,01</code> und <code>patience=2</code>. Welche zwei Werte werden ausgegeben?",
+      "fullSolution": "0,80 verbessert sich auf 0,60. Die folgenden Verluste 0,60 und 0,595 verbessern den Bestwert nicht um mehr als 0,01; beim vierten Durchlauf erreicht wait daher 2. Der Abbruch erfolgt in Epoche 4, der beste Verlust bleibt 0,6.",
+      "hints": [
+        "Eine Verbesserung muss strikt größer als min_delta sein.",
+        "Zähle die nicht ausreichenden Verbesserungen ab dem Bestwert 0,60 und stoppe bei wait=2."
+      ],
+      "feedbackRules": [
+        {
+          "if": "first-line-wrong",
+          "then": "0,595 − 0,60 ist keine Verbesserung von mehr als 0,01; der Zähler erreicht in Epoche 4 den Wert 2."
+        },
+        {
+          "if": "second-line-wrong",
+          "then": "Der beste bisherige Verlust bleibt 0,6, weil spätere Werte nicht unter 0,59 fallen."
+        },
+        {
+          "if": "element-count-mismatch",
+          "then": "Das Programm druckt zuerst die Epoche und danach den besten Loss."
+        }
+      ],
+      "typicalErrors": [
+        "min_delta als inklusive statt als strikte Schwelle behandelt",
+        "patience nach einer echten Verbesserung nicht zurückgesetzt",
+        "den aktuellen Loss statt den bisher besten Loss ausgegeben"
       ],
       "tolerancePolicy": {
         "mode": "whitespace-normalized"
