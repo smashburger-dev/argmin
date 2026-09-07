@@ -12,10 +12,15 @@
       {
         "caseId": "pipeline-leakage-audit",
         "propertyTest": false
+      },
+      {
+        "caseId": "pipeline-clean-split",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "stretch"
+      "stretch",
+      "challenge"
     ],
     "competencyIds": [
       "c-ml-cv"
@@ -66,6 +71,56 @@
         "Groß-/Kleinschreibung nicht normalisieren",
         "UND-Regeln als ODER-Regeln implementieren",
         "Indizes unsortiert sammeln"
+      ],
+      "tolerancePolicy": {
+        "mode": "tests"
+      },
+      "activityType": "python-code",
+      "graderId": "pyodide",
+      "competencyIds": [
+        "c-ml-cv"
+      ]
+    },
+    {
+      "caseId": "pipeline-clean-split",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "packages": [],
+        "starterCode": "def audit_pipeline(steps):\n    # return sorted indices matching the three leakage rules\n    ...\n",
+        "tests": "steps = [\"split train and test\", \"fit scaler on train rows\", \"fit model on train features\", \"score on test rows\"]\n__check(\"clean\", audit_pipeline(steps) == [])\nleaky = [\"Mittelwert über alle Zeilen berechnen\", \"fit scaler on train\", \"fit model on test features\"]\n__check(\"all-rows and test-fit\", audit_pipeline(leaky) == [0, 2])\n__check(\"case-insensitive\", audit_pipeline([\"ZIEL als FEATURE verwenden\"]) == [0])"
+      },
+      "expected": {
+        "kind": "reference-solver",
+        "referenceSolver": "def audit_pipeline(steps):\n    out = []\n    for i, step in enumerate(steps):\n        text = str(step).lower()\n        if (\"ziel\" in text and \"feature\" in text) or \"alle zeilen\" in text or (\"test\" in text and \"fit\" in text):\n            out.append(i)\n    return out"
+      },
+      "prompt": "Implementiere den Audit-Vertrag: melde die sortierten 0-basierten Indizes von Schritten, die Ziel-Leakage, Vorab-Statistiken über alle Zeilen oder Fitting auf Testdaten enthalten.",
+      "fullSolution": "def audit_pipeline(steps):\n    out = []\n    for i, step in enumerate(steps):\n        text = str(step).lower()\n        if (\"ziel\" in text and \"feature\" in text) or \"alle zeilen\" in text or (\"test\" in text and \"fit\" in text):\n            out.append(i)\n    return out",
+      "hints": [
+        "Suche alle drei Regeln pro Schritt und gib die Indizes bereits sortiert zurück.",
+        "Groß-/Kleinschreibung darf die Erkennung nicht beeinflussen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "wrong-target",
+          "then": "Ziel und Feature im selben Schritt markieren Ziel-Leakage."
+        },
+        {
+          "if": "wrong-stat",
+          "then": "Statistiken über alle Zeilen vor dem Split leaken Testinformation."
+        },
+        {
+          "if": "wrong-test-fit",
+          "then": "Ein Fit auf Testdaten ist ebenfalls Leakage."
+        }
+      ],
+      "typicalErrors": [
+        "nur die erste Regel geprüft",
+        "Indexpositionen nicht beibehalten",
+        "Großschreibung übersehen"
       ],
       "tolerancePolicy": {
         "mode": "tests"

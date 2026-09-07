@@ -12,10 +12,20 @@
       {
         "caseId": "failure-next-cycle-supervised",
         "propertyTest": false
+      },
+      {
+        "caseId": "task-house-price",
+        "propertyTest": false
+      },
+      {
+        "caseId": "task-customer-segments",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-baseline"
@@ -84,6 +94,140 @@
         "Zielart nach Datentyp statt nach Bedeutung der Variable entscheiden",
         "überwachtes und unüberwachtes Lernen verwechseln",
         "Kategorien als stetiges Ziel behandeln, weil sie als Zahlen kodiert sind"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "task-house-price",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "scenario": "Ausfall ja/nein mit historischen Labels",
+        "target": "Ausfall im nächsten Zyklus"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Unüberwachtes Clustering, weil mehrere Merkmale eingehen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Binäre Klassifikation, weil jeder Verkauf ein einzelnes Ergebnis ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Überwachte Regression, weil ein stetiger Preis aus gelabelten Beispielen gelernt wird.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Bestärkendes Lernen, weil das Haus eine Entscheidung darstellt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Modell soll den Verkaufspreis eines Hauses aus Fläche, Lage und Baujahr vorhersagen. Historische Verkaufspreise sind vorhanden. Welche Aufgabenart liegt vor?",
+      "fullSolution": "Der Zielwert ist eine stetige Zahl und historische Zielwerte sind vorhanden: überwachte Regression.",
+      "hints": [
+        "Achte auf den Datentyp des Zielwerts, nicht auf die Zahl der Merkmale.",
+        "Labels machen die Aufgabe überwacht; ein stetiger Zielwert bedeutet Regression."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Aufgabenart mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "task-customer-segments",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "scenario": "Ausfall ja/nein mit historischen Labels",
+        "target": "Ausfall im nächsten Zyklus"
+      },
+      "expected": {
+        "correctChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Überwachte Regression auf eine unbekannte Zielvariable.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Unüberwachtes Clustering, weil Gruppen ohne Labels entdeckt werden.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Klassifikation, weil jeder Kunde genau einer Gruppe zugeordnet wird.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Regression, weil Kaufprofile Zahlen enthalten.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Händler besitzt Kundendaten ohne Zielvariable und möchte Gruppen ähnlicher Kaufprofile entdecken. Welche Aufgabenart passt?",
+      "fullSolution": "Ohne vorgegebene Zielvariable und mit dem Ziel, Gruppen zu entdecken, handelt es sich um unüberwachtes Clustering.",
+      "hints": [
+        "Suche zuerst nach einer vorhandenen Zielvariable.",
+        "Gruppen entdecken ist etwas anderes, als eine bekannte Kategorie vorherzusagen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Aufgabenart: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Aufgabenart mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
       ],
       "tolerancePolicy": {
         "mode": "none"

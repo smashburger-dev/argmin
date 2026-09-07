@@ -12,10 +12,20 @@
       {
         "caseId": "repro-contract-violation",
         "propertyTest": false
+      },
+      {
+        "caseId": "repro-environment-version",
+        "propertyTest": false
+      },
+      {
+        "caseId": "repro-random-split-undocumented",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-repro"
@@ -84,6 +94,140 @@
         "Dokumentation (Manifest, README) mit Reproduzierbarkeit verwechseln",
         "Seed-Setzung als ausreichend ansehen, obwohl der Split frei läuft",
         "Vorab-Metrik als optional ansehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "repro-environment-version",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-repro"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Ein Experiment speichert Seed und Split, aber nicht die Version der Vorverarbeitungsbibliothek. Warum ist das ein Reproduktionsrisiko?",
+      "fullSolution": "Unterschiedliche Bibliotheksversionen können Vorverarbeitung, numerische Details oder Defaults ändern. Ohne Versionsangabe ist die Umgebung nicht vollständig festgelegt.",
+      "hints": [
+        "Ein Seed kontrolliert Zufall, nicht automatisch Bibliotheksimplementierungen.",
+        "Zum Reproduktionsvertrag gehört auch die ausführbare Umgebung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "text": "Versionen sind irrelevant, wenn der Seed gleich bleibt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Ohne Versionsangaben kann sich die Ausführung trotz gleichem Seed ändern.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Das verletzt nur den Speichervertrag, nicht Reproduzierbarkeit.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein README ersetzt alle maschinenlesbaren Versionsangaben.",
+          "correct": false
+        }
+      ],
+      "typicalErrors": [
+        "Reproduktionsvertrag mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "repro-random-split-undocumented",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-repro"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Ein Training setzt einen Seed, erzeugt aber bei jedem Lauf einen neuen Train/Test-Split und speichert ihn nicht. Was ist verletzt?",
+      "fullSolution": "Der Seed allein reicht nicht, wenn Split-Erzeugung oder Split-Artefakt nicht deterministisch reproduziert werden. Die Datenaufteilung gehört in den Vertrag.",
+      "hints": [
+        "Frage, ob derselbe Datensatz in Training und Test landet.",
+        "Reproduzierbarkeit verlangt dieselbe Aufteilung, nicht nur irgendeinen Seed."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Reproduktionsvertrag: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nichts, weil jeder Split statistisch gültig ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur die Modellarchitektur ist unvollständig dokumentiert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Der Split-Vertrag ist verletzt; derselbe Lauf kann andere Trainings- und Testdaten sehen.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Das ist ausschließlich ein Problem der Metrikdefinition.",
+          "correct": false
+        }
+      ],
+      "typicalErrors": [
+        "Reproduktionsvertrag mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
       ],
       "tolerancePolicy": {
         "mode": "none"

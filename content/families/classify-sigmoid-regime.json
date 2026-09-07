@@ -12,10 +12,20 @@
       {
         "caseId": "sigmoid-large-z",
         "propertyTest": false
+      },
+      {
+        "caseId": "sigmoid-threshold",
+        "propertyTest": false
+      },
+      {
+        "caseId": "sigmoid-log-odds",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-logistic"
@@ -86,6 +96,144 @@
         "Ausgabebereich (0, 1) mit {0, 1} verwechseln",
         "Symmetrie σ(−z) = 1 − σ(z) nicht kennen",
         "den Schwellenwert-Schritt mit der Sigmoid-Ausgabe gleichsetzen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "sigmoid-threshold",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-logistic"
+      ],
+      "parameters": {
+        "formula": "sigmoid(z) = 1 / (1 + exp(-z))"
+      },
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Ausgabe ist 0, weil der Logit null ist.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Ausgabe ist negativ, weil der Logit kein positives Signal enthält.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Ausgabe ist exakt 1 und die Klasse damit unabhängig vom Schwellenwert festgelegt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Ausgabe ist 0,5; die Klassenentscheidung entsteht erst durch einen Schwellenwert.",
+          "correct": true
+        }
+      ],
+      "prompt": "Ein logistisches Modell liefert für einen Fall den Logit $z=0$. Welche Aussage über Ausgabe und Entscheidung stimmt?",
+      "fullSolution": "Für $z=0$ ist $\\sigma(z)=0{,}5$. Erst ein separater Schwellenwert, etwa 0,5, macht daraus eine Klassenentscheidung.",
+      "hints": [
+        "Setze z direkt in die Formel ein.",
+        "Trenne die kontinuierliche Sigmoid-Ausgabe von der späteren Schwellenentscheidung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Sigmoid-Ausgabe: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Sigmoid-Ausgabe: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Sigmoid-Ausgabe: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Sigmoid-Ausgabe mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "sigmoid-log-odds",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-logistic"
+      ],
+      "parameters": {
+        "formula": "sigmoid(z) = 1 / (1 + exp(-z))"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Wahrscheinlichkeit ist $\\log(3)$ und damit größer als 1.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Die Wahrscheinlichkeit ist 3/4, aber die Odds sind 1/3.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Wahrscheinlichkeit ist 0,75, entsprechend Odds von 3:1.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Die Wahrscheinlichkeit ist 0,25, weil der Logit positiv invertiert wird.",
+          "correct": false
+        }
+      ],
+      "prompt": "Was bedeutet ein Logit von $z=\\log(3)$ in einem korrekt spezifizierten logistischen Modell?",
+      "fullSolution": "Die Sigmoidfunktion wandelt Log-Odds in eine Wahrscheinlichkeit um: $\\sigma(\\log 3)=3/(1+3)=0{,}75$.",
+      "hints": [
+        "Nutze $e^{\\log 3}=3$.",
+        "Die Odds sind p/(1-p); löse daraus p."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Sigmoid-Log-Odds: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Sigmoid-Log-Odds: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Sigmoid-Log-Odds: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Sigmoid-Log-Odds mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
       ],
       "tolerancePolicy": {
         "mode": "none"

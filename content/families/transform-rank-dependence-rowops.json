@@ -12,10 +12,17 @@
       {
         "caseId": "rank-3x3-staircase",
         "propertyTest": false
+      },
+      {
+        "caseId": "rank-3x3-full",
+        "propertyTest": false
+      },
+      {
+        "caseId": "rank-3x4-line",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro",
       "core",
       "stretch",
       "challenge"
@@ -60,6 +67,101 @@
       },
       "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}2&1&1\\\\1&2&0\\\\3&3&1\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.",
       "fullSolution": "III − I − II: $(3,3,1)-(2,1,1)-(1,2,0)=(0,0,0)$, also eine Nullzeile. Zeile 1 und Zeile 2 sind unabhängig (keine Vielfachen), damit ist $\\operatorname{rang}(A)=2$."
+    },
+    {
+      "caseId": "rank-3x3-full",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "A": [
+          [
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            1,
+            3
+          ],
+          [
+            2,
+            0,
+            1
+          ]
+        ]
+      },
+      "expected": {
+        "kind": "integer",
+        "value": 3
+      },
+      "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}1&2&0\\\\0&1&3\\\\2&0&1\\end{pmatrix}\\] mit Gauß-Elimination.",
+      "fullSolution": "Die Determinante ist $7$ und damit ungleich null. Es gibt drei Pivotzeilen, also ist $\\operatorname{rang}(A)=3$.",
+      "hints": [
+        "Suche Pivotzeilen nach dem Zeilentausch und der Elimination.",
+        "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
+      ],
+      "typicalErrors": [
+        "Zeilenabhängigkeit nicht erkannt",
+        "Rang mit der Zahl der Spalten verwechselt",
+        "Nullzeilen nach der Elimination mitgezählt"
+      ],
+      "tolerancePolicy": {
+        "mode": "absolute",
+        "value": 0
+      }
+    },
+    {
+      "caseId": "rank-3x4-line",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "A": [
+          [
+            1,
+            2,
+            3,
+            4
+          ],
+          [
+            2,
+            4,
+            6,
+            8
+          ],
+          [
+            -1,
+            -2,
+            -3,
+            -4
+          ]
+        ]
+      },
+      "expected": {
+        "kind": "integer",
+        "value": 1
+      },
+      "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}1&2&3&4\\\\2&4&6&8\\\\-1&-2&-3&-4\\end{pmatrix}\\] mit Gauß-Elimination.",
+      "fullSolution": "Zeile 2 ist $2$-mal Zeile 1 und Zeile 3 ist $-1$-mal Zeile 1. Nach Elimination bleibt genau eine Pivotzeile, also ist $\\operatorname{rang}(A)=1$.",
+      "hints": [
+        "Suche Pivotzeilen nach dem Zeilentausch und der Elimination.",
+        "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
+      ],
+      "typicalErrors": [
+        "Zeilenabhängigkeit nicht erkannt",
+        "Rang mit der Zahl der Spalten verwechselt",
+        "Nullzeilen nach der Elimination mitgezählt"
+      ],
+      "tolerancePolicy": {
+        "mode": "absolute",
+        "value": 0
+      }
     }
   ]
 }

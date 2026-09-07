@@ -12,10 +12,20 @@
       {
         "caseId": "hard-margin-width",
         "propertyTest": false
+      },
+      {
+        "caseId": "svm-soft-margin-slack",
+        "propertyTest": false
+      },
+      {
+        "caseId": "svm-support-boundary",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-svm-pca"
@@ -85,6 +95,134 @@
           "id": "d",
           "text": "Die Breite des Korridors um die Trenngerade, den kein Trainingspunkt durchquert; sie beträgt 2/||w|| — kleines ||w|| heißt großer Margin.",
           "correct": true
+        }
+      ]
+    },
+    {
+      "caseId": "svm-soft-margin-slack",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "Was erlaubt eine Soft-Margin-SVM durch Slack-Variablen?",
+      "fullSolution": "Slack-Variablen erlauben einzelne Margin-Verletzungen gegen eine Kostenstrafe. Das Modell tauscht damit harte Trennbarkeit gegen Robustheit gegenüber Ausreißern.",
+      "hints": [
+        "Soft Margin bedeutet nicht, dass die Margin verschwindet.",
+        "Die Kostenstrafe entscheidet, wie stark Verletzungen bestraft werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "SVM-Margin mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Sie entfernt alle Trainingspunkte aus der Optimierung.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Sie maximiert Fehler ohne jede Strafe.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Sie erlaubt Margin-Verletzungen, die über eine Kostenstrafe kontrolliert werden.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Sie macht aus der SVM ein unüberwachtes Clustering.",
+          "correct": false
+        }
+      ]
+    },
+    {
+      "caseId": "svm-support-boundary",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "expected": {
+        "correctChoice": "b"
+      },
+      "prompt": "Welche Rolle haben Support Vectors in einer linearen SVM?",
+      "fullSolution": "Support Vectors liegen auf der Margin oder verletzen sie und bestimmen dadurch die Lage der optimalen Trennebene. Punkte weit außerhalb haben typischerweise keinen direkten Einfluss.",
+      "hints": [
+        "Nicht jeder Trainingspunkt bestimmt die Grenze gleich stark.",
+        "Die Randpunkte tragen die aktiven Nebenbedingungen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "SVM-Margin: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "SVM-Margin mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Sie sind zufällig gewählte Punkte für einen Validierungssplit.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Sie liegen an der Margin oder verletzen sie und bestimmen damit die Lösung.",
+          "correct": true
+        },
+        {
+          "id": "c",
+          "text": "Sie sind alle Punkte auf der richtigen Seite, weit vom Rand entfernt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Sie sind nur die falsch klassifizierten Testpunkte.",
+          "correct": false
         }
       ]
     }

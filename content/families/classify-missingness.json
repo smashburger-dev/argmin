@@ -12,10 +12,20 @@
       {
         "caseId": "target-dependent-missingness",
         "propertyTest": false
+      },
+      {
+        "caseId": "missingness-device-censoring",
+        "propertyTest": false
+      },
+      {
+        "caseId": "missingness-income-survey",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-pandas-cleaning"
@@ -85,6 +95,138 @@
           "id": "d",
           "text": "Der Mittelwert wird überschätzt, weil hohe Umsätze doppelt gezählt werden.",
           "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "missingness-device-censoring",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "thema": "zielabhängige Missingness"
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "prompt": "In einem Krankenhaus fallen Laborwerte genau dann aus, wenn ein Messgerät bei extremen Werten abschaltet. Was ist die sauberste Diagnose?",
+      "fullSolution": "Das Fehlen hängt vom Messwert beziehungsweise seinem Extrembereich ab und ist daher nicht MCAR. Eine naive Löschung kann die Verteilung systematisch verzerren.",
+      "hints": [
+        "Frage, ob das Fehlen unabhängig vom nicht beobachteten Wert ist.",
+        "Ein gerätebedingtes Ausfallen bei Extremwerten verändert gerade die Randbereiche."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Missingness-Mechanik mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das ist MCAR, weil das Gerät zufällig ausfällt.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Das Löschen ist immer harmlos, solange mehr als die Hälfte der Werte bleibt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Das Fehlen ist wertabhängig; Löschen kann Extremwerte systematisch entfernen.",
+          "correct": true
+        },
+        {
+          "id": "d",
+          "text": "Das ist automatisch Imputation durch den Sensor.",
+          "correct": false
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "missingness-income-survey",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "thema": "zielabhängige Missingness"
+      },
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Bei einer freiwilligen Umfrage fehlt das Einkommen besonders häufig bei sehr hohen Einkommen. Welche Folgerung ist korrekt?",
+      "fullSolution": "Die Ausfälle hängen plausibel vom nicht beobachteten Einkommen ab. Complete-Case-Analysen können den Mittelwert nach unten verzerren; die Missingness-Mechanik muss untersucht werden.",
+      "hints": [
+        "Vergleiche die Antwortwahrscheinlichkeit mit dem vermuteten fehlenden Wert.",
+        "Hohe Einkommen, die systematisch fehlen, verändern den Mittelwert der Beobachteten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Missingness-Mechanik: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Missingness-Mechanik mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Daten sind MCAR, weil jede Person freiwillig teilnehmen durfte.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur die Anzahl der Antworten zählt; die Richtung der Ausfälle ist egal.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die fehlenden Einkommen können durch den Median ersetzt werden, ohne Annahmen zu prüfen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Missingness ist wahrscheinlich wertabhängig und kann den Mittelwert nach unten verzerren.",
+          "correct": true
         }
       ],
       "activityType": "single-choice",

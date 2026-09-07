@@ -12,6 +12,14 @@
       {
         "caseId": "shape-product-drawn",
         "propertyTest": false
+      },
+      {
+        "caseId": "shape-add-broadcast-trap",
+        "propertyTest": false
+      },
+      {
+        "caseId": "shape-vector-matmul-chain",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
@@ -71,6 +79,148 @@
       ],
       "prompt": "$A$ ist eine $3\\times2$-Matrix und $B$ eine $2\\times4$-Matrix. Welche Aussage ist korrekt?",
       "fullSolution": "Spaltenzahl($A$)=2 = Zeilenzahl($B$)=2, also ist $AB$ definiert mit Form $3\\times4$. Für $BA$ müsste Spaltenzahl($B$)=4 gleich Zeilenzahl($A$)=3 sein — falsch, also undefiniert."
+    },
+    {
+      "caseId": "shape-add-broadcast-trap",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "dimsA": [
+          2,
+          3
+        ],
+        "dimsB": [
+          2,
+          3
+        ]
+      },
+      "expected": {
+        "correctChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "c",
+          "text": "$A+B$ ist definiert und hat die Form $2\\times3$; beide Operanden haben dieselbe Form.",
+          "correct": true
+        },
+        {
+          "id": "a",
+          "text": "$A+B$ ist eine $3\\times2$-Matrix, weil sich die Dimensionen beim Addieren drehen.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "$A+B$ ist immer definiert, weil NumPy jede Matrixaddition broadcastet.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$A+B$ ist nicht definiert, weil Addition nur für quadratische Matrizen erlaubt ist.",
+          "correct": false
+        }
+      ],
+      "prompt": "A ist eine $2\\times3$-Matrix und B ebenfalls. Welche Aussage zur Addition ist korrekt?",
+      "fullSolution": "Eine Matrixaddition ist nur für gleiche Shapes definiert. Daher ist $A+B$ eine $2\\times3$-Matrix; es gibt hier kein Broadcasting wie in NumPy für beliebige Formen.",
+      "hints": [
+        "Vergleiche bei Addition zuerst beide Dimensionen, nicht nur eine davon.",
+        "Matrixaddition ist keine Matrixmultiplikation: Beide Shapes müssen übereinstimmen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Shape-Prüfung bei Addition: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Shape-Prüfung bei Addition: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Shape-Prüfung bei Addition: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Shape-Prüfung bei Addition mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
+    },
+    {
+      "caseId": "shape-vector-matmul-chain",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "dimsA": [
+          3,
+          2
+        ],
+        "dimsB": [
+          2,
+          4
+        ]
+      },
+      "expected": {
+        "correctChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Nur $AB$ ist definiert und hat die Form $1\\times3$.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Nur $BA$ ist definiert und hat die Form $1\\times1$.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Beide Produkte sind $3\\times3$, weil B drei Zeilen hat.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "$AB$ ist $1\\times1$ und $BA$ ist $3\\times3$; beide Produkte sind definiert.",
+          "correct": true
+        }
+      ],
+      "prompt": "A ist eine $1\\times3$-Matrix und B eine $3\\times1$-Matrix. Welche Aussage über $AB$ und $BA$ stimmt?",
+      "fullSolution": "$AB$ ist eine $1\\times1$-Matrix, während $BA$ eine $3\\times3$-Matrix ist. Beide Produkte sind definiert, weil jeweils die inneren Dimensionen übereinstimmen.",
+      "hints": [
+        "Bei $AB$ liest du die äußeren Dimensionen als Ergebnisform.",
+        "Vertausche die Faktoren einmal bewusst: Dann ändern sich die äußeren Dimensionen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "äußere Dimensionen der Produkte: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "äußere Dimensionen der Produkte: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "äußere Dimensionen der Produkte: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "äußere Dimensionen der Produkte mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      }
     }
   ]
 }

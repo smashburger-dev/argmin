@@ -12,10 +12,20 @@
       {
         "caseId": "l1-vs-l2-effect",
         "propertyTest": false
+      },
+      {
+        "caseId": "regularizer-elastic-net",
+        "propertyTest": false
+      },
+      {
+        "caseId": "regularizer-validation-lambda",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
-      "intro"
+      "intro",
+      "core",
+      "stretch"
     ],
     "competencyIds": [
       "c-ml-regularization"
@@ -81,6 +91,134 @@
         "L1- und L2-Strafe verwechseln",
         "Sparsity als Nebeneffekt von kleinem lambda erklären",
         "Regularisierung mit Normalisierung der Eingaben verwechseln"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "regularizer-elastic-net",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Es kombiniert L1- und L2-Strafe und kann dadurch Sparsity plus stabile Schrumpfung liefern.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Es ist nur eine andere Bezeichnung für unregularisierte Regression.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Es setzt immer alle Koeffizienten auf denselben Wert.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Es darf nur bei Entscheidungsbäumen verwendet werden.",
+          "correct": false
+        }
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "prompt": "Welche Aussage beschreibt Elastic Net am besten?",
+      "fullSolution": "Elastic Net kombiniert L1- und L2-Strafe. Es kann Sparsity durch L1 erzeugen und zugleich die stabilisierende Schrumpfung von L2 nutzen.",
+      "hints": [
+        "Suche nach der Kombination beider Penalty-Formen.",
+        "L1 erklärt exakte Nullen, L2 erklärt stetige Schrumpfung."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Regularisierungswirkung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Regularisierungswirkung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Regularisierungswirkung: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Regularisierungswirkung mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "regularizer-validation-lambda",
+      "difficultyProfile": "stretch",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Weil $\\lambda$ ein gelernter Koeffizient ist und nicht gewählt werden kann.",
+          "correct": false
+        },
+        {
+          "id": "b",
+          "text": "Weil Regularisierung nur für Trainingsdaten definiert ist.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Weil Validierung keine Daten benötigt.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Weil das Testset für die abschließende, unabhängige Bewertung unberührt bleiben soll.",
+          "correct": true
+        }
+      ],
+      "expected": {
+        "correctChoice": "d"
+      },
+      "prompt": "Warum wird $\\lambda$ typischerweise per Validierung gewählt und nicht auf dem Testset optimiert?",
+      "fullSolution": "Die Wahl von $\\lambda$ ist Modellselektion. Wird das Testset dafür verwendet, ist die Testschätzung nicht mehr unabhängig und die Generalisierung wird zu optimistisch eingeschätzt.",
+      "hints": [
+        "Ordne lambda als Hyperparameter ein.",
+        "Der Testdatensatz soll erst nach allen Entscheidungen eine unberührte Schätzung liefern."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'a'",
+          "then": "Regularisierungswahl: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'b'",
+          "then": "Regularisierungswahl: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Regularisierungswahl: Diese Aussage verwechselt den zentralen Begriff mit einer naheliegenden, aber falschen Alternative."
+        }
+      ],
+      "typicalErrors": [
+        "Regularisierungswahl mit der Nachbardisziplin verwechselt",
+        "ein einzelnes Signal als vollständigen Beweis gelesen",
+        "die Randbedingung der Aufgabe übersehen"
       ],
       "tolerancePolicy": {
         "mode": "none"
