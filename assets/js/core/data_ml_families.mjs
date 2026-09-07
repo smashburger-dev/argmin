@@ -53,164 +53,295 @@ import {
 
 export const DATA_ML_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch'];
 
+const acceptsMissingTargetRowsIntro = (parameters) => parameters.framing === 'drop';
+const acceptsMissingTargetRowsStretch = (parameters) => parameters.framing === 'rate';
+const acceptsDuplicateRowsIntro = (parameters) => !parameters.dropKey && parameters.keyConflicts === 0;
+const acceptsDuplicateRowsStretch = (parameters) => parameters.dropKey;
+const acceptsConditionalCountIntro = (parameters) => parameters.direction === 'count';
+const acceptsConditionalCountStretch = (parameters) => parameters.direction === 'percent';
+const acceptsSubgroupErrorGapIntro = (parameters) => parameters.n === 100;
+const acceptsSubgroupErrorGapStretch = (parameters) => parameters.n === 20 || parameters.n === 25;
+const acceptsRidgeShrinkageIntro = (parameters) => parameters.phrasing === 'share';
+const acceptsRidgeShrinkageStretch = (parameters) => parameters.phrasing === 'shrink';
+const acceptsMseGradientIntro = (parameters) => parameters.n === 2;
+const acceptsMseGradientStretch = (parameters) => parameters.n === 4;
+const acceptsMajorityBaselineIntro = (parameters) => {
+  const counts = [...parameters.counts].sort((a, b) => b - a);
+  return counts[0] >= 2 * counts[1];
+};
+const acceptsMajorityBaselineStretch = (parameters) => {
+  const counts = [...parameters.counts].sort((a, b) => b - a);
+  return counts[0] - counts[1] <= 10;
+};
+const acceptsEnsembleMajorityIntro = (parameters) => parameters.direction === 'count';
+const acceptsEnsembleMajorityStretch = (parameters) => parameters.direction === 'percent';
+const acceptsMseResidualsIntro = (parameters) => parameters.n <= 3;
+const acceptsMseResidualsStretch = (parameters) => parameters.n >= 5;
+const acceptsR2Intro = (parameters) => parameters.phrasing === 'r2';
+const acceptsR2Stretch = (parameters) => parameters.phrasing === 'context';
+const acceptsConfusionMarginalIntro = (parameters) => parameters.metric === 'predicted-pos';
+const acceptsConfusionMarginalStretch = (parameters) => parameters.metric === 'actual-neg';
+const acceptsCvSpreadIntro = (parameters) => parameters.k === 4;
+const acceptsCvSpreadStretch = (parameters) => parameters.k === 10;
+const acceptsSeedSpreadIntro = (parameters) => parameters.unit === 'percent' && parameters.runs === 3;
+const acceptsSeedSpreadStretch = (parameters) => parameters.unit === 'fraction';
+const acceptsPcaVarianceIntro = (parameters) => parameters.total === 50;
+const acceptsPcaVarianceStretch = (parameters) => parameters.total === 25;
+const acceptsLinearParamIntro = (parameters) => parameters.variant === 'single';
+const acceptsLinearParamStretch = (parameters) => parameters.variant === 'compare';
+const acceptsSgdIntro = (parameters) => parameters.variant === 'epochs';
+const acceptsSgdStretch = (parameters) => parameters.variant === 'until' || parameters.variant === 'momentum';
+const acceptsDropoutIntro = (parameters) => parameters.variant === 'kept';
+const acceptsDropoutStretch = (parameters) => parameters.variant === 'both';
+const acceptsChainRuleIntro = (parameters) => parameters.variant === 'path';
+const acceptsChainRuleStretch = (parameters) => parameters.variant === 'fork';
+const acceptsAttentionIntro = (parameters) => parameters.variant === 'score-cells';
+const acceptsAttentionStretch = (parameters) => parameters.variant === 'mask-cells' || parameters.variant === 'scale-divisor';
+const acceptsBpeIntro = (parameters) => parameters.variant === 'total';
+const acceptsBpeStretch = (parameters) => parameters.variant === 'merges-needed';
+const acceptsLoraIntro = (parameters) => parameters.variant === 'lora';
+const acceptsLoraStretch = (parameters) => parameters.variant === 'saved';
+const acceptsGreedyIntro = (parameters) => parameters.variant === 'argmax-position';
+const acceptsGreedyStretch = (parameters) => parameters.variant === 'decode-length';
+const acceptsPaperGainIntro = (parameters) => parameters.variant === 'count-gain';
+const acceptsPaperGainStretch = (parameters) => parameters.variant === 'relative-percent' || parameters.variant === 'error-reduction';
+const acceptsPrecisionIntro = (parameters) => parameters.shape === 'precision';
+const acceptsPrecisionStretch = (parameters) => parameters.shape === 'f1';
+const acceptsInjectionIntro = (parameters) => parameters.shape === 'missed' || parameters.shape === 'false-alarms';
+const acceptsInjectionStretch = (parameters) => parameters.shape === 'caught-percent';
+const acceptsSubgroupRateIntro = (parameters) => parameters.shape === 'fpr-diff';
+const acceptsSubgroupRateStretch = (parameters) => parameters.shape === 'selrate-diff';
+const acceptsAllowedActionIntro = (parameters) => parameters.shape === 'allowed';
+const acceptsAllowedActionStretch = (parameters) => parameters.shape === 'percent';
+const acceptsRecallIntro = (parameters) => parameters.shape === 'hits';
+const acceptsRecallStretch = (parameters) => parameters.shape === 'percent' || parameters.shape === 'irrelevant';
+const acceptsProtocolShiftIntro = (parameters) => parameters.flags?.length === 1;
+const acceptsProtocolShiftStretch = (parameters) => parameters.flags?.length >= 3;
+const acceptsCardAuditIntro = (parameters) => parameters.karten?.length === 1;
+const acceptsCardAuditStretch = (parameters) => parameters.karten?.length === 2;
+const acceptsBaselineLedgerIntro = (parameters) => parameters.shape === 'naive-percent';
+const acceptsBaselineLedgerStretch = (parameters) => parameters.shape === 'gap-promille';
+const acceptsPipelineIntro = (parameters) => parameters.shape === 'valid-count';
+const acceptsPipelineStretch = (parameters) => parameters.shape === 'missing-hashes';
+const acceptsEvalBatchIntro = (parameters) => parameters.shape === 'retrieval-error-count'
+  || parameters.shape === 'answer-error-count';
+const acceptsEvalBatchStretch = (parameters) => parameters.shape === 'answer-rate-percent'
+  || parameters.shape === 'retrieval-hit-percent';
+
+const PROFILE_PREDICATES = {
+  'missing-target-rows': { intro: acceptsMissingTargetRowsIntro, stretch: acceptsMissingTargetRowsStretch },
+  'duplicate-rows': { intro: acceptsDuplicateRowsIntro, stretch: acceptsDuplicateRowsStretch },
+  'conditional-count-percent': { intro: acceptsConditionalCountIntro, stretch: acceptsConditionalCountStretch },
+  'subgroup-error-gap-pp': { intro: acceptsSubgroupErrorGapIntro, stretch: acceptsSubgroupErrorGapStretch },
+  'ridge-shrinkage-percent': { intro: acceptsRidgeShrinkageIntro, stretch: acceptsRidgeShrinkageStretch },
+  'mse-gradient-wrt-w': { intro: acceptsMseGradientIntro, stretch: acceptsMseGradientStretch },
+  'majority-baseline-errors': { intro: acceptsMajorityBaselineIntro, stretch: acceptsMajorityBaselineStretch },
+  'ensemble-majority-output-count': { intro: acceptsEnsembleMajorityIntro, stretch: acceptsEnsembleMajorityStretch },
+  'mse-from-residuals': { intro: acceptsMseResidualsIntro, stretch: acceptsMseResidualsStretch },
+  'r2-explained-share': { intro: acceptsR2Intro, stretch: acceptsR2Stretch },
+  'confusion-marginal-count': { intro: acceptsConfusionMarginalIntro, stretch: acceptsConfusionMarginalStretch },
+  'cv-fold-accuracy-spread': { intro: acceptsCvSpreadIntro, stretch: acceptsCvSpreadStretch },
+  'seed-rerun-accuracy-spread': { intro: acceptsSeedSpreadIntro, stretch: acceptsSeedSpreadStretch },
+  'pca-explained-variance-percent': { intro: acceptsPcaVarianceIntro, stretch: acceptsPcaVarianceStretch },
+  'linear-param-count': { intro: acceptsLinearParamIntro, stretch: acceptsLinearParamStretch },
+  'sgd-update-count': { intro: acceptsSgdIntro, stretch: acceptsSgdStretch },
+  'dropout-mask-kept-count': { intro: acceptsDropoutIntro, stretch: acceptsDropoutStretch },
+  'chain-rule-path-sum': { intro: acceptsChainRuleIntro, stretch: acceptsChainRuleStretch },
+  'attention-tensor-cells': { intro: acceptsAttentionIntro, stretch: acceptsAttentionStretch },
+  'bpe-vocab-size': { intro: acceptsBpeIntro, stretch: acceptsBpeStretch },
+  'lora-param-count': { intro: acceptsLoraIntro, stretch: acceptsLoraStretch },
+  'greedy-step-stat': { intro: acceptsGreedyIntro, stretch: acceptsGreedyStretch },
+  'paper-gain-from-counts': { intro: acceptsPaperGainIntro, stretch: acceptsPaperGainStretch },
+  'answer-filter-precision-recall-f1': { intro: acceptsPrecisionIntro, stretch: acceptsPrecisionStretch },
+  'injection-filter-counts': { intro: acceptsInjectionIntro, stretch: acceptsInjectionStretch },
+  'subgroup-rate-gap-permille': { intro: acceptsSubgroupRateIntro, stretch: acceptsSubgroupRateStretch },
+  'allowed-action-count': { intro: acceptsAllowedActionIntro, stretch: acceptsAllowedActionStretch },
+  'recall-at-k-window': { intro: acceptsRecallIntro, stretch: acceptsRecallStretch },
+  'protocol-shift-flag-count': { intro: acceptsProtocolShiftIntro, stretch: acceptsProtocolShiftStretch },
+  'card-audit-missing-count': { intro: acceptsCardAuditIntro, stretch: acceptsCardAuditStretch },
+  'baseline-ledger-rates': { intro: acceptsBaselineLedgerIntro, stretch: acceptsBaselineLedgerStretch },
+  'pipeline-stage-audit': { intro: acceptsPipelineIntro, stretch: acceptsPipelineStretch },
+  'eval-batch-rates': { intro: acceptsEvalBatchIntro, stretch: acceptsEvalBatchStretch },
+};
+
 function profileAccepts(caseId, difficulty) {
   if (difficulty === 'core') return null;
-  if (caseId === 'missing-target-rows') {
-    if (difficulty === 'intro') return (parameters) => parameters.framing === 'drop';
-    if (difficulty === 'stretch') return (parameters) => parameters.framing === 'rate';
-  }
-  if (caseId === 'duplicate-rows') {
-    if (difficulty === 'intro') return (parameters) => !parameters.dropKey && parameters.keyConflicts === 0;
-    if (difficulty === 'stretch') return (parameters) => parameters.dropKey;
-  }
-  if (caseId === 'conditional-count-percent') {
-    if (difficulty === 'intro') return (parameters) => parameters.direction === 'count';
-    if (difficulty === 'stretch') return (parameters) => parameters.direction === 'percent';
-  }
-  if (caseId === 'subgroup-error-gap-pp') {
-    if (difficulty === 'intro') return (parameters) => parameters.n === 100;
-    if (difficulty === 'stretch') return (parameters) => parameters.n === 20 || parameters.n === 25;
-  }
-  if (caseId === 'ridge-shrinkage-percent') {
-    if (difficulty === 'intro') return (parameters) => parameters.phrasing === 'share';
-    if (difficulty === 'stretch') return (parameters) => parameters.phrasing === 'shrink';
-  }
-  if (caseId === 'mse-gradient-wrt-w') {
-    if (difficulty === 'intro') return (parameters) => parameters.n === 2;
-    if (difficulty === 'stretch') return (parameters) => parameters.n === 4;
-  }
-  if (caseId === 'majority-baseline-errors') {
-    if (difficulty === 'intro') {
-      return (parameters) => {
-        const counts = [...parameters.counts].sort((a, b) => b - a);
-        return counts[0] >= 2 * counts[1];
-      };
-    }
-    if (difficulty === 'stretch') {
-      return (parameters) => {
-        const counts = [...parameters.counts].sort((a, b) => b - a);
-        return counts[0] - counts[1] <= 10;
-      };
-    }
-  }
-  if (caseId === 'ensemble-majority-output-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.direction === 'count';
-    if (difficulty === 'stretch') return (parameters) => parameters.direction === 'percent';
-  }
-  if (caseId === 'mse-from-residuals') {
-    if (difficulty === 'intro') return (parameters) => parameters.n <= 3;
-    if (difficulty === 'stretch') return (parameters) => parameters.n >= 5;
-  }
-  if (caseId === 'r2-explained-share') {
-    if (difficulty === 'intro') return (parameters) => parameters.phrasing === 'r2';
-    if (difficulty === 'stretch') return (parameters) => parameters.phrasing === 'context';
-  }
-  if (caseId === 'confusion-marginal-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.metric === 'predicted-pos';
-    if (difficulty === 'stretch') return (parameters) => parameters.metric === 'actual-neg';
-  }
-  if (caseId === 'cv-fold-accuracy-spread') {
-    if (difficulty === 'intro') return (parameters) => parameters.k === 4;
-    if (difficulty === 'stretch') return (parameters) => parameters.k === 10;
-  }
-  if (caseId === 'seed-rerun-accuracy-spread') {
-    if (difficulty === 'intro') {
-      return (parameters) => parameters.unit === 'percent' && parameters.runs === 3;
-    }
-    if (difficulty === 'stretch') return (parameters) => parameters.unit === 'fraction';
-  }
-  if (caseId === 'pca-explained-variance-percent') {
-    if (difficulty === 'intro') return (parameters) => parameters.total === 50;
-    if (difficulty === 'stretch') return (parameters) => parameters.total === 25;
-  }
-  if (caseId === 'linear-param-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'single';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'compare';
-  }
-  if (caseId === 'sgd-update-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'epochs';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'until' || parameters.variant === 'momentum';
-  }
-  if (caseId === 'dropout-mask-kept-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'kept';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'both';
-  }
-  if (caseId === 'chain-rule-path-sum') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'path';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'fork';
-  }
-  if (caseId === 'attention-tensor-cells') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'score-cells';
-    if (difficulty === 'stretch') {
-      return (parameters) => parameters.variant === 'mask-cells' || parameters.variant === 'scale-divisor';
-    }
-  }
-  if (caseId === 'bpe-vocab-size') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'total';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'merges-needed';
-  }
-  if (caseId === 'lora-param-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'lora';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'saved';
-  }
-  if (caseId === 'greedy-step-stat') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'argmax-position';
-    if (difficulty === 'stretch') return (parameters) => parameters.variant === 'decode-length';
-  }
-  if (caseId === 'paper-gain-from-counts') {
-    if (difficulty === 'intro') return (parameters) => parameters.variant === 'count-gain';
-    if (difficulty === 'stretch') {
-      return (parameters) => parameters.variant === 'relative-percent' || parameters.variant === 'error-reduction';
-    }
-  }
-  if (caseId === 'answer-filter-precision-recall-f1') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'precision';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'f1';
-  }
-  if (caseId === 'injection-filter-counts') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'missed' || parameters.shape === 'false-alarms';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'caught-percent';
-  }
-  if (caseId === 'subgroup-rate-gap-permille') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'fpr-diff';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'selrate-diff';
-  }
-  if (caseId === 'allowed-action-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'allowed';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'percent';
-  }
-  if (caseId === 'recall-at-k-window') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'hits';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'percent' || parameters.shape === 'irrelevant';
-  }
-  if (caseId === 'protocol-shift-flag-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.flags?.length === 1;
-    if (difficulty === 'stretch') return (parameters) => parameters.flags?.length >= 3;
-  }
-  if (caseId === 'card-audit-missing-count') {
-    if (difficulty === 'intro') return (parameters) => parameters.karten?.length === 1;
-    if (difficulty === 'stretch') return (parameters) => parameters.karten?.length === 2;
-  }
-  if (caseId === 'baseline-ledger-rates') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'naive-percent';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'gap-promille';
-  }
-  if (caseId === 'pipeline-stage-audit') {
-    if (difficulty === 'intro') return (parameters) => parameters.shape === 'valid-count';
-    if (difficulty === 'stretch') return (parameters) => parameters.shape === 'missing-hashes';
-  }
-  if (caseId === 'eval-batch-rates') {
-    if (difficulty === 'intro') {
-      return (parameters) => parameters.shape === 'retrieval-error-count'
-        || parameters.shape === 'answer-error-count';
-    }
-    if (difficulty === 'stretch') {
-      return (parameters) => parameters.shape === 'answer-rate-percent'
-        || parameters.shape === 'retrieval-hit-percent';
-    }
-  }
-  throw new Error(`Unbekanntes Profil ${difficulty}`);
+  const predicate = PROFILE_PREDICATES[caseId]?.[difficulty];
+  if (!predicate) throw new Error(`Unbekanntes Profil ${difficulty}`);
+  return predicate;
 }
+
+const solveFormulaRatioCompare = (parameters) => staticExpected('formula-ratio-percent-metric', parameters);
+const solveFormulaRatioShrinkage = (parameters) => {
+  const share = (100 * parameters.sxx) / (parameters.sxx + parameters.lam);
+  return { value: parameters.phrasing === 'shrink' ? 100 - share : share };
+};
+const solveFormulaRatioSubgroupGap = (parameters) => ({ value: (100 * Math.abs(parameters.e1 - parameters.e2)) / parameters.n });
+const solveFormulaRatioR2 = (parameters) => ({ value: 100 - (100 * parameters.ssRes) / parameters.ssTot });
+const solveFormulaRatioPca = (parameters) => ({
+  value: (100 * parameters.lambda1) / (parameters.lambda1 + parameters.lambda2 + parameters.lambda3),
+});
+const solveFormulaRatioAllowedAction = (parameters) => ({
+  value: parameters.shape === 'allowed'
+    ? parameters.allowed
+    : parameters.shape === 'denied'
+      ? parameters.denied
+      : (100 * parameters.allowed) / parameters.total,
+});
+const solveFormulaRatioBaseline = (parameters) => {
+  const treffer = parameters.n - parameters.retrieval_fehler;
+  const korrekt = treffer - parameters.antwort_fehler;
+  if (parameters.shape === 'sep-percent') return { value: (100 * korrekt) / treffer };
+  if (parameters.shape === 'naive-percent') return { value: (100 * korrekt) / parameters.n };
+  return { value: Math.round((korrekt / treffer - korrekt / parameters.n) * 1000) };
+};
+const solveFormulaRatioDefault = (parameters) => (
+  parameters.direction === 'count'
+    ? { value: (parameters.nA * parameters.p) / parameters.q }
+    : { value: (100 * parameters.c) / parameters.n }
+);
+const FORMULA_RATIO_SOLVERS = {
+  'compare-systems-metric': solveFormulaRatioCompare,
+  'ridge-shrinkage-percent': solveFormulaRatioShrinkage,
+  'subgroup-error-gap-pp': solveFormulaRatioSubgroupGap,
+  'r2-explained-share': solveFormulaRatioR2,
+  'pca-explained-variance-percent': solveFormulaRatioPca,
+  'allowed-action-count': solveFormulaRatioAllowedAction,
+  'baseline-ledger-rates': solveFormulaRatioBaseline,
+};
+
+const solveFormulaCountLinear = (parameters) => {
+  if (parameters.variant === 'single') return { value: parameters.d * parameters.h + parameters.h };
+  if (parameters.variant === 'mlp') {
+    return {
+      value: (parameters.d * parameters.h1 + parameters.h1)
+        + (parameters.h1 * parameters.h2 + parameters.h2),
+    };
+  }
+  return {
+    value: (parameters.hWide - parameters.hNarrow)
+      * (parameters.d + 1 + parameters.out),
+  };
+};
+const solveFormulaCountSgd = (parameters) => {
+  if (parameters.variant === 'plain') {
+    return { value: parameters.descending ? parameters.w0 - parameters.n * parameters.step : parameters.w0 + parameters.n * parameters.step };
+  }
+  if (parameters.variant === 'epochs') return { value: parameters.epochs * Math.ceil(parameters.n / parameters.batch) };
+  if (parameters.variant === 'until') return { value: Math.ceil((parameters.w0 - parameters.target) / parameters.step) };
+  return { value: 2 * parameters.g - parameters.g / 2 ** (parameters.n - 1) };
+};
+const solveFormulaCountDropout = (parameters) => {
+  if (parameters.variant === 'kept') return { value: parameters.mask.filter(Boolean).length };
+  if (parameters.variant === 'dropped') return { value: parameters.n - parameters.mask.filter(Boolean).length };
+  return {
+    value: parameters.mask1.reduce((count, value, index) => count + (value && parameters.mask2[index] ? 1 : 0), 0),
+  };
+};
+const solveFormulaCountAttention = (parameters) => {
+  if (parameters.variant === 'score-cells') return { value: parameters.n * parameters.m };
+  if (parameters.variant === 'output-cells') return { value: parameters.n * parameters.dv };
+  if (parameters.variant === 'mask-cells') return { value: (parameters.n * (parameters.n - 1)) / 2 };
+  return { value: Math.sqrt(parameters.dk) };
+};
+const solveFormulaCountBpe = (parameters) => {
+  if (parameters.variant === 'total') return { value: parameters.chars + parameters.merges + parameters.specials };
+  if (parameters.variant === 'merges-needed') return { value: parameters.target - parameters.chars - parameters.specials };
+  return { value: parameters.target - parameters.chars - parameters.merges };
+};
+const solveFormulaCountLora = (parameters) => {
+  const lora = parameters.rank * (parameters.dIn + parameters.dOut);
+  if (parameters.variant === 'lora') return { value: lora };
+  if (parameters.variant === 'full') return { value: parameters.dIn * parameters.dOut };
+  return { value: parameters.dIn * parameters.dOut - lora };
+};
+const FORMULA_COUNT_SOLVERS = {
+  'linear-param-count': solveFormulaCountLinear,
+  'sgd-update-count': solveFormulaCountSgd,
+  'dropout-mask-kept-count': solveFormulaCountDropout,
+  'attention-tensor-cells': solveFormulaCountAttention,
+  'bpe-vocab-size': solveFormulaCountBpe,
+  'lora-param-count': solveFormulaCountLora,
+};
+
+const solveFormulaStatGreedy = (parameters) => {
+  if (parameters.variant === 'argmax-position') {
+    return { value: 1 + parameters.logits.indexOf(Math.max(...parameters.logits)) };
+  }
+  if (parameters.variant === 'margin') {
+    const sorted = [...parameters.logits].sort((left, right) => right - left);
+    return { value: sorted[0] - sorted[1] };
+  }
+  return { value: parameters.init + parameters.steps };
+};
+const solveFormulaStatCardAudit = (parameters) => ({ value: countCardDefects(parameters.karten, parameters.pflichtfelder) });
+const solveFormulaStatPipeline = (parameters) => {
+  const index = new Map(parameters.stages.map((stage, i) => [stage.id, i]));
+  if (parameters.shape === 'missing-hashes') {
+    return { value: parameters.stages.filter((stage) => !stage.hash).length };
+  }
+  return {
+    value: parameters.stages.filter((stage) => stage.hash
+      && (stage.input === 'quelle'
+        || (stage.input && index.get(stage.input) < index.get(stage.id)))).length,
+  };
+};
+const solveFormulaStatEvalBatch = (parameters) => {
+  const n = parameters.batches.reduce((sum, batch) => sum + batch.n, 0);
+  const retrieval = parameters.batches.reduce((sum, batch) => sum + batch.retrieval_fehler, 0);
+  const antwort = parameters.batches.reduce((sum, batch) => sum + batch.antwort_fehler, 0);
+  const treffer = n - retrieval;
+  const korrekt = treffer - antwort;
+  if (parameters.shape === 'retrieval-error-count') return { value: retrieval };
+  if (parameters.shape === 'answer-error-count') return { value: antwort };
+  if (parameters.shape === 'answer-rate-percent') return { value: (100 * korrekt) / treffer };
+  return { value: (100 * treffer) / n };
+};
+const solveFormulaStatFallback = (parameters) => {
+  if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
+  if (parameters.variant === 'relative-percent') {
+    return { value: Math.round(100 * (parameters.newer - parameters.base) / parameters.base) };
+  }
+  if (parameters.variant === 'error-reduction') {
+    return { value: Math.round(100 * (parameters.eBase - parameters.eNew) / parameters.eBase) };
+  }
+  return { value: parameters.newer - parameters.base };
+};
+const FORMULA_STAT_SOLVERS = {
+  'greedy-step-stat': solveFormulaStatGreedy,
+  'card-audit-missing-count': solveFormulaStatCardAudit,
+  'pipeline-stage-audit': solveFormulaStatPipeline,
+  'eval-batch-rates': solveFormulaStatEvalBatch,
+  'stage-timeout-count': (parameters) => staticExpected('formula-stat-from-table', parameters),
+  'dependency-pin-count': (parameters) => staticExpected('formula-stat-from-table', parameters),
+};
+const solveConfusionMarginal = (parameters) => ({
+  value: parameters.metric === 'actual-neg'
+    ? parameters.tn + parameters.fp
+    : parameters.metric === 'predicted-pos'
+      ? parameters.tp + parameters.fp
+      : parameters.tp + parameters.fn,
+});
+const solveConfusionPrecisionRecall = (parameters) => {
+  if (parameters.shape === 'precision') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fp) };
+  if (parameters.shape === 'recall') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
+  return { value: (200 * parameters.tp) / (2 * parameters.tp + parameters.fp + parameters.fn) };
+};
+const solveConfusionInjection = (parameters) => {
+  if (parameters.shape === 'missed') return { value: parameters.fn };
+  if (parameters.shape === 'false-alarms') return { value: parameters.fp };
+  if (parameters.shape === 'caught-percent') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
+  return { value: parameters.tn };
+};
+const solveConfusionSubgroupRate = (parameters) => ({
+  value: subgroupRatePerMille(parameters.a, parameters.b, parameters.kind),
+});
+const AGGREGATE_CONFUSION_SOLVERS = {
+  'confusion-marginal-count': solveConfusionMarginal,
+  'answer-filter-precision-recall-f1': solveConfusionPrecisionRecall,
+  'injection-filter-counts': solveConfusionInjection,
+  'subgroup-rate-gap-permille': solveConfusionSubgroupRate,
+};
 
 function staticExpected(familyId, parameters) {
   const expected = staticCaseBody(familyId, parameters.caseId).expected || {};
@@ -277,43 +408,7 @@ const FAMILY_DEFINITIONS = {
       'subgroup-recall-output-trace': {},
     },
     solve(parameters) {
-      if (parameters.caseId === 'compare-systems-metric') {
-        return staticExpected('formula-ratio-percent-metric', parameters);
-      }
-      if (parameters.caseId === 'ridge-shrinkage-percent') {
-        const share = (100 * parameters.sxx) / (parameters.sxx + parameters.lam);
-        return { value: parameters.phrasing === 'shrink' ? 100 - share : share };
-      }
-      if (parameters.caseId === 'subgroup-error-gap-pp') {
-        return { value: (100 * Math.abs(parameters.e1 - parameters.e2)) / parameters.n };
-      }
-      if (parameters.caseId === 'r2-explained-share') {
-        return { value: 100 - (100 * parameters.ssRes) / parameters.ssTot };
-      }
-      if (parameters.caseId === 'pca-explained-variance-percent') {
-        return {
-          value: (100 * parameters.lambda1)
-            / (parameters.lambda1 + parameters.lambda2 + parameters.lambda3),
-        };
-      }
-      if (parameters.caseId === 'allowed-action-count') {
-        return {
-          value: parameters.shape === 'allowed'
-            ? parameters.allowed
-            : parameters.shape === 'denied'
-              ? parameters.denied
-              : (100 * parameters.allowed) / parameters.total,
-        };
-      }
-      if (parameters.caseId === 'baseline-ledger-rates') {
-        const treffer = parameters.n - parameters.retrieval_fehler;
-        const korrekt = treffer - parameters.antwort_fehler;
-        if (parameters.shape === 'sep-percent') return { value: (100 * korrekt) / treffer };
-        if (parameters.shape === 'naive-percent') return { value: (100 * korrekt) / parameters.n };
-        return { value: Math.round((korrekt / treffer - korrekt / parameters.n) * 1000) };
-      }
-      if (parameters.direction === 'count') return { value: (parameters.nA * parameters.p) / parameters.q };
-      return { value: (100 * parameters.c) / parameters.n };
+      return (FORMULA_RATIO_SOLVERS[parameters.caseId] || solveFormulaRatioDefault)(parameters);
     },
   },
   'optimize-mse-gradient-closed-form': {
@@ -397,29 +492,8 @@ const FAMILY_DEFINITIONS = {
       },
     },
     solve(parameters) {
-      if (parameters.caseId === 'confusion-marginal-count') {
-        const value = parameters.metric === 'actual-neg'
-          ? parameters.tn + parameters.fp
-          : parameters.metric === 'predicted-pos'
-            ? parameters.tp + parameters.fp
-            : parameters.tp + parameters.fn;
-        return { value };
-      }
-      if (parameters.caseId === 'answer-filter-precision-recall-f1') {
-        if (parameters.shape === 'precision') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fp) };
-        if (parameters.shape === 'recall') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
-        return { value: (200 * parameters.tp) / (2 * parameters.tp + parameters.fp + parameters.fn) };
-      }
-      if (parameters.caseId === 'injection-filter-counts') {
-        if (parameters.shape === 'missed') return { value: parameters.fn };
-        if (parameters.shape === 'false-alarms') return { value: parameters.fp };
-        if (parameters.shape === 'caught-percent') return { value: (100 * parameters.tp) / (parameters.tp + parameters.fn) };
-        return { value: parameters.tn };
-      }
-      if (parameters.caseId === 'subgroup-rate-gap-permille') {
-        return { value: subgroupRatePerMille(parameters.a, parameters.b, parameters.kind) };
-      }
-      return staticExpected('aggregate-confusion-metric', parameters);
+      const solver = AGGREGATE_CONFUSION_SOLVERS[parameters.caseId];
+      return solver ? solver(parameters) : staticExpected('aggregate-confusion-metric', parameters);
     },
   },
   'formula-metric-spread-range': {
@@ -467,56 +541,9 @@ const FAMILY_DEFINITIONS = {
       },
     },
     solve(parameters) {
-      if (parameters.caseId === 'linear-param-count') {
-        if (parameters.variant === 'single') return { value: parameters.d * parameters.h + parameters.h };
-        if (parameters.variant === 'mlp') {
-          return {
-            value: (parameters.d * parameters.h1 + parameters.h1)
-              + (parameters.h1 * parameters.h2 + parameters.h2),
-          };
-        }
-        return {
-          value: (parameters.hWide - parameters.hNarrow)
-            * (parameters.d + 1 + parameters.out),
-        };
-      }
-      if (parameters.caseId === 'sgd-update-count') {
-        if (parameters.variant === 'plain') {
-          return { value: parameters.descending ? parameters.w0 - parameters.n * parameters.step : parameters.w0 + parameters.n * parameters.step };
-        }
-        if (parameters.variant === 'epochs') return { value: parameters.epochs * Math.ceil(parameters.n / parameters.batch) };
-        if (parameters.variant === 'until') return { value: Math.ceil((parameters.w0 - parameters.target) / parameters.step) };
-        return { value: 2 * parameters.g - parameters.g / 2 ** (parameters.n - 1) };
-      }
-      if (parameters.caseId === 'dropout-mask-kept-count') {
-        if (parameters.variant === 'kept') return { value: parameters.mask.filter(Boolean).length };
-        if (parameters.variant === 'dropped') return { value: parameters.n - parameters.mask.filter(Boolean).length };
-        return {
-          value: parameters.mask1.reduce((count, value, index) => count + (value && parameters.mask2[index] ? 1 : 0), 0),
-        };
-      }
-      if (parameters.caseId === 'attention-tensor-cells') {
-        if (parameters.variant === 'score-cells') return { value: parameters.n * parameters.m };
-        if (parameters.variant === 'output-cells') return { value: parameters.n * parameters.dv };
-        if (parameters.variant === 'mask-cells') return { value: (parameters.n * (parameters.n - 1)) / 2 };
-        return { value: Math.sqrt(parameters.dk) };
-      }
-      if (parameters.caseId === 'bpe-vocab-size') {
-        if (parameters.variant === 'total') {
-          return { value: parameters.chars + parameters.merges + parameters.specials };
-        }
-        if (parameters.variant === 'merges-needed') {
-          return { value: parameters.target - parameters.chars - parameters.specials };
-        }
-        return { value: parameters.target - parameters.chars - parameters.merges };
-      }
-      if (parameters.caseId === 'lora-param-count') {
-        const lora = parameters.rank * (parameters.dIn + parameters.dOut);
-        if (parameters.variant === 'lora') return { value: lora };
-        if (parameters.variant === 'full') return { value: parameters.dIn * parameters.dOut };
-        return { value: parameters.dIn * parameters.dOut - lora };
-      }
-      throw new Error(`formula-count-from-construction: unbekannter Fall ${parameters.caseId}`);
+      const solver = FORMULA_COUNT_SOLVERS[parameters.caseId];
+      if (!solver) throw new Error(`formula-count-from-construction: unbekannter Fall ${parameters.caseId}`);
+      return solver(parameters);
     },
   },
   'formula-stat-from-table': {
@@ -545,52 +572,8 @@ const FAMILY_DEFINITIONS = {
       },
     },
     solve(parameters) {
-      if (parameters.caseId === 'greedy-step-stat') {
-        if (parameters.variant === 'argmax-position') {
-          return { value: 1 + parameters.logits.indexOf(Math.max(...parameters.logits)) };
-        }
-        if (parameters.variant === 'margin') {
-          const sorted = [...parameters.logits].sort((left, right) => right - left);
-          return { value: sorted[0] - sorted[1] };
-        }
-        return { value: parameters.init + parameters.steps };
-      }
-      if (parameters.caseId === 'card-audit-missing-count') {
-        return { value: countCardDefects(parameters.karten, parameters.pflichtfelder) };
-      }
-      if (parameters.caseId === 'pipeline-stage-audit') {
-        const index = new Map(parameters.stages.map((stage, i) => [stage.id, i]));
-        if (parameters.shape === 'missing-hashes') {
-          return { value: parameters.stages.filter((stage) => !stage.hash).length };
-        }
-        return {
-          value: parameters.stages.filter((stage) => stage.hash
-            && (stage.input === 'quelle'
-              || (stage.input && index.get(stage.input) < index.get(stage.id)))).length,
-        };
-      }
-      if (parameters.caseId === 'eval-batch-rates') {
-        const n = parameters.batches.reduce((sum, batch) => sum + batch.n, 0);
-        const retrieval = parameters.batches.reduce((sum, batch) => sum + batch.retrieval_fehler, 0);
-        const antwort = parameters.batches.reduce((sum, batch) => sum + batch.antwort_fehler, 0);
-        const treffer = n - retrieval;
-        const korrekt = treffer - antwort;
-        if (parameters.shape === 'retrieval-error-count') return { value: retrieval };
-        if (parameters.shape === 'answer-error-count') return { value: antwort };
-        if (parameters.shape === 'answer-rate-percent') return { value: (100 * korrekt) / treffer };
-        return { value: (100 * treffer) / n };
-      }
-      if (parameters.caseId === 'stage-timeout-count' || parameters.caseId === 'dependency-pin-count') {
-        return staticExpected('formula-stat-from-table', parameters);
-      }
-      if (parameters.variant === 'count-gain') return { value: parameters.c2 - parameters.c1 };
-      if (parameters.variant === 'relative-percent') {
-        return { value: Math.round(100 * (parameters.newer - parameters.base) / parameters.base) };
-      }
-      if (parameters.variant === 'error-reduction') {
-        return { value: Math.round(100 * (parameters.eBase - parameters.eNew) / parameters.eBase) };
-      }
-      return { value: parameters.newer - parameters.base };
+      const solver = FORMULA_STAT_SOLVERS[parameters.caseId] || solveFormulaStatFallback;
+      return solver(parameters);
     },
   },
   'optimize-backprop-path-sum': {
