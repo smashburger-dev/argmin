@@ -49,12 +49,10 @@ Python-Referenz und Mutanten, Trace-Tabellen, Taxonomie-Crosschecks,
 Prompt-Sicherheitsregeln, Generatorinvarianten, Legacy-Oracle-
 Äquivalenz und Capstone-Semantik.
 
-Die Lesson-Honesty-Suiten wurden unter
-`tests/lesson_content.test.mjs` zusammengeführt. Die drei fachlichen
-Abschnitte liegen als importierte Teilmodule
-`lesson_content_ml.mjs`, `lesson_content_transformer.mjs` und
-`lesson_content_genai.mjs` vor; dadurch gibt es nur noch einen Node-Test-
-Entrypoint für die Lesson-Verträge.
+Die Lesson-Honesty-Suiten heißen jetzt `tests/lesson_content_ml.test.mjs`,
+`lesson_content_transformer.test.mjs` und `lesson_content_genai.test.mjs`
+(vormals `data_ml_content`, `w22_w26_content`, `w27_w30_content`); die
+Legacy-Generator-Referenzprüfung aus `w18_w21_content` entfiel.
 
 ## Golden-Corpus-Tausch
 
