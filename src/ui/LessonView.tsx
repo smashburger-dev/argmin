@@ -76,7 +76,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
               </div>
               <div class="side-cards">{relatedExercises.slice(1, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong><MathMarkup inline html={exercise.title || activityLabel(exercise.activityType)} /></strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Öffnen</Button></article>)}</div>
             </>
-          : <p>Zu dieser Lektion gibt es noch keine Aufgaben — sie kommen bald. Lies in Ruhe weiter.</p>}
+          : <p>Zu dieser Lektion gibt es noch keine Aufgaben. Sie kommen bald, lies in Ruhe weiter.</p>}
         {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}
       </section>
       {sourceLinks.length ? (

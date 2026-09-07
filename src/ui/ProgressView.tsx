@@ -72,7 +72,7 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
       <header class="view-header">
         <p class="eyebrow">Belege statt Punkte</p>
         <h1 id="progress-title" tabIndex={-1}>Fortschritt</h1>
-        <p class="lede">Was du nachgewiesen hast, was fällig ist — alles lokal in diesem Browser.</p>
+        <p class="lede">Was du nachgewiesen hast und was fällig ist. Alles bleibt lokal in diesem Browser.</p>
       </header>
       <section class="progress-summary" aria-label="Fortschrittsübersicht" data-tour="progress-overview">
         <div class="meter" aria-label={`${percent} Prozent Kompetenzen nachgewiesen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
@@ -119,7 +119,7 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
           <ul>
             {journal.map((entry, index) => <li key={entry.id ?? index}>{formatJournalDate(entry.ts)} · {journalExerciseLabel(exerciseById.get(entry.exerciseId))} · {entry.errorType}</li>)}
           </ul>
-        ) : <p>Noch keine Einträge — Fehler, die du beim Üben machst, landen hier, damit du sie gezielt wiederholen kannst.</p>}
+        ) : <p>Noch keine Einträge. Fehler, die du beim Üben machst, landen hier, damit du sie gezielt wiederholen kannst.</p>}
       </details>
       <details class="policy">
         <summary>Wie wird gezählt?</summary>

@@ -211,7 +211,7 @@ main { min-width: 0; }
 .review-card p { margin: var(--s2) 0 0; color: var(--text-2); }
 .progress-summary { display: grid; gap: var(--s5); margin-bottom: var(--s6); padding: clamp(24px, 4vw, 40px); }
 .progress-summary-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); }
-.progress-summary-stats > div { display: grid; gap: var(--s2); }
+.progress-summary-stats > div { display: grid; gap: var(--s2); justify-items: center; text-align: center; }
 .progress-summary-stats strong { display: block; font-size: clamp(22px, 3vw, 28px); letter-spacing: -.03em; line-height: 1.1; }
 .progress-summary-stats span { color: var(--text-2); font-size: 14px; }
 .progress-summary .meter { height: 12px; margin-top: 0; }

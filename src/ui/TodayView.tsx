@@ -217,7 +217,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           </div>
           <span>{plan.totalMinutes} von {plan.availableMinutes} Min. · <a href="#/settings">Budget anpassen</a></span>
         </div>
-        {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan — nach der Diagnose wird er genauer.</p> : null}
+        {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan. Nach der Diagnose wird er genauer.</p> : null}
         {plan.days.some((day) => day.items.length) ? (
           <Carousel label="Wochenplan-Tage">
             {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} competencyById={competencyById} key={day.day} />)}
@@ -225,7 +225,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
         ) : trackDone ? (
           <div class="empty-state">
             <h3>Pfad geschafft</h3>
-            <p>Alle Kompetenzen in diesem Pfad sind nachgewiesen. Reviews halten sie frisch — oder du wechselst den Pfad in den <a href="#/settings">Einstellungen</a>.</p>
+            <p>Alle Kompetenzen in diesem Pfad sind nachgewiesen. Reviews halten sie frisch, oder du wechselst den Pfad in den <a href="#/settings">Einstellungen</a>.</p>
           </div>
         ) : (
           <div class="empty-state">
