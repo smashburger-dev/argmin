@@ -35,7 +35,7 @@ interface CompiledIndex {
   families: Array<{
     familyId: string;
     summary?: string;
-    contract: Record<string, unknown> | null;
+    contract: (Record<string, unknown> & { activityType?: string }) | null;
     cases: Array<{ caseId: string; difficultyProfile: string; masteryEligible: boolean }>;
   }>;
 }
@@ -123,6 +123,7 @@ export function loadCatalog(): CatalogData {
     families: index.families.map((family) => ({
       familyId: family.familyId,
       summary: family.summary ?? '',
+      activityType: family.contract?.activityType,
     })),
   };
 }

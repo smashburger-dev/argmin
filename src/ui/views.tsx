@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../app/types';
+import type { CatalogData, Competency, EvidenceState, ExerciseSummary, SourceSummary } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
@@ -32,10 +32,17 @@ import { buildWeeklyLearningPlan } from '../adapters/learning-plan';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
+import { activityLabel, difficultyLabelFor } from './exercise-context';
 
 const minutesLabel = (minutes: number) => minutes >= 60
   ? `${Math.round(minutes / 60)} Std.`
   : `${minutes} Min.`;
+
+function learnerExerciseLabel(exercise: Pick<ExerciseSummary, 'activityType' | 'difficulty'> | undefined) {
+  return exercise
+    ? `${activityLabel(exercise.activityType)} · ${difficultyLabelFor(exercise.difficulty)}`
+    : 'Aufgabe';
+}
 
 export function TodayView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const foundation = catalog.milestones.find((item) => item.milestoneId === 'ms-foundations');
@@ -70,7 +77,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
             ? `${executableReviews.length} fällig${archivedReviews.length ? ` · ${archivedReviews.length} archiviert` : ''}`
             : 'Noch nichts fällig'}</h2>
           <p>{executableReviews.length
-            ? `Als Nächstes: ${executableReviews.slice(0, 3).map((item) => item.exerciseId).join(', ')}.`
+            ? `Als Nächstes: ${executableReviews.slice(0, 3).map((item) => learnerExerciseLabel(exerciseById.get(item.exerciseId))).join(', ')}.`
             : archivedReviews.length
               ? 'Alle fälligen Reviews betreffen entfernte Aufgaben. Nicht mehr verfügbar – Verlauf bleibt erhalten.'
               : 'Fällige Aufgaben-Reviews erscheinen hier; Aufgaben mit Variantengenerator öffnen dann eine frische Instanz.'}</p>
@@ -93,7 +100,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           <a class="text-link" href="#/settings">Budget anpassen</a>
         </article>
       </div>
-      <section class="weekly-plan" aria-labelledby="weekly-plan-title"><div class="section-heading"><div><p class="eyebrow">Deterministischer Vorschlag</p><h2 id="weekly-plan-title">Dein Wochenplan</h2></div><span>{plan.totalMinutes} von {plan.availableMinutes} Min. verplant</span></div><p class="plan-policy">Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Diese Quote und die Reviewintervalle sind konfigurierbare Produktheuristiken, keine optimalen Lernkonstanten.</p>{plan.days.some((day) => day.items.length) ? <div class="plan-days">{plan.days.filter((day) => day.items.length).map((day) => <article class="plan-day" key={day.day}><p class="card-kicker">Tag {day.day} · {day.minutes} Min.</p><ol>{day.items.map((item) => <li key={item.activityId}><a href={item.route}><strong>{item.title}</strong><span>{item.estimatedMinutes} Min. · {item.reasonCodes.includes('review-due') ? 'fälliger Review' : item.reasonCodes.includes('strengthen-competency') ? 'Kompetenz stärken' : 'Kompetenz aufbauen'}</span></a></li>)}</ol></article>)}</div> : <div class="empty-state"><h3>Kein Plan im aktuellen Budget</h3><p>Erhöhe das Wochenbudget oder wähle den nächsten Bereich frei im Katalog.</p></div>}</section>
+      <section class="weekly-plan" aria-labelledby="weekly-plan-title"><div class="section-heading"><div><p class="eyebrow">Deterministischer Vorschlag</p><h2 id="weekly-plan-title">Dein Wochenplan</h2></div><span>{plan.totalMinutes} von {plan.availableMinutes} Min. verplant</span></div><p class="plan-policy">Bis zu 35 Prozent des Budgets sind für fällige Reviews reserviert. Diese Quote und die Reviewintervalle sind konfigurierbare Produktheuristiken, keine optimalen Lernkonstanten.</p>{plan.days.some((day) => day.items.length) ? <div class="plan-days">{plan.days.filter((day) => day.items.length).map((day) => <article class="plan-day" key={day.day}><p class="card-kicker">Tag {day.day} · {day.minutes} Min.</p><ol>{day.items.map((item) => <li key={item.activityId}><a href={item.route}><strong>{item.type === 'exercise' || item.type === 'review' ? learnerExerciseLabel(exerciseById.get(item.activityId)) : item.title}</strong><span>{item.estimatedMinutes} Min. · {item.reasonCodes.includes('review-due') ? 'fälliger Review' : item.reasonCodes.includes('strengthen-competency') ? 'Kompetenz stärken' : 'Kompetenz aufbauen'}</span></a></li>)}</ol></article>)}</div> : <div class="empty-state"><h3>Kein Plan im aktuellen Budget</h3><p>Erhöhe das Wochenbudget oder wähle den nächsten Bereich frei im Katalog.</p></div>}</section>
       <aside class="reason-panel" aria-labelledby="reason-title">
         <p class="eyebrow">Warum dieser Start?</p>
         <h2 id="reason-title">Erst messen, dann empfehlen</h2>
@@ -244,7 +251,7 @@ export function CompetencyView({ catalog, progress, competencyId }: {
       <section class="activity-section" aria-labelledby="activity-title">
         <div class="section-heading"><div><p class="eyebrow">Üben und nachweisen</p><h2 id="activity-title">Aufgaben</h2></div><span>{exercises.length} verfügbar</span></div>
         {exercises.length > 0
-          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.activityType} · {exercise.estimatedMinutes} Min.</p><h3>{exercise.prompt}</h3><p>{exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.'}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
+          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.estimatedMinutes} Min.</p><h3>{learnerExerciseLabel(exercise)}</h3><p>{exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.'}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
           : <div class="empty-state"><h2>Noch keine Aufgabenfamilie</h2><p>Diese Lücke bleibt im Foundations-Manifest sichtbar.</p></div>}
       </section>
     </section>
@@ -344,7 +351,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               const freshRoute = definition.familyId && definition.seeded
                 ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
                 : route;
-              return <article class="review-card" key={review.exerciseId}><div><p class="card-kicker">Aufgaben-Review fällig</p><h2>{definition.title ?? review.exerciseId}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
+              return <article class="review-card" key={review.exerciseId}><div><p class="card-kicker">Aufgaben-Review fällig</p><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}
             {archived.map((review) => (
               <article class="review-card" key={review.exerciseId}>

@@ -235,7 +235,7 @@ export interface CatalogData {
   exercises: ExerciseSummary[];
   explanations: ExplanationCard[];
   projects: ProjectDefinition[];
-  families?: Array<{ familyId: string; summary: string }>;
+  families?: Array<{ familyId: string; summary: string; activityType?: string }>;
 }
 
 export interface VisualizationSummary {

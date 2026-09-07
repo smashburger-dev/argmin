@@ -2,13 +2,7 @@ import type { CatalogData } from '../app/types';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Breadcrumbs } from './Breadcrumbs';
-
-const difficultyLabel = {
-  intro: 'Einstieg',
-  core: 'Kern',
-  stretch: 'Vertiefung',
-  challenge: 'Herausforderung',
-} as const;
+import { activityLabel, difficultyLabelFor } from './exercise-context';
 
 export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; moduleId: string }) {
   const module = catalog.learningModules.find((item) => item.moduleId === moduleId);
@@ -50,8 +44,11 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
         </div>
         {curated.length > 0
           ? <div class="activity-list">{curated.map((placement) => {
-              const exercise = placement.definitionId ? exerciseById.get(placement.definitionId) : null;
-              const title = exercise?.title || `${placement.familyId} · ${placement.caseId || 'Fall'}`;
+              const exercise = placement.definitionId
+                ? exerciseById.get(placement.definitionId)
+                : catalog.exercises.find((item) => item.familyId === placement.familyId && item.caseId === placement.caseId);
+              const family = catalog.families?.find((item) => item.familyId === placement.familyId);
+              const title = `${activityLabel(exercise?.activityType || family?.activityType)} · ${difficultyLabelFor(placement.difficulty)}`;
               const href = exercise ? routeForDefinition(exercise) : null;
               const familyHref = !exercise && placement.familyId
                 ? `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`
@@ -59,7 +56,7 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
               return (
                 <article class="activity-card" key={placement.placementId}>
                   <div>
-                    <p class="card-kicker">{difficultyLabel[placement.difficulty]} · {exercise?.masteryEligible ? 'Kompetenzbeleg möglich' : 'Übung'}</p>
+                    <p class="card-kicker">{difficultyLabelFor(placement.difficulty)} · {exercise?.masteryEligible ? 'Kompetenzbeleg möglich' : 'Übung'}</p>
                     <h3>{title}</h3>
                     <p>{exercise
                       ? (exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Bearbeitungsnachweis, kein Mastery-Beleg.')
@@ -84,7 +81,7 @@ export function ModuleView({ catalog, moduleId }: { catalog: CatalogData; module
           <div class="activity-list">{practice.map((placement) => (
             <article class="activity-card" key={placement.placementId}>
               <div>
-                <p class="card-kicker">{difficultyLabel[placement.difficulty]} · Übung</p>
+                <p class="card-kicker">{difficultyLabelFor(placement.difficulty)} · Übung</p>
                 <h3>{catalog.families?.find((family) => family.familyId === placement.familyId)?.summary || 'Freie Aufgabe'}</h3>
                 <p>Jede Öffnung erzeugt eine neue Variante.</p>
               </div>

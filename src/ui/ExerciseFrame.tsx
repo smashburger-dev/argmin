@@ -35,12 +35,15 @@ export function ExerciseFrame({
       <Breadcrumbs items={[
         { href: '#/learn', label: 'Lernen' },
         ...(ctx.module ? [{ href: ctx.moduleHref, label: ctx.module.title }] : []),
-        ...(ctx.lesson ? [{ href: ctx.lessonHref, label: ctx.lesson.title }] : []),
+        ...(ctx.lesson && ctx.lesson.title !== ctx.module?.title
+          ? [{ href: ctx.lessonHref, label: ctx.lesson.title }]
+          : []),
         { label: ctx.title },
       ]} />
       <header class="view-header">
         <p class="eyebrow">{eyebrow}</p>
         <h1 id="exercise-title" tabIndex={-1}>{ctx.title}</h1>
+        {ctx.summary ? <p class="lede">{ctx.summary}</p> : null}
       </header>
       <div class="exercise-layout">
         <div class="exercise-main">

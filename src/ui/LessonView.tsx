@@ -5,6 +5,7 @@ import { MathMarkup } from './MathMarkup';
 import { VisualizationBlock } from './VisualizationBlock';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Breadcrumbs } from './Breadcrumbs';
+import { activityLabel, difficultyLabelFor } from './exercise-context';
 
 export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lessonId: string }) {
   const lessonIndex = catalog.lessons.findIndex((item) => item.lessonId === lessonId);
@@ -70,7 +71,7 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
           <p class="card-kicker">Direkt prüfen</p>
           <h2 id="practice-title">Passende Aufgaben</h2>
           {relatedExercises.length > 0
-            ? <ul>{relatedExercises.slice(0, 5).map((exercise) => <li key={exercise.definitionId}><a href={routeForDefinition(exercise)}>{exercise.title}<span>{exercise.estimatedMinutes} Min.</span></a></li>)}</ul>
+            ? <ul>{relatedExercises.slice(0, 5).map((exercise) => <li key={exercise.definitionId}><a href={routeForDefinition(exercise)}><strong>{activityLabel(exercise.activityType)} · {difficultyLabelFor(exercise.difficulty)}</strong><span>{exercise.estimatedMinutes} Min.</span></a></li>)}</ul>
             : <p>Für diese neue Kompetenz werden die unabhängigen Aufgabenfamilien noch ergänzt.</p>}
           {practiceSpaces.length > 0 && <div class="lesson-practice"><h3>Übungsplatz</h3><ul>{practiceSpaces.map((placement) => <li key={placement.placementId}><a href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>{catalog.families?.find((family) => family.familyId === placement.familyId)?.summary || 'Freie Aufgabe'}<span>Variante üben</span></a></li>)}</ul></div>}
           {sourceLinks.length ? <div class="lesson-sources"><h3>Weiterlesen und prüfen</h3><ul>{sourceLinks.map(({ reference, source }) => source && <li key={`${reference.sourceId}:${reference.locator}`}><a href={source.canonicalUrl} target="_blank" rel="noreferrer">{source.title}<span>{reference.role} · {reference.locator}</span></a></li>)}</ul></div> : null}

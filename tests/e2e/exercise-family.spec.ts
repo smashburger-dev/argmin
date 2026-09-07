@@ -5,11 +5,11 @@ test('golden path 2: family placements instantiate two case types without a JSON
   await page.goto('/index.html#/module/lm-git-basics');
   await expect(page.getByRole('heading', { level: 1, name: 'Git als überprüfbares Arbeitsprotokoll' })).toBeVisible();
   await expect(page.getByText('63 Min.')).toBeVisible();
-  await expect(page.getByText('Einstieg · Übung')).toBeVisible();
-  await expect(page.getByText('Kern · Übung').first()).toBeVisible();
-  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Git' }).first()).toBeVisible();
-  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Git' }).nth(1)).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Variante öffnen' }).first()).toBeVisible();
+  await expect(page.getByText('Einstieg · Kompetenzbeleg möglich')).toBeVisible();
+  await expect(page.getByText('Kern · Kompetenzbeleg möglich').first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Konzeptfrage' }).first()).toBeVisible();
+  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: 'Konzeptfrage' }).nth(1)).toBeVisible();
+  await expect(page.getByRole('link', { name: /(?:Aufgabe|Variante) öffnen/ }).first()).toBeVisible();
 
   const probe = await page.evaluate(async () => {
     const familyUrl = '/assets/js/domain/' + 'exercise_registry.mjs';

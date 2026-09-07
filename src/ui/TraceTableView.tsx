@@ -26,6 +26,7 @@ export interface TraceTableInstance {
   caseId: string;
   seed: number;
   difficulty: string;
+  activityType: string;
   prompt: string;
   parameters?: { snippet?: unknown };
   traceTable: TraceTableData;
