@@ -32,9 +32,16 @@ export function contractKey(exercise) {
 }
 
 export function buildPyodideContractMatrix(projectRoot = root) {
-  const definitions = [];
   const bundle = compileContent({ projectRoot, profile: 'public' });
-  for (const activity of bundle.familyActivities) {
+  const definitions = buildDefinitions(bundle.familyActivities);
+  addVerificationHashes(definitions);
+  const contracts = buildContracts(definitions);
+  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions };
+}
+
+function buildDefinitions(activities) {
+  const definitions = [];
+  for (const activity of activities) {
     const instance = EXERCISE_FAMILIES.instantiate(
       activity.familyId,
       activity.seed,
@@ -42,27 +49,34 @@ export function buildPyodideContractMatrix(projectRoot = root) {
       activity.caseId,
     );
     if (instance.graderId !== 'pyodide' && instance.graderId !== 'pyodide-sympy') continue;
-    if (instance.graderId === 'pyodide-sympy') {
-      const run = buildSympyEquivalenceRun(instance.expectedAnswer?.expression ?? '', instance.expectedAnswer?.expression ?? '');
-      definitions.push({
-        definitionId: activity.definitionId,
-        competencyIds: activity.competencyIds,
-        packages: run.packages,
-        tests: run.tests,
-        referenceSolver: run.code,
-        contract: contractKey({ ...instance, grader: instance.graderId }),
-      });
-      continue;
-    }
-    definitions.push({
+    definitions.push(buildDefinition(activity, instance));
+  }
+  return definitions;
+}
+
+function buildDefinition(activity, instance) {
+  if (instance.graderId === 'pyodide-sympy') {
+    const run = buildSympyEquivalenceRun(instance.expectedAnswer?.expression ?? '', instance.expectedAnswer?.expression ?? '');
+    return {
       definitionId: activity.definitionId,
       competencyIds: activity.competencyIds,
-      packages: instance.parameters?.packages || [],
-      tests: buildPythonTests({ ...instance, grader: instance.graderId }),
-      referenceSolver: instance.expectedAnswer?.referenceSolver || instance.fullSolution || '',
+      packages: run.packages,
+      tests: run.tests,
+      referenceSolver: run.code,
       contract: contractKey({ ...instance, grader: instance.graderId }),
-    });
+    };
   }
+  return {
+    definitionId: activity.definitionId,
+    competencyIds: activity.competencyIds,
+    packages: instance.parameters?.packages || [],
+    tests: buildPythonTests({ ...instance, grader: instance.graderId }),
+    referenceSolver: instance.expectedAnswer?.referenceSolver || instance.fullSolution || '',
+    contract: contractKey({ ...instance, grader: instance.graderId }),
+  };
+}
+
+function addVerificationHashes(definitions) {
   for (const definition of definitions) {
     definition.verificationHash = createHash('sha256').update(JSON.stringify({
       definitionId: definition.definitionId,
@@ -72,6 +86,9 @@ export function buildPyodideContractMatrix(projectRoot = root) {
       contract: definition.contract,
     })).digest('hex');
   }
+}
+
+function buildContracts(definitions) {
   const contracts = [];
   for (const definition of definitions) {
     let entry = contracts.find((item) => item.contractId === definition.contract);
@@ -81,7 +98,7 @@ export function buildPyodideContractMatrix(projectRoot = root) {
     }
     entry.definitionIds.push(definition.definitionId);
   }
-  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions };
+  return contracts;
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
