@@ -398,23 +398,10 @@ function gradeCodeTrace(exercise, answers) {
   const hasRepr = vars.some((v) => v.type === 'repr');
   const { invalid, wrong } = inspectTraceVariables(vars, answers);
   if (invalid) {
-    return {
-      correct: false,
-      verdictText: hasRepr
-        ? `'${invalid}' ist leer oder unlesbar — trage den Wert in Python-Schreibweise ein, z. B. [1, 2] oder {'a': 1}.`
-        : `'${invalid}' ist keine ganze Zahl — der getracete Wert ist immer ganzzahlig.`,
-      errorType: 'invalid-input',
-    };
+    return invalidTraceResult(invalid, hasRepr);
   }
   const correct = wrong.length === 0;
-  let diagnosis = null;
-  if (!correct) {
-    diagnosis = `Falsche Werte für: ${wrong.join(', ')}. Tipp: Zeile für Zeile neu durchgehen und nach jeder Zuweisung den neuen Wert notieren.`;
-    for (const rule of exercise.feedbackRules || []) {
-      if (rule.if === wrong.map((w) => `value:${w}`).join('+')) diagnosis = rule.then;
-    }
-  }
-  return { correct, verdictText: correct ? 'Richtig — alle Variablenwerte stimmen.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-value', diagnosis };
+  return traceGradeResult(exercise, correct, wrong);
 }
 
 function inspectTraceVariables(vars, answers) {
@@ -425,6 +412,27 @@ function inspectTraceVariables(vars, answers) {
     if (result.wrong) wrong.push(variable.name);
   }
   return { invalid: null, wrong };
+}
+
+function invalidTraceResult(invalid, hasRepr) {
+  return {
+    correct: false,
+    verdictText: hasRepr
+      ? `'${invalid}' ist leer oder unlesbar — trage den Wert in Python-Schreibweise ein, z. B. [1, 2] oder {'a': 1}.`
+      : `'${invalid}' ist keine ganze Zahl — der getracete Wert ist immer ganzzahlig.`,
+    errorType: 'invalid-input',
+  };
+}
+
+function traceGradeResult(exercise, correct, wrong) {
+  let diagnosis = null;
+  if (!correct) {
+    diagnosis = `Falsche Werte für: ${wrong.join(', ')}. Tipp: Zeile für Zeile neu durchgehen und nach jeder Zuweisung den neuen Wert notieren.`;
+    for (const rule of exercise.feedbackRules || []) {
+      if (rule.if === wrong.map((w) => `value:${w}`).join('+')) diagnosis = rule.then;
+    }
+  }
+  return { correct, verdictText: correct ? 'Richtig — alle Variablenwerte stimmen.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-value', diagnosis };
 }
 
 /** Predict-output: predicted stdout, compared normalized — whitespace and
