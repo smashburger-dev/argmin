@@ -52,7 +52,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'ok', 'antwort': 'ok'}, {'retrieval': 'leer', 'antwort': 'ok'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Zwei Datensätze: sauber plus retrieval leer. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'ok', 'antwort': 'blockiert'}, {'retrieval': 'ok', 'antwort': 'blockiert'}, {'retrieval': 'ok', 'antwort': 'blockiert'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Drei blockierte Antworten, retrieval ok. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'leer', 'antwort': 'kein_treffer'}, {'retrieval': 'leer', 'antwort': 'kein_treffer'}, {'retrieval': 'leer', 'antwort': 'kein_treffer'}, {'retrieval': 'leer', 'antwort': 'kein_treffer'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Vier leere Retrievals. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'ok', 'antwort': 'kein_treffer'}, {'retrieval': 'ok', 'antwort': 'ok'}, {'retrieval': 'ok', 'antwort': 'ok'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Ein kein_treffer, zwei sauber. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'ok', 'antwort': 'blockiert'}, {'retrieval': 'leer', 'antwort': 'blockiert'}, {'retrieval': 'ok', 'antwort': 'ok'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Mix blockiert/leer/sauber. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = []\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Leere Liste. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'ok', 'antwort': 'ok'}, {'retrieval': 'ok', 'antwort': 'ok'}, {'retrieval': 'ok', 'antwort': 'ok'}, {'retrieval': 'ok', 'antwort': 'ok'}, {'retrieval': 'ok', 'antwort': 'ok'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Fünf saubere Datensätze. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'leer', 'antwort': 'ok'}, {'retrieval': 'ok', 'antwort': 'kein_treffer'}, {'retrieval': 'ok', 'antwort': 'blockiert'}, {'retrieval': 'ok', 'antwort': 'ok'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Alle drei Eimer einmal plus sauber. Implementiere `trenne_fehler`."
+        },
+        {
+          "parameters": {
+            "tests": "D = [{'retrieval': 'ok', 'antwort': 'kein_treffer'}, {'retrieval': 'ok', 'antwort': 'kein_treffer'}, {'retrieval': 'leer', 'antwort': 'ok'}, {'retrieval': 'leer', 'antwort': 'ok'}]\ndef __want(datensaetze):\n    zaehler = {\"retrieval_fehler\": 0, \"antwort_fehler\": 0, \"sauber\": 0}\n    for datensatz in datensaetze:\n        if datensatz[\"retrieval\"] == \"leer\":\n            zaehler[\"retrieval_fehler\"] += 1\n        elif datensatz[\"antwort\"] != \"ok\":\n            zaehler[\"antwort_fehler\"] += 1\n        else:\n            zaehler[\"sauber\"] += 1\n    return zaehler\n__check('zaehlung', trenne_fehler(D) == __want(D))\n__check('leer dominiert', trenne_fehler([{\"retrieval\": \"leer\", \"antwort\": \"ok\"}]) == {\"retrieval_fehler\": 1, \"antwort_fehler\": 0, \"sauber\": 0})\n__check('summe', (lambda r: r[\"retrieval_fehler\"] + r[\"antwort_fehler\"] + r[\"sauber\"])(trenne_fehler(D)) == len(D))\n"
+          },
+          "prompt": "Zwei Antwortfehler, zwei Retrievalfehler. Implementiere `trenne_fehler`."
+        }
+      ]
     }
   ]
 }
