@@ -95,7 +95,135 @@
         ]
       },
       "prompt": "Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` (Begleiter zu w05-e8) in die richtige Reihenfolge. Zwei Zeilen sind Distraktoren, die nicht zur Lösung gehören — sortiere sie aus.",
-      "fullSolution": "Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert)."
+      "fullSolution": "Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert).",
+      "variants": [
+        {
+          "parameters": {
+            "initialOrder": [
+              "d1",
+              "p3",
+              "p5",
+              "p2",
+              "d2",
+              "p4",
+              "p1"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 1 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p3",
+              "p5",
+              "p2",
+              "d2",
+              "p4",
+              "p1",
+              "d1"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 2 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p5",
+              "p2",
+              "d2",
+              "p4",
+              "p1",
+              "d1",
+              "p3"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 3 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p2",
+              "d2",
+              "p4",
+              "p1",
+              "d1",
+              "p3",
+              "p5"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 4 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "d2",
+              "p4",
+              "p1",
+              "d1",
+              "p3",
+              "p5",
+              "p2"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 5 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p4",
+              "p1",
+              "d1",
+              "p3",
+              "p5",
+              "p2",
+              "d2"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 6 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p1",
+              "d1",
+              "p3",
+              "p5",
+              "p2",
+              "d2",
+              "p4"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 7 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p1",
+              "d1",
+              "p3",
+              "p5",
+              "p2",
+              "d2",
+              "p4"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 8 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p1",
+              "d1",
+              "p3",
+              "p5",
+              "p2",
+              "d2",
+              "p4"
+            ]
+          },
+          "prompt": "Parsons matvec, Startlage um 9 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
+        }
+      ]
     },
     {
       "caseId": "matvec-code-reference",

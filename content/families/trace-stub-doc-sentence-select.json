@@ -68,7 +68,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Fenster schließen bei Sturm. Sturm kommt vom Meer.', 'Tueren bleiben offen.']\nprint(antwort('Wann schließen Fenster?', DOCS))\nprint(antwort('Gibt es Kaffee?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Fenster schließen bei Sturm\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Fenster/Sturm. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Fenster schließen bei Sturm\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Batterien halten zehn Stunden. Laden erfolgt nachts.', 'Kabel liegen in der Schublade.']\nprint(antwort('Wie lange halten Batterien?', DOCS))\nprint(antwort('Wo ist der Mond?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Batterien halten zehn Stunden\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Batterien. Sage Treffer und kein-treffer vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Batterien halten zehn Stunden\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Zuege halten in Mainz. Mainz liegt am Rhein.', 'Schiffe fahren den Rhein.']\nprint(antwort('Wo halten Zuege?', DOCS))\nprint(antwort('Gibt es WLAN?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Zuege halten in Mainz\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Züge/Mainz. Sage beide Ausgaben vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Zuege halten in Mainz\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Pflanzen brauchen Licht. Licht kommt vom Fenster.', 'Tiere brauchen Ruhe.']\nprint(antwort('Was brauchen Pflanzen?', DOCS))\nprint(antwort('Parkplatz frei?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Pflanzen brauchen Licht\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Pflanzen. Sage Satz und kein treffer vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Pflanzen brauchen Licht\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Karten zeigen Strassen. Strassen fuehren nach Hause.', 'Kompasse zeigen Norden.']\nprint(antwort('Was zeigen Karten?', DOCS))\nprint(antwort('Wie schmeckt Tee?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Karten zeigen Strassen\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Karten. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Karten zeigen Strassen\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Lampen leuchten warm. Schalter sitzen an der Wand.', 'Kerzen brennen langsam.']\nprint(antwort('Wie leuchten Lampen?', DOCS))\nprint(antwort('Gibt es Nebel?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Lampen leuchten warm\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Lampen. Sage Treffer und Miss vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Lampen leuchten warm\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Salate stehen im Kuehlschrank. Der Kuehlschrank piept leise.', 'Suppen stehen auf dem Herd.']\nprint(antwort('Wo stehen Salate?', DOCS))\nprint(antwort('Ticketpreis?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Salate stehen im Kuehlschrank\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Salate. Sage beide Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Salate stehen im Kuehlschrank\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Drucker brauchen Toner. Papier liegt daneben.', 'Scanner speichern Dateien.']\nprint(antwort('Was brauchen Drucker?', DOCS))\nprint(antwort('Wetter morgen?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Drucker brauchen Toner\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Drucker. Sage Satz und kein treffer vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Drucker brauchen Toner\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def antwort(anfrage, docs):\n    def terme(s):\n        return {w for w in s.lower().split() if len(w) >= 4}\n    q = terme(anfrage)\n    punkte = [len(q & terme(d)) for d in docs]\n    if max(punkte) == 0:\n        return \"kein treffer\"\n    best = punkte.index(max(punkte))\n    saetze = docs[best].split(\".\")\n    for satz in saetze:\n        if q & terme(satz):\n            return satz.strip()\n    return saetze[0].strip()\n\nDOCS = ['Wartezeit betraegt fuenf Minuten. Schalter oeffnen frueh.', 'Tickets gelten einen Tag.']\nprint(antwort('Wie lange betraegt die Wartezeit?', DOCS))\nprint(antwort('Gibt es Parkplaetze hier?', DOCS))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "Wartezeit betraegt fuenf Minuten\nkein treffer"
+          },
+          "prompt": "Stub-Retrieval Wartezeit. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>Wartezeit betraegt fuenf Minuten\nkein treffer</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     }
   ]
 }

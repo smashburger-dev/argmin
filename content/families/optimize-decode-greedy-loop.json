@@ -71,7 +71,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'x', 1: 'y', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 1, 2]\nxy<eos>"
+          },
+          "prompt": "Greedy-Decode x/y/<eos>. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 1, 2]\nxy<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'm', 1: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 1)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 1]\nm<eos>"
+          },
+          "prompt": "Greedy-Decode m dann eos. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 1]\nm<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'a', 1: 'a', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 1, 2]\naa<eos>"
+          },
+          "prompt": "Greedy-Decode doppeltes a. Sage ID-Liste und Join vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 1, 2]\naa<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'z', 1: 'w', 2: 'q', 3: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2, (0, 1, 2): 3}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 3)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 1, 2, 3]\nzwq<eos>"
+          },
+          "prompt": "Greedy-Decode vier Token bis eos. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 1, 2, 3]\nzwq<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'k', 1: '<eos>', 2: 'x'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 1)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 1]\nk<eos>"
+          },
+          "prompt": "Greedy-Decode stoppt nach k. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 1]\nk<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'p', 1: 'q', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 1, (1,): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[1, 2]\nq<eos>"
+          },
+          "prompt": "Greedy-Decode startet mit q. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[1, 2]\nq<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'n', 1: 'o', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 0, (0, 0): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 0, 2]\nnn<eos>"
+          },
+          "prompt": "Greedy-Decode wiederholt n. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 0, 2]\nnn<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'u', 1: 'v', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 1, (1,): 0, (1, 0): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[1, 0, 2]\nvu<eos>"
+          },
+          "prompt": "Greedy-Decode v dann u. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[1, 0, 2]\nvu<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "VOCAB = {0: 'a', 1: 'b', 2: 'c', 3: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 2, (2,): 3}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 3)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[2, 3]\nc<eos>"
+          },
+          "prompt": "Greedy-Decode startet bei c. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[2, 3]\nc<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     },
     {
       "caseId": "greedy-decode-function",

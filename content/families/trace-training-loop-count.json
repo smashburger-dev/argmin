@@ -80,7 +80,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 10, 10, 2\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 8.0\nfor g in [2.0, 2.0]:\n    w = w - 0.5 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\n6.0"
+          },
+          "prompt": "Training-Loop n=B=10, 2 Epochen, zwei Gradienten. Sage steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\n6.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 5, 2, 1\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 1.0\nfor g in [0.0]:\n    w = w - 0.5 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n1.0"
+          },
+          "prompt": "Training-Loop n=5 B=2 eine Epoche. Sage steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n1.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 100, 30, 2\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 0.0\nfor g in [1.0, 1.0]:\n    w = w - 1.0 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "8\n-2.0"
+          },
+          "prompt": "Training-Loop n=100 B=30. Sage ceil-steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>8\n-2.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 7, 3, 3\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 6.0\nfor g in [2.0, 2.0, 2.0]:\n    w = w - 0.5 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "9\n3.0"
+          },
+          "prompt": "Training-Loop 7/3 über 3 Epochen. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>9\n3.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 8, 8, 4\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 4.0\nfor g in [0.0, 0.0, 0.0, 8.0]:\n    w = w - 0.5 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\n0.0"
+          },
+          "prompt": "Training-Loop n=B, 4 Epochen. Sage steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 1, 1, 5\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 5.0\nfor g in [1.0] * 5:\n    w = w - 0.2 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "5\n3.999999999999999"
+          },
+          "prompt": "Training-Loop n=1 fünfmal. Sage steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>5\n3.999999999999999</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 50, 20, 2\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 2.0\nfor g in [2.0, 2.0]:\n    w = w - 0.5 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "6\n0.0"
+          },
+          "prompt": "Training-Loop 50/20 zwei Epochen. Sage beide Zahlen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>6\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 9, 4, 1\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 9.0\nfor g in [2.0]:\n    w = w - 0.5 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n8.0"
+          },
+          "prompt": "Training-Loop 9/4 eine Epoche. Sage steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n8.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, B, epochs = 12, 5, 2\nsteps = 0\nfor _ in range(epochs):\n    steps += -(-n // B)\nprint(steps)\nw = 3.0\nfor g in [1.0, 3.0]:\n    w = w - 1.0 * g\nprint(w)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "6\n-1.0"
+          },
+          "prompt": "Training-Loop 12/5. Sage ceil-steps und w vorher.",
+          "fullSolution": "Die Ausgabe ist <code>6\n-1.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     },
     {
       "caseId": "training-loop-drop-last",
@@ -128,7 +229,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 8, 4, 1\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 4]\n2"
+          },
+          "prompt": "Drop-last n=8 bs=4 eine Epoche. Sage starts und steps vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 4]\n2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 5, 2, 3\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 2, 4]\n6"
+          },
+          "prompt": "Drop-last n=5 bs=2, 3 Epochen. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 2, 4]\n6</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 4, 4, 2\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0]\n2"
+          },
+          "prompt": "Drop-last n=bs=4, zwei Epochen. Sage starts und steps vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0]\n2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 9, 4, 1\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 4, 8]\n2"
+          },
+          "prompt": "Drop-last n=9 bs=4, Rest verworfen. Sage print vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 4, 8]\n2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 6, 3, 2\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 3]\n4"
+          },
+          "prompt": "Drop-last n=6 bs=3. Sage starts und steps vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 3]\n4</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 7, 3, 1\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 3, 6]\n2"
+          },
+          "prompt": "Drop-last n=7 bs=3 eine Epoche. Sage beide Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 3, 6]\n2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 12, 5, 2\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 5, 10]\n4"
+          },
+          "prompt": "Drop-last n=12 bs=5. Sage starts und steps vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 5, 10]\n4</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 3, 2, 4\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 2]\n4"
+          },
+          "prompt": "Drop-last n=3 bs=2, 4 Epochen. Sage print vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 2]\n4</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "n, bs, epochs = 16, 8, 1\nstarts = list(range(0, n, bs))\nsteps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)\nprint(starts)\nprint(steps)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "[0, 8]\n2"
+          },
+          "prompt": "Drop-last n=16 bs=8. Sage starts und steps vorher.",
+          "fullSolution": "Die Ausgabe ist <code>[0, 8]\n2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     },
     {
       "caseId": "training-loop-early-stop-counter",
@@ -176,7 +378,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "losses = [1.0, 0.5, 0.49, 0.48]\nmin_delta = 0.1\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\n0.5"
+          },
+          "prompt": "Early-Stop min_delta=0.1 patience=2. Sage stopped und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\n0.5</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [0.9, 0.8, 0.7, 0.6, 0.5]\nmin_delta = 0.05\npatience = 3\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "None\n0.5"
+          },
+          "prompt": "Early-Stop immer Verbesserung. Sage stopped (None→print None) und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>None\n0.5</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [0.5, 0.5, 0.5]\nmin_delta = 0.01\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.5"
+          },
+          "prompt": "Early-Stop Plateau 0.5. Sage Epoche und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.5</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [1.0, 0.2, 0.2, 0.2]\nmin_delta = 0.5\npatience = 1\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.2"
+          },
+          "prompt": "Early-Stop patience=1 nach großem Sprung. Sage stopped und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [0.4, 0.3, 0.29, 0.28, 0.27]\nmin_delta = 0.05\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\n0.3"
+          },
+          "prompt": "Early-Stop kleine Schritte unter min_delta. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\n0.3</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [2.0, 1.0, 0.0]\nmin_delta = 0.5\npatience = 5\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "None\n0.0"
+          },
+          "prompt": "Early-Stop patience größer als Epochen. Sage stopped und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>None\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [0.8, 0.7, 0.69, 0.68, 0.67, 0.66]\nmin_delta = 0.09\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\n0.7"
+          },
+          "prompt": "Early-Stop nach erstem echten Drop. Sage Epoche und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\n0.7</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [0.1, 0.2, 0.3]\nmin_delta = 0.01\npatience = 2\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.1"
+          },
+          "prompt": "Early-Stop steigender Loss. Sage stopped und best vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.1</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "losses = [0.9, 0.4, 0.39, 0.38]\nmin_delta = 0.02\npatience = 3\nbest = float('inf')\nwait = 0\nstopped = None\nfor epoch, loss in enumerate(losses, 1):\n    if best - loss > min_delta:\n        best = loss\n        wait = 0\n    else:\n        wait += 1\n    if wait >= patience:\n        stopped = epoch\n        break\nprint(stopped)\nprint(best)\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "None\n0.38"
+          },
+          "prompt": "Early-Stop großer Drop dann Plateau, patience=3. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>None\n0.38</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     }
   ]
 }

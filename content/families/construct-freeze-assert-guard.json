@@ -145,7 +145,171 @@
         "mode": "exact"
       },
       "activityType": "parsons",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "initialOrder": [
+              "p1",
+              "d2",
+              "p6",
+              "p4",
+              "p2",
+              "p9",
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 1 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "d2",
+              "p6",
+              "p4",
+              "p2",
+              "p9",
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 2 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p6",
+              "p4",
+              "p2",
+              "p9",
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 3 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p4",
+              "p2",
+              "p9",
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2",
+              "p6"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 4 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p2",
+              "p9",
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2",
+              "p6",
+              "p4"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 5 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p9",
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2",
+              "p6",
+              "p4",
+              "p2"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 6 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "d1",
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2",
+              "p6",
+              "p4",
+              "p2",
+              "p9"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 7 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p5",
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2",
+              "p6",
+              "p4",
+              "p2",
+              "p9",
+              "d1"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 8 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p7",
+              "p8",
+              "p3",
+              "p1",
+              "d2",
+              "p6",
+              "p4",
+              "p2",
+              "p9",
+              "d1",
+              "p5"
+            ]
+          },
+          "prompt": "Parsons Freeze-Assert, Startlage um 9 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
+        }
+      ]
     },
     {
       "caseId": "demo-from-frozen-report",
