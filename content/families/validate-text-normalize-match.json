@@ -74,7 +74,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Steigt der Anteil korrekter Treffer, wenn k wächst?') is True)\n__check('ohne metrik', is_testable('Fühlt sich alles besser an?') is False)\n__check('absolute verworfen', is_testable('Ist die Lösung generell optimal?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je größer k, desto höher der Anteil Treffer')\nkern = 'Je größer k, desto höher der Anteil Treffer'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je größer k, desto höher der Anteil Treffer' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: Anteil/steigt vs generell. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Sinkt die Quote der Ablehnungen nach dem Filter?') is True)\n__check('ohne metrik', is_testable('Wie läuft der Tag?') is False)\n__check('absolute verworfen', is_testable('Warum ist das Modell immer das beste?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je kleiner das Fenster, desto geringer die kosten je lauf')\nkern = 'Je kleiner das Fenster, desto geringer die kosten je lauf'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je kleiner das Fenster, desto geringer die kosten je lauf' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: Quote/sinkt vs immer/beste. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Ist die dauer höher als zuvor?') is True)\n__check('ohne metrik', is_testable('Macht es Spaß?') is False)\n__check('absolute verworfen', is_testable('Bleibt die recall@3-Quote optimal?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je länger der Text, desto höher die genauigkeit')\nkern = 'Je länger der Text, desto höher die genauigkeit'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je länger der Text, desto höher die genauigkeit' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: dauer/höher vs optimal. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Unterscheidet sich die genauigkeit zwischen Gruppen?') is True)\n__check('ohne metrik', is_testable('Ist das nett?') is False)\n__check('absolute verworfen', is_testable('Wird niemals eine Metrik genannt?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je breiter der Sweep, desto geringer die kosten')\nkern = 'Je breiter der Sweep, desto geringer die kosten'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je breiter der Sweep, desto geringer die kosten' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: genauigkeit/unterscheidet vs niemals. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Ist f1 verschieden zwischen den Läufen?') is True)\n__check('ohne metrik', is_testable('Klingt das gut?') is False)\n__check('absolute verworfen', is_testable('Ist die Pipeline generell fertig?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je mehr Daten, desto höher der anteil')\nkern = 'Je mehr Daten, desto höher der anteil'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je mehr Daten, desto höher der anteil' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: f1/verschieden vs generell. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Steigt die genauigkeit mit mehr Kontext?') is True)\n__check('ohne metrik', is_testable('Welche Farbe hat der Himmel?') is False)\n__check('absolute verworfen', is_testable('Warum bleibt alles immer gleich?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je kürzer der Prompt, desto geringer die dauer')\nkern = 'Je kürzer der Prompt, desto geringer die dauer'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je kürzer der Prompt, desto geringer die dauer' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: genauigkeit/steigt vs immer. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Sinkt die kosten je Anfrage?') is True)\n__check('ohne metrik', is_testable('Bitte um Meinung.') is False)\n__check('absolute verworfen', is_testable('Ist das die beste Architektur?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je höher k, desto höher die quote')\nkern = 'Je höher k, desto höher die quote'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je höher k, desto höher die quote' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: kosten/sinkt vs beste. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Ist recall@1 gleich zwischen Seeds?') is True)\n__check('ohne metrik', is_testable('Ohne Kennzahl nur Gefühl.') is False)\n__check('absolute verworfen', is_testable('Warum ist das optimal für alle?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je später der Cutoff, desto geringer der anteil')\nkern = 'Je später der Cutoff, desto geringer der anteil'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je später der Cutoff, desto geringer der anteil' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: recall@/gleich vs optimal. Implementiere `is_testable` und `extract_variables`."
+        },
+        {
+          "parameters": {
+            "tests": "__check('testable true', is_testable('Wird die quote niedriger nach dem Filter?') is True)\n__check('ohne metrik', is_testable('Schönes Wetter heute.') is False)\n__check('absolute verworfen', is_testable('Gilt das niemals für Subgruppen?') is False)\n__check('metrik allein', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\ngot = extract_variables('Je strenger die Regel, desto höher die genauigkeit')\nkern = 'Je strenger die Regel, desto höher die genauigkeit'.strip().rstrip(\".\")\nteile = kern.split(\", desto \")\nuv = \" \".join(teile[0].split()[2:]).lower()\ndv = \" \".join(teile[1].split()[1:]).lower()\n__check('uv dv', got == {\"uv\": uv, \"dv\": dv})\n__check('punkt entfernt', extract_variables('Je strenger die Regel, desto höher die genauigkeit' + \".\") == got)\ntry:\n    extract_variables('Ohne Form hier.')\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('keine je-desto-form -> ValueError', True)\n\n"
+          },
+          "prompt": "Text-Prüfbarkeit: quote/niedriger vs niemals. Implementiere `is_testable` und `extract_variables`."
+        }
+      ]
     }
   ]
 }

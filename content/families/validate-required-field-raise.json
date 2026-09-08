@@ -53,7 +53,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'Frage A', 'methode': '   ', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': 'L', 'claims': [{'claim': 'c1', 'evidence': {'baseline': 1.0, 'system': 2.0}}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte A: methode nur Whitespace. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F?', 'methode': 'M', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': '', 'claims': [{'claim': 'flat', 'evidence': {'baseline': 3.0, 'system': 3.0}}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte: leere limitation, flat claim. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F?', 'methode': 'M', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': 'L', 'claims': [{'claim': 'down', 'evidence': {'baseline': 9.0, 'system': 1.0}}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte: regresser Claim. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F', 'methode': 'M', 'datensatz': 'D', 'ergebnis': 'E'}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte ohne limitation und ohne claims. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F?', 'methode': 'M', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': 'L', 'claims': [{'claim': 'x'}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte Claim ohne evidence. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F?', 'methode': 'M', 'datensatz': '', 'ergebnis': 'ok', 'limitation': 'L', 'claims': [{'claim': 'c1', 'evidence': {'baseline': 1.0, 'system': 2.0}}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte leerer datensatz. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F?', 'methode': 'M', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': 'L', 'claims': [{'claim': 'ok', 'evidence': {'baseline': 1, 'system': 2}}, {'claim': 'bad', 'evidence': {'baseline': False, 'system': True}}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte: bool-Evidenz ungestützt. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'F?', 'methode': 'Methode B', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': 'L', 'claims': []}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte leere claims-Liste. Implementiere `review_paper_card`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'frage': 'Neue Frage', 'methode': 'M', 'datensatz': 'D', 'ergebnis': 'E', 'limitation': 'L', 'claims': [{'claim': 'a', 'evidence': {'baseline': 10.0, 'system': 12.0}}, {'claim': 'b', 'evidence': {'baseline': 10.0, 'system': 9.0}}]}\nREQUIRED_FIELDS = [\"frage\", \"methode\", \"datensatz\", \"ergebnis\", \"limitation\"]\ndef __want(card):\n    if not isinstance(card, dict):\n        raise ValueError(\"card muss ein dict sein\")\n    missing = [f for f in REQUIRED_FIELDS if not isinstance(card.get(f), str) or not card.get(f).strip()]\n    unsupported = []\n    claims = card.get(\"claims\", [])\n    if not isinstance(claims, list):\n        raise ValueError(\"claims muss eine Liste sein\")\n    for index, claim in enumerate(claims):\n        evidence = claim.get(\"evidence\") if isinstance(claim, dict) else None\n        ok = False\n        if isinstance(evidence, dict):\n            baseline, system = evidence.get(\"baseline\"), evidence.get(\"system\")\n            if isinstance(baseline, (int, float)) and isinstance(system, (int, float)):\n                if not isinstance(baseline, bool) and not isinstance(system, bool):\n                    ok = system > baseline\n        if not ok:\n            unsupported.append(index)\n    return {\"missing_fields\": missing, \"unsupported_claims\": unsupported}\n__check('review', review_paper_card(card) == __want(card))\ntry:\n    review_paper_card({'claims': 'keine Liste'})\n    __check('claims Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('claims Typ geprueft -> ValueError', True)\n\ntry:\n    review_paper_card(['kein', 'dict'])\n    __check('card Typ geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('card Typ geprueft -> ValueError', True)\n\n"
+          },
+          "prompt": "Paper-Karte zwei Claims, einer ungestützt. Implementiere `review_paper_card`."
+        }
+      ]
     },
     {
       "caseId": "protocol-validator",
@@ -104,7 +160,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'metrik': 'f1', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2026-01-01', 'datum_hauptlauf': '2026-02-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll vollständig Januar/Februar 2026. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2026-01-01', 'datum_hauptlauf': '2026-02-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll ohne metrik. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'metrik': 'f1', 'baseline': '  ', 'abbruchregel': 'stopp', 'datum_prereg': '2026-01-01', 'datum_hauptlauf': '2026-02-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll baseline nur Whitespace. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'metrik': 'f1', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2026-01-01', 'datum_hauptlauf': '2026-01-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll gleiches Datum. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'metrik': 'f1', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2026-03-01', 'datum_hauptlauf': '2026-02-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll vertauschte Daten. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Leeres Protokoll. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': '', 'uv': '', 'dv': 'dv', 'metrik': 'f1', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2026-01-01', 'datum_hauptlauf': '2026-02-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll frage und uv leer. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'metrik': 'f1', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2026-01-01'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll ohne datum_hauptlauf. Implementiere `validate_protocol`."
+        },
+        {
+          "parameters": {
+            "tests": "PFLICHT = [\"frage\", \"uv\", \"dv\", \"metrik\", \"baseline\", \"abbruchregel\", \"datum_prereg\", \"datum_hauptlauf\"]\np = {'frage': 'Steigt etwas?', 'uv': 'uv', 'dv': 'dv', 'metrik': 'f1', 'baseline': 'b0', 'abbruchregel': 'stopp', 'datum_prereg': '2025-12-31', 'datum_hauptlauf': '2026-01-02'}\ndef __want(p):\n    probleme = []\n    for feld in PFLICHT:\n        wert = p.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            probleme.append(feld + \"-fehlt\")\n    prereg = p.get(\"datum_prereg\")\n    haupt = p.get(\"datum_hauptlauf\")\n    if prereg and haupt and str(prereg).strip() and str(haupt).strip() and not (str(prereg) < str(haupt)):\n        probleme.append(\"datum-reihenfolge\")\n    return sorted(probleme)\n__check('validate_protocol', validate_protocol(p) == __want(p))\n"
+          },
+          "prompt": "Protokoll Jahreswechsel, gültige Reihenfolge. Implementiere `validate_protocol`."
+        }
+      ]
     },
     {
       "caseId": "validate-card-fields",
@@ -155,7 +267,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "card = {'name': 'a', 'zweck': '', 'lizenz': 'mit'}\nrequired = ['name', 'zweck', 'herkunft', 'lizenz']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1}) is (\n    all(isinstance({'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1}.get(\"split_train\", 99)) + float({'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1}.get(\"split_dev\", 99)) + float({'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('1.0.0') is (len('1.0.0'.split(\".\")) == 3 and all(t.isdigit() for t in '1.0.0'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte a: zweck leer, splits 0.7/0.2/0.1, semver 1.0.0. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'titel': 'x', 'ort': '   '}\nrequired = ['titel', 'ort', 'jahr']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.5, 'split_dev': 0.5, 'split_test': 0.0}) is (\n    all(isinstance({'split_train': 0.5, 'split_dev': 0.5, 'split_test': 0.0}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.5, 'split_dev': 0.5, 'split_test': 0.0}.get(\"split_train\", 99)) + float({'split_train': 0.5, 'split_dev': 0.5, 'split_test': 0.0}.get(\"split_dev\", 99)) + float({'split_train': 0.5, 'split_dev': 0.5, 'split_test': 0.0}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.5, 'split_dev': 0.5, 'split_test': 0.0} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('2.3.4') is (len('2.3.4'.split(\".\")) == 3 and all(t.isdigit() for t in '2.3.4'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte titel/ort, splits 0.5/0.5/0, semver 2.3.4. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'id': 'k', 'note': 'ok'}\nrequired = ['id', 'note']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.9, 'split_dev': 0.05, 'split_test': 0.05}) is (\n    all(isinstance({'split_train': 0.9, 'split_dev': 0.05, 'split_test': 0.05}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.9, 'split_dev': 0.05, 'split_test': 0.05}.get(\"split_train\", 99)) + float({'split_train': 0.9, 'split_dev': 0.05, 'split_test': 0.05}.get(\"split_dev\", 99)) + float({'split_train': 0.9, 'split_dev': 0.05, 'split_test': 0.05}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.9, 'split_dev': 0.05, 'split_test': 0.05} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('0.0.1') is (len('0.0.1'.split(\".\")) == 3 and all(t.isdigit() for t in '0.0.1'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte id/note vollständig, splits 0.9/0.05/0.05. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'n': None, 'm': 'z'}\nrequired = ['n', 'm', 'p']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.8, 'split_dev': 0.1}) is (\n    all(isinstance({'split_train': 0.8, 'split_dev': 0.1}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.8, 'split_dev': 0.1}.get(\"split_train\", 99)) + float({'split_train': 0.8, 'split_dev': 0.1}.get(\"split_dev\", 99)) + float({'split_train': 0.8, 'split_dev': 0.1}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.8, 'split_dev': 0.1} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('1.2') is (len('1.2'.split(\".\")) == 3 and all(t.isdigit() for t in '1.2'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte n None, split_test fehlt, semver zu kurz. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'alpha': '1', 'beta': '2', 'gamma': '3'}\nrequired = ['alpha', 'beta', 'gamma']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': '0.8', 'split_dev': 0.1, 'split_test': 0.1}) is (\n    all(isinstance({'split_train': '0.8', 'split_dev': 0.1, 'split_test': 0.1}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': '0.8', 'split_dev': 0.1, 'split_test': 0.1}.get(\"split_train\", 99)) + float({'split_train': '0.8', 'split_dev': 0.1, 'split_test': 0.1}.get(\"split_dev\", 99)) + float({'split_train': '0.8', 'split_dev': 0.1, 'split_test': 0.1}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': '0.8', 'split_dev': 0.1, 'split_test': 0.1} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('v1.2.0') is (len('v1.2.0'.split(\".\")) == 3 and all(t.isdigit() for t in 'v1.2.0'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte alpha-gamma, String-Splits, v-Prefix. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'q': ' ', 'r': 'r'}\nrequired = ['q', 'r']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.4, 'split_dev': 0.4, 'split_test': 0.2}) is (\n    all(isinstance({'split_train': 0.4, 'split_dev': 0.4, 'split_test': 0.2}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.4, 'split_dev': 0.4, 'split_test': 0.2}.get(\"split_train\", 99)) + float({'split_train': 0.4, 'split_dev': 0.4, 'split_test': 0.2}.get(\"split_dev\", 99)) + float({'split_train': 0.4, 'split_dev': 0.4, 'split_test': 0.2}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.4, 'split_dev': 0.4, 'split_test': 0.2} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('10.20.30') is (len('10.20.30'.split(\".\")) == 3 and all(t.isdigit() for t in '10.20.30'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte q Whitespace, splits 0.4/0.4/0.2. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'u': 'u', 'v': 'v', 'w': 'w'}\nrequired = ['u', 'v', 'w', 'x']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.33, 'split_dev': 0.33, 'split_test': 0.34}) is (\n    all(isinstance({'split_train': 0.33, 'split_dev': 0.33, 'split_test': 0.34}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.33, 'split_dev': 0.33, 'split_test': 0.34}.get(\"split_train\", 99)) + float({'split_train': 0.33, 'split_dev': 0.33, 'split_test': 0.34}.get(\"split_dev\", 99)) + float({'split_train': 0.33, 'split_dev': 0.33, 'split_test': 0.34}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.33, 'split_dev': 0.33, 'split_test': 0.34} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('1.2.x') is (len('1.2.x'.split(\".\")) == 3 and all(t.isdigit() for t in '1.2.x'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Karte x fehlt, splits 0.33+0.33+0.34, semver Buchstabe. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'s': 'ok'}\nrequired = ['s']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 1, 'split_dev': 0, 'split_test': 0}) is (\n    all(isinstance({'split_train': 1, 'split_dev': 0, 'split_test': 0}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 1, 'split_dev': 0, 'split_test': 0}.get(\"split_train\", 99)) + float({'split_train': 1, 'split_dev': 0, 'split_test': 0}.get(\"split_dev\", 99)) + float({'split_train': 1, 'split_dev': 0, 'split_test': 0}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 1, 'split_dev': 0, 'split_test': 0} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('9.9.9') is (len('9.9.9'.split(\".\")) == 3 and all(t.isdigit() for t in '9.9.9'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Nur Feld s, splits 1/0/0 als ints. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        },
+        {
+          "parameters": {
+            "tests": "card = {'h': '', 'i': '', 'j': 'j'}\nrequired = ['h', 'i', 'j']\ndef __miss(card, required):\n    fehlt = []\n    for feld in required:\n        wert = card.get(feld)\n        if wert is None or str(wert).strip() == \"\":\n            fehlt.append(feld)\n    return sorted(fehlt)\n__check('validate_card', validate_card(card, required) == __miss(card, required))\n__check('splits_ok', splits_ok({'split_train': 0.25, 'split_dev': 0.25, 'split_test': 0.5}) is (\n    all(isinstance({'split_train': 0.25, 'split_dev': 0.25, 'split_test': 0.5}.get(k), (int, float)) for k in (\"split_train\", \"split_dev\", \"split_test\"))\n    and abs(float({'split_train': 0.25, 'split_dev': 0.25, 'split_test': 0.5}.get(\"split_train\", 99)) + float({'split_train': 0.25, 'split_dev': 0.25, 'split_test': 0.5}.get(\"split_dev\", 99)) + float({'split_train': 0.25, 'split_dev': 0.25, 'split_test': 0.5}.get(\"split_test\", 99)) - 1.0) <= 1e-9\n    if all(k in {'split_train': 0.25, 'split_dev': 0.25, 'split_test': 0.5} for k in (\"split_train\", \"split_dev\", \"split_test\")) else False\n))\n__check('semver', is_semver('3.2.1') is (len('3.2.1'.split(\".\")) == 3 and all(t.isdigit() for t in '3.2.1'.split(\".\"))))\n__check('semver zu kurz', is_semver(\"1.2\") is False)\n"
+          },
+          "prompt": "Zwei leere Felder h/i, splits 0.25/0.25/0.5. Implementiere `validate_card`, `splits_ok`, `is_semver`."
+        }
+      ]
     },
     {
       "caseId": "readme-required-headings",
@@ -206,7 +374,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "text = '# Titel\\n## Setup\\n## Daten\\n'\npflicht = ['Setup', 'Karten', 'Daten']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README mit Setup/Daten, Karten fehlt. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = '### Limitations\\nText\\n## Setup\\n'\npflicht = ['Setup', 'Limitations']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README dreifach-Raute Limitations plus Setup. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = 'Setup steht nur im Text\\n'\npflicht = ['Setup']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README ohne #-Zeile. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = ''\npflicht = ['A', 'B']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "Leerer README-Text, zwei Pflichtüberschriften. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = '## Karten\\n## Setup\\n## Limitations\\n'\npflicht = ['Limitations', 'Karten', 'Extra']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README drei Köpfe, Extra fehlt, Reihenfolge pflicht. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = '#  Abhaengigkeiten  \\n## Karten\\n'\npflicht = ['Abhaengigkeiten', 'Karten', 'Setup']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README mit Spaces um Abhaengigkeiten. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = '## Modell\\n## Datenkarte\\n'\npflicht = ['Modell', 'Systemkarte']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README Modell da, Systemkarte fehlt. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = '# Intro\\nNichtüberschrift Setup\\n## Evaluation\\n'\npflicht = ['Intro', 'Setup', 'Evaluation']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README Intro/Evaluation, Setup nur Fließtext. Implementiere `fehlende_uberschriften`."
+        },
+        {
+          "parameters": {
+            "tests": "text = '#### Pins\\n## Freeze\\n'\npflicht = ['Pins', 'Freeze', 'Hash']\ndef __want(text, pflicht):\n    gefundene = []\n    for zeile in text.splitlines():\n        z = zeile.strip()\n        if z.startswith(\"#\"):\n            gefundene.append(z.lstrip(\"#\").strip())\n    return [h for h in pflicht if h not in gefundene]\n__check('fehlende', fehlende_uberschriften(text, pflicht) == __want(text, pflicht))\n__check('alle da lokal', fehlende_uberschriften(\"## X\\n\", [\"X\"]) == [])\n"
+          },
+          "prompt": "README Pins/Freeze, Hash fehlt. Implementiere `fehlende_uberschriften`."
+        }
+      ]
     }
   ]
 }

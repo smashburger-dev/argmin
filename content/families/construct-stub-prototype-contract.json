@@ -74,7 +74,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Die Wartezeit beträgt fünf Minuten. Der Schalter öffnet um acht.', 'Tickets gelten einen Tag. Danach verfallen sie.', 'Hunde bleiben draußen. Ausnahmen gibt es nicht.'], 'queries': [{'query': 'Wie lange beträgt die Wartezeit?', 'relevant': [0]}, {'query': 'Wie lange gelten Tickets?', 'relevant': [1]}, {'query': 'Wo bleiben Hunde?', 'relevant': [2]}, {'query': 'xyzzy plugh', 'relevant': [0]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Wie lange beträgt die Wartezeit?') == 'Die Wartezeit beträgt fünf Minuten')\n__check('antwort1', proto[\"answer\"]('Wie lange gelten Tickets?') == 'Tickets gelten einen Tag')\n__check('kein treffer ehrlich', proto[\"answer\"]('xyzzy plugh') == 'kein treffer')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 3)\n__check('deterministisch', proto[\"answer\"]('Wie lange beträgt die Wartezeit?') == proto[\"answer\"]('Wie lange beträgt die Wartezeit?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Wartezeit/Tickets/Hunde. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Batterien halten zehn Stunden. Laden erfolgt nachts.', 'Kabel liegen in der Schublade. Ersatz gibt es im Lager.'], 'queries': [{'query': 'Wie lange halten Batterien?', 'relevant': [0]}, {'query': 'Wo liegen Kabel?', 'relevant': [1]}, {'query': 'foobar baz', 'relevant': [0]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Wie lange halten Batterien?') == 'Batterien halten zehn Stunden')\n__check('antwort1', proto[\"answer\"]('Wo liegen Kabel?') == 'Kabel liegen in der Schublade')\n__check('kein treffer ehrlich', proto[\"answer\"]('foobar baz') == 'kein treffer')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 2)\n__check('deterministisch', proto[\"answer\"]('Wie lange halten Batterien?') == proto[\"answer\"]('Wie lange halten Batterien?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Batterien/Kabel, zwei Docs. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Drucker brauchen Toner. Papier liegt daneben.', 'Toner kommt aus dem Schrank. Der Schrank bleibt zu.', 'Scanner speichern Dateien. Dateien liegen lokal.'], 'queries': [{'query': 'Was brauchen Drucker?', 'relevant': [0]}, {'query': 'Woher kommt Toner?', 'relevant': [1]}, {'query': 'Was speichern Scanner?', 'relevant': [2]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Was brauchen Drucker?') == 'Drucker brauchen Toner')\n__check('antwort1', proto[\"answer\"]('Woher kommt Toner?') == 'Toner kommt aus dem Schrank')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 3)\n__check('deterministisch', proto[\"answer\"]('Was brauchen Drucker?') == proto[\"answer\"]('Was brauchen Drucker?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Drucker/Toner/Scanner. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Fenster schließen bei Sturm. Sturm kommt vom Meer.', 'Türen bleiben tagsüber offen. Nachts werden sie verriegelt.'], 'queries': [{'query': 'Wann schließen Fenster?', 'relevant': [0]}, {'query': 'Wann bleiben Türen offen?', 'relevant': [1]}, {'query': 'qqqq zzzz', 'relevant': [1]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Wann schließen Fenster?') == 'Fenster schließen bei Sturm')\n__check('antwort1', proto[\"answer\"]('Wann bleiben Türen offen?') == 'Türen bleiben tagsüber offen')\n__check('kein treffer ehrlich', proto[\"answer\"]('qqqq zzzz') == 'kein treffer')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 0.6666666666666666) < 1e-12)\n__check('answered', m[\"answered\"] == 2)\n__check('deterministisch', proto[\"answer\"]('Wann schließen Fenster?') == proto[\"answer\"]('Wann schließen Fenster?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Fenster/Türen. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Salate stehen im Kühlschrank. Der Kühlschrank piept.', 'Suppen stehen auf dem Herd. Der Herd wird heiß.', 'Brote liegen im Korb. Der Korb steht nebenan.'], 'queries': [{'query': 'Wo stehen Salate?', 'relevant': [0]}, {'query': 'Wo stehen Suppen?', 'relevant': [1]}, {'query': 'Wo liegen Brote?', 'relevant': [2]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Wo stehen Salate?') == 'Salate stehen im Kühlschrank')\n__check('antwort1', proto[\"answer\"]('Wo stehen Suppen?') == 'Suppen stehen auf dem Herd')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 3)\n__check('deterministisch', proto[\"answer\"]('Wo stehen Salate?') == proto[\"answer\"]('Wo stehen Salate?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Salate/Suppen/Brote. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Züge halten in Mainz. Mainz liegt am Rhein.', 'Schiffe fahren den Rhein. Der Rhein ist breit.'], 'queries': [{'query': 'Wo halten Züge?', 'relevant': [0]}, {'query': 'Wohin fahren Schiffe?', 'relevant': [1]}, {'query': 'abcdef', 'relevant': [0]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Wo halten Züge?') == 'Züge halten in Mainz')\n__check('antwort1', proto[\"answer\"]('Wohin fahren Schiffe?') == 'Schiffe fahren den Rhein')\n__check('kein treffer ehrlich', proto[\"answer\"]('abcdef') == 'kein treffer')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 2)\n__check('deterministisch', proto[\"answer\"]('Wo halten Züge?') == proto[\"answer\"]('Wo halten Züge?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Züge/Schiffe. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Lampen leuchten warm. Schalter sitzen an der Wand.', 'Kerzen brennen langsam. Wachs tropft herunter.'], 'queries': [{'query': 'Wie leuchten Lampen?', 'relevant': [0]}, {'query': 'Wie brennen Kerzen?', 'relevant': [1]}, {'query': 'nonsens wort', 'relevant': [1]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Wie leuchten Lampen?') == 'Lampen leuchten warm')\n__check('antwort1', proto[\"answer\"]('Wie brennen Kerzen?') == 'Kerzen brennen langsam')\n__check('kein treffer ehrlich', proto[\"answer\"]('nonsens wort') == 'kein treffer')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 0.6666666666666666) < 1e-12)\n__check('answered', m[\"answered\"] == 2)\n__check('deterministisch', proto[\"answer\"]('Wie leuchten Lampen?') == proto[\"answer\"]('Wie leuchten Lampen?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Lampen/Kerzen. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Karten zeigen Straßen. Straßen führen nach Hause.', 'Kompasse zeigen Norden. Norden bleibt fest.', 'Uhren zeigen Stunden. Stunden vergehen leise.'], 'queries': [{'query': 'Was zeigen Karten?', 'relevant': [0]}, {'query': 'Was zeigen Kompasse?', 'relevant': [1]}, {'query': 'Was zeigen Uhren?', 'relevant': [2]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Was zeigen Karten?') == 'Karten zeigen Straßen')\n__check('antwort1', proto[\"answer\"]('Was zeigen Kompasse?') == 'Kompasse zeigen Norden')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 3)\n__check('deterministisch', proto[\"answer\"]('Was zeigen Karten?') == proto[\"answer\"]('Was zeigen Karten?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Karten/Kompasse/Uhren. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        },
+        {
+          "parameters": {
+            "tests": "NO_HIT = \"kein treffer\"\nCONFIG = {'docs': ['Pflanzen brauchen Licht. Licht kommt vom Fenster.', 'Tiere brauchen Ruhe. Ruhe herrscht nachts.'], 'queries': [{'query': 'Was brauchen Pflanzen?', 'relevant': [0]}, {'query': 'Was brauchen Tiere?', 'relevant': [1]}, {'query': 'zzzz yyyy', 'relevant': [0]}], 'k': 1}\nproto = build_prototype(CONFIG)\n__check('antwort0', proto[\"answer\"]('Was brauchen Pflanzen?') == 'Pflanzen brauchen Licht')\n__check('antwort1', proto[\"answer\"]('Was brauchen Tiere?') == 'Tiere brauchen Ruhe')\n__check('kein treffer ehrlich', proto[\"answer\"]('zzzz yyyy') == 'kein treffer')\nm = proto[\"metrics\"]()\n__check('recall_at_k', abs(m[\"recall_at_k\"] - 1.0) < 1e-12)\n__check('answered', m[\"answered\"] == 2)\n__check('deterministisch', proto[\"answer\"]('Was brauchen Pflanzen?') == proto[\"answer\"]('Was brauchen Pflanzen?'))\n"
+          },
+          "prompt": "Stub-Prototyp: Pflanzen/Tiere. Implementiere `build_prototype` (Stub-Antwort, metrics, NO_HIT)."
+        }
+      ]
     }
   ]
 }

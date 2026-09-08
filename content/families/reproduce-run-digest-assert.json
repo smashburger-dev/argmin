@@ -74,7 +74,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 2, 'faelle': [{'id': 'a', 'relevante': ['1'], 'top': ['1', '2'], 'korrekt': True}, {'id': 'b', 'relevante': ['3'], 'top': ['2', '3'], 'korrekt': False}, {'id': 'c', 'relevante': ['2'], 'top': ['2'], 'korrekt': True}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=2, drei Fälle a/b/c. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 1, 'faelle': [{'id': 'a', 'relevante': ['1'], 'top': ['1', '9'], 'korrekt': True}, {'id': 'b', 'relevante': ['2'], 'top': ['9', '2'], 'korrekt': True}, {'id': 'c', 'relevante': ['3'], 'top': ['3'], 'korrekt': False}, {'id': 'd', 'relevante': ['4'], 'top': ['5'], 'korrekt': False}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=1, vier Fälle, Top-1 strenger. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 3, 'faelle': [{'id': 'x', 'relevante': ['a'], 'top': ['b', 'a'], 'korrekt': True}, {'id': 'y', 'relevante': ['c'], 'top': ['c'], 'korrekt': True}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=3, zwei Fälle x/y. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 1, 'faelle': [{'id': 'p', 'relevante': ['p'], 'top': ['p'], 'korrekt': True}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline ein Fall, k=1. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 2, 'faelle': [{'id': '1', 'relevante': ['a', 'b'], 'top': ['c', 'a'], 'korrekt': False}, {'id': '2', 'relevante': ['d'], 'top': ['d', 'e'], 'korrekt': True}, {'id': '3', 'relevante': ['f'], 'top': ['g', 'h'], 'korrekt': False}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=2, relevante Mengen mit zwei Ids. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 5, 'faelle': [{'id': 'q', 'relevante': ['z'], 'top': ['z'], 'korrekt': True}, {'id': 'w', 'relevante': ['z'], 'top': ['y', 'z'], 'korrekt': False}, {'id': 'e', 'relevante': ['x'], 'top': ['x', 'z'], 'korrekt': True}, {'id': 'r', 'relevante': ['w'], 'top': ['w'], 'korrekt': True}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=5, vier Fälle q/w/e/r. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 1, 'faelle': [{'id': 'n1', 'relevante': ['t'], 'top': ['u', 't'], 'korrekt': True}, {'id': 'n2', 'relevante': ['t'], 'top': ['t'], 'korrekt': False}, {'id': 'n3', 'relevante': ['v'], 'top': ['v'], 'korrekt': True}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=1, n1–n3. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 2, 'faelle': [{'id': 's', 'relevante': ['1'], 'top': ['1', '2'], 'korrekt': True}, {'id': 't', 'relevante': ['2'], 'top': ['2'], 'korrekt': True}, {'id': 'u', 'relevante': ['3'], 'top': ['1', '2'], 'korrekt': False}, {'id': 'v', 'relevante': ['4'], 'top': ['4', '5'], 'korrekt': True}, {'id': 'w', 'relevante': ['5'], 'top': ['6'], 'korrekt': False}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=2, fünf Fälle s–w. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nCONFIG = {'k': 3, 'faelle': [{'id': 'aa', 'relevante': ['x'], 'top': ['y', 'x', 'z'], 'korrekt': False}, {'id': 'bb', 'relevante': ['z'], 'top': ['z'], 'korrekt': True}, {'id': 'cc', 'relevante': ['y'], 'top': ['y', 'x'], 'korrekt': True}]}\ndef __vals(config):\n    k = config[\"k\"]\n    faelle = config[\"faelle\"]\n    treffer = [f for f in faelle if set(f[\"relevante\"]) & set(f[\"top\"][:k])]\n    korrekt = [f for f in treffer if f[\"korrekt\"]]\n    werte = {\n        \"recall_at_k\": round(len(treffer) / len(faelle), 3),\n        \"antwort_naiv\": round(len(korrekt) / len(faelle), 3),\n        \"antwort_getrennt\": round(len(korrekt) / len(treffer), 3) if treffer else 0.0,\n    }\n    digest = hashlib.sha256(json.dumps(werte, sort_keys=True, separators=(\",\", \":\")).encode(\"utf-8\")).hexdigest()\n    return werte, digest\nr = run_baseline(CONFIG)\nw, d = __vals(CONFIG)\n__check('werte', r[\"werte\"] == w)\n__check('digest', r[\"digest\"] == d)\n__check('doppel-lauf', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"] = TAMPER[\"faelle\"] + [{\"id\": \"zz-extra\", \"relevante\": [\"nope\"], \"top\": [\"other\"], \"korrekt\": False}]\n__check('digest reagiert', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\n"
+          },
+          "prompt": "Baseline k=3, aa/bb/cc. Implementiere `run_baseline` mit Doppel-Lauf-Assert."
+        }
+      ]
     },
     {
       "caseId": "pipeline-freeze-report",
@@ -125,7 +181,63 @@
       },
       "fullSolution": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) >= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# Freeze zuerst, Stages rein deterministic, Digest kanonisch — Doppellauf liefert dasselbe Objekt.",
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['Ast', 'Baum', 'Zelt', 'Aal', 'Berg']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 4]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: fünf Wörter, min_laenge 4. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['Hi', 'Hallo', 'Hey', 'Haus']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 3, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 3]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 3, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: H-Wörter, min_laenge 3. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['Omega', 'Alpha', 'Beta']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 5]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: griechisch, min_laenge 5. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['q', 'qq', 'qqq', 'qqqq']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 2, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 2]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 2, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: q-Längen, min_laenge 2. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['Sonne', 'Mond', 'Stern', 'See']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 4]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: Himmel, min_laenge 4. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['rot', 'grün', 'blau', 'gelb']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 4]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: Farben, min_laenge 4. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['Code', 'Test', 'Build', 'Ship']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 4]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 4, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: Code/Test/Build/Ship, min 4. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['Apfel', 'Birne', 'Citrus']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 5]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: Obst, min_laenge 5. Implementiere `run_pipeline` mit Freeze-Hash."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nDATEN = ['one', 'two', 'three', 'four', 'five']\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 3, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\nnormalisiert = [w.lower() for w in DATEN]\ngefiltert = [w for w in normalisiert if len(w) >= 3]\nanfangs = {}\nfor w in gefiltert:\n    anfangs[w[0]] = anfangs.get(w[0], 0) + 1\nwant = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht', erg[\"bericht\"] == want)\n__check('digest', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": DATEN + [\"Xyzzy\"], \"min_laenge\": 3, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))\n"
+          },
+          "prompt": "Pipeline-Freeze: englische Zahlen, min 3. Implementiere `run_pipeline` mit Freeze-Hash."
+        }
+      ]
     },
     {
       "caseId": "reproduction-verdict-rules",
@@ -176,7 +288,63 @@
       },
       "fullSolution": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef repro_check(readme, laeufe, phrasen):\n    digests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\n    identisch = all(d == digests[0] for d in digests) if digests else True\n    t = readme.lower()\n    overclaims = sorted(p for p in phrasen if p in t)\n    verdict = \"angenommen\" if identisch and not overclaims else \"abgelehnt\"\n    return {\"digest_identisch\": identisch, \"digests\": digests, \"overclaims\": overclaims, \"verdict\": verdict}\n\n# Doppellauf-Digest + Overclaim-Scan = Reproduktionsvertrag der Dokumentation.",
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Ehrlicher Text ohne Anspruch.'\nlaeufe = [{'m': 1}, {'m': 1}]\nphrasen = ['produktionsreif']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: gleiche Läufe, clean README. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Das System ist produktionsreif.'\nlaeufe = [{'m': 1}]\nphrasen = ['produktionsreif']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: Overclaim produktionsreif. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Guter Text.'\nlaeufe = [{'a': 1}, {'a': 2}]\nphrasen = ['produktionsreif']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: Digest weicht, kein Overclaim. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Sicher gegen alles.'\nlaeufe = [{'x': 0}]\nphrasen = ['sicher gegen', 'produktionsreif']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: Overclaim sicher gegen. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Neutral.'\nlaeufe = []\nphrasen = ['produktionsreif']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: leere Läufe (Vakuum). Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Kein Marketing.'\nlaeufe = [{'k': 3, 'n': 1}, {'n': 1, 'k': 3}]\nphrasen = ['genie']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: Schlüsselreihenfolge, Phrase genie fehlt. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Wir sind produktionsreif und fertig.'\nlaeufe = [{'z': True}, {'z': True}]\nphrasen = ['produktionsreif']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: identisch plus Overclaim. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Laborbericht.'\nlaeufe = [{'r': 0.2}, {'r': 0.2}, {'r': 0.2}]\nphrasen = ['unfehlbar']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: drei gleiche Läufe. Implementiere `repro_check`."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nreadme = 'Unfehlbar laut Folie.'\nlaeufe = [{'r': 1}, {'r': 0}]\nphrasen = ['unfehlbar']\nbericht = repro_check(readme, laeufe, phrasen)\ndigests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\nidentisch = all(d == digests[0] for d in digests) if digests else True\nt = readme.lower()\nover = sorted(p for p in phrasen if p in t)\nverdict = \"angenommen\" if identisch and not over else \"abgelehnt\"\n__check('digest_identisch', bericht[\"digest_identisch\"] is identisch)\n__check('digests', bericht[\"digests\"] == digests)\n__check('overclaims', bericht[\"overclaims\"] == over)\n__check('verdict', bericht[\"verdict\"] == verdict)\n"
+          },
+          "prompt": "Repro: abweichend plus Overclaim. Implementiere `repro_check`."
+        }
+      ]
     }
   ]
 }
