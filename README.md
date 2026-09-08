@@ -34,15 +34,18 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
   ![Eine Programmieraufgabe in argmin: Formel, Python-Editor und grünes Prüfergebnis](docs/media/python-aufgabe-dark.png)
 
   <!-- GIF-Platz: docs/media/python-demo.gif (Code tippen, prüfen, grün) — kommt noch. -->
-- **Üben, bis es sitzt.** Viele Aufgaben erzeugen immer neue Varianten, du kannst also so oft üben, wie du willst. _Jede Aufgabe entsteht aus einem Startwert. Gleicher Startwert, gleiche Aufgabe — überall. Neuer Startwert, neue Aufgabe. So oft du willst, ohne Server._
+- **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neue Variante. Gleicher Seed, gleiche Aufgabe — überall, ohne Server.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 
+Was seit 0.1 neu ist, steht im [Changelog](CHANGELOG.md).
+
 ## In Arbeit / Geplant
 
-- Mehr Varianten: Rechenaufgaben sind schon bei 10 bis 200, viele Konzeptfragen und fast alle Coding-Aufgaben haben noch genau eine Version. Kommt Block für Block.
-- Varianten für „Ablauf nachvollziehen“, Parsons und Vektor-Aufgaben (bisher fest).
-- Fortschritt zwischen Geräten: heute nur per Datei-Export/Import in den Einstellungen, ein optionaler Sync ist eine Idee, kein Versprechen.
+- **Frontend Rework.** Die Oberfläche soll sich weniger nach Baukasten anfühlen: Layout, Typo, Abstände, Mobile, leere Zustände. Tokens bleiben, keine zweite Designsprache.
+- **Intro / Tour.** Beim ersten Öffnen kurz: wo Heute, Lernen und Review liegen, dass Varianten vom Seed kommen, dass der Fortschritt lokal bleibt. Wegklickbar.
+
+Fortschritt zwischen Geräten bleibt Datei-Export/Import in den Einstellungen. Sync ohne Account ist eine Idee, kein Versprechen.
 
 ## Mitmachen
 
@@ -51,7 +54,7 @@ argmin lebt davon, dass Menschen mitdenken. Du musst nicht programmieren können
 - Dir ist ein Tippfehler, eine unklare Erklärung oder ein Fehler aufgefallen? [Öffne ein Issue](https://github.com/smashburger-dev/argmin/issues/new) Jede Rückmeldung hilft!
 - Du möchtest eine Lektion oder Aufgabe verbessern oder schreiben? In [CONTRIBUTING.md](CONTRIBUTING.md) steht, wie das geht!
 - Du willst am Code mitarbeiten? Willkommen :D unten steht, wie du lokal startest.
-- Mitbauen mit oder ohne KI-Agent. In WIP.md steht, was gerade offen ist: pro Punkt Ziel, betroffene Dateien, Prüfbefehle und wann es fertig ist. Damit kannst du (oder dein Agent) direkt loslegen, ohne erst das ganze Repo zu lesen.
+- Mitbauen mit oder ohne KI-Agent. In [WIP.md](WIP.md) stehen Frontend Rework und Intro/Tour mit Dateien und Prüfbefehlen.
 
 ## Hier kannst du am meisten beitragen
 
@@ -72,7 +75,7 @@ npm run dev:next
 
 Öffne anschließend <http://127.0.0.1:4173/> im Browser. (Bitte nicht als `file://` öffnen — die App braucht einen lokalen Server, den `npm run dev:next` für dich startet.)
 
-**Mitbauen mit oder ohne KI-Agent.** In [WIP.md](WIP.md) steht, was gerade offen ist: pro Punkt Ziel, betroffene Dateien, Prüfbefehle und wann es fertig ist. Damit kannst du (oder dein Agent) direkt loslegen, ohne erst das ganze Repo zu lesen.
+**Mitbauen mit oder ohne KI-Agent.** Offen ist [WIP.md](WIP.md): Oberfläche und Einstiegs-Tour.
 
 ## Wie das Projekt aufgebaut ist
 
