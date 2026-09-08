@@ -124,7 +124,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 1, (1,): 2, (1, 2): 3}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 4, 3)\ncur = []\nwhile len(cur) < 4:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 3:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 3 or len(got) == 4)\n"
+          },
+          "prompt": "Kette 1-2-3, eos=3, max_len=4. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 8, (8,): 8}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 5, 8)\ncur = []\nwhile len(cur) < 5:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 8:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 8 or len(got) == 5)\n"
+          },
+          "prompt": "Sofort eos=8, max_len=5. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 2, (2,): 4, (2, 4): 6, (2, 4, 6): 0}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 10, 0)\ncur = []\nwhile len(cur) < 10:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 0:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 0 or len(got) == 10)\n"
+          },
+          "prompt": "Kette 2-4-6-0, eos=0. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 9, (9,): 1, (9, 1): 9}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 3, 9)\ncur = []\nwhile len(cur) < 3:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 9:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 9 or len(got) == 3)\n"
+          },
+          "prompt": "eos=9 erscheint auch später, max_len=3. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 4, (4,): 5, (4, 5): 4}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 8, 4)\ncur = []\nwhile len(cur) < 8:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 4:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 4 or len(got) == 8)\n"
+          },
+          "prompt": "Zweites 4 ist eos nach 4,5. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 7}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 2, 7)\ncur = []\nwhile len(cur) < 2:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 7:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 7 or len(got) == 2)\n"
+          },
+          "prompt": "Ein Schritt, eos=7, max_len=2. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 5, (5,): 6, (5, 6): 5}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 4, 5)\ncur = []\nwhile len(cur) < 4:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 5:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 5 or len(got) == 4)\n"
+          },
+          "prompt": "Kette 5-6-5, eos=5 stoppt beim dritten Token. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 10, (10,): 11, (10, 11): 12}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 20, 12)\ncur = []\nwhile len(cur) < 20:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 12:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 12 or len(got) == 20)\n"
+          },
+          "prompt": "Kette 10-11-12, großes max_len. `greedy_decode` kopiert init, stoppt bei eos."
+        },
+        {
+          "parameters": {
+            "tests": "TABLE = {(): 6, (6,): 6, (6, 6): 6}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 3, 99)\ncur = []\nwhile len(cur) < 3:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 99:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 99 or len(got) == 3)\n"
+          },
+          "prompt": "Kein eos 99, max_len=3 füllt 6,6,6. `greedy_decode` kopiert init, stoppt bei eos."
+        }
+      ]
     }
   ]
 }

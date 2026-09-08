@@ -81,7 +81,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 21, 'n': 32, 'test_share': 0.25, 'lam': 0.5}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 8)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=21, n=32, test_share=0.25. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 8, 'n': 48, 'test_share': 0.25, 'lam': 1.5}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 12)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=8, n=48, lam=1.5. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 3, 'n': 24, 'test_share': 0.5, 'lam': 1.0}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 12)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=3, n=24, test_share=0.5. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 99, 'n': 40, 'test_share': 0.2, 'lam': 0.25}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 8)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=99, n=40, test_share=0.2. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 14, 'n': 36, 'test_share': 0.25, 'lam': 2.0}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 9)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=14, n=36, lam=2.0. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 5, 'n': 20, 'test_share': 0.3, 'lam': 1.0}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 6)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=5, n=20, test_share=0.3. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 42, 'n': 60, 'test_share': 0.25, 'lam': 0.8}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 15)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=42, n=60, lam=0.8. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 17, 'n': 28, 'test_share': 0.25, 'lam': 1.1}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 7)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=17, n=28, lam=1.1. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__cfg = {'seed': 6, 'n': 44, 'test_share': 0.25, 'lam': 0.1}\n__r1 = run_experiment(__cfg)\n__r2 = run_experiment(__cfg)\n__check('Schluessel vorhanden', all(k in __r1 for k in ('seed', 'test_idx', 'w', 'rmse')))\n__check('zwei Laeufe identisch', __r1 == __r2)\n__check('Anzahl Testindizes', len(__r1['test_idx']) == 11)\n__alt = dict(__cfg)\n__alt['seed'] = __cfg['seed'] + 1\n__r3 = run_experiment(__alt)\n__check('anderer Seed, anderer Split', __r1['test_idx'] != __r3['test_idx'])\n__check('anderer Seed aendert Werte', (__r1['w'] != __r3['w']) or (__r1['rmse'] != __r3['rmse']))\n__check('gueltiges Manifest', check_manifest({'seed': __cfg['seed'], 'split': 'train/test', 'metric': 'rmse', 'versions': {'numpy': '1.20.3'}}) is True)\ntry:\n    check_manifest({'seed': 11, 'split': '30/10', 'metric': 'rmse'})\n    __check('fehlender Schluessel abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlender Schluessel abgelehnt', True)\n\ntry:\n    run_experiment({'n': 40})\n    __check('config ohne seed abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('config ohne seed abgelehnt', True)\n\n"
+          },
+          "prompt": "Experiment seed=6, n=44, lam=0.1. Implementiere `run_experiment` und `check_manifest` deterministisch."
+        }
+      ]
     },
     {
       "caseId": "repro-report-table-check",
@@ -134,7 +190,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'u', 'seed': 4, 'n': 32, 'test_share': 0.25, 'lam': 0.4}, {'config_id': 'v', 'seed': 5, 'n': 32, 'test_share': 0.25, 'lam': 1.2}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['u', 'v'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle u/v, n=32. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'p', 'seed': 9, 'n': 36, 'test_share': 0.25, 'lam': 0.7}, {'config_id': 'q', 'seed': 10, 'n': 36, 'test_share': 0.25, 'lam': 1.7}, {'config_id': 'r', 'seed': 11, 'n': 36, 'test_share': 0.25, 'lam': 2.7}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['p', 'q', 'r'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle p/q/r, n=36. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'm', 'seed': 1, 'n': 24, 'test_share': 0.5, 'lam': 1.0}, {'config_id': 'n', 'seed': 2, 'n': 24, 'test_share': 0.5, 'lam': 3.0}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['m', 'n'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle m/n, test_share=0.5. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 's1', 'seed': 21, 'n': 40, 'test_share': 0.2, 'lam': 0.2}, {'config_id': 's2', 'seed': 22, 'n': 40, 'test_share': 0.2, 'lam': 0.9}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['s1', 's2'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle s1/s2, test_share=0.2. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'aa', 'seed': 13, 'n': 28, 'test_share': 0.25, 'lam': 1.0}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['aa'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Eine Zeile aa, n=28. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'k', 'seed': 30, 'n': 48, 'test_share': 0.25, 'lam': 0.5}, {'config_id': 'l', 'seed': 31, 'n': 48, 'test_share': 0.25, 'lam': 2.5}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['k', 'l'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle k/l, n=48. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'g', 'seed': 7, 'n': 20, 'test_share': 0.3, 'lam': 1.4}, {'config_id': 'h', 'seed': 8, 'n': 20, 'test_share': 0.3, 'lam': 1.8}, {'config_id': 'i', 'seed': 9, 'n': 20, 'test_share': 0.3, 'lam': 2.2}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['g', 'h', 'i'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle g/h/i, n=20. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'z', 'seed': 40, 'n': 44, 'test_share': 0.25, 'lam': 0.05}, {'config_id': 'y', 'seed': 41, 'n': 44, 'test_share': 0.25, 'lam': 5.0}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['y', 'z'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Report-Tabelle z/y, extremes lam. Implementiere `repro_report` und `check_table`."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__configs = [{'config_id': 'd1', 'seed': 15, 'n': 36, 'test_share': 0.25, 'lam': 0.9}, {'config_id': 'd2', 'seed': 16, 'n': 36, 'test_share': 0.25, 'lam': 1.1}, {'config_id': 'd3', 'seed': 17, 'n': 36, 'test_share': 0.25, 'lam': 1.3}, {'config_id': 'd4', 'seed': 18, 'n': 36, 'test_share': 0.25, 'lam': 1.5}]\n__table = repro_report(__configs)\n__check('Zeilen', sorted(__table.keys()) == ['d1', 'd2', 'd3', 'd4'])\n__check('identical_rerun ueberall True', all(row['identical_rerun'] is True for row in __table.values()))\n__check('Scores sind positive floats', all(isinstance(row['score'], float) and row['score'] > 0.0 for row in __table.values()))\n__check('check_table akzeptiert', check_table(__table) is True)\n__table2 = repro_report(__configs)\n__check('Report selbst reproduzierbar', __table == __table2)\ntry:\n    check_table({'a': {'score': 0.1, 'identical_rerun': False}})\n    __check('fehlgeschlagene Wiederholung abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('fehlgeschlagene Wiederholung abgelehnt', True)\n\ntry:\n    check_table({})\n    __check('leere Tabelle abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Tabelle abgelehnt', True)\n\n"
+          },
+          "prompt": "Vier Zeilen d1–d4, n=36. Implementiere `repro_report` und `check_table`."
+        }
+      ]
     }
   ]
 }
