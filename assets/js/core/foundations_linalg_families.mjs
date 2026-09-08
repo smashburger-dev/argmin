@@ -5,7 +5,7 @@
 import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, solveShape } from './linalg_numpy_fresh_generators.mjs';
 import { drawFamilyInstance } from './generator_draw_kit.mjs';
 import { rank, solveLinear2 } from './linalg_generators.mjs';
-import { staticCaseBody } from '../domain/family_registry.mjs';
+import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -24,13 +24,47 @@ function matmulProfileAccepts(difficulty) {
   return (parameters) => maxAbsEntry(parameters) >= 4;
 }
 
+const SCALAR_STATIC_CASES = [
+  'scalar-loop-output',
+  'product-definition-rationale',
+  'matmul-entry-w05-e1',
+  'matmul-entry-w05-e12',
+  'dot-product-w05-e13',
+  'dot-product-w05-e3',
+  'column-vector-authored',
+];
+
+function staticVariantInstance(familyId, caseId, seed, difficulty) {
+  const body = staticCaseBody(familyId, caseId);
+  const { body: chosen, index } = variantOf(body, seed ?? 0);
+  const {
+    caseId: _caseId,
+    difficultyProfile: _difficultyProfile,
+    masteryEligible: _masteryEligible,
+    sourceLineage: _sourceLineage,
+    variants: _variants,
+    ...generated
+  } = chosen;
+  return {
+    ...generated,
+    masteryEligible: body.masteryEligible,
+    parameters: {
+      caseId,
+      difficulty,
+      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+      ...(chosen.parameters || {}),
+    },
+  };
+}
+
 /** Unabhängiger Solver: Matrixeintrag oder Skalarprodukt aus den
  *  Fallparametern, liest nie `expected` ab. */
 export function solveScalarProduct(parameters) {
-  if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3', 'column-vector-authored'].includes(parameters.caseId)) {
-    const body = staticCaseBody('formula-scalar-product', parameters.caseId);
+  if (SCALAR_STATIC_CASES.includes(parameters.caseId)) {
+    const { body } = variantOf(staticCaseBody('formula-scalar-product', parameters.caseId), parameters.variant ?? 0);
     if (body.expected?.output) return { output: body.expected.output };
     if (body.expected?.kind === 'rubric') return { kind: 'rubric' };
+    if (body.expected?.kind === 'integer-pair') return { solution: body.expected.solution };
     return { value: body.expected?.value };
   }
   if (parameters.form === 'dot-vectors') {
@@ -46,10 +80,8 @@ export function solveScalarProduct(parameters) {
 }
 
 export function generateScalarProductFamily({ seed, caseId, difficulty }) {
-  if (['scalar-loop-output', 'product-definition-rationale', 'matmul-entry-w05-e1', 'matmul-entry-w05-e12', 'dot-product-w05-e13', 'dot-product-w05-e3', 'column-vector-authored'].includes(caseId)) {
-    const body = staticCaseBody('formula-scalar-product', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+  if (SCALAR_STATIC_CASES.includes(caseId)) {
+    return staticVariantInstance('formula-scalar-product', caseId, seed, difficulty);
   }
   if (caseId !== 'matmul-entry-seeded') throw new Error(`Unbekannter Fall ${caseId}`);
   const drawn = drawFamilyInstance(genMatmulEntryFresh, {

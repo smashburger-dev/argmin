@@ -146,6 +146,8 @@ const FORMULA_RATIO_SOLVERS = {
   'pca-explained-variance-percent': solveFormulaRatioPca,
   'allowed-action-count': solveFormulaRatioAllowedAction,
   'baseline-ledger-rates': solveFormulaRatioBaseline,
+  'ledger-rates-output-trace': solveFormulaRatioCompare,
+  'subgroup-recall-output-trace': solveFormulaRatioCompare,
 };
 
 const solveFormulaCountLinear = (parameters) => {
@@ -283,7 +285,8 @@ const AGGREGATE_CONFUSION_SOLVERS = {
 };
 
 function staticExpected(familyId, parameters) {
-  const expected = staticCaseBody(familyId, parameters.caseId).expected || {};
+  const { body } = variantOf(staticCaseBody(familyId, parameters.caseId), parameters.variant ?? 0);
+  const expected = body.expected || {};
   if (Object.hasOwn(expected, 'value')) return { value: expected.value };
   if (Object.hasOwn(expected, 'output')) return { output: expected.output };
   if (expected.kind === 'rubric') return { kind: 'rubric' };

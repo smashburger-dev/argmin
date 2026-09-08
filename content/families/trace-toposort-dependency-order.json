@@ -68,7 +68,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'a': [], 'b': ['a'], 'c': ['b']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['a', 'b', 'c']"
+          },
+          "prompt": "Toposort a→b→c. Sage die Reihenfolge vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['a', 'b', 'c']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'z': [], 'y': [], 'x': ['y', 'z']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['y', 'z', 'x']"
+          },
+          "prompt": "Toposort zwei Quellen z/y. Sage print(topo) vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['y', 'z', 'x']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'load': [], 'fit': ['load'], 'eval': ['fit'], 'report': ['eval']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['load', 'fit', 'eval', 'report']"
+          },
+          "prompt": "Toposort load/fit/eval/report. Sage die Liste vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['load', 'fit', 'eval', 'report']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'m': [], 'n': ['m'], 'p': ['m']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['m', 'n', 'p']"
+          },
+          "prompt": "Toposort eine Quelle, zwei Kinder. Sage sortierte Reihenfolge vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['m', 'n', 'p']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'u': [], 'v': ['u'], 'w': ['u'], 't': ['v', 'w']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['u', 'v', 'w', 't']"
+          },
+          "prompt": "Toposort Diamant u→v,w→t. Sage print vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['u', 'v', 'w', 't']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'k': [], 'm': [], 'n': []}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['k', 'm', 'n']"
+          },
+          "prompt": "Toposort drei unabhängige Knoten. Sage die sortierte Liste vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['k', 'm', 'n']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'start': [], 'mid': ['start'], 'end': ['mid']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['start', 'mid', 'end']"
+          },
+          "prompt": "Toposort start/mid/end. Sage die Reihenfolge vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['start', 'mid', 'end']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'gold': [], 'score': ['gold'], 'plot': ['score']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['gold', 'score', 'plot']"
+          },
+          "prompt": "Toposort gold/score/plot. Sage print(topo) vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['gold', 'score', 'plot']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def topo(stages):\n    offen = set(stages)\n    erledigt = []\n    while offen:\n        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))\n        naechster = bereit[0]\n        erledigt.append(naechster)\n        offen.discard(naechster)\n    return erledigt\n\nstages = {'a': [], 'b': ['a'], 'c': ['a'], 'd': ['b', 'c']}\nprint(topo(stages))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "['a', 'b', 'c', 'd']"
+          },
+          "prompt": "Toposort a mit zwei Kindern und Join. Sage die Liste vorher.",
+          "fullSolution": "Die Ausgabe ist <code>['a', 'b', 'c', 'd']</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     }
   ]
 }
