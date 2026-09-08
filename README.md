@@ -17,7 +17,7 @@ Ja… Schon ziemlich mutig, als Person ohne jeglichen Background in diesen Domä
 - **Fortschritt, der dir gehört (also wirklich):** Kein Account, kein Server, kein Tracking. Alles liegt in deinem Browser, und du kannst es jederzeit als Datei mitnehmen.
 - **Ganzes Labor im Browser-Tab:** Echtes Python mit NumPy, Formeln, interaktive Grafiken und ein Editor, der deinen Code sofort prüft.
 
-Das heißt: Gleicher Seed, gleiche Aufgabe. Überall, auf jedem Gerät, ohne Server. Wenn dir eine Variante komisch vorkommt, sagst du einfach „Familie X, Seed 42“ und ich sehe exakt dasselbe wie du. Neuer Seed, neue Aufgabe. So oft du willst, bis es sitzt. Eine einzige Algebra-Schablone bringt es so auf 200 verschiedene Aufgaben.
+Das heißt: Gleicher Seed, gleiche Aufgabe. Überall, auf jedem Gerät. Wenn dir eine Variante komisch vorkommt, sagst du einfach „Familie X, Seed 42“ und ich sehe exakt dasselbe wie du. Neuer Seed, neue Aufgabe. So oft du willst, bis es sitzt. Eine einzige Algebra-Schablone bringt es so auf 200 verschiedene Aufgaben.
 
 ## Einfach loslegen
 
@@ -34,7 +34,7 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
   ![Eine Programmieraufgabe in argmin: Formel, Python-Editor und grünes Prüfergebnis](docs/media/python-aufgabe-dark.png)
 
   <!-- GIF-Platz: docs/media/python-demo.gif (Code tippen, prüfen, grün) — kommt noch. -->
-- **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neue Variante. Gleicher Seed, gleiche Aufgabe — überall, ohne Server.
+- **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neue Variante. Gleicher Seed, gleiche Aufgabe.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 
@@ -42,7 +42,7 @@ Was seit 0.1 neu ist, steht im [Changelog](CHANGELOG.md).
 
 ## In Arbeit / Geplant
 
-- **Frontend Rework.** Die Oberfläche soll sich weniger nach Baukasten anfühlen: Layout, Typo, Abstände, Mobile, leere Zustände. Tokens bleiben, keine zweite Designsprache.
+- **Frontend Rework.** Farben und ein klareres Layout.
 - **Intro / Tour.** Beim ersten Öffnen kurz: wo Heute, Lernen und Review liegen, dass Varianten vom Seed kommen, dass der Fortschritt lokal bleibt. Wegklickbar.
 
 Fortschritt zwischen Geräten bleibt Datei-Export/Import in den Einstellungen. Sync ohne Account ist eine Idee, kein Versprechen.

@@ -8,7 +8,7 @@ Für Agenten zum Kopieren:
 
 ## 1. Frontend Rework
 
-**Ziel:** Die Preact-Oberfläche soll sich nach einem Produkt anfühlen, nicht nach zusammengelegten Karten. Ein Durchgang über Layout, Typo, Abstände, Mobile und leere Zustände. Tokens und Komponenten wiederverwenden, keine zweite Designsprache.
+**Ziel:** Color Rework und ein ruhigeres Layout. Kein Design-System-Umbau.
 
 **Wo:** `src/ui/` (App-Shell, Heute, Lernen, Lektion, Aufgabe, Fortschritt, Einstellungen), `src/styles/next.css`, `src/app/theme.ts`, `src/ui/Button.tsx`. Screenshots in `docs/media/` nur anfassen, wenn sich der sichtbare Stand wirklich ändert.
 
