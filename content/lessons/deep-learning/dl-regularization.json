@@ -3,7 +3,7 @@
   "lessonId": "l-dl-regularization",
   "version": 2,
   "locale": "de",
-  "title": "Regularisierung, faire Ablation, Save/Load",
+  "title": "Weight-Decay exakt ausführen",
   "objectives": [
     "L2/Weight-Decay als zusätzlichen Gradiententerm herleiten und das Update exakt ausführen",
     "Dropout mit fester, per Seed gezogener Maske und invertierter Skalierung umsetzen — als kontrolliertes Konzept, nicht als Zufallsblackbox",

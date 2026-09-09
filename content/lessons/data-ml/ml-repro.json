@@ -3,7 +3,7 @@
   "lessonId": "l-ml-repro",
   "version": 1,
   "locale": "de",
-  "title": "Reproduzierbarkeit: Seeds, Splits und Manifeste",
+  "title": "Den Reproduzierbarkeitsvertrag anwenden",
   "objectives": [
     "den Reproduzierbarkeitsvertrag aus Seeds, fixem Split, Vorab-Metrik und Manifest anwenden",
     "numpy-Zufallsströme mit default_rng korrekt vorhersagen und wiederholen",

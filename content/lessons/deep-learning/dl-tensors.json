@@ -3,7 +3,7 @@
   "lessonId": "l-dl-tensors",
   "version": 2,
   "locale": "de",
-  "title": "Tensoren, Layer und Dimensionsverträge",
+  "title": "Tensorformen als Vertrag lesen",
   "objectives": [
     "Tensorformen als Vertrag lesen: Batch-, Feature- und Hidden-Dimensionen bei Vorwärtsdurchläufen nachvollziehen",
     "Broadcasting-Regeln auf Bias-Vektoren und Shapes anwenden und entscheiden, wann eine Operation erlaubt ist",

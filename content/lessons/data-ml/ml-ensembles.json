@@ -3,7 +3,7 @@
   "lessonId": "l-ml-ensembles",
   "version": 1,
   "locale": "de",
-  "title": "Entscheidungsbäume und Ensembles",
+  "title": "Bäume von Hand rechnen",
   "objectives": [
     "Gini-Unreinheit und gewichtete Splits für Tiefe <= 2 von Hand rechnen",
     "Bias-Varianz-Idee von Bagging und Majority Voting begründen",

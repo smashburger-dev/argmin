@@ -3,7 +3,7 @@
   "lessonId": "l-dl-training",
   "version": 2,
   "locale": "de",
-  "title": "Training Loops: Loss, Lernrate, Lernkurven",
+  "title": "Verluste implementieren und Schritte trennen",
   "objectives": [
     "MSE- und BCE-Verluste korrekt implementieren und Batches, Epochen und Optimizer-Schritte auseinanderhalten",
     "SGD mit Momentum als Update-Regel herleiten und Determinismus über feste Seeds (np.random.default_rng) sichern",

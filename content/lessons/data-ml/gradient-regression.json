@@ -3,7 +3,7 @@
   "lessonId": "l-grad-regression",
   "version": 2,
   "locale": "de",
-  "title": "Gradientenabstieg und lineare Regression",
+  "title": "Gradienten von Hand herleiten",
   "objectives": [
     "die Ableitung als Steigungsrate lesen und den Gradienten von MSE bzgl. w und b herleiten",
     "Gradientenabstieg-Updates w ← w − lr·grad ausführen und gegen lstsq prüfen",

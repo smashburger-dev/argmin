@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { CatalogData } from '../app/types';
 import { Button } from './Button';
+import { BrandWordmark } from './Brand';
 import { minutesLabel } from './learner-labels';
 
 const budgetOptions = [90, 180, 360];
@@ -43,8 +44,12 @@ export function OnboardingOverlay({ catalog, initialTrackId, onDone, onSkip }: {
         <p class="card-kicker">Schritt {step + 1} von 3</p>
         {step === 0 && (
           <>
-            <h1 id="onboarding-title" tabIndex={-1} ref={headingRef}>Willkommen bei argmin</h1>
-            <p class="lede">Dein lokaler Lernpfad für KI: Lektionen, Aufgaben mit frischen Varianten und ein Review, das dich rechtzeitig erinnert. Ohne Account, dein Fortschritt bleibt in diesem Browser.</p>
+            <p class="onboarding-welcome">Willkommen bei</p>
+            <h1 id="onboarding-title" tabIndex={-1} ref={headingRef}>
+              <span class="visually-hidden">Willkommen bei argmin</span>
+              <span class="onboarding-wordmark" aria-hidden="true"><BrandWordmark /></span>
+            </h1>
+            <p class="lede onboarding-lede"><strong>Dein lokaler Lernpfad für KI.</strong> Lektionen, Aufgaben mit frischen Varianten und ein Review, das dich rechtzeitig erinnert. Ohne Account, dein Fortschritt bleibt in diesem Browser.</p>
             <div class="actions">
               <Button variant="primary" onClick={() => setStep(1)}>Pfad wählen</Button>
               <Button variant="ghost" onClick={onSkip}>Überspringen</Button>

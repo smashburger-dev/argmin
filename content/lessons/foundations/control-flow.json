@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-control-flow",
   "version": 3,
   "locale": "de",
-  "title": "Bedingungen und Schleifen kontrollieren",
+  "title": "Bedingungen als Wahrheitsfragen lesen",
   "objectives": ["Bedingungen als Wahrheitsfragen formulieren", "for und while passend auswählen", "Abbruch und Fortschritt einer Schleife prüfen"],
   "competencyIds": ["c-python-control-flow"],
   "requires": ["c-python-basics"],

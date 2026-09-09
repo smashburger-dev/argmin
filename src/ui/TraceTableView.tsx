@@ -43,7 +43,7 @@ function emptyStates(rows: number, vars: string[]): Array<Record<string, string>
   return Array.from({ length: rows }, () => Object.fromEntries(vars.map((name) => [name, ''])));
 }
 
-export function TraceTableView({ catalog, instance, summary }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string }) {
+export function TraceTableView({ catalog, instance, summary, nextSeed }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string; nextSeed?: number }) {
   const table = instance.traceTable;
   const rows = table.lines.length;
   const [cells, setCells] = useState<Array<Record<string, string>>>(() => emptyStates(rows, table.stateVars));
@@ -111,7 +111,7 @@ export function TraceTableView({ catalog, instance, summary }: { catalog: Catalo
     }
   };
 
-  const ctx = getExerciseContext(catalog, instance, summary || 'Aufgabe');
+  const ctx = getExerciseContext(catalog, instance, summary || 'Aufgabe', nextSeed);
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict?.correct

@@ -3,7 +3,7 @@
   "lessonId": "l-genai-rag",
   "version": 1,
   "locale": "de",
-  "title": "RAG: Retrieval messbar machen",
+  "title": "Chunks und Index deterministisch bauen",
   "objectives": [
     "Dokumente deterministisch chunken (Größe, Overlap, Fensterarithmetik) und einen Inverted-Index mit gepinnter Normalisierung aufbauen",
     "Retrieval als eigene, messbare Stufe behandeln: top-k, Recall@k und MRR gegen ein festes Golden Set",

@@ -3,7 +3,7 @@
   "lessonId": "l-ml-regularization",
   "version": 2,
   "locale": "de",
-  "title": "Ridge und Lasso: Schrumpfen statt Überanpassen",
+  "title": "Ridge-Formel herleiten und anwenden",
   "objectives": [
     "die Ridge-Geschlossene-Formel herleiten und auf kleine Matrizen anwenden",
     "Lasso-Soft-Thresholding in einer Dimension berechnen und Sparsity begründen",

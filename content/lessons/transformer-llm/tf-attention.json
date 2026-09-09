@@ -3,7 +3,7 @@
   "lessonId": "l-tf-attention",
   "version": 2,
   "locale": "de",
-  "title": "Attention und Transformer-Grundlagen",
+  "title": "Queries, Keys und Values erklären",
   "objectives": [
     "die Rollen von Queries, Keys und Values in Scaled Dot-Product Attention erklären und Shape-Verträge prüfen",
     "stabiles zeilenweises Softmax und Maskierung (kausal, Padding) mit −∞ vor dem Softmax korrekt anwenden",

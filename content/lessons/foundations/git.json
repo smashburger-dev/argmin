@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-git",
   "version": 2,
   "locale": "de",
-  "title": "Git als überprüfbares Arbeitsprotokoll",
+  "title": "Diffs lesen und Commits bauen",
   "objectives": ["Status und Diff vor einem Commit lesen", "einen kleinen inhaltlich geschlossenen Commit erstellen", "Branch und Merge von Codekorrektheit unterscheiden"],
   "competencyIds": ["c-git-basics"],
   "requires": ["c-meta-learning"],

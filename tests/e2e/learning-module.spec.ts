@@ -25,3 +25,18 @@ test('module shows lessons and exercises together without toggling', async ({ pa
   await expect(page.locator('.module-sections .lesson-list a').first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Aufgabe öffnen' }).first()).toBeVisible();
 });
+
+test('learn path modules advance with side arrows', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Carousel arrows run in Chromium; the markup is browser-independent.');
+  await page.goto('/index.html#/learn');
+  const track = page.getByRole('list', { name: 'Module in diesem Pfad' });
+  await expect(track).toBeVisible();
+  const rail = page.locator('.learn-rail');
+  const next = rail.getByRole('button', { name: 'Weitere Module' });
+  await expect(next).toBeVisible();
+  await expect(rail.getByRole('button', { name: 'Vorherige Module' })).toBeDisabled();
+  const start = await track.evaluate((element) => element.scrollLeft);
+  await next.click();
+  await expect.poll(async () => track.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start);
+  await expect(rail.getByRole('button', { name: 'Vorherige Module' })).toBeEnabled();
+});

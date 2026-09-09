@@ -162,3 +162,21 @@ test('S4D2 numeric family grades typed answers and opens domain hints', async ({
   await expect(page.getByText(/Richtig/)).toBeVisible();
   await expect(page.getByText('Kann als Kompetenzbeleg zählen.')).toBeVisible();
 });
+
+test('next variant advances repeatedly with a concrete seed per click', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Variant routing runs in Chromium; the markup is browser-independent.');
+  await page.goto('/index.html#/family/transform-linear-equation-isolate/-/7/intro');
+  await expect(page.getByRole('button', { name: 'Antwort prüfen' })).toBeVisible();
+  const seedOf = (url: string) => url.split('#/family/')[1]?.split('/')[2] ?? '';
+  const seeds: string[] = [];
+  let previous = page.url();
+  for (let round = 0; round < 3; round += 1) {
+    await page.getByRole('link', { name: 'Nächste Variante' }).click();
+    await expect.poll(async () => page.url()).not.toBe(previous);
+    previous = page.url();
+    seeds.push(seedOf(previous));
+    await expect(page.locator('.prompt-content')).not.toBeEmpty();
+  }
+  expect(new Set(seeds).size).toBe(3);
+  expect(seeds.every((seed) => /^\d+$/.test(seed))).toBe(true);
+});

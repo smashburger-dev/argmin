@@ -18,34 +18,6 @@ export function moduleState(competencyIds: string[], states: Record<string, Evid
   return '';
 }
 
-function ModuleProgress({ module, progress, quiet }: {
-  module: CatalogData['learningModules'][number];
-  progress: ProgressSnapshot;
-  quiet: boolean;
-}) {
-  const evidenced = module.competencyIds.filter((id) => hasEvidence(progress.evidenceStates[id])).length;
-  const percent = module.competencyIds.length ? Math.round(evidenced / module.competencyIds.length * 100) : 0;
-  const state = moduleState(module.competencyIds, progress.evidenceStates);
-  return (
-    <a class="module-progress" href={`#/module/${module.moduleId}`}>
-      <span class="module-progress-copy">
-        <strong>{module.title}</strong>
-        <small>{quiet
-          ? `${module.estimatedMinutes} Min. · ${module.competencyIds.length === 1 ? '1 Kompetenz' : `${module.competencyIds.length} Kompetenzen`}`
-          : `${evidenced} von ${module.competencyIds.length} Kompetenzen nachgewiesen · ${module.estimatedMinutes} Min.`}</small>
-      </span>
-      {quiet ? null : (
-        <span class="module-progress-meter">
-          <span class={`meter ${state === 'Fällig' ? 'meter-warning' : ''}`} aria-label={`${module.title}: ${percent} Prozent belegt`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
-            <span style={{ width: `${percent}%` }} />
-          </span>
-          {state ? <span class={`tag ${state === 'Fällig' ? 'tag-warning' : ''}`}>{state}</span> : null}
-        </span>
-      )}
-    </a>
-  );
-}
-
 function formatJournalDate(value: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime())
@@ -63,9 +35,6 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
   const demonstrated = catalog.competencies.filter((item) => hasEvidence(progress.evidenceStates[item.competencyId])).length;
   const percent = catalog.competencies.length ? Math.round(demonstrated / catalog.competencies.length * 100) : 0;
   const dueCompetencies = catalog.competencies.filter((item) => progress.evidenceStates[item.competencyId] === 'review_due');
-  const track = catalog.tracks.find((item) => item.trackId === progress.trackId) ?? catalog.tracks[0];
-  const trackModules = catalog.learningModules.filter((module) => track?.trackId && module.trackIds.includes(track.trackId));
-  const otherModules = catalog.learningModules.filter((module) => module.trackIds.length === 0);
   const journal = progress.journal.slice(-10).reverse();
   return (
     <section class="view" aria-labelledby="progress-title">
@@ -102,17 +71,6 @@ export function ProgressView({ catalog, progress }: { catalog: CatalogData; prog
           <Button variant="primary" href="#/diagnostic">Einstufung starten</Button>
         </div>
       ) : null}
-      <section class="activity-section" aria-labelledby="modules-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">Lernpfad</p><h2 id="modules-title">Module</h2></div>
-          <span>{track?.title ?? 'Alle Module'}</span>
-        </div>
-        <div class="module-progress-list">
-          {trackModules.map((module) => <ModuleProgress module={module} progress={progress} quiet={progress.attemptsCount === 0} key={module.moduleId} />)}
-          {otherModules.length > 0 ? <h3 class="module-group-title">Weitere Module</h3> : null}
-          {otherModules.map((module) => <ModuleProgress module={module} progress={progress} quiet={progress.attemptsCount === 0} key={module.moduleId} />)}
-        </div>
-      </section>
       <details class="journal">
         <summary>Fehlerjournal ({progress.journal.length})</summary>
         {journal.length > 0 ? (

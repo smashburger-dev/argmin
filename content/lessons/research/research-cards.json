@@ -3,7 +3,7 @@
   "lessonId": "l-research-cards",
   "version": 1,
   "locale": "de",
-  "title": "Daten- und Modellkarten",
+  "title": "Karten als Vertrag erfassen",
   "objectives": [
     "Daten- und Modellkarten als Vertrag mit festen Pflichtfeldern erfassen und fehlende oder leere Felder deterministisch zählen",
     "Karten, Systemkarte und Forschungsprotokoll auf Widersprüche prüfen (Name, Metrik, Schwellenwert, Umfang, Modell)",

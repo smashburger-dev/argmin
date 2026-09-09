@@ -6,8 +6,30 @@ import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mj
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
-import { activityLabel, difficultyLabelFor } from './exercise-context';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
+
+const TODAY_BOOSTS = [
+  'geht die Rechnung auf.',
+  'bleibt kein Rest.',
+  'wird der Nenner nicht null.',
+  'folgt q.e.d.',
+  'sitzt die Induktion.',
+  'wird nicht geraten.',
+  'löst du, was gestern klemmte.',
+  'stimmt das Vorzeichen.',
+  'knackst du erst den harten Brocken.',
+  'wird aus Raten Wissen.',
+  'gibt es keine halben Beweise.',
+  'hältst du die Kette bis zum Ende.',
+  'stimmt jede Umformung.',
+  'wird jede Lücke geschlossen.',
+  'läuft alles grün.',
+  'kompiliert es beim ersten Mal.',
+  'gilt: erst denken, dann tippen.',
+  'trifft jede Schätzung.',
+  'wird widerlegt, was wackelt.',
+  'reicht ein Anlauf.',
+];
 
 function reasonLabel(item: LearningPlanItem) {
   if (item.reasonCodes.includes('review-due')) return 'Fälliger Review';
@@ -63,14 +85,13 @@ function MilestoneCard({ catalog, progress }: { catalog: CatalogData; progress: 
   const evidenceCount = competencyIds.filter((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')).length;
   const percent = competencyIds.length ? Math.round(evidenceCount / competencyIds.length * 100) : 0;
   return (
-    <article class="status-card">
+    <article class="status-card milestone-card">
       <p class="card-kicker">Aktueller Milestone</p>
-      <h2>{foundation?.title ?? 'Foundations'}</h2>
-      <p>{foundation?.description}</p>
-      <div class="meter" aria-label={`Foundations: ${percent} Prozent belegt`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
+      <p class="milestone-sub">{foundation?.description}</p>
+      <div class="meter meter-lg" aria-label={`${evidenceCount} von ${competencyIds.length} Kompetenzen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
         <span style={{ width: `${percent}%` }} />
       </div>
-      <p class="meter-label">{evidenceCount} von {competencyIds.length} Kompetenzen mit aktuellem Beleg.</p>
+      <p class="meter-label">{evidenceCount} von {competencyIds.length} Kompetenzen.</p>
       <a class="text-link" href="#/learn">Im Lernpfad weiter →</a>
     </article>
   );
@@ -82,24 +103,15 @@ function FollowUpCard({ executableReviews, nextNonReview, exerciseById, competen
   exerciseById: Map<string, CatalogData['exercises'][number]>;
   competencyById: Map<string, CatalogData['competencies'][number]>;
 }) {
-  if (executableReviews.length > 0) {
-    return nextNonReview ? (
-      <article class="status-card">
-        <p class="card-kicker">Nächster Schritt danach</p>
-        <h2>{itemTitle(nextNonReview, exerciseById, competencyById)}</h2>
-        <p>{reasonLabel(nextNonReview)}</p>
-        <a class="text-link" href={nextNonReview.route}>Öffnen</a>
-      </article>
-    ) : null;
-  }
-  return (
+  if (executableReviews.length === 0) return null;
+  return nextNonReview ? (
     <article class="status-card">
-      <p class="card-kicker">Wiederholen</p>
-      <h2>Nichts zu wiederholen</h2>
-      <p>Gut so. Sobald eine Aufgabe zur Wiederholung dran ist, erscheint sie hier.</p>
-      <a class="text-link" href="#/review">Review-Queue öffnen</a>
+      <p class="card-kicker">Nächster Schritt danach</p>
+      <h2>{itemTitle(nextNonReview, exerciseById, competencyById)}</h2>
+      <p>{reasonLabel(nextNonReview)}</p>
+      <a class="text-link" href={nextNonReview.route}>Öffnen</a>
     </article>
-  );
+  ) : null;
 }
 
 function relativeDay(occurredAt: string) {
@@ -107,26 +119,6 @@ function relativeDay(occurredAt: string) {
   if (elapsedDays <= 0) return 'heute';
   if (elapsedDays === 1) return 'gestern';
   return `vor ${elapsedDays} Tagen`;
-}
-
-function LastWorkedCard({ progress, exerciseById, catalog }: {
-  progress: ProgressSnapshot;
-  exerciseById: Map<string, CatalogData['exercises'][number]>;
-  catalog: CatalogData;
-}) {
-  const lastAttempt = progress.lastAttempt;
-  const exercise = lastAttempt ? exerciseById.get(lastAttempt.definitionId) : undefined;
-  if (!lastAttempt || !exercise) return null;
-  const module = catalog.learningModules.find((item) => item.placements.some((placement) => placement.definitionId === exercise.definitionId));
-  const competency = catalog.competencies.find((item) => exercise.competencyIds.includes(item.competencyId));
-  return (
-    <article class="status-card">
-      <p class="card-kicker">Zuletzt bearbeitet</p>
-      <h2>{activityLabel(exercise.activityType)} · {difficultyLabelFor(exercise.difficulty)}</h2>
-      <p>{module?.title ?? competency?.title} · {relativeDay(lastAttempt.occurredAt)}</p>
-      <a class="text-link" href={routeForDefinition(exercise)}>Weitermachen</a>
-    </article>
-  );
 }
 
 function recommendation(
@@ -187,11 +179,19 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
   const trackDone = activeTrack ? activeTrack.competencyIds.every((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')) : false;
   const primary = recommendation(progress, plan, executableReviews, exerciseById, competencyById);
   const nextNonReview = plan.days.flatMap((day) => day.items).find((item) => item.type !== 'review');
+  const lastAttempt = progress.lastAttempt;
+  const lastExercise = lastAttempt ? exerciseById.get(lastAttempt.definitionId) : undefined;
+  const lastContext = lastAttempt && lastExercise
+    ? catalog.learningModules.find((item) => item.placements.some((placement) => placement.definitionId === lastExercise.definitionId))?.title
+      ?? catalog.competencies.find((item) => lastExercise.competencyIds.includes(item.competencyId))?.title
+    : undefined;
+  const resume = lastAttempt && lastExercise && lastContext
+    ? { href: routeForDefinition(lastExercise), label: `Weitermachen: ${lastContext} · ${relativeDay(lastAttempt.occurredAt)}` }
+    : null;
   return (
     <section class="view" aria-labelledby="today-title">
       <header class="view-header">
-        <p class="eyebrow">Dein Lernfenster</p>
-        <h1 id="today-title" tabIndex={-1}>Heute</h1>
+        <h1 id="today-title" tabIndex={-1}>Heute <span class="today-boost">{TODAY_BOOSTS[Math.floor(Date.now() / 86400000) % TODAY_BOOSTS.length]}</span></h1>
       </header>
       <div class="today-grid">
         <article class="primary-card" data-tour="today-primary">
@@ -204,20 +204,19 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
             {primary.time ? <span class="time-chip">{primary.time}</span> : null}
             <Button variant="primary" href={primary.href}>{primary.action}</Button>
           </div>
+          {resume ? <a class="text-link resume-link" href={resume.href}>{resume.label}</a> : null}
         </article>
         <MilestoneCard catalog={catalog} progress={progress} />
         <FollowUpCard executableReviews={executableReviews} nextNonReview={nextNonReview} exerciseById={exerciseById} competencyById={competencyById} />
-        <LastWorkedCard progress={progress} exerciseById={exerciseById} catalog={catalog} />
       </div>
       <section class="weekly-plan" aria-labelledby="weekly-plan-title" data-tour="today-plan">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Vorschlag für die Woche</p>
             <h2 id="weekly-plan-title">Dein Wochenplan</h2>
           </div>
           <span>{plan.totalMinutes} von {plan.availableMinutes} Min. · <a href="#/settings">Budget anpassen</a></span>
         </div>
-        {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan. Nach der Diagnose wird er genauer.</p> : null}
+        {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan. Kurze Aufgaben liefern belastbarere Hinweise als Selbsteinschätzung allein. Nach der Diagnose fällt Nachgewiesenes heraus.</p> : null}
         {plan.days.some((day) => day.items.length) ? (
           <Carousel label="Wochenplan-Tage">
             {plan.days.filter((day) => day.items.length).map((day) => <PlanDay day={day} exerciseById={exerciseById} competencyById={competencyById} key={day.day} />)}
@@ -238,17 +237,6 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           <p>Der Plan verteilt dein Wochenbudget aus den Einstellungen auf die Tage. Bis zu 35 Prozent davon sind für Wiederholungen reserviert, der Rest für neue Lektionen und Aufgaben. Wiederholungsabstände kannst du in den Einstellungen anpassen.</p>
         </details>
       </section>
-      {progress.attemptsCount === 0 ? (
-        <aside class="reason-panel" aria-labelledby="reason-title">
-          <p class="eyebrow">Warum dieser Start?</p>
-          <h2 id="reason-title">Erst messen, dann empfehlen</h2>
-          <ol>
-            <li>Kurze Aufgaben liefern belastbarere Hinweise als Selbsteinschätzung allein.</li>
-            <li>Fehlende Voraussetzungen werden vor neuen Themen sichtbar.</li>
-            <li>Du kannst jede Empfehlung überspringen und direkt lernen.</li>
-          </ol>
-        </aside>
-      ) : null}
     </section>
   );
 }

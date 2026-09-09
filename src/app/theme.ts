@@ -20,7 +20,7 @@ export function applyTheme(pref: ThemePreference): void {
   if (typeof document === 'undefined') return;
   const theme = pref === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : pref;
   document.documentElement.dataset.theme = theme;
-  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0e0e11' : '#f6f6f7');
+  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#171519' : '#efe5dc');
 }
 
 export function saveThemePreference(pref: ThemePreference): void {

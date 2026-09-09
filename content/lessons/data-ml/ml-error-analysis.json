@@ -3,7 +3,7 @@
   "lessonId": "l-ml-error-analysis",
   "version": 1,
   "locale": "de",
-  "title": "Fehleranalyse nach Teilgruppen und Modellkarten",
+  "title": "Fehlerlücken in Teilgruppen messen",
   "objectives": [
     "Fehlerraten je Teilgruppe berechnen und die größte Lücke in Prozentpunkten angeben",
     "Fehlertypen unterscheiden: Label-Noise, systematischer Subgruppenfehler und Drift",

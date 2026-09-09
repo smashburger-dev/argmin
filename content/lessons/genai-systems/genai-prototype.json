@@ -3,7 +3,7 @@
   "lessonId": "l-genai-prototype",
   "version": 1,
   "locale": "de",
-  "title": "Minimaler abgesicherter GenAI-Prototyp",
+  "title": "Retrieval, Evaluation und Kontrolle verbinden",
   "objectives": [
     "Retrieval, deterministische Evaluation und Sicherheitskontrollen zu einem minimalen Prototyp mit Stub-Generator zusammenfügen",
     "Least Privilege, erlaubte/verbotene Aktionen und nachvollziehbare Fehler umsetzen und mit einer Ablation (mit/ohne Kontrolle) messen",

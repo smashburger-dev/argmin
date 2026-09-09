@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-files-errors",
   "version": 2,
   "locale": "de",
-  "title": "Dateien lesen und Fehler begrenzen",
+  "title": "Grenze zur Außenwelt klein halten",
   "objectives": ["Dateien mit einem Kontextmanager öffnen", "Parsingfehler von Dateifehlern unterscheiden", "Fehler dort behandeln, wo eine sinnvolle Entscheidung möglich ist"],
   "competencyIds": ["c-python-files-errors"],
   "requires": ["c-python-functions", "c-python-collections"],

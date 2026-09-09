@@ -3,7 +3,7 @@
   "lessonId": "l-tf-inference",
   "version": 1,
   "locale": "de",
-  "title": "Reproduzierbare Toy-Modell-Inferenz",
+  "title": "Die Pipeline als Kette beschreiben",
   "objectives": [
     "die Pipeline Tokenisierung, Forward-Pass mit gestellten Fixtur-Gewichten, Logits und Greedy-Decoding als deterministische Kette beschreiben",
     "Greedy Decoding mit argmax, max_len und eos einschließlich der Kopier- und Stoppverträge implementieren",

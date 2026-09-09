@@ -3,7 +3,7 @@
   "lessonId": "l-dl-autograd",
   "version": 1,
   "locale": "de",
-  "title": "Backpropagation als Kettenregel im Rechengraph",
+  "title": "Rechengraphen lesen und Gradienten trennen",
   "objectives": [
     "Rechengraphen lesen und lokale von globalen Gradienten unterscheiden",
     "die Kettenregel über Pfade und Gabelungen anwenden (Produkt entlang eines Pfades, Summe über Pfade)",

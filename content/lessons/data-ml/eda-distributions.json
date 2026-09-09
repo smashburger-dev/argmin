@@ -3,7 +3,7 @@
   "lessonId": "l-eda-distributions",
   "version": 2,
   "locale": "de",
-  "title": "Verteilungen, Korrelation und bedingte Anteile",
+  "title": "Verteilungen zusammenfassen und vergleichen",
   "objectives": [
     "Verteilungen durch Histogramm-Bins, Median, Quartile und Schiefe zusammenfassen",
     "die Diagrammart aus der Fragestellung ableiten und Korrelation mit np.corrcoef berechnen",

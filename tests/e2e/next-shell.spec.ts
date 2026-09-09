@@ -25,7 +25,7 @@ test('next shell exposes the primary learning flow without serious accessibility
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Dein Wochenplan' })).toBeVisible();
   await page.getByRole('link', { name: 'Lernen' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Lernen' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Dein Lernpfad:/ })).toBeVisible();
   const accessibility = await new AxeBuilder({ page }).analyze();
   expect(accessibility.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''))).toEqual([]);
   expect(errors).toEqual([]);
@@ -36,7 +36,7 @@ test('competency and lesson routes expose family activities', async ({ page }) =
   await expect(page.getByRole('heading', { level: 1, name: 'Algebra-Grundlagen' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Aufgabe öffnen' }).first()).toHaveAttribute('href', /^#\/family\//);
   await page.goto('/index.html#/lesson/l-foundations-algebra');
-  await expect(page.getByRole('heading', { level: 1, name: 'Algebra-Grundlagen sicher prüfen' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Algebra als überprüfbare Umformung' })).toBeVisible();
 });
 
 test('public sources and modern module route render', async ({ page }) => {

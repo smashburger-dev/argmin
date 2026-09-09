@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-learning",
   "version": 2,
   "locale": "de",
-  "title": "Fehler in nächste Handlungen übersetzen",
+  "title": "Fehlerjournal als Handlungsverkürzer nutzen",
   "objectives": ["Symptom und Ursache trennen", "einen Fehler mit einem prüfbaren nächsten Schritt dokumentieren", "Review nach Fälligkeit statt Streak planen"],
   "competencyIds": ["c-meta-learning"],
   "requires": [],

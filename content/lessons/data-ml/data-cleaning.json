@@ -3,7 +3,7 @@
   "lessonId": "l-data-cleaning",
   "version": 1,
   "locale": "de",
-  "title": "Datenbereinigung tabellarischer Daten",
+  "title": "Tabellendaten lesen und prüfen",
   "objectives": [
     "tabellarische Daten als Zeilenlisten mit Schema- und Datentyp-Vertrag lesen und prüfen",
     "fehlende Werte, Sentinel-Werte und Duplikate erkennen und korrekt behandeln",
