@@ -189,7 +189,7 @@ export interface SourceSummary {
   license: string;
   attribution: string;
   allowedUses: string[];
-  weeks: number[];
+  usedInModules: { moduleId: string; title: string }[];
   extractionStatus: string;
   qaStatus: string;
 }

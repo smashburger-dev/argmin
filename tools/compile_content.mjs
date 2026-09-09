@@ -586,9 +586,45 @@ function filterPublicEntities(entities) {
   }
 }
 
+// Derived usage index: source -> modules whose lessons cite it. Replaces the
+// hand-maintained weeks arrays (retired with the week system); the Lektüren
+// view renders module links from this instead of week numbers.
+function attachSourceModuleUsage(entities) {
+  const citingLessonsBySource = new Map();
+  for (const lesson of entities.lessons || []) {
+    for (const reference of lesson.sourceRefs || []) {
+      const sourceId = reference && reference.sourceId;
+      if (!sourceId) continue;
+      if (!citingLessonsBySource.has(sourceId)) citingLessonsBySource.set(sourceId, new Set());
+      citingLessonsBySource.get(sourceId).add(lesson.lessonId);
+    }
+  }
+  const modulesByLesson = new Map();
+  for (const module of entities.learningModules || []) {
+    for (const lessonId of module.lessonIds || []) {
+      if (!modulesByLesson.has(lessonId)) modulesByLesson.set(lessonId, []);
+      modulesByLesson.get(lessonId).push({ moduleId: module.moduleId, title: module.title });
+    }
+  }
+  for (const source of entities.sources || []) {
+    const seen = new Set();
+    const usedInModules = [];
+    for (const lessonId of citingLessonsBySource.get(source.sourceId) || []) {
+      for (const entry of modulesByLesson.get(lessonId) || []) {
+        if (seen.has(entry.moduleId)) continue;
+        seen.add(entry.moduleId);
+        usedInModules.push(entry);
+      }
+    }
+    usedInModules.sort((a, b) => (a.moduleId < b.moduleId ? -1 : 1));
+    source.usedInModules = usedInModules;
+  }
+}
+
 function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion, entities) {
   entities.learningModules = entities.learningModules.map((module) => compileLearningModule(module, { lessons: entities.lessons, definitions: [], projects: entities.projects }));
   entities.lessons = compileLessonContent(contentRoot, entities.lessons, projectRoot, entities.families);
+  attachSourceModuleUsage(entities);
   const familyActivities = buildFamilyActivities(entities.learningModules, entities.families);
   const visualizations = entities.lessons.flatMap((lesson) => lesson.blocks
     .filter((block) => block.type === 'visualization' && block.viz && block.visualizationId)
