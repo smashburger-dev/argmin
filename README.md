@@ -2,7 +2,7 @@
 
 **KI verstehen, Schritt für Schritt. Auf Deutsch, direkt im Browser. Kostenlos.**
 
-[![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
+[![Die Heute-Seite in argmin: Empfehlung, Milestone und Wochenplan, dunkles Theme](docs/media/heute-dark.png)](https://smashburger-dev.github.io/argmin/)
 
 argmin ist eine offene Lernplattform für alle, die verstehen wollen, wie künstliche Intelligenz wirklich funktioniert: von den Mathe-Grundlagen über Lineare Algebra und Machine Learning bis zu Deep Learning, Transformern und GenAI. Kein Vorwissen nötig. Fang von dort an, wo du jetzt gerade stehst.
 
@@ -28,12 +28,13 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 ## Was dich erwartet
 
 - **46 Lektionen und über 250 Aufgaben** in kleinen, verständlichen Schritten. Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI.
+
+[![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
+
 - **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren.
   + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
 
-  ![Eine Programmieraufgabe in argmin: Formel, Python-Editor und grünes Prüfergebnis](docs/media/python-aufgabe-dark.png)
-
-  <!-- GIF-Platz: docs/media/python-demo.gif (Code tippen, prüfen, grün) — kommt noch. -->
+  ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
 - **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neue Variante. Gleicher Seed, gleiche Aufgabe.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
