@@ -34,8 +34,6 @@ Das war's. Kein Account, keine Installation, keine Kosten. Dein Fortschritt blei
 - **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren.
   + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
 
-  ![Eine Programmieraufgabe in argmin: Aufgabenstellung und Python-Editor mit Starter-Code](docs/media/python-aufgabe-dark.png)
-
   ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
 - **Üben, bis es sitzt.** Viele Aufgaben erzeugen immer neue Varianten, du kannst also so oft üben, wie du willst. _Jede Aufgabe entsteht aus einem Startwert. Gleicher Startwert, gleiche Aufgabe — überall. Neuer Startwert, neue Aufgabe. So oft du willst, ohne Server._
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
