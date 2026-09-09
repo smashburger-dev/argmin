@@ -4,8 +4,6 @@
 
 [![Die Heute-Seite in argmin: Empfehlung, Milestone und Wochenplan, dunkles Theme](docs/media/heute-dark.png)](https://smashburger-dev.github.io/argmin/)
 
-[![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
-
 argmin ist eine offene Lernplattform für alle, die verstehen wollen, wie künstliche Intelligenz wirklich funktioniert: von den Mathe-Grundlagen über Lineare Algebra und Machine Learning bis zu Deep Learning, Transformern und GenAI. Kein Vorwissen nötig. Fang von dort an, wo du jetzt gerade stehst.
 
 Servus erstamoi! Ich bin **Noa**, auch bekannt als **no8** (keineacht auf TikTok, 8atana auf X). Ursprünglich als Privatprojekt begonnen, um als frischer Medien- & Kommunikationsbachelor und selbstständiger Creative Director einen Quereinstieg in die Welt der Künstlichen Intelligenz zu wagen. Nach etlichen Stunden an Recherche, wie man überhaupt optimal lernt, insbesondere in Bezug zur Mathematik und Coding, geschweige das Zusammenkratzen aller Ressourcen, ist mir eins aufgefallen.
@@ -30,10 +28,13 @@ Das war's. Kein Account, keine Installation, keine Kosten. Dein Fortschritt blei
 ## Was dich erwartet
 
 - **46 Lektionen und über 250 Aufgaben** in kleinen, verständlichen Schritten. Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI.
+
+[![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
+
 - **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren.
   + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
 
-  ![Eine Programmieraufgabe in argmin: Aufgabenstellung, Python-Editor und grünes Prüfergebnis](docs/media/python-aufgabe-dark.png)
+  ![Eine Programmieraufgabe in argmin: Aufgabenstellung und Python-Editor mit Starter-Code](docs/media/python-aufgabe-dark.png)
 
   ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
 - **Üben, bis es sitzt.** Viele Aufgaben erzeugen immer neue Varianten, du kannst also so oft üben, wie du willst. _Jede Aufgabe entsteht aus einem Startwert. Gleicher Startwert, gleiche Aufgabe — überall. Neuer Startwert, neue Aufgabe. So oft du willst, ohne Server._
