@@ -2,6 +2,8 @@
 
 **KI verstehen, Schritt für Schritt. Auf Deutsch, direkt im Browser. Kostenlos.**
 
+[![Die Heute-Seite in argmin: Empfehlung, Milestone und Wochenplan, dunkles Theme](docs/media/heute-dark.png)](https://smashburger-dev.github.io/argmin/)
+
 [![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
 
 argmin ist eine offene Lernplattform für alle, die verstehen wollen, wie künstliche Intelligenz wirklich funktioniert: von den Mathe-Grundlagen über Lineare Algebra und Machine Learning bis zu Deep Learning, Transformern und GenAI. Kein Vorwissen nötig. Fang von dort an, wo du jetzt gerade stehst.
@@ -31,9 +33,9 @@ Das war's. Kein Account, keine Installation, keine Kosten. Dein Fortschritt blei
 - **Python direkt im Browser.** Du schreibst und testest echten Code, ohne irgendetwas zu installieren.
   + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
 
-  ![Eine Programmieraufgabe in argmin: Formel, Python-Editor und grünes Prüfergebnis](docs/media/python-aufgabe-dark.png)
+  ![Eine Programmieraufgabe in argmin: Aufgabenstellung, Python-Editor und grünes Prüfergebnis](docs/media/python-aufgabe-dark.png)
 
-  <!-- GIF-Platz: docs/media/python-demo.gif (Code tippen, prüfen, grün) — kommt noch. -->
+  ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
 - **Üben, bis es sitzt.** Viele Aufgaben erzeugen immer neue Varianten, du kannst also so oft üben, wie du willst. _Jede Aufgabe entsteht aus einem Startwert. Gleicher Startwert, gleiche Aufgabe — überall. Neuer Startwert, neue Aufgabe. So oft du willst, ohne Server._
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
