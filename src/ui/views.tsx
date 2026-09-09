@@ -263,9 +263,18 @@ export function ToolsView(_: { catalog: CatalogData }) {
   return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug nennt Zweck, Grenzen und Einstieg.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="actions">{tool.routes.map((route) => <Button key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</Button>)}</div></article>)}</div></section>;
 }
 
-function sourceWeeksLabel(weeks: unknown) {
-  if (Array.isArray(weeks) && weeks.length) return `Referenzabschnitte ${weeks.join(', ')}`;
-  return 'Referenzkatalog';
+function SourceModuleUsage({ modules }: { modules: SourceSummary['usedInModules'] }) {
+  if (!modules.length) return <>Referenzkatalog</>;
+  return (
+    <>
+      {modules.map((module, index) => (
+        <span key={module.moduleId}>
+          {index > 0 ? ', ' : null}
+          <a class="text-link" href={`#/module/${module.moduleId}`}>{module.title}</a>
+        </span>
+      ))}
+    </>
+  );
 }
 
 function SourceCard({ source }: { source: SourceSummary }) {
@@ -277,8 +286,7 @@ function SourceCard({ source }: { source: SourceSummary }) {
       <p>{source.author}</p>
       <dl>
         <div><dt>Lizenz</dt><dd>{source.license}</dd></div>
-        <div><dt>Status</dt><dd>{source.extractionStatus}</dd></div>
-        <div><dt>Verwendet in</dt><dd>{sourceWeeksLabel(source.weeks)}</dd></div>
+        <div><dt>Verwendet in</dt><dd><SourceModuleUsage modules={source.usedInModules || []} /></dd></div>
       </dl>
       <div class="actions">
         {external ? <Button href={source.canonicalUrl} target="_blank" rel="noreferrer">Originalquelle öffnen</Button> : null}

@@ -30,7 +30,7 @@ Eigene Software steht unter MIT in `LICENSE`. Eigene distributierbare Lerninhalt
 
 ## Anhang: Vollständige Quellenliste (generiert aus content/sources.json, Stand 2026-08-31)
 
-Diese Tabelle wird aus der verbindlichen Datei abgeleitet und listet alle 76 Einträge. Detailnotizen der Handtabelle oben bleiben gültig, wo sie konkreter sind.
+Diese Tabelle wird aus der verbindlichen Datei abgeleitet und listet alle 65 Einträge. Detailnotizen der Handtabelle oben bleiben gültig, wo sie konkreter sind.
 
 | sourceId | Klasse | Lizenz (Kurzfassung) |
 |---|---|---|
