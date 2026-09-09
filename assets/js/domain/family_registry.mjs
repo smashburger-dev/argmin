@@ -223,6 +223,10 @@ export function createFamilyRegistry(families) {
       grader: generated.graderId ?? family.graderId,
       competencyIds: [...(generated.competencyIds ?? family.competencyIds)],
       prompt: generated.prompt,
+      // Optionaler generischer Kartentitel je Fall (der Compiler bevorzugt
+      // ihn gegenüber dem geseedeten Prompt; Familien ohne Titel sind
+      // unverändert).
+      ...(generated.title ? { title: generated.title } : null),
       parameters: generated.parameters,
       choices: generated.choices,
       // Nur bei Rubric-Fällen gesetzt (hält Golden-Korpora stabil).

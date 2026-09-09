@@ -174,6 +174,7 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
     return {
       parameters: p,
       expected: { kind: 'integer', value },
+      title: 'Löse die Gleichung, gib den Wert von x als ganze Zahl ein.',
       prompt: `Löse die Gleichung ${p.a}x ${signed(p.b)} = ${p.c}. Gib den Wert von x als ganze Zahl ein.`,
       fullSolution: `${p.a}x ${signed(p.b)} = ${p.c} ergibt ${p.a}x = ${p.c - p.b}, also x = ${value}. Probe: ${p.a}·${value} ${signed(p.b)} = ${p.c}.`,
     };
@@ -184,6 +185,7 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
     return {
       parameters: p,
       expected: { kind: 'integer', value },
+      title: 'Löse die Gleichung, sammle zuerst alle x-Terme auf einer Seite.',
       prompt: `Löse die Gleichung ${p.a}x ${signed(p.b)} = ${p.c}x ${signed(p.d)}. Sammle zuerst alle x-Terme auf einer Seite und gib x als ganze Zahl ein.`,
       fullSolution: `${p.a}x ${signed(p.b)} = ${p.c}x ${signed(p.d)} führt auf ${p.a - p.c}x = ${p.d - p.b} und damit x = ${value}. Die Probe erfüllt beide Seiten.`,
     };
@@ -515,6 +517,7 @@ export function generateExpressionCanonicalFamily({ seed, caseId, difficulty }) 
   return {
     parameters,
     expected: { kind: 'expression', expression: solved.canonicalExpression, equivalence: SYMPY_EQUIVALENCE_RULE },
+    title: 'Vereinfache den Term so weit wie möglich und gib ihn ein.',
     prompt: `Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als \`2*x + 7\`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.`,
     fullSolution: `$${source} = ${solved.canonicalExpression}$. ${hint} Kanonische Zielform: ${solved.canonicalExpression}.`,
   };

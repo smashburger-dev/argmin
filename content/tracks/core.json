@@ -35,7 +35,7 @@
       "trackId": "applied-ai",
       "locale": "de",
       "title": "Applied AI Engineering",
-      "description": "Python- und Datenkompetenzen für robuste angewandte KI-Systeme.",
+      "description": "Der komplette Weg: Python und Datenarbeit über klassisches ML bis zu Deep Learning, GenAI und Capstone.",
       "competencyIds": [
         "c-python-basics",
         "c-python-reading",

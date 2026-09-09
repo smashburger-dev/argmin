@@ -3,7 +3,7 @@
   "lessonId": "l-tf-tokenizer",
   "version": 1,
   "locale": "de",
-  "title": "Tokenisierung und Sprachmodellfamilien",
+  "title": "Tokenisierung mit Folgen vergleichen",
   "objectives": [
     "Zeichen-, Wort- und Subword-Tokenisierung mit ihren Vokabular- und OOV-Folgen vergleichen",
     "Encode/Decode mit End-of-Word-Marker implementieren und den Round-Trip decode(encode(s)) == s durchsetzen",

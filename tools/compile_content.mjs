@@ -99,7 +99,10 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
       .join('; ');
     throw new Error(`${schemaName}: ${details}`);
   }
-  if (schemaName === 'exercise-family-cases') validateChoiceContracts(value);
+  if (schemaName === 'exercise-family-cases') {
+    validateChoiceContracts(value);
+    validateChallengeContracts(value);
+  }
   return true;
 }
 
@@ -108,6 +111,28 @@ function validateChoiceContracts(document) {
     validateChoiceContract(`${document.familyId}:${item.caseId}`, item);
     for (const [index, variant] of (item.variants || []).entries()) {
       validateChoiceContract(`${document.familyId}:${item.caseId}:variant-${index + 1}`, variant);
+    }
+  }
+}
+
+function validateChallengeContracts(document) {
+  for (const item of document.cases || []) {
+    if (item.challengeEligible !== true) continue;
+    const label = `${document.familyId}:${item.caseId}`;
+    if (item.difficultyProfile !== 'challenge') {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt difficultyProfile challenge`);
+    }
+    if (item.masteryEligible !== true) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt masteryEligible`);
+    }
+    if (!Array.isArray(item.hints) || item.hints.length === 0) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt nicht-leere hints`);
+    }
+    if (typeof item.fullSolution !== 'string' || item.fullSolution.length === 0) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt fullSolution`);
+    }
+    if (!Array.isArray(item.sourceLineage) || item.sourceLineage.length === 0) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt gesetzte sourceLineage`);
     }
   }
 }
@@ -655,8 +680,8 @@ export function buildSplitArtifacts(bundle) {
       familyId: family.familyId,
       summary: family.contract?.summary || '',
       contract: family.contract,
-      cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible }) => ({
-        caseId, difficultyProfile, masteryEligible,
+      cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible, challengeEligible }) => ({
+        caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}),
       })),
     })),
   };

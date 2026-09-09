@@ -54,6 +54,16 @@ test('next build validator accepts the bounded static shell', () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('next build validator accepts bundled image assets but rejects stray files', () => {
+  const dir = fixture();
+  try {
+    writeFixtureFile(dir, 'assets/argmin-split-BqxAsJyg.png', 'fake-png-bytes');
+    validateNextBuild(dir);
+    writeFixtureFile(dir, 'assets/notes.txt', 'stray');
+    assert.throws(() => validateNextBuild(dir), /unerlaubte Datei im Next-Build/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('next build validator rejects private markers and external scripts', () => {
   const privateDir = fixture();
   const externalDir = fixture();

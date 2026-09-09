@@ -42,8 +42,9 @@ function validateBuildTree(root, files, unifiedBuild) {
     for (const file of files) {
       // Vite benennt geteilte Chunks [name]-[hash].js; name darf Punkte
       // enthalten (z. B. jsxRuntime.module). Weiterhin nur assets/, nur
-      // .js/.css, keine Unterverzeichnisse; Marker prüft der Scan unten.
-      if (file !== 'index.html' && !/^assets\/[a-zA-Z0-9_.-]+\.(js|css)$/.test(file)) {
+      // .js/.css plus gebündelte Bild-Assets, keine Unterverzeichnisse;
+      // Marker prüft der Scan unten.
+      if (file !== 'index.html' && !/^assets\/[a-zA-Z0-9_.-]+\.(js|css|png|svg|webp|avif)$/.test(file)) {
         throw new Error(`unerlaubte Datei im Next-Build: ${file}`);
       }
     }

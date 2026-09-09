@@ -3,7 +3,7 @@
   "lessonId": "l-genai-eval",
   "version": 2,
   "locale": "de",
-  "title": "Evaluation generativer Antworten",
+  "title": "Fragenkataloge einfrieren und messen",
   "objectives": [
     "feste Evaluationsfragen mit Gold-Antworten und Quellenbelegen anlegen und vor der Messung einfrieren",
     "Antwortfehler mit einem geschlossenen Labelset (falsch-faktisch, unvollständig, halluziniert, quellos, off-topic, Formatfehler) deterministisch klassifizieren und von Retrieval-Fehlern trennen",

@@ -3,7 +3,7 @@
   "lessonId": "l-ml-linear",
   "version": 2,
   "locale": "de",
-  "title": "Lineare Regression: Fit, Fehlermaße und Residuenanalyse",
+  "title": "Fit und Fehlermaße berechnen",
   "objectives": [
     "MSE, RMSE und R² von Hand berechnen und die Einheiten der Fehlermaße angeben",
     "eine Kleinste-Quadrate-Anpassung mit Intercept über eine Design-Matrix und np.linalg.lstsq berechnen",

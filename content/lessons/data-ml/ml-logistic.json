@@ -3,7 +3,7 @@
   "lessonId": "l-ml-logistic",
   "version": 2,
   "locale": "de",
-  "title": "Logistische Regression und Klassifikationsmetriken",
+  "title": "Sigmoid auswerten und Labels setzen",
   "objectives": [
     "die Sigmoid-Funktion auswerten und Wahrscheinlichkeiten mit einem Schwellenwert in Labels überführen",
     "Precision, Recall und F1 aus einer Konfusionsmatrix berechnen",

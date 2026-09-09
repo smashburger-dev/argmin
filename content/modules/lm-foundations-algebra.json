@@ -13,7 +13,8 @@
   "trackIds": [
     "common-core",
     "applied-ai",
-    "research-evaluation"
+    "research-evaluation",
+    "mathematical-foundations"
   ],
   "lessonIds": [
     "l-foundations-algebra",

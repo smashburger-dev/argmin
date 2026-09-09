@@ -3,7 +3,7 @@
   "lessonId": "l-numpy-shape-contracts",
   "version": 2,
   "locale": "de",
-  "title": "NumPy-Arrays mit Shape-Verträgen",
+  "title": "Shape-Verträge formulieren und prüfen",
   "objectives": ["ndim und shape als Funktionsvertrag prüfen", "Matrixprodukte mit @ von elementweiser Multiplikation unterscheiden", "Broadcasting an einem kleinen Handbeispiel kontrollieren"],
   "competencyIds": ["c-numpy-basics"],
   "requires": ["c-python-functions", "c-linalg-matrices"],

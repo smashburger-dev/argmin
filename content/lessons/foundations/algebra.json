@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-algebra",
   "version": 3,
   "locale": "de",
-  "title": "Algebra-Grundlagen sicher prüfen",
+  "title": "Algebra als überprüfbare Umformung",
   "objectives": ["Lineare Gleichungen schrittweise äquivalent umformen", "Potenz- und Logarithmusaufgaben über Definitionen prüfen", "Vorzeichen- und Operationsfehler lokalisieren"],
   "competencyIds": ["c-algebra-basics"],
   "requires": [],

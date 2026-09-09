@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
@@ -10,7 +10,7 @@ import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
 import { TraceTableView } from './TraceTableView';
 import { ExerciseFrame } from './ExerciseFrame';
-import { getExerciseContext } from './exercise-context';
+import { getExerciseContext, randomVariantSeed } from './exercise-context';
 import type { CatalogData } from '../app/types';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
@@ -51,6 +51,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   const [failed, setFailed] = useState<string | null>(null);
   const [instance, setInstance] = useState<ReturnType<typeof EXERCISE_FAMILIES.instantiate> | null>(null);
   const [summary, setSummary] = useState('');
+  // Frischer Seed pro geladener Variante: Der Link bekommt einen konkreten
+  // Seed, damit jeder Klick die Route ändert. Ein literal '-' in der URL
+  // würde nach dem ersten Klick Same-Hash-Navigation ohne Reload bedeuten.
+  const nextSeed = useMemo(() => randomVariantSeed(), [familyRef]);
 
   let parsed: ReturnType<typeof parseFamilyRef> | null = null;
   let parseError: unknown = null;
@@ -91,7 +95,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   // S4D1: Trace-Tabelle als Interaktionsvariante, sobald der Generator
   // Zustände kennt (instance.traceTable). Sonst normale Familienübung.
   if (instance.traceTable) {
-    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} />;
+    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} nextSeed={nextSeed} />;
   }
 
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
@@ -169,7 +173,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     ? instance.parameters.starterCode
     : '';
 
-  const ctx = getExerciseContext(catalog, instance, summary);
+  const ctx = getExerciseContext(catalog, instance, summary, nextSeed);
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict

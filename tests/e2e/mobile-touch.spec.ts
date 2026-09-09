@@ -47,7 +47,7 @@ async function tapNavigation(page: Page): Promise<void> {
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
   const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
   await nav.getByRole('link', { name: 'Lernen' }).tap();
-  await expect(page.getByRole('heading', { level: 1, name: 'Lernen' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Dein Lernpfad:/ })).toBeVisible();
   await nav.getByRole('link', { name: 'Einstellungen' }).tap();
   await expect(page.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeVisible();
   await nav.getByRole('link', { name: 'Heute', exact: true }).tap();

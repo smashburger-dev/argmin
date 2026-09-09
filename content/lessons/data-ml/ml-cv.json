@@ -3,7 +3,7 @@
   "lessonId": "l-ml-cv",
   "version": 2,
   "locale": "de",
-  "title": "Cross-Validation und Leakage-Kontrolle",
+  "title": "Folds erzeugen und Leakage finden",
   "objectives": [
     "eine K-Fold-Aufteilung mit der n-mod-k-Größenverteilung deterministisch erzeugen",
     "Hyperparameter von gelernten Parametern unterscheiden und Hyperparameter über Cross-Validation wählen",

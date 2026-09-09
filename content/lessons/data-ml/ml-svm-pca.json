@@ -3,7 +3,7 @@
   "lessonId": "l-ml-svm-pca",
   "version": 2,
   "locale": "de",
-  "title": "Margins, PCA und k-Means: Abstände ohne Ambiguität",
+  "title": "Margins als kleinste Norm erklären",
   "objectives": [
     "die Margin-Idee der Hard-Margin-SVM als kleinste-Norm-Lösung erklären",
     "PCA mit Zentrieren, Kovarianz, eigh und Varianzanteil von Hand und in numpy rechnen",

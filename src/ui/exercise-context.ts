@@ -91,7 +91,11 @@ function nextPlacement(catalog: CatalogData, module: LearningModule | undefined,
   return module.placements.slice(start + 1).find((placement) => placement.role === 'curated');
 }
 
-export function getExerciseContext(catalog: CatalogData, instance: ExerciseInstance, summary: string): ExerciseContext {
+export function randomVariantSeed(): number {
+  return Math.floor(Math.random() * 2 ** 31);
+}
+
+export function getExerciseContext(catalog: CatalogData, instance: ExerciseInstance, summary: string, nextSeed?: number): ExerciseContext {
   const match = findPlacement(catalog, instance);
   const module = match?.module;
   const placement = match?.placement;
@@ -107,7 +111,7 @@ export function getExerciseContext(catalog: CatalogData, instance: ExerciseInsta
     difficultyLabel: difficultyLabelFor(instance.difficulty),
     lessonHref: lesson ? `#/lesson/${lesson.lessonId}` : undefined,
     moduleHref: module ? `#/module/${module.moduleId}` : undefined,
-    nextVariantHref: `#/family/${instance.familyId}/${instance.caseId || '-'}/-/${instance.difficulty}`,
+    nextVariantHref: `#/family/${instance.familyId}/${instance.caseId || '-'}/${nextSeed ?? '-'}/${instance.difficulty}`,
     nextTaskHref: next?.href,
     nextTaskTitle: next?.title,
   };

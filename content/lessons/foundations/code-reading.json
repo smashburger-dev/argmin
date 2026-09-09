@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-code-reading",
   "version": 2,
   "locale": "de",
-  "title": "Code Zeile für Zeile tracen",
+  "title": "Programme simulieren statt raten",
   "objectives": ["Ausführung von Quelltext und bloßes Lesen unterscheiden", "Schleifenläufe in einer Tabelle festhalten", "eine Ausgabe vor dem Ausführen begründen"],
   "competencyIds": ["c-python-reading"],
   "requires": ["c-python-basics"],

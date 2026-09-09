@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-collections",
   "version": 3,
   "locale": "de",
-  "title": "Datenstrukturen nach Aufgabe wählen",
+  "title": "Zugriff und Invarianten entscheiden",
   "objectives": ["Liste, Dictionary und Set über ihren Zugriff unterscheiden", "Häufigkeiten mit einem Dictionary zählen", "Duplikate mit einem Set erkennen"],
   "competencyIds": ["c-python-collections"],
   "requires": ["c-python-control-flow"],

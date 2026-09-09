@@ -346,7 +346,7 @@ if (nextDirArg) {
   for (const source of walk(nextSource)) {
     const rel = relative(nextSource, source).replaceAll('\\', '/');
     // Gleiches Namensmuster wie validate_next_build: Vite-Chunks dürfen Punkte tragen.
-    if (rel !== 'index.html' && !/^assets\/[a-zA-Z0-9_.-]+\.(js|css)$/.test(rel)) fail(`unerlaubte Next-Datei: ${rel}`);
+    if (rel !== 'index.html' && !/^assets\/[a-zA-Z0-9_.-]+\.(js|css|png|svg|webp|avif)$/.test(rel)) fail(`unerlaubte Next-Datei: ${rel}`);
     targets.push(rel);
     mkdirSync(join(out, dirname(rel)), { recursive: true });
     cpSync(source, join(out, rel));

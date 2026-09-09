@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-testing-debugging",
   "version": 2,
   "locale": "de",
-  "title": "Ein Fehler, ein reproduzierbarer Test",
+  "title": "Beobachtungen in Tests festhalten",
   "objectives": ["einen Fehler zuverlässig reproduzieren", "Arrange, Act und Assert trennen", "einen Fix gegen Ursache und Regression prüfen"],
   "competencyIds": ["c-testing-debugging"],
   "requires": ["c-python-functions", "c-python-files-errors"],

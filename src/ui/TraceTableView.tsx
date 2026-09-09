@@ -43,7 +43,7 @@ function emptyStates(rows: number, vars: string[]): Array<Record<string, string>
   return Array.from({ length: rows }, () => Object.fromEntries(vars.map((name) => [name, ''])));
 }
 
-export function TraceTableView({ catalog, instance, summary }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string }) {
+export function TraceTableView({ catalog, instance, summary, nextSeed }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string; nextSeed?: number }) {
   const table = instance.traceTable;
   const rows = table.lines.length;
   const [cells, setCells] = useState<Array<Record<string, string>>>(() => emptyStates(rows, table.stateVars));
@@ -111,7 +111,7 @@ export function TraceTableView({ catalog, instance, summary }: { catalog: Catalo
     }
   };
 
-  const ctx = getExerciseContext(catalog, instance, summary || 'Aufgabe');
+  const ctx = getExerciseContext(catalog, instance, summary || 'Aufgabe', nextSeed);
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict?.correct
@@ -131,32 +131,34 @@ export function TraceTableView({ catalog, instance, summary }: { catalog: Catalo
   const answer = (
     <>
       <p>Trage nach jeder Zeile die Werte aller Variablen ein. Noch unbelegte Zellen bleiben leer.</p>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Zeile</th>
-            {table.stateVars.map((name) => <th scope="col" key={name}><code>{name}</code></th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {table.lines.map((line, row) => (
-            <tr key={row} aria-current={verdict && !verdict.correct && verdict.firstBadRow === row ? 'true' : undefined}>
-              <th scope="row"><code>{line}</code></th>
-              {table.stateVars.map((name) => (
-                <td key={name}>
-                  <input
-                    type="text"
-                    aria-label={`Zeile ${row + 1}, ${name}`}
-                    value={revealed ? String(table.expectedStates[row]?.[name] ?? '') : (cells[row]?.[name] ?? '')}
-                    disabled={revealed || (verdict?.correct === true)}
-                    onInput={(event) => setCell(row, name, (event.target as HTMLInputElement).value)}
-                  />
-                </td>
-              ))}
+      <div class="trace-table-scroll" role="region" aria-label="Zustandstabelle" tabIndex={0}>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Zeile</th>
+              {table.stateVars.map((name) => <th scope="col" key={name}><code>{name}</code></th>)}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {table.lines.map((line, row) => (
+              <tr key={row} class={verdict && !verdict.correct && verdict.firstBadRow === row ? 'trace-error' : undefined} aria-current={verdict && !verdict.correct && verdict.firstBadRow === row ? 'true' : undefined}>
+                <th scope="row"><code>{line}</code></th>
+                {table.stateVars.map((name) => (
+                  <td key={name}>
+                    <input
+                      type="text"
+                      aria-label={`Zeile ${row + 1}, ${name}`}
+                      value={revealed ? String(table.expectedStates[row]?.[name] ?? '') : (cells[row]?.[name] ?? '')}
+                      disabled={revealed || (verdict?.correct === true)}
+                      onInput={(event) => setCell(row, name, (event.target as HTMLInputElement).value)}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
   return (

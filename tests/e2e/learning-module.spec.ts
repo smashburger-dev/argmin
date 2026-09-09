@@ -12,25 +12,31 @@ test('golden path 1: git module is reachable without a week route', async ({ pag
   await expect(page.getByText(`${gitModule.derivedMinutes} Min.`)).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Lektionen' })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben & Üben' })).toBeVisible();
-  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
-  await expect(page.getByRole('button', { name: 'Aufgaben & Üben' })).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('link', { name: 'Aufgabe öffnen' }).first()).toBeVisible();
-  await page.getByRole('button', { name: 'Lektionen' }).click();
-  await expect(page.locator('#module-exercises')).toBeHidden();
-  await page.getByRole('button', { name: 'Aufgaben & Üben' }).click();
   await page.getByRole('link', { name: /(?:Aufgabe|Variante) öffnen/ }).first().click();
   await expect(page).toHaveURL(/#\/(?:exercise|family)\//);
 });
 
-test('module panels switch between lessons and exercises', async ({ page, browserName }) => {
-  test.skip(browserName !== 'chromium', 'Module panel behavior runs in Chromium.');
+test('module shows lessons and exercises together without toggling', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Module section behavior runs in Chromium.');
   await page.goto('/index.html#/module/lm-git-basics');
-  const exercises = page.getByRole('button', { name: 'Aufgaben & Üben' });
-  await exercises.click();
-  await expect(exercises).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('heading', { level: 2, name: 'Lektionen' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Aufgaben & Üben' })).toBeVisible();
+  await expect(page.locator('.module-sections .lesson-list a').first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Aufgabe öffnen' }).first()).toBeVisible();
-  const lessons = page.getByRole('button', { name: 'Lektionen' });
-  await lessons.click();
-  await expect(lessons).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('#module-exercises')).toBeHidden();
+});
+
+test('learn path modules advance with side arrows', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Carousel arrows run in Chromium; the markup is browser-independent.');
+  await page.goto('/index.html#/learn');
+  const track = page.getByRole('list', { name: 'Module in diesem Pfad' });
+  await expect(track).toBeVisible();
+  const rail = page.locator('.learn-rail');
+  const next = rail.getByRole('button', { name: 'Weitere Module' });
+  await expect(next).toBeVisible();
+  await expect(rail.getByRole('button', { name: 'Vorherige Module' })).toBeDisabled();
+  const start = await track.evaluate((element) => element.scrollLeft);
+  await next.click();
+  await expect.poll(async () => track.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start);
+  await expect(rail.getByRole('button', { name: 'Vorherige Module' })).toBeEnabled();
 });

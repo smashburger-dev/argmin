@@ -3,6 +3,8 @@ import type { CatalogData, Competency, EvidenceState, SourceSummary } from '../a
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
+import { Carousel } from './Carousel';
+import { MathMarkup } from './MathMarkup';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 /** Loads a route-scoped content section once per session. null while the
@@ -25,14 +27,14 @@ function useSection<T>(load: () => Promise<T>): SectionState<T> {
 }
 
 function sectionError(view: string) {
-  return <p role="alert" class="content-error">{view} konnten nicht geladen werden — bitte die Seite neu laden (Abschnittsdatei fehlt oder Verbindung unterbrochen).</p>;
+  return <p role="alert" class="content-error">{view} konnten nicht geladen werden. Bitte lade die Seite neu (Abschnittsdatei fehlt oder Verbindung unterbrochen).</p>;
 }
 import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
-import { learnerExerciseLabel, minutesLabel } from './learner-labels';
+import { countLabel, learnerExerciseLabel, minutesLabel, reasonCodeLabel } from './learner-labels';
 import { moduleState } from './ProgressView';
 
 const stateLabels = {
@@ -52,10 +54,36 @@ const domainLabels: Record<string, string> = {
   tooling: 'Werkzeuge',
 };
 
+function ModuleCard({ module, step, total, credited, states, trackTitle }: {
+  module: CatalogData['learningModules'][number];
+  step: number;
+  total: number;
+  credited: number;
+  states: Record<string, EvidenceState>;
+  trackTitle?: string;
+}) {
+  const state = moduleState(module.competencyIds, states);
+  const competencyLabel = module.competencyIds.length === 1 ? 'Kompetenz' : 'Kompetenzen';
+  const percent = total > 0 ? Math.round((credited / total) * 100) : 0;
+  return (
+    <a class="module-card-link" href={`#/module/${module.moduleId}`}>
+      <span class="module-step" aria-hidden="true">{step}</span>
+      <div>
+        {trackTitle ? <p class="card-kicker">{trackTitle}</p> : null}
+        <strong>{module.title}</strong>
+        <p>{module.description}</p>
+      </div>
+      <span class="module-meta">{module.estimatedMinutes} Min. · {module.competencyIds.length} {competencyLabel} {state ? <span class="tag">{state}</span> : null} <span class={credited > 0 ? 'tag tag-progress' : 'tag'} style={credited > 0 ? { background: `linear-gradient(90deg, var(--accent-soft) ${percent}%, transparent ${percent}%)` } : undefined}>{credited > 0 ? `${credited} von ${countLabel(total, 'Aufgabe', 'Aufgaben')}` : countLabel(total, 'Aufgabe', 'Aufgaben')}</span></span>
+    </a>
+  );
+}
+
+const historyKindLabels: Record<string, string> = { module: 'Modul', lesson: 'Lektion', attempt: 'Aufgabe' };
+
 export function LearnView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
-  const [activeTrack, setActiveTrack] = useState(progress.trackId);
   const [query, setQuery] = useState('');
-  const track = catalog.tracks.find((item) => item.trackId === activeTrack) ?? catalog.tracks[0];
+  const [restFilter, setRestFilter] = useState<string | null>(null);
+  const track = catalog.tracks.find((item) => item.trackId === progress.trackId) ?? catalog.tracks[0];
   const modules = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase('de');
     const matching = (catalog.learningModules || []).filter((module) => {
@@ -64,62 +92,129 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
     });
     return track ? orderModulesForTrack(matching, track) : matching;
   }, [catalog.learningModules, query, track]);
+  const exerciseCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const module of catalog.learningModules || []) {
+      counts.set(module.moduleId, catalog.exercises.filter((exercise) => exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
+    }
+    return counts;
+  }, [catalog.exercises, catalog.learningModules]);
+  const creditedCounts = useMemo(() => {
+    const credited = new Set(progress.creditedDefinitions);
+    const counts = new Map<string, number>();
+    for (const module of catalog.learningModules || []) {
+      counts.set(module.moduleId, catalog.exercises.filter((exercise) => credited.has(exercise.definitionId) && exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
+    }
+    return counts;
+  }, [catalog.exercises, catalog.learningModules, progress.creditedDefinitions]);
+  const trackFacts = useMemo(() => {
+    const inTrack = (catalog.learningModules || []).filter((module) => track && module.trackIds.includes(track.trackId));
+    const minutes = inTrack.reduce((total, module) => total + module.estimatedMinutes, 0);
+    return { count: inTrack.length, minutes };
+  }, [catalog.learningModules, track]);
+  const restModules = useMemo(() => {
+    const rest = catalog.tracks.filter((item) => item.trackId !== track?.trackId
+      && (restFilter === null || item.trackId === restFilter));
+    return rest.flatMap((restTrack) => orderModulesForTrack(catalog.learningModules || [], restTrack)
+      .map((module, index) => ({ module, track: restTrack, step: index + 1 })));
+  }, [catalog.learningModules, catalog.tracks, track, restFilter]);
+  const restFacts = useMemo(() => {
+    const unique = new Map(restModules.map((entry) => [entry.module.moduleId, entry.module]));
+    const modules = [...unique.values()];
+    return { count: modules.length, minutes: modules.reduce((total, module) => total + module.estimatedMinutes, 0) };
+  }, [restModules]);
+  const historyCards = useMemo(() => {
+    const modulesById = new Map((catalog.learningModules || []).map((module) => [module.moduleId, module]));
+    const lessonsById = new Map(catalog.lessons.map((lesson) => [lesson.lessonId, lesson]));
+    const exercisesById = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
+    return progress.history.flatMap((entry) => {
+      if (entry.kind === 'module') {
+        const module = modulesById.get(entry.id);
+        return module ? [{ kind: 'module', title: module.title, href: `#/module/${module.moduleId}`, key: `module:${entry.id}` }] : [];
+      }
+      if (entry.kind === 'lesson') {
+        const lesson = lessonsById.get(entry.id);
+        return lesson ? [{ kind: 'lesson', title: lesson.title, href: `#/lesson/${lesson.lessonId}`, key: `lesson:${entry.id}` }] : [];
+      }
+      const exercise = exercisesById.get(entry.id);
+      return exercise ? [{ kind: 'attempt', title: learnerExerciseLabel(exercise), href: routeForDefinition(exercise), key: `attempt:${entry.id}` }] : [];
+    });
+  }, [catalog, progress.history]);
   return (
-    <section class="view" aria-labelledby="learn-title">
+    <section class="view learn-view" aria-labelledby="learn-title">
       <header class="view-header split-header">
-        <div>
-          <p class="eyebrow">Lernpfad</p>
-          <h1 id="learn-title" tabIndex={-1}>Lernen</h1>
-          <p class="lede">Module in sinnvoller Reihenfolge — du kannst jederzeit frei springen.</p>
-        </div>
-        <label class="search-field">
-          <span>Module suchen</span>
+        <h1 id="learn-title" tabIndex={-1}>{track ? <>Dein Lernpfad: <span class="track-name-accent">{track.title}</span></> : 'Lernpfade'}</h1>
+        <label class="search-field omni-search">
+          <span class="visually-hidden">Module suchen</span>
           <input
             type="search"
-            placeholder="Algebra, Tensoren, RAG"
+            placeholder="Module suchen …"
             value={query}
             onInput={(event) => setQuery(event.currentTarget.value)}
           />
         </label>
       </header>
-      <div class="track-strip" aria-label="Lernpfade">
-        {catalog.tracks.map((track) => (
-          <button
-            type="button"
-            class={track.trackId === activeTrack ? 'track-chip active' : 'track-chip'}
-            aria-pressed={track.trackId === activeTrack}
-            onClick={() => setActiveTrack(track.trackId)}
-            key={track.trackId}
-          >
-            {track.title}
-          </button>
-        ))}
-      </div>
-      <section class="activity-section" aria-labelledby="learn-module-title">
-        <div class="section-heading">
-          <div><p class="eyebrow">Lernpfad</p><h2 id="learn-module-title">Module in diesem Pfad</h2></div>
-          <span>{modules.length}</span>
-        </div>
+      <section class="activity-section learn-rail" aria-labelledby="learn-module-title">
         {modules.length > 0 ? (
-          <ol class="module-path">
-            {modules.map((module, index) => {
-              const state = moduleState(module.competencyIds, progress.evidenceStates) || 'Im Aufbau';
-              const competencyLabel = module.competencyIds.length === 1 ? 'Kompetenz' : 'Kompetenzen';
-              return (
-                <li key={module.moduleId}>
-                  <a href={`#/module/${module.moduleId}`}>
-                    <span class="module-step" aria-hidden="true">{index + 1}</span>
-                    <div>
-                      <strong>{module.title}</strong>
-                      <p>{module.description}</p>
-                    </div>
-                    <span class="module-meta">{module.estimatedMinutes} Min. · {module.competencyIds.length} {competencyLabel} <span class="tag">{state}</span></span>
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
-        ) : <div class="empty-state"><h2>Kein passendes Modul</h2><p>Ändere den Suchbegriff oder wähle einen anderen Lernpfad.</p></div>}
+          <>
+          <h2 class="visually-hidden" id="learn-module-title">Module in diesem Pfad</h2>
+          <Carousel label="Module in diesem Pfad" arrows fades prevLabel="Vorherige Module" nextLabel="Weitere Module">
+            {modules.map((module, index) => (
+              <ModuleCard module={module} step={index + 1} total={exerciseCounts.get(module.moduleId) ?? 0} credited={creditedCounts.get(module.moduleId) ?? 0} states={progress.evidenceStates} key={module.moduleId} />
+            ))}
+          </Carousel>
+          </>
+        ) : <div class="empty-state"><h2 id="learn-module-title">Kein passendes Modul</h2><p>Ändere den Suchbegriff oder wähle einen anderen Lernpfad.</p></div>}
+      </section>
+      {track ? (
+        <div class="track-below">
+          <p>{track.description}</p>
+          <span>{trackFacts.count} {trackFacts.count === 1 ? 'Modul' : 'Module'} · {minutesLabel(trackFacts.minutes)} · {track.competencyIds.length} Kompetenzen</span>
+        </div>
+      ) : null}
+      <section class="activity-section learn-history" aria-labelledby="learn-history-title">
+        <div class="section-heading">
+          <div><h2 id="learn-history-title">Zuletzt geöffnet</h2></div>
+          <span>{historyCards.length} {historyCards.length === 1 ? 'Eintrag' : 'Einträge'}</span>
+        </div>
+        {historyCards.length > 0 ? (
+          <Carousel label="Zuletzt geöffnet" arrows fades prevLabel="Ältere Einträge" nextLabel="Neuere Einträge">
+            {historyCards.map((card) => (
+              <a class="history-card" href={card.href} key={card.key}>
+                <p class="card-kicker">{historyKindLabels[card.kind]}</p>
+                <strong>{card.title}</strong>
+              </a>
+            ))}
+          </Carousel>
+        ) : <div class="empty-state"><h2>Noch keine Geschichte</h2><p>Sobald du Module, Lektionen oder Aufgaben öffnest, erscheinen sie hier.</p></div>}
+      </section>
+      <section class="activity-section learn-rest" aria-labelledby="learn-rest-title">
+        <div class="learn-rest-head">
+          <div>
+            <h2 id="learn-rest-title">Erkunde die restlichen Lernpfade</h2>
+          </div>
+          <div class="track-strip" role="group" aria-label="Andere Lernpfade" data-tour="learn-tracks">
+            {catalog.tracks.filter((item) => item.trackId !== track?.trackId).map((item) => (
+              <button
+                type="button"
+                class={item.trackId === restFilter ? 'track-chip active' : 'track-chip'}
+                aria-pressed={item.trackId === restFilter}
+                onClick={() => setRestFilter((current) => current === item.trackId ? null : item.trackId)}
+                key={item.trackId}
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
+        </div>
+        <Carousel label="Module der restlichen Lernpfade" arrows fades prevLabel="Vorherige Module" nextLabel="Weitere Module">
+          {restModules.map(({ module, track: restTrack, step }) => (
+            <ModuleCard module={module} step={step} total={exerciseCounts.get(module.moduleId) ?? 0} credited={creditedCounts.get(module.moduleId) ?? 0} states={progress.evidenceStates} trackTitle={restFilter ? undefined : restTrack.title} key={`${restTrack.trackId}:${module.moduleId}`} />
+          ))}
+        </Carousel>
+        <div class="track-below">
+          <span>{restFacts.count} {restFacts.count === 1 ? 'Modul' : 'Module'} · {minutesLabel(restFacts.minutes)}</span>
+        </div>
       </section>
     </section>
   );
@@ -146,15 +241,15 @@ export function CompetencyView({ catalog, progress, competencyId }: {
       </header>
       <div class="competency-detail-grid">
         <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${new Date(String(progress.evidenceDueAt[competencyId])).toLocaleDateString('de-DE')}.` : ''}</p></article>
-        <article class="status-card"><p class="card-kicker">Evidence-Policy</p><h2>{competency.evidencePolicy.minimumIndependentHits} Treffer</h2><p>{competency.evidencePolicy.minimumDistinctDefinitions} verschiedene Aufgabenfamilien{competency.evidencePolicy.delayedHitRequired ? ', davon ein verzögerter Abruf' : ''}. Fällige Aufgaben-Reviews dieser Kompetenz erscheinen in der Review-Ansicht — Kompetenz-Frische und Aufgaben-Review sind zwei getrennte Zeitachsen.</p></article>
+        <article class="status-card"><p class="card-kicker">Evidence-Policy</p><h2>{competency.evidencePolicy.minimumIndependentHits} Treffer</h2><p>{competency.evidencePolicy.minimumDistinctDefinitions} verschiedene Aufgabenfamilien{competency.evidencePolicy.delayedHitRequired ? ', davon ein verzögerter Abruf' : ''}. Fällige Aufgaben-Reviews dieser Kompetenz erscheinen in der Review-Ansicht. Kompetenz-Frische und Aufgaben-Review sind zwei getrennte Zeitachsen.</p></article>
       </div>
       {competency.requires.length > 0 && <aside class="prerequisite-panel"><h2>Voraussetzungen</h2><ul>{competency.requires.map((id) => <li key={id}><a href={`#/competency/${id}`}>{byId.get(id)?.title ?? id}</a><span>{stateLabels[progress.evidenceStates[id] ?? 'unassessed']}</span></li>)}</ul></aside>}
-      {modules.length > 0 && <section class="activity-section" aria-labelledby="module-list-title"><div class="section-heading"><div><p class="eyebrow">Module</p><h2 id="module-list-title">Module in diesem Pfad</h2></div><span>{modules.length}</span></div><div class="lesson-list">{modules.map((module) => <a href={`#/module/${module.moduleId}`} key={module.moduleId}><span>{module.estimatedMinutes} Min.</span><strong>{module.title}</strong><p>{module.description}</p></a>)}</div></section>}
-      {lessons.length > 0 && <section class="activity-section" aria-labelledby="lesson-list-title"><div class="section-heading"><div><p class="eyebrow">Lektionen</p><h2 id="lesson-list-title">Lektionen</h2></div><span>{lessons.length} verfügbar</span></div><div class="lesson-list">{lessons.map((lesson) => <a href={`#/lesson/${lesson.lessonId}`} key={lesson.lessonId}><span>{lesson.estimatedMinutes} Min.</span><strong>{lesson.title}</strong><p>{lesson.objectives[0]}</p></a>)}</div></section>}
+      {modules.length > 0 && <section class="activity-section" aria-labelledby="module-list-title"><div class="section-heading"><div><h2 id="module-list-title">Module in diesem Pfad</h2></div><span>{modules.length}</span></div><div class="lesson-list">{modules.map((module) => <a href={`#/module/${module.moduleId}`} key={module.moduleId}><span>{module.estimatedMinutes} Min.</span><strong>{module.title}</strong><p>{module.description}</p></a>)}</div></section>}
+      {lessons.length > 0 && <section class="activity-section" aria-labelledby="lesson-list-title"><div class="section-heading"><div><h2 id="lesson-list-title">Lektionen</h2></div><span>{lessons.length} verfügbar</span></div><div class="lesson-list">{lessons.map((lesson) => <a href={`#/lesson/${lesson.lessonId}`} key={lesson.lessonId}><span>{lesson.estimatedMinutes} Min.</span><strong>{lesson.title}</strong><p>{lesson.objectives[0]}</p></a>)}</div></section>}
       <section class="activity-section" aria-labelledby="activity-title">
         <div class="section-heading"><div><p class="eyebrow">Üben und nachweisen</p><h2 id="activity-title">Aufgaben</h2></div><span>{exercises.length} verfügbar</span></div>
         {exercises.length > 0
-          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.estimatedMinutes} Min.</p><h3>{learnerExerciseLabel(exercise)}</h3><p>{exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.'}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
+          ? <div class="activity-list">{exercises.map((exercise) => <article class="activity-card" key={exercise.definitionId}><div><p class="card-kicker">{exercise.estimatedMinutes} Min.</p><h3>{learnerExerciseLabel(exercise)}</h3><p>{exercise.title ? <MathMarkup inline html={exercise.title} /> : (exercise.masteryEligible ? 'Kann als Kompetenzbeleg zählen.' : 'Diagnose oder Reflexion ohne Kompetenzbeleg.')}</p></div><Button href={routeForDefinition(exercise)}>{exercise.activityType === 'python-code' ? 'Im Codeworkspace öffnen' : 'Aufgabe öffnen'}</Button></article>)}</div>
           : <div class="empty-state"><h2>Noch keine Aufgabenfamilie</h2><p>Diese Lücke bleibt im Foundations-Manifest sichtbar.</p></div>}
       </section>
     </section>
@@ -165,7 +260,7 @@ export function ToolsView(_: { catalog: CatalogData }) {
   const tools = useSection(loadTools);
   if (tools === 'failed') return <section class="view" aria-labelledby="tools-title"><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1>{sectionError('Werkzeugkarten')}</section>;
   if (!tools) return <section class="view" aria-labelledby="tools-title"><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p role="status">Werkzeugkarten werden geladen.</p></section>;
-  return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug hat einen sichtbaren Zweck, Grenzen und einen nativen Einstieg. Externe Repositories bleiben Quellen; sie werden nicht ungeprüft ausgeführt.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="actions">{tool.routes.map((route) => <Button key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</Button>)}</div></article>)}</div></section>;
+  return <section class="view" aria-labelledby="tools-title"><header class="view-header"><p class="eyebrow">Runtimes, Prüfpfade und Arbeitsweisen</p><h1 id="tools-title" tabIndex={-1}>Werkzeuge</h1><p class="lede">Jedes Werkzeug nennt Zweck, Grenzen und Einstieg.</p></header><div class="tool-grid">{tools.map((tool) => <article class="tool-card" key={tool.toolId}><p class="card-kicker">{tool.kind} · {tool.toolId}</p><h2>{tool.title}</h2><p>{tool.summary}</p><h3>Kann</h3><ul>{tool.capabilities.map((capability) => <li key={capability}>{capability}</li>)}</ul>{tool.limitations.length ? <><h3>Grenzen</h3><ul>{tool.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul></> : null}<div class="actions">{tool.routes.map((route) => <Button key={route.href} href={route.href} target={route.type === 'external' ? '_blank' : undefined} rel={route.type === 'external' ? 'noreferrer' : undefined}>{route.label}</Button>)}</div></article>)}</div></section>;
 }
 
 function sourceWeeksLabel(weeks: unknown) {
@@ -203,7 +298,7 @@ export function SourcesView(_: { catalog: CatalogData }) {
         <div>
           <p class="eyebrow">Quellen und Referenzen</p>
           <h1 id="sources-title" tabIndex={-1}>Lektüren</h1>
-          <p class="lede">Öffentliche Quellen und Referenzen begleiten die Lektionen. Eine Quelle ist noch keine Lernaktivität; ihre Rolle wird in Lektionen und Modulen ausgewiesen.</p>
+          <p class="lede">Öffentliche Quellen begleiten die Lektionen.</p>
         </div>
         <Button href="#/learn">Zum Kompetenzkatalog</Button>
       </header>
@@ -219,9 +314,9 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
   const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'transform-linear-equation-isolate:two-step-fixed-instance');
   return (
     <section class="view" aria-labelledby="diagnostic-title">
-      <header class="view-header"><p class="eyebrow">Formative Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>
+      <header class="view-header"><p class="eyebrow">Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>
       {recommendations.length > 0
-        ? <div class="diagnostic-grid">{recommendations.map((recommendation, index) => { const competency = labels.get(recommendation.competencyId); return <article class="diagnostic-card" key={recommendation.competencyId}><span>{String(index + 1).padStart(2, '0')} · {typeLabels[recommendation.type]}</span><h2>{competency?.title ?? recommendation.competencyId}</h2><p>{competency?.description}</p><small>{recommendation.reasonCodes.join(' · ')}</small><a href={`#/competency/${recommendation.competencyId}`}>Bereich ansehen</a></article>; })}</div>
+        ? <div class="diagnostic-grid">{recommendations.map((recommendation, index) => { const competency = labels.get(recommendation.competencyId); return <article class="diagnostic-card" key={recommendation.competencyId}><span>{String(index + 1).padStart(2, '0')} · {typeLabels[recommendation.type]}</span><h2>{competency?.title ?? recommendation.competencyId}</h2><p>{competency?.description}</p><small>{recommendation.reasonCodes.map(reasonCodeLabel).join(' · ')}</small><a href={`#/competency/${recommendation.competencyId}`}>Bereich ansehen</a></article>; })}</div>
         : <div class="empty-state"><h2>Foundations aktuell belegt</h2><p>Öffne Review für fällige Abrufe oder wähle frei den nächsten Lernpfad.</p></div>}
       <aside class="reason-panel"><p class="eyebrow">Auswertung</p><h2>Jede Empfehlung bleibt erklärbar</h2><p>Reason-Codes unterscheiden fehlende Evidence, schwache Kompetenz, fälligen Review und aktuellen Nachweis. Selbsteinschätzung allein öffnet oder schließt kein Gate.</p><Button variant="primary" href={firstAnchor ? routeForDefinition(firstAnchor) : '#/learn'}>Ersten Algebra-Anker ausführen</Button></aside>
     </section>
@@ -233,9 +328,9 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
   const { executable, archived } = partitionReviewQueue(progress.dueReviews, byId.keys());
   return (
     <section class="view" aria-labelledby="review-title">
-      <header class="view-header"><p class="eyebrow">Abruf statt Wiederlesen</p><h1 id="review-title" tabIndex={-1}>Review</h1><p class="lede">Fällige Aufgaben-Reviews aus allen Kompetenzen an einem Ort. Das ist die Aufgabe-Ebene: jede einzelne Aufgabe hat ihren eigenen Fälligkeitstermin aus den Expanding-Slots. Die aggregierte Kompetenz-Frische ist separat im Fortschritt sichtbar.</p></header>
+      <header class="view-header"><p class="eyebrow">Abruf statt Wiederlesen</p><h1 id="review-title" tabIndex={-1}>Review</h1><p class="lede">Fällige Abrufe aus allen Kompetenzen an einem Ort.</p></header>
       {progress.dueReviews.length === 0
-        ? <div class="empty-state"><h2>Keine Aufgaben-Reviews fällig</h2><p>Nach einem unabhängigen Treffer plant die Plattform den nächsten Abruf. Aufgaben mit Variantengenerator öffnen bei jedem Review eine frische Instanz mit neuen Werten.</p><Button href="#/learn">Inhalte erkunden</Button></div>
+        ? <div class="empty-state"><h2>Keine Aufgaben-Reviews fällig</h2><p>Nach einem Treffer plant die Plattform den nächsten Abruf.</p><Button href="#/learn">Inhalte erkunden</Button></div>
         : <>
           <div class="competency-summary" aria-live="polite">
             <strong>{executable.length}</strong>
@@ -246,7 +341,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               <span>archiviert</span>
             </>}
           </div>
-          <div class="review-list">
+          <div class="review-list" data-tour="review-queue">
             {executable.map((review) => {
               const definition = byId.get(review.exerciseId);
               if (!definition) return null; // unreachable after the partition; keeps the type narrowing honest
@@ -254,14 +349,13 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               const freshRoute = definition.familyId && definition.seeded
                 ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
                 : route;
-              return <article class="review-card" key={review.exerciseId}><div><p class="card-kicker">Aufgaben-Review fällig</p><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
+              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}
             {archived.map((review) => (
               <article class="review-card" key={review.exerciseId}>
                 <div>
-                  <p class="card-kicker">Archivierter Aufgaben-Review</p>
                   <h2>{review.exerciseId}</h2>
-                  <p>Nicht mehr verfügbar – Verlauf bleibt erhalten. Die Aufgabenfamilie wurde aus dem Katalog entfernt; Versuche, Belege und Review-Termine bleiben lokal gespeichert.</p>
+                  <p>Nicht mehr verfügbar. Der Verlauf bleibt erhalten. Die Aufgabenfamilie wurde aus dem Katalog entfernt; Versuche, Belege und Review-Termine bleiben lokal gespeichert.</p>
                 </div>
               </article>
             ))}
@@ -304,7 +398,7 @@ export function SettingsView({ catalog, progress, onSave }: {
   };
   return (
     <section class="view" aria-labelledby="settings-title">
-      <header class="view-header"><p class="eyebrow">Lokal und übersteuerbar</p><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p class="lede">Zielpfad, Zeitbudget und optionale Adapter bleiben unter deiner Kontrolle.</p></header>
+      <header class="view-header"><p class="eyebrow">Lokal</p><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p class="lede">Pfad, Zeitbudget und Darstellung bleiben unter deiner Kontrolle.</p></header>
       <section class="settings-panel" aria-labelledby="theme-title">
         <div><p class="card-kicker">Darstellung</p><h2 id="theme-title">Farbschema</h2><p>Wähle, ob die Oberfläche dem System folgt oder hell beziehungsweise dunkel bleibt.</p></div>
         <div class="segmented" role="radiogroup" aria-label="Farbschema">
@@ -334,5 +428,5 @@ export function SettingsView({ catalog, progress, onSave }: {
 }
 
 export function PlaceholderView({ title }: { title: string }) {
-  return <section class="view"><header class="view-header"><p class="eyebrow">Freier Zugriff</p><h1 tabIndex={-1}>{title}</h1><p class="lede">Dieser Lernfluss wird im parallelen UI-Schnitt aufgebaut.</p></header><Button href="#/learn">Zur Kompetenzkarte</Button></section>;
+  return <section class="view"><header class="view-header"><p class="eyebrow">Verlaufen?</p><h1 tabIndex={-1}>{title}</h1><p class="lede">Diese Adresse gibt es hier nicht.</p></header><Button href="#/learn">Zur Kompetenzkarte</Button></section>;
 }

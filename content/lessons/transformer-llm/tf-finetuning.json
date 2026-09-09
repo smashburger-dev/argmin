@@ -3,7 +3,7 @@
   "lessonId": "l-tf-finetuning",
   "version": 2,
   "locale": "de",
-  "title": "Fine-Tuning-Strategien und LoRA-Mathematik",
+  "title": "Strategien nach Kosten vergleichen",
   "objectives": [
     "Fine-Tuning, Feature Extraction und LoRA mit ihren Parameter- und Speicherfolgen vergleichen",
     "LoRA-Updates ΔW = (α/r)·B·A exakt berechnen, anwenden und Parameterzahlen gegen volles Fine-Tuning stellen",

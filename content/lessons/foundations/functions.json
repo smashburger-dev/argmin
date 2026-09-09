@@ -3,7 +3,7 @@
   "lessonId": "l-foundations-functions",
   "version": 3,
   "locale": "de",
-  "title": "Funktionen als kleine Verträge",
+  "title": "Eingaben, Wirkung und Vertrag klären",
   "objectives": ["Parameter, Rückgabe und Seiteneffekt unterscheiden", "eine Funktion aus Beispielen ableiten", "Grenzfälle vor der Implementierung notieren"],
   "competencyIds": ["c-python-functions"],
   "requires": ["c-python-basics"],

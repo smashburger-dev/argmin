@@ -3,7 +3,7 @@
   "lessonId": "l-ml-baseline",
   "version": 1,
   "locale": "de",
-  "title": "ML-Probleme formulieren und Baselines setzen",
+  "title": "Probleme einordnen und Baselines lesen",
   "objectives": [
     "eine Vorhersageaufgabe als Regression oder Klassifikation einordnen und die Zielvariable präzise definieren",
     "Majority- und Mean-Baselines berechnen und als Vergleichsmaßstab begründen",
