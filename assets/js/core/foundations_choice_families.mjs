@@ -17,6 +17,7 @@
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
 import { genMetaErrorClassify } from './foundations_fresh_generators.mjs';
+import { variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
 
 const CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
 const CHOICE_IDS = ['a', 'b', 'c', 'd'];
@@ -26,14 +27,6 @@ const CHOICE_IDS = ['a', 'b', 'c', 'd'];
  *  genMetaErrorClassify(3401) ist byte-identisch mit der autorisierten
  *  Definition (Fall off-by-one, korrekte Wahl b). */
 export const FROZEN_META_ERROR_SEED = 3401;
-
-/** Rotate `options` so that index `rotation` becomes the correct position.
- *  rotation 0 keeps the input order (slice(-0) would be a no-rotation trap).
- *  S4C-Mechanik (generateGitOperationFamily), unverändert übernommen. */
-const rotateOptions = (options, rotation) => {
-  if (rotation <= 0) return [...options];
-  return [...options.slice(-rotation), ...options.slice(0, options.length - rotation)];
-};
 
 /** Generische statische Choice-Maschine: Der Seed rotiert nur die Position
  *  der korrekten Antwort (intro zeigt 2, alle anderen Profile 4 Optionen).
@@ -45,13 +38,12 @@ function generateStaticChoice(bank, { seed, caseId, difficulty }) {
   const meta = bank.find((item) => item.caseId === caseId);
   if (!meta) throw new Error(`Unbekannter Fall ${caseId}`);
   const options = [meta.correct, ...meta.distractors.slice(0, choiceCount - 1)];
-  const rotation = Math.abs(seed) % options.length;
-  const rotated = rotateOptions(options, rotation);
+  const rotation = variantCaseIndex(seed, options.length);
   const ids = CHOICE_IDS.slice(0, options.length);
   return {
     parameters: { caseId, difficulty, ...(meta.parameters || {}) },
     expected: { correctChoice: ids[rotation] },
-    choices: rotated.map((text, index) => ({ id: ids[index], text, correct: index === rotation })),
+    choices: buildRotatedChoices(options, rotation, ids),
     prompt: meta.prompt,
     fullSolution: meta.solution,
     ...(meta.hints ? { hints: meta.hints } : {}),

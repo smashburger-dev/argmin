@@ -17,7 +17,7 @@
 // validated fail-closed by the family runtime; code-trace
 // variables may carry `type: 'repr'` (canonical Python literals).
 
-import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
+import { rng, randInt, nonzeroInt, variantCaseIndex, variantEpoch, buildRotatedChoices } from './generator_draw_kit.mjs';
 
 
 /** Python repr for the values our generators produce. Sets are rendered
@@ -449,34 +449,34 @@ const META_CASES = [
   },
 ];
 
-/** Rotate `options` so that index `rotation` becomes the correct position.
- *  rotation 0 keeps the input order (slice(-0) would be a no-rotation trap). */
-const rotateOptions = (options, rotation) => {
-  if (rotation <= 0) return [...options];
-  return [...options.slice(-rotation), ...options.slice(0, options.length - rotation)];
-};
-
 /** Shared variant-bank scaffolding (ADR-0015 mechanism B): the seed picks
- *  the case (`seed % cases.length`), the correct position rotates with the
- *  case AND the seed epoch, and every option text passes through `localize`
- *  (the git family rewrites its file name per epoch). `finish` receives the
- *  resolved bank state and builds the generator return value. */
-const caseBank = (cases, seed, { localize = (text) => text, finish }) => {
-  const caseIndex = seed % cases.length;
+ *  the case (`variantCaseIndex`), the correct position rotates with the
+ *  case AND the seed epoch (`variantEpoch`), and every option text passes
+ *  through `localize` (the git family rewrites its file name per epoch).
+ *  Cases with seed-dependent distractors pass `buildOptions(metaCase, seed)`
+ *  returning `{ correctText, distractors }` plus extra fields for `finish`
+ *  (the exception bank returns `code` and `noError` this way). `finish`
+ *  receives the resolved bank state and builds the generator return value. */
+const caseBank = (cases, seed, { localize = (text) => text, buildOptions = null, finish }) => {
+  const caseIndex = variantCaseIndex(seed, cases.length);
   const metaCase = cases[caseIndex];
-  const options = [metaCase.correct, ...metaCase.distractors].map(localize);
-  const rotation = (caseIndex + Math.floor(seed / cases.length)) % options.length;
-  const rotated = rotateOptions(options, rotation);
+  const epoch = variantEpoch(seed, cases.length);
+  const detail = buildOptions ? buildOptions(metaCase, seed) : null;
+  const correct = detail ? detail.correctText : metaCase.correct;
+  const distractors = detail ? detail.distractors : metaCase.distractors;
+  const options = [correct, ...distractors].map(localize);
+  const rotation = (caseIndex + epoch) % options.length;
   const ids = ['a', 'b', 'c', 'd'];
-  const choices = rotated.map((text, i) => ({ id: ids[i], text, correct: i === rotation }));
+  const choices = buildRotatedChoices(options, rotation, ids);
   return finish({
     metaCase,
     caseIndex,
-    epoch: Math.floor(seed / cases.length),
+    epoch,
     correctText: options[0],
     options,
     choices,
     correctChoiceId: ids[rotation],
+    detail,
   });
 };
 
@@ -518,48 +518,47 @@ const EXCEPTION_CASES = [
  *  Correct position rotates with the case. */
 export function genExceptionBoundary(seed) {
   const r = rng(seed);
-  const caseIndex = seed % EXCEPTION_CASES.length;
-  const metaCase = EXCEPTION_CASES[caseIndex];
-  const code = metaCase.expr(r);
-  const noError = metaCase.answer.startsWith('KEIN_FEHLER');
-  let correctText;
-  if (!noError) {
-    correctText = `${metaCase.answer} — ${metaCase.why}`;
-  } else if (metaCase.answer === 'KEIN_FEHLER_INT') {
-    const value = code.match(/"(\d+)"/)[1];
-    correctText = `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.`;
-  } else {
-    const digits = code.match(/"(\d+)"/)[1];
-    const times = Number(code.split('*')[1].trim());
-    correctText = `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".`;
-  }
-  const answerName = noError ? 'KEIN_FEHLER' : metaCase.answer;
-  const wrongPool = [
-    'ValueError — das Literal passt nicht zum erwarteten Typ.',
-    'TypeError — die Operation ist für diese Typen nicht definiert.',
-    'KeyError — der Schlüssel fehlt im Mapping.',
-    'FileNotFoundError — die Datei existiert nicht.',
-    'IndexError — der Index liegt außerhalb der Sequenz.',
-    'Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis.',
-  ].filter((text) => (noError ? !text.startsWith('Kein Fehler') : !text.startsWith(`${answerName} —`)));
-  const distractors = [];
-  const er = rng(seed ^ 0x5f2c);
-  while (distractors.length < 3) {
-    const candidate = wrongPool[Math.floor(er() * wrongPool.length)];
-    if (!distractors.includes(candidate)) distractors.push(candidate);
-  }
-  const options = [correctText, ...distractors];
-  const rotation = (caseIndex + Math.floor(seed / EXCEPTION_CASES.length)) % options.length;
-  const rotated = rotateOptions(options, rotation);
-  const ids = ['a', 'b', 'c', 'd'];
-  const choices = rotated.map((text, i) => ({ id: ids[i], text, correct: i === rotation }));
-  return {
-    parameters: { caseId: metaCase.caseId, caseIndex },
-    expected: { correctChoice: ids[rotation] },
-    choices,
-    prompt: `Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n${code}`,
-    fullSolution: `Richtig: ${correctText}${noError ? '' : ` Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.`}`,
-  };
+  return caseBank(EXCEPTION_CASES, seed, {
+    buildOptions: (metaCase) => {
+      const code = metaCase.expr(r);
+      const noError = metaCase.answer.startsWith('KEIN_FEHLER');
+      let correctText;
+      if (!noError) {
+        correctText = `${metaCase.answer} — ${metaCase.why}`;
+      } else if (metaCase.answer === 'KEIN_FEHLER_INT') {
+        const value = code.match(/"(\d+)"/)[1];
+        correctText = `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.`;
+      } else {
+        const digits = code.match(/"(\d+)"/)[1];
+        const times = Number(code.split('*')[1].trim());
+        correctText = `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".`;
+      }
+      const answerName = noError ? 'KEIN_FEHLER' : metaCase.answer;
+      const wrongPool = [
+        'ValueError — das Literal passt nicht zum erwarteten Typ.',
+        'TypeError — die Operation ist für diese Typen nicht definiert.',
+        'KeyError — der Schlüssel fehlt im Mapping.',
+        'FileNotFoundError — die Datei existiert nicht.',
+        'IndexError — der Index liegt außerhalb der Sequenz.',
+        'Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis.',
+      ].filter((text) => (noError ? !text.startsWith('Kein Fehler') : !text.startsWith(`${answerName} —`)));
+      const distractors = [];
+      // ponytail: historische Seed-Ableitung eingefroren, neue Fälle via familySubseed.
+      const er = rng(seed ^ 0x5f2c);
+      while (distractors.length < 3) {
+        const candidate = wrongPool[Math.floor(er() * wrongPool.length)];
+        if (!distractors.includes(candidate)) distractors.push(candidate);
+      }
+      return { code, noError, correctText, distractors };
+    },
+    finish: ({ metaCase, caseIndex, choices, correctChoiceId, correctText, detail }) => ({
+      parameters: { caseId: metaCase.caseId, caseIndex },
+      expected: { correctChoice: correctChoiceId },
+      choices,
+      prompt: `Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n${detail.code}`,
+      fullSolution: `Richtig: ${correctText}${detail.noError ? '' : ` Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.`}`,
+    }),
+  });
 }
 
 export function exceptionBoundaryCaseCount() {
@@ -737,14 +736,9 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
   const fileName = varyFile ? fileNames[randInt(rng(seed), 0, fileNames.length - 1)] : null;
   const options = gitOperationOptions(meta, difficulty, choiceCount);
-  const rotation = Math.abs(seed) % options.length;
-  const rotated = rotateOptions(options, rotation);
+  const rotation = variantCaseIndex(seed, options.length);
   const ids = ['a', 'b', 'c', 'd'].slice(0, options.length);
-  const choices = rotated.map((text, index) => ({
-    id: ids[index],
-    text,
-    correct: index === rotation,
-  }));
+  const choices = buildRotatedChoices(options, rotation, ids);
   const fileNote = fileName ? ` Die Arbeitsdatei heißt ${fileName}.` : '';
   const question = GIT_OPERATION_STATIC[caseId]
     ? 'Welcher Ablauf liefert den belastbarsten Abschluss?'

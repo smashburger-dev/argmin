@@ -45,3 +45,16 @@
 # leaked validator temp dirs from interrupted test runs
 tmp-validate-neg-*/
 .tmp-validate-neg-*/
+
+# LLM training artifacts stay private (B3). Registry plus script are tracked.
+private/llm/adapters/
+private/llm/datasets/
+private/llm/runs/
+teacher-traces.jsonl
+verified-traces.jsonl
+teacher-cost.json
+verify-report.json
+eval-report.json
+
+# Private LLM training data (Spec B1/B3): never in release tree
+/private/llm/

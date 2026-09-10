@@ -40,6 +40,7 @@ import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
+import { shuffle } from './generator_draw_kit.mjs';
 import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
@@ -54,17 +55,6 @@ function assertProfile(difficulty) {
 
 function profileTier(difficulty) {
   return CONSTRUCT_PROFILES.indexOf(difficulty);
-}
-
-/** Fisher-Yates mit dem Projekt-RNG: deterministische Permutation. */
-function shuffledIds(ids, seed) {
-  const r = rng(seed >>> 0);
-  const out = [...ids];
-  for (let i = out.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(r() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
 }
 
 const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
@@ -717,6 +707,7 @@ export function inspectSummary(rows) {
 const pyString = (s) => `"${s}"`;
 
 function zaehleExtraRows(seed, count) {
+  // ponytail: historische Seed-Ableitung eingefroren, neue Fälle via familySubseed.
   const r = rng((seed ^ 0x9e37) >>> 0);
   const rows = [];
   for (let i = 0; i < count; i += 1) {
@@ -734,6 +725,7 @@ function zaehleExtraRows(seed, count) {
 }
 
 function inspectExtraRows(seed, count) {
+  // ponytail: historische Seed-Ableitung eingefroren, neue Fälle via familySubseed.
   const r = rng((seed ^ 0x51f7) >>> 0);
   const rows = [];
   for (let i = 0; i < count; i += 1) {
@@ -932,6 +924,7 @@ export function palindromOutcome(s) {
 const pyEscape = (s) => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\t/g, '\\t');
 
 function palindromExtraCases(seed, count) {
+  // ponytail: historische Seed-Ableitung eingefroren, neue Fälle via familySubseed.
   const r = rng((seed ^ 0x3a5f) >>> 0);
   const cases = [];
   for (let i = 0; i < count; i += 1) {
@@ -987,6 +980,8 @@ export function generateRegressionSuiteFamily({ seed, caseId, difficulty }) {
 // adjazente Vertauschung; sonst geseedete Permutation ungleich der
 // Poolreihenfolge). Lösung und Distraktoren sind fallfixiert; der Solver
 // kennt nur die geordnete Lösungssequenz je Fall (Referenzvertrag).
+
+const shuffledIds = (ids, seed) => shuffle(rng(seed >>> 0), ids);
 
 function parsonsInitialOrder(pool, seed, difficulty) {
   if (profileTier(difficulty) === 0) {

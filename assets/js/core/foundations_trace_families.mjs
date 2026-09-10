@@ -26,7 +26,7 @@ export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge
 // Ziehlogik aus generator_draw_kit (eine Stelle, keine Duplikate).
 // traceSubseed bleibt als Alias erhalten.
 export { drawFamilyInstance, familySubseed as traceSubseed } from './generator_draw_kit.mjs';
-import { drawFamilyInstance as drawInstance } from './generator_draw_kit.mjs';
+import { drawFamilyInstance as drawInstance, variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
 
 function requireTraceProfile(difficulty) {
   if (!TRACE_DIFFICULTY_PROFILES.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
@@ -795,13 +795,12 @@ export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   const correct = drawn.choices.find((choice) => choice.correct);
   const distractor = drawn.choices.find((choice) => !choice.correct);
   if (!correct || !distractor) throw new Error('trace-exception-path: Gegenbeispiel fehlt');
-  const rotation = Math.abs(seed) % EXCEPTION_INTRO_CHOICES;
-  const ordered = rotation === 0 ? [correct, distractor] : [distractor, correct];
+  const rotation = variantCaseIndex(seed, EXCEPTION_INTRO_CHOICES);
   const ids = ['a', 'b'];
   return {
     parameters,
     expected: { correctChoice: ids[rotation] },
-    choices: ordered.map((choice, index) => ({ id: ids[index], text: choice.text, correct: index === rotation })),
+    choices: buildRotatedChoices([correct.text, distractor.text], rotation, ids),
     prompt: drawn.prompt,
     fullSolution: drawn.fullSolution,
   };

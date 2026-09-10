@@ -263,24 +263,30 @@ test('W10 static cases enforce profiles and competency overrides', () => {
 
 
 
-test('W11 static cases enforce profiles and logistic competency', () => {
-  const sigmoid = EXERCISE_FAMILIES.instantiate(
-    'classify-sigmoid-regime',
-    0,
-    'intro',
-    'sigmoid-large-z',
-  );
-  assert.equal(sigmoid.masteryEligible, false);
-  assert.deepEqual(sigmoid.competencyIds, ['c-ml-logistic']);
-  assert.throws(
-    () => EXERCISE_FAMILIES.instantiate(
+test('W11 sigmoid cases are seeded with case binding and logistic competency', () => {
+  for (const [caseId, difficulty] of [
+    ['sigmoid-large-z', 'intro'],
+    ['sigmoid-threshold', 'core'],
+    ['sigmoid-log-odds', 'stretch'],
+  ]) {
+    const sigmoid = EXERCISE_FAMILIES.instantiate(
       'classify-sigmoid-regime',
       0,
-      'core',
-      'sigmoid-large-z',
-    ),
-    /Unbekanntes Profil/,
-  );
+      difficulty,
+      caseId,
+    );
+    assert.equal(sigmoid.masteryEligible, false);
+    assert.deepEqual(sigmoid.competencyIds, ['c-ml-logistic']);
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(
+        'classify-sigmoid-regime',
+        0,
+        difficulty === 'intro' ? 'core' : 'intro',
+        caseId,
+      ),
+      /Unbekannter Fall/,
+    );
+  }
   for (const [caseId, difficulty] of [
     ['threshold-under-asymmetric-cost', 'core'],
     ['sigmoid-predict-numpy', 'core'],
@@ -531,7 +537,7 @@ test('W16 static cases enforce profiles and competency overrides', () => {
       'core',
       'hard-margin-width',
     ),
-    /Unbekanntes Profil/,
+    /Unbekannter Fall/,
   );
   const pca = EXERCISE_FAMILIES.instantiate(
     'formula-ratio-percent-metric',

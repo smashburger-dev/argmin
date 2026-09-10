@@ -1,6 +1,6 @@
 // The canonical integer helpers live in foundations (byte-pinned rng); re-exported
 // here so every family module has ONE import site.
-export { rng, randInt } from './foundations_generators.mjs';
+export { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
 
 /** Binds until/clean to one family's retry bounds, error scope and leak-guard
  *  strictness — the per-file constants that keep RNG consumption identical. */
@@ -14,6 +14,26 @@ export const bindFamilyDraw = (options) => ({
 // is an explicit option so each family keeps its exact RNG consumption,
 // retry bounds, error scope and leak-guard strictness — the seed golden
 // corpus in tests/fixtures/generator-golden-corpus.json pins the bytes).
+
+/** Seed-Varianten: Fallwahl aus dem Seed (negativ-sicher, `seed % N` ohne
+ *  `abs` bricht für negative Seeds — caseBank hatte genau diesen Defekt). */
+export const variantCaseIndex = (seed, length) => Math.abs(seed) % length;
+
+/** Seed-Epoche: zählt, wie oft die Fallbank schon durchlaufen ist. */
+export const variantEpoch = (seed, length) => Math.floor(Math.abs(seed) / length);
+
+/** Rotate `options` so that index `rotation` becomes the correct position.
+ *  rotation 0 keeps the input order (slice(-0) would be a no-rotation trap). */
+export const rotateOptions = (options, rotation) => {
+  if (rotation <= 0) return [...options];
+  return [...options.slice(-rotation), ...options.slice(0, options.length - rotation)];
+};
+
+/** Baut benannte Choices aus unrotierten Optionstexten (options[0] korrekt). */
+export const buildRotatedChoices = (options, rotation, ids) => {
+  const rotated = rotateOptions(options, rotation);
+  return rotated.map((text, index) => ({ id: ids[index], text, correct: index === rotation }));
+};
 
 export function pick(random, values) {
   return values[Math.floor(random() * values.length)];
