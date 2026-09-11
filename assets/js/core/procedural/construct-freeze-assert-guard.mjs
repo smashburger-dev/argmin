@@ -7,6 +7,8 @@
 // the equal path, __raised for the AssertionError path). Mirrors
 // validate-data-quality-contract.mjs.
 
+import { RAISED_HELPER } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 const PROFILE_TIERS = ['intro', 'core', 'stretch', 'challenge'];
@@ -105,11 +107,6 @@ const pyLit = (value) => {
 
 // Returns (exception type, message) or ("ok", result): lets one comparison
 // cover both value returns and the contracted AssertionError path.
-const RAISED_HELPER = `def __raised(fn, *args):
-    try:
-        return ("ok", fn(*args))
-    except Exception as exc:
-        return (type(exc).__name__, str(exc))`;
 
 // Draw domains for the demo case: metric dicts over a fixed name pool plus
 // one guaranteed deviation (value change, extra key or dropped key — every

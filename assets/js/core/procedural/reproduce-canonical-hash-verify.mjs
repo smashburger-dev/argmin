@@ -6,6 +6,8 @@
 // literal), and a renamed __ref copy of the solver oracles the whole result
 // dict. Mirrors the capsule recipe of formula-descriptive-stats-numpy.mjs.
 
+import { refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
@@ -23,9 +25,6 @@ const CASE_PAYLOADS = {
 
 // Renames the module-level reference functions inside an emitted copy so the
 // seeded block cannot collide with the learner's own definitions.
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 // Serializes drawn data as Python literals (the pools stay quote-free ASCII,
 // so the generated test block has no escaping hazards).

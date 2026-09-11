@@ -7,11 +7,10 @@
 //   - baseline-report: metric/values/error-list draws plus a verweigert path
 //     (a required guard input deliberately missing).
 
+import { refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 const py = (value) => {
   if (typeof value === 'string') return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;

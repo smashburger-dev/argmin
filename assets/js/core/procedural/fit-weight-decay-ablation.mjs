@@ -8,6 +8,8 @@
 // decay shrinks the weight norm, smaller lam shrinks less). Mirrors
 // fit-mlp-val-curve-argmin.mjs.
 
+import { pyNum } from './py_test_kit.mjs';
+
 import { pick, randInt, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -112,7 +114,6 @@ def compare_decay(X, y, lam, lr, epochs, seed):
 
 # Gleicher Seed: nur lambda unterscheidet die Laeufe; Decay haelt die Gewichtsnorm kleiner`;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
 
 const W_TRUE_POOL = [-1.5, -1, -0.5, 0.5, 1, 1.5, 2];
 const LAM_CHOICES = [0.04, 0.06, 0.08, 0.1];

@@ -38,6 +38,10 @@ test('browser receipt proves every pyodide family ran in a real worker', (t) => 
   assert.equal(receipt.schemaVersion, 1);
   assert.equal(receipt.browser, 'chromium');
   assert.ok(['dev', 'build'].includes(receipt.artifact));
+  assert.equal(
+    receipt.runtimeHash, matrix.runtimeHash,
+    'Browserbeleg stammt aus einer anderen Laufzeit — npm run test:e2e erneut ausführen',
+  );
   assert.equal(receipt.definitionCount, matrix.definitionCount);
   assert.equal(receipt.contractCount, matrix.contractCount);
   const byId = new Map(receipt.results.map((item) => [item.definitionId, item]));

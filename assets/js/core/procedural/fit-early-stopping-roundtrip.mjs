@@ -8,6 +8,8 @@
 // roundtrip is asserted via inline np.* expressions. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
+import { pyNum, pyList } from './py_test_kit.mjs';
+
 import { randInt, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -181,8 +183,6 @@ const MIN_DELTA_REF_HELPER = `def __ref_early_stop(val_losses, patience, min_del
             return int(best_index)
     return int(best_index)`;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
-const pyList = (values) => `[${values.map(pyNum).join(', ')}]`;
 const pyArray = (value) =>
   Array.isArray(value[0])
     ? `np.array([${value.map(pyList).join(', ')}])`

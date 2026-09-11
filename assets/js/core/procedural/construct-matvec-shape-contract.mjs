@@ -13,15 +13,12 @@
 // (fragments/initialOrder or tests) — nothing answer-relevant leaks.
 // Blueprints: reproduce-seeded-split.mjs, classify-eval-hazard.mjs.
 
+import { refCopy } from './py_test_kit.mjs';
+
 import { randInt, rng, shuffle, until } from '../generator_draw_kit.mjs';
 
 const DRAW_SCOPE = 'construct-matvec-shape-contract';
 
-// Renames the module-level reference names inside an emitted copy so the
-// seeded block cannot collide with the learner's own definitions.
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 const pyList = (rows) => `[${rows.map((row) => (Array.isArray(row) ? pyList(row) : String(row))).join(', ')}]`;
 

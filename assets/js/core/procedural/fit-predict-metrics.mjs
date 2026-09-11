@@ -7,6 +7,8 @@
 // tolerances as the base checks, so the grading contract cannot drift.
 // Mirrors formula-descriptive-stats-numpy.mjs.
 
+import { pyNum, pyList } from './py_test_kit.mjs';
+
 import { pick, randInt, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -261,8 +263,6 @@ def regression_report(X, y, X_test, y_test):
     }
 `;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
-const pyList = (values) => `[${values.map(pyNum).join(', ')}]`;
 const pyColumn = (values) => `[${values.map((v) => `[${pyNum(v)}]`).join(', ')}]`;
 
 // Draw domains: integer-valued single-column design matrices and integer

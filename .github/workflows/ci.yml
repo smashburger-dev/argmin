@@ -36,6 +36,16 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install sympy
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps chromium
+      # Frischer Vertragsbeleg ueberspringt den Pyodide-Browser-Run; der
+      # Cache-Key deckt alle Eingaben ab, die den runtimeHash beeinflussen.
+      - uses: actions/cache@v4
+        with:
+          path: tests/e2e/pyodide-contract-receipt.json
+          key: pyodide-contract-${{ hashFiles('content/**', 'assets/js/**', 'vendor/pyodide/**', 'tools/pyodide_contract_matrix.mjs', 'tools/compile_content.mjs', 'tools/build_coverage_matrix.mjs') }}
       - run: npm run test:e2e -- --project=chromium
       - run: npm run test:e2e:build

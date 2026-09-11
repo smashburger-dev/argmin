@@ -10,7 +10,7 @@
 // list, workspace shape (files/entrypoint), and where the test code comes from.
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildPythonTests, buildSympyEquivalenceRun } from '../assets/js/core/graders.js';
@@ -62,7 +62,32 @@ export function buildPyodideContractMatrix(projectRoot = root) {
     }
     entry.definitionIds.push(definition.definitionId);
   }
-  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions };
+  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions, runtimeHash: runtimeHash(projectRoot, definitions) };
+}
+
+// Bricht den Browser-Vertrag, wenn sich Definitionen, Worker/Runner-Protokoll
+// oder die vendorte Pyodide-Laufzeit aendern — ein frischer Receipt
+// (tests/e2e/pyodide-contract-receipt.json) macht den teuren Run dann
+// ueberfluessig.
+const RUNTIME_FILES = [
+  'assets/js/runtime/pyodide_runner.js',
+  'assets/js/runtime/pyodide_worker.mjs',
+  'assets/js/runtime/workspace_protocol.mjs',
+];
+
+export function runtimeHash(projectRoot = root, definitions = []) {
+  const hash = createHash('sha256');
+  hash.update(JSON.stringify(definitions));
+  for (const rel of RUNTIME_FILES) {
+    hash.update(rel);
+    hash.update(readFileSync(join(projectRoot, rel)));
+  }
+  const vendorDir = join(projectRoot, 'vendor/pyodide');
+  for (const name of readdirSync(vendorDir).sort()) {
+    hash.update(name);
+    hash.update(readFileSync(join(vendorDir, name)));
+  }
+  return hash.digest('hex');
 }
 
 function buildDefinition(activity, instance) {

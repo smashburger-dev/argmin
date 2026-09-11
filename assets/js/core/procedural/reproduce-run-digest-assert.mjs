@@ -6,6 +6,8 @@
 // reference solver and __raised covers the AssertionError freeze path, so the
 // grading contract cannot drift. Mirrors reproduce-seeded-split.mjs.
 
+import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/reproduce-run-digest-assert.json.
@@ -30,18 +32,7 @@ const pyLit = (value) => {
 
 // Returns ("ok", result) or (exception type, message): lets one comparison
 // cover both value returns and the contracted AssertionError path.
-const RAISED_HELPER = `def __raised(fn, *args):
-    try:
-        return ("ok", fn(*args))
-    except Exception as exc:
-        return (type(exc).__name__, str(exc))`;
 
-// Renames the module-level names of the reference solver so the test block
-// can keep an inline oracle copy next to the seeded literals. All
-// occurrences are rewritten so internal calls stay consistent.
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 // Draw pools: doc-id register shared by all three cases, German word list
 // for the freeze stage and overclaim phrases/readme templates for the
