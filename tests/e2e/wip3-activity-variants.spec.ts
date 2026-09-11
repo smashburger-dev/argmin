@@ -104,7 +104,7 @@ test('WIP-3 predict-output variants grade two seeds', async ({ page, browserName
     await page.getByRole('button', { name: 'Antwort prüfen' }).click();
     await expect(page.getByText(/Richtig/)).toBeVisible();
   }
-  expect(instances[0].output).not.toEqual(instances[1].output);
+  expect(instances.at(0)?.output).not.toEqual(instances.at(-1)?.output);
 });
 
 test('WIP-3 parsons variants grade two seeds', async ({ page, browserName }) => {
