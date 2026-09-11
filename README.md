@@ -13,11 +13,11 @@ Servus erstamoi! Ich bin **Noa**, auch bekannt als **no8** (keineacht auf TikTok
 Dann habe ich mich eben dazu entschieden mit mehreren verschiedenen KI-Modellen… eine Plattform zu bauen… mit der man Künstliche Intelligenz verstehen kann… 
 Ja… Schon ziemlich mutig, als Person ohne jeglichen Background in diesen Domänen, sich solch ein Projekt anzuvertrauen und zu veröffentlichen… ABER! Wenn ich eine Sache halbwegs gut kann, dann ist es die Tatsache, dass ich genau weiß, wie ich etwas angehen muss, um es zu erschaffen. Dies schulde ich meiner Selbstständigkeit in der Kreativ Branche, meiner noch frisch abgegeben Bachelor Arbeit und der Tatsache, dass es einer meiner Kern Prioritäten ist, genau diesen Quereinstieg selber erfolgreich zu schaffen. Und jetzt mal Budde bei die Fische… deswegen ist es auch **Open-Source** (haha)! Hey ich hab mein bestes gegeben, ein paar coole Features hier einzubauen!
 
-- **Seed Generator:** Also… Jede Aufgabe auf argmin ist eigentlich eine Schablone. „Löse a·x + b = c“ zum Beispiel. Welche Zahlen da reinkommen, entscheidet eine einzige Startzahl, der Seed. Seed 42 gibt dir vielleicht 3x + 5 = 20, Seed 43 schon 7x − 2 = 12. Und weil die Lösung aus denselben Zahlen berechnet wird, passt die Prüfung immer zur Aufgabe.
+- **Seed Generator:** Also… Jede Aufgabe auf argmin ist eigentlich eine Schablone. „Löse a·x + b = c“ zum Beispiel. Welche Zahlen da reinkommen, entscheidet eine einzige Startzahl, der Seed. Seed 42 gibt dir vielleicht 3x + 5 = 20, Seed 43 schon 7x − 2 = 12. Und weil die Lösung aus denselben Zahlen berechnet wird, passt die Prüfung immer zur Aufgabe. Das gilt seit 0.3 auch für die Aufgaben selbst: Sie werden aus dem Seed gebaut, nicht aus einer Liste gegriffen.
 - **Fortschritt, der dir gehört (also wirklich):** Kein Account, kein Server, kein Tracking. Alles liegt in deinem Browser, und du kannst es jederzeit als Datei mitnehmen.
 - **Ganzes Labor im Browser-Tab:** Echtes Python mit NumPy, Formeln, interaktive Grafiken und ein Editor, der deinen Code sofort prüft.
 
-Das heißt: Gleicher Seed, gleiche Aufgabe. Überall, auf jedem Gerät. Wenn dir eine Variante komisch vorkommt, sagst du einfach „Familie X, Seed 42“ und ich sehe exakt dasselbe wie du. Neuer Seed, neue Aufgabe. So oft du willst, bis es sitzt. Eine einzige Algebra-Schablone bringt es so auf 200 verschiedene Aufgaben.
+Das heißt: Gleicher Seed, gleiche Aufgabe. Überall, auf jedem Gerät. Wenn dir eine Variante komisch vorkommt, sagst du einfach „Familie X, Seed 42“ und ich sehe exakt dasselbe wie du. Neuer Seed, neue Aufgabe. So oft du willst, bis es sitzt. Eine einzige Schablone bringt es so auf tausende verschiedene Aufgaben.
 
 ## Einfach loslegen
 
@@ -35,11 +35,11 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
   + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
 
   ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
-- **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neue Variante. Gleicher Seed, gleiche Aufgabe.
+- **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neu erzeugte Aufgabe. Gleicher Seed, gleiche Aufgabe.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 
-Was seit 0.1 neu ist, steht im [Changelog](CHANGELOG.md).
+Was seit 0.3 neu ist, steht im [Changelog](CHANGELOG.md).
 
 ## In Arbeit / Geplant
 
