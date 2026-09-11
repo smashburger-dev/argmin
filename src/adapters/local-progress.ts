@@ -213,6 +213,16 @@ export async function saveOnboardingDone(): Promise<void> {
   await progress.setSetting('onboardingDone', true);
 }
 
+export async function loadTourDone(): Promise<boolean> {
+  if (!progress) return true;
+  return (await progress.getSetting('tourDone')) === true;
+}
+
+export async function saveTourDone(): Promise<void> {
+  if (!progress) return;
+  await progress.setSetting('tourDone', true);
+}
+
 export async function saveLearningPreferences(weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]): Promise<void> {
   if (!progress) return;
   await Promise.all([
