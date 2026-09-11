@@ -1,0 +1,468 @@
+{
+  "capsules": {
+    "intro": {
+      "caseId": "dropout-regime",
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein Netz nutzt invertiertes Dropout in jeder Trainingsepoche: Behaltenswahrscheinlichkeit $p$, erhaltene Aktivierungen werden mit $1/p$ skaliert. Wie behandelt das Netz dieselbe Schicht im Inference-Pass (Vorhersage nach dem Training)?",
+          "correct": "Keine Maske, keine Skalierung: Die Aktivierungen fließen unangetastet — die Skalierung mit $1/p$ im Training hat den Erwartungswert bereits angepasst.",
+          "wrong": [
+            "Es wird eine neue Maske gezogen und mit $1/p$ skaliert — Inference dropout genauso wie im Training.",
+            "Keine Maske, aber Multiplikation mit $p$: Die Skalierung verschiebt sich von $1/p$ im Training auf $p$ in der Inference.",
+            "Alle Aktivierungen werden auf $0$ gesetzt, deren Neuron im Training jemals gedroppt wurden — die Maske bleibt dauerhaft."
+          ],
+          "solution": "Invertiertes Dropout skaliert im Training die erhaltenen Aktivierungen mit $1/p$, sodass der Erwartungswert über die Masken dem unskalierten Wert entspricht. Die Inference rechnet daher ohne Maske und ohne Skalierung — deterministisch und erwartungstreu. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+        },
+        {
+          "key": "klassisch-eval",
+          "prompt": "Ein Netz nutzt klassisches (nicht-invertiertes) Dropout: Im Training werden Aktivierungen mit Keep-Probability $p$ maskiert, aber NICHT skaliert. Was muss dieselbe Schicht im Inference-Pass tun, damit der Erwartungswert stimmt?",
+          "correct": "Keine Maske ziehen und alle Aktivierungen mit $p$ multiplizieren — die Skalierung holt die Auswertung nach.",
+          "wrong": [
+            "Keine Maske und keine Skalierung — Dropout ist im Inference immer die Identität.",
+            "Eine neue Maske ziehen und mit $1/p$ skalieren, exakt wie im Training.",
+            "Keine Maske, aber mit $1/p$ multiplizieren, um die gedroppten Einheiten zu kompensieren."
+          ],
+          "solution": "Klassisches Dropout lässt die erhaltenen Aktivierungen im Training unskaliert; der Erwartungswert einer Einheit ist $p \\cdot a$. Die Inference multipliziert deshalb mit $p$. Invertiertes Dropout verlagert die Skalierung ins Training ($1/p$) und lässt die Inference unverändert."
+        },
+        {
+          "key": "mc-dropout",
+          "prompt": "Bei Monte-Carlo-Dropout wird das Netz im Eval-Modus $k=20$ mal mit jeweils neu gezogener Maske durchlaufen und die Ergebnisse gemittelt. Was unterscheidet das vom Standard-Inference-Pass mit invertiertem Dropout?",
+          "correct": "MC-Dropout lässt die Maske im Eval bewusst aktiv und mittelt über stochastische Pässe — Standard-Inference schaltet die Maske vollständig ab.",
+          "wrong": [
+            "Kein Unterschied: Beide Verfahren deaktivieren Dropout bei der Vorhersage vollständig.",
+            "MC-Dropout multipliziert die Aktivierungen zusätzlich mit $p$, Standard-Inference nicht.",
+            "MC-Dropout zieht die Maske einmal und friert sie für alle weiteren Vorhersagen ein."
+          ],
+          "solution": "Standard-Inference mit invertiertem Dropout ist deterministisch: keine Maske, keine Skalierung. MC-Dropout ist eine bewusste Ausnahme — die Maske bleibt aktiv, $k$ Pässe liefern eine Verteilung, deren Mittelwert und Streuung als Vorhersage plus Unsicherheit dienen."
+        },
+        {
+          "key": "zweimal-eval",
+          "prompt": "Ein mit invertiertem Dropout trainiertes Netz wird mit `model.eval()` zweimal hintereinander auf derselben Eingabe aufgerufen. Was gilt für die beiden Ausgaben?",
+          "correct": "Beide Ausgaben sind bitgleich — ohne Maske ist der Forward-Pass deterministisch.",
+          "wrong": [
+            "Die Ausgaben unterscheiden sich, weil jede Eval-Runde eine neue Maske zieht.",
+            "Die zweite Ausgabe ist mit $p$ skaliert, weil der Eval-Zähler die Skalierung hochfährt.",
+            "Beide Ausgaben sind zufällig, aber ihr Mittelwert über viele Wiederholungen ist korrekt."
+          ],
+          "solution": "Im Eval-Modus ist invertiertes Dropout deaktiviert: keine Zufallsmaske, keine Skalierung. Derselbe Forward-Pass auf derselben Eingabe liefert dieselbe Ausgabe — deterministisch und wiederholbar."
+        },
+        {
+          "key": "validierung-maske",
+          "prompt": "Während des Trainings läuft nach jeder Epoche eine Validierung mit `model.eval()` und `torch.no_grad()`. Zieht die Dropout-Schicht in der Validierungsrunde eine Maske?",
+          "correct": "Nein — Validierung läuft im Eval-Modus, die Maske ist ausgeschaltet und der Pass deterministisch.",
+          "wrong": [
+            "Ja — sonst wäre der Validierungsverlust nicht vergleichbar mit dem Trainingsverlust.",
+            "Ja, aber mit halber Dropout-Rate, damit die Validierung stabiler ist.",
+            "Nur in der ersten Validierungsrunde; danach wird die Maske eingefroren."
+          ],
+          "solution": "Validierung ist Auswertung: `model.eval()` schaltet Dropout (und BatchNorm in den gespeicherten-Statistik-Modus). Nur so misst der Validierungsverlust dasselbe deterministische Modell, das später deployed wird."
+        },
+        {
+          "key": "identitaet-eval",
+          "prompt": "Welcher Funktion entspricht ein Dropout-Layer mit invertiertem Dropout im Eval-Modus?",
+          "correct": "Der Identität: Die Eingabe geht unverändert durch, weder Maske noch Skalierung greifen.",
+          "wrong": [
+            "Einer Skalierung mit $p$: Jede Aktivierung wird mit der Keep-Probability multipliziert.",
+            "Einer Skalierung mit $1/p$: Die Trainingsskalierung wird im Eval wiederholt.",
+            "Einer Nullfunktion: Alle Einheiten, die je gedroppt wurden, bleiben ausgeschaltet."
+          ],
+          "solution": "Invertiertes Dropout verlagert die gesamte Korrektur ins Training ($1/p$ auf die Überlebenden). Im Eval ist der Layer die Identität — genau das ist der Vorteil gegenüber klassischem Dropout, das im Eval mit $p$ multiplizieren muss."
+        },
+        {
+          "key": "absichtliche-maske",
+          "prompt": "Ein Kollege zieht im Inference-Pass trotz invertiertem Dropout weiterhin eine Zufallsmaske, „für zusätzliche Robustheit\". Was ist die Folge?",
+          "correct": "Die Vorhersage wird stochastisch und im Mittel falsch skaliert — die Erwartungstreue gilt nur ohne Maske.",
+          "wrong": [
+            "Nichts — eine zusätzliche Maske macht die Vorhersage robuster, ohne etwas zu verändern.",
+            "Die Vorhersage bleibt deterministisch, weil die Maske im Eval ignoriert wird.",
+            "Die Aktivierungen werden korrekter, weil zwei Masken sich gegenseitig ausmitteln."
+          ],
+          "solution": "Invertiertes Dropout ist so kalibriert, dass der Trainings-Erwartungswert dem vollen Netz entspricht. Eine Eval-Maske bricht diese Kalibrierung: Die Ausgabe hängt vom Zufallsdraw ab und der Erwartungswert sinkt auf den Anteil der erhaltenen Einheiten."
+        },
+        {
+          "key": "batchnorm-analog",
+          "prompt": "Welches Verhalten von BatchNorm im Eval-Modus ist analog zum Regime-Wechsel von invertiertem Dropout?",
+          "correct": "BatchNorm nutzt im Eval die gespeicherten Laufmittel statt Batch-Statistiken — wie Dropout dort die Maske abschaltet, wechseln beide zwischen Trainings- und Eval-Regime.",
+          "wrong": [
+            "BatchNorm zieht im Eval ebenfalls Zufallsmasken über die Kanäle.",
+            "BatchNorm skaliert im Eval mit $1/p$, analog zur Dropout-Skalierung.",
+            "BatchNorm wird im Eval komplett abgeschaltet und gibt die Eingabe unverändert weiter."
+          ],
+          "solution": "Beide Schichten sind regimewechselnd: Training nutzt Zufall (Maske) beziehungsweise Batch-Statistik, Eval nutzt den deterministischen Pfad (keine Maske, gespeicherte Statistik). Darum gehört `model.eval()` vor jeder Auswertung."
+        },
+        {
+          "key": "nur-training",
+          "prompt": "Warum wird Dropout überhaupt nur im Training angewendet und nicht bei der Vorhersage?",
+          "correct": "Dropout ist ein Regularisierer: Es soll das Training stören, damit das Netz robust lernt — bei der Vorhersage wäre das nur unnötige Varianz.",
+          "wrong": [
+            "Weil Dropout im Inference zu teuer wäre — das Maskenziehen kostet mehr Rechenzeit als der Forward-Pass.",
+            "Weil die Aktivierungen im Inference ohnehin null sind und eine Maske nichts ändern würde.",
+            "Weil Dropout nur wirkt, wenn Gradienten fließen — ohne Backpropagation ist die Maske wirkungslos."
+          ],
+          "solution": "Dropout verhindert Ko-Adaption: Durch zufälliges Abschalten lernt keine Einheit, sich auf eine andere zu verlassen. Das ist ein Trainingsmechanismus. Bei der Vorhersage will man das volle, deterministische Modell — Störung wäre reine Varianz."
+        },
+        {
+          "key": "gradient-eval",
+          "prompt": "Im Eval-Modus mit `torch.no_grad()` ruft ein Skript die Dropout-Schicht auf. Welche Aussage stimmt?",
+          "correct": "Keine Maske und kein Gradient: Eval deaktiviert Dropout, `no_grad` verhindert das Aufzeichnen des Graphen.",
+          "wrong": [
+            "Die Maske wird gezogen, aber ohne Gradienten — Dropout hängt von `no_grad`, nicht vom Modus.",
+            "Dropout bleibt aktiv, `no_grad` sorgt nur dafür, dass die Maske nicht gelernt wird.",
+            "Die Schicht wirft einen Fehler, weil Dropout ohne Gradienten nicht definiert ist."
+          ],
+          "solution": "Zwei getrennte Schalter: `model.eval()` steuert das Regime der Schicht (Dropout aus, BatchNorm auf gespeicherte Statistik), `no_grad` steuert nur die Autograd-Aufzeichnung. Im Eval-Pass gilt: deterministischer Forward, kein Graph."
+        },
+        {
+          "key": "training-erneut",
+          "prompt": "Ein trainiertes Netz wird für einen Validierungslauf auf `eval()` gestellt und danach wieder auf `train()`. Was passiert mit der Dropout-Schicht beim nächsten Batch?",
+          "correct": "Die Maske wird wieder pro Batch gezogen und die Überlebenden mit $1/p$ skaliert — der Moduswechsel ist reversibel.",
+          "wrong": [
+            "Die Schicht bleibt dauerhaft im Eval-Modus — einmal deaktiviertes Dropout kehrt nicht zurück.",
+            "Die Masken aus der letzten Trainingsrunde werden wiederverwendet, um konsistent zu bleiben.",
+            "Die Skalierung wechselt zu $p$, weil der Moduszähler das Regime rotiert."
+          ],
+          "solution": "`train()` und `eval()` sind Flags, keine Einbahnstraße. Zurück im Trainingsmodus zieht die Dropout-Schicht wieder pro Forward-Pass eine frische Maske und skaliert mit $1/p$ — der Zustand des Modells bleibt unverändert."
+        },
+        {
+          "key": "sigmoid-verwechslung",
+          "prompt": "Ein Dropout-Layer mit invertiertem Dropout steht hinter einer linearen Schicht, gefolgt von einer Sigmoid-Aktivierung. Was gilt im Eval-Modus für die Dropout-Schicht?",
+          "correct": "Sie lässt die Aktivierungen unverändert durch — die Sigmoid-Schicht ist davon unabhängig und arbeitet normal weiter.",
+          "wrong": [
+            "Sie deaktiviert auch die Sigmoid-Schicht, weil beide im selben Eval-Modus laufen.",
+            "Sie skaliert mit $1/p$, weil die Aktivierung danach nichtlinear ist.",
+            "Sie maskiert die Sigmoid-Eingänge, damit die Ausgabe bei $0{,}5$ bleibt."
+          ],
+          "solution": "Der Modus gilt pro Schicht-Typ: Dropout schaltet auf Identität, Sigmoid bleibt die normale Nichtlinearität — sie hat kein Trainings-/Eval-Regime. Verwechslung mit der Aktivierungsfunktion ist ein typischer Fehler."
+        },
+        {
+          "key": "keep-vs-drop",
+          "prompt": "Ein Paper nennt Dropout-Rate $p=0{,}3$, ein Framework dokumentiert Keep-Probability $p=0{,}3$. Beide verwenden invertiertes Dropout. Was ist der Unterschied?",
+          "correct": "Dropout-Rate $0{,}3$ löscht $30\\%$ der Einheiten und skaliert mit $1/0{,}7$; Keep-Probability $0{,}3$ löscht $70\\%$ und skaliert mit $1/0{,}3$ — die Konvention dreht die Stärke um.",
+          "wrong": [
+            "Kein Unterschied — beide Konventionen bezeichnen denselben Hyperparameter.",
+            "Dropout-Rate gilt für den Eval-Modus, Keep-Probability für das Training.",
+            "Keep-Probability steuert die Maske, Dropout-Rate steuert nur die Skalierung."
+          ],
+          "solution": "Die Konvention entscheidet: Rate $p$ bedeutet löschen mit $p$ (Skalierung $1/(1-p)$), Keep-Probability $p$ bedeutet behalten mit $p$ (Skalierung $1/p$). Wer beide verwechselt, invertiert die Regularisierungsstärke."
+        }
+      ]
+    },
+    "core": {
+      "caseId": "dropout-inverted-scale",
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}2$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $1,25$, weil $1/(1-0,2)=1/0,8$ gilt.",
+          "wrong": [
+            "Mit $0,2$, weil nur die Dropout-Rate skaliert wird.",
+            "Mit $0,8$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $5$, weil $1/0,2$ die Überlebenden kompensiert."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0,8$. Inverted Dropout multipliziert überlebende Werte mit $1/(1-p)=1/0,8=1,25$, damit der Erwartungswert gleich bleibt."
+        },
+        {
+          "key": "p-05",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}5$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $2$, weil $1/(1-0{,}5)=1/0{,}5$ gilt.",
+          "wrong": [
+            "Mit $0{,}5$, weil nur die Dropout-Rate skaliert wird.",
+            "Mit $1{,}5$, weil die Keep-Probability halbiert addiert wird.",
+            "Mit $0{,}25$, weil der Faktor quadriert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}5$. Inverted Dropout multipliziert die Überlebenden mit $1/(1-p)=2$, damit der Erwartungswert erhalten bleibt."
+        },
+        {
+          "key": "p-06",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}6$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $2{,}5$, weil $1/(1-0{,}6)=1/0{,}4$ gilt.",
+          "wrong": [
+            "Mit $0{,}4$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}67$, weil $1/0{,}6$ die Überlebenden kompensiert.",
+            "Mit $0{,}6$, weil nur die Dropout-Rate skaliert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}4$. Der Faktor ist $1/(1-p)=1/0{,}4=2{,}5$ — nicht $1/p$, denn skaliert wird durch die Überlebenswahrscheinlichkeit."
+        },
+        {
+          "key": "p-075",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}75$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $4$, weil $1/(1-0{,}75)=1/0{,}25$ gilt.",
+          "wrong": [
+            "Mit $1{,}33$, weil $1/0{,}75$ die Überlebenden kompensiert.",
+            "Mit $0{,}25$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $0{,}75$, weil nur die Dropout-Rate skaliert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}25$. Der Faktor $1/(1-p)=4$ gleicht aus, dass nur ein Viertel der Einheiten überlebt."
+        },
+        {
+          "key": "p-025",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}25$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{4}{3}\\approx 1{,}33$, weil $1/(1-0{,}25)=1/0{,}75$ gilt.",
+          "wrong": [
+            "Mit $1{,}25$, weil $1/0{,}8$ der Kehrwert der Dropout-Rate ist.",
+            "Mit $0{,}75$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $4$, weil $1/0{,}25$ die Überlebenden kompensiert."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}75$. Der Faktor ist $1/(1-p)=4/3\\approx 1{,}33$ — der Kehrwert der Keep-Probability, nicht der Dropout-Rate."
+        },
+        {
+          "key": "p-04",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}4$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{5}{3}\\approx 1{,}67$, weil $1/(1-0{,}4)=1/0{,}6$ gilt.",
+          "wrong": [
+            "Mit $2{,}5$, weil $1/0{,}4$ die Überlebenden kompensiert.",
+            "Mit $0{,}6$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $0{,}4$, weil nur die Dropout-Rate skaliert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}6$. Der Faktor $1/(1-p)=5/3\\approx 1{,}67$ hält den Erwartungswert konstant."
+        },
+        {
+          "key": "p-03",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}3$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{10}{7}\\approx 1{,}43$, weil $1/(1-0{,}3)=1/0{,}7$ gilt.",
+          "wrong": [
+            "Mit $\\tfrac{10}{3}\\approx 3{,}33$, weil $1/0{,}3$ die Überlebenden kompensiert.",
+            "Mit $0{,}7$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}3$, weil die Dropout-Rate auf eins aufaddiert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}7$. Der Faktor ist $1/(1-p)=10/7\\approx 1{,}43$."
+        },
+        {
+          "key": "p-01",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}1$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{10}{9}\\approx 1{,}11$, weil $1/(1-0{,}1)=1/0{,}9$ gilt.",
+          "wrong": [
+            "Mit $10$, weil $1/0{,}1$ die Überlebenden kompensiert.",
+            "Mit $0{,}9$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}1$, weil die Dropout-Rate zu eins addiert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}9$. Der Faktor ist $1/(1-p)=10/9\\approx 1{,}11$ — bei kleiner Rate nur leicht über eins."
+        },
+        {
+          "key": "p-015",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}15$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{20}{17}\\approx 1{,}18$, weil $1/(1-0{,}15)=1/0{,}85$ gilt.",
+          "wrong": [
+            "Mit $\\tfrac{20}{3}\\approx 6{,}67$, weil $1/0{,}15$ die Überlebenden kompensiert.",
+            "Mit $0{,}85$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}15$, weil die Dropout-Rate zu eins addiert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}85$. Der Faktor ist $1/(1-p)=20/17\\approx 1{,}18$."
+        },
+        {
+          "key": "p-08",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}8$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $5$, weil $1/(1-0{,}8)=1/0{,}2$ gilt.",
+          "wrong": [
+            "Mit $1{,}25$, weil $1/0{,}8$ die Überlebenden kompensiert.",
+            "Mit $0{,}2$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $0{,}8$, weil nur die Dropout-Rate skaliert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}2$. Der Faktor ist $1/(1-p)=5$ — hohe Dropout-Raten verlangen starke Kompensation."
+        },
+        {
+          "key": "p-005",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}05$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{20}{19}\\approx 1{,}05$, weil $1/(1-0{,}05)=1/0{,}95$ gilt.",
+          "wrong": [
+            "Mit $20$, weil $1/0{,}05$ die Überlebenden kompensiert.",
+            "Mit $0{,}95$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}5$, weil die Dropout-Rate verzehnfacht wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}95$. Der Faktor ist $1/(1-p)=20/19\\approx 1{,}05$."
+        },
+        {
+          "key": "p-035",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}35$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{20}{13}\\approx 1{,}54$, weil $1/(1-0{,}35)=1/0{,}65$ gilt.",
+          "wrong": [
+            "Mit $\\tfrac{20}{7}\\approx 2{,}86$, weil $1/0{,}35$ die Überlebenden kompensiert.",
+            "Mit $0{,}65$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}35$, weil die Dropout-Rate zu eins addiert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}65$. Der Faktor ist $1/(1-p)=20/13\\approx 1{,}54$."
+        },
+        {
+          "key": "p-045",
+          "prompt": "Inverted Dropout verwendet im Training Dropout-Rate $p=0{,}45$. Mit welchem Faktor werden die überlebenden Aktivierungen skaliert?",
+          "correct": "Mit $\\tfrac{20}{11}\\approx 1{,}82$, weil $1/(1-0{,}45)=1/0{,}55$ gilt.",
+          "wrong": [
+            "Mit $\\tfrac{20}{9}\\approx 2{,}22$, weil $1/0{,}45$ die Überlebenden kompensiert.",
+            "Mit $0{,}55$, weil die Keep-Probability direkt der Faktor ist.",
+            "Mit $1{,}45$, weil die Dropout-Rate zu eins addiert wird."
+          ],
+          "solution": "Die Keep-Probability ist $1-p=0{,}55$. Der Faktor ist $1/(1-p)=20/11\\approx 1{,}82$."
+        },
+        {
+          "key": "richtung-faktor",
+          "prompt": "Inverted Dropout skaliert überlebende Aktivierungen mit $1/(1-p)$. Was passiert mit dem Faktor, wenn die Dropout-Rate $p$ wächst?",
+          "correct": "Er wächst: Je mehr Einheiten gelöscht werden, desto stärker müssen die Überlebenden kompensieren — bei $p\\to 1$ geht der Faktor gegen Unendlich.",
+          "wrong": [
+            "Er sinkt: Mehr Dropout bedeutet weniger nötige Kompensation pro Überlebendem.",
+            "Er bleibt konstant bei $1{,}25$, weil der Faktor unabhängig von $p$ ist.",
+            "Er nähert sich $1$, weil bei starker Regularisierung kaum noch Skalierung nötig ist."
+          ],
+          "solution": "Der Faktor ist $1/(1-p)$: Bei $p=0$ ist er $1$ (kein Dropout, keine Skalierung), bei $p=0{,}5$ ist er $2$, bei $p\\to 1$ divergiert er — wenige Überlebende tragen die volle Erwartung."
+        }
+      ]
+    },
+    "stretch": {
+      "caseId": "dropout-eval-mode",
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein Netz wurde mit Dropout-Rate $p=0{,}5$ trainiert. Was geschieht bei der Vorhersage im korrekt aktivierten Eval-Modus?",
+          "correct": "Es wird keine Zufallsmaske angewendet; die volle Aktivierung wird deterministisch genutzt.",
+          "wrong": [
+            "Genau die Hälfte der Einheiten wird auch bei jeder Vorhersage entfernt.",
+            "Die Aktivierungen werden im Eval-Modus nochmals mit 2 multipliziert.",
+            "Dropout vertauscht im Eval-Modus automatisch die Klassenlabels."
+          ],
+          "solution": "Im Eval-Modus werden keine Einheiten zufällig entfernt. Bei Inverted Dropout ist die Trainingsskalierung bereits berücksichtigt; die volle Aktivierung wird deterministisch verwendet."
+        },
+        {
+          "key": "eval-zweipass",
+          "prompt": "Ein Netz wurde mit Dropout trainiert und steht im Eval-Modus. Zwei aufeinanderfolgende Vorhersagen für dieselbe Eingabe werden verglichen. Was gilt?",
+          "correct": "Sie sind identisch — im Eval-Modus wird keine Zufallsmaske gezogen, der Pass ist deterministisch.",
+          "wrong": [
+            "Sie unterscheiden sich leicht, weil jede Vorhersage eine neue Maske zieht.",
+            "Sie unterscheiden sich nur in den Einheiten, die im Training am häufigsten gedroppt wurden.",
+            "Die erste Vorhersage ist deterministisch, die zweite zieht eine Restmaske."
+          ],
+          "solution": "Eval-Modus heißt: keine Masken, keine zufälligen Pfade. Dieselbe Eingabe liefert dieselbe Ausgabe — Wiederholbarkeit ist die Grundlage für reproduzierbare Auswertung."
+        },
+        {
+          "key": "mc-vs-standard",
+          "prompt": "Warum mittelt Monte-Carlo-Dropout im Eval über mehrere stochastische Pässe, statt die Maske abzuschalten?",
+          "correct": "Weil die gezogene Varianz als Unsicherheitsmaß dient — die Masken sind hier gewollt, Standard-Eval schaltet sie dagegen ab.",
+          "wrong": [
+            "Weil der Eval-Modus die Masken nicht deaktivieren kann — Mittelung ist der einzige Weg.",
+            "Weil die Aktivierungen sonst mit $1/p$ falsch skaliert wären.",
+            "Weil ein einzelner Eval-Pass ohne Maske numerisch instabil ist."
+          ],
+          "solution": "MC-Dropout ist bewusstes Abweichen vom Standard: Die Maske bleibt aktiv, $k$ Pässe liefern eine Verteilung, deren Streuung epistemische Unsicherheit schätzt. Standard-Eval mit invertiertem Dropout ist dagegen deterministisch."
+        },
+        {
+          "key": "eval-train-flag",
+          "prompt": "Ein Validierungsskript vergisst `model.eval()` und lässt das Modell auf `train()`. Welche Folge hat das für die Dropout-Schichten?",
+          "correct": "Sie ziehen weiterhin Zufallsmasken — der gemessene Validierungsverlust wird stochastisch und systematisch schlechter als der des echten Eval-Modells.",
+          "wrong": [
+            "Keine — Dropout erkennt an `no_grad`, dass gerade ausgewertet wird.",
+            "Die Masken werden eingefroren, weil Validierung implizit eval bedeutet.",
+            "Die Schichten skalieren doppelt, einmal mit $1/p$ und einmal mit $p$."
+          ],
+          "solution": "Das Flag steuert das Regime: `train()` heißt Masken ziehen und mit $1/p$ skalieren. Ohne `eval()` misst die Validierung ein gestörtes Modell — der Verlust schwankt und liegt über dem deterministischen Wert."
+        },
+        {
+          "key": "klassisch-eval-faktor",
+          "prompt": "Ein Netz nutzt klassisches Dropout (keine Trainingsskalierung) mit Keep-Probability $p$. Was muss im Eval-Modus geschehen, damit die Ausgabe erwartungstreu bleibt?",
+          "correct": "Alle Aktivierungen werden mit $p$ multipliziert — die Skalierung, die im Training fehlte, holt der Eval-Pass nach.",
+          "wrong": [
+            "Alle Aktivierungen werden mit $1/p$ multipliziert, wie im invertierten Training.",
+            "Nichts — klassisches Dropout verhält sich im Eval wie invertiertes Dropout.",
+            "Eine Maske mit Rate $1-p$ wird gezogen und die Überlebenden verdoppelt."
+          ],
+          "solution": "Klassisches Dropout: Training produziert Erwartungswert $p\\cdot a$ pro Einheit. Eval multipliziert mit $p$, um denselben Erwartungswert zu treffen. Invertiertes Dropout macht Eval dagegen zur Identität."
+        },
+        {
+          "key": "schicht-scope",
+          "prompt": "Ein Netz hat Dropout hinter zwei von fünf Schichten. Was gilt im Eval-Modus?",
+          "correct": "Nur die beiden Dropout-Schichten wechseln auf Identität; alle anderen Schichten haben ohnehin kein Regime und rechnen unverändert.",
+          "wrong": [
+            "Alle fünf Schichten werden deaktiviert, weil der Eval-Modus global die Störung abschaltet.",
+            "Die Dropout-Schichten werden entfernt und die Gewichte der Nachbarschichten halbiert.",
+            "Nur die erste Dropout-Schicht wechselt das Regime; die zweite bleibt aktiv."
+          ],
+          "solution": "Der Modus ist eine Eigenschaft der Dropout-Schicht: Im Eval wird sie zur Identität. Lineare Schichten, Aktivierungen und Normalisierungen (außer BatchNorm mit eigenem Regime) kennen keinen Moduswechsel."
+        },
+        {
+          "key": "label-verwechslung",
+          "prompt": "Was ändert der Eval-Modus an einem mit Dropout trainierten Netz NICHT?",
+          "correct": "Weder Gewichte noch Labels — der Modus ändert nur das Verhalten regimewechselnder Schichten wie Dropout und BatchNorm.",
+          "wrong": [
+            "Die Klassenlabels werden pro Vorhersage neu gewichtet, damit Masken ausgeglichen werden.",
+            "Die Gewichte werden mit $p$ reskaliert, um die fehlenden Masken zu kompensieren.",
+            "Die Eingabedimension wird auf die Anzahl überlebender Einheiten reduziert."
+          ],
+          "solution": "`eval()` ändert ausschließlich das Laufzeitverhalten bestimmter Schichten. Parameter, Labels und Architektur bleiben unberührt — kein Reskalieren der Gewichte, keine Eingriffe in die Daten."
+        },
+        {
+          "key": "inferenz-pipeline",
+          "prompt": "Eine Inferenz-Pipeline ruft `model.eval()` und `torch.no_grad()` auf, führt dann aber ein Fine-Tuning fort, ohne den Modus zurückzusetzen. Was passiert mit Dropout?",
+          "correct": "Dropout bleibt deaktiviert — das Fine-Tuning läuft ohne Regularisierung, obwohl es im Trainingsmodus sein sollte.",
+          "wrong": [
+            "Dropout reaktiviert sich automatisch, sobald `loss.backward()` aufgerufen wird.",
+            "Dropout zieht Masken, aber ohne Skalierung, weil der Eval-Modus die Skalierung speichert.",
+            "Nichts — Dropout ist nur für die erste Inferenz relevant."
+          ],
+          "solution": "Der Modus klebt: `eval()` bleibt aktiv, bis `train()` gesetzt wird. Ein Fine-Tuning im Eval-Modus trainiert ohne Dropout-Masken — ein stiller Fehler, der die Regularisierung unterschiebt."
+        },
+        {
+          "key": "full-activation",
+          "prompt": "Ein mit Dropout-Rate $p=0{,}4$ trainiertes Netz steht im Eval-Modus. Wie viele Einheiten einer Dropout-Schicht tragen zur Ausgabe bei?",
+          "correct": "Alle — im Eval wird die volle Schicht genutzt; die Kompensation steckte bereits in der Trainingsskalierung mit $1/(1-p)$.",
+          "wrong": [
+            "$60\\%$ — der Anteil, der im Training im Mittel überlebte.",
+            "$40\\%$ — die Rate bestimmt, wie viele Einheiten auch im Eval entfallen.",
+            "Zufällig zwischen $0$ und $100\\%$, je nach gezogener Eval-Maske."
+          ],
+          "solution": "Inverted Dropout kompensiert im Training ($\\times 1/(1-p)$), damit die Eval-Schicht vollständig und unverändert arbeiten kann. Kein Anteil wird im Eval entfernt."
+        },
+        {
+          "key": "stoch-eval-test",
+          "prompt": "Ein Unit-Test prüft ein Dropout-Modell im Eval-Modus: `assert torch.equal(model(x), model(x))`. Ist der Test korrekt?",
+          "correct": "Ja — im Eval-Modus ist der Forward-Pass deterministisch, Gleichheit muss gelten.",
+          "wrong": [
+            "Nein — Dropout macht auch den Eval-Pass stochastisch, der Test ist zu streng.",
+            "Nein — Gleichheit gilt nur bis auf Gleitkommafehler, nie exakt.",
+            "Ja, aber nur wenn vorher eine Maske gezogen und gespeichert wurde."
+          ],
+          "solution": "Im Eval-Modus ist invertiertes Dropout die Identität — keine Zufallsquelle im Pfad. Exakte Gleichheit ist die korrekte Erwartung; ein schwankender Test würde einen vergessenen `eval()`-Aufruf aufdecken."
+        },
+        {
+          "key": "erwartung-eval",
+          "prompt": "Mit welcher Begründung darf invertiertes Dropout im Eval-Modus weder maskieren noch skalieren?",
+          "correct": "Weil die Trainingsskalierung mit $1/p$ den Erwartungswert bereits auf den vollen Netzausgang kalibriert hat — jede Eval-Korrektur würde ihn verzerren.",
+          "wrong": [
+            "Weil die Einheiten im Eval doppelt so aktiv sind und eine Skalierung überkompensieren würde.",
+            "Weil die Masken beim Speichern des Modells in die Gewichte eingebaut wurden.",
+            "Weil der Eval-Modus aus historischen Gründen alle Schichten auf Identität setzt."
+          ],
+          "solution": "Training: Einheit liefert $a/p$ mit Wahrscheinlichkeit $p$, also Erwartungswert $a$. Eval: volle Einheit liefert exakt $a$. Die Kalibrierung ist bereits exakt — weitere Faktoren oder Masken würden sie brechen."
+        },
+        {
+          "key": "nur-erste-schicht",
+          "prompt": "Ein Modell nutzt Dropout nur hinter der ersten Schicht. Beim Export für die Inferenz schlägt jemand vor, die Dropout-Schicht zu löschen. Ist das im Eval-Modus äquivalent?",
+          "correct": "Ja — im Eval ist die Schicht die Identität; Löschen ändert die Ausgabe nicht.",
+          "wrong": [
+            "Nein — die Schicht trägt gelernte Masken-Gewichte, die beim Löschen verloren gehen.",
+            "Nein — ohne die Schicht fehlt die $1/p$-Skalierung im Inference-Pass.",
+            "Nur wenn zusätzlich die erste Schicht mit $p$ reskaliert wird."
+          ],
+          "solution": "Im Eval ist invertiertes Dropout die Identität — die Schicht hat keine Parameter. Löschen ist äquivalent; wichtig ist nur, dass die Schicht nicht im Trainingsmodus exportiert wird."
+        },
+        {
+          "key": "halbes-netz",
+          "prompt": "Jemand behauptet: „Im Eval-Modus nutzt das Netz nur $(1-p)$ seiner Einheiten, der Rest bleibt abgeschaltet.\" Was stimmt an der Behauptung nicht?",
+          "correct": "Alles — im Eval sind alle Einheiten aktiv; $(1-p)$ beschreibt den Trainings-Erwartungswert der Maske, nicht einen Eval-Anteil.",
+          "wrong": [
+            "Nur der Faktor: Es sind $p$ statt $1-p$ der Einheiten, die aktiv bleiben.",
+            "Die Behauptung stimmt, aber nur für invertiertes Dropout.",
+            "Die Behauptung stimmt, solange die Schicht auf `train()` steht."
+          ],
+          "solution": "Die Keep-Probability $1-p$ gilt für die Trainingsmaske: Im Mittel bleibt dieser Anteil pro Batch aktiv. Im Eval gibt es keine Maske — die volle Schicht trägt bei, genau dafür wurde im Training skaliert."
+        }
+      ]
+    }
+  }
+}

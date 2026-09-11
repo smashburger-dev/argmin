@@ -256,6 +256,7 @@ const ALLOWED_DIRS = [
   { dir: 'vendor/mathlive/fonts', ext: '.woff2' },
   { dir: 'content/modules', ext: '.json' },
   { dir: 'content/families', ext: '.json' },
+  { dir: 'content/banks', ext: '.json' },
   { dir: 'assets/js/core/procedural', ext: '.mjs' },
 ];
 // Source directories scanned for private canaries before copying.

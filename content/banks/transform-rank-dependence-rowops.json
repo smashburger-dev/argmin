@@ -1,0 +1,31 @@
+{
+  "capsules": {
+    "core": {
+      "dims": [
+        3,
+        3
+      ],
+      "targetRank": 2,
+      "bound": 7,
+      "caseId": "rank-3x3-staircase"
+    },
+    "stretch": {
+      "dims": [
+        3,
+        3
+      ],
+      "targetRank": 3,
+      "bound": 5,
+      "caseId": "rank-3x3-full"
+    },
+    "challenge": {
+      "dims": [
+        3,
+        4
+      ],
+      "targetRank": 1,
+      "bound": 20,
+      "caseId": "rank-3x4-line"
+    }
+  }
+}

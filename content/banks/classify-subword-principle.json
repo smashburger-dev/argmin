@@ -1,0 +1,415 @@
+{
+  "capsules": {
+    "intro": {
+      "caseId": "subword-oov-robustness",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein reiner Wort-Tokenizer trifft auf „Donaudampfschifffahrtskapitän“. Was macht der Subword-Ansatz stattdessen?",
+          "correct": "Das Wort wird in bekannte Teile zerlegt (z. B. „Donau“ + „dampf“ + …) — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+          "wrong": [
+            "Das Vokabular wird zur Laufzeit automatisch um dieses Wort erweitert.",
+            "Das Wort wird zeichenweise gelöscht und durch <code>&lt;pad&gt;</code> ersetzt.",
+            "Das Wort landet komplett in <code>&lt;unk&gt;</code> — Subwords verhindern nur kürzere Sequenzen, nicht OOV."
+          ],
+          "solution": "Subword-Tokenisierung zerlegt seltene oder unbekannte Wörter in bekannte Bestandteile bis hinunter zu Zeichen — OOV verschwindet praktisch, der Preis sind längere Tokenfolgen. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+        },
+        {
+          "key": "kraftfahrzeug",
+          "prompt": "Ein Wort-Tokenizer sieht das Kompositum „Kraftfahrzeughaftpflichtversicherung“. Wie antwortet der Subword-Ansatz?",
+          "correct": "Er zerlegt es in bekannte Teilstücke (z. B. „Kraft“, „fahrzeug“, „haftpflicht“, „versicherung“) — das Wort bleibt darstellbar, statt als OOV zu enden.",
+          "wrong": [
+            "Das Vokabular ergänzt das Wort automatisch beim ersten Auftreten.",
+            "Das Kompositum wird komplett durch <code>&lt;unk&gt;</code> ersetzt.",
+            "Das Wort wird auf sein erstes Zeichen gekürzt und der Rest verworfen."
+          ],
+          "solution": "Lange Komposita sind der Grund für Subwords: die Einzelteile sind häufig genug fürs Vokabular, die Vollform nicht. Zerlegt bleibt das Wort repräsentiert — die Folge wird länger, nicht <unk>."
+        },
+        {
+          "key": "neologismus",
+          "prompt": "Im Korpus taucht der seltene Neologismus „Schwarmintelligenzoffensive“ auf. Was passiert unter einem Subword-Tokenizer?",
+          "correct": "Die Teilfolge aus bekannten Stücken repräsentiert ihn (z. B. „Schwarm“, „intelligenz“, „offensiv…“) — unbekannt heißt feiner zerlegt, nicht verworfen.",
+          "wrong": [
+            "Das Wort erhält sofort eine eigene neue Vokabel-ID.",
+            "Das Wort fällt komplett in <code>&lt;unk&gt;</code>.",
+            "Der Satz wird am Wortanfang abgeschnitten."
+          ],
+          "solution": "Subwords degradieren stufenweise: je seltener das Wort, desto feiner die Zerlegung — im Extrem bis auf Zeichen. Der Neologismus bleibt repräsentiert, nur die Folge wird länger."
+        },
+        {
+          "key": "verschreiber",
+          "prompt": "Eine Nutzerin schreibt „Wheater“ statt „Weather“. Welchen Vorteil hat Subword gegenüber reinen Wort-Tokens hier?",
+          "correct": "Der Verschreiber zerfällt in naheliegende Teile („W“, „heat“, „er“ o. ä.), statt komplett in <code>&lt;unk&gt;</code> zu fallen — Teile der Form bleiben dem Modell zugänglich.",
+          "wrong": [
+            "Die Autokorrektur des Tokenizers ersetzt das Wort garantiert.",
+            "Das ganze Wort wird zu <code>&lt;unk&gt;</code>, wie bei Wort-Tokens.",
+            "Die falschen Zeichen werden gelöscht, der Rest bleibt ein Token."
+          ],
+          "solution": "Tippfehler sind OOV-Kandidaten für Wort-Tokenizer. Subwords fangen sie teilweise auf, weil Teilstrings oft bekannt sind — kein perfektes Verständnis, aber besser als <unk>."
+        },
+        {
+          "key": "zeichen-fallback",
+          "prompt": "Warum kann ein Subword-Tokenizer grundsätzlich jedes neue Wort darstellen?",
+          "correct": "Weil die Zerlegung im Extremfall bis auf bekannte Einzelzeichen zurückfällt — das Vokabular deckt die Atome ab, aus denen sich jede Form zusammensetzt.",
+          "wrong": [
+            "Weil das Vokabular unendlich groß ist.",
+            "Weil unbekannte Wörter still übersprungen werden.",
+            "Weil das Vokabular zur Laufzeit weiterlernt."
+          ],
+          "solution": "Das Vokabular enthält Zeichen und kurze Stücke als Sicherungsnetz: greift kein längeres Stück, bleibt die Zerlegung in Einzelzeichen. Deshalb ist OOV praktisch ausgeschlossen."
+        },
+        {
+          "key": "covid-begriff",
+          "prompt": "Ein auf Texten von 2019 trainiertes Modell liest zwei Jahre später das Wort „Impfstoffverteilung“. Was leistet die Subword-Zerlegung?",
+          "correct": "Sie zerlegt das neue Kompositum in damals schon bekannte Teile („Impf“, „stoff“, „verteilung“ o. ä.) — Begriffe, die nach dem Trainingsstand kamen, bleiben darstellbar.",
+          "wrong": [
+            "Das Vokabular aktualisiert sich beim Lesen automatisch.",
+            "Das Wort wird als unbekanntes Ganzes ignoriert.",
+            "<code>&lt;unk&gt;</code> ist die einzige Option für neue Wörter."
+          ],
+          "solution": "Neue Begriffe nach dem Trainingsstand sind ein Alltagsfall: Subwords erben Darstellbarkeit aus bekannten Teilen — das Vokabular bleibt fest, die Abdeckung bleibt."
+        },
+        {
+          "key": "fremdsprache",
+          "prompt": "Ein mehrsprachig trainierter Subword-Tokenizer trifft auf das finnische Kompositum „lentokonesuihkuturbiini“. Was ist zu erwarten?",
+          "correct": "Eine Zerlegung in kurze bekannte Stücke — finnische Komposita sind selten im Vokabular, aber aus Teilstrings darstellbar.",
+          "wrong": [
+            "Das Wort wird zuerst auf Englisch übersetzt und dann tokenisiert.",
+            "<code>&lt;unk&gt;</code>, weil Finnisch nicht im Training war.",
+            "Ein einziges Token, weil ein Kompositum immer zusammenbleibt."
+          ],
+          "solution": "Mehrsprachige Subword-Vokabulare teilen Zeichen und kurze Stücke über Sprachen hinweg. Lange Komposita zerfallen in bekannte Bruchstücke, statt OOV zu werden."
+        },
+        {
+          "key": "produktname",
+          "prompt": "Ein Chatnutzer fragt nach dem Produktnamen „Xylophon-Pro Max Ultra“. Wie hilft Subword-Tokenisierung?",
+          "correct": "Marken- und Produktwörter zerfallen in bekannte Teile und Zeichen — der Name bleibt im Kontext lesbar, statt als <code>&lt;unk&gt;</code> zu verschwinden.",
+          "wrong": [
+            "Der Name wird vor der Tokenisierung korrekturgelesen.",
+            "Neue Wörter bekommen beim ersten Auftreten eigene Embeddings.",
+            "Der Text wird am ersten Bindestrich verworfen."
+          ],
+          "solution": "Eigen- und Produktnamen sind klassische OOV-Quellen. Subword-Zerlegung hält sie repräsentiert — die Qualität hängt vom Training ab, aber nichts fällt hart aus."
+        },
+        {
+          "key": "preis-frage",
+          "prompt": "Was ist der Preis, den Subword-Tokenizer für ihre OOV-Robustheit zahlen?",
+          "correct": "Längere Tokenfolgen: seltene Wörter zerfallen in mehrere Stücke — die Sequenz wird länger, dafür bleibt jedes Wort darstellbar.",
+          "wrong": [
+            "Das Vokabular wächst unkontrolliert zur Laufzeit.",
+            "Die Wortbedeutung geht bei jeder Zerlegung vollständig verloren.",
+            "<code>&lt;unk&gt;</code> bleibt für die Hälfte aller Wörter bestehen."
+          ],
+          "solution": "Der Tradeoff ist Sequenzlänge gegen Abdeckung: häufige Wörter bleiben ein Token, seltene zerfallen — mehr Tokens pro Text, aber praktisch kein OOV."
+        },
+        {
+          "key": "kompositum-split",
+          "prompt": "Ein Subword-Tokenizer zerlegt „Rathausneubau“ in „Rat“, „haus“, „neu“, „bau“. Was zeigt das Beispiel?",
+          "correct": "Dass unbekannte Vollformen aus bekannten Teilen rekonstruiert werden — die Zerlegung ist die Antwort auf OOV, kein Fehler.",
+          "wrong": [
+            "Dass der Tokenizer das Wort nicht kannte und <code>&lt;unk&gt;</code> nahm.",
+            "Dass die Semantik des Wortes dabei verloren geht.",
+            "Dass die Segmentierung zufällig gewählt wird."
+          ],
+          "solution": "Komposita zerfallen entlang erlernter Merges: die Vollform war selten, die Teile häufig. Aus den Teilstücken kann das Modell die Form rekonstruieren — das ist der Mechanismus hinter der OOV-Robustheit."
+        },
+        {
+          "key": "seltenes-tag",
+          "prompt": "Ein Dokument enthält den seltenen String „<xmp_deprecated_tag>“. Was macht der Subword-Tokenizer damit?",
+          "correct": "Er zerlegt den String in bekannte Zeichen- und Teilstücke — auch Nicht-Wort-Strings bleiben darstellbar, solange die Zeichen im Vokabular sind.",
+          "wrong": [
+            "Der String wird als Markup interpretiert und entfernt.",
+            "Der String fällt komplett in <code>&lt;unk&gt;</code>.",
+            "Das Vokabular lernt das Tag zur Laufzeit neu."
+          ],
+          "solution": "Subwords arbeiten unterhalb der Wortebene: Sonderzeichen und seltene Strings zerfallen in vorhandene Atome. Nur völlig unbekannte Zeichen wären ein Problem — die deckt das Basisvokabular ab."
+        },
+        {
+          "key": "anker-vergleich",
+          "prompt": "Ein Wort-Tokenizer meldet für 2 % der Korpuswörter <code>&lt;unk&gt;</code>; ein Subword-Tokenizer für dasselbe Korpus praktisch null. Woher kommt der Unterschied?",
+          "correct": "Der Subword-Tokenizer fällt auf bekannte Teilstücke bis zu Zeichen zurück, statt ganze Wörter als unbekannt zu verwerfen — Abdeckung durch Zerlegung statt durch Vollform-Einträge.",
+          "wrong": [
+            "Der Subword-Tokenizer hat ein unendliches Vokabular.",
+            "Der Wort-Tokenizer löscht die unbekannten Wörter aus dem Text.",
+            "Der Subword-Tokenizer trainiert sein Vokabular zur Laufzeit nach."
+          ],
+          "solution": "Der Unterschied liegt im Rückfall: Wort-Tokenizer kennen nur Vollformen und melden sonst <unk>; Subword-Tokenizer zerlegen bis auf bekannte Atome — dieselbe Abdeckung mit festem, kleinem Vokabular."
+        }
+      ]
+    },
+    "core": {
+      "caseId": "subword-unknown-piece",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>un</code>, <code>believ</code> und <code>able</code>, aber nicht das neue Stück <code>unbelievable</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das unbekannte Gesamtwort kann in bekannte Subwords zerlegt werden, statt vollständig als OOV-Token zu scheitern. Das Vokabular muss deshalb nicht jedes vollständige Wort enthalten."
+        },
+        {
+          "key": "wiederholung",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>wieder</code>, <code>hol</code> und <code>ung</code>, aber nicht das neue Stück <code>wiederholung</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'wiederholung' wird als 'wieder' + 'hol' + 'ung' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "vorsagbar",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>vor</code>, <code>sag</code> und <code>bar</code>, aber nicht das neue Stück <code>vorsagbar</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'vorsagbar' wird als 'vor' + 'sag' + 'bar' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "tokenisierung",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>token</code>, <code>isier</code> und <code>ung</code>, aber nicht das neue Stück <code>tokenisierung</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'tokenisierung' wird als 'token' + 'isier' + 'ung' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "unbeschreiblich",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>un</code>, <code>beschreib</code> und <code>lich</code>, aber nicht das neue Stück <code>unbeschreiblich</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'unbeschreiblich' wird als 'un' + 'beschreib' + 'lich' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "maschinenbau",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>masch</code>, <code>inen</code> und <code>bau</code>, aber nicht das neue Stück <code>maschinenbau</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'maschinenbau' wird als 'masch' + 'inen' + 'bau' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "retraining",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>re</code>, <code>train</code> und <code>ing</code>, aber nicht das neue Stück <code>retraining</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'retraining' wird als 're' + 'train' + 'ing' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "lernbar",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>lern</code> und <code>bar</code>, aber nicht das neue Stück <code>lernbar</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'lernbar' wird als 'lern' + 'bar' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "unfreundlich",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>un</code>, <code>freund</code> und <code>lich</code>, aber nicht das neue Stück <code>unfreundlich</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'unfreundlich' wird als 'un' + 'freund' + 'lich' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "bedeutungslos",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>be</code>, <code>deutungs</code> und <code>los</code>, aber nicht das neue Stück <code>bedeutungslos</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'bedeutungslos' wird als 'be' + 'deutungs' + 'los' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "transferieren",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>trans</code>, <code>fer</code> und <code>ieren</code>, aber nicht das neue Stück <code>transferieren</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'transferieren' wird als 'trans' + 'fer' + 'ieren' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        },
+        {
+          "key": "wahrscheinlich",
+          "prompt": "Ein Subword-Vokabular kennt die Stücke <code>wahr</code>, <code>schein</code> und <code>lich</code>, aber nicht das neue Stück <code>wahrscheinlich</code>. Was ist der Hauptvorteil?",
+          "correct": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+          "wrong": [
+            "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+            "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+            "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung."
+          ],
+          "solution": "Das fixe Vokabular deckt die Bausteine: 'wahrscheinlich' wird als 'wahr' + 'schein' + 'lich' segmentiert statt verworfen — genau die OOV-Reserve, für die Subwords trainiert wurden."
+        }
+      ]
+    },
+    "stretch": {
+      "caseId": "subword-boundary-sharing",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein Korpus enthält <code>play</code>, <code>player</code> und <code>replay</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen play, player und replay wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>play</code> oder ein Präfix/Suffix können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "lern-familie",
+          "prompt": "Ein Korpus enthält <code>lernen</code>, <code>lernbar</code> und <code>umlernen</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen lernen, lernbar und umlernen wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>lern</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "token-familie",
+          "prompt": "Ein Korpus enthält <code>token</code>, <code>tokenizer</code> und <code>tokenisierung</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen token, tokenizer und tokenisierung wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>token</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "modell-familie",
+          "prompt": "Ein Korpus enthält <code>modell</code>, <code>modellieren</code> und <code>vormodelliert</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen modell, modellieren und vormodelliert wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>modell</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "train-familie",
+          "prompt": "Ein Korpus enthält <code>train</code>, <code>trainer</code> und <code>training</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen train, trainer und training wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>train</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "valid-familie",
+          "prompt": "Ein Korpus enthält <code>valid</code>, <code>invalid</code> und <code>validierung</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen valid, invalid und validierung wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>valid</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "netz-familie",
+          "prompt": "Ein Korpus enthält <code>netz</code>, <code>netzwerk</code> und <code>subnetz</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen netz, netzwerk und subnetz wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>netz</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "prompt-familie",
+          "prompt": "Ein Korpus enthält <code>prompt</code>, <code>prompting</code> und <code>prompter</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen prompt, prompting und prompter wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>prompt</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "filter-familie",
+          "prompt": "Ein Korpus enthält <code>filter</code>, <code>filterbar</code> und <code>vorfilter</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen filter, filterbar und vorfilter wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>filter</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "kodier-familie",
+          "prompt": "Ein Korpus enthält <code>kodieren</code>, <code>dekodieren</code> und <code>kodiert</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen kodieren, dekodieren und kodiert wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>kodier</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "such-familie",
+          "prompt": "Ein Korpus enthält <code>suchen</code>, <code>sucher</code> und <code>durchsuchbar</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen suchen, sucher und durchsuchbar wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>such</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        },
+        {
+          "key": "import-familie",
+          "prompt": "Ein Korpus enthält <code>import</code>, <code>importieren</code> und <code>reimport</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "correct": "Geteilte Stücke können Wissen zwischen import, importieren und reimport wiederverwenden.",
+          "wrong": [
+            "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+            "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+            "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding."
+          ],
+          "solution": "Gemeinsame Stücke wie <code>import</code> können über mehrere Wörter geteilt werden. Dadurch können statistische Muster zwischen verwandten Formen wiederverwendet werden."
+        }
+      ]
+    }
+  }
+}

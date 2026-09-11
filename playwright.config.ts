@@ -3,9 +3,15 @@ import { defineConfig, devices } from '@playwright/test';
 const builtPreview = process.env.PLAYWRIGHT_PREVIEW === '1';
 const port = builtPreview ? 4174 : 4173;
 
+// Firefox/Webkit laufen nur in CI oder explizit (PLAYWRIGHT_ALL_BROWSERS=1) —
+// lokal duplizieren sie denselben Chromium-Lauf und brauchen zusaetzliche
+// Browser-Binaries, die ein frischer Checkout nicht installiert.
+const extraBrowsers = process.env.CI || process.env.PLAYWRIGHT_ALL_BROWSERS === '1';
+
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: false,
+  fullyParallel: true,
+  workers: process.env.CI ? 4 : '50%',
   forbidOnly: true,
   retries: 0,
   reporter: 'line',
@@ -21,7 +27,11 @@ export default defineConfig({
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    ...(extraBrowsers
+      ? [
+          { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+          { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+        ]
+      : []),
   ],
 });

@@ -6,6 +6,14 @@
  *  in browser and Node. */
 import { rng, randInt, nonzeroInt, until, clean } from './generator_draw_kit.mjs';
 
+import columnCombinationBank from '../../../content/banks/classify-column-combination.json' with { type: 'json' };
+import independenceBank from '../../../content/banks/classify-independence-multiple.json' with { type: 'json' };
+import matrixShapeBank from '../../../content/banks/classify-matrix-shape.json' with { type: 'json' };
+import rankSolutionBank from '../../../content/banks/classify-rank-solution-case.json' with { type: 'json' };
+import rowOperationBank from '../../../content/banks/classify-row-operation-validity.json' with { type: 'json' };
+import classifyShapeBank from '../../../content/banks/classify-shape-contract.json' with { type: 'json' };
+import rankBank from '../../../content/banks/transform-rank-dependence-rowops.json' with { type: 'json' };
+
 export { rng };
 
 
@@ -145,11 +153,7 @@ export function genRank3(seed) {
 
 /** Pilot-Kapseln für transform-rank-dependence-rowops (v2-Bounds 7/5/20):
  *  je Profil genau eine Kapsel mit dims, Zielrang, Bound und Fallbindung. */
-export const RANK_CAPSULES = {
-  core: { dims: [3, 3], targetRank: 2, bound: 7, caseId: 'rank-3x3-staircase' },
-  stretch: { dims: [3, 3], targetRank: 3, bound: 5, caseId: 'rank-3x3-full' },
-  challenge: { dims: [3, 4], targetRank: 1, bound: 20, caseId: 'rank-3x4-line' },
-};
+export const RANK_CAPSULES = rankBank.capsules;
 
 const rankLatex = (A) => A.map((row) => row.join('&')).join('\\\\');
 
@@ -215,11 +219,7 @@ export function genRankCapsule(seed, { dims, targetRank, bound }) {
 /** Kapseln für classify-independence-multiple: je Profil genau eine Kapsel
  *  mit Art, Bound und Fallbindung (intro/core/stretch → Doppel/Negativ/Tripel).
  *  Bounds decken die 27 kuratierten Orakel ab (intro maxAbs 12 über Faktor 4). */
-export const INDEPENDENCE_CAPSULES = {
-  intro: { kind: 'dependent-pair', bound: 12, caseId: 'dependent-pair-double' },
-  core: { kind: 'independent-pair', bound: 5, caseId: 'independent-pair-negative' },
-  stretch: { kind: 'dependent-triple', bound: 5, caseId: 'dependent-triple-span' },
-};
+export const INDEPENDENCE_CAPSULES = independenceBank.capsules;
 
 const INDEPENDENCE_FACTORS = [-4, -3, -2, -1, 2, 3, 4];
 
@@ -338,11 +338,7 @@ export const drawIndependenceParameters = (r, capsule) => ({
  *  Orakel ab (Produkt m 2-6/k 2-5/n 2-5, Addition 2-7, Vektor k 2-10);
  *  der Vektor-Bereich ist bis 12 geweitet, damit der Distinct-Boden (40)
  *  gegen 11 mal 4 Zellen hält. */
-export const MATRIX_SHAPE_CAPSULES = {
-  intro: { kind: 'product', rows: [2, 6], inner: [2, 5], cols: [2, 5], caseId: 'shape-product-drawn' },
-  core: { kind: 'add', dims: [2, 7], caseId: 'shape-add-broadcast-trap' },
-  stretch: { kind: 'vector', inner: [2, 12], caseId: 'shape-vector-matmul-chain' },
-};
+export const MATRIX_SHAPE_CAPSULES = matrixShapeBank.capsules;
 
 const inDimRange = (value, [lo, hi]) => Number.isInteger(value) && value >= lo && value <= hi;
 
@@ -458,11 +454,7 @@ export const drawMatrixShapeParameters = (r, capsule) => {
  *  ab (Spalteneinträge ≤ 5, Ziel ≤ 12, Lösung ≤ 3, beide
  *  Lösungskomponenten ungleich 0), die Shape-Bank die 9 kuratierten
  *  (m,n)-Orakel (2 bis 7 je Achse). */
-export const COLUMN_COMBINATION_CAPSULES = {
-  core: { kind: 'coefficients', bound: 12, caseId: 'column-coefficients-double' },
-  intro: { kind: 'choice', bound: 12, caseId: 'column-choice-authored' },
-  stretch: { kind: 'shape-debug', rows: [2, 7], cols: [2, 7], caseId: 'shape-debug-authored' },
-};
+export const COLUMN_COMBINATION_CAPSULES = columnCombinationBank.capsules;
 
 export const COLUMN_IDS = {
   coefficients: ['a', 'b', 'c', 'd'],
@@ -623,10 +615,7 @@ export const drawColumnCombinationParameters = (r, capsule) => {
  *  Gleichungs-Orakel ab (Koeffizienten ungleich 0 und ≤ 5, rechte Seiten
  *  ≤ 9, det ≠ 0) und die 9 kuratierten Multiplikator-Orakel (1 bis 9,
  *  Kapsel bis 12 für den Distinct-Boden). */
-export const ROW_OPERATION_CAPSULES = {
-  core: { kind: 'equations', bound: 9, caseId: 'valid-operation-rhs' },
-  intro: { kind: 'multiplier', min: 1, max: 12, caseId: 'row-operation-choice-contract' },
-};
+export const ROW_OPERATION_CAPSULES = rowOperationBank.capsules;
 
 export const ROW_OPERATION_IDS = {
   equations: ['a', 'b', 'c', 'd'],
@@ -726,10 +715,7 @@ export const drawRowOperationParameters = (r, capsule) => (capsule.kind === 'mul
  *  (Koeffizienten -3 bis 7, Kapsel bis 7 für den Distinct-Boden). Beide
  *  Templates lesen Rang 2 mit freier Variable aus der Stufenform; die
  *  Texte sind wörtlich aus den beiden Basisfällen. */
-export const RANK_SOLUTION_CAPSULES = {
-  core: { kind: 'echelon-abcd', bound: 7, caseId: 'echelon-read-rank-case' },
-  stretch: { kind: 'echelon-symbolic', bound: 7, caseId: 'rank-system-authored' },
-};
+export const RANK_SOLUTION_CAPSULES = rankSolutionBank.capsules;
 
 export const RANK_SOLUTION_IDS = {
   'echelon-abcd': ['a', 'b', 'c', 'd'],
@@ -796,11 +782,7 @@ export const drawRankSolutionParameters = (r, capsule) => ({
  *  QKV B 1-8/T 3-13/d 8-32/p 2-16, Embedding B 1-8/T 3-12/d 6-32);
  *  Ungleichungen (in≠out, T≠d, p≠d) halten Schlüssel und Distraktoren
  *  semantisch disjunkt. */
-export const CLASSIFY_SHAPE_CAPSULES = {
-  intro: { kind: 'bias-broadcast', batch: [4, 64], inputFeatures: [5, 13], outputFeatures: [3, 24], caseId: 'shape-bias-broadcast-mc' },
-  core: { kind: 'transformer-qkv', batch: [1, 8], seqLen: [3, 13], modelDim: [8, 32], projDim: [2, 16], caseId: 'shape-transformer-qkv' },
-  stretch: { kind: 'token-embedding', batch: [1, 8], seqLen: [3, 12], embedDim: [6, 32], caseId: 'shape-token-batch-flatten' },
-};
+export const CLASSIFY_SHAPE_CAPSULES = classifyShapeBank.capsules;
 
 export const SHAPE_CONTRACT_IDS = ['a', 'b', 'c', 'd'];
 

@@ -1,0 +1,266 @@
+{
+  "capsules": {
+    "intro": {
+      "kind": "ziel-abhaengig",
+      "slot": "ziel",
+      "thema": "zielabhängige Missingness",
+      "caseId": "target-dependent-missingness",
+      "bank": [
+        {
+          "ziel": "Gehalt",
+          "prompt": "In einer Gehaltstabelle fehlt der Zielwert „Jahresgehalt“ genau bei den bestbezahlten Beschäftigten, weil sie der Veröffentlichung nicht zugestimmt haben. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
+          "correct": "Die verbleibenden Daten unterschätzen das durchschnittliche Gehalt systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "fehlende": "die hohen Gehälter",
+          "hoch": "Gehälter"
+        },
+        {
+          "ziel": "Liegezeit",
+          "prompt": "In einer Klinikdatei fehlt die Liegedauer genau bei sehr langen Aufenthalten, weil diese Fälle intern archiviert und nicht exportiert werden. Was droht beim Löschen aller Zeilen ohne Liegedauer?",
+          "correct": "Die verbleibenden Daten unterschätzen die mittlere Liegezeit — das Löschen verzerrt, weil lange Aufenthalte gezielt fehlen.",
+          "fehlende": "die langen Aufenthalte",
+          "hoch": "Liegezeiten"
+        },
+        {
+          "ziel": "Note",
+          "prompt": "In einem Kurs fehlen Klausurnoten genau bei den besten Leistungen, weil diese Studierenden der Weitergabe nicht zustimmen. Was passiert, wenn du Zeilen ohne Note löschst?",
+          "correct": "Die verbleibenden Noten unterschätzen den Mittelwert systematisch, weil gerade die besten Ergebnisse fehlen.",
+          "fehlende": "die besten Noten",
+          "hoch": "Noten"
+        },
+        {
+          "ziel": "Bestellwert",
+          "prompt": "In einer Bestelltabelle fehlt der Umsatz genau bei Großaufträgen, weil diese unter NDA stehen. Was droht, wenn du alle Zeilen ohne Umsatz löschst?",
+          "correct": "Der mittlere Bestellwert der Restzeilen liegt zu niedrig, weil genau die großen Aufträge fehlen.",
+          "fehlende": "die Großaufträge",
+          "hoch": "Aufträge"
+        },
+        {
+          "ziel": "Schadstoff",
+          "prompt": "Ein Luftmessnetz liefert den Zielwert PM2,5 nicht an Tagen mit sehr hoher Belastung, weil das Gerät in den Alarmmodus wechselt und keinen Zahlenwert sendet. Was droht beim Löschen dieser Tage?",
+          "correct": "Der Mittelwert der gemeldeten Werte unterschätzt die Belastung, weil Extremtage fehlen.",
+          "fehlende": "die Extremtage",
+          "hoch": "Messwerte"
+        },
+        {
+          "ziel": "Ausfall",
+          "prompt": "In einer Kreditdatei fehlt das Label „Zahlungsausfall“ genau bei Kundinnen mit sehr hohem Risiko, weil diese der Auswertung widersprochen haben. Was droht beim Löschen aller Zeilen ohne Label?",
+          "correct": "Die Ausfallrate der Restzeilen ist zu niedrig, weil genau die kritischen Fälle fehlen.",
+          "fehlende": "die kritischen Fälle",
+          "hoch": "Ausfälle"
+        },
+        {
+          "ziel": "Strom",
+          "prompt": "In Verbrauchsdaten fehlt der Jahresstrom genau bei Haushalten mit sehr hohem Verbrauch, weil sie der Datenweitergabe widersprechen. Was droht, wenn du diese Zeilen löschst?",
+          "correct": "Der mittlere Verbrauch der Restzeilen liegt zu niedrig, weil Spitzenverbraucher fehlen.",
+          "fehlende": "die Spitzenverbraucher",
+          "hoch": "Verbrauchswerte"
+        },
+        {
+          "ziel": "Spende",
+          "prompt": "In einer Spendenstatistik fehlt der Betrag genau bei den höchsten Einzelspenden, weil diese anonym bleiben sollen. Was droht beim Löschen der Zeilen ohne Betrag?",
+          "correct": "Der Mittelwert der beobachteten Spenden unterschätzt den wahren Mittelwert, weil große Spenden fehlen.",
+          "fehlende": "die großen Spenden",
+          "hoch": "Spenden"
+        },
+        {
+          "ziel": "Miete",
+          "prompt": "Auf einem Mietportal fehlt der Zielwert „Kaltmiete“ genau bei den teuersten Wohnungen, weil die Anbieter den Preis nur auf Anfrage nennen. Was droht, wenn du Anzeigen ohne Preis löschst?",
+          "correct": "Die verbleibenden Mieten unterschätzen das Niveau, weil teure Wohnungen gezielt fehlen.",
+          "fehlende": "die teuren Wohnungen",
+          "hoch": "Mieten"
+        },
+        {
+          "ziel": "Punktzahl",
+          "prompt": "Auf einer Lernplattform fehlt der Zielwert „Abschlussscore“ genau bei den fleißigsten Nutzerinnen, weil diese ihre Profile privat halten. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
+          "correct": "Die verbleibenden Daten unterschätzen den durchschnittlichen Abschlussscore systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "fehlende": "die hohen Abschlussscores",
+          "hoch": "Abschlussscores"
+        },
+        {
+          "ziel": "Reparaturkosten",
+          "prompt": "In einer Werkstattdatei fehlt der Zielwert „Reparaturkosten“ genau bei den teuersten Aufträgen, weil diese über Garantien abgerechnet werden. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
+          "correct": "Die verbleibenden Daten unterschätzen die mittleren Reparaturkosten systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "fehlende": "die teuren Reparaturaufträge",
+          "hoch": "Reparaturaufträge"
+        },
+        {
+          "ziel": "Ladezeit",
+          "prompt": "In einem Web-Log fehlt der Zielwert „Ladezeit“ genau bei den langsamsten Seitenaufrufen, weil das Tracking bei Timeouts abbricht. Was droht, wenn du alle Zeilen mit fehlender Ladezeit löschst?",
+          "correct": "Die verbleibenden Daten unterschätzen die mittlere Ladezeit systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "fehlende": "die langsamen Seitenaufrufe",
+          "hoch": "Ladezeiten"
+        },
+        {
+          "ziel": "Kalorien",
+          "prompt": "In einer Ernährungs-App fehlt der Zielwert „Kalorien“ genau bei den Tagen mit höchstem Verbrauch, weil diese Einträge unvollständig bleiben. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
+          "correct": "Die verbleibenden Daten unterschätzen die mittlere Kalorienmenge systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "fehlende": "die kalorienreichen Tage",
+          "hoch": "Kalorienwerte"
+        },
+        {
+          "ziel": "Sitzungsdauer",
+          "prompt": "In einem Analytics-Export fehlt die Sitzungsdauer genau bei den längsten Sitzungen, weil diese beim Timeout abgeschnitten werden. Was droht, wenn du alle Zeilen mit fehlender Sitzungsdauer löschst?",
+          "correct": "Die verbleibenden Daten unterschätzen die mittlere Sitzungsdauer systematisch — das Löschen verzerrt, weil das Fehlen vom Zielwert abhängt.",
+          "fehlende": "die langen Sitzungen",
+          "hoch": "Sitzungsdauern"
+        }
+      ]
+    },
+    "core": {
+      "kind": "sensor-zensiert",
+      "slot": "sensor",
+      "thema": "wertabhängiges Zensieren",
+      "caseId": "missingness-device-censoring",
+      "bank": [
+        {
+          "sensor": "Blutdruckmanschette",
+          "prompt": "Eine Blutdruckmanschette liefert keinen Zahlenwert, sobald der Druck über 180 mmHg liegt, und speichert dann eine Lücke. Was ist die sauberste Diagnose?",
+          "extrem": "extreme Blutdruckwerte"
+        },
+        {
+          "sensor": "Personenwaage",
+          "prompt": "Eine Personenwaage zeigt bei Werten über 150 kg keine Zahl, sondern ein leeres Feld. Was ist die sauberste Diagnose, wenn du leere Felder löschst?",
+          "extrem": "sehr hohe Gewichte"
+        },
+        {
+          "sensor": "Mikrofon",
+          "prompt": "Ein Mikrofon speichert bei Pegel über 0 dBFS keinen Zahlenwert, sondern eine Lücke. Was ist die sauberste Diagnose?",
+          "extrem": "laute Peaks"
+        },
+        {
+          "sensor": "pH-Sonde",
+          "prompt": "Eine pH-Sonde liefert außerhalb von 2 bis 12 keinen Messwert, sondern einen Fehlstatus. Was ist die sauberste Diagnose?",
+          "extrem": "extreme pH-Werte"
+        },
+        {
+          "sensor": "Glukosemessgerät",
+          "prompt": "Ein Glukosemessgerät schreibt statt einer Zahl „HI“, sobald der Wert über 400 mg/dl liegt; in der Tabelle steht dann fehlend. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Glukosewerte"
+        },
+        {
+          "sensor": "Geschwindigkeitsmessung",
+          "prompt": "Eine Lichtschranke protokolliert keine Geschwindigkeit über 250 km/h, sondern eine leere Zelle. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Geschwindigkeiten"
+        },
+        {
+          "sensor": "Altimeter",
+          "prompt": "Ein Höhenmesser speichert oberhalb von 8000 m keinen Zahlenwert. Was ist die sauberste Diagnose, wenn du diese Lücken löschst?",
+          "extrem": "große Höhen"
+        },
+        {
+          "sensor": "Leistungsmesser",
+          "prompt": "Ein Leistungsmesser liefert bei Überlast keine Wattzahl, weil die Sicherung auslöst. Was ist die sauberste Diagnose?",
+          "extrem": "Lastspitzen"
+        },
+        {
+          "sensor": "Feinstaubsensor",
+          "prompt": "Ein Feinstaubsensor schreibt bei Konzentrationen über seinem Messbereich keine Zahl, sondern einen Fehlcode. Was ist die sauberste Diagnose?",
+          "extrem": "saturierte Extremwerte"
+        },
+        {
+          "sensor": "Thermometer",
+          "prompt": "Ein Ofenthermometer liefert oberhalb von 500 °C keinen Messwert, sondern einen Fehlcode. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Temperaturen"
+        },
+        {
+          "sensor": "Füllstandssensor",
+          "prompt": "Ein Füllstandssensor gibt bei Überlauf keinen Füllstand, sondern einen Fehlstatus aus. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Füllstände"
+        },
+        {
+          "sensor": "Netzwerkmonitor",
+          "prompt": "Ein Netzwerkmonitor protokolliert keine Latenzen über 1000 ms, sondern eine leere Zelle. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Latenzen"
+        },
+        {
+          "sensor": "Windsensor",
+          "prompt": "Ein Windsensor speichert bei Böen über 150 km/h keinen Zahlenwert. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Windgeschwindigkeiten"
+        },
+        {
+          "sensor": "Ladesäule",
+          "prompt": "Eine Ladesäule bricht die Aufzeichnung bei Ladeleistungen über 150 kW ab und hinterlässt eine Lücke. Was ist die sauberste Diagnose?",
+          "extrem": "sehr hohe Ladeleistungen"
+        }
+      ]
+    },
+    "stretch": {
+      "kind": "umfrage-wertabhaengig",
+      "slot": "ziel",
+      "thema": "zielabhängige Missingness",
+      "caseId": "missingness-income-survey",
+      "bank": [
+        {
+          "ziel": "Vermögen",
+          "prompt": "Bei einer freiwilligen Vermögensumfrage fehlt die Angabe besonders häufig bei sehr hohen Vermögen. Welche Folgerung ist korrekt?",
+          "groesse": "den Mittelwert des Vermögens"
+        },
+        {
+          "ziel": "Bonus",
+          "prompt": "In einer freiwilligen Bonusumfrage fehlen Beträge besonders oft bei den höchsten Boni. Welche Folgerung ist korrekt?",
+          "groesse": "den mittleren Bonus"
+        },
+        {
+          "ziel": "Firmenumsatz",
+          "prompt": "In einer Branchenumfrage fehlt der Jahresumsatz besonders häufig bei den umsatzstärksten Firmen. Welche Folgerung ist korrekt?",
+          "groesse": "den mittleren Umsatz"
+        },
+        {
+          "ziel": "Arbeitszeit",
+          "prompt": "In einer Arbeitszeitumfrage fehlen Angaben besonders oft bei Personen mit sehr vielen Überstunden. Welche Folgerung ist korrekt?",
+          "groesse": "die mittlere Arbeitszeit"
+        },
+        {
+          "ziel": "Immobilienwert",
+          "prompt": "Bei einer freiwilligen Immobilienumfrage fehlt der Schätzwert besonders häufig bei sehr teuren Objekten. Welche Folgerung ist korrekt?",
+          "groesse": "den mittleren Immobilienwert"
+        },
+        {
+          "ziel": "Spendenbereitschaft",
+          "prompt": "In einer Spendenumfrage fehlt der Betrag besonders oft bei sehr hohen geplanten Spenden. Welche Folgerung ist korrekt?",
+          "groesse": "den mittleren Spendenbetrag"
+        },
+        {
+          "ziel": "Kilometerstand",
+          "prompt": "In einer freiwilligen Fahrleistungsumfrage fehlt der Kilometerstand besonders häufig bei Vielfahrerinnen. Welche Folgerung ist korrekt?",
+          "groesse": "den mittleren Kilometerstand"
+        },
+        {
+          "ziel": "Körpergewicht",
+          "prompt": "In einer Gesundheitsumfrage fehlt das Körpergewicht besonders häufig bei sehr hohen Werten. Welche Folgerung ist korrekt?",
+          "groesse": "den Mittelwert des Gewichts"
+        },
+        {
+          "ziel": "Nettovermögen",
+          "prompt": "In einer Haushaltsbefragung fehlt das Nettovermögen besonders oft in der obersten Vermögensgruppe. Welche Folgerung ist korrekt?",
+          "groesse": "den Mittelwert"
+        },
+        {
+          "ziel": "Pendelzeit",
+          "prompt": "In einer freiwilligen Pendelumfrage fehlt die tägliche Pendelzeit besonders häufig bei sehr langen Wegen. Welche Folgerung ist korrekt?",
+          "groesse": "die mittlere Pendelzeit"
+        },
+        {
+          "ziel": "Bildschirmzeit",
+          "prompt": "In einer freiwilligen Bildschirmzeit-Umfrage fehlen Angaben besonders oft bei sehr hoher täglicher Nutzung. Welche Folgerung ist korrekt?",
+          "groesse": "die mittlere Bildschirmzeit"
+        },
+        {
+          "ziel": "Mietbelastung",
+          "prompt": "In einer Haushaltsbefragung fehlt die Mietbelastung besonders oft bei sehr hohen Mieten. Welche Folgerung ist korrekt?",
+          "groesse": "die mittlere Mietbelastung"
+        },
+        {
+          "ziel": "Wegstrecke",
+          "prompt": "In einer Mobilitätsumfrage fehlt die täglich gefahrene Strecke besonders häufig bei Vielfahrerinnen. Welche Folgerung ist korrekt?",
+          "groesse": "die mittlere Tagesstrecke"
+        },
+        {
+          "ziel": "Stromkosten",
+          "prompt": "In einer Energieumfrage fehlen die Stromkosten besonders oft bei Haushalten mit elektrischer Heizung. Welche Folgerung ist korrekt?",
+          "groesse": "die mittleren Stromkosten"
+        }
+      ]
+    }
+  }
+}

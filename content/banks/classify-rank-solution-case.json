@@ -1,0 +1,14 @@
+{
+  "capsules": {
+    "core": {
+      "kind": "echelon-abcd",
+      "bound": 7,
+      "caseId": "echelon-read-rank-case"
+    },
+    "stretch": {
+      "kind": "echelon-symbolic",
+      "bound": 7,
+      "caseId": "rank-system-authored"
+    }
+  }
+}
