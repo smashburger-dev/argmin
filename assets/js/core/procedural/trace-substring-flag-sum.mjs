@@ -8,7 +8,8 @@
 // the booleans, and the single-rule probe prints a Python bool (True/False).
 // Expected keeps the base form { kind: 'output-lines', output }.
 
-import { randInt, rng, shuffle, until } from '../generator_draw_kit.mjs';
+import { randInt, shuffle, until } from '../generator_draw_kit.mjs';
+import { makePredictFamily } from './case_family_kit.mjs';
 
 const DRAW_SCOPE = 'trace-substring-flag-sum';
 
@@ -97,9 +98,31 @@ export const SUBSTRING_CASES = {
     difficulty: 'core',
     baseSnippet: BASE_SNIPPET,
     baseOutput: BASE_OUTPUT,
+    baseParams: {
+      rules: RULE_BANK.slice(0, 3),
+      beispiele: EXAMPLE_BANK.slice(0, 3),
+      probeIndex: 2,
+      probeRule: 'systemprompt',
+    },
     prompt: PROMPT,
     baseSolution: BASE_SOLUTION,
     competencyIds: ['c-genai-security', 'c-python-reading'],
+    draw: drawSubstringScenario,
+    buildSnippet: (p) => buildSnippet(p),
+    buildOutput: (p) => substringFlagOutput(p.beispiele, p.rules, p.probeIndex, p.probeRule),
+    buildSolution: (p) => buildSolution(p),
+    checkParams(p) {
+      const { rules, beispiele, probeIndex, probeRule } = p;
+      if (!Array.isArray(rules) || rules.length !== 3 || new Set(rules).size !== 3) return false;
+      if (!rules.every((rule) => RULE_BANK.includes(rule))) return false;
+      if (!Array.isArray(beispiele) || beispiele.length < 3 || beispiele.length > 4) return false;
+      if (new Set(beispiele).size !== beispiele.length) return false;
+      if (!beispiele.every((b) => EXAMPLE_BANK.includes(b))) return false;
+      if (!Number.isInteger(probeIndex) || probeIndex < 0 || probeIndex >= beispiele.length) return false;
+      if (!RULE_BANK.includes(probeRule) || rules.includes(probeRule)) return false;
+      const flags = beispiele.map((b) => containsInjection(b, rules));
+      return flags.some(Boolean) && flags.some((f) => !f);
+    },
   },
 };
 
@@ -115,54 +138,6 @@ function drawSubstringScenario(r) {
     const flags = beispiele.map((b) => containsInjection(b, rules));
     return flags.some(Boolean) && flags.some((f) => !f);
   }, { scope: DRAW_SCOPE });
-}
-
-// Capsule shape: drawn fields must stay inside the banks, keep the mixed
-// hit/clean split, and rebuild the snippet verbatim.
-export function substringCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    const { rules, beispiele, probeIndex, probeRule } = parameters;
-    if (!Array.isArray(rules) || rules.length !== 3 || new Set(rules).size !== 3) return false;
-    if (!rules.every((rule) => RULE_BANK.includes(rule))) return false;
-    if (!Array.isArray(beispiele) || beispiele.length < 3 || beispiele.length > 4) return false;
-    if (new Set(beispiele).size !== beispiele.length) return false;
-    if (!beispiele.every((b) => EXAMPLE_BANK.includes(b))) return false;
-    if (!Number.isInteger(probeIndex) || probeIndex < 0 || probeIndex >= beispiele.length) return false;
-    if (!RULE_BANK.includes(probeRule) || rules.includes(probeRule)) return false;
-    const flags = beispiele.map((b) => containsInjection(b, rules));
-    if (!flags.some(Boolean) || !flags.some((f) => !f)) return false;
-    return parameters.snippet === buildSnippet(parameters);
-  } catch { return false; }
-}
-
-export function genSubstringCase(seed, caseDef) {
-  const drawn = drawSubstringScenario(rng(seed));
-  return {
-    parameters: {
-      caseId: caseDef.caseId,
-      difficulty: caseDef.difficulty,
-      ...drawn,
-      snippet: buildSnippet(drawn),
-    },
-    expected: {
-      kind: 'output-lines',
-      output: substringFlagOutput(drawn.beispiele, drawn.rules, drawn.probeIndex, drawn.probeRule),
-    },
-    prompt: caseDef.prompt,
-    fullSolution: buildSolution(drawn),
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveSubstringFamily(parameters) {
-  const caseDef = SUBSTRING_CASES[parameters?.caseId];
-  if (!caseDef || !substringCaseOk(parameters, caseDef)) {
-    throw new Error('trace-substring-flag-sum: Parameter verletzen die Kapselform');
-  }
-  return {
-    output: substringFlagOutput(parameters.beispiele, parameters.rules, parameters.probeIndex, parameters.probeRule),
-  };
 }
 
 export const SUBSTRING_CONTRACT = {
@@ -181,13 +156,14 @@ export const SUBSTRING_CONTRACT = {
   activityType: 'predict-output',
 };
 
-export function generateSubstringFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = SUBSTRING_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genSubstringCase(seed, caseDef);
-}
+const FAMILY = makePredictFamily({
+  contract: SUBSTRING_CONTRACT,
+  cases: SUBSTRING_CASES,
+  shapeError: 'trace-substring-flag-sum: Parameter verletzen die Kapselform',
+});
 
-export const FAMILY_SPEC = { ...SUBSTRING_CONTRACT, generate: generateSubstringFamily, solve: solveSubstringFamily };
+export const substringCaseOk = FAMILY.caseOk;
+export const genSubstringCase = FAMILY.genCase;
+export const solveSubstringFamily = FAMILY.solve;
+export const generateSubstringFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

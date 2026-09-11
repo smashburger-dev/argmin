@@ -58,3 +58,62 @@ export function makeCaseFamily({ contract, cases, shapeError, seededBlock, defau
 
   return { caseOk, genCase, solve, generate, spec: { ...contract, generate, solve } };
 }
+
+// Predict-output analogue: parameters carry {caseId, difficulty, ...drawn,
+// snippet}; expected is {output}. The case defs own the builders — the kit
+// only wires draw -> params -> snippet/expected/prompt/solution.
+//
+// Contract per family:
+//   cases: { [caseId]: { caseId, difficulty, baseSnippet, baseOutput,
+//     baseParams, prompt, baseSolution?, competencyIds?, expectedKind?,
+//     draw(r), toParams?(drawn), buildSnippet(params), buildOutput(params),
+//     buildPrompt?(params), buildSolution?(params), checkParams(params) } }
+export function makePredictFamily({ contract, cases, shapeError }) {
+  const error = shapeError ?? `${contract.familyId}: Parameter verletzen die Kapselform`;
+
+  const caseOk = (parameters, caseId, caseDef) => {
+    try {
+      if (!parameters || typeof parameters !== 'object') return false;
+      if (!caseDef.checkParams(parameters)) return false;
+      return parameters.snippet === caseDef.buildSnippet(parameters);
+    } catch { return false; }
+  };
+
+  const genCase = (seed, caseId, caseDef) => {
+    const r = rng(seed);
+    const drawn = caseDef.draw(r);
+    const parameters = {
+      caseId: caseDef.caseId,
+      difficulty: caseDef.difficulty,
+      ...(caseDef.toParams ? caseDef.toParams(drawn) : drawn),
+    };
+    parameters.snippet = caseDef.buildSnippet(parameters);
+    return {
+      parameters,
+      expected: {
+        kind: caseDef.expectedKind ?? 'output-lines',
+        output: caseDef.buildOutput(parameters),
+      },
+      prompt: caseDef.buildPrompt ? caseDef.buildPrompt(parameters) : caseDef.prompt,
+      fullSolution: caseDef.buildSolution ? caseDef.buildSolution(parameters) : caseDef.baseSolution,
+      competencyIds: caseDef.competencyIds,
+    };
+  };
+
+  const solve = (parameters) => {
+    const caseDef = cases[parameters?.caseId];
+    if (!caseDef || !caseOk(parameters, parameters.caseId, caseDef)) throw new Error(error);
+    return { output: caseDef.buildOutput(parameters) };
+  };
+
+  const generate = ({ seed, caseId, difficulty }) => {
+    if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+    const caseDef = cases[caseId];
+    if (!caseDef || caseDef.difficulty !== difficulty) {
+      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
+    }
+    return genCase(seed, caseId, caseDef);
+  };
+
+  return { caseOk, genCase, solve, generate, spec: { ...contract, generate, solve } };
+}

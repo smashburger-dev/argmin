@@ -62,8 +62,8 @@ test('capsule shape: generated parameters satisfy substringCaseOk over 200 seeds
   for (const caseId of CASE_IDS) {
     const def = SUBSTRING_CASES[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genSubstringCase(seed, def);
-      assert.ok(substringCaseOk(generated.parameters, def), `${caseId}:${seed}: shape`);
+      const generated = genSubstringCase(seed, caseId, def);
+      assert.ok(substringCaseOk(generated.parameters, caseId, def), `${caseId}:${seed}: shape`);
       assert.equal(generated.parameters.caseId, caseId);
       assert.equal(generated.parameters.difficulty, def.difficulty);
       assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
@@ -85,7 +85,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
     let sawTrue = 0;
     let sawFalse = 0;
     for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genSubstringCase(seed, def);
+      const generated = genSubstringCase(seed, caseId, def);
       const { beispiele, rules, probeIndex, probeRule } = generated.parameters;
       const want = refOutput(beispiele, rules, probeIndex, probeRule);
       assert.equal(generated.expected.output, want, `${caseId}:${seed}: expected output`);
@@ -105,7 +105,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
 test('seeded draws stay inside the declared domains', () => {
   const def = SUBSTRING_CASES['substring-flag-sum'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const { rules, beispiele, probeIndex, probeRule } = genSubstringCase(seed, def).parameters;
+    const { rules, beispiele, probeIndex, probeRule } = genSubstringCase(seed, 'substring-flag-sum', def).parameters;
     assert.equal(rules.length, 3, 'three rules drawn');
     assert.equal(new Set(rules).size, 3, 'rules distinct');
     assert.ok(rules.every((rule) => RULE_BANK.includes(rule)), 'rules from the bank');
@@ -134,7 +134,7 @@ test('determinism: same seed reproduces identical output, negative seeds valid',
   for (const caseId of CASE_IDS) {
     const def = SUBSTRING_CASES[caseId];
     for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genSubstringCase(seed, def), genSubstringCase(seed, def), `${caseId}:${seed}`);
+      assert.deepEqual(genSubstringCase(seed, caseId, def), genSubstringCase(seed, caseId, def), `${caseId}:${seed}`);
     }
   }
 });
@@ -167,6 +167,6 @@ test('family block: dispatch, contract, errors', () => {
   assert.throws(() => generateSubstringFamily({ seed: 0, caseId: 'nope', difficulty: 'core' }), /Unbekannter Fall/);
   assert.throws(() => generateSubstringFamily({ seed: 0.5, caseId: 'substring-flag-sum', difficulty: 'core' }), /Seed/);
   assert.throws(() => solveSubstringFamily({}), /Kapselform/);
-  const good = genSubstringCase(0, SUBSTRING_CASES['substring-flag-sum']).parameters;
+  const good = genSubstringCase(0, 'substring-flag-sum', SUBSTRING_CASES['substring-flag-sum']).parameters;
   assert.throws(() => solveSubstringFamily({ ...good, snippet: 'x' }), /Kapselform/);
 });

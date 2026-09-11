@@ -27,7 +27,16 @@ function assertContractExtras(contract, { familyGroup, difficultyProfiles } = {}
 
 // cases: [{ caseId, difficulty, competencyIds? }]
 // mod: module namespace; capsules keyed by caseId or by difficulty.
-export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, familyGroup, difficultyProfiles } = {}) {
+// Parametrisierte Kapseln (makeChoiceCapsuleFamily) tragen Zahlen-/Parameter-
+// Raeume statt einer gekeyten Textbank — bankabhaengige Gates laufen nur,
+// wenn jeder Eintrag key/correct/wrong traegt. `leakCheck(prompt, text)` ersetzt
+// den Default-Includes-Test fuer Familien mit numerischen Schluesseltexten.
+const keyedBank = (capsule) => Array.isArray(capsule?.bank)
+  && capsule.bank.every((entry) => typeof entry?.key === 'string'
+    && typeof entry?.correct === 'string' && Array.isArray(entry?.wrong));
+
+export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, familyGroup, difficultyProfiles, leakCheck } = {}) {
+  const leak = leakCheck ?? ((prompt, text) => prompt.includes(text));
   const doc = loadDoc(familyId);
   const table = Object.entries(mod).find(([key, value]) => /CAPSULES/.test(key) && value && typeof value === 'object')?.[1];
   const contract = Object.values(mod).find((value) => value?.familyId === familyId && value.authorityMode === 'seeded');
@@ -43,7 +52,11 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
   test('Orakel: Base-Eintrag reproduziert den JSON-Fall wörtlich', () => {
     for (const item of cases) {
       const body = doc.cases.find((entry) => entry.caseId === item.caseId);
-      const base = capsuleFor(item)?.bank.find((entry) => entry.key === 'base');
+      const capsule = capsuleFor(item);
+      // Parametrisierte Kapseln haben kein Text-Bank-Orakel — deren Anker
+      // deckt der Anker-Test unten plus die file-lokalen Orakel-Tabellen.
+      if (!keyedBank(capsule)) continue;
+      const base = capsule.bank.find((entry) => entry.key === 'base');
       assert.ok(base, `${item.caseId}: Base-Orakel fehlt`);
       assert.equal(base.prompt, body.prompt, `${item.caseId}: Prompt`);
       assert.equal(base.correct, body.choices.find((choice) => choice.correct).text, `${item.caseId}: Schlüsseltext`);
@@ -65,6 +78,7 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
   test('Kapseltabelle: Bank mit eindeutigen Keys und vier verschiedenen Optionen', () => {
     for (const item of cases) {
       const capsule = capsuleFor(item);
+      if (!keyedBank(capsule)) continue;
       assert.ok(capsule.bank.length >= 10, `${item.caseId}: Bank ${capsule.bank.length}`);
       assert.equal(new Set(capsule.bank.map((entry) => entry.key)).size, capsule.bank.length, `${item.caseId}: Keys eindeutig`);
       for (const entry of capsule.bank) {
@@ -81,7 +95,9 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
       for (let seed = 0; seed < 200; seed += 1) {
         const generated = callGen(genCapsule, seed, item.caseId, capsule);
         assert.ok(callOk(capsuleOk, generated.parameters, item.caseId, capsule), `${item.caseId}:${seed}: Kapselform`);
-        assert.ok(capsule.bank.some((entry) => entry.key === generated.parameters.scenario), `${item.caseId}:${seed}: Szenario in Bank`);
+        if (keyedBank(capsule)) {
+          assert.ok(capsule.bank.some((entry) => entry.key === generated.parameters.scenario), `${item.caseId}:${seed}: Szenario in Bank`);
+        }
         assert.equal(generated.choices.length, 4, `${item.caseId}:${seed}: vier Wahlen`);
         assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${item.caseId}:${seed}: eindeutige Texte`);
         const correct = generated.choices.filter((choice) => choice.correct);
@@ -123,7 +139,7 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
       for (let seed = 0; seed < 200; seed += 1) {
         const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
         const correct = generated.choices.find((choice) => choice.correct);
-        assert.ok(!generated.prompt.includes(correct.text), `${item.caseId}:${seed}: Schlüssel im Prompt`);
+        assert.ok(!leak(generated.prompt, correct.text, generated), `${item.caseId}:${seed}: Schlüssel im Prompt`);
         counts[generated.expected.correctChoice] += 1;
         const bucket = seed % 8;
         if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
@@ -146,12 +162,14 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
         const correct = generated.choices.find((choice) => choice.correct);
         assert.deepEqual(solve(generated.parameters), { correctText: correct.text }, `${item.caseId}:${seed}`);
       }
-      const base = capsule.bank.find((entry) => entry.key === 'base');
-      assert.deepEqual(
-        solve({ caseId: item.caseId, scenario: 'base' }),
-        { correctText: base.correct },
-        `${item.caseId}: Solver ohne expected/difficulty`,
-      );
+      if (keyedBank(capsule)) {
+        const base = capsule.bank.find((entry) => entry.key === 'base');
+        assert.deepEqual(
+          solve({ caseId: item.caseId, scenario: 'base' }),
+          { correctText: base.correct },
+          `${item.caseId}: Solver ohne expected/difficulty`,
+        );
+      }
     }
     assert.throws(() => solve({ caseId: 'nope' }), /Unbekannter Fall/);
     assert.throws(() => solve({ caseId: cases[0].caseId, scenario: 'nope' }), /Kapselform/);

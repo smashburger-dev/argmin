@@ -2,7 +2,7 @@
 // W06 generators; this module only supplies profile filtering and family
 // instance shape.
 
-import { drawFamilyInstance } from './generator_draw_kit.mjs';
+import { drawFamilyInstance, makeChoiceCapsuleFamily } from './generator_draw_kit.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import {
   genCompleteRows,
@@ -19,38 +19,54 @@ import {
   genMseGradient,
   genR2Share,
   genPcaVariancePercent,
-  genSigmoidCapsule,
+  drawSigmoidParameters,
+  sigmoidOptions,
+  sigmoidPrompt,
+  sigmoidShapeOk,
+  sigmoidSolution,
   SIGMOID_CAPSULES,
-  sigmoidCapsuleOk,
-  sigmoidCorrectText,
-  genBenchmarkCapsule,
+  drawBenchmarkParameters,
+  benchmarkOptions,
+  benchmarkPrompt,
+  benchmarkShapeOk,
+  benchmarkSolution,
   BENCHMARK_CAPSULES,
-  benchmarkCapsuleOk,
-  benchmarkCorrectText,
-  genLoraCapsule,
+  drawLoraParameters,
+  loraOptions,
+  loraPrompt,
+  loraShapeOk,
+  loraSolution,
   LORA_CAPSULES,
-  loraCapsuleOk,
-  loraCorrectText,
-  genMissingnessCapsule,
+  drawMissingnessParameters,
+  missingnessOptions,
+  missingnessPrompt,
+  missingnessShapeOk,
+  missingnessSolution,
   MISSINGNESS_CAPSULES,
-  missingnessCapsuleOk,
-  missingnessCorrectText,
-  genConfoundingCapsule,
+  drawConfoundingParameters,
+  confoundingOptions,
+  confoundingPrompt,
+  confoundingShapeOk,
+  confoundingSolution,
   CONFOUNDING_CAPSULES,
-  confoundingCapsuleOk,
-  confoundingCorrectText,
-  genTaskTypeCapsule,
+  drawTaskTypeParameters,
+  taskTypeOptions,
+  taskTypePrompt,
+  taskTypeShapeOk,
+  taskTypeSolution,
   TASK_TYPE_CAPSULES,
-  taskTypeCapsuleOk,
-  taskTypeCorrectText,
-  genErrorDriftCapsule,
+  drawErrorDriftParameters,
+  errorDriftOptions,
+  errorDriftPrompt,
+  errorDriftShapeOk,
+  errorDriftSolution,
   ERROR_DRIFT_CAPSULES,
-  errorDriftCapsuleOk,
-  errorDriftCorrectText,
-  genSvmMarginCapsule,
+  drawSvmMarginParameters,
+  svmMarginOptions,
+  svmMarginPrompt,
+  svmMarginShapeOk,
+  svmMarginSolution,
   SVM_MARGIN_CAPSULES,
-  svmMarginCapsuleOk,
-  svmMarginCorrectText,
 } from './data_ml_generators.mjs';
 import {
   genBackpropChain,
@@ -1036,35 +1052,6 @@ export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
 // Vertrag lebt hier. masteryEligible bleibt false wie im Bestand (alle drei
 // Base-Fälle false).
 
-const SIGMOID_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveSigmoidRegimeFamily(parameters) {
-  const capsule = Object.values(SIGMOID_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: sigmoidCorrectText(parameters, capsule) };
-}
-
-export function generateSigmoidRegimeFamily({ seed, caseId, difficulty }) {
-  const capsule = SIGMOID_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genSigmoidCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => sigmoidCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => sigmoidCapsuleOk(parameters, capsule),
-    profiles: SIGMOID_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
-
 export const SIGMOID_REGIME_CONTRACT = {
   familyId: 'classify-sigmoid-regime',
   familyGroup: 'classify-concept',
@@ -1083,41 +1070,28 @@ export const SIGMOID_REGIME_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const SIGMOID = makeChoiceCapsuleFamily({
+  contract: SIGMOID_REGIME_CONTRACT,
+  capsules: SIGMOID_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawSigmoidParameters,
+  buildOptions: sigmoidOptions,
+  validate: sigmoidShapeOk,
+  buildPrompt: sigmoidPrompt,
+  buildSolution: sigmoidSolution,
+});
+export const sigmoidCapsuleOk = SIGMOID.capsuleOk;
+export const sigmoidCorrectText = SIGMOID.correctText;
+export const genSigmoidCapsule = SIGMOID.genCapsule;
+export const solveSigmoidRegimeFamily = SIGMOID.solve;
+export const generateSigmoidRegimeFamily = SIGMOID.generate;
+
 // --- classify-benchmark-reading -------------------------------------------------
 // Geseedet über genBenchmarkCapsule: zwei Zahlen-Templates plus eine
 // Szenario-Bank mit Rotation, ein Template je Fallart, drei Kapseln 1:1 auf
 // den Bestandsfällen (intro/core/stretch → absolute-gain/absolute-relative/
 // imbalanced-accuracy). Der Content-Contract ist null, der Vertrag lebt hier.
 // masteryEligible bleibt false wie im Bestand (alle drei Base-Fälle false).
-
-const BENCHMARK_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveBenchmarkReadingFamily(parameters) {
-  const capsule = Object.values(BENCHMARK_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: benchmarkCorrectText(parameters, capsule) };
-}
-
-export function generateBenchmarkReadingFamily({ seed, caseId, difficulty }) {
-  const capsule = BENCHMARK_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genBenchmarkCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => benchmarkCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => benchmarkCapsuleOk(parameters, capsule),
-    profiles: BENCHMARK_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const BENCHMARK_READING_CONTRACT = {
   familyId: 'classify-benchmark-reading',
@@ -1137,41 +1111,28 @@ export const BENCHMARK_READING_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const BENCHMARK = makeChoiceCapsuleFamily({
+  contract: BENCHMARK_READING_CONTRACT,
+  capsules: BENCHMARK_CAPSULES,
+  shapeError: 'Benchmark-Befund verletzt die Kapselform',
+  drawParameters: drawBenchmarkParameters,
+  buildOptions: benchmarkOptions,
+  validate: benchmarkShapeOk,
+  buildPrompt: benchmarkPrompt,
+  buildSolution: benchmarkSolution,
+});
+export const benchmarkCapsuleOk = BENCHMARK.capsuleOk;
+export const benchmarkCorrectText = BENCHMARK.correctText;
+export const genBenchmarkCapsule = BENCHMARK.genCapsule;
+export const solveBenchmarkReadingFamily = BENCHMARK.solve;
+export const generateBenchmarkReadingFamily = BENCHMARK.generate;
+
 // --- classify-lora-tradeoff -----------------------------------------------------
 // Geseedet ueber genLoraCapsule: ein Begriffs-Template plus zwei
 // Rechen-Templates mit Rotation, drei Kapseln 1:1 auf den Bestandsfaellen
 // (intro/core/stretch -> tradeoff/param-count/alpha-rank). Der
 // Content-Contract ist null, der Vertrag lebt hier. masteryEligible bleibt
 // false wie im Bestand (alle drei Base-Faelle false).
-
-const LORA_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhaengiger Schluessel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveLoraTradeoffFamily(parameters) {
-  const capsule = Object.values(LORA_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: loraCorrectText(parameters, capsule) };
-}
-
-export function generateLoraTradeoffFamily({ seed, caseId, difficulty }) {
-  const capsule = LORA_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genLoraCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => loraCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => loraCapsuleOk(parameters, capsule),
-    profiles: LORA_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const LORA_TRADEOFF_CONTRACT = {
   familyId: 'classify-lora-tradeoff',
@@ -1191,6 +1152,22 @@ export const LORA_TRADEOFF_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const LORA = makeChoiceCapsuleFamily({
+  contract: LORA_TRADEOFF_CONTRACT,
+  capsules: LORA_CAPSULES,
+  shapeError: 'LoRA-Befund verletzt die Kapselform',
+  drawParameters: drawLoraParameters,
+  buildOptions: loraOptions,
+  validate: loraShapeOk,
+  buildPrompt: loraPrompt,
+  buildSolution: loraSolution,
+});
+export const loraCapsuleOk = LORA.capsuleOk;
+export const loraCorrectText = LORA.correctText;
+export const genLoraCapsule = LORA.genCapsule;
+export const solveLoraTradeoffFamily = LORA.solve;
+export const generateLoraTradeoffFamily = LORA.generate;
+
 // --- classify-missingness -------------------------------------------------------
 // Geseedet ueber genMissingnessCapsule: Slot-Bank (Szenarien mit thema/ziel-
 // bzw. sensor-Slot) plus Rotation, ein Options-Template je Fallart, drei
@@ -1199,35 +1176,6 @@ export const LORA_TRADEOFF_CONTRACT = {
 // missingness-income-survey). Der Content-Contract ist null, der Vertrag
 // lebt hier. masteryEligible bleibt false wie im Bestand (alle drei
 // Base-Faelle false).
-
-const MISSINGNESS_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhaengiger Schluessel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveMissingnessFamily(parameters) {
-  const capsule = Object.values(MISSINGNESS_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: missingnessCorrectText(parameters, capsule) };
-}
-
-export function generateMissingnessFamily({ seed, caseId, difficulty }) {
-  const capsule = MISSINGNESS_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genMissingnessCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => missingnessCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => missingnessCapsuleOk(parameters, capsule),
-    profiles: MISSINGNESS_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, thema: capsule.thema, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const MISSINGNESS_CONTRACT = {
   familyId: 'classify-missingness',
@@ -1247,6 +1195,22 @@ export const MISSINGNESS_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const MISSINGNESS = makeChoiceCapsuleFamily({
+  contract: MISSINGNESS_CONTRACT,
+  capsules: MISSINGNESS_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawMissingnessParameters,
+  buildOptions: missingnessOptions,
+  validate: missingnessShapeOk,
+  buildPrompt: missingnessPrompt,
+  buildSolution: missingnessSolution,
+});
+export const missingnessCapsuleOk = MISSINGNESS.capsuleOk;
+export const missingnessCorrectText = MISSINGNESS.correctText;
+export const genMissingnessCapsule = MISSINGNESS.genCapsule;
+export const solveMissingnessFamily = MISSINGNESS.solve;
+export const generateMissingnessFamily = MISSINGNESS.generate;
+
 // --- classify-confounding -------------------------------------------------------
 // Geseedet über genConfoundingCapsule: Szenario-Bank (confounder-Slot) plus
 // Rotation, ein Options-Template je Fallart, drei Kapseln 1:1 auf den
@@ -1254,35 +1218,6 @@ export const MISSINGNESS_CONTRACT = {
 // confounder-exercise-sleep/confounder-ad-spend-season). Der Content-Contract
 // ist null, der Vertrag lebt hier. masteryEligible bleibt false wie im
 // Bestand (alle drei Base-Fälle false).
-
-const CONFOUNDING_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveConfoundingFamily(parameters) {
-  const capsule = Object.values(CONFOUNDING_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: confoundingCorrectText(parameters, capsule) };
-}
-
-export function generateConfoundingFamily({ seed, caseId, difficulty }) {
-  const capsule = CONFOUNDING_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genConfoundingCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => confoundingCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => confoundingCapsuleOk(parameters, capsule),
-    profiles: CONFOUNDING_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const CONFOUNDING_CONTRACT = {
   familyId: 'classify-confounding',
@@ -1302,6 +1237,22 @@ export const CONFOUNDING_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const CONFOUNDING = makeChoiceCapsuleFamily({
+  contract: CONFOUNDING_CONTRACT,
+  capsules: CONFOUNDING_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawConfoundingParameters,
+  buildOptions: confoundingOptions,
+  validate: confoundingShapeOk,
+  buildPrompt: confoundingPrompt,
+  buildSolution: confoundingSolution,
+});
+export const confoundingCapsuleOk = CONFOUNDING.capsuleOk;
+export const confoundingCorrectText = CONFOUNDING.correctText;
+export const genConfoundingCapsule = CONFOUNDING.genCapsule;
+export const solveConfoundingFamily = CONFOUNDING.solve;
+export const generateConfoundingFamily = CONFOUNDING.generate;
+
 // --- classify-task-type ---------------------------------------------------------
 // Geseedet über genTaskTypeCapsule: Szenario-Bank (scenario/target-Slots) plus
 // Rotation, Schlüsseltext und Distraktoren wörtlich in der Bank, drei Kapseln
@@ -1309,35 +1260,6 @@ export const CONFOUNDING_CONTRACT = {
 // task-house-price/task-customer-segments). Der Content-Contract ist null, der
 // Vertrag lebt hier. masteryEligible bleibt false wie im Bestand (alle drei
 // Base-Fälle false).
-
-const TASK_TYPE_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveTaskTypeFamily(parameters) {
-  const capsule = Object.values(TASK_TYPE_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: taskTypeCorrectText(parameters, capsule) };
-}
-
-export function generateTaskTypeFamily({ seed, caseId, difficulty }) {
-  const capsule = TASK_TYPE_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genTaskTypeCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => taskTypeCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => taskTypeCapsuleOk(parameters, capsule),
-    profiles: TASK_TYPE_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const TASK_TYPE_CONTRACT = {
   familyId: 'classify-task-type',
@@ -1357,6 +1279,22 @@ export const TASK_TYPE_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const TASK_TYPE = makeChoiceCapsuleFamily({
+  contract: TASK_TYPE_CONTRACT,
+  capsules: TASK_TYPE_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawTaskTypeParameters,
+  buildOptions: taskTypeOptions,
+  validate: taskTypeShapeOk,
+  buildPrompt: taskTypePrompt,
+  buildSolution: taskTypeSolution,
+});
+export const taskTypeCapsuleOk = TASK_TYPE.capsuleOk;
+export const taskTypeCorrectText = TASK_TYPE.correctText;
+export const genTaskTypeCapsule = TASK_TYPE.genCapsule;
+export const solveTaskTypeFamily = TASK_TYPE.solve;
+export const generateTaskTypeFamily = TASK_TYPE.generate;
+
 // --- classify-error-drift -------------------------------------------------------
 // Geseedet über genErrorDriftCapsule: Szenario-Bank plus Rotation, korrekter
 // Wahltext je Fall konstant, szenariobindende Distraktoren wörtlich in der
@@ -1367,35 +1305,6 @@ export const TASK_TYPE_CONTRACT = {
 // generate gibt masteryEligible nicht zurück, der Registry-Fallback
 // (family.masteryEligible) greift — wie im Bestand sind alle drei Fälle
 // mastery-eligible, daher trägt der Vertrag masteryEligible: true.
-
-const ERROR_DRIFT_DIFFICULTIES = ['core', 'stretch', 'challenge'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveErrorDriftFamily(parameters) {
-  const capsule = Object.values(ERROR_DRIFT_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: errorDriftCorrectText(parameters, capsule) };
-}
-
-export function generateErrorDriftFamily({ seed, caseId, difficulty }) {
-  const capsule = ERROR_DRIFT_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genErrorDriftCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => errorDriftCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => errorDriftCapsuleOk(parameters, capsule),
-    profiles: ERROR_DRIFT_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const ERROR_DRIFT_CONTRACT = {
   familyId: 'classify-error-drift',
@@ -1415,6 +1324,22 @@ export const ERROR_DRIFT_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const ERROR_DRIFT = makeChoiceCapsuleFamily({
+  contract: ERROR_DRIFT_CONTRACT,
+  capsules: ERROR_DRIFT_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawErrorDriftParameters,
+  buildOptions: errorDriftOptions,
+  validate: errorDriftShapeOk,
+  buildPrompt: errorDriftPrompt,
+  buildSolution: errorDriftSolution,
+});
+export const errorDriftCapsuleOk = ERROR_DRIFT.capsuleOk;
+export const errorDriftCorrectText = ERROR_DRIFT.correctText;
+export const genErrorDriftCapsule = ERROR_DRIFT.genCapsule;
+export const solveErrorDriftFamily = ERROR_DRIFT.solve;
+export const generateErrorDriftFamily = ERROR_DRIFT.generate;
+
 // --- classify-svm-margin ------------------------------------------------------
 // Geseedet über genSvmMarginCapsule: Zahlenbanken mit konsistenten Tupeln
 // (Generator rechnet marginWidth = 2/||w|| bzw. marginScore = y·(wᵀx+b) nach),
@@ -1423,35 +1348,6 @@ export const ERROR_DRIFT_CONTRACT = {
 // svm-support-boundary). Der Content-Contract ist null, der Vertrag lebt
 // hier. masteryEligible bleibt false wie im Bestand (alle drei Base-Fälle
 // false).
-
-const SVM_MARGIN_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveSvmMarginFamily(parameters) {
-  const capsule = Object.values(SVM_MARGIN_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: svmMarginCorrectText(parameters, capsule) };
-}
-
-export function generateSvmMarginFamily({ seed, caseId, difficulty }) {
-  const capsule = SVM_MARGIN_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genSvmMarginCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => svmMarginCapsuleOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => svmMarginCapsuleOk(parameters, capsule),
-    profiles: SVM_MARGIN_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const SVM_MARGIN_CONTRACT = {
   familyId: 'classify-svm-margin',
@@ -1470,6 +1366,22 @@ export const SVM_MARGIN_CONTRACT = {
   graderId: 'deterministic',
   activityType: 'single-choice',
 };
+
+const SVM_MARGIN = makeChoiceCapsuleFamily({
+  contract: SVM_MARGIN_CONTRACT,
+  capsules: SVM_MARGIN_CAPSULES,
+  shapeError: 'SVM-Margin-Befund verletzt die Kapselform',
+  drawParameters: drawSvmMarginParameters,
+  buildOptions: svmMarginOptions,
+  validate: svmMarginShapeOk,
+  buildPrompt: svmMarginPrompt,
+  buildSolution: svmMarginSolution,
+});
+export const svmMarginCapsuleOk = SVM_MARGIN.capsuleOk;
+export const svmMarginCorrectText = SVM_MARGIN.correctText;
+export const genSvmMarginCapsule = SVM_MARGIN.genCapsule;
+export const solveSvmMarginFamily = SVM_MARGIN.solve;
+export const generateSvmMarginFamily = SVM_MARGIN.generate;
 
 export const DATA_ML_FAMILY_SPECS = [
   {

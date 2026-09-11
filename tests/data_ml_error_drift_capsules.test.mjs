@@ -1,4 +1,6 @@
 // Familie classify-error-drift: Kapsel-Gates (single-choice-adaptiert).
+// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_error_drift_capsules.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,19 +8,39 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  genErrorDriftCapsule,
   ERROR_DRIFT_CAPSULES,
-  errorDriftCapsuleOk,
-  errorDriftCorrectText,
 } from '../assets/js/core/data_ml_generators.mjs';
 import {
   ERROR_DRIFT_CONTRACT,
+  genErrorDriftCapsule,
+  errorDriftCapsuleOk,
+  errorDriftCorrectText,
   generateErrorDriftFamily,
   solveErrorDriftFamily,
+  DATA_ML_FAMILY_SPECS,
 } from '../assets/js/core/data_ml_families.mjs';
-import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
+import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+// Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
+// Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
+const mod = {
+  ERROR_DRIFT_CAPSULES,
+  errorDriftCapsuleOk,
+  errorDriftCorrectText,
+  genErrorDriftCapsule,
+  ERROR_DRIFT_CONTRACT,
+  generateErrorDriftFamily,
+  solveErrorDriftFamily,
+  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-error-drift'),
+};
+
+choiceCapsuleSuite('classify-error-drift', mod, [
+  { caseId: 'accuracy-drop-without-code-change', difficulty: 'core' },
+  { caseId: 'error-label-definition-shift', difficulty: 'stretch' },
+  { caseId: 'error-stable-subgroup', difficulty: 'challenge' },
+], { familyGroup: 'classify-concept', difficultyProfiles: ['core', 'stretch', 'challenge'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schlüsseltext. Regel: Kapsel weiten,
@@ -143,122 +165,4 @@ test('Kapseltabelle: Banken, Fallbindung, Slots', () => {
     assert.equal(capsule.bank.length, 14, `${capsule.caseId}: 14 Szenarien`);
     assert.equal(new Set(capsule.bank.map((item) => item[capsule.slot])).size, 14, `${capsule.caseId}: Slotwerte eindeutig`);
   }
-});
-
-test('Kapsel-Constraints: Form, Choices, Schlüssel über je 200 Seeds', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = ERROR_DRIFT_CAPSULES[key];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genErrorDriftCapsule(seed, capsule);
-      assert.ok(errorDriftCapsuleOk(generated.parameters, capsule), `${key}:${seed}: Kapselform`);
-      assert.equal(generated.choices.length, 4, `${key}:${seed}: vier Wahlen`);
-      assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${key}:${seed}: eindeutige Texte`);
-      const correct = generated.choices.filter((choice) => choice.correct);
-      assert.equal(correct.length, 1, `${key}:${seed}: genau eine korrekte Wahl`);
-      assert.equal(generated.expected.correctChoice, correct[0].id, `${key}:${seed}: Key zeigt auf korrekte Wahl`);
-      assert.equal(correct[0].text, errorDriftCorrectText(generated.parameters, capsule), `${key}:${seed}: Schlüsseltext`);
-      assert.ok(generated.prompt.length > 20, `${key}:${seed}: Prompt`);
-      assert.ok(generated.fullSolution.length > 20, `${key}:${seed}: Lösung`);
-    }
-  }
-});
-
-test('Distinct-Boden 3x200: je Kapsel mindestens 40 distincte Instanzen', () => {
-  for (const key of CAPSULE_KEYS) {
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateErrorDriftFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      seen.add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    assert.ok(seen.size >= 40, `${key}: nur ${seen.size} distinct`);
-  }
-});
-
-test('Key-Agreement 3x200: Solve-Schlüssel gegen Generator ohne Abweichung', () => {
-  for (const key of CAPSULE_KEYS) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateErrorDriftFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const solved = solveErrorDriftFamily(generated.parameters);
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.equal(solved.correctText, correct.text, `${key}:${seed}: Schlüsseltext`);
-      assert.equal(generated.expected.correctChoice, correct.id, `${key}:${seed}: Key-Id`);
-    }
-  }
-});
-
-test('Constraint-Compliance 3x200: null Samples außerhalb der Szenario-Bank', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = ERROR_DRIFT_CAPSULES[key];
-    let violations = 0;
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateErrorDriftFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      if (!errorDriftCapsuleOk(generated.parameters, capsule)) violations += 1;
-    }
-    assert.equal(violations, 0, `${key}: Constraint-Verletzungen`);
-  }
-});
-
-test('Leak/Rotation: Prompt nennt den Schlüssel nie, Positionen rotieren, Modulo-Klassen halten nichts zurück', () => {
-  for (const key of CAPSULE_KEYS) {
-    const counts = { a: 0, b: 0, c: 0, d: 0 };
-    const byModulo = new Map();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateErrorDriftFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.ok(!generated.prompt.includes(correct.text), `${key}:${seed}: Schlüssel im Prompt`);
-      counts[generated.expected.correctChoice] += 1;
-      const bucket = seed % 8;
-      if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
-      byModulo.get(bucket).add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    for (const [id, count] of Object.entries(counts)) {
-      assert.ok(count >= 40 && count <= 60, `${key}: Position ${id} nur ${count}x`);
-    }
-    for (const [bucket, instances] of byModulo) {
-      assert.ok(instances.size >= 10, `${key}: Modulo-Klasse ${bucket} hält nur ${instances.size} distinct`);
-    }
-  }
-});
-
-test('negative Seeds: gültig und deterministisch', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = ERROR_DRIFT_CAPSULES[key];
-    for (let seed = -50; seed < 0; seed += 1) {
-      const first = genErrorDriftCapsule(seed, capsule);
-      assert.deepEqual(first, genErrorDriftCapsule(seed, capsule), `${key}:${seed}: deterministisch`);
-      assert.ok(errorDriftCapsuleOk(first.parameters, capsule), `${key}:${seed}: Kapselform`);
-    }
-  }
-});
-
-test('Familien-Block: Dispatch, Contract, Solve', () => {
-  assert.equal(ERROR_DRIFT_CONTRACT.familyId, 'classify-error-drift');
-  assert.equal(ERROR_DRIFT_CONTRACT.authorityMode, 'seeded');
-  assert.equal(ERROR_DRIFT_CONTRACT.activityType, 'single-choice');
-  assert.equal(ERROR_DRIFT_CONTRACT.masteryEligible, true);
-  assert.deepEqual(ERROR_DRIFT_CONTRACT.difficultyProfiles, ['core', 'stretch', 'challenge']);
-  assert.deepEqual(ERROR_DRIFT_CONTRACT.caseTypes.map((item) => item.caseId).sort(), Object.values(CASE_FOR).sort());
-  for (const key of CAPSULE_KEYS) {
-    const generated = generateErrorDriftFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key });
-    const correct = generated.choices.find((choice) => choice.correct);
-    assert.equal(generated.expected.correctChoice, correct.id);
-    assert.deepEqual(solveErrorDriftFamily(generated.parameters), { correctText: correct.text });
-    assert.ok(generated.prompt.length > 20);
-    assert.deepEqual(generateErrorDriftFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key }), generated);
-  }
-  assert.throws(() => generateErrorDriftFamily({ seed: 0, caseId: 'accuracy-drop-without-code-change', difficulty: 'stretch' }), /Unbekannter Fall/);
-  assert.throws(() => generateErrorDriftFamily({ seed: 0, caseId: 'error-label-definition-shift', difficulty: 'core' }), /Unbekannt/);
-  assert.throws(() => generateErrorDriftFamily({ seed: 0, caseId: 'accuracy-drop-without-code-change', difficulty: 'intro' }), /Unbekannt/);
-});
-
-test('Familien-Block: Registry löst, gradet und bleibt deterministisch', async () => {
-  const instance = EXERCISE_FAMILIES.instantiate('classify-error-drift', 11, 'core', 'accuracy-drop-without-code-change');
-  assert.equal(instance.masteryEligible, true);
-  const correct = instance.choices.find((choice) => choice.correct);
-  assert.equal(instance.expectedAnswer.correctChoice, correct.id);
-  const right = await EXERCISE_FAMILIES.grade(instance, correct.id);
-  assert.equal(right.correct, true);
-  const wrong = instance.choices.find((choice) => !choice.correct);
-  const graded = await EXERCISE_FAMILIES.grade(instance, wrong.id);
-  assert.equal(graded.correct, false);
 });

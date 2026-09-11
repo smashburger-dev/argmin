@@ -11,7 +11,8 @@
 // sharing a term — strip() equals JS trim() for this content. Expected keeps
 // the base form { kind: 'output-lines', output }.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { randInt } from '../generator_draw_kit.mjs';
+import { makePredictFamily } from './case_family_kit.mjs';
 
 const STUB_DEF = `def antwort(anfrage, docs):
     def terme(s):
@@ -157,9 +158,25 @@ export const STUB_DOC_CASES = {
     difficulty: 'core',
     baseSnippet: BASE_SNIPPET,
     baseOutput: BASE_OUTPUT,
+    baseParams: {
+      docs: DOC_BANK[0].docs,
+      queryHit: 'Wie erfolgt der Versand?',
+      queryMiss: 'Gibt es einen Parkplatz?',
+    },
     prompt: PROMPT,
     baseSolution: BASE_SOLUTION,
     competencyIds: ['c-genai-prototype', 'c-python-reading'],
+    draw: drawStubScenario,
+    buildSnippet: (p) => buildSnippet(p),
+    buildOutput: (p) => `${runStub(p.queryHit, p.docs)}\n${runStub(p.queryMiss, p.docs)}`,
+    buildSolution: (p) => buildSolution(p),
+    checkParams(p) {
+      const { docs, queryHit, queryMiss } = p;
+      const entry = DOC_BANK.find((item) => item.docs.length === docs?.length
+        && item.docs.every((doc, i) => doc === docs[i]));
+      if (!entry || !entry.hits.includes(queryHit)) return false;
+      return missCandidates(entry.docs).includes(queryMiss);
+    },
   },
 };
 
@@ -169,50 +186,6 @@ function drawStubScenario(r) {
   const misses = missCandidates(entry.docs);
   const queryMiss = misses[randInt(r, 0, misses.length - 1)];
   return { docs: entry.docs, queryHit, queryMiss };
-}
-
-// Capsule shape: docs must be a bank entry, the hit query one of its authored
-// hits, the miss query a pool member that scores zero, and the snippet the
-// verbatim rebuild — honest distinctness (the code text itself differs).
-export function stubDocCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    const { docs, queryHit, queryMiss } = parameters;
-    const entry = DOC_BANK.find((item) => item.docs.length === docs?.length
-      && item.docs.every((doc, i) => doc === docs[i]));
-    if (!entry || !entry.hits.includes(queryHit)) return false;
-    if (!missCandidates(entry.docs).includes(queryMiss)) return false;
-    return parameters.snippet === buildSnippet({ docs, queryHit, queryMiss });
-  } catch { return false; }
-}
-
-export function genStubDocCase(seed, caseDef) {
-  const drawn = drawStubScenario(rng(seed));
-  return {
-    parameters: {
-      caseId: caseDef.caseId,
-      difficulty: caseDef.difficulty,
-      ...drawn,
-      snippet: buildSnippet(drawn),
-    },
-    expected: {
-      kind: 'output-lines',
-      output: `${runStub(drawn.queryHit, drawn.docs)}\n${runStub(drawn.queryMiss, drawn.docs)}`,
-    },
-    prompt: caseDef.prompt,
-    fullSolution: buildSolution(drawn),
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveStubDocFamily(parameters) {
-  const caseDef = STUB_DOC_CASES[parameters?.caseId];
-  if (!caseDef || !stubDocCaseOk(parameters, caseDef)) {
-    throw new Error('trace-stub-doc-sentence-select: Parameter verletzen die Kapselform');
-  }
-  return {
-    output: `${runStub(parameters.queryHit, parameters.docs)}\n${runStub(parameters.queryMiss, parameters.docs)}`,
-  };
 }
 
 export const STUB_DOC_CONTRACT = {
@@ -231,13 +204,14 @@ export const STUB_DOC_CONTRACT = {
   activityType: 'predict-output',
 };
 
-export function generateStubDocFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = STUB_DOC_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genStubDocCase(seed, caseDef);
-}
+const FAMILY = makePredictFamily({
+  contract: STUB_DOC_CONTRACT,
+  cases: STUB_DOC_CASES,
+  shapeError: 'trace-stub-doc-sentence-select: Parameter verletzen die Kapselform',
+});
 
-export const FAMILY_SPEC = { ...STUB_DOC_CONTRACT, generate: generateStubDocFamily, solve: solveStubDocFamily };
+export const stubDocCaseOk = FAMILY.caseOk;
+export const genStubDocCase = FAMILY.genCase;
+export const solveStubDocFamily = FAMILY.solve;
+export const generateStubDocFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

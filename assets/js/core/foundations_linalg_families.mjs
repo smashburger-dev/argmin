@@ -1,11 +1,32 @@
 // Linalg-Familie (formula-scalar-product) für Skalarprodukt und Matrixeintrag.
 // Ein geseedeter Fall und statische Falltypen teilen den kanonischen
 // Lösungsweg; Code-Ausgabe und Begründung bleiben getrennte Familienfälle.
+//
+// Alle elf Familien laufen über die Kit-Factories in linalg_family_kit.mjs:
+// makeNumericFamily liefert generate/solve/spec für die fünf numerischen
+// Wrapper (statische Fälle + Seed-Ziehung), makeLinalgChoiceCapsuleFamily
+// liefert capsuleOk/correctText/genCapsule/generate/solve/spec für die sechs
+// Choice-Kapsel-Familien. Die fachliche Domäne (Kapseln, Banken, Templates,
+// Validatoren, Reference-Solver) bleibt in linalg_generators.mjs.
 
 import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, solveShape } from './linalg_numpy_fresh_generators.mjs';
-import { drawFamilyInstance } from './generator_draw_kit.mjs';
-import { rank, solveLinear2, genRankCapsule, RANK_CAPSULES, genIndependenceCapsule, INDEPENDENCE_CAPSULES, independenceShapeOk, independenceCorrectText, maxAbsVectors, genMatrixShapeCapsule, MATRIX_SHAPE_CAPSULES, matrixShapeOk, matrixShapeCorrectText, genColumnCombinationCapsule, COLUMN_COMBINATION_CAPSULES, columnInstanceOk, columnCorrectText, genRowOperationCapsule, ROW_OPERATION_CAPSULES, rowOperationInstanceOk, rowOperationCorrectText, genClassifyShapeCapsule, CLASSIFY_SHAPE_CAPSULES, classifyShapeOk, classifyShapeCorrectText, genRankSolutionCapsule, RANK_SOLUTION_CAPSULES, rankSolutionInstanceOk, rankSolutionCorrectText } from './linalg_generators.mjs';
+import {
+  rank, solveLinear2, genRankCapsule, RANK_CAPSULES,
+  INDEPENDENCE_CAPSULES, independenceShapeOk,
+  independenceOptions, independencePrompt, independenceSolution, drawIndependenceParameters,
+  MATRIX_SHAPE_CAPSULES, matrixShapeOk,
+  matrixShapeOptions, matrixShapePrompt, matrixShapeSolution, drawMatrixShapeParameters,
+  COLUMN_COMBINATION_CAPSULES, COLUMN_IDS, columnInstanceOk, columnSystemOf,
+  columnOptions, columnPrompt, columnSolution, drawColumnCombinationParameters,
+  ROW_OPERATION_CAPSULES, ROW_OPERATION_IDS, rowOperationInstanceOk, rowOperationSystemOf,
+  rowOperationOptions, rowOperationPrompt, rowOperationSolution, drawRowOperationParameters,
+  CLASSIFY_SHAPE_CAPSULES, SHAPE_CONTRACT_IDS, classifyShapeOk, classifyShapeSystem,
+  classifyShapeOptions, classifyShapePrompt, classifyShapeSolution, drawClassifyShapeParameters,
+  RANK_SOLUTION_CAPSULES, RANK_SOLUTION_IDS, rankSolutionInstanceOk,
+  rankSolutionOptions, rankSolutionPrompt, rankSolutionSolution, drawRankSolutionParameters,
+} from './linalg_generators.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './linalg_family_kit.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -34,39 +55,20 @@ const SCALAR_STATIC_CASES = [
   'column-vector-authored',
 ];
 
-function staticVariantInstance(familyId, caseId, seed, difficulty) {
-  const body = staticCaseBody(familyId, caseId);
-  const { body: chosen, index } = variantOf(body, seed ?? 0);
-  const {
-    caseId: _caseId,
-    difficultyProfile: _difficultyProfile,
-    masteryEligible: _masteryEligible,
-    sourceLineage: _sourceLineage,
-    variants: _variants,
-    ...generated
-  } = chosen;
-  return {
-    ...generated,
-    masteryEligible: body.masteryEligible,
-    parameters: {
-      caseId,
-      difficulty,
-      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
-      ...(chosen.parameters || {}),
-    },
-  };
-}
+/** Statischer Schlüssel: erwartete Ausgabe aus dem registrierten Fallkörper
+ *  (Variante über parameters.variant wie im Bestand), liest nie `expected`
+ *  der generierten Instanz. */
+const solveScalarStatic = (parameters) => {
+  const { body } = variantOf(staticCaseBody('formula-scalar-product', parameters.caseId), parameters.variant ?? 0);
+  if (body.expected?.output) return { output: body.expected.output };
+  if (body.expected?.kind === 'rubric') return { kind: 'rubric' };
+  if (body.expected?.kind === 'integer-pair') return { solution: body.expected.solution };
+  return { value: body.expected?.value };
+};
 
 /** Unabhängiger Solver: Matrixeintrag oder Skalarprodukt aus den
  *  Fallparametern, liest nie `expected` ab. */
-export function solveScalarProduct(parameters) {
-  if (SCALAR_STATIC_CASES.includes(parameters.caseId)) {
-    const { body } = variantOf(staticCaseBody('formula-scalar-product', parameters.caseId), parameters.variant ?? 0);
-    if (body.expected?.output) return { output: body.expected.output };
-    if (body.expected?.kind === 'rubric') return { kind: 'rubric' };
-    if (body.expected?.kind === 'integer-pair') return { solution: body.expected.solution };
-    return { value: body.expected?.value };
-  }
+const solveScalarSeeded = (parameters) => {
   if (parameters.form === 'dot-vectors') {
     const { u, v } = parameters;
     return { value: u[0] * v[0] + u[1] * v[1] + u[2] * v[2] };
@@ -77,28 +79,7 @@ export function solveScalarProduct(parameters) {
     return { value: A[i - 1][0] * B[0][j - 1] + A[i - 1][1] * B[1][j - 1] };
   }
   throw new Error(`formula-scalar-product: unbekannte Form ${parameters.form}`);
-}
-
-export function generateScalarProductFamily({ seed, caseId, difficulty }) {
-  if (SCALAR_STATIC_CASES.includes(caseId)) {
-    return staticVariantInstance('formula-scalar-product', caseId, seed, difficulty);
-  }
-  if (caseId !== 'matmul-entry-seeded') throw new Error(`Unbekannter Fall ${caseId}`);
-  const drawn = drawFamilyInstance(genMatmulEntryFresh, {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: () => true,
-    profileAccepts: matmulProfileAccepts(difficulty),
-    profiles: LINALG_DIFFICULTY_PROFILES,
-  });
-  return {
-    parameters: { caseId, difficulty, form: 'matmul-entry', ...drawn.parameters },
-    expected: { kind: 'integer', value: drawn.expected },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
+};
 
 export const SCALAR_PRODUCT_CONTRACT = {
   familyId: 'formula-scalar-product',
@@ -123,41 +104,27 @@ export const SCALAR_PRODUCT_CONTRACT = {
   activityType: 'numeric',
 };
 
+const scalarProductKit = makeNumericFamily({
+  contract: SCALAR_PRODUCT_CONTRACT,
+  staticCaseIds: SCALAR_STATIC_CASES,
+  staticVariants: true,
+  seededCaseId: 'matmul-entry-seeded',
+  draw: genMatmulEntryFresh,
+  profileAccepts: matmulProfileAccepts,
+  extraParameters: { form: 'matmul-entry' },
+  toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
+  solveStatic: solveScalarStatic,
+  solveSeeded: solveScalarSeeded,
+});
+export const generateScalarProductFamily = scalarProductKit.generate;
+export const solveScalarProduct = scalarProductKit.solve;
+
 // --- classify-matrix-shape ---------------------------------------------------
 // Geseedet über genMatrixShapeCapsule: dims-Bank plus Rotation, ein Template
 // je Shape-Art, drei Kapseln 1:1 auf den Bestandsfällen (intro/core/stretch
 // → Produkt/Addition/Vektor-Kette). Constraint ist das valide Shape-Tupel
 // (Bound-Gate sinngemäß). Der Content-Contract ist null, der Vertrag lebt
 // hier. masteryEligible bleibt false wie im Bestand (alle Base-Fälle false).
-
-const MATRIX_SHAPE_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveMatrixShapeFamily(parameters) {
-  const capsule = Object.values(MATRIX_SHAPE_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: matrixShapeCorrectText(parameters.dimsA, parameters.dimsB, capsule) };
-}
-
-export function generateMatrixShapeFamily({ seed, caseId, difficulty }) {
-  const capsule = MATRIX_SHAPE_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genMatrixShapeCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => matrixShapeOk(instance.parameters.dimsA, instance.parameters.dimsB, capsule),
-    profileAccepts: (parameters) => matrixShapeOk(parameters.dimsA, parameters.dimsB, capsule),
-    profiles: MATRIX_SHAPE_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const MATRIX_SHAPE_CONTRACT = {
   familyId: 'classify-matrix-shape',
@@ -177,6 +144,22 @@ export const MATRIX_SHAPE_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const matrixShapeKit = makeLinalgChoiceCapsuleFamily({
+  contract: MATRIX_SHAPE_CONTRACT,
+  capsules: MATRIX_SHAPE_CAPSULES,
+  shapeError: 'Dims verletzen die Kapselform',
+  drawParameters: drawMatrixShapeParameters,
+  buildOptions: (parameters, capsule) => matrixShapeOptions(parameters.dimsA, parameters.dimsB, capsule),
+  validate: (parameters, capsule) => matrixShapeOk(parameters.dimsA, parameters.dimsB, capsule),
+  buildPrompt: (parameters, capsule) => matrixShapePrompt(parameters.dimsA, parameters.dimsB, capsule),
+  buildSolution: (parameters, capsule) => matrixShapeSolution(parameters.dimsA, parameters.dimsB, capsule),
+});
+export const matrixShapeCapsuleOk = matrixShapeKit.capsuleOk;
+export const matrixShapeCorrectText = matrixShapeKit.correctText;
+export const genMatrixShapeCapsule = matrixShapeKit.genCapsule;
+export const generateMatrixShapeFamily = matrixShapeKit.generate;
+export const solveMatrixShapeFamily = matrixShapeKit.solve;
+
 // --- formula-det2-independence -------------------------------------------------
 // Geseedet über genDet2 (Determinante als Unabhängigkeitsbeleg).
 
@@ -187,28 +170,6 @@ function det2ProfileAccepts(difficulty) {
   }
   if (difficulty === 'stretch') return (parameters) => det2(parameters.A) < 0;
   return (parameters) => Math.max(...parameters.A.flat().map((value) => Math.abs(value))) >= 5;
-}
-
-export function solveDet2Family(parameters) {
-  return { value: det2(parameters.A) };
-}
-
-export function generateDet2Family({ seed, caseId, difficulty }) {
-  if (caseId !== 'det2-seeded-columns') throw new Error(`Unbekannter Fall ${caseId}`);
-  const drawn = drawFamilyInstance(genDet2, {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: () => true,
-    profileAccepts: det2ProfileAccepts(difficulty),
-    profiles: LINALG_DIFFICULTY_PROFILES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'integer', value: drawn.expected },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
 }
 
 export const DET2_CONTRACT = {
@@ -225,6 +186,17 @@ export const DET2_CONTRACT = {
   activityType: 'numeric',
 };
 
+const det2Kit = makeNumericFamily({
+  contract: DET2_CONTRACT,
+  seededCaseId: 'det2-seeded-columns',
+  draw: genDet2,
+  profileAccepts: det2ProfileAccepts,
+  toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
+  solveSeeded: (parameters) => ({ value: det2(parameters.A) }),
+});
+export const generateDet2Family = det2Kit.generate;
+export const solveDet2Family = det2Kit.solve;
+
 // --- transform-system-2x2-elimination ------------------------------------------
 // Geseedet über genLinear2Fresh plus zwei statische w05-Fälle (Vektorpaar).
 
@@ -235,33 +207,6 @@ function linear2ProfileAccepts(difficulty) {
   }
   if (difficulty === 'stretch') return (parameters) => parameters.b.some((value) => value < 0);
   return (parameters) => Math.max(...parameters.A.flat().map((value) => Math.abs(value))) >= 4;
-}
-
-export function solveSystem2x2(parameters) {
-  return { solution: solveLinear2(parameters.A, parameters.b) };
-}
-
-export function generateSystem2x2Family({ seed, caseId, difficulty }) {
-  if (['system-w05-e11', 'system-w05-e6'].includes(caseId)) {
-    const body = staticCaseBody('transform-system-2x2-elimination', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
-  }
-  if (caseId !== 'system-seeded-2x2') throw new Error(`Unbekannter Fall ${caseId}`);
-  const drawn = drawFamilyInstance(genLinear2Fresh, {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: () => true,
-    profileAccepts: linear2ProfileAccepts(difficulty),
-    profiles: LINALG_DIFFICULTY_PROFILES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'integer-pair', solution: [...drawn.expected] },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
 }
 
 export const SYSTEM_2X2_CONTRACT = {
@@ -282,6 +227,18 @@ export const SYSTEM_2X2_CONTRACT = {
   activityType: 'vector',
 };
 
+const system2x2Kit = makeNumericFamily({
+  contract: SYSTEM_2X2_CONTRACT,
+  staticCaseIds: ['system-w05-e11', 'system-w05-e6'],
+  seededCaseId: 'system-seeded-2x2',
+  draw: genLinear2Fresh,
+  profileAccepts: linear2ProfileAccepts,
+  toExpected: (drawn) => ({ kind: 'integer-pair', solution: [...drawn.expected] }),
+  solveSeeded: (parameters) => ({ solution: solveLinear2(parameters.A, parameters.b) }),
+});
+export const generateSystem2x2Family = system2x2Kit.generate;
+export const solveSystem2x2 = system2x2Kit.solve;
+
 // --- validate-shape-contract ---------------------------------------------------
 // Geseedet über genShapePredict plus statischen w18-e3 (drei Printzeilen).
 
@@ -290,36 +247,6 @@ function shapeProfileAccepts(difficulty) {
   if (difficulty === 'intro') return (parameters) => parameters.rows <= 3;
   if (difficulty === 'stretch') return (parameters) => parameters.shape === 'transpose' || parameters.shape === 'outer';
   return (parameters) => parameters.n >= 20;
-}
-
-export function solveShapeContract(parameters) {
-  if (parameters.caseId === 'shapes-w18-broadcast-axes') {
-    return { output: staticCaseBody('validate-shape-contract', parameters.caseId).expected.output };
-  }
-  return { output: `(${solveShape(parameters.shape, parameters).join(', ')})` };
-}
-
-export function generateShapeContractFamily({ seed, caseId, difficulty }) {
-  if (caseId === 'shapes-w18-broadcast-axes') {
-    const body = staticCaseBody('validate-shape-contract', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
-  }
-  if (caseId !== 'shapes-seeded-predict') throw new Error(`Unbekannter Fall ${caseId}`);
-  const drawn = drawFamilyInstance(genShapePredict, {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: () => true,
-    profileAccepts: shapeProfileAccepts(difficulty),
-    profiles: LINALG_DIFFICULTY_PROFILES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { output: drawn.expected.output },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
 }
 
 export const SHAPE_CONTRACT = {
@@ -339,6 +266,19 @@ export const SHAPE_CONTRACT = {
   activityType: 'predict-output',
 };
 
+const shapeContractKit = makeNumericFamily({
+  contract: SHAPE_CONTRACT,
+  staticCaseIds: ['shapes-w18-broadcast-axes'],
+  seededCaseId: 'shapes-seeded-predict',
+  draw: genShapePredict,
+  profileAccepts: shapeProfileAccepts,
+  toExpected: (drawn) => ({ output: drawn.expected.output }),
+  solveStatic: (parameters) => ({ output: staticCaseBody('validate-shape-contract', parameters.caseId).expected.output }),
+  solveSeeded: (parameters) => ({ output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
+});
+export const generateShapeContractFamily = shapeContractKit.generate;
+export const solveShapeContract = shapeContractKit.solve;
+
 // --- W05-Restfälle in bestehenden Familien (S4D7) --------------------------------
 // w05-e16 (numpy-Schleife) als statischer Predict-Fall: gleiche
 // komponentenweise Produkte wie der Rest der Familie.
@@ -351,34 +291,6 @@ export const SHAPE_CONTRACT = {
 // Pilot: geseedet über genRankCapsule, eine Kapsel je Profil mit
 // caseId-Rangbindung (core/stretch/challenge → staircase/full/line).
 // Der Content-Contract ist null, der Vertrag lebt hier.
-
-const RANK_DIFFICULTIES = ['core', 'stretch', 'challenge'];
-
-/** Unabhängiger Solver: Rang aus den Fallparametern, liest nie `expected`. */
-export function solveRankFamily(parameters) {
-  return { value: rank(parameters.A) };
-}
-
-export function generateRankFamily({ seed, caseId, difficulty }) {
-  const capsule = RANK_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genRankCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => rank(instance.parameters.A) === capsule.targetRank,
-    profileAccepts: (parameters) => Math.max(
-      ...parameters.A.flat().map((value) => Math.abs(value)),
-    ) <= capsule.bound,
-    profiles: RANK_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'integer', value: drawn.expected },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const RANK_CONTRACT = {
   familyId: 'transform-rank-dependence-rowops',
@@ -398,40 +310,25 @@ export const RANK_CONTRACT = {
   activityType: 'numeric',
 };
 
+const rankKit = makeNumericFamily({
+  contract: RANK_CONTRACT,
+  capsules: RANK_CAPSULES,
+  draw: (subseed, capsule) => genRankCapsule(subseed, capsule),
+  wantShape: (instance, capsule) => rank(instance.parameters.A) === capsule.targetRank,
+  profileAccepts: (difficulty, capsule) => (parameters) => Math.max(
+    ...parameters.A.flat().map((value) => Math.abs(value)),
+  ) <= capsule.bound,
+  toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
+  solveSeeded: (parameters) => ({ value: rank(parameters.A) }),
+});
+export const generateRankFamily = rankKit.generate;
+export const solveRankFamily = rankKit.solve;
+
 // --- classify-independence-multiple ----------------------------------------------
 // Geseedet über genIndependenceCapsule: Vektor-Zahlenbank plus Rotation, ein
 // Template, drei Kapseln 1:1 auf den Bestandsfällen (intro/core/stretch).
 // Der Content-Contract ist null, der Vertrag lebt hier. masteryEligible
 // bleibt false wie im Bestand (alle drei Base-Fälle false).
-
-const INDEPENDENCE_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveIndependenceFamily(parameters) {
-  const capsule = Object.values(INDEPENDENCE_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: independenceCorrectText(parameters.vectors, capsule) };
-}
-
-export function generateIndependenceFamily({ seed, caseId, difficulty }) {
-  const capsule = INDEPENDENCE_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genIndependenceCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => independenceShapeOk(instance.parameters.vectors, capsule),
-    profileAccepts: (parameters) => maxAbsVectors(parameters.vectors) <= capsule.bound,
-    profiles: INDEPENDENCE_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const INDEPENDENCE_CONTRACT = {
   familyId: 'classify-independence-multiple',
@@ -451,6 +348,22 @@ export const INDEPENDENCE_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const independenceKit = makeLinalgChoiceCapsuleFamily({
+  contract: INDEPENDENCE_CONTRACT,
+  capsules: INDEPENDENCE_CAPSULES,
+  shapeError: 'Vektoren verletzen die Kapselform',
+  drawParameters: drawIndependenceParameters,
+  buildOptions: (parameters, capsule) => independenceOptions(parameters.vectors, capsule),
+  validate: (parameters, capsule) => independenceShapeOk(parameters.vectors, capsule),
+  buildPrompt: (parameters, capsule) => independencePrompt(parameters.vectors, capsule),
+  buildSolution: (parameters, capsule) => independenceSolution(parameters.vectors, capsule),
+});
+export const independenceCapsuleOk = independenceKit.capsuleOk;
+export const independenceCorrectText = independenceKit.correctText;
+export const genIndependenceCapsule = independenceKit.genCapsule;
+export const generateIndependenceFamily = independenceKit.generate;
+export const solveIndependenceFamily = independenceKit.solve;
+
 // --- classify-column-combination ------------------------------------------------
 // Geseedet über genColumnCombinationCapsule: 2×2-Zahlenbank plus 2×2-Solver
 // als Antwort-Key (coefficients/choice), (m,n)-Bank mit Text-Key
@@ -460,43 +373,11 @@ export const INDEPENDENCE_CONTRACT = {
 // (core/intro/stretch → true/false/true), damit Coverage und
 // Mastery-Aussagen unverändert bleiben.
 
-const COLUMN_COMBINATION_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
 const COLUMN_COMBINATION_META = {
   'column-coefficients-double': { masteryEligible: true, competencyIds: ['c-linalg-matrices'] },
   'column-choice-authored': { masteryEligible: false, competencyIds: ['c-linalg-systems'] },
   'shape-debug-authored': { masteryEligible: true, competencyIds: ['c-linalg-matrices', 'c-numpy-basics'] },
 };
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveColumnCombinationFamily(parameters) {
-  const capsule = Object.values(COLUMN_COMBINATION_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: columnCorrectText(parameters, capsule) };
-}
-
-export function generateColumnCombinationFamily({ seed, caseId, difficulty }) {
-  const capsule = COLUMN_COMBINATION_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genColumnCombinationCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => columnInstanceOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => columnInstanceOk(parameters, capsule),
-    profiles: COLUMN_COMBINATION_DIFFICULTIES,
-  });
-  const meta = COLUMN_COMBINATION_META[caseId];
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-    masteryEligible: meta.masteryEligible,
-    competencyIds: [...meta.competencyIds],
-  };
-}
 
 export const COLUMN_COMBINATION_CONTRACT = {
   familyId: 'classify-column-combination',
@@ -516,40 +397,32 @@ export const COLUMN_COMBINATION_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const columnCombinationKit = makeLinalgChoiceCapsuleFamily({
+  contract: COLUMN_COMBINATION_CONTRACT,
+  capsules: COLUMN_COMBINATION_CAPSULES,
+  shapeError: (capsule) => (capsule.kind === 'shape-debug'
+    ? 'Shape-Debug verletzt die Kapselform'
+    : 'Spaltenkombination verletzt die Kapselform'),
+  drawParameters: drawColumnCombinationParameters,
+  buildOptions: (parameters, capsule) => columnOptions(columnSystemOf(parameters, capsule), capsule),
+  validate: columnInstanceOk,
+  buildPrompt: (parameters, capsule) => columnPrompt(columnSystemOf(parameters, capsule), capsule),
+  buildSolution: (parameters, capsule) => columnSolution(columnSystemOf(parameters, capsule), capsule),
+  choiceIds: (capsule) => COLUMN_IDS[capsule.kind],
+  caseMeta: COLUMN_COMBINATION_META,
+});
+export const columnCombinationCapsuleOk = columnCombinationKit.capsuleOk;
+export const columnCombinationCorrectText = columnCombinationKit.correctText;
+export const genColumnCombinationCapsule = columnCombinationKit.genCapsule;
+export const generateColumnCombinationFamily = columnCombinationKit.generate;
+export const solveColumnCombinationFamily = columnCombinationKit.solve;
+
 // --- classify-shape-contract --------------------------------------------------
 // Geseedet über genClassifyShapeCapsule: Shape-Zahlenbank plus Rotation, ein
 // Template je Shape-Art, drei Kapseln 1:1 auf den Bestandsfällen
 // (intro/core/stretch → Bias-Broadcast/Transformer-QKV/Token-Embedding).
 // Der Content-Contract ist null, der Vertrag lebt hier. masteryEligible
 // bleibt false wie im Bestand (alle drei Base-Fälle false).
-const CLASSIFY_SHAPE_DIFFICULTIES = ['intro', 'core', 'stretch'];
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveClassifyShapeFamily(parameters) {
-  const capsule = Object.values(CLASSIFY_SHAPE_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: classifyShapeCorrectText(parameters, capsule) };
-}
-
-export function generateClassifyShapeFamily({ seed, caseId, difficulty }) {
-  const capsule = CLASSIFY_SHAPE_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genClassifyShapeCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => classifyShapeOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => classifyShapeOk(parameters, capsule),
-    profiles: CLASSIFY_SHAPE_DIFFICULTIES,
-  });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-  };
-}
 
 export const CLASSIFY_SHAPE_CONTRACT = {
   familyId: 'classify-shape-contract',
@@ -569,6 +442,23 @@ export const CLASSIFY_SHAPE_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const classifyShapeKit = makeLinalgChoiceCapsuleFamily({
+  contract: CLASSIFY_SHAPE_CONTRACT,
+  capsules: CLASSIFY_SHAPE_CAPSULES,
+  shapeError: 'Shape-Parametern verletzen die Kapselform',
+  drawParameters: drawClassifyShapeParameters,
+  buildOptions: (parameters, capsule) => classifyShapeOptions(classifyShapeSystem(parameters, capsule), capsule),
+  validate: classifyShapeOk,
+  buildPrompt: (parameters, capsule) => classifyShapePrompt(classifyShapeSystem(parameters, capsule), capsule),
+  buildSolution: (parameters, capsule) => classifyShapeSolution(classifyShapeSystem(parameters, capsule), capsule),
+  choiceIds: () => SHAPE_CONTRACT_IDS,
+});
+export const classifyShapeCapsuleOk = classifyShapeKit.capsuleOk;
+export const classifyShapeCorrectText = classifyShapeKit.correctText;
+export const genClassifyShapeCapsule = classifyShapeKit.genCapsule;
+export const generateClassifyShapeFamily = classifyShapeKit.generate;
+export const solveClassifyShapeFamily = classifyShapeKit.solve;
+
 // --- classify-row-operation-validity ------------------------------------------------
 // Geseedet über genRowOperationCapsule: 2×2-Zahlenbank mit getragener
 // rechter Seite als Antwort-Key (equations), Multiplikator-Bank mit
@@ -578,42 +468,10 @@ export const CLASSIFY_SHAPE_CONTRACT = {
 // (core/intro → true/false, je c-linalg-gauss), damit Coverage und
 // Mastery-Aussagen unverändert bleiben.
 
-const ROW_OPERATION_DIFFICULTIES = ['intro', 'core'];
-
 const ROW_OPERATION_META = {
   'valid-operation-rhs': { masteryEligible: true, competencyIds: ['c-linalg-gauss'] },
   'row-operation-choice-contract': { masteryEligible: false, competencyIds: ['c-linalg-gauss'] },
 };
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function solveRowOperationFamily(parameters) {
-  const capsule = Object.values(ROW_OPERATION_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: rowOperationCorrectText(parameters, capsule) };
-}
-
-export function generateRowOperationFamily({ seed, caseId, difficulty }) {
-  const capsule = ROW_OPERATION_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genRowOperationCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => rowOperationInstanceOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => rowOperationInstanceOk(parameters, capsule),
-    profiles: ROW_OPERATION_DIFFICULTIES,
-  });
-  const meta = ROW_OPERATION_META[caseId];
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-    masteryEligible: meta.masteryEligible,
-    competencyIds: [...meta.competencyIds],
-  };
-}
 
 export const ROW_OPERATION_CONTRACT = {
   familyId: 'classify-row-operation-validity',
@@ -632,6 +490,24 @@ export const ROW_OPERATION_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const rowOperationKit = makeLinalgChoiceCapsuleFamily({
+  contract: ROW_OPERATION_CONTRACT,
+  capsules: ROW_OPERATION_CAPSULES,
+  shapeError: 'Zeilenoperation verletzt die Kapselform',
+  drawParameters: drawRowOperationParameters,
+  buildOptions: (parameters, capsule) => rowOperationOptions(rowOperationSystemOf(parameters, capsule), capsule),
+  validate: rowOperationInstanceOk,
+  buildPrompt: (parameters, capsule) => rowOperationPrompt(rowOperationSystemOf(parameters, capsule), capsule),
+  buildSolution: (parameters, capsule) => rowOperationSolution(rowOperationSystemOf(parameters, capsule), capsule),
+  choiceIds: (capsule) => ROW_OPERATION_IDS[capsule.kind],
+  caseMeta: ROW_OPERATION_META,
+});
+export const rowOperationCapsuleOk = rowOperationKit.capsuleOk;
+export const rowOperationCorrectText = rowOperationKit.correctText;
+export const genRowOperationCapsule = rowOperationKit.genCapsule;
+export const generateRowOperationFamily = rowOperationKit.generate;
+export const solveRowOperationFamily = rowOperationKit.solve;
+
 // --- classify-rank-solution-case --------------------------------------------------
 // Geseedet über genRankSolutionCapsule: Echelon-Zahlenbank mit Rotation,
 // ein Template je Art (Zahlen-Fall trivial mit $z$-Texten, Symbol-Fall mit
@@ -642,42 +518,10 @@ export const ROW_OPERATION_CONTRACT = {
 // c-linalg-systems und c-linalg-independence), damit Coverage und
 // Mastery-Aussagen unverändert bleiben.
 
-const RANK_SOLUTION_DIFFICULTIES = ['core', 'stretch'];
-
 const RANK_SOLUTION_META = {
   'echelon-read-rank-case': { masteryEligible: true, competencyIds: ['c-linalg-gauss'] },
   'rank-system-authored': { masteryEligible: true, competencyIds: ['c-linalg-systems', 'c-linalg-gauss', 'c-linalg-independence'] },
 };
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus der Kapselart, liest nie `expected`. */
-export function solveRankSolutionFamily(parameters) {
-  const capsule = Object.values(RANK_SOLUTION_CAPSULES).find((item) => item.caseId === parameters?.caseId);
-  if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-  return { correctText: rankSolutionCorrectText(parameters, capsule) };
-}
-
-export function generateRankSolutionFamily({ seed, caseId, difficulty }) {
-  const capsule = RANK_SOLUTION_CAPSULES[difficulty];
-  if (!capsule || capsule.caseId !== caseId) throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  const drawn = drawFamilyInstance((subseed) => genRankSolutionCapsule(subseed, capsule), {
-    seed,
-    caseId,
-    difficulty,
-    wantShape: (instance) => rankSolutionInstanceOk(instance.parameters, capsule),
-    profileAccepts: (parameters) => rankSolutionInstanceOk(parameters, capsule),
-    profiles: RANK_SOLUTION_DIFFICULTIES,
-  });
-  const meta = RANK_SOLUTION_META[caseId];
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { ...drawn.expected },
-    choices: drawn.choices,
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-    masteryEligible: meta.masteryEligible,
-    competencyIds: [...meta.competencyIds],
-  };
-}
 
 export const RANK_SOLUTION_CONTRACT = {
   familyId: 'classify-rank-solution-case',
@@ -696,16 +540,34 @@ export const RANK_SOLUTION_CONTRACT = {
   activityType: 'single-choice',
 };
 
+const rankSolutionKit = makeLinalgChoiceCapsuleFamily({
+  contract: RANK_SOLUTION_CONTRACT,
+  capsules: RANK_SOLUTION_CAPSULES,
+  shapeError: 'Rangfall verletzt die Kapselform',
+  drawParameters: drawRankSolutionParameters,
+  buildOptions: (parameters, capsule) => rankSolutionOptions(capsule),
+  validate: rankSolutionInstanceOk,
+  buildPrompt: (parameters, capsule) => rankSolutionPrompt(parameters.systemCoefficients, capsule),
+  buildSolution: (parameters, capsule) => rankSolutionSolution(capsule),
+  choiceIds: (capsule) => RANK_SOLUTION_IDS[capsule.kind],
+  caseMeta: RANK_SOLUTION_META,
+});
+export const rankSolutionCapsuleOk = rankSolutionKit.capsuleOk;
+export const rankSolutionCorrectText = rankSolutionKit.correctText;
+export const genRankSolutionCapsule = rankSolutionKit.genCapsule;
+export const generateRankSolutionFamily = rankSolutionKit.generate;
+export const solveRankSolutionFamily = rankSolutionKit.solve;
+
 export const LINALG_FAMILY_SPECS = [
-  { ...SCALAR_PRODUCT_CONTRACT, generate: generateScalarProductFamily, solve: solveScalarProduct },
-  { ...DET2_CONTRACT, generate: generateDet2Family, solve: solveDet2Family },
-  { ...SYSTEM_2X2_CONTRACT, generate: generateSystem2x2Family, solve: solveSystem2x2 },
-  { ...SHAPE_CONTRACT, generate: generateShapeContractFamily, solve: solveShapeContract },
-  { ...RANK_CONTRACT, generate: generateRankFamily, solve: solveRankFamily },
-  { ...INDEPENDENCE_CONTRACT, generate: generateIndependenceFamily, solve: solveIndependenceFamily },
-  { ...MATRIX_SHAPE_CONTRACT, generate: generateMatrixShapeFamily, solve: solveMatrixShapeFamily },
-  { ...COLUMN_COMBINATION_CONTRACT, generate: generateColumnCombinationFamily, solve: solveColumnCombinationFamily },
-  { ...ROW_OPERATION_CONTRACT, generate: generateRowOperationFamily, solve: solveRowOperationFamily },
-  { ...CLASSIFY_SHAPE_CONTRACT, generate: generateClassifyShapeFamily, solve: solveClassifyShapeFamily },
-  { ...RANK_SOLUTION_CONTRACT, generate: generateRankSolutionFamily, solve: solveRankSolutionFamily },
+  scalarProductKit.spec,
+  det2Kit.spec,
+  system2x2Kit.spec,
+  shapeContractKit.spec,
+  rankKit.spec,
+  independenceKit.spec,
+  matrixShapeKit.spec,
+  columnCombinationKit.spec,
+  rowOperationKit.spec,
+  classifyShapeKit.spec,
+  rankSolutionKit.spec,
 ];

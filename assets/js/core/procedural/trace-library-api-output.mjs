@@ -17,7 +17,8 @@
 // ceil(test_size * n) last-block split. Expected keeps the base form
 // { kind: 'output-lines', output }.
 
-import { randInt, rng, until } from '../generator_draw_kit.mjs';
+import { randInt, until } from '../generator_draw_kit.mjs';
+import { makePredictFamily } from './case_family_kit.mjs';
 
 const DRAW_SCOPE = 'trace-library-api-output';
 
@@ -251,6 +252,7 @@ export const LIBRARY_API_CASES = {
     difficulty: 'core',
     baseSnippet: PANDAS_BASE_SNIPPET,
     baseOutput: PANDAS_BASE_OUTPUT,
+    baseParams: { ids: [1, 2, 2, 3], ziels: [10, 20, 20, null] },
     prompt: 'pandas lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: pandas läuft im Browser nicht — hier zählt api-reading, die dokumentierten Bedeutungen von <code>drop_duplicates()</code> (erster Vorkommen bleibt) und <code>isna()</code>.',
     competencyIds: ['c-pandas-cleaning', 'c-python-reading'],
     draw: drawPandasRows,
@@ -277,6 +279,7 @@ export const LIBRARY_API_CASES = {
     difficulty: 'core',
     baseSnippet: NUMPY_BASE_SNIPPET,
     baseOutput: NUMPY_BASE_OUTPUT,
+    baseParams: { x: [2, 4, 4, 4, 5, 5, 7, 9], y: [1, 2, 3, 3, 4, 5, 6, 8], bins: [0, 4, 9] },
     prompt: 'NumPy-Zusammenfassungen lesen: Was gibt dieses Programm aus? Sage die Ausgabe der drei <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Achte auf die Kanten-Regel von <code>np.histogram</code> und auf das Runden.',
     competencyIds: ['c-eda-viz', 'c-numpy-basics'],
     draw: drawNumpySample,
@@ -301,6 +304,7 @@ export const LIBRARY_API_CASES = {
     difficulty: 'core',
     baseSnippet: SKLEARN_BASE_SNIPPET,
     baseOutput: SKLEARN_BASE_OUTPUT,
+    baseParams: { n: 10, start: 0, testSize: 0.25 },
     prompt: 'sklearn lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: scikit-learn läuft im Browser nicht — hier zählt API-Reading für <code>train_test_split</code>.',
     competencyIds: ['c-ml-baseline', 'c-python-reading'],
     draw: drawSklearnSplit,
@@ -315,41 +319,6 @@ export const LIBRARY_API_CASES = {
     },
   },
 };
-
-// Capsule shape: parameters carry the drawn fields plus the snippet rebuilt
-// verbatim from them — honest distinctness (the code text itself differs).
-export function libraryApiCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (!caseDef.checkParams(parameters)) return false;
-    return parameters.snippet === caseDef.buildSnippet(parameters);
-  } catch { return false; }
-}
-
-export function genLibraryApiCase(seed, caseDef) {
-  const drawn = caseDef.draw(rng(seed));
-  const drawnParams = caseDef.toParams(drawn);
-  return {
-    parameters: {
-      caseId: caseDef.caseId,
-      difficulty: caseDef.difficulty,
-      ...drawnParams,
-      snippet: caseDef.buildSnippet(drawnParams),
-    },
-    expected: { kind: 'output-lines', output: caseDef.buildOutput(drawnParams) },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.buildSolution(drawnParams),
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveLibraryApiFamily(parameters) {
-  const caseDef = LIBRARY_API_CASES[parameters?.caseId];
-  if (!caseDef || !libraryApiCaseOk(parameters, caseDef)) {
-    throw new Error('trace-library-api-output: Parameter verletzen die Kapselform');
-  }
-  return { output: caseDef.buildOutput(parameters) };
-}
 
 export const LIBRARY_API_CONTRACT = {
   familyId: 'trace-library-api-output',
@@ -369,13 +338,14 @@ export const LIBRARY_API_CONTRACT = {
   activityType: 'predict-output',
 };
 
-export function generateLibraryApiFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = LIBRARY_API_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genLibraryApiCase(seed, caseDef);
-}
+const FAMILY = makePredictFamily({
+  contract: LIBRARY_API_CONTRACT,
+  cases: LIBRARY_API_CASES,
+  shapeError: 'trace-library-api-output: Parameter verletzen die Kapselform',
+});
 
-export const FAMILY_SPEC = { ...LIBRARY_API_CONTRACT, generate: generateLibraryApiFamily, solve: solveLibraryApiFamily };
+export const libraryApiCaseOk = FAMILY.caseOk;
+export const genLibraryApiCase = FAMILY.genCase;
+export const solveLibraryApiFamily = FAMILY.solve;
+export const generateLibraryApiFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

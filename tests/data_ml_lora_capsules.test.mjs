@@ -1,4 +1,6 @@
 // Familie classify-lora-tradeoff: Kapsel-Gates (single-choice-adaptiert).
+// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_lora_capsules.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -6,20 +8,48 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  genLoraCapsule,
   LORA_CAPSULES,
-  loraCapsuleOk,
-  loraCorrectText,
 } from '../assets/js/core/data_ml_generators.mjs';
 import {
   LORA_TRADEOFF_CONTRACT,
+  genLoraCapsule,
+  loraCapsuleOk,
+  loraCorrectText,
   generateLoraTradeoffFamily,
   solveLoraTradeoffFamily,
+  DATA_ML_FAMILY_SPECS,
 } from '../assets/js/core/data_ml_families.mjs';
 import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
-import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
+import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+// Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
+// Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
+const mod = {
+  LORA_CAPSULES,
+  loraCapsuleOk,
+  loraCorrectText,
+  genLoraCapsule,
+  LORA_TRADEOFF_CONTRACT,
+  generateLoraTradeoffFamily,
+  solveLoraTradeoffFamily,
+  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-lora-tradeoff'),
+};
+
+choiceCapsuleSuite('classify-lora-tradeoff', mod, [
+  { caseId: 'lora-tradeoff', difficulty: 'intro' },
+  { caseId: 'lora-parameter-count', difficulty: 'core' },
+  { caseId: 'lora-alpha-rank', difficulty: 'stretch' },
+], {
+  familyGroup: 'classify-concept',
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  // alpha-rank trägt nackte Zahlen als Schlüsseltext — die Ziffer darf als
+  // Substring in $\alpha=24$ vorkommen, aber nie als eigenständige Zahl.
+  leakCheck: (prompt, text, generated) => generated.parameters.caseId === 'lora-alpha-rank'
+    ? standaloneNumberPresent(prompt, text)
+    : prompt.includes(text),
+});
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schluesseltext. Regel: Kapsel weiten,
@@ -73,16 +103,6 @@ const ORACLES = [
 const CAPSULE_KEYS = ['intro', 'core', 'stretch'];
 const CASE_FOR = { intro: 'lora-tradeoff', core: 'lora-parameter-count', stretch: 'lora-alpha-rank' };
 const capsuleFor = (caseId) => LORA_CAPSULES[CAPSULE_KEYS.find((key) => CASE_FOR[key] === caseId)];
-const bareParameters = (parameters) => {
-  const { caseId, difficulty, ...rest } = parameters;
-  return rest;
-};
-const leaksKey = (generated, correct) => (
-  generated.parameters.caseId === 'lora-alpha-rank'
-    ? standaloneNumberPresent(generated.prompt, correct.text)
-    : generated.prompt.includes(correct.text)
-);
-
 test('Orakel-27: alle statischen Kennzahlen im Constraint, Schlüssel wörtlich', () => {
   let count = 0;
   for (const oracle of ORACLES) {
@@ -129,121 +149,4 @@ test('Kapseltabelle: Arten, Bereiche, Fallbindung', () => {
   for (const oracle of ORACLES) {
     assert.ok(loraCapsuleOk(oracle.entries[0].parameters, capsuleFor(oracle.caseId)), `${oracle.caseId}: Orakel im Bereich`);
   }
-});
-
-test('Kapsel-Constraints: Form, Choices, Schlüssel über je 200 Seeds', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = LORA_CAPSULES[key];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genLoraCapsule(seed, capsule);
-      assert.ok(loraCapsuleOk(generated.parameters, capsule), `${key}:${seed}: Kapselform`);
-      assert.equal(generated.choices.length, 4, `${key}:${seed}: vier Wahlen`);
-      assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${key}:${seed}: eindeutige Texte`);
-      const correct = generated.choices.filter((choice) => choice.correct);
-      assert.equal(correct.length, 1, `${key}:${seed}: genau eine korrekte Wahl`);
-      assert.equal(generated.expected.correctChoice, correct[0].id, `${key}:${seed}: Key zeigt auf korrekte Wahl`);
-      assert.equal(correct[0].text, loraCorrectText(generated.parameters, capsule), `${key}:${seed}: Schlüsseltext`);
-      assert.ok(generated.prompt.length > 20, `${key}:${seed}: Prompt`);
-      assert.ok(generated.fullSolution.length > 20, `${key}:${seed}: Lösung`);
-    }
-  }
-});
-
-test('Distinct-Boden 3x200: je Kapsel mindestens 40 distincte Instanzen', () => {
-  for (const key of CAPSULE_KEYS) {
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateLoraTradeoffFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      seen.add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    assert.ok(seen.size >= 40, `${key}: nur ${seen.size} distinct`);
-  }
-});
-
-test('Key-Agreement 3x200: Solve-Schlüssel gegen Generator ohne Abweichung', () => {
-  for (const key of CAPSULE_KEYS) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateLoraTradeoffFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const solved = solveLoraTradeoffFamily(generated.parameters);
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.equal(solved.correctText, correct.text, `${key}:${seed}: Schlüsseltext`);
-      assert.equal(generated.expected.correctChoice, correct.id, `${key}:${seed}: Key-Id`);
-    }
-  }
-});
-
-test('Constraint-Compliance 3x200: null Samples außerhalb der Kapselform', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = LORA_CAPSULES[key];
-    let violations = 0;
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateLoraTradeoffFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      if (!loraCapsuleOk(bareParameters(generated.parameters), capsule)) violations += 1;
-    }
-    assert.equal(violations, 0, `${key}: Constraint-Verletzungen`);
-  }
-});
-
-test('Leak/Rotation: Prompt nennt den Schlüssel nie, Positionen rotieren, Modulo-Klassen halten nichts zurück', () => {
-  for (const key of CAPSULE_KEYS) {
-    const counts = { a: 0, b: 0, c: 0, d: 0 };
-    const byModulo = new Map();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateLoraTradeoffFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.ok(!leaksKey(generated, correct), `${key}:${seed}: Schlüssel im Prompt`);
-      counts[generated.expected.correctChoice] += 1;
-      const bucket = seed % 8;
-      if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
-      byModulo.get(bucket).add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    for (const [id, count] of Object.entries(counts)) {
-      assert.ok(count >= 40 && count <= 60, `${key}: Position ${id} nur ${count}x`);
-    }
-    for (const [bucket, instances] of byModulo) {
-      assert.ok(instances.size >= 10, `${key}: Modulo-Klasse ${bucket} hält nur ${instances.size} distinct`);
-    }
-  }
-});
-
-test('negative Seeds: gültig und deterministisch', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = LORA_CAPSULES[key];
-    for (let seed = -50; seed < 0; seed += 1) {
-      const first = genLoraCapsule(seed, capsule);
-      assert.deepEqual(first, genLoraCapsule(seed, capsule), `${key}:${seed}: deterministisch`);
-      assert.ok(loraCapsuleOk(first.parameters, capsule), `${key}:${seed}: Kapselform`);
-    }
-  }
-});
-
-test('Familien-Block: Dispatch, Contract, Solve', () => {
-  assert.equal(LORA_TRADEOFF_CONTRACT.familyId, 'classify-lora-tradeoff');
-  assert.equal(LORA_TRADEOFF_CONTRACT.authorityMode, 'seeded');
-  assert.equal(LORA_TRADEOFF_CONTRACT.activityType, 'single-choice');
-  assert.equal(LORA_TRADEOFF_CONTRACT.masteryEligible, false);
-  assert.deepEqual(LORA_TRADEOFF_CONTRACT.difficultyProfiles, ['intro', 'core', 'stretch']);
-  assert.deepEqual(LORA_TRADEOFF_CONTRACT.caseTypes.map((item) => item.caseId).sort(), Object.values(CASE_FOR).sort());
-  for (const key of CAPSULE_KEYS) {
-    const generated = generateLoraTradeoffFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key });
-    const correct = generated.choices.find((choice) => choice.correct);
-    assert.equal(generated.expected.correctChoice, correct.id);
-    assert.deepEqual(solveLoraTradeoffFamily(generated.parameters), { correctText: correct.text });
-    assert.ok(generated.prompt.length > 20);
-    assert.deepEqual(generateLoraTradeoffFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key }), generated);
-  }
-  assert.throws(() => generateLoraTradeoffFamily({ seed: 0, caseId: 'lora-tradeoff', difficulty: 'core' }), /Unbekannter Fall/);
-  assert.throws(() => generateLoraTradeoffFamily({ seed: 0, caseId: 'lora-parameter-count', difficulty: 'intro' }), /Unbekannt/);
-  assert.throws(() => generateLoraTradeoffFamily({ seed: 0, caseId: 'lora-tradeoff', difficulty: 'challenge' }), /Unbekannt/);
-});
-
-test('Familien-Block: Registry löst, gradet und bleibt deterministisch', async () => {
-  const instance = EXERCISE_FAMILIES.instantiate('classify-lora-tradeoff', 11, 'intro', 'lora-tradeoff');
-  const correct = instance.choices.find((choice) => choice.correct);
-  assert.equal(instance.expectedAnswer.correctChoice, correct.id);
-  const right = await EXERCISE_FAMILIES.grade(instance, correct.id);
-  assert.equal(right.correct, true);
-  const wrong = instance.choices.find((choice) => !choice.correct);
-  const graded = await EXERCISE_FAMILIES.grade(instance, wrong.id);
-  assert.equal(graded.correct, false);
 });

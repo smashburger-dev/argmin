@@ -15,7 +15,7 @@
 //     contain it;
 //   - degenerate draws are retried with a bounded guard.
 
-import { bindFamilyDraw, buildRotatedChoices, pick, randInt, rng, variantCaseIndex } from './generator_draw_kit.mjs';
+import { bindFamilyDraw, pick, randInt, rng } from './generator_draw_kit.mjs';
 
 const { until, clean } = bindFamilyDraw({ maxTries: 96, scope: 'data_ml_generators', normalizeUnicodeMinus: false });
 
@@ -420,12 +420,10 @@ export const SIGMOID_CAPSULES = {
   },
 };
 
-const SIGMOID_IDS = ['a', 'b', 'c', 'd'];
-
 /** Ein Template je Fallart: options[0] ist korrekt, Texte wörtlich aus den
  *  kuratierten Varianten (large-z/threshold) bzw. aus deren
  *  Distraktor-Bauart (log-odds: Log-Falle, Invers-Odds, Invertierung). */
-const sigmoidOptions = (parameters, capsule) => {
+export const sigmoidOptions = (parameters, capsule) => {
   if (capsule.kind === 'log-odds') {
     const p = parameters.odds / (1 + parameters.odds);
     const text = fmtDe(parameters.odds);
@@ -452,13 +450,13 @@ const sigmoidOptions = (parameters, capsule) => {
   ];
 };
 
-const sigmoidPrompt = (parameters, capsule) => {
+export const sigmoidPrompt = (parameters, capsule) => {
   if (capsule.kind === 'log-odds') return `Was bedeutet ein Logit von $z=\\log(${fmtDe(parameters.odds)})$ in einem korrekt spezifizierten logistischen Modell?`;
   if (capsule.kind === 'threshold') return `Ein logistisches Modell liefert den Logit $z=${fmtDe(parameters.z)}$. Welche Aussage über Ausgabe und Schwelle 0,5 stimmt?`;
   return `Für den Logit $z=${fmtDe(parameters.z)}$ gilt $\\sigma(z)=1/(1+e^{-z})$. Welche Aussage ist korrekt?`;
 };
 
-const sigmoidSolution = (parameters, capsule) => {
+export const sigmoidSolution = (parameters, capsule) => {
   if (capsule.kind === 'log-odds') {
     const text = fmtDe(parameters.odds);
     const p = parameters.odds / (1 + parameters.odds);
@@ -475,7 +473,7 @@ const sigmoidSolution = (parameters, capsule) => {
 
 /** Kapselform: Bankzugehörigkeit plus nachgerechnete Kennzahl (6-stellig
  *  wie die kuratierten Orakel, Toleranz 1e-6). */
-export function sigmoidCapsuleOk(parameters, capsule) {
+export function sigmoidShapeOk(parameters, capsule) {
   if (!parameters || typeof parameters !== 'object') return false;
   if (capsule.kind === 'log-odds') {
     if (!capsule.oddsBank.includes(parameters.odds)) return false;
@@ -484,12 +482,6 @@ export function sigmoidCapsuleOk(parameters, capsule) {
   if (!capsule.zBank.includes(parameters.z)) return false;
   if (Math.abs(parameters.sigmoid - sigmoidValue(parameters.z)) > 1e-6) return false;
   return capsule.kind === 'large-z' || parameters.threshold === 0.5;
-}
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function sigmoidCorrectText(parameters, capsule) {
-  if (!sigmoidCapsuleOk(parameters, capsule)) throw new Error('Parameter verletzen die Kapselform');
-  return sigmoidOptions(parameters, capsule)[0];
 }
 
 // --- W26: Benchmark-Reading-Kapseln (classify-benchmark-reading) --------------
@@ -516,12 +508,10 @@ export const BENCHMARK_CAPSULES = {
   },
 };
 
-const BENCHMARK_IDS = ['a', 'b', 'c', 'd'];
-
 /** Ein Template je Fallart: options[0] ist korrekt, Texte wörtlich aus den
  *  Bestandsvarianten (Gain mit Prozentpunkten plus Relativ-Prozent,
  *  Accuracy-Differenz mit absolut/relativ, Mehrheits-Baseline). */
-const benchmarkOptions = (parameters, capsule) => {
+export const benchmarkOptions = (parameters, capsule) => {
   if (capsule.kind === 'imbalanced-accuracy') {
     const acc = Math.round(parameters.accuracy * 100);
     const pos = Math.round(parameters.positiveShare * 100);
@@ -558,7 +548,7 @@ const benchmarkOptions = (parameters, capsule) => {
   ];
 };
 
-const benchmarkPrompt = (parameters, capsule) => {
+export const benchmarkPrompt = (parameters, capsule) => {
   if (capsule.kind === 'imbalanced-accuracy') {
     const neg = Math.round(parameters.negativeShare * 100);
     const pos = Math.round(parameters.positiveShare * 100);
@@ -571,7 +561,7 @@ const benchmarkPrompt = (parameters, capsule) => {
   return `Ein Benchmark-Score steigt von ${fmtDe(parameters.before)} auf ${fmtDe(parameters.after)}. Welche Weitererzählung ist rechnerisch korrekt?`;
 };
 
-const benchmarkSolution = (parameters, capsule) => {
+export const benchmarkSolution = (parameters, capsule) => {
   if (capsule.kind === 'imbalanced-accuracy') {
     const acc = Math.round(parameters.accuracy * 100);
     return `Ein Modell, das immer die Mehrheitsklasse vorhersagt, erreicht bereits ${acc} % Accuracy. Ohne positive Treffer bleibt der positive Recall 0; die Accuracy allein ist daher irreführend.`;
@@ -594,105 +584,73 @@ const benchmarkSolution = (parameters, capsule) => {
  *  Tausendstel-/Hundertstel-Raster und vier paarweise verschiedene
  *  Antworttexte; bei der Anteils-Bank Bankzugehörigkeit plus
  *  Mehrheits-Identität (accuracy = negativeShare, positiveShare = Rest). */
-export function benchmarkCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (capsule.kind === 'imbalanced-accuracy') {
-      const { negativeShare, positiveShare, accuracy } = parameters;
-      if (!capsule.shareBank.includes(negativeShare)) return false;
-      if (Math.abs(positiveShare - (1 - negativeShare)) > 1e-9) return false;
-      if (Math.abs(accuracy - negativeShare) > 1e-9) return false;
-    } else if (capsule.kind === 'absolute-relative') {
-      const { before, after } = parameters;
-      if (typeof before !== 'number' || typeof after !== 'number') return false;
-      if (!(before >= 0.2 && before <= 0.85 && after > before && after <= 0.9)) return false;
-      const gain100 = Math.round(after * 100) - Math.round(before * 100);
-      if (!(gain100 >= 5 && gain100 <= 16)) return false;
-      if (Math.abs(before * 100 - Math.round(before * 100)) > 1e-6) return false;
-      if (Math.abs(after * 100 - Math.round(after * 100)) > 1e-6) return false;
-    } else {
-      const { before, after } = parameters;
-      if (typeof before !== 'number' || typeof after !== 'number') return false;
-      if (!(before >= 0.4 && before <= 0.91 && after > before && after <= 0.98)) return false;
-      const gain1000 = Math.round(after * 1000) - Math.round(before * 1000);
-      if (!(gain1000 >= 40 && gain1000 <= 100)) return false;
-      if (Math.abs(before * 1000 - Math.round(before * 1000)) > 1e-6) return false;
-      if (Math.abs(after * 1000 - Math.round(after * 1000)) > 1e-6) return false;
-    }
-    return new Set(benchmarkOptions(parameters, capsule)).size === 4;
-  } catch { return false; }
+export function benchmarkShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
+  if (capsule.kind === 'imbalanced-accuracy') {
+    const { negativeShare, positiveShare, accuracy } = parameters;
+    if (!capsule.shareBank.includes(negativeShare)) return false;
+    if (Math.abs(positiveShare - (1 - negativeShare)) > 1e-9) return false;
+    if (Math.abs(accuracy - negativeShare) > 1e-9) return false;
+  } else if (capsule.kind === 'absolute-relative') {
+    const { before, after } = parameters;
+    if (typeof before !== 'number' || typeof after !== 'number') return false;
+    if (!(before >= 0.2 && before <= 0.85 && after > before && after <= 0.9)) return false;
+    const gain100 = Math.round(after * 100) - Math.round(before * 100);
+    if (!(gain100 >= 5 && gain100 <= 16)) return false;
+    if (Math.abs(before * 100 - Math.round(before * 100)) > 1e-6) return false;
+    if (Math.abs(after * 100 - Math.round(after * 100)) > 1e-6) return false;
+  } else {
+    const { before, after } = parameters;
+    if (typeof before !== 'number' || typeof after !== 'number') return false;
+    if (!(before >= 0.4 && before <= 0.91 && after > before && after <= 0.98)) return false;
+    const gain1000 = Math.round(after * 1000) - Math.round(before * 1000);
+    if (!(gain1000 >= 40 && gain1000 <= 100)) return false;
+    if (Math.abs(before * 1000 - Math.round(before * 1000)) > 1e-6) return false;
+    if (Math.abs(after * 1000 - Math.round(after * 1000)) > 1e-6) return false;
+  }
+  return new Set(benchmarkOptions(parameters, capsule)).size === 4;
 }
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function benchmarkCorrectText(parameters, capsule) {
-  if (!benchmarkCapsuleOk(parameters, capsule)) throw new Error('Benchmark-Befund verletzt die Kapselform');
-  return benchmarkOptions(parameters, capsule)[0];
-}
-
-/** Zahlenbank-Sampler mit Rotation: Seed wählt Zahlenpaar bzw. Anteil und
- *  Antwortposition. Kein clean()-Guard: expected ist ein Buchstabe — Leak
- *  deckt Gate 3 im Test über den Volltext ab (Vorbild genSigmoidCapsule). */
-export function genBenchmarkCapsule(seed, capsule) {
-  const r = rng(seed);
-  let parameters;
+/** Zahlenbank-Sampler: Seed wählt Zahlenpaar bzw. Anteil; die until-Guards
+ *  halten die Hundertstel-/Tausendstel-Deckung wie im Bestand. */
+export function drawBenchmarkParameters(r, capsule) {
   if (capsule.kind === 'imbalanced-accuracy') {
     const negativeShare = pick(r, capsule.shareBank);
-    parameters = {
+    return {
       negativeShare,
       positiveShare: Math.round((1 - negativeShare) * 100) / 100,
       accuracy: negativeShare,
     };
-  } else if (capsule.kind === 'absolute-relative') {
+  }
+  if (capsule.kind === 'absolute-relative') {
     const drawn = until(r, () => {
       const before100 = randInt(r, 25, 80);
       const gain100 = randInt(r, 6, 15);
       return { before100, after100: before100 + gain100 };
     }, (candidate) => candidate.after100 <= 90);
-    parameters = { before: drawn.before100 / 100, after: drawn.after100 / 100 };
-  } else {
-    const drawn = until(r, () => {
-      const before1000 = randInt(r, 400, 910);
-      const gain1000 = randInt(r, 40, 95);
-      return { before1000, after1000: before1000 + gain1000 };
-    }, (candidate) => candidate.after1000 <= 980);
-    parameters = { before: drawn.before1000 / 1000, after: drawn.after1000 / 1000 };
+    return { before: drawn.before100 / 100, after: drawn.after100 / 100 };
   }
-  const options = benchmarkOptions(parameters, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters,
-    expected: { correctChoice: BENCHMARK_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, BENCHMARK_IDS),
-    prompt: benchmarkPrompt(parameters, capsule),
-    fullSolution: benchmarkSolution(parameters, capsule),
-  };
+  const drawn = until(r, () => {
+    const before1000 = randInt(r, 400, 910);
+    const gain1000 = randInt(r, 40, 95);
+    return { before1000, after1000: before1000 + gain1000 };
+  }, (candidate) => candidate.after1000 <= 980);
+  return { before: drawn.before1000 / 1000, after: drawn.after1000 / 1000 };
 }
 
-/** Zahlenbank-Sampler mit Rotation: Seed wählt Bankwert und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe — Leak deckt Gate 3 im
- *  Test über den Volltext ab (Vorbild genIndependenceCapsule). */
-export function genSigmoidCapsule(seed, capsule) {
-  const r = rng(seed);
-  let parameters;
+/** Zahlenbank-Sampler: Seed wählt den Bankwert; Kennzahlen werden 6-stellig
+ *  nachgerechnet wie die kuratierten Orakel. */
+export function drawSigmoidParameters(r, capsule) {
   if (capsule.kind === 'log-odds') {
     const odds = pick(r, capsule.oddsBank);
-    parameters = { odds, logit: Math.round(Math.log(odds) * 1e6) / 1e6 };
-  } else if (capsule.kind === 'threshold') {
-    const z = pick(r, capsule.zBank);
-    parameters = { z, threshold: 0.5, sigmoid: Math.round(sigmoidValue(z) * 1e6) / 1e6 };
-  } else {
-    const z = pick(r, capsule.zBank);
-    parameters = { z, sigmoid: Math.round(sigmoidValue(z) * 1e6) / 1e6 };
+    return { odds, logit: Math.round(Math.log(odds) * 1e6) / 1e6 };
   }
-  const options = sigmoidOptions(parameters, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters,
-    expected: { correctChoice: SIGMOID_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, SIGMOID_IDS),
-    prompt: sigmoidPrompt(parameters, capsule),
-    fullSolution: sigmoidSolution(parameters, capsule),
-  };
+  if (capsule.kind === 'threshold') {
+    const z = pick(r, capsule.zBank);
+    return { z, threshold: 0.5, sigmoid: Math.round(sigmoidValue(z) * 1e6) / 1e6 };
+  }
+  const z = pick(r, capsule.zBank);
+  return { z, sigmoid: Math.round(sigmoidValue(z) * 1e6) / 1e6 };
 }
 
 // --- W25: LoRA-Tradeoff-Kapseln (classify-lora-tradeoff) --------------------------
@@ -712,14 +670,12 @@ export const LORA_CAPSULES = {
   stretch: { kind: 'alpha-rank', caseId: 'lora-alpha-rank' },
 };
 
-const LORA_IDS = ['a', 'b', 'c', 'd'];
-
 const fmtIntDe = (value) => String(value).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 
 /** Ein Template je Fallart: options[0] ist korrekt, Texte woertlich aus den
  *  Bestandsvarianten (Kernidee mit Bruch, Parameterzahl mit Tausenderpunkt,
  *  Skalierung mit Differenz/Summe/Produkt als Distraktoren). */
-const loraOptions = (parameters, capsule) => {
+export const loraOptions = (parameters, capsule) => {
   if (capsule.kind === 'alpha-rank') {
     const scale = parameters.alpha / parameters.rank;
     return [
@@ -747,13 +703,13 @@ const loraOptions = (parameters, capsule) => {
   ];
 };
 
-const loraPrompt = (parameters, capsule) => {
+export const loraPrompt = (parameters, capsule) => {
   if (capsule.kind === 'alpha-rank') return `Für eine LoRA-Schicht gelten Skalierungsparameter $\\alpha=${parameters.alpha}$ und Rang $r=${parameters.rank}$. Welcher Faktor multipliziert $BA$ in $\\Delta W=(\\alpha/r)BA$?`;
   if (capsule.kind === 'param-count') return `Eine lineare Schicht hat $d_{in}=${parameters.dIn}$, $d_{out}=${parameters.dOut}$ und LoRA-Rang $r=${parameters.rank}$. Wie viele trainierbare LoRA-Parameter ersetzt die volle Matrix?`;
   return `LoRA nutzt für eine Anpassung den Rang $r=${parameters.rank}$ und den Skalierungsparameter $\\alpha=${parameters.alpha}$. Was ist die Kernidee?`;
 };
 
-const loraSolution = (parameters, capsule) => {
+export const loraSolution = (parameters, capsule) => {
   if (capsule.kind === 'alpha-rank') return `Einsetzen ergibt $\\alpha/r=${parameters.alpha}/${parameters.rank}=${parameters.alpha / parameters.rank}$. Dieser Faktor multipliziert $BA$.`;
   if (capsule.kind === 'param-count') return `LoRA speichert Faktoren mit ${parameters.rank}·${parameters.dIn} und ${parameters.rank}·${parameters.dOut} Parametern. Summe: ${parameters.rank}(${parameters.dIn}+${parameters.dOut})=${parameters.rank * (parameters.dIn + parameters.dOut)}.`;
   return `LoRA friert $W$ ein und trainiert eine niedrig-rangige Korrektur $\\Delta W=(${parameters.alpha}/${parameters.rank})BA$. Dadurch bleiben die trainierbaren Matrizen klein.`;
@@ -762,70 +718,49 @@ const loraSolution = (parameters, capsule) => {
 /** Kapselform ueber den gespeicherten Parametern: Bereiche plus vier
  *  paarweise verschiedene Antworttexte; bei alpha-rank zusaetzlich
  *  Teilbarkeit (Skalierung ganzzahlig). */
-export function loraCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (capsule.kind === 'alpha-rank') {
-      const { alpha, rank } = parameters;
-      if (!Number.isInteger(alpha) || !Number.isInteger(rank)) return false;
-      if (!(rank >= 2 && rank <= 12)) return false;
-      if (alpha % rank !== 0) return false;
-      const scale = alpha / rank;
-      if (!(scale >= 2 && scale <= 8)) return false;
-    } else if (capsule.kind === 'param-count') {
-      const { dIn, dOut, rank } = parameters;
-      if (!Number.isInteger(dIn) || !Number.isInteger(dOut) || !Number.isInteger(rank)) return false;
-      if (!(dIn >= 128 && dIn <= 2048 && dIn % 64 === 0)) return false;
-      if (!(dOut >= 128 && dOut <= 2048 && dOut % 64 === 0)) return false;
-      if (!(rank >= 2 && rank <= 16)) return false;
-    } else {
-      const { rank, alpha } = parameters;
-      if (!Number.isInteger(rank) || !Number.isInteger(alpha)) return false;
-      if (!(rank >= 1 && rank <= 16)) return false;
-      if (!(alpha >= 2 && alpha <= 64)) return false;
-    }
-    return new Set(loraOptions(parameters, capsule)).size === 4;
-  } catch { return false; }
+export function loraShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
+  if (capsule.kind === 'alpha-rank') {
+    const { alpha, rank } = parameters;
+    if (!Number.isInteger(alpha) || !Number.isInteger(rank)) return false;
+    if (!(rank >= 2 && rank <= 12)) return false;
+    if (alpha % rank !== 0) return false;
+    const scale = alpha / rank;
+    if (!(scale >= 2 && scale <= 8)) return false;
+  } else if (capsule.kind === 'param-count') {
+    const { dIn, dOut, rank } = parameters;
+    if (!Number.isInteger(dIn) || !Number.isInteger(dOut) || !Number.isInteger(rank)) return false;
+    if (!(dIn >= 128 && dIn <= 2048 && dIn % 64 === 0)) return false;
+    if (!(dOut >= 128 && dOut <= 2048 && dOut % 64 === 0)) return false;
+    if (!(rank >= 2 && rank <= 16)) return false;
+  } else {
+    const { rank, alpha } = parameters;
+    if (!Number.isInteger(rank) || !Number.isInteger(alpha)) return false;
+    if (!(rank >= 1 && rank <= 16)) return false;
+    if (!(alpha >= 2 && alpha <= 64)) return false;
+  }
+  return new Set(loraOptions(parameters, capsule)).size === 4;
 }
 
-/** Unabhaengiger Schluessel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function loraCorrectText(parameters, capsule) {
-  if (!loraCapsuleOk(parameters, capsule)) throw new Error('LoRA-Befund verletzt die Kapselform');
-  return loraOptions(parameters, capsule)[0];
-}
-
-/** Zahlen-Sampler mit Rotation: Seed waehlt Parameter und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe — Leak deckt Gate 3 im
- *  Test ueber den Volltext ab (Vorbild genSigmoidCapsule). Einzige
- *  Ausnahme: alpha-rank verengt um die degenerierte Klasse Antwort==Rang
- *  (Vorbild genConditionalCount: Antwort muss sich von jeder Promptzahl
+/** Zahlen-Sampler: Seed waehlt die Parameter. Einzige Verengung: alpha-rank
+ *  redraws um die degenerierte Klasse Antwort==Rang (Vorbild
+ *  genConditionalCount: Antwort muss sich von jeder Promptzahl
  *  unterscheiden). Befund: 2/9 kuratierte Orakel plus der Base-Fall
  *  (16,4) haben Antwort==Rang — Bestand, keine Generator-Verstaerkung;
  *  die Kapselform laesst sie zu, der Sampler erzeugt sie nicht. */
-export function genLoraCapsule(seed, capsule) {
-  const r = rng(seed);
-  let parameters;
+export function drawLoraParameters(r, capsule) {
   if (capsule.kind === 'alpha-rank') {
-    parameters = until(r, () => {
+    return until(r, () => {
       const rank = randInt(r, 2, 12);
       const scale = randInt(r, 2, 8);
       return { alpha: rank * scale, rank };
     }, (candidate) => candidate.alpha / candidate.rank !== candidate.rank
       && new Set(loraOptions(candidate, capsule)).size === 4);
-  } else if (capsule.kind === 'param-count') {
-    parameters = { dIn: 64 * randInt(r, 2, 32), dOut: 64 * randInt(r, 2, 32), rank: randInt(r, 2, 16) };
-  } else {
-    parameters = { rank: randInt(r, 1, 16), alpha: randInt(r, 2, 64) };
   }
-  const options = loraOptions(parameters, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters,
-    expected: { correctChoice: LORA_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, LORA_IDS),
-    prompt: loraPrompt(parameters, capsule),
-    fullSolution: loraSolution(parameters, capsule),
-  };
+  if (capsule.kind === 'param-count') {
+    return { dIn: 64 * randInt(r, 2, 32), dOut: 64 * randInt(r, 2, 32), rank: randInt(r, 2, 16) };
+  }
+  return { rank: randInt(r, 1, 16), alpha: randInt(r, 2, 64) };
 }
 
 export function genPcaVariancePercent(seed) {
@@ -1131,12 +1066,16 @@ export const MISSINGNESS_CAPSULES = {
   },
 };
 
-const MISSINGNESS_IDS = ['a', 'b', 'c', 'd'];
+/** Bankzeile zum Parameter-Slotwert (die Bank steht im Kapselobjekt). */
+const missingnessEntry = (parameters, capsule) => (
+  capsule.bank.find((item) => item[capsule.slot] === parameters[capsule.slot])
+);
 
 /** Ein Options-Template je Fallart: options[0] ist korrekt, Texte wörtlich
  *  aus den kuratierten Varianten (intro: je Szenario kuratiert) bzw. aus dem
  *  Bestands-Base-Fall (core/stretch: einheitliche Distraktor-Bauart). */
-const missingnessOptions = (entry, capsule) => {
+export const missingnessOptions = (parameters, capsule) => {
+  const entry = missingnessEntry(parameters, capsule);
   if (capsule.kind === 'sensor-zensiert') {
     return [
       `Das Fehlen ist wertabhängig; Löschen kann ${entry.extrem} systematisch entfernen.`,
@@ -1161,7 +1100,10 @@ const missingnessOptions = (entry, capsule) => {
   ];
 };
 
-const missingnessSolution = (entry, capsule) => {
+export const missingnessPrompt = (parameters, capsule) => missingnessEntry(parameters, capsule).prompt;
+
+export const missingnessSolution = (parameters, capsule) => {
+  const entry = missingnessEntry(parameters, capsule);
   if (capsule.kind === 'sensor-zensiert') {
     return `Das Fehlen hängt vom Messwert beziehungsweise seinem Extrembereich ab und ist daher nicht MCAR. Naives Löschen kann ${entry.extrem} systematisch entfernen und die Verteilung verzerren.`;
   }
@@ -1173,40 +1115,18 @@ const missingnessSolution = (entry, capsule) => {
 
 /** Kapselform: Slotwert aus der Szenario-Bank plus vier paarweise
  *  verschiedene Antworttexte. */
-export function missingnessCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    const entry = capsule.bank.find((item) => item[capsule.slot] === parameters[capsule.slot]);
-    if (!entry) return false;
-    return new Set(missingnessOptions(entry, capsule)).size === 4;
-  } catch { return false; }
+export function missingnessShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
+  if (!missingnessEntry(parameters, capsule)) return false;
+  return new Set(missingnessOptions(parameters, capsule)).size === 4;
 }
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest
- *  nie `expected` ab. */
-export function missingnessCorrectText(parameters, capsule) {
-  const entry = capsule.bank.find((item) => item[capsule.slot] === parameters?.[capsule.slot]);
-  if (!entry || !missingnessCapsuleOk(parameters, capsule)) {
-    throw new Error('Parameter verletzen die Kapselform');
-  }
-  return missingnessOptions(entry, capsule)[0];
-}
-
-/** Slot-Bank-Sampler mit Rotation: Seed wählt Szenario und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe — Leak deckt Gate 3 im
- *  Test über den Volltext ab (Vorbild genSigmoidCapsule). */
-export function genMissingnessCapsule(seed, capsule) {
-  const r = rng(seed);
+/** Slot-Bank-Sampler: Seed wählt das Szenario; `thema` wandert in die
+ *  Parameter, damit generate weiterhin {caseId, difficulty, thema, slot}
+ *  in dieser Reihenfolge ausgibt. */
+export function drawMissingnessParameters(r, capsule) {
   const entry = pick(r, capsule.bank);
-  const options = missingnessOptions(entry, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: { [capsule.slot]: entry[capsule.slot] },
-    expected: { correctChoice: MISSINGNESS_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, MISSINGNESS_IDS),
-    prompt: entry.prompt,
-    fullSolution: missingnessSolution(entry, capsule),
-  };
+  return { thema: capsule.thema, [capsule.slot]: entry[capsule.slot] };
 }
 
 // --- W07: Confounding-Kapseln (classify-confounding) --------------------------
@@ -1633,16 +1553,20 @@ export const CONFOUNDING_CAPSULES = {
   },
 };
 
-const CONFOUNDING_IDS = ['a', 'b', 'c', 'd'];
-
 /** Dezimalzahl im Prompt-LaTeX: 0.85 -> '0{,}85' (deutsches Komma). */
 const fmtRDe = (value) => String(value).replace('.', '{,}');
+
+/** Bankzeile zum Parameter-Slotwert (die Bank steht im Kapselobjekt). */
+const confoundingEntry = (parameters, capsule) => (
+  capsule.bank.find((item) => item[capsule.slot] === parameters[capsule.slot])
+);
 
 /** Ein Options-Template je Fallart: options[0] ist korrekt. Szenariobindende
  *  Distraktoren stehen wörtlich in der Bank; wiederkehrende Distraktoren sind
  *  Template-Konstanten (intro: Widerlegung plus Linearitäts-Claim mit r;
  *  stretch: Budget-Claim). */
-const confoundingOptions = (entry, capsule) => {
+export const confoundingOptions = (parameters, capsule) => {
+  const entry = confoundingEntry(parameters, capsule);
   if (capsule.kind === 'beobachtung') {
     return [entry.correct, entry.kausal, entry.ausgeschlossen, entry.umkehr];
   }
@@ -1662,42 +1586,23 @@ const confoundingOptions = (entry, capsule) => {
   ];
 };
 
+export const confoundingPrompt = (parameters, capsule) => confoundingEntry(parameters, capsule).prompt;
+
+export const confoundingSolution = (parameters, capsule) => confoundingEntry(parameters, capsule).loesung;
+
 /** Kapselform: Slotwert aus der Szenario-Bank, passender r-Parameter und vier
  *  paarweise verschiedene Antworttexte. */
-export function confoundingCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    const entry = capsule.bank.find((item) => item[capsule.slot] === parameters[capsule.slot]);
-    if (!entry || entry.r !== parameters.r) return false;
-    return new Set(confoundingOptions(entry, capsule)).size === 4;
-  } catch { return false; }
+export function confoundingShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
+  const entry = confoundingEntry(parameters, capsule);
+  if (!entry || entry.r !== parameters.r) return false;
+  return new Set(confoundingOptions(parameters, capsule)).size === 4;
 }
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest
- *  nie `expected` ab. */
-export function confoundingCorrectText(parameters, capsule) {
-  const entry = capsule.bank.find((item) => item[capsule.slot] === parameters?.[capsule.slot]);
-  if (!entry || !confoundingCapsuleOk(parameters, capsule)) {
-    throw new Error('Parameter verletzen die Kapselform');
-  }
-  return confoundingOptions(entry, capsule)[0];
-}
-
-/** Slot-Bank-Sampler mit Rotation: Seed wählt Szenario und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe — Leak deckt Gate 3 im
- *  Test über den Volltext ab (Vorbild genMissingnessCapsule). */
-export function genConfoundingCapsule(seed, capsule) {
-  const r = rng(seed);
+/** Slot-Bank-Sampler: Seed wählt das Szenario samt r-Belegung. */
+export function drawConfoundingParameters(r, capsule) {
   const entry = pick(r, capsule.bank);
-  const options = confoundingOptions(entry, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: { r: entry.r, confounder: entry.confounder },
-    expected: { correctChoice: CONFOUNDING_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, CONFOUNDING_IDS),
-    prompt: entry.prompt,
-    fullSolution: entry.loesung,
-  };
+  return { r: entry.r, confounder: entry.confounder };
 }
 
 // --- W09: Task-Type-Kapseln (classify-task-type) --------------------------------
@@ -2244,49 +2149,36 @@ export const TASK_TYPE_CAPSULES = {
   },
 };
 
-const TASK_TYPE_IDS = ['a', 'b', 'c', 'd'];
+/** Bankzeile zum Szenario-Parameter (die Bank steht im Kapselobjekt). */
+const taskTypeEntry = (parameters, capsule) => (
+  capsule.bank.find((item) => item.scenario === parameters.scenario)
+);
 
 /** Vier Optionstexte je Szenario: options[0] ist korrekt. Schlüsseltext und
  *  Distraktoren sind szenariobindend und stehen wörtlich in der Bank
  *  (Vorbild classify-missingness). */
-const taskTypeOptions = (entry) => [entry.correct, ...entry.wrong];
+export const taskTypeOptions = (parameters, capsule) => {
+  const entry = taskTypeEntry(parameters, capsule);
+  return [entry.correct, ...entry.wrong];
+};
+
+export const taskTypePrompt = (parameters, capsule) => taskTypeEntry(parameters, capsule).prompt;
+
+export const taskTypeSolution = (parameters, capsule) => taskTypeEntry(parameters, capsule).loesung;
 
 /** Kapselform: Szenario und Zielwert aus der Bank plus vier paarweise
  *  verschiedene Antworttexte. */
-export function taskTypeCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    const entry = capsule.bank.find((item) => item.scenario === parameters.scenario);
-    if (!entry || entry.target !== parameters.target) return false;
-    return new Set(taskTypeOptions(entry)).size === 4;
-  } catch { return false; }
+export function taskTypeShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
+  const entry = taskTypeEntry(parameters, capsule);
+  if (!entry || entry.target !== parameters.target) return false;
+  return new Set(taskTypeOptions(parameters, capsule)).size === 4;
 }
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest
- *  nie `expected` ab. */
-export function taskTypeCorrectText(parameters, capsule) {
-  const entry = capsule.bank.find((item) => item.scenario === parameters?.scenario);
-  if (!entry || !taskTypeCapsuleOk(parameters, capsule)) {
-    throw new Error('Parameter verletzen die Kapselform');
-  }
-  return taskTypeOptions(entry)[0];
-}
-
-/** Szenario-Bank-Sampler mit Rotation: Seed wählt Szenario und
- *  Antwortposition. Kein clean()-Guard: expected ist ein Buchstabe — Leak
- *  deckt Gate 3 im Test über den Volltext ab (Vorbild genMissingnessCapsule). */
-export function genTaskTypeCapsule(seed, capsule) {
-  const r = rng(seed);
+/** Szenario-Bank-Sampler: Seed wählt Szenario samt Zielwert. */
+export function drawTaskTypeParameters(r, capsule) {
   const entry = pick(r, capsule.bank);
-  const options = taskTypeOptions(entry);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: { scenario: entry.scenario, target: entry.target },
-    expected: { correctChoice: TASK_TYPE_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, TASK_TYPE_IDS),
-    prompt: entry.prompt,
-    fullSolution: entry.loesung,
-  };
+  return { scenario: entry.scenario, target: entry.target };
 }
 
 // --- W13: Error-Drift-Kapseln (classify-error-drift) ----------------------------
@@ -2715,12 +2607,16 @@ export const ERROR_DRIFT_CAPSULES = {
   },
 };
 
-const ERROR_DRIFT_IDS = ['a', 'b', 'c', 'd'];
+/** Bankzeile zum Parameter-Slotwert (die Bank steht im Kapselobjekt). */
+const errorDriftEntry = (parameters, capsule) => (
+  capsule.bank.find((item) => item[capsule.slot] === parameters[capsule.slot])
+);
 
 /** Ein Options-Template je Fallart: options[0] ist korrekt, der Schlüsseltext
  *  ist je Fall eine Konstante (wörtlich aus allen neun kuratierten Varianten);
  *  die szenariobindenden Distraktoren stehen wörtlich in der Bank. */
-const errorDriftOptions = (entry, capsule) => {
+export const errorDriftOptions = (parameters, capsule) => {
+  const entry = errorDriftEntry(parameters, capsule);
   if (capsule.kind === 'label-drift') {
     return [
       'Label- beziehungsweise Konzept-Drift durch die geänderte Zieldefinition.',
@@ -2745,45 +2641,27 @@ const errorDriftOptions = (entry, capsule) => {
   ];
 };
 
+export const errorDriftPrompt = (parameters, capsule) => errorDriftEntry(parameters, capsule).prompt;
+
+export const errorDriftSolution = (parameters, capsule) => errorDriftEntry(parameters, capsule).loesung;
+
 /** Kapselform: Slotwert aus der Szenario-Bank, alle `params`-Felder stimmen
  *  mit der Bankzeile überein, vier paarweise verschiedene Antworttexte. */
-export function errorDriftCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    const entry = capsule.bank.find((item) => item[capsule.slot] === parameters[capsule.slot]);
-    if (!entry) return false;
-    for (const key of capsule.params) {
-      if (parameters[key] !== entry[key]) return false;
-    }
-    return new Set(errorDriftOptions(entry, capsule)).size === 4;
-  } catch { return false; }
-}
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest
- *  nie `expected` ab. */
-export function errorDriftCorrectText(parameters, capsule) {
-  const entry = capsule.bank.find((item) => item[capsule.slot] === parameters?.[capsule.slot]);
-  if (!entry || !errorDriftCapsuleOk(parameters, capsule)) {
-    throw new Error('Parameter verletzen die Kapselform');
+export function errorDriftShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
+  const entry = errorDriftEntry(parameters, capsule);
+  if (!entry) return false;
+  for (const key of capsule.params) {
+    if (parameters[key] !== entry[key]) return false;
   }
-  return errorDriftOptions(entry, capsule)[0];
+  return new Set(errorDriftOptions(parameters, capsule)).size === 4;
 }
 
-/** Szenario-Bank-Sampler mit Rotation: Seed wählt Szenario und
- *  Antwortposition. Kein clean()-Guard: expected ist ein Buchstabe — Leak
- *  deckt Gate 3 im Test über den Volltext ab (Vorbild genMissingnessCapsule). */
-export function genErrorDriftCapsule(seed, capsule) {
-  const r = rng(seed);
+/** Szenario-Bank-Sampler: Seed wählt das Szenario; `params` spiegelt exakt
+ *  die Parameter-Felder der Bankzeile. */
+export function drawErrorDriftParameters(r, capsule) {
   const entry = pick(r, capsule.bank);
-  const options = errorDriftOptions(entry, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: Object.fromEntries(capsule.params.map((key) => [key, entry[key]])),
-    expected: { correctChoice: ERROR_DRIFT_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, ERROR_DRIFT_IDS),
-    prompt: entry.prompt,
-    fullSolution: entry.loesung,
-  };
+  return Object.fromEntries(capsule.params.map((key) => [key, entry[key]]));
 }
 
 // --- W16: SVM-Margin-Kapseln (classify-svm-margin) ---------------------------
@@ -2869,8 +2747,6 @@ export const SVM_MARGIN_CAPSULES = {
   },
 };
 
-const SVM_MARGIN_IDS = ['a', 'b', 'c', 'd'];
-
 /** ||w|| der 2D-Trenngeraden. */
 const svmNorm = (w) => Math.hypot(w[0], w[1]);
 
@@ -2887,7 +2763,7 @@ const svmVecEq = (left, right) => Array.isArray(left) && Array.isArray(right)
  *  Distraktoren stehen wörtlich in den kuratierten Varianten (intro:
  *  Korridorbreite 2/||w|| mit Komma-Dezimalen; core: Slack/C mit
  *  Komma-Dezimalen; stretch: Margin-Score mit Punkt-Dezimalen). */
-const svmMarginOptions = (parameters, capsule) => {
+export const svmMarginOptions = (parameters, capsule) => {
   if (capsule.kind === 'soft-margin-slack') {
     return [
       `Sie erlaubt eine Margin-Verletzung von $\\xi=${fmtDe(parameters.slack)}$, die mit Kostenparameter $C=${fmtDe(parameters.C)}$ in der Zielfunktion bestraft wird.`,
@@ -2912,7 +2788,7 @@ const svmMarginOptions = (parameters, capsule) => {
   ];
 };
 
-const svmMarginPrompt = (parameters, capsule) => {
+export const svmMarginPrompt = (parameters, capsule) => {
   if (capsule.kind === 'soft-margin-slack') {
     return `Eine Soft-Margin-SVM verwendet $C=${fmtDe(parameters.C)}$ und eine Slack-Variable $\\xi=${fmtDe(parameters.slack)}$. Was erlaubt diese Slack-Variable?`;
   }
@@ -2922,7 +2798,7 @@ const svmMarginPrompt = (parameters, capsule) => {
   return `Eine Hard-Margin-SVM hat $w=(${parameters.w.join(',')})$ und $b=${parameters.b}$. Was beschreibt ihr geometrischer Margin?`;
 };
 
-const svmMarginSolution = (parameters, capsule) => {
+export const svmMarginSolution = (parameters, capsule) => {
   if (capsule.kind === 'soft-margin-slack') {
     return `Slack erlaubt, die Margin um ${fmtDe(parameters.slack)} zu verletzen; dafür fällt in der Zielfunktion eine von $C=${fmtDe(parameters.C)}$ gewichtete Strafe an.`;
   }
@@ -2936,66 +2812,44 @@ const svmMarginSolution = (parameters, capsule) => {
  *  plus nachgerechnete Kennzahl (marginWidth = 2/||w|| bzw.
  *  marginScore = y·(wᵀx+b), Toleranz 1e-6) und vier paarweise verschiedene
  *  Antworttexte; intro verlangt die ganzzahlige Norm (pythagoreische Bank). */
-export function svmMarginCapsuleOk(parameters, capsule) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (capsule.kind === 'soft-margin-slack') {
-      const { C, slack } = parameters;
-      if (!capsule.bank.some((entry) => entry.C === C && entry.slack === slack)) return false;
-    } else if (capsule.kind === 'support-boundary') {
-      const { w, b, point, label, marginScore } = parameters;
-      const entry = capsule.bank.find((item) => svmVecEq(item.w, w) && item.b === b
-        && svmVecEq(item.point, point) && item.label === label);
-      if (!entry || typeof marginScore !== 'number') return false;
-      if (Math.abs(marginScore - label * (w[0] * point[0] + w[1] * point[1] + b)) > 1e-6) return false;
-    } else {
-      const { w, b, marginWidth } = parameters;
-      if (!capsule.bank.some((entry) => svmVecEq(entry.w, w) && entry.b === b)) return false;
-      const norm = svmNorm(w);
-      if (!Number.isInteger(norm)) return false;
-      if (typeof marginWidth !== 'number') return false;
-      if (Math.abs(marginWidth - 2 / norm) > 1e-6) return false;
-    }
-    return new Set(svmMarginOptions(parameters, capsule)).size === 4;
-  } catch { return false; }
-}
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest
- *  nie `expected` ab. */
-export function svmMarginCorrectText(parameters, capsule) {
-  if (!svmMarginCapsuleOk(parameters, capsule)) throw new Error('SVM-Margin-Befund verletzt die Kapselform');
-  return svmMarginOptions(parameters, capsule)[0];
-}
-
-/** Zahlenbank-Sampler mit Rotation: Seed wählt Tupel und Antwortposition;
- *  die Kennzahl wird aus dem Tupel gerechnet (marginWidth = 2/||w||,
- *  marginScore = y·(wᵀx+b), 6-stellig wie die Orakel). Kein clean()-Guard:
- *  expected ist ein Buchstabe — Leak deckt Gate 3 im Test über den Volltext
- *  ab (Vorbild genSigmoidCapsule). */
-export function genSvmMarginCapsule(seed, capsule) {
-  const r = rng(seed);
-  const entry = pick(r, capsule.bank);
-  let parameters;
+export function svmMarginShapeOk(parameters, capsule) {
+  if (!parameters || typeof parameters !== 'object') return false;
   if (capsule.kind === 'soft-margin-slack') {
-    parameters = { C: entry.C, slack: entry.slack };
+    const { C, slack } = parameters;
+    if (!capsule.bank.some((entry) => entry.C === C && entry.slack === slack)) return false;
   } else if (capsule.kind === 'support-boundary') {
-    parameters = {
+    const { w, b, point, label, marginScore } = parameters;
+    const entry = capsule.bank.find((item) => svmVecEq(item.w, w) && item.b === b
+      && svmVecEq(item.point, point) && item.label === label);
+    if (!entry || typeof marginScore !== 'number') return false;
+    if (Math.abs(marginScore - label * (w[0] * point[0] + w[1] * point[1] + b)) > 1e-6) return false;
+  } else {
+    const { w, b, marginWidth } = parameters;
+    if (!capsule.bank.some((entry) => svmVecEq(entry.w, w) && entry.b === b)) return false;
+    const norm = svmNorm(w);
+    if (!Number.isInteger(norm)) return false;
+    if (typeof marginWidth !== 'number') return false;
+    if (Math.abs(marginWidth - 2 / norm) > 1e-6) return false;
+  }
+  return new Set(svmMarginOptions(parameters, capsule)).size === 4;
+}
+
+/** Zahlenbank-Sampler: Seed wählt das Tupel; die Kennzahl wird aus dem Tupel
+ *  gerechnet (marginWidth = 2/||w||, marginScore = y·(wᵀx+b), 6-stellig wie
+ *  die Orakel). */
+export function drawSvmMarginParameters(r, capsule) {
+  const entry = pick(r, capsule.bank);
+  if (capsule.kind === 'soft-margin-slack') {
+    return { C: entry.C, slack: entry.slack };
+  }
+  if (capsule.kind === 'support-boundary') {
+    return {
       w: entry.w,
       b: entry.b,
       point: entry.point,
       label: entry.label,
       marginScore: svmMarginScore(entry),
     };
-  } else {
-    parameters = { w: entry.w, b: entry.b, marginWidth: Math.round((2 / svmNorm(entry.w)) * 1e6) / 1e6 };
   }
-  const options = svmMarginOptions(parameters, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters,
-    expected: { correctChoice: SVM_MARGIN_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, SVM_MARGIN_IDS),
-    prompt: svmMarginPrompt(parameters, capsule),
-    fullSolution: svmMarginSolution(parameters, capsule),
-  };
+  return { w: entry.w, b: entry.b, marginWidth: Math.round((2 / svmNorm(entry.w)) * 1e6) / 1e6 };
 }

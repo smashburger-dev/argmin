@@ -66,8 +66,8 @@ test('capsule shape: generated parameters satisfy stubDocCaseOk over 200 seeds',
   for (const caseId of CASE_IDS) {
     const def = STUB_DOC_CASES[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genStubDocCase(seed, def);
-      assert.ok(stubDocCaseOk(generated.parameters, def), `${caseId}:${seed}: shape`);
+      const generated = genStubDocCase(seed, caseId, def);
+      assert.ok(stubDocCaseOk(generated.parameters, caseId, def), `${caseId}:${seed}: shape`);
       assert.equal(generated.parameters.caseId, caseId);
       assert.equal(generated.parameters.difficulty, def.difficulty);
       assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
@@ -85,7 +85,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
   for (const caseId of CASE_IDS) {
     const def = STUB_DOC_CASES[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genStubDocCase(seed, def);
+      const generated = genStubDocCase(seed, caseId, def);
       const { docs, queryHit, queryMiss } = generated.parameters;
       const want = `${refStub(queryHit, docs)}\n${refStub(queryMiss, docs)}`;
       assert.equal(generated.expected.output, want, `${caseId}:${seed}: expected output`);
@@ -107,7 +107,7 @@ test('seeded draws stay inside the declared domains', () => {
   const seenHits = new Set();
   const seenMisses = new Set();
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = genStubDocCase(seed, def);
+    const generated = genStubDocCase(seed, 'stub-doc-sentence-select', def);
     const { docs, queryHit, queryMiss } = generated.parameters;
     const entry = DOC_BANK.find((item) => item.docs.length === docs.length
       && item.docs.every((d, i) => d === docs[i]));
@@ -140,7 +140,7 @@ test('determinism: same seed reproduces identical output, negative seeds valid',
   for (const caseId of CASE_IDS) {
     const def = STUB_DOC_CASES[caseId];
     for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genStubDocCase(seed, def), genStubDocCase(seed, def), `${caseId}:${seed}`);
+      assert.deepEqual(genStubDocCase(seed, caseId, def), genStubDocCase(seed, caseId, def), `${caseId}:${seed}`);
     }
   }
 });
@@ -173,6 +173,6 @@ test('family block: dispatch, contract, errors', () => {
   assert.throws(() => generateStubDocFamily({ seed: 0, caseId: 'nope', difficulty: 'core' }), /Unbekannter Fall/);
   assert.throws(() => generateStubDocFamily({ seed: 0.5, caseId: 'stub-doc-sentence-select', difficulty: 'core' }), /Seed/);
   assert.throws(() => solveStubDocFamily({}), /Kapselform/);
-  const good = genStubDocCase(0, STUB_DOC_CASES['stub-doc-sentence-select']).parameters;
+  const good = genStubDocCase(0, 'stub-doc-sentence-select', STUB_DOC_CASES['stub-doc-sentence-select']).parameters;
   assert.throws(() => solveStubDocFamily({ ...good, snippet: 'x' }), /Kapselform/);
 });

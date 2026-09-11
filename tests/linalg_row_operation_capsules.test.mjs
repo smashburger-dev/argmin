@@ -1,19 +1,25 @@
 // Familie classify-row-operation-validity: Kapsel-Gates (single-choice-adaptiert).
 // Run: node --test tests/linalg_row_operation_capsules.test.mjs
+// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
+// foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
+// linalg_generators.mjs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  genRowOperationCapsule,
   ROW_OPERATION_CAPSULES,
   rowOperationInstanceOk,
-  rowOperationCorrectText,
 } from '../assets/js/core/linalg_generators.mjs';
 import {
   ROW_OPERATION_CONTRACT,
+  rowOperationCapsuleOk,
+  rowOperationCorrectText,
+  genRowOperationCapsule,
   generateRowOperationFamily,
   solveRowOperationFamily,
 } from '../assets/js/core/foundations_linalg_families.mjs';
 import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
 
 // --- 18 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Lösung und Bound (Gleichungen 9,
@@ -101,128 +107,19 @@ test('Kapseltabelle: Arten, Bounds und Fallbindung', () => {
   assert.deepEqual(ROW_OPERATION_CAPSULES.intro, { kind: 'multiplier', min: 1, max: 12, caseId: 'row-operation-choice-contract' });
 });
 
-test('Kapsel-Constraints: Form, Choices, Schlüssel über je 200 Seeds', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = ROW_OPERATION_CAPSULES[key];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genRowOperationCapsule(seed, capsule);
-      assert.ok(rowOperationInstanceOk(generated.parameters, capsule), `${key}:${seed}: Kapselform`);
-      assert.equal(generated.choices.length, 4, `${key}:${seed}: vier Wahlen`);
-      assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${key}:${seed}: eindeutige Texte`);
-      const correct = generated.choices.filter((choice) => choice.correct);
-      assert.equal(correct.length, 1, `${key}:${seed}: genau eine korrekte Wahl`);
-      assert.equal(generated.expected.correctChoice, correct[0].id, `${key}:${seed}: Key zeigt auf korrekte Wahl`);
-      assert.equal(correct[0].text, rowOperationCorrectText(generated.parameters, capsule), `${key}:${seed}: Schlüsseltext`);
-      assert.ok(generated.prompt.length > 20, `${key}:${seed}: Prompt`);
-      assert.ok(generated.fullSolution.length > 20, `${key}:${seed}: Lösung`);
-    }
-  }
-});
-
-test('Distinct-Boden 2x200: je Kapsel mindestens 40 distincte Instanzen', () => {
-  for (const key of CAPSULE_KEYS) {
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateRowOperationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      seen.add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    assert.ok(seen.size >= 40, `${key}: nur ${seen.size} distinct`);
-  }
-});
-
-test('Key-Agreement 2x200: Solve-Schlüssel gegen Generator ohne Abweichung', () => {
-  for (const key of CAPSULE_KEYS) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateRowOperationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const solved = solveRowOperationFamily(generated.parameters);
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.equal(solved.correctText, correct.text, `${key}:${seed}: Schlüsseltext`);
-      assert.equal(generated.expected.correctChoice, correct.id, `${key}:${seed}: Key-Id`);
-    }
-  }
-});
-
-test('Constraint-Compliance 2x200: null Samples außerhalb der Kapselform', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = ROW_OPERATION_CAPSULES[key];
-    let violations = 0;
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateRowOperationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      if (!rowOperationInstanceOk(generated.parameters, capsule)) violations += 1;
-    }
-    assert.equal(violations, 0, `${key}: Constraint-Verletzungen`);
-  }
-});
-
-test('Leak/Rotation: Prompt nennt den Schlüssel nie, Positionen rotieren, Modulo-Klassen halten nichts zurück', () => {
-  const idsFor = {
-    core: EQUATION_IDS,
-    intro: MULTIPLIER_IDS,
-  };
-  for (const key of CAPSULE_KEYS) {
-    const counts = Object.fromEntries(idsFor[key].map((id) => [id, 0]));
-    const byModulo = new Map();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateRowOperationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.ok(!generated.prompt.includes(correct.text), `${key}:${seed}: Schlüssel im Prompt`);
-      counts[generated.expected.correctChoice] += 1;
-      const bucket = seed % 8;
-      if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
-      byModulo.get(bucket).add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    for (const [id, count] of Object.entries(counts)) {
-      assert.ok(count >= 40 && count <= 60, `${key}: Position ${id} nur ${count}x`);
-    }
-    for (const [bucket, instances] of byModulo) {
-      assert.ok(instances.size >= 10, `${key}: Modulo-Klasse ${bucket} hält nur ${instances.size} distinct`);
-    }
-  }
-});
-
-test('negative Seeds: gültig und deterministisch', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = ROW_OPERATION_CAPSULES[key];
-    for (let seed = -50; seed < 0; seed += 1) {
-      const first = genRowOperationCapsule(seed, capsule);
-      assert.deepEqual(first, genRowOperationCapsule(seed, capsule), `${key}:${seed}: deterministisch`);
-      assert.ok(rowOperationInstanceOk(first.parameters, capsule), `${key}:${seed}: Kapselform`);
-    }
-  }
-});
-
-test('Familien-Block: Dispatch, Contract, Solve', () => {
-  assert.equal(ROW_OPERATION_CONTRACT.familyId, 'classify-row-operation-validity');
-  assert.equal(ROW_OPERATION_CONTRACT.authorityMode, 'seeded');
-  assert.equal(ROW_OPERATION_CONTRACT.activityType, 'single-choice');
-  assert.deepEqual(ROW_OPERATION_CONTRACT.difficultyProfiles, ['intro', 'core']);
-  assert.deepEqual(ROW_OPERATION_CONTRACT.caseTypes.map((item) => item.caseId).sort(), Object.values(CASE_FOR).sort());
-  const meta = {
+linalgChoiceCapsuleSuite('classify-row-operation-validity', {
+  capsules: ROW_OPERATION_CAPSULES,
+  contract: ROW_OPERATION_CONTRACT,
+  capsuleOk: rowOperationCapsuleOk,
+  correctText: rowOperationCorrectText,
+  genCapsule: genRowOperationCapsule,
+  generate: generateRowOperationFamily,
+  solve: solveRowOperationFamily,
+  registry: LINALG_FAMILIES,
+}, CASE_FOR, {
+  difficultyProfiles: ['intro', 'core'],
+  meta: {
     core: { masteryEligible: true, competencyIds: ['c-linalg-gauss'] },
     intro: { masteryEligible: false, competencyIds: ['c-linalg-gauss'] },
-  };
-  for (const key of CAPSULE_KEYS) {
-    const generated = generateRowOperationFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key });
-    const correct = generated.choices.find((choice) => choice.correct);
-    assert.equal(generated.expected.correctChoice, correct.id);
-    assert.deepEqual(solveRowOperationFamily(generated.parameters), { correctText: correct.text });
-    assert.equal(generated.masteryEligible, meta[key].masteryEligible, `${key}: Mastery wie im Bestand`);
-    assert.deepEqual(generated.competencyIds, meta[key].competencyIds, `${key}: Kompetenzen wie im Bestand`);
-    assert.ok(generated.prompt.length > 20);
-    assert.deepEqual(generateRowOperationFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key }), generated);
-  }
-  assert.throws(() => generateRowOperationFamily({ seed: 0, caseId: 'valid-operation-rhs', difficulty: 'intro' }), /Unbekannter Fall/);
-  assert.throws(() => generateRowOperationFamily({ seed: 0, caseId: 'row-operation-choice-contract', difficulty: 'core' }), /Unbekannter Fall/);
-  assert.throws(() => generateRowOperationFamily({ seed: 0, caseId: 'row-operation-choice-contract', difficulty: 'challenge' }), /Unbekannt/);
-});
-
-test('Familien-Block: Registry löst, gradet und bleibt deterministisch', async () => {
-  const instance = LINALG_FAMILIES.instantiate('classify-row-operation-validity', 11, 'core', 'valid-operation-rhs');
-  const correct = instance.choices.find((choice) => choice.correct);
-  assert.equal(instance.expectedAnswer.correctChoice, correct.id);
-  const right = await LINALG_FAMILIES.grade(instance, correct.id);
-  assert.equal(right.correct, true);
-  const wrong = instance.choices.find((choice) => !choice.correct);
-  const graded = await LINALG_FAMILIES.grade(instance, wrong.id);
-  assert.equal(graded.correct, false);
+  },
 });
