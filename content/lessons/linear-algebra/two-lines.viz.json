@@ -11,7 +11,7 @@
   "objects": [
     { "kind": "functiongraph", "expr": "(c1-2*x)/1", "label": "L₁", "color": "#16713a" },
     { "kind": "functiongraph", "expr": "(c2+1*x)/2", "label": "L₂", "color": "#9c4b00" },
-    { "kind": "point", "at": ["(2*c1-c2)/3", "(c1+c2)/3"], "label": "S", "color": "#294bd6" },
-    { "kind": "text", "at": [-4, -3.5], "text": "Lösung ({(2*c1-c2)/3} ; {(c1+c2)/3})", "color": "#294bd6" }
+    { "kind": "point", "at": ["(2*c1-c2)/5", "(c1+2*c2)/5"], "label": "S", "color": "#294bd6" },
+    { "kind": "text", "at": [-4, -3.5], "text": "Lösung ({(2*c1-c2)/5} ; {(c1+2*c2)/5})", "color": "#294bd6" }
   ]
 }

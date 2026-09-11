@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-error-journal-order",
+  "contract": {
+    "familyId": "construct-error-journal-order",
+    "familyGroup": "construct-program",
+    "summary": "Ordnet die Einträge eines Fehlerjournals vom beobachteten Symptom bis zum geplanten Abruf.",
+    "taskArchetype": "parsons",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "journal-entry-order",
+        "propertyTest": true
+      }
+    ],
+    "difficultyProfiles": [
+      "core"
+    ],
+    "competencyIds": [
+      "c-meta-learning"
+    ],
+    "graderId": "deterministic",
+    "activityType": "parsons"
+  },
+  "cases": [
+    {
+      "caseId": "journal-entry-order",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-meta-error-log-01",
+        "generated"
+      ],
+      "competencyIds": [
+        "c-meta-learning"
+      ],
+      "activityType": "parsons",
+      "graderId": "deterministic",
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p-symptom",
+            "text": "Symptom: predict-output zur Summenschleife gab 15 statt 11 — ein Schleifenschritt zu viel gezählt."
+          },
+          {
+            "id": "p-repro",
+            "text": "Reproduktion: dieselbe Schleife mit n = 3 von Hand tracen — der doppelte Schritt zeigt sich wieder."
+          },
+          {
+            "id": "p-hypothese",
+            "text": "Hypothese: Off-by-one — der Akkumulator wird auch nach dem letzten Durchlauf noch einmal erhöht."
+          },
+          {
+            "id": "p-test",
+            "text": "Test: den Trace an einer neuen Instanz derselben Familie Zeile für Zeile wiederholen und die Schritte mitzählen."
+          },
+          {
+            "id": "p-abruf",
+            "text": "Abruf: in zwei Tagen eine neue Seed-Instanz desselben Fehlertyps lösen, nicht denselben Fall wiederholen."
+          },
+          {
+            "id": "d-label",
+            "text": "Selbsteinschätzung: „Schleifen liegen mir einfach nicht.“"
+          },
+          {
+            "id": "d-abkuerzung",
+            "text": "Status: Mastery manuell auf „nachgewiesen“ gesetzt, damit das Milestone-Gate öffnet."
+          }
+        ],
+        "initialOrder": [
+          "p-hypothese",
+          "d-label",
+          "p-symptom",
+          "p-test",
+          "p-repro",
+          "d-abkuerzung",
+          "p-abruf"
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p-symptom",
+          "p-repro",
+          "p-hypothese",
+          "p-test",
+          "p-abruf"
+        ],
+        "distractors": [
+          "d-label",
+          "d-abkuerzung"
+        ]
+      },
+      "prompt": "Ein Lernender protokolliert einen Fehler aus einer predict-output-Aufgabe im Fehlerjournal. Bringe die fünf Einträge in die Reihenfolge des Journalablaufs — vom beobachteten Symptom bis zum geplanten Abruf. Zwei Zeilen gehören nicht in den Eintrag und werden ausgesondert.",
+      "fullSolution": "Die Reihenfolge folgt dem Journalablauf: Symptom (was wurde beobachtet) → Reproduktion (minimaler Fall, der den Fehler zeigt) → Hypothese (kausale Erklärung, nicht das Symptom nacherzählt) → Test (konkreter nächster Schritt, der die Hypothese prüft) → Abruf (zeitversetzte neue Instanz desselben Fehlertyps). „Schleifen liegen mir nicht“ ist ein globales Selbsturteil ohne prüfbare Ursache, und der manuell gesetzte Mastery-Status ist eine Abkürzung, die den Nachweis fälscht — beide Zeilen gehören nicht in den Eintrag.",
+      "hints": [
+        "Der Eintrag läuft von der Beobachtung zur Handlung: Was wurde gesehen, wie wird es eingeengt, was erklärt es, was prüft die Erklärung, wann wird erneut geübt?",
+        "Beginne mit der beobachteten Abweichung. Eine Zeile ohne prüfbaren Inhalt und eine Zeile, die den Nachweis umgeht, gehören nicht in den Eintrag."
+      ],
+      "feedbackRules": [
+        {
+          "if": "order-length-mismatch",
+          "then": "Der Eintrag besteht aus genau fünf Zeilen — die Selbsteinschätzung und der manuell gesetzte Status gehören nicht hinein."
+        }
+      ],
+      "typicalErrors": [
+        "globales Selbsturteil als Ursachenhypothese aufnehmen",
+        "den geplanten Test vor die Hypothese setzen",
+        "den Abruf vor den Test legen oder weglassen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "variants": [
+        {
+          "parameters": {
+            "initialOrder": [
+              "p-test",
+              "p-symptom",
+              "d-abkuerzung",
+              "p-abruf",
+              "p-hypothese",
+              "d-label",
+              "p-repro"
+            ]
+          }
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "d-abkuerzung",
+              "p-repro",
+              "p-abruf",
+              "p-symptom",
+              "d-label",
+              "p-test",
+              "p-hypothese"
+            ]
+          }
+        },
+        {
+          "parameters": {
+            "initialOrder": [
+              "p-abruf",
+              "d-label",
+              "p-repro",
+              "p-test",
+              "d-abkuerzung",
+              "p-symptom",
+              "p-hypothese"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -28,6 +28,25 @@
       "estimatedMinutes": 8,
       "lessonId": "l-foundations-learning",
       "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-learning-error-journal-order",
+      "role": "curated",
+      "familyId": "construct-error-journal-order",
+      "caseId": "journal-entry-order",
+      "seed": 0,
+      "difficulty": "core",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-learning",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-learning-construct-error-journal-order-prac",
+      "role": "practice-space",
+      "familyId": "construct-error-journal-order",
+      "difficulty": "core",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-learning"
     }
   ],
   "projectIds": [],

@@ -40,7 +40,7 @@ Fallback. Timeouts messen wir mit einer **virtuellen Uhr**
 (`call_with_timeout(fn, budget, clock)`): Die Uhr ist ein Parameter, es gibt
 kein `sleep`, und die Tests steuern die Zeit von Hand.
 
-## Feste Evaluation: einmarshen, nicht nachjustieren
+## Feste Evaluation: einfrieren, nicht nachjustieren
 
 Die Evaluation steht vor der Optimierung fest: acht Queries über dem
 ungeänderten Korpus des GenAI-Prototyps, davon die vier Queries des GenAI-Prototyps wörtlich als Teilmenge,

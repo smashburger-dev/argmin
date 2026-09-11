@@ -508,8 +508,8 @@ export function generateExpressionCanonicalFamily({ seed, caseId, difficulty }) 
     parameters,
     expected: { kind: 'expression', expression: solved.canonicalExpression, equivalence: SYMPY_EQUIVALENCE_RULE },
     title: 'Vereinfache den Term so weit wie möglich und gib ihn ein.',
-    prompt: `Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als \`2*x + 7\`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.`,
-    fullSolution: `$${source} = ${solved.canonicalExpression}$. ${hint} Kanonische Zielform: ${solved.canonicalExpression}.`,
+    prompt: `Vereinfache $${source.replace(/\*/g, ' \\cdot ')}$ so weit wie möglich und gib den Term ein (z. B. als \`2*x + 7\`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.`,
+    fullSolution: `$${source.replace(/\*/g, ' \\cdot ')} = ${solved.canonicalExpression.replace(/\*/g, ' \\cdot ')}$. ${hint} Kanonische Zielform: ${solved.canonicalExpression}.`,
   };
 }
 
