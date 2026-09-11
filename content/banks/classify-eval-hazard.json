@@ -1,0 +1,175 @@
+{
+  "capsules": {
+    "eval-hazard-taxonomy": {
+      "caseId": "eval-hazard-taxonomy",
+      "difficulty": "intro",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Eine RAG-Antwort nennt die richtige Frist in Tagen und formuliert sauber — aber als Beleg zitieren sie die Quelle „blog-x“, die nicht in der zulässigen Quellenliste der Eval-Frage steht. Welches Label der Fehlertaxonomie passt?",
+          "correct": "halluziniert — der zitierte Beleg steht nicht in der zulässigen Quellenliste, die Quelle ist erfunden.",
+          "wrong": [
+            "falsch-faktisch — die genannte Frist ist falsch.",
+            "quellos — die Antwort kommt ohne Beleg aus.",
+            "formatfehler — die Antwort ist unbrauchbar formatiert."
+          ],
+          "solution": "Der Beleg existiert nicht in der zulässigen Quellenliste, die Antwort erfindet eine Quelle → halluziniert (Beleg-Ebene). Inhalt und Format sind in Ordnung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+        },
+        {
+          "key": "leer-schlaegt-quellos",
+          "prompt": "Die Antwort besteht nur aus Leerzeichen, und die Belegliste ist leer. Welches Label der Fehlertaxonomie greift?",
+          "correct": "formatfehler — die Kaskade prüft die leere Antwort vor der Belegliste; die erste passende Regel gewinnt.",
+          "wrong": [
+            "quellos — die Belegliste ist leer.",
+            "unvollständig — ohne Antwort fehlt jeder Gold-Inhalt.",
+            "off-topic — die Antwort teilt keinen Inhaltsbegriff mit dem Gold."
+          ],
+          "solution": "Leer und quellos treffen beide zu — aber das Regelwerk ist geordnet: empty-answer steht vor no-citations, also gewinnt formatfehler. Die Kaskadenreihenfolge ist Teil des Vertrags, nicht die Reihenfolge, in der man die Mängel bemerkt."
+        },
+        {
+          "key": "quellos-trotz-falscher-zahl",
+          "prompt": "Die Antwort nennt 9 Werktage, das Gold verlangt 3 — und die Belegliste ist leer. Welches Label greift zuerst?",
+          "correct": "quellos — die leere Belegliste greift in der festen Regelreihenfolge vor der Zahlen-Regel.",
+          "wrong": [
+            "falsch-faktisch — die genannte Zahl steht nicht im Gold.",
+            "off-topic — die Antwort weicht vom Goldthema ab.",
+            "formatfehler — eine falsche Zahl macht die Antwort unbrauchbar."
+          ],
+          "solution": "Der inhaltliche Fehler springt ins Auge, aber die Kaskade ist strikt geordnet: no-citations steht vor foreign-number. Eine Antwort ohne jeden Beleg ist quellos — egal, was sonst noch falsch ist."
+        },
+        {
+          "key": "off-topic-mit-fremder-zahl",
+          "prompt": "Antwort: „Herrlicher Sonnenschein um 15 Uhr.“ Gold: „Die Lieferzeit beträgt 3 Werktage.“ Beleg: faq-3 aus der erlaubten Liste. Welches Label passt?",
+          "correct": "off-topic — Antwort und Gold teilen keinen Inhaltsbegriff; die Themen-Regel steht vor den Zahlen-Regeln.",
+          "wrong": [
+            "falsch-faktisch — die 15 steht nicht im Gold.",
+            "halluziniert — der Beleg deckt die Aussage nicht.",
+            "unvollständig — die Lieferzeit fehlt in der Antwort."
+          ],
+          "solution": "Die 15 wäre eine fremde Zahl — aber no-shared-terms wird vor foreign-number geprüft. Antwort und Gold haben keinen Inhaltsbegriff (Länge ≥ 4) gemeinsam, also greift off-topic zuerst."
+        },
+        {
+          "key": "halluziniert-zweitquelle",
+          "prompt": "Inhalt und alle Zahlen der Antwort stimmen mit dem Gold überein, aber neben dem erlaubten Beleg faq-3 steht wiki-z in der Zitatliste. Welches Label?",
+          "correct": "halluziniert — mindestens ein Beleg steht außerhalb der zulässigen Quellenliste.",
+          "wrong": [
+            "unvollständig — ein Beleg allein reicht nicht als Nachweis.",
+            "quellos — die falsche Quelle zählt als fehlender Beleg.",
+            "falsch-faktisch — die falsche Quelle verfälscht den Inhalt."
+          ],
+          "solution": "Ein einziger nicht gelisteter Beleg genügt für halluziniert — die Regel prüft jede Zitation gegen die Quellenliste. Der korrekte Inhalt ändert daran nichts: der Fehler sitzt auf Beleg-Ebene."
+        },
+        {
+          "key": "falsch-faktisch-widerspruch",
+          "prompt": "Die Antwort nennt 30 Tage, das Gold 14 Tage; der Beleg faq-7 ist erlaubt und das Thema stimmt. Welches Label?",
+          "correct": "falsch-faktisch — die Antwort trägt eine Zahl, die nicht unter den Gold-Zahlen steht.",
+          "wrong": [
+            "unvollständig — die richtige Frist fehlt in der Antwort.",
+            "off-topic — eine andere Zahl ist ein anderes Thema.",
+            "halluziniert — der Beleg kann die falsche Zahl nicht stützen."
+          ],
+          "solution": "Die Antwort widerspricht dem Gold direkt: 30 steht nicht in der Gold-Zahlenmenge {14} → foreign-number → falsch-faktisch. Thema und Beleg sind in Ordnung; der Fehler sitzt im Inhalt."
+        },
+        {
+          "key": "unvollstaendig-gold-zahl-fehlt",
+          "prompt": "Antwort: „Die Frist endet nach einigen Tagen.“ Gold: „Die Frist endet nach 30 Tagen.“ Beleg: vertrag-1, erlaubt. Welches Label?",
+          "correct": "unvollständig — die Gold-Zahl 30 fehlt in der Antwort.",
+          "wrong": [
+            "quellos — vage Antworten tragen keinen Beleg.",
+            "falsch-faktisch — die Antwort nennt keine konkrete Zahl.",
+            "off-topic — „einige Tage“ ist kein Inhaltsbegriff."
+          ],
+          "solution": "Thema und Beleg stimmen, und die Antwort trägt keine fremde Zahl — aber die Gold-Zahl 30 fehlt: missing-gold-number → unvollständig. Die Taxonomie misst Vollständigkeit gegen das Gold, nicht den Wahrheitsgehalt allein."
+        },
+        {
+          "key": "unvollstaendig-alles-abgedeckt",
+          "prompt": "Die Antwort wiederholt Inhalt und alle Zahlen des Golds exakt und zitiert nur erlaubte Quellen. Welches Label greift?",
+          "correct": "unvollständig — keine spezialisierte Regel greift; die default-Regel fängt den Fall konservativ ab.",
+          "wrong": [
+            "kein Label — eine fehlerfreie Antwort bleibt ungelabelt.",
+            "falsch-faktisch — wortgleiche Wiederholung zählt als Abschreiben.",
+            "formatfehler — die Antwort wiederholt das Gold eins zu eins."
+          ],
+          "solution": "Keine der spezialisierten Regeln trifft zu — also greift die letzte Regel: default → unvollständig. Die Taxonomie ist konservativ: was kein Label beweist, landet im Default, nicht in einer „alles ok“-Kategorie."
+        },
+        {
+          "key": "halluziniert-nur-fremd",
+          "prompt": "Die Antwort ist inhaltlich korrekt, zitiert aber ausschließlich intern-wiki — eine Quelle, die nicht in der erlaubten Liste steht. Welches Label?",
+          "correct": "halluziniert — der einzige genannte Beleg steht außerhalb der zulässigen Quellenliste.",
+          "wrong": [
+            "quellos — ein ungültiger Beleg zählt wie kein Beleg.",
+            "falsch-faktisch — die Quelle verfälscht die Aussage.",
+            "unvollständig — es fehlt ein zweiter, erlaubter Beleg."
+          ],
+          "solution": "quellos heißt wörtlich: die Belegliste ist leer. Hier steht ein Beleg — nur eben ein nicht zugelassener. Das ist unknown-citation → halluziniert: die Quelle ist faktisch erfunden, egal wie gut der Inhalt ist."
+        },
+        {
+          "key": "falsch-faktisch-zusatzzahl",
+          "prompt": "Antwort: „Die Lieferzeit beträgt 3 Werktage, erfahrungsgemäß eher 5.“ Gold: „Die Lieferzeit beträgt 3 Werktage.“ Beleg: faq-3. Welches Label?",
+          "correct": "falsch-faktisch — die Antwort trägt eine Zahl (5), die nicht im Gold steht.",
+          "wrong": [
+            "unvollständig — die Antwort wiederholt das Gold nicht vollständig.",
+            "halluziniert — die Erfahrungsangabe hat keinen Beleg.",
+            "off-topic — die Zusatzzahl weicht vom Thema ab."
+          ],
+          "solution": "Die Antwort enthält alles aus dem Gold — und eine zusätzliche Zahl. foreign-number prüft genau das: Zahlen der Antwort minus Gold-Zahlen ist {5} ≠ ∅ → falsch-faktisch. Zusätze sind Fehler, keine Vollständigkeit."
+        },
+        {
+          "key": "off-topic-verweigerung",
+          "prompt": "Antwort: „Dazu kann ich keine Angabe machen.“ Beleg: vertrag-1 aus der Liste, Gold: eine Aussage zur Lieferzeit. Welches Label?",
+          "correct": "off-topic — die Antwort teilt keinen Inhaltsbegriff mit dem Gold, und ein Beleg ist vorhanden.",
+          "wrong": [
+            "quellos — die Antwort gibt inhaltlich nichts her.",
+            "formatfehler — eine Verweigerung ist keine formatierte Antwort.",
+            "unvollständig — die Lieferzeit fehlt in der Antwort."
+          ],
+          "solution": "Die Belegliste ist nicht leer, also greift quellos nicht. Die Verweigerung teilt keinen Inhaltsbegriff (Länge ≥ 4) mit dem Gold → no-shared-terms → off-topic. Wer keine Angabe macht, beantwortet die Frage nicht — das ist ein Themenfehler."
+        },
+        {
+          "key": "quellos-perfekte-antwort",
+          "prompt": "Die Antwort ist vollständig, faktisch korrekt und sauber formuliert — aber die Belegliste ist leer. Welches Label?",
+          "correct": "quellos — ohne jeden Beleg ist auch die beste Antwort quellos.",
+          "wrong": [
+            "unvollständig — der Default fängt korrekte Antworten ab.",
+            "halluziniert — fehlende Quellen zählen als erfundene Quellen.",
+            "kein Label — korrekte Antworten brauchen keinen Beleg."
+          ],
+          "solution": "no-citations prüft nur die Länge der Belegliste, nicht die Inhaltsqualität: leere Liste → quellos. Belegpflicht ist Teil des Vertrags — inhaltliche Qualität rettet die Antwort nicht über die Regel hinaus."
+        },
+        {
+          "key": "formatfehler-whitespace",
+          "prompt": "Die Antwort enthält nur einen Tabulator und Zeilenumbrüche; die Belegliste nennt faq-3. Welches Label?",
+          "correct": "formatfehler — die Antwort ist nach Whitespace-Normalisierung leer.",
+          "wrong": [
+            "quellos — sichtbar steht kein Belegtext in der Antwort.",
+            "off-topic — Whitespace teilt keinen Inhaltsbegriff mit dem Gold.",
+            "unvollständig — ohne Inhalt fehlt jede Gold-Information."
+          ],
+          "solution": "empty-answer prüft answer.strip() == „“ — Tabs und Zeilenumbrüche sind Whitespace, die Antwort ist faktisch leer. Die Regel steht ganz vorn in der Kaskade und greift vor allen inhaltlichen Prüfungen."
+        },
+        {
+          "key": "unvollstaendig-teilantwort",
+          "prompt": "Gold: „Die Lieferzeit beträgt 3 Werktage ab Versand.“ Antwort: „Die Lieferzeit beträgt 3 Werktage.“ Beleg: faq-3. Welches Label?",
+          "correct": "unvollständig — keine spezialisierte Regel greift, die default-Regel fängt die Teilantwort konservativ ab.",
+          "wrong": [
+            "falsch-faktisch — der Versand-Zusatz wurde verändert.",
+            "off-topic — die Antwort deckt das Gold nur teilweise.",
+            "formatfehler — die Antwort ist kürzer als das Gold."
+          ],
+          "solution": "Die Zahl 3 steht in beiden Texten, der Beleg ist erlaubt, Inhaltsbegriffe werden geteilt — keine spezialisierte Regel trifft zu. Der fehlende Zusatz „ab Versand“ ist keine Zahl, also bleibt der Default: unvollständig."
+        },
+        {
+          "key": "halluziniert-belegname",
+          "prompt": "Inhalt und Zahlen stimmen, aber der Beleg heißt „faq-33“ statt „faq-3“ — die Quellenliste kennt nur faq-3, faq-7 und vertrag-1. Welches Label?",
+          "correct": "halluziniert — „faq-33“ steht nicht in der zulässigen Quellenliste; der Belegname ist faktisch erfunden.",
+          "wrong": [
+            "falsch-faktisch — die Quellennummer ist eine falsche Angabe.",
+            "quellos — der echte Beleg faq-3 fehlt in der Liste.",
+            "unvollständig — ein Tippfehler im Beleg ist kein inhaltlicher Fehler."
+          ],
+          "solution": "unknown-citation vergleicht wörtlich: „faq-33“ ≠ „faq-3“, also steht der Beleg außerhalb der Liste → halluziniert. Fast-Treffer zählen nicht — die Quellenliste ist eine Allowlist, keine Ähnlichkeitssuche."
+        }
+      ]
+    }
+  }
+}
