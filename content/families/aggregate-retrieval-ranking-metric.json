@@ -54,7 +54,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "DOCS = ['Rote Autos fahren schnell.', 'Blaue Autos fahren langsam.', 'Fahrräder brauchen Wege.', 'Wege im Park sind schmal.']\n__check('query0 top1', rank('Welche Autos fahren schnell?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Welche Autos fahren schnell?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Welche Autos fahren langsam?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Was brauchen Fahrräder?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Welche Autos fahren schnell?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Welche Autos fahren schnell?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Welche Autos fahren schnell?', DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Autos/Fahrräder. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Salz würzt die Suppe.', 'Pfeffer würzt das Fleisch.', 'Suppe kocht im Topf.', 'Fleisch brät in der Pfanne.']\n__check('query0 top1', rank('Was würzt die Suppe?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Was würzt die Suppe?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Was würzt das Fleisch?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Wo kocht die Suppe?', DOCS, 1) == [0])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Was würzt die Suppe?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Was würzt die Suppe?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([0], rank('Was würzt die Suppe?', DOCS, 2), 2) == 1.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Salz/Pfeffer. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Lehrer erklären Aufgaben.', 'Schüler lösen Aufgaben.', 'Aufgaben stehen im Heft.', 'Hefte liegen auf Tischen.']\n__check('query0 top1', rank('Wer erklärt Aufgaben?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Wer erklärt Aufgaben?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Wer löst Aufgaben?', DOCS, 2) == [0, 1])\n__check('query2 top1', rank('Wo stehen Aufgaben?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Wer erklärt Aufgaben?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Wer erklärt Aufgaben?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Wer erklärt Aufgaben?', DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Lehrer/Schüler. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Fische schwimmen im See.', 'Vögel fliegen über den See.', 'Der See ist tief.', 'Fliegen kostet Kraft.']\n__check('query0 top1', rank('Wer schwimmt im See?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Wer schwimmt im See?', DOCS, 2) == [0, 2])\n__check('query1 top', rank('Wer fliegt über den See?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Wie ist der See?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 2], rank('Wer schwimmt im See?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 2], rank('Wer schwimmt im See?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Wer schwimmt im See?', DOCS, 2), 2) == 1.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Fische/Vögel. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Kupfer leitet Strom.', 'Holz leitet kaum Strom.', 'Strom fließt in Kabeln.', 'Kabel liegen in Wänden.']\n__check('query0 top1', rank('Was leitet Strom?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Was leitet Strom?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Was leitet kaum Strom?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Wo fließt Strom?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Was leitet Strom?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Was leitet Strom?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Was leitet Strom?', DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Kupfer/Holz. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Montag beginnt die Woche.', 'Sonntag endet die Woche.', 'Wochen haben sieben Tage.', 'Tage haben vierundzwanzig Stunden.']\n__check('query0 top1', rank('Wann beginnt die Woche?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Wann beginnt die Woche?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Wann endet die Woche?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Wie viele Tage hat die Woche?', DOCS, 1) == [0])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Wann beginnt die Woche?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Wann beginnt die Woche?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([0], rank('Wann beginnt die Woche?', DOCS, 2), 2) == 1.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Montag/Sonntag. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Tomaten wachsen rot.', 'Gurken wachsen grün.', 'Rot signalisiert Reife.', 'Grün bleibt oft sauer.']\n__check('query0 top1', rank('Welche Farbe haben Tomaten?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Welche Farbe haben Tomaten?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Welche Farbe haben Gurken?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Was signalisiert Reife?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Welche Farbe haben Tomaten?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Welche Farbe haben Tomaten?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Welche Farbe haben Tomaten?', DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Tomaten/Gurken. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Uhren zeigen Minuten.', 'Kalender zeigen Monate.', 'Minuten vergehen schnell.', 'Monate bilden Jahre.']\n__check('query0 top1', rank('Was zeigen Uhren?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Was zeigen Uhren?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Was zeigen Kalender?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Was vergeht schnell?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Was zeigen Uhren?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Was zeigen Uhren?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Was zeigen Uhren?', DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Uhren/Kalender. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        },
+        {
+          "parameters": {
+            "tests": "DOCS = ['Wale leben im Meer.', 'Hirsche leben im Wald.', 'Das Meer ist salzig.', 'Wälder speichern Wasser.']\n__check('query0 top1', rank('Wo leben Wale?', DOCS, 3)[0] == 0)\n__check('query0 top2', rank('Wo leben Wale?', DOCS, 2) == [0, 1])\n__check('query1 top', rank('Wo leben Hirsche?', DOCS, 2) == [1, 0])\n__check('query2 top1', rank('Wie ist das Meer?', DOCS, 1) == [2])\n__check('recall voll', abs(recall_at_k([0, 1], rank('Wo leben Wale?', DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank('Wo leben Wale?', DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([2], rank('Wo leben Wale?', DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('leere relevante -> ValueError', True)\n\n"
+          },
+          "prompt": "Recall-Baseline: Wale/Hirsche. Implementiere `build_vectors`, `rank` und `recall_at_k`."
+        }
+      ]
     },
     {
       "caseId": "retrieval-evaluate-queries",
@@ -107,7 +163,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Katzen sitzen auf dem Sofa.', 'Hunde bellen laut im Garten.', 'Katzen jagen Mäuse nachts.', 'Der Garten braucht Wasser.']\nB_QUERIES = ['Wo sitzen Katzen?', 'Wer bellt laut?', 'Was braucht der Garten?']\nB_RELEVANT = [[0], [1], [3]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Katzen/Hunde/Garten, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Tee wird heiß serviert.', 'Kaffee kommt aus Bohnen.', 'Teeblätter kommen aus Asien.', 'Bohnen wachsen in Erde.']\nB_QUERIES = ['Was wird heiß serviert?', 'Woher kommt Kaffee?', 'Woher kommen Teeblätter?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Tee/Kaffee, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Züge fahren nach Berlin.', 'Busse fahren nach Hamburg.', 'Berlin hat viele Museen.', 'Hamburg liegt an der Elbe.']\nB_QUERIES = ['Wohin fahren Züge?', 'Wohin fahren Busse?', 'Was hat Berlin?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Berlin/Hamburg, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Äpfel sind rot oder grün.', 'Birnen sind oft gelb.', 'Äpfel wachsen am Baum.', 'Gelbe Früchte reifen später.']\nB_QUERIES = ['Welche Farbe haben Äpfel?', 'Welche Farbe haben Birnen?', 'Wo wachsen Äpfel?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 2)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 0.6666666666666666) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 0.8333333333333334) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Äpfel/Birnen, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Python zählt Listen.', 'NumPy rechnet Matrizen.', 'Listen speichern Zahlen.', 'Matrizen haben Zeilen.']\nB_QUERIES = ['Was zählt Python?', 'Was rechnet NumPy?', 'Was speichern Listen?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Python/NumPy, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Regen fällt im Herbst.', 'Schnee fällt im Winter.', 'Herbst bringt buntes Laub.', 'Winter bringt Frost.']\nB_QUERIES = ['Wann fällt Regen?', 'Wann fällt Schnee?', 'Was bringt der Herbst?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Herbst/Winter, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Brot wird gebacken.', 'Milch wird gekühlt.', 'Backen braucht Mehl.', 'Kühlen braucht Strom.']\nB_QUERIES = ['Was wird gebacken?', 'Was wird gekühlt?', 'Was braucht Backen?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Backen/Kühlen, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Mond umkreist die Erde.', 'Sonne spendet Licht.', 'Erde hat Ozeane.', 'Licht braucht keine Luft.']\nB_QUERIES = ['Was umkreist die Erde?', 'Was spendet Licht?', 'Was hat die Erde?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 3])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Mond/Sonne/Erde, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        },
+        {
+          "parameters": {
+            "tests": "B_DOCS = ['Gitarren haben Saiten.', 'Klaviere haben Tasten.', 'Saiten klingen hell.', 'Tasten liegen in Reihen.']\nB_QUERIES = ['Was haben Gitarren?', 'Was haben Klaviere?', 'Wie klingen Saiten?']\nB_RELEVANT = [[0], [1], [2]]\nb_index = build_index(B_DOCS)\n__check('index matrix form', b_index[\"matrix\"].shape == (4, len(b_index[\"vocab\"])))\n__check('top1 query0', rank_query(b_index, B_QUERIES[0])[0] == 0)\n__check('ranking query1 prefix', rank_query(b_index, B_QUERIES[1])[:2] == [1, 0])\nres1 = evaluate(b_index, B_QUERIES, B_RELEVANT, 1)\nres3 = evaluate(b_index, B_QUERIES, B_RELEVANT, 3)\n__check('recall@1', abs(res1[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('mrr@1', abs(res1[\"mrr\"] - 1.0) < 1e-9)\n__check('recall@3', abs(res3[\"recall_at_k\"] - 1.0) < 1e-9)\n__check('metriken in [0,1]', 0.0 <= res3[\"mrr\"] <= 1.0 and 0.0 <= res3[\"recall_at_k\"] <= 1.0)\n"
+          },
+          "prompt": "Retrieval-Index: Gitarre/Klavier, drei Anfragen. Implementiere `build_index`, `rank_query` und `evaluate`."
+        }
+      ]
     }
   ]
 }

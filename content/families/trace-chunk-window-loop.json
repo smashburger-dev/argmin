@@ -46,7 +46,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"abcd\"\nprint(len(chunk(text, 2, 0)))\nprint(chunk(text, 2, 0)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\ncd"
+          },
+          "prompt": "Chunk size=2 overlap=0 auf 'abcd'. Sage Länge und letztes Stück vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\ncd</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"xyz\"\nprint(len(chunk(text, 2, 1)))\nprint(chunk(text, 2, 1)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\nz"
+          },
+          "prompt": "Chunk 'xyz' size=2 overlap=1. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\nz</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"hello\"\nprint(len(chunk(text, 5, 0)))\nprint(chunk(text, 5, 0)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1\nhello"
+          },
+          "prompt": "Chunk genau ein Fenster 'hello'. Sage Länge und Inhalt vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1\nhello</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"123456\"\nprint(len(chunk(text, 3, 1)))\nprint(chunk(text, 3, 1)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n56"
+          },
+          "prompt": "Chunk '123456' size=3 overlap=1. Sage Count und letztes Stück vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n56</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"aa\"\nprint(len(chunk(text, 1, 0)))\nprint(chunk(text, 1, 0)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\na"
+          },
+          "prompt": "Chunk size=1 auf 'aa'. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\na</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"windowing\"\nprint(len(chunk(text, 4, 2)))\nprint(chunk(text, 4, 2)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "5\ng"
+          },
+          "prompt": "Chunk 'windowing' size=4 overlap=2. Sage Länge und letztes Stück vorher.",
+          "fullSolution": "Die Ausgabe ist <code>5\ng</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"abcdef\"\nprint(len(chunk(text, 6, 1)))\nprint(chunk(text, 6, 1)[0])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nabcdef"
+          },
+          "prompt": "Chunk size=6 auf 6 Zeichen, print erstes Stück. Sage beide Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nabcdef</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"qwerty\"\nprint(len(chunk(text, 2, 1)))\nprint(chunk(text, 2, 1)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "6\ny"
+          },
+          "prompt": "Chunk 'qwerty' size=2 overlap=1. Sage Count und letztes Stück vorher.",
+          "fullSolution": "Die Ausgabe ist <code>6\ny</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def chunk(text, size, overlap):\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += size - overlap\n    return parts\ntext = \"data\"\nprint(len(chunk(text, 3, 2)))\nprint(chunk(text, 3, 2)[-1])\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\na"
+          },
+          "prompt": "Chunk 'data' size=3 overlap=2. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\na</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     }
   ]
 }

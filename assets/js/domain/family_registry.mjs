@@ -9,7 +9,7 @@ const FAMILY_ID = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const DIFFICULTY_ORDER = ['intro', 'core', 'stretch', 'challenge'];
 const staticCases = new Map();
 
-const variantOf = (body, seed) => {
+export const variantOf = (body, seed) => {
   const all = [body, ...(body.variants || [])];
   const index = variantCaseIndex(seed, all.length);
   const variant = all[index];

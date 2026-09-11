@@ -3,7 +3,7 @@
 // instance shape.
 
 import { drawFamilyInstance } from './generator_draw_kit.mjs';
-import { staticCaseBody } from '../domain/family_registry.mjs';
+import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import {
   genCompleteRows,
   genConditionalCount,
@@ -178,6 +178,8 @@ const FORMULA_RATIO_SOLVERS = {
   'pca-explained-variance-percent': solveFormulaRatioPca,
   'allowed-action-count': solveFormulaRatioAllowedAction,
   'baseline-ledger-rates': solveFormulaRatioBaseline,
+  'ledger-rates-output-trace': solveFormulaRatioCompare,
+  'subgroup-recall-output-trace': solveFormulaRatioCompare,
 };
 
 const solveFormulaCountLinear = (parameters) => {
@@ -315,7 +317,8 @@ const AGGREGATE_CONFUSION_SOLVERS = {
 };
 
 function staticExpected(familyId, parameters) {
-  const expected = staticCaseBody(familyId, parameters.caseId).expected || {};
+  const { body } = variantOf(staticCaseBody(familyId, parameters.caseId), parameters.variant ?? 0);
+  const expected = body.expected || {};
   if (Object.hasOwn(expected, 'value')) return { value: expected.value };
   if (Object.hasOwn(expected, 'output')) return { output: expected.output };
   if (expected.kind === 'rubric') return { kind: 'rubric' };
@@ -605,17 +608,24 @@ function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
     if (body.difficultyProfile !== difficulty) {
       throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
     }
+    const { body: chosen, index } = variantOf(body, seed ?? 0);
     const {
       caseId: _caseId,
       difficultyProfile: _difficultyProfile,
       masteryEligible: _masteryEligible,
       sourceLineage: _sourceLineage,
+      variants: _variants,
       ...generated
-    } = body;
+    } = chosen;
     return {
       ...generated,
       masteryEligible: body.masteryEligible,
-      parameters: { caseId, difficulty, ...(body.parameters || {}) },
+      parameters: {
+        caseId,
+        difficulty,
+        ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+        ...(chosen.parameters || {}),
+      },
     };
   }
   const drawn = difficulty === 'core'

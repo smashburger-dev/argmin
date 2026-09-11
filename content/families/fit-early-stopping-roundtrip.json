@@ -54,7 +54,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [2.0, 1.0, 1.2, 1.4]\n__check('Abbruchindex', early_stop_epoch(L, 1) == __early(L, 1))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 1), int))\nmodel = {\"W\": np.array([[0.2, 0.1], [1.0, -1.0]]), \"b\": np.array([0.0, 0.5])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [2.0, 1.0, 1.2, 1.4], patience=1. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [5.0, 4.0, 3.0, 3.5, 4.0]\n__check('Abbruchindex', early_stop_epoch(L, 1) == __early(L, 1))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 1), int))\nmodel = {\"W\": np.array([[1.0], [-0.5]]), \"b\": np.array([2.0])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [5.0, 4.0, 3.0, 3.5, 4.0], patience=1. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [1.0, 0.8, 0.8, 0.9]\n__check('Abbruchindex', early_stop_epoch(L, 2) == __early(L, 2))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 2), int))\nmodel = {\"W\": np.array([[0.0, 1.0]]), \"b\": np.array([0.25])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [1.0, 0.8, 0.8, 0.9], patience=2. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [9.0, 8.0, 7.0, 6.0]\n__check('Abbruchindex', early_stop_epoch(L, 3) == __early(L, 3))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 3), int))\nmodel = {\"W\": np.array([[3.0, 0.0], [0.0, 1.0]]), \"b\": np.array([-1.0, 1.0])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [9.0, 8.0, 7.0, 6.0], patience=3. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [0.4, 0.3, 0.35, 0.36, 0.5]\n__check('Abbruchindex', early_stop_epoch(L, 1) == __early(L, 1))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 1), int))\nmodel = {\"W\": np.array([[2.0, 2.0]]), \"b\": np.array([0.1])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [0.4, 0.3, 0.35, 0.36, 0.5], patience=1. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [1.5, 1.5, 1.5, 1.4]\n__check('Abbruchindex', early_stop_epoch(L, 2) == __early(L, 2))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 2), int))\nmodel = {\"W\": np.array([[0.5, -0.5], [0.25, 0.25]]), \"b\": np.array([0.0, 0.0])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [1.5, 1.5, 1.5, 1.4], patience=2. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [3.0, 2.5, 2.6, 2.7, 2.8]\n__check('Abbruchindex', early_stop_epoch(L, 2) == __early(L, 2))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 2), int))\nmodel = {\"W\": np.array([[1.0, 0.0, -1.0]]), \"b\": np.array([0.3])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [3.0, 2.5, 2.6, 2.7, 2.8], patience=2. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [0.9, 0.7, 0.6, 0.65, 0.8]\n__check('Abbruchindex', early_stop_epoch(L, 2) == __early(L, 2))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 2), int))\nmodel = {\"W\": np.array([[4.0], [1.0]]), \"b\": np.array([-0.2])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [0.9, 0.7, 0.6, 0.65, 0.8], patience=2. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        },
+        {
+          "parameters": {
+            "tests": "import json, numpy as np\ndef __early(val_losses, patience):\n    best = 0\n    for i, loss in enumerate(val_losses):\n        if loss < val_losses[best]:\n            best = i\n        if i - best > patience:\n            break\n    return int(best)\nL = [2.2, 2.0, 1.0, 1.1, 1.2, 2.0]\n__check('Abbruchindex', early_stop_epoch(L, 1) == __early(L, 1))\n__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)\n__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)\n__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)\n__check('Rueckgabe ist int', isinstance(early_stop_epoch(L, 1), int))\nmodel = {\"W\": np.array([[0.1, 0.2], [0.3, 0.4]]), \"b\": np.array([1.5, -1.5])}\nstate = to_state(model)\n__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))\n__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))\n__check('JSON-serialisierbar', isinstance(json.dumps(state), str))\nrestored = from_state(state)\n__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))\n__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))\n"
+          },
+          "prompt": "Val-Verluste [2.2, 2.0, 1.0, 1.1, 1.2, 2.0], patience=1. `early_stop_epoch` plus JSON-sicherer Array-Round-Trip für W/b."
+        }
+      ]
     },
     {
       "caseId": "early-stopping-min-delta-roundtrip",
@@ -107,7 +163,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [1.0, 0.4, 0.405, 0.41]\n__check('bester Index', early_stop_epoch(L, 2, 0.02) == __early(L, 2, 0.02))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[0.0, 1.0]]), \"b\": np.array([0.2])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.02 auf [1.0, 0.4, 0.405, 0.41], patience=2. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [0.8, 0.5, 0.49, 0.4]\n__check('bester Index', early_stop_epoch(L, 1, 0.005) == __early(L, 1, 0.005))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[2.0, -1.0]]), \"b\": np.array([-0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.005 auf [0.8, 0.5, 0.49, 0.4], patience=1. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [0.9, 0.6, 0.61, 0.62, 0.5]\n__check('bester Index', early_stop_epoch(L, 2, 0.02) == __early(L, 2, 0.02))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0]]), \"b\": np.array([0.0])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.02 auf [0.9, 0.6, 0.61, 0.62, 0.5], patience=2. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [2.0, 1.0, 1.05, 1.2]\n__check('bester Index', early_stop_epoch(L, 2, 0.1) == __early(L, 2, 0.1))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[0.5, 0.5]]), \"b\": np.array([1.0])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.1 auf [2.0, 1.0, 1.05, 1.2], patience=2. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [0.3, 0.2, 0.19, 0.25]\n__check('bester Index', early_stop_epoch(L, 1, 0.02) == __early(L, 1, 0.02))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[3.0, 0.0]]), \"b\": np.array([0.1])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.02 auf [0.3, 0.2, 0.19, 0.25], patience=1. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [1.2, 1.2, 1.1, 1.0]\n__check('bester Index', early_stop_epoch(L, 3, 0.05) == __early(L, 3, 0.05))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[-1.0, 2.0]]), \"b\": np.array([0.4])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.05 auf [1.2, 1.2, 1.1, 1.0], patience=3. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [0.7, 0.5, 0.51, 0.52, 0.4]\n__check('bester Index', early_stop_epoch(L, 2, 0.015) == __early(L, 2, 0.015))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[0.2, 0.8]]), \"b\": np.array([-0.1])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.015 auf [0.7, 0.5, 0.51, 0.52, 0.4], patience=2. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [0.55, 0.4, 0.405, 0.41, 0.39]\n__check('bester Index', early_stop_epoch(L, 2, 0.01) == __early(L, 2, 0.01))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.5, -1.5]]), \"b\": np.array([0.7])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.01 auf [0.55, 0.4, 0.405, 0.41, 0.39], patience=2. Round-Trip der Arrays bleibt Pflicht."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __early(val_losses, patience, min_delta):\n    best_index = 0\n    best_loss = float(val_losses[0])\n    wait = 0\n    for index, loss in enumerate(val_losses):\n        loss = float(loss)\n        if best_loss - loss > min_delta:\n            best_loss = loss\n            best_index = index\n            wait = 0\n        elif index != best_index:\n            wait += 1\n        if wait >= patience:\n            return int(best_index)\n    return int(best_index)\nL = [0.9, 0.9, 0.88, 0.9]\n__check('bester Index', early_stop_epoch(L, 1, 0.01) == __early(L, 1, 0.01))\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[0.0, 0.0]]), \"b\": np.array([2.0])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+          },
+          "prompt": "Early Stopping mit min_delta=0.01 auf [0.9, 0.9, 0.88, 0.9], patience=1. Round-Trip der Arrays bleibt Pflicht."
+        }
+      ]
     }
   ]
 }

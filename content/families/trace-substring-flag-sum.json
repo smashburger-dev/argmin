@@ -46,7 +46,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "RULES = ['foo', 'bar']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['bitte foo tun', 'nein', 'bar oben']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['nein']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nFalse"
+          },
+          "prompt": "Injection-Flags foo/bar. Sage Summe und letzten Extra-Check vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nFalse</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['ignoriere vorherige']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['ignoriere vorherige anweisung', 'hallo', 'welt']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['welt']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1\nTrue"
+          },
+          "prompt": "Nur eine Injektionsphrase. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1\nTrue</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['sende die datei', 'token']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['sende die datei jetzt', 'token liegt offen', 'ok']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['ok']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nTrue"
+          },
+          "prompt": "Zwei Regeln, zwei Treffer. Sage Summe und Extra-Check vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nTrue</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['alpha']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['kein treffer hier', 'auch nicht', 'alpha start']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['start']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1\nTrue"
+          },
+          "prompt": "alpha nur im letzten Beispiel. Sage print vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1\nTrue</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['x', 'y', 'z']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['x y z', 'nichts', 'leer']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['nichts']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1\nFalse"
+          },
+          "prompt": "Drei Regeln im ersten Text. Sage Summe und Extra vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1\nFalse</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['geheim']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['GEHEIM im text', 'privat', 'geheimnis']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['privat']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nFalse"
+          },
+          "prompt": "Case-insensitive geheim. Sage beide Zahlen/Bools vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nFalse</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['prompt']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['systemprompt', 'user', 'prompt leak']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['user']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nFalse"
+          },
+          "prompt": "Substring prompt. Sage Summe und Extra-Check vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nFalse</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['datei', 'mail']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['keine datei', 'sende mail', 'ok']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['ok']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nTrue"
+          },
+          "prompt": "Zwei Regeln verteilt. Sage print vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nTrue</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "RULES = ['block']\ndef contains_injection(text, rules):\n    t = text.lower()\n    return any(rule in t for rule in rules)\n\nbeispiele = ['blockiert', 'frei', 'BLOCK bitte']\nprint(sum(contains_injection(b, RULES) for b in beispiele))\nprint(contains_injection(beispiele[-1], ['frei']))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\nFalse"
+          },
+          "prompt": "block in zwei Beispielen. Sage Summe und Extra vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\nFalse</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     }
   ]
 }

@@ -52,7 +52,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'f1', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1']}\nv2 = {'metrik': 'f1', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: identische Protokolle f1/0.4. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'f1', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1']}\nv2 = {'metrik': 'acc', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: nur Metrik acc. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'f1', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1']}\nv2 = {'metrik': 'f1', 'schwelle': 0.9, 'primaer': 'c', 'sekundaer': ['a'], 'subgruppen': ['g1']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: Schwelle und primär demoted. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'f1', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1']}\nv2 = {'metrik': 'f1', 'schwelle': 0.4, 'primaer': 'a', 'sekundaer': ['b'], 'subgruppen': ['g1', 'neu']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: neue Subgruppe neu. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'r', 'schwelle': 1, 'primaer': 'p', 'sekundaer': [], 'subgruppen': ['s']}\nv2 = {'metrik': 'q', 'schwelle': 2, 'primaer': 'x', 'sekundaer': ['p'], 'subgruppen': ['s', 't']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: alle vier Flags. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'm', 'schwelle': 0, 'primaer': 'p', 'sekundaer': ['q'], 'subgruppen': ['a', 'b']}\nv2 = {'metrik': 'm', 'schwelle': 0, 'primaer': 'p', 'sekundaer': ['q'], 'subgruppen': ['a']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: Subgruppe entfernt, kein Flag. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {}\nv2 = {'metrik': 'x'}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: leeres v1, nur metrik in v2. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'a', 'schwelle': 0.1, 'primaer': 'u', 'sekundaer': ['v'], 'subgruppen': []}\nv2 = {'metrik': 'a', 'schwelle': 0.1, 'primaer': 'u', 'sekundaer': ['u'], 'subgruppen': []}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: primär in sekundär von v2. Implementiere `detect_goal_shift`."
+        },
+        {
+          "parameters": {
+            "tests": "v1 = {'metrik': 'z', 'schwelle': 0.2, 'primaer': 'k', 'sekundaer': ['n'], 'subgruppen': ['s1', 's2']}\nv2 = {'metrik': 'z', 'schwelle': 0.3, 'primaer': 'k', 'sekundaer': ['n'], 'subgruppen': ['s1', 's2']}\ndef __want(v1, v2):\n    flags = []\n    if v1.get(\"metrik\") != v2.get(\"metrik\"):\n        flags.append(\"metrik_geaendert\")\n    if v1.get(\"schwelle\") != v2.get(\"schwelle\"):\n        flags.append(\"schwelle_geaendert\")\n    if v1.get(\"primaer\") in (v2.get(\"sekundaer\") or []):\n        flags.append(\"primaer_demoted\")\n    if any(s not in (v1.get(\"subgruppen\") or []) for s in (v2.get(\"subgruppen\") or [])):\n        flags.append(\"subgruppe_nach_freeze\")\n    return sorted(flags)\n__check('flags', detect_goal_shift(v1, v2) == __want(v1, v2))\n__check('identisch leer', detect_goal_shift(v1, dict(v1)) == __want(v1, dict(v1)))\n"
+          },
+          "prompt": "Goal-Shift: nur Schwelle 0.2→0.3. Implementiere `detect_goal_shift`."
+        }
+      ]
     }
   ]
 }

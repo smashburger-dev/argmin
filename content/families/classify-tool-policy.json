@@ -70,7 +70,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "need": "faq+bericht"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Unbekannte Werkzeuge werden automatisch mit eingeschränkten Rechten eingebunden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alle Werkzeuge sind erlaubt, der Systemprompt verbietet Mail.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Mail ist erlaubt, ein Filter prüft Nachrichten nachträglich.",
+              "correct": false
+            }
+          ],
+          "prompt": "FAQ-Bot: nur Korpus lesen und einen Bericht exportieren. Welche Policy ist Least Privilege?",
+          "fullSolution": "Allowlist search/read/export(bericht). Mail/Hook nicht registrieren, Unknown = deny."
+        },
+        {
+          "parameters": {
+            "need": "ticket-lookup"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Unbekannte Tools auto-allow mit read-only.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Tools an, Prompt sagt „keine Mail“.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Mail an, DLP danach.",
+              "correct": false
+            }
+          ],
+          "prompt": "Interner Helfer darf Tickets suchen/lesen und einen Statusbericht exportieren, sonst nichts. Least Privilege?",
+          "fullSolution": "Nur Lookup/Read/Export(bericht). Kein Mail-Tool, keine Auto-Registration."
+        },
+        {
+          "parameters": {
+            "need": "inventar-csv"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Unbekannte Werkzeuge eingeschränkt nachladen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Prompt-only Guardrails, volle Tool-Liste.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Webhook erlaubt, Inhalte hinterher scannen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            }
+          ],
+          "prompt": "Bestandsabfrage plus Export nur mit Argument ‚bericht‘, kein Versandkanal. Welche Beschreibung ist Least Privilege?",
+          "fullSolution": "Query/Read + export(bericht). Hooks nicht registrieren."
+        },
+        {
+          "parameters": {
+            "need": "readme-only"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Unbekannte Tools automatisch einbinden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alles erlauben plus Höflichkeits-Prompt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Mail erlauben und filtern.",
+              "correct": false
+            }
+          ],
+          "prompt": "Prototyp beantwortet nur aus README/FAQ und darf Ergebnis als Bericht speichern. Least Privilege?",
+          "fullSolution": "search/read + export(bericht). Unbekannt ablehnen."
+        },
+        {
+          "parameters": {
+            "need": "kb-export"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Unbekannte Werkzeuge werden automatisch mit eingeschränkten Rechten eingebunden, damit nichts blockiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Alle Werkzeuge werden erlaubt, und im Systemprompt steht: „Missbrauche die Mail-Funktion nicht.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Mail ist erlaubt, aber ein Filter prüft jede gesendete Nachricht nachträglich auf vertrauliche Inhalte.",
+              "correct": false
+            }
+          ],
+          "prompt": "Knowledge-Base-Assistent: Anfragen nur aus gepinnten Artikeln, Resultat nur als Bericht. Welche Policy ist Least Privilege?",
+          "fullSolution": "Dieselbe Allowlist-Logik: suchen/lesen, export(bericht), keine Mail/Hooks, Unknown deny."
+        },
+        {
+          "parameters": {
+            "need": "changelog"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Auto-allow für neue CLI-Tools.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Vollzugriff, Prompt verbietet exfil.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "SMTP offen, Regex auf Body.",
+              "correct": false
+            }
+          ],
+          "prompt": "Changelog-Bot liest RELEASES.md und schreibt einen Bericht, soll aber weder Mail noch Webhook können. Least Privilege?",
+          "fullSolution": "Nicht registrierte Kanäle bleiben zu. Prompt ersetzt keine Policy."
+        },
+        {
+          "parameters": {
+            "need": "policy-doc"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Unbekannte Tools mit Default-Deny-Rechten trotzdem laden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Alle Tools, Systemprompt als Grenze.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Mail plus nachträglicher Scan.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            }
+          ],
+          "prompt": "Der Prototyp darf nur fest verdrahtete Policy-PDFs lesen und einen Bericht exportieren. Korrekte Least-Privilege-Beschreibung?",
+          "fullSolution": "Allowlist, Argumentbeschränkung auf bericht, Unknown reject."
+        },
+        {
+          "parameters": {
+            "need": "runbook"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Unbekannte Werkzeuge automatisch einbinden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Mail im Prompt verbieten, Tools trotzdem alle an.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Mail an und filtern.",
+              "correct": false
+            }
+          ],
+          "prompt": "Runbook-Assistent: nur runbook/*.md lesen, Export ausschließlich dateiname=bericht. Least Privilege?",
+          "fullSolution": "Minimale Menge. Detektivische Filter auf offenen Kanälen reichen nicht."
+        },
+        {
+          "parameters": {
+            "need": "faq-export"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Unbekannte Werkzeuge werden automatisch mit eingeschränkten Rechten eingebunden, damit nichts blockiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Suchen und Lesen sind erlaubt, Export nur mit Argument ‚bericht‘; Mail- und Hook-Werkzeuge werden gar nicht registriert, unbekannte Aufrufe lehnt die Policy ab.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Alle Werkzeuge werden erlaubt, und im Systemprompt steht: „Missbrauche die Mail-Funktion nicht.“",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Mail ist erlaubt, aber ein Filter prüft jede gesendete Nachricht nachträglich auf vertrauliche Inhalte.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein FAQ-Dienst soll nur aus fünf festen Dokumenten antworten und Resultate als Bericht exportieren — nichts anderes. Welche Beschreibung ist Least Privilege?",
+          "fullSolution": "Wie die Basisfrage, konkreter Korpusumfang fünf Dateien. Dieselbe Allowlist."
+        }
+      ]
     }
   ]
 }

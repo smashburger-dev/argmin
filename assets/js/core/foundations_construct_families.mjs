@@ -41,7 +41,7 @@ import {
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
 import { shuffle } from './generator_draw_kit.mjs';
-import { staticCaseBody } from '../domain/family_registry.mjs';
+import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -55,6 +55,29 @@ function assertProfile(difficulty) {
 
 function profileTier(difficulty) {
   return CONSTRUCT_PROFILES.indexOf(difficulty);
+}
+
+function staticVariantInstance(familyId, caseId, seed, difficulty) {
+  const body = staticCaseBody(familyId, caseId);
+  const { body: chosen, index } = variantOf(body, seed ?? 0);
+  const {
+    caseId: _caseId,
+    difficultyProfile: _difficultyProfile,
+    masteryEligible: _masteryEligible,
+    sourceLineage: _sourceLineage,
+    variants: _variants,
+    ...generated
+  } = chosen;
+  return {
+    ...generated,
+    masteryEligible: body.masteryEligible,
+    parameters: {
+      caseId,
+      difficulty,
+      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+      ...(chosen.parameters || {}),
+    },
+  };
 }
 
 const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
@@ -747,19 +770,7 @@ export function generateValidateCountFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'separate-error-kinds') {
-    const body = staticCaseBody('aggregate-validate-and-count-records', caseId);
-    const {
-      caseId: _caseId,
-      difficultyProfile: _difficultyProfile,
-      masteryEligible: _masteryEligible,
-      sourceLineage: _sourceLineage,
-      ...generated
-    } = body;
-    return {
-      ...generated,
-      masteryEligible: body.masteryEligible,
-      parameters: { caseId, difficulty, ...(body.parameters || {}) },
-    };
+    return staticVariantInstance('aggregate-validate-and-count-records', caseId, seed, difficulty);
   }
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   if (caseId === 'parse-validate-summarize') {
@@ -1256,19 +1267,7 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
     || caseId === 'validate-card-fields'
     || caseId === 'readme-required-headings'
   ) {
-    const body = staticCaseBody('validate-required-field-raise', caseId);
-    const {
-      caseId: _caseId,
-      difficultyProfile: _difficultyProfile,
-      masteryEligible: _masteryEligible,
-      sourceLineage: _sourceLineage,
-      ...generated
-    } = body;
-    return {
-      ...generated,
-      masteryEligible: body.masteryEligible,
-      parameters: { caseId, difficulty, ...(body.parameters || {}) },
-    };
+    return staticVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
   }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);

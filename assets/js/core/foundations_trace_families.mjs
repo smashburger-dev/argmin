@@ -19,7 +19,7 @@ import {
   genCollectionStepTrace,
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
-import { staticCaseBody } from '../domain/family_registry.mjs';
+import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 
 export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -159,10 +159,36 @@ const TRACE_ASSIGNMENT_SOLVERS = {
   transform: solveAssignmentTransform,
 };
 
+function staticVariantInstance(familyId, caseId, seed, difficulty) {
+  const body = staticCaseBody(familyId, caseId);
+  const { body: chosen, index } = variantOf(body, seed ?? 0);
+  const {
+    caseId: _caseId,
+    difficultyProfile: _difficultyProfile,
+    masteryEligible: _masteryEligible,
+    sourceLineage: _sourceLineage,
+    variants: _variants,
+    ...generated
+  } = chosen;
+  return {
+    ...generated,
+    masteryEligible: body.masteryEligible,
+    parameters: {
+      caseId,
+      difficulty,
+      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+      ...(chosen.parameters || {}),
+    },
+  };
+}
+
 /** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
 export function solveTraceAssignment(parameters) {
   const staticKey = TRACE_ASSIGNMENT_STATIC_KEYS[parameters.caseId];
-  if (staticKey) return { [staticKey]: staticCaseBody('trace-assignment-state', parameters.caseId).expected[staticKey] };
+  if (staticKey) {
+    const { body } = variantOf(staticCaseBody('trace-assignment-state', parameters.caseId), parameters.variant ?? 0);
+    return { [staticKey]: body.expected[staticKey] };
+  }
   const solver = TRACE_ASSIGNMENT_SOLVERS[parameters.shape];
   if (solver) return solver(parameters);
   throw new Error(`trace-assignment-state: unbekannte Form ${parameters.shape}`);
@@ -170,9 +196,7 @@ export function solveTraceAssignment(parameters) {
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
   if (TRACE_ASSIGNMENT_STATIC_KEYS[caseId]) {
-    const body = staticCaseBody('trace-assignment-state', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+    return staticVariantInstance('trace-assignment-state', caseId, seed, difficulty);
   }
   const stateShape = ASSIGNMENT_STATE_SHAPES[caseId];
   const readingShape = ASSIGNMENT_READING_SHAPES[caseId];

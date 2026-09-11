@@ -54,7 +54,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, True), (True, False), (False, True), (False, False), (False, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 1: 5 Vergleichszeilen, erste (True, True). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, True), (True, True), (True, True), (True, True), (False, True), (False, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 2: 6 Vergleichszeilen, erste (True, True). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, False), (True, False), (True, False), (False, False), (False, False)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 3: 5 Vergleichszeilen, erste (True, False). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(False, False), (False, False), (False, False), (False, False), (False, True), (False, True), (False, True), (False, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 4: 8 Vergleichszeilen, erste (False, False). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, True), (True, True), (True, False), (False, True), (False, True), (True, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 5: 6 Vergleichszeilen, erste (True, True). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, False), (False, True), (True, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 6: 3 Vergleichszeilen, erste (True, False). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(False, True), (False, True), (False, True), (False, True), (False, True), (False, True), (True, True), (True, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 7: 8 Vergleichszeilen, erste (False, True). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, True), (True, True), (True, True), (True, True), (True, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 8: 5 Vergleichszeilen, erste (True, True). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __cmp(rows):\n    clean = []\n    for row in rows:\n        if len(row) != 2:\n            raise ValueError('jede Zeile braucht zwei Eintraege')\n        clean.append((bool(row[0]), bool(row[1])))\n    n = len(clean)\n    base = sum(1 for b, s in clean if b)\n    system = sum(1 for b, s in clean if s)\n    delta = system - base\n    relative = 0 if base == 0 else int(round(100.0 * delta / base))\n    return {\"n\": n, \"baseline_correct\": base, \"system_correct\": system, \"delta_correct\": delta, \"relative_percent\": relative}\nROWS = [(True, False), (True, False), (False, False), (False, False), (False, False), (False, True)]\nr = compare_systems(ROWS)\n__check('haupttabelle', r == __cmp(ROWS))\nr2 = compare_systems([(True, True), (True, True)])\n__check('alles richtig', r2 == __cmp([(True, True), (True, True)]))\nr3 = compare_systems([(False, False), (False, True), (False, True)])\n__check('baseline null', r3 == __cmp([(False, False), (False, True), (False, True)]))\nr5 = compare_systems([])\n__check('leere Liste', r5 == __cmp([]))\ntry:\n    compare_systems([(True, True, True)])\n    __check('falsche Zeilenlaenge -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('falsche Zeilenlaenge -> ValueError', True)\n"
+          },
+          "prompt": "Instanz 9: 6 Vergleichszeilen, erste (True, False). `compare_systems` zählt n, Delta und relative Prozent wie im Vertrag."
+        }
+      ]
     },
     {
       "caseId": "ledger-rates-output-trace",
@@ -99,7 +155,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "faelle = [('a', True, True), ('b', True, True), ('c', False, False), ('d', True, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.667\n0.5"
+          },
+          "prompt": "Ledger-Raten: 4 Fälle, 3 Treffer. Sage die drei print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.667\n0.5</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('q1', True, False), ('q2', False, False), ('q3', True, True), ('q4', True, True), ('q5', True, True), ('q6', False, True)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\n0.75\n0.5"
+          },
+          "prompt": "Ledger-Raten: 6 Fälle. Sage Trefferzahl, Präzision und Anteil vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\n0.75\n0.5</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('x', True, True), ('y', True, True)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "2\n1.0\n1.0"
+          },
+          "prompt": "Ledger-Raten: nur zwei Treffer, beide korrekt. Sage die drei Zahlen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>2\n1.0\n1.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('1', True, False), ('2', True, False), ('3', True, True), ('4', False, False), ('5', False, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.333\n0.2"
+          },
+          "prompt": "Ledger-Raten: 5 Fälle, ein korrekter Treffer. Sage die drei print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.333\n0.2</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('p', False, False), ('q', True, True), ('r', True, False), ('s', True, True), ('t', True, True), ('u', False, False), ('v', True, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "5\n0.6\n0.429"
+          },
+          "prompt": "Ledger-Raten: 7 Fälle. Sage Treffer, Rate, Anteil vorher.",
+          "fullSolution": "Die Ausgabe ist <code>5\n0.6\n0.429</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('k', True, True), ('m', False, False), ('n', True, True), ('o', True, True)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n1.0\n0.75"
+          },
+          "prompt": "Ledger-Raten: 4 Fälle ohne False-Positive im Treffer? Prüfe f[2]. Sage die Ausgabe vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n1.0\n0.75</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('u1', True, False), ('u2', True, False), ('u3', True, False), ('u4', False, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.0\n0.0"
+          },
+          "prompt": "Ledger-Raten: drei Treffer, keiner korrekt. Sage die drei print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.0\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('z', True, True), ('y', False, False), ('x', False, False), ('w', True, True), ('v', True, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "3\n0.667\n0.4"
+          },
+          "prompt": "Ledger-Raten: Mix aus fünf Tupeln. Sage die Ausgabe vorher.",
+          "fullSolution": "Die Ausgabe ist <code>3\n0.667\n0.4</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "faelle = [('r1', True, True), ('r2', True, True), ('r3', True, True), ('r4', True, True), ('r5', False, False)]\ntreffer = [f for f in faelle if f[1]]\nkorrekt = [f for f in treffer if f[2]]\nprint(len(treffer))\nprint(round(len(korrekt) / len(treffer), 3))\nprint(round(len(korrekt) / len(faelle), 3))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "4\n1.0\n0.8"
+          },
+          "prompt": "Ledger-Raten: vier korrekte Treffer von fünf. Sage die drei Zahlen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>4\n1.0\n0.8</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     },
     {
       "caseId": "subgroup-recall-output-trace",
@@ -144,7 +301,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'nord': (4, 4), 'sued': (4, 2), 'ost': (2, 1), 'west': (2, 2)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"nord\"], werte[\"sued\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1.0 0.5\n75.0"
+          },
+          "prompt": "Subgruppen-Recall nord/süd. Sage die zwei print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1.0 0.5\n75.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'a': (1, 1), 'b': (2, 0), 'c': (2, 2)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"a\"], werte[\"b\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1.0 0.0\n66.7"
+          },
+          "prompt": "Subgruppen-Recall a/b, drei Gruppen. Sage Ausgabe und Mittel vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1.0 0.0\n66.7</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'versand': (3, 3), 'recht': (1, 0), 'rabatt': (4, 2), 'garantie': (2, 1)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"recht\"], werte[\"garantie\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.0 0.5\n50.0"
+          },
+          "prompt": "Subgruppen-Recall recht/garantie. Sage die zwei print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.0 0.5\n50.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'g1': (5, 5), 'g2': (5, 5), 'g3': (5, 0)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"g1\"], werte[\"g3\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "1.0 0.0\n66.7"
+          },
+          "prompt": "Subgruppen-Recall g1/g3. Sage Werte und Mittel vorher.",
+          "fullSolution": "Die Ausgabe ist <code>1.0 0.0\n66.7</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'k': (2, 1), 'm': (2, 1), 'n': (2, 1), 'p': (2, 2)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"k\"], werte[\"p\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.5 1.0\n62.5"
+          },
+          "prompt": "Subgruppen-Recall k/p. Sage die Ausgabe vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.5 1.0\n62.5</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'alpha': (10, 7), 'beta': (10, 10)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"alpha\"], werte[\"beta\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.7 1.0\n85.0"
+          },
+          "prompt": "Subgruppen-Recall nur zwei Gruppen. Sage print und Mittel vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.7 1.0\n85.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'v': (1, 0), 'r': (1, 1), 'b': (1, 1), 'g': (1, 0)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"v\"], werte[\"r\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.0 1.0\n50.0"
+          },
+          "prompt": "Subgruppen-Recall vier Einser-Gruppen. Sage die zwei Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.0 1.0\n50.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'x': (6, 3), 'y': (6, 6), 'z': (3, 0)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"x\"], werte[\"z\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.5 0.0\n50.0"
+          },
+          "prompt": "Subgruppen-Recall x/z. Sage Werte und Prozentmittel vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.5 0.0\n50.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def recall(gesamt, getroffen):\n    if not gesamt:\n        return 0.0\n    return getroffen / gesamt\n\ngruppen = {'versand': (8, 4), 'recht': (2, 2), 'rabatt': (2, 1), 'garantie': (4, 4)}\nwerte = {name: recall(g, t) for name, (g, t) in gruppen.items()}\nprint(werte[\"versand\"], werte[\"rabatt\"])\nprint(round(100 * sum(werte.values()) / len(werte), 1))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.5 0.5\n75.0"
+          },
+          "prompt": "Subgruppen-Recall Versand/Rabatt mit neuen Zählern. Sage die Ausgabe vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.5 0.5\n75.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     }
   ]
 }

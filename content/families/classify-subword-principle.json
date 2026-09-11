@@ -68,7 +68,297 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "word": "Kraftfahrzeughaftpflichtversicherung"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Das Vokabular wird zur Laufzeit automatisch um dieses Wort erweitert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Wort wird zeichenweise gelöscht und durch <code>&lt;pad&gt;</code> ersetzt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Wort landet komplett in <code>&lt;unk&gt;</code>.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Wort-Tokenizer kennt „Kraftfahrzeughaftpflichtversicherung“ nicht. Was macht der Subword-Ansatz stattdessen?",
+          "fullSolution": "Zerlegung in Stamm-/Silben-/Byte-Stücke. Kein Laufzeit-Insert, kein Löschen, kein hartes UNK des ganzen Wortes."
+        },
+        {
+          "parameters": {
+            "word": "Glukoneogenese"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Vokabular wächst um den Medizinterm.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Das Wort wird durch <code>&lt;pad&gt;</code> ersetzt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ohne Ganzworteintrag gibt es keine Einbettung.",
+              "correct": false
+            }
+          ],
+          "prompt": "„Glukoneogenese“ fehlt als Ganzwort. Subword-Verhalten?",
+          "fullSolution": "Morphem- oder Byte-Stücke tragen das Wort. Sequenz darf länger werden."
+        },
+        {
+          "parameters": {
+            "word": "retryCount"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Identifier werden abgelehnt.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Zur Laufzeit entsteht eine neue Vokabularzeile.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Alles wird auf SPACE gemappt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            }
+          ],
+          "prompt": "Code-Identifier <code>retryCount</code> ist ungesehen. Was tut ein Byte-Level-BPE?",
+          "fullSolution": "Fragmente wie <code>retry</code>/<code>Count</code> oder Bytes. Vokabular bleibt fest."
+        },
+        {
+          "parameters": {
+            "word": "FluxPad42"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Training muss sofort neu anlaufen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur eine UNK-ID, sonst nichts.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nur Ziffern werden zerlegt, Buchstaben nie.",
+              "correct": false
+            }
+          ],
+          "prompt": "Produktname „FluxPad42“ ist neu. Welche Subword-Aussage stimmt?",
+          "fullSolution": "Zeichen-/Byte-Stücke reichen. Kein UNK-Zwang, kein Vokabularwachstum."
+        },
+        {
+          "parameters": {
+            "word": "Żurek"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Das Zeichen löscht den ganzen Prompt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Automatischer Vokabular-Insert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur ASCII-Namen sind darstellbar.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nachname „Żurek“ enthält ein Zeichen außerhalb des häufigen Alphabets. Byte-Fallback-Subword?",
+          "fullSolution": "UTF-8-Bytes als Stücke, Round-Trip bleibt möglich. Kein stilles Löschen."
+        },
+        {
+          "parameters": {
+            "word": "TransformerXL"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Eine UNK und Stop.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Neues Wort sofort im Softmax-Kopf.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur „XL“ überlebt, der Rest fällt weg.",
+              "correct": false
+            }
+          ],
+          "prompt": "„TransformerXL“ ist kein Ganzwort-Token, „Transform“ und „er“ sind bekannt. Ergebnis?",
+          "fullSolution": "Mehrere IDs, das Modell rechnet weiter. Kein Kopf-Wachstum zur Laufzeit."
+        },
+        {
+          "parameters": {
+            "word": "#ai4good"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Hashtags speichert das Modell sofort im Vokabular.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Subword verweigert Sonderzeichen immer.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Hashtags brauchen eigene Attention.",
+              "correct": false
+            }
+          ],
+          "prompt": "Hashtag <code>#ai4good</code> ist neu. Subword vs. reines Wortmodell?",
+          "fullSolution": "Subword zerlegt; ein Wortmodell wäre oft UNK. Attention ändert sich nicht."
+        },
+        {
+          "parameters": {
+            "word": "Safranmilchling"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Domain-Shift zwingt ein Retraining des gesamten LM.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Seltene Zutaten werden stillschweigend gedroppt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "d_model wächst um 1.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            }
+          ],
+          "prompt": "Wikipedia-BPE liest ein Kochrezept mit „Safranmilchling“. Was passiert mit dem unbekannten Ganzwort?",
+          "fullSolution": "Zerlegung in häufigere Silben/Bytes. Kein Drop, kein Architekturwechsel."
+        },
+        {
+          "parameters": {
+            "word": "Mikroskopstativ"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Wort wird in bekannte Teile zerlegt — kein <code>&lt;unk&gt;</code>, auch wenn die Tokenfolge länger wird.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Das Vokabular wird zur Laufzeit um dieses Wort erweitert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Wort wird durch <code>&lt;pad&gt;</code> ersetzt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Wort landet komplett in <code>&lt;unk&gt;</code>.",
+              "correct": false
+            }
+          ],
+          "prompt": "Tokenizer kennt „Mikroskopstativ“ nicht als Ganzes, wohl aber Stücke wie „Mikro“ und „skop“. Subword-Effekt?",
+          "fullSolution": "Bekannte Teile, längere Folge, kein harter OOV-Abbruch und kein Vokabular-+1."
+        }
+      ]
     },
     {
       "caseId": "subword-unknown-piece",
@@ -142,7 +432,336 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "word": "playing",
+            "knownPieces": [
+              "play",
+              "ing"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Das Vokabular kennt <code>play</code> und <code>ing</code>, aber nicht <code>playing</code> als Ganzes. Hauptvorteil?",
+          "fullSolution": "Zwei bekannte Stücke statt OOV oder neuer ID. Die Sequenz wird länger, nicht bedeutungsatomar."
+        },
+        {
+          "parameters": {
+            "word": "unhappiness",
+            "knownPieces": [
+              "un",
+              "happi",
+              "ness"
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Zur Laufzeit entsteht die ID <code>unhappiness</code>.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Die Tokenanzahl bleibt zwingend 1.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nur <code>un</code> trägt die volle Semantik.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bekannt: <code>un</code>, <code>happi</code>, <code>ness</code>. Unbekannt: das Stück <code>unhappiness</code>. Vorteil?",
+          "fullSolution": "Komposition der drei Stücke. Keine neue Vokabel, Bedeutung über mehrere IDs."
+        },
+        {
+          "parameters": {
+            "word": "restarted",
+            "knownPieces": [
+              "re",
+              "start",
+              "ed"
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Neue ID für <code>restarted</code> ohne Training.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Sequenzlänge ist egal und konstant.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "<code>start</code> allein ist das ganze Wort.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            }
+          ],
+          "prompt": "Subword-Tabelle hat <code>re</code>, <code>start</code>, <code>ed</code>, nicht <code>restarted</code>. Was folgt?",
+          "fullSolution": "Zerlegung statt OOV. Drei Tokens, nicht ein magisches Vollwort-Embedding."
+        },
+        {
+          "parameters": {
+            "word": "Microskop",
+            "knownPieces": [
+              "Micro",
+              "skop"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Stücke <code>Micro</code> und <code>skop</code> existieren, <code>Microskop</code> nicht. Hauptvorteil?",
+          "fullSolution": "Zwei IDs reichen. Kein Laufzeit-Insert."
+        },
+        {
+          "parameters": {
+            "word": "getName",
+            "knownPieces": [
+              "get",
+              "Name"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "CamelCase erzwingt eine neue ID.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Die Sequenzlänge bleibt 1.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "<code>get</code> bedeutet bereits <code>getName</code>.",
+              "correct": false
+            }
+          ],
+          "prompt": "Identifier <code>getName</code> fehlt, <code>get</code> und <code>Name</code> nicht. Vorteil der Stücke?",
+          "fullSolution": "Repräsentation ohne neue Vokabel. Zwei Tokens sind erlaubt."
+        },
+        {
+          "parameters": {
+            "word": "national",
+            "knownPieces": [
+              "nation",
+              "al"
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Lemma <code>national</code> bekommt sofort eine Matrixzeile.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Tokenanzahl darf sich nicht ändern.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "<code>nation</code> enthält immer die volle Wortbedeutung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Bekannt <code>nation</code> und <code>al</code>, unbekannt das Stück <code>national</code>. Hauptvorteil?",
+          "fullSolution": "Zusammensetzen. Vokabular muss nicht jedes Lemma listen."
+        },
+        {
+          "parameters": {
+            "word": "verkaufen",
+            "knownPieces": [
+              "ver",
+              "kauf",
+              "en"
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Neue ID zur Inferenz.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Immer genau ein Token.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur das längste Stück zählt semantisch.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            }
+          ],
+          "prompt": "Deutsch: <code>ver</code>, <code>kauf</code>, <code>en</code> bekannt, <code>verkaufen</code> nicht als Atom. Vorteil?",
+          "fullSolution": "Drei Stücke statt OOV. Morphologie bleibt auf mehrere IDs verteilt."
+        },
+        {
+          "parameters": {
+            "word": "2024",
+            "knownPieces": [
+              "20",
+              "24"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jahreszahl <code>2024</code> fehlt als Ganzes, <code>20</code> und <code>24</code> existieren. Hauptvorteil?",
+          "fullSolution": "Zwei Ziffernstücke statt neuer Jahres-ID."
+        },
+        {
+          "parameters": {
+            "word": "believable",
+            "knownPieces": [
+              "believ",
+              "able"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jedes unbekannte Wort erhält automatisch eine eigene neue Vokabel-ID.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Das Wort kann aus bekannten Teilstücken repräsentiert werden, obwohl die Gesamtform unbekannt ist.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Subwords machen die Sequenz unabhängig von ihrer Tokenanzahl.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein einzelnes Subword enthält immer die vollständige Wortbedeutung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Das Vokabular kennt <code>believ</code> und <code>able</code>, aber nicht das neue Stück <code>believable</code>. Was ist der Hauptvorteil?",
+          "fullSolution": "Wie beim Basisbeispiel mit <code>unbelievable</code>, hier ohne Präfix <code>un</code>: bekannte Teile tragen die unbekannte Gesamtform."
+        }
+      ]
     },
     {
       "caseId": "subword-boundary-sharing",
@@ -215,7 +834,333 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "words": [
+              "Kauf",
+              "verkaufen",
+              "Käufer"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Geteilte Stücke können Wissen zwischen Kauf, verkaufen und Käufer wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Korpus enthält <code>Kauf</code>, <code>verkaufen</code> und <code>Käufer</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "fullSolution": "Stamm und Affixe teilen sich IDs. Keine Ein-Token-Garantie, Morphologie bleibt als extra Stücke sichtbar."
+        },
+        {
+          "parameters": {
+            "words": [
+              "Licht",
+              "Belichtung",
+              "Lichtung"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jedes Wort wird garantiert ein Token.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Geteilte Stücke können Wissen zwischen Licht, Belichtung und Lichtung wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Subwords löschen die Affixe.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Jedes Wort braucht ein neues Vollwort-Embedding.",
+              "correct": false
+            }
+          ],
+          "prompt": "Korpus: <code>Licht</code>, <code>Belichtung</code>, <code>Lichtung</code>. Subword-Nutzen gegen Worttokens?",
+          "fullSolution": "Stück <code>Licht</code> plus Affixe. Sharing ist Wiederverwendung, kein Bedeutungsverlust der Unterschiede."
+        },
+        {
+          "parameters": {
+            "words": [
+              "nation",
+              "national",
+              "international"
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jedes Lemma wird ein einziges Token.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Morphologische Unterschiede verschwinden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Geteilte Stücke können Wissen zwischen nation, national und international wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "international darf nation nicht enthalten, sonst Kollision.",
+              "correct": false
+            }
+          ],
+          "prompt": "Englisch/lateinisch: <code>nation</code>, <code>national</code>, <code>international</code>. Vorteil von Subwords?",
+          "fullSolution": "Ein Stammstück in mehreren Wörtern. Kein Zwang zu drei isolierten Vollwortzeilen."
+        },
+        {
+          "parameters": {
+            "words": [
+              "getName",
+              "setName",
+              "NameError"
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Identifier sind immer genau ein Token.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "CamelCase löscht Sharing.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Jeder Identifier braucht ein neues vollständiges Embedding.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Geteilte Stücke können Wissen zwischen getName, setName und NameError wiederverwenden.",
+              "correct": true
+            }
+          ],
+          "prompt": "Code-Korpus mit <code>getName</code>, <code>setName</code>, <code>NameError</code>. Subword-Vorteil?",
+          "fullSolution": "<code>Name</code> als wiederkehrendes Stück. Keine Vollwort-ID pro Identifier nötig."
+        },
+        {
+          "parameters": {
+            "words": [
+              "2020",
+              "2021",
+              "2024"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Geteilte Stücke können Wissen zwischen 2020, 2021 und 2024 wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jede Jahreszahl wird garantiert ein Token.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Zahlen verlieren alle Unterschiede.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Jedes Jahr braucht ein neues vollständiges Embedding.",
+              "correct": false
+            }
+          ],
+          "prompt": "Jahreszahlen <code>2020</code>, <code>2021</code>, <code>2024</code> im Korpus. Warum Subwords helfen können?",
+          "fullSolution": "Gemeinsame Ziffernstücke (z. B. <code>20</code>). Keine Ein-Token-Garantie."
+        },
+        {
+          "parameters": {
+            "words": [
+              "schreiben",
+              "Beschreibung",
+              "Schreiber"
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jedes Wort wird ein Token.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Geteilte Stücke können Wissen zwischen schreiben, Beschreibung und Schreiber wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Subwords entfernen alle morphologischen Unterschiede.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Neue Wörter brauchen immer ein neues Voll-Embedding.",
+              "correct": false
+            }
+          ],
+          "prompt": "<code>schreiben</code>, <code>Beschreibung</code>, <code>Schreiber</code>. Vorteil gegenüber Worttokens?",
+          "fullSolution": "Stamm-/Wurzelstücke plus Affixe. Unterschiede bleiben als extra Tokens."
+        },
+        {
+          "parameters": {
+            "words": [
+              "form",
+              "format",
+              "perform"
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Alles wird auf exakt ein Token reduziert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Morphologie wird gelöscht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Geteilte Stücke können Wissen zwischen form, format und perform wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "perform braucht ein eigenes vollständiges Embedding, form darf nicht geteilt werden.",
+              "correct": false
+            }
+          ],
+          "prompt": "Korpus <code>form</code>, <code>format</code>, <code>perform</code>. Subword-Pointe?",
+          "fullSolution": "Überlappende Stücke, statistische Wiederverwendung. Kein Zwang zu drei Atomwörtern."
+        },
+        {
+          "parameters": {
+            "words": [
+              "binden",
+              "Verbindung",
+              "verbindlich"
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Jedes Wort ist genau ein Token.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Subwords entfernen alle Unterschiede.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Jedes Wort braucht ein neues vollständiges Embedding.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Geteilte Stücke können Wissen zwischen binden, Verbindung und verbindlich wiederverwenden.",
+              "correct": true
+            }
+          ],
+          "prompt": "Deutsch <code>binden</code>, <code>Verbindung</code>, <code>verbindlich</code>. Warum Subwords gegenüber Worttokens?",
+          "fullSolution": "Geteilte Wurzelstücke. Affixe bleiben zusätzliche IDs, sie werden nicht gelöscht."
+        },
+        {
+          "parameters": {
+            "words": [
+              "lauf",
+              "laufen",
+              "Verlauf"
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Geteilte Stücke können Wissen zwischen lauf, laufen und Verlauf wiederverwenden.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Jedes Wort wird garantiert auf exakt ein Token reduziert.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Subwords entfernen alle morphologischen Unterschiede zwischen den Wörtern.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Methode benötigt für jedes neue Wort ein neues vollständiges Embedding.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Korpus enthält <code>lauf</code>, <code>laufen</code> und <code>Verlauf</code>. Warum können Subwords gegenüber reinen Worttokens Vorteile bringen?",
+          "fullSolution": "Stamm <code>lauf</code> plus Affixe/Präfixe. Sharing statt dreier isolierter Wortzeilen — analog zu play/player/replay."
+        }
+      ]
     }
   ]
 }

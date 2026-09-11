@@ -52,7 +52,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'a-1', 'antwort': 'eins', 'quellen': ['q1']}, {'id': 'b-2', 'antwort': 'zwei', 'quellen': ['q2']}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set zwei Ids a-1/b-2. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'z', 'antwort': 'Z', 'quellen': []}, {'id': 'y', 'antwort': 'Y', 'quellen': ['y']}, {'id': 'x', 'antwort': 'X', 'quellen': ['x']}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set x/y/z drei Einträge. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'only', 'antwort': 'solo', 'quellen': ['s']}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set ein Eintrag only. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = []\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Leeres Golden Set. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'm', 'antwort': 'ä', 'quellen': ['ö']}, {'id': 'n', 'antwort': 'ß', 'quellen': []}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set Umlaute in Antworten. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'p2', 'antwort': 'b', 'quellen': ['2']}, {'id': 'p1', 'antwort': 'a', 'quellen': ['1']}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set p1/p2, Reihenfolge umgekehrt in der Liste. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'c', 'antwort': 'c', 'quellen': ['c'], 'extra': 1}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set mit Extra-Feld. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'u', 'antwort': '', 'quellen': []}, {'id': 'v', 'antwort': 'v', 'quellen': ['v']}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set leere Antwort u. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        },
+        {
+          "parameters": {
+            "tests": "import hashlib, json\nGOLDEN = [{'id': 'g3', 'antwort': 'drei', 'quellen': ['a', 'b']}, {'id': 'g1', 'antwort': 'eins', 'quellen': ['a']}, {'id': 'g2', 'antwort': 'zwei', 'quellen': ['b']}]\ndef __want(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('golden', a == __want(GOLDEN))\n__check('reihenfolge-invarianz', a == b)\nif GOLDEN:\n    tamper = [dict(x) for x in GOLDEN]\n    tamper[0] = dict(tamper[0])\n    tamper[0][\"antwort\"] = tamper[0].get(\"antwort\", \"\") + \"!\"\n    __check('aenderungssensitiv', build_golden(tamper)[\"sha256\"] != a[\"sha256\"])\n__check('leeres set', build_golden([])[\"n\"] == 0)\n"
+          },
+          "prompt": "Golden Set g1–g3. Implementiere `build_golden` (kanonisches JSON + sha256)."
+        }
+      ]
     }
   ]
 }

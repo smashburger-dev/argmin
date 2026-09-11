@@ -48,7 +48,63 @@
       ],
       "tolerancePolicy": {
         "mode": "tests"
-      }
+      },
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [1, 3, 3, 5, 9]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 3, 9]), np.histogram(arr, bins=np.asarray([0, 3, 9], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([3.0, 9.0, 9.0], [0, 3, 9]), np.histogram(np.asarray([3.0, 9.0, 9.0], dtype=float), bins=np.asarray([0, 3, 9], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([0.5, 8.0], [0, 2, 5, 9]), np.histogram(np.asarray([0.5, 8.0], dtype=float), bins=np.asarray([0, 2, 5, 9], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [1, 3, 3, 5, 9] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 3, 9]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [0, 2, 2, 2, 10]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 2, 10]), np.histogram(arr, bins=np.asarray([0, 2, 10], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([2.0, 10.0], [0, 2, 10]), np.histogram(np.asarray([2.0, 10.0], dtype=float), bins=np.asarray([0, 2, 10], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 9.0], [0, 3, 6, 10]), np.histogram(np.asarray([1.0, 9.0], dtype=float), bins=np.asarray([0, 3, 6, 10], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [0, 2, 2, 2, 10] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 2, 10]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [4, 4, 6, 8, 12]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 5, 12]), np.histogram(arr, bins=np.asarray([0, 5, 12], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([5.0, 12.0, 12.0], [0, 5, 12]), np.histogram(np.asarray([5.0, 12.0, 12.0], dtype=float), bins=np.asarray([0, 5, 12], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([0.0, 11.0], [0, 2, 8, 12]), np.histogram(np.asarray([0.0, 11.0], dtype=float), bins=np.asarray([0, 2, 8, 12], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [4, 4, 6, 8, 12] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 5, 12]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [3, 5, 7, 7, 11]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 7, 11]), np.histogram(arr, bins=np.asarray([0, 7, 11], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([7.0, 11.0], [0, 7, 11]), np.histogram(np.asarray([7.0, 11.0], dtype=float), bins=np.asarray([0, 7, 11], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 10.0], [0, 4, 8, 12]), np.histogram(np.asarray([1.0, 10.0], dtype=float), bins=np.asarray([0, 4, 8, 12], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [3, 5, 7, 7, 11] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 7, 11]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [6, 6, 6, 8, 14]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 6, 14]), np.histogram(arr, bins=np.asarray([0, 6, 14], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([6.0, 14.0, 14.0], [0, 6, 14]), np.histogram(np.asarray([6.0, 14.0, 14.0], dtype=float), bins=np.asarray([0, 6, 14], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([2.0, 13.0], [0, 5, 9, 14]), np.histogram(np.asarray([2.0, 13.0], dtype=float), bins=np.asarray([0, 5, 9, 14], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [6, 6, 6, 8, 14] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 6, 14]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [1, 1, 4, 8, 8]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 4, 8]), np.histogram(arr, bins=np.asarray([0, 4, 8], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([4.0, 8.0], [0, 4, 8]), np.histogram(np.asarray([4.0, 8.0], dtype=float), bins=np.asarray([0, 4, 8], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([0.5, 7.5], [0, 2, 5, 9]), np.histogram(np.asarray([0.5, 7.5], dtype=float), bins=np.asarray([0, 2, 5, 9], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [1, 1, 4, 8, 8] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 4, 8]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [2, 6, 6, 10, 18]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 6, 18]), np.histogram(arr, bins=np.asarray([0, 6, 18], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([6.0, 18.0, 18.0], [0, 6, 18]), np.histogram(np.asarray([6.0, 18.0, 18.0], dtype=float), bins=np.asarray([0, 6, 18], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 17.0], [0, 3, 12, 18]), np.histogram(np.asarray([1.0, 17.0], dtype=float), bins=np.asarray([0, 3, 12, 18], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [2, 6, 6, 10, 18] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 6, 18]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [5, 5, 5, 5, 15]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 5, 15]), np.histogram(arr, bins=np.asarray([0, 5, 15], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([5.0, 15.0], [0, 5, 15]), np.histogram(np.asarray([5.0, 15.0], dtype=float), bins=np.asarray([0, 5, 15], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 14.0], [0, 4, 10, 16]), np.histogram(np.asarray([1.0, 14.0], dtype=float), bins=np.asarray([0, 4, 10, 16], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [5, 5, 5, 5, 15] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 5, 15]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [0, 1, 8, 8, 16]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 8, 16]), np.histogram(arr, bins=np.asarray([0, 8, 16], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([8.0, 16.0, 16.0], [0, 8, 16]), np.histogram(np.asarray([8.0, 16.0, 16.0], dtype=float), bins=np.asarray([0, 8, 16], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([2.0, 15.0], [0, 3, 9, 16]), np.histogram(np.asarray([2.0, 15.0], dtype=float), bins=np.asarray([0, 3, 9, 16], dtype=float))[0]))\n"
+          },
+          "prompt": "Messreihe [0, 1, 8, 8, 16] (n=5). Implementiere `describe` und `bin_counts` wie im Vertrag; die Tests prüfen Mittelwert, Median, Bevölkerung-Std und Histogrammkanten [0, 8, 16]."
+        }
+      ]
     },
     {
       "caseId": "describe-outlier-bins",
@@ -97,7 +153,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [0, 1, 1, 3, 12]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 1, 3, 12]), np.histogram(arr, bins=np.asarray([0, 1, 3, 12], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([1.0, 12.0], [0, 1, 12]), np.histogram(np.asarray([1.0, 12.0], dtype=float), bins=np.asarray([0, 1, 12], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([0.0, 11.0], [0, 2, 4, 12]), np.histogram(np.asarray([0.0, 11.0], dtype=float), bins=np.asarray([0, 2, 4, 12], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [0, 1, 1, 3, 12]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 1, 3, 12]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [2, 2, 3, 9, 20]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 3, 9, 20]), np.histogram(arr, bins=np.asarray([0, 3, 9, 20], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([3.0, 20.0], [0, 3, 20]), np.histogram(np.asarray([3.0, 20.0], dtype=float), bins=np.asarray([0, 3, 20], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([2.0, 19.0], [0, 2, 4, 20]), np.histogram(np.asarray([2.0, 19.0], dtype=float), bins=np.asarray([0, 2, 4, 20], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [2, 2, 3, 9, 20]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 3, 9, 20]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [1, 4, 4, 5, 18]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 4, 6, 18]), np.histogram(arr, bins=np.asarray([0, 4, 6, 18], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([4.0, 18.0], [0, 4, 18]), np.histogram(np.asarray([4.0, 18.0], dtype=float), bins=np.asarray([0, 4, 18], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 17.0], [0, 2, 4, 18]), np.histogram(np.asarray([1.0, 17.0], dtype=float), bins=np.asarray([0, 2, 4, 18], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [1, 4, 4, 5, 18]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 4, 6, 18]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [3, 3, 3, 6, 15]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 3, 6, 15]), np.histogram(arr, bins=np.asarray([0, 3, 6, 15], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([3.0, 15.0], [0, 3, 15]), np.histogram(np.asarray([3.0, 15.0], dtype=float), bins=np.asarray([0, 3, 15], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([3.0, 14.0], [0, 2, 4, 15]), np.histogram(np.asarray([3.0, 14.0], dtype=float), bins=np.asarray([0, 2, 4, 15], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [3, 3, 3, 6, 15]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 3, 6, 15]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [0, 2, 5, 5, 14]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 2, 5, 14]), np.histogram(arr, bins=np.asarray([0, 2, 5, 14], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([2.0, 14.0], [0, 2, 14]), np.histogram(np.asarray([2.0, 14.0], dtype=float), bins=np.asarray([0, 2, 14], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([0.0, 13.0], [0, 2, 4, 14]), np.histogram(np.asarray([0.0, 13.0], dtype=float), bins=np.asarray([0, 2, 4, 14], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [0, 2, 5, 5, 14]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 2, 5, 14]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [1, 1, 7, 7, 19]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 1, 7, 19]), np.histogram(arr, bins=np.asarray([0, 1, 7, 19], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([1.0, 19.0], [0, 1, 19]), np.histogram(np.asarray([1.0, 19.0], dtype=float), bins=np.asarray([0, 1, 19], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 18.0], [0, 2, 4, 19]), np.histogram(np.asarray([1.0, 18.0], dtype=float), bins=np.asarray([0, 2, 4, 19], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [1, 1, 7, 7, 19]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 1, 7, 19]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [4, 4, 5, 8, 22]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 5, 8, 22]), np.histogram(arr, bins=np.asarray([0, 5, 8, 22], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([5.0, 22.0], [0, 5, 22]), np.histogram(np.asarray([5.0, 22.0], dtype=float), bins=np.asarray([0, 5, 22], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([4.0, 21.0], [0, 2, 4, 22]), np.histogram(np.asarray([4.0, 21.0], dtype=float), bins=np.asarray([0, 2, 4, 22], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [4, 4, 5, 8, 22]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 5, 8, 22]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [2, 3, 3, 10, 16]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 3, 10, 16]), np.histogram(arr, bins=np.asarray([0, 3, 10, 16], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([3.0, 16.0], [0, 3, 16]), np.histogram(np.asarray([3.0, 16.0], dtype=float), bins=np.asarray([0, 3, 16], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([2.0, 15.0], [0, 2, 4, 16]), np.histogram(np.asarray([2.0, 15.0], dtype=float), bins=np.asarray([0, 2, 4, 16], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [2, 3, 3, 10, 16]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 3, 10, 16]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\nvals = [1, 2, 8, 8, 21]\nd = describe(vals)\narr = np.asarray(vals, dtype=float)\n__check('n', d[\"n\"] == int(arr.size))\n__check('mean', abs(d[\"mean\"] - float(np.mean(arr))) < 1e-9)\n__check('median', abs(d[\"median\"] - float(np.median(arr))) < 1e-9)\n__check('std ddof=0', abs(d[\"std\"] - float(np.std(arr))) < 1e-12)\n__check('histogramm bins', np.array_equal(bin_counts(vals, [0, 2, 8, 21]), np.histogram(arr, bins=np.asarray([0, 2, 8, 21], dtype=float))[0]))\n__check('letzte Kante inklusiv', np.array_equal(bin_counts([2.0, 21.0], [0, 2, 21]), np.histogram(np.asarray([2.0, 21.0], dtype=float), bins=np.asarray([0, 2, 21], dtype=float))[0]))\n__check('leerer Bin', np.array_equal(bin_counts([1.0, 20.0], [0, 2, 4, 21]), np.histogram(np.asarray([1.0, 20.0], dtype=float), bins=np.asarray([0, 2, 4, 21], dtype=float))[0]))\n"
+          },
+          "prompt": "Kleine Stichprobe mit Ausreißer [1, 2, 8, 8, 21]. Dieselbe `describe`/`bin_counts`-Semantik, drei Bins mit Kanten [0, 2, 8, 21]."
+        }
+      ]
     }
   ]
 }

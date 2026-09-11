@@ -71,7 +71,297 @@
         }
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "set": "40-queries"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Um Laufzeit zu sparen — der Hash beschleunigt recall@k.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Aus Urheberrecht an den Queries.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Damit niemand die 40 Fragen lesen kann.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum hash-friert ihr die 40 Golden-Queries, bevor ihr am Retriever dreht?",
+          "fullSolution": "Gleiche Prüfung nach jedem Tune-Schritt. Still extra Queries einschmuggeln würde den Hash brechen."
+        },
+        {
+          "parameters": {
+            "set": "fixtures-A-G"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Hash macht den Detektor schneller.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Fixtures dürfen urheberrechtlich nicht byteweise wechseln.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Damit die Angriffe geheim bleiben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Angriffs-Fixtures A–G werden per sha256 fixiert, bevor die Regeln nachgeschärft werden. Zweck?",
+          "fullSolution": "Vergleichbarkeit. Eine still ergänzte Fixture wäre Zielverschiebung."
+        },
+        {
+          "parameters": {
+            "set": "qrels"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Qrels-Hash spart IO.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lizenz an den Dokument-IDs.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Auswendiglernen verhindern.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            }
+          ],
+          "prompt": "Warum vor dem BM25-Tuning den qrels-JSON-Hash einfrieren?",
+          "fullSolution": "Vorher-Nachher nur sinnvoll auf identischer Goldmenge."
+        },
+        {
+          "parameters": {
+            "set": "ranking-labels"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Hash verkürzt die Metrikberechnung.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Urheberrecht an Labels.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Labels sollen unlesbar sein.",
+              "correct": false
+            }
+          ],
+          "prompt": "Learning-to-Rank: Labeldatei wird gehasht, dann erst Feature-Experimente. Warum diese Reihenfolge?",
+          "fullSolution": "Freeze vor Optimierung. Hash macht nachträgliche Label-Edits sichtbar."
+        },
+        {
+          "parameters": {
+            "set": "capstone-golden"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Um Laufzeit zu sparen — der Hash-Abgleich beschleunigt die Auswertung des Golden Sets deutlich.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Aus Urheberrecht: Die Fragen im Golden Set dürfen nur in unveränderter Form gespeichert werden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Damit niemand die Testfragen lesen und auswendig lernen kann.",
+              "correct": false
+            }
+          ],
+          "prompt": "Capstone: Golden Set per Hash einfrieren, danach erst Chunkgröße tunen. Warum nicht umgekehrt?",
+          "fullSolution": "Sonst misst ihr nach dem Tune gegen ein anderes Set. Hash macht die Verschiebung laut."
+        },
+        {
+          "parameters": {
+            "set": "nli-gold"
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Hash ist ein Cache.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Gold-Sätze sind urheberrechtlich hashpflichtig.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Damit das Dev-Set geheim bleibt.",
+              "correct": false
+            }
+          ],
+          "prompt": "NLI-Baseline: 200 Goldpaare hashen, dann Schwellen tunen. Zweck des Freeze?",
+          "fullSolution": "Stabiler Prüfstand, sichtbare Zielverschiebung."
+        },
+        {
+          "parameters": {
+            "set": "detektor-benign"
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Benign-Hash spart CPU.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Lizenzbedingung.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Verhindern, dass jemand Benign liest.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            }
+          ],
+          "prompt": "Warum Benign- und Attack-Sets hashen, bevor ihr Regex nachlegt?",
+          "fullSolution": "FPR/TPR nur vergleichbar, wenn dieselben Fälle bleiben."
+        },
+        {
+          "parameters": {
+            "set": "mrr-board"
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Hash ersetzt die MRR-Formel.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Urheberrecht.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Unlesbarkeit der Queries.",
+              "correct": false
+            }
+          ],
+          "prompt": "Leaderboard-MRR soll über zwei Wochen vergleichbar sein. Warum zuerst das Eval-Set hashen?",
+          "fullSolution": "Ohne Freeze ist jede Steigerung verdächtig als Set-Drift."
+        },
+        {
+          "parameters": {
+            "set": "pipeline-golden"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Um Laufzeit zu sparen — der Hash-Abgleich beschleunigt die Auswertung des Golden Sets deutlich.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Damit nach jeder Optimierung dieselbe Prüfung greift: Alte und neue Läufe bleiben vergleichbar, und eine still geänderte Prüfmenge fällt per Hash-Abgleich auf.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Aus Urheberrecht: Die Fragen im Golden Set dürfen nur in unveränderter Form gespeichert werden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Damit niemand die Testfragen lesen und auswendig lernen kann.",
+              "correct": false
+            }
+          ],
+          "prompt": "Warum wird das Golden Set der Pipeline per Hash eingefroren, bevor die Optimierung der Stages beginnt?",
+          "fullSolution": "Dieselbe Zweckfrage wie die Basis, auf Stages bezogen: vergleichbare Läufe, sichtbare Set-Änderung."
+        }
+      ]
     }
   ]
 }

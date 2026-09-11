@@ -50,7 +50,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[1, 0, 1], [1, 1, 0], [1, 0, 0]]) == [1, 0, 0])\n__node = {'feature': 0, 'threshold': 2.0, 'left': {'leaf': 0}, 'right': {'leaf': 1}}\n__x = [1.0, 2.0, 3.0, 4.0]\n__y = [0, 0, 1, 1]\n__models = [[0, 0, 1, 1], [0, 1, 1, 1], [0, 0, 1, 0]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Ensemble-Schwelle 2.0, y=[0,0,1,1], drei Wähler. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[0, 1], [1, 1], [0, 1]]) == [0, 1])\n__node = {'feature': 0, 'threshold': 5.0, 'left': {'leaf': 1}, 'right': {'leaf': 0}}\n__x = [1, 3, 5, 8]\n__y = [1, 1, 1, 0]\n__models = [[1, 1, 1, 0], [1, 0, 1, 0], [0, 1, 1, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Ensemble-Schwelle 5.0, y=[1,1,1,0]. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[1, 1, 0], [0, 1, 0], [1, 1, 1]]) == [1, 1, 0])\n__node = {'feature': 0, 'threshold': 0.0, 'left': {'leaf': 0}, 'right': {'leaf': 1}}\n__x = [-2, -1, 0, 2]\n__y = [0, 0, 0, 1]\n__models = [[0, 0, 0, 1], [0, 1, 0, 1], [1, 0, 0, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Ensemble-Schwelle 0.0, negative x links. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[0, 0, 0], [0, 0, 1], [1, 0, 1]]) == [0, 0, 1])\n__node = {'feature': 0, 'threshold': 10.0, 'left': {'leaf': 2.0}, 'right': {'leaf': 8.0}}\n__x = [4, 10, 12]\n__y = [2, 2, 8]\n__models = [[2, 2, 8], [2, 0, 8], [0, 2, 8]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Regression-Blätter 2 und 8, Schwelle 10. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[1, 1, 1, 0], [1, 0, 1, 0], [1, 1, 0, 0]]) == [1, 1, 1, 0])\n__node = {'feature': 0, 'threshold': 1.5, 'left': {'leaf': 0}, 'right': {'leaf': 1}}\n__x = [0, 1, 2, 3]\n__y = [0, 0, 1, 1]\n__models = [[0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 0]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Schwelle 1.5 auf x=0..3. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[0, 1, 0], [0, 1, 1], [0, 1, 0]]) == [0, 1, 0])\n__node = {'feature': 0, 'threshold': 7.5, 'left': {'leaf': 0}, 'right': {'leaf': 1}}\n__x = [1, 7, 8, 9]\n__y = [0, 0, 1, 1]\n__models = [[0, 0, 1, 1], [0, 1, 1, 1], [0, 0, 0, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Schwelle 7.5, y springt nach 7. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[1, 0], [1, 0], [0, 0]]) == [1, 0])\n__node = {'feature': 0, 'threshold': 3.0, 'left': {'leaf': 5.0}, 'right': {'leaf': 1.0}}\n__x = [1, 3, 6]\n__y = [5, 5, 1]\n__models = [[5, 5, 1], [5, 0, 1], [0, 5, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Blätter 5 und 1, Schwelle 3.0. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[0, 0, 1, 1], [1, 0, 1, 1], [0, 0, 1, 0]]) == [0, 0, 1, 1])\n__node = {'feature': 0, 'threshold': 4.0, 'left': {'leaf': 0}, 'right': {'leaf': 1}}\n__x = [2, 4, 5, 9]\n__y = [0, 0, 1, 1]\n__models = [[0, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 0]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Schwelle 4.0, vier Punkte. Implementiere majority_vote, tree_predict und compare_models."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\n__check('Mehrheit', majority_vote([[1, 1, 0, 0], [1, 0, 0, 0], [1, 1, 1, 0]]) == [1, 1, 0, 0])\n__node = {'feature': 0, 'threshold': 6.5, 'left': {'leaf': 1}, 'right': {'leaf': 0}}\n__x = [1, 6, 7, 10]\n__y = [1, 1, 0, 0]\n__models = [[1, 1, 0, 0], [1, 0, 0, 0], [1, 1, 1, 0]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\nxa = np.asarray(__x, dtype=float)\nya = np.asarray(__y, dtype=float)\nw = float((xa @ ya) / (xa @ xa))\nlin = float(np.sqrt(np.mean((w * xa - ya) ** 2)))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - lin) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE nicht negativ', __res['voting'] >= 0.0, str(__res))\n"
+          },
+          "prompt": "Schwelle 6.5, links Blatt 1. Implementiere majority_vote, tree_predict und compare_models."
+        }
+      ]
     },
     {
       "caseId": "voting-tie-and-tree",
@@ -99,7 +155,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[1, 0], [0, 0]]) == [1, 0])\nnode = {'feature': 0, 'threshold': 1.0, 'left': {'leaf': 0.0}, 'right': {'leaf': 4.0}}\n__check('tree boundary', tree_predict(node, [1.0]) == 0.0 and tree_predict(node, [2.0]) == 4.0)\nr = compare_models([1.0, 2.0], [0, 4], node, [[0, 4], [1, 4]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Tie [1,0] vs [0,0], Schwelle 1.0. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[0, 1], [0, 1]]) == [0, 1])\nnode = {'feature': 0, 'threshold': 5.0, 'left': {'leaf': 3.0}, 'right': {'leaf': 9.0}}\n__check('tree boundary', tree_predict(node, [5.0]) == 3.0 and tree_predict(node, [6.0]) == 9.0)\nr = compare_models([5.0, 6.0], [3, 9], node, [[3, 9], [3, 0]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Einstimmig [0,1], Schwelle 5. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[1, 1], [0, 1]]) == [1, 1])\nnode = {'feature': 0, 'threshold': 0.5, 'left': {'leaf': 1.0}, 'right': {'leaf': 2.0}}\n__check('tree boundary', tree_predict(node, [0.5]) == 1.0 and tree_predict(node, [1.5]) == 2.0)\nr = compare_models([0.5, 1.0], [1, 2], node, [[1, 2], [1, 2]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Tie zugunsten 1 auf Position 0, Schwelle 0.5. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[0, 0], [1, 0]]) == [1, 0])\nnode = {'feature': 0, 'threshold': 8.0, 'left': {'leaf': 0.0}, 'right': {'leaf': 1.0}}\n__check('tree boundary', tree_predict(node, [8.0]) == 0.0 and tree_predict(node, [9.0]) == 1.0)\nr = compare_models([7.0, 9.0], [0, 1], node, [[0, 1], [0, 0]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Schwelle 8.0, x=7 und 9. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[1, 0, 1], [1, 0, 0]]) == [1, 0, 1])\nnode = {'feature': 0, 'threshold': 2.0, 'left': {'leaf': 0.0}, 'right': {'leaf': 5.0}}\n__check('tree boundary', tree_predict(node, [2.0]) == 0.0 and tree_predict(node, [3.0]) == 5.0)\nr = compare_models([2.0, 3.0], [0, 5], node, [[0, 5], [1, 5]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Drei Beispiele Voting, Schwelle 2. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[0, 1, 0], [0, 0, 0]]) == [0, 1, 0])\nnode = {'feature': 0, 'threshold': 4.5, 'left': {'leaf': 2.0}, 'right': {'leaf': 6.0}}\n__check('tree boundary', tree_predict(node, [4.5]) == 2.0 and tree_predict(node, [5.5]) == 6.0)\nr = compare_models([4.5, 5.0], [2, 6], node, [[2, 6], [2, 6]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Schwelle 4.5, Blätter 2 und 6. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[1, 1, 0], [0, 1, 0]]) == [1, 1, 0])\nnode = {'feature': 0, 'threshold': 10.0, 'left': {'leaf': 1.0}, 'right': {'leaf': 0.0}}\n__check('tree boundary', tree_predict(node, [10.0]) == 1.0 and tree_predict(node, [11.0]) == 0.0)\nr = compare_models([10.0, 11.0], [1, 0], node, [[1, 0], [1, 1]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Schwelle 10, Blattwechsel. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[0, 0], [0, 1]]) == [0, 1])\nnode = {'feature': 0, 'threshold': 3.5, 'left': {'leaf': 7.0}, 'right': {'leaf': 1.0}}\n__check('tree boundary', tree_predict(node, [3.5]) == 7.0 and tree_predict(node, [4.5]) == 1.0)\nr = compare_models([3.5, 4.0], [7, 1], node, [[7, 1], [0, 1]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Schwelle 3.5, Blätter 7 und 1. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        },
+        {
+          "parameters": {
+            "tests": "__check('tie counts as one', majority_vote([[1, 0, 0], [1, 1, 0]]) == [1, 1, 0])\nnode = {'feature': 0, 'threshold': 0.0, 'left': {'leaf': 0.0}, 'right': {'leaf': 3.0}}\n__check('tree boundary', tree_predict(node, [0.0]) == 0.0 and tree_predict(node, [1.0]) == 3.0)\nr = compare_models([0.0, 1.0], [0, 3], node, [[0, 3], [0, 3]])\n__check('tree rmse', abs(r['tree']) < 1e-12)\n__check('keys', set(r) == {'tree', 'voting', 'linear'})\n"
+          },
+          "prompt": "Schwelle 0.0, nichtnegatives x. Implementiere Voting mit Gleichstand zugunsten von 1 und den RMSE-Vergleich."
+        }
+      ]
     }
   ]
 }

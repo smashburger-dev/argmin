@@ -35,7 +35,360 @@
         }
       ],
       "prompt": "Drei Verträge in einer Synthese: Shape prüfen und `matvec` rechnen, Rang per Elimination mit Zeilentausch, System per `solve` mit Shape-Prüfung. Welche Implementierung erfüllt alle drei?",
-      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle."
+      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle.",
+      "variants": [
+        {
+          "parameters": {
+            "mv": [
+              3,
+              4
+            ],
+            "sys": [
+              2,
+              2
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Erst `matvec`/`solve` rechnen, Shapes hinterher prüfen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Rang ohne Zeilentausch: Null oben in der Pivotspalte überspringen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein hartkodierter Testfall je Funktion als Beleg.",
+              "correct": false
+            }
+          ],
+          "prompt": "Synthese: `matvec` für $A\\in\\mathbb{R}^{3\\times 4}$ und $x\\in\\mathbb{R}^{4}$, Rang einer $3\\times 3$-Matrix mit möglichem Zeilentausch, `solve` für $2\\times 2$. Welche Implementierung erfüllt alle drei Verträge?",
+          "fullSolution": "Prüfen vor Rechnen, Pivot mit Tausch, kein Hardcode."
+        },
+        {
+          "parameters": {
+            "mv": [
+              2,
+              5
+            ],
+            "sys": [
+              3,
+              3
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Shapes nach dem Ergebnis prüfen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Null-Pivot zählt als Rang ohne Tausch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein Beispielvektor reicht als Vertrag.",
+              "correct": false
+            }
+          ],
+          "prompt": "Drei Verträge: Shape von $(2,5)\\cdot(5,)$ plus `matvec`, Elimination mit Tausch für Rang, `solve` nur nach Shape. Was erfüllt alle?",
+          "fullSolution": "assert vor Op, Tausch im Rang, solve nach Prüfung."
+        },
+        {
+          "parameters": {
+            "mv": [
+              4,
+              4
+            ],
+            "sys": [
+              4,
+              4
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Erst rechnen, Shapes vom Ergebnis ableiten.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Rang: Nullzeile als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Fixture pro Funktion.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            }
+          ],
+          "prompt": "Quadratische $4\\times 4$-Pipeline: matvec, Rang, solve. Welche Kombi hält alle Verträge?",
+          "fullSolution": "Auch bei $n=n$ zuerst Shape, Rang mit Tausch, dann solve."
+        },
+        {
+          "parameters": {
+            "mv": [
+              1,
+              6
+            ],
+            "sys": [
+              2,
+              2
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Erst rechnen, dann die Shapes prüfen — das Ergebnis verrät Fehler von selbst.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Rang ohne Zeilentausch: Pivotspalte mit Null oben wird übersprungen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein hartkodierter Testfall je Funktion als Beleg.",
+              "correct": false
+            }
+          ],
+          "prompt": "Zeilenvektor $(1,6)$ mal $x\\in\\mathbb{R}^{6}$, Rang $2\\times 2$ mit Tausch, `solve` mit Shape-Guard. Welche Implementierung erfüllt alle drei?",
+          "fullSolution": "Drei getrennte Verträge, Prüfung vor der Numerik."
+        },
+        {
+          "parameters": {
+            "mv": [
+              5,
+              2
+            ],
+            "sys": [
+              3,
+              3
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "matmul zuerst, assert später.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Kein Zeilentausch im Rang.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Hardcodierte $A,x$ als Spezifikation.",
+              "correct": false
+            }
+          ],
+          "prompt": "Rechteck $5\\times 2$ für matvec (x Länge 2), Rang und solve auf $3\\times 3$. Korrekte Synthese?",
+          "fullSolution": "assert, Pivot-Tausch, solve nach Shape."
+        },
+        {
+          "parameters": {
+            "mv": [
+              8,
+              3
+            ],
+            "sys": [
+              2,
+              2
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ergebnisform ersetzt den Shape-Check.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Null-Pivot ignorieren und Rang erhöhen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Ein Doctest ersetzt den Vertrag.",
+              "correct": false
+            }
+          ],
+          "prompt": "matvec $(8,3)\\cdot(3,)$, Rang mit Zeilentausch, `solve` $2\\times 2$. Was erfüllt alle Verträge?",
+          "fullSolution": "Wie die Basis, andere Formen."
+        },
+        {
+          "parameters": {
+            "mv": [
+              2,
+              2
+            ],
+            "sys": [
+              5,
+              5
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Erst NumPy, dann prüfen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Rang ohne Tausch.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Testvektor je Funktion.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            }
+          ],
+          "prompt": "Kleine matvec $2\\times 2$, großer Löser $5\\times 5$. Welche Implementierung koppelt die drei Verträge korrekt?",
+          "fullSolution": "Unabhängig von $n$: Guard, Tausch-Rang, solve danach."
+        },
+        {
+          "parameters": {
+            "mv": [
+              6,
+              1
+            ],
+            "sys": [
+              3,
+              3
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Erst rechnen, dann die Shapes prüfen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Rang ohne Zeilentausch bei Null oben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein hartkodierter Testfall je Funktion.",
+              "correct": false
+            }
+          ],
+          "prompt": "Spalte $(6,1)$ mal Skalar-as-vector Länge 1, Rang $3\\times 3$, solve mit Shape-Check. Erfüllung aller drei?",
+          "fullSolution": "assert / Pivot-Tausch / solve nach Prüfung."
+        },
+        {
+          "parameters": {
+            "mv": [
+              3,
+              3
+            ],
+            "sys": [
+              3,
+              3
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Erst rechnen, dann die Shapes prüfen — das Ergebnis verrät Fehler von selbst.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "`assert` vor jeder Operation; Rang zählt Pivotzeilen nach Elimination mit Zeilentausch; `solve` erst nach Shape-Prüfung.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Rang ohne Zeilentausch: Pivotspalte mit Null oben wird übersprungen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein hartkodierter Testfall je Funktion als Beleg.",
+              "correct": false
+            }
+          ],
+          "prompt": "Drei Verträge in einer Synthese für $3\\times 3$: Shape plus `matvec`, Rang per Elimination mit Zeilentausch, `solve` mit Shape-Prüfung. Welche Implementierung erfüllt alle drei?",
+          "fullSolution": "Dieselbe Dreierkette wie die Basisfrage, konkret auf $3\\times 3$ gepinnt."
+        }
+      ]
     },
     {
       "caseId": "synthesis-singular-guard",
@@ -97,7 +450,398 @@
       ],
       "tolerancePolicy": {
         "mode": "none"
-      }
+      },
+      "variants": [
+        {
+          "parameters": {
+            "A": [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                4
+              ]
+            ],
+            "b": [
+              3,
+              6
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "`solve` immer aufrufen und eine NumPy-Ausnahme als Vertragsprüfung verwenden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur prüfen, ob A quadratisch ist; jede quadratische Matrix besitzt eine Inverse.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Den Rang ignorieren und für singuläre Fälle eine beliebige Lösung zurückgeben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Vertrag `solve(A,b)`: $A=[[1,2],[2,4]]$, $b=[3,6]$ (abhängig). Welche Kombination schützt singuläre Eingaben korrekt?",
+          "fullSolution": "2×2 und trotzdem det=0. Shape reicht nicht; Rang/Det vor solve, Fehler explizit."
+        },
+        {
+          "parameters": {
+            "A": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "b": [
+              1,
+              0
+            ]
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Immer `np.linalg.solve` werfen lassen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Quadratisch ⇒ invertierbar.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Irgendeine Lösung bei Rangdefekt ausgeben.",
+              "correct": false
+            }
+          ],
+          "prompt": "$A=\\mathrm{diag}(1,0)$, quadratisch, singulär. Welcher Guard vor `solve`?",
+          "fullSolution": "Rang 1. Explizite Diagnose, keine beliebige Lösung."
+        },
+        {
+          "parameters": {
+            "A": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "b": [
+              0,
+              0
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "NumPy-Exception ist der Vertrag.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "2×2 reicht als Inverse-Beweis.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nullsystem: irgendein $x$ zurückgeben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Nullmatrix $2\\times 2$, $b=0$. Wie schützt der `solve`-Vertrag?",
+          "fullSolution": "Unendlich viele Lösungen. Nicht solve, sondern explizit nicht-eindeutig melden."
+        },
+        {
+          "parameters": {
+            "n": 3,
+            "rank": 2
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "`solve` immer aufrufen und eine NumPy-Ausnahme als Vertragsprüfung verwenden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur prüfen, ob A quadratisch ist; jede quadratische Matrix besitzt eine Inverse.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Den Rang ignorieren und für singuläre Fälle eine beliebige Lösung zurückgeben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Vertrag soll `solve(A,b)` für $A\\in\\mathbb{R}^{3\\times 3}$ bereitstellen, Rang kann 2 sein. Welche Kombination schützt singuläre Eingaben?",
+          "fullSolution": "n=n ist nicht Invertierbarkeit. Rang/Det, dann erst solve."
+        },
+        {
+          "parameters": {
+            "A": [
+              [
+                2,
+                2
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "b": [
+              1,
+              1
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Exception aus NumPy als Spezifikation.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Quadratgenüge.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Eine Pseudoinverse still als Lösung.",
+              "correct": false
+            }
+          ],
+          "prompt": "$A$ hat proportionale Zeilen $[2,2]$ und $[1,1]$. Korrekter Guard für `solve`?",
+          "fullSolution": "Singular. Shape-Check plus Rang, keine stillen Ersatzlösungen."
+        },
+        {
+          "parameters": {
+            "n": 4
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Roh-Exception reicht.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Vier-gleich-vier impliziert Inverse.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Bei det=0 irgendein $x$.",
+              "correct": false
+            }
+          ],
+          "prompt": "`solve` für quadratische $4\\times 4$, einschließlich rangdefekter Fälle. Schutz?",
+          "fullSolution": "Explizite Eindeutigkeitsprüfung vor NumPy-solve."
+        },
+        {
+          "parameters": {
+            "A": [
+              [
+                1,
+                1,
+                1
+              ],
+              [
+                2,
+                2,
+                2
+              ],
+              [
+                3,
+                3,
+                3
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "solve werfen lassen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "3×3 ⇒ Inverse.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Eine Basis des Kerns als ‚die‘ Lösung.",
+              "correct": false
+            }
+          ],
+          "prompt": "Alle Zeilen von $A$ sind Vielfache von $[1,1,1]$. Welcher `solve`-Vertrag ist korrekt?",
+          "fullSolution": "Rang 1. Melden, nicht raten."
+        },
+        {
+          "parameters": {
+            "A": [
+              [
+                1,
+                2,
+                0
+              ],
+              [
+                2,
+                4,
+                0
+              ],
+              [
+                0,
+                0,
+                1
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "`solve` immer aufrufen und eine NumPy-Ausnahme als Vertragsprüfung verwenden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur prüfen, ob A quadratisch ist; jede quadratische Matrix besitzt eine Inverse.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Den Rang ignorieren und für singuläre Fälle eine beliebige Lösung zurückgeben.",
+              "correct": false
+            }
+          ],
+          "prompt": "Vertrag `solve(A,b)`: $A=[[1,2,0],[2,4,0],[0,0,1]]$ (erste zwei Zeilen abhängig). Welche Kombination schützt diese singuläre Eingabe?",
+          "fullSolution": "3×3 und det=0, weil Zeile 2 = 2·Zeile 1. Shape reicht nicht; Rang/Det vor solve."
+        },
+        {
+          "parameters": {
+            "A": [
+              [
+                1,
+                2,
+                3
+              ],
+              [
+                2,
+                4,
+                6
+              ],
+              [
+                0,
+                1,
+                1
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "`solve` immer aufrufen und eine NumPy-Ausnahme als Vertragsprüfung verwenden.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Nur prüfen, ob A quadratisch ist; jede quadratische Matrix besitzt eine Inverse.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Den Rang ignorieren und für singuläre Fälle eine beliebige Lösung zurückgeben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Shape prüfen, Eindeutigkeit über Rang/Determinante sichern und erst dann `solve` ausführen.",
+              "correct": true
+            }
+          ],
+          "prompt": "Ein Vertrag soll `solve(A,b)` für quadratische Matrizen bereitstellen. $A$ sei $[[1,2,3],[2,4,6],[0,1,1]]$ (Zeile 2 = 2·Zeile 1). Welche Kombination schützt auch diese singuläre Eingabe?",
+          "fullSolution": "Konkrete abhängige Zeilen. Shape plus Rang/Det, dann solve nur bei Eindeutigkeit."
+        }
+      ]
     },
     {
       "caseId": "synthesis-row-swap",
@@ -159,7 +903,395 @@
       ],
       "tolerancePolicy": {
         "mode": "none"
-      }
+      },
+      "variants": [
+        {
+          "parameters": {
+            "col": 0,
+            "rows": [
+              [
+                0,
+                1
+              ],
+              [
+                2,
+                3
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Nullzeile überspringen und die aktuelle Spalte als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Durch null teilen und Unendlichkeit als Pivot verwenden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Matrix transponieren, bis zufällig ein Pivot oben steht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Rangtableau, Pivotspalte 0: erste Zeile $[0,1]$, darunter $[2,3]$. Welche Implementierung erfüllt den Elimination-Vertrag?",
+          "fullSolution": "Tausch Zeile0↔Zeile1, dann eliminieren. 2 ist der Pivot, nicht die 0 zählen."
+        },
+        {
+          "parameters": {
+            "col": 1,
+            "rows": [
+              [
+                1,
+                0,
+                4
+              ],
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                5,
+                0
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Spalte 1 als Pivot zählen trotz 0.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "1/0 als Pivot.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Transponieren.",
+              "correct": false
+            }
+          ],
+          "prompt": "Aktueller Pivot bei Spalte 1, Zeile 1 ist $[0,0,1]$, Zeile 2 hat $5$ in Spalte 1. Korrekter Schritt?",
+          "fullSolution": "Zeile 2 nach oben tauschen, dann eliminieren."
+        },
+        {
+          "parameters": {
+            "col": 0,
+            "rows": [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                2,
+                0
+              ],
+              [
+                3,
+                0,
+                0
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Null oben als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Durch 0 teilen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Transponieren bis Glück.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            }
+          ],
+          "prompt": "Erste Pivotspalte, oben $[0,0,1]$, unten eine $3$ in Spalte 0. Was verlangt der Vertrag?",
+          "fullSolution": "Zeile mit 3 nach oben, dann erst skalieren/eliminieren."
+        },
+        {
+          "parameters": {
+            "col": 2,
+            "rows": "rest"
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Nullzeile überspringen und die aktuelle Spalte als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Durch null teilen und die entstehende Unendlichkeit als Pivot verwenden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Matrix transponieren, bis zufällig ein Pivot oben steht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Rangroutine trifft in Pivotspalte 2 auf eine 0 in der Pivotzeile, darunter steht eine 7. Welche Implementierung erfüllt den Vertrag?",
+          "fullSolution": "Tausch mit der 7-Zeile, dann Elimination. Keine Division durch 0."
+        },
+        {
+          "parameters": {
+            "col": 1,
+            "rows": [
+              [
+                1,
+                0,
+                2
+              ],
+              [
+                0,
+                0,
+                3
+              ],
+              [
+                0,
+                4,
+                1
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Nullzeile überspringen und die aktuelle Spalte als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Durch null teilen und Unendlichkeit als Pivot verwenden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Matrix transponieren, bis zufällig ein Pivot oben steht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Pivot bei Spalte 1, Zeile 1: $[0,0,3]$, darunter Zeile 2 mit $4$ in Spalte 1. Vertragstreuer Schritt?",
+          "fullSolution": "Tausch Zeile1↔Zeile2, Pivot 4, dann eliminieren. Die 0 ist kein Pivot."
+        },
+        {
+          "parameters": {
+            "col": 0,
+            "rows": [
+              [
+                0,
+                4
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "0 oben als Rang-1 verbuchen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Unendlich-Pivot.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "A.T benutzen.",
+              "correct": false
+            }
+          ],
+          "prompt": "$[[0,4],[1,1]]$, Startpivot (0,0). Korrekter Eliminationsschritt?",
+          "fullSolution": "Tausch, Pivot wird 1, dann eliminieren."
+        },
+        {
+          "parameters": {
+            "col": 1,
+            "rows": [
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                3
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Spalte 1 trotz 0 als Pivot.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Durch 0 teilen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Transponieren.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            }
+          ],
+          "prompt": "Nach einem Schritt sitzt in Spalte 1 oben eine 0, in Zeile 2 eine 3. Vertragstreuer Move?",
+          "fullSolution": "Zeilentausch mit der 3, dann weiter eliminieren."
+        },
+        {
+          "parameters": {
+            "col": 0,
+            "rows": [
+              [
+                0,
+                5,
+                1
+              ],
+              [
+                4,
+                2,
+                0
+              ]
+            ]
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Nullzeile überspringen und die aktuelle Spalte als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Durch null teilen und Unendlichkeit als Pivot verwenden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Matrix transponieren, bis zufällig ein Pivot oben steht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Rangtableau, Pivotspalte 0: erste Zeile $[0,5,1]$, darunter $[4,2,0]$. Welche Implementierung erfüllt den Elimination-Vertrag?",
+          "fullSolution": "Tausch mit der 4-Zeile, Pivot 4, dann eliminieren. Die 0 oben ist kein Pivot."
+        },
+        {
+          "parameters": {
+            "generic": true
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Nullzeile überspringen und die aktuelle Spalte als Pivot zählen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Eine Nichtnullzeile aus den verbleibenden Zeilen nach oben tauschen und anschließend eliminieren.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Durch null teilen und die entstehende Unendlichkeit als Pivot verwenden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Matrix transponieren, bis zufällig ein Pivot oben steht.",
+              "correct": false
+            }
+          ],
+          "prompt": "Eine Rangroutine trifft in der aktuellen Pivotspalte auf eine Null, eine Zeile darunter enthält 9. Welche Implementierung erfüllt den Elimination-Vertrag?",
+          "fullSolution": "Tausch mit der 9-Zeile, dann eliminieren — dieselbe Regel wie in der Basisfrage, konkrete 9."
+        }
+      ]
     }
   ]
 }

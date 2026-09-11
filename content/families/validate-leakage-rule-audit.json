@@ -53,6 +53,62 @@
       "graderId": "pyodide",
       "competencyIds": [
         "c-ml-cv"
+      ],
+      "variants": [
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'split', 'action': 'Train/Test-Split mit festem Seed 13'}, {'step': 'impute', 'action': 'Median nur auf Train-Spalten'}, {'step': 'fit', 'action': 'Modell auf Train gefittet'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 'feat', 'action': 'Ziel als Feature kopiert'}, {'step': 'split', 'action': 'Split'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 'scale', 'action': 'Normierung über alle Zeilen'}, {'step': 'split', 'action': 'Split'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'Ziel-Feature gebaut'}, {'step': 'b', 'action': 'Statistik über alle Zeilen'}, {'step': 'c', 'action': 'Split'}, {'step': 'd', 'action': 'Scaler auf Test fitten'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Pipeline-Audit mit Seed-13-Split: Ziel-Feature, alle Zeilen, Test-Fit. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'cut', 'action': 'Holdout 20 Prozent'}, {'step': 'fit', 'action': 'Regression auf Train'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 'leak', 'action': 'Das Ziel wird zum Feature'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 'stat', 'action': 'Mittelwert über alle Zeilen vor dem Split'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'z', 'action': 'Feature aus Ziel abgeleitet'}, {'step': 's', 'action': 'Skalierung über alle Zeilen'}, {'step': 't', 'action': 'Transform auf Test neu gefittet'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Audit-Instanz Holdout-20: drei Leak-Regeln an kurzen Schritten. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'ok', 'action': 'Nur Train-Statistiken, dann Bewertung auf Holdout'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 'bad', 'action': 'ZIEL-Spalte als FEATURE'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 'bad2', 'action': 'Quantile über alle Zeilen'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': '1', 'action': 'ziel und feature gemischt'}, {'step': '2', 'action': 'alle zeilen standardisiert'}, {'step': '3', 'action': 'ok'}, {'step': '4', 'action': 'fit auf test-daten'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Audit-Instanz Großschreibung: ZIEL/FEATURE und alle zeilen. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'clean', 'action': 'Nur Train-Statistiken Variante 3'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 't', 'action': 'ziel-feature kopie 3'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 's', 'action': 'alle zeilen mittelwert 3'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'ziel feature 3'}, {'step': 'b', 'action': 'alle zeilen 3'}, {'step': 'c', 'action': 'split'}, {'step': 'd', 'action': 'auf test fitten 3'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Auditor-Fall Kasten-A: Leak-Wörter ziel+feature in Schritt 0. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'clean', 'action': 'Nur Train-Statistiken Variante 4'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 't', 'action': 'ziel-feature kopie 4'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 's', 'action': 'alle zeilen mittelwert 4'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'ziel feature 4'}, {'step': 'b', 'action': 'alle zeilen 4'}, {'step': 'c', 'action': 'split'}, {'step': 'd', 'action': 'auf test fitten 4'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Auditor-Fall Kasten-B: 'alle Zeilen' als einzige Leckstelle. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'clean', 'action': 'Nur Train-Statistiken Variante 5'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 't', 'action': 'ziel-feature kopie 5'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 's', 'action': 'alle zeilen mittelwert 5'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'ziel feature 5'}, {'step': 'b', 'action': 'alle zeilen 5'}, {'step': 'c', 'action': 'split'}, {'step': 'd', 'action': 'auf test fitten 5'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Auditor-Fall Kasten-C: Test-Fit ohne Ziel-Leak. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'clean', 'action': 'Nur Train-Statistiken Variante 6'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 't', 'action': 'ziel-feature kopie 6'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 's', 'action': 'alle zeilen mittelwert 6'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'ziel feature 6'}, {'step': 'b', 'action': 'alle zeilen 6'}, {'step': 'c', 'action': 'split'}, {'step': 'd', 'action': 'auf test fitten 6'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Auditor-Fall Kasten-D: leere Pipeline plus ein sauberer Schritt. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'clean', 'action': 'Nur Train-Statistiken Variante 7'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 't', 'action': 'ziel-feature kopie 7'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 's', 'action': 'alle zeilen mittelwert 7'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'ziel feature 7'}, {'step': 'b', 'action': 'alle zeilen 7'}, {'step': 'c', 'action': 'split'}, {'step': 'd', 'action': 'auf test fitten 7'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Auditor-Fall Kasten-E: zwei Leaks an Index 1 und 2. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        },
+        {
+          "parameters": {
+            "tests": "clean = [{'step': 'clean', 'action': 'Nur Train-Statistiken Variante 8'}]\n__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])\ntarget_leak = [{'step': 't', 'action': 'ziel-feature kopie 8'}]\n__check('Ziel-Leak', audit_pipeline(target_leak) == [i for i, st in enumerate(target_leak) if 'ziel' in st['action'].lower() and 'feature' in st['action'].lower()])\nscaler_leak = [{'step': 's', 'action': 'alle zeilen mittelwert 8'}]\n__check('Skalier-Leak', audit_pipeline(scaler_leak) == [i for i, st in enumerate(scaler_leak) if 'alle zeilen' in st['action'].lower()])\nmulti_leak = [{'step': 'a', 'action': 'ziel feature 8'}, {'step': 'b', 'action': 'alle zeilen 8'}, {'step': 'c', 'action': 'split'}, {'step': 'd', 'action': 'auf test fitten 8'}]\ndef __want(steps):\n    leaks = []\n    for idx, step in enumerate(steps):\n        action = str(step.get('action', '')).lower()\n        if ('ziel' in action and 'feature' in action) or ('alle zeilen' in action) or ('test' in action and 'fit' in action):\n            leaks.append(idx)\n    return leaks\n__check('Mehrfach-Leaks sortiert', audit_pipeline(multi_leak) == __want(multi_leak))\n__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])\nhidden_case = [{'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'}, {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'}]\n__check('unbekannte Pipeline: nur Regel 1', audit_pipeline(hidden_case) == [0])\n"
+          },
+          "prompt": "Auditor-Fall Kasten-F: nur Regel 3 (test+fit) trifft. Implementiere `audit_pipeline` mit den drei Keyword-Regeln."
+        }
       ]
     },
     {
@@ -103,6 +159,62 @@
       "graderId": "pyodide",
       "competencyIds": [
         "c-ml-cv"
+      ],
+      "variants": [
+        {
+          "parameters": {
+            "tests": "steps = ['split train and test', 'fit scaler on train rows', 'score on test rows']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['Mittelwert über alle Zeilen berechnen', 'fit scaler on train', 'fit model on test features']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "Sauberer Split, Leak über alle Zeilen und Test-Fit. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['holdout 30 percent', 'fit on train features']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['ZIEL als FEATURE verwenden', 'fit on train']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit: ZIEL als FEATURE, sonst sauber. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['standardize train columns', 'fit model on train']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['Statistik über alle Zeilen', 'fit model on train', 'refit on test']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit: alle Zeilen plus refit on test. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['encode categories on train']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['target leak: ziel im feature', 'ok', 'fit the test set']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit Variante D: ziel/feature und test+fit. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['pipeline ohne leak schritt']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['alle zeilen min-max', 'fit train']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit Variante E: nur alle-Zeilen-Leak. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['train imputer', 'train model']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['fit transformer on test rows', 'evaluate']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit Variante F: nur Test-Fit. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['split', 'fit train', 'score test']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['Feature aus Ziel', 'alle Zeilen skalieren', 'fit on test data']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit Variante G: alle drei Regeln. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['nothing leaks here']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['ZIEL-FEATURE-Kopplung', 'ok']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit Variante H: nur Regel 1. Implementiere `audit_pipeline` auf Schritt-Strings."
+        },
+        {
+          "parameters": {
+            "tests": "steps = ['fit scaler on train', 'fit model on train features', 'score on test rows']\n__check('clean', audit_pipeline(steps) == [])\nleaky = ['Mittelwert über alle Zeilen', 'fit model on test']\ndef __want(items):\n    out = []\n    for i, step in enumerate(items):\n        text = str(step).lower()\n        if ('ziel' in text and 'feature' in text) or 'alle zeilen' in text or ('test' in text and 'fit' in text):\n            out.append(i)\n    return out\n__check('leaks', audit_pipeline(leaky) == __want(leaky))\n__check('case-insensitive', audit_pipeline(['ZIEL als FEATURE verwenden']) == [0])\n"
+          },
+          "prompt": "String-Audit Variante I: Statistik plus Test-Fit. Implementiere `audit_pipeline` auf Schritt-Strings."
+        }
       ]
     }
   ]

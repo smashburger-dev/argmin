@@ -71,7 +71,306 @@
         "mode": "none"
       },
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "fpCost": 40,
+            "fnCost": 0.04
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als Spam klassifizieren, weil ein FP rund 1000-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Schwellenwert senken (Richtung 0,1): Fast alles als Spam.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Beim Standard 0,5 bleiben: immer optimal.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Schwellenwert beeinflusst die Kosten nicht — nur Accuracy.",
+              "correct": false
+            }
+          ],
+          "prompt": "Spamfilter: FP (legitime Mail im Spam) 40 €, FN 0,04 €. Welche Schwellen-Strategie senkt die erwarteten Kosten?",
+          "fullSolution": "FP/FN = 1000. Schwelle hoch, weniger FP."
+        },
+        {
+          "parameters": {
+            "fpCost": 200,
+            "fnCost": 1
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle senken, um keine Positive zu verpassen.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Bei 0,5 bleiben.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit positiv klassifizieren, weil ein FP viel teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nur Accuracy zählt.",
+              "correct": false
+            }
+          ],
+          "prompt": "Betrugsalarm: falsches Einfrieren eines Kontos (FP) kostet 200, übersehener Kleinstbetrug (FN) 1. Strategie?",
+          "fullSolution": "FP dominiert. Weniger Alarme, höhere Schwelle."
+        },
+        {
+          "parameters": {
+            "fpCost": 80,
+            "fnCost": 0.08
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle gegen 0,1.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Immer 0,5.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Schwelle egal, Accuracy reicht.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur sehr sichere Fälle positiv, weil FP ≈ 1000·FN kostet.",
+              "correct": true
+            }
+          ],
+          "prompt": "Werbeblocker: fälschlich geblockte legitime Anzeige 80, durchgerutschte Spam-Anzeige 0,08. Schwelle?",
+          "fullSolution": "Teure FP → Schwelle hoch."
+        },
+        {
+          "parameters": {
+            "fpCost": 25,
+            "fnCost": 0.05
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als positiv klassifizieren, weil ein FP 500-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Schwelle senken Richtung 0,1.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Bei 0,5 bleiben.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Accuracy ersetzt die Kosten.",
+              "correct": false
+            }
+          ],
+          "prompt": "Moderation: falsches Entfernen eines harmlosen Posts 25, übersehenes toxisches Kurzposting 0,05. Kostenminimale Schwelle?",
+          "fullSolution": "FP/FN = 500. Anheben."
+        },
+        {
+          "parameters": {
+            "fpCost": 100,
+            "fnCost": 0.1
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert senken (Richtung 0,1): Fast alles wird als Spam markiert.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als Spam klassifizieren, weil ein FP 1000-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Beim Standard 0,5 bleiben: kostenunabhängig optimal.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Schwellenwert beeinflusst die Kostenbilanz nicht — entscheidend ist allein die Accuracy.",
+              "correct": false
+            }
+          ],
+          "prompt": "Filter: FP 100 €, FN 0,10 €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?",
+          "fullSolution": "Faktor 1000 wie im Basisbeispiel, andere Euro-Beträge. Schwelle hoch."
+        },
+        {
+          "parameters": {
+            "fpCost": 60,
+            "fnCost": 0.2
+          },
+          "expected": {
+            "correctChoice": "c"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle senken.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "0,5 ist immer das Optimum.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit positiv, weil FP deutlich teurer ist als FN.",
+              "correct": true
+            },
+            {
+              "id": "d",
+              "text": "Nur die Trefferquote zählt.",
+              "correct": false
+            }
+          ],
+          "prompt": "QA-Scanner: Ausschuss eines guten Teils (FP) 60, entgangener Mini-Defekt (FN) 0,20. Strategie?",
+          "fullSolution": "FP teurer → weniger Positive, Schwelle rauf."
+        },
+        {
+          "parameters": {
+            "fpCost": 15,
+            "fnCost": 0.03
+          },
+          "expected": {
+            "correctChoice": "d"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwelle gegen 0.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Fix 0,5.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Accuracy unabhängig vom Threshold.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur sehr sichere Positive, weil FP ≈ 500·FN.",
+              "correct": true
+            }
+          ],
+          "prompt": "Phishing-Warnung: Fehlalarm an eine Kundin 15, übersehene Nuisance-Mail 0,03. Schwelle?",
+          "fullSolution": "FP-dominant. Anheben."
+        },
+        {
+          "parameters": {
+            "fpCost": 500,
+            "fnCost": 0.5
+          },
+          "expected": {
+            "correctChoice": "a"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit alarmieren, weil ein FP 1000-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Schwelle senken, damit nichts durchrutscht.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "0,5 beibehalten.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Schwelle ändert die Kosten nicht.",
+              "correct": false
+            }
+          ],
+          "prompt": "SOC-Alert: falscher Incident-Call (FP) 500, verpasste Low-Severity-Mail (FN) 0,5. Kostenstrategie?",
+          "fullSolution": "Faktor 1000. Höhere Schwelle, weniger Alarme."
+        },
+        {
+          "parameters": {
+            "fpCost": 50,
+            "fnCost": 0.1
+          },
+          "expected": {
+            "correctChoice": "b"
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Schwellenwert senken (Richtung 0,1): Fast alles wird als Spam markiert, dadurch geht kein Spam unter.",
+              "correct": false
+            },
+            {
+              "id": "b",
+              "text": "Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit als Spam klassifizieren, weil ein FP 500-mal teurer ist als ein FN.",
+              "correct": true
+            },
+            {
+              "id": "c",
+              "text": "Beim Standard 0,5 bleiben: Dieser Wert ist kostenunabhängig immer optimal.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Der Schwellenwert beeinflusst die Kostenbilanz nicht — entscheidend ist allein die Accuracy.",
+              "correct": false
+            }
+          ],
+          "prompt": "Ein Spamfilter gibt Wahrscheinlichkeiten aus. FP kostet 50 €, FN 0,10 €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?",
+          "fullSolution": "Wie die Basisfrage mit FN 0,10 statt 0,05: FP bleibt dominant, Schwelle hoch."
+        }
+      ]
     },
     {
       "caseId": "sigmoid-predict-numpy",
@@ -123,7 +422,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 2.0\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-1.7))) - (1 - float(np.asarray(sigmoid(1.7))))) < 1e-12)\nyt, yp, t0 = [1, 0, 1, 0, 1, 0], [0.9, 0.8, 0.4, 0.3, 0.6, 0.2], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.7)) == __cm(yt, yp, 0.7))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Sigmoid und Konfusion: Scores [0.9, 0.8, 0.4, 0.3, 0.6, 0.2], Labels [1, 0, 1, 0, 1, 0], Schwelle 0.5."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 1.2\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-0.8))) - (1 - float(np.asarray(sigmoid(0.8))))) < 1e-12)\nyt, yp, t0 = [1, 1, 0, 0, 1], [0.7, 0.4, 0.6, 0.1, 0.9], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.8)) == __cm(yt, yp, 0.8))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "`sigmoid`, `confusion` und `precision_recall_f1` auf y_true=[1, 1, 0, 0, 1], p=[0.7, 0.4, 0.6, 0.1, 0.9]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 3.0\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-2.0))) - (1 - float(np.asarray(sigmoid(2.0))))) < 1e-12)\nyt, yp, t0 = [0, 1, 0, 1, 0, 1], [0.2, 0.8, 0.49, 0.51, 0.1, 0.99], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.6)) == __cm(yt, yp, 0.6))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Logistische Schwelle 0.5 für Wahrscheinlichkeiten [0.2, 0.8, 0.49, 0.51, 0.1, 0.99] gegen [0, 1, 0, 1, 0, 1]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 0.5\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-0.5))) - (1 - float(np.asarray(sigmoid(0.5))))) < 1e-12)\nyt, yp, t0 = [1, 0, 1, 1], [0.3, 0.3, 0.8, 0.55], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.9)) == __cm(yt, yp, 0.9))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Numpy-Sigmoid plus TP/FP/FN/TN zu den Paaren [1, 0, 1, 1]/[0.3, 0.3, 0.8, 0.55]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 4.0\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-1.0))) - (1 - float(np.asarray(sigmoid(1.0))))) < 1e-12)\nyt, yp, t0 = [1, 1, 1, 0, 0], [0.95, 0.2, 0.6, 0.7, 0.05], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.75)) == __cm(yt, yp, 0.75))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Klassifikationszählung mit p>=0.5 auf [0.95, 0.2, 0.6, 0.7, 0.05]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 1.5\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-2.5))) - (1 - float(np.asarray(sigmoid(2.5))))) < 1e-12)\nyt, yp, t0 = [0, 0, 1, 1, 0, 1, 0], [0.4, 0.6, 0.4, 0.9, 0.1, 0.2, 0.8], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.65)) == __cm(yt, yp, 0.65))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Präzision/Recall/F1 aus der Konfusion der Scores [0.4, 0.6, 0.4, 0.9, 0.1, 0.2, 0.8]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 2.2\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-0.3))) - (1 - float(np.asarray(sigmoid(0.3))))) < 1e-12)\nyt, yp, t0 = [1, 0, 0, 1], [0.51, 0.49, 0.2, 0.8], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.85)) == __cm(yt, yp, 0.85))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Referenz-Sigmoid und Cut 0.5: Labels [1, 0, 0, 1]."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 0.8\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-1.8))) - (1 - float(np.asarray(sigmoid(1.8))))) < 1e-12)\nyt, yp, t0 = [1, 1, 0, 0, 1, 0], [0.99, 0.01, 0.7, 0.3, 0.55, 0.45], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.6)) == __cm(yt, yp, 0.6))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Binäre Entscheider auf [0.99, 0.01, 0.7, 0.3, 0.55, 0.45] (true=[1, 1, 0, 0, 1, 0])."
+        },
+        {
+          "parameters": {
+            "tests": "import numpy as np\ndef __sig(z):\n    return 1.0 / (1.0 + np.exp(-np.asarray(z, dtype=float)))\ndef __cm(y_true, y_pred, threshold):\n    tp = fp = fn = tn = 0\n    for t, p in zip(y_true, y_pred):\n        pred = 1 if float(p) >= threshold else 0\n        if int(t) == 1 and pred == 1:\n            tp += 1\n        elif int(t) == 0 and pred == 1:\n            fp += 1\n        elif int(t) == 1 and pred == 0:\n            fn += 1\n        else:\n            tn += 1\n    return {'tp': tp, 'fp': fp, 'fn': fn, 'tn': tn}\ndef __prf(cm):\n    tp, fp, fn = cm['tp'], cm['fp'], cm['fn']\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 0.0 if precision + recall == 0 else 2 * precision * recall / (precision + recall)\n    return (float(precision), float(recall), float(f1))\n__check('sigmoid(0)=0.5', abs(float(np.asarray(sigmoid(0))) - 0.5) < 1e-12)\nz = 2.7\n__check('sigmoid wert', abs(float(np.asarray(sigmoid(z))) - float(__sig(z))) < 1e-9)\n__check('symmetrie', abs(float(np.asarray(sigmoid(-2.7))) - (1 - float(np.asarray(sigmoid(2.7))))) < 1e-12)\nyt, yp, t0 = [0, 1, 1, 0, 1], [0.15, 0.85, 0.5, 0.5, 0.35], 0.5\ncm = confusion(yt, yp, t0)\n__check('konfusion', dict(cm) == __cm(yt, yp, t0))\np, r, f = precision_recall_f1(cm)\nwp, wr, wf = __prf(__cm(yt, yp, t0))\n__check('precision', abs(p - wp) < 1e-9)\n__check('recall', abs(r - wr) < 1e-9)\n__check('f1', abs(f - wf) < 1e-9)\ncm0 = confusion([0, 0], [0.1, 0.2], 0.5)\n__check('nur TN', dict(cm0) == {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 2})\n__check('ohne positive', precision_recall_f1(cm0) == (0.0, 0.0, 0.0))\n__check('grenze zaehlt als 1', dict(confusion([1], [0.5], 0.5)) == {'tp': 1, 'fp': 0, 'fn': 0, 'tn': 0})\n__check('hoeherer schwellenwert', dict(confusion(yt, yp, 0.8)) == __cm(yt, yp, 0.8))\n\ntry:\n    confusion([1, 0], [0.5], 0.5)\n    __check('ValueError bei Laengen-Mismatch', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei Laengen-Mismatch', True)\nexcept Exception as e:\n    __check('ValueError bei Laengen-Mismatch', False, type(e).__name__)\n\n"
+          },
+          "prompt": "`sigmoid`/`confusion` testen mit true=[0, 1, 1, 0, 1], pred=[0.15, 0.85, 0.5, 0.5, 0.35], t=0.5."
+        }
+      ]
     },
     {
       "caseId": "confusion-cost-report",
@@ -175,7 +530,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 2, 'fp': 1, 'fn': 3, 'tn': 4}\n__check('kostenformel', total_cost(cm, 8.0, 2.0) == __total(cm, 8.0, 2.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.9, 0.7, 0.4, 0.2, 0.8], [1, 1, 0, 0, 1]\nb1 = best_threshold(y1, t1, 5.0, 2.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 5.0, 2.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 5.0, 2.0))\ny2, t2 = [0.6, 0.3, 0.55, 0.1], [1, 0, 1, 0]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 2.0, 9.0)) - __best(y2, t2, 2.0, 9.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Kosten 8.0/2.0 auf Matrix {'tp': 2, 'fp': 1, 'fn': 3, 'tn': 4}; `best_threshold` sweep 0.1..0.9 für p=[0.9, 0.7, 0.4, 0.2, 0.8]."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 4, 'fp': 2, 'fn': 1, 'tn': 3}\n__check('kostenformel', total_cost(cm, 3.0, 7.0) == __total(cm, 3.0, 7.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.95, 0.4, 0.2, 0.8, 0.6, 0.1], [1, 0, 0, 1, 1, 0]\nb1 = best_threshold(y1, t1, 10.0, 1.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 10.0, 1.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 10.0, 1.0))\ny2, t2 = [0.7, 0.2, 0.7, 0.2], [1, 0, 0, 1]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 1.0, 20.0)) - __best(y2, t2, 1.0, 20.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "`total_cost` und cost-minimaler Schwellenwert: y_prob=[0.95, 0.4, 0.2, 0.8, 0.6, 0.1], y_true=[1, 0, 0, 1, 1, 0], FP=10.0, FN=1.0."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 1, 'fp': 0, 'fn': 2, 'tn': 5}\n__check('kostenformel', total_cost(cm, 4.0, 4.0) == __total(cm, 4.0, 4.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.3, 0.8, 0.5, 0.9, 0.1], [0, 1, 1, 1, 0]\nb1 = best_threshold(y1, t1, 2.0, 8.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 2.0, 8.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 2.0, 8.0))\ny2, t2 = [0.4, 0.6, 0.4, 0.6], [1, 1, 0, 0]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 6.0, 1.0)) - __best(y2, t2, 6.0, 1.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Cost-sensitive Schwelle für Wahrscheinlichkeiten [0.3, 0.8, 0.5, 0.9, 0.1] gegen [0, 1, 1, 1, 0]."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 0, 'fp': 3, 'fn': 3, 'tn': 1}\n__check('kostenformel', total_cost(cm, 1.0, 5.0) == __total(cm, 1.0, 5.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.55, 0.45, 0.85, 0.15, 0.65], [1, 0, 1, 0, 0]\nb1 = best_threshold(y1, t1, 8.0, 3.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 8.0, 3.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 8.0, 3.0))\ny2, t2 = [0.9, 0.1, 0.8, 0.2], [1, 0, 1, 0]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 3.0, 3.0)) - __best(y2, t2, 3.0, 3.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Fehlerkostenreport: Beispielmatrix {'tp': 0, 'fp': 3, 'fn': 3, 'tn': 1}, Sweep auf [0.55, 0.45, 0.85, 0.15, 0.65]."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 5, 'fp': 1, 'fn': 0, 'tn': 2}\n__check('kostenformel', total_cost(cm, 12.0, 1.0) == __total(cm, 12.0, 1.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.2, 0.4, 0.6, 0.8, 0.99, 0.01], [0, 0, 1, 1, 1, 0]\nb1 = best_threshold(y1, t1, 4.0, 10.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 4.0, 10.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 4.0, 10.0))\ny2, t2 = [0.35, 0.65, 0.35, 0.65], [0, 1, 1, 0]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 9.0, 2.0)) - __best(y2, t2, 9.0, 2.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "FP kostet 4.0, FN kostet 10.0; suche t auf [0.2, 0.4, 0.6, 0.8, 0.99, 0.01]."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 3, 'fp': 3, 'fn': 1, 'tn': 1}\n__check('kostenformel', total_cost(cm, 2.5, 2.5) == __total(cm, 2.5, 2.5))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.75, 0.25, 0.6, 0.4, 0.9], [1, 0, 1, 0, 1]\nb1 = best_threshold(y1, t1, 7.0, 1.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 7.0, 1.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 7.0, 1.0))\ny2, t2 = [0.5, 0.5, 0.2, 0.8], [1, 0, 0, 1]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 1.5, 6.0)) - __best(y2, t2, 1.5, 6.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "`best_threshold([0.75, 0.25, 0.6, 0.4, 0.9], [1, 0, 1, 0, 1], 7.0, 1.0)` — Gleichstand → kleinstes t."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 2, 'fp': 0, 'fn': 4, 'tn': 2}\n__check('kostenformel', total_cost(cm, 1.0, 9.0) == __total(cm, 1.0, 9.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.11, 0.31, 0.51, 0.71, 0.91], [1, 0, 1, 0, 1]\nb1 = best_threshold(y1, t1, 3.0, 6.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 3.0, 6.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 3.0, 6.0))\ny2, t2 = [0.8, 0.2, 0.8, 0.2, 0.5], [1, 0, 0, 1, 1]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 5.0, 5.0)) - __best(y2, t2, 5.0, 5.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Tabelliere Kosten der Konfusion {'tp': 2, 'fp': 0, 'fn': 4, 'tn': 2} und sweep die Scores [0.11, 0.31, 0.51, 0.71, 0.91]."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 6, 'fp': 2, 'fn': 2, 'tn': 0}\n__check('kostenformel', total_cost(cm, 6.0, 3.0) == __total(cm, 6.0, 3.0))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.42, 0.58, 0.33, 0.67, 0.2, 0.8], [0, 1, 0, 1, 0, 1]\nb1 = best_threshold(y1, t1, 2.0, 12.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 2.0, 12.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 2.0, 12.0))\ny2, t2 = [0.9, 0.8, 0.1, 0.2], [1, 1, 0, 0]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 4.0, 1.0)) - __best(y2, t2, 4.0, 1.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Gewichtete Konfusion (2.0/12.0) auf [0.42, 0.58, 0.33, 0.67, 0.2, 0.8] vs. [0, 1, 0, 1, 0, 1]."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __total(cm, fp_cost, fn_cost):\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('missing')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\ndef __best(y_prob, y_true, fp_cost, fn_cost):\n    best_t = best_c = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = __total(cm, fp_cost, fn_cost)\n        if best_c is None or c < best_c:\n            best_t, best_c = t, c\n    return float(best_t)\ncm = {'tp': 1, 'fp': 4, 'fn': 1, 'tn': 2}\n__check('kostenformel', total_cost(cm, 9.0, 1.5) == __total(cm, 9.0, 1.5))\n__check('fehlerfrei 0', total_cost({'tp': 5, 'fp': 0, 'fn': 0, 'tn': 5}, 10, 2) == 0.0)\ny1, t1 = [0.05, 0.25, 0.45, 0.65, 0.85], [0, 1, 0, 1, 1]\nb1 = best_threshold(y1, t1, 11.0, 2.0)\n__check('best threshold', abs(float(b1) - __best(y1, t1, 11.0, 2.0)) < 1e-12)\n__check('deterministisch', b1 == best_threshold(y1, t1, 11.0, 2.0))\ny2, t2 = [0.3, 0.7, 0.3, 0.7], [1, 1, 0, 0]\n__check('zweite instanz', abs(float(best_threshold(y2, t2, 2.0, 15.0)) - __best(y2, t2, 2.0, 15.0)) < 1e-12)\n\ntry:\n    total_cost({'tp': 1, 'fp': 0, 'tn': 2}, 1.0, 1.0)\n    __check('ValueError bei fehlendem Schluessel', False, 'kein ValueError')\nexcept ValueError:\n    __check('ValueError bei fehlendem Schluessel', True)\nexcept Exception as e:\n    __check('ValueError bei fehlendem Schluessel', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Kostenmatrix plus Schwellen-Sweep der Klassifikation [0, 1, 0, 1, 1] / [0.05, 0.25, 0.45, 0.65, 0.85]."
+        }
+      ]
     },
     {
       "caseId": "metric-code-output-trace",
@@ -220,7 +631,108 @@
         "mode": "whitespace-normalized"
       },
       "activityType": "predict-output",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"rote Autos fahren\", \"blaue Autos fahren laut\"))\nprint(token_f1(\"Hund\", \"Katze\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.57\n0.0"
+          },
+          "prompt": "Token-F1: rote/blaue Autos vs. Hund/Katze. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.57\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"ein kleiner Hund\", \"ein kleiner Hund bellt\"))\nprint(token_f1(\"ja\", \"nein\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.86\n0.0"
+          },
+          "prompt": "Token-F1: kleiner Hund vs. ja/nein. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.86\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"alpha beta gamma\", \"alpha beta\"))\nprint(token_f1(\"x\", \"y z\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.8\n0.0"
+          },
+          "prompt": "Token-F1: alpha beta gamma vs. x/y. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.8\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"die lieferzeit betraegt drei tage\", \"die lieferzeit betraegt zwei tage\"))\nprint(token_f1(\"open\", \"close\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.8\n0.0"
+          },
+          "prompt": "Token-F1: Lieferzeit-Sätze. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.8\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"a a b\", \"a b b\"))\nprint(token_f1(\"foo\", \"bar\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.67\n0.0"
+          },
+          "prompt": "Token-F1 mit Wiederholungen a/b. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.67\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"Kurztext\", \"Kurztext extra\"))\nprint(token_f1(\"nein\", \"nein\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.67\n1.0"
+          },
+          "prompt": "Token-F1: Kurztext und identisches nein. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.67\n1.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"vier fische schwimmen\", \"drei fische schwimmen dort\"))\nprint(token_f1(\"rot\", \"blau\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.57\n0.0"
+          },
+          "prompt": "Token-F1: Fische vs. rot/blau. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.57\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"modell sagt treffer\", \"modell sagt fehlalarm\"))\nprint(token_f1(\"yes\", \"no\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.67\n0.0"
+          },
+          "prompt": "Token-F1: Modell-Sätze. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.67\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        },
+        {
+          "parameters": {
+            "snippet": "def token_f1(answer, gold):\n    a = answer.lower().split()\n    g = gold.lower().split()\n    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))\n    if common == 0:\n        return 0.0\n    p = common / len(a)\n    r = common / len(g)\n    return round(2 * p * r / (p + r), 2)\n\nprint(token_f1(\"eine frage zwei woerter\", \"eine frage drei woerter\"))\nprint(token_f1(\"leer\", \"voll\"))\n"
+          },
+          "expected": {
+            "kind": "output-lines",
+            "output": "0.75\n0.0"
+          },
+          "prompt": "Token-F1: Frage/Wörter. Sage beide print-Zeilen vorher.",
+          "fullSolution": "Die Ausgabe ist <code>0.75\n0.0</code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
+        }
+      ]
     },
     {
       "caseId": "confusion-from-rows",
@@ -273,7 +785,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('pos', 'pos'), ('neg', 'pos'), ('pos', 'neg'), ('neg', 'neg')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['Ja ', 'Nein', 'Jein'], ['Ja', 'Nein', 'Nein']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('drei Katzen sitzen', 'zwei Katzen sitzen hier') - __tok('drei Katzen sitzen', 'zwei Katzen sitzen hier')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Zähle TP/FP/FN/TN in [('pos', 'pos'), ('neg', 'pos'), ('pos', 'neg'), ('neg', 'neg')]; plus exact_match und token_f1."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('pos', 'pos'), ('pos', 'pos'), ('neg', 'neg'), ('pos', 'neg')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['ok', 'nein', 'ok'], ['ok', 'ok', 'ok']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('alpha beta', 'beta gamma') - __tok('alpha beta', 'beta gamma')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "`confusion`/`prf` auf den Paaren [('pos', 'pos'), ('pos', 'pos'), ('neg', 'neg'), ('pos', 'neg')]."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('neg', 'pos'), ('neg', 'pos'), ('pos', 'neg')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['A', 'B'], ['A', 'B']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('rot gruen blau', 'rot blau') - __tok('rot gruen blau', 'rot blau')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Vier-Felder-Tafel der (pred, actual)-Liste [('neg', 'pos'), ('neg', 'pos'), ('pos', 'neg')]."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('pos', 'pos'), ('neg', 'neg'), ('neg', 'neg'), ('pos', 'pos'), ('neg', 'pos')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['x ', 'y', 'z'], ['x', 'y', 'w']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('ein kurzer satz', 'kurzer satz extra') - __tok('ein kurzer satz', 'kurzer satz extra')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Konfusionszählung und Token-F1 für [('pos', 'pos'), ('neg', 'neg'), ('neg', 'neg'), ('pos', 'pos'), ('neg', 'pos')]."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('pos', 'neg'), ('pos', 'neg'), ('neg', 'pos'), ('neg', 'neg')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['foo', 'bar'], ['foo', 'baz']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('token token gold', 'token gold') - __tok('token token gold', 'token gold')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Zellen plus Tokenüberlappung: Zeilen [('pos', 'neg'), ('pos', 'neg'), ('neg', 'pos'), ('neg', 'neg')]."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('pos', 'pos'), ('pos', 'pos'), ('pos', 'pos'), ('neg', 'neg')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['Ja', 'Ja'], ['Ja', 'Nein']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('a a b', 'a b b') - __tok('a a b', 'a b b')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Aggregiere die Labelpaare [('pos', 'pos'), ('pos', 'pos'), ('pos', 'pos'), ('neg', 'neg')] und prüfe prf."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('neg', 'neg'), ('pos', 'pos'), ('neg', 'pos')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['nein', 'ja '], ['nein', 'ja']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('katze hund', 'hund vogel katze') - __tok('katze hund', 'hund vogel katze')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Wahr/Pred-Report für [('neg', 'neg'), ('pos', 'pos'), ('neg', 'pos')], plus String-Metriken."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('pos', 'neg'), ('neg', 'pos'), ('pos', 'pos'), ('neg', 'neg'), ('pos', 'pos')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['aa', 'bb', 'cc'], ['aa', 'bb', 'dd']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('eins zwei drei', 'zwei drei vier') - __tok('eins zwei drei', 'zwei drei vier')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Konfusionszähler auf [('pos', 'neg'), ('neg', 'pos'), ('pos', 'pos'), ('neg', 'neg'), ('pos', 'pos')]; exact_match_rate und token_f1 bleiben."
+        },
+        {
+          "parameters": {
+            "tests": "import re\nfrom collections import Counter\ndef __words(text):\n    stripped = re.sub('[!\"$%&\\'()*+,-./:;<=>?@\\\\[\\\\]^_`{|}~„“”‚‘’\\\\\\\\]', \" \", text.lower())\n    return stripped.split()\ndef __conf(rows):\n    tp = fp = fn = tn = 0\n    for predicted, actual in rows:\n        if predicted == \"pos\" and actual == \"pos\":\n            tp += 1\n        elif predicted == \"pos\" and actual == \"neg\":\n            fp += 1\n        elif predicted == \"neg\" and actual == \"pos\":\n            fn += 1\n        else:\n            tn += 1\n    return tp, fp, fn, tn\ndef __prf(tp, fp, fn):\n    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0\n    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0\n    f1 = 2 * precision * recall / (precision + recall) if (precision + recall) > 0 else 0.0\n    return {\"precision\": precision, \"recall\": recall, \"f1\": f1}\ndef __tok(answer, gold):\n    a, g = __words(answer), __words(gold)\n    if not a or not g:\n        return 0.0\n    ca, cg = Counter(a), Counter(g)\n    common = sum(min(ca[t], cg[t]) for t in set(a))\n    if common == 0:\n        return 0.0\n    p, r = common / len(a), common / len(g)\n    return 2 * p * r / (p + r)\nROWS = [('neg', 'pos'), ('pos', 'pos'), ('pos', 'neg'), ('neg', 'neg')]\n__check('konfusionszaehlung', confusion(ROWS) == __conf(ROWS))\ntp, fp, fn, tn = __conf(ROWS)\nm = prf(tp, fp, fn)\nwant = __prf(tp, fp, fn)\n__check('prf werte', abs(m['precision'] - want['precision']) < 1e-12 and abs(m['recall'] - want['recall']) < 1e-12 and abs(m['f1'] - want['f1']) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\nans, gold = ['links', 'rechts'], ['links', 'rechts']\n__check('exact match rate', exact_match_rate(ans, gold) == sum(1 for a, g in zip(ans, gold) if a.strip() == g.strip()) / len(gold))\n__check('token f1 wert', abs(token_f1('die kleine maus', 'kleine maus rennt') - __tok('die kleine maus', 'kleine maus rennt')) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\n\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nexcept Exception as e:\n    __check('laengenfehler -> ValueError', False, type(e).__name__)\n\n"
+          },
+          "prompt": "Aus [('neg', 'pos'), ('pos', 'pos'), ('pos', 'neg'), ('neg', 'neg')] die vier Kennzahlen und Token-F1 ableiten."
+        }
+      ]
     },
     {
       "caseId": "contains-injection-rules",
@@ -375,7 +943,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'nord': {'tp': 10, 'fp': 6, 'fn': 4, 'tn': 20}, 'sued': {'tp': 12, 'fp': 3, 'fn': 5, 'tn': 30}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'alt': {'tp': 8, 'fp': 8, 'fn': 2, 'tn': 22}, 'neu': {'tp': 15, 'fp': 5, 'fn': 5, 'tn': 25}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen nord / sued mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'a': {'tp': 20, 'fp': 5, 'fn': 5, 'tn': 20}, 'b': {'tp': 18, 'fp': 2, 'fn': 6, 'tn': 24}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'x': {'tp': 9, 'fp': 9, 'fn': 3, 'tn': 27}, 'y': {'tp': 14, 'fp': 4, 'fn': 6, 'tn': 26}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen a / b mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'k1': {'tp': 30, 'fp': 10, 'fn': 10, 'tn': 50}, 'k2': {'tp': 25, 'fp': 5, 'fn': 15, 'tn': 55}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'p': {'tp': 12, 'fp': 8, 'fn': 4, 'tn': 16}, 'q': {'tp': 16, 'fp': 4, 'fn': 8, 'tn': 12}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen k1 / k2 mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'g': {'tp': 7, 'fp': 7, 'fn': 3, 'tn': 21}, 'h': {'tp': 11, 'fp': 1, 'fn': 5, 'tn': 19}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'u': {'tp': 40, 'fp': 10, 'fn': 10, 'tn': 40}, 'v': {'tp': 35, 'fp': 5, 'fn': 15, 'tn': 45}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen g / h mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'rot': {'tp': 15, 'fp': 5, 'fn': 5, 'tn': 25}, 'blau': {'tp': 10, 'fp': 10, 'fn': 10, 'tn': 20}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'m': {'tp': 6, 'fp': 2, 'fn': 2, 'tn': 10}, 'n': {'tp': 8, 'fp': 4, 'fn': 4, 'tn': 8}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen rot / blau mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'ost': {'tp': 22, 'fp': 8, 'fn': 6, 'tn': 24}, 'west': {'tp': 18, 'fp': 4, 'fn': 10, 'tn': 28}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'i': {'tp': 5, 'fp': 5, 'fn': 5, 'tn': 15}, 'j': {'tp': 9, 'fp': 3, 'fn': 3, 'tn': 15}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen ost / west mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'alpha': {'tp': 16, 'fp': 4, 'fn': 8, 'tn': 32}, 'beta': {'tp': 20, 'fp': 8, 'fn': 4, 'tn': 28}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'r': {'tp': 11, 'fp': 7, 'fn': 2, 'tn': 20}, 's': {'tp': 13, 'fp': 3, 'fn': 7, 'tn': 17}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen alpha / beta mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'t1': {'tp': 9, 'fp': 3, 'fn': 3, 'tn': 15}, 't2': {'tp': 12, 'fp': 6, 'fn': 0, 'tn': 12}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'c': {'tp': 25, 'fp': 15, 'fn': 5, 'tn': 35}, 'd': {'tp': 28, 'fp': 8, 'fn': 12, 'tn': 32}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen t1 / t2 mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        },
+        {
+          "parameters": {
+            "tests": "\ndef __metrics(zaehlungen):\n    fpr = {}\n    selrate = {}\n    for gruppe, z in zaehlungen.items():\n        fpr[gruppe] = round(z[\"fp\"] / (z[\"fp\"] + z[\"tn\"]), 3)\n        selrate[gruppe] = round((z[\"tp\"] + z[\"fp\"]) / (z[\"tp\"] + z[\"fp\"] + z[\"fn\"] + z[\"tn\"]), 3)\n    erste, zweite = sorted(zaehlungen)[:2]\n    return {\n        \"fpr\": fpr,\n        \"fpr_diff\": round(abs(fpr[erste] - fpr[zweite]), 3),\n        \"selrate\": selrate,\n        \"selrate_diff\": round(abs(selrate[erste] - selrate[zweite]), 3),\n    }\nz1 = {'f1': {'tp': 14, 'fp': 6, 'fn': 6, 'tn': 24}, 'f2': {'tp': 18, 'fp': 2, 'fn': 8, 'tn': 22}}\nm = subgroup_metrics(z1)\nw = __metrics(z1)\n__check('fpr je gruppe', m[\"fpr\"] == w[\"fpr\"])\n__check('fpr differenz', m[\"fpr_diff\"] == w[\"fpr_diff\"])\n__check('selrate je gruppe', m[\"selrate\"] == w[\"selrate\"])\n__check('selrate differenz', m[\"selrate_diff\"] == w[\"selrate_diff\"])\nz2 = {'e': {'tp': 4, 'fp': 4, 'fn': 4, 'tn': 8}, 'f': {'tp': 7, 'fp': 1, 'fn': 3, 'tn': 9}}\nm2 = subgroup_metrics(z2)\nw2 = __metrics(z2)\n__check('zweite instanz fpr', m2[\"fpr\"] == w2[\"fpr\"])\n__check('zweite instanz diffs', m2[\"fpr_diff\"] == w2[\"fpr_diff\"] and m2[\"selrate_diff\"] == w2[\"selrate_diff\"])\nrev = dict(reversed(list(z1.items())))\n__check('reihenfolge egal (betrag)', subgroup_metrics(rev)[\"fpr_diff\"] == w[\"fpr_diff\"])\n"
+          },
+          "prompt": "Subgruppen f1 / f2 mit den gegebenen TP/FP/FN/TN. `subgroup_metrics` liefert gerundete FPR- und Selektionsraten plus Betragsdifferenzen."
+        }
+      ]
     }
   ]
 }

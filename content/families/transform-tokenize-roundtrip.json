@@ -54,7 +54,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('best owl') == __enc('best owl'))\n__check('encode einzelwort', encode('best') == __enc('best'))\n__check('round trip einzelwort', decode(encode('best')) == 'best')\n__check('round trip zwei woerter', decode(encode('best owl')) == 'best owl')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['best', 'owl', 'best owl']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter best/owl (nur Vokabularbuchstaben). encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('sad tea') == __enc('sad tea'))\n__check('encode einzelwort', encode('sad') == __enc('sad'))\n__check('round trip einzelwort', decode(encode('sad')) == 'sad')\n__check('round trip zwei woerter', decode(encode('sad tea')) == 'sad tea')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['sad', 'tea', 'sad tea']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter sad/tea. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('ball seed') == __enc('ball seed'))\n__check('encode einzelwort', encode('ball') == __enc('ball'))\n__check('round trip einzelwort', decode(encode('ball')) == 'ball')\n__check('round trip zwei woerter', decode(encode('ball seed')) == 'ball seed')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['ball', 'seed', 'ball seed']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter ball/seed. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('toast low') == __enc('toast low'))\n__check('encode einzelwort', encode('toast') == __enc('toast'))\n__check('round trip einzelwort', decode(encode('toast')) == 'toast')\n__check('round trip zwei woerter', decode(encode('toast low')) == 'toast low')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['toast', 'low', 'toast low']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter toast/low. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('least cab') == __enc('least cab'))\n__check('encode einzelwort', encode('least') == __enc('least'))\n__check('round trip einzelwort', decode(encode('least')) == 'least')\n__check('round trip zwei woerter', decode(encode('least cab')) == 'least cab')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['least', 'cab', 'least cab']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter least/cab. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('bowl dot') == __enc('bowl dot'))\n__check('encode einzelwort', encode('bowl') == __enc('bowl'))\n__check('round trip einzelwort', decode(encode('bowl')) == 'bowl')\n__check('round trip zwei woerter', decode(encode('bowl dot')) == 'bowl dot')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['bowl', 'dot', 'bowl dot']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter bowl/dot. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('sell wet') == __enc('sell wet'))\n__check('encode einzelwort', encode('sell') == __enc('sell'))\n__check('round trip einzelwort', decode(encode('sell')) == 'sell')\n__check('round trip zwei woerter', decode(encode('sell wet')) == 'sell wet')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['sell', 'wet', 'sell wet']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter sell/wet. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('cold was') == __enc('cold was'))\n__check('encode einzelwort', encode('cold') == __enc('cold'))\n__check('round trip einzelwort', decode(encode('cold')) == 'cold')\n__check('round trip zwei woerter', decode(encode('cold was')) == 'cold was')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['cold', 'was', 'cold was']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter cold/was. encode/decode auf dem festen Starter-VOCAB."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"<eos>\": 2, \"</w>\": 3, \"a\": 4, \"b\": 5, \"c\": 6, \"d\": 7, \"e\": 8,\n         \"l\": 9, \"o\": 10, \"s\": 11, \"t\": 12, \"w\": 13}\ndef __enc(text):\n    ids = []\n    for word in text.split(\" \"):\n        for ch in word:\n            ids.append(VOCAB[ch])\n        ids.append(VOCAB[\"</w>\"])\n    ids.append(VOCAB[\"<eos>\"])\n    return ids\n__check('encode zwei woerter', encode('east bad') == __enc('east bad'))\n__check('encode einzelwort', encode('east') == __enc('east'))\n__check('round trip einzelwort', decode(encode('east')) == 'east')\n__check('round trip zwei woerter', decode(encode('east bad')) == 'east bad')\n__check('round trip liste', all(decode(encode(s)) == s for s in ['east', 'bad', 'east bad']))\n__check('eos beendet decode', decode([4, 3, 5, 2, 99]) == \"a b\")\ntry:\n    encode(\"nope\")\n    __check('unbekanntes Zeichen -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekanntes Zeichen -> ValueError', True)\n\ntry:\n    decode([99])\n    __check('unbekannte ID -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('unbekannte ID -> ValueError', True)\n\ntry:\n    decode([0])\n    __check('pad im Datenstrom -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('pad im Datenstrom -> ValueError', True)\n\n"
+          },
+          "prompt": "Tokenizer-Wörter east/bad. encode/decode auf dem festen Starter-VOCAB."
+        }
+      ]
     },
     {
       "caseId": "subword-unk-roundtrip",
@@ -105,7 +161,63 @@
         "mode": "tests"
       },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "variants": [
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['world', 'foo', 'hello']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Tokens world/foo/hello: foo fällt auf unk. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['hello', 'hello']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Zwei bekannte hello ohne unk. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['zzz', 'world']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Führendes unbekanntes Token. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['<pad>', 'hello', 'world']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Pad in der Mitte der Folge. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['world']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Nur world, kein unk. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['hello', 'bar', 'baz', 'world']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Zwei unbekannte in der Mitte. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['<unk>', 'hello']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Explizites unk-Token plus hello. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['world', '<pad>', 'world']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Pad zwischen zwei world. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        },
+        {
+          "parameters": {
+            "tests": "VOCAB = {\"<pad>\": 0, \"<unk>\": 1, \"hello\": 2, \"world\": 3}\nvocab = VOCAB\ninverse = {value: key for key, value in vocab.items()}\ntokens = ['nope']\nids = encode(tokens, vocab)\nwant = [vocab.get(t, vocab['<unk>']) for t in tokens]\n__check('encode ids', ids == want)\n__check('Round-Trip', decode(ids, inverse) == [inverse[i] for i in want])\n__check('Pad bleibt erhalten', decode(encode(['<pad>'], vocab), inverse) == ['<pad>'])\n"
+          },
+          "prompt": "Nur unbekanntes Token. encode/decode mit festem VOCAB, Unbekanntes → <unk>."
+        }
+      ]
     }
   ]
 }
