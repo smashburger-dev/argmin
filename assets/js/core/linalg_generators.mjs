@@ -4,7 +4,7 @@
 
 /** Deterministic small PRNG (mulberry32) so seeds behave identically
  *  in browser and Node. */
-import { rng, randInt, nonzeroInt, until, clean, variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
+import { rng, randInt, nonzeroInt, until, clean } from './generator_draw_kit.mjs';
 
 export { rng };
 
@@ -221,7 +221,6 @@ export const INDEPENDENCE_CAPSULES = {
   stretch: { kind: 'dependent-triple', bound: 5, caseId: 'dependent-triple-span' },
 };
 
-const INDEPENDENCE_IDS = ['a', 'b', 'c', 'd'];
 const INDEPENDENCE_FACTORS = [-4, -3, -2, -1, 2, 3, 4];
 
 export const maxAbsVectors = (vectors) => Math.max(...vectors.flat().map((value) => Math.abs(value)));
@@ -264,13 +263,13 @@ export function independenceShapeOk(vectors, capsule) {
 
 const vecText = (v) => `(${v.join(',')})`;
 
-const independencePrompt = (vectors, capsule) => {
+export const independencePrompt = (vectors, capsule) => {
   if (capsule.kind === 'dependent-pair') return `Sind $b_1=${vecText(vectors[0])}$, $b_2=${vecText(vectors[1])}$ linear unabhängig?`;
   if (capsule.kind === 'independent-pair') return `Sind $u=${vecText(vectors[0])}$ und $v=${vecText(vectors[1])}$ linear unabhängig?`;
   return `Sind $v_1=${vecText(vectors[0])}$, $v_2=${vecText(vectors[1])}$ und $v_3=${vecText(vectors[2])}$ linear unabhängig?`;
 };
 
-const independenceSolution = (vectors, capsule) => {
+export const independenceSolution = (vectors, capsule) => {
   if (capsule.kind === 'dependent-pair') {
     const k = dependenceFactor(vectors[0], vectors[1]);
     return `$b_2=${k}\\,b_1$, also gibt es eine nichttriviale Linearkombination und die Vektoren sind abhängig.`;
@@ -283,7 +282,7 @@ const independenceSolution = (vectors, capsule) => {
 };
 
 /** Ein Template: options[0] ist korrekt, Texte wörtlich aus den Bestandfällen. */
-const independenceOptions = (vectors, capsule) => {
+export const independenceOptions = (vectors, capsule) => {
   if (capsule.kind === 'dependent-pair') {
     const k = dependenceFactor(vectors[0], vectors[1]);
     return [
@@ -309,12 +308,6 @@ const independenceOptions = (vectors, capsule) => {
   ];
 };
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Vektoren, liest nie `expected`. */
-export function independenceCorrectText(vectors, capsule) {
-  if (!independenceShapeOk(vectors, capsule)) throw new Error('Vektoren verletzen die Kapselform');
-  return independenceOptions(vectors, capsule)[0];
-}
-
 const drawIndependenceVectors = (r, capsule) => {
   if (capsule.kind === 'dependent-pair') {
     const b1 = [nonzeroInt(r, -5, 5), nonzeroInt(r, -5, 5)];
@@ -332,6 +325,13 @@ const drawIndependenceVectors = (r, capsule) => {
   return [v1, v2, v1.map((value, i) => value + v2[i])];
 };
 
+/** Kit-Hook: Seed zieht den Vektorsatz (until-Retry wie im bisherigen
+ *  Kapsel-Sampler; die Antwortposition rotiert im Kit). */
+export const drawIndependenceParameters = (r, capsule) => ({
+  vectors: until(r, () => drawIndependenceVectors(r, capsule),
+    (candidate) => independenceShapeOk(candidate, capsule), { scope: 'genIndependenceCapsule' }),
+});
+
 /** Kapseln für classify-matrix-shape: je Profil genau eine Kapsel mit
  *  Shape-Art, dims-Bereichen und Fallbindung (intro/core/stretch →
  *  Produkt/Addition/Vektor-Kette). Bereiche decken die 27 kuratierten
@@ -343,8 +343,6 @@ export const MATRIX_SHAPE_CAPSULES = {
   core: { kind: 'add', dims: [2, 7], caseId: 'shape-add-broadcast-trap' },
   stretch: { kind: 'vector', inner: [2, 12], caseId: 'shape-vector-matmul-chain' },
 };
-
-const MATRIX_SHAPE_IDS = ['a', 'b', 'c', 'd'];
 
 const inDimRange = (value, [lo, hi]) => Number.isInteger(value) && value >= lo && value <= hi;
 
@@ -382,13 +380,13 @@ export function matrixShapeOk(dimsA, dimsB, capsule) {
 
 const shapePair = ([rows, cols]) => `$${rows}\\times${cols}$`;
 
-const matrixShapePrompt = (dimsA, dimsB, capsule) => {
+export const matrixShapePrompt = (dimsA, dimsB, capsule) => {
   if (capsule.kind === 'product') return `$A$ ist eine ${shapePair(dimsA)}-Matrix und $B$ eine ${shapePair(dimsB)}-Matrix. Welche Aussage ist korrekt?`;
   if (capsule.kind === 'add') return `$A$ ist eine ${shapePair(dimsA)}-Matrix und $B$ ebenfalls. Welche Aussage zur Addition ist korrekt?`;
   return `$A$ ist eine ${shapePair(dimsA)}-Matrix und $B$ eine ${shapePair(dimsB)}-Matrix. Welche Aussage über $AB$ und $BA$ stimmt?`;
 };
 
-const matrixShapeSolution = (dimsA, dimsB, capsule) => {
+export const matrixShapeSolution = (dimsA, dimsB, capsule) => {
   if (capsule.kind === 'product') {
     const [m, k] = dimsA;
     const n = dimsB[1];
@@ -402,7 +400,7 @@ const matrixShapeSolution = (dimsA, dimsB, capsule) => {
 };
 
 /** Ein Template: options[0] ist korrekt, Texte wörtlich aus den Bestandfällen. */
-const matrixShapeOptions = (dimsA, dimsB, capsule) => {
+export const matrixShapeOptions = (dimsA, dimsB, capsule) => {
   if (capsule.kind === 'product') {
     const [m, k] = dimsA;
     const n = dimsB[1];
@@ -431,12 +429,6 @@ const matrixShapeOptions = (dimsA, dimsB, capsule) => {
   ];
 };
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den dims, liest nie `expected`. */
-export function matrixShapeCorrectText(dimsA, dimsB, capsule) {
-  if (!matrixShapeOk(dimsA, dimsB, capsule)) throw new Error('Dims verletzen die Kapselform');
-  return matrixShapeOptions(dimsA, dimsB, capsule)[0];
-}
-
 const drawMatrixDims = (r, capsule) => {
   if (capsule.kind === 'product') {
     const m = randInt(r, capsule.rows[0], capsule.rows[1]);
@@ -452,41 +444,13 @@ const drawMatrixDims = (r, capsule) => {
   return [[1, k], [k, 1]];
 };
 
-/** Dims-Bank-Sampler mit Rotation: Seed wählt Shape-Tupel und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe — Leak deckt Gate 3 im
- *  Test über den Volltext ab (Vorbild genIndependenceCapsule). */
-export function genMatrixShapeCapsule(seed, capsule) {
-  const r = rng(seed);
+/** Kit-Hook: Seed zieht das Shape-Tupel (until-Retry wie im bisherigen
+ *  Kapsel-Sampler; die Antwortposition rotiert im Kit). */
+export const drawMatrixShapeParameters = (r, capsule) => {
   const [dimsA, dimsB] = until(r, () => drawMatrixDims(r, capsule),
     (candidate) => matrixShapeOk(candidate[0], candidate[1], capsule), { scope: 'genMatrixShapeCapsule' });
-  const options = matrixShapeOptions(dimsA, dimsB, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: { dimsA, dimsB },
-    expected: { correctChoice: MATRIX_SHAPE_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, MATRIX_SHAPE_IDS),
-    prompt: matrixShapePrompt(dimsA, dimsB, capsule),
-    fullSolution: matrixShapeSolution(dimsA, dimsB, capsule),
-  };
-}
-
-/** Zahlenbank-Sampler mit Rotation: Seed wählt Vektoren und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe, der im Prompt (b_1/b_2)
- *  als False-Positive träfe — Leak deckt Gate 3 im Test ab. */
-export function genIndependenceCapsule(seed, capsule) {
-  const r = rng(seed);
-  const vectors = until(r, () => drawIndependenceVectors(r, capsule),
-    (candidate) => independenceShapeOk(candidate, capsule), { scope: 'genIndependenceCapsule' });
-  const options = independenceOptions(vectors, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: { vectors },
-    expected: { correctChoice: INDEPENDENCE_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, INDEPENDENCE_IDS),
-    prompt: independencePrompt(vectors, capsule),
-    fullSolution: independenceSolution(vectors, capsule),
-  };
-}
+  return { dimsA, dimsB };
+};
 
 /** Kapseln für classify-column-combination: je Profil genau eine Kapsel
  *  mit Art, Bound und Fallbindung (core/intro/stretch → Koeffizienten/
@@ -500,7 +464,7 @@ export const COLUMN_COMBINATION_CAPSULES = {
   stretch: { kind: 'shape-debug', rows: [2, 7], cols: [2, 7], caseId: 'shape-debug-authored' },
 };
 
-const COLUMN_IDS = {
+export const COLUMN_IDS = {
   coefficients: ['a', 'b', 'c', 'd'],
   choice: ['both-one', 'first-only', 'second-only', 'swapped-target'],
   'shape-debug': ['matmul-contract', 'reshape-any', 'sum-all', 'transpose'],
@@ -562,7 +526,7 @@ const shapeDebugOk = (m, n, capsule) => Number.isInteger(m)
 /** Ein Template je Art: options[0] ist korrekt, Texte wörtlich aus den
  *  Bestandsvarianten (Koeffizienten-Gleichung, bares Paar, matmul-Vertrag
  *  mit Ausgabe-Shape). */
-const columnOptions = (system, capsule) => {
+export const columnOptions = (system, capsule) => {
   if (capsule.kind === 'shape-debug') {
     const { m, n } = system;
     return [
@@ -589,7 +553,7 @@ const columnOptions = (system, capsule) => {
   ];
 };
 
-const columnPrompt = (system, capsule) => {
+export const columnPrompt = (system, capsule) => {
   if (capsule.kind === 'shape-debug') {
     const { m, n } = system;
     return `Eine Funktion soll für eine Matrix A mit Shape (m,n)=(${m},${n}) und einen Vektor v mit Shape (${n},) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in \`return A * v\` und schützt zugleich den Vertrag?`;
@@ -601,7 +565,7 @@ const columnPrompt = (system, capsule) => {
   return `Gegeben $s_1=${vec2Text(s1)}$, $s_2=${vec2Text(s2)}$ und $w=${vec2Text(target)}$. Schreibe $w$ als Kombination der Spalten: $w = a\\,s_1 + b\\,s_2$. Welches Paar $(a,b)$ stimmt?`;
 };
 
-const columnSolution = (system, capsule) => {
+export const columnSolution = (system, capsule) => {
   if (capsule.kind === 'shape-debug') {
     return 'Das Hadamard-Produkt ist hier nicht der gewünschte Vertrag. Nach Shape-Prüfung liefert `A @ v` einen Vektor mit einer Komponente pro Matrixzeile.';
   }
@@ -611,45 +575,26 @@ const columnSolution = (system, capsule) => {
   return `Einsetzen zeigt: ${equation}. Deshalb sind die Koeffizienten $(a,b)=(${x},${y})$.`;
 };
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern,
- *  Lösung stets über den 2×2-Solver (Zahlenbank) bzw. die (m,n)-Bank,
- *  liest nie `expected`. */
-export function columnCorrectText(parameters, capsule) {
-  if (!columnInstanceOk(parameters, capsule)) {
-    throw new Error(capsule.kind === 'shape-debug'
-      ? 'Shape-Debug verletzt die Kapselform'
-      : 'Spaltenkombination verletzt die Kapselform');
-  }
+/** Rekonstruiert die interne System-Sicht aus den gespeicherten Parametern:
+ *  (m,n) für shape-debug, Spaltenpaar plus nachgerechnete Lösung für die
+ *  Zahlenbank-Arten (choice benennt die Spalten a1/a2). */
+export const columnSystemOf = (parameters, capsule) => {
   if (capsule.kind === 'shape-debug') {
-    return columnOptions({ m: parameters.matrixRows, n: parameters.matrixColumns }, capsule)[0];
+    return { m: parameters.matrixRows, n: parameters.matrixColumns };
   }
   const s1 = capsule.kind === 'choice' ? parameters.a1 : parameters.s1;
   const s2 = capsule.kind === 'choice' ? parameters.a2 : parameters.s2;
   const { target } = parameters;
-  const system = { s1, s2, target, solution: solveColumnSystem(s1, s2, target) };
-  return columnOptions(system, capsule)[0];
-}
+  return { s1, s2, target, solution: solveColumnSystem(s1, s2, target) };
+};
 
-/** Zahlenbank-Sampler mit Rotation: Seed wählt 2×2-System bzw.
- *  (m,n)-Tupel und Antwortposition. Kein clean()-Guard: expected ist
- *  ein Buchstabe bzw. eine ID — Leak deckt Gate 3 im Test über den
- *  Volltext ab (Vorbild genIndependenceCapsule). */
-export function genColumnCombinationCapsule(seed, capsule) {
-  const r = rng(seed);
-  const ids = COLUMN_IDS[capsule.kind];
+/** Kit-Hook: Seed wählt 2×2-System bzw. (m,n)-Tupel (until-Retry wie im
+ *  bisherigen Kapsel-Sampler; die Antwortposition rotiert im Kit). */
+export const drawColumnCombinationParameters = (r, capsule) => {
   if (capsule.kind === 'shape-debug') {
-    const system = {
-      m: randInt(r, capsule.rows[0], capsule.rows[1]),
-      n: randInt(r, capsule.cols[0], capsule.cols[1]),
-    };
-    const options = columnOptions(system, capsule);
-    const rotation = variantCaseIndex(seed, options.length);
     return {
-      parameters: { matrixRows: system.m, matrixColumns: system.n },
-      expected: { correctChoice: ids[rotation] },
-      choices: buildRotatedChoices(options, rotation, ids),
-      prompt: columnPrompt(system, capsule),
-      fullSolution: columnSolution(system, capsule),
+      matrixRows: randInt(r, capsule.rows[0], capsule.rows[1]),
+      matrixColumns: randInt(r, capsule.cols[0], capsule.cols[1]),
     };
   }
   const drawn = until(r, () => drawColumnSystem(r),
@@ -667,22 +612,10 @@ export function genColumnCombinationCapsule(seed, capsule) {
       return (candidate.s1[0] * candidate.s2[1] - candidate.s1[1] * candidate.s2[0]) !== 0
         && absMax2(candidate.target) <= capsule.bound;
     }, { scope: 'genColumnCombinationCapsule' });
-  const system = capsule.kind === 'choice'
-    ? { s1: drawn.s1, s2: drawn.s2, target: drawn.target, solution: drawn.solution }
-    : drawn;
-  const options = columnOptions(system, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  const parameters = capsule.kind === 'choice'
+  return capsule.kind === 'choice'
     ? { a1: drawn.s1, a2: drawn.s2, target: drawn.target }
     : { s1: drawn.s1, s2: drawn.s2, target: drawn.target };
-  return {
-    parameters,
-    expected: { correctChoice: ids[rotation] },
-    choices: buildRotatedChoices(options, rotation, ids),
-    prompt: columnPrompt(system, capsule),
-    fullSolution: columnSolution(system, capsule),
-  };
-}
+};
 
 /** Kapseln für classify-row-operation-validity: je Profil genau eine Kapsel
  *  mit Art, Bound und Fallbindung (core/intro → Gleichungssystem/
@@ -695,7 +628,7 @@ export const ROW_OPERATION_CAPSULES = {
   intro: { kind: 'multiplier', min: 1, max: 12, caseId: 'row-operation-choice-contract' },
 };
 
-const ROW_OPERATION_IDS = {
+export const ROW_OPERATION_IDS = {
   equations: ['a', 'b', 'c', 'd'],
   multiplier: ['row-add', 'zero-row', 'left-only', 'delete'],
 };
@@ -732,7 +665,7 @@ export function rowOperationInstanceOk(parameters, capsule) {
 
 /** Ein Template je Art: options[0] ist korrekt, Texte wörtlich aus den
  *  Bestandsvarianten (getragene Gleichung, Z-Notation mit Multiplikator). */
-const rowOperationOptions = (system, capsule) => {
+export const rowOperationOptions = (system, capsule) => {
   if (capsule.kind === 'multiplier') {
     return [
       `$Z_2 \\leftarrow Z_2-${system.multiplier}Z_1$`,
@@ -750,7 +683,7 @@ const rowOperationOptions = (system, capsule) => {
   ];
 };
 
-const rowOperationPrompt = (system, capsule) => {
+export const rowOperationPrompt = (system, capsule) => {
   if (capsule.kind === 'multiplier') {
     return 'Welche Zeilenoperation erhält die Lösungsmenge eines linearen Gleichungssystems sicher?';
   }
@@ -758,7 +691,7 @@ const rowOperationPrompt = (system, capsule) => {
   return `System: ${linEq(first)}, ${linEq(second)}. Welche Zeilenoperation erhält garantiert die Lösungsmenge?`;
 };
 
-const rowOperationSolution = (system, capsule) => {
+export const rowOperationSolution = (system, capsule) => {
   if (capsule.kind === 'multiplier') {
     return `Das Addieren eines Vielfachen einer Zeile zu einer anderen ist äquivalent. Daher erhält $Z_2 \\leftarrow Z_2-${system.multiplier}Z_1$ die Lösungsmenge.`;
   }
@@ -766,51 +699,26 @@ const rowOperationSolution = (system, capsule) => {
   return `Eine Zeilenoperation muss die gesamte zweite Gleichung verändern: II ← II − 2·I. Damit wird die rechte Seite zu ${cr}; die Lösungsmenge bleibt erhalten.`;
 };
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern,
- *  getragene Zeile stets über rowCarried (Zahlenbank), liest nie
- *  `expected`. */
-export function rowOperationCorrectText(parameters, capsule) {
-  if (!rowOperationInstanceOk(parameters, capsule)) {
-    throw new Error('Zeilenoperation verletzt die Kapselform');
-  }
-  const system = capsule.kind === 'multiplier'
-    ? { multiplier: parameters.multiplier }
-    : { equations: parameters.equations };
-  return rowOperationOptions(system, capsule)[0];
-}
+/** Rekonstruiert die interne System-Sicht aus den gespeicherten Parametern
+ *  (Multiplikator bzw. Gleichungspaar je Kapselart). */
+export const rowOperationSystemOf = (parameters, capsule) => (capsule.kind === 'multiplier'
+  ? { multiplier: parameters.multiplier }
+  : { equations: parameters.equations });
 
 const drawEquations = (r) => {
   const row = () => [nonzeroInt(r, -5, 5), nonzeroInt(r, -5, 5), nonzeroInt(r, -9, 9)];
   return [row(), row()];
 };
 
-/** Zahlenbank-Sampler mit Rotation: Seed wählt Gleichungssystem bzw.
- *  Multiplikator und Antwortposition. Kein clean()-Guard: expected ist
- *  eine ID — Leak deckt Gate 3 im Test über den Volltext ab
- *  (Vorbild genColumnCombinationCapsule). */
-export function genRowOperationCapsule(seed, capsule) {
-  const r = rng(seed);
-  const ids = ROW_OPERATION_IDS[capsule.kind];
-  const system = capsule.kind === 'multiplier'
-    ? { multiplier: randInt(r, capsule.min, capsule.max) }
-    : {
-      equations: until(r, () => drawEquations(r),
-        (candidate) => rowOperationInstanceOk({ equations: candidate }, capsule),
-        { scope: 'genRowOperationCapsule' }),
-    };
-  const parameters = capsule.kind === 'multiplier'
-    ? { multiplier: system.multiplier }
-    : { equations: system.equations };
-  const options = rowOperationOptions(system, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters,
-    expected: { correctChoice: ids[rotation] },
-    choices: buildRotatedChoices(options, rotation, ids),
-    prompt: rowOperationPrompt(system, capsule),
-    fullSolution: rowOperationSolution(system, capsule),
-  };
-};
+/** Kit-Hook: Seed wählt Gleichungssystem bzw. Multiplikator (until-Retry
+ *  wie im bisherigen Kapsel-Sampler; die Antwortposition rotiert im Kit). */
+export const drawRowOperationParameters = (r, capsule) => (capsule.kind === 'multiplier'
+  ? { multiplier: randInt(r, capsule.min, capsule.max) }
+  : {
+    equations: until(r, () => drawEquations(r),
+      (candidate) => rowOperationInstanceOk({ equations: candidate }, capsule),
+      { scope: 'genRowOperationCapsule' }),
+  });
 
 /** Kapseln für classify-rank-solution-case: je Profil genau eine Kapsel
  *  mit Echelon-Art, Bound und Fallbindung (core/stretch → a/b/c/d und
@@ -823,7 +731,7 @@ export const RANK_SOLUTION_CAPSULES = {
   stretch: { kind: 'echelon-symbolic', bound: 7, caseId: 'rank-system-authored' },
 };
 
-const RANK_SOLUTION_IDS = {
+export const RANK_SOLUTION_IDS = {
   'echelon-abcd': ['a', 'b', 'c', 'd'],
   'echelon-symbolic': ['rank-two-free', 'rank-three-unique', 'contradiction', 'rank-zero'],
 };
@@ -839,7 +747,7 @@ export function rankSolutionInstanceOk(parameters, capsule) {
 
 /** Ein Template je Art: options[0] ist korrekt, Texte wörtlich aus den
  *  beiden Basisfällen (Zahlen-Fall mit $z$, Symbol-Fall ohne $z$). */
-const rankSolutionOptions = (capsule) => {
+export const rankSolutionOptions = (capsule) => {
   if (capsule.kind === 'echelon-symbolic') {
     return [
       'Rang 2, eine freie Variable und unendlich viele Lösungen',
@@ -856,51 +764,30 @@ const rankSolutionOptions = (capsule) => {
   ];
 };
 
-const rankSolutionPrompt = ([a, b, c, d], capsule) => {
+export const rankSolutionPrompt = ([a, b, c, d], capsule) => {
   if (capsule.kind === 'echelon-symbolic') {
     return `Nach korrekter Gauß-Elimination eines Systems mit drei Variablen entsteht $\\left(\\begin{array}{ccc|c}1&0&${a}&${b}\\\\0&1&${c}&${d}\\\\0&0&0&0\\end{array}\\right)$. Welche Diagnose ist vollständig korrekt?`;
   }
   return `Das System in $x,y,z$ steht in Zeilenstufenform: \\[\\begin{array}{rrr|r}1&0&${a}&${b}\\\\0&1&${c}&${d}\\\\0&0&0&0\\end{array}\\] Was folgt für Rang, freie Variable und Lösungsfall?`;
 };
 
-const rankSolutionSolution = (capsule) => {
+export const rankSolutionSolution = (capsule) => {
   if (capsule.kind === 'echelon-symbolic') {
     return 'Es gibt zwei Pivotpositionen, also Rang 2. Bei drei Variablen bleibt eine Variable frei. Die Nullzeile bedeutet $0=0$ und erzeugt keinen Widerspruch; daher gibt es unendlich viele Lösungen.';
   }
   return 'Zwei Pivotzeilen, also Rang 2. Drei Variablen minus Rang 2: $z$ ist frei, unendlich viele Lösungen. Die Nullzeile liest sich als $0=0$, nicht als Widerspruch.';
 };
 
-/** Unabhängiger Schlüssel: korrekter Wahltext aus der Kapselart, liest nie
- *  `expected` (die Stufenform hat immer Rang 2 mit freier Variable). */
-export function rankSolutionCorrectText(parameters, capsule) {
-  if (!rankSolutionInstanceOk(parameters, capsule)) {
-    throw new Error('Rangfall verletzt die Kapselform');
-  }
-  return rankSolutionOptions(capsule)[0];
-}
-
-/** Zahlenbank-Sampler mit Rotation: Seed wählt Koeffizienten und
- *  Antwortposition. Kein clean()-Guard: expected ist eine ID — Leak deckt
- *  Gate 3 im Test über den Volltext ab (Vorbild genRowOperationCapsule). */
-export function genRankSolutionCapsule(seed, capsule) {
-  const r = rng(seed);
-  const systemCoefficients = [
+/** Kit-Hook: Seed wählt die vier Koeffizienten der Stufenform (die
+ *  Antwortposition rotiert im Kit). */
+export const drawRankSolutionParameters = (r, capsule) => ({
+  systemCoefficients: [
     randInt(r, -capsule.bound, capsule.bound),
     randInt(r, -capsule.bound, capsule.bound),
     randInt(r, -capsule.bound, capsule.bound),
     randInt(r, -capsule.bound, capsule.bound),
-  ];
-  const ids = RANK_SOLUTION_IDS[capsule.kind];
-  const options = rankSolutionOptions(capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters: { systemCoefficients },
-    expected: { correctChoice: ids[rotation] },
-    choices: buildRotatedChoices(options, rotation, ids),
-    prompt: rankSolutionPrompt(systemCoefficients, capsule),
-    fullSolution: rankSolutionSolution(capsule),
-  };
-};
+  ],
+});
 
 /** Kapseln für classify-shape-contract: je Profil genau eine Kapsel mit
  *  Shape-Art, dims-Bereichen und Fallbindung (intro/core/stretch →
@@ -915,7 +802,7 @@ export const CLASSIFY_SHAPE_CAPSULES = {
   stretch: { kind: 'token-embedding', batch: [1, 8], seqLen: [3, 12], embedDim: [6, 32], caseId: 'shape-token-batch-flatten' },
 };
 
-const SHAPE_CONTRACT_IDS = ['a', 'b', 'c', 'd'];
+export const SHAPE_CONTRACT_IDS = ['a', 'b', 'c', 'd'];
 
 const shapeOf = (dims) => `$(${dims.join(',')})$`;
 
@@ -955,7 +842,7 @@ export function classifyShapeOk(parameters, capsule) {
   return false;
 }
 
-const classifyShapeSystem = (parameters, capsule) => {
+export const classifyShapeSystem = (parameters, capsule) => {
   if (capsule.kind === 'transformer-qkv') {
     const [batch, seqLen, modelDim] = parameters.inputShape;
     return { batch, seqLen, modelDim, projectionWidth: parameters.projectionWidth };
@@ -966,7 +853,7 @@ const classifyShapeSystem = (parameters, capsule) => {
   return { batch: parameters.batch, inputFeatures: parameters.inputFeatures, outputFeatures: parameters.outputFeatures };
 };
 
-const classifyShapeParameters = (system, capsule) => {
+export const classifyShapeParameters = (system, capsule) => {
   if (capsule.kind === 'transformer-qkv') {
     return { inputShape: [system.batch, system.seqLen, system.modelDim], projectionWidth: system.projectionWidth };
   }
@@ -979,7 +866,7 @@ const classifyShapeParameters = (system, capsule) => {
 /** Ein Template je Art: options[0] ist korrekt, Texte wörtlich aus den
  *  Bestandsvarianten (Broadcast-Begründung, QKV-Tupel mit
  *  Gewichtsform-Distraktor aus dem Basisfall, Embedding-Tupel). */
-const classifyShapeOptions = (system, capsule) => {
+export const classifyShapeOptions = (system, capsule) => {
   if (capsule.kind === 'transformer-qkv') {
     const { batch, seqLen, modelDim, projectionWidth } = system;
     return [
@@ -1007,7 +894,7 @@ const classifyShapeOptions = (system, capsule) => {
   ];
 };
 
-const classifyShapePrompt = (system, capsule) => {
+export const classifyShapePrompt = (system, capsule) => {
   if (capsule.kind === 'transformer-qkv') {
     const { batch, seqLen, modelDim, projectionWidth } = system;
     return `Ein Batch $X$ hat Shape $(B,T,d)=(${batch},${seqLen},${modelDim})$; $W_Q$ hat Shape $(${modelDim},${projectionWidth})$. Welche Shape besitzt $Q=XW_Q$?`;
@@ -1020,7 +907,7 @@ const classifyShapePrompt = (system, capsule) => {
   return `Ein Batch hat die Form $X \\in \\mathbb{R}^{${batch} \\times ${inputFeatures}}$, die Gewichtsmatrix eines linearen Layers $W \\in \\mathbb{R}^{${inputFeatures} \\times ${outputFeatures}}}$ und der Bias $b \\in \\mathbb{R}^{${outputFeatures}}}$. Welche Form hat $XW+b$, und warum?`;
 };
 
-const classifyShapeSolution = (system, capsule) => {
+export const classifyShapeSolution = (system, capsule) => {
   if (capsule.kind === 'transformer-qkv') {
     const { batch, seqLen, modelDim, projectionWidth } = system;
     return `Die Projektion wirkt auf die letzte Achse: jede der ${batch}·${seqLen} Tokenpositionen wird von ${modelDim} auf ${projectionWidth} Merkmale abgebildet. Daher hat $Q$ Shape ${shapeOf([batch, seqLen, projectionWidth])}.`;
@@ -1032,12 +919,6 @@ const classifyShapeSolution = (system, capsule) => {
   const { batch, outputFeatures } = system;
   return `$XW$ hat Form $${batch}\\times${outputFeatures}$; der Bias mit Form $${outputFeatures}$ wird über die ${batch} Zeilen gebroadcastet. Ergebnis: ${shapeOf([batch, outputFeatures])}.`;
 };
-
-/** Unabhängiger Schlüssel: korrekter Wahltext aus den Fallparametern, liest nie `expected`. */
-export function classifyShapeCorrectText(parameters, capsule) {
-  if (!classifyShapeOk(parameters, capsule)) throw new Error('Shape-Parametern verletzen die Kapselform');
-  return classifyShapeOptions(classifyShapeSystem(parameters, capsule), capsule)[0];
-}
 
 const drawClassifyShapeSystem = (r, capsule) => {
   if (capsule.kind === 'transformer-qkv') {
@@ -1062,25 +943,15 @@ const drawClassifyShapeSystem = (r, capsule) => {
   };
 };
 
-/** Shape-Bank-Sampler mit Rotation: Seed wählt dims-Tupel und Antwortposition.
- *  Kein clean()-Guard: expected ist ein Buchstabe — Leak deckt Gate 3 im
- *  Test über den Volltext ab (Vorbild genMatrixShapeCapsule). */
-export function genClassifyShapeCapsule(seed, capsule) {
-  const r = rng(seed);
-  const system = until(r, () => drawClassifyShapeSystem(r, capsule),
+/** Kit-Hook: Seed wählt das Shape-System und liefert die gespeicherten
+ *  Parameter (until-Retry wie im bisherigen Kapsel-Sampler; die
+ *  Antwortposition rotiert im Kit). */
+export const drawClassifyShapeParameters = (r, capsule) => classifyShapeParameters(
+  until(r, () => drawClassifyShapeSystem(r, capsule),
     (candidate) => classifyShapeOk(classifyShapeParameters(candidate, capsule), capsule),
-    { scope: 'genClassifyShapeCapsule' });
-  const parameters = classifyShapeParameters(system, capsule);
-  const options = classifyShapeOptions(system, capsule);
-  const rotation = variantCaseIndex(seed, options.length);
-  return {
-    parameters,
-    expected: { correctChoice: SHAPE_CONTRACT_IDS[rotation] },
-    choices: buildRotatedChoices(options, rotation, SHAPE_CONTRACT_IDS),
-    prompt: classifyShapePrompt(system, capsule),
-    fullSolution: classifyShapeSolution(system, capsule),
-  };
-}
+    { scope: 'genClassifyShapeCapsule' }),
+  capsule,
+);
 
 export function genColumnCombination(seed) {
   const { parameters, expected } = genLinear2(seed);

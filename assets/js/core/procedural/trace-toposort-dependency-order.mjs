@@ -8,7 +8,8 @@
 // Base fields pin the curated oracle case verbatim (anchor tests compare
 // them against the JSON); the draw domain is documented here.
 
-import { randInt, rng, shuffle, until } from '../generator_draw_kit.mjs';
+import { randInt, shuffle, until } from '../generator_draw_kit.mjs';
+import { makePredictFamily } from './case_family_kit.mjs';
 
 const DRAW_SCOPE = 'trace-toposort-dependency-order';
 
@@ -167,41 +168,6 @@ export const TOPO_CASES = {
   },
 };
 
-// Capsule shape: parameters carry the drawn stages plus the snippet rebuilt
-// verbatim from them — honest distinctness (the code text itself differs).
-export function topoCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (!caseDef.checkParams(parameters)) return false;
-    return parameters.snippet === caseDef.buildSnippet(parameters);
-  } catch { return false; }
-}
-
-export function genTopoCase(seed, caseDef) {
-  const drawn = caseDef.draw(rng(seed));
-  const parameters = {
-    caseId: caseDef.caseId,
-    difficulty: caseDef.difficulty,
-    ...caseDef.toParams(drawn),
-  };
-  parameters.snippet = caseDef.buildSnippet(parameters);
-  return {
-    parameters,
-    expected: { kind: 'output-lines', output: caseDef.buildOutput(parameters) },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.buildSolution(parameters),
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveTopoFamily(parameters) {
-  const caseDef = TOPO_CASES[parameters?.caseId];
-  if (!caseDef || !topoCaseOk(parameters, caseDef)) {
-    throw new Error('trace-toposort-dependency-order: Parameter verletzen die Kapselform');
-  }
-  return { output: caseDef.buildOutput(parameters) };
-}
-
 export const TOPO_CONTRACT = {
   familyId: 'trace-toposort-dependency-order',
   familyGroup: 'trace-state',
@@ -218,13 +184,13 @@ export const TOPO_CONTRACT = {
   activityType: 'predict-output',
 };
 
-export function generateTopoFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = TOPO_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genTopoCase(seed, caseDef);
-}
+const FAMILY = makePredictFamily({
+  contract: TOPO_CONTRACT,
+  cases: TOPO_CASES,
+});
 
-export const FAMILY_SPEC = { ...TOPO_CONTRACT, generate: generateTopoFamily, solve: solveTopoFamily };
+export const topoCaseOk = FAMILY.caseOk;
+export const genTopoCase = FAMILY.genCase;
+export const solveTopoFamily = FAMILY.solve;
+export const generateTopoFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

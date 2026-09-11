@@ -39,7 +39,7 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 
-Was seit 0.3 neu ist, steht im [Changelog](CHANGELOG.md).
+Was seit 0.4 neu ist, steht im [Changelog](CHANGELOG.md).
 
 ## In Arbeit / Geplant
 

@@ -11,7 +11,8 @@
 // Base fields pin the curated oracle cases verbatim (anchor tests compare
 // them against the JSON); draw domains are documented here.
 
-import { randInt, rng, until } from '../generator_draw_kit.mjs';
+import { randInt, until } from '../generator_draw_kit.mjs';
+import { makePredictFamily } from './case_family_kit.mjs';
 
 const DRAW_SCOPE = 'trace-training-loop-count';
 
@@ -278,41 +279,6 @@ export const LOOP_CASES = {
   },
 };
 
-// Capsule shape: parameters carry the drawn constants plus the snippet rebuilt
-// verbatim from them — honest distinctness (the code text itself differs).
-export function loopCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (!caseDef.checkParams(parameters)) return false;
-    return parameters.snippet === caseDef.buildSnippet(parameters);
-  } catch { return false; }
-}
-
-export function genLoopCase(seed, caseDef) {
-  const drawn = caseDef.draw(rng(seed));
-  const parameters = {
-    caseId: caseDef.caseId,
-    difficulty: caseDef.difficulty,
-    ...caseDef.toParams(drawn),
-  };
-  parameters.snippet = caseDef.buildSnippet(parameters);
-  return {
-    parameters,
-    expected: { kind: 'output-lines', output: caseDef.buildOutput(parameters) },
-    prompt: caseDef.buildPrompt ? caseDef.buildPrompt(parameters) : caseDef.prompt,
-    fullSolution: caseDef.buildSolution(parameters),
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveLoopFamily(parameters) {
-  const caseDef = LOOP_CASES[parameters?.caseId];
-  if (!caseDef || !loopCaseOk(parameters, caseDef)) {
-    throw new Error('trace-training-loop-count: Parameter verletzen die Kapselform');
-  }
-  return { output: caseDef.buildOutput(parameters) };
-}
-
 export const LOOP_CONTRACT = {
   familyId: 'trace-training-loop-count',
   familyGroup: 'trace-state',
@@ -331,13 +297,14 @@ export const LOOP_CONTRACT = {
   activityType: 'predict-output',
 };
 
-export function generateLoopFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = LOOP_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genLoopCase(seed, caseDef);
-}
+const FAMILY = makePredictFamily({
+  contract: LOOP_CONTRACT,
+  cases: LOOP_CASES,
+  shapeError: 'trace-training-loop-count: Parameter verletzen die Kapselform',
+});
 
-export const FAMILY_SPEC = { ...LOOP_CONTRACT, generate: generateLoopFamily, solve: solveLoopFamily };
+export const loopCaseOk = FAMILY.caseOk;
+export const genLoopCase = FAMILY.genCase;
+export const solveLoopFamily = FAMILY.solve;
+export const generateLoopFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

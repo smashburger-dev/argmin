@@ -3,21 +3,27 @@
 // Anker-Korrektur (bewusst, gegen Strip-Prinzip): Base-Params aller 3 Fälle
 // aufgefüllt (war {}), Contract-caseTypes 1→3, challenge-Profil verlustfrei
 // gestrichen (keine challenge-differenzierten Varianten im Bestand).
+// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
+// foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
+// linalg_generators.mjs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  genColumnCombinationCapsule,
   COLUMN_COMBINATION_CAPSULES,
   columnInstanceOk,
-  columnCorrectText,
   solveColumnSystem,
 } from '../assets/js/core/linalg_generators.mjs';
 import {
   COLUMN_COMBINATION_CONTRACT,
+  columnCombinationCapsuleOk,
+  columnCombinationCorrectText,
+  genColumnCombinationCapsule,
   generateColumnCombinationFamily,
   solveColumnCombinationFamily,
 } from '../assets/js/core/foundations_linalg_families.mjs';
 import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Lösung und Bound (12/12/2-7).
@@ -93,7 +99,7 @@ test('Orakel-27: alle statischen Fälle form- und schlüssel-bestätigt', () => 
       // Kuratierte Rotation: Variante i trägt die korrekte Antwort an Position i % 4.
       assert.equal(row[0], oracle.ids[index % 4], `${oracle.caseId}#${index}: Rotationsposition`);
       if (oracle.kind === 'shape-debug') {
-        assert.ok(columnCorrectText(params, capsule).includes(`\`(${row[1]},)\``), `${oracle.caseId}#${index}: Ausgabe-Shape`);
+        assert.ok(columnCombinationCorrectText(params, capsule).includes(`\`(${row[1]},)\``), `${oracle.caseId}#${index}: Ausgabe-Shape`);
       } else {
         const s1 = oracle.kind === 'choice' ? params.a1 : params.s1;
         const s2 = oracle.kind === 'choice' ? params.a2 : params.s2;
@@ -108,19 +114,19 @@ test('Orakel-27: alle statischen Fälle form- und schlüssel-bestätigt', () => 
 
 test('Anker-Texte: kuratierte Erstvarianten-Schlüssel wörtlich im Template', () => {
   assert.equal(
-    columnCorrectText(
+    columnCombinationCorrectText(
       { s1: [2, 1], s2: [-1, 3], target: [3, 5] }, COLUMN_COMBINATION_CAPSULES.core,
     ),
     '$(a,b) = (2,1)$: $2(2,1) + 1(-1,3) = (3,5)$.',
   );
   assert.equal(
-    columnCorrectText(
+    columnCombinationCorrectText(
       { a1: [2, 1], a2: [1, 3], target: [3, 4] }, COLUMN_COMBINATION_CAPSULES.intro,
     ),
     '$x_1=1, x_2=1$',
   );
   assert.equal(
-    columnCorrectText(
+    columnCombinationCorrectText(
       { matrixRows: 2, matrixColumns: 3 }, COLUMN_COMBINATION_CAPSULES.stretch,
     ),
     'A und v mit `np.asarray` normalisieren, `A.ndim == 2`, `v.ndim == 1` und `A.shape[1] == v.shape[0]` prüfen, dann `A @ v` mit Ausgabe-Shape `(2,)` zurückgeben',
@@ -133,130 +139,20 @@ test('Kapseltabelle: Arten, Bounds und Fallbindung', () => {
   assert.deepEqual(COLUMN_COMBINATION_CAPSULES.stretch, { kind: 'shape-debug', rows: [2, 7], cols: [2, 7], caseId: 'shape-debug-authored' });
 });
 
-test('Kapsel-Constraints: Form, Choices, Schlüssel über je 200 Seeds', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = COLUMN_COMBINATION_CAPSULES[key];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genColumnCombinationCapsule(seed, capsule);
-      assert.ok(columnInstanceOk(generated.parameters, capsule), `${key}:${seed}: Kapselform`);
-      assert.equal(generated.choices.length, 4, `${key}:${seed}: vier Wahlen`);
-      assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${key}:${seed}: eindeutige Texte`);
-      const correct = generated.choices.filter((choice) => choice.correct);
-      assert.equal(correct.length, 1, `${key}:${seed}: genau eine korrekte Wahl`);
-      assert.equal(generated.expected.correctChoice, correct[0].id, `${key}:${seed}: Key zeigt auf korrekte Wahl`);
-      assert.equal(correct[0].text, columnCorrectText(generated.parameters, capsule), `${key}:${seed}: Schlüsseltext`);
-      assert.ok(generated.prompt.length > 20, `${key}:${seed}: Prompt`);
-      assert.ok(generated.fullSolution.length > 20, `${key}:${seed}: Lösung`);
-    }
-  }
-});
-
-test('Distinct-Boden 3x200: je Kapsel mindestens 40 distincte Instanzen', () => {
-  for (const key of CAPSULE_KEYS) {
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateColumnCombinationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      seen.add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    assert.ok(seen.size >= 40, `${key}: nur ${seen.size} distinct`);
-  }
-});
-
-test('Key-Agreement 3x200: Solve-Schlüssel gegen Generator ohne Abweichung', () => {
-  for (const key of CAPSULE_KEYS) {
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateColumnCombinationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const solved = solveColumnCombinationFamily(generated.parameters);
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.equal(solved.correctText, correct.text, `${key}:${seed}: Schlüsseltext`);
-      assert.equal(generated.expected.correctChoice, correct.id, `${key}:${seed}: Key-Id`);
-    }
-  }
-});
-
-test('Constraint-Compliance 3x200: null Samples außerhalb der Kapselform', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = COLUMN_COMBINATION_CAPSULES[key];
-    let violations = 0;
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateColumnCombinationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      if (!columnInstanceOk(generated.parameters, capsule)) violations += 1;
-    }
-    assert.equal(violations, 0, `${key}: Constraint-Verletzungen`);
-  }
-});
-
-test('Leak/Rotation: Prompt nennt den Schlüssel nie, Positionen rotieren, Modulo-Klassen halten nichts zurück', () => {
-  const idsFor = {
-    core: ['a', 'b', 'c', 'd'],
-    intro: ['both-one', 'first-only', 'second-only', 'swapped-target'],
-    stretch: ['matmul-contract', 'reshape-any', 'sum-all', 'transpose'],
-  };
-  for (const key of CAPSULE_KEYS) {
-    const counts = Object.fromEntries(idsFor[key].map((id) => [id, 0]));
-    const byModulo = new Map();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = generateColumnCombinationFamily({ seed, caseId: CASE_FOR[key], difficulty: key });
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.ok(!generated.prompt.includes(correct.text), `${key}:${seed}: Schlüssel im Prompt`);
-      counts[generated.expected.correctChoice] += 1;
-      const bucket = seed % 8;
-      if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
-      byModulo.get(bucket).add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-    }
-    for (const [id, count] of Object.entries(counts)) {
-      assert.ok(count >= 40 && count <= 60, `${key}: Position ${id} nur ${count}x`);
-    }
-    for (const [bucket, instances] of byModulo) {
-      assert.ok(instances.size >= 10, `${key}: Modulo-Klasse ${bucket} hält nur ${instances.size} distinct`);
-    }
-  }
-});
-
-test('negative Seeds: gültig und deterministisch', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = COLUMN_COMBINATION_CAPSULES[key];
-    for (let seed = -50; seed < 0; seed += 1) {
-      const first = genColumnCombinationCapsule(seed, capsule);
-      assert.deepEqual(first, genColumnCombinationCapsule(seed, capsule), `${key}:${seed}: deterministisch`);
-      assert.ok(columnInstanceOk(first.parameters, capsule), `${key}:${seed}: Kapselform`);
-    }
-  }
-});
-
-test('Familien-Block: Dispatch, Contract, Solve', () => {
-  assert.equal(COLUMN_COMBINATION_CONTRACT.familyId, 'classify-column-combination');
-  assert.equal(COLUMN_COMBINATION_CONTRACT.authorityMode, 'seeded');
-  assert.equal(COLUMN_COMBINATION_CONTRACT.activityType, 'single-choice');
-  assert.deepEqual(COLUMN_COMBINATION_CONTRACT.difficultyProfiles, ['intro', 'core', 'stretch']);
-  assert.deepEqual(COLUMN_COMBINATION_CONTRACT.caseTypes.map((item) => item.caseId).sort(), Object.values(CASE_FOR).sort());
-  const meta = {
+linalgChoiceCapsuleSuite('classify-column-combination', {
+  capsules: COLUMN_COMBINATION_CAPSULES,
+  contract: COLUMN_COMBINATION_CONTRACT,
+  capsuleOk: columnCombinationCapsuleOk,
+  correctText: columnCombinationCorrectText,
+  genCapsule: genColumnCombinationCapsule,
+  generate: generateColumnCombinationFamily,
+  solve: solveColumnCombinationFamily,
+  registry: LINALG_FAMILIES,
+}, CASE_FOR, {
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  meta: {
     core: { masteryEligible: true, competencyIds: ['c-linalg-matrices'] },
     intro: { masteryEligible: false, competencyIds: ['c-linalg-systems'] },
     stretch: { masteryEligible: true, competencyIds: ['c-linalg-matrices', 'c-numpy-basics'] },
-  };
-  for (const key of CAPSULE_KEYS) {
-    const generated = generateColumnCombinationFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key });
-    const correct = generated.choices.find((choice) => choice.correct);
-    assert.equal(generated.expected.correctChoice, correct.id);
-    assert.deepEqual(solveColumnCombinationFamily(generated.parameters), { correctText: correct.text });
-    assert.equal(generated.masteryEligible, meta[key].masteryEligible, `${key}: Mastery wie im Bestand`);
-    assert.deepEqual(generated.competencyIds, meta[key].competencyIds, `${key}: Kompetenzen wie im Bestand`);
-    assert.ok(generated.prompt.length > 20);
-    assert.deepEqual(generateColumnCombinationFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key }), generated);
-  }
-  assert.throws(() => generateColumnCombinationFamily({ seed: 0, caseId: 'column-coefficients-double', difficulty: 'intro' }), /Unbekannter Fall/);
-  assert.throws(() => generateColumnCombinationFamily({ seed: 0, caseId: 'column-choice-authored', difficulty: 'core' }), /Unbekannter Fall/);
-  assert.throws(() => generateColumnCombinationFamily({ seed: 0, caseId: 'shape-debug-authored', difficulty: 'challenge' }), /Unbekannt/);
-});
-
-test('Familien-Block: Registry löst, gradet und bleibt deterministisch', async () => {
-  const instance = LINALG_FAMILIES.instantiate('classify-column-combination', 11, 'core', 'column-coefficients-double');
-  const correct = instance.choices.find((choice) => choice.correct);
-  assert.equal(instance.expectedAnswer.correctChoice, correct.id);
-  const right = await LINALG_FAMILIES.grade(instance, correct.id);
-  assert.equal(right.correct, true);
-  const wrong = instance.choices.find((choice) => !choice.correct);
-  const graded = await LINALG_FAMILIES.grade(instance, wrong.id);
-  assert.equal(graded.correct, false);
+  },
 });

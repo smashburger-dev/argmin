@@ -21,36 +21,7 @@ const refParts = (text, size, overlap) => {
   return parts;
 };
 
-// The case def keeps the builders module-private; the suite surface pins the
-// base draw and exposes them through the exported chunkParts/chunkCaseOk so
-// the anchor self-consistency checks still exercise the real module paths.
-const suiteMod = {
-  ...mod,
-  CHUNK_CASES: {
-    'chunk-window-loop': {
-      ...CHUNK_DEF,
-      baseParams: { text: 'abcdefgh', size: 4, overlap: 2 },
-      buildSnippet: ({ text, size, overlap }) => `def chunk(text, size, overlap):
-    parts = []
-    start = 0
-    while start < len(text):
-        parts.append(text[start:start + size])
-        start += size - overlap
-    return parts
-
-text = "${text}"
-print(len(chunk(text, ${size}, ${overlap})))
-print(chunk(text, ${size}, ${overlap})[-1])`,
-      buildOutput: ({ text, size, overlap }) => {
-        const parts = mod.chunkParts(text, size, overlap);
-        return `${parts.length}\n${parts.at(-1)}`;
-      },
-      checkParams: (parameters) => mod.chunkCaseOk(parameters, CHUNK_DEF),
-    },
-  },
-};
-
-predictCapsuleSuite('trace-chunk-window-loop', suiteMod, [
+predictCapsuleSuite('trace-chunk-window-loop', mod, [
   { caseId: 'chunk-window-loop', difficulty: 'core' },
 ], { familyGroup: 'trace-state', difficultyProfiles: ['core'] });
 
@@ -65,7 +36,7 @@ test('anchor extras: expected form, base solution and oracle self-consistency', 
 
 test('expected output: solver recomputes the prediction deterministically', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genChunkCase(seed, CHUNK_DEF);
+    const generated = mod.genChunkCase(seed, 'chunk-window-loop', CHUNK_DEF);
     const parts = refParts(generated.parameters.text, generated.parameters.size, generated.parameters.overlap);
     const want = `${parts.length}\n${parts.at(-1)}`;
     assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
@@ -88,7 +59,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genChunkCase(seed, CHUNK_DEF);
+    const generated = mod.genChunkCase(seed, 'chunk-window-loop', CHUNK_DEF);
     const { text, size, overlap } = generated.parameters;
     assert.match(text, /^[a-z]{6,12}$/, `text shape: ${text}`);
     for (let i = 1; i < text.length; i += 1) {
