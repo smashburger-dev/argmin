@@ -34,6 +34,7 @@ const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
   'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization',
+  'capsule-bank',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
 const CATALOG_ROOTS = { competencies: ['competencies', 'competency'], tracks: ['tracks', 'track'], milestones: ['milestones', 'milestone'], tools: ['tools', 'tool-card'] };
@@ -537,6 +538,14 @@ function loadCatalogEntities(contentRoot, catalog, files, projectRoot) {
   const objects = Object.fromEntries(Object.entries(CATALOG_OBJECTS).map(([key, [, idField, schemaName]]) => [key, loadObjects(contentRoot, files[key], idField, schemaName, projectRoot)]));
   const projects = loadObjects(contentRoot, files.projects, 'projectId', 'project', projectRoot);
   const families = files.families.map((file) => loadFamilyDocument(contentRoot, file, projectRoot));
+  // Capsule-Banken sind Generator-Inputs ausserhalb des Katalogs — jede Datei
+  // muss dem Schema folgen, der Build bleibt damit fail-closed.
+  const banksDir = join(contentRoot, 'banks');
+  if (existsSync(banksDir)) {
+    for (const file of readdirSync(banksDir).filter((name) => name.endsWith('.json')).sort()) {
+      validateSourceDocument('capsule-bank', JSON.parse(readFileSync(join(banksDir, file), 'utf8')), projectRoot);
+    }
+  }
   return {
     sourceRights: sourceRightsDocument.sources,
     sources: sourcesDocument.sources || [],

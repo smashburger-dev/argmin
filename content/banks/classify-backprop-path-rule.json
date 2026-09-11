@@ -1,0 +1,457 @@
+{
+  "capsules": {
+    "intro": {
+      "caseId": "backprop-path-rule",
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Backpropagation überträgt Gradienten rückwärts durch den Rechengraphen. Ein Knoten $z$ hängt von $x$ ab mit lokalem Gradienten $\\partial z / \\partial x = 3$; von oben kommt der Upstream-Gradient $\\partial L / \\partial z = -2$. Wie entsteht $\\partial L / \\partial x$ korrekt?",
+          "correct": "$\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = -2 \\cdot 3 = -6$ — lokal mal upstream (Kettenregel).",
+          "wrong": [
+            "$\\partial L / \\partial x = \\partial L / \\partial z + \\partial z / \\partial x = -2 + 3 = 1$ — Beiträge an Gabelungen werden addiert, also auch hier.",
+            "$\\partial L / \\partial x = -2 / 3$ — der lokale Gradient dividiert den Upstream.",
+            "$\\partial L / \\partial x = \\partial z / \\partial x = 3$ — der lokale Gradient ist bereits die endgültige Antwort."
+          ],
+          "solution": "Kettenregel auf einem Pfad: $\\partial L / \\partial x = \\partial L / \\partial z \\cdot \\partial z / \\partial x = (-2) \\cdot 3 = -6$. Addition steht nur für Gabelungen mit mehreren Wegen nach $L$. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+        },
+        {
+          "key": "vorzeichen-beachten",
+          "prompt": "Ein Knoten hat den lokalen Gradienten $\\partial z/\\partial x=4$ und empfängt den Upstream-Gradienten $\\partial L/\\partial z=-3$. Wie lautet $\\partial L/\\partial x$?",
+          "correct": "$-12$ — Produkt aus lokalem Gradienten und Upstream; das negative Vorzeichen wandert mit.",
+          "wrong": [
+            "$12$ — das Vorzeichen des Upstreams fällt unterwegs weg.",
+            "$1$ — die beiden Gradienten werden addiert.",
+            "$-\\frac{3}{4}$ — der lokale Gradient teilt den Upstream."
+          ],
+          "solution": "Kettenregel: lokal mal upstream, $4\\cdot(-3)=-12$. Das Vorzeichen gehört zum Gradienten — es zu ignorieren ist derselbe Fehler wie Addition oder Division statt Multiplikation."
+        },
+        {
+          "key": "zwei-faktoren-positiv",
+          "prompt": "Ein Knoten hat den lokalen Gradienten $2$ und empfängt den Upstream-Gradienten $5$. Was gibt er rückwärts weiter?",
+          "correct": "$10$ — die Kettenregel multipliziert die Faktoren entlang des Pfades.",
+          "wrong": [
+            "$7$ — lokaler und Upstream-Gradient werden summiert.",
+            "$5$ — der Upstream ersetzt den lokalen Gradienten.",
+            "$2{,}5$ — der Upstream wird durch den lokalen Gradienten geteilt."
+          ],
+          "solution": "Auf einem einzigen Pfad gilt die Produktform: $2\\cdot5=10$. Addiert wird nur dort, wo sich mehrere Pfade zu $L$ verzweigen — hier gibt es genau einen."
+        },
+        {
+          "key": "lange-kette",
+          "prompt": "Ein Pfad führt über zwei Zwischenknoten: $\\partial a/\\partial x=2$, $\\partial b/\\partial a=3$, Upstream $\\partial L/\\partial b=4$. Wie groß ist $\\partial L/\\partial x$?",
+          "correct": "$24$ — alle lokalen Faktoren entlang des Pfades werden multipliziert.",
+          "wrong": [
+            "$9$ — die Faktoren werden addiert.",
+            "$8$ — nur der letzte lokale Gradient zählt.",
+            "$14$ — die Summe der lokalen Faktoren mal dem Upstream."
+          ],
+          "solution": "Der Pfad zieht jedes Glied der Kette ins Produkt: $4\\cdot3\\cdot2=24$. Wer nur den letzten Faktor nimmt oder addiert, bricht die Kettenregel mitten im Pfad."
+        },
+        {
+          "key": "upstream-null",
+          "prompt": "Der lokale Gradient beträgt $100$, der eintreffende Upstream-Gradient ist $0$. Was gibt der Knoten weiter?",
+          "correct": "$0$ — ein blockierter Pfad leitet nichts weiter, egal wie groß der lokale Faktor ist.",
+          "wrong": [
+            "$100$ — der lokale Gradient allein bestimmt die Weitergabe.",
+            "$50$ — die Hälfte fließt weiter.",
+            "$1$ — es bleibt immer ein Restgradient."
+          ],
+          "solution": "Multiplikation mit null ergibt null: Oberhalb dieses Knotens hängt nichts mehr von ihm ab. Der lokale Gradient misst nur die lokale Empfindlichkeit — ohne Upstream-Anliegen bleibt sie wirkungslos."
+        },
+        {
+          "key": "wann-addieren",
+          "prompt": "Wann wird bei der Gradientenweitergabe addiert statt multipliziert?",
+          "correct": "Wenn ein Knoten über mehrere getrennte Pfade in $L$ mündet — die Beiträge der Pfade werden summiert.",
+          "wrong": [
+            "Immer — Addition ist die Grundregel der Backpropagation.",
+            "Wenn der lokale Gradient größer als der Upstream ist.",
+            "Wenn zwei Knoten denselben Namen tragen."
+          ],
+          "solution": "Multiplikation entlang eines Pfades, Addition über parallele Pfade: Beide Regeln sind dieselbe Kettenregel. Der Graph entscheidet — Verzweigung heißt Summe der Pfadbeiträge, nicht Produkt."
+        },
+        {
+          "key": "nur-lokal-nicht-genug",
+          "prompt": "Ein Lernender meldet als Antwort nur den lokalen Gradienten $\\partial z/\\partial x=3$. Was fehlt?",
+          "correct": "Der Upstream-Gradient $\\partial L/\\partial z$ — ohne ihn bleibt die Wirkung auf $L$ unberücksichtigt.",
+          "wrong": [
+            "Die zweite Ableitung $\\partial^2 z/\\partial x^2$ — die lokale Krümmung fehlt.",
+            "Der Vorwärtswert von $x$ — ohne ihn ist nichts zu sagen.",
+            "Nichts — der lokale Gradient ist die endgültige Antwort."
+          ],
+          "solution": "Der lokale Gradient beantwortet nur „wie reagiert $z$ auf $x$?“. Die Frage ist „wie reagiert $L$ auf $x$?“ — und die braucht den Upstream-Faktor $\\partial L/\\partial z$ im Produkt."
+        },
+        {
+          "key": "einheiten-lesen",
+          "prompt": "Wie liest man die Einheiten der Kettenregel $\\partial L/\\partial x = \\partial L/\\partial z \\cdot \\partial z/\\partial x$?",
+          "correct": "„Änderung von $L$ pro Änderung von $z$“ mal „Änderung von $z$ pro Änderung von $x$“ — die $z$-Einheit kürzt sich heraus.",
+          "wrong": [
+            "Die Einheiten addieren sich — darum wird $z$ zur Summe.",
+            "Der erste Faktor hat keine Einheit — er ist nur ein Zähler.",
+            "Die Einheiten müssen erst quadriert werden, damit sie passen."
+          ],
+          "solution": "Die Differentiale kürzen sich wie Brüche: $(\\Delta L/\\Delta z)\\cdot(\\Delta z/\\Delta x)=\\Delta L/\\Delta x$. Diese Sicht macht klar, warum multipliziert wird — jeder Faktor ist eine Übersetzung entlang des Pfades."
+        },
+        {
+          "key": "reihenfolge-faktoren",
+          "prompt": "Gilt bei der Backpropagation „upstream mal lokal“ oder „lokal mal upstream“?",
+          "correct": "Beide — Multiplikation ist kommutativ; wichtig ist nur, dass genau diese zwei Faktoren im Produkt stehen.",
+          "wrong": [
+            "Nur „lokal mal upstream“ — die Reihenfolge ist Teil der Regel.",
+            "Nur „upstream mal lokal“ — sonst stimmt das Vorzeichen nicht.",
+            "Weder — die Faktoren müssen subtrahiert werden."
+          ],
+          "solution": "Für Skalare ist die Reihenfolge egal ($a\\cdot b=b\\cdot a$); bei Matrizen legt die Dimension die Ordnung fest. Entscheidend ist: Pfad heißt Produkt — die Faktoren sind lokale Ableitung und eintreffender Upstream."
+        },
+        {
+          "key": "division-kein-pfad",
+          "prompt": "Warum ist $\\partial L/\\partial x = \\partial L/\\partial z \\;/\\; \\partial z/\\partial x$ als Pfadregel falsch?",
+          "correct": "Weil die Kettenregel Empfindlichkeiten entlang des Pfades multipliziert — Dividieren würde die Wirkung von $x$ auf $z$ umkehren statt fortsetzen.",
+          "wrong": [
+            "Sie ist richtig, sobald der lokale Gradient größer als eins ist.",
+            "Weil man durch Gradienten grundsätzlich nie teilen darf.",
+            "Weil Division nur für Gabelungen reserviert ist."
+          ],
+          "solution": "Die Kettenregel ist keine beliebige Verknüpfung: $x$ wirkt auf $z$, $z$ wirkt auf $L$ — die Empfindlichkeiten verketten sich im Produkt. Division würde bedeuten, $x$ wirkte entgegengesetzt zu $z$."
+        },
+        {
+          "key": "gabelung-zwei-pfade",
+          "prompt": "Von $x$ führen zwei getrennte Pfade zu $L$; die Pfadbeiträge sind $3$ und $4$. Wie groß ist $\\partial L/\\partial x$?",
+          "correct": "$7$ — die Beiträge paralleler Pfade werden addiert.",
+          "wrong": [
+            "$12$ — die Beiträge werden multipliziert.",
+            "$4$ — nur der größte Pfad zählt.",
+            "$1$ — die Beiträge werden subtrahiert."
+          ],
+          "solution": "Zwei Pfade heißen zwei Kanäle, über die $x$ auf $L$ wirkt — ihre Wirkungen summieren sich. Das Produkt gilt innerhalb eines Pfades, die Summe zwischen Pfaden; hier liegen zwei Pfade vor."
+        },
+        {
+          "key": "bruch-lokal",
+          "prompt": "Der lokale Gradient ist $\\frac{1}{2}$, der Upstream-Gradient $8$. Ergebnis für $\\partial L/\\partial x$?",
+          "correct": "$4$ — das Produkt dämpft den Upstream auf die Hälfte.",
+          "wrong": [
+            "$8{,}5$ — die Terme werden addiert.",
+            "$16$ — der lokale Faktor wird verdoppelt.",
+            "$8$ — ein Bruch ändert nichts am Upstream."
+          ],
+          "solution": "Ein lokaler Gradient unter eins dämpft: $\\frac{1}{2}\\cdot8=4$. Die Kettenregel verstärkt nicht automatisch — sie übersetzt die Empfindlichkeit durch jeden Faktor des Pfades."
+        },
+        {
+          "key": "matrix-jakobi",
+          "prompt": "Wie lautet die Kettenregel, wenn $x$ und $z$ Vektoren statt Skalare sind?",
+          "correct": "Das Produkt der Jacobi-Matrizen entlang des Pfades — dieselbe Regel, nur mit Matrixmultiplikation.",
+          "wrong": [
+            "Die Summe der Jacobi-Matrizen entlang des Pfades.",
+            "Das Skalarprodukt der Vektoren $x$ und $z$.",
+            "Die Determinante der Jacobi-Matrix."
+          ],
+          "solution": "Vektoren ändern die Arithmetik, nicht die Regel: Entlang eines Pfades werden Jacobi-Matrizen multipliziert (Reihenfolge beachten), über parallele Pfade addiert. Skalar oder Matrix — „lokal mal upstream“ bleibt das Prinzip."
+        }
+      ]
+    },
+    "core": {
+      "caseId": "backprop-chain-rule",
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein Rechenweg ist $x\\rightarrow h=x^2\\rightarrow y=3h$ mit $x=2$. Welche Aussage über $\\frac{dy}{dx}$ ist korrekt?",
+          "correct": "$dy/dx=12$, weil $dy/dh=3$ und $dh/dx=4$ multipliziert werden.",
+          "wrong": [
+            "$dy/dx=7$, weil die lokalen Ableitungen addiert werden.",
+            "$dy/dx=6$, weil nur der Faktor 3 zählt.",
+            "$dy/dx=4$, weil nur die Ableitung von $x^2$ zählt."
+          ],
+          "solution": "Die lokalen Ableitungen sind $dh/dx=2x=4$ und $dy/dh=3$. Nach der Kettenregel ist $dy/dx=3\\cdot4=12$."
+        },
+        {
+          "key": "kubisch-fuenf",
+          "prompt": "Rechenweg $x\\to h=x^3\\to y=5h$ bei $x=2$. Wie groß ist $dy/dx$?",
+          "correct": "$60$ — $dh/dx=3x^2=12$ und $dy/dh=5$ ergeben $5\\cdot12=60$.",
+          "wrong": [
+            "$17$ — die lokalen Ableitungen werden addiert.",
+            "$12$ — nur die Ableitung von $x^3$ zählt.",
+            "$40$ — $dy/dh$ wird mit $x$ statt mit $dh/dx$ multipliziert."
+          ],
+          "solution": "Zwei Faktoren am Pfad: innen $dh/dx=3x^2$, bei $x=2$ gleich $12$; außen $dy/dh=5$. Kettenregel: $5\\cdot12=60$ — addiert oder weggelassen wird hier nichts."
+        },
+        {
+          "key": "lineares-inneres",
+          "prompt": "Rechenweg $x\\to h=2x+1\\to y=h^2$ bei $x=3$. Ergebnis für $dy/dx$?",
+          "correct": "$28$ — $dy/dh=2h=14$ und $dh/dx=2$ ergeben $14\\cdot2=28$.",
+          "wrong": [
+            "$14$ — nur die äußere Ableitung zählt.",
+            "$2$ — nur die innere Ableitung zählt.",
+            "$16$ — die Faktoren werden addiert."
+          ],
+          "solution": "Erst den Zwischenwert: $h=2\\cdot3+1=7$. Äußere Ableitung $dy/dh=2h=14$, innere $dh/dx=2$. Produkt entlang des Pfades: $14\\cdot2=28$."
+        },
+        {
+          "key": "negatives-x",
+          "prompt": "Rechenweg $x\\to h=x^2\\to y=3h$ bei $x=-1$. Wie groß ist $dy/dx$?",
+          "correct": "$-6$ — $dh/dx=2x=-2$ und $dy/dh=3$ ergeben $-6$.",
+          "wrong": [
+            "$6$ — das Vorzeichen von $x$ fällt unter dem Quadrat weg.",
+            "$-2$ — nur die innere Ableitung zählt.",
+            "$1$ — die Faktoren heben sich auf."
+          ],
+          "solution": "Das Quadrat macht den Vorwärtswert positiv, nicht die Ableitung: $dh/dx=2x=-2$. Der Upstream-Faktor $3$ liefert $-6$ — das Vorzeichen ist Teil des Gradienten."
+        },
+        {
+          "key": "additive-konstante",
+          "prompt": "Rechenweg $x\\to h=x^2\\to y=h+10$ bei $x=2$. Wie groß ist $dy/dx$?",
+          "correct": "$4$ — die Konstante fällt in der Ableitung weg; es bleibt $1\\cdot4=4$.",
+          "wrong": [
+            "$14$ — die Konstante wird mit abgeleitet.",
+            "$12$ — die Konstante wird zum Faktor $3$.",
+            "$0$ — die Konstante blockiert den Gradienten."
+          ],
+          "solution": "Die äußere Funktion ist $y=h+10$, also $dy/dh=1$ — die Konstante verschwindet. Übrig bleibt $dh/dx=2x=4$; die Kettenregel läuft über denselben Pfad."
+        },
+        {
+          "key": "nullstelle-suchen",
+          "prompt": "Für den Pfad $x\\to h=x^2\\to y=5h$: Bei welchem $x$ ist $dy/dx=0$?",
+          "correct": "Bei $x=0$ — dort ist $dh/dx=2x=0$ und nullt das ganze Produkt.",
+          "wrong": [
+            "Bei $x=5$ — dort kippt der äußere Faktor.",
+            "Bei $x=1$ — dort ist $h$ minimal.",
+            "Nirgends — ein quadratischer Term hat nie null Gradient."
+          ],
+          "solution": "Das Produkt $dy/dx=5\\cdot2x=10x$ ist genau dann null, wenn ein Faktor null ist — hier nur bei $x=0$. Ein nullter Pfadbeitrag blockiert den ganzen Pfad."
+        },
+        {
+          "key": "dreifach-kette",
+          "prompt": "Rechenweg $x\\to a=2x\\to b=a^2\\to y=b$ bei $x=1$. Wie groß ist $dy/dx$?",
+          "correct": "$8$ — die Faktoren $1\\cdot4\\cdot2$ entlang des dreigliedrigen Pfades.",
+          "wrong": [
+            "$4$ — nur der mittlere Faktor zählt.",
+            "$7$ — die Faktoren werden addiert.",
+            "$16$ — jeder Faktor wird verdoppelt."
+          ],
+          "solution": "Drei Glieder, drei Faktoren: $dy/db=1$, $db/da=2a=4$ (mit $a=2$), $da/dx=2$. Produkt: $1\\cdot4\\cdot2=8$ — die Kette zieht sich durch jedes Glied."
+        },
+        {
+          "key": "direkt-vs-kette",
+          "prompt": "Der Pfad $x\\to h=x^2\\to y=3h$ lässt sich auch als $y=3x^2$ schreiben. Ändert das $dy/dx$ bei $x=2$?",
+          "correct": "Nein — direkt abgeleitet ergibt $6x=12$, exakt das Kettenregel-Produkt $3\\cdot4$.",
+          "wrong": [
+            "Ja — ohne Zwischenvariable halbiert sich der Gradient.",
+            "Ja — direkte Ableitung liefert $9x^2=36$.",
+            "Nein, aber nur weil $x=2$ gerade ganzzahlig ist."
+          ],
+          "solution": "Die Zwischenvariable ist Buchführung, nicht Physik: $y=3x^2$ direkt abgeleitet gibt $6x$, bei $x=2$ gleich $12$ — identisch zur Kettenregel. Beide Wege rechnen dieselbe Regel."
+        },
+        {
+          "key": "delta-sicht",
+          "prompt": "Warum multipliziert die Kettenregel die lokalen Ableitungen — anschaulich?",
+          "correct": "Weil eine kleine Änderung von $x$ zuerst $h$ um den Faktor $dh/dx$ und dann $y$ um den Faktor $dy/dh$ streckt — die Streckungen verketten sich im Produkt.",
+          "wrong": [
+            "Weil die Fehler der Schritte sich addieren müssen.",
+            "Weil Multiplikation numerisch stabiler ist als Addition.",
+            "Weil der Softmax der Ableitungen multipliziert."
+          ],
+          "solution": "Vergrößert sich $x$ um $\\Delta x$, wächst $h$ um etwa $dh/dx\\cdot\\Delta x$ und $y$ um etwa $dy/dh$ davon — insgesamt $(dy/dh\\cdot dh/dx)\\cdot\\Delta x$. Verkettete Streckung heißt Produkt."
+        },
+        {
+          "key": "halbes-x",
+          "prompt": "Rechenweg $x\\to h=4x\\to y=h^2$ bei $x=0{,}5$. Wie groß ist $dy/dx$?",
+          "correct": "$16$ — $h=2$, $dy/dh=2h=4$, $dh/dx=4$, Produkt $16$.",
+          "wrong": [
+            "$8$ — die Faktoren werden addiert.",
+            "$4$ — nur die innere Ableitung zählt.",
+            "$32$ — $h$ wird noch einmal quadriert."
+          ],
+          "solution": "Zwischenwert $h=4\\cdot0{,}5=2$; äußere Ableitung $2h=4$, innere $4$. Entlang des Pfades: $4\\cdot4=16$. Der Dezimalwert ändert nichts an der Regel."
+        },
+        {
+          "key": "anderes-x",
+          "prompt": "Derselbe Pfad $x\\to h=x^2\\to y=3h$, nun bei $x=5$. Wie groß ist $dy/dx$?",
+          "correct": "$30$ — $dh/dx=2x=10$ mal $dy/dh=3$.",
+          "wrong": [
+            "$12$ — der Wert von $x=2$ wird übernommen.",
+            "$15$ — die Faktoren werden addiert.",
+            "$75$ — $x$ wird zusätzlich quadriert."
+          ],
+          "solution": "Der Pfad bleibt, der Auswertungspunkt ändert sich: $2\\cdot5=10$ innen, $3$ außen — $30$. Die Kettenregel liefert eine Funktion von $x$, nicht eine Konstante."
+        },
+        {
+          "key": "welcher-faktor-fehlt",
+          "prompt": "Jemand rechnet für $x\\to h=x^2\\to y=3h$ bei $x=2$ das Ergebnis $4$. Welcher Fehler steckt darin?",
+          "correct": "Der äußere Faktor $dy/dh=3$ wurde weggelassen — $4$ ist nur $dh/dx$.",
+          "wrong": [
+            "Das Ergebnis stimmt — $4$ ist die vollständige Ableitung.",
+            "Die innere Ableitung wurde falsch berechnet.",
+            "Die Faktoren wurden versehentlich addiert."
+          ],
+          "solution": "$4=2x$ ist nur der innere Beitrag $h$ nach $x$. Der Pfad läuft weiter bis $y$: Ohne den Faktor $3$ bleibt die Antwort um genau diesen Faktor zu klein — Pfadregel heißt alle Glieder."
+        },
+        {
+          "key": "upstream-vorhanden",
+          "prompt": "Hinter $y$ hängt noch ein Loss: $\\partial L/\\partial y=2$. Für denselben Pfad $x\\to h=x^2\\to y=3h$ bei $x=2$ — wie groß ist $\\partial L/\\partial x$?",
+          "correct": "$24$ — der Upstream-Faktor $2$ verlängert die Kette: $2\\cdot3\\cdot4$.",
+          "wrong": [
+            "$12$ — der Upstream ändert nichts am Pfad.",
+            "$9$ — alle Terme werden addiert.",
+            "$14$ — der Upstream wird nur auf den letzten Faktor addiert."
+          ],
+          "solution": "Die Kette endet nicht bei $y$: Ein weiterer Faktor $\\partial L/\\partial y=2$ tritt ans Produkt. $2\\cdot3\\cdot4=24$ — Upstream mal alle lokalen Faktoren."
+        }
+      ]
+    },
+    "stretch": {
+      "caseId": "backprop-detached-branch",
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Ein Modell berechnet $u=x^2$ und setzt danach $z=u+\\operatorname{stop\\_gradient}(u)$. Welche Aussage über $dz/dx$ bei $x=3$ stimmt?",
+          "correct": "$dz/dx=6$, weil nur der erste $u$-Zweig rückwärts differenziert wird.",
+          "wrong": [
+            "$dz/dx=0$, weil <code>stop_gradient</code> den gesamten Ausdruck blockiert.",
+            "$dz/dx=12$, weil beide Vorkommen von $u$ gleich aussehen.",
+            "$dz/dx=3$, weil der Gradient den Exponenten nicht berücksichtigt."
+          ],
+          "solution": "Der normale $u$-Zweig liefert $du/dx=2x=6$. Der abgetrennte Zweig liefert keinen Gradienten, daher ist $dz/dx=6$ statt 12."
+        },
+        {
+          "key": "produkt-sg",
+          "prompt": "Es gilt $u=x^2$ und $z=u\\cdot\\operatorname{stop\\_gradient}(u)$. Was ist $dz/dx$ bei $x=2$?",
+          "correct": "$16$ — nur der erste $u$-Faktor wird differenziert: $du/dx\\cdot u=4\\cdot4=16$.",
+          "wrong": [
+            "$32$ — beide Faktoren liefern je $16$.",
+            "$0$ — der abgetrennte Faktor blockiert das ganze Produkt.",
+            "$8$ — nur $du/dx$ ohne den Wert von $u$."
+          ],
+          "solution": "Produktregel mit abgetrenntem Zweig: $dz/dx=du/dx\\cdot\\operatorname{sg}(u)+u\\cdot0$. Bei $x=2$ gilt $u=4$ und $du/dx=4$ — der erste Summand ergibt $16$, der zweite verschwindet komplett."
+        },
+        {
+          "key": "sg-x-eins",
+          "prompt": "Es gilt $u=x^2$ und $z=u+\\operatorname{stop\\_gradient}(u)$. Was ist $dz/dx$ bei $x=1$?",
+          "correct": "$2$ — der aktive $u$-Zweig liefert $2x=2$, der abgetrennte nichts.",
+          "wrong": [
+            "$4$ — beide Zweige tragen je $2$ bei.",
+            "$0$ — <code>stop_gradient</code> blockiert den ganzen Ausdruck.",
+            "$1$ — der Gradient ist der Eingabewert."
+          ],
+          "solution": "Wie im Basisfall, nur anderer Punkt: $du/dx=2x=2$ fließt über den ersten Zweig, der zweite ist getrennt. Ergebnis $2$ — nicht $4$ und nicht $0$."
+        },
+        {
+          "key": "sg-ganzer-term",
+          "prompt": "Nun steht der ganze Ausdruck im Stop: $z=\\operatorname{stop\\_gradient}(u+u)$ mit $u=x^2$. Was ist $dz/dx$ bei $x=3$?",
+          "correct": "$0$ — beide Summanden liegen im selben abgetrennten Zweig; kein Pfad führt mehr zu $x$.",
+          "wrong": [
+            "$12$ — zwei Zweige à $2x$.",
+            "$6$ — ein Zweig bleibt immer aktiv.",
+            "$36$ — das Quadrat wirkt zweimal."
+          ],
+          "solution": "Der Geltungsbereich zählt: $\\operatorname{stop\\_gradient}$ umfasst hier die ganze Summe — es gibt keinen freien $x$-Pfad mehr. Gradient null, obwohl der Vorwärtswert $18$ beträgt."
+        },
+        {
+          "key": "sg-linearer-rest",
+          "prompt": "Es gilt $z=\\operatorname{stop\\_gradient}(x^2)+3x$. Was ist $dz/dx$ bei $x=3$?",
+          "correct": "$3$ — nur der lineare Term trägt einen Pfad; der abgetrennte quadratische Teil liefert nichts.",
+          "wrong": [
+            "$9$ — $2x+3$ über beide Teile.",
+            "$0$ — der Stop blockiert den ganzen Ausdruck.",
+            "$6$ — nur der quadratische Teil zählt."
+          ],
+          "solution": "Der Stop trifft nur den ersten Summanden: Dort endet jeder Pfad. Der zweite Summand $3x$ ist frei und liefert $3$ — die Abtrennung ist eine Eigenschaft des Zweigs, nicht der Formelzeile."
+        },
+        {
+          "key": "vorwaerts-gleich",
+          "prompt": "Der Vorwärtswert von $z=u+\\operatorname{stop\\_gradient}(u)$ bei $x=3$ ist $18$, trotzdem ist $dz/dx=6$. Warum?",
+          "correct": "Vorwärts zählen beide Zweige als Werte, rückwärts nur der angeschlossene — Wertgleichheit ist keine Pfadgleichheit.",
+          "wrong": [
+            "Das ist ein Widerspruch — der Gradient muss dem Wert folgen.",
+            "Weil der zweite Zweig vorwärts halbiert wird.",
+            "Weil $18$ nur ein gerundeter Wert ist."
+          ],
+          "solution": "stop\\_gradient ist identisch im Vorwärtspass — der Wert $u+u$ bleibt $18$. Rückwärts aber existiert der zweite Pfad nicht: Der Gradient folgt den Kanten des Graphen, nicht der Höhe der Werte."
+        },
+        {
+          "key": "zweck-stop",
+          "prompt": "Wozu setzt man <code>stop_gradient</code> in der Praxis ein?",
+          "correct": "Um einen Zweig als Konstante zu behandeln — etwa ein Ziel, das nicht mittrainiert werden soll (Target-Netzwerke, TD-Learning).",
+          "wrong": [
+            "Um Speicher im Vorwärtspass zu sparen.",
+            "Um die Vorwärtsrechnung zu beschleunigen.",
+            "Um die zweite Ableitung zu berechnen."
+          ],
+          "solution": "Der Zweck ist semantisch: Der abgetrennte Wert steht im Vorwärtspass, fließt aber nicht in die Parameteranpassung. Klassische Anwendung: Bootstrapping-Ziele, die konstant gehalten werden müssen."
+        },
+        {
+          "key": "sg-ist-null",
+          "prompt": "Welchen Gradientenbeitrag liefert ein Zweig hinter <code>stop_gradient</code> exakt?",
+          "correct": "Exakt null — der Pfad ist geschnitten, nicht nur gedämpft.",
+          "wrong": [
+            "Einen sehr kleinen Epsilon-Gradienten.",
+            "Den gleichen Beitrag wie ohne Stop, nur halbiert.",
+            "Einen Gradienten von eins als Platzhalter."
+          ],
+          "solution": "Die Abtrennung entfernt die Kante aus dem Rechengraphen: $\\partial\\,\\operatorname{sg}(u)/\\partial x=0$ exakt. Kein Rauschen, kein Rest — der Zweig ist für den Gradienten unsichtbar."
+        },
+        {
+          "key": "detach-aequivalent",
+          "prompt": "Wie heißt dasselbe Konzept in PyTorch?",
+          "correct": "<code>detach()</code> — der Tensor verlässt den Autograd-Graphen und trägt keinen Gradienten mehr.",
+          "wrong": [
+            "<code>clone()</code> — die Kopie trennt den Graphen automatisch.",
+            "<code>no_grad()</code> auf einem einzelnen Tensor.",
+            "<code>freeze()</code> als Layer-Option."
+          ],
+          "solution": "Frameworks nennen es verschieden — JAX: stop\\_gradient, PyTorch: detach. Gemeinsam ist: Der Wert bleibt im Vorwärtspass, die Kante im Graphen verschwindet. no\\_grad ist ein Kontext, kein Tensor-Schnitt."
+        },
+        {
+          "key": "zwei-stops",
+          "prompt": "Es gilt $z=\\operatorname{stop\\_gradient}(u)+\\operatorname{stop\\_gradient}(u)$ mit $u=x^2$. Was ist $dz/dx$ bei $x=3$?",
+          "correct": "$0$ — beide Summanden sind abgetrennt; es gibt keinen freien Pfad zu $x$.",
+          "wrong": [
+            "$12$ — zwei Zweige à $6$.",
+            "$6$ — ein Zweig bleibt immer offen.",
+            "$18$ — der Vorwärtswert bestimmt den Gradienten."
+          ],
+          "solution": "Jeder Summand liegt hinter einer eigenen Abtrennung — addiert werden zwei Nullen. Vorwärts liefert der Ausdruck weiterhin $2u=18$: Wert und Gradient können völlig auseinanderlaufen."
+        },
+        {
+          "key": "gleiche-werte-falle",
+          "prompt": "Beide Vorkommen von $u$ in $z=u+\\operatorname{stop\\_gradient}(u)$ haben denselben numerischen Wert. Warum nicht denselben Gradienten?",
+          "correct": "Der Gradient folgt den Pfaden im Graphen — der zweite Zweig hat keine Kante zu $x$; Wertgleichheit ist irrelevant.",
+          "wrong": [
+            "Sie haben denselben Gradienten — $dz/dx=12$.",
+            "Weil der zweite Wert intern gerundet wird.",
+            "Weil nur der erste Buchstabe $u$ differenzierbar ist."
+          ],
+          "solution": "Autograd kennt keine „gleichen Werte“, nur Kanten: $\\operatorname{sg}(u)$ ist eine neue Konstante ohne Vorgeschichte. Derselbe Denkfehler macht aus dem korrekten $6$ die falsche $12$."
+        },
+        {
+          "key": "sg-in-loss",
+          "prompt": "Ein Loss lautet $L=(y-\\operatorname{stop\\_gradient}(t))^2$ mit einem Zielwert $t$ aus demselben Netz. Welcher Gradient fließt in den $t$-Zweig?",
+          "correct": "Keiner — das Ziel ist abgetrennt; der Gradient wirkt nur über den $y$-Pfad.",
+          "wrong": [
+            "Der volle Gradient — beide Pfade werden differenziert.",
+            "Der negative Gradient — das Minuszeichen dreht den Fluss um.",
+            "Ein reduzierter Gradient von halber Stärke."
+          ],
+          "solution": "Genau dafür steht der Stop: Das Ziel soll Anker bleiben, nicht mitwandern. Ohne Abtrennung würde das Netz den Fehler auch dadurch „verkleinern“, dass es $t$ Richtung $y$ schiebt."
+        },
+        {
+          "key": "fehler-null-lesen",
+          "prompt": "Jemand schließt aus $dz/dx=6$ statt $12$: „Dann war der zweite Summand vorwärts auch null.“ Was stimmt daran nicht?",
+          "correct": "Vorwärts trägt der zweite Summand voll bei ($u=9$) — nur rückwärts ist er getrennt; Wert und Gradient sind verschiedene Durchläufe.",
+          "wrong": [
+            "Es stimmt — ein getrennter Zweig liefert vorwärts null.",
+            "Falsch ist nur die Zahl: Vorwärts waren es $6$.",
+            "Falsch ist, dass überhaupt zwei Durchläufe existieren."
+          ],
+          "solution": "Die Abtrennung ist eine Einbahnstraße: Vorwärts fließt der Wert normal ($9+9=18$), rückwärts nichts. Wer das liest wie „der Summand war null“, verwechselt Vorwärtswert mit Pfadbeitrag."
+        }
+      ]
+    }
+  }
+}

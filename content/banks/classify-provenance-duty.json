@@ -1,0 +1,152 @@
+{
+  "capsules": {
+    "intro": {
+      "caseId": "provenance-duty",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Was ist der zentrale Zweck der Pflichtfelder in Daten- und Modellkarten dieser Plattform?",
+          "correct": "Provenienz, Zweck, Evaluationsrahmen und Grenzen so erfassen, dass Vollständigkeit und Konsistenz deterministisch prüfbar sind.",
+          "wrong": [
+            "Das System in positives Licht rücken, damit es übernommen wird.",
+            "Kennzahlen ersetzen: Wer die Karte liest, braucht keine Messung mehr.",
+            "Ein Formular, das niemand liest und das keine Konsequenzen hat."
+          ],
+          "solution": "Pflichtfelder machen Provenienz, Verwendungszweck, Evaluationsrahmen und bekannte Grenzen maschinenlesbar nachvollziehbar: Ein Audit kann fehlende oder leere Felder zählen und Karten gegen das Protokoll abgleichen — Karten sind ein prüfbarer Vertrag, kein Marketingtext. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+        },
+        {
+          "key": "quelle-pflichtfeld",
+          "prompt": "Eine Datenkarte verlangt die Quelle jedes Datensatzes als Pflichtfeld. Welche Pflichtklasse erfüllt dieses Feld?",
+          "correct": "Provenienz: Die Herkunft muss so dokumentiert sein, dass ein Audit fehlende Angaben deterministisch feststellen kann.",
+          "wrong": [
+            "Marketing: Die Quelle soll den Datensatz attraktiver wirken lassen.",
+            "Performance: Die Quellenangabe beschleunigt die Verarbeitung der Daten.",
+            "Zierde: Das Feld existiert nur, damit die Karte vollständig aussieht."
+          ],
+          "solution": "Provenienz-Felder machen Herkunft prüfbar: Ein Audit zählt leere Quellenangaben als feststellbaren Mangel und gleicht sie gegen das Protokoll. Die Angabe dient der Nachvollziehbarkeit, nicht der Darstellung."
+        },
+        {
+          "key": "zweckbindung",
+          "prompt": "Ein Modellkarten-Eintrag beschreibt, wofür das Modell gebaut wurde und wofür nicht. Welche Pflicht steckt dahinter?",
+          "correct": "Zweckbindung: Der deklarierte Verwendungszweck ist Teil des prüfbaren Vertrags, damit Fehlverwendungen gegen die Karte festgestellt werden können.",
+          "wrong": [
+            "Werbung: Der Zweck soll das Modell für möglichst viele Einsätze empfehlen.",
+            "Verschlüsselung: Der Zweck schützt das Modell vor unbefugtem Zugriff.",
+            "Ersatzmessung: Wer den Zweck kennt, muss das Modell nicht mehr evaluieren."
+          ],
+          "solution": "Das Zweckfeld macht den Verwendungsrahmen prüfbar: Ein Einsatz außerhalb des deklarierten Zwecks ist am Kartentext feststellbar. Ohne das Pflichtfeld wäre Fehlverwendung eine Interpretationsfrage statt eines feststellbaren Vertragsbruchs."
+        },
+        {
+          "key": "leeres-grenzenfeld",
+          "prompt": "Ein Audit findet das Pflichtfeld „bekannte Grenzen“ leer vor. Was bedeutet das im Kartenvertrag?",
+          "correct": "Einen prüfbaren Vertragsbruch: Leere Pflichtfelder sind feststellbare Mängel, keine Geschmacksfrage — das Audit kann sie zählen und monieren.",
+          "wrong": [
+            "Eine Erfolgsmeldung: Ein leeres Grenzen-Feld heißt, das System hat keine Grenzen.",
+            "Ein Formatproblem ohne fachliche Bedeutung, das ignoriert werden kann.",
+            "Einen Beweis, dass die Karte von einem automatischen Verfahren erzeugt wurde."
+          ],
+          "solution": "Pflicht heißt konsequenzbehaftet: Das Feld muss vorhanden und sagend sein. Ein leeres Grenzen-Feld ist ein zählbarer Mangel — gerade weil die Pflicht deterministisch prüfbar ist, kann das Audit ihn feststellen statt zu interpretieren."
+        },
+        {
+          "key": "evaluationsrahmen",
+          "prompt": "Warum verlangt die Kartenpflicht einen Evaluationsrahmen (welche Daten, welche Metriken) statt nur einer Gütezahl?",
+          "correct": "Weil eine Zahl ohne Rahmen nicht prüfbar ist: Erst Datenbasis, Metrik und Vorgehen machen die Aussage nachvollziehbar und mit späteren Karten vergleichbar.",
+          "wrong": [
+            "Weil der Rahmen die Zahl verschleiert und Audits erschwert.",
+            "Weil Zahlen grundsätzlich falsch sind und nur Prosa zählt.",
+            "Weil der Evaluationsrahmen das Modell automatisch neu trainiert."
+          ],
+          "solution": "Eine Gütezahl ohne Evaluationsrahmen ist nicht reproduzierbar: Niemand kann feststellen, auf welchen Daten und unter welcher Metrik sie entstand. Das Pflichtfeld macht die Messung zum prüfbaren Teil des Vertrags."
+        },
+        {
+          "key": "nur-staerken",
+          "prompt": "Ein Team will in der Karte nur die Stärken des Modells beschreiben und Grenzen weglassen. Welche Pflicht wird verletzt?",
+          "correct": "Die Vollständigkeitspflicht: Karten sind Abnahmegrundlage — bekannte Grenzen und Lücken gehören zum prüfbaren Vertrag, Weglassen ist ein feststellbarer Mangel.",
+          "wrong": [
+            "Die Kürze-Pflicht: Karten müssen so kurz wie möglich bleiben.",
+            "Die Geheimhaltungspflicht: Grenzen dürfen nur intern dokumentiert werden.",
+            "Keine — Karten sind freiwillige Werbetexte ohne Prüfcharakter."
+          ],
+          "solution": "Der Kartenvertrag verlangt Vollständigkeit, nicht positive Darstellung: Grenzen und Lücken sind gerade die Angaben, die ein Audit braucht. Wer sie weglässt, produziert einen feststellbaren Mangel — keinen guten Eindruck."
+        },
+        {
+          "key": "karte-vs-werbetext",
+          "prompt": "Welche Aussage trifft den Unterschied zwischen einer Modellkarte und einem Werbetext?",
+          "correct": "Die Karte ist ein prüfbarer Vertrag: Pflichtfelder zu Provenienz, Zweck, Evaluation und Grenzen erlauben deterministische Vollständigkeits- und Konsistenzchecks — der Werbetext kennt solche Prüfungen nicht.",
+          "wrong": [
+            "Die Karte ist länger und schöner formatiert als der Werbetext.",
+            "Die Karte ersetzt die Evaluation, der Werbetext nicht.",
+            "Es gibt keinen Unterschied — beide sollen das System positiv darstellen."
+          ],
+          "solution": "Der Unterschied liegt im Prüfcharakter: Pflichtfelder sind maschinell auf Vorhandensein und Konsistenz auswertbar, fehlende Angaben sind Mängel. Ein Werbetext optimiert Wirkung und kann nicht gegen ein Protokoll abgeglichen werden."
+        },
+        {
+          "key": "vage-quelle",
+          "prompt": "Eine Datenkarte nennt „Webcrawl 2023“ als Quelle — ohne Zeitraum, Lizenz oder Bezugsweg. Was fehlt der Provenienz-Angabe?",
+          "correct": "Die Prüfbarkeit: Provenienz heißt, Herkunft so konkret zu erfassen, dass ein Audit sie nachvollziehen und fehlende Teilangaben feststellen kann.",
+          "wrong": [
+            "Die Verschlüsselung: Die Quelle muss vor fremden Lesern geschützt werden.",
+            "Die Werbewirkung: Die Quelle klingt zu technisch und sollte positiver formuliert werden.",
+            "Nichts — jede Quellenangabe erfüllt automatisch die Pflicht."
+          ],
+          "solution": "Ein Feld ist erst dann sagend, wenn ein Audit dagegen prüfen kann: „Webcrawl 2023“ ohne Zeitraum, Lizenz und Bezugsweg lässt offen, was tatsächlich im Datensatz steckt — die Angabe ist vorhanden, aber nicht vollständig genug für den Vertrag."
+        },
+        {
+          "key": "maschinenlesbar",
+          "prompt": "Warum sind die Karten-Pflichtfelder maschinenlesbar strukturiert statt Freitext?",
+          "correct": "Damit Vollständigkeit und Konsistenz deterministisch geprüft werden können: Felder sind vorhanden und sagend, oder der Mangel ist automatisch feststellbar.",
+          "wrong": [
+            "Damit die Karten von Suchmaschinen besser gefunden werden.",
+            "Damit niemand die Felder versehentlich lesen kann.",
+            "Damit die Karten kleiner gespeichert werden können."
+          ],
+          "solution": "Der Vertragsgedanke verlangt deterministische Prüfung: Nur strukturierte Felder kann ein Werkzeug zählen, leeren Inhalt erkennen und Karten gegeneinander abgleichen. Freitext ließe die Prüfung beim Interpretations-Spielraum."
+        },
+        {
+          "key": "fixture-scope",
+          "prompt": "Eine Karte dokumentiert „evaluiert auf den Projekt-Fixtures“. Ein Audit fragt, ob das für den produktiven Einsatz reicht. Welche Pflicht greift hier?",
+          "correct": "Die Grenzen-Pflicht: Der Evaluationsrahmen muss Geltungsbereich und bekannte Lücken benennen — Fixture-Ergebnisse ohne Grenzhinweis übersteigen den prüfbaren Vertrag.",
+          "wrong": [
+            "Die Werbe-Pflicht: Die Karte muss Fixtures als Stärke verkaufen.",
+            "Die Verschwiegenheits-Pflicht: Evaluationsdetails gehören nicht in Karten.",
+            "Keine — eine Evaluationsangabe schließt jede weitere Pflicht aus."
+          ],
+          "solution": "Der Evaluationsrahmen ist nur mit Grenzangabe vollständig: Auf Fixtures gemessene Werte sagen nichts über Produktivdaten. Die Pflichtfelder machen diesen Geltungsbereich feststellbar — wer die Karte liest, sieht, was die Zahlen tragen und was nicht."
+        },
+        {
+          "key": "vergleichbarkeit",
+          "prompt": "Zwei Modelle sollen anhand ihrer Karten verglichen werden. Was macht die Pflichtfelder-Struktur dabei entscheidend?",
+          "correct": "Dass beide Karten dieselben Angabepflichten erfüllen müssen: Provenienz, Zweck, Evaluationsrahmen und Grenzen liegen in derselben Form vor, sonst wäre der Vergleich nicht prüfbar.",
+          "wrong": [
+            "Dass die Karten dieselbe Länge und dasselbe Design haben.",
+            "Dass Karten-Vergleiche Messungen komplett ersetzen.",
+            "Dass das bessere Modell die schönere Karte hat."
+          ],
+          "solution": "Vergleichbarkeit entsteht durch gleiche Pflichtstruktur: Wenn beide Karten Provenienz, Zweck, Rahmen und Grenzen in derselben Form tragen, kann der Abgleich deterministisch laufen. Freie Textformen würden den Vergleich zur Interpretation machen."
+        },
+        {
+          "key": "marketingziel-im-zweckfeld",
+          "prompt": "Ein Review moniert: „Karte vorhanden, aber das Zweckfeld beschreibt Marketingziele statt der Modellverwendung.“ Welche Kartenpflicht ist konkret gemeint?",
+          "correct": "Konsistenz und Sagendheit der Pflichtfelder: Ein Feld muss den geforderten Inhalt tragen — ein Zweckfeld ohne Verwendungszweck ist ein feststellbarer Vertragsmangel.",
+          "wrong": [
+            "Die Rechtschreibpflicht der Kartensoftware.",
+            "Die Pflicht, jedes Feld mit beliebigem Text zu füllen.",
+            "Die Pflicht, Marketingziele geheim zu halten."
+          ],
+          "solution": "Vorhandensein reicht nicht: Der Vertrag verlangt sagende Felder. Ein Zweckfeld, das Marketingziele statt der Modellverwendung nennt, ist formal gefüllt, inhaltlich aber ein Mangel — genau das macht die Konsistenzprüfung feststellbar."
+        },
+        {
+          "key": "pflicht-vs-empfehlung",
+          "prompt": "Was unterscheidet eine Karten-Pflicht von einer freiwilligen Dokumentations-Empfehlung?",
+          "correct": "Die Pflicht macht die Karte abnahmefähig: Fehlen oder Leere der Felder ist deterministisch feststellbar und hat Konsequenzen im Audit — Empfehlungen können folgenlos ignoriert werden.",
+          "wrong": [
+            "Pflichtfelder sind optional, Empfehlungen sind bindend.",
+            "Pflichtfelder verschlüsseln die Karte, Empfehlungen nicht.",
+            "Es gibt keinen Unterschied — beide sind Textvorschläge."
+          ],
+          "solution": "Pflicht heißt prüfbar und sanktionsfähig: Das Audit zählt fehlende oder leere Felder als Mängel mit Konsequenz. Eine Empfehlung erzeugt keinen feststellbaren Vertragsbruch — sie ist Bemühung, nicht Abnahmegrundlage."
+        }
+      ]
+    }
+  }
+}

@@ -26,7 +26,7 @@ import {
   rankSolutionOptions, rankSolutionPrompt, rankSolutionSolution, drawRankSolutionParameters,
 } from './linalg_generators.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
-import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './linalg_family_kit.mjs';
+import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './solved_family_kit.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 

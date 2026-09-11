@@ -1,0 +1,36 @@
+{
+  "capsules": {
+    "intro": {
+      "kind": "product",
+      "rows": [
+        2,
+        6
+      ],
+      "inner": [
+        2,
+        5
+      ],
+      "cols": [
+        2,
+        5
+      ],
+      "caseId": "shape-product-drawn"
+    },
+    "core": {
+      "kind": "add",
+      "dims": [
+        2,
+        7
+      ],
+      "caseId": "shape-add-broadcast-trap"
+    },
+    "stretch": {
+      "kind": "vector",
+      "inner": [
+        2,
+        12
+      ],
+      "caseId": "shape-vector-matmul-chain"
+    }
+  }
+}

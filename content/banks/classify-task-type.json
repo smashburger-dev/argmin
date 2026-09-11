@@ -1,0 +1,526 @@
+{
+  "capsules": {
+    "intro": {
+      "kind": "binaer",
+      "caseId": "failure-next-cycle-supervised",
+      "bank": [
+        {
+          "scenario": "Kündigung ja/nein mit historischen Labels",
+          "target": "Churn im nächsten Monat",
+          "prompt": "Ein Mobilfunkanbieter will vorhersagen, ob ein Vertrag im nächsten Monat gekündigt wird (ja/nein). Die Historie enthält pro Kundin das bisherige Kündigungsverhalten. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (kündigt / kündigt nicht), und es gibt gelabelte historische Beispiele.",
+          "wrong": [
+            "Regression: „Ja“ und „Nein“ als 1 und 0 machen das Ziel stetig.",
+            "Beides gleich gut möglich — der Algorithmus entscheidet den Problemtyp.",
+            "Weder noch: Ohne vordefinierte Gruppen ist das Clustering."
+          ],
+          "loesung": "Das Ziel ist eine Kategorie mit Labels — binäre Klassifikation. 0/1-Kodierung ändert den Kategoriecharakter nicht."
+        },
+        {
+          "scenario": "Spam ja/nein mit historischen Labels",
+          "target": "Spam-Mail",
+          "prompt": "Ein Filter soll erkennen, ob eine Mail Spam ist (ja/nein). Es gibt einen historischen Satz manuell gelabelter Mails. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (Spam / kein Spam), und es gibt gelabelte historische Beispiele.",
+          "wrong": [
+            "Regression, weil Spamfilter Zahlen wie Wortanzahl nutzen.",
+            "Clustering, weil Mails Gruppen bilden.",
+            "Der Algorithmus rät selbst, ob Klassifikation oder Regression passt."
+          ],
+          "loesung": "Gelabelte Kategorien ergeben überwachte binäre Klassifikation, kein Clustering und keine Regression."
+        },
+        {
+          "scenario": "Kreditausfall ja/nein mit Labels",
+          "target": "Ausfall in 12 Monaten",
+          "prompt": "Eine Bank will vorhersagen, ob ein Kredit in den nächsten 12 Monaten ausfällt (ja/nein). Alte Verträge sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (fällt aus / fällt nicht aus) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Ausfall als 0/1 kodiert werden kann.",
+            "Clustering, weil Kundinnen Segmente bilden.",
+            "Bestärkendes Lernen, weil ein Kredit eine Entscheidung ist."
+          ],
+          "loesung": "Historische Ja/Nein-Labels machen eine überwachte binäre Klassifikation. Die 0/1-Kodierung macht das Ziel nicht stetig."
+        },
+        {
+          "scenario": "Befund positiv/negativ mit Labels",
+          "target": "Krankheit vorhanden",
+          "prompt": "Ein Modell soll vorhersagen, ob ein Befund positiv oder negativ ist. Ärztlich gelabelte historische Fälle liegen vor. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (befundpositiv / -negativ) mit gelabelten Fällen.",
+          "wrong": [
+            "Regression, weil Laborwerte stetig sind.",
+            "Clustering, weil Patientinnen Gruppen bilden.",
+            "Unüberwacht, weil die Diagnose erst später feststeht."
+          ],
+          "loesung": "Zwei Klassen plus Labels: überwachte binäre Klassifikation. Stetige Laborwerte sind Merkmale, nicht das Ziel."
+        },
+        {
+          "scenario": "Betrug ja/nein mit Labels",
+          "target": "Betrugsfall",
+          "prompt": "Ein Zahlungsdienst will Transaktionen als Betrug oder legitim einstufen. Historische, geprüfte Fälle sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (Betrug / kein Betrug) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Transaktionsbeträge Zahlen sind.",
+            "Clustering, weil es keine vordefinierten Gruppen gäbe.",
+            "Der Algorithmus entscheidet den Problemtyp selbst."
+          ],
+          "loesung": "Gelabelte Kategorien ergeben binäre Klassifikation. Beträge sind Eingaben, nicht das stetige Ziel."
+        },
+        {
+          "scenario": "Bestehen ja/nein mit Labels",
+          "target": "Prüfung bestanden",
+          "prompt": "Eine Hochschule will vorhersagen, ob eine Prüfung bestanden wird (ja/nein). Alte Versuche mit Ergebnis liegen vor. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (bestanden / nicht bestanden) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Punkte stetig sind.",
+            "Clustering, weil Kohorten Gruppen bilden.",
+            "Unüberwacht, weil die Prüfung in der Zukunft liegt."
+          ],
+          "loesung": "Das Ziel ist die Kategorie bestanden/nicht, nicht die Punktzahl. Mit Labels ist das binäre Klassifikation."
+        },
+        {
+          "scenario": "Klick ja/nein mit Labels",
+          "target": "Anzeige geklickt",
+          "prompt": "Ein Anzeigensystem soll vorhersagen, ob eine Impression geklickt wird (ja/nein). Historische Impressionen sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (Klick / kein Klick) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil CTR eine Rate ist.",
+            "Clustering, weil Nutzende Segmente bilden.",
+            "Bestärkendes Lernen, weil Anzeigen Entscheidungen sind."
+          ],
+          "loesung": "Pro Impression ein Ja/Nein-Label: binäre Klassifikation. Eine spätere Rate ist eine Metrik, nicht der Problemtyp."
+        },
+        {
+          "scenario": "Garantieanspruch ja/nein mit Labels",
+          "target": "Anspruch im ersten Jahr",
+          "prompt": "Ein Hersteller will vorhersagen, ob ein Gerät im ersten Jahr einen Garantieanspruch auslöst (ja/nein). Alte Geräte sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (Anspruch / kein Anspruch) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Reparaturkosten stetig wären.",
+            "Clustering, weil Produkte Gruppen bilden.",
+            "Weder noch, weil die Zukunft unbekannt ist."
+          ],
+          "loesung": "Zwei Klassen plus Historie: überwachte binäre Klassifikation. Kosten wären ein anderes, stetiges Ziel."
+        },
+        {
+          "scenario": "Mail geöffnet ja/nein mit Labels",
+          "target": "Öffnung innerhalb 24h",
+          "prompt": "Ein Newsletter soll vorhersagen, ob eine Mail in 24 Stunden geöffnet wird (ja/nein). Alte Versandprotokolle sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (geöffnet / nicht geöffnet) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Öffnungsraten Zahlen sind.",
+            "Clustering, weil Empfängergruppen entdeckt werden sollen.",
+            "Der Algorithmus wählt den Problemtyp automatisch."
+          ],
+          "loesung": "Gelabeltes Ja/Nein pro Mail ist binäre Klassifikation, kein Clustering und keine Regression auf eine Rate."
+        },
+        {
+          "scenario": "Rücksendung ja/nein mit Labels",
+          "target": "Retoure der Bestellung",
+          "prompt": "Ein Online-Shop will vorhersagen, ob eine Bestellung zurückgesendet wird (ja/nein). Historische Bestellungen sind mit dem Retourenstatus gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (Rücksendung / keine Rücksendung) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil der Bestellwert eine Zahl ist.",
+            "Clustering, weil Kundentypen gesucht werden.",
+            "Der Algorithmus entscheidet den Problemtyp selbst."
+          ],
+          "loesung": "Gelabelter Ja/Nein-Status pro Bestellung: überwachte binäre Klassifikation."
+        },
+        {
+          "scenario": "Schichtausfall ja/nein mit Labels",
+          "target": "Fehltag nächste Woche",
+          "prompt": "Ein Dienstplan soll vorhersagen, ob eine Schicht krankheitsbedingt ausfällt (ja/nein). Vergangene Schichten sind mit dem Ausgang gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (fällt aus / findet statt) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil die Schichtdauer in Stunden gemessen wird.",
+            "Clustering, weil Teams Gruppen bilden.",
+            "Unüberwacht, weil die Zukunft unbekannt ist."
+          ],
+          "loesung": "Ja/Nein-Ziel mit historischen Labels: überwachte binäre Klassifikation."
+        },
+        {
+          "scenario": "Zahlungsverzug ja/nein mit Labels",
+          "target": "Rechnung verspätet",
+          "prompt": "Ein Buchhaltungssystem soll vorhersagen, ob eine Rechnung verspätet bezahlt wird (ja/nein). Alte Rechnungen sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (verspätet / pünktlich) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Rechnungsbeträge Zahlen sind.",
+            "Bestärkendes Lernen, weil Mahnungen Entscheidungen sind.",
+            "Clustering, weil Kundinnen Segmente bilden."
+          ],
+          "loesung": "Zwei Klassen plus Labels: binäre Klassifikation; der Rechnungsbetrag ist ein Merkmal."
+        },
+        {
+          "scenario": "Absturz ja/nein mit Labels",
+          "target": "App-Absturz",
+          "prompt": "Ein Telemetrie-System soll vorhersagen, ob eine App-Sitzung abstürzt (ja/nein). Historische Sitzungen sind mit dem Ausgang gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (Absturz / kein Absturz) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil die Sitzungsdauer stetig ist.",
+            "Clustering, weil Sitzungen Muster bilden.",
+            "Der Algorithmus wählt den Problemtyp automatisch."
+          ],
+          "loesung": "Gelabeltes Ja/Nein pro Sitzung: binäre Klassifikation."
+        },
+        {
+          "scenario": "Budgetüberschreitung ja/nein mit Labels",
+          "target": "Budgetüberschreitung",
+          "prompt": "Ein Controlling-Tool soll vorhersagen, ob ein Projekt sein Budget überschreitet (ja/nein). Abgeschlossene Projekte sind gelabelt. Wie ist das Problem korrekt formuliert?",
+          "correct": "Binäre Klassifikation: Das Ziel ist eine Kategorie (überschreitet / hält ein) mit historischen Labels.",
+          "wrong": [
+            "Regression, weil Budgets Zahlen sind.",
+            "Unüberwacht, weil das Projekt noch läuft.",
+            "Clustering, weil Projekte Gruppen bilden."
+          ],
+          "loesung": "Zwei gelabelte Klassen: binäre Klassifikation, kein stetiges Ziel."
+        }
+      ]
+    },
+    "core": {
+      "kind": "regression",
+      "caseId": "task-house-price",
+      "bank": [
+        {
+          "scenario": "Temperatur stetig mit Labels",
+          "target": "Tagestemperatur",
+          "prompt": "Ein Modell soll die Tagestemperatur aus Luftdruck, Wind und Feuchte vorhersagen. Historische Temperaturen sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil eine stetige Temperatur aus gelabelten Messungen gelernt wird.",
+          "wrong": [
+            "Unüberwachtes Clustering, weil mehrere Wettermerkmale eingehen.",
+            "Binäre Klassifikation, weil jeder Tag ein einzelnes Ergebnis ist.",
+            "Bestärkendes Lernen, weil Wetter eine Entscheidung ist."
+          ],
+          "loesung": "Stetiges Ziel plus Labels: überwachte Regression."
+        },
+        {
+          "scenario": "Nachfrage stetig mit Labels",
+          "target": "Stückzahl",
+          "prompt": "Ein Modell soll die wöchentliche Nachfrage eines Artikels aus Preis, Saison und Lagerbestand vorhersagen. Historische Stückzahlen liegen vor. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil eine stetige Stückzahl aus gelabelten Verkäufen gelernt wird.",
+          "wrong": [
+            "Clustering, weil Produkte Gruppen bilden.",
+            "Binäre Klassifikation, weil jedes Produkt verkauft oder nicht verkauft wird.",
+            "Bestärkendes Lernen, weil Bestellungen Entscheidungen sind."
+          ],
+          "loesung": "Die Zielgröße ist stetig und gelabelt: überwachte Regression."
+        },
+        {
+          "scenario": "Blutdruck stetig mit Labels",
+          "target": "systolischer Druck",
+          "prompt": "Ein Modell soll den systolischen Blutdruck aus Alter, Gewicht und Ruheherzfrequenz schätzen. Historische Messwerte sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiger Druckwert aus gelabelten Messungen gelernt wird.",
+          "wrong": [
+            "Clustering, weil mehrere Vitalwerte eingehen.",
+            "Binäre Klassifikation, weil Hypertonie eine Klasse wäre.",
+            "Unüberwacht, weil der Druck in der Zukunft liegt."
+          ],
+          "loesung": "Stetiges, gelabeltes Ziel: Regression. Eine spätere Schwelle zu Hypertonie wäre ein anderes Problem."
+        },
+        {
+          "scenario": "Verspätung stetig mit Labels",
+          "target": "Verspätung in Minuten",
+          "prompt": "Ein Modell soll die Verspätung in Minuten aus Uhrzeit, Linie und Wetter vorhersagen. Historische Verspätungen liegen vor. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil Minuten als stetiges Ziel aus gelabelten Fahrten gelernt werden.",
+          "wrong": [
+            "Klassifikation, weil jede Fahrt pünktlich oder unpünktlich ist.",
+            "Clustering, weil Linien Gruppen bilden.",
+            "Bestärkendes Lernen, weil Fahrpläne Entscheidungen sind."
+          ],
+          "loesung": "Minuten sind ein stetiges, gelabeltes Ziel: überwachte Regression."
+        },
+        {
+          "scenario": "Ertrag stetig mit Labels",
+          "target": "Ertrag in Tonnen",
+          "prompt": "Ein Modell soll den Ertrag in Tonnen aus Niederschlag, Bodenwerten und Sorte schätzen. Historische Erträge sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiger Ertrag aus gelabelten Feldern gelernt wird.",
+          "wrong": [
+            "Clustering, weil Felder ähnliche Böden haben.",
+            "Klassifikation, weil jede Ernte ein einzelnes Ergebnis ist.",
+            "Unüberwacht, weil das Wetter unbekannt ist."
+          ],
+          "loesung": "Stetiges Ziel mit Labels: überwachte Regression."
+        },
+        {
+          "scenario": "Gehalt stetig mit Labels",
+          "target": "Jahresgehalt",
+          "prompt": "Ein Modell soll das Jahresgehalt aus Berufserfahrung, Region und Qualifikation schätzen. Historische Gehälter liegen vor. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiges Gehalt aus gelabelten Verträgen gelernt wird.",
+          "wrong": [
+            "Clustering, weil mehrere Merkmale eingehen.",
+            "Binäre Klassifikation, weil jemand angestellt ist oder nicht.",
+            "Bestärkendes Lernen, weil Gehalt eine Verhandlung ist."
+          ],
+          "loesung": "Das Ziel ist eine stetige Zahl mit Labels: überwachte Regression."
+        },
+        {
+          "scenario": "Energie stetig mit Labels",
+          "target": "kWh pro Tag",
+          "prompt": "Ein Modell soll den Tagesverbrauch in kWh aus Temperatur, Wochentag und Haushaltsgröße vorhersagen. Historische Zählerstände sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiger Verbrauch aus gelabelten Tagen gelernt wird.",
+          "wrong": [
+            "Clustering, weil Haushalte Segmente bilden.",
+            "Klassifikation, weil ein Tag Lastspitze hat oder nicht.",
+            "Unüberwacht, weil zukünftiger Verbrauch unbekannt ist."
+          ],
+          "loesung": "kWh sind stetig und gelabelt: überwachte Regression."
+        },
+        {
+          "scenario": "Wartezeit stetig mit Labels",
+          "target": "Minuten bis Bedienung",
+          "prompt": "Ein Modell soll die Wartezeit in Minuten aus Uhrzeit, Schalterzahl und Ticketart schätzen. Historische Wartezeiten liegen vor. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil eine stetige Wartezeit aus gelabelten Besuchen gelernt wird.",
+          "wrong": [
+            "Klassifikation, weil jemand wartet oder nicht.",
+            "Clustering, weil Schalter Gruppen bilden.",
+            "Bestärkendes Lernen, weil Personalentscheidungen folgen."
+          ],
+          "loesung": "Stetiges, gelabeltes Ziel: überwachte Regression."
+        },
+        {
+          "scenario": "Mietpreis stetig mit Labels",
+          "target": "Kaltmiete",
+          "prompt": "Ein Modell soll die Kaltmiete aus Fläche, Lage und Baujahr schätzen. Historische Angebotspreise sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiger Mietpreis aus gelabelten Angeboten gelernt wird.",
+          "wrong": [
+            "Clustering, weil Stadtteile Gruppen bilden.",
+            "Binäre Klassifikation, weil jede Wohnung vermietet wird oder nicht.",
+            "Bestärkendes Lernen, weil Miete eine Entscheidung ist."
+          ],
+          "loesung": "Der Preis ist stetig und gelabelt: überwachte Regression."
+        },
+        {
+          "scenario": "Lieferzeit stetig mit Labels",
+          "target": "Tage bis Zustellung",
+          "prompt": "Ein Modell soll die Lieferzeit in Tagen aus Distanz, Paketgröße und Versandart schätzen. Historische Lieferzeiten liegen vor. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil eine stetige Lieferzeit aus gelabelten Sendungen gelernt wird.",
+          "wrong": [
+            "Clustering, weil Routen Gruppen bilden.",
+            "Binäre Klassifikation, weil jedes Paket ankommt oder nicht.",
+            "Bestärkendes Lernen, weil Zustellung Entscheidungen sind."
+          ],
+          "loesung": "Stetiges, gelabeltes Ziel: überwachte Regression."
+        },
+        {
+          "scenario": "Strompreis stetig mit Labels",
+          "target": "Börsenpreis pro MWh",
+          "prompt": "Ein Modell soll den Strompreis pro MWh aus Last, Windaufkommen und Stunde vorhersagen. Historische Preise sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiger Preis aus gelabelten Stunden gelernt wird.",
+          "wrong": [
+            "Klassifikation, weil der Preis steigt oder fällt.",
+            "Clustering, weil Tage Gruppen bilden.",
+            "Unüberwacht, weil der Markt unbekannt ist."
+          ],
+          "loesung": "Stetiger Preis mit Labels: überwachte Regression."
+        },
+        {
+          "scenario": "Laufleistung stetig mit Labels",
+          "target": "Kilometer pro Jahr",
+          "prompt": "Ein Modell soll die jährliche Fahrleistung aus Fahrzeugtyp, Region und Alter schätzen. Historische Leistungen liegen vor. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil eine stetige Kilometerleistung aus gelabelten Fahrzeugen gelernt wird.",
+          "wrong": [
+            "Clustering, weil Fahrzeuge Segmente bilden.",
+            "Binäre Klassifikation, weil jemand Vielfahrer ist oder nicht.",
+            "Bestärkendes Lernen, weil Fahren Entscheidungen sind."
+          ],
+          "loesung": "Stetiges Ziel mit Labels: überwachte Regression."
+        },
+        {
+          "scenario": "Durchfluss stetig mit Labels",
+          "target": "Durchfluss pro Stunde",
+          "prompt": "Ein Modell soll den Abwasserdurchfluss aus Niederschlag, Tageszeit und Einwohnerzahl vorhersagen. Historische Messungen sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil ein stetiger Durchfluss aus gelabelten Messungen gelernt wird.",
+          "wrong": [
+            "Clustering, weil Stunden Gruppen bilden.",
+            "Klassifikation, weil die Kläranlage läuft oder nicht.",
+            "Bestärkendes Lernen, weil Pumpen Entscheidungen sind."
+          ],
+          "loesung": "Stetiges, gelabeltes Ziel: überwachte Regression."
+        },
+        {
+          "scenario": "Schadenshöhe stetig mit Labels",
+          "target": "Schadenssumme",
+          "prompt": "Ein Modell soll die Schadenssumme aus Unfallart, Fahrzeugalter und Region schätzen. Historische Schadenfälle sind vorhanden. Welche Aufgabenart liegt vor?",
+          "correct": "Überwachte Regression, weil eine stetige Schadenssumme aus gelabelten Fällen gelernt wird.",
+          "wrong": [
+            "Binäre Klassifikation, weil ein Schaden eintritt oder nicht.",
+            "Clustering, weil Fälle Gruppen bilden.",
+            "Unüberwacht, weil die Summe unbekannt ist."
+          ],
+          "loesung": "Stetige Summe mit Labels: überwachte Regression."
+        }
+      ]
+    },
+    "stretch": {
+      "kind": "clustering",
+      "caseId": "task-customer-segments",
+      "bank": [
+        {
+          "scenario": "Genprofile ohne Zielvariable",
+          "target": null,
+          "prompt": "Ein Labor besitzt Genexpressionsprofile ohne Zielvariable und will Gruppen ähnlicher Profile finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Gruppen ohne Labels entdeckt werden.",
+          "wrong": [
+            "Überwachte Regression auf eine unbekannte Zielvariable.",
+            "Klassifikation, weil jedes Profil später einer Gruppe zugeordnet wird.",
+            "Regression, weil Expressionswerte Zahlen sind."
+          ],
+          "loesung": "Ohne Labels Gruppen entdecken: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Dokumente ohne Thema-Labels",
+          "target": null,
+          "prompt": "Ein Archiv hat Texte ohne Themenlabels und will Gruppen ähnlicher Dokumente finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Themengruppen ohne Labels entdeckt werden.",
+          "wrong": [
+            "Überwachte Klassifikation, weil jedes Dokument ein Thema hat.",
+            "Regression, weil Worthäufigkeiten Zahlen sind.",
+            "Bestärkendes Lernen, weil Texte Entscheidungen sind."
+          ],
+          "loesung": "Keine vorgegebenen Themen: unüberwachtes Clustering, nicht Klassifikation."
+        },
+        {
+          "scenario": "Sensorprofile ohne Störungslabel",
+          "target": null,
+          "prompt": "Eine Werkstatt hat Sensortakte ohne Störungslabel und will ähnliche Betriebsmuster gruppieren. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Betriebsmuster ohne Labels gruppiert werden.",
+          "wrong": [
+            "Überwachte Regression, weil die Zielgröße nur noch fehlt.",
+            "Klassifikation, weil jede Maschine genau einem Muster entspricht.",
+            "Regression, weil Sensortakte Zahlen sind."
+          ],
+          "loesung": "Ohne Zielvariable Muster finden: Clustering. Eine spätere Cluster-ID ist kein vorgegebenes Label."
+        },
+        {
+          "scenario": "Nutzungsprofile ohne Segmentlabel",
+          "target": null,
+          "prompt": "Eine App hat Nutzungsprofile ohne vorgegebene Segmente und will Gruppen ähnlichen Verhaltens finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Segmente ohne Labels entdeckt werden.",
+          "wrong": [
+            "Überwachte Klassifikation auf unbekannte Segmente.",
+            "Regression, weil Klicks Zahlen sind.",
+            "Bestärkendes Lernen, weil die App Entscheidungen trifft."
+          ],
+          "loesung": "Gruppen ohne Zielvariable: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Rezepturen ohne Qualitätsklasse",
+          "target": null,
+          "prompt": "Eine Produktion hat Rezepturdaten ohne Qualitätsklasse und will ähnliche Mischungen finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Mischungen ohne Labels gruppiert werden.",
+          "wrong": [
+            "Überwachte Regression auf eine fehlende Qualitätsnote.",
+            "Klassifikation, weil jede Rezeptur genau einer Gruppe zugeordnet wird.",
+            "Regression, weil Mengenangaben Zahlen sind."
+          ],
+          "loesung": "Ohne Labels ähnliche Rezepturen finden: Clustering."
+        },
+        {
+          "scenario": "Fahrprofile ohne Unfall-Label",
+          "target": null,
+          "prompt": "Eine Flotte hat Fahrprofile ohne Unfall-Label und will Gruppen ähnlicher Fahrstile finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Fahrstile ohne Labels entdeckt werden.",
+          "wrong": [
+            "Klassifikation, weil später Cluster-IDs existieren.",
+            "Regression, weil Geschwindigkeit stetig ist.",
+            "Überwachte Regression auf eine unbekannte Zielvariable."
+          ],
+          "loesung": "Keine Zielvariable, Gruppen entdecken: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Einkaufskörbe ohne Kategorienlabel",
+          "target": null,
+          "prompt": "Ein Händler hat Warenkörbe ohne vorgegebene Kundentypen und will ähnliche Körbe gruppieren. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Warenkörbe ohne Labels gruppiert werden.",
+          "wrong": [
+            "Klassifikation, weil jedes Produkt einer Kategorie angehört.",
+            "Regression, weil Preise Zahlen sind.",
+            "Überwachte Regression auf den unbekannten Warenkorbwert."
+          ],
+          "loesung": "Ohne Zielvariable Gruppen finden: Clustering. Produktkategorien sind Merkmale, keine Supervisionslabels für den Korb."
+        },
+        {
+          "scenario": "Bildpatches ohne Klassenlabel",
+          "target": null,
+          "prompt": "Ein Datensatz enthält Bildausschnitte ohne Klassenlabel. Du willst Gruppen ähnlicher Texturen finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil ähnliche Patches ohne Labels gruppiert werden.",
+          "wrong": [
+            "Überwachte Klassifikation, weil Bilder Objekte enthalten.",
+            "Regression, weil Pixel Zahlen sind.",
+            "Bestärkendes Lernen, weil ein Modell entscheidet."
+          ],
+          "loesung": "Ohne Labels ähnliche Patches finden: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Support-Tickets ohne Typ-Label",
+          "target": null,
+          "prompt": "Ein Support-Postfach hat Tickets ohne Typ-Label und will Gruppen ähnlicher Anliegen finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Ticketgruppen ohne Labels entdeckt werden.",
+          "wrong": [
+            "Überwachte Klassifikation auf unbekannte Tickettypen.",
+            "Regression, weil Textlängen Zahlen sind.",
+            "Bestärkendes Lernen, weil Support Entscheidungen trifft."
+          ],
+          "loesung": "Gruppen ohne vorgegebene Klassen: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Wetterstationen ohne Klimaklasse",
+          "target": null,
+          "prompt": "Ein Netzwerk hat Wetterstationen ohne Klimaklasse und will Gruppen ähnlicher Messprofile finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Stationsprofile ohne Labels gruppiert werden.",
+          "wrong": [
+            "Überwachte Regression auf eine unbekannte Klimaklasse.",
+            "Klassifikation, weil jede Station später eine Gruppe hat.",
+            "Regression, weil Messwerte Zahlen sind."
+          ],
+          "loesung": "Ohne Zielvariable Gruppen finden: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Musikstücke ohne Genre-Label",
+          "target": null,
+          "prompt": "Eine Musiksammlung hat Stücke ohne Genre-Label und will Gruppen ähnlichen Klangs finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Klanggruppen ohne Labels entdeckt werden.",
+          "wrong": [
+            "Überwachte Klassifikation auf unbekannte Genres.",
+            "Regression, weil Spektren Zahlen sind.",
+            "Bestärkendes Lernen, weil Empfehlungen Entscheidungen sind."
+          ],
+          "loesung": "Keine vorgegebenen Genres: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Standorte ohne Regionstyp",
+          "target": null,
+          "prompt": "Ein Einzelhändler hat Filialdaten ohne Regionstyp und will ähnliche Standorte gruppieren. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Standortprofile ohne Labels gruppiert werden.",
+          "wrong": [
+            "Überwachte Regression auf einen unbekannten Umsatz.",
+            "Klassifikation, weil jede Filiale genau einer Gruppe zugeordnet wird.",
+            "Regression, weil Einwohnerzahlen Zahlen sind."
+          ],
+          "loesung": "Ohne Zielvariable ähnliche Standorte finden: Clustering."
+        },
+        {
+          "scenario": "Proteinsequenzen ohne Familienlabel",
+          "target": null,
+          "prompt": "Eine Datenbank hat Proteinsequenzen ohne Familienlabel und will Gruppen ähnlicher Sequenzen finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Sequenzgruppen ohne Labels entdeckt werden.",
+          "wrong": [
+            "Überwachte Klassifikation, weil jede Sequenz eine Funktion hat.",
+            "Regression, weil Sequenzlängen Zahlen sind.",
+            "Bestärkendes Lernen, weil Annotationen Entscheidungen sind."
+          ],
+          "loesung": "Ohne Familienlabel Gruppen entdecken: unüberwachtes Clustering."
+        },
+        {
+          "scenario": "Verkehrszählungen ohne Tagestyp",
+          "target": null,
+          "prompt": "Eine Stadt hat Verkehrszählungen ohne Tagestyp-Label und will Gruppen ähnlicher Tagesverläufe finden. Welche Aufgabenart passt?",
+          "correct": "Unüberwachtes Clustering, weil Tagesverläufe ohne Labels gruppiert werden.",
+          "wrong": [
+            "Überwachte Regression auf ein unbekanntes Verkehrsaufkommen.",
+            "Klassifikation, weil jeder Tag später einen Typ erhält.",
+            "Regression, weil Zählwerte Zahlen sind."
+          ],
+          "loesung": "Keine vorgegebenen Typen: unüberwachtes Clustering."
+        }
+      ]
+    }
+  }
+}

@@ -38,7 +38,7 @@ const ALLOWED_FILES = [
   'assets/js/core/progress_migration.mjs',
   'assets/js/core/review_scheduler.js',
   'assets/js/core/linalg_generators.mjs',
-  'assets/js/core/linalg_family_kit.mjs',
+  'assets/js/core/solved_family_kit.mjs',
   'assets/js/core/foundations_generators.mjs',
   'assets/js/core/generator_draw_kit.mjs',
   'assets/js/core/foundations_fresh_generators.mjs',
@@ -256,6 +256,7 @@ const ALLOWED_DIRS = [
   { dir: 'vendor/mathlive/fonts', ext: '.woff2' },
   { dir: 'content/modules', ext: '.json' },
   { dir: 'content/families', ext: '.json' },
+  { dir: 'content/banks', ext: '.json' },
   { dir: 'assets/js/core/procedural', ext: '.mjs' },
 ];
 // Source directories scanned for private canaries before copying.

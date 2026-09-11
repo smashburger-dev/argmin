@@ -99,6 +99,38 @@ export function staticFamilySpec(doc) {
   };
 }
 
+/** Static case straight from the registered body (no variant resolution). */
+export const staticBodyInstance = (familyId, caseId, difficulty) => {
+  const body = staticCaseBody(familyId, caseId);
+  const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+  return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+};
+
+/** Static case with seed-driven variant resolution: the variant index lands
+ *  in parameters, masteryEligible comes from the case body. */
+export function staticVariantInstance(familyId, caseId, seed, difficulty) {
+  const body = staticCaseBody(familyId, caseId);
+  const { body: chosen, index } = variantOf(body, seed ?? 0);
+  const {
+    caseId: _caseId,
+    difficultyProfile: _difficultyProfile,
+    masteryEligible: _masteryEligible,
+    sourceLineage: _sourceLineage,
+    variants: _variants,
+    ...generated
+  } = chosen;
+  return {
+    ...generated,
+    masteryEligible: body.masteryEligible,
+    parameters: {
+      caseId,
+      difficulty,
+      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+      ...(chosen.parameters || {}),
+    },
+  };
+}
+
 export function familyIdTokens(familyId) {
   return String(familyId).split('-').filter(Boolean).sort().join('\0');
 }

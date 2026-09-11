@@ -1,0 +1,152 @@
+{
+  "capsules": {
+    "intro": {
+      "caseId": "silent-fallback-hazard",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Eine Stage der Pipeline läuft in ein Timeout. Die Hauptfunktion fängt das ab, setzt das Ergebnis auf None und läuft munter weiter. Was ist das strukturelle Problem?",
+          "correct": "Der Ausfall wird verschleiert: None ist auch ein legaler Wert, der Aufrufer kann Timeout und Ergebnis nicht unterscheiden — der Fehlerzustand müsste sichtbar sein (Sentinel-Status).",
+          "wrong": [
+            "None ist in Python als Rückgabewert nicht erlaubt und müsste einen TypeError auslösen.",
+            "Das Problem ist rein kosmetisch — ein leerer String statt None wäre genauso korrekt.",
+            "Es fehlt nur ein globales try/except um die Hauptfunktion, dann ist die Pipeline robust."
+          ],
+          "solution": "Richtig ist der Sentinel-Status: Die Stage antwortet immer mit einem klar benannten Zustand ({'status': 'timeout'} bzw. 'fehler'), und die Hauptfunktion bricht den Lauf sichtbar ab (Status 'abgebrochen' mit fehlerhafter Stage). None verschleiert den Ausfall, weil es auch ein legaler Zwischenwert sein könnte — das ist der stille Fallback. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+        },
+        {
+          "key": "empty-string-sentinel",
+          "prompt": "Eine Stage fängt einen Parse-Fehler ab und liefert stattdessen den leeren String '' zurück. Welches Problem bleibt bestehen?",
+          "correct": "Dasselbe in anderem Gewand: '' ist ein legaler Stringwert — der Aufrufer kann den Ausfall nicht von einem echten leeren Ergebnis unterscheiden; nötig ist ein sichtbarer Zustand.",
+          "wrong": [
+            "Kein Problem: '' ist eindeutig als Fehler erkennbar, weil echte Ergebnisse nie leer sind.",
+            "Das Problem ist gelöst, weil None vermieden wurde und '' harmloser ist.",
+            "Es fehlt nur ein längerer Timeout-Wert, dann tritt der Parse-Fehler seltener auf."
+          ],
+          "solution": "Ein Sentinel muss von jedem legalen Wert unterscheidbar sein. '' erfüllt das nicht — ein Parser kann legitim leeren Text liefern. Erst ein benannter Zustand wie {'status': 'parse_fehler'} macht den Ausfall für den Aufrufer sichtbar."
+        },
+        {
+          "key": "stale-cache-fallback",
+          "prompt": "Bei einem Timeout liefert eine Stage still den zuletzt gecachten Wert zurück, ohne den Lauf zu markieren. Was ist das Risiko?",
+          "correct": "Der stille Fallback verkauft einen alten Stand als frisches Ergebnis — der Laufbericht behauptet Reproduzierbarkeit über Daten, die gar nicht aus diesem Lauf stammen.",
+          "wrong": [
+            "Kein Risiko: ein gecachter Wert ist immer korrekter als ein Fehlerabbruch.",
+            "Das Risiko ist rein technisch: der Cache könnte Speicher sparen.",
+            "Der einzige Fehler ist, dass der Cache nicht groß genug dimensioniert ist."
+          ],
+          "solution": "Caching als Fallback ist legitim, wenn es als solches gekennzeichnet wird — etwa {'status': 'cache_fallback', 'wert': ...}. Ohne Kennzeichnung kann niemand unterscheiden, ob die Stage im Lauf gerechnet hat oder Altbestand durchreichte; der Bericht wird unglaubwürdig."
+        },
+        {
+          "key": "teil-ergebnis-dict",
+          "prompt": "Eine Stage gibt bei einem internen Fehler ein halb befülltes Ergebnis-Dict ohne Fehlerfeld zurück. Was fehlt strukturell?",
+          "correct": "Ein sichtbarer Zustand: ohne Feld wie 'status' kann der Aufrufer das Teilergebnis nicht von einem vollständigen unterscheiden — der Ausfall wird als Erfolg weitergereicht.",
+          "wrong": [
+            "Es fehlt nur ein Kommentar im Dict, der den Fehler beschreibt.",
+            "Das Dict muss unveränderbar sein, damit der Fehler nicht mutiert.",
+            "Nichts — ein halb befülltes Dict ist besser als gar kein Ergebnis."
+          ],
+          "solution": "Der Vertrag jeder Stage ist ein klar benannter Zustand: 'ok' mit vollständigen Feldern oder 'fehler'/'timeout' mit Begründung. Ein still gekürztes Ergebnis bricht diesen Vertrag, ohne dass es jemand sieht."
+        },
+        {
+          "key": "sentinel-begruendung",
+          "prompt": "Warum bevorzugt der Stage-Runner ein Ergebnis wie {'status': 'timeout'} gegenüber der Rückgabe von None?",
+          "correct": "Weil der Sentinel ein eigens benannter Zustand ist, den kein legitimes Ergebnis annimmt — der Aufrufer kann Ausfall und Wert sicher unterscheiden und sichtbar abbrechen.",
+          "wrong": [
+            "Weil ein Dict schneller zu serialisieren ist als None.",
+            "Weil None in Python nicht in JSON gespeichert werden kann.",
+            "Weil der Sentinel den Timeout verhindert."
+          ],
+          "solution": "None ist ein legaler Wert des Ergebnisraums; als Fehlersignal kollidiert es mit echten Ergebnissen. {'status': 'timeout'} liegt außerhalb des Werteraums — die Unterscheidung wird zur expliziten Prüfung statt zur Vermutung."
+        },
+        {
+          "key": "metrik-verfaelschung",
+          "prompt": "Im Laufbericht zählt ein Runner eine Stage als 'ok', obwohl sie nach einem Timeout nur None geliefert hat. Wie entsteht diese falsche Zählung?",
+          "correct": "Der Runner behandelt einen legalen Rückgabewert als Erfolg: weil der Ausfall nie als Zustand markiert wurde, kann die Auswertung ihn nicht von einem Ergebnis unterscheiden.",
+          "wrong": [
+            "Die Metrik ist defekt, weil sie überhaupt zählt.",
+            "Der Bericht kann Timeouts prinzipiell nicht erfassen.",
+            "Die Stage war erfolgreich, weil sie keine Exception geworfen hat."
+          ],
+          "solution": "Der Bericht kann nur zählen, was sichtbar ist. Ein stiller Fallback läuft als normaler Wert durch die Zählung; erst der explizite Status 'fehler'/'timeout' macht die Stage in der Metrik als Ausfall sichtbar."
+        },
+        {
+          "key": "globaler-fang",
+          "prompt": "Ein Team umgibt den kompletten Pipeline-Lauf mit einem einzigen try/except und fängt jede Ausnahme global. Welches strukturelle Defizit bleibt?",
+          "correct": "Der globale Fang schluckt den Fehlerort: aus einem abgebrochenen Gesamtlauf geht nicht hervor, welche Stage warum ausfiel — die Zuordnung muss lokal je Stage als Status entstehen.",
+          "wrong": [
+            "Kein Defizit: ein globaler Fang ist die sauberste Form der Fehlerbehandlung.",
+            "Der except-Block ist zu klein für die Fehlermeldung.",
+            "Es fehlt lediglich ein finally, das den Lauf neu startet."
+          ],
+          "solution": "Lokale Zustände statt globalem Schlucken: jede Stage meldet {'status': 'fehler', 'ursache': ...} für ihren Bereich, die Hauptfunktion aggregiert sichtbar. Wer alles in einem Topf fängt, verliert den Befund, an dem Maßnahmen hängen."
+        },
+        {
+          "key": "retry-verschleierung",
+          "prompt": "Ein Retry-Mechanismus versucht eine Stage dreimal und gibt nach dem dritten Fehlschlag None zurück, ohne den Lauf zu markieren. Was bleibt falsch?",
+          "correct": "Auch der dritte Fehlschlag muss als Zustand gemeldet werden: None nach Retry ist derselbe stille Fallback wie None ohne Retry — der Aufrufer sieht keinen Unterschied zu einem echten Ergebnis.",
+          "wrong": [
+            "Die Retry-Zahl ist zu niedrig, sie muss auf mindestens zehn erhöht werden.",
+            "Retries dürfen grundsätzlich nie None zurückgeben, sondern müssen die Exception weiterwerfen.",
+            "Falsch ist nur, dass die Versuche nicht parallel liefen."
+          ],
+          "solution": "Wiederholung ändert nichts an der Sichtbarkeit: nach dem letzten Versuch ist der Ausfall Fakt und gehört als {'status': 'fehler', 'versuche': 3} in den Ergebnisstrom — nicht als legaler Wert."
+        },
+        {
+          "key": "default-null",
+          "prompt": "Ein Loader ersetzt jede unlesbare Eingabezeile still durch 0 und fährt fort. Welches Muster liegt vor?",
+          "correct": "Ein stiller Fallback auf einen Default: 0 ist ein legitimer Datenwert — Ausfälle verschwinden in den Daten und verfälschen jede nachgelagerte Auswertung.",
+          "wrong": [
+            "Saubere Fehlerbehandlung: 0 ist der neutrale Wert und stört die Analyse nicht.",
+            "Ein Effizienzproblem: das Ersetzen kostet unnötig Laufzeit.",
+            "Eine korrekte Sentinel-Lösung, weil 0 in den Daten nie vorkommt."
+          ],
+          "solution": "Ein Default ist nur dann erträglich, wenn er als solcher markiert wird — etwa eine Spalte 'imputiert' oder ein Zustand 'zeilen_fehler': n. Still 0 zu setzen macht den Datenfehler zum Messfehler."
+        },
+        {
+          "key": "sichtbarer-abbruch",
+          "prompt": "Wie sollte die Hauptfunktion auf {'status': 'timeout'} einer Stage reagieren, damit der Lauf aussagekräftig bleibt?",
+          "correct": "Sichtbar abbrechen und den Lauf als 'abgebrochen' mit der fehlerhaften Stage protokollieren — so steht im Bericht, welcher Befund fehlt, statt ein fragliches Ergebnis vorzutäuschen.",
+          "wrong": [
+            "Die Stage still überspringen und den Lauf als 'ok' abschließen.",
+            "Den Timeout ignorieren und mit dem Teilergebnis weiterrechnen.",
+            "Den Fehler in den Ergebniswert umrechnen und als Zahl melden."
+          ],
+          "solution": "Der Bericht soll Wahrheit über den Lauf sagen: 'abgebrochen in Stage X' ist eine ehrliche Aussage; weitergerechnete Teilergebnisse ohne Markierung sind es nicht. Sichtbarkeit schlägt Vollständigkeit."
+        },
+        {
+          "key": "status-vs-log",
+          "prompt": "Eine Stage schreibt ihren Fehler ins Log, gibt aber ein regulär aussehendes Ergebnis zurück. Warum reicht das nicht?",
+          "correct": "Logging ist kein Zustandskanal: der Aufrufer und der Bericht sehen nur das Ergebnis — der Fehler muss Teil der Rückgabe sein, sonst wirkt der Lauf erfolgreich.",
+          "wrong": [
+            "Es reicht, weil Logs ohnehin immer gelesen werden.",
+            "Es reicht nicht, weil das Log zu langsam geschrieben wird.",
+            "Es reicht, weil ein leeres Log den Fehler beweist."
+          ],
+          "solution": "Ein Log ist ein Nebenkanal, den niemand auswerten muss; der Vertrag zwischen Stage und Aufrufer ist die Rückgabe. Fehlerzustand in die Rückgabe (status-Feld), Log nur als Detail — nicht umgekehrt."
+        },
+        {
+          "key": "skip-still",
+          "prompt": "Eine Stage wird wegen einer fehlenden Voraussetzung still übersprungen; der Bericht listet sie als 'ok'. Was ist der Befund?",
+          "correct": "Ein stiller Fallback per Auslassung: 'ok' ohne Ausführung ist eine falsche Aussage — der Zustand müsste 'übersprungen' lauten, damit der Bericht die Lücke zeigt.",
+          "wrong": [
+            "Der Bericht ist korrekt: eine nicht gelaufene Stage kann nicht fehlschlagen.",
+            "Der Fehler liegt allein bei der Voraussetzung, nicht bei der Meldung.",
+            "Der Runner braucht nur einen schnelleren Scheduler."
+          ],
+          "solution": "Auch Überspringen ist ein Zustand, der gemeldet werden muss: 'übersprungen: voraussetzung Y fehlt'. Ein 'ok' für eine nie gelaufene Stage verbirgt die Lücke und bricht die Vergleichbarkeit der Läufe."
+        },
+        {
+          "key": "hauptfunktion-weiter",
+          "prompt": "Die Hauptfunktion sieht None von einer Stage und reicht es unverändert an die nächste weiter. Welche Verantwortung wird verletzt?",
+          "correct": "Die Kontrollpflicht: ohne Zustandsprüfung propagiert der Ausfall als normaler Wert durch die Kette — jede Stage müsste ihren Status liefern, die Hauptfunktion ihn prüfen.",
+          "wrong": [
+            "Keine: None weiterzureichen ist korrekte Fehlerweitergabe.",
+            "Nur die nächste Stage ist verantwortlich, nicht die Hauptfunktion.",
+            "Die Verletzung liegt in der fehlenden Typ-Annotation am Rückgabewert."
+          ],
+          "solution": "Die Hauptfunktion ist die einzige Stelle, die den Gesamtlauf steuert: sie muss den Stage-Status lesen und bei 'fehler' sichtbar abbrechen. None ungeprüft durchzureichen macht sie zum Mitverschleierer."
+        }
+      ]
+    }
+  }
+}

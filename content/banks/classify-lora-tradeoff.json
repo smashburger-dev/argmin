@@ -1,0 +1,16 @@
+{
+  "capsules": {
+    "intro": {
+      "kind": "tradeoff",
+      "caseId": "lora-tradeoff"
+    },
+    "core": {
+      "kind": "param-count",
+      "caseId": "lora-parameter-count"
+    },
+    "stretch": {
+      "kind": "alpha-rank",
+      "caseId": "lora-alpha-rank"
+    }
+  }
+}
