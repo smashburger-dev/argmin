@@ -5,6 +5,7 @@ import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
 import { MathMarkup } from './MathMarkup';
+import { formatGermanDate } from './format';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 /** Loads a route-scoped content section once per session. null while the
@@ -154,7 +155,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           />
         </label>
       </header>
-      <section class="activity-section learn-rail" aria-labelledby="learn-module-title">
+      <section class="activity-section learn-rail" aria-labelledby="learn-module-title" data-tour="learn-rail">
         {modules.length > 0 ? (
           <>
           <h2 class="visually-hidden" id="learn-module-title">Module in diesem Pfad</h2>
@@ -240,7 +241,7 @@ export function CompetencyView({ catalog, progress, competencyId }: {
         <p class="lede">{competency.description}</p>
       </header>
       <div class="competency-detail-grid">
-        <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${new Date(String(progress.evidenceDueAt[competencyId])).toLocaleDateString('de-DE')}.` : ''}</p></article>
+        <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${formatGermanDate(String(progress.evidenceDueAt[competencyId]))}.` : ''}</p></article>
         <article class="status-card"><p class="card-kicker">Evidence-Policy</p><h2>{competency.evidencePolicy.minimumIndependentHits} Treffer</h2><p>{competency.evidencePolicy.minimumDistinctDefinitions} verschiedene Aufgabenfamilien{competency.evidencePolicy.delayedHitRequired ? ', davon ein verzögerter Abruf' : ''}. Fällige Aufgaben-Reviews dieser Kompetenz erscheinen in der Review-Ansicht. Kompetenz-Frische und Aufgaben-Review sind zwei getrennte Zeitachsen.</p></article>
       </div>
       {competency.requires.length > 0 && <aside class="prerequisite-panel"><h2>Voraussetzungen</h2><ul>{competency.requires.map((id) => <li key={id}><a href={`#/competency/${id}`}>{byId.get(id)?.title ?? id}</a><span>{stateLabels[progress.evidenceStates[id] ?? 'unassessed']}</span></li>)}</ul></aside>}
@@ -335,7 +336,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
   const byId = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
   const { executable, archived } = partitionReviewQueue(progress.dueReviews, byId.keys());
   return (
-    <section class="view" aria-labelledby="review-title">
+    <section class="view" aria-labelledby="review-title" data-tour="review-view">
       <header class="view-header"><p class="eyebrow">Abruf statt Wiederlesen</p><h1 id="review-title" tabIndex={-1}>Review</h1><p class="lede">Fällige Abrufe aus allen Kompetenzen an einem Ort.</p></header>
       {progress.dueReviews.length === 0
         ? <div class="empty-state"><h2>Keine Aufgaben-Reviews fällig</h2><p>Nach einem Treffer plant die Plattform den nächsten Abruf.</p><Button href="#/learn">Inhalte erkunden</Button></div>
@@ -357,7 +358,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               const freshRoute = definition.familyId && definition.seeded
                 ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
                 : route;
-              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
+              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {formatGermanDate(review.nextDueAt)}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}
             {archived.map((review) => (
               <article class="review-card" key={review.exerciseId}>
@@ -373,10 +374,11 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
   );
 }
 
-export function SettingsView({ catalog, progress, onSave }: {
+export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
   catalog: CatalogData;
   progress: ProgressSnapshot;
   onSave: (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => Promise<void>;
+  onRestartTour: () => void;
 }) {
   const [status, setStatus] = useState('');
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
@@ -415,7 +417,7 @@ export function SettingsView({ catalog, progress, onSave }: {
           ))}
         </div>
       </section>
-      <form class="settings-panel" onSubmit={async (event) => {
+      <form class="settings-panel" data-tour="settings-form" onSubmit={async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const slots = String(data.get('reviewSlots')).split(/[;,\s]+/).filter(Boolean).map(Number);
@@ -430,6 +432,10 @@ export function SettingsView({ catalog, progress, onSave }: {
         <Button variant="primary" type="submit">Lokal speichern</Button>
         <p class="save-status" role="status">{status}</p>
       </form>
+      <section class="settings-panel" aria-labelledby="tour-settings-title">
+        <div><p class="card-kicker">Orientierung</p><h2 id="tour-settings-title">Rundgang</h2><p>Die kurze Tour zeigt, wo was liegt.</p></div>
+        <div class="actions"><Button variant="secondary" type="button" onClick={onRestartTour}>Rundgang erneut starten</Button></div>
+      </section>
       <section class="settings-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</Button><Button variant="secondary" type="button" onClick={() => importInput.current?.click()}>JSON importieren</Button><input ref={importInput} id="progress-import" type="file" aria-label="JSON importieren" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
     </section>
   );

@@ -40,6 +40,16 @@ export default defineConfig({
                 },
               },
               {
+                // Bank-JSONs gehoeren zum selben Lazy-Chunk wie ihre
+                // Generator-Familie (familyId-Praefix), sonst zieht die
+                // FamilyExerciseView alle Bänke in ihren eigenen Chunk.
+                test: /content\/banks\//,
+                name: (id) => {
+                  const match = /content\/banks\/([a-z]+)-/.exec(id);
+                  return match ? `procedural-${match[1]}` : 'content-banks';
+                },
+              },
+              {
                 // Alles, wovon die Familien-Laufzeit gegenseitig abhaengt,
                 // gehoert in EINEN Chunk: die Zyklen family_registry ->
                 // graders -> linalg_generators und draw_kit <-> generators

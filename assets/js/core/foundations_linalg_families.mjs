@@ -26,7 +26,7 @@ import {
   rankSolutionOptions, rankSolutionPrompt, rankSolutionSolution, drawRankSolutionParameters,
 } from './linalg_generators.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
-import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './linalg_family_kit.mjs';
+import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './solved_family_kit.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -100,8 +100,6 @@ export const SCALAR_PRODUCT_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-matrices'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const scalarProductKit = makeNumericFamily({
@@ -140,8 +138,6 @@ export const MATRIX_SHAPE_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-linalg-matrices'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const matrixShapeKit = makeLinalgChoiceCapsuleFamily({
@@ -182,8 +178,6 @@ export const DET2_CONTRACT = {
   caseTypes: [{ caseId: 'det2-seeded-columns' }],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-independence'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const det2Kit = makeNumericFamily({
@@ -223,7 +217,6 @@ export const SYSTEM_2X2_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-gauss'],
-  graderId: 'deterministic',
   activityType: 'vector',
 };
 
@@ -262,7 +255,6 @@ export const SHAPE_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-numpy-basics', 'c-dl-tensors'],
-  graderId: 'deterministic',
   activityType: 'predict-output',
 };
 
@@ -306,8 +298,6 @@ export const RANK_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-independence', 'c-linalg-gauss'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const rankKit = makeNumericFamily({
@@ -344,8 +334,6 @@ export const INDEPENDENCE_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-linalg-independence'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const independenceKit = makeLinalgChoiceCapsuleFamily({
@@ -393,8 +381,6 @@ export const COLUMN_COMBINATION_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-linalg-matrices', 'c-linalg-systems', 'c-numpy-basics'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const columnCombinationKit = makeLinalgChoiceCapsuleFamily({
@@ -438,8 +424,6 @@ export const CLASSIFY_SHAPE_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-tensors'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const classifyShapeKit = makeLinalgChoiceCapsuleFamily({
@@ -486,8 +470,6 @@ export const ROW_OPERATION_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core'],
   competencyIds: ['c-linalg-gauss'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const rowOperationKit = makeLinalgChoiceCapsuleFamily({
@@ -536,8 +518,6 @@ export const RANK_SOLUTION_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-linalg-gauss', 'c-linalg-systems', 'c-linalg-independence'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const rankSolutionKit = makeLinalgChoiceCapsuleFamily({

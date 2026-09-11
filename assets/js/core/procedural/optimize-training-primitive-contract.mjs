@@ -321,8 +321,6 @@ export const PRIM_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-dl-training', 'c-dl-regularization', 'c-grad-regression', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

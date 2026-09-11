@@ -26,8 +26,6 @@ export const RAG_STAGE_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-genai-rag'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

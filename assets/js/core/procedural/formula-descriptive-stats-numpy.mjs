@@ -173,8 +173,6 @@ export const STATS_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'challenge'],
   competencyIds: ['c-eda-viz', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

@@ -26,8 +26,6 @@ export const ATTACK_SURFACE_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-genai-security'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

@@ -159,8 +159,8 @@ test('family block: dispatch, contract, errors', () => {
   assert.equal(STUB_DOC_CONTRACT.familyId, 'trace-stub-doc-sentence-select');
   assert.equal(STUB_DOC_CONTRACT.authorityMode, 'seeded');
   assert.equal(STUB_DOC_CONTRACT.taskArchetype, 'output-predict-lines');
-  assert.equal(STUB_DOC_CONTRACT.activityType, 'predict-output');
-  assert.equal(STUB_DOC_CONTRACT.graderId, 'deterministic');
+  assert.equal(FAMILY_SPEC.activityType, 'predict-output');
+  assert.equal(FAMILY_SPEC.graderId, 'deterministic');
   assert.equal(STUB_DOC_CONTRACT.masteryEligible, true);
   assert.deepEqual(STUB_DOC_CONTRACT.difficultyProfiles, ['core']);
   assert.deepEqual(STUB_DOC_CONTRACT.competencyIds, ['c-genai-prototype', 'c-python-reading']);

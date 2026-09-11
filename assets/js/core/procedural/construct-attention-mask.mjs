@@ -273,8 +273,6 @@ export const ATTENTION_MASK_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'core'],
   competencyIds: ['c-dl-attention', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

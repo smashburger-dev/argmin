@@ -3,7 +3,7 @@ import { Fragment } from 'preact';
 import type { JSX } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
-import { loadOnboardingDone, loadProgressSnapshot, saveLearningPreferences, saveOnboardingDone, type ProgressSnapshot } from '../adapters/local-progress';
+import { loadOnboardingDone, loadProgressSnapshot, loadTourDone, saveLearningPreferences, saveOnboardingDone, saveTourDone, type ProgressSnapshot } from '../adapters/local-progress';
 import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ReviewView, SettingsView, SourcesView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
@@ -14,6 +14,8 @@ import { Button } from './Button';
 import { BrandWordmark } from './Brand';
 import { SponsorSlots } from './Sponsor';
 import { OnboardingOverlay } from './OnboardingOverlay';
+import { TourOverlay } from './TourOverlay';
+import { TOUR_STEPS } from './tour-steps';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 import { initPageEase } from './page-ease';
 
@@ -132,6 +134,7 @@ export function App() {
   });
   const [progressReady, setProgressReady] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+  const [tourStep, setTourStep] = useState<number | null>(null);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const [navCollapsed, setNavCollapsed] = useState(() => typeof localStorage !== 'undefined' && localStorage.getItem(NAV_KEY) === 'rail');
   const progressRequest = useRef(0);
@@ -165,9 +168,18 @@ export function App() {
 
   useEffect(() => {
     let live = true;
-    const forced = new URLSearchParams(location.search).has('fresh');
-    void loadOnboardingDone()
-      .then((done) => { if (live) setShowOnboarding((forced || !navigator.webdriver) && !done); })
+    const params = new URLSearchParams(location.search);
+    const forced = params.has('fresh');
+    const wantsTour = params.has('tour');
+    void Promise.all([loadOnboardingDone(), loadTourDone()])
+      .then(([done, tourDone]) => {
+        if (!live) return;
+        setShowOnboarding((forced || !navigator.webdriver) && !done);
+        // The explicit ?tour param wins even under webdriver; otherwise offer
+        // the tour once to users whose onboarding is already done.
+        if (wantsTour) setTourStep(0);
+        else if (!forced && done && !tourDone && !navigator.webdriver) setTourStep(0);
+      })
       .catch(() => { if (live) setShowOnboarding(false); });
     return () => { live = false; };
   }, []);
@@ -206,12 +218,26 @@ export function App() {
     await savePreferences(weeklyMinutes, trackId, progress.reviewSlotsWeeks);
     await saveOnboardingDone();
     setShowOnboarding(false);
+    if (!navigator.webdriver) setTourStep(0);
   }, [progress.reviewSlotsWeeks, savePreferences]);
 
   const skipOnboarding = useCallback(async () => {
     await saveOnboardingDone();
     setShowOnboarding(false);
+    if (!navigator.webdriver) setTourStep(0);
   }, []);
+
+  const closeTour = useCallback(async () => {
+    await saveTourDone();
+    setTourStep(null);
+  }, []);
+
+  const goToStep = useCallback((next: number) => {
+    const nextStep = TOUR_STEPS[next];
+    if (!nextStep) { void closeTour(); return; }
+    if (nextStep.route && currentRoute() !== nextStep.route) location.hash = `#/${nextStep.route}`;
+    setTourStep(next);
+  }, [closeTour]);
 
   const toggleTheme = () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -231,7 +257,7 @@ export function App() {
       : section === 'review' ? <ReviewView catalog={catalog} progress={progress} />
         : section === 'progress' ? <ProgressView catalog={catalog} progress={progress} />
           : section === 'settings' ? progressReady
-            ? <SettingsView catalog={catalog} progress={progress} onSave={savePreferences} />
+            ? <SettingsView catalog={catalog} progress={progress} onSave={savePreferences} onRestartTour={() => setTourStep(0)} />
             : <section class="view" aria-labelledby="settings-title" aria-busy="true"><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p role="status">Lokale Einstellungen werden geladen.</p></section>
             : section === 'diagnostic' ? <DiagnosticView catalog={catalog} progress={progress} />
               : section === 'sources' ? <SourcesView catalog={catalog} />
@@ -295,6 +321,14 @@ export function App() {
           initialTrackId={progress.trackId}
           onDone={(trackId, weeklyMinutes) => void finishOnboarding(trackId, weeklyMinutes)}
           onSkip={() => void skipOnboarding()}
+        />
+      ) : null}
+      {tourStep !== null && !showOnboarding ? (
+        <TourOverlay
+          step={tourStep}
+          onNext={() => (tourStep >= TOUR_STEPS.length - 1 ? void closeTour() : goToStep(tourStep + 1))}
+          onPrev={() => goToStep(Math.max(0, tourStep - 1))}
+          onClose={() => void closeTour()}
         />
       ) : null}
     </div>

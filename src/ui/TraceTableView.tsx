@@ -6,6 +6,7 @@ import { progress } from '../../assets/js/core/progress_store.js';
 import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
 import { ExerciseFrame } from './ExerciseFrame';
+import { formatGermanDate } from './format';
 import { getExerciseContext } from './exercise-context';
 import type { CatalogData } from '../app/types';
 
@@ -118,7 +119,7 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
       ? <div class="feedback-box correct">
           <p class="feedback-title">Richtig, alle Zustände stimmen.</p>
           {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
-          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {new Date(reviewDueAt).toLocaleDateString('de-DE')}</p> : null}
+          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
         </div>
       : verdict
         ? <div class="feedback-box incorrect">

@@ -210,8 +210,6 @@ export const MHA_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-dl-attention', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

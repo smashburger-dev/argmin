@@ -205,8 +205,6 @@ export const TEXT_MATCH_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-research-question', 'c-python-functions'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The renamed reference copy plus the __raised helper are emitted once at

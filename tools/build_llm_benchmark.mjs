@@ -29,7 +29,7 @@ export const SCHEMA_VERSION = 1;
 export const HELD_MODULO_BASE = 10;
 export const TRAIN_SEED_RANGES = [{ start: TRAIN_SEED_MIN, end: TRAIN_SEED_MAX }];
 
-const HASHED_DIRS = ['content/families', 'assets/js/domain', 'assets/js/core'];
+const HASHED_DIRS = ['content/families', 'content/banks', 'assets/js/domain', 'assets/js/core'];
 const HASHED_FILES = ['tools/build_llm_benchmark.mjs', 'schemas/llm-benchmark.schema.json'];
 const HASHED_EXTENSIONS = new Set(['.json', '.mjs', '.js']);
 const projectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');

@@ -26,8 +26,6 @@ export const TOOL_POLICY_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-genai-prototype'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

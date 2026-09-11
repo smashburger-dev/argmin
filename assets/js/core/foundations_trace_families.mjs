@@ -19,20 +19,20 @@ import {
   genCollectionStepTrace,
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
-import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
 
 export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
 // Ziehlogik aus generator_draw_kit (eine Stelle, keine Duplikate).
 // traceSubseed bleibt als Alias erhalten.
-export { drawFamilyInstance, familySubseed as traceSubseed } from './generator_draw_kit.mjs';
-import { drawFamilyInstance as drawInstance, variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
+import { drawFamilyInstance, familySubseed, variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
+export { drawFamilyInstance, familySubseed as traceSubseed };
 
 function requireTraceProfile(difficulty) {
   if (!TRACE_DIFFICULTY_PROFILES.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
 
-const drawTraceInstance = (generate, options) => drawInstance(generate, { ...options, profiles: TRACE_DIFFICULTY_PROFILES });
+const drawTraceInstance = (generate, options) => drawFamilyInstance(generate, { ...options, profiles: TRACE_DIFFICULTY_PROFILES });
 
 const maxAbs = (values) => values.reduce((peak, value) => Math.max(peak, Math.abs(value)), 0);
 const hasNegative = (values) => values.some((value) => value < 0);
@@ -158,29 +158,6 @@ const TRACE_ASSIGNMENT_SOLVERS = {
   comprehension: solveAssignmentComprehension,
   transform: solveAssignmentTransform,
 };
-
-function staticVariantInstance(familyId, caseId, seed, difficulty) {
-  const body = staticCaseBody(familyId, caseId);
-  const { body: chosen, index } = variantOf(body, seed ?? 0);
-  const {
-    caseId: _caseId,
-    difficultyProfile: _difficultyProfile,
-    masteryEligible: _masteryEligible,
-    sourceLineage: _sourceLineage,
-    variants: _variants,
-    ...generated
-  } = chosen;
-  return {
-    ...generated,
-    masteryEligible: body.masteryEligible,
-    parameters: {
-      caseId,
-      difficulty,
-      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
-      ...(chosen.parameters || {}),
-    },
-  };
-}
 
 /** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
 export function solveTraceAssignment(parameters) {

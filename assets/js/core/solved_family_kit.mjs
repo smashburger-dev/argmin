@@ -1,6 +1,7 @@
-// Linalg family kit: shared factories for the capsule-based single-choice
-// families and the numeric drawFamilyInstance wrappers that used to be
-// hand-copied across foundations_linalg_families.mjs. Mirrors
+// Solved family kit: shared factories for families whose solve() recomputes
+// the answer from parameters — the capsule-based single-choice families and
+// the numeric drawFamilyInstance wrappers that used to be hand-copied across
+// foundations_linalg_families.mjs and data_ml_families.mjs. Mirrors
 // makeChoiceCapsuleFamily (generator_draw_kit.mjs) with the two linalg
 // deviations kept explicit as options: per-capsule choice ids (several kinds
 // carry semantic ids instead of a/b/c/d) and per-case mastery/competency
@@ -30,42 +31,10 @@
 import {
   rng, variantCaseIndex, buildRotatedChoices, drawFamilyInstance,
 } from './generator_draw_kit.mjs';
-import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { staticBodyInstance, staticCaseBody, staticVariantInstance } from '../domain/family_registry.mjs';
+export { staticBodyInstance, staticVariantInstance };
 
 const CHOICE_IDS = ['a', 'b', 'c', 'd'];
-
-/** Static case straight from the registered body (no variant resolution —
- *  the W05 bodies carry no variants[]). */
-export const staticBodyInstance = (familyId, caseId, difficulty) => {
-  const body = staticCaseBody(familyId, caseId);
-  const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-  return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
-};
-
-/** Static case with seed-driven variant resolution: the variant index lands
- *  in parameters, masteryEligible comes from the case body. */
-export function staticVariantInstance(familyId, caseId, seed, difficulty) {
-  const body = staticCaseBody(familyId, caseId);
-  const { body: chosen, index } = variantOf(body, seed ?? 0);
-  const {
-    caseId: _caseId,
-    difficultyProfile: _difficultyProfile,
-    masteryEligible: _masteryEligible,
-    sourceLineage: _sourceLineage,
-    variants: _variants,
-    ...generated
-  } = chosen;
-  return {
-    ...generated,
-    masteryEligible: body.masteryEligible,
-    parameters: {
-      caseId,
-      difficulty,
-      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
-      ...(chosen.parameters || {}),
-    },
-  };
-}
 
 /** Parametrized choice-capsule family: the seed draw yields computed
  *  parameters (not a bank key), options/prompt/solution are built from the
@@ -138,7 +107,7 @@ export function makeLinalgChoiceCapsuleFamily({
 
   return {
     capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { ...contract, generate, solve },
+    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
   };
 }
 
@@ -198,5 +167,50 @@ export function makeNumericFamily({
     return solveSeeded(parameters);
   };
 
-  return { generate, solve, spec: { ...contract, generate, solve } };
+  return { generate, solve, spec: { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve } };
+}
+
+/** Solved family over a per-caseId definition map (the data_ml pattern):
+ *  `cases: { [caseId]: { generator?, competencyIds? } }` — a case without a
+ *  generator resolves to the registered static body (variant resolution
+ *  included); the 'core' difficulty calls generator(seed) directly, every
+ *  other profile goes through drawFamilyInstance. Per-case competencyIds
+ *  merge into the generated instance after fullSolution. */
+export function makeSolvedFamily({
+  contract,
+  cases,
+  profileAccepts = () => null,
+  toExpected,
+  solve,
+}) {
+  const generate = ({ seed, caseId, difficulty }) => {
+    const caseDef = cases[caseId];
+    if (!caseDef) throw new Error(`${contract.familyId}: unbekannter Fall ${caseId}`);
+    if (!caseDef.generator) {
+      const body = staticCaseBody(contract.familyId, caseId);
+      if (body.difficultyProfile !== difficulty) {
+        throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+      }
+      return staticVariantInstance(contract.familyId, caseId, seed, difficulty);
+    }
+    const drawn = difficulty === 'core'
+      ? caseDef.generator(seed)
+      : drawFamilyInstance(caseDef.generator, {
+        seed,
+        caseId,
+        difficulty,
+        wantShape: () => true,
+        profileAccepts: profileAccepts(caseId, difficulty),
+        profiles: contract.difficultyProfiles,
+      });
+    return {
+      parameters: { caseId, difficulty, ...drawn.parameters },
+      expected: toExpected(drawn),
+      prompt: drawn.prompt,
+      fullSolution: drawn.fullSolution,
+      ...(caseDef.competencyIds ? { competencyIds: [...caseDef.competencyIds] } : {}),
+    };
+  };
+
+  return { generate, solve, spec: { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve } };
 }

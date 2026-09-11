@@ -200,8 +200,6 @@ export const STUB_DOC_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-genai-prototype', 'c-python-reading'],
-  graderId: 'deterministic',
-  activityType: 'predict-output',
 };
 
 const FAMILY = makePredictFamily({

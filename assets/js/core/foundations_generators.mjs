@@ -59,10 +59,10 @@ export function logInt(base, arg) {
 
 // --- prompt formatting helpers ---------------------------------------------------
 
-const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
+export const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
 const coeff = (a) => `${a}x`;
 const SUB = { 2: '\u2082', 3: '\u2083', 5: '\u2085', 10: '\u2081\u2080' };
-const logTerm = (b, arg) => `log${SUB[b] || '_' + b}(${arg})`;
+export const logTerm = (b, arg) => `log${SUB[b] || '_' + b}(${arg})`;
 
 // --- generators -----------------------------------------------------------------
 

@@ -1,0 +1,15 @@
+{
+  "capsules": {
+    "core": {
+      "kind": "equations",
+      "bound": 9,
+      "caseId": "valid-operation-rhs"
+    },
+    "intro": {
+      "kind": "multiplier",
+      "min": 1,
+      "max": 12,
+      "caseId": "row-operation-choice-contract"
+    }
+  }
+}

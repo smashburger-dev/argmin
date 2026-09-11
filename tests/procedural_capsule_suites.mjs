@@ -179,8 +179,8 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
   test('Familien-Block: Contract-Felder, Kompetenzen je Fall, Dispatch, Fehlerpfade', () => {
     assert.equal(contract.familyId, familyId);
     assert.equal(contract.authorityMode, 'seeded');
-    assert.equal(contract.activityType, 'single-choice');
-    assert.equal(contract.graderId, 'deterministic');
+    assert.equal(mod.FAMILY_SPEC.activityType, 'single-choice');
+    assert.equal(mod.FAMILY_SPEC.graderId, 'deterministic');
     assertContractExtras(contract, { familyGroup, difficultyProfiles });
     assert.equal(typeof contract.taskArchetype, 'string');
     const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
@@ -291,8 +291,8 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, 
   test('family block: contract fields, dispatch, errors', () => {
     assert.equal(contract.familyId, familyId);
     assert.equal(contract.authorityMode, 'seeded');
-    assert.equal(contract.activityType, 'predict-output');
-    assert.equal(contract.graderId, 'deterministic');
+    assert.equal(mod.FAMILY_SPEC.activityType, 'predict-output');
+    assert.equal(mod.FAMILY_SPEC.graderId, 'deterministic');
     assertContractExtras(contract, { familyGroup, difficultyProfiles });
     const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
     assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
@@ -385,8 +385,8 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, fam
   test('family block: contract fields, dispatch, errors', () => {
     assert.equal(contract.familyId, familyId);
     assert.equal(contract.authorityMode, 'seeded');
-    assert.equal(contract.activityType, 'python-code');
-    assert.equal(contract.graderId, 'pyodide');
+    assert.equal(mod.FAMILY_SPEC.activityType, 'python-code');
+    assert.equal(mod.FAMILY_SPEC.graderId, 'pyodide');
     assertContractExtras(contract, { familyGroup, difficultyProfiles });
     const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
     assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);

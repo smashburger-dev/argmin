@@ -164,8 +164,6 @@ export const RANKING_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'challenge'],
   competencyIds: ['c-genai-rag', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The __raised helper plus the renamed reference copy are emitted once at the

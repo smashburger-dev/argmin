@@ -149,8 +149,6 @@ export const DIGEST_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'challenge'],
   competencyIds: ['c-python-functions', 'c-research-capstone'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The __raised helper plus the renamed reference copy are emitted once at the

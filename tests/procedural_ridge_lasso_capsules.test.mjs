@@ -108,8 +108,8 @@ test('solver consistency: solve returns the case reference solver', () => {
 test('family block: dispatch, contract, errors', () => {
   assert.equal(RIDGE_LASSO_CONTRACT.familyId, 'formula-ridge-lasso-closed-form');
   assert.equal(RIDGE_LASSO_CONTRACT.authorityMode, 'seeded');
-  assert.equal(RIDGE_LASSO_CONTRACT.activityType, 'python-code');
-  assert.equal(RIDGE_LASSO_CONTRACT.graderId, 'pyodide');
+  assert.equal(FAMILY_SPEC.activityType, 'python-code');
+  assert.equal(FAMILY_SPEC.graderId, 'pyodide');
   assert.equal(RIDGE_LASSO_CONTRACT.masteryEligible, true);
   assert.deepEqual(RIDGE_LASSO_CONTRACT.difficultyProfiles, ['core', 'stretch']);
   assert.throws(() => generateRidgeLassoFamily({ seed: 0, caseId: 'ridge-normal-equation', difficulty: 'stretch' }), /Unbekannter Fall/);

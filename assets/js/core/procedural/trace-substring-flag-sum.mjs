@@ -152,8 +152,6 @@ export const SUBSTRING_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-genai-security', 'c-python-reading'],
-  graderId: 'deterministic',
-  activityType: 'predict-output',
 };
 
 const FAMILY = makePredictFamily({

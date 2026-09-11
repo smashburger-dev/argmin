@@ -25,8 +25,6 @@ export const QUESTION_QUALITY_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-research-question'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

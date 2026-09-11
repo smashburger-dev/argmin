@@ -264,8 +264,6 @@ export const ATTN_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-dl-attention', 'c-numpy-basics', 'c-dl-inference'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

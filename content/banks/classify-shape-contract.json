@@ -1,0 +1,56 @@
+{
+  "capsules": {
+    "intro": {
+      "kind": "bias-broadcast",
+      "batch": [
+        4,
+        64
+      ],
+      "inputFeatures": [
+        5,
+        13
+      ],
+      "outputFeatures": [
+        3,
+        24
+      ],
+      "caseId": "shape-bias-broadcast-mc"
+    },
+    "core": {
+      "kind": "transformer-qkv",
+      "batch": [
+        1,
+        8
+      ],
+      "seqLen": [
+        3,
+        13
+      ],
+      "modelDim": [
+        8,
+        32
+      ],
+      "projDim": [
+        2,
+        16
+      ],
+      "caseId": "shape-transformer-qkv"
+    },
+    "stretch": {
+      "kind": "token-embedding",
+      "batch": [
+        1,
+        8
+      ],
+      "seqLen": [
+        3,
+        12
+      ],
+      "embedDim": [
+        6,
+        32
+      ],
+      "caseId": "shape-token-batch-flatten"
+    }
+  }
+}
