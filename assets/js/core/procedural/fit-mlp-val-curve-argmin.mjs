@@ -7,6 +7,8 @@
 // (determinism, lengths, argmin, int type, split contract). Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
+import { pyNum } from './py_test_kit.mjs';
+
 import { randInt, pick, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -133,7 +135,6 @@ const VAL_CURVE_SOLUTION = `def train_mlp_regression(X, y, hidden, lr, epochs, s
 
 # Deterministischer Doppelaufruf, Trainingsverlust faellt, Validierung auf getrennten Indizes`;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
 
 // Draw domain: toy-scale datasets (n 120-260, d 2-5), small hidden layers,
 // conservative learning rates and 40-80 epochs keep the generated run cheap

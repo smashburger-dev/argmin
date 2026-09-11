@@ -9,6 +9,8 @@
 // Blueprints: classify-eval-hazard.mjs (choice arm), reproduce-seeded-split.mjs
 // (code arm).
 
+import { refCopy } from './py_test_kit.mjs';
+
 import {
   buildRotatedChoices,
   drawFamilyInstance,
@@ -21,9 +23,6 @@ import {
 const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 const DRAW_SCOPE = 'optimize-gradient-update-rule';
 
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 const pyList = (rows) => `[${rows.map((row) => (Array.isArray(row) ? pyList(row) : String(row))).join(', ')}]`;
 

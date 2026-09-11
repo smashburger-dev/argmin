@@ -7,6 +7,8 @@
 // ValueError paths, so the grading contract cannot drift. Mirrors
 // reproduce-seeded-split.mjs.
 
+import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/aggregate-grouped-metrics-report.json.
@@ -32,18 +34,7 @@ const pyLit = (value) => {
 
 // Returns ("ok", result) or (exception type, message): lets one comparison
 // cover both value returns and the contracted ValueError paths.
-const RAISED_HELPER = `def __raised(fn, *args):
-    try:
-        return ("ok", fn(*args))
-    except Exception as exc:
-        return (type(exc).__name__, str(exc))`;
 
-// Renames the module-level names of the reference solver so the test block
-// can keep an inline oracle copy next to the seeded literals. All
-// occurrences are rewritten so internal calls stay consistent.
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 // Draw pools: two-group label pairs for the hypothesis report, small group
 // sets for the error-rate / categorization tables and recall rows in the

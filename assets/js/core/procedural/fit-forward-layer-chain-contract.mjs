@@ -7,6 +7,8 @@
 // block already defines __reference, so the seeded checks reuse it. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
+import { pyNum, pyList } from './py_test_kit.mjs';
+
 import { randInt, pick, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -352,8 +354,6 @@ def deep_param_count(weights, biases):
 
 # Tiefe 1 bleibt linear, Tiefen 2-4 matchen die Schleifen-Referenz`;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
-const pyList = (values) => `[${values.map(pyNum).join(', ')}]`;
 const pyMatrix = (rows) => `np.array([${rows.map(pyList).join(', ')}])`;
 const pyVector = (values) => `np.array(${pyList(values)})`;
 

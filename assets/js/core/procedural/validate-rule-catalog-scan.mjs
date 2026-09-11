@@ -10,11 +10,10 @@
 //     (pins computed via the base block's PIN helper).
 //   - pin-version-check (stretch): spec dicts mixing exact and ranged pins.
 
+import { refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 // Python literal serializer (pools stay quote- and backslash-free).
 const py = (value) => {

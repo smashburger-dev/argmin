@@ -9,6 +9,8 @@
 // the learner's w/b/loss_history are compared against it on the drawn
 // literals. Mirrors fit-early-stopping-roundtrip.mjs.
 
+import { pyNum } from './py_test_kit.mjs';
+
 import { pick, randInt, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -143,7 +145,6 @@ const SGD_REF_HELPER = `def __ref_train_linear_sgd(X, y, lr, epochs, seed):
         b = b - lr * (2.0 / n) * float(np.sum(r))
     return {"w": w, "b": float(b), "loss_history": loss_history}`;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
 const pyCol = (values) => `[${values.map((v) => `[${pyNum(v)}]`).join(', ')}]`;
 
 // Draw domains: split sizes 20-60 with fractions from a small bank keep

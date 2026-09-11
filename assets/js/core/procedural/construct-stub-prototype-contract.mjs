@@ -5,6 +5,8 @@
 // is evaluated against a renamed __ref_ copy of the reference solver, so the
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
+import { refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
@@ -116,9 +118,6 @@ const STUB_SOLUTION = STUB_REFERENCE;
 // Renames the module-level reference names inside an emitted copy so the
 // seeded block cannot collide with the learner's own definitions (and a
 // redefined NO_HIT constant cannot poison the oracle).
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 // Serializes drawn data as Python literals (the pools stay quote- and
 // backslash-free, so the generated test block has no escaping hazards).

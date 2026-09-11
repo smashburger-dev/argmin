@@ -8,6 +8,8 @@
 // pins rng.choice init and smallest-index tie-breaking). Mirrors
 // fit-early-stopping-roundtrip.mjs.
 
+import { pyNum, pyList } from './py_test_kit.mjs';
+
 import { pick, randInt, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -340,8 +342,6 @@ def __ref_preprocess(X, k, seed):
             "labels": [int(v) for v in labels],
             "centroids": centroids.tolist()}`;
 
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
-const pyList = (values) => `[${values.map(pyNum).join(', ')}]`;
 const pyMatrix = (rows) => `[${rows.map(pyList).join(', ')}]`;
 
 // Draw domains: every entry is a two-blob 2-D dataset in block order — blob A

@@ -6,6 +6,8 @@
 // paths compare by type and message), so the grading contract cannot drift.
 // Mirrors palindromExtraCases in foundations_construct_families.mjs.
 
+import { RAISED_HELPER } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
@@ -195,11 +197,6 @@ const pyLit = (value) => {
 
 // Returns ("ok", result) or (exception type, message): lets one comparison
 // cover both value returns and the contracted ValueError paths.
-const RAISED_HELPER = `def __raised(fn, *args):
-    try:
-        return ("ok", fn(*args))
-    except Exception as exc:
-        return (type(exc).__name__, str(exc))`;
 
 // Renames the public functions of the reference solver so the test block can
 // keep an inline oracle copy next to the seeded literals.

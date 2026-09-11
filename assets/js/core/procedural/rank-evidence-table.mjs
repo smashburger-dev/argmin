@@ -6,6 +6,8 @@
 // sort key), so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
+import { pyNum } from './py_test_kit.mjs';
+
 import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 const EVIDENCE_PACKAGES = ["numpy"];
@@ -129,7 +131,6 @@ function drawPaperEntry(r) {
 // expressions the reference solver evaluates, applied to the drawn literals.
 
 const pyStr = (s) => JSON.stringify(s);
-const pyNum = (v) => (Number.isInteger(v) ? `${v}.0` : String(v));
 
 function evidenceSeededChecks(entry, index) {
   const rowsLit = entry.papers

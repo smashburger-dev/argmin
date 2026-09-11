@@ -6,6 +6,8 @@
 // renamed __ref_ copy of the reference functions (normalize + chunk), so the
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
+import { refCopy } from './py_test_kit.mjs';
+
 import { pick, randInt, rng } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
@@ -79,11 +81,6 @@ const CHUNK_SOLUTION = `${CHUNK_REFERENCE}
 
 # alle __check-Tests bestanden (lokal python3-verifiziert)`;
 
-// Renames the module-level reference names inside an emitted copy so the
-// seeded block cannot collide with the learner's own definitions.
-const refCopy = (source, names) => (
-  names.reduce((text, name) => text.split(name).join(`__ref_${name}`), source)
-);
 
 // Serializes drawn data as Python literals (the pools stay quote- and
 // backslash-free, so the generated test block has no escaping hazards).
