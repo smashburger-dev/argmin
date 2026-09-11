@@ -113,8 +113,6 @@ export const CHUNK_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-genai-rag', 'c-python-reading'],
-  graderId: 'deterministic',
-  activityType: 'predict-output',
 };
 
 const FAMILY = makePredictFamily({

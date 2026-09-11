@@ -27,8 +27,6 @@ export const FAIRNESS_AGG_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-ml-erroranalysis'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

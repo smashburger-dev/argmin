@@ -170,8 +170,6 @@ export const PARITY_THRESHOLD_CONTRACT = {
   ],
   difficultyProfiles: ['stretch'],
   competencyIds: ['c-research-responsible', 'c-genai-eval'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

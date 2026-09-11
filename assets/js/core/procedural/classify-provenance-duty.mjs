@@ -25,8 +25,6 @@ export const PROVENANCE_DUTY_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-research-cards'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

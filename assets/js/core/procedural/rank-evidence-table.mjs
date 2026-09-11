@@ -179,8 +179,6 @@ export const EVIDENCE_TABLE_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-dl-papers', 'c-ml-cv'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

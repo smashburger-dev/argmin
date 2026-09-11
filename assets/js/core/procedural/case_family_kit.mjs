@@ -56,7 +56,7 @@ export function makeCaseFamily({ contract, cases, shapeError, seededBlock, defau
     return genCase(seed, caseId, caseDef);
   };
 
-  return { caseOk, genCase, solve, generate, spec: { ...contract, generate, solve } };
+  return { caseOk, genCase, solve, generate, spec: { graderId: 'pyodide', activityType: 'python-code', ...contract, generate, solve } };
 }
 
 // Predict-output analogue: parameters carry {caseId, difficulty, ...drawn,
@@ -115,5 +115,5 @@ export function makePredictFamily({ contract, cases, shapeError }) {
     return genCase(seed, caseId, caseDef);
   };
 
-  return { caseOk, genCase, solve, generate, spec: { ...contract, generate, solve } };
+  return { caseOk, genCase, solve, generate, spec: { graderId: 'deterministic', activityType: 'predict-output', ...contract, generate, solve } };
 }

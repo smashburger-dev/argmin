@@ -5,6 +5,7 @@ import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
 import { MathMarkup } from './MathMarkup';
+import { formatGermanDate } from './format';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
 /** Loads a route-scoped content section once per session. null while the
@@ -240,7 +241,7 @@ export function CompetencyView({ catalog, progress, competencyId }: {
         <p class="lede">{competency.description}</p>
       </header>
       <div class="competency-detail-grid">
-        <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${new Date(String(progress.evidenceDueAt[competencyId])).toLocaleDateString('de-DE')}.` : ''}</p></article>
+        <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${formatGermanDate(String(progress.evidenceDueAt[competencyId]))}.` : ''}</p></article>
         <article class="status-card"><p class="card-kicker">Evidence-Policy</p><h2>{competency.evidencePolicy.minimumIndependentHits} Treffer</h2><p>{competency.evidencePolicy.minimumDistinctDefinitions} verschiedene Aufgabenfamilien{competency.evidencePolicy.delayedHitRequired ? ', davon ein verzögerter Abruf' : ''}. Fällige Aufgaben-Reviews dieser Kompetenz erscheinen in der Review-Ansicht. Kompetenz-Frische und Aufgaben-Review sind zwei getrennte Zeitachsen.</p></article>
       </div>
       {competency.requires.length > 0 && <aside class="prerequisite-panel"><h2>Voraussetzungen</h2><ul>{competency.requires.map((id) => <li key={id}><a href={`#/competency/${id}`}>{byId.get(id)?.title ?? id}</a><span>{stateLabels[progress.evidenceStates[id] ?? 'unassessed']}</span></li>)}</ul></aside>}
@@ -357,7 +358,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               const freshRoute = definition.familyId && definition.seeded
                 ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
                 : route;
-              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
+              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {formatGermanDate(review.nextDueAt)}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}
             {archived.map((review) => (
               <article class="review-card" key={review.exerciseId}>

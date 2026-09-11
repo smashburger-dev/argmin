@@ -462,8 +462,6 @@ export const PCA_KMEANS_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-ml-svm-pca', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Seeded block: the case-level ref helper copy once, then the per-draw check

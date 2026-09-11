@@ -181,8 +181,6 @@ export const SPLIT_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-ml-baseline'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The renamed reference copy (plus helpers) is emitted once at the top of

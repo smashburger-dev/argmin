@@ -301,8 +301,6 @@ export const EARLY_STOP_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'core'],
   competencyIds: ['c-dl-regularization', 'c-ml-cv'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Appends the seeded literal checks behind the '# seeded extra cases' header:

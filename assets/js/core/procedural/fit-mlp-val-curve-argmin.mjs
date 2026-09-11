@@ -208,8 +208,6 @@ export const VAL_CURVE_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-dl-training', 'c-dl-autograd'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

@@ -229,8 +229,6 @@ export const TREE_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-ml-ensembles', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Assembles the seeded block: the shared prelude (reference copies) followed

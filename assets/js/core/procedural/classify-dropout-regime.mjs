@@ -32,8 +32,6 @@ export const DROPOUT_REGIME_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-regularization'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

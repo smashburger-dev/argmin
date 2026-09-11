@@ -196,8 +196,6 @@ export const TOY_PIPELINE_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-dl-inference', 'c-dl-attention', 'c-dl-tokenizer'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

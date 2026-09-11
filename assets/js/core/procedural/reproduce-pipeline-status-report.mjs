@@ -360,8 +360,6 @@ export const PIPELINE_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-capstone-pipeline', 'c-genai-prototype', 'c-genai-security', 'c-python-functions', 'c-research-capstone'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The renamed reference copy is emitted once at the top of the seeded block;

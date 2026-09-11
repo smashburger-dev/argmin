@@ -180,8 +180,6 @@ export const TOPO_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
-  graderId: 'deterministic',
-  activityType: 'predict-output',
 };
 
 const FAMILY = makePredictFamily({

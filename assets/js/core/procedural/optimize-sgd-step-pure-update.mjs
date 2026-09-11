@@ -242,8 +242,6 @@ export const SGD_CONTRACT = {
   ],
   difficultyProfiles: ['challenge', 'core', 'stretch'],
   competencyIds: ['c-dl-autograd', 'c-grad-regression'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Assembles the seeded block: optional per-case prelude (reference copies)

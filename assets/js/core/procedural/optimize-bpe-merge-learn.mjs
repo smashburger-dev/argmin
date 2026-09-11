@@ -176,8 +176,6 @@ export const LEARN_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-dl-tokenizer', 'c-python-collections'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

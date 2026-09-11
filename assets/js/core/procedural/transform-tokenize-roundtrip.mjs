@@ -214,8 +214,6 @@ export const TOKENIZE_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-dl-tokenizer', 'c-python-collections'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

@@ -384,8 +384,6 @@ export const BACKPROP_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-dl-autograd', 'c-dl-tensors'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

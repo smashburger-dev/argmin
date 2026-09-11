@@ -660,8 +660,6 @@ export const DETECTOR_EVAL_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-genai-eval', 'c-ml-erroranalysis', 'c-genai-security', 'c-testing-debugging'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
