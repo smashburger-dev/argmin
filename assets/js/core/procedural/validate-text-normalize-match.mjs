@@ -9,8 +9,9 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng } from '../generator_draw_kit.mjs';
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/validate-text-normalize-match.json.
 const CASE_PAYLOADS = {
@@ -192,49 +193,6 @@ function seededChecks(entry, index) {
   ].join('\n');
 }
 
-// The renamed reference copy plus the __raised helper are emitted once at
-// the top of the seeded block; all per-draw checks call into them.
-function seededBlock(caseDef, seedCases) {
-  const prelude = `${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}`;
-  const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${prelude}\n\n${checks}`;
-}
-
-const testsFor = (caseDef, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function textMatchCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genTextMatchCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveTextMatchFamily(parameters) {
-  const caseDef = Object.values(TEXT_MATCH_CASES).find((item) => textMatchCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Text-Normalisierungs-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const TEXT_MATCH_CONTRACT = {
   familyId: 'validate-text-normalize-match',
   familyGroup: 'validate-contract',
@@ -251,13 +209,21 @@ export const TEXT_MATCH_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateTextMatchFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = TEXT_MATCH_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genTextMatchCase(seed, caseDef);
-}
+// The renamed reference copy plus the __raised helper are emitted once at
+// the top of the seeded block; all per-draw checks call into them.
+const FAMILY = makeCaseFamily({
+  contract: TEXT_MATCH_CONTRACT,
+  cases: TEXT_MATCH_CASES,
+  shapeError: 'Text-Normalisierungs-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const prelude = `${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}`;
+    const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${prelude}\n\n${checks}`;
+  },
+});
 
-export const FAMILY_SPEC = { ...TEXT_MATCH_CONTRACT, generate: generateTextMatchFamily, solve: solveTextMatchFamily };
+export const textMatchCaseOk = FAMILY.caseOk;
+export const genTextMatchCase = FAMILY.genCase;
+export const solveTextMatchFamily = FAMILY.solve;
+export const generateTextMatchFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

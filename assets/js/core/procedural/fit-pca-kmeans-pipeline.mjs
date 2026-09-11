@@ -9,8 +9,9 @@
 // fit-early-stopping-roundtrip.mjs.
 
 import { pyNum, pyList } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng } from '../generator_draw_kit.mjs';
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -415,7 +416,7 @@ export const PCA_KMEANS_CASES = {
     fullSolution: PCA_EIGH_SOLUTION,
     refHelper: PCA_EIGH_REF_HELPER,
     checks: pcaEighChecks,
-    drawEntry(r) {
+    draw(r) {
       return { X: drawBlobs(r), k: pick(r, [1, 2]), kmSeed: randInt(r, 0, 99) };
     },
     validEntry: (entry) =>
@@ -435,7 +436,7 @@ export const PCA_KMEANS_CASES = {
     fullSolution: STANDARDIZE_SOLUTION,
     refHelper: STANDARDIZE_REF_HELPER,
     checks: standardizeChecks,
-    drawEntry(r) {
+    draw(r) {
       return { X: drawBlobs(r), seed: randInt(r, 0, 99), constVal: randInt(r, -5, 5) };
     },
     validEntry: (entry) =>
@@ -447,46 +448,6 @@ export const PCA_KMEANS_CASES = {
     extraCount: 3,
   },
 };
-
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => caseDef.checks(entry, i + 1)).join('\n\n');
-  return `${caseDef.refHelper}\n\n${checks}`;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function pcaKmeansCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    if (parameters.seedCases.some((entry) => !caseDef.validEntry(entry))) return false;
-    const expectedTests = `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, parameters.seedCases)}`;
-    return parameters.tests === expectedTests;
-  } catch { return false; }
-}
-
-export function genPcaKmeansCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solvePcaKmeansFamily(parameters) {
-  const caseDef = Object.values(PCA_KMEANS_CASES).find((item) => pcaKmeansCaseOk(parameters, item));
-  if (!caseDef) throw new Error('PCA-k-Means-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const PCA_KMEANS_CONTRACT = {
   familyId: 'fit-pca-kmeans-pipeline',
@@ -505,13 +466,21 @@ export const PCA_KMEANS_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generatePcaKmeansFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = PCA_KMEANS_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genPcaKmeansCase(seed, caseDef);
-}
+// Seeded block: the case-level ref helper copy once, then the per-draw check
+// lines behind the '# seeded extra cases' header.
+const FAMILY = makeCaseFamily({
+  contract: PCA_KMEANS_CONTRACT,
+  cases: PCA_KMEANS_CASES,
+  shapeError: 'PCA-k-Means-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => caseDef.checks(entry, i + 1)).join('\n\n');
+    return `# seeded extra cases\n${caseDef.refHelper}\n\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...PCA_KMEANS_CONTRACT, generate: generatePcaKmeansFamily, solve: solvePcaKmeansFamily };
+export const pcaKmeansCaseOk = FAMILY.caseOk;
+export const genPcaKmeansCase = FAMILY.genCase;
+export const solvePcaKmeansFamily = FAMILY.solve;
+export const generatePcaKmeansFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

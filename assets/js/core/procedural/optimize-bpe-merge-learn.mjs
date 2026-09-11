@@ -8,7 +8,9 @@
 // string merges), so the grading contract cannot drift. Mirrors
 // transform-bpe-merge-apply.mjs.
 
-import { randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -122,7 +124,7 @@ export const LEARN_CASES = {
     prompt: CORE_PROMPT,
     fullSolution: CORE_SOLUTION,
     preamble: SEEDED_PREAMBLE,
-    drawCase(r) {
+    draw(r) {
       const stemCount = randInt(r, 2, 4);
       const stems = new Set();
       while (stems.size < stemCount) {
@@ -162,39 +164,6 @@ function seededSection(caseDef, seedCases) {
   return `${caseDef.preamble}\n${extras}`;
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function learnCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genLearnCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveLearnFamily(parameters) {
-  const caseDef = Object.values(LEARN_CASES).find((item) => learnCaseOk(parameters, item));
-  if (!caseDef) throw new Error('BPE-Learn-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const LEARN_CONTRACT = {
   familyId: 'optimize-bpe-merge-learn',
   familyGroup: 'optimize-update',
@@ -211,13 +180,17 @@ export const LEARN_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateLearnFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = LEARN_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genLearnCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: LEARN_CONTRACT,
+  cases: LEARN_CASES,
+  shapeError: 'BPE-Learn-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => `# seeded extra cases\n${seededSection(caseDef, seedCases)}`,
+});
 
-export const FAMILY_SPEC = { ...LEARN_CONTRACT, generate: generateLearnFamily, solve: solveLearnFamily };
+export const learnCaseOk = FAMILY.caseOk;
+export const genLearnCase = FAMILY.genCase;
+export const solveLearnFamily = FAMILY.solve;
+export const generateLearnFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

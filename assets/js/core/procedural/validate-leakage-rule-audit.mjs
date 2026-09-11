@@ -6,7 +6,9 @@
 // so the grading contract cannot drift. Mirrors palindromExtraCases in
 // foundations_construct_families.mjs.
 
-import { pick, randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 const AUDIT_STARTER = `def audit_pipeline(steps):
     # a step leaks if its lower-cased action matches at least one rule:
@@ -195,46 +197,6 @@ export const LEAKAGE_AUDIT_CASES = {
   },
 };
 
-const seededBlock = (caseDef, seedCases) => [
-  caseDef.prelude,
-  ...seedCases.map((entry, i) => caseDef.emit(entry, i + 1)),
-].join('\n\n');
-
-const testsFor = (caseDef, seedCases) => `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function leakageAuditCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genLeakageAuditCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveLeakageAuditFamily(parameters) {
-  const caseDef = Object.values(LEAKAGE_AUDIT_CASES).find((item) => leakageAuditCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Leakage-Audit-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const LEAKAGE_AUDIT_CONTRACT = {
   familyId: 'validate-leakage-rule-audit',
   familyGroup: 'validate-contract',
@@ -252,13 +214,21 @@ export const LEAKAGE_AUDIT_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateLeakageAuditFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = LEAKAGE_AUDIT_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genLeakageAuditCase(seed, caseDef);
-}
+// The per-case prelude (renamed reference copy) is emitted once at the top of
+// the seeded block; all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: LEAKAGE_AUDIT_CONTRACT,
+  cases: LEAKAGE_AUDIT_CASES,
+  shapeError: 'Leakage-Audit-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${[
+      caseDef.prelude,
+      ...seedCases.map((entry, i) => caseDef.emit(entry, i + 1)),
+    ].join('\n\n')}`,
+});
 
-export const FAMILY_SPEC = { ...LEAKAGE_AUDIT_CONTRACT, generate: generateLeakageAuditFamily, solve: solveLeakageAuditFamily };
+export const leakageAuditCaseOk = FAMILY.caseOk;
+export const genLeakageAuditCase = FAMILY.genCase;
+export const solveLeakageAuditFamily = FAMILY.solve;
+export const generateLeakageAuditFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

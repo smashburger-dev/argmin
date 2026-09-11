@@ -8,8 +8,9 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { pyNum, pyList } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { randInt, pick, rng } from '../generator_draw_kit.mjs';
+import { randInt, pick } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -377,7 +378,7 @@ export const FORWARD_CASES = {
     referenceSolver: LINEAR_REFERENCE,
     prompt: LINEAR_PROMPT,
     fullSolution: LINEAR_SOLUTION,
-    drawEntry(r) {
+    draw(r) {
       const n = randInt(r, 2, 4);
       const d = randInt(r, 2, 4);
       const h = randInt(r, 2, 4);
@@ -416,7 +417,7 @@ export const FORWARD_CASES = {
     referenceSolver: MLP_REFERENCE,
     prompt: MLP_PROMPT,
     fullSolution: MLP_SOLUTION,
-    drawEntry(r) {
+    draw(r) {
       const n = randInt(r, 2, 4);
       const d = randInt(r, 2, 5);
       const h1 = randInt(r, 2, 5);
@@ -467,7 +468,7 @@ export const FORWARD_CASES = {
     referenceSolver: DEEP_REFERENCE,
     prompt: DEEP_PROMPT,
     fullSolution: DEEP_SOLUTION,
-    drawEntry(r) {
+    draw(r) {
       const depth = randInt(r, 1, 4);
       const sizes = Array.from({ length: depth + 1 }, () => randInt(r, 2, 5));
       const n = randInt(r, 2, 4);
@@ -507,43 +508,6 @@ export const FORWARD_CASES = {
   },
 };
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function forwardCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.seededChecks(entry, i + 1))
-      .join('\n\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genForwardCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  const extras = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveForwardFamily(parameters) {
-  const caseDef = Object.values(FORWARD_CASES).find((item) => forwardCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Forward-Chain-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const FORWARD_CONTRACT = {
   familyId: 'fit-forward-layer-chain-contract',
   familyGroup: 'fit-model',
@@ -562,13 +526,19 @@ export const FORWARD_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateForwardFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = FORWARD_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genForwardCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: FORWARD_CONTRACT,
+  cases: FORWARD_CASES,
+  shapeError: 'Forward-Chain-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...FORWARD_CONTRACT, generate: generateForwardFamily, solve: solveForwardFamily };
+export const forwardCaseOk = FAMILY.caseOk;
+export const genForwardCase = FAMILY.genCase;
+export const solveForwardFamily = FAMILY.solve;
+export const generateForwardFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

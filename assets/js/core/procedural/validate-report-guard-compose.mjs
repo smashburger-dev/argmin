@@ -8,8 +8,9 @@
 //     (a required guard input deliberately missing).
 
 import { refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 
 const py = (value) => {
@@ -171,38 +172,6 @@ export const GUARD_CASES = {
   },
 };
 
-export function guardCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genGuardCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveGuardFamily(parameters) {
-  const caseDef = Object.values(GUARD_CASES).find((item) => guardCaseOk(parameters, item));
-  if (!caseDef) throw new Error('validate-report-guard-compose: Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const GUARD_CONTRACT = {
   familyId: 'validate-report-guard-compose',
   familyGroup: 'validate-contract',
@@ -220,13 +189,17 @@ export const GUARD_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateGuardFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = GUARD_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genGuardCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: GUARD_CONTRACT,
+  cases: GUARD_CASES,
+  shapeError: 'validate-report-guard-compose: Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => seededBlock(caseDef, seedCases),
+});
 
-export const FAMILY_SPEC = { ...GUARD_CONTRACT, generate: generateGuardFamily, solve: solveGuardFamily };
+export const guardCaseOk = FAMILY.caseOk;
+export const genGuardCase = FAMILY.genCase;
+export const solveGuardFamily = FAMILY.solve;
+export const generateGuardFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

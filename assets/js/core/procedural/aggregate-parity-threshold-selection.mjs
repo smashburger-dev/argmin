@@ -7,7 +7,9 @@
 // round()/division expressions the reference solver evaluates, so the grading
 // contract cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt, shuffle } from '../generator_draw_kit.mjs';
 
 // --- parity-threshold-selection (stretch) ---
 const PARITY_PACKAGES = [];
@@ -150,48 +152,11 @@ export const PARITY_THRESHOLD_CASES = {
     referenceSolver: PARITY_REFERENCE,
     prompt: PARITY_PROMPT,
     fullSolution: PARITY_SOLUTION,
-    drawEntry: drawParityEntry,
+    draw: drawParityEntry,
     seededChecks: paritySeededChecks,
     extraCount: 3,
   },
 };
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function parityThresholdCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genParityThresholdCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  const extras = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveParityThresholdFamily(parameters) {
-  const caseDef = Object.values(PARITY_THRESHOLD_CASES).find((item) => parityThresholdCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Paritaets-Schwellen-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const PARITY_THRESHOLD_CONTRACT = {
   familyId: 'aggregate-parity-threshold-selection',
@@ -209,13 +174,18 @@ export const PARITY_THRESHOLD_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateParityThresholdFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = PARITY_THRESHOLD_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genParityThresholdCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: PARITY_THRESHOLD_CONTRACT,
+  cases: PARITY_THRESHOLD_CASES,
+  shapeError: 'Paritaets-Schwellen-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
+});
 
-export const FAMILY_SPEC = { ...PARITY_THRESHOLD_CONTRACT, generate: generateParityThresholdFamily, solve: solveParityThresholdFamily };
+export const parityThresholdCaseOk = FAMILY.caseOk;
+export const genParityThresholdCase = FAMILY.genCase;
+export const solveParityThresholdFamily = FAMILY.solve;
+export const generateParityThresholdFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

@@ -9,8 +9,9 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { pyNum, pyList } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -237,7 +238,7 @@ export const EARLY_STOP_CASES = {
     fullSolution: ROUNDTRIP_SOLUTION,
     refHelper: ROUNDTRIP_REF_HELPER,
     hasMinDelta: false,
-    drawEntry(r) {
+    draw(r) {
       return { curve: drawCurve(r), patience: randInt(r, 0, 3), model: drawRoundtripModel(r) };
     },
     extraCount: 3,
@@ -251,7 +252,7 @@ export const EARLY_STOP_CASES = {
     fullSolution: MIN_DELTA_SOLUTION,
     refHelper: MIN_DELTA_REF_HELPER,
     hasMinDelta: true,
-    drawEntry(r) {
+    draw(r) {
       return {
         curve: drawCurve(r),
         patience: randInt(r, 1, 3),
@@ -287,48 +288,6 @@ function seededChecks(entry, index, hasMinDelta) {
   ].join('\n');
 }
 
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases
-    .map((entry, i) => seededChecks(entry, i + 1, caseDef.hasMinDelta))
-    .join('\n\n');
-  return `import json\n\n${caseDef.refHelper}\n\n${checks}`;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function earlyStopCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    if (parameters.seedCases.some((entry) => !entry || !Array.isArray(entry.curve) || !entry.model)) return false;
-    const expectedTests = `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, parameters.seedCases)}`;
-    return parameters.tests === expectedTests;
-  } catch { return false; }
-}
-
-export function genEarlyStopCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveEarlyStopFamily(parameters) {
-  const caseDef = Object.values(EARLY_STOP_CASES).find((item) => earlyStopCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Early-Stopping-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const EARLY_STOP_CONTRACT = {
   familyId: 'fit-early-stopping-roundtrip',
   familyGroup: 'fit-model',
@@ -346,13 +305,25 @@ export const EARLY_STOP_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateEarlyStopFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = EARLY_STOP_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genEarlyStopCase(seed, caseDef);
-}
+// Appends the seeded literal checks behind the '# seeded extra cases' header:
+// every draw is concrete in the test string; early_stop_epoch is compared to
+// the embedded __ref_early_stop copy, the state roundtrip is asserted with
+// inline np.* expressions.
+const FAMILY = makeCaseFamily({
+  contract: EARLY_STOP_CONTRACT,
+  cases: EARLY_STOP_CASES,
+  shapeError: 'Early-Stopping-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases
+      .map((entry, i) => seededChecks(entry, i + 1, caseDef.hasMinDelta))
+      .join('\n\n');
+    return `# seeded extra cases\nimport json\n\n${caseDef.refHelper}\n\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...EARLY_STOP_CONTRACT, generate: generateEarlyStopFamily, solve: solveEarlyStopFamily };
+export const earlyStopCaseOk = FAMILY.caseOk;
+export const genEarlyStopCase = FAMILY.genCase;
+export const solveEarlyStopFamily = FAMILY.solve;
+export const generateEarlyStopFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

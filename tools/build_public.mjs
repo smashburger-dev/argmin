@@ -58,7 +58,6 @@ const ALLOWED_FILES = [
   'assets/js/domain/plan_engine.mjs',
   'assets/js/domain/exercise_registry.mjs',
   'assets/js/domain/family_registry.mjs',
-  'assets/js/domain/foundations_choice_registry.mjs',
   'assets/js/domain/foundations_construct_registry.mjs',
   'assets/js/domain/foundations_trace_registry.mjs',
   'assets/js/domain/foundations_linalg_registry.mjs',

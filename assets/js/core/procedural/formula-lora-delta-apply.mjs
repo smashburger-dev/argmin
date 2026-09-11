@@ -6,7 +6,9 @@
 // with the same exactness as the base checks, so the grading contract cannot
 // drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -144,7 +146,7 @@ export const LORA_CASES = {
     referenceSolver: CORE_REFERENCE,
     prompt: CORE_PROMPT,
     fullSolution: CORE_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const rank = randInt(r, 1, 3);
       const dIn = randInt(r, 2, 4);
       const dOut = randInt(r, 2, 4);
@@ -166,7 +168,7 @@ export const LORA_CASES = {
     referenceSolver: STRETCH_REFERENCE,
     prompt: STRETCH_PROMPT,
     fullSolution: STRETCH_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const rank = randInt(r, 1, 2);
       const dIn = randInt(r, 2, 3);
       const dOut = randInt(r, 2, 3);
@@ -203,43 +205,6 @@ function seededChecks(entry, index) {
   ].join('\n');
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function loraCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genLoraCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  const extras = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveLoraFamily(parameters) {
-  const caseDef = Object.values(LORA_CASES).find((item) => loraCaseOk(parameters, item));
-  if (!caseDef) throw new Error('LoRA-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const LORA_CONTRACT = {
   familyId: 'formula-lora-delta-apply',
   familyGroup: 'formula-apply',
@@ -257,13 +222,19 @@ export const LORA_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateLoraFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = LORA_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genLoraCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: LORA_CONTRACT,
+  cases: LORA_CASES,
+  shapeError: 'LoRA-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...LORA_CONTRACT, generate: generateLoraFamily, solve: solveLoraFamily };
+export const loraCaseOk = FAMILY.caseOk;
+export const genLoraCase = FAMILY.genCase;
+export const solveLoraFamily = FAMILY.solve;
+export const generateLoraFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

@@ -8,8 +8,9 @@
 // Mirrors formula-descriptive-stats-numpy.mjs.
 
 import { pyNum, pyList } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng } from '../generator_draw_kit.mjs';
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -376,7 +377,7 @@ export const PREDICT_METRICS_CASES = {
     prompt: BASELINE_PROMPT,
     fullSolution: BASELINE_SOLUTION,
     checks: baselineChecks,
-    drawEntry(r) {
+    draw(r) {
       const n = randInt(r, 8, 20);
       return {
         n,
@@ -402,7 +403,7 @@ export const PREDICT_METRICS_CASES = {
     prompt: LSTSQ_PROMPT,
     fullSolution: LSTSQ_SOLUTION,
     checks: lstsqChecks,
-    drawEntry(r) {
+    draw(r) {
       const n = randInt(r, 4, 8);
       const m = randInt(r, 3, 6);
       return {
@@ -430,7 +431,7 @@ export const PREDICT_METRICS_CASES = {
     prompt: REPORT_PROMPT,
     fullSolution: REPORT_SOLUTION,
     checks: reportChecks,
-    drawEntry(r) {
+    draw(r) {
       const n = randInt(r, 4, 8);
       const m = pick(r, [2, 3]);
       return {
@@ -447,47 +448,6 @@ export const PREDICT_METRICS_CASES = {
     extraCount: 3,
   },
 };
-
-function seededBlock(caseDef, seedCases) {
-  return seedCases.map((entry, i) => caseDef.checks(entry, i + 1)).join('\n\n');
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function predictMetricsCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    if (parameters.seedCases.some((entry) => !caseDef.validEntry(entry))) return false;
-    const expectedTests = `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, parameters.seedCases)}`;
-    return parameters.tests === expectedTests;
-  } catch { return false; }
-}
-
-export function genPredictMetricsCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solvePredictMetricsFamily(parameters) {
-  const caseDef = Object.values(PREDICT_METRICS_CASES).find((item) =>
-    predictMetricsCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Predict-Metrics-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const PREDICT_METRICS_CONTRACT = {
   familyId: 'fit-predict-metrics',
@@ -507,13 +467,19 @@ export const PREDICT_METRICS_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generatePredictMetricsFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = PREDICT_METRICS_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genPredictMetricsCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: PREDICT_METRICS_CONTRACT,
+  cases: PREDICT_METRICS_CASES,
+  shapeError: 'Predict-Metrics-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.checks(entry, i + 1)).join('\n\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...PREDICT_METRICS_CONTRACT, generate: generatePredictMetricsFamily, solve: solvePredictMetricsFamily };
+export const predictMetricsCaseOk = FAMILY.caseOk;
+export const genPredictMetricsCase = FAMILY.genCase;
+export const solvePredictMetricsFamily = FAMILY.solve;
+export const generatePredictMetricsFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

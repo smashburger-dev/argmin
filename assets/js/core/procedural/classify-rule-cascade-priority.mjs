@@ -7,8 +7,9 @@
 // reproduce-seeded-split.mjs.
 
 import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/classify-rule-cascade-priority.json.
 const CASE_PAYLOADS = {
@@ -154,49 +155,6 @@ export const CASCADE_CASES = {
   },
 };
 
-// The __raised helper plus the renamed reference copy are emitted once at the
-// top of the seeded block; all per-draw checks call into it.
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${checks}`;
-}
-
-const testsFor = (caseDef, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function cascadeCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genCascadeCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, (_, i) => caseDef.draw(r, i));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveCascadeFamily(parameters) {
-  const caseDef = Object.values(CASCADE_CASES).find((item) => cascadeCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Regel-Kaskaden-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const CASCADE_CONTRACT = {
   familyId: 'classify-rule-cascade-priority',
   familyGroup: 'classify-concept',
@@ -214,13 +172,20 @@ export const CASCADE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateCascadeFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = CASCADE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genCascadeCase(seed, caseDef);
-}
+// The __raised helper plus the renamed reference copy are emitted once at the
+// top of the seeded block; all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: CASCADE_CONTRACT,
+  cases: CASCADE_CASES,
+  shapeError: 'Regel-Kaskaden-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${checks}`;
+  },
+});
 
-export const FAMILY_SPEC = { ...CASCADE_CONTRACT, generate: generateCascadeFamily, solve: solveCascadeFamily };
+export const cascadeCaseOk = FAMILY.caseOk;
+export const genCascadeCase = FAMILY.genCase;
+export const solveCascadeFamily = FAMILY.solve;
+export const generateCascadeFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

@@ -7,8 +7,9 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { pyNum } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const EVIDENCE_PACKAGES = ["numpy"];
 const EVIDENCE_STARTER = `def evidence_table(papers):
@@ -160,48 +161,11 @@ export const EVIDENCE_TABLE_CASES = {
     referenceSolver: EVIDENCE_REFERENCE,
     prompt: EVIDENCE_PROMPT,
     fullSolution: EVIDENCE_SOLUTION,
-    drawEntry: drawPaperEntry,
+    draw: drawPaperEntry,
     seededChecks: evidenceSeededChecks,
     extraCount: 3,
   },
 };
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function evidenceTableCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genEvidenceTableCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  const extras = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveEvidenceTableFamily(parameters) {
-  const caseDef = Object.values(EVIDENCE_TABLE_CASES).find((item) => evidenceTableCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Evidenztabelle-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const EVIDENCE_TABLE_CONTRACT = {
   familyId: 'rank-evidence-table',
@@ -219,13 +183,18 @@ export const EVIDENCE_TABLE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateEvidenceTableFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = EVIDENCE_TABLE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genEvidenceTableCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: EVIDENCE_TABLE_CONTRACT,
+  cases: EVIDENCE_TABLE_CASES,
+  shapeError: 'Evidenztabelle-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
+});
 
-export const FAMILY_SPEC = { ...EVIDENCE_TABLE_CONTRACT, generate: generateEvidenceTableFamily, solve: solveEvidenceTableFamily };
+export const evidenceTableCaseOk = FAMILY.caseOk;
+export const genEvidenceTableCase = FAMILY.genCase;
+export const solveEvidenceTableFamily = FAMILY.solve;
+export const generateEvidenceTableFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

@@ -7,8 +7,9 @@
 // relevant ValueError path. Mirrors reproduce-seeded-split.mjs.
 
 import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/aggregate-retrieval-ranking-metric.json.
 const CASE_PAYLOADS = {
@@ -150,49 +151,6 @@ export const RANKING_CASES = {
   },
 };
 
-// The __raised helper plus the renamed reference copy are emitted once at the
-// top of the seeded block; all per-draw checks call into it.
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${checks}`;
-}
-
-const testsFor = (caseDef, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function rankingCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genRankingCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, (_, i) => caseDef.draw(r, i));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveRankingFamily(parameters) {
-  const caseDef = Object.values(RANKING_CASES).find((item) => rankingCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Retrieval-Ranking-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const RANKING_CONTRACT = {
   familyId: 'aggregate-retrieval-ranking-metric',
   familyGroup: 'aggregate-count',
@@ -210,13 +168,20 @@ export const RANKING_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateRankingFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = RANKING_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genRankingCase(seed, caseDef);
-}
+// The __raised helper plus the renamed reference copy are emitted once at the
+// top of the seeded block; all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: RANKING_CONTRACT,
+  cases: RANKING_CASES,
+  shapeError: 'Retrieval-Ranking-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${checks}`;
+  },
+});
 
-export const FAMILY_SPEC = { ...RANKING_CONTRACT, generate: generateRankingFamily, solve: solveRankingFamily };
+export const rankingCaseOk = FAMILY.caseOk;
+export const genRankingCase = FAMILY.genCase;
+export const solveRankingFamily = FAMILY.solve;
+export const generateRankingFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

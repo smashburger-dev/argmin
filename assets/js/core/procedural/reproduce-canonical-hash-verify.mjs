@@ -7,8 +7,9 @@
 // dict. Mirrors the capsule recipe of formula-descriptive-stats-numpy.mjs.
 
 import { refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
 
@@ -57,18 +58,20 @@ export const HASH_CASES = {
     ...CASE_PAYLOADS['canonical-hash-verify'],
     refNames: ['build_golden'],
     // Golden set: 2-5 entries with unique ids drawn from prefix+number pairs.
-    drawEntries(r) {
+    draw(r) {
       const count = randInt(r, 2, 5);
       const prefixes = ['faq', 'vertrag', 'agb', 'handbuch'];
       const idPool = shuffle(
         r,
         prefixes.flatMap((p) => Array.from({ length: 12 }, (_, i) => `${p}-${String(i + 1).padStart(2, '0')}`)),
       );
-      return idPool.slice(0, count).map((id) => ({
-        id,
-        antwort: pick(r, ANSWER_POOL),
-        quellen: shuffle(r, SOURCE_POOL).slice(0, randInt(r, 1, 2)),
-      }));
+      return {
+        entries: idPool.slice(0, count).map((id) => ({
+          id,
+          antwort: pick(r, ANSWER_POOL),
+          quellen: shuffle(r, SOURCE_POOL).slice(0, randInt(r, 1, 2)),
+        })),
+      };
     },
     extraCount: 3,
   },
@@ -93,48 +96,6 @@ function seededChecks(seedCase, index) {
   ].join('\n');
 }
 
-// The renamed reference copy is emitted once at the top of the seeded block;
-// all per-draw checks call into it.
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function hashCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genHashCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => ({
-    entries: caseDef.drawEntries(r),
-  }));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveHashFamily(parameters) {
-  const caseDef = Object.values(HASH_CASES).find((item) => hashCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Golden-Hash-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const HASH_CONTRACT = {
   familyId: 'reproduce-canonical-hash-verify',
   familyGroup: 'reproduce-hash',
@@ -151,13 +112,21 @@ export const HASH_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateHashFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = HASH_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genHashCase(seed, caseDef);
-}
+// The renamed reference copy is emitted once at the top of the seeded block;
+// all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: HASH_CONTRACT,
+  cases: HASH_CASES,
+  shapeError: 'Golden-Hash-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...HASH_CONTRACT, generate: generateHashFamily, solve: solveHashFamily };
+export const hashCaseOk = FAMILY.caseOk;
+export const genHashCase = FAMILY.genCase;
+export const solveHashFamily = FAMILY.solve;
+export const generateHashFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

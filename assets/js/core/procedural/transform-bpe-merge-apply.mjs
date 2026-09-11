@@ -5,7 +5,9 @@
 // reference merge loop (no np.* equivalent exists for string merges), so the
 // grading contract cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const CORE_STARTER = `def bpe_encode(word, merges):
     """Apply the merge table in order: each merge hits all occurrences (left-to-right, non-overlapping)."""
@@ -141,7 +143,7 @@ export const BPE_CASES = {
     prompt: CORE_PROMPT,
     fullSolution: CORE_SOLUTION,
     preamble: CORE_SEEDED_PREAMBLE,
-    drawCase(r) {
+    draw(r) {
       const word = Array.from({ length: randInt(r, 3, 6) }, () => WORD_ALPHABET[randInt(r, 0, WORD_ALPHABET.length - 1)]).join('');
       return { word, merges: drawMerges(r, WORD_ALPHABET, randInt(r, 2, 4)) };
     },
@@ -156,7 +158,7 @@ export const BPE_CASES = {
     prompt: TIE_PROMPT,
     fullSolution: TIE_SOLUTION,
     preamble: TIE_SEEDED_PREAMBLE,
-    drawCase(r) {
+    draw(r) {
       const symbols = Array.from({ length: randInt(r, 3, 6) }, () => TIE_ALPHABET[randInt(r, 0, TIE_ALPHABET.length - 1)]);
       return { symbols, merges: drawMerges(r, TIE_ALPHABET, randInt(r, 1, 3)) };
     },
@@ -188,39 +190,6 @@ function seededSection(caseDef, caseId, seedCases) {
   return caseDef.preamble ? `${caseDef.preamble}\n${extras}` : extras;
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function bpeCaseOk(parameters, caseDef, caseId) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, caseId, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genBpeCase(seed, caseDef, caseId) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, caseId, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveBpeFamily(parameters) {
-  const entry = Object.entries(BPE_CASES).find(([caseId, item]) => bpeCaseOk(parameters, item, caseId));
-  if (!entry) throw new Error('BPE-Parameter verletzen die Kapselform');
-  return { referenceCode: entry[1].referenceSolver };
-}
-
 export const BPE_CONTRACT = {
   familyId: 'transform-bpe-merge-apply',
   familyGroup: 'transform-terms',
@@ -238,13 +207,17 @@ export const BPE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateBpeFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = BPE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genBpeCase(seed, caseDef, caseId);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: BPE_CONTRACT,
+  cases: BPE_CASES,
+  shapeError: 'BPE-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, caseId, seedCases) => `# seeded extra cases\n${seededSection(caseDef, caseId, seedCases)}`,
+});
 
-export const FAMILY_SPEC = { ...BPE_CONTRACT, generate: generateBpeFamily, solve: solveBpeFamily };
+export const bpeCaseOk = FAMILY.caseOk;
+export const genBpeCase = FAMILY.genCase;
+export const solveBpeFamily = FAMILY.solve;
+export const generateBpeFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

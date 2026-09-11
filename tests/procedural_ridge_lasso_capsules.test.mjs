@@ -44,8 +44,8 @@ test('capsule shape: generated parameters satisfy ridgeLassoCaseOk over 200 seed
   for (const caseId of CASE_IDS) {
     const def = RIDGE_LASSO_CASES[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genRidgeLassoCase(seed, def, caseId);
-      assert.ok(ridgeLassoCaseOk(generated.parameters, def, caseId), `${caseId}:${seed}: shape`);
+      const generated = genRidgeLassoCase(seed, caseId, def);
+      assert.ok(ridgeLassoCaseOk(generated.parameters, caseId, def), `${caseId}:${seed}: shape`);
       assert.ok(generated.parameters.tests.startsWith(def.baseTests), `${caseId}:${seed}: base block kept`);
       assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${caseId}:${seed}: seeded block`);
       assert.equal(generated.expected.referenceSolver, def.referenceSolver);
@@ -56,7 +56,7 @@ test('capsule shape: generated parameters satisfy ridgeLassoCaseOk over 200 seed
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const core = genRidgeLassoCase(seed, RIDGE_LASSO_CASES['ridge-normal-equation'], 'ridge-normal-equation');
+    const core = genRidgeLassoCase(seed, 'ridge-normal-equation', RIDGE_LASSO_CASES['ridge-normal-equation']);
     for (const entry of core.parameters.seedCases) {
       assert.ok(entry.X.length >= 3 && entry.X.length <= 4, 'core n range');
       assert.ok(entry.X[0].length >= 1 && entry.X[0].length <= 2, 'core d range');
@@ -65,7 +65,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(entry.clam > 0, 'core lasso lam positive');
       assert.ok(entry.X.flat().every((v) => v >= -2 && v <= 3), 'core X range');
     }
-    const stretch = genRidgeLassoCase(seed, RIDGE_LASSO_CASES['lasso-soft-threshold'], 'lasso-soft-threshold');
+    const stretch = genRidgeLassoCase(seed, 'lasso-soft-threshold', RIDGE_LASSO_CASES['lasso-soft-threshold']);
     for (const entry of stretch.parameters.seedCases) {
       assert.ok(entry.X.length >= 3 && entry.X.length <= 5, 'stretch n range');
       assert.equal(entry.y.length, entry.X.length, 'stretch y matches n');
@@ -90,7 +90,7 @@ test('determinism: same seed reproduces identical output, negative seeds valid',
   for (const caseId of CASE_IDS) {
     const def = RIDGE_LASSO_CASES[caseId];
     for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genRidgeLassoCase(seed, def, caseId), genRidgeLassoCase(seed, def, caseId), `${caseId}:${seed}`);
+      assert.deepEqual(genRidgeLassoCase(seed, caseId, def), genRidgeLassoCase(seed, caseId, def), `${caseId}:${seed}`);
     }
   }
 });

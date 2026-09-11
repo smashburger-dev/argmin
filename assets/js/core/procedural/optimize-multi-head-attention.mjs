@@ -6,7 +6,9 @@
 // already defines, so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -157,7 +159,7 @@ export const MHA_CASES = {
     referenceSolver: MHA_REFERENCE,
     prompt: MHA_PROMPT,
     fullSolution: MHA_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const shape = MHA_SHAPES[randInt(r, 0, MHA_SHAPES.length - 1)];
       const maskKind = MHA_MASK_KINDS[randInt(r, 0, MHA_MASK_KINDS.length - 1)];
       return {
@@ -196,43 +198,6 @@ function seededChecks(entry, index) {
   return lines.join('\n');
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function mhaCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genMhaCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  const extras = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveMhaFamily(parameters) {
-  const caseDef = Object.values(MHA_CASES).find((item) => mhaCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Multi-Head-Attention-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const MHA_CONTRACT = {
   familyId: 'optimize-multi-head-attention',
   familyGroup: 'optimize-update',
@@ -249,13 +214,19 @@ export const MHA_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateMhaFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = MHA_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genMhaCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: MHA_CONTRACT,
+  cases: MHA_CASES,
+  shapeError: 'Multi-Head-Attention-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...MHA_CONTRACT, generate: generateMhaFamily, solve: solveMhaFamily };
+export const mhaCaseOk = FAMILY.caseOk;
+export const genMhaCase = FAMILY.genCase;
+export const solveMhaFamily = FAMILY.solve;
+export const generateMhaFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

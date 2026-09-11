@@ -6,8 +6,9 @@
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
 import { refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
 
@@ -204,11 +205,6 @@ function seededChecks(entry, index) {
   return lines.join('\n');
 }
 
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
-}
-
 export const STUB_CASES = {
   'stub-prototype-contract': {
     difficulty: 'core',
@@ -219,42 +215,12 @@ export const STUB_CASES = {
     prompt: STUB_PROMPT,
     fullSolution: STUB_SOLUTION,
     extraCount: 3,
-    draw: drawConfig,
+    // Seed entries keep their { config } wrapper shape.
+    draw(r) {
+      return { config: drawConfig(r) };
+    },
   },
 };
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function stubCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genStubCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => ({ config: caseDef.draw(r) }));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveStubFamily(parameters) {
-  const caseDef = Object.values(STUB_CASES).find((item) => stubCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Stub-Prototyp-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const STUB_CONTRACT = {
   familyId: 'construct-stub-prototype-contract',
@@ -272,13 +238,22 @@ export const STUB_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateStubFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = STUB_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genStubCase(seed, caseDef);
-}
+// Seeded block: renamed reference copy once, then per draw the literal config,
+// both prototype instances, one answer check per fixture query and one metrics
+// comparison (dict equality — both sides compute the same floats).
+const FAMILY = makeCaseFamily({
+  contract: STUB_CONTRACT,
+  cases: STUB_CASES,
+  shapeError: 'Stub-Prototyp-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...STUB_CONTRACT, generate: generateStubFamily, solve: solveStubFamily };
+export const stubCaseOk = FAMILY.caseOk;
+export const genStubCase = FAMILY.genCase;
+export const solveStubFamily = FAMILY.solve;
+export const generateStubFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

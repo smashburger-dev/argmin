@@ -7,7 +7,9 @@
 // evaluates, so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
-import { pick, randInt, rng, until } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { pick, randInt, until } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
 
@@ -623,7 +625,7 @@ export const DETECTOR_EVAL_CASES = {
     referenceSolver: EVAL_REFERENCE,
     prompt: EVAL_PROMPT,
     fullSolution: EVAL_SOLUTION,
-    drawEntry(r) {
+    draw(r) {
       const size = randInt(r, 4, 6);
       return { records: Array.from({ length: size }, () => drawEvalRecord(r)) };
     },
@@ -637,50 +639,13 @@ export const DETECTOR_EVAL_CASES = {
     referenceSolver: TABLE_REFERENCE,
     prompt: TABLE_PROMPT,
     fullSolution: TABLE_SOLUTION,
-    drawEntry(r) {
+    draw(r) {
       return until(r, () => drawTableScenario(r), tableScenarioOk, { scope: 'detector-table-best-f1' });
     },
     seededChecks: tableSeededChecks,
     extraCount: 3,
   },
 };
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function detectorEvalCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genDetectorEvalCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  const extras = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveDetectorEvalFamily(parameters) {
-  const caseDef = Object.values(DETECTOR_EVAL_CASES).find((item) => detectorEvalCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Detektor-Eval-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const DETECTOR_EVAL_CONTRACT = {
   familyId: 'aggregate-detector-eval-compare',
@@ -699,13 +664,19 @@ export const DETECTOR_EVAL_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateDetectorEvalFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = DETECTOR_EVAL_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genDetectorEvalCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: DETECTOR_EVAL_CONTRACT,
+  cases: DETECTOR_EVAL_CASES,
+  shapeError: 'Detektor-Eval-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...DETECTOR_EVAL_CONTRACT, generate: generateDetectorEvalFamily, solve: solveDetectorEvalFamily };
+export const detectorEvalCaseOk = FAMILY.caseOk;
+export const genDetectorEvalCase = FAMILY.genCase;
+export const solveDetectorEvalFamily = FAMILY.solve;
+export const generateDetectorEvalFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

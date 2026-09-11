@@ -7,7 +7,9 @@
 // reference copies and closed-form update terms), so the grading contract
 // cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -166,7 +168,7 @@ export const SGD_CASES = {
     prompt: TRAIN_PROMPT,
     fullSolution: TRAIN_SOLUTION,
     seededPrelude: TRAIN_SEEDED_PRELUDE,
-    drawCase(r) {
+    draw(r) {
       return {
         dataSeed: randInt(r, 0, 9999),
         n: randInt(r, 12, 24),
@@ -198,7 +200,7 @@ export const SGD_CASES = {
     referenceSolver: MOMENTUM_REFERENCE,
     prompt: MOMENTUM_PROMPT,
     fullSolution: MOMENTUM_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const wLen = randInt(r, 2, 3);
       return {
         params: { w: drawVec(r, wLen, -3, 3), b: drawVec(r, 1, -3, 3) },
@@ -227,46 +229,6 @@ export const SGD_CASES = {
   },
 };
 
-// Assembles the seeded block: optional per-case prelude (reference copies)
-// followed by the per-draw literal checks.
-function seededBlock(caseDef, seedCases) {
-  const extras = seedCases.map((entry, i) => caseDef.emitChecks(entry, i + 1)).join('\n');
-  return caseDef.seededPrelude ? `${caseDef.seededPrelude}\n${extras}` : extras;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function sgdCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genSgdCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveSgdFamily(parameters) {
-  const caseDef = Object.values(SGD_CASES).find((item) => sgdCaseOk(parameters, item));
-  if (!caseDef) throw new Error('SGD-Step-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const SGD_CONTRACT = {
   familyId: 'optimize-sgd-step-pure-update',
   familyGroup: 'optimize-update',
@@ -284,13 +246,21 @@ export const SGD_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateSgdFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = SGD_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genSgdCase(seed, caseDef);
-}
+// Assembles the seeded block: optional per-case prelude (reference copies)
+// followed by the per-draw literal checks.
+const FAMILY = makeCaseFamily({
+  contract: SGD_CONTRACT,
+  cases: SGD_CASES,
+  shapeError: 'SGD-Step-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const extras = seedCases.map((entry, i) => caseDef.emitChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${caseDef.seededPrelude ? `${caseDef.seededPrelude}\n${extras}` : extras}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...SGD_CONTRACT, generate: generateSgdFamily, solve: solveSgdFamily };
+export const sgdCaseOk = FAMILY.caseOk;
+export const genSgdCase = FAMILY.genCase;
+export const solveSgdFamily = FAMILY.solve;
+export const generateSgdFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

@@ -4,21 +4,22 @@
 // module surface plus the JSON anchors.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import {
-  ENSEMBLE_CASES,
-  ENSEMBLE_CONTRACT,
-  FAMILY_SPEC,
-  ensembleCaseOk,
-  genEnsembleCase,
-  generateEnsembleFamily,
-  solveEnsembleFamily,
-} from '../assets/js/core/procedural/construct-ensemble-predictor-comparison.mjs';
+import * as mod from '../assets/js/core/procedural/construct-ensemble-predictor-comparison.mjs';
+import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CASE_IDS = ['voting-tree-linear-rmse', 'voting-tie-and-tree'];
+// The case defs do not carry `packages`; the JSON anchors pin it to ['numpy'],
+// so the suite surface adds it for the verbatim anchor check.
+const suiteMod = {
+  ...mod,
+  ENSEMBLE_CASES: Object.fromEntries(
+    Object.entries(mod.ENSEMBLE_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
+  ),
+};
+
+codeCapsuleSuite('construct-ensemble-predictor-comparison', suiteMod, [
+  { caseId: 'voting-tree-linear-rmse', difficulty: 'stretch' },
+  { caseId: 'voting-tie-and-tree', difficulty: 'challenge' },
+], { familyGroup: 'construct-program', difficultyProfiles: ['stretch', 'challenge'] });
 
 // Structural invariants of a drawn dict tree: internal nodes split on
 // feature 0 with a half-integer threshold, leaves hold an int in [0, 2].
@@ -59,47 +60,11 @@ function assertCompareData(entry, scope) {
   );
 }
 
-test('anchor: contract null, cases fully preserved as oracle', () => {
-  const doc = JSON.parse(readFileSync(join(root, 'content/families/construct-ensemble-predictor-comparison.json'), 'utf8'));
-  assert.equal(doc.contract, null);
-  assert.equal(doc.cases.length, 2);
-  for (const caseId of CASE_IDS) {
-    const body = doc.cases.find((item) => item.caseId === caseId);
-    assert.ok(body, `${caseId}: anchor missing`);
-    assert.ok(body.parameters.tests.includes('__check'), `${caseId}: base tests preserved`);
-    assert.equal(body.expected.kind, 'reference-solver');
-    assert.ok(body.expected.referenceSolver.length > 50, `${caseId}: reference solver preserved`);
-  }
-  // base test blocks and prompts must equal the module constants verbatim
-  for (const caseId of CASE_IDS) {
-    const body = doc.cases.find((item) => item.caseId === caseId);
-    const def = ENSEMBLE_CASES[caseId];
-    assert.equal(body.parameters.tests, def.baseTests, `${caseId}: base tests verbatim`);
-    assert.equal(body.parameters.starterCode, def.starterCode, `${caseId}: starter verbatim`);
-    assert.equal(body.prompt, def.prompt, `${caseId}: prompt verbatim`);
-    assert.equal(body.fullSolution, def.fullSolution, `${caseId}: fullSolution verbatim`);
-    assert.equal(body.expected.referenceSolver, def.referenceSolver, `${caseId}: solver verbatim`);
-  }
-});
-
-test('capsule shape: generated parameters satisfy ensembleCaseOk over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = ENSEMBLE_CASES[caseId];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genEnsembleCase(seed, def);
-      assert.ok(ensembleCaseOk(generated.parameters, def), `${caseId}:${seed}: shape`);
-      assert.ok(generated.parameters.tests.startsWith(def.baseTests), `${caseId}:${seed}: base block kept`);
-      assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${caseId}:${seed}: seeded block`);
-      assert.ok(generated.parameters.tests.includes('seeded vote 1'), `${caseId}:${seed}: seeded checks`);
-      assert.equal(generated.expected.referenceSolver, def.referenceSolver);
-      assert.equal(generated.prompt, def.prompt);
-    }
-  }
-});
-
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const trio = genEnsembleCase(seed, ENSEMBLE_CASES['voting-tree-linear-rmse']);
+    const trio = mod.genEnsembleCase(seed, 'voting-tree-linear-rmse', mod.ENSEMBLE_CASES['voting-tree-linear-rmse']);
+    assert.ok(trio.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
+    assert.ok(trio.parameters.tests.includes('seeded vote 1'), `${seed}: seeded checks`);
     assert.equal(trio.parameters.seedCases.length, 2, 'trio extraCount');
     for (const entry of trio.parameters.seedCases) {
       assertPreds(entry.preds, 2, 5, 3, 6, 1, 'trio.preds');
@@ -109,7 +74,9 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(trio.parameters.tests.includes('majority_vote(__p'), 'trio: vote literal baked');
       assert.ok(trio.parameters.tests.includes('seeded linear rmse'), 'trio: linear rmse check baked');
     }
-    const flat = genEnsembleCase(seed, ENSEMBLE_CASES['voting-tie-and-tree']);
+    const flat = mod.genEnsembleCase(seed, 'voting-tie-and-tree', mod.ENSEMBLE_CASES['voting-tie-and-tree']);
+    assert.ok(flat.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
+    assert.ok(flat.parameters.tests.includes('seeded vote 1'), `${seed}: seeded checks`);
     assert.equal(flat.parameters.seedCases.length, 2, 'flat extraCount');
     for (const entry of flat.parameters.seedCases) {
       const m = entry.preds.length;
@@ -142,53 +109,10 @@ test('seeded draws stay inside the declared domains', () => {
   }
 });
 
-test('distinct floor: at least 40 distinct parameter sets per case over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = ENSEMBLE_CASES[caseId];
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      seen.add(JSON.stringify(generateEnsembleFamily({ seed, caseId, difficulty: def.difficulty }).parameters));
-    }
-    assert.ok(seen.size >= 40, `${caseId}: only ${seen.size} distinct`);
-  }
-});
-
-test('determinism: same seed reproduces identical output, negative seeds valid', () => {
-  for (const caseId of CASE_IDS) {
-    const def = ENSEMBLE_CASES[caseId];
-    for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genEnsembleCase(seed, def), genEnsembleCase(seed, def), `${caseId}:${seed}`);
-    }
-  }
-});
-
-test('solver consistency: solve returns the case reference solver', () => {
-  for (const caseId of CASE_IDS) {
-    const def = ENSEMBLE_CASES[caseId];
-    for (let seed = 0; seed < 50; seed += 1) {
-      const generated = generateEnsembleFamily({ seed, caseId, difficulty: def.difficulty });
-      assert.deepEqual(solveEnsembleFamily(generated.parameters), { referenceCode: def.referenceSolver });
-    }
-  }
-});
-
-test('family block: dispatch, contract, errors', () => {
-  assert.equal(ENSEMBLE_CONTRACT.familyId, 'construct-ensemble-predictor-comparison');
-  assert.equal(ENSEMBLE_CONTRACT.familyGroup, 'construct-program');
-  assert.equal(ENSEMBLE_CONTRACT.authorityMode, 'seeded');
-  assert.equal(ENSEMBLE_CONTRACT.activityType, 'python-code');
-  assert.equal(ENSEMBLE_CONTRACT.graderId, 'pyodide');
-  assert.equal(ENSEMBLE_CONTRACT.masteryEligible, true);
-  assert.deepEqual(ENSEMBLE_CONTRACT.difficultyProfiles, ['stretch', 'challenge']);
-  assert.deepEqual(ENSEMBLE_CONTRACT.competencyIds, ['c-ml-ensembles', 'c-numpy-basics']);
-  assert.deepEqual(ENSEMBLE_CONTRACT.caseTypes, [
+test('family extras: contract competencies and case types', () => {
+  assert.deepEqual(mod.ENSEMBLE_CONTRACT.competencyIds, ['c-ml-ensembles', 'c-numpy-basics']);
+  assert.deepEqual(mod.ENSEMBLE_CONTRACT.caseTypes, [
     { caseId: 'voting-tree-linear-rmse', propertyTest: false },
     { caseId: 'voting-tie-and-tree', propertyTest: false },
   ]);
-  assert.equal(FAMILY_SPEC.generate, generateEnsembleFamily);
-  assert.equal(FAMILY_SPEC.solve, solveEnsembleFamily);
-  assert.throws(() => generateEnsembleFamily({ seed: 0, caseId: 'voting-tree-linear-rmse', difficulty: 'challenge' }), /Unbekannter Fall/);
-  assert.throws(() => generateEnsembleFamily({ seed: 0, caseId: 'nope', difficulty: 'stretch' }), /Unbekannter Fall/);
-  assert.throws(() => generateEnsembleFamily({ seed: 0.5, caseId: 'voting-tie-and-tree', difficulty: 'challenge' }), /Seed/);
-  assert.throws(() => solveEnsembleFamily({}), /Kapselform/);
 });

@@ -6,7 +6,9 @@
 // grading contract cannot drift. Mirrors palindromExtraCases in
 // foundations_construct_families.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -104,6 +106,10 @@ export const STATS_CASES = {
       while (set.size < count) set.add(randInt(r, -20, 45));
       return [...set].sort((a, b) => a - b);
     },
+    // Seed entries keep their { sample, edges } pair shape.
+    draw(r) {
+      return { sample: this.drawSample(r), edges: this.drawEdges(r) };
+    },
     extraCount: 3,
   },
   'describe-outlier-bins': {
@@ -125,6 +131,10 @@ export const STATS_CASES = {
       const set = new Set();
       while (set.size < count) set.add(randInt(r, -15, 220));
       return [...set].sort((a, b) => a - b);
+    },
+    // Seed entries keep their { sample, edges } pair shape.
+    draw(r) {
+      return { sample: this.drawSample(r), edges: this.drawEdges(r) };
     },
     extraCount: 3,
   },
@@ -150,46 +160,6 @@ function seededChecks(sample, edges, index) {
   ].join('\n');
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function statsCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => seededChecks(entry.sample, entry.edges, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genStatsCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => ({
-    sample: caseDef.drawSample(r),
-    edges: caseDef.drawEdges(r),
-  }));
-  const extras = seedCases.map((entry, i) => seededChecks(entry.sample, entry.edges, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveStatsFamily(parameters) {
-  const caseDef = Object.values(STATS_CASES).find((item) => statsCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Deskriptive-Stats-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const STATS_CONTRACT = {
   familyId: 'formula-descriptive-stats-numpy',
   familyGroup: 'formula-apply',
@@ -207,13 +177,19 @@ export const STATS_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateStatsFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = STATS_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genStatsCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: STATS_CONTRACT,
+  cases: STATS_CASES,
+  shapeError: 'Deskriptive-Stats-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => seededChecks(entry.sample, entry.edges, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...STATS_CONTRACT, generate: generateStatsFamily, solve: solveStatsFamily };
+export const statsCaseOk = FAMILY.caseOk;
+export const genStatsCase = FAMILY.genCase;
+export const solveStatsFamily = FAMILY.solve;
+export const generateStatsFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;
