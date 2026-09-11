@@ -9,8 +9,9 @@ import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mj
 import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
 import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
 import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
+import { PROCEDURAL_FAMILY_SPECS } from './procedural_registry.mjs';
 
-export { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec };
+export { createFamilyRegistry, familyHint, familyIdTokens };
 
 const jsFamilySpecs = [
   {
@@ -28,6 +29,8 @@ const jsFamilySpecs = [
   ...LINALG_FAMILY_SPECS,
   // S4D8: Datenbereinigung.
   ...DATA_ML_FAMILY_SPECS,
+  // Prozedurale Einzel-Module (pro Familie eine Datei in core/procedural/).
+  ...PROCEDURAL_FAMILY_SPECS,
 ];
 
 export let EXERCISE_FAMILIES = createFamilyRegistry(jsFamilySpecs);

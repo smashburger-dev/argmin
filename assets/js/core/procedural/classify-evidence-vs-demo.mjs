@@ -1,0 +1,321 @@
+// Procedural family classify-evidence-vs-demo: the seed draws a scenario from
+// the curated bank and rotates the answer position via buildRotatedChoices.
+// Each case keeps its curated base example verbatim as oracle (key 'base') —
+// same prompt, same four option texts, same solution — plus new German
+// scenarios: evidence-vs-demo probes what artifacts prove (Work Evidence vs
+// Mastery via deterministic partial tests), demo-vs-evidence trains the
+// overclaim detector on bounded vs absolute README claims. parameters carry
+// only the scenario key, so nothing answer-relevant leaks into
+// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_generators.mjs.
+
+import { makeChoiceFamily } from '../generator_draw_kit.mjs';
+
+export const EVIDENCE_DEMO_CAPSULES = {
+  'evidence-vs-demo': {
+    difficulty: 'intro',
+    competencyIds: ['c-capstone-pipeline'],
+    bank: [
+      {
+        key: 'base',
+        prompt: 'Abschluss der Capstone: Die Demo und die Retrospektive sind fertig und sehen stark aus. Was belegen sie in dieser Plattform?',
+        correct: 'Work Evidence: Sie dokumentieren Arbeit und Grenzen — Mastery entsteht nur aus den deterministisch geprüften Teiltests.',
+        wrong: [
+          'Mastery-Nachweis: Eine überzeugende Demo ersetzt die Teiltests, weil sie das Ergebnis live zeigt.',
+          'Gar nichts — Demo und Retrospektive zählen in keiner Form und können übersprungen werden.',
+          'Sie ersetzen die Abnahme der Verträge, wenn die Präsentation alle Phasen zeigt.',
+        ],
+        solution: 'Demo und Retrospektive sind Work Evidence: Sie dokumentieren geleistete Arbeit und Grenzen, aber Mastery entsteht ausschließlich aus den deterministisch geprüften Teiltests (mindestens zwei unabhängige Treffer, zwei Definitionen, 14 Tage Abstand, keine disqualifizierte Instanz). Genau deshalb meldet der Projekt-Report integrity: self-reported. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.',
+      },
+      {
+        key: 'teiltests-mastery',
+        prompt: 'Was belegt Mastery auf dieser Plattform?',
+        correct: 'Nur die deterministisch geprüften Teiltests — mindestens zwei unabhängige Treffer in zwei Definitionen mit 14 Tagen Abstand und ohne disqualifizierte Instanz.',
+        wrong: [
+          'Eine live gezeigte Demo des Endergebnisses.',
+          'Eine ausführliche Retrospektive mit benannten Lektionen.',
+          'Ein vollständiges README, das alle Phasen beschreibt.',
+        ],
+        solution: 'Mastery ist an die Evidenzregeln der Teiltests gebunden: zwei unabhängige Treffer, zwei Definitionen, zeitlicher Abstand, keine disqualifizierte Instanz. Demo, Retrospektive und README sind Work Evidence — sie dokumentieren, beweisen aber nichts.',
+      },
+      {
+        key: 'runner-report-integrity',
+        prompt: 'Der Projekt-Report meldet integrity: self-reported. Was heißt das?',
+        correct: 'Die Report-Werte sind selbstberichtete Arbeitsevidenz — geprüft wird über die Verträge (Tests, Manifest, Reproduktion), nicht über den Report.',
+        wrong: [
+          'Der Report ist ein Zertifikat der Plattform über die Pipeline-Qualität.',
+          'Die Werte wurden maschinell von der Plattform verifiziert.',
+          'self-reported bedeutet ohne Aussagekraft — der Report wird ignoriert.',
+        ],
+        solution: 'self-reported ist eine ehrliche Statusmarke: Der Report dokumentiert, was gelaufen ist, aber die Autorität liegt bei den deterministischen Verträgen. Wer den Report liest, sieht Evidenz über Arbeit — keine Abnahme.',
+      },
+      {
+        key: 'demo-video',
+        prompt: 'Ein Team zeigt ein poliertes Demo-Video der laufenden Pipeline statt bestandener Teiltests. Was zählt dieses Video?',
+        correct: 'Work Evidence — es dokumentiert geleistete Arbeit, aber Mastery entsteht nur aus den geprüften Teiltests.',
+        wrong: [
+          'Mastery — das Video beweist das Ergebnis direkt.',
+          'Nichts — Videos sind als Artefakt unzulässig.',
+          'Vertragsabnahme — das Video ersetzt das Manifest.',
+        ],
+        solution: 'Ein Video zeigt einen Lauf, nicht wiederholbare Evidenz: Es ist Work Evidence, kein Testnachweis. Mastery verlangt deterministisch geprüfte Teiltests; die Abnahme läuft über die Verträge.',
+      },
+      {
+        key: 'manifest-rolle',
+        prompt: 'Welche Rolle spielt das Manifest mit den sha256-Hashes in der Abnahme?',
+        correct: 'Es ist der prüfbare Vertrag: Die Freeze-Prüfung gleicht die gelieferten Dateien gegen die fixierten Hashes.',
+        wrong: [
+          'Es ist eine formlose Dokumentation ohne Prüfwirkung.',
+          'Es ersetzt die Teiltests, weil es den Stand fixiert.',
+          'Es beweist Mastery der Person, die es erstellt hat.',
+        ],
+        solution: 'Das Manifest bindet Dateinamen an Hashes — damit ist der Prüfstand maschinell nachrechenbar. Es ist Teil der Vertragsabnahme (Work-Evidence-Seite der Pipeline), kein Mastery-Nachweis und kein Testersatz.',
+      },
+      {
+        key: 'retro-zweck',
+        prompt: 'Wozu dient die Retrospektive im Capstone?',
+        correct: 'Als Work Evidence: Sie dokumentiert Prozess, Grenzen und offene Risiken ehrlich — sie ist kein Testnachweis.',
+        wrong: [
+          'Als Ersatz für fehlende Teiltests, wenn sie gut begründet.',
+          'Als Mastery-Nachweis über die gelernten Konzepte.',
+          'Als Pflichtformat, das inhaltlich leer bleiben darf.',
+        ],
+        solution: 'Die Retrospektive macht sichtbar, was funktioniert hat und was nicht — ehrliche Grenzdokumentation statt geschöntem Abschluss. Das ist wertvolle Arbeitsevidenz, aber sie prüft nichts und ersetzt nichts.',
+      },
+      {
+        key: 'arbeitsevidenz-wert',
+        prompt: 'Ist Work Evidence ohne die geprüften Teiltests wertlos?',
+        correct: 'Nein — sie dokumentiert ehrlich, was gebaut wurde und wo die Grenzen liegen; nur als Mastery-Beweis taugt sie nicht.',
+        wrong: [
+          'Ja — ungeprüfte Dokumentation ist generell wertlos.',
+          'Nein — sie ersetzt die Teiltests vollständig.',
+          'Ja — nur das Manifest zählt als Artefakt.',
+        ],
+        solution: 'Work Evidence hat eigenen Wert: Sie macht Arbeit und Grenzen nachvollziehbar. Der Fehler liegt in beiden Extremen — sie als wertlos abtun oder sie zum Mastery-Beweis aufblasen.',
+      },
+      {
+        key: 'kein-mastery-ohne-tests',
+        prompt: 'Ein Projekt hat Demo, Retrospektive und sauberes README, aber keine bestandenen Teiltests. Was ist der Befund?',
+        correct: 'Bearbeitung mit Work Evidence — aber kein Mastery-Nachweis, weil die geprüften Teiltests fehlen.',
+        wrong: [
+          'Mastery durch Präsentation, weil alle Artefakte da sind.',
+          'Abgenommen, weil Demo und README den Vertrag ersetzen.',
+          'Disqualifiziert, weil das Demo-Video fehlt.',
+        ],
+        solution: 'Die Artefakte zeigen Bearbeitung — Work Evidence. Mastery ist ein separater, härterer Nachweis über die Teiltests. Beides auseinanderzuhalten ist der Kern der Plattform-Ehrlichkeit.',
+      },
+      {
+        key: 'overclaim-gegenprobe',
+        prompt: 'Welche Aussage über den eigenen Runner-Report ist ehrlich?',
+        correct: '„Der Report ist selbstberichtete Arbeitsevidenz und kein Zertifikat.“',
+        wrong: [
+          '„Der Runner zertifiziert die Pipeline für den Echteinsatz.“',
+          '„Die Demo beweist Mastery über die Teiltests hinaus.“',
+          '„Bei überzeugender Demo sind die Teiltests optional.“',
+        ],
+        solution: 'Die ehrliche Aussage benennt den Status des Reports genau: self-reported, keine Abnahme. Die anderen Optionen behaupten eine Prüfmacht, die Demo oder Report nicht haben — klassische Overclaims.',
+      },
+      {
+        key: 'zwei-definitionen',
+        prompt: 'Warum verlangt Mastery zwei unabhängige Definitionen und 14 Tage Abstand zwischen den Treffern?',
+        correct: 'Damit der Nachweis stabil und reproduzierbar ist — ein einmaliger Treffer in einer Definition zählt nicht als Beherrschen.',
+        wrong: [
+          'Damit die Plattform insgesamt mehr Bearbeitungszeit verlangt.',
+          'Damit die Demo zweimal gezeigt werden muss.',
+          'Damit die Retrospektive zweimal geschrieben wird.',
+        ],
+        solution: 'Die Mastery-Regeln (zwei unabhängige Treffer, zwei Definitionen, 14 Tage Abstand, keine disqualifizierte Instanz) schützen vor Zufallstreffern und Kurzzeit-Effekten. Sie sind der einzige Weg zum Mastery-Status — bewusst anspruchsvoller als Work Evidence.',
+      },
+      {
+        key: 'abnahme-vertraege',
+        prompt: 'Worüber läuft die Abnahme des Capstone-Projekts?',
+        correct: 'Über die Verträge: deterministische Tests, Manifest-Freeze und reproduzierbare Status — Demo und Retrospektive ergänzen als Work Evidence.',
+        wrong: [
+          'Über die Demo-Qualität in der Abschlusspräsentation.',
+          'Über die Länge und Tiefe der Retrospektive.',
+          'Über den Runner-Report als alleiniges Abnahmedokument.',
+        ],
+        solution: 'Abnahme ist Vertragssache: Tests laufen deterministisch, das Manifest fixiert den Prüfstand per Hash, der Status ist reproduzierbar. Demo und Retro dokumentieren den Weg — sie sind Evidenz über Arbeit, nicht die Abnahme selbst.',
+      },
+      {
+        key: 'mastery-nicht-selbst',
+        prompt: 'Kann ein Team sich Mastery über einen überzeugend geschriebenen Report selbst ausstellen?',
+        correct: 'Nein — der Report bleibt self-reported; Mastery entsteht nur aus den geprüften Teiltest-Instanzen.',
+        wrong: [
+          'Ja — mit ausführlicher Begründung und sauberen Tabellen.',
+          'Ja — wenn die Demo alle Phasen live zeigt.',
+          'Nein — Work Evidence ist auf dieser Plattform verboten.',
+        ],
+        solution: 'Selbstberichtete Werte sind ehrlich gemeint, aber nicht autoritativ: integrity: self-reported markiert genau das. Mastery ist kein Dokumentationsprodukt — es fällt ausschließlich aus den deterministisch geprüften Teiltests.',
+      },
+    ],
+  },
+  'demo-vs-evidence': {
+    difficulty: 'intro',
+    competencyIds: ['c-capstone-pipeline', 'c-ml-repro'],
+    bank: [
+      {
+        key: 'base',
+        prompt: 'Overclaim erkennen: Welche README-Aussage über den eigenen Prototyp ist eine unzulässige Übertreibung?',
+        correct: '„Der Prototyp ist sicher gegen Prompt-Injection.“',
+        wrong: [
+          '„Der Regel-Detektor blockiert die sieben gelieferten Angriffs-Fixtures; Benign-Fälle bleiben frei.“',
+          '„Zwei der acht Golden-Set-Queries treffen kein Dokument — das ist eine bekannte lexikalische Lücke.“',
+          '„Der Runner-Report ist selbstberichtete Arbeitsevidenz und kein Zertifikat.“',
+        ],
+        solution: '„Sicher gegen Prompt-Injection“ ist der Overclaim: Belegt ist nur, dass der Regel-Detektor die gelieferten Fixtures blockiert — Angriffe außerhalb der Regeln bleiben möglich. Die anderen Aussagen benennen ihren Rahmen. Genau solche Phrasen fängt der Overclaim-Detektor („produktionsreif“, „sicher gegen“, „halluziniert nie“, „getestet gegen alle“). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.',
+      },
+      {
+        key: 'overclaim-produktionsreif',
+        prompt: 'Welche README-Aussage über den eigenen Regel-Detektor ist ein Overclaim?',
+        correct: '„Der Detektor ist produktionsreif und für den Echteinsatz freigegeben.“',
+        wrong: [
+          '„Der Detektor fängt die Phrasen der sieben Angriffs-Fixtures ab.“',
+          '„Angriffe außerhalb der Regelliste bleiben möglich — bekannte Grenze.“',
+          '„Die Evaluation misst nur die Fixture-Abdeckung.“',
+        ],
+        solution: '„Produktionsreif“ und „freigegeben“ behaupten eine Reife, die sieben Fixtures nicht belegen können. Ehrlich ist die benannte Messung: Fixture-Abdeckung ja, Echteinsatz-Tauglichkeit nein — der Overclaim-Detektor fängt genau solche Phrasen.',
+      },
+      {
+        key: 'overclaim-nie-halluziniert',
+        prompt: 'Welche Aussage über den RAG-Prototyp ist eine unzulässige Übertreibung?',
+        correct: '„Der Prototyp halluziniert nie.“',
+        wrong: [
+          '„Auf den acht Golden-Set-Queries liegt die Antwort im gemessenen Rahmen.“',
+          '„citation_precision misst nur Zitate gegen die erlaubten Quellen.“',
+          '„Ohne echtes Modell wird die Generierung getrennt bewertet.“',
+        ],
+        solution: '„Nie“ ist ein Absolutanspruch ohne Beleg: Die Fixtures messen einzelne Fälle, nicht alle möglichen Antworten. Die anderen Aussagen bleiben im gemessenen Rahmen — Grenzen benennen ist das Gegenteil eines Overclaims.',
+      },
+      {
+        key: 'overclaim-alle-angriffe',
+        prompt: 'Welche README-Aussage über den Detektor ist ein Overclaim?',
+        correct: '„Getestet gegen alle bekannten Prompt-Injection-Angriffe.“',
+        wrong: [
+          '„Getestet gegen die sieben gelieferten Angriffs-Fixtures.“',
+          '„Der Regel-Detektor deckt exakt seine Phrasenliste ab.“',
+          '„Benign-Fälle bleiben im Fixture-Test frei.“',
+        ],
+        solution: '„Alle bekannten Angriffe“ ist nicht belegbar — getestet wurde gegen sieben konkrete Fixtures. Der ehrliche Satz nennt die Menge; der Overclaim dehnt sie auf alles Bekannte aus.',
+      },
+      {
+        key: 'ehrlich-fixture-rand',
+        prompt: 'Welche README-Aussage über den Detektor ist ehrlich berichtet?',
+        correct: '„Vier von sieben Angriffs-Fixtures werden blockiert — die anderen drei sind dokumentierte Lücken.“',
+        wrong: [
+          '„Der Detektor stoppt jede Prompt-Injection.“',
+          '„Die Pipeline ist nach dem Fixture-Lauf sicher.“',
+          '„Fehlalarme sind mit diesem Regelwerk ausgeschlossen.“',
+        ],
+        solution: 'Der ehrliche Satz nennt Zähler, Nenner und die Lücke: vier von sieben, drei dokumentiert. Die anderen Optionen behaupten Vollständigkeit („jede“, „sicher“, „ausgeschlossen“) — genau die Phrasen des Overclaim-Detektors.',
+      },
+      {
+        key: 'overclaim-fehlerfrei',
+        prompt: 'Welche Aussage über die eigene Pipeline ist ein Overclaim?',
+        correct: '„Die Pipeline arbeitet fehlerfrei.“',
+        wrong: [
+          '„Die Pipeline reproduziert die gelabelten Fixture-Erwartungen.“',
+          '„Bekannte Grenzen sind im Status-Report benannt.“',
+          '„Der Eval läuft deterministisch gegen das eingefrorene Golden Set.“',
+        ],
+        solution: '„Fehlerfrei“ behauptet eine Eigenschaft, die kein Fixture-Lauf beweisen kann — gemessen wird Abdeckung, nicht Abwesenheit aller Fehler. Die anderen Aussagen berichten den tatsächlichen Messrahmen.',
+      },
+      {
+        key: 'ehrlich-golden-luecke',
+        prompt: 'Welche Aussage über das Retrieval ist ehrlich?',
+        correct: '„Zwei Golden-Set-Queries finden kein Dokument — eine bekannte lexikalische Lücke.“',
+        wrong: [
+          '„Das Retrieval findet immer den richtigen Beleg.“',
+          '„Der Recall ist garantiert 1{,}0.“',
+          '„Das Golden Set beweist die Allgemeingültigkeit der Suche.“',
+        ],
+        solution: 'Ehrlich berichtet, wer die gemessene Lücke benennt statt sie zu verstecken. „Immer“, „garantiert“ und „Allgemeingültigkeit“ sind Overclaim-Phrasen: acht Queries messen den Korpus, nicht die Welt.',
+      },
+      {
+        key: 'overclaim-mensch-ersetzt',
+        prompt: 'Welche Aussage über den Evaluator ist ein Overclaim?',
+        correct: '„Der Evaluator ersetzt die menschliche Prüfung vollständig.“',
+        wrong: [
+          '„Der Evaluator vergleicht Antworten deterministisch gegen das Regelwerk.“',
+          '„Der Evaluator misst Zitattreue gegen eine Allowlist von Quellen.“',
+          '„Semantische Äquivalenz deckt der Evaluator nicht ab — bekannte Grenze.“',
+        ],
+        solution: 'Ein Regelwerk ersetzt keine Prüfung durch Menschen — es misst definierte Kriterien deterministisch. „Vollständig ersetzen“ ist der Overclaim; die anderen Sätze benennen exakt, was der Evaluator tut und was nicht.',
+      },
+      {
+        key: 'overclaim-lernversprechen',
+        prompt: 'Welche Aussage über eine Lektion ist eine unzulässige Übertreibung?',
+        correct: '„Wer diese Lektion schafft, baut garantiert sichere Systeme.“',
+        wrong: [
+          '„Die Lektion zeigt den Umgang mit Angriffs-Fixtures im Kleinen.“',
+          '„Die Tests der Lektion laufen lokal und deterministisch.“',
+          '„Der Korpus der Lektion ist klein und benannt.“',
+        ],
+        solution: 'Ein Lernversprechen auf Garantieniveau ist nicht belegbar: Die Lektion vermittelt ein Verfahren an kleinen Fixtures — sie kann keine Sicherheit beliebiger Systeme garantieren. Die anderen Aussagen beschreiben den tatsächlichen Rahmen.',
+      },
+      {
+        key: 'ehrlich-selfreported',
+        prompt: 'Welche Aussage über den Status-Report ist zulässig?',
+        correct: '„Der Report ist selbstberichtet und ersetzt keine Abnahme über die Verträge.“',
+        wrong: [
+          '„Der Report zertifiziert die Pipeline für den Echteinsatz.“',
+          '„Wer den Report zeigt, hat Mastery bewiesen.“',
+          '„Der Report garantiert fehlerfreie Läufe der Pipeline.“',
+        ],
+        solution: 'Die zulässige Aussage benennt die integrity-Marke ehrlich: self-reported, keine Abnahme. Zertifizierung, Mastery-Beweis und Fehlerfrei-Garantie behaupten eine Autorität, die der Report nicht hat.',
+      },
+      {
+        key: 'overclaim-skalierung',
+        prompt: 'Welche Aussage über den Prototyp ist ein Overclaim?',
+        correct: '„Der Prototyp skaliert auf beliebige Dokumentmengen ohne Qualitätsverlust.“',
+        wrong: [
+          '„Der Prototyp indexiert die fünf Fixture-Dokumente lokal.“',
+          '„Größere Korpora wurden nicht gemessen — offene Frage.“',
+          '„Der Prototyp nutzt einen Vektorindex über den Fixture-Texten.“',
+        ],
+        solution: 'Gemessen wurden fünf Fixtures — „beliebige Mengen ohne Qualitätsverlust“ extrapoliert ohne Beleg. Ehrlich ist, die offene Frage offen zu lassen: nicht gemessen ist nicht widerlegt, aber auch nicht behauptbar.',
+      },
+      {
+        key: 'overclaim-beweis-sicherheit',
+        prompt: 'Welche Aussage über die Angriffs-Fixtures ist eine unzulässige Übertreibung?',
+        correct: '„Die sieben Fixtures beweisen die Sicherheit des Detektors.“',
+        wrong: [
+          '„Die sieben Fixtures zeigen die Regel-Abdeckung des Detektors.“',
+          '„Außerhalb der Fixture-Phrasen ist nichts gemessen.“',
+          '„Die Fixture-Ergebnisse sind reproduzierbar.“',
+        ],
+        solution: 'Sieben Fixtures sind eine Stichprobe, kein Beweis: Sie zeigen, dass der Detektor seine Regeln anwendet — nicht, dass das System sicher ist. Der Overclaim tauscht Abdeckung gegen Sicherheit.',
+      },
+    ],
+  },
+};
+
+export const EVIDENCE_DEMO_CONTRACT = {
+  familyId: 'classify-evidence-vs-demo',
+  familyGroup: 'classify-concept',
+  summary: 'Unterscheidet Evidenz für eine reproduzierbare Pipeline von einer bloßen Demo.',
+  taskArchetype: 'choice-diagnose',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'evidence-vs-demo', propertyTest: false },
+    { caseId: 'demo-vs-evidence', propertyTest: false },
+  ],
+  difficultyProfiles: ['intro'],
+  competencyIds: ['c-capstone-pipeline'],
+  graderId: 'deterministic',
+  activityType: 'single-choice',
+};
+
+const FAMILY_IMPL = makeChoiceFamily({
+  contract: EVIDENCE_DEMO_CONTRACT,
+  capsules: EVIDENCE_DEMO_CAPSULES,
+  shapeError: 'Evidenz-Demo-Parameter verletzen die Kapselform',
+  keyBy: 'caseId',
+});
+
+export const evidenceDemoCapsuleOk = FAMILY_IMPL.capsuleOk;
+export const evidenceDemoCorrectText = FAMILY_IMPL.correctText;
+export const genEvidenceDemoCapsule = FAMILY_IMPL.genCapsule;
+export const generateEvidenceDemoFamily = FAMILY_IMPL.generate;
+export const solveEvidenceDemoFamily = FAMILY_IMPL.solve;
+export const FAMILY_SPEC = FAMILY_IMPL.spec;

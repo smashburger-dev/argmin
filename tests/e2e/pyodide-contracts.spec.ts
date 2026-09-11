@@ -32,7 +32,8 @@ interface RunRecord {
   definitionId: string;
   referencePassed: boolean;
   brokenRejected: boolean;
-  referenceRun: { tests: number };
+  referenceRun: { tests: number; [key: string]: unknown };
+  [key: string]: unknown;
 }
 
 interface WorkerProbe {
@@ -48,7 +49,16 @@ test('every pyodide exercise contract passes and rejects in the browser worker',
 
   const results = await page.evaluate(async (definitions: ContractDefinition[]) => {
     const runnerUrl = '/assets/js/runtime/pyodide_runner.js';
-    const { pyodideRunner } = (await import(runnerUrl)) as { pyodideRunner: {
+    const { pyodideRunner, PyodideRunner } = (await import(runnerUrl)) as { pyodideRunner: {
+      run: (payload: { code: string; tests: string; packages: string[]; seed: number; timeoutMs: number }) => Promise<{
+        ok: boolean;
+        phase: string;
+        errorType: string | null;
+        stdout: string;
+        durationMs: number;
+        testResults?: Array<{ passed: boolean }>;
+      }>;
+    }; PyodideRunner: new (url: string) => {
       run: (payload: { code: string; tests: string; packages: string[]; seed: number; timeoutMs: number }) => Promise<{
         ok: boolean;
         phase: string;
@@ -58,44 +68,55 @@ test('every pyodide exercise contract passes and rejects in the browser worker',
         testResults?: Array<{ passed: boolean }>;
       }>;
     } };
-    const runResults = [];
-    for (const definition of definitions) {
-      const reference = await pyodideRunner.run({
-        code: definition.referenceSolver,
-        tests: definition.tests,
-        packages: definition.packages,
-        seed: 42,
-        timeoutMs: 60000,
-      });
-      const referenceTestResults = reference.testResults || [];
-      const referencePassed = reference.ok
-        && referenceTestResults.length > 0
-        && referenceTestResults.every((item) => item.passed);
-      const broken = await pyodideRunner.run({
-        code: 'pass',
-        tests: definition.tests,
-        packages: definition.packages,
-        seed: 42,
-        timeoutMs: 60000,
-      });
-      const brokenRejected = !broken.ok || !(broken.testResults || []).every((item: { passed: boolean }) => item.passed);
-      runResults.push({
-        definitionId: definition.definitionId,
-        weekId: definition.weekId,
-        contract: definition.contract,
-        verificationHash: definition.verificationHash,
-        referenceRun: { ok: reference.ok, tests: referenceTestResults.length, errorType: reference.errorType, phase: reference.phase, durationMs: reference.durationMs },
-        referencePassed,
-        brokenRejected,
-        brokenRun: { ok: broken.ok, errorType: broken.errorType, phase: broken.phase, durationMs: broken.durationMs },
-      });
-    }
+    type Runner = typeof pyodideRunner;
+    // Zwei Worker parallel: der Runner pipelined pro Worker, jeder Worker
+    // rechnet sequentiell — die 188 Runs halbieren sich so auf der Wanduhr.
+    const secondRunner = new PyodideRunner('assets/js/runtime/pyodide_worker.mjs');
+    const runResults: RunRecord[] = new Array(definitions.length);
+    const runSlice = async (runner: Runner, defs: Array<{ index: number; definition: ContractDefinition }>) => {
+      for (const { index, definition } of defs) {
+        const reference = await runner.run({
+          code: definition.referenceSolver,
+          tests: definition.tests,
+          packages: definition.packages,
+          seed: 42,
+          timeoutMs: 60000,
+        });
+        const referenceTestResults = reference.testResults || [];
+        const referencePassed = reference.ok
+          && referenceTestResults.length > 0
+          && referenceTestResults.every((item) => item.passed);
+        const broken = await runner.run({
+          code: 'pass',
+          tests: definition.tests,
+          packages: definition.packages,
+          seed: 42,
+          timeoutMs: 60000,
+        });
+        const brokenRejected = !broken.ok || !(broken.testResults || []).every((item: { passed: boolean }) => item.passed);
+        runResults[index] = {
+          definitionId: definition.definitionId,
+          weekId: definition.weekId,
+          contract: definition.contract,
+          verificationHash: definition.verificationHash,
+          referenceRun: { ok: reference.ok, tests: referenceTestResults.length, errorType: reference.errorType, phase: reference.phase, durationMs: reference.durationMs },
+          referencePassed,
+          brokenRejected,
+          brokenRun: { ok: broken.ok, errorType: broken.errorType, phase: broken.phase, durationMs: broken.durationMs },
+        };
+      }
+    };
+    const indexed = definitions.map((definition, index) => ({ index, definition }));
+    await Promise.all([
+      runSlice(pyodideRunner, indexed.filter((item) => item.index % 2 === 0)),
+      runSlice(secondRunner, indexed.filter((item) => item.index % 2 === 1)),
+    ]);
     const timeoutProbe = await pyodideRunner.run({
       code: 'while True:\n    pass',
       tests: '',
       packages: [],
       seed: 1,
-      timeoutMs: 4000,
+      timeoutMs: 1500,
     });
     const afterRestart = await pyodideRunner.run({
       code: 'print("restarted")',

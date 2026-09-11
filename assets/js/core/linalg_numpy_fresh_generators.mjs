@@ -6,7 +6,7 @@
 // and shape families are new procedural generators with their own
 // independent reference solvers.
 
-import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
+import { rng, randInt, nonzeroInt } from './generator_draw_kit.mjs';
 import { genMatmulEntry, genLinear2 } from './linalg_generators.mjs';
 
 

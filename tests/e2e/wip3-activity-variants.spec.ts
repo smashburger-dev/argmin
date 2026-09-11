@@ -87,30 +87,46 @@ test('WIP-3 code-trace variants grade two seeds', async ({ page, browserName }) 
 
 test('WIP-3 predict-output variants grade two seeds', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'WIP-3 activity variants run in Chromium.');
-  const body = loadCase('trace-chunk-window-loop.json', 'chunk-window-loop');
-  expect(variantOf(body, 0).prompt).not.toEqual(variantOf(body, 1).prompt);
+  // Prozedurale Familie: Instanz kommt aus der Registry, nicht aus JSON-Varianten.
+  const instances: Array<{ prompt: string; output: string }> = [];
   for (const seed of [0, 1]) {
-    const chosen = variantOf(body, seed);
     await openFamily(page, 'trace-chunk-window-loop', 'chunk-window-loop', seed, 'core');
-    await expectPrompt(page, chosen.prompt);
-    await page.getByLabel('Erwartete Ausgabe').fill(String(chosen.expected?.output ?? ''));
+    const inst = await page.evaluate(async (s) => {
+      const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
+        EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { prompt: string; expectedAnswer: { output: string } } };
+      };
+      const i = EXERCISE_FAMILIES.instantiate('trace-chunk-window-loop', s, 'core', 'chunk-window-loop');
+      return { prompt: i.prompt, output: i.expectedAnswer.output };
+    }, seed);
+    instances.push(inst);
+    await expectPrompt(page, inst.prompt);
+    await page.getByLabel('Erwartete Ausgabe').fill(inst.output);
     await page.getByRole('button', { name: 'Antwort prüfen' }).click();
     await expect(page.getByText(/Richtig/)).toBeVisible();
   }
+  expect(instances.at(0)?.output).not.toEqual(instances.at(-1)?.output);
 });
 
 test('WIP-3 parsons variants grade two seeds', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'WIP-3 activity variants run in Chromium.');
-  const body = loadCase('construct-matvec-shape-contract.json', 'matvec-contract-order');
-  expect(variantOf(body, 0).prompt).not.toEqual(variantOf(body, 1).prompt);
+  // Prozedurale Familie: Instanz kommt aus der Registry, nicht aus JSON-Varianten.
+  const orders: string[] = [];
   for (const seed of [0, 1]) {
-    const chosen = variantOf(body, seed);
     await openFamily(page, 'construct-matvec-shape-contract', 'matvec-contract-order', seed, 'intro');
-    await expectPrompt(page, chosen.prompt);
-    await arrangeParsons(page, chosen.expected?.solutionOrder || [], chosen.expected?.distractors || []);
+    const inst = await page.evaluate(async (s) => {
+      const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
+        EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { prompt: string; expectedAnswer: { solutionOrder: string[]; distractors: string[] }; parameters?: { initialOrder?: string[] } } };
+      };
+      const i = EXERCISE_FAMILIES.instantiate('construct-matvec-shape-contract', s, 'intro', 'matvec-contract-order');
+      return { prompt: i.prompt, solutionOrder: i.expectedAnswer.solutionOrder, distractors: i.expectedAnswer.distractors, initialOrder: i.parameters?.initialOrder };
+    }, seed);
+    orders.push(JSON.stringify(inst.initialOrder));
+    await expectPrompt(page, inst.prompt);
+    await arrangeParsons(page, inst.solutionOrder, inst.distractors);
     await page.getByRole('button', { name: 'Antwort prüfen' }).click();
     await expect(page.getByText(/Richtig/)).toBeVisible();
   }
+  expect(orders[0]).not.toEqual(orders[1]);
 });
 
 test('WIP-3 vector variants grade two seeds', async ({ page, browserName }) => {

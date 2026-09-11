@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "formula-descriptive-stats-numpy",
-  "contract": {
-    "familyId": "formula-descriptive-stats-numpy",
-    "familyGroup": "formula-apply",
-    "summary": "Implementiert deskriptive Kennzahlen und Histogramm-Bins mit NumPy.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "describe-and-bins",
-        "propertyTest": false
-      },
-      {
-        "caseId": "describe-outlier-bins",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-eda-viz",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "describe-and-bins",

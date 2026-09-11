@@ -62,6 +62,7 @@ const ALLOWED_FILES = [
   'assets/js/domain/foundations_construct_registry.mjs',
   'assets/js/domain/foundations_trace_registry.mjs',
   'assets/js/domain/foundations_linalg_registry.mjs',
+  'assets/js/domain/procedural_registry.mjs',
   'assets/js/domain/project_report.mjs',
   'assets/js/runtime/pyodide_runner.js',
   'assets/js/runtime/pyodide_worker.mjs',
@@ -255,6 +256,7 @@ const ALLOWED_DIRS = [
   { dir: 'vendor/mathlive/fonts', ext: '.woff2' },
   { dir: 'content/modules', ext: '.json' },
   { dir: 'content/families', ext: '.json' },
+  { dir: 'assets/js/core/procedural', ext: '.mjs' },
 ];
 // Source directories scanned for private canaries before copying.
 const SCAN_DIRS = ['assets', 'content'];

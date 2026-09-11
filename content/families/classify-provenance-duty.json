@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-provenance-duty",
-  "contract": {
-    "familyId": "classify-provenance-duty",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Verwendung der passenden Provenance-Pflichtklasse zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "provenance-duty",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-research-cards"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "provenance-duty",

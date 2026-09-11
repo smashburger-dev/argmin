@@ -1,33 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-gradient-update-rule",
-  "contract": {
-    "familyId": "optimize-gradient-update-rule",
-    "familyGroup": "optimize-update",
-    "summary": "Wendet Gradientenabstieg-Updates korrekt an und implementiert den Regressionsgradienten als Lernschleife.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "sign-and-scale-of-update",
-        "propertyTest": false
-      },
-      {
-        "caseId": "fit-linear-gradient-loop",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-grad-regression"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "sign-and-scale-of-update",

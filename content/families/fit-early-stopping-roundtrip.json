@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-early-stopping-roundtrip",
-  "contract": {
-    "familyId": "fit-early-stopping-roundtrip",
-    "familyGroup": "fit-model",
-    "summary": "Implementiert die Early-Stopping-Patience-Regel als strikten Scan über Epochenverluste plus wertexakten JSON-Zustandsroundtrip.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "early-stopping-roundtrip",
-        "propertyTest": false
-      },
-      {
-        "caseId": "early-stopping-min-delta-roundtrip",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-regularization",
-      "c-ml-cv"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "early-stopping-roundtrip",

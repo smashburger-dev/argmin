@@ -4,7 +4,6 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  DATA_ML_FAMILY_SPECS,
   generateAggregateMajorityRuleCountFamily,
   generateAggregateConfusionMetricFamily,
   generateFormulaMetricSpreadRangeFamily,
@@ -24,27 +23,6 @@ import {
   solveFormulaCountFromConstruction,
   solveOptimizeBackpropPathSum,
 } from '../assets/js/core/data_ml_families.mjs';
-import {
-  genBaselineCorrect,
-  genConfusionCount,
-  genCvSpread,
-  genCompleteRows,
-  genDedupRows,
-  genEnsembleAccuracy,
-  genMseFromResiduals,
-  genMseGradient,
-  genPcaVariancePercent,
-  genSeedSpread,
-  genR2Share,
-  genShrinkagePercent,
-  genSubgroupGapPp,
-} from '../assets/js/core/data_ml_generators.mjs';
-import {
-  genBackpropChain,
-  genDropoutCount,
-  genLinearParamCount,
-  genSgdSteps,
-} from '../assets/js/core/deep_learning_generators.mjs';
 import { EXERCISE_FAMILIES, configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 
@@ -132,22 +110,7 @@ const familyDocs = [
 for (const doc of familyDocs.slice(1)) registerStaticCases(doc.familyId, doc.cases);
 configureExerciseFamilies(familyDocs);
 
-const seededSpec = DATA_ML_FAMILY_SPECS[0];
-const cases = ['missing-target-rows', 'duplicate-rows'];
 const profiles = ['intro', 'core', 'stretch'];
-const conditionalCase = 'conditional-count-percent';
-
-function expectedFromParameters(parameters) {
-  if (parameters.caseId === 'missing-target-rows') return parameters.rows - parameters.missing;
-  return parameters.dropKey
-    ? parameters.rows - parameters.exactDups - parameters.keyConflicts
-    : parameters.rows - parameters.exactDups;
-}
-
-function expectedMseGradient(parameters) {
-  const { n, w, b, points } = parameters;
-  return (2 / n) * points.reduce((sum, [x, y]) => sum + x * (w * x + b - y), 0);
-}
 
 
 
@@ -283,24 +246,30 @@ test('static data-ml choice cases without generators honor seeded variants', () 
 
 
 
-test('W11 static cases enforce profiles and logistic competency', () => {
-  const sigmoid = EXERCISE_FAMILIES.instantiate(
-    'classify-sigmoid-regime',
-    0,
-    'intro',
-    'sigmoid-large-z',
-  );
-  assert.equal(sigmoid.masteryEligible, false);
-  assert.deepEqual(sigmoid.competencyIds, ['c-ml-logistic']);
-  assert.throws(
-    () => EXERCISE_FAMILIES.instantiate(
+test('W11 sigmoid cases are seeded with case binding and logistic competency', () => {
+  for (const [caseId, difficulty] of [
+    ['sigmoid-large-z', 'intro'],
+    ['sigmoid-threshold', 'core'],
+    ['sigmoid-log-odds', 'stretch'],
+  ]) {
+    const sigmoid = EXERCISE_FAMILIES.instantiate(
       'classify-sigmoid-regime',
       0,
-      'core',
-      'sigmoid-large-z',
-    ),
-    /Unbekanntes Profil/,
-  );
+      difficulty,
+      caseId,
+    );
+    assert.equal(sigmoid.masteryEligible, false);
+    assert.deepEqual(sigmoid.competencyIds, ['c-ml-logistic']);
+    assert.throws(
+      () => EXERCISE_FAMILIES.instantiate(
+        'classify-sigmoid-regime',
+        0,
+        difficulty === 'intro' ? 'core' : 'intro',
+        caseId,
+      ),
+      /Unbekannter Fall/,
+    );
+  }
   for (const [caseId, difficulty] of [
     ['threshold-under-asymmetric-cost', 'core'],
     ['sigmoid-predict-numpy', 'core'],
@@ -435,7 +404,7 @@ test('W13 static cases enforce profiles and competency overrides', () => {
         difficulty === 'core' ? 'stretch' : 'core',
         caseId,
       ),
-      /Unbekanntes Profil/,
+      /Unbekanntes Profil|Unbekannter Fall/,
     );
   }
 });
@@ -485,7 +454,7 @@ test('W14 static cases enforce profiles and competency overrides', () => {
         difficulty === 'core' ? 'stretch' : 'core',
         caseId,
       ),
-      /Unbekanntes Profil/,
+      /Unbekannter Fall/,
     );
   }
 });
@@ -530,7 +499,7 @@ test('W15 static cases enforce profiles and competency overrides', () => {
         difficulty === 'core' ? 'stretch' : 'core',
         caseId,
       ),
-      /Unbekanntes Profil/,
+      /Unbekannt/,
     );
   }
 });
@@ -551,7 +520,7 @@ test('W16 static cases enforce profiles and competency overrides', () => {
       'core',
       'hard-margin-width',
     ),
-    /Unbekanntes Profil/,
+    /Unbekannter Fall/,
   );
   const pca = EXERCISE_FAMILIES.instantiate(
     'formula-ratio-percent-metric',
@@ -587,7 +556,10 @@ test('sklearn trace case grades and exposes the ML-baseline competency override'
     'sklearn-split-no-shuffle',
   );
   assert.deepEqual(instance.competencyIds, ['c-ml-baseline', 'c-python-reading']);
-  assert.equal((await EXERCISE_FAMILIES.grade(instance, '[7, 8, 9]')).correct, true);
+  assert.equal(
+    (await EXERCISE_FAMILIES.grade(instance, instance.expectedAnswer.output)).correct,
+    true,
+  );
   assert.equal((await EXERCISE_FAMILIES.grade(instance, '[0, 1, 2]')).correct, false);
 });
 
@@ -613,7 +585,11 @@ test('NumPy trace grades and exposes case competency override', async () => {
     'numpy-median-histogram-corrcoef',
   );
   assert.deepEqual(numpy.competencyIds, ['c-eda-viz', 'c-numpy-basics']);
-  assert.equal((await EXERCISE_FAMILIES.grade(numpy, '4.5\n[1 7]\n0.97')).correct, true);
+  assert.equal(
+    (await EXERCISE_FAMILIES.grade(numpy, numpy.expectedAnswer.output)).correct,
+    true,
+  );
+  assert.equal((await EXERCISE_FAMILIES.grade(numpy, '4.5\n[1 7]\n0.97')).correct, false);
   const pandas = EXERCISE_FAMILIES.instantiate(
     'trace-library-api-output',
     0,

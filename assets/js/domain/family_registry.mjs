@@ -1,4 +1,5 @@
 import { graders } from '../core/graders.js';
+import { variantCaseIndex } from '../core/generator_draw_kit.mjs';
 
 // S4D1: zentrale Familien-Runtime (eine Semantik, keine Duplikate).
 // Hierher ausgelagert, damit exercise_registry.mjs und die dünnen
@@ -10,7 +11,7 @@ const staticCases = new Map();
 
 export const variantOf = (body, seed) => {
   const all = [body, ...(body.variants || [])];
-  const index = Math.abs(seed) % all.length;
+  const index = variantCaseIndex(seed, all.length);
   const variant = all[index];
   return {
     index,
@@ -117,7 +118,7 @@ function resolveCaseId(family, seed, caseId) {
   }
   const cases = family.caseTypes.filter((item) => item.propertyTest !== false);
   if (!cases.length) throw new Error(`${family.familyId}: kein property-testfähiger Fall`);
-  return cases[Math.abs(seed) % cases.length].caseId;
+  return cases[variantCaseIndex(seed, cases.length)].caseId;
 }
 
 // S4D2: domänenspezifische Hinweise, strikt aus Instanzdaten abgeleitet

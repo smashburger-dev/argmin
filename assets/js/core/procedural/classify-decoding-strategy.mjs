@@ -1,0 +1,497 @@
+// Procedural family classify-decoding-strategy: the seed draws a scenario
+// from the per-case curated bank and rotates the answer position via
+// buildRotatedChoices. Each bank keeps its curated base example verbatim as
+// oracle (key 'base') — same prompt, same four option texts, same solution —
+// plus new German scenarios that probe the decoding mechanics:
+//   - greedy-decoding (intro): argmax per step, fully deterministic, stops
+//     at <eos> or max_len — no sampling, no lookahead, no backtracking.
+//   - decoding-temperature-low (core): logits are divided by T before
+//     softmax; T<1 sharpens, T>1 flattens, T→0 becomes greedy.
+//   - decoding-top-k (stretch): a hard rank filter keeps the k best tokens;
+//     the surviving mass is renormalized, selection stays stochastic.
+// parameters carry only the scenario key, so nothing answer-relevant leaks
+// into instance.parameters. Mirrors genSvmMarginCapsule in
+// data_ml_generators.mjs.
+
+import { makeChoiceFamily } from '../generator_draw_kit.mjs';
+
+export const DECODING_STRATEGY_CAPSULES = {
+  intro: {
+    caseId: 'greedy-decoding',
+    competencyIds: ['c-dl-inference'],
+    bank: [
+      {
+        key: 'base',
+        prompt: 'Was zeichnet Greedy Decoding als Dekodierstrategie aus?',
+        correct: 'Es wählt in jedem Schritt das Token mit der höchsten Punktzahl (argmax) — deterministisch: bei gleichen Logits entsteht immer dieselbe Folge.',
+        wrong: [
+          'Es zieht ein Token zufällig, proportional zu den Softmax-Wahrscheinlichkeiten.',
+          'Es wählt gelegentlich das Token mit der niedrigsten Punktzahl, um Wiederholungen zu vermeiden.',
+          'Es generiert mehrere Kandidatenfolgen parallel und wählt am Ende die beste.',
+        ],
+        solution: 'Greedy Decoding hängt pro Schritt das Token mit der höchsten Logit-Punktzahl an (argmax, Gleichstand geht an die kleinste ID) und stoppt bei <eos> oder max_len — vollständig deterministisch. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.',
+      },
+      {
+        key: 'determinismus',
+        prompt: 'Dieselbe Eingabe wird zweimal mit Greedy Decoding dekodiert. Was ist zu erwarten?',
+        correct: 'Zweimal exakt dieselbe Tokenfolge — Greedy enthält keinen Zufall.',
+        wrong: [
+          'Zwei leicht verschiedene Folgen — kleiner Decoding-Zufall ist eingebaut.',
+          'Beim zweiten Lauf eine kürzere Folge — Greedy merkt sich den ersten Pfad.',
+          'Eine Fehlermeldung — Greedy darf nicht zweimal laufen.',
+        ],
+        solution: 'Greedy ist ein deterministischer Algorithmus: gleiche Logits → gleiches argmax → gleiche Folge. Variation kann nur aus geänderten Logits kommen, nie aus dem Decoder selbst.',
+      },
+      {
+        key: 'stopp-regel',
+        prompt: 'Wann beendet Greedy Decoding die Generierung?',
+        correct: 'Sobald das EOS-Token gewählt wird oder die Maximallänge erreicht ist.',
+        wrong: [
+          'Sobald ein Token zum zweiten Mal vorkommt.',
+          'Sobald die Punktzahl unter einen Schwellenwert fällt.',
+          'Nach einer festen Anzahl von zehn Tokens.',
+        ],
+        solution: 'Zwei Stopps: das Ende-Token als inhaltliches Signal und max_len als harte Grenze. Wiederholungen oder niedrige Scores stoppen Greedy nicht — das argmax läuft weiter.',
+      },
+      {
+        key: 'gleichstand',
+        prompt: 'Zwei Tokens teilen sich exakt denselben höchsten Logit. Wie entscheidet Greedy?',
+        correct: 'Über eine feste Tie-Break-Regel — üblich ist die kleinste Token-ID; es bleibt deterministisch.',
+        wrong: [
+          'Per Zufall zwischen den beiden Kandidaten.',
+          'Es werden beide Tokens gleichzeitig angehängt.',
+          'Greedy bricht mit einem Fehler ab.',
+        ],
+        solution: 'Ein Gleichstand ist ein definierter Fall: Die Implementierung wählt etwa die kleinste ID. Wichtig ist die Konsequenz — auch der Tie-Break ist deterministisch, kein verstecktes Sampling.',
+      },
+      {
+        key: 'vs-sampling',
+        prompt: 'Welche Beschreibung trennt Greedy sauber vom Sampling?',
+        correct: 'Greedy nimmt immer das argmax-Token; Sampling zieht proportional zu den Softmax-Wahrscheinlichkeiten.',
+        wrong: [
+          'Greedy zieht proportional, Sampling nimmt das Maximum.',
+          'Beide sind deterministisch, Sampling nur langsamer.',
+          'Sampling nutzt keine Softmax-Wahrscheinlichkeiten.',
+        ],
+        solution: 'Der Unterschied liegt im Auswahlschritt: Maximum versus Zufallszug aus der Verteilung. Beide lesen dieselben Logits — nur die Entscheidungsregel danach ist verschieden.',
+      },
+      {
+        key: 'gierig-name',
+        prompt: 'Warum heißt die Strategie „greedy“ (gierig)?',
+        correct: 'Weil sie in jedem Schritt das lokal beste Token nimmt, ohne die Gesamtfolge zu planen.',
+        wrong: [
+          'Weil sie möglichst viele Tokens pro Schritt anhängt.',
+          'Weil sie den gesamten Speicher des Modells nutzt.',
+          'Weil sie die höchste Temperatur wählt.',
+        ],
+        solution: 'Gierig bezieht sich auf die lokale Optimalität: Das aktuelle Maximum gewinnt, ohne zu prüfen, ob ein schwächerer Schritt zu einer besseren Folge geführt hätte. Suchen über die Folge wäre Beam Search.',
+      },
+      {
+        key: 'kein-backtracking',
+        prompt: 'Kann Greedy Decoding einen einmal gewählten Token später zurücknehmen?',
+        correct: 'Nein — die angehängte Folge ist fixiert; jeder Schritt baut auf dem bisherigen Präfix auf.',
+        wrong: [
+          'Ja — bei niedrigen Scores wird der letzte Token ersetzt.',
+          'Ja — alle fünf Schritte wird die Folge neu bewertet.',
+          'Nur wenn das EOS-Token noch nicht kam.',
+        ],
+        solution: 'Greedy ist ein reiner Vorwärtslauf: Token anhängen, Kontext aktualisieren, nächstes argmax. Es gibt keine Revisionsregel — lokale Fehlentscheidungen bleiben in der Folge stehen.',
+      },
+      {
+        key: 'vs-beam',
+        prompt: 'Worin unterscheidet sich Greedy von Beam Search?',
+        correct: 'Greedy verfolgt genau eine Folge; Beam Search hält k Kandidatenfolgen parallel und vergleicht ihre Gesamtscores.',
+        wrong: [
+          'Beam Search ist nur ein anderer Name für Greedy.',
+          'Greedy hält mehrere Folgen, Beam nur eine.',
+          'Beam Search verzichtet auf die Softmax-Scores.',
+        ],
+        solution: 'Beam Search ist die Sucherweiterung von Greedy: k beste Partialfolgen statt einer. Teurer, oft besser — aber derselbe Score-Ansatz. Wer „mehrere Kandidaten“ liest, beschreibt Beam, nicht Greedy.',
+      },
+      {
+        key: 'typischer-nachteil',
+        prompt: 'Welcher Nachteil von Greedy Decoding zeigt sich bei offener Textgenerierung typischerweise?',
+        correct: 'Wiederholungen und lokale Sackgassen — ohne Exploration gerät die Folge in Schleifen.',
+        wrong: [
+          'Zu hohe Zufälligkeit der Ausgabe.',
+          'Zu lange Laufzeit durch das Führen vieler Hypothesen.',
+          'Ignorieren des Kontexts ab dem zweiten Token.',
+        ],
+        solution: 'Die Stärke ist der Fehler: Immer das lokale Maximum heißt, nie eine Alternative zu prüfen. Texte wiederholen sich oder verlieren den Faden — Beam, Sampling oder Wiederholungsstrafen sind die üblichen Antworten.',
+      },
+      {
+        key: 'argmax-logits-softmax',
+        prompt: 'Argmax auf den Logits oder auf den Softmax-Wahrscheinlichkeiten — macht das einen Unterschied?',
+        correct: 'Nein — Softmax ist streng monoton; das Maximum bleibt dasselbe Token.',
+        wrong: [
+          'Ja — nur die Softmax-Werte dürfen verglichen werden.',
+          'Ja — Logits können negativ sein, also kippt die Wahl.',
+          'Ja — Greedy arbeitet ausschließlich auf Rohlogits ohne Ordnung.',
+        ],
+        solution: 'Die Softmax-Transformation verändert die Werte, nicht ihre Ordnung: größter Logit = größte Wahrscheinlichkeit. Deshalb kann Greedy direkt auf den Logits arbeiten — effizienter und identisch im Ergebnis.',
+      },
+      {
+        key: 't-gegen-null',
+        prompt: 'Auf welche Strategie läuft Sampling mit Temperatur $T\\to0$ hinaus?',
+        correct: 'Auf Greedy — die Verteilung spitzt sich so stark zu, dass praktisch immer das argmax-Token gezogen wird.',
+        wrong: [
+          'Auf reines Zufallsrauschen ohne Struktur.',
+          'Auf Beam Search mit unendlich vielen Strahlen.',
+          'Auf Top-p mit wachsender Kandidatenmenge.',
+        ],
+        solution: 'Die Temperatur teilt die Logits: $T\\to0$ treibt alle Differenzen ins Extreme — das Maximum trägt fast die ganze Masse. Der Grenzfall des Samplings ist also genau das deterministische argmax.',
+      },
+      {
+        key: 'was-braucht-schritt',
+        prompt: 'Was benötigt ein einzelner Greedy-Schritt als Eingabe?',
+        correct: 'Nur die Logits des aktuellen Schritts über dem Vokabular — kein Score der Gesamtfolge, kein Blick in die Zukunft.',
+        wrong: [
+          'Die Bewertungen aller möglichen Endfolgen.',
+          'Eine Zufallszahl für den Tokenzug.',
+          'Die gespeicherten Alternativfolgen des letzten Schritts.',
+        ],
+        solution: 'Greedy ist myopisch: Modell aufrufen, Logits lesen, Maximum nehmen. Es gibt weder Folgenscore noch Gedächtnis für Alternativen — genau das macht es billig und anfällig.',
+      },
+      {
+        key: 'ausgabe-variiert',
+        prompt: 'Greedy liefert bei zwei Anfragen verschiedene Texte. Welche Erklärung ist möglich?',
+        correct: 'Die Logits waren verschieden — anderer Kontext, anderes Modell oder andere Prompt; der Decoder selbst bleibt deterministisch.',
+        wrong: [
+          'Der Decoder hat intern gewürfelt.',
+          'Greedy wählt bei Wiederholung absichtlich Variation.',
+          'Der Tie-Break ist zufällig.',
+        ],
+        solution: 'Deterministisch heißt: gleiche Eingabe, gleiche Ausgabe — nicht: immer dieselbe Ausgabe. Ändert sich irgendetwas an den Logits, ändert sich die Folge; der Zufall steckt dann in der Eingabe, nicht im Verfahren.',
+      },
+    ],
+  },
+  core: {
+    caseId: 'decoding-temperature-low',
+    competencyIds: ['c-dl-inference'],
+    bank: [
+      {
+        key: 'base',
+        prompt: 'Ein Decoder verwendet dieselben Logits, aber Temperatur $T=0{,}5$ statt $T=1$. Welche Wirkung ist zu erwarten?',
+        correct: 'Die Verteilung wird typischerweise spitzer; Top-Tokens werden stärker bevorzugt.',
+        wrong: [
+          'Die Tokenreihenfolge wird zufällig neu gemischt.',
+          'Alle Token erhalten exakt dieselbe Wahrscheinlichkeit.',
+          'Die Wahrscheinlichkeitsverteilung wird zwingend flacher.',
+        ],
+        solution: 'Die Logits werden durch $T$ geteilt; bei $T<1$ werden Unterschiede vergrößert. Die Softmax wird dadurch spitzer und bevorzugt die wahrscheinlichsten Tokens stärker.',
+      },
+      {
+        key: 't-zwei',
+        prompt: 'Dieselben Logits, nun mit $T=2$ statt $T=1$. Welche Wirkung?',
+        correct: 'Die Verteilung wird flacher: Unterschiede zwischen den Tokens schrumpfen, seltene Tokens bekommen mehr Masse.',
+        wrong: [
+          'Die Verteilung wird spitzer — das Top-Token dominiert stärker.',
+          'Keine — Temperatur wirkt nur unter $1$.',
+          'Die Tokenreihenfolge wird umgekehrt.',
+        ],
+        solution: 'Geteilt wird vor dem Softmax: Logits$/2$ halbiert alle Abstände. Große $T$ nähern die Verteilung der Gleichverteilung an — mehr Vielfalt, mehr Rauschen im Sample.',
+      },
+      {
+        key: 't-eins',
+        prompt: 'Was bewirkt die Wahl $T=1$ konkret?',
+        correct: 'Nichts — die Logits werden unverändert in den Softmax gegeben; $T=1$ ist die neutrale Referenz.',
+        wrong: [
+          'Die Verteilung wird auf das Maximum konzentriert.',
+          'Alle Tokens werden gleich wahrscheinlich.',
+          'Die Temperatur wird ignoriert und zufällig gewählt.',
+        ],
+        solution: 'Teilen durch $1$ ändert keinen Wert: $T=1$ bedeutet „Sampling auf der Rohverteilung“. Erst Abweichungen nach oben oder unten formen die Verteilung — deshalb ist $1$ der Vergleichspunkt.',
+      },
+      {
+        key: 't-gegen-null-core',
+        prompt: 'Was passiert, wenn $T$ gegen null geht?',
+        correct: 'Die Verteilung konzentriert sich auf das Maximum — das Verhalten nähert sich Greedy Decoding an.',
+        wrong: [
+          'Die Verteilung wird vollkommen gleichförmig.',
+          'Die Softmax-Ausgabe wird negativ.',
+          'Das Sampling wird unmöglich und bricht ab.',
+        ],
+        solution: 'Logits$/T$ mit winzigem $T$ sprengt jede Differenz: Der größte Logit trägt fast alle Masse. Der Grenzfall ist mathematisch das argmax — die Brücke zwischen Sampling und Greedy.',
+      },
+      {
+        key: 'formel-eingang',
+        prompt: 'Wo genau wirkt die Temperatur in der Decodierformel?',
+        correct: 'Die Logits werden vor dem Softmax durch $T$ geteilt: $p_i=\\operatorname{softmax}(z_i/T)$.',
+        wrong: [
+          'Die Softmax-Wahrscheinlichkeiten werden mit $T$ multipliziert.',
+          'Die Logits werden um $T$ verschoben (Addition).',
+          'Die Wahrscheinlichkeiten werden mit $T$ potenziert.',
+        ],
+        solution: 'Die Temperatur ist ein Skalenfaktor auf den Logits — Division, keine Addition, keine Potenz. Erst danach normiert der Softmax; genau diese Stelle erklärt, warum $T<1$ spitzt und $T>1$ glättet.',
+      },
+      {
+        key: 'rangfolge-bleibt',
+        prompt: 'Verändert $T=0{,}5$ die Rangfolge der Token-Wahrscheinlichkeiten?',
+        correct: 'Nein — Division durch positives $T$ ist monoton; die Reihenfolge bleibt, nur die Abstände wachsen.',
+        wrong: [
+          'Ja — kleine Tokens rutschen nach vorn.',
+          'Ja — die Reihenfolge kehrt sich um.',
+          'Nur bei geraden Logits bleibt sie gleich.',
+        ],
+        solution: 'Alle Logits werden durch dieselbe positive Zahl geteilt — die Ordnung ist invariant. Was sich ändert, ist die Schärfe: Das Top-Token bleibt vorn und bekommt zusätzlich mehr Masse.',
+      },
+      {
+        key: 'wozu-hoch',
+        prompt: 'Ein Team will vielfältigere, überraschendere Ausgaben. In welche Richtung wird $T$ geschoben?',
+        correct: 'Über $1$ hinaus — höhere Temperatur glättet die Verteilung und gibt Außenseitern mehr Chance.',
+        wrong: [
+          'Gegen $0$ — das macht die Ausgabe kreativer.',
+          'Genau auf $1$ — die Mitte ist am diversifiziertesten.',
+          'Temperatur hat auf Vielfalt keinen Einfluss.',
+        ],
+        solution: 'Vielfalt heißt flachere Verteilung: Bei $T>1$ schrumpfen die relativen Logit-Abstände, und Tokens mit mittlerer Wahrscheinlichkeit werden häufiger gezogen. Unter $1$ geht es Richtung Konzentration — das Gegenteil.',
+      },
+      {
+        key: 'wozu-niedrig',
+        prompt: 'Für eine faktentreue Zusammenfassung soll die Ausgabe konservativ bleiben. Welche Temperatur-Richtung?',
+        correct: 'Unter $1$ — die Verteilung spitzt sich, wahrscheinliche Tokens dominieren stärker.',
+        wrong: [
+          'Über $1$ — das verbessert die Faktentreue.',
+          'Genau $1$ — die Rohverteilung ist immer am treuesten.',
+          'Temperatur steuert nur die Geschwindigkeit.',
+        ],
+        solution: 'Konservativ heißt: Das Modell soll bei seinen stärksten Kandidaten bleiben. $T<1$ vergrößert die Abstände und macht unwahrscheinliche Tokens noch seltener — eine Schärfung, keine Neuerfindung der Verteilung.',
+      },
+      {
+        key: 'kein-zufall-selbst',
+        prompt: 'Erzeugt die Temperatur selbst den Zufall beim Sampling?',
+        correct: 'Nein — $T$ formt nur die Verteilung; gezogen wird weiterhin zufällig aus ihr (oder deterministisch per argmax).',
+        wrong: [
+          'Ja — die Temperatur ist der Zufallsseed.',
+          'Ja — unter $1$ ist der Prozess deterministisch.',
+          'Nein — die Temperatur deaktiviert den Softmax.',
+        ],
+        solution: 'Zwei getrennte Dinge: die Verteilung (durch $T$ geformt) und der Auswahlmechanismus (Sampling oder argmax). $T=0{,}5$ macht die Verteilung spitzer, aber es wird weiter gesampelt — deterministisch wird es erst im Grenzfall oder bei Greedy.',
+      },
+      {
+        key: 't-negativ',
+        prompt: 'Warum muss die Temperatur strikt positiv sein?',
+        correct: 'Weil Division durch $T\\le0$ die Ordnung umkehrt oder ungültig wird — daraus entsteht keine sinnvolle Wahrscheinlichkeitsverteilung.',
+        wrong: [
+          'Weil negative Temperatur das Modell beschädigt.',
+          'Weil $T=0$ das Vokabular leert.',
+          'Muss sie nicht — auch negative Werte sind üblich.',
+        ],
+        solution: 'Der Softmax braucht eine monotone, sinnvolle Skalierung: $T=0$ ist eine Division durch null, $T<0$ dreht die Rangfolge um — das „schlechteste“ Token läge vorn. Deshalb gilt $T>0$ als Vertragsbedingung.',
+      },
+      {
+        key: 't-vs-topk',
+        prompt: 'Wie unterscheiden sich Temperatur und Top-k im Mechanismus?',
+        correct: 'Temperatur skaliert alle Logits weich; Top-k schneidet die Kandidatenmenge hart auf die $k$ Besten.',
+        wrong: [
+          'Beide schneiden die Kandidatenmenge hart.',
+          'Temperatur schneidet hart, Top-k skaliert weich.',
+          'Beide verändern nur die Tokenreihenfolge.',
+        ],
+        solution: 'Zwei Hebel am selben Punkt: $T$ verändert die Form der Verteilung, lässt aber jedem Token eine Chance; Top-k ist ein Filter, der den Rest auf exakt null setzt. Kombinierbar, aber grundverschieden.',
+      },
+      {
+        key: 'uniform-bleibt',
+        prompt: 'Alle Logits sind exakt gleich. Was ändert $T=0{,}5$?',
+        correct: 'Nichts — gleiche Logits bleiben nach dem Teilen gleich; die Uniformverteilung ist invariant gegen $T$.',
+        wrong: [
+          'Das Top-Token dominiert nun.',
+          'Die Hälfte der Tokens fällt weg.',
+          'Die Verteilung wird zufällig neu sortiert.',
+        ],
+        solution: 'Temperatur wirkt über Unterschiede — wo keine Differenz ist, kann keine verstärkt werden. $z_i/T$ mit identischem $z_i$ liefert identische Werte: Uniform bleibt uniform bei jedem $T$.',
+      },
+      {
+        key: 'praxis-schaerfung',
+        prompt: 'Logits $(2{,}0,\\ 1{,}0,\\ 0{,}0)$ bei $T=0{,}5$: Was passiert mit den Abständen vor dem Softmax?',
+        correct: 'Sie verdoppeln sich: $(4{,}0,\\ 2{,}0,\\ 0{,}0)$ — die Softmax-Ausgabe wird spitzer.',
+        wrong: [
+          'Sie halbieren sich: $(1{,}0,\\ 0{,}5,\\ 0{,}0)$.',
+          'Sie bleiben unverändert — $T$ wirkt erst nach dem Softmax.',
+          'Sie werden zu $(2{,}5,\\ 1{,}5,\\ 0{,}5)$ — ein fester Versatz.',
+        ],
+        solution: 'Geteilt, nicht multipliziert: $z_i/0{,}5=2z_i$ verdoppelt jede Differenz. Genau diese Streckung ist der Mechanismus — mehr Abstand vor dem Softmax heißt schärfere Wahrscheinlichkeiten danach.',
+      },
+    ],
+  },
+  stretch: {
+    caseId: 'decoding-top-k',
+    competencyIds: ['c-dl-inference'],
+    bank: [
+      {
+        key: 'base',
+        prompt: 'Beim Top-k-Decoding wird für $k=2$ nach der Softmax nur aus den zwei höchstwahrscheinlichen Tokens gezogen. Welche Aussage trifft zu?',
+        correct: 'Alle Tokens außer den zwei wahrscheinlichsten erhalten Auswahlwahrscheinlichkeit null.',
+        wrong: [
+          'Top-k setzt die beiden wahrscheinlichsten Tokens immer auf je 0,5.',
+          'Top-k wählt stets deterministisch den ersten Kandidaten.',
+          'Top-k verändert nur die Temperatur, aber nicht die erlaubten Tokens.',
+        ],
+        solution: 'Top-k sortiert die Kandidaten nach ihrer Modellwahrscheinlichkeit und behält nur die zwei höchsten. Die verbleibenden Wahrscheinlichkeiten werden für die Auswahl renormalisiert.',
+      },
+      {
+        key: 'k-eins',
+        prompt: 'Was ergibt Top-k mit $k=1$?',
+        correct: 'Greedy Decoding — nur der beste Kandidat bleibt übrig, die Auswahl ist deterministisch.',
+        wrong: [
+          'Reines Sampling über das ganze Vokabular.',
+          'Beam Search mit einem Strahl.',
+          'Eine Gleichverteilung über ein Token.',
+        ],
+        solution: 'Der Filter lässt genau einen Kandidaten: das argmax-Token. $k=1$ ist der Schnittpunkt von Top-k und Greedy — die Verbindung zwischen Filter und Maximum.',
+      },
+      {
+        key: 'warum-renorm',
+        prompt: 'Warum werden die verbleibenden Wahrscheinlichkeiten nach dem Top-k-Schnitt renormalisiert?',
+        correct: 'Damit sie wieder zu eins summieren — die Auswahl braucht eine gültige Verteilung über den $k$ Kandidaten.',
+        wrong: [
+          'Damit alle $k$ Kandidaten gleich wahrscheinlich werden.',
+          'Damit die Temperatur wieder ausgeglichen wird.',
+          'Damit die abgeschnittenen Tokens doch noch Masse bekommen.',
+        ],
+        solution: 'Der Schnitt entfernt Wahrscheinlichkeitsmasse: Die Restsumme ist kleiner als eins. Renormalisieren teilt durch diese Summe — die relativen Verhältnisse der Top-Kandidaten bleiben, nur die Skala stimmt wieder.',
+      },
+      {
+        key: 'k-fuenfzig',
+        prompt: 'Ein Vokabular von 1000 Tokens wird mit $k=50$ gefiltert. Was heißt das?',
+        correct: 'Die 50 wahrscheinlichsten Tokens behalten ihre relative Masse, die anderen 950 werden auf null gesetzt.',
+        wrong: [
+          'Jedes fünfzigste Token bleibt erhalten.',
+          '50 % der Tokens werden entfernt.',
+          'Die 50 Besten bekommen je Wahrscheinlichkeit $1/50$.',
+        ],
+        solution: 'Top-k ist ein Rangfilter, kein Prozentfilter und keine Gleichverteilung: Die ersten $k$ nach Wahrscheinlichkeit bleiben, der Rest fliegt raus. Innerhalb der 50 wird proportional zum Original gezogen — renormalisiert, nicht egalitär.',
+      },
+      {
+        key: 'vs-top-p',
+        prompt: 'Wie unterscheidet sich Top-p (Nucleus) von Top-k?',
+        correct: 'Top-p nimmt die kleinste Menge an Tokens, deren Masse $\\ge p$ ist — die Kandidatenzahl variiert pro Schritt; bei Top-k ist sie fest.',
+        wrong: [
+          'Top-p nutzt eine feste Anzahl, Top-k eine Masseschwelle.',
+          'Beide sind identisch — nur andere Namen.',
+          'Top-p entfernt die Top-Tokens statt den Tail.',
+        ],
+        solution: 'k um die Menge, p um die Masse: Top-k sagt „die besten $k$“, Top-p sagt „so viele, bis $p$ erreicht ist“. Bei spitzer Verteilung ist der Nucleus klein, bei flacher groß — Top-p passt sich der Form an.',
+      },
+      {
+        key: 'innen-verteilung',
+        prompt: 'Innerhalb der erlaubten Top-k — wie wird gezogen?',
+        correct: 'Proportional zu den renormalisierten Originalwahrscheinlichkeiten — nicht gleichverteilt.',
+        wrong: [
+          'Gleichverteilt: Jeder der $k$ Kandidaten bekommt $1/k$.',
+          'Deterministisch: Immer der beste der $k$.',
+          'In umgekehrter Reihenfolge: Der schlechteste zuerst.',
+        ],
+        solution: 'Der Filter schneidet, die Verteilung bleibt: Von den $k$ Überlebenden wird proportional zur (reskalierten) Modellwahrscheinlichkeit gezogen. Top-k ist Sampling auf einer gekürzten Menge — weder argmax noch Lotterie.',
+      },
+      {
+        key: 'zweck-tail',
+        prompt: 'Welches Problem verhindert Top-k primär?',
+        correct: 'Dass Tokens mit winziger Wahrscheinlichkeit aus dem langen Tail gezogen werden — der Filter kappt genau diesen Tail.',
+        wrong: [
+          'Dass das Top-Token zu oft gewählt wird.',
+          'Dass die Folge zu kurz wird.',
+          'Dass die Logits zu groß werden.',
+        ],
+        solution: 'Die Gefahr des Samplings steckt im Tail: Tausende Restkandidaten mit je winziger Masse summieren sich zu relevanter Gesamtchance auf Unsinn. Top-k entfernt den Tail komplett — die erlaubte Menge bleibt hochwertig.',
+      },
+      {
+        key: 'k-groesser-v',
+        prompt: 'Was passiert, wenn $k$ größer oder gleich der Vokabulargröße gewählt wird?',
+        correct: 'Der Filter greift nicht — es bleibt beim normalen Sampling über alle Tokens.',
+        wrong: [
+          'Es wird deterministisch dekodiert.',
+          'Es entsteht ein Fehler im Decoder.',
+          'Nur das Top-Token bleibt erlaubt.',
+        ],
+        solution: 'Ein Filter, der nichts ausschließt, ist wirkungslos: Alle Tokens liegen in den Top-$k$. Top-k mit $k\\ge|V|$ degeneriert zu gewöhnlichem Sampling — die Grenzfälle erklären den Mechanismus.',
+      },
+      {
+        key: 'ist-deterministisch',
+        prompt: 'Ist Top-k-Decoding mit $k=10$ deterministisch?',
+        correct: 'Nein — innerhalb der zehn Kandidaten wird zufällig gezogen; erst $k=1$ ist deterministisch.',
+        wrong: [
+          'Ja — die Top-10 sind eine feste Menge.',
+          'Ja — Top-k ist eine Variante von Greedy.',
+          'Nur bei ungeraden $k$.',
+        ],
+        solution: 'Determinismus braucht eine einelementige Auswahlmenge: $k=1$. Sobald mehrere Kandidaten stehen bleiben, entscheidet der Zufallszug — Top-k filtert die Verteilung, es ersetzt das Sampling nicht.',
+      },
+      {
+        key: 'kombi-temperatur',
+        prompt: 'Lassen sich Top-k und Temperatur kombinieren?',
+        correct: 'Ja — beide wirken auf dieselbe Verteilung vor dem Ziehen: etwa erst die Logits mit $T$ skalieren, dann auf $k$ Kandidaten filtern und renormalisieren.',
+        wrong: [
+          'Nein — die Verfahren schließen sich aus.',
+          'Ja — aber die Temperatur muss danach auf null gesetzt werden.',
+          'Nein — Top-k ersetzt den Softmax.',
+        ],
+        solution: 'Die Pipeline erlaubt beide Schritte nacheinander: Temperatur formt die Verteilung weich, Top-k schneidet hart, Renorm stellt die Summe wieder her. Die Reihenfolge ist Konvention — Kombination ist Standard.',
+      },
+      {
+        key: 'filter-ebene',
+        prompt: 'Filtert Top-k auf Logits oder auf Wahrscheinlichkeiten?',
+        correct: 'Auf die höchsten Kandidaten — die Rangfolge von Logits und Softmax ist dieselbe; implementiert wird der Schnitt meist auf Logits, die Semantik ist identisch.',
+        wrong: [
+          'Auf die Token-IDs — die niedrigsten $k$ IDs bleiben.',
+          'Auf die Buchstabenlänge der Tokens.',
+          'Nur auf Wahrscheinlichkeiten — Logits sind unzulässig.',
+        ],
+        solution: 'Da Softmax monoton ist, sind „die $k$ größten Logits“ und „die $k$ größten Wahrscheinlichkeiten“ dieselbe Menge. Der Filter arbeitet am Rang — egal, auf welcher der beiden Skalen er gerechnet wird.',
+      },
+      {
+        key: 'konkret-renorm',
+        prompt: 'Vier Tokens mit Wahrscheinlichkeiten $(0{,}5,\\ 0{,}3,\\ 0{,}15,\\ 0{,}05)$ werden mit $k=2$ gefiltert. Woraus wird gezogen?',
+        correct: 'Aus den zwei besten mit renormalisierten Anteilen: $0{,}625$ und $0{,}375$.',
+        wrong: [
+          'Aus allen vier mit unveränderten Wahrscheinlichkeiten.',
+          'Aus den zwei besten mit je $0{,}5$.',
+          'Nur aus dem besten mit Wahrscheinlichkeit $1{,}0$.',
+        ],
+        solution: 'Der Schnitt lässt $0{,}5$ und $0{,}3$ — Restsumme $0{,}8$. Renormieren: $0{,}5/0{,}8=0{,}625$, $0{,}3/0{,}8=0{,}375$. Die Verhältnisse bleiben, die Summe wird wieder eins.',
+      },
+      {
+        key: 'k-fest-nicht-p',
+        prompt: 'Warum kann die Kandidatenzahl bei Top-p schwanken, bei Top-k nicht?',
+        correct: 'Weil Top-k einen festen Rang schneidet („die $k$ besten“), während Top-p die Menge an der Masseschwelle $p$ misst — die dafür nötige Zahl hängt von der Verteilungsform ab.',
+        wrong: [
+          'Weil Top-k nur bei Greedy funktioniert.',
+          'Weil Top-p keine Wahrscheinlichkeiten nutzt.',
+          'Weil Top-k die Verteilung nicht kennt.',
+        ],
+        solution: 'Flache Verteilung: Viele Tokens nötig, um $p$ zu erreichen. Spitze Verteilung: Zwei genügen. Top-p adaptiert die Mengengröße an die Form — Top-k ignoriert die Form und zählt nur Ränge.',
+      },
+    ],
+  },
+};
+
+export const DECODING_STRATEGY_CONTRACT = {
+  familyId: 'classify-decoding-strategy',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet ein Decodierverhalten der passenden Decodierstrategie zu.',
+  taskArchetype: 'single-choice',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'greedy-decoding', propertyTest: false },
+    { caseId: 'decoding-temperature-low', propertyTest: false },
+    { caseId: 'decoding-top-k', propertyTest: false },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-dl-inference'],
+  graderId: 'deterministic',
+  activityType: 'single-choice',
+};
+
+const FAMILY_IMPL = makeChoiceFamily({
+  contract: DECODING_STRATEGY_CONTRACT,
+  capsules: DECODING_STRATEGY_CAPSULES,
+  shapeError: 'Decoding-Strategie-Parameter verletzen die Kapselform',
+});
+
+export const decodingStrategyCapsuleOk = FAMILY_IMPL.capsuleOk;
+export const decodingStrategyCorrectText = FAMILY_IMPL.correctText;
+export const genDecodingStrategyCapsule = FAMILY_IMPL.genCapsule;
+export const generateDecodingStrategyFamily = FAMILY_IMPL.generate;
+export const solveDecodingStrategyFamily = FAMILY_IMPL.solve;
+export const FAMILY_SPEC = FAMILY_IMPL.spec;

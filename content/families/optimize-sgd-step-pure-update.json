@@ -1,35 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-sgd-step-pure-update",
-  "contract": {
-    "familyId": "optimize-sgd-step-pure-update",
-    "familyGroup": "optimize-update",
-    "summary": "Implementiert einen vollständigen SGD-Trainingsschritt als reine Funktion: Verlust vor dem Update, Update in neue Parameter, Eingabe unverändert.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "pure-train-step",
-        "propertyTest": false
-      },
-      {
-        "caseId": "sgd-momentum-step",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-autograd",
-      "c-grad-regression"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "pure-train-step",

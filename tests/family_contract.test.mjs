@@ -250,6 +250,71 @@ test('foundations choice cases keep their compact parameter contract', () => {
   }
 });
 
+test('foundations choice solvers match rotated choices over 32 seeds', () => {
+  // Gate 5 braucht alle sieben Choice-Familien, nicht nur sechs:
+  // generateExceptionPlacementFamily (classify-exception-placement) fehlt
+  // im Sechser-Entwurf und ist ueber die ID-Liste hier explizit enthalten.
+  assert.equal(FOUNDATIONS_CHOICE_FAMILY_IDS.length, 7);
+  for (const familyId of FOUNDATIONS_CHOICE_FAMILY_IDS) {
+    const family = registry.get(familyId);
+    assert.ok(family, `unbekannte Choice-Familie ${familyId}`);
+    assert.equal(typeof family.solve, 'function', `${familyId}: solve fehlt`);
+    for (const caseType of family.caseTypes) {
+      for (const difficulty of validProfiles(familyId, caseType.caseId)) {
+        const reference = registry.instantiate(familyId, 0, difficulty, caseType.caseId);
+        const expectedCount = difficulty === 'intro' ? 2 : 4;
+        for (let seed = 0; seed < 32; seed += 1) {
+          const instance = registry.instantiate(familyId, seed, difficulty, caseType.caseId);
+          assert.deepEqual(
+            instance,
+            registry.instantiate(familyId, seed, difficulty, caseType.caseId),
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: nicht deterministisch`,
+          );
+          assert.equal(instance.choices.length, expectedCount, `${familyId}:${caseType.caseId}:${difficulty}`);
+          assert.equal(
+            new Set(instance.choices.map((choice) => choice.text)).size,
+            instance.choices.length,
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: doppelte Auswahltexte`,
+          );
+          const solved = family.solve(instance.parameters);
+          const correct = instance.choices.filter((choice) => choice.correct);
+          assert.equal(correct.length, 1, `${familyId}:${caseType.caseId}:${difficulty}:${seed}: genau eine korrekte Wahl`);
+          assert.equal(
+            correct[0].text,
+            solved.correctText,
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Solver weicht von choices ab`,
+          );
+          assert.equal(
+            instance.expectedAnswer.correctChoice,
+            correct[0].id,
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: expectedAnswer zeigt auf falsche id`,
+          );
+          const expectedIndex = Math.abs(seed) % instance.choices.length;
+          assert.equal(
+            instance.choices[expectedIndex].id,
+            instance.expectedAnswer.correctChoice,
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Rotation nicht deterministisch`,
+          );
+          assert.equal(
+            instance.prompt,
+            reference.prompt,
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Seed veraendert den Inhalt`,
+          );
+          assert.deepEqual(
+            instance.choices.map((choice) => choice.text).sort(),
+            reference.choices.map((choice) => choice.text).sort(),
+            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Seed veraendert die Auswahlmenge`,
+          );
+        }
+        if (caseType.caseId === 'seeded-error-pattern-cases') {
+          const frozen = registry.instantiate(familyId, 3401, difficulty, caseType.caseId);
+          assert.equal(reference.prompt, frozen.prompt, `${familyId}:${difficulty}: Default weicht von Seed 3401 ab`);
+        }
+      }
+    }
+  }
+});
+
 test('static Python cases carry executable content', () => {
   for (const doc of docs) {
     for (const item of doc.cases) {

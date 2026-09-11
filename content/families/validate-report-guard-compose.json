@@ -1,40 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "validate-report-guard-compose",
-  "contract": {
-    "familyId": "validate-report-guard-compose",
-    "familyGroup": "validate-contract",
-    "summary": "Prueft die Vorbedingungen eines Berichts und verweigert bei Fehlen deterministisch ohne Teilmesswerte, sonst werden alle Berichtsteile zusammengefuehrt.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "report-guard-compose",
-        "propertyTest": false
-      },
-      {
-        "caseId": "baseline-report",
-        "propertyTest": false
-      },
-      {
-        "caseId": "run-digest-assert",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-genai-eval",
-      "c-ml-repro",
-      "c-research-capstone",
-      "c-research-responsible"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "report-guard-compose",

@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-fairness-aggregation",
-  "contract": {
-    "familyId": "classify-fairness-aggregation",
-    "familyGroup": "classify-concept",
-    "summary": "Erkennt, warum Gesamtmetriken Fehler kleiner Teilgruppen verdecken können.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "overall-accuracy-hides-subgroups",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-ml-erroranalysis"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "overall-accuracy-hides-subgroups",

@@ -29,7 +29,7 @@ function parseFamilyRef(ref: string): {
   if (!difficulty) throw new Error('Schwierigkeitsstufe fehlt.');
   const caseId = casePart && casePart !== '-' ? casePart : undefined;
   const seed = seedPart === '-' || seedPart === ''
-    ? Math.floor(Math.random() * 2 ** 31)
+    ? randomVariantSeed()
     : /^\d+$/.test(seedPart)
       ? Number(seedPart) >>> 0
       : (() => { throw new Error(`Startwert ungültig: ${seedPart}`); })();

@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-freeze-assert-guard",
-  "contract": {
-    "familyId": "construct-freeze-assert-guard",
-    "familyGroup": "construct-program",
-    "summary": "Schützt eingefrorene Berichte durch einen expliziten Gleichheits- und Abweichungsvertrag.",
-    "taskArchetype": "program-ordering",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "freeze-assert-parsons",
-        "propertyTest": false
-      },
-      {
-        "caseId": "demo-from-frozen-report",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-python-functions"
-    ],
-    "graderId": "deterministic",
-    "activityType": "parsons"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "freeze-assert-parsons",

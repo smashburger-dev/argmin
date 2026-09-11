@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-multi-head-attention",
-  "contract": {
-    "familyId": "optimize-multi-head-attention",
-    "familyGroup": "optimize-update",
-    "summary": "Zerlegt projizierte Q/K/V in Köpfe, rechnet je Kopf skalierte Attention mit Maske, konkateniert und projiziert die Ausgabe.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "multi-head-attention",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-attention",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "multi-head-attention",

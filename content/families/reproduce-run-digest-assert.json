@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-run-digest-assert",
-  "contract": {
-    "familyId": "reproduce-run-digest-assert",
-    "familyGroup": "reproduce-hash",
-    "summary": "Sichert einen eingefrorenen Lauf-Digest gegen stille Abweichungen.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "run-digest-assert",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-python-functions",
-      "c-research-capstone"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "run-digest-assert",

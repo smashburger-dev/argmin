@@ -144,7 +144,7 @@ test('content can grow by one lesson and one exercise without touching counters'
     const extraLesson = { ...seedLesson, lessonId: 'l-growth-extra', title: 'Zusatzlektion', blocks: [{ blockId: 'b1', type: 'worked-example', contentRef: 'lessons/growth/extra.md' }] };
     writeFileSync(join(growRoot, 'content/lessons/growth/extra.json'), JSON.stringify(extraLesson));
 
-    const seedFamily = JSON.parse(readFileSync(join(root, 'content/families/classify-attention-roles.json'), 'utf8'));
+    const seedFamily = JSON.parse(readFileSync(join(root, 'content/families/classify-repro-contract.json'), 'utf8'));
     const extraFamily = {
       ...seedFamily,
       familyId: 'growth-family',

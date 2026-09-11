@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-dropout-regime",
-  "contract": {
-    "familyId": "classify-dropout-regime",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Dropout-Konfiguration ihrem Wirkungsregime zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "dropout-regime",
-        "propertyTest": false
-      },
-      {
-        "caseId": "dropout-inverted-scale",
-        "propertyTest": false
-      },
-      {
-        "caseId": "dropout-eval-mode",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-regularization"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "dropout-regime",

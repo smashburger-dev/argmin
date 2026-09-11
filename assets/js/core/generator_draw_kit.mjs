@@ -1,6 +1,7 @@
 // The canonical integer helpers live in foundations (byte-pinned rng); re-exported
 // here so every family module has ONE import site.
-export { rng, randInt } from './foundations_generators.mjs';
+import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
+export { rng, randInt, nonzeroInt };
 
 /** Binds until/clean to one family's retry bounds, error scope and leak-guard
  *  strictness — the per-file constants that keep RNG consumption identical. */
@@ -14,6 +15,26 @@ export const bindFamilyDraw = (options) => ({
 // is an explicit option so each family keeps its exact RNG consumption,
 // retry bounds, error scope and leak-guard strictness — the seed golden
 // corpus in tests/fixtures/generator-golden-corpus.json pins the bytes).
+
+/** Seed-Varianten: Fallwahl aus dem Seed (negativ-sicher, `seed % N` ohne
+ *  `abs` bricht für negative Seeds — caseBank hatte genau diesen Defekt). */
+export const variantCaseIndex = (seed, length) => Math.abs(seed) % length;
+
+/** Seed-Epoche: zählt, wie oft die Fallbank schon durchlaufen ist. */
+export const variantEpoch = (seed, length) => Math.floor(Math.abs(seed) / length);
+
+/** Rotate `options` so that index `rotation` becomes the correct position.
+ *  rotation 0 keeps the input order (slice(-0) would be a no-rotation trap). */
+const rotateOptions = (options, rotation) => {
+  if (rotation <= 0) return [...options];
+  return [...options.slice(-rotation), ...options.slice(0, options.length - rotation)];
+};
+
+/** Baut benannte Choices aus unrotierten Optionstexten (options[0] korrekt). */
+export const buildRotatedChoices = (options, rotation, ids) => {
+  const rotated = rotateOptions(options, rotation);
+  return rotated.map((text, index) => ({ id: ids[index], text, correct: index === rotation }));
+};
 
 export function pick(random, values) {
   return values[Math.floor(random() * values.length)];
@@ -86,4 +107,80 @@ export function drawFamilyInstance(generate, { seed, caseId, difficulty, wantSha
   }
   if (!fallback) throw new Error(`${caseId}: keine formtreue Instanz in ${cap} Versuchen`);
   return fallback;
+}
+
+const CHOICE_IDS = ['a', 'b', 'c', 'd'];
+
+/** Baut das Standard-Surface einer reinen Choice-Kapsel-Familie: Szenario-Bank
+ *  + Antwort-Rotation. Module behalten Bank und Contract, die Generator-/
+ *  Solver-Mechanik lebt hier genau einmal. `shapeError` bleibt familienspezifisch,
+ *  weil Tests und Fehlertexte auf den Wortlaut pinnen. */
+export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'difficulty' }) {
+  const options = (entry) => [entry.correct, ...entry.wrong];
+
+  const capsuleOk = (parameters, capsule) => {
+    try {
+      if (!parameters || typeof parameters !== 'object') return false;
+      const entry = capsule.bank.find((item) => item.key === parameters.scenario);
+      if (!entry) return false;
+      return new Set(options(entry)).size === 4;
+    } catch { return false; }
+  };
+
+  const correctText = (parameters, capsule) => {
+    const entry = capsule.bank.find((item) => item.key === parameters?.scenario);
+    if (!entry || !capsuleOk(parameters, capsule)) throw new Error(shapeError);
+    return entry.correct;
+  };
+
+  const genCapsule = (seed, capsule) => {
+    const r = rng(seed);
+    const entry = pick(r, capsule.bank);
+    const opts = options(entry);
+    const rotation = variantCaseIndex(seed, opts.length);
+    return {
+      parameters: { scenario: entry.key },
+      expected: { correctChoice: CHOICE_IDS[rotation] },
+      choices: buildRotatedChoices(opts, rotation, CHOICE_IDS),
+      prompt: entry.prompt,
+      fullSolution: entry.solution,
+    };
+  };
+
+  const generate = ({ seed, caseId, difficulty }) => {
+    const capsule = keyBy === 'caseId' ? capsules[caseId] : capsules[difficulty];
+    const matches = keyBy === 'caseId' ? capsule?.difficulty === difficulty : capsule?.caseId === caseId;
+    if (!capsule || !matches) {
+      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
+    }
+    const drawn = drawFamilyInstance((subseed) => genCapsule(subseed, capsule), {
+      seed,
+      caseId,
+      difficulty,
+      wantShape: (instance) => capsuleOk(instance.parameters, capsule),
+      profileAccepts: (parameters) => capsuleOk(parameters, capsule),
+      profiles: contract.difficultyProfiles,
+    });
+    return {
+      parameters: { caseId, difficulty, ...drawn.parameters },
+      expected: { ...drawn.expected },
+      choices: drawn.choices,
+      prompt: drawn.prompt,
+      fullSolution: drawn.fullSolution,
+      ...(capsule.competencyIds ? { competencyIds: capsule.competencyIds } : {}),
+    };
+  };
+
+  const solve = (parameters) => {
+    const capsule = keyBy === 'caseId'
+      ? capsules[parameters?.caseId]
+      : Object.values(capsules).find((item) => item.caseId === parameters?.caseId);
+    if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
+    return { correctText: correctText(parameters, capsule) };
+  };
+
+  return {
+    capsuleOk, correctText, genCapsule, generate, solve,
+    spec: { ...contract, generate, solve },
+  };
 }

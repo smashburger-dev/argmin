@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-attention-roles",
-  "contract": {
-    "familyId": "classify-attention-roles",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet Tensorrollen den Aufmerksamkeitsrollen zu.",
-    "taskArchetype": "single-choice",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "attention-role-values",
-        "propertyTest": false
-      },
-      {
-        "caseId": "attention-role-batch",
-        "propertyTest": false
-      },
-      {
-        "caseId": "attention-role-padding",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-attention"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "attention-role-values",

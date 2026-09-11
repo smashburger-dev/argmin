@@ -27,12 +27,6 @@ import { validateSourceDocument } from '../tools/compile_content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
-const SOLVER_TABLE = {
-  'diff-unstaged': 'git diff',
-  'diff-staged': 'git diff --staged',
-  'merge-conflict-test-flow': 'Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen',
-};
-
 const ids = {
   competencies: new Set(['c-git-basics']),
   tracks: new Set(['common-core']),
@@ -54,12 +48,6 @@ const familyModule = {
   projectIds: [],
   placements: [],
 };
-
-function counterexample(instance) {
-  const wrong = instance.choices.find((choice) => choice.correct !== true);
-  assert.ok(wrong, `${instance.caseId}: Gegenbeispiel fehlt`);
-  return wrong.id;
-}
 
 function propertyCases(family) {
   return family.caseTypes.filter((item) => item.propertyTest !== false);

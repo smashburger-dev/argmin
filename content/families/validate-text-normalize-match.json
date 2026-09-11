@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "validate-text-normalize-match",
-  "contract": {
-    "familyId": "validate-text-normalize-match",
-    "familyGroup": "validate-contract",
-    "summary": "Normalisiert Text und prüft danach den Übereinstimmungsvertrag.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "text-normalize-match",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-research-question",
-      "c-python-functions"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "text-normalize-match",

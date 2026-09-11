@@ -1,33 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "validate-leakage-rule-audit",
-  "contract": {
-    "familyId": "validate-leakage-rule-audit",
-    "familyGroup": "validate-contract",
-    "summary": "Prüft Pipelines auf Ziel-, Statistik- und Test-Leakage.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "pipeline-leakage-audit",
-        "propertyTest": false
-      },
-      {
-        "caseId": "pipeline-clean-split",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-ml-cv"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "pipeline-leakage-audit",

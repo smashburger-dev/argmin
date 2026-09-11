@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-decoding-strategy",
-  "contract": {
-    "familyId": "classify-decoding-strategy",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet ein Decodierverhalten der passenden Decodierstrategie zu.",
-    "taskArchetype": "single-choice",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "greedy-decoding",
-        "propertyTest": false
-      },
-      {
-        "caseId": "decoding-temperature-low",
-        "propertyTest": false
-      },
-      {
-        "caseId": "decoding-top-k",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-inference"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "greedy-decoding",

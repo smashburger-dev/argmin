@@ -1,33 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-decode-greedy-loop",
-  "contract": {
-    "familyId": "optimize-decode-greedy-loop",
-    "familyGroup": "optimize-update",
-    "summary": "Führt Greedy-Decoding als Schleife über die Decodeschritte aus.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "greedy-loop-trace",
-        "propertyTest": false
-      },
-      {
-        "caseId": "greedy-decode-function",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-inference",
-      "c-python-basics"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "greedy-loop-trace",

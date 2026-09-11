@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-backprop-gradient-check",
-  "contract": {
-    "familyId": "optimize-backprop-gradient-check",
-    "familyGroup": "optimize-update",
-    "summary": "Leitet die Gradienten eines Layers bzw. MLP mit MSE im Rückwärtslauf her und validiert sie gegen die zentrale numerische Differenz.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "linear-mse-gradients",
-        "propertyTest": false
-      },
-      {
-        "caseId": "mlp-backprop-relu-mse",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-autograd",
-      "c-dl-tensors"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "linear-mse-gradients",

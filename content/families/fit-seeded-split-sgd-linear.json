@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-seeded-split-sgd-linear",
-  "contract": {
-    "familyId": "fit-seeded-split-sgd-linear",
-    "familyGroup": "fit-model",
-    "summary": "Implementiert geseedetes Training einer linearen Regression: Seed-Permutation-Split, Full-Batch-SGD mit Faktor 2/n, Verlusthistorie zu Epochenbeginn.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "seeded-split-sgd-linear",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-training",
-      "c-grad-regression"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "seeded-split-sgd-linear",

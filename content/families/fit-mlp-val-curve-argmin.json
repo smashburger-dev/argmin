@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-mlp-val-curve-argmin",
-  "contract": {
-    "familyId": "fit-mlp-val-curve-argmin",
-    "familyGroup": "fit-model",
-    "summary": "Trainiert ein MLP mit einem rng in fester Reihenfolge, führt Trainings- und Validierungsverlust pro Epoche und leitet best_val_epoch als Argmin ab.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "mlp-val-curve-argmin",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-training",
-      "c-dl-autograd"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "mlp-val-curve-argmin",

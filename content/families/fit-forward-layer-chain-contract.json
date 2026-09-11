@@ -1,40 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-forward-layer-chain-contract",
-  "contract": {
-    "familyId": "fit-forward-layer-chain-contract",
-    "familyGroup": "fit-model",
-    "summary": "Implementiert den MLP-Forward vertrags zuerst: Struktur- und Kettenverträge vor der Rechnung, ReLU nur auf versteckten Schichten, Parameterzahl inklusive Bias.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "linear-forward-contract",
-        "propertyTest": false
-      },
-      {
-        "caseId": "mlp-forward-relu",
-        "propertyTest": false
-      },
-      {
-        "caseId": "deep-forward-chain",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-tensors",
-      "c-numpy-basics",
-      "c-linalg-matrices"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "linear-forward-contract",

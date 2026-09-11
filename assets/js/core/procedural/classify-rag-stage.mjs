@@ -1,0 +1,202 @@
+// Procedural family classify-rag-stage: the seed draws a scenario from the
+// curated bank and rotates the answer position via buildRotatedChoices. The
+// bank keeps the curated base example verbatim as oracle (key 'base') — same
+// prompt, same four option texts, same solution — plus new German scenarios
+// that assign a processing step to its RAG stage (indexing, retrieval,
+// generation, evaluation) or probe why the stages are measured separately.
+// parameters carry only the scenario key, so nothing answer-relevant leaks
+// into instance.parameters. Mirrors genSvmMarginCapsule in
+// data_ml_generators.mjs.
+
+import { makeChoiceFamily } from '../generator_draw_kit.mjs';
+
+export const RAG_STAGE_CAPSULES = {
+  intro: {
+    caseId: 'rag-stage-separation',
+    bank: [
+      {
+        key: 'base',
+        prompt: 'Diese Plattform misst in der Lektion „RAG: Retrieval messbar machen“ nur das Retrieval — die Antwortgenerierung eines echten Sprachmodells läuft bewusst nicht im Browser. Was ist der Kerngrund für diese Trennung?',
+        correct: 'Retrieval ist deterministisch und offline gegen ein Golden Set messbar; die Antwortgenerierung eines echten Modells läuft hier nicht und wird getrennt bewertet — so bleiben Retrieval- und Antwortfehler unterscheidbar.',
+        wrong: [
+          'Bei RAG werden Antworten immer wörtlich aus den Dokumenten kopiert, ein Modell ist nie nötig.',
+          'Für generierte Antworten existieren keine Evaluationsmetriken, deshalb misst man nur das Retrieval.',
+          'Die Antwortgenerierung ist in RAG-Systemen technisch unmöglich.',
+        ],
+        solution: 'Retrieval ist deterministisch, läuft offline und ist mit Recall@k/MRR gegen ein Golden Set messbar. Antwortgenerierung bräuchte ein echtes Modell — sie wird separat über Fixtures und lokale Projekte geprüft. Nur die Trennung macht Fehlerursachen zuordenbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.',
+      },
+      {
+        key: 'chunk-index-step',
+        prompt: 'Ein Schritt zerlegt Quelldokumente in Chunks und schreibt sie in den Vektorindex. Welcher RAG-Stage gehört er an?',
+        correct: 'Zur Indexierung (Retrieval-Vorbereitung): Der Schritt baut den durchsuchbaren Bestand offline auf, bevor eine Anfrage gestellt wird.',
+        wrong: [
+          'Zur Generierung: Der Schritt formuliert die Antwort auf die Nutzerfrage.',
+          'Zur Antwort-Auswertung: Der Schritt misst die Antwortqualität gegen das Golden Set.',
+          'Zur Absicherung: Der Schritt prüft Antworten auf verbotene Inhalte.',
+        ],
+        solution: 'Chunking und Index-Aufbau laufen vor jeder Anfrage und erzeugen den Bestand, gegen den das Retrieval später sucht. Es ist Teil der Retrieval-Vorbereitung — weder Generierung noch Auswertung.',
+      },
+      {
+        key: 'query-embed-search',
+        prompt: 'Ein Schritt bettet die Nutzerfrage ein und holt die k ähnlichsten Chunks aus dem Index. Welche Stage ist das?',
+        correct: 'Das Retrieval: Die Anfrage wird deterministisch gegen den Index ausgewertet — welche Belege gefunden werden, ist mit Recall@k gegen ein Golden Set messbar.',
+        wrong: [
+          'Die Generierung: Hier wird der Antworttext für die Nutzerin formuliert.',
+          'Die Indexierung: Hier wird der Dokumentbestand aufgebaut.',
+          'Die Rubric-Prüfung: Hier werden Antworten manuell bewertet.',
+        ],
+        solution: 'Einbettung der Anfrage plus Top-k-Suche ist die Retrieval-Stage zur Laufzeit: deterministisch, offline wiederholbar und gegen ein Golden Set mit bekannten relevanten Belegen messbar.',
+      },
+      {
+        key: 'prompt-template-call',
+        prompt: 'Ein Schritt setzt die gefundenen Chunks und die Frage in ein Prompt-Template und ruft das Sprachmodell. Welcher Stage gehört er an?',
+        correct: 'Zur Generierung: Erst hier entsteht aus den Belegen ein neu formulierter Antworttext — ein eigener Fehlerursachen-Bereich neben dem Retrieval.',
+        wrong: [
+          'Zum Retrieval: Der Schritt sucht die Chunks im Index.',
+          'Zur Indexierung: Der Schritt legt Dokumente im Vektorindex ab.',
+          'Zur Hash-Fixierung: Der Schritt beweist den Zustand des Golden Sets.',
+        ],
+        solution: 'Template-Befüllung und Modellaufruf erzeugen neuen Text aus den Belegen — das ist die Generierungs-Stage. Sie braucht ein echtes Modell und wird getrennt bewertet, weil ihre Fehler nichts mit der Trefferliste zu tun haben müssen.',
+      },
+      {
+        key: 'golden-set-metrics',
+        prompt: 'Warum wird die Retrieval-Qualität in der Lektion gegen ein Golden Set mit recall@k und MRR gemessen?',
+        correct: 'Weil das Retrieval deterministisch und offline läuft: Mit bekannten relevanten Belegen pro Frage ist der Fund messbar, ohne dass ein Sprachmodell nötig wäre.',
+        wrong: [
+          'Weil das Golden Set die Antworten des Modells ersetzt.',
+          'Weil recall@k den Wahrheitsgehalt generierter Sätze bewertet.',
+          'Weil Messungen ohne Golden Set technisch unmöglich sind.',
+        ],
+        solution: 'Recall@k und MRR vergleichen die Trefferliste mit den im Golden Set markierten relevanten Belegen — eine deterministische Rechnung ohne Modell. Die Metriken bewerten den Fund, nicht die spätere Formulierung.',
+      },
+      {
+        key: 'stub-copy-answer',
+        prompt: 'Im Prototyp werden gefundene Sätze wörtlich als „Antwort“ ausgegeben statt neu formuliert. Welche Stage fehlt damit?',
+        correct: 'Die Generierung: Aus den Belegen wird kein neuer Antworttext geformt — der Stub deckt nur Indexierung und Retrieval ab, was die Messbarkeit des Retrievals unberührt lässt.',
+        wrong: [
+          'Die Indexierung: Es wurden keine Chunks gebaut.',
+          'Das Retrieval: Es wurden keine Dokumente gefunden.',
+          'Die Hash-Fixierung: Der Zustand des Index ist unbewiesen.',
+        ],
+        solution: 'Kopierte Fundstellen sind keine Generierung: Der Stub zeigt die Trefferliste als Antwort an. Indexierung und Retrieval laufen trotzdem vollständig — genau deshalb bleibt ihre Messung gegen das Golden Set gültig.',
+      },
+      {
+        key: 'fehler-zuordnung',
+        prompt: 'Ein Audit trennt „Dokument nicht gefunden“ von „Dokument gefunden, aber falsch zusammengefasst“. Welchen Vorteil hat die Stage-Trennung hier?',
+        correct: 'Fehlerursachen werden zuordenbar: Ein Retrieval-Fehler (Beleg fehlt) ist ein anderer Befund als ein Generierungsfehler (Beleg da, Aussage falsch) — beide verlangen verschiedene Maßnahmen.',
+        wrong: [
+          'Die Trennung erspart jede weitere Messung.',
+          'Die Trennung macht das Sprachmodell überflüssig.',
+          'Die Trennung verschlüsselt die Fehlerursachen.',
+        ],
+        solution: 'Ohne Trennung wäre jede falsche Antwort eine Blackbox. Mit getrennten Stages zeigt der Befund die Ursache: Fehlende Belege verlangen besseres Retrieval, falsche Aussagen bei vorhandenen Belegen bessere Generierung.',
+      },
+      {
+        key: 'nicht-retrieval',
+        prompt: 'Welcher Schritt gehört NICHT zur Retrieval-Stage?',
+        correct: 'Das Umschreiben der gefundenen Belege in eine flüssige Antwort durch das Sprachmodell.',
+        wrong: [
+          'Das Einbetten der Nutzerfrage in einen Vektor.',
+          'Die Suche der k nächsten Chunks im Index.',
+          'Das Sortieren der Treffer nach Ähnlichkeit.',
+        ],
+        solution: 'Einbettung, Top-k-Suche und Treffer-Sortierung sind Retrieval-Schritte: deterministisch und gegen das Golden Set messbar. Das Formulieren der Antwort ist Generierung — eine andere Stage mit anderen Fehlerbildern.',
+      },
+      {
+        key: 'zitat-praezision-stage',
+        prompt: 'Die Antwortmetrik citation_precision prüft, ob genannte Belege in den erlaubten Quellen liegen. Welche Stage bewertet sie?',
+        correct: 'Die Generierung beziehungsweise ihre Auswertung: Sie misst an der fertigen Antwort, nicht an der Trefferliste des Retrievals.',
+        wrong: [
+          'Die Indexierung: Sie misst die Qualität des Chunk-Aufbaus.',
+          'Das Retrieval: Sie misst, ob die richtigen Dokumente gefunden wurden.',
+          'Die Hash-Fixierung: Sie beweist den Set-Zustand.',
+        ],
+        solution: 'citation_precision setzt eine formulierte Antwort mit Beleg-Angaben voraus — sie bewertet die Generierungsseite. Ob die richtigen Dokumente gefunden wurden, beantwortet dagegen das Retrieval über recall@k/MRR.',
+      },
+      {
+        key: 'fehlendes-stage-logging',
+        prompt: 'Ein Team loggt nur die Endantwort und fragt später, warum sie falsch war. Was verhindert das fehlende Stage-Logging?',
+        correct: 'Die Fehlerzuordnung: Ohne getrennte Messung von Retrieval (welche Belege kamen) und Generierung (was daraus wurde) bleibt offen, ob Suche oder Formulierung fehlschlug.',
+        wrong: [
+          'Die Verschlüsselung der Antworten.',
+          'Die Geschwindigkeit der Indexierung.',
+          'Die Anzahl der Pflichtfelder in der Modellkarte.',
+        ],
+        solution: 'Nur die Endantwort zu kennen lässt beide Fehlerquellen offen: Vielleicht fehlte der Beleg schon in der Trefferliste, vielleicht war er da und wurde falsch verwertet. Stage-Logging macht den Unterschied messbar.',
+      },
+      {
+        key: 'indexierung-vs-retrieval',
+        prompt: 'Welche Aussage beschreibt den Unterschied zwischen Indexierung und Retrieval korrekt?',
+        correct: 'Indexierung baut den durchsuchbaren Bestand vorab offline auf (Chunking, Embeddings, Index); Retrieval beantwortet eine konkrete Anfrage deterministisch gegen diesen Bestand.',
+        wrong: [
+          'Indexierung formuliert Antworten, Retrieval schreibt Dokumente in den Bestand.',
+          'Beides ist derselbe Schritt zur Laufzeit der Anfrage.',
+          'Retrieval baut den Index, Indexierung sucht darin.',
+        ],
+        solution: 'Die beiden Stages sind zeitlich getrennt: Indexierung läuft vorab und offline, Retrieval zur Anfragezeit gegen den fertigen Bestand. Erstere bereitet vor, letztere liefert die messbaren Belege.',
+      },
+      {
+        key: 'ehrlichkeit-browser',
+        prompt: 'Warum ist es ehrlicher, im Browser nur das Retrieval zu messen statt eine „Antwortqualität“ ohne echtes Modell zu behaupten?',
+        correct: 'Weil ohne Generator keine Generierungsleistung existiert, die man messen könnte — die Plattform misst, was deterministisch vorliegt, und bewertet Generierung getrennt über Fixtures und lokale Projekte.',
+        wrong: [
+          'Weil Sprachmodelle im Browser illegal sind.',
+          'Weil Antwortqualität prinzipiell nicht messbar ist.',
+          'Weil das Golden Set dann doppelt so groß sein müsste.',
+        ],
+        solution: 'Eine Messung darf nur behaupten, was tatsächlich läuft: Retrieval ist deterministisch und offline vorhanden, Generierung nicht. Statt simulierte „Antwortqualität“ wird Generierung dort geprüft, wo ein echtes Modell läuft.',
+      },
+      {
+        key: 'korpus-dedup',
+        prompt: 'Ein Schritt entfernt Duplikate aus dem Korpus, bevor Chunks gebaut werden. Wo ordnet er sich ein?',
+        correct: 'In die Datenaufbereitung vor der Indexierung — er gehört zur Retrieval-Vorbereitung, nicht zur Generierung oder zur Antwortbewertung.',
+        wrong: [
+          'In die Generierung, weil er Texte verändert.',
+          'In die Antwortbewertung, weil er Qualität prüft.',
+          'In das Retrieval zur Laufzeit der Anfrage.',
+        ],
+        solution: 'Deduplizierung verändert den Korpus, bevor überhaupt ein Index existiert: Sie ist Vorbereitung des Suchbestands. Weder wird dabei eine Antwort formuliert noch eine Anfrage zur Laufzeit beantwortet.',
+      },
+      {
+        key: 'zwei-fehlerbilder',
+        prompt: 'Zwei Fehlerbilder: (1) Der relevante Beleg steht nicht unter den Top-k. (2) Der Beleg steht an Position 1, die Antwort behauptet trotzdem das Gegenteil. Was zeigt das Beispiel?',
+        correct: 'Dass Retrieval und Generierung getrennt gemessen werden müssen: (1) ist ein Recall-Problem, (2) ein Generierungsfehler — dieselbe Endantwort „falsch“ hat verschiedene Ursachen.',
+        wrong: [
+          'Dass beide Fehler identisch sind und eine Metrik genügt.',
+          'Dass der Index in beiden Fällen defekt ist.',
+          'Dass das Golden Set unbrauchbar ist.',
+        ],
+        solution: 'Das Beispiel trennt die Fehlerklassen sauber: In (1) hat das Retrieval versagt (Beleg außerhalb Top-k), in (2) die Generierung (Beleg vorhanden, Aussage falsch). Nur getrennte Messung zeigt, welche Stage die Maßnahme braucht.',
+      },
+    ],
+  },
+};
+
+export const RAG_STAGE_CONTRACT = {
+  familyId: 'classify-rag-stage',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet einen Verarbeitungsschritt der passenden RAG-Stage zu.',
+  taskArchetype: 'choice-diagnose',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'rag-stage-separation', propertyTest: false },
+  ],
+  difficultyProfiles: ['intro'],
+  competencyIds: ['c-genai-rag'],
+  graderId: 'deterministic',
+  activityType: 'single-choice',
+};
+
+const FAMILY_IMPL = makeChoiceFamily({
+  contract: RAG_STAGE_CONTRACT,
+  capsules: RAG_STAGE_CAPSULES,
+  shapeError: 'RAG-Stage-Parameter verletzen die Kapselform',
+});
+
+export const ragStageCapsuleOk = FAMILY_IMPL.capsuleOk;
+export const ragStageCorrectText = FAMILY_IMPL.correctText;
+export const genRagStageCapsule = FAMILY_IMPL.genCapsule;
+export const generateRagStageFamily = FAMILY_IMPL.generate;
+export const solveRagStageFamily = FAMILY_IMPL.solve;
+export const FAMILY_SPEC = FAMILY_IMPL.spec;

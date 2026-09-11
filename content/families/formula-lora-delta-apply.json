@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "formula-lora-delta-apply",
-  "contract": {
-    "familyId": "formula-lora-delta-apply",
-    "familyGroup": "formula-apply",
-    "summary": "Wendet die LoRA-Delta-Formel (alpha/r)*B@A an und sichert Rang-, Form- und Dimensionsverträge mit ValueError ab.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "lora-delta-apply",
-        "propertyTest": false
-      },
-      {
-        "caseId": "lora-delta-scaled-update",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-finetuning",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "lora-delta-apply",

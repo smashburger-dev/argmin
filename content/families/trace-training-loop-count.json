@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-training-loop-count",
-  "contract": {
-    "familyId": "trace-training-loop-count",
-    "familyGroup": "trace-state",
-    "summary": "Tracet Schrittzählung und Parameter-Updates einer Trainingsloop mit Aufrund-Arithmetik.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "training-loop-count",
-        "propertyTest": false
-      },
-      {
-        "caseId": "training-loop-drop-last",
-        "propertyTest": false
-      },
-      {
-        "caseId": "training-loop-early-stop-counter",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-training",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "training-loop-count",

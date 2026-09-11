@@ -83,3 +83,28 @@ test('family golden corpus has no behavioural differences', () => {
     .filter((familyId) => fixture.families[familyId] !== current[familyId]);
   assert.deepEqual(changed, [], `families with changed golden digest: ${changed.join(', ')}`);
 });
+
+test('golden corpus coverage delta against canonical families is explicit', () => {
+  // Fixture: 107 Familien, canonical-families.json: 132. Die Differenz ist
+  // bekannt und hier explizit gepinnt; jede stille Drift scheitert.
+  const canonicalIds = JSON.parse(
+    readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'),
+  ).families.map((family) => family.familyId).sort();
+  const goldenIds = Object.keys(
+    JSON.parse(readFileSync(join(root, 'tests/fixtures/family-golden-corpus.json'), 'utf8')).families,
+  ).sort();
+  const missing = canonicalIds.filter((familyId) => !goldenIds.includes(familyId));
+  const extra = goldenIds.filter((familyId) => !canonicalIds.includes(familyId));
+  assert.deepEqual(missing, [
+    'aggregate-accumulator-count', 'aggregate-majority-rule-count', 'aggregate-topk-relevance-arithmetic',
+    'classify-control-construct', 'classify-error-hypothesis', 'classify-exception-placement',
+    'classify-git-operation', 'classify-python-collection-choice', 'classify-set-operation-semantics',
+    'classify-string-immutability', 'classify-test-attitude', 'construct-guarded-loop',
+    'construct-regression-test-suite', 'construct-safe-bugfix-workflow', 'construct-test-structure-aaa',
+    'count-remaining-rows-cleaning-rule', 'formula-count-from-construction', 'formula-det2-independence',
+    'formula-metric-spread-range', 'optimize-backprop-path-sum', 'reflect-error-journal-rationale',
+    'trace-collection-state', 'trace-dict-state-update', 'trace-exception-path',
+    'transform-expression-simplify-canonical', 'transform-power-log-exponent',
+  ], `stille Drift im Golden-Korpus, fehlend: ${missing.join(', ')}`);
+  assert.deepEqual(extra, ['classify-shape-contract'], `stille Drift im Golden-Korpus, extra: ${extra.join(', ')}`);
+});

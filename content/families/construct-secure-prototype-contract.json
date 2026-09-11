@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-secure-prototype-contract",
-  "contract": {
-    "familyId": "construct-secure-prototype-contract",
-    "familyGroup": "construct-program",
-    "summary": "Integriert Kontrollen in den Prototyp: Audit über Anfrage und Top-Dokument, konstanter Ablehnungsstring, eingebettete Policy-Kaskade und ehrlich gedämpfte Metriken.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "secure-prototype-contract",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-genai-prototype",
-      "c-python-functions"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "secure-prototype-contract",

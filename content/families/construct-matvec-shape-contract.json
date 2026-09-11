@@ -1,36 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-matvec-shape-contract",
-  "contract": {
-    "familyId": "construct-matvec-shape-contract",
-    "familyGroup": "construct-program",
-    "summary": "Sequenziert eine Matrix-Vektor-Operation mit vorangestelltem Dimensionsvertrag: Normalisierung, Assert-Prüfung, erst dann die Operation.",
-    "taskArchetype": "program-ordering",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "matvec-contract-order",
-        "propertyTest": false
-      },
-      {
-        "caseId": "matvec-code-reference",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-numpy-basics",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "parsons"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "matvec-contract-order",

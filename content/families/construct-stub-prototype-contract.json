@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-stub-prototype-contract",
-  "contract": {
-    "familyId": "construct-stub-prototype-contract",
-    "familyGroup": "construct-program",
-    "summary": "Implementiert den Stub-Prototyp-Kern ohne LLM: Term-Normalisierung, Dokument- und Satzwahl mit Index-Tie-Break, ehrlicher Fehlstring plus Fixtur-Metriken.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "stub-prototype-contract",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-prototype",
-      "c-python-functions"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "stub-prototype-contract",

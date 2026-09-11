@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-stub-doc-sentence-select",
-  "contract": {
-    "familyId": "trace-stub-doc-sentence-select",
-    "familyGroup": "trace-state",
-    "summary": "Verfolgt die Dokument- und Satzauswahl eines ehrlichen Stub-Generators über Begriffsschnitte und sagt die Antwortsätze oder den konstanten Fehlstring voraus.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "stub-doc-sentence-select",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-prototype",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "stub-doc-sentence-select",

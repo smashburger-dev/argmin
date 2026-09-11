@@ -2,7 +2,7 @@
 // implementations live here. Each adapter: grade(exercise, answer, ctx) ->
 // { correct, verdictText, errorType, diagnosis? } (async allowed).
 
-import { parseIntegerAnswer, parseIntegerPair, genMatmulEntry, genDot, solveLinear2, matmul, dot, rank } from './linalg_generators.mjs';
+import { parseIntegerAnswer, parseIntegerPair, solveLinear2, matmul, dot, rank } from './linalg_generators.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
 // never pay for the pyodide runner module in their chunk.
 const loadPyodideRunner = () => import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner);
@@ -20,8 +20,7 @@ function expectedNumeric(exercise) {
   const p = exercise.parameters || {};
   const parameterValue = numericParameterValue(p);
   if (parameterValue !== null) return parameterValue;
-  const gen = { 'w05-e1': genMatmulEntry, 'w05-e3': genDot }[exercise.exerciseId];
-  return gen ? gen(exercise.deterministicSeed).expected : null;
+  return null;
 }
 
 function numericParameterValue(parameters) {
@@ -123,58 +122,6 @@ async function gradePython(exercise, code, ctx) {
 
 export function buildPythonTests(exercise) {
   if (typeof exercise.parameters?.tests === 'string' && exercise.parameters.tests.trim()) return exercise.parameters.tests;
-  // S4D7: Familien-Fall zur selben Aufgabe (gleiche Tests wie w05-e8).
-  if (exercise.exerciseId === 'w05-e8' || exercise.caseId === 'matvec-code-reference') {
-    return `
-import json
-import numpy as np
-
-# --- 1) Mehrere gueltige Matrix-Vektor-Produkte (auch nicht quadratisch) ---
-__r1 = np.array_equal(matvec([[1, 2], [3, 4]], [1, 1]), np.array([3, 7]))
-__check('Korrekt: 2x2-Mal-Vektor', __r1, 'erwartet [3, 7]')
-__r2 = np.array_equal(matvec([[2, 0], [0, 3]], [5, -2]), np.array([10, -6]))
-__check('Korrekt: zweite 2x2-Matrix', __r2, 'erwartet [10, -6]')
-__r3 = np.array_equal(matvec([[1, 2, 3], [4, 5, 6]], [1, 0, -1]), np.array([-2, -2]))
-__check('Korrekt: nicht quadratische 2x3-Matrix', __r3, 'erwartet [-2, -2]')
-
-# --- 2) Dimensionsvertraege einzeln: AssertionError fuer jeden unguelten Fall ---
-def __expect_assert(label, fn):
-    try:
-        fn()
-        __check(label, False, 'kein AssertionError geworfen')
-    except AssertionError:
-        __check(label, True)
-    except Exception as e:
-        __check(label, False, 'falscher Fehlertyp: ' + type(e).__name__)
-
-__expect_assert('Vertrag A.ndim == 2: 1-dimensionales A abgelehnt', lambda: matvec([1, 2], [1, 1]))
-__expect_assert('Vertrag A.ndim == 2: 3-dimensionales A abgelehnt', lambda: matvec(np.zeros((2, 2, 2)), [1, 1]))
-__expect_assert('Vertrag v.ndim == 1: 2-dimensionales v abgelehnt', lambda: matvec([[1, 2], [3, 4]], [[1], [2]]))
-__expect_assert('Vertrag A.shape[1] == v.shape[0]: inkompatible Shapes abgelehnt', lambda: matvec([[1, 2, 3], [4, 5, 6]], [1, 2]))
-
-# --- 3) Listenverarbeitung ueber np.asarray ---
-__r4 = matvec([[1, 2], [3, 4]], [1, 1])
-__check('Listen als Eingabe akzeptiert (Ergebnis ist ndarray)', isinstance(__r4, np.ndarray) and np.array_equal(__r4, np.array([3, 7])), 'np.asarray vor der Rechnung verwenden')
-
-# --- 4) Schutz vor hartcodierter Loesung der obigen Beispiele ---
-# Deterministisch erzeugte, ungewoehnliche Instanzen; Vergleich gegen die
-# Referenz A @ v innerhalb des Tests.
-import random as __rnd
-__rnd.seed(20260824)
-for __i in range(3):
-    __m = __rnd.randint(2, 4)
-    __n = __rnd.randint(1, 4)
-    __A = [[__rnd.randint(-7, 7) for _ in range(__n)] for _ in range(__m)]
-    __v = [__rnd.randint(-7, 7) for _ in range(__n)]
-    __exp = np.asarray(__A) @ np.asarray(__v)
-    try:
-        __got = matvec(__A, __v)
-        __ok = np.array_equal(np.asarray(__got), __exp)
-        __check(f'Unbekannte Instanz {__i + 1} (Form {__m}x{__n})', __ok, f'erwartet {__exp.tolist()}, erhalten {np.asarray(__got).tolist()}')
-    except Exception as e:
-        __check(f'Unbekannte Instanz {__i + 1} (Form {__m}x{__n})', False, 'Exception: ' + type(e).__name__)
-`;
-  }
   return '';
 }
 

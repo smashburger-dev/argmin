@@ -1,33 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "validate-data-quality-contract",
-  "contract": {
-    "familyId": "validate-data-quality-contract",
-    "familyGroup": "validate-contract",
-    "summary": "Implementiert Datenqualitätsverträge mit Schema-, Typ-, Bereichs- und Duplikatprüfungen.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "profile-table-schema-counts",
-        "propertyTest": false
-      },
-      {
-        "caseId": "validate-rows-contract-errors",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-pandas-cleaning"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "profile-table-schema-counts",

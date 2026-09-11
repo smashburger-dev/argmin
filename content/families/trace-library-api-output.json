@@ -1,37 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-library-api-output",
-  "contract": {
-    "familyId": "trace-library-api-output",
-    "familyGroup": "trace-state",
-    "summary": "Sagt die exakte Ausgabe eines dokumentierten Bibliotheks-Snippets (pandas, NumPy, scikit-learn) voraus.",
-    "taskArchetype": "predict-output",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "pandas-dedup-isna-lines",
-        "propertyTest": false
-      },
-      {
-        "caseId": "numpy-median-histogram-corrcoef",
-        "propertyTest": false
-      },
-      {
-        "caseId": "sklearn-split-no-shuffle",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-pandas-cleaning",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "pandas-dedup-isna-lines",
