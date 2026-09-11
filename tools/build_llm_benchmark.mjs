@@ -303,7 +303,11 @@ const uncoveredStaticGaps = (snapshot, staticIds, root) => {
 };
 
 export function fixtureDigest(fixture) {
-  return createHash('sha256').update(JSON.stringify(fixture)).digest('hex');
+  // contentCommit ist Metadaten, kein Inhalt — auch in items[].provenance:
+  // der Checkout-Commit weicht in CI (Merge-Ref) vom Pin-Commit ab und darf
+  // den Digest nicht kippen.
+  const stripped = JSON.stringify(fixture, (key, value) => (key === 'contentCommit' ? null : value));
+  return createHash('sha256').update(stripped).digest('hex');
 }
 
 export async function buildFixture(root = projectRoot) {
