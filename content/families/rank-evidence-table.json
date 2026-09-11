@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "rank-evidence-table",
-  "contract": {
-    "familyId": "rank-evidence-table",
-    "familyGroup": "aggregate-count",
-    "summary": "Baut eine Evidenztabelle mit absolutem und relativem Gewinn samt Verdikt und sortiert sie nach fester Regel.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "evidence-table-ranking",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-papers",
-      "c-ml-cv"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "evidence-table-ranking",

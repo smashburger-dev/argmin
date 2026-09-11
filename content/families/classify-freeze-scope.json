@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-freeze-scope",
-  "contract": {
-    "familyId": "classify-freeze-scope",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen eingefrorenen Evaluationsstand dem geschützten Umfang einer reproduzierbaren Pipeline zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "freeze-scope",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "freeze-scope",

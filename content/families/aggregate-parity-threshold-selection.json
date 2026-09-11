@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-parity-threshold-selection",
-  "contract": {
-    "familyId": "aggregate-parity-threshold-selection",
-    "familyGroup": "aggregate-count",
-    "summary": "Waehlt aus einer Kandidatentabelle unter harter Nebenbedingung (Paritaetsband) den besten Metrikwert mit deterministischem Tie-Break und beziffert Kosten.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "parity-threshold-selection",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-research-responsible",
-      "c-genai-eval"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "parity-threshold-selection",

@@ -1,0 +1,191 @@
+// Procedural family classify-freeze-scope: the seed draws a scenario
+// from the curated bank and rotates the answer position via
+// buildRotatedChoices. The bank keeps the curated base example verbatim as
+// oracle (key 'base') plus new German scenarios probing what belongs in a
+// capstone scope freeze (hashes, versions, exclusions, timing).
+// parameters carry only the scenario key, so nothing answer-relevant leaks
+// into instance.parameters. Mirrors genSvmMarginCapsule in
+// data_ml_generators.mjs.
+
+import { makeChoiceFamily } from '../generator_draw_kit.mjs';
+
+export const FREEZE_SCOPE_CAPSULES = {
+  intro: {
+    caseId: 'freeze-scope',
+    competencyIds: ["c-capstone-pipeline"],
+    bank: [
+    {
+      "key": "base",
+      "prompt": "Capstone-Start: Was gehört in den Scope-Freeze, BEVOR die Implementierung der Pipeline beginnt?",
+      "correct": "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — per sha256 im Manifest; jede Änderung braucht eine neue Version.",
+      "wrong": [
+        "Nur den eigenen Quellcode einfrieren; Daten und Konfiguration dürfen weiterlaufen, damit man während der Entwicklung nachjustieren kann.",
+        "Nichts einfrieren — Erwartungen und Schwellen legt man bei jedem Lauf neu fest, je nachdem, was die Pipeline gerade hergibt.",
+        "Nur das README einfrieren, weil es als Dokument den Vertrag bereits vollständig prüfbar macht."
+      ],
+      "solution": "In den Freeze gehören Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — jeweils mit sha256 im Manifest. Änderungen sind möglich, aber sie brauchen eine neue Version und ein neues Manifest; assert_frozen() macht Abweichungen hörbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis."
+    },
+    {
+      "key": "seeds-rng",
+      "prompt": "Ein Team friert den Scope seiner Reproduktionspipeline ein. Gehören die Zufalls-Seeds und die RNG-Konfiguration in das Manifest?",
+      "correct": "Ja — Seeds stehen in der Experimentkonfiguration und werden mit sha256 gepinnt; ohne sie ist kein Lauf bitgenau reproduzierbar.",
+      "wrong": [
+        "Nein — Seeds sind Zufall und dürfen sich pro Lauf ändern, sonst wäre es kein Zufallsexperiment.",
+        "Nur der Haupt-Seed; Hilfs-Seeds der Bibliotheken sind Implementierungsdetail.",
+        "Nein — Seeds gehören ins README, nicht in das signierte Manifest."
+      ],
+      "solution": "Reproduzierbarkeit beginnt beim Zufall: Seed, RNG-Version und Bibliotheksstand gehören in die eingefrorene Experimentkonfiguration. Wer Seeds auslässt, kann denselben Lauf nicht mehr exakt wiederholen."
+    },
+    {
+      "key": "dependencies-lock",
+      "prompt": "Welche Rolle spielt die Dependency-Lock-Datei (gepinnte Versionen) beim Scope-Freeze?",
+      "correct": "Sie gehört in den Freeze: Ohne gepinnte Versionen kann dieselbe Pipeline auf neueren Bibliotheken andere Ergebnisse liefern.",
+      "wrong": [
+        "Keine — Dependencies ändern sich sowieso, das Einfrieren wäre sinnlos.",
+        "Sie gehört nur dokumentiert, nicht gehasht — die Versionen stehen ja im Namen der Datei.",
+        "Sie wird aus dem Freeze ausgenommen, damit Sicherheitsupdates automatisch einfließen."
+      ],
+      "solution": "Bibliotheksstände ändern Verhalten und Zahlen (NumPy-Rundung, Tokenizer-Regeln). Die Lock-Datei wird mit in das Manifest gehasht; ein Update ist eine bewusste neue Version, kein stilles Weiterlaufen."
+    },
+    {
+      "key": "nicht-freeze",
+      "prompt": "Was gehört bewusst NICHT in den Scope-Freeze der Capstone-Pipeline?",
+      "correct": "Explorative Notebooks und Sandbox-Experimente — der Freeze gilt für den geprüften Vertrag (Daten, Config, Tests), nicht für jeden Arbeitsstand.",
+      "wrong": [
+        "Das Golden Set — es ändert sich ja ohnehin nie.",
+        "Die Testdateien — sie gehören zum Code, nicht zum Scope.",
+        "Die Angriffs-Fixtures — sie sind Sicherheitsthema, kein Pipeline-Scope."
+      ],
+      "solution": "Der Freeze schützt den Prüfvertrag: Golden Set, Angriffs-Fixtures, Konfiguration, Testdateien, gepinnter Kern. Exploratives Arbeiten bleibt frei — erst was referenziert und geprüft wird, kommt ins Manifest."
+    },
+    {
+      "key": "schwellen-freeze",
+      "prompt": "Die Auswertung der Pipeline vergleicht Metriken gegen Schwellenwerte. Wann werden diese Schwellen festgelegt?",
+      "correct": "Vor dem Freeze und vor dem ersten Messlauf — sie stehen in der eingefrorenen Konfiguration; nachträgliches Justieren wäre Moving the Goalposts.",
+      "wrong": [
+        "Nach dem ersten Lauf — erst wenn man sieht, was das Modell erreicht, setzt man sinnvolle Schwellen.",
+        "Während des Laufs — die Schwellen kalibrieren sich auf die ersten Ergebnisse.",
+        "Gar nicht — Schwellen sind Interpretationssache und bleiben bewusst offen."
+      ],
+      "solution": "Schwellen sind Prüfkriterium: Wer sie nach dem Ergebnis setzt, misst nicht mehr, sondern rechtfertigt. Sie gehören in die eingefrorene Experimentkonfiguration; Änderungen brauchen eine neue Version."
+    },
+    {
+      "key": "aenderung-golden",
+      "prompt": "Mitten im Capstone stellt sich heraus, dass das eingefrorene Golden Set einen fehlerhaften Eintrag enthält. Was ist der korrekte Umgang?",
+      "correct": "Neue Version des Golden Sets, neuer Hash, neues Manifest — die Korrektur ist legitim, aber sie wird versioniert, nicht still überschrieben.",
+      "wrong": [
+        "Den Eintrag im eingefrorenen Set korrigieren — ein Freeze darf keine Fehler festschreiben.",
+        "Den Eintrag stehen lassen und im Report erwähnen — der Freeze ist unantastbar.",
+        "Den Freeze komplett aufheben und am Ende neu einfrieren."
+      ],
+      "solution": "Der Freeze verhindert stille Änderungen, nicht Änderungen selbst: korrigieren, neu hashen, neue Version, Manifest aktualisieren. `assert_frozen()` schlägt sonst zu Recht an — Abweichungen müssen hörbar sein."
+    },
+    {
+      "key": "data-snapshot",
+      "prompt": "Die Pipeline liest einen Korpus, der wöchentlich aktualisiert wird. Was friert der Scope-Freeze für die Auswertung ein?",
+      "correct": "Einen datierten Snapshot mit sha256-Hash — die Auswertung läuft immer gegen denselben Datenstand, Updates bekommen einen neuen Snapshot.",
+      "wrong": [
+        "Den Live-Korpus — die Auswertung soll immer den aktuellen Stand messen.",
+        "Nur die Anzahl der Dokumente — der Inhalt darf driften, solange die Menge stimmt.",
+        "Eine zufällige Stichprobe pro Lauf — das mittelt Datenänderungen heraus."
+      ],
+      "solution": "Ein lebender Korpus macht Ergebnisse unvergleichbar: Dieselbe Pipeline misst jede Woche etwas anderes. Der Freeze pinnt einen Snapshot per Hash; neue Datenstände erzeugen neue Versionen und neue Läufe."
+    },
+    {
+      "key": "baseline-artefakte",
+      "prompt": "Welche Artefakte gehören neben Daten und Config ebenfalls in den Scope-Freeze?",
+      "correct": "Die Referenz-Artefakte der Baseline (erwartete Reports, Referenz-Outputs) — sie sind der Vergleichsanker, gegen den Abweichungen gemessen werden.",
+      "wrong": [
+        "Die fertige Dokumentation — sie beschreibt den Scope am besten.",
+        "Die Trainings-Logs alter Experimente — sie belegen die Historie.",
+        "Nichts weiter — Daten und Config decken den Scope vollständig ab."
+      ],
+      "solution": "Ein Freeze ohne Vergleichsanker prüft ins Leere: Die Baseline-Artefakte (Referenz-Reports, erwartete Outputs) werden mit gehasht, damit Abweichungen gegen einen festen Punkt gemessen werden."
+    },
+    {
+      "key": "assert-frozen-zweck",
+      "prompt": "Wozu dient `assert_frozen()` in einer gefrorenen Pipeline?",
+      "correct": "Es prüft die sha256-Hashes der eingefrorenen Dateien vor dem Lauf und bricht hörbar ab, wenn etwas vom Manifest abweicht.",
+      "wrong": [
+        "Es verhindert technisch jede Änderung an den Dateien — ein Schreibschutz-Mechanismus.",
+        "Es friert den Prozess ein, bis ein Reviewer die Änderungen freigibt.",
+        "Es erzeugt das Manifest nachträglich aus dem aktuellen Dateistand."
+      ],
+      "solution": "Der Freeze ist ein Versprechen, `assert_frozen()` seine Durchsetzung: Hashes gegen Manifest prüfen, bei Abweichung abbrechen. Es kann Änderungen nicht verhindern — aber es macht sie sichtbar statt still."
+    },
+    {
+      "key": "manifest-inhalt",
+      "prompt": "Was steht im Freeze-Manifest einer Reproduktionspipeline?",
+      "correct": "Die Liste der eingefrorenen Pfade mit ihren sha256-Hashes plus Versionskennung — ein prüfbarer Vertrag, keine Prosa.",
+      "wrong": [
+        "Eine textliche Beschreibung, was eingefroren wurde — Hashes sind Implementierungsdetail.",
+        "Nur der Hash eines Tar-Archivs aller Dateien — Einzelhashes sind überflüssig.",
+        "Die Git-Commit-ID — mehr braucht es nicht, weil Git alles versioniert."
+      ],
+      "solution": "Das Manifest ist maschinenprüfbar: Pfad → sha256 → Version. Ein Git-Commit reicht nicht, weil Daten, Fixtures und generierte Artefakte oft außerhalb des Repos liegen; Einzelhashes machen jede Abweichung lokalisierbar."
+    },
+    {
+      "key": "freeze-zeitpunkt",
+      "prompt": "Warum wird der Scope-Freeze VOR der Implementierung gesetzt und nicht nach dem ersten funktionierenden Lauf?",
+      "correct": "Damit Daten, Tests und Erwartungen unabhängig vom Ergebnis festgelegt sind — wer nach dem Lauf friert, riskiert, den Scope an das Ergebnis anzupassen.",
+      "wrong": [
+        "Weil ein späterer Freeze die implementierten Bugs festschreiben würde.",
+        "Weil sich der Aufwand nach der Implementierung nicht mehr lohnt.",
+        "Weil der Freeze nur vor dem ersten Commit technisch möglich ist."
+      ],
+      "solution": "Der Freeze ist eine Preregistrierung: Erwartungen und Prüfdaten werden festgelegt, bevor Ergebnisse sie beeinflussen können. Ein nachträglicher Freeze kann einen Sollbruchstellen-Test schon mit dem Ist-Zustand abgleichen."
+    },
+    {
+      "key": "wer-darf",
+      "prompt": "Wer darf eine Datei im Scope-Freeze verändern, ohne das Manifest zu aktualisieren?",
+      "correct": "Niemand — jede Änderung am eingefrorenen Scope erzeugt eine neue Version; der Sinn des Freeze ist, dass es keine stillen Ausnahmen gibt.",
+      "wrong": [
+        "Der Projektverantwortliche — er trägt die Freigabe und darf Ausnahmen per Slack dokumentieren.",
+        "Jede Person, solange sie die Änderung im nächsten Report erwähnt.",
+        "Automatisierte Prozesse — Skripte zählen nicht als Änderung."
+      ],
+      "solution": "Ausnahmen machen den Freeze wertlos: Wenn eine Autorität überschreiben darf, ist der Vertrag bilateral. Jede Änderung — egal von wem — bekommt neue Hashes und eine neue Version."
+    },
+    {
+      "key": "readme-genuegt",
+      "prompt": "Ein Team dokumentiert den Scope-Freeze ausführlich im README und verzichtet auf ein Hash-Manifest. Was fehlt?",
+      "correct": "Die Prüfbarkeit — ein README beschreibt den Vertrag, aber nur sha256-Hashes können Abweichungen automatisch und bitgenau feststellen.",
+      "wrong": [
+        "Nichts — ausführliche Dokumentation ist ein vollwertiger Freeze.",
+        "Nur die Unterschrift — Dokumentation braucht eine formale Freigabe.",
+        "Das Datum — ohne Zeitstempel ist der Freeze nicht nachvollziehbar."
+      ],
+      "solution": "Dokumentation sagt, was gelten soll; das Manifest beweist, was gilt. Text driftet mit den Dateien still auseinander — Hashes nicht. README bleibt ergänzend, der Prüfpfad läuft über das Manifest."
+    }
+  ],
+  },
+};
+
+export const FREEZE_SCOPE_CONTRACT = {
+  familyId: 'classify-freeze-scope',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet Artefakte und Regeln dem Capstone-Scope-Freeze zu.',
+  taskArchetype: 'choice-diagnose',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'freeze-scope', propertyTest: false },
+  ],
+  difficultyProfiles: ['intro'],
+  competencyIds: ['c-capstone-pipeline'],
+  graderId: 'deterministic',
+  activityType: 'single-choice',
+};
+
+const FAMILY_IMPL = makeChoiceFamily({
+  contract: FREEZE_SCOPE_CONTRACT,
+  capsules: FREEZE_SCOPE_CAPSULES,
+  shapeError: 'Freeze-Scope-Parameter verletzen die Kapselform',
+});
+
+export const freezeScopeCapsuleOk = FAMILY_IMPL.capsuleOk;
+export const freezeScopeCorrectText = FAMILY_IMPL.correctText;
+export const genFreezeScopeCapsule = FAMILY_IMPL.genCapsule;
+export const generateFreezeScopeFamily = FAMILY_IMPL.generate;
+export const solveFreezeScopeFamily = FAMILY_IMPL.solve;
+export const FAMILY_SPEC = FAMILY_IMPL.spec;

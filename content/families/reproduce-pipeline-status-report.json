@@ -1,54 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-pipeline-status-report",
-  "contract": {
-    "familyId": "reproduce-pipeline-status-report",
-    "familyGroup": "reproduce-hash",
-    "summary": "Reproduziert den Status einer Pipeline und berichtet ihn strukturiert.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "pipeline-status-report",
-        "propertyTest": false
-      },
-      {
-        "caseId": "call-with-timeout",
-        "propertyTest": false
-      },
-      {
-        "caseId": "run-stage-budget",
-        "propertyTest": false
-      },
-      {
-        "caseId": "start-pipeline-integration",
-        "propertyTest": false
-      },
-      {
-        "caseId": "verdict-rules",
-        "propertyTest": false
-      },
-      {
-        "caseId": "acceptance-all-contracts",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-genai-prototype",
-      "c-genai-security",
-      "c-python-functions",
-      "c-research-capstone"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "pipeline-status-report",

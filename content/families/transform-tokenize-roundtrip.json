@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "transform-tokenize-roundtrip",
-  "contract": {
-    "familyId": "transform-tokenize-roundtrip",
-    "familyGroup": "transform-terms",
-    "summary": "Baut Zeichen-Tokenisierung mit Wort-Marker und Satz-Eos auf und stellt die decode-Umkehrung samt Fehlervertrag bereit.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "char-encode-roundtrip",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subword-unk-roundtrip",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-tokenizer",
-      "c-python-collections"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "char-encode-roundtrip",

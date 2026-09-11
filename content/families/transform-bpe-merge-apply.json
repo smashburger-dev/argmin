@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "transform-bpe-merge-apply",
-  "contract": {
-    "familyId": "transform-bpe-merge-apply",
-    "familyGroup": "transform-terms",
-    "summary": "Wendet eine BPE-Mergetabelle in Tabellenreihenfolge mit links-nach-rechts nicht überlappenden Merges auf eine Symbolfolge an.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "bpe-merge-apply",
-        "propertyTest": false
-      },
-      {
-        "caseId": "bpe-merge-tie-order",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-tokenizer",
-      "c-python-collections"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "bpe-merge-apply",

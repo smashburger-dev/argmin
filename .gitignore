@@ -58,3 +58,4 @@ eval-report.json
 
 # Private LLM training data (Spec B1/B3): never in release tree
 /private/llm/
+__pycache__/

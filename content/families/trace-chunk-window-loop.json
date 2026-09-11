@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-chunk-window-loop",
-  "contract": {
-    "familyId": "trace-chunk-window-loop",
-    "familyGroup": "trace-state",
-    "summary": "Verfolgt eine Fenster-Chunking-Schleife mit Schrittweite size − overlap und sagt Fensterzahl und verkürztes Restfenster als Ausgabezeilen voraus.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "chunk-window-loop",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-rag",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "chunk-window-loop",

@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-normalize-chunk-contract",
-  "contract": {
-    "familyId": "construct-normalize-chunk-contract",
-    "familyGroup": "construct-program",
-    "summary": "Implementiert den RAG-Vorverarbeitungs-Vertrag aus Textnormalisierung mit Umlautschutz und bewachter Fenster-Schleife inklusive ValueError-Parametervalidierung.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "normalize-chunk-contract",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-rag",
-      "c-python-functions"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "normalize-chunk-contract",

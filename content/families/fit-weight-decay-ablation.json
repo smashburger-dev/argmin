@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-weight-decay-ablation",
-  "contract": {
-    "familyId": "fit-weight-decay-ablation",
-    "familyGroup": "fit-model",
-    "summary": "Führt eine faire Weight-Decay-Ablation durch: zweimal train_decay mit identischem Seed, reiner MSE in der Historie, λ·w nur im Gradienten.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "weight-decay-ablation",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-regularization",
-      "c-ml-cv"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "weight-decay-ablation",

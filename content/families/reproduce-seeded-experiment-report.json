@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-seeded-experiment-report",
-  "contract": {
-    "familyId": "reproduce-seeded-experiment-report",
-    "familyGroup": "reproduce-hash",
-    "summary": "Führt ein geseedetes Experiment deterministisch aus (feste Ziehungsreihenfolge, Doppel-Lauf) und prüft Manifest- bzw. Tabellenfelder gegen Typ- und Wertregeln.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "seeded-experiment-manifest",
-        "propertyTest": false
-      },
-      {
-        "caseId": "repro-report-table-check",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-ml-repro",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "seeded-experiment-manifest",

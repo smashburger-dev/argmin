@@ -1,36 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-rule-cascade-priority",
-  "contract": {
-    "familyId": "classify-rule-cascade-priority",
-    "familyGroup": "classify-concept",
-    "summary": "Wendet eine geordnete Regel- oder Policy-Kaskade an, in der die erste passende Regel gewinnt und der Default- beziehungsweise Unbekannt-Fall konservativ am Ende greift.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "error-taxonomy-classify",
-        "propertyTest": false
-      },
-      {
-        "caseId": "permission-policy-check",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-genai-eval",
-      "c-python-functions",
-      "c-genai-security",
-      "c-testing-debugging"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "error-taxonomy-classify",

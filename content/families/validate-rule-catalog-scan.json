@@ -1,46 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "validate-rule-catalog-scan",
-  "contract": {
-    "familyId": "validate-rule-catalog-scan",
-    "familyGroup": "validate-contract",
-    "summary": "Wendet einen festen Regel- oder Musterkatalog auf Datensaetze an und meldet die Treffer als sortierte, duplikatfreie Codes oder Verstossstrings.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "card-secret-scan",
-        "propertyTest": false
-      },
-      {
-        "caseId": "cross-card-consistency",
-        "propertyTest": false
-      },
-      {
-        "caseId": "freeze-checker",
-        "propertyTest": false
-      },
-      {
-        "caseId": "pin-version-check",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-genai-security",
-      "c-ml-repro",
-      "c-python-functions",
-      "c-research-cards"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "card-secret-scan",

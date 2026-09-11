@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-bpe-merge-learn",
-  "contract": {
-    "familyId": "optimize-bpe-merge-learn",
-    "familyGroup": "optimize-update",
-    "summary": "Lernt eine BPE-Mergetabelle als greedy Schleife: Paarhäufigkeiten zählen, häufigstes Paar mit lexikographischem Tie-Break wählen, überall anwenden, abbrechen.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "bpe-merge-learn",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-tokenizer",
-      "c-python-collections"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "bpe-merge-learn",

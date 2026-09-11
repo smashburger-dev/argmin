@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-ensemble-predictor-comparison",
-  "contract": {
-    "familyId": "construct-ensemble-predictor-comparison",
-    "familyGroup": "construct-program",
-    "summary": "Konstruiert Mehrheits-Voting, Baum-Vorhersage und Intercept-loose lineare Baseline und vergleicht die Verfahren über RMSE.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "voting-tree-linear-rmse",
-        "propertyTest": false
-      },
-      {
-        "caseId": "voting-tie-and-tree",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-ml-ensembles",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "voting-tree-linear-rmse",

@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-substring-flag-sum",
-  "contract": {
-    "familyId": "trace-substring-flag-sum",
-    "familyGroup": "trace-state",
-    "summary": "Verfolgt eine regelbasierte Substring-Detektion über Beispiele hinweg und sagt die Summe der Trefferflags sowie eine Einzelregelprüfung voraus.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "substring-flag-sum",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-security",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "substring-flag-sum",

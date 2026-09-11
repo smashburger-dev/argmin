@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-silent-fallback-hazard",
-  "contract": {
-    "familyId": "classify-silent-fallback-hazard",
-    "familyGroup": "classify-concept",
-    "summary": "Erkennt stille Fallbacks als Gefahr für die Aussagekraft eines reproduzierbaren Stage-Runners.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "silent-fallback-hazard",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "silent-fallback-hazard",

@@ -1,32 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-seeded-split",
-  "contract": {
-    "familyId": "reproduce-seeded-split",
-    "familyGroup": "reproduce-hash",
-    "summary": "Reproduziert geseedete Datensplits und Fold-Zuordnungen exakt aus Seed und Split-Parametern.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "deterministic-split-numpy",
-        "propertyTest": false
-      },
-      {
-        "caseId": "kfold-indices-numpy",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-ml-baseline"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "deterministic-split-numpy",
@@ -51,7 +26,7 @@
         "referenceSolver": "import numpy as np\n\ndef deterministic_split(n, seed, frac):\n    '''Deterministic split of range(n) in permutation order.'''\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(frac * n))\n    test_idx = [int(i) for i in perm[:n_test]]\n    train_idx = [int(i) for i in perm[n_test:]]\n    return train_idx, test_idx\n\ndef majority_baseline(y):\n    '''Most frequent label; on ties the first label seen in y.'''\n    counts = {}\n    for label in y:\n        counts[label] = counts.get(label, 0) + 1\n    best = None\n    for label in y:\n        if best is None or counts[label] > counts[best]:\n            best = label\n    return best\n"
       },
       "prompt": "Implementiere zwei Funktionen. `deterministic_split(n, seed, frac)` legt zuerst `perm = np.random.default_rng(seed).permutation(n)` fest, berechnet `n_test = int(round(frac * n))` und schneidet die Permutation: die ersten `n_test` Einträge sind der Test-Index, der Rest der Train-Index. Rückgabe als Tupel `(train_idx, test_idx)` mit zwei Listen von int, in Permutationsreihenfolge (nicht sortiert). `majority_baseline(y)` gibt das häufigste Label zurück; bei Gleichstand das Label, das in `y` zuerst erscheint (Eingabe: Liste oder 1-d-Array, Labels beliebig vergleichbar). Der Testcode ist von deiner Eingabe getrennt und prüft auch die Permutations-Identität.",
-      "fullSolution": "import numpy as np\n\ndef deterministic_split(n, seed, frac):\n    '''Deterministic split of range(n) in permutation order.'''\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(frac * n))\n    test_idx = [int(i) for i in perm[:n_test]]\n    train_idx = [int(i) for i in perm[n_test:]]\n    return train_idx, test_idx\n\ndef majority_baseline(y):\n    '''Most frequent label; on ties the first label seen in y.'''\n    counts = {}\n    for label in y:\n        counts[label] = counts.get(label, 0) + 1\n    best = None\n+    for label in y:\n+        if best is None or counts[label] > counts[best]:\n+            best = label\n+    return best\n+",
+      "fullSolution": "import numpy as np\n\ndef deterministic_split(n, seed, frac):\n    '''Deterministic split of range(n) in permutation order.'''\n    perm = np.random.default_rng(seed).permutation(n)\n    n_test = int(round(frac * n))\n    test_idx = [int(i) for i in perm[:n_test]]\n    train_idx = [int(i) for i in perm[n_test:]]\n    return train_idx, test_idx\n\ndef majority_baseline(y):\n    '''Most frequent label; on ties the first label seen in y.'''\n    counts = {}\n    for label in y:\n        counts[label] = counts.get(label, 0) + 1\n    best = None\n    for label in y:\n        if best is None or counts[label] > counts[best]:\n            best = label\n    return best\n",
       "hints": [
         "Ein eigener Generator pro Aufruf macht den Split reproduzierbar: np.random.default_rng(seed) liefert bei gleichem Seed dieselbe Permutation.",
         "Für die Majority-Baseline zählst du Vorkommen pro Label in einem Dictionary und ersetzt das beste Label nur bei echt größerer Anzahl — so gewinnt bei Gleichstand das zuerst gesehene Label."

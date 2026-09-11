@@ -1,43 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-grouped-metrics-report",
-  "contract": {
-    "familyId": "aggregate-grouped-metrics-report",
-    "familyGroup": "aggregate-count",
-    "summary": "Berechnet gruppenweise Kennzahlen und Anteile und füllt daraus einen strukturierten Bericht ohne Kausaldeutung.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "hypothesis-report-groups",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subgroup-error-rates-numpy",
-        "propertyTest": false
-      },
-      {
-        "caseId": "categorize-errors-report",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subgroup-recall-report",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-genai-security",
-      "c-ml-erroranalysis"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "hypothesis-report-groups",

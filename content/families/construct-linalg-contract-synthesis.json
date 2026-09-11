@@ -1,39 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-linalg-contract-synthesis",
-  "contract": {
-    "familyId": "construct-linalg-contract-synthesis",
-    "familyGroup": "construct-program",
-    "summary": "Implementiert Shape-Vertrag, Pivot-Rang und Systemlöser als drei getrennte Funktionverträge in einer Synthese mit rechteckigen und abhängigen Fällen.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "synthesis-three-contracts",
-        "propertyTest": false
-      },
-      {
-        "caseId": "synthesis-singular-guard",
-        "propertyTest": false
-      },
-      {
-        "caseId": "synthesis-row-swap",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-numpy-basics",
-      "c-linalg-gauss"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "synthesis-three-contracts",

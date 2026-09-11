@@ -29,6 +29,11 @@ const sample = [];
           if (instance.graderId !== 'deterministic') continue;
           if (!['numeric', 'single-choice'].includes(instance.activityType)) continue;
           if (oracleAnswer(instance) === null) continue;
+          // traceValidity braucht mindestens eine Zahl, die sich auf die
+          // Parameter zurückführen lässt; rein textuelle Szenario-Kapseln
+          // (z. B. Angriffstaxonomie ohne Zahlen) sind für den Mock-Trace
+          // strukturell nicht darstellbar und gehören nicht in die Stichprobe.
+          if (!/-?\d/.test(JSON.stringify(instance.parameters))) continue;
           const list = byFamily.get(instance.familyId) || [];
           if (list.length < 4) {
             list.push({ familyId: instance.familyId, caseId: instance.caseId, difficulty: instance.difficulty, seed });

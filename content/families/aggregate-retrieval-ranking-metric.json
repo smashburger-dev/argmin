@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-retrieval-ranking-metric",
-  "contract": {
-    "familyId": "aggregate-retrieval-ranking-metric",
-    "familyGroup": "aggregate-count",
-    "summary": "Berechnet TF-IDF- und Kosinusähnlichkeit als Ranking-Metrik, leitet das Ranking ab und evaluiert es mit Recall@k und MRR.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "retrieval-ranking-recall",
-        "propertyTest": false
-      },
-      {
-        "caseId": "retrieval-evaluate-queries",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-genai-rag",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "retrieval-ranking-recall",

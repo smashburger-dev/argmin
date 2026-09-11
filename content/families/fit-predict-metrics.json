@@ -1,37 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-predict-metrics",
-  "contract": {
-    "familyId": "fit-predict-metrics",
-    "familyGroup": "fit-model",
-    "summary": "Fittet ein Modell, sagt auf Testdaten voraus und berechnet die Fehlermetriken.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "baseline-experiment-report",
-        "propertyTest": false
-      },
-      {
-        "caseId": "linear-fit-lstsq",
-        "propertyTest": false
-      },
-      {
-        "caseId": "regression-report",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-ml-baseline"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "baseline-experiment-report",

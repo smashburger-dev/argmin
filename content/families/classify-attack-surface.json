@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-attack-surface",
-  "contract": {
-    "familyId": "classify-attack-surface",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Angriffsbeschreibung der passenden Angriffsfläche zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "attack-surface-taxonomy",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-genai-security"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "attack-surface-taxonomy",

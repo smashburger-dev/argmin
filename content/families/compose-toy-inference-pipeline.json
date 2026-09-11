@@ -1,30 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "compose-toy-inference-pipeline",
-  "contract": {
-    "familyId": "compose-toy-inference-pipeline",
-    "familyGroup": "construct-program",
-    "summary": "Komponiert Tokenizer, Toy-Forward-Pass und Greedy-Dekodierung zu einer deterministischen Inferenz-Pipeline mit Rückdekodierung.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "toy-inference-pipeline",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-inference",
-      "c-dl-attention",
-      "c-dl-tokenizer"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "toy-inference-pipeline",

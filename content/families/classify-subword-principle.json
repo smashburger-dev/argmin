@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-subword-principle",
-  "contract": {
-    "familyId": "classify-subword-principle",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet ein Tokenisierungsverhalten dem passenden Subword-Prinzip zu.",
-    "taskArchetype": "single-choice",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "subword-oov-robustness",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subword-unknown-piece",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subword-boundary-sharing",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-tokenizer"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "subword-oov-robustness",

@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-evidence-vs-demo",
-  "contract": {
-    "familyId": "classify-evidence-vs-demo",
-    "familyGroup": "classify-concept",
-    "summary": "Unterscheidet Evidenz für eine reproduzierbare Pipeline von einer bloßen Demo.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "evidence-vs-demo",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "evidence-vs-demo",

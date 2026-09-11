@@ -1,35 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-training-primitive-contract",
-  "contract": {
-    "familyId": "optimize-training-primitive-contract",
-    "familyGroup": "optimize-update",
-    "summary": "Implementiert Verlust- und Regularisierungsprimitive mit Wertebereichs-Verträgen vor der Rechnung (MSE, BCE mit Clipping, Ceil-Schritte, Dropout, Weight Decay).",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "loss-and-batch-primitives",
-        "propertyTest": false
-      },
-      {
-        "caseId": "dropout-weight-decay-primitives",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-training",
-      "c-dl-regularization",
-      "c-grad-regression",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "loss-and-batch-primitives",

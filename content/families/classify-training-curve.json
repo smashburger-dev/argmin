@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-training-curve",
-  "contract": {
-    "familyId": "classify-training-curve",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen Trainingskurvenverlauf seinem Diagnosemuster zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "training-curve-diagnosis",
-        "propertyTest": false
-      },
-      {
-        "caseId": "training-curve-overfit",
-        "propertyTest": false
-      },
-      {
-        "caseId": "training-curve-underfit",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-training"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "training-curve-diagnosis",

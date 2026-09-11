@@ -1,35 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-detector-eval-compare",
-  "contract": {
-    "familyId": "aggregate-detector-eval-compare",
-    "familyGroup": "aggregate-count",
-    "summary": "Wertet mehrere deterministische Regelwerke oder Detektoren auf einem gelabelten Korpus aus, führt eine Metriktabelle und kürt den Sieger über deterministische Rundung und Namens-Tie-Break.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "run-eval-compare-rulesets",
-        "propertyTest": false
-      },
-      {
-        "caseId": "detector-table-best-f1",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-genai-eval",
-      "c-ml-erroranalysis",
-      "c-genai-security",
-      "c-testing-debugging"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "run-eval-compare-rulesets",

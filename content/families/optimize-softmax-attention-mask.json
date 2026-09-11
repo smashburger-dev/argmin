@@ -1,35 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-softmax-attention-mask",
-  "contract": {
-    "familyId": "optimize-softmax-attention-mask",
-    "familyGroup": "optimize-update",
-    "summary": "Berechnet Softmax-Aufmerksamkeit inklusive Maskierung der verbotenen Positionen.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "scaled-dot-product-attention",
-        "propertyTest": false
-      },
-      {
-        "caseId": "toy-forward-pass",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-attention",
-      "c-numpy-basics",
-      "c-dl-inference"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "scaled-dot-product-attention",

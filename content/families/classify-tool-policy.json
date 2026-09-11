@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-tool-policy",
-  "contract": {
-    "familyId": "classify-tool-policy",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen Tool-Einsatz der passenden Policy-Klasse zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "tool-policy-least-privilege",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-genai-prototype"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "tool-policy-least-privilege",

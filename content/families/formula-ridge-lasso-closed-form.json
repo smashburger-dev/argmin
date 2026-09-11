@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "formula-ridge-lasso-closed-form",
-  "contract": {
-    "familyId": "formula-ridge-lasso-closed-form",
-    "familyGroup": "formula-apply",
-    "summary": "Löst Ridge über die geschlossene Normalgleichung mit np.linalg.solve und Lasso-1D über Soft-Thresholding, je mit Validierung von lambda vor der Berechnung.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "ridge-normal-equation",
-        "propertyTest": false
-      },
-      {
-        "caseId": "lasso-soft-threshold",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-ml-regularization",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "ridge-normal-equation",

@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-canonical-hash-verify",
-  "contract": {
-    "familyId": "reproduce-canonical-hash-verify",
-    "familyGroup": "reproduce-hash",
-    "summary": "Prüft einen kanonischen Hash als unveränderlichen Referenzpunkt einer Baseline.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "canonical-hash-verify",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-python-functions",
-      "c-research-capstone"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "canonical-hash-verify",

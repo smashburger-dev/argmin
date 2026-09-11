@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-rag-stage",
-  "contract": {
-    "familyId": "classify-rag-stage",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen Verarbeitungsschritt der passenden RAG-Stage zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "rag-stage-separation",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-genai-rag"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "rag-stage-separation",

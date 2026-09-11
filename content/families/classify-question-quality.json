@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-question-quality",
-  "contract": {
-    "familyId": "classify-question-quality",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Fragestellung ihrer Qualitätsklasse zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "question-quality-check",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-research-question"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "question-quality-check",

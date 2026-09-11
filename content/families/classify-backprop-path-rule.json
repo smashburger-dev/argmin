@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-backprop-path-rule",
-  "contract": {
-    "familyId": "classify-backprop-path-rule",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Kettenregel-Situation der richtigen Verknüpfungsregel auf Pfaden und über parallele Zweige zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "backprop-path-rule",
-        "propertyTest": false
-      },
-      {
-        "caseId": "backprop-chain-rule",
-        "propertyTest": false
-      },
-      {
-        "caseId": "backprop-detached-branch",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-autograd"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "backprop-path-rule",

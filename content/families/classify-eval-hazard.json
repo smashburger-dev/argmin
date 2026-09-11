@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-eval-hazard",
-  "contract": {
-    "familyId": "classify-eval-hazard",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Evaluationssituation dem passenden Eval-Hazard zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "eval-hazard-taxonomy",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-genai-eval"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "eval-hazard-taxonomy",

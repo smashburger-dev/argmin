@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-toposort-dependency-order",
-  "contract": {
-    "familyId": "trace-toposort-dependency-order",
-    "familyGroup": "trace-state",
-    "summary": "Verfolgt die Reihenfolge eines Pipeline-Toposorts aus seinen Abhängigkeiten.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "toposort-dependency-order",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "toposort-dependency-order",
