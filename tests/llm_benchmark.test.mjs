@@ -19,10 +19,9 @@ import {
   TRAIN_SEED_RANGES,
   buildFixture,
   computeContentHash,
-  contentCommit,
   correctAnswer,
   fixtureDigest,
-  fixtureFileName,
+  PIN_FILE,
   loadBenchmarkSnapshot,
 } from '../tools/build_llm_benchmark.mjs';
 import {
@@ -35,17 +34,17 @@ import {
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const snapshot = await loadBenchmarkSnapshot(root);
 const currentHash = computeContentHash(root);
-const currentCommit = contentCommit(root);
-const expectedName = fixtureFileName({ contentCommit: currentCommit, contentHash: currentHash });
-const fixturePath = join(root, 'tests/fixtures', expectedName);
+// Kein 200k-Snapshot im Repo: die Fixture wird deterministisch frisch gebaut
+// und gegen den kleinen Pin (Digest + Metadaten) geprueft.
+const fixture = await buildFixture(root);
+const pinPath = join(root, 'tests/fixtures', PIN_FILE);
 
-const loadFixture = () => {
+const loadPin = () => {
   assert.ok(
-    existsSync(fixturePath),
-    `Snapshot veraltet: ${expectedName} fehlt (Branch- oder Content-Drift). `
-    + 'tools/build_llm_benchmark.mjs neu laufen lassen und Fixture mit einfrieren.',
+    existsSync(pinPath),
+    `Benchmark-Pin fehlt: ${PIN_FILE}. tools/build_llm_benchmark.mjs laufen lassen.`,
   );
-  return JSON.parse(readFileSync(fixturePath, 'utf8'));
+  return JSON.parse(readFileSync(pinPath, 'utf8'));
 };
 
 const inRanges = (seed, ranges) => ranges.some(({ start, end }) => seed >= start && seed <= end);
@@ -61,16 +60,17 @@ test('benchmark constants match the sampling ranges', () => {
   assert.deepEqual(TRAIN_SEED_RANGES, [{ start: TRAIN_SEED_MIN, end: TRAIN_SEED_MAX }]);
 });
 
-test('fixture snapshot pinning matches the live content', () => {
-  const fixture = loadFixture();
+test('benchmark pin matches the freshly built fixture', () => {
+  const pin = loadPin();
   assert.equal(
     fixture.contentHash, currentHash,
     `Snapshot veraltet: Fixture-Hash ${fixture.contentHash} statt ${currentHash}. Neu bauen.`,
   );
-  assert.equal(
-    fixture.contentCommit, currentCommit,
-    `Snapshot veraltet: Fixture-Commit ${fixture.contentCommit} statt ${currentCommit}. Neu bauen.`,
-  );
+  assert.equal(pin.contentHash, currentHash, `Pin-Hash ${pin.contentHash} statt ${currentHash}. Neu bauen.`);
+  assert.equal(pin.digest, fixtureDigest(fixture), `Pin-Digest ${pin.digest} statt ${fixtureDigest(fixture)}. Neu bauen.`);
+  assert.equal(pin.items, fixture.items.length);
+  assert.equal(pin.mutants, fixture.items.reduce((sum, item) => sum + item.mutants.length, 0));
+  assert.equal(pin.builderVersion, BUILDER_VERSION);
   assert.equal(fixture.builderVersion, BUILDER_VERSION);
   assert.equal(fixture.promptVersion, null);
   assert.deepEqual(fixture.heldSeedRange, { start: HOLD_SEED_MIN, end: HOLD_SEED_MAX });
@@ -85,7 +85,6 @@ test('two builder runs produce the identical fixture digest', async () => {
 });
 
 test('fixture validates against the llm-benchmark schema', () => {
-  const fixture = loadFixture();
   const schema = JSON.parse(readFileSync(join(root, 'schemas/llm-benchmark.schema.json'), 'utf8'));
   assert.equal(schema.$schema, 'https://json-schema.org/draft/2020-12/schema');
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
@@ -95,15 +94,14 @@ test('fixture validates against the llm-benchmark schema', () => {
 });
 
 test('oracle instances are instantiable and solver-consistent', async () => {
-  const fixture = loadFixture();
   assert.ok(fixture.items.length > 0);
   for (const item of fixture.items) {
     const label = `${item.familyId}:${item.caseId}:${item.difficulty}#${item.moduloClass}`;
     const instance = snapshot.registry.instantiate(item.familyId, item.heldSeed, item.difficulty, item.caseId);
-    assert.deepEqual(canon(instance.prompt), item.prompt, `${label}: prompt`);
-    assert.deepEqual(canon(instance.parameters), item.parameters, `${label}: parameters`);
-    assert.deepEqual(canon(instance.expectedAnswer), item.expectedAnswer, `${label}: expectedAnswer`);
-    assert.deepEqual(canon(instance.choices || null), item.choices, `${label}: choices`);
+    assert.deepEqual(canon(instance.prompt), canon(item.prompt), `${label}: prompt`);
+    assert.deepEqual(canon(instance.parameters), canon(item.parameters), `${label}: parameters`);
+    assert.deepEqual(canon(instance.expectedAnswer), canon(item.expectedAnswer), `${label}: expectedAnswer`);
+    assert.deepEqual(canon(instance.choices || null), canon(item.choices), `${label}: choices`);
     assert.equal(instance.graderId, item.oracle.graderId, `${label}: graderId`);
     assert.equal(instance.activityType, item.oracle.activityType, `${label}: activityType`);
     const solved = snapshot.registry.get(item.familyId).solve(instance.parameters);
@@ -120,7 +118,6 @@ test('oracle instances are instantiable and solver-consistent', async () => {
 });
 
 test('every mutant is rejected with the documented reason', async () => {
-  const fixture = loadFixture();
   let checked = 0;
   for (const item of fixture.items) {
     const label = `${item.familyId}:${item.caseId}:${item.difficulty}#${item.moduloClass}`;
@@ -139,7 +136,6 @@ test('every mutant is rejected with the documented reason', async () => {
 });
 
 test('held seeds are disjoint from training, audit, and golden seeds', () => {
-  const fixture = loadFixture();
   assert.deepEqual([...fixture.heldSeeds].sort((a, b) => a - b), fixture.heldSeeds, 'heldSeeds unsortiert');
   for (const item of fixture.items) {
     const label = `${item.familyId}:${item.caseId}:${item.difficulty}`;
@@ -158,7 +154,6 @@ test('held seeds are disjoint from training, audit, and golden seeds', () => {
 });
 
 test('static cases cover every modulo class', () => {
-  const fixture = loadFixture();
   const expected = new Map();
   for (const doc of snapshot.docs.filter((item) => item.contract)) {
     for (const body of doc.cases) {
@@ -184,7 +179,6 @@ test('static cases cover every modulo class', () => {
 });
 
 test('coverage gaps are explicit, verification never silently drops', () => {
-  const fixture = loadFixture();
   for (const entry of fixture.uncovered) {
     assert.ok(entry.reason.length > 0, `${entry.familyId}: Grund fehlt`);
   }

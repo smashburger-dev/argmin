@@ -335,8 +335,26 @@ export async function buildFixture(root = projectRoot) {
 }
 
 export function fixtureFileName(fixture) {
-  const short = fixture.contentCommit === 'nogit' ? 'nogit' : fixture.contentCommit.slice(0, 12);
-  return `llm-benchmark.${short}-${fixture.contentHash.slice(0, 16)}.json`;
+  return `llm-benchmark.${fixture.contentHash.slice(0, 16)}.json`;
+}
+
+export const PIN_FILE = 'llm-benchmark-pin.json';
+
+/** Kleiner Pin statt 200k-Zeilen-Snapshot im Repo: der Test baut die Fixture
+ *  deterministisch frisch und prueft Digest + Metadaten gegen diese Datei. */
+export function fixturePin(fixture) {
+  return {
+    schemaVersion: fixture.schemaVersion,
+    builderVersion: fixture.builderVersion,
+    contentHash: fixture.contentHash,
+    digest: fixtureDigest(fixture),
+    items: fixture.items.length,
+    mutants: fixture.items.reduce((sum, item) => sum + item.mutants.length, 0),
+    uncovered: fixture.uncovered.length,
+    mutantRejectionRate: fixture.mutantRejectionRate,
+    heldSeedRange: fixture.heldSeedRange,
+    trainSeedRanges: fixture.trainSeedRanges,
+  };
 }
 
 async function main() {
@@ -348,14 +366,8 @@ async function main() {
     unlinkSync(join(dir, stale));
   }
   writeFileSync(join(dir, name), `${JSON.stringify(fixture, null, 2)}\n`);
-  console.log(JSON.stringify({
-    fixture: name,
-    digest: fixtureDigest(fixture),
-    items: fixture.items.length,
-    mutants: fixture.items.reduce((sum, item) => sum + item.mutants.length, 0),
-    uncovered: fixture.uncovered.length,
-    mutantRejectionRate: 1,
-  }, null, 2));
+  writeFileSync(join(dir, PIN_FILE), `${JSON.stringify(fixturePin(fixture), null, 2)}\n`);
+  console.log(JSON.stringify({ fixture: name, pin: PIN_FILE, ...fixturePin(fixture) }, null, 2));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main();
