@@ -27,8 +27,6 @@ export const EVIDENCE_DEMO_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-capstone-pipeline'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

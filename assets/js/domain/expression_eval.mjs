@@ -103,7 +103,7 @@ export function compileTemplate(text, names) {
   return (scope) => parts.map((part, index) => (index % 2 ? formatNumber(compiled[index](scope)) : part)).join('');
 }
 
-export function formatNumber(value) {
+function formatNumber(value) {
   if (!Number.isFinite(value)) return '–';
   return (Math.round(value * 100) / 100).toString().replace('.', ',');
 }

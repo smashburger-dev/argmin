@@ -181,7 +181,7 @@ export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'diff
 
   return {
     capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { ...contract, generate, solve },
+    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
   };
 }
 
@@ -259,6 +259,6 @@ export function makeChoiceCapsuleFamily({
 
   return {
     capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { ...contract, generate, solve },
+    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
   };
 }

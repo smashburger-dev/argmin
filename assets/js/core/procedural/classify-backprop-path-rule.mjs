@@ -33,8 +33,6 @@ export const BACKPROP_PATH_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-autograd'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

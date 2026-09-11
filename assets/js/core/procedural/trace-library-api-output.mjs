@@ -334,8 +334,6 @@ export const LIBRARY_API_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-pandas-cleaning', 'c-python-reading'],
-  graderId: 'deterministic',
-  activityType: 'predict-output',
 };
 
 const FAMILY = makePredictFamily({

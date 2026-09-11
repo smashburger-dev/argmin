@@ -293,8 +293,6 @@ export const LOOP_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-dl-training', 'c-python-reading'],
-  graderId: 'deterministic',
-  activityType: 'predict-output',
 };
 
 const FAMILY = makePredictFamily({

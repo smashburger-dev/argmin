@@ -168,8 +168,6 @@ export const CASCADE_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-genai-eval', 'c-python-functions', 'c-genai-security', 'c-testing-debugging'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The __raised helper plus the renamed reference copy are emitted once at the

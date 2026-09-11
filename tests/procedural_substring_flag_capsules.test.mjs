@@ -153,8 +153,8 @@ test('family block: dispatch, contract, errors', () => {
   assert.equal(SUBSTRING_CONTRACT.familyId, 'trace-substring-flag-sum');
   assert.equal(SUBSTRING_CONTRACT.authorityMode, 'seeded');
   assert.equal(SUBSTRING_CONTRACT.taskArchetype, 'output-predict-lines');
-  assert.equal(SUBSTRING_CONTRACT.activityType, 'predict-output');
-  assert.equal(SUBSTRING_CONTRACT.graderId, 'deterministic');
+  assert.equal(FAMILY_SPEC.activityType, 'predict-output');
+  assert.equal(FAMILY_SPEC.graderId, 'deterministic');
   assert.equal(SUBSTRING_CONTRACT.masteryEligible, true);
   assert.deepEqual(SUBSTRING_CONTRACT.difficultyProfiles, ['core']);
   assert.deepEqual(SUBSTRING_CONTRACT.competencyIds, ['c-genai-security', 'c-python-reading']);

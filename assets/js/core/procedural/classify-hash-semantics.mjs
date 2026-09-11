@@ -26,8 +26,6 @@ export const HASH_SEMANTICS_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-research-capstone'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

@@ -203,8 +203,6 @@ export const BPE_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'core'],
   competencyIds: ['c-dl-tokenizer', 'c-python-collections'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

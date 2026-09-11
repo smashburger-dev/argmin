@@ -307,8 +307,6 @@ export const DATA_QUALITY_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-pandas-cleaning'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The per-case prelude (raised helper plus renamed reference copy / contract

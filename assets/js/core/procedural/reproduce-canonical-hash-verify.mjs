@@ -108,8 +108,6 @@ export const HASH_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-python-functions', 'c-research-capstone'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The renamed reference copy is emitted once at the top of the seeded block;

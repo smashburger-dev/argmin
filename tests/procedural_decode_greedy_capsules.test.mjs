@@ -166,8 +166,8 @@ test('family block: dispatch, contract, errors', () => {
   assert.equal(DECODE_CONTRACT.familyId, 'optimize-decode-greedy-loop');
   assert.equal(DECODE_CONTRACT.authorityMode, 'seeded');
   assert.equal(DECODE_CONTRACT.taskArchetype, 'output-predict-lines');
-  assert.equal(DECODE_CONTRACT.activityType, 'predict-output');
-  assert.equal(DECODE_CONTRACT.graderId, 'deterministic');
+  assert.equal(FAMILY_SPEC.activityType, 'predict-output');
+  assert.equal(FAMILY_SPEC.graderId, 'deterministic');
   assert.equal(DECODE_CONTRACT.masteryEligible, true);
   assert.deepEqual(DECODE_CONTRACT.difficultyProfiles, ['core']);
   assert.deepEqual(DECODE_CONTRACT.competencyIds, ['c-dl-inference', 'c-python-basics']);

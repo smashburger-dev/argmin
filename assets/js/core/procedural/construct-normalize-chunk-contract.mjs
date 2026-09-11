@@ -194,8 +194,6 @@ export const CHUNK_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-genai-rag', 'c-python-functions'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Seeded block: renamed reference copy once, then per draw one normalize

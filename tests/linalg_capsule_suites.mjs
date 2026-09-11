@@ -123,7 +123,7 @@ export function linalgChoiceCapsuleSuite(familyId, surface, caseFor, {
   test('Familien-Block: Dispatch, Contract, Solve', () => {
     assert.equal(contract.familyId, familyId);
     assert.equal(contract.authorityMode, 'seeded');
-    assert.equal(contract.activityType, 'single-choice');
+    assert.equal(registry.get(familyId).activityType, 'single-choice');
     assert.deepEqual(contract.difficultyProfiles, difficultyProfiles);
     assert.deepEqual(contract.caseTypes.map((item) => item.caseId).sort(), Object.values(caseFor).sort());
     for (const key of keys) {

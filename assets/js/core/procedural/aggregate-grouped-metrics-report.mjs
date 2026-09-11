@@ -202,8 +202,6 @@ export const GROUPED_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-capstone-pipeline', 'c-genai-security', 'c-ml-erroranalysis'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The __raised helper plus the renamed reference copy are emitted once at the

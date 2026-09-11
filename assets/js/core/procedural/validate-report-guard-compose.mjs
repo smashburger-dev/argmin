@@ -185,8 +185,6 @@ export const GUARD_CONTRACT = {
   ],
   difficultyProfiles: ['challenge'],
   competencyIds: ['c-capstone-pipeline', 'c-genai-eval', 'c-ml-repro', 'c-research-capstone', 'c-research-responsible'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

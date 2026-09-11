@@ -26,8 +26,6 @@ export const FREEZE_PURPOSE_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

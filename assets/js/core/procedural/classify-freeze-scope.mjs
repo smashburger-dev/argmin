@@ -25,8 +25,6 @@ export const FREEZE_SCOPE_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-capstone-pipeline'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

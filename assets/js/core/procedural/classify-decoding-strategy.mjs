@@ -33,8 +33,6 @@ export const DECODING_STRATEGY_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-inference'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

@@ -522,8 +522,6 @@ export const FORWARD_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-dl-tensors', 'c-numpy-basics', 'c-linalg-matrices'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
