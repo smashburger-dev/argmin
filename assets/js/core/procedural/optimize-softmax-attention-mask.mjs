@@ -7,7 +7,9 @@
 // already define, so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -200,7 +202,7 @@ export const ATTN_CASES = {
     referenceSolver: ATTN_REFERENCE,
     prompt: ATTN_PROMPT,
     fullSolution: ATTN_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const n = randInt(r, 2, 4);
       const m = randInt(r, 2, 4);
       const dK = randInt(r, 2, 4);
@@ -238,7 +240,7 @@ export const ATTN_CASES = {
     referenceSolver: TOY_REFERENCE,
     prompt: TOY_PROMPT,
     fullSolution: TOY_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const len = randInt(r, 1, 4);
       return { ids: Array.from({ length: len }, () => randInt(r, 0, 5)) };
     },
@@ -248,43 +250,6 @@ export const ATTN_CASES = {
     extraCount: 3,
   },
 };
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function attnCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.emitChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genAttnCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  const extras = seedCases.map((entry, i) => caseDef.emitChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveAttnFamily(parameters) {
-  const caseDef = Object.values(ATTN_CASES).find((item) => attnCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Softmax-Attention-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const ATTN_CONTRACT = {
   familyId: 'optimize-softmax-attention-mask',
@@ -303,13 +268,19 @@ export const ATTN_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateAttnFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = ATTN_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genAttnCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: ATTN_CONTRACT,
+  cases: ATTN_CASES,
+  shapeError: 'Softmax-Attention-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.emitChecks(entry, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...ATTN_CONTRACT, generate: generateAttnFamily, solve: solveAttnFamily };
+export const attnCaseOk = FAMILY.caseOk;
+export const genAttnCase = FAMILY.genCase;
+export const solveAttnFamily = FAMILY.solve;
+export const generateAttnFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

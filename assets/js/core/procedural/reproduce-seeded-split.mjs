@@ -9,8 +9,9 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/reproduce-seeded-split.json.
 const CASE_PAYLOADS = {
@@ -167,51 +168,6 @@ function seededChecks(caseId, entry, index) {
   ].join('\n');
 }
 
-// The renamed reference copy (plus helpers) is emitted once at the top of
-// the seeded block; all per-draw checks call into it.
-function seededBlock(caseId, caseDef, seedCases) {
-  const helpers = caseId === 'kfold-indices-numpy' ? `${RAISED_HELPER}\n\n${CV_MODEL}` : RAISED_HELPER;
-  const prelude = `${helpers}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}`;
-  const checks = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${prelude}\n\n${checks}`;
-}
-
-const testsFor = (caseId, caseDef, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseId, caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function splitCaseOk(parameters, caseId, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseId, caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genSplitCase(seed, caseId, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, (_, i) => caseDef.draw(r, i));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseId, caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveSplitFamily(parameters) {
-  const entry = Object.entries(SPLIT_CASES).find(([caseId, item]) => splitCaseOk(parameters, caseId, item));
-  if (!entry) throw new Error('Split-Parameter verletzen die Kapselform');
-  return { referenceCode: entry[1].referenceSolver };
-}
-
 export const SPLIT_CONTRACT = {
   familyId: 'reproduce-seeded-split',
   familyGroup: 'reproduce-hash',
@@ -229,13 +185,22 @@ export const SPLIT_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateSplitFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = SPLIT_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genSplitCase(seed, caseId, caseDef);
-}
+// The renamed reference copy (plus helpers) is emitted once at the top of
+// the seeded block; all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: SPLIT_CONTRACT,
+  cases: SPLIT_CASES,
+  shapeError: 'Split-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, caseId, seedCases) => {
+    const helpers = caseId === 'kfold-indices-numpy' ? `${RAISED_HELPER}\n\n${CV_MODEL}` : RAISED_HELPER;
+    const prelude = `${helpers}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}`;
+    const checks = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${prelude}\n\n${checks}`;
+  },
+});
 
-export const FAMILY_SPEC = { ...SPLIT_CONTRACT, generate: generateSplitFamily, solve: solveSplitFamily };
+export const splitCaseOk = FAMILY.caseOk;
+export const genSplitCase = FAMILY.genCase;
+export const solveSplitFamily = FAMILY.solve;
+export const generateSplitFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

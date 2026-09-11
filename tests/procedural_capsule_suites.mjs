@@ -14,9 +14,20 @@ const loadDoc = (familyId) => JSON.parse(readFileSync(join(root, 'content/famili
 
 const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 
+// Some modules take the caseId as a middle argument (genCase(seed, caseId, def),
+// caseOk(params, caseId, def)); the suite adapts on declared arity.
+const callGen = (fn, seed, caseId, def) => (fn.length >= 3 ? fn(seed, caseId, def) : fn(seed, def));
+const callOk = (fn, params, caseId, def) => (fn.length >= 3 ? fn(params, caseId, def) : fn(params, def));
+
+// Optional contract assertions absorbed from per-family tests.
+function assertContractExtras(contract, { familyGroup, difficultyProfiles } = {}) {
+  if (familyGroup !== undefined) assert.equal(contract.familyGroup, familyGroup);
+  if (difficultyProfiles !== undefined) assert.deepEqual(contract.difficultyProfiles, difficultyProfiles);
+}
+
 // cases: [{ caseId, difficulty, competencyIds? }]
 // mod: module namespace; capsules keyed by caseId or by difficulty.
-export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = {}) {
+export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, familyGroup, difficultyProfiles } = {}) {
   const doc = loadDoc(familyId);
   const table = Object.entries(mod).find(([key, value]) => /CAPSULES/.test(key) && value && typeof value === 'object')?.[1];
   const contract = Object.values(mod).find((value) => value?.familyId === familyId && value.authorityMode === 'seeded');
@@ -68,8 +79,8 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } 
     for (const item of cases) {
       const capsule = capsuleFor(item);
       for (let seed = 0; seed < 200; seed += 1) {
-        const generated = genCapsule(seed, capsule);
-        assert.ok(capsuleOk(generated.parameters, capsule), `${item.caseId}:${seed}: Kapselform`);
+        const generated = callGen(genCapsule, seed, item.caseId, capsule);
+        assert.ok(callOk(capsuleOk, generated.parameters, item.caseId, capsule), `${item.caseId}:${seed}: Kapselform`);
         assert.ok(capsule.bank.some((entry) => entry.key === generated.parameters.scenario), `${item.caseId}:${seed}: Szenario in Bank`);
         assert.equal(generated.choices.length, 4, `${item.caseId}:${seed}: vier Wahlen`);
         assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${item.caseId}:${seed}: eindeutige Texte`);
@@ -97,8 +108,8 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } 
     for (const item of cases) {
       const capsule = capsuleFor(item);
       for (let seed = -30; seed < 30; seed += 1) {
-        assert.deepEqual(genCapsule(seed, capsule), genCapsule(seed, capsule), `${item.caseId}:${seed}: deterministisch`);
-        assert.ok(capsuleOk(genCapsule(seed, capsule).parameters, capsule), `${item.caseId}:${seed}: Kapselform`);
+        assert.deepEqual(callGen(genCapsule, seed, item.caseId, capsule), callGen(genCapsule, seed, item.caseId, capsule), `${item.caseId}:${seed}: deterministisch`);
+        assert.ok(callOk(capsuleOk, callGen(genCapsule, seed, item.caseId, capsule).parameters, item.caseId, capsule), `${item.caseId}:${seed}: Kapselform`);
       }
       const viaFamily = generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty });
       assert.deepEqual(viaFamily, generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty }), `${item.caseId}: Family deterministisch`);
@@ -152,6 +163,7 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } 
     assert.equal(contract.authorityMode, 'seeded');
     assert.equal(contract.activityType, 'single-choice');
     assert.equal(contract.graderId, 'deterministic');
+    assertContractExtras(contract, { familyGroup, difficultyProfiles });
     assert.equal(typeof contract.taskArchetype, 'string');
     const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
     assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
@@ -177,7 +189,7 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } 
 
 // cases: [{ caseId, difficulty, competencyIds? }]; modules carry per-case
 // baseSnippet/baseOutput anchors plus draw/buildSnippet/buildOutput builders.
-export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = {}) {
+export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, familyGroup, difficultyProfiles } = {}) {
   const doc = loadDoc(familyId);
   const defs = Object.entries(mod).find(([key, value]) => /_CASES/.test(key) && value && typeof value === 'object')?.[1];
   const contract = Object.values(mod).find((value) => value?.familyId === familyId && value.authorityMode === 'seeded');
@@ -218,8 +230,8 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 }
     for (const item of cases) {
       const def = defs[item.caseId];
       for (let seed = 0; seed < 200; seed += 1) {
-        const generated = genCase(seed, def);
-        assert.ok(caseOk(generated.parameters, def), `${item.caseId}:${seed}: shape`);
+        const generated = callGen(genCase, seed, item.caseId, def);
+        assert.ok(callOk(caseOk, generated.parameters, item.caseId, def), `${item.caseId}:${seed}: shape`);
         assert.equal(generated.parameters.caseId, item.caseId);
         assert.equal(generated.parameters.difficulty, item.difficulty);
         assert.equal(generated.expected.output, def.buildOutput(generated.parameters), `${item.caseId}:${seed}: expected output`);
@@ -253,7 +265,7 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 }
     for (const item of cases) {
       const def = defs[item.caseId];
       for (let seed = -20; seed < 20; seed += 1) {
-        assert.deepEqual(genCase(seed, def), genCase(seed, def), `${item.caseId}:${seed}`);
+        assert.deepEqual(callGen(genCase, seed, item.caseId, def), callGen(genCase, seed, item.caseId, def), `${item.caseId}:${seed}`);
       }
     }
   });
@@ -263,6 +275,7 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 }
     assert.equal(contract.authorityMode, 'seeded');
     assert.equal(contract.activityType, 'predict-output');
     assert.equal(contract.graderId, 'deterministic');
+    assertContractExtras(contract, { familyGroup, difficultyProfiles });
     const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
     assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
     assert.deepEqual(contract.caseTypes.map((entry) => entry.caseId), cases.map((item) => item.caseId));
@@ -277,7 +290,7 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 }
 }
 
 // cases: [{ caseId, difficulty, competencyIds? }]; defs: module CASES table.
-export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = {}) {
+export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, familyGroup, difficultyProfiles } = {}) {
   const doc = loadDoc(familyId);
   const defs = Object.entries(mod).find(([key, value]) => /_CASES/.test(key) && value && typeof value === 'object')?.[1];
   const contract = Object.values(mod).find((value) => value?.familyId === familyId && value.authorityMode === 'seeded');
@@ -300,7 +313,9 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = 
       const def = defs[item.caseId];
       assert.equal(body.parameters.tests, def.baseTests, `${item.caseId}: base tests verbatim`);
       assert.equal(body.parameters.starterCode, def.starterCode, `${item.caseId}: starter verbatim`);
-      assert.deepEqual(body.parameters.packages, def.packages ?? [], `${item.caseId}: packages verbatim`);
+      // packages may live on the def or on a family-level default — compare
+      // the anchor against what the generator actually emits.
+      assert.deepEqual(body.parameters.packages, callGen(genCase, 0, item.caseId, def).parameters.packages, `${item.caseId}: packages verbatim`);
       assert.equal(body.prompt, def.prompt, `${item.caseId}: prompt verbatim`);
       assert.equal(body.fullSolution, def.fullSolution, `${item.caseId}: fullSolution verbatim`);
       assert.equal(body.expected.referenceSolver, def.referenceSolver, `${item.caseId}: solver verbatim`);
@@ -311,8 +326,8 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = 
     for (const item of cases) {
       const def = defs[item.caseId];
       for (let seed = 0; seed < 200; seed += 1) {
-        const generated = genCase(seed, def);
-        assert.ok(caseOk(generated.parameters, def), `${item.caseId}:${seed}: shape`);
+        const generated = callGen(genCase, seed, item.caseId, def);
+        assert.ok(callOk(caseOk, generated.parameters, item.caseId, def), `${item.caseId}:${seed}: shape`);
         assert.ok(generated.parameters.tests.startsWith(def.baseTests), `${item.caseId}:${seed}: base block kept`);
         assert.equal(generated.expected.referenceSolver, def.referenceSolver);
         assert.equal(generated.prompt, def.prompt);
@@ -334,7 +349,7 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = 
     for (const item of cases) {
       const def = defs[item.caseId];
       for (let seed = -20; seed < 20; seed += 1) {
-        assert.deepEqual(genCase(seed, def), genCase(seed, def), `${item.caseId}:${seed}`);
+        assert.deepEqual(callGen(genCase, seed, item.caseId, def), callGen(genCase, seed, item.caseId, def), `${item.caseId}:${seed}`);
       }
     }
   });
@@ -354,6 +369,7 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40 } = 
     assert.equal(contract.authorityMode, 'seeded');
     assert.equal(contract.activityType, 'python-code');
     assert.equal(contract.graderId, 'pyodide');
+    assertContractExtras(contract, { familyGroup, difficultyProfiles });
     const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
     assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
     assert.deepEqual(contract.caseTypes.map((entry) => entry.caseId), cases.map((item) => item.caseId));

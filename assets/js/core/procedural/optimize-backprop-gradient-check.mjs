@@ -6,7 +6,9 @@
 // (MLP case), so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng, until } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt, until } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -287,7 +289,7 @@ export const BACKPROP_CASES = {
     prompt: LINEAR_PROMPT,
     fullSolution: LINEAR_SOLUTION,
     competencyIds: ['c-dl-autograd', 'c-grad-regression'],
-    drawCase: drawLinearCase,
+    draw: drawLinearCase,
     extraCount: 2,
   },
   'mlp-backprop-relu-mse': {
@@ -299,7 +301,7 @@ export const BACKPROP_CASES = {
     fullSolution: MLP_SOLUTION,
     competencyIds: ['c-dl-autograd', 'c-dl-tensors'],
     preamble: MLP_SEEDED_PREAMBLE,
-    drawCase: drawMlpCase,
+    draw: drawMlpCase,
     extraCount: 2,
   },
 };
@@ -369,40 +371,6 @@ function seededSection(caseDef, caseId, seedCases) {
   return caseDef.preamble ? `${caseDef.preamble}\n${extras}` : extras;
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function backpropCaseOk(parameters, caseDef, caseId) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, caseId, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genBackpropCase(seed, caseDef, caseId) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, caseId, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveBackpropFamily(parameters) {
-  const entry = Object.entries(BACKPROP_CASES).find(([caseId, item]) => backpropCaseOk(parameters, item, caseId));
-  if (!entry) throw new Error('Backprop-Parameter verletzen die Kapselform');
-  return { referenceCode: entry[1].referenceSolver };
-}
-
 export const BACKPROP_CONTRACT = {
   familyId: 'optimize-backprop-gradient-check',
   familyGroup: 'optimize-update',
@@ -420,13 +388,18 @@ export const BACKPROP_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateBackpropFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = BACKPROP_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genBackpropCase(seed, caseDef, caseId);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: BACKPROP_CONTRACT,
+  cases: BACKPROP_CASES,
+  shapeError: 'Backprop-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, caseId, seedCases) => `# seeded extra cases\n${seededSection(caseDef, caseId, seedCases)}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...BACKPROP_CONTRACT, generate: generateBackpropFamily, solve: solveBackpropFamily };
+export const backpropCaseOk = FAMILY.caseOk;
+export const genBackpropCase = FAMILY.genCase;
+export const solveBackpropFamily = FAMILY.solve;
+export const generateBackpropFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

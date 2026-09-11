@@ -6,7 +6,9 @@
 // solver emitted once per seeded block, so the grading contract cannot
 // drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -196,7 +198,7 @@ export const TREE_CASES = {
     prompt: GINI_PROMPT,
     fullSolution: GINI_SOLUTION,
     seededPrelude: TREE_SEEDED_PRELUDE,
-    drawCase: (r) => drawPair(r, randInt(r, 4, 6), 9, 1),
+    draw: (r) => drawPair(r, randInt(r, 4, 6), 9, 1),
     emitChecks: emitSplitChecks,
     extraCount: 2,
   },
@@ -208,51 +210,11 @@ export const TREE_CASES = {
     prompt: CANDIDATES_PROMPT,
     fullSolution: CANDIDATES_SOLUTION,
     seededPrelude: TREE_SEEDED_PRELUDE,
-    drawCase: (r) => drawPair(r, randInt(r, 4, 6), 4, 2),
+    draw: (r) => drawPair(r, randInt(r, 4, 6), 4, 2),
     emitChecks: emitSplitChecks,
     extraCount: 2,
   },
 };
-
-// Assembles the seeded block: the shared prelude (reference copies) followed
-// by the per-draw literal checks.
-function seededBlock(caseDef, seedCases) {
-  const extras = seedCases.map((entry, i) => caseDef.emitChecks(entry, i + 1)).join('\n');
-  return caseDef.seededPrelude ? `${caseDef.seededPrelude}\n${extras}` : extras;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function treeCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genTreeCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveTreeFamily(parameters) {
-  const caseDef = Object.values(TREE_CASES).find((item) => treeCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Tree-Split-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const TREE_CONTRACT = {
   familyId: 'optimize-tree-best-split',
@@ -271,13 +233,21 @@ export const TREE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateTreeFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = TREE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genTreeCase(seed, caseDef);
-}
+// Assembles the seeded block: the shared prelude (reference copies) followed
+// by the per-draw literal checks.
+const FAMILY = makeCaseFamily({
+  contract: TREE_CONTRACT,
+  cases: TREE_CASES,
+  shapeError: 'Tree-Split-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const extras = seedCases.map((entry, i) => caseDef.emitChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${caseDef.seededPrelude ? `${caseDef.seededPrelude}\n${extras}` : extras}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...TREE_CONTRACT, generate: generateTreeFamily, solve: solveTreeFamily };
+export const treeCaseOk = FAMILY.caseOk;
+export const genTreeCase = FAMILY.genCase;
+export const solveTreeFamily = FAMILY.solve;
+export const generateTreeFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

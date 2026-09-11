@@ -1,68 +1,24 @@
-// Procedural family aggregate-parity-threshold-selection: capsule gates.
+// Procedural family aggregate-parity-threshold-selection: capsule gates (python-code).
 // Run: node --test tests/procedural_parity_threshold_capsules.test.mjs
 // Registry wiring is done centrally by the parent — this test only checks the
 // module surface plus the JSON anchors.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import * as mod from '../assets/js/core/procedural/aggregate-parity-threshold-selection.mjs';
 import {
-  FAMILY_SPEC,
   PARITY_THRESHOLD_CASES,
-  PARITY_THRESHOLD_CONTRACT,
   genParityThresholdCase,
-  generateParityThresholdFamily,
-  parityThresholdCaseOk,
-  solveParityThresholdFamily,
 } from '../assets/js/core/procedural/aggregate-parity-threshold-selection.mjs';
+import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CASE_IDS = ['parity-threshold-selection'];
-
-test('anchor: contract null, cases fully preserved as oracle', () => {
-  const doc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-parity-threshold-selection.json'), 'utf8'));
-  assert.equal(doc.contract, null);
-  assert.equal(doc.cases.length, CASE_IDS.length);
-  for (const caseId of CASE_IDS) {
-    const body = doc.cases.find((item) => item.caseId === caseId);
-    assert.ok(body, `${caseId}: anchor missing`);
-    assert.ok(body.parameters.tests.includes('__check'), `${caseId}: base tests preserved`);
-    assert.equal(body.expected.kind, 'reference-solver');
-    assert.ok(body.expected.referenceSolver.length > 50, `${caseId}: reference solver preserved`);
-  }
-  // base test blocks and prompts must equal the module constants verbatim
-  for (const caseId of CASE_IDS) {
-    const body = doc.cases.find((item) => item.caseId === caseId);
-    const def = PARITY_THRESHOLD_CASES[caseId];
-    assert.equal(body.parameters.tests, def.baseTests, `${caseId}: base tests verbatim`);
-    assert.equal(body.parameters.starterCode, def.starterCode, `${caseId}: starter verbatim`);
-    assert.deepEqual(body.parameters.packages, def.packages, `${caseId}: packages verbatim`);
-    assert.equal(body.prompt, def.prompt, `${caseId}: prompt verbatim`);
-    assert.equal(body.fullSolution, def.fullSolution, `${caseId}: fullSolution verbatim`);
-    assert.equal(body.expected.referenceSolver, def.referenceSolver, `${caseId}: solver verbatim`);
-  }
-});
-
-test('capsule shape: generated parameters satisfy parityThresholdCaseOk over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = PARITY_THRESHOLD_CASES[caseId];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genParityThresholdCase(seed, def);
-      assert.ok(parityThresholdCaseOk(generated.parameters, def), `${caseId}:${seed}: shape`);
-      assert.ok(generated.parameters.tests.startsWith(def.baseTests), `${caseId}:${seed}: base block kept`);
-      assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${caseId}:${seed}: seeded block`);
-      assert.ok(generated.parameters.tests.includes('seeded sweep a 1'), `${caseId}:${seed}: seeded checks`);
-      assert.equal(generated.expected.referenceSolver, def.referenceSolver);
-      assert.equal(generated.prompt, def.prompt);
-    }
-  }
-});
+codeCapsuleSuite('aggregate-parity-threshold-selection', mod, [
+  { caseId: 'parity-threshold-selection', difficulty: 'stretch' },
+], { familyGroup: 'aggregate-count', difficultyProfiles: ['stretch'] });
 
 test('seeded draws stay inside the declared domains', () => {
   const def = PARITY_THRESHOLD_CASES['parity-threshold-selection'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = genParityThresholdCase(seed, def);
+    const generated = genParityThresholdCase(seed, 'parity-threshold-selection', def);
     for (const entry of generated.parameters.seedCases) {
       assert.ok(entry.kandidaten.length >= 3 && entry.kandidaten.length <= 5, 'kandidaten count');
       const schwellen = entry.kandidaten.map((k) => k.schwelle);
@@ -84,48 +40,11 @@ test('seeded draws stay inside the declared domains', () => {
   }
 });
 
-test('distinct floor: at least 40 distinct parameter sets per case over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = PARITY_THRESHOLD_CASES[caseId];
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      seen.add(JSON.stringify(generateParityThresholdFamily({ seed, caseId, difficulty: def.difficulty }).parameters));
-    }
-    assert.ok(seen.size >= 40, `${caseId}: only ${seen.size} distinct`);
+test('seeded test block: seeded markers stay embedded in the emitted tests', () => {
+  const def = PARITY_THRESHOLD_CASES['parity-threshold-selection'];
+  for (let seed = 0; seed < 200; seed += 1) {
+    const generated = genParityThresholdCase(seed, 'parity-threshold-selection', def);
+    assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
+    assert.ok(generated.parameters.tests.includes('seeded sweep a 1'), `${seed}: seeded checks`);
   }
-});
-
-test('determinism: same seed reproduces identical output, negative seeds valid', () => {
-  for (const caseId of CASE_IDS) {
-    const def = PARITY_THRESHOLD_CASES[caseId];
-    for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genParityThresholdCase(seed, def), genParityThresholdCase(seed, def), `${caseId}:${seed}`);
-    }
-  }
-});
-
-test('solver consistency: solve returns the case reference solver', () => {
-  for (const caseId of CASE_IDS) {
-    const def = PARITY_THRESHOLD_CASES[caseId];
-    for (let seed = 0; seed < 50; seed += 1) {
-      const generated = generateParityThresholdFamily({ seed, caseId, difficulty: def.difficulty });
-      assert.deepEqual(solveParityThresholdFamily(generated.parameters), { referenceCode: def.referenceSolver });
-    }
-  }
-});
-
-test('family block: dispatch, contract, errors', () => {
-  assert.equal(PARITY_THRESHOLD_CONTRACT.familyId, 'aggregate-parity-threshold-selection');
-  assert.equal(PARITY_THRESHOLD_CONTRACT.familyGroup, 'aggregate-count');
-  assert.equal(PARITY_THRESHOLD_CONTRACT.authorityMode, 'seeded');
-  assert.equal(PARITY_THRESHOLD_CONTRACT.activityType, 'python-code');
-  assert.equal(PARITY_THRESHOLD_CONTRACT.graderId, 'pyodide');
-  assert.equal(PARITY_THRESHOLD_CONTRACT.masteryEligible, true);
-  assert.deepEqual(PARITY_THRESHOLD_CONTRACT.difficultyProfiles, ['stretch']);
-  assert.equal(FAMILY_SPEC.generate, generateParityThresholdFamily);
-  assert.equal(FAMILY_SPEC.solve, solveParityThresholdFamily);
-  assert.throws(() => generateParityThresholdFamily({ seed: 0, caseId: 'parity-threshold-selection', difficulty: 'core' }), /Unbekannter Fall/);
-  assert.throws(() => generateParityThresholdFamily({ seed: 0, caseId: 'nope', difficulty: 'stretch' }), /Unbekannter Fall/);
-  assert.throws(() => generateParityThresholdFamily({ seed: 0.5, caseId: 'parity-threshold-selection', difficulty: 'stretch' }), /Seed/);
-  assert.throws(() => solveParityThresholdFamily({}), /Kapselform/);
 });

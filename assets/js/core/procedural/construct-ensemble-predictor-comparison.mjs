@@ -8,7 +8,9 @@
 // inline with np.*, so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -288,43 +290,6 @@ export const ENSEMBLE_CASES = {
   },
 };
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function ensembleCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genEnsembleCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  const extras = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveEnsembleFamily(parameters) {
-  const caseDef = Object.values(ENSEMBLE_CASES).find((item) => ensembleCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Ensemble-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const ENSEMBLE_CONTRACT = {
   familyId: 'construct-ensemble-predictor-comparison',
   familyGroup: 'construct-program',
@@ -342,13 +307,19 @@ export const ENSEMBLE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateEnsembleFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = ENSEMBLE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genEnsembleCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: ENSEMBLE_CONTRACT,
+  cases: ENSEMBLE_CASES,
+  shapeError: 'Ensemble-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...ENSEMBLE_CONTRACT, generate: generateEnsembleFamily, solve: solveEnsembleFamily };
+export const ensembleCaseOk = FAMILY.caseOk;
+export const genEnsembleCase = FAMILY.genCase;
+export const solveEnsembleFamily = FAMILY.solve;
+export const generateEnsembleFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

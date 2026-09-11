@@ -7,8 +7,9 @@
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
 import { refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng } from '../generator_draw_kit.mjs';
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
 
@@ -156,11 +157,6 @@ function seededChecks(entry, index) {
   ].join('\n');
 }
 
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
-}
-
 export const CHUNK_CASES = {
   'normalize-chunk-contract': {
     difficulty: 'core',
@@ -186,39 +182,6 @@ export const CHUNK_CASES = {
   },
 };
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function chunkCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genChunkCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveChunkFamily(parameters) {
-  const caseDef = Object.values(CHUNK_CASES).find((item) => chunkCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Normalize-Chunk-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const CHUNK_CONTRACT = {
   familyId: 'construct-normalize-chunk-contract',
   familyGroup: 'construct-program',
@@ -235,13 +198,22 @@ export const CHUNK_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateChunkFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = CHUNK_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genChunkCase(seed, caseDef);
-}
+// Seeded block: renamed reference copy once, then per draw one normalize
+// probe, one valid window probe and one invalid-parameter probe (ValueError
+// path, same try/except shape as the base block).
+const FAMILY = makeCaseFamily({
+  contract: CHUNK_CONTRACT,
+  cases: CHUNK_CASES,
+  shapeError: 'Normalize-Chunk-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...CHUNK_CONTRACT, generate: generateChunkFamily, solve: solveChunkFamily };
+export const chunkCaseOk = FAMILY.caseOk;
+export const genChunkCase = FAMILY.genCase;
+export const solveChunkFamily = FAMILY.solve;
+export const generateChunkFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

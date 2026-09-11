@@ -7,7 +7,9 @@
 // max, normalize), so the grading contract cannot drift. Mirrors
 // formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -258,43 +260,6 @@ export const ATTENTION_MASK_CASES = {
   },
 };
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function attentionMaskCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => caseDef.seededChecks(entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genAttentionMaskCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  const extras = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveAttentionMaskFamily(parameters) {
-  const caseDef = Object.values(ATTENTION_MASK_CASES).find((item) => attentionMaskCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Attention-Mask-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const ATTENTION_MASK_CONTRACT = {
   familyId: 'construct-attention-mask',
   familyGroup: 'construct-program',
@@ -312,13 +277,19 @@ export const ATTENTION_MASK_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateAttentionMaskFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = ATTENTION_MASK_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genAttentionMaskCase(seed, caseDef);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: ATTENTION_MASK_CONTRACT,
+  cases: ATTENTION_MASK_CASES,
+  shapeError: 'Attention-Mask-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...ATTENTION_MASK_CONTRACT, generate: generateAttentionMaskFamily, solve: solveAttentionMaskFamily };
+export const attentionMaskCaseOk = FAMILY.caseOk;
+export const genAttentionMaskCase = FAMILY.genCase;
+export const solveAttentionMaskFamily = FAMILY.solve;
+export const generateAttentionMaskFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

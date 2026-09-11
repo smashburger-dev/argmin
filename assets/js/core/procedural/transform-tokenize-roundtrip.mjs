@@ -5,7 +5,9 @@
 // as literals (the seeded block keeps the base block's exact == style), so
 // the grading contract cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const CORE_STARTER = `# VOCAB is part of the starter code
 VOCAB = {"<pad>": 0, "<unk>": 1, "<eos>": 2, "</w>": 3, "a": 4, "b": 5, "c": 6, "d": 7, "e": 8,
@@ -148,7 +150,7 @@ export const TOKENIZE_CASES = {
     referenceSolver: CORE_REFERENCE,
     prompt: CORE_PROMPT,
     fullSolution: CORE_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const words = Array.from({ length: randInt(r, 1, 3) }, () =>
         Array.from({ length: randInt(r, 1, 5) }, () => CHAR_KEYS[randInt(r, 0, CHAR_KEYS.length - 1)]).join(''));
       return { words };
@@ -163,7 +165,7 @@ export const TOKENIZE_CASES = {
     referenceSolver: STRETCH_REFERENCE,
     prompt: STRETCH_PROMPT,
     fullSolution: STRETCH_SOLUTION,
-    drawCase(r) {
+    draw(r) {
       const tokens = Array.from({ length: randInt(r, 2, 4) }, () => (r() < 0.5
         ? KNOWN_TOKENS[randInt(r, 0, KNOWN_TOKENS.length - 1)]
         : UNKNOWN_TOKENS[randInt(r, 0, UNKNOWN_TOKENS.length - 1)]));
@@ -199,43 +201,6 @@ function seededChecks(caseId, entry, index) {
   ].join('\n');
 }
 
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function tokenizeCaseOk(parameters, caseDef, caseId) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    const rebuilt = parameters.seedCases
-      .map((entry, i) => seededChecks(caseId, entry, i + 1))
-      .join('\n');
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${rebuilt}`;
-  } catch { return false; }
-}
-
-export function genTokenizeCase(seed, caseDef, caseId) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  const extras = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${extras}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveTokenizeFamily(parameters) {
-  const entry = Object.entries(TOKENIZE_CASES).find(([caseId, item]) => tokenizeCaseOk(parameters, item, caseId));
-  if (!entry) throw new Error('Tokenize-Parameter verletzen die Kapselform');
-  return { referenceCode: entry[1].referenceSolver };
-}
-
 export const TOKENIZE_CONTRACT = {
   familyId: 'transform-tokenize-roundtrip',
   familyGroup: 'transform-terms',
@@ -253,13 +218,18 @@ export const TOKENIZE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateTokenizeFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = TOKENIZE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genTokenizeCase(seed, caseDef, caseId);
-}
+// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
+// the verbatim base block plus the seeded extras derived from seedCases.
+const FAMILY = makeCaseFamily({
+  contract: TOKENIZE_CONTRACT,
+  cases: TOKENIZE_CASES,
+  shapeError: 'Tokenize-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, caseId, seedCases) =>
+    `# seeded extra cases\n${seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n')}`,
+});
 
-export const FAMILY_SPEC = { ...TOKENIZE_CONTRACT, generate: generateTokenizeFamily, solve: solveTokenizeFamily };
+export const tokenizeCaseOk = FAMILY.caseOk;
+export const genTokenizeCase = FAMILY.genCase;
+export const solveTokenizeFamily = FAMILY.solve;
+export const generateTokenizeFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

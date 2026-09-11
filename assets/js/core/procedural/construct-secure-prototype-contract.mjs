@@ -7,8 +7,9 @@
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
 import { refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
 
@@ -273,11 +274,6 @@ function seededChecks(entry, index) {
   return lines.join('\n');
 }
 
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
-}
-
 export const SECURE_CASES = {
   'secure-prototype-contract': {
     difficulty: 'stretch',
@@ -291,39 +287,6 @@ export const SECURE_CASES = {
     draw: drawConfig,
   },
 };
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function secureCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n${seededBlock(caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genSecureCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveSecureFamily(parameters) {
-  const caseDef = Object.values(SECURE_CASES).find((item) => secureCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Secure-Prototyp-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
 
 export const SECURE_CONTRACT = {
   familyId: 'construct-secure-prototype-contract',
@@ -341,13 +304,20 @@ export const SECURE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateSecureFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = SECURE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genSecureCase(seed, caseDef);
-}
+// Seeded block: renamed reference copy once, then the per-draw check lines.
+const FAMILY = makeCaseFamily({
+  contract: SECURE_CONTRACT,
+  cases: SECURE_CASES,
+  shapeError: 'Secure-Prototyp-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => seededChecks(entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...SECURE_CONTRACT, generate: generateSecureFamily, solve: solveSecureFamily };
+export const secureCaseOk = FAMILY.caseOk;
+export const genSecureCase = FAMILY.genCase;
+export const solveSecureFamily = FAMILY.solve;
+export const generateSecureFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

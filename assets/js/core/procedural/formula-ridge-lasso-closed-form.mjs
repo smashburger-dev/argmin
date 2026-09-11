@@ -6,7 +6,9 @@
 // case) with the same tolerances as the base checks, so the grading contract
 // cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
-import { randInt, rng } from '../generator_draw_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
+
+import { randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -159,7 +161,7 @@ export const RIDGE_LASSO_CASES = {
     referenceSolver: CORE_REFERENCE,
     prompt: CORE_PROMPT,
     fullSolution: CORE_REFERENCE,
-    drawCase(r) {
+    draw(r) {
       const d = randInt(r, 1, 2);
       const n = randInt(r, 3, 4);
       return {
@@ -180,7 +182,7 @@ export const RIDGE_LASSO_CASES = {
     prompt: STRETCH_PROMPT,
     fullSolution: STRETCH_REFERENCE,
     preamble: STRETCH_SEEDED_PREAMBLE,
-    drawCase(r) {
+    draw(r) {
       const d = randInt(r, 1, 2);
       const n = randInt(r, 3, 5);
       return {
@@ -229,44 +231,6 @@ function seededChecks(caseId, entry, index) {
   ].join('\n');
 }
 
-function seededSection(caseDef, caseId, seedCases) {
-  const extras = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
-  return caseDef.preamble ? `${caseDef.preamble}\n${extras}` : extras;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function ridgeLassoCaseOk(parameters, caseDef, caseId) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, caseId, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genRidgeLassoCase(seed, caseDef, caseId) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawCase(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededSection(caseDef, caseId, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveRidgeLassoFamily(parameters) {
-  const entry = Object.entries(RIDGE_LASSO_CASES).find(([caseId, item]) => ridgeLassoCaseOk(parameters, item, caseId));
-  if (!entry) throw new Error('Ridge-Lasso-Parameter verletzen die Kapselform');
-  return { referenceCode: entry[1].referenceSolver };
-}
-
 export const RIDGE_LASSO_CONTRACT = {
   familyId: 'formula-ridge-lasso-closed-form',
   familyGroup: 'formula-apply',
@@ -284,13 +248,22 @@ export const RIDGE_LASSO_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateRidgeLassoFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = RIDGE_LASSO_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genRidgeLassoCase(seed, caseDef, caseId);
-}
+// Seeded section: optional case preamble (the __ref_ridge copy) once, then
+// the per-draw check lines behind the '# seeded extra cases' header.
+const FAMILY = makeCaseFamily({
+  contract: RIDGE_LASSO_CONTRACT,
+  cases: RIDGE_LASSO_CASES,
+  shapeError: 'Ridge-Lasso-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, caseId, seedCases) => {
+    const extras = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
+    const body = caseDef.preamble ? `${caseDef.preamble}\n${extras}` : extras;
+    return `# seeded extra cases\n${body}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...RIDGE_LASSO_CONTRACT, generate: generateRidgeLassoFamily, solve: solveRidgeLassoFamily };
+export const ridgeLassoCaseOk = FAMILY.caseOk;
+export const genRidgeLassoCase = FAMILY.genCase;
+export const solveRidgeLassoFamily = FAMILY.solve;
+export const generateRidgeLassoFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

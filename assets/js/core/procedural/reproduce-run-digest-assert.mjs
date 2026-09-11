@@ -7,8 +7,9 @@
 // grading contract cannot drift. Mirrors reproduce-seeded-split.mjs.
 
 import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 // Verbatim case payloads extracted from content/families/reproduce-run-digest-assert.json.
 const CASE_PAYLOADS = {
@@ -134,49 +135,6 @@ export const DIGEST_CASES = {
   },
 };
 
-// The __raised helper plus the renamed reference copy are emitted once at the
-// top of the seeded block; all per-draw checks call into it.
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${checks}`;
-}
-
-const testsFor = (caseDef, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function digestCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genDigestCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, (_, i) => caseDef.draw(r, i));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-    competencyIds: caseDef.competencyIds,
-  };
-}
-
-export function solveDigestFamily(parameters) {
-  const caseDef = Object.values(DIGEST_CASES).find((item) => digestCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Lauf-Digest-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const DIGEST_CONTRACT = {
   familyId: 'reproduce-run-digest-assert',
   familyGroup: 'reproduce-hash',
@@ -195,13 +153,18 @@ export const DIGEST_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateDigestFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = DIGEST_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genDigestCase(seed, caseDef);
-}
+// The __raised helper plus the renamed reference copy are emitted once at the
+// top of the seeded block; all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: DIGEST_CONTRACT,
+  cases: DIGEST_CASES,
+  shapeError: 'Lauf-Digest-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n')}`,
+});
 
-export const FAMILY_SPEC = { ...DIGEST_CONTRACT, generate: generateDigestFamily, solve: solveDigestFamily };
+export const digestCaseOk = FAMILY.caseOk;
+export const genDigestCase = FAMILY.genCase;
+export const solveDigestFamily = FAMILY.solve;
+export const generateDigestFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

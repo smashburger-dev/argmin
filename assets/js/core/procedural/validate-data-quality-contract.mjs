@@ -7,8 +7,9 @@
 // Mirrors palindromExtraCases in foundations_construct_families.mjs.
 
 import { RAISED_HELPER } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -293,46 +294,6 @@ export const DATA_QUALITY_CASES = {
   },
 };
 
-const seededBlock = (caseDef, seedCases) => [
-  caseDef.prelude,
-  ...seedCases.map((entry, i) => caseDef.emit(entry, i + 1)),
-].join('\n\n');
-
-const testsFor = (caseDef, seedCases) => `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`;
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function dataQualityCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === testsFor(caseDef, parameters.seedCases);
-  } catch { return false; }
-}
-
-export function genDataQualityCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.draw(r));
-  return {
-    parameters: {
-      packages: caseDef.packages,
-      starterCode: caseDef.starterCode,
-      tests: testsFor(caseDef, seedCases),
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveDataQualityFamily(parameters) {
-  const caseDef = Object.values(DATA_QUALITY_CASES).find((item) => dataQualityCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Datenqualitäts-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const DATA_QUALITY_CONTRACT = {
   familyId: 'validate-data-quality-contract',
   familyGroup: 'validate-contract',
@@ -350,13 +311,22 @@ export const DATA_QUALITY_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateDataQualityFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = DATA_QUALITY_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genDataQualityCase(seed, caseDef);
-}
+// The per-case prelude (raised helper plus renamed reference copy / contract
+// literal) is emitted once at the top of the seeded block; all per-draw
+// checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: DATA_QUALITY_CONTRACT,
+  cases: DATA_QUALITY_CASES,
+  shapeError: 'Datenqualitäts-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) =>
+    `# seeded extra cases\n${[
+      caseDef.prelude,
+      ...seedCases.map((entry, i) => caseDef.emit(entry, i + 1)),
+    ].join('\n\n')}`,
+});
 
-export const FAMILY_SPEC = { ...DATA_QUALITY_CONTRACT, generate: generateDataQualityFamily, solve: solveDataQualityFamily };
+export const dataQualityCaseOk = FAMILY.caseOk;
+export const genDataQualityCase = FAMILY.genCase;
+export const solveDataQualityFamily = FAMILY.solve;
+export const generateDataQualityFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

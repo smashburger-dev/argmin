@@ -7,8 +7,9 @@
 // capsule recipe of formula-descriptive-stats-numpy.mjs.
 
 import { refCopy } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 const PACKAGES = [];
 
@@ -142,7 +143,7 @@ export const PIPELINE_CASES = {
     refNames: ['NO_HIT', 'BLOCK', '_norm', '_terms', '_rank_docs', 'build_secure_prototype', 'ablation'],
     // Ablation config: 4-6 docs (often one injection doc), 2-4 queries with
     // valid relevant indices, k, rules, policy, free_tools and 3-6 actions.
-    drawConfig(r) {
+    draw(r) {
       const docs = shuffle(r, DOC_POOL).slice(0, randInt(r, 4, 6));
       if (r() < 0.6) docs[randInt(r, 0, docs.length - 1)] = INJECTION_DOC;
       const queries = Array.from({ length: randInt(r, 2, 4) }, () => ({
@@ -157,13 +158,15 @@ export const PIPELINE_CASES = {
         ? { [rest[0]]: shuffle(r, ARG_POOL).slice(0, randInt(r, 1, 2)) }
         : {};
       return {
-        docs,
-        queries,
-        k: randInt(r, 1, 2),
-        injection_rules: shuffle(r, RULE_POOL).slice(0, randInt(r, 1, 2)),
-        policy: { allowed, restricted, forbidden },
-        free_tools: shuffle(r, TOOL_POOL).slice(0, randInt(r, 3, 5)),
-        actions: Array.from({ length: randInt(r, 3, 6) }, () => ({ tool: pick(r, TOOL_POOL), arg: pick(r, ARG_POOL) })),
+        config: {
+          docs,
+          queries,
+          k: randInt(r, 1, 2),
+          injection_rules: shuffle(r, RULE_POOL).slice(0, randInt(r, 1, 2)),
+          policy: { allowed, restricted, forbidden },
+          free_tools: shuffle(r, TOOL_POOL).slice(0, randInt(r, 3, 5)),
+          actions: Array.from({ length: randInt(r, 3, 6) }, () => ({ tool: pick(r, TOOL_POOL), arg: pick(r, ARG_POOL) })),
+        },
       };
     },
     extraCount: 2,
@@ -174,7 +177,7 @@ export const PIPELINE_CASES = {
     refNames: ['call_with_timeout'],
     // Virtual clock pair (t0, t1); index parity forces one ok and one timeout
     // draw per instance.
-    drawCall(r, index) {
+    draw(r, index) {
       const budget = randInt(r, 40, 160);
       const t0 = randInt(r, 0, 30);
       const timeout = index % 2 === 0;
@@ -188,7 +191,7 @@ export const PIPELINE_CASES = {
     ...CASE_PAYLOADS['run-stage-budget'],
     refNames: ['run_stage'],
     // One draw per report kind (ok/timeout/fehler) cycling by index.
-    drawStage(r, index) {
+    draw(r, index) {
       const kind = ['ok', 'timeout', 'fehler'][index % 3];
       const budget = randInt(r, 20, 120);
       const t0 = randInt(r, 0, 20);
@@ -211,7 +214,7 @@ export const PIPELINE_CASES = {
     refNames: ['starte_pipeline'],
     // 2-3 stages over an increasing virtual clock; about half the draws carry
     // one failing stage (fehler or timeout) so the abort path is exercised.
-    drawPipeline(r) {
+    draw(r) {
       const count = randInt(r, 2, 3);
       const names = shuffle(r, STAGE_NAMES).slice(0, count);
       const failAt = r() < 0.5 ? randInt(r, 0, count - 1) : -1;
@@ -238,7 +241,7 @@ export const PIPELINE_CASES = {
     refNames: ['bewerte'],
     // Thresholds plus one lauf record; roughly a quarter of draws are aborted
     // runs, some keep empty subgruppen to hit the defensive 0.0 branch.
-    drawBewerte(r) {
+    draw(r) {
       const schwellen = { recall_min: pick(r, [0.5, 0.6, 0.7]), subgruppe_min: pick(r, [0.4, 0.5, 0.6]) };
       const gesamt = randInt(r, 5, 9);
       const lauf = {
@@ -257,7 +260,7 @@ export const PIPELINE_CASES = {
     ...CASE_PAYLOADS['acceptance-all-contracts'],
     refNames: ['acceptance'],
     // 3-5 named checks (manifest_gepinnt usually present), some empty lists.
-    drawPruefungen(r) {
+    draw(r) {
       if (r() < 0.15) return { pruefungen: [] };
       const names = shuffle(r, CHECK_NAMES).slice(0, randInt(r, 3, 5));
       if (r() < 0.7 && !names.includes('manifest_gepinnt')) {
@@ -340,53 +343,6 @@ function seededChecks(caseId, seedCase, index) {
   ].join('\n');
 }
 
-// The renamed reference copy is emitted once at the top of the seeded block;
-// all per-draw checks call into it.
-function seededBlock(caseId, caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
-  return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function pipelineCaseOk(parameters, caseId, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    return parameters.tests === `${caseDef.baseTests}\n\n${seededBlock(caseId, caseDef, parameters.seedCases)}`;
-  } catch { return false; }
-}
-
-export function genPipelineCase(seed, caseId, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, (_, i) => {
-    if (caseId === 'pipeline-status-report') return { config: caseDef.drawConfig(r) };
-    if (caseId === 'call-with-timeout') return caseDef.drawCall(r, i);
-    if (caseId === 'run-stage-budget') return caseDef.drawStage(r, i);
-    if (caseId === 'start-pipeline-integration') return caseDef.drawPipeline(r);
-    if (caseId === 'verdict-rules') return caseDef.drawBewerte(r);
-    return caseDef.drawPruefungen(r);
-  });
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n${seededBlock(caseId, caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solvePipelineFamily(parameters) {
-  const entry = Object.entries(PIPELINE_CASES).find(([caseId, item]) => pipelineCaseOk(parameters, caseId, item));
-  if (!entry) throw new Error('Pipeline-Status-Parameter verletzen die Kapselform');
-  return { referenceCode: entry[1].referenceSolver };
-}
-
 export const PIPELINE_CONTRACT = {
   familyId: 'reproduce-pipeline-status-report',
   familyGroup: 'reproduce-hash',
@@ -408,13 +364,21 @@ export const PIPELINE_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generatePipelineFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = PIPELINE_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genPipelineCase(seed, caseId, caseDef);
-}
+// The renamed reference copy is emitted once at the top of the seeded block;
+// all per-draw checks call into it.
+const FAMILY = makeCaseFamily({
+  contract: PIPELINE_CONTRACT,
+  cases: PIPELINE_CASES,
+  shapeError: 'Pipeline-Status-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n');
+    return `# seeded extra cases\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...PIPELINE_CONTRACT, generate: generatePipelineFamily, solve: solvePipelineFamily };
+export const pipelineCaseOk = FAMILY.caseOk;
+export const genPipelineCase = FAMILY.genCase;
+export const solvePipelineFamily = FAMILY.solve;
+export const generatePipelineFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;

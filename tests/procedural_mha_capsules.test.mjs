@@ -7,61 +7,39 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  FAMILY_SPEC,
-  MHA_CASES,
-  MHA_CONTRACT,
-  genMhaCase,
-  generateMhaFamily,
-  mhaCaseOk,
-  solveMhaFamily,
-} from '../assets/js/core/procedural/optimize-multi-head-attention.mjs';
+import * as mod from '../assets/js/core/procedural/optimize-multi-head-attention.mjs';
+import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CASE_IDS = ['multi-head-attention'];
 
-test('anchor: contract null, cases fully preserved as oracle', () => {
+// The case defs do not carry `packages`; the JSON anchors pin it to ['numpy'],
+// so the suite surface adds it for the verbatim anchor check.
+const suiteMod = {
+  ...mod,
+  MHA_CASES: Object.fromEntries(
+    Object.entries(mod.MHA_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
+  ),
+};
+
+codeCapsuleSuite('optimize-multi-head-attention', suiteMod, [
+  { caseId: 'multi-head-attention', difficulty: 'challenge' },
+], { difficultyProfiles: ['challenge'] });
+
+test('anchor extras: difficulty profile, contract competencies and case types', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/optimize-multi-head-attention.json'), 'utf8'));
-  assert.equal(doc.contract, null);
-  assert.equal(doc.cases.length, 1);
-  for (const caseId of CASE_IDS) {
-    const body = doc.cases.find((item) => item.caseId === caseId);
-    assert.ok(body, `${caseId}: anchor missing`);
-    assert.ok(body.parameters.tests.includes('__check'), `${caseId}: base tests preserved`);
-    assert.equal(body.expected.kind, 'reference-solver');
-    assert.ok(body.expected.referenceSolver.length > 50, `${caseId}: reference solver preserved`);
-  }
-  // base test blocks and prompts must equal the module constants verbatim
-  for (const caseId of CASE_IDS) {
-    const body = doc.cases.find((item) => item.caseId === caseId);
-    const def = MHA_CASES[caseId];
-    assert.equal(body.difficultyProfile, def.difficulty, `${caseId}: difficulty`);
-    assert.equal(body.parameters.tests, def.baseTests, `${caseId}: base tests verbatim`);
-    assert.equal(body.parameters.starterCode, def.starterCode, `${caseId}: starter verbatim`);
-    assert.equal(body.prompt, def.prompt, `${caseId}: prompt verbatim`);
-    assert.equal(body.fullSolution, def.fullSolution, `${caseId}: fullSolution verbatim`);
-    assert.equal(body.expected.referenceSolver, def.referenceSolver, `${caseId}: solver verbatim`);
-  }
-});
-
-test('capsule shape: generated parameters satisfy mhaCaseOk over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = MHA_CASES[caseId];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const generated = genMhaCase(seed, def);
-      assert.ok(mhaCaseOk(generated.parameters, def), `${caseId}:${seed}: shape`);
-      assert.ok(generated.parameters.tests.startsWith(def.baseTests), `${caseId}:${seed}: base block kept`);
-      assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${caseId}:${seed}: seeded block`);
-      assert.ok(generated.parameters.tests.includes('seeded mha 1'), `${caseId}:${seed}: seeded check emitted`);
-      assert.equal(generated.expected.referenceSolver, def.referenceSolver);
-      assert.equal(generated.prompt, def.prompt);
-    }
-  }
+  const body = doc.cases.find((item) => item.caseId === 'multi-head-attention');
+  assert.equal(body.difficultyProfile, mod.MHA_CASES['multi-head-attention'].difficulty, 'difficulty');
+  assert.deepEqual(mod.MHA_CONTRACT.competencyIds, ['c-dl-attention', 'c-numpy-basics']);
+  assert.deepEqual(mod.MHA_CONTRACT.caseTypes, [
+    { caseId: 'multi-head-attention', propertyTest: false },
+  ]);
 });
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = genMhaCase(seed, MHA_CASES['multi-head-attention']);
+    const generated = mod.genMhaCase(seed, 'multi-head-attention', mod.MHA_CASES['multi-head-attention']);
+    assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
+    assert.ok(generated.parameters.tests.includes('seeded mha 1'), `${seed}: seeded check emitted`);
     assert.equal(generated.parameters.seedCases.length, 2, 'extraCount');
     for (const entry of generated.parameters.seedCases) {
       const { shape, X, Wq, Wk, Wv, Wo, mask } = entry;
@@ -90,53 +68,4 @@ test('seeded draws stay inside the declared domains', () => {
       });
     }
   }
-});
-
-test('distinct floor: at least 40 distinct parameter sets per case over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = MHA_CASES[caseId];
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      seen.add(JSON.stringify(generateMhaFamily({ seed, caseId, difficulty: def.difficulty }).parameters));
-    }
-    assert.ok(seen.size >= 40, `${caseId}: only ${seen.size} distinct`);
-  }
-});
-
-test('determinism: same seed reproduces identical output, negative seeds valid', () => {
-  for (const caseId of CASE_IDS) {
-    const def = MHA_CASES[caseId];
-    for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genMhaCase(seed, def), genMhaCase(seed, def), `${caseId}:${seed}`);
-    }
-  }
-});
-
-test('solver consistency: solve returns the case reference solver', () => {
-  for (const caseId of CASE_IDS) {
-    const def = MHA_CASES[caseId];
-    for (let seed = 0; seed < 50; seed += 1) {
-      const generated = generateMhaFamily({ seed, caseId, difficulty: def.difficulty });
-      assert.deepEqual(solveMhaFamily(generated.parameters), { referenceCode: def.referenceSolver });
-    }
-  }
-});
-
-test('family block: dispatch, contract, errors', () => {
-  assert.equal(MHA_CONTRACT.familyId, 'optimize-multi-head-attention');
-  assert.equal(MHA_CONTRACT.authorityMode, 'seeded');
-  assert.equal(MHA_CONTRACT.activityType, 'python-code');
-  assert.equal(MHA_CONTRACT.graderId, 'pyodide');
-  assert.equal(MHA_CONTRACT.masteryEligible, true);
-  assert.deepEqual(MHA_CONTRACT.difficultyProfiles, ['challenge']);
-  assert.deepEqual(MHA_CONTRACT.competencyIds, ['c-dl-attention', 'c-numpy-basics']);
-  assert.deepEqual(MHA_CONTRACT.caseTypes, [
-    { caseId: 'multi-head-attention', propertyTest: false },
-  ]);
-  assert.equal(FAMILY_SPEC.generate, generateMhaFamily);
-  assert.equal(FAMILY_SPEC.solve, solveMhaFamily);
-  assert.throws(() => generateMhaFamily({ seed: 0, caseId: 'multi-head-attention', difficulty: 'core' }), /Unbekannter Fall/);
-  assert.throws(() => generateMhaFamily({ seed: 0, caseId: 'nope', difficulty: 'challenge' }), /Unbekannter Fall/);
-  assert.throws(() => generateMhaFamily({ seed: 1.5, caseId: 'multi-head-attention', difficulty: 'challenge' }), /Seed/);
-  assert.throws(() => solveMhaFamily({}), /Kapselform/);
 });

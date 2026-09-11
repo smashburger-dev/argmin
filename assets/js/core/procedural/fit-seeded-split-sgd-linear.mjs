@@ -10,8 +10,9 @@
 // literals. Mirrors fit-early-stopping-roundtrip.mjs.
 
 import { pyNum } from './py_test_kit.mjs';
+import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt, rng } from '../generator_draw_kit.mjs';
+import { pick, randInt } from '../generator_draw_kit.mjs';
 
 const PACKAGES = ['numpy'];
 
@@ -223,7 +224,7 @@ export const SEEDED_SGD_CASES = {
     fullSolution: SGD_SOLUTION,
     refHelper: SGD_REF_HELPER,
     checks: seededChecks,
-    drawEntry(r) {
+    draw(r) {
       return { split: drawSplit(r), run: drawRun(r) };
     },
     validEntry: (entry) =>
@@ -241,46 +242,6 @@ export const SEEDED_SGD_CASES = {
   },
 };
 
-function seededBlock(caseDef, seedCases) {
-  const checks = seedCases.map((entry, i) => caseDef.checks(entry, i + 1)).join('\n\n');
-  return `${caseDef.refHelper}\n\n${checks}`;
-}
-
-// Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
-// the verbatim base block plus the seeded extras derived from seedCases.
-export function seededSgdCaseOk(parameters, caseDef) {
-  try {
-    if (!parameters || typeof parameters !== 'object') return false;
-    if (parameters.starterCode !== caseDef.starterCode) return false;
-    if (!Array.isArray(parameters.seedCases) || parameters.seedCases.length !== caseDef.extraCount) return false;
-    if (parameters.seedCases.some((entry) => !caseDef.validEntry(entry))) return false;
-    const expectedTests = `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, parameters.seedCases)}`;
-    return parameters.tests === expectedTests;
-  } catch { return false; }
-}
-
-export function genSeededSgdCase(seed, caseDef) {
-  const r = rng(seed);
-  const seedCases = Array.from({ length: caseDef.extraCount }, () => caseDef.drawEntry(r));
-  return {
-    parameters: {
-      packages: PACKAGES,
-      starterCode: caseDef.starterCode,
-      tests: `${caseDef.baseTests}\n\n# seeded extra cases\n${seededBlock(caseDef, seedCases)}`,
-      seedCases,
-    },
-    expected: { kind: 'reference-solver', referenceSolver: caseDef.referenceSolver },
-    prompt: caseDef.prompt,
-    fullSolution: caseDef.fullSolution,
-  };
-}
-
-export function solveSeededSgdFamily(parameters) {
-  const caseDef = Object.values(SEEDED_SGD_CASES).find((item) => seededSgdCaseOk(parameters, item));
-  if (!caseDef) throw new Error('Seeded-SGD-Parameter verletzen die Kapselform');
-  return { referenceCode: caseDef.referenceSolver };
-}
-
 export const SEEDED_SGD_CONTRACT = {
   familyId: 'fit-seeded-split-sgd-linear',
   familyGroup: 'fit-model',
@@ -295,13 +256,21 @@ export const SEEDED_SGD_CONTRACT = {
   activityType: 'python-code',
 };
 
-export function generateSeededSgdFamily({ seed, caseId, difficulty }) {
-  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-  const caseDef = SEEDED_SGD_CASES[caseId];
-  if (!caseDef || caseDef.difficulty !== difficulty) {
-    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-  }
-  return genSeededSgdCase(seed, caseDef);
-}
+// Seeded block: the renamed reference helper once, then the per-draw check
+// lines behind the '# seeded extra cases' header.
+const FAMILY = makeCaseFamily({
+  contract: SEEDED_SGD_CONTRACT,
+  cases: SEEDED_SGD_CASES,
+  shapeError: 'Seeded-SGD-Parameter verletzen die Kapselform',
+  seededBlock: (caseDef, _caseId, seedCases) => {
+    const checks = seedCases.map((entry, i) => caseDef.checks(entry, i + 1)).join('\n\n');
+    return `# seeded extra cases\n${caseDef.refHelper}\n\n${checks}`;
+  },
+  defaultPackages: PACKAGES,
+});
 
-export const FAMILY_SPEC = { ...SEEDED_SGD_CONTRACT, generate: generateSeededSgdFamily, solve: solveSeededSgdFamily };
+export const seededSgdCaseOk = FAMILY.caseOk;
+export const genSeededSgdCase = FAMILY.genCase;
+export const solveSeededSgdFamily = FAMILY.solve;
+export const generateSeededSgdFamily = FAMILY.generate;
+export const FAMILY_SPEC = FAMILY.spec;
