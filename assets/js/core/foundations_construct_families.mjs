@@ -41,7 +41,8 @@ import {
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
 import { shuffle } from './generator_draw_kit.mjs';
-import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { logTerm, signed } from './foundations_generators.mjs';
+import { staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -57,32 +58,6 @@ function profileTier(difficulty) {
   return CONSTRUCT_PROFILES.indexOf(difficulty);
 }
 
-function staticVariantInstance(familyId, caseId, seed, difficulty) {
-  const body = staticCaseBody(familyId, caseId);
-  const { body: chosen, index } = variantOf(body, seed ?? 0);
-  const {
-    caseId: _caseId,
-    difficultyProfile: _difficultyProfile,
-    masteryEligible: _masteryEligible,
-    sourceLineage: _sourceLineage,
-    variants: _variants,
-    ...generated
-  } = chosen;
-  return {
-    ...generated,
-    masteryEligible: body.masteryEligible,
-    parameters: {
-      caseId,
-      difficulty,
-      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
-      ...(chosen.parameters || {}),
-    },
-  };
-}
-
-const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
-const SUB = { 2: '₂', 3: '₃', 5: '₅', 10: '₁₀' };
-const logTerm = (base, arg) => `log${SUB[base] || `_${base}`}(${arg})`;
 
 // --- Familie 1: transform-linear-equation-isolate (numeric-exact) ---------
 // Shard-Fälle: two-step-fixed-instance (statisch, w01-e1), two-step-seeded-

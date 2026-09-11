@@ -2,7 +2,8 @@
 // W06 generators; this module only supplies profile filtering and family
 // instance shape.
 
-import { drawFamilyInstance, makeChoiceCapsuleFamily } from './generator_draw_kit.mjs';
+import { makeChoiceCapsuleFamily } from './generator_draw_kit.mjs';
+import { makeSolvedFamily } from './solved_family_kit.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import {
   genCompleteRows,
@@ -156,6 +157,8 @@ function profileAccepts(caseId, difficulty) {
   if (!predicate) throw new Error(`Unbekanntes Profil ${difficulty}`);
   return predicate;
 }
+
+const toIntegerExpected = (drawn) => ({ kind: 'integer', value: drawn.expected });
 
 const solveFormulaRatioCompare = (parameters) => staticExpected('formula-ratio-percent-metric', parameters);
 const solveFormulaRatioShrinkage = (parameters) => {
@@ -615,150 +618,6 @@ const FAMILY_DEFINITIONS = {
   },
 };
 
-function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
-  const definition = FAMILY_DEFINITIONS[familyId];
-  const caseDefinition = definition?.cases[caseId];
-  if (!definition || !caseDefinition) throw new Error(`${familyId}: unbekannter Fall ${caseId}`);
-  if (!caseDefinition.generator) {
-    const body = staticCaseBody(familyId, caseId);
-    if (body.difficultyProfile !== difficulty) {
-      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
-    }
-    const { body: chosen, index } = variantOf(body, seed ?? 0);
-    const {
-      caseId: _caseId,
-      difficultyProfile: _difficultyProfile,
-      masteryEligible: _masteryEligible,
-      sourceLineage: _sourceLineage,
-      variants: _variants,
-      ...generated
-    } = chosen;
-    return {
-      ...generated,
-      masteryEligible: body.masteryEligible,
-      parameters: {
-        caseId,
-        difficulty,
-        ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
-        ...(chosen.parameters || {}),
-      },
-    };
-  }
-  const drawn = difficulty === 'core'
-    ? caseDefinition.generator(seed)
-    : drawFamilyInstance(caseDefinition.generator, {
-      seed,
-      caseId,
-      difficulty,
-      wantShape: () => true,
-      profileAccepts: profileAccepts(caseId, difficulty),
-      profiles: DATA_ML_DIFFICULTY_PROFILES,
-    });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'integer', value: drawn.expected },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-    ...(caseDefinition.competencyIds ? { competencyIds: [...caseDefinition.competencyIds] } : {}),
-  };
-}
-
-export function solveCountRemainingRows(parameters) {
-  return FAMILY_DEFINITIONS['count-remaining-rows-cleaning-rule'].solve(parameters);
-}
-
-export function generateCountRemainingRowsFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('count-remaining-rows-cleaning-rule', { seed, caseId, difficulty });
-}
-
-export function solveFormulaRatioPercentMetric(parameters) {
-  return FAMILY_DEFINITIONS['formula-ratio-percent-metric'].solve(parameters);
-}
-
-export function generateFormulaRatioPercentMetricFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-ratio-percent-metric', { seed, caseId, difficulty });
-}
-
-export function solveMseGradientClosedForm(parameters) {
-  return FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].solve(parameters);
-}
-
-export function generateMseGradientClosedFormFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('optimize-mse-gradient-closed-form', { seed, caseId, difficulty });
-}
-
-export function solveFormulaQuadraticErrorMetric(parameters) {
-  return FAMILY_DEFINITIONS['formula-quadratic-error-metric'].solve(parameters);
-}
-
-export function generateFormulaQuadraticErrorMetricFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-quadratic-error-metric', { seed, caseId, difficulty });
-}
-
-export function solveAggregateMajorityRuleCount(parameters) {
-  return FAMILY_DEFINITIONS['aggregate-majority-rule-count'].solve(parameters);
-}
-
-export function generateAggregateMajorityRuleCountFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('aggregate-majority-rule-count', { seed, caseId, difficulty });
-}
-
-export function solveAggregateConfusionMetric(parameters) {
-  return FAMILY_DEFINITIONS['aggregate-confusion-metric'].solve(parameters);
-}
-
-export function generateAggregateConfusionMetricFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('aggregate-confusion-metric', { seed, caseId, difficulty });
-}
-
-export function solveFormulaMetricSpreadRange(parameters) {
-  return FAMILY_DEFINITIONS['formula-metric-spread-range'].solve(parameters);
-}
-
-export function generateFormulaMetricSpreadRangeFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-metric-spread-range', { seed, caseId, difficulty });
-}
-
-export function solveFormulaCountFromConstruction(parameters) {
-  return FAMILY_DEFINITIONS['formula-count-from-construction'].solve(parameters);
-}
-
-export function generateFormulaCountFromConstructionFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-count-from-construction', { seed, caseId, difficulty });
-}
-
-export function solveOptimizeBackpropPathSum(parameters) {
-  return FAMILY_DEFINITIONS['optimize-backprop-path-sum'].solve(parameters);
-}
-
-export function generateOptimizeBackpropPathSumFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('optimize-backprop-path-sum', { seed, caseId, difficulty });
-}
-
-export function solveFormulaStatFromTable(parameters) {
-  return FAMILY_DEFINITIONS['formula-stat-from-table'].solve(parameters);
-}
-
-export function generateFormulaStatFromTableFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-stat-from-table', { seed, caseId, difficulty });
-}
-
-export function solveAggregateTopkRelevanceArithmetic(parameters) {
-  return FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve(parameters);
-}
-
-export function generateAggregateTopkRelevanceArithmeticFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('aggregate-topk-relevance-arithmetic', { seed, caseId, difficulty });
-}
-
-export function solveValidateGoalshiftFlagRules(parameters) {
-  return FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve(parameters);
-}
-
-export function generateValidateGoalshiftFlagRulesFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('validate-goalshift-flag-rules', { seed, caseId, difficulty });
-}
-
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
   { caseId: 'duplicate-rows', sourceLineage: ['w06-e6'] },
@@ -884,6 +743,16 @@ export const COUNT_REMAINING_ROWS_CONTRACT = {
   activityType: 'numeric',
 };
 
+const COUNT_REMAINING_ROWS = makeSolvedFamily({
+  contract: COUNT_REMAINING_ROWS_CONTRACT,
+  cases: FAMILY_DEFINITIONS['count-remaining-rows-cleaning-rule'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['count-remaining-rows-cleaning-rule'].solve,
+});
+export const generateCountRemainingRowsFamily = COUNT_REMAINING_ROWS.generate;
+export const solveCountRemainingRows = COUNT_REMAINING_ROWS.solve;
+
 export const FORMULA_RATIO_PERCENT_CONTRACT = {
   familyId: 'formula-ratio-percent-metric',
   familyGroup: 'formula-apply',
@@ -897,6 +766,16 @@ export const FORMULA_RATIO_PERCENT_CONTRACT = {
   graderId: 'deterministic',
   activityType: 'numeric',
 };
+
+const FORMULA_RATIO_PERCENT = makeSolvedFamily({
+  contract: FORMULA_RATIO_PERCENT_CONTRACT,
+  cases: FAMILY_DEFINITIONS['formula-ratio-percent-metric'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['formula-ratio-percent-metric'].solve,
+});
+export const generateFormulaRatioPercentMetricFamily = FORMULA_RATIO_PERCENT.generate;
+export const solveFormulaRatioPercentMetric = FORMULA_RATIO_PERCENT.solve;
 
 export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
   familyId: 'optimize-mse-gradient-closed-form',
@@ -912,6 +791,16 @@ export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
   activityType: 'numeric',
 };
 
+const MSE_GRADIENT_CLOSED_FORM = makeSolvedFamily({
+  contract: MSE_GRADIENT_CLOSED_FORM_CONTRACT,
+  cases: FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].solve,
+});
+export const generateMseGradientClosedFormFamily = MSE_GRADIENT_CLOSED_FORM.generate;
+export const solveMseGradientClosedForm = MSE_GRADIENT_CLOSED_FORM.solve;
+
 export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
   familyId: 'aggregate-majority-rule-count',
   familyGroup: 'aggregate-count',
@@ -925,6 +814,16 @@ export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
   graderId: 'deterministic',
   activityType: 'numeric',
 };
+
+const AGGREGATE_MAJORITY_RULE_COUNT = makeSolvedFamily({
+  contract: AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT,
+  cases: FAMILY_DEFINITIONS['aggregate-majority-rule-count'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['aggregate-majority-rule-count'].solve,
+});
+export const generateAggregateMajorityRuleCountFamily = AGGREGATE_MAJORITY_RULE_COUNT.generate;
+export const solveAggregateMajorityRuleCount = AGGREGATE_MAJORITY_RULE_COUNT.solve;
 
 export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
   familyId: 'formula-quadratic-error-metric',
@@ -940,6 +839,16 @@ export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
   activityType: 'numeric',
 };
 
+const FORMULA_QUADRATIC_ERROR = makeSolvedFamily({
+  contract: FORMULA_QUADRATIC_ERROR_CONTRACT,
+  cases: FAMILY_DEFINITIONS['formula-quadratic-error-metric'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['formula-quadratic-error-metric'].solve,
+});
+export const generateFormulaQuadraticErrorMetricFamily = FORMULA_QUADRATIC_ERROR.generate;
+export const solveFormulaQuadraticErrorMetric = FORMULA_QUADRATIC_ERROR.solve;
+
 export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
   familyId: 'aggregate-confusion-metric',
   familyGroup: 'aggregate-count',
@@ -954,6 +863,16 @@ export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
   activityType: 'numeric',
 };
 
+const AGGREGATE_CONFUSION_METRIC = makeSolvedFamily({
+  contract: AGGREGATE_CONFUSION_METRIC_CONTRACT,
+  cases: FAMILY_DEFINITIONS['aggregate-confusion-metric'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['aggregate-confusion-metric'].solve,
+});
+export const generateAggregateConfusionMetricFamily = AGGREGATE_CONFUSION_METRIC.generate;
+export const solveAggregateConfusionMetric = AGGREGATE_CONFUSION_METRIC.solve;
+
 export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
   familyId: 'formula-metric-spread-range',
   familyGroup: 'formula-apply',
@@ -967,6 +886,16 @@ export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
   graderId: 'deterministic',
   activityType: 'numeric',
 };
+
+const FORMULA_METRIC_SPREAD_RANGE = makeSolvedFamily({
+  contract: FORMULA_METRIC_SPREAD_RANGE_CONTRACT,
+  cases: FAMILY_DEFINITIONS['formula-metric-spread-range'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['formula-metric-spread-range'].solve,
+});
+export const generateFormulaMetricSpreadRangeFamily = FORMULA_METRIC_SPREAD_RANGE.generate;
+export const solveFormulaMetricSpreadRange = FORMULA_METRIC_SPREAD_RANGE.solve;
 
 export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
   familyId: 'formula-count-from-construction',
@@ -989,6 +918,16 @@ export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
   activityType: 'numeric',
 };
 
+const FORMULA_COUNT_FROM_CONSTRUCTION = makeSolvedFamily({
+  contract: FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT,
+  cases: FAMILY_DEFINITIONS['formula-count-from-construction'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['formula-count-from-construction'].solve,
+});
+export const generateFormulaCountFromConstructionFamily = FORMULA_COUNT_FROM_CONSTRUCTION.generate;
+export const solveFormulaCountFromConstruction = FORMULA_COUNT_FROM_CONSTRUCTION.solve;
+
 export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
   familyId: 'formula-stat-from-table',
   familyGroup: 'formula-apply',
@@ -1002,6 +941,16 @@ export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
   graderId: 'deterministic',
   activityType: 'numeric',
 };
+
+const FORMULA_STAT_FROM_TABLE = makeSolvedFamily({
+  contract: FORMULA_STAT_FROM_TABLE_CONTRACT,
+  cases: FAMILY_DEFINITIONS['formula-stat-from-table'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['formula-stat-from-table'].solve,
+});
+export const generateFormulaStatFromTableFamily = FORMULA_STAT_FROM_TABLE.generate;
+export const solveFormulaStatFromTable = FORMULA_STAT_FROM_TABLE.solve;
 
 export const AGGREGATE_TOPK_RELEVANCE_CONTRACT = {
   familyId: 'aggregate-topk-relevance-arithmetic',
@@ -1017,6 +966,16 @@ export const AGGREGATE_TOPK_RELEVANCE_CONTRACT = {
   activityType: 'numeric',
 };
 
+const AGGREGATE_TOPK_RELEVANCE = makeSolvedFamily({
+  contract: AGGREGATE_TOPK_RELEVANCE_CONTRACT,
+  cases: FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve,
+});
+export const generateAggregateTopkRelevanceArithmeticFamily = AGGREGATE_TOPK_RELEVANCE.generate;
+export const solveAggregateTopkRelevanceArithmetic = AGGREGATE_TOPK_RELEVANCE.solve;
+
 export const VALIDATE_GOALSHIFT_CONTRACT = {
   familyId: 'validate-goalshift-flag-rules',
   familyGroup: 'validate-contract',
@@ -1031,6 +990,16 @@ export const VALIDATE_GOALSHIFT_CONTRACT = {
   activityType: 'numeric',
 };
 
+const VALIDATE_GOALSHIFT = makeSolvedFamily({
+  contract: VALIDATE_GOALSHIFT_CONTRACT,
+  cases: FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve,
+});
+export const generateValidateGoalshiftFlagRulesFamily = VALIDATE_GOALSHIFT.generate;
+export const solveValidateGoalshiftFlagRules = VALIDATE_GOALSHIFT.solve;
+
 export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
   familyId: 'optimize-backprop-path-sum',
   familyGroup: 'optimize-update',
@@ -1044,6 +1013,16 @@ export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
   graderId: 'deterministic',
   activityType: 'numeric',
 };
+
+const OPTIMIZE_BACKPROP_PATH_SUM = makeSolvedFamily({
+  contract: OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT,
+  cases: FAMILY_DEFINITIONS['optimize-backprop-path-sum'].cases,
+  profileAccepts,
+  toExpected: toIntegerExpected,
+  solve: FAMILY_DEFINITIONS['optimize-backprop-path-sum'].solve,
+});
+export const generateOptimizeBackpropPathSumFamily = OPTIMIZE_BACKPROP_PATH_SUM.generate;
+export const solveOptimizeBackpropPathSum = OPTIMIZE_BACKPROP_PATH_SUM.solve;
 
 // --- classify-sigmoid-regime ----------------------------------------------------
 // Geseedet über genSigmoidCapsule: Logit-/Odds-Zahlenbank plus Rotation, ein
@@ -1436,13 +1415,13 @@ export const DATA_ML_FAMILY_SPECS = [
   },
   {
     ...AGGREGATE_TOPK_RELEVANCE_CONTRACT,
-    generate: ({ seed, caseId, difficulty }) => generateDataMlFamily('aggregate-topk-relevance-arithmetic', { seed, caseId, difficulty }),
-    solve: (parameters) => FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve(parameters),
+    generate: generateAggregateTopkRelevanceArithmeticFamily,
+    solve: solveAggregateTopkRelevanceArithmetic,
   },
   {
     ...VALIDATE_GOALSHIFT_CONTRACT,
-    generate: ({ seed, caseId, difficulty }) => generateDataMlFamily('validate-goalshift-flag-rules', { seed, caseId, difficulty }),
-    solve: (parameters) => FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve(parameters),
+    generate: generateValidateGoalshiftFlagRulesFamily,
+    solve: solveValidateGoalshiftFlagRules,
   },
   {
     ...SIGMOID_REGIME_CONTRACT,
