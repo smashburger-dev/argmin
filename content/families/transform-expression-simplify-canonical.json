@@ -12,10 +12,26 @@
       ],
       "parameters": {
         "tiers": [
-          { "vars": 2, "consts": 2, "coef": 5 },
-          { "vars": 3, "consts": 2, "coef": 9 },
-          { "vars": 3, "consts": 3, "coef": 9 },
-          { "vars": 4, "consts": 3, "coef": 12 }
+          {
+            "vars": 2,
+            "consts": 2,
+            "coef": 5
+          },
+          {
+            "vars": 3,
+            "consts": 2,
+            "coef": 9
+          },
+          {
+            "vars": 3,
+            "consts": 3,
+            "coef": 9
+          },
+          {
+            "vars": 4,
+            "consts": 3,
+            "coef": 12
+          }
         ]
       },
       "expected": {
@@ -33,10 +49,22 @@
       ],
       "parameters": {
         "tiers": [
-          { "coef": 3, "constant": 6 },
-          { "coef": 4, "constant": 9 },
-          { "coef": 5, "constant": 12 },
-          { "coef": 6, "constant": 15 }
+          {
+            "coef": 3,
+            "constant": 6
+          },
+          {
+            "coef": 4,
+            "constant": 9
+          },
+          {
+            "coef": 5,
+            "constant": 12
+          },
+          {
+            "coef": 6,
+            "constant": 15
+          }
         ]
       },
       "expected": {

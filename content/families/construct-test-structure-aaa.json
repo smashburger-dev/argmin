@@ -13,16 +13,34 @@
       "parameters": {
         "parsonsCase": "arrange-act-assert",
         "fragments": [
-          { "id": "p1", "text": "rows = [{\"id\": \"a1\"}, {\"id\": \"a1\"}]" },
-          { "id": "p2", "text": "issues = duplicate_issues(rows)" },
-          { "id": "p3", "text": "assert issues == [{\"row\": 3, \"value\": \"a1\"}]" },
-          { "id": "d1", "text": "expected = issues" }
+          {
+            "id": "p1",
+            "text": "rows = [{\"id\": \"a1\"}, {\"id\": \"a1\"}]"
+          },
+          {
+            "id": "p2",
+            "text": "issues = duplicate_issues(rows)"
+          },
+          {
+            "id": "p3",
+            "text": "assert issues == [{\"row\": 3, \"value\": \"a1\"}]"
+          },
+          {
+            "id": "d1",
+            "text": "expected = issues"
+          }
         ]
       },
       "expected": {
         "kind": "ordered-lines",
-        "solutionOrder": ["p1", "p2", "p3"],
-        "distractors": ["d1"]
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "distractors": [
+          "d1"
+        ]
       },
       "prompt": "Ordne einen kleinen Test nach Arrange, Act, Assert. Eine Zeile würde die Erwartung dem fehlerhaften Ergebnis anpassen und gehört nicht hinein.",
       "fullSolution": "Die feste Eingabe kommt zuerst, danach der Funktionsaufruf und zuletzt der Vergleich mit einer unabhängig notierten Erwartung."
@@ -38,16 +56,34 @@
       "parameters": {
         "parsonsCase": "arrange-act-assert-filter",
         "fragments": [
-          { "id": "p1", "text": "orders = [{\"id\": \"b2\", \"paid\": false}, {\"id\": \"b2\", \"paid\": true}]" },
-          { "id": "p2", "text": "open = unpaid_orders(orders)" },
-          { "id": "p3", "text": "assert open == [{\"id\": \"b2\"}]" },
-          { "id": "d1", "text": "expected = open" }
+          {
+            "id": "p1",
+            "text": "orders = [{\"id\": \"b2\", \"paid\": false}, {\"id\": \"b2\", \"paid\": true}]"
+          },
+          {
+            "id": "p2",
+            "text": "open = unpaid_orders(orders)"
+          },
+          {
+            "id": "p3",
+            "text": "assert open == [{\"id\": \"b2\"}]"
+          },
+          {
+            "id": "d1",
+            "text": "expected = open"
+          }
         ]
       },
       "expected": {
         "kind": "ordered-lines",
-        "solutionOrder": ["p1", "p2", "p3"],
-        "distractors": ["d1"]
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3"
+        ],
+        "distractors": [
+          "d1"
+        ]
       },
       "prompt": "Ordne einen kleinen Test nach Arrange, Act, Assert. Eine Zeile würde die Erwartung aus dem fehlerhaften Ergebnis übernehmen und gehört nicht hinein.",
       "fullSolution": "Die feste Eingabe kommt zuerst, danach der Funktionsaufruf und zuletzt der Vergleich mit einer unabhängig notierten Erwartung."

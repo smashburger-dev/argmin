@@ -10,9 +10,7 @@
       "sourceLineage": [
         "f-files-choice-01"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",

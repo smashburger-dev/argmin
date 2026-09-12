@@ -31,86 +31,13 @@
         "Symbole als Liste von Strings führen; der Marker ist das letzte Startsymbol.",
         "Pro Merge ein linker nach rechter Durchlauf mit Positionsindex: bei Treffer beide Symbole zum verschmolzenen String zusammenfassen und Index um 2 weiterschalten."
       ],
-      "feedbackRules": [
-        {
-          "if": "table-reordered",
-          "then": "Die Tabellenreihenfolge ist Priorität — nicht nach Häufigkeit oder Länge sortieren."
-        },
-        {
-          "if": "overlapping-merged",
-          "then": "Überlappende Vorkommen werden nicht doppelt gezählt: nach einem Merge springt der Index um 2."
-        },
-        {
-          "if": "marker-missing",
-          "then": "Der End-of-Word-Marker gehört zur Startfolge und bleibt das letzte Symbol."
-        }
-      ],
       "typicalErrors": [
         "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)",
         "überlappende Vorkommen doppelt verschmolzen",
         "End-of-Word-Marker unterschlagen"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('a', 'b'), ('ab', 'c')]\n__check('wort 0', bpe_encode('abc', MERGES) == __apply(list('abc') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('ab', MERGES) == __apply(list('ab') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('cab', MERGES) == __apply(list('cab') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Mergetabelle ab dann abc. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('l', 'o'), ('lo', 'w')]\n__check('wort 0', bpe_encode('low', MERGES) == __apply(list('low') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('owl', MERGES) == __apply(list('owl') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('lowest', MERGES) == __apply(list('lowest') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Mergetabelle lo/low auf low/owl/lowest. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('s', 't'), ('e', 'st')]\n__check('wort 0', bpe_encode('best', MERGES) == __apply(list('best') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('set', MERGES) == __apply(list('set') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('east', MERGES) == __apply(list('east') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Merges st und est. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('t', 'o'), ('to', 'a')]\n__check('wort 0', bpe_encode('toast', MERGES) == __apply(list('toast') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('to', MERGES) == __apply(list('to') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('cat', MERGES) == __apply(list('cat') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Merges to/toa. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('e', 'e'), ('ee', 'd')]\n__check('wort 0', bpe_encode('seed', MERGES) == __apply(list('seed') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('see', MERGES) == __apply(list('see') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('deed', MERGES) == __apply(list('deed') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Merges ee/eed. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('w', 'e'), ('we', 't')]\n__check('wort 0', bpe_encode('wet', MERGES) == __apply(list('wet') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('west', MERGES) == __apply(list('west') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('we', MERGES) == __apply(list('we') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Merges we/wet. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('b', 'a'), ('ba', 'l')]\n__check('wort 0', bpe_encode('ball', MERGES) == __apply(list('ball') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('ba', MERGES) == __apply(list('ba') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('lab', MERGES) == __apply(list('lab') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Merges ba/bal. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('o', 'w'), ('l', 'ow')]\n__check('wort 0', bpe_encode('low', MERGES) == __apply(list('low') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('owl', MERGES) == __apply(list('owl') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('wow', MERGES) == __apply(list('wow') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Merges ow dann low. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\nMERGES = [('a', 'a')]\n__check('wort 0', bpe_encode('aa', MERGES) == __apply(list('aa') + ['</w>'], MERGES))\n__check('wort 1', bpe_encode('aaa', MERGES) == __apply(list('aaa') + ['</w>'], MERGES))\n__check('wort 2', bpe_encode('baa', MERGES) == __apply(list('baa') + ['</w>'], MERGES))\n__check('leere Tabelle reine Zeichen', bpe_encode('ab', []) == ['a', 'b', '</w>'])\n__check('Overlapping von links', bpe_encode('aaa', [('a', 'a')]) == __apply(list('aaa') + ['</w>'], [('a', 'a')]))\n__check('Marker immer letztes Symbol', bpe_encode('low', MERGES)[-1] == '</w>')\n"
-          },
-          "prompt": "Nur Merge aa, Overlap von links. Implementiere `bpe_encode` in Tabellenreihenfolge."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "bpe-merge-tie-order",
@@ -138,86 +65,13 @@
         "Arbeite mit einer neuen Ausgabeliste pro Mergerunde.",
         "Nach einem Treffer zwei Eingabesymbole verbrauchen; so wird aa a nicht zu einem überlappenden Dreifach-Merge."
       ],
-      "feedbackRules": [
-        {
-          "if": "table-reordered",
-          "then": "Bei [a,b,c] und den zwei Kandidaten wird zuerst (a,b) nach Tabellenreihenfolge verarbeitet, nicht der zweite Pair-Kandidat."
-        },
-        {
-          "if": "overlapping-merged",
-          "then": "Die Folge [a,a,a] ergibt mit (a,a) genau [aa,a], weil das erste Paar die nächste Position überspringt."
-        },
-        {
-          "if": "new-pair-skipped",
-          "then": "Nach (a,b) entsteht ab; der folgende Merge (ab,c) darf dieses neue Symbol in der nächsten Runde verwenden."
-        }
-      ],
       "typicalErrors": [
         "Mergetabelle nach eigener Häufigkeitsannahme sortiert",
         "überlappende Symbole mehrfach im selben Durchlauf verbraucht",
         "neu entstandenes Paar nicht in der nächsten Mergerunde berücksichtigt"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['x', 'y', 'z'], [('x', 'y'), ('y', 'z')]) == __apply(['x', 'y', 'z'], [('x', 'y'), ('y', 'z')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "Symbole xyz, Merge xy vor yz. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['a', 'a', 'b'], [('a', 'a'), ('a', 'b')]) == __apply(['a', 'a', 'b'], [('a', 'a'), ('a', 'b')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "aab, aa vor ab. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['p', 'q', 'p', 'q'], [('p', 'q')]) == __apply(['p', 'q', 'p', 'q'], [('p', 'q')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "pq pq, ein Merge. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['m', 'n', 'o'], [('n', 'o'), ('m', 'no')]) == __apply(['m', 'n', 'o'], [('n', 'o'), ('m', 'no')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "mno, no dann mno. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['t', 't', 't', 't'], [('t', 't')]) == __apply(['t', 't', 't', 't'], [('t', 't')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "vier t, nicht überlappend. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['u', 'v'], [('a', 'b')]) == __apply(['u', 'v'], [('a', 'b')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "Kein Merge, uv bleibt. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['c', 'd', 'e', 'f'], [('c', 'd'), ('e', 'f'), ('cd', 'ef')]) == __apply(['c', 'd', 'e', 'f'], [('c', 'd'), ('e', 'f'), ('cd', 'ef')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "Zwei Paare, dann cd+ef. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['r', 'r', 's'], [('r', 's'), ('r', 'r')]) == __apply(['r', 'r', 's'], [('r', 's'), ('r', 'r')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "Tie-Reihenfolge rr vor rs? Tabelle rs zuerst. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        },
-        {
-          "parameters": {
-            "tests": "\ndef __apply(symbols, merges):\n    symbols = list(symbols)\n    for left, right in merges:\n        out = []\n        i = 0\n        while i < len(symbols):\n            if i + 1 < len(symbols) and symbols[i] == left and symbols[i + 1] == right:\n                out.append(left + right)\n                i += 2\n            else:\n                out.append(symbols[i])\n                i += 1\n        symbols = out\n    return symbols\n\n__check('apply', apply_merges(['g', 'h', 'g', 'h'], [('g', 'h'), ('gh', 'gh')]) == __apply(['g', 'h', 'g', 'h'], [('g', 'h'), ('gh', 'gh')]))\n__check('Tie folgt Tabellenreihenfolge', apply_merges(['a', 'b', 'c'], [('a', 'b'), ('b', 'c')]) == ['ab', 'c'])\n__check('nicht ueberlappend', apply_merges(['a', 'a', 'a'], [('a', 'a')]) == ['aa', 'a'])\n__check('kein Merge unveraendert', apply_merges(['x', 'y'], [('a', 'b')]) == ['x', 'y'])\n"
-          },
-          "prompt": "gh zweimal, dann ghgh. `apply_merges` in Tabellenreihenfolge, nicht überlappend."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

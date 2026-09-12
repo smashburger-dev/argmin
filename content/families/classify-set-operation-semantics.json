@@ -10,9 +10,7 @@
       "sourceLineage": [
         "w03-e2"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",

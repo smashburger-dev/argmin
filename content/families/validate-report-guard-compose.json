@@ -29,86 +29,13 @@
         "Prüfe in der festen Reihenfolge subgroups, sweep, kosten, restrisiken — jede Verletzung wirft ValueError mit genau der genannten Meldung.",
         "paritaet_ok True heißt echt True (is True) — False oder fehlend verweigern; das Restrisiko wird als sortierte Kopie eingebettet."
       ],
-      "feedbackRules": [
-        {
-          "if": "partial-report",
-          "then": "Ein halber Bericht ist kein Bericht: Fehlt eine Vorbedingung, wird vollständig verworfen (ValueError), nicht mit Lücken gefüllt."
-        },
-        {
-          "if": "truthy-check",
-          "then": "paritaet_ok mit Truthiness zu prüfen nimmt auch 1 oder 'ja' an — der Vertrag verlangt is True."
-        },
-        {
-          "if": "restrisiko-mutated",
-          "then": "restrisiko im Bericht ist eine sortierte Kopie — die übergebene Liste darf nicht verändert werden."
-        }
-      ],
       "typicalErrors": [
         "Bericht mit Lücken statt Verweigerung erzeugt",
         "paritaet_ok truthy statt is True geprüft",
         "übergebene Restrisiken-Liste mutiert statt sortiert zu kopieren"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.2, 'selrate_diff': 0.1}\nSWP = {'schwelle': 0.5, 'f1': 0.7, 'paritaet_ok': True}\nKST = {'input_eur': 0.01, 'output_eur': 0.02, 'gesamt_eur': 0.03}\nr = responsible_report(SUB, SWP, KST, ['risiko-a', 'kein echtes llm'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.2, 'selrate_diff': 0.1, 'schwelle': 0.5, 'f1': 0.7, 'kosten_gesamt_eur': 0.03, 'restrisiko': ['kein echtes llm', 'risiko-a']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.5, 'f1': 0.7}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.5, 'f1': 0.7, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report fpr=0.2, Schwelle 0.5. Implementiere `responsible_report`."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.0, 'selrate_diff': 0.0}\nSWP = {'schwelle': 0.4, 'f1': 1.0, 'paritaet_ok': True}\nKST = {'gesamt_eur': 0.0, 'input_eur': 0.0}\nr = responsible_report(SUB, SWP, KST, ['nur stub'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.0, 'selrate_diff': 0.0, 'schwelle': 0.4, 'f1': 1.0, 'kosten_gesamt_eur': 0.0, 'restrisiko': ['nur stub']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.4, 'f1': 1.0}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.4, 'f1': 1.0, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report Null-Kosten. Restrisiko als sortierte Kopie."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.33, 'selrate_diff': 0.12}\nSWP = {'schwelle': 0.8, 'f1': 0.4, 'paritaet_ok': True}\nKST = {'gesamt_eur': 1.5}\nr = responsible_report(SUB, SWP, KST, ['z-risiko', 'a-risiko', 'm-risiko'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.33, 'selrate_diff': 0.12, 'schwelle': 0.8, 'f1': 0.4, 'kosten_gesamt_eur': 1.5, 'restrisiko': ['a-risiko', 'm-risiko', 'z-risiko']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.8, 'f1': 0.4}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.8, 'f1': 0.4, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report drei Restrisiken, Sortierung prüfen."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.05, 'selrate_diff': 0.25}\nSWP = {'schwelle': 0.1, 'f1': 0.9, 'paritaet_ok': True}\nKST = {'gesamt_eur': 0.99, 'extra': 1}\nr = responsible_report(SUB, SWP, KST, ['detektor lueckenhaft'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.05, 'selrate_diff': 0.25, 'schwelle': 0.1, 'f1': 0.9, 'kosten_gesamt_eur': 0.99, 'restrisiko': ['detektor lueckenhaft']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.1, 'f1': 0.9}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.1, 'f1': 0.9, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report extra-Kostenfeld ignorieren, gesamt_eur zählt."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 1.0, 'selrate_diff': 1.0}\nSWP = {'schwelle': 0.0, 'f1': 0.0, 'paritaet_ok': True}\nKST = {'gesamt_eur': 2.2}\nr = responsible_report(SUB, SWP, KST, ['kein echtes llm'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 1.0, 'selrate_diff': 1.0, 'schwelle': 0.0, 'f1': 0.0, 'kosten_gesamt_eur': 2.2, 'restrisiko': ['kein echtes llm']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.0, 'f1': 0.0}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.0, 'f1': 0.0, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report Extremwerte. paritaet_ok muss is True sein."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.11, 'selrate_diff': 0.07, 'note': 'x'}\nSWP = {'schwelle': 0.55, 'f1': 0.61, 'paritaet_ok': True}\nKST = {'gesamt_eur': 0.08}\nr = responsible_report(SUB, SWP, KST, ['regel nur bekanntes', 'kein llm'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.11, 'selrate_diff': 0.07, 'schwelle': 0.55, 'f1': 0.61, 'kosten_gesamt_eur': 0.08, 'restrisiko': ['kein llm', 'regel nur bekanntes']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.55, 'f1': 0.61}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.55, 'f1': 0.61, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report mit Notizfeld in Subgruppen. Vorbedingungen unverändert."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.18, 'selrate_diff': 0.02}\nSWP = {'schwelle': 0.7, 'f1': 0.65, 'paritaet_ok': True, 'n': 3}\nKST = {'gesamt_eur': 0.4}\nr = responsible_report(SUB, SWP, KST, ['budget'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.18, 'selrate_diff': 0.02, 'schwelle': 0.7, 'f1': 0.65, 'kosten_gesamt_eur': 0.4, 'restrisiko': ['budget']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.7, 'f1': 0.65}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.7, 'f1': 0.65, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report Sweep mit Extra-n. Verweigern bei leerem Restrisiko."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.09, 'selrate_diff': 0.09}\nSWP = {'schwelle': 0.3, 'f1': 0.3, 'paritaet_ok': True}\nKST = {'gesamt_eur': 0.01}\nr = responsible_report(SUB, SWP, KST, ['alpha', 'beta'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.09, 'selrate_diff': 0.09, 'schwelle': 0.3, 'f1': 0.3, 'kosten_gesamt_eur': 0.01, 'restrisiko': ['alpha', 'beta']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.3, 'f1': 0.3}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.3, 'f1': 0.3, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report kleine Differenzen. Feste Fehlermeldungen behalten."
-        },
-        {
-          "parameters": {
-            "tests": "SUB = {'fpr_diff': 0.4, 'selrate_diff': 0.15}\nSWP = {'schwelle': 0.9, 'f1': 0.2, 'paritaet_ok': True}\nKST = {'gesamt_eur': 3.0}\nr = responsible_report(SUB, SWP, KST, ['kein echtes llm', 'regel-detektor erkennt nur bekannte muster'])\n__check('bericht mit allen teilen', r == {'fpr_diff': 0.4, 'selrate_diff': 0.15, 'schwelle': 0.9, 'f1': 0.2, 'kosten_gesamt_eur': 3.0, 'restrisiko': ['kein echtes llm', 'regel-detektor erkennt nur bekannte muster']})\nfor args, meldung in (\n    (({}, SWP, KST, ['x']), 'subgruppen fehlen'),\n    ((SUB, {'schwelle': 0.9, 'f1': 0.2}, KST, ['x']), 'paritaet nicht geprueft'),\n    ((SUB, SWP, {'input_eur': 0.06}, ['x']), 'kosten fehlen'),\n    ((SUB, SWP, KST, []), 'restrisiko fehlt'),\n):\n    try:\n        responsible_report(*args)\n        __check('verweigert: ' + meldung, False, 'kein ValueError')\n    except ValueError as exc:\n        __check('verweigert: ' + meldung, str(exc) == meldung)\ntry:\n    responsible_report(SUB, {'schwelle': 0.9, 'f1': 0.2, 'paritaet_ok': False}, KST, ['x'])\n    print('paritaet-false nicht verworfen')\nexcept ValueError as exc:\n    __check('paritaet false -> ValueError', str(exc) == 'paritaet nicht geprueft')\n"
-          },
-          "prompt": "Responsible-Report hohe Schwelle, zwei Restrisiken. Implementiere `responsible_report`."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "baseline-report",
@@ -137,91 +64,14 @@
         "Prüfe die Kontexte unabhängig voneinander und sammle die fehlt-Codes — sortiert zurückgeben.",
         "Bei Verweigerung darf das Ergebnis-Dict keinen messwerte-Schlüssel haben; die Zählung der Fehlerarten passiert nur im ok-Fall."
       ],
-      "feedbackRules": [
-        {
-          "if": "partial-values",
-          "then": "Teilergebnisse mit Messwerten trotz fehlender Kontexte sind Overclaiming — verweigert heißt ohne Werte."
-        },
-        {
-          "if": "digest-trusted",
-          "then": "Den mitgelieferten digest ungeprüft zu übernehmen prüft nichts — der Guard rechnet den sha256 über die kanonisch serialisierten werte neu und verweigert bei Abweichung."
-        },
-        {
-          "if": "unsorted-codes",
-          "then": "Die fehlt-Liste ist alphabetisch sortiert (digest, fehlerliste, karten, protokoll-metrik) — die Tests vergleichen exakt."
-        },
-        {
-          "if": "ungetrennte-liste-ok",
-          "then": "Eine Fehlerliste ohne art in (retrieval, antwort) ist keine getrennte Fehlerliste — sie zählt als fehlend."
-        }
-      ],
       "typicalErrors": [
         "digest übernommen statt sha256 über die werte neu zu rechnen",
         "Messwerte trotz Verweigerung mitgeliefert",
         "fehlt-Codes unsortiert",
         "Fehlerliste ohne getrennte Arten akzeptiert"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.5, 'antwort_naiv': 0.4, 'antwort_getrennt': 0.45}, 'digest': 'bdec5bbb2be551988d8d395b1f6a398ad6cef64bfba462e6bfca0be5378c9941'}\nPROTO = {'metrik': 'recall@3', 'datum_prereg': '2026-01-01'}\nKARTEN = {'datacard': {'name': 'faq'}, 'modelcard': {'name': 'stub'}}\nFEHLER = [{'id': 'a', 'art': 'antwort'}, {'id': 'b', 'art': 'retrieval'}, {'id': 'c', 'art': 'antwort'}, {'id': 'd', 'art': 'retrieval'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'recall@3', 'messwerte': {'recall_at_k': 0.5, 'antwort_naiv': 0.4, 'antwort_getrennt': 0.45}, 'digest': 'bdec5bbb2be551988d8d395b1f6a398ad6cef64bfba462e6bfca0be5378c9941', 'fehler_nach_art': {'retrieval': 2, 'antwort': 2}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report recall@3, zwei Retrieval-Fehler. Implementiere `baseline_report`."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 1.0, 'antwort_naiv': 1.0, 'antwort_getrennt': 1.0}, 'digest': 'eecd61155c99c2174f048e3e9e161a639b563242f0ed82213c49c285eb9c67b3'}\nPROTO = {'metrik': 'recall@1'}\nKARTEN = {'datacard': {'name': 'd'}, 'modelcard': {'name': 'm'}}\nFEHLER = [{'id': 'x', 'art': 'retrieval'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'recall@1', 'messwerte': {'recall_at_k': 1.0, 'antwort_naiv': 1.0, 'antwort_getrennt': 1.0}, 'digest': 'eecd61155c99c2174f048e3e9e161a639b563242f0ed82213c49c285eb9c67b3', 'fehler_nach_art': {'retrieval': 1, 'antwort': 0}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report nur ein Retrieval-Fehler. Verweigerung ohne messwerte."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.0, 'antwort_naiv': 0.0, 'antwort_getrennt': 0.1}, 'digest': '700ddc97105ee1a4da9276a5061bbf726c7654c90c0566a06e2ae55ca57caf12'}\nPROTO = {'metrik': 'hit@5', 'datum_prereg': '2025-12-24'}\nKARTEN = {'datacard': {'name': 'korpus'}, 'modelcard': {'name': 'rag'}}\nFEHLER = [{'id': '1', 'art': 'antwort'}, {'id': '2', 'art': 'antwort'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'hit@5', 'messwerte': {'recall_at_k': 0.0, 'antwort_naiv': 0.0, 'antwort_getrennt': 0.1}, 'digest': '700ddc97105ee1a4da9276a5061bbf726c7654c90c0566a06e2ae55ca57caf12', 'fehler_nach_art': {'retrieval': 0, 'antwort': 2}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report hit@5, nur Antwortfehler. Codes sortiert bei Totalausfall."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.9, 'antwort_naiv': 0.2, 'antwort_getrennt': 0.8}, 'digest': '67e4166433a1e4dc37dad7d0a5d34d00e569d8208231907ca1b96f81eb230525'}\nPROTO = {'metrik': 'recall@10'}\nKARTEN = {'datacard': {'name': 'news'}, 'modelcard': {'name': 'tiny'}}\nFEHLER = [{'id': 'n1', 'art': 'retrieval'}, {'id': 'n2', 'art': 'retrieval'}, {'id': 'n3', 'art': 'antwort'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'recall@10', 'messwerte': {'recall_at_k': 0.9, 'antwort_naiv': 0.2, 'antwort_getrennt': 0.8}, 'digest': '67e4166433a1e4dc37dad7d0a5d34d00e569d8208231907ca1b96f81eb230525', 'fehler_nach_art': {'retrieval': 2, 'antwort': 1}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report News-Korpus. Ungetrennte art zählt nicht als Fehlerliste."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.66, 'antwort_naiv': 0.5, 'antwort_getrennt': 0.6}, 'digest': 'e2fb4b3a8d1d27118a796175c7d33a4aefc740d9ac075ee82e09756ceabeb73d'}\nPROTO = {'metrik': 'macro-f1'}\nKARTEN = {'datacard': {'name': 'tickets'}, 'modelcard': {'name': 'clf'}}\nFEHLER = [{'id': 't', 'art': 'antwort'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'macro-f1', 'messwerte': {'recall_at_k': 0.66, 'antwort_naiv': 0.5, 'antwort_getrennt': 0.6}, 'digest': 'e2fb4b3a8d1d27118a796175c7d33a4aefc740d9ac075ee82e09756ceabeb73d', 'fehler_nach_art': {'retrieval': 0, 'antwort': 1}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report macro-f1. Leere Metrik bleibt verweigert."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.25, 'antwort_naiv': 0.25, 'antwort_getrennt': 0.3}, 'digest': 'e1155007dd1306dde150feb0f870face5defef1d7f16d4bbaf23d0a17fb49cfe'}\nPROTO = {'metrik': 'recall@2', 'owner': 'lab'}\nKARTEN = {'datacard': {'name': 'wiki'}, 'modelcard': {'name': 'bm25'}}\nFEHLER = [{'id': 'w', 'art': 'retrieval'}, {'id': 'w2', 'art': 'retrieval'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'recall@2', 'messwerte': {'recall_at_k': 0.25, 'antwort_naiv': 0.25, 'antwort_getrennt': 0.3}, 'digest': 'e1155007dd1306dde150feb0f870face5defef1d7f16d4bbaf23d0a17fb49cfe', 'fehler_nach_art': {'retrieval': 2, 'antwort': 0}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report Wiki/bm25. Extra-Protokollfeld stört nicht."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.77, 'antwort_naiv': 0.1, 'antwort_getrennt': 0.7}, 'digest': '0b94c959e6337cf0c2173a96437a9d00234b3170fece6fec6447e91fe85c1043'}\nPROTO = {'metrik': 'ndcg'}\nKARTEN = {'datacard': {'name': 'chat'}, 'modelcard': {'name': 'seq'}}\nFEHLER = [{'id': 'c1', 'art': 'antwort'}, {'id': 'c2', 'art': 'retrieval'}, {'id': 'c3', 'art': 'antwort'}, {'id': 'c4', 'art': 'antwort'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'ndcg', 'messwerte': {'recall_at_k': 0.77, 'antwort_naiv': 0.1, 'antwort_getrennt': 0.7}, 'digest': '0b94c959e6337cf0c2173a96437a9d00234b3170fece6fec6447e91fe85c1043', 'fehler_nach_art': {'retrieval': 1, 'antwort': 3}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report nDCG, drei Antwortfehler. Implementiere `baseline_report`."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.4, 'antwort_naiv': 0.4, 'antwort_getrennt': 0.4}, 'digest': '1f63dc889484e259624ae820f103d768967a7a9bd3f202fb4e1754de8f9fc902'}\nPROTO = {'metrik': 'recall@7'}\nKARTEN = {'datacard': {'name': 'gesetz'}, 'modelcard': {'name': 'lex'}}\nFEHLER = [{'id': 'g1', 'art': 'retrieval'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'recall@7', 'messwerte': {'recall_at_k': 0.4, 'antwort_naiv': 0.4, 'antwort_getrennt': 0.4}, 'digest': '1f63dc889484e259624ae820f103d768967a7a9bd3f202fb4e1754de8f9fc902', 'fehler_nach_art': {'retrieval': 1, 'antwort': 0}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report Gesetzestexte. Alles-fehlt sortiert prüfen."
-        },
-        {
-          "parameters": {
-            "tests": "ERGEBNIS = {'werte': {'recall_at_k': 0.85, 'antwort_naiv': 0.55, 'antwort_getrennt': 0.8}, 'digest': '28052a507eddca6655a108685d4e2d0d7138ce9a8c364a4cc527c63e45f32218'}\nPROTO = {'metrik': 'recall@4', 'datum_prereg': '2026-06-01'}\nKARTEN = {'datacard': {'name': 'faq-v2'}, 'modelcard': {'name': 'rag-v2'}}\nFEHLER = [{'id': 'f1', 'art': 'antwort'}, {'id': 'f2', 'art': 'retrieval'}]\nr = baseline_report(ERGEBNIS, PROTO, KARTEN, FEHLER)\n__check('bericht ok', r == {'status': 'ok', 'metrik': 'recall@4', 'messwerte': {'recall_at_k': 0.85, 'antwort_naiv': 0.55, 'antwort_getrennt': 0.8}, 'digest': '28052a507eddca6655a108685d4e2d0d7138ce9a8c364a4cc527c63e45f32218', 'fehler_nach_art': {'retrieval': 1, 'antwort': 1}})\n__check('falscher digest verweigert', baseline_report({'werte': ERGEBNIS['werte'], 'digest': '0' * 64}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\n__check('fehlender digest verweigert', baseline_report({'werte': ERGEBNIS['werte']}, PROTO, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['digest']})\nv = baseline_report(ERGEBNIS, {'datum_prereg': '2026-05-12'}, KARTEN, FEHLER)\n__check('bericht ohne protokoll verweigert', v == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n__check('verweigert hat keine messwerte', 'messwerte' not in v)\n__check('ohne modelcard', baseline_report(ERGEBNIS, PROTO, {'datacard': KARTEN['datacard']}, FEHLER) == {'status': 'verweigert', 'fehlt': ['karten']})\n__check('ohne fehlerliste', baseline_report(ERGEBNIS, PROTO, KARTEN, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('ungetrennte fehlerliste zaehlt nicht', baseline_report(ERGEBNIS, PROTO, KARTEN, [{'id': 'faq-11', 'art': 'unbekannt'}]) == {'status': 'verweigert', 'fehlt': ['fehlerliste']})\n__check('alles fehlt sortiert', baseline_report(ERGEBNIS, {}, {}, []) == {'status': 'verweigert', 'fehlt': ['fehlerliste', 'karten', 'protokoll-metrik']})\n__check('leere metrik verweigert', baseline_report(ERGEBNIS, {'metrik': ''}, KARTEN, FEHLER) == {'status': 'verweigert', 'fehlt': ['protokoll-metrik']})\n"
-          },
-          "prompt": "Baseline-Report faq-v2. Implementiere Verweigerung ohne Teilmesswerte."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

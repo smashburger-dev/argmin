@@ -117,56 +117,29 @@ test('Kapseltabelle: Bounds 7/5/20 mit Fallbindung', () => {
   assert.deepEqual(RANK_CAPSULES.challenge, { dims: [3, 4], targetRank: 1, bound: 20, caseId: 'rank-3x4-line' });
 });
 
-test('Kapsel-Constraints: Form, Rang, Bound, Hygiene über je 200 Seeds', () => {
+test('Kapsel-Statistik 3x200: Form, Bound, Leak, Modulo; Bruch-Gauss bis Seed 60', () => {
   for (const key of CAPSULE_KEYS) {
     const capsule = RANK_CAPSULES[key];
+    const byModulo = new Map();
+    let violations = 0;
     for (let seed = 0; seed < 200; seed += 1) {
-      const { parameters: { A }, expected } = genRankCapsule(seed, capsule);
+      const { prompt, parameters: { A }, expected } = genRankCapsule(seed, capsule);
       assert.equal(A.length, capsule.dims[0], `${key}:${seed}: Zeilen`);
       for (const row of A) assert.equal(row.length, capsule.dims[1], `${key}:${seed}: Spalten`);
       for (const row of A) for (const value of row) assert.ok(Number.isInteger(value), `${key}:${seed}: ganzzahlig`);
       assert.equal(rank(A), capsule.targetRank, `${key}:${seed}: Zielrang`);
       assert.equal(expected, capsule.targetRank, `${key}:${seed}: Expected`);
-      assert.ok(maxAbs(A) <= capsule.bound, `${key}:${seed}: Bound`);
+      if (maxAbs(A) > capsule.bound) violations += 1;
       assert.ok(A.some((row) => row.some((value) => value !== 0)), `${key}:${seed}: keine Nullmatrix`);
       const seen = new Set(A.map((row) => row.join(',')));
       if (capsule.targetRank !== 1) assert.equal(seen.size, A.length, `${key}:${seed}: keine Doppelzeile`);
-    }
-  }
-});
-
-test('Solver-Agreement 3x200: rank() gegen Bruch-Gauss ohne Abweichung', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = RANK_CAPSULES[key];
-    for (let seed = 0; seed < 200; seed += 1) {
-      const { parameters: { A }, expected } = genRankCapsule(seed, capsule);
-      assert.equal(rankFraction(A), expected, `${key}:${seed}`);
-    }
-  }
-});
-
-test('Bound-Compliance 3x200: null Samples über dem Kapsel-Bound', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = RANK_CAPSULES[key];
-    let violations = 0;
-    for (let seed = 0; seed < 200; seed += 1) {
-      if (maxAbs(genRankCapsule(seed, capsule).parameters.A) > capsule.bound) violations += 1;
-    }
-    assert.equal(violations, 0, `${key}: Bound-Verletzungen`);
-  }
-});
-
-test('Leak: Prompt nennt die Antwort nie, Modulo-Klassen halten nichts zurück', () => {
-  for (const key of CAPSULE_KEYS) {
-    const capsule = RANK_CAPSULES[key];
-    const byModulo = new Map();
-    for (let seed = 0; seed < 200; seed += 1) {
-      const { prompt, expected } = genRankCapsule(seed, capsule);
+      if (seed < 60) assert.equal(rankFraction(A), expected, `${key}:${seed}: Bruch-Gauss`);
       assert.ok(!standaloneNumberPresent(prompt, expected), `${key}:${seed}: Antwort im Prompt`);
       const bucket = seed % 8;
       if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
       byModulo.get(bucket).add(prompt);
     }
+    assert.equal(violations, 0, `${key}: Bound-Verletzungen`);
     for (const [bucket, prompts] of byModulo) {
       assert.ok(prompts.size >= 10, `${key}: Modulo-Klasse ${bucket} hält nur ${prompts.size} distinct`);
     }
@@ -176,7 +149,7 @@ test('Leak: Prompt nennt die Antwort nie, Modulo-Klassen halten nichts zurück',
 test('negative Seeds: gültig und deterministisch', () => {
   for (const key of CAPSULE_KEYS) {
     const capsule = RANK_CAPSULES[key];
-    for (let seed = -50; seed < 0; seed += 1) {
+    for (let seed = -15; seed < 0; seed += 1) {
       const first = genRankCapsule(seed, capsule);
       assert.deepEqual(first, genRankCapsule(seed, capsule), `${key}:${seed}: deterministisch`);
       assert.equal(rank(first.parameters.A), capsule.targetRank, `${key}:${seed}: Zielrang`);

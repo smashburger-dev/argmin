@@ -10,9 +10,7 @@
       "sourceLineage": [
         "f-algebra-debug-01"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -47,9 +45,7 @@
       "sourceLineage": [
         "f-meta-error-classify-01"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -87,9 +83,7 @@
       "competencyIds": [
         "c-meta-learning"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -123,9 +117,6 @@
         "Ursache ohne Gegenprobe",
         "Musterlösung mit eigenem Abruf verwechseln"
       ],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

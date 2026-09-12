@@ -36,9 +36,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?",
       "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (**Confounder**). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -63,10 +61,7 @@
         "aus Korrelation direkt Kausalität geschlossen",
         "Korrelation als Kausalitäts-Widerlegung gelesen",
         "Confounder nicht gesucht, weil $r$ „fast 1“ ist"
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     },
     {
       "caseId": "confounder-exercise-sleep",
@@ -101,9 +96,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Mehr Bewegung und bessere Schlafqualität treten gemeinsam auf. Menschen mit weniger Arbeitsstress bewegen sich aber auch häufiger. Was darfst du aus der Korrelation schließen?",
       "fullSolution": "Arbeitsstress ist eine plausible Drittvariable, die Bewegung und Schlaf beeinflusst. Die Korrelation allein belegt daher keinen kausalen Effekt der Bewegung.",
       "hints": [
@@ -128,10 +121,7 @@
         "Beobachtete Korrelation zwischen Bewegung und Schlaf als sicheren Kausaleffekt gelesen.",
         "Eine positive Korrelation fälschlich als Ausschluss jeder Drittvariable behandelt.",
         "Ohne zeitliche oder experimentelle Evidenz eine umgekehrte Kausalrichtung behauptet."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     },
     {
       "caseId": "confounder-ad-spend-season",
@@ -166,9 +156,7 @@
           "correct": true
         }
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Werbung und Online-Umsatz steigen im Dezember stark. Gleichzeitig ist Dezember die umsatzstärkste Saison. Welche Aussage ist methodisch sauber?",
       "fullSolution": "Saison ist eine plausible Drittvariable. Ohne Kontrolle der Saison kann der Werbeeffekt überschätzt werden; die Korrelation isoliert die Ursache nicht.",
       "hints": [
@@ -193,10 +181,7 @@
         "Einen gemeinsamen Dezemberanstieg vollständig der Werbung zugeschrieben.",
         "Eine kalenderbasierte Drittvariable fälschlich nur dann als Confounder zugelassen, wenn sie bereits im Modell steht.",
         "Hohe Korrelation ohne Kontrolle der umsatzstarken Saison als kausalen Beleg verwendet."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     }
   ]
 }

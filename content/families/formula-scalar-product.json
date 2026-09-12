@@ -461,18 +461,9 @@
       "fullSolution": "Die Koeffizienten sind $(x_1,x_2)=(7,1)$. Die Probe liefert $7(1,3)^T+1(-1,-4)^T=(6,17)^T$.",
       "activityType": "vector",
       "graderId": "deterministic",
-      "tolerancePolicy": {
-        "mode": "exact-integer-pair"
-      },
       "hints": [
         "Lies aus den beiden Komponenten ein 2×2-Gleichungssystem ab.",
         "Setze dein Paar zur Probe wieder in $A x$ ein."
-      ],
-      "feedbackRules": [
-        {
-          "if": "swapped",
-          "then": "Achte auf die Reihenfolge $(x_1,x_2)$."
-        }
       ],
       "typicalErrors": [
         "Koeffizienten vertauschen",

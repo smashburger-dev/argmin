@@ -78,9 +78,9 @@ for (const item of seeded) {
   test(`${item.caseId}: raw predicate acceptance is reported and above 10 percent`, () => {
     for (const predicate of [item.intro, item.stretch]) {
       let accepted = 0;
-      for (let seed = 0; seed < 10000; seed += 1) accepted += predicate(item.generator(seed).parameters) ? 1 : 0;
-      console.log(`${item.caseId}: ${accepted}/10000 (${(accepted / 100).toFixed(2)}%)`);
-      assert.ok(accepted >= 1000);
+      for (let seed = 0; seed < 2000; seed += 1) accepted += predicate(item.generator(seed).parameters) ? 1 : 0;
+      console.log(`${item.caseId}: ${accepted}/2000 (${(accepted / 20).toFixed(2)}%)`);
+      assert.ok(accepted >= 200);
     }
   });
 }

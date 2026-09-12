@@ -22,9 +22,7 @@
           5
         ]
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -74,9 +72,7 @@
           4
         ]
       },
-      "expected": {
-        "correctChoice": "both-one"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "both-one",
@@ -105,19 +101,10 @@
         "Berechne zuerst $a_1+a_2$ komponentenweise.",
         "Die Koeffizienten sind Gewichte der Spalten, nicht die Einträge von b."
       ],
-      "feedbackRules": [
-        {
-          "if": "swapped-target",
-          "then": "Die Einträge von b sind das Ergebnis, nicht automatisch die Koeffizienten."
-        }
-      ],
       "typicalErrors": [
         "Zielvektor mit Koeffizienten verwechseln",
         "nur eine Spalte berücksichtigen"
       ],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -136,25 +123,14 @@
         "matrixRows": 2,
         "matrixColumns": 3
       },
-      "expected": {
-        "correctChoice": "matmul-contract"
-      },
+      "expected": {},
       "prompt": "Eine Funktion soll für eine Matrix A mit Shape (m,n) und einen Vektor v mit Shape (n,) das Matrix-Vektor-Produkt liefern. Welche Änderung behebt den fachlichen Fehler in `return A * v` und schützt zugleich den Vertrag?",
       "fullSolution": "`np.asarray` vereinheitlicht Listen und Arrays. Nach den drei Shape-Prüfungen berechnet `A @ v` genau das Matrix-Vektor-Produkt und liefert Shape `(m,)`.",
       "activityType": "single-choice",
       "graderId": "deterministic",
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "hints": [
         "Elementweise Multiplikation und Matrixprodukt sind verschiedene Operationen.",
         "Ein Vertrag prüft ndim, innere Dimension und Ergebnisbedeutung."
-      ],
-      "feedbackRules": [
-        {
-          "if": "sum-all",
-          "then": "Eine Gesamtsumme verliert die geforderte Ausgabe pro Matrixzeile."
-        }
       ],
       "typicalErrors": [
         "elementweise Multiplikation mit Matrixprodukt verwechseln",

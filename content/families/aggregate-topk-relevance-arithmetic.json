@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w27-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genRecallAtK"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-genai-rag"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genRecallAtK",
-        "defaultSeed": 2711,
-        "defaultExpected": 2
-      },
       "prompt": "Für eine Testanfrage eines Retrieval-Systems sind 12 Dokumente als relevant markiert: A, B, D, E, F, G, H, I, J, K, L, N. Das Ranking des Systems (Top 7): G, B, C, M, E, K, N. Wie viele der gelisteten Top-7-Dokumente sind nicht relevant?",
       "fullSolution": "Schnitt der Top 7 mit der Relevant-Menge: {G, B, E, K, N} → 5 Treffer. Nicht relevant: 7 − 5 = 2. Mit „Neue Zahlen“ erscheint eine neue Instanz (Treffer/Prozent/fehlende/nicht relevante) mit demselben Lösungsweg.",
       "hints": [
@@ -47,9 +39,6 @@
         "Recall-Formel mit dem falschen Nenner (Top-k statt relevante) gerechnet",
         "Fenstergröße mit Trefferzahl verwechselt"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

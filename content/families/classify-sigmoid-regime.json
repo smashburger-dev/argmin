@@ -16,9 +16,7 @@
       "parameters": {
         "formula": "sigmoid(z) = 1 / (1 + exp(-z))"
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -66,9 +64,6 @@
         "Symmetrie σ(−z) = 1 − σ(z) nicht kennen",
         "den Schwellenwert-Schritt mit der Sigmoid-Ausgabe gleichsetzen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -85,9 +80,7 @@
       "parameters": {
         "formula": "sigmoid(z) = 1 / (1 + exp(-z))"
       },
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -135,9 +128,6 @@
         "Den Nullpunkt der Sigmoidkurve fälschlich als negative Wahrscheinlichkeit interpretiert.",
         "Kontinuierliche Modellwahrscheinlichkeit und nachgelagerte Klassenschwelle vermischt."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -154,9 +144,7 @@
       "parameters": {
         "formula": "sigmoid(z) = 1 / (1 + exp(-z))"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -204,9 +192,6 @@
         "Odds und inverse Odds bei der Rückrechnung von 0,75 vertauscht.",
         "Das Vorzeichen des Logits fälschlich als Umkehrung der Wahrscheinlichkeit interpretiert."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

@@ -14,9 +14,7 @@
       "competencyIds": [
         "c-dl-finetuning"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -64,9 +62,6 @@
         "LoRA mit Pruning verwechselt",
         "eingefrorene Basis übersehen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -85,9 +80,7 @@
       "competencyIds": [
         "c-dl-finetuning"
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -135,9 +128,6 @@
         "den B-Faktor mit d_out beim Zählen ausgelassen",
         "LoRA-Rang mit einer quadratischen Parameterzahl verwechselt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -155,9 +145,7 @@
       "competencyIds": [
         "c-dl-finetuning"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -205,9 +193,6 @@
         "alpha und Rang addiert statt dividiert",
         "den Rang in den Zähler verschoben"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

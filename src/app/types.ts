@@ -72,7 +72,6 @@ export interface ExerciseSummary {
   parameters: Record<string, unknown>;
   choices: Array<{ id: string; text: string; correct: boolean }>;
   expectedAnswer: Record<string, unknown>;
-  tolerancePolicy: Record<string, unknown>;
   hints: string[];
   feedbackRules: Array<Record<string, unknown>>;
   fullSolution: string;

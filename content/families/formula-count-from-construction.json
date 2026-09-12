@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w18-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genLinearParamCount"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-tensors"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genLinearParamCount",
-        "defaultSeed": 1802,
-        "defaultExpected": 77
-      },
       "prompt": "Zwei MLPs mit je einer versteckten Schicht unterscheiden sich nur in deren Breite: Netz A hat 4, Netz B 11 versteckte Neuronen. Beide lesen 6 Features, geben 4 Ausgaben aus und tragen überall Bias. Wie viele zusätzliche trainierbare Parameter hat Netz B gegenüber Netz A?",
       "fullSolution": "Ein Netz mit versteckter Breite $h$ hat $d \\cdot h + h + h \\cdot \\mathrm{out} + \\mathrm{out}$ Parameter. Die Differenz zwischen den Breiten ist $(h_B - h_A) \\cdot (d + 1 + \\mathrm{out})$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -47,9 +39,6 @@
         "nur die versteckte Schicht zählen und die Ausgabeschicht vergessen, die mit $h$ mitwächst",
         "Differenz der Neuronenzahlen statt der Parameterdifferenz angeben"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -60,18 +49,10 @@
       "sourceLineage": [
         "w20-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genSgdSteps"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-training"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genSgdSteps",
-        "defaultSeed": 2002,
-        "defaultExpected": 15
-      },
       "prompt": "Ein Datensatz mit 291 Beispielen wird mit Batchgröße 64 trainiert; der letzte Batch einer Epoche darf kleiner sein. Wie viele Optimizer-Updates enthält das Training insgesamt über 3 Epochen?",
       "fullSolution": "Batches pro Epoche: $\\lceil n / B \\rceil$, denn der letzte Batch darf kleiner sein. Updates insgesamt: $E \\cdot \\lceil n / B \\rceil$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -97,9 +78,6 @@
         "Schritte pro Epoche mit Schritten insgesamt verwechselt",
         "glatte Division angenommen, obwohl ein Rest bleibt"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -110,18 +88,10 @@
       "sourceLineage": [
         "w21-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genDropoutCount"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-regularization"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genDropoutCount",
-        "defaultSeed": 2102,
-        "defaultExpected": 8
-      },
       "prompt": "Zwei aufeinanderfolgende Dropout-Schichten mit Behaltenswahrscheinlichkeit p = 0,6 arbeiten auf 21 Aktivierungen mit unabhängigen, festen Masken (1 = behalten, 0 = droppen). Maske 1: `101110101000011011110`. Maske 2: `111001101100110010110`. Wie viele Aktivierungen überleben beide Schichten?",
       "fullSolution": "Überleben beide Schichten heißt: Position trägt in Maske 1 UND Maske 2 eine 1 — das positionweise UND der Maskenziffern zählen. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -147,9 +117,6 @@
         "Einsen beider Masken addiert statt UND-verknüpft",
         "Skalierungsfaktor 1/p auf die Anzahl angewendet"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -160,18 +127,10 @@
       "sourceLineage": [
         "w22-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genAttentionShape"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-attention"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genAttentionShape",
-        "defaultSeed": 2211,
-        "defaultExpected": 45
-      },
       "prompt": "Ein Decoder darf beim Token 10 nur die Tokens 1 bis 10 sehen (kausale Maske): alle Score-Zellen, in denen ein Token auf ein späteres Token schaut, werden vor dem Softmax auf −∞ gesetzt. Wie viele Zellen einer 10×10-Score-Matrix werden so verdeckt?",
       "fullSolution": "Formen ableiten: Score-Matrix $n \\times m$, Ausgabe $n \\times d_v$, kausale Maske verdeckt $n(n-1)/2$ Zellen, Skalierungsdivisor $\\sqrt{d_k}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -197,9 +156,6 @@
         "Diagonale in die Maskenzählung einbezogen",
         "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -210,18 +166,10 @@
       "sourceLineage": [
         "w23-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genVocabAfterMerges"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-tokenizer"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genVocabAfterMerges",
-        "defaultSeed": 2311,
-        "defaultExpected": 97
-      },
       "prompt": "Ein Subword-Tokenizer startet mit 31 Zeichen-Tokens. Ein BPE-Lauf lernt 62 Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen 4 Sondertokens (etwa <pad>, <unk>, <eos>) dazu. Wie groß ist das Vokabular danach?",
       "fullSolution": "Vokabulargröße = Zeichen + Merges + Sondertokens; jeder Merge fügt genau ein neues Symbol hinzu. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -247,9 +195,6 @@
         "Merges doppelt gezählt (Symbole und Ausgangspaare)",
         "bei Zielgrößen die Rückrechnung andersherum aufgestellt"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -260,18 +205,10 @@
       "sourceLineage": [
         "w25-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genLoraParamCount"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-finetuning"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genLoraParamCount",
-        "defaultSeed": 2511,
-        "defaultExpected": 1184
-      },
       "prompt": "LoRA friert die Matrix W (176×416) ein und lernt nur ΔW = B·A mit A als 2×416-Matrix und B als 176×2-Matrix (Skalierung α/r frei gewählt). Wie viele freie Parameter haben A und B zusammen?",
       "fullSolution": "LoRA: $r\\,(d_{in} + d_{out})$ freie Parameter gegen $d_{out} \\cdot d_{in}$ beim vollen Fine-Tuning; Ersparnis = Differenz. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -297,9 +234,6 @@
         "Formen von A und B vertauscht",
         "Ersparnis als Quotient statt Differenz berechnet"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

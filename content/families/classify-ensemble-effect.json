@@ -64,9 +64,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Konzept-Check Ensembles: Warum reduziert Bagging mit Bootstrap-Stichproben typischerweise die Varianz der Ensemble-Vorhersage? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "fullSolution": "Bagging trainiert jedes Modell auf einer anderen Bootstrap-Stichprobe. Da die Fehler der Bäume nur teilweise korreliert sind, heben sie sich beim Mitteln bzw. Majority Voting gegenseitig auf: Die Varianz der Ensemble-Vorhersage sinkt, der Bias bleibt etwa gleich.",
       "hints": [
@@ -92,9 +90,6 @@
         "Bootstrap als Datensynthese verstehen",
         "Korrelation der Basis-Modelle ignorieren"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -102,9 +97,7 @@
           "parameters": {
             "setting": "Bäume auf Bootstrap"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -134,9 +127,7 @@
           "parameters": {
             "setting": "nicht Bias"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -166,9 +157,7 @@
           "parameters": {
             "setting": "nicht identische Daten"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -198,9 +187,7 @@
           "parameters": {
             "setting": "kein neues n"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -230,9 +217,7 @@
           "parameters": {
             "setting": "Klassifikation"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -262,9 +247,7 @@
           "parameters": {
             "setting": "Regression"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -294,9 +277,7 @@
           "parameters": {
             "setting": "Korrelation"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -326,9 +307,7 @@
           "parameters": {
             "setting": "n_estimators"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -358,9 +337,7 @@
           "parameters": {
             "setting": "Konzept-Check"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -418,9 +395,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Warum reduziert ein Random Forest typischerweise die Varianz gegenüber einem einzelnen tiefen Baum?",
       "fullSolution": "Viele decorrelierte Bäume werden auf Bootstrap-Stichproben trainiert und ihre Vorhersagen aggregiert. Das mittelt zufällige Schwankungen und reduziert Varianz.",
       "hints": [
@@ -446,9 +421,6 @@
         "Die Varianzreduktion durch Aggregation als bloßen Nachteil zusätzlicher Modelle missverstanden.",
         "Bagging-Mechanismus fälschlich mit der Lernrate eines iterativen Optimierers erklärt."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -456,9 +428,7 @@
           "parameters": {
             "setting": "Feature-Zufall"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -488,9 +458,7 @@
           "parameters": {
             "setting": "nicht gleicher Fehler"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -520,9 +488,7 @@
           "parameters": {
             "setting": "mehr Modelle"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -552,9 +518,7 @@
           "parameters": {
             "setting": "keine LR"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -584,9 +548,7 @@
           "parameters": {
             "setting": "vs Einzelbaum"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -616,9 +578,7 @@
           "parameters": {
             "setting": "mtry"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -648,9 +608,7 @@
           "parameters": {
             "setting": "OOB"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -680,9 +638,7 @@
           "parameters": {
             "setting": "Regression-Forest"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -712,9 +668,7 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -772,9 +726,7 @@
           "correct": true
         }
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Was ist die typische Idee von Boosting bei einer Folge schwacher Lerner?",
       "fullSolution": "Jeder neue Lerner konzentriert sich stärker auf bisher schlecht erklärte Beispiele beziehungsweise Residuen. Die Modelle werden sequentiell kombiniert, um Bias zu reduzieren.",
       "hints": [
@@ -800,9 +752,6 @@
         "Die additive Kombination der bereits trainierten Lerner übersehen.",
         "Boosting fälschlich als reine Merkmalsvorverarbeitung ohne Residuenfokus beschrieben."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -810,9 +759,7 @@
           "parameters": {
             "setting": "Residuen"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -842,9 +789,7 @@
           "parameters": {
             "setting": "nicht unabhängig"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -874,9 +819,7 @@
           "parameters": {
             "setting": "behalten"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -906,9 +849,7 @@
           "parameters": {
             "setting": "keine Skala"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -938,9 +879,7 @@
           "parameters": {
             "setting": "AdaBoost-Gewichte"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -970,9 +909,7 @@
           "parameters": {
             "setting": "Bias"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1002,9 +939,7 @@
           "parameters": {
             "setting": "Reihenfolge"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1034,9 +969,7 @@
           "parameters": {
             "setting": "schwache Lerner"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1066,9 +999,7 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",

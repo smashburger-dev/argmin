@@ -17,9 +17,7 @@
         "fpCost": 50,
         "fnCost": 0.05
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -59,9 +57,6 @@
         "0,5 als kostenunabhängiges Optimum behandeln",
         "Accuracy als Kostenmaß verwenden"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -70,9 +65,7 @@
             "fpCost": 40,
             "fnCost": 0.04
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -103,9 +96,7 @@
             "fpCost": 200,
             "fnCost": 1
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -136,9 +127,7 @@
             "fpCost": 80,
             "fnCost": 0.08
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -169,9 +158,7 @@
             "fpCost": 25,
             "fnCost": 0.05
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -202,9 +189,7 @@
             "fpCost": 100,
             "fnCost": 0.1
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -235,9 +220,7 @@
             "fpCost": 60,
             "fnCost": 0.2
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -268,9 +251,7 @@
             "fpCost": 15,
             "fnCost": 0.03
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -301,9 +282,7 @@
             "fpCost": 500,
             "fnCost": 0.5
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -334,9 +313,7 @@
             "fpCost": 50,
             "fnCost": 0.1
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -391,28 +368,11 @@
         "Zähle in einer Schleife über Paare (Wahrheit, Wahrscheinlichkeit): Die vier Felder ergeben sich aus den Kombinationen tatsächlich 0/1 und vorhergesagt 0/1.",
         "precision = tp/(tp+fp), recall = tp/(tp+fn), f1 ist das harmonische Mittel — sichere die Nenner mit Abfragen gegen 0 ab."
       ],
-      "feedbackRules": [
-        {
-          "if": "threshold-strict",
-          "then": "Die Regel ist p ≥ threshold (größer ODER gleich) — bei striktem > scheitert der Grenzfall p = t."
-        },
-        {
-          "if": "precision-recall-swapped",
-          "then": "precision hat tp+fp im Nenner (Vorhersageseite), recall tp+fn (Tatseite) — vertausche die Nenner nicht."
-        },
-        {
-          "if": "tuple-vs-list",
-          "then": "precision_recall_f1 gibt ein Tupel (precision, recall, f1) zurück, nicht drei Einzelwerte und keine Liste."
-        }
-      ],
       "typicalErrors": [
         "Grenzfall p = threshold falsch behandeln",
         "precision und recall vertauschen",
         "Division durch 0 bei leeren Raten nicht abgesichert"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -499,28 +459,11 @@
         "Baue eine Schleife über i = 1..9 mit t = i/10 und berechne für jedes t die Konfusionsmatrix mit der Regel p ≥ t — vergleiche die Kosten strikt kleiner, dann gewinnt bei Gleichstand automatisch das kleinste t.",
         "Die Suchrichtung folgt den Kosten: FP teuer verschiebt das Optimum nach oben, FN teuer nach unten — dein Sweep findet das automatisch, wenn er alle neun Werte prüft."
       ],
-      "feedbackRules": [
-        {
-          "if": "ties-keep-last",
-          "then": "Bei gleichen Kosten muss das kleinste t gewinnen — nur bei strikt kleineren Kosten ersetzen (<= wäre falsch)."
-        },
-        {
-          "if": "accuracy-instead-of-cost",
-          "then": "Optimiert wird die Kostenfunktion FP·fp_cost + FN·fn_cost, nicht die Accuracy."
-        },
-        {
-          "if": "missing-key-check",
-          "then": "total_cost muss vor der Berechnung alle vier Schlüssel prüfen und sonst ValueError werfen."
-        }
-      ],
       "typicalErrors": [
         "Gleichstandsregel falsch (letztes statt kleinstes t)",
         "Kostenfunktion mit Accuracy verwechseln",
         "nur 0.5 prüfen statt aller Schwellenwerte"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -604,24 +547,11 @@
         "Bestimme die gemeinsamen Wörter beider Sätze und ihre minimalen Häufigkeiten — das ist common.",
         "p = common/Länge der Antwort, r = common/Länge der Gold-Antwort; F1 = 2pr/(p+r), auf 2 Stellen gerundet."
       ],
-      "feedbackRules": [
-        {
-          "if": "first-line-wrong",
-          "then": "common = 2 (katzen, sitzen). p = 2/3, r = 2/4 → F1 = 4/7 ≈ 0.5714 → gerundet 0.57."
-        },
-        {
-          "if": "second-line-wrong",
-          "then": "Kein gemeinsames Wort → common = 0 → der Zweig gibt 0.0 zurück (und dividiert nie durch null)."
-        }
-      ],
       "typicalErrors": [
         "common über die Vereinigung statt der Schnittmenge gezählt",
         "nur die Ausgabequote p (2/3) statt F1 angegeben",
         "bei common = 0 eine Division durch null vorhergesagt"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic",
       "variants": [
@@ -754,28 +684,11 @@
         "confusion zählt vier Fälle in einem Durchlauf: vorhergesagt pos/neg gegen tatsächlich pos/neg.",
         "token_f1 über Multimengen: min(Anzahl in Antwort, Anzahl in Gold) je gemeinsamem Wort — nicht set-intersection."
       ],
-      "feedbackRules": [
-        {
-          "if": "zero-division",
-          "then": "prf muss tp+fp bzw. tp+fn == 0 abfangen und 0.0 liefern, nicht abstürzen."
-        },
-        {
-          "if": "set-not-multiset",
-          "then": "Set-Intersektion übersieht wiederholte Wörter — Token-F1 nutzt Mindesthäufigkeiten."
-        },
-        {
-          "if": "exact-match-no-strip",
-          "then": "Exact Match vergleicht nach strip() — führende/folgende Leerzeichen sind kein Fehler."
-        }
-      ],
       "typicalErrors": [
         "Precision/Recall-Nenner verwechselt",
         "Token-F1 über Mengen statt Multimengen",
         "Längenprüfung bei exact_match_rate vergessen"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -861,28 +774,11 @@
         "contains_injection lowercastet den Text einmal und prüft dann alle Regeln mit any().",
         "Die vier Konfusionsfälle ergeben sich aus label × flagged — zähle sie in einem Durchlauf."
       ],
-      "feedbackRules": [
-        {
-          "if": "rules-not-lowered",
-          "then": "Die Regeln sind klein geschrieben vorgegeben; wenn du zusätzlich den Text nicht lowercastest, fliegen Großschreibung-Treffer wie „IGNORIERE“ durch."
-        },
-        {
-          "if": "confusion-swapped",
-          "then": "fp sind harmlose Treffer (label False, geflaggt), fn sind verpasste Injektionen (label True, nicht geflaggt) — nicht umgekehrt."
-        },
-        {
-          "if": "rounding-missing",
-          "then": "precision/recall sind auf 4 Stellen zu runden, damit die Tests versionsstabil vergleichen."
-        }
-      ],
       "typicalErrors": [
         "Text nicht kleingeschrieben und Regeln verfehlt",
         "fp und fn vertauscht",
         "Metriken ungerundet geliefert"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -912,28 +808,11 @@
         "Bilde je Gruppe zuerst fpr und selrate und runde jede Rate auf 3 Stellen — die Differenz entsteht aus den gerundeten Werten.",
         "abs() macht die Differenz unabhängig von der Gruppenreihenfolge; die Rückgabe ist ein Dict mit den vier Schlüsseln."
       ],
-      "feedbackRules": [
-        {
-          "if": "rounding-order",
-          "then": "Erst runden, dann differenzieren: 0.438 − 0.369 = 0.069 — ungerundete Raten würden 0.0692… liefern und die Exaktvergleiche brechen."
-        },
-        {
-          "if": "wrong-denominator",
-          "then": "fpr teilt durch fp + tn (nur harmlose Fälle), selrate durch alle vier Summanden — die Nenner sind nicht vertauschbar."
-        },
-        {
-          "if": "sign-diffs",
-          "then": "Die Differenzen sind Beträge (abs) — negative Differenzen je nach Gruppenreihenfolge sind ein Zeichen für das fehlende abs."
-        }
-      ],
       "typicalErrors": [
         "ungerundet weitergerechnet",
         "FPR-Nenner mit dem der Auswahlrate verwechselt",
         "Differenz ohne Betrag"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [

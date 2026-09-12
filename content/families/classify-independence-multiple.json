@@ -22,9 +22,7 @@
           ]
         ]
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -69,9 +67,7 @@
           ]
         ]
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -118,10 +114,7 @@
         "Gemeinsamen Vektorraum und lineare Unabhängigkeit als dieselbe Aussage behandelt.",
         "Einen unpassenden gemeinsamen Faktor für $(1,2)$ und $(2,3)$ verwendet.",
         "Das kleine Vektorpaar mit einem nicht benötigten Determinantenverfahren für $3\\times3$-Matrizen geprüft."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     },
     {
       "caseId": "dependent-triple-span",
@@ -149,9 +142,7 @@
           ]
         ]
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -198,10 +189,7 @@
         "Jeden einzelnen Nichtnullvektor fälschlich als Beleg für Unabhängigkeit der ganzen Menge gelesen.",
         "Die mögliche Abhängigkeit von drei Vektoren in $\\mathbb{R}^3$ durch die Dimensionszahl ausgeschlossen.",
         "Paarweise Nichtparallelität mit Unabhängigkeit einer gesamten Vektormenge verwechselt."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     }
   ]
 }

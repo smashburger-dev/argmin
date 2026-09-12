@@ -16,9 +16,7 @@
       "parameters": {
         "thema": "Dimensionsvertrag der Matrizenmultiplikation"
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -66,9 +64,6 @@
         "Bias als formgebend statt nur broadcastet gelesen",
         "passende innere Dimensionen fälschlich für unzulässig gehalten"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -93,9 +88,7 @@
           4
         ]
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -143,9 +136,6 @@
         "Batchdimension beim Matrixprodukt entfernt",
         "Gewichtsmatrixform als Aktivierungsform ausgegeben"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -164,9 +154,7 @@
         "tokens": 7,
         "embeddingDim": 16
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -214,9 +202,6 @@
         "Batchachse beim Einbetten weggelassen",
         "Vorher-Shape der Token-IDs als Ergebnis beibehalten"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

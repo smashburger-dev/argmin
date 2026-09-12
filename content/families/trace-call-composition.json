@@ -33,14 +33,6 @@
         {
           "if": "element-count-mismatch",
           "then": "Die print-Zeile gibt zwei Werte in einer Zeile aus — durch Leerzeichen getrennt, z. B. `12 14`. Rechne beide Aufrufe aus."
-        },
-        {
-          "if": "one-call-only",
-          "then": "Ein einzelnes Ergebnis ist zu wenig: print(flaeche(3, 4), umfang(3, 4)) ruft beide Funktionen auf — erst flaeche, dann umfang."
-        },
-        {
-          "if": "order-swapped",
-          "then": "Reihenfolge beachten: print gibt zuerst flaeche(3, 4) = 12, dann umfang(3, 4) = 14 aus."
         }
       ],
       "typicalErrors": [
@@ -48,9 +40,6 @@
         "Klammer in umfang übersehen: 2 · 3 + 4 statt 2 · (3 + 4)",
         "Werte in der Ausgabe vertauscht (umfang vor flaeche)"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic",
       "traceTable": {

@@ -91,7 +91,6 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
     parameters: {},
     choices: [],
     expectedAnswer: {},
-    tolerancePolicy: {},
     hints: [],
     feedbackRules: [],
     fullSolution: '',

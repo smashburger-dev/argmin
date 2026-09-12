@@ -16,7 +16,10 @@
       "parameters": {
         "A": {
           "kind": "int-matrix",
-          "dims": [2, 2],
+          "dims": [
+            2,
+            2
+          ],
           "entries": "ganze Zahlen ungleich 0 in [-5, 5]",
           "constraint": "det(A) != 0; Rejection-Sampling bis 200 Versuche, Ersatzmatrix [[1, 2], [3, 4]]"
         }
@@ -34,9 +37,6 @@
         "Vorzeichen der Nebendiagonale falsch behandelt",
         "Determinante berechnet, aber den Unabhängigkeitsschluss nicht gezogen"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

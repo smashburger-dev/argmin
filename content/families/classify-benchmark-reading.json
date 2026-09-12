@@ -14,9 +14,7 @@
       "competencyIds": [
         "c-dl-papers"
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -64,9 +62,6 @@
         "Baseline aus Klammer statt Differenz gelesen",
         "Einheit der Metrik ignoriert"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -84,9 +79,7 @@
       "competencyIds": [
         "c-dl-papers"
       ],
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -134,9 +127,6 @@
         "den alten Benchmarkwert als 1 statt als Bezugsgröße 0,62 verwendet",
         "eine positive Differenz wegen der Normierung auf 1 verworfen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -155,9 +145,7 @@
       "competencyIds": [
         "c-dl-papers"
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -205,9 +193,6 @@
         "positive Trefferquote aus der Gesamt-Accuracy abgeleitet",
         "Klassenimbalance als Verbot statt als Interpretationsrisiko behandelt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

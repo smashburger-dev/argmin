@@ -188,6 +188,12 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       ? <div class={`feedback-box ${correct ? 'correct' : 'incorrect'}`}>
           <p class="feedback-title">{verdict}</p>
           {diagnosis ? <p class="feedback-detail"><MathMarkup html={diagnosis} inline /></p> : null}
+          {!correct && Array.isArray(instance.typicalErrors) && instance.typicalErrors.length > 0
+            ? <div class="feedback-detail">
+                <p>Typische Fehler:</p>
+                <ul>{instance.typicalErrors.map((item: string, index: number) => <li key={index}><MathMarkup html={item} inline /></li>)}</ul>
+              </div>
+            : null}
           {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
           {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
           {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}

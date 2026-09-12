@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w09-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genBaselineCorrect"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-ml-baseline"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genBaselineCorrect",
-        "defaultSeed": 9001,
-        "defaultExpected": 149
-      },
       "prompt": "Ein Klassifikationsdatensatz hat 76 Beispiele der Klasse „Defekt“, 92 der Klasse „Verschleiß“ und 73 der Klasse „in Ordnung“. Eine Trivial-Baseline sagt immer die häufigste Klasse vorher. Wie viele Beispiele werden falsch klassifiziert?",
       "fullSolution": "Die häufigste Klasse bestimmen (größte Klassenanzahl). Die Baseline klassifiziert genau deren Beispiele richtig, alle Beispiele der anderen Klassen falsch. Fehlerzahl = Gesamtanzahl der Beispiele − Anzahl der häufigsten Klasse. Mit „Neue Zahlen\" erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -43,9 +35,6 @@
         "Klassenanzahl statt Klassenhäufigkeit verglichen",
         "bei drei Klassen nur die zweitgrößte Klasse abziehen"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -56,18 +45,10 @@
       "sourceLineage": [
         "w15-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genEnsembleAccuracy"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-ml-ensembles"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genEnsembleAccuracy",
-        "defaultSeed": 15001,
-        "defaultExpected": 11
-      },
       "prompt": "Drei Modelle geben auf 20 Testbeispielen Binärausgaben (1 = Klasse A, 0 = Klasse B). Modell-Ausgaben, je eine Ziffer pro Beispiel: `01000010001000001001`, `11100011111100000111`, `01111011111111111011`. Ein Mehrheitsensemble gibt 1 aus, wenn mindestens zwei der drei Modelle 1 ausgeben. Für wie viele Beispiele gibt das Ensemble 1 aus?",
       "fullSolution": "Spaltenweise zählen: Das Ensemble gibt 1 aus, wo mindestens zwei der drei Modelle 1 ausgeben. Zähle diese Spalten. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -78,10 +59,6 @@
         {
           "if": "value === 20",
           "then": "20 wäre „alle Beispiele“ — geprüft wird die Mehrheitsregel pro Spalte, nicht die Gesamtanzahl der Einsen."
-        },
-        {
-          "if": "value < 5",
-          "then": "So wenige Mehrheits-Spalten gibt es nicht — hast du vielleicht Spalten mit genau einer Eins mitgezählt?"
         }
       ],
       "typicalErrors": [
@@ -89,9 +66,6 @@
         "Spalten mit genau einer Eins mitzählen",
         "Anzahl der Einsen insgesamt statt der Mehrheits-Spalten angeben"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

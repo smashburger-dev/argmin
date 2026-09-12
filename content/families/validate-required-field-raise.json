@@ -30,28 +30,11 @@
         "Die fünf Textfelder in kanonischer Reihenfolge prüfen: nur nicht-leere Strings zählen.",
         "Claims defensiv lesen: evidence fehlt, ist kein dict, enthält bool oder keine Zahlen — alles ungestützt."
       ],
-      "feedbackRules": [
-        {
-          "if": "order-ignored",
-          "then": "missing_fields folgt der festen Reihenfolge frage, methode, datensatz, ergebnis, limitation."
-        },
-        {
-          "if": "bool-accepted",
-          "then": "True/False sind keine Bewertungszahlen — isinstance(x, bool) muss ausgeschlossen werden."
-        },
-        {
-          "if": "equal-supported",
-          "then": "system > baseline ist die Stützungsbedingung; Gleichstand oder Verschlechterung stützt keinen Claim."
-        }
-      ],
       "typicalErrors": [
         "kanonische Feldreihenfolge missachtet",
         "bool als Zahl akzeptiert",
         "Gleichstand als gestützt gewertet"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -137,28 +120,11 @@
         "None und nur-Whitespace sind beide \"fehlend\": wert ist None or str(wert).strip() == \"\".",
         "Die Datumsreihenfolge wird nur geprüft, wenn beide Werte vorhanden und nicht leer sind — ISO-Zeichenfolgen vergleichen sich direkt mit <."
       ],
-      "feedbackRules": [
-        {
-          "if": "order-wrong",
-          "then": "Die Codes werden sortiert zurückgegeben (sorted), nicht in Pflichtfeld-Reihenfolge — die Tests vergleichen exakte Listen."
-        },
-        {
-          "if": "whitespace-counts",
-          "then": "Ein Feld mit \"   \" ist leer: strip() vor dem Vergleich, sonst zählt es fälschlich als ausgefüllt."
-        },
-        {
-          "if": "date-checked-when-missing",
-          "then": "Fehlt eines der Datums, darf datum-reihenfolge nicht zusätzlich ausgelöst werden — der Feld-Code reicht."
-        }
-      ],
       "typicalErrors": [
         "Whitespace-only-Felder als ausgefüllt gewertet",
         "datum-reihenfolge auch bei fehlenden Datums ausgelöst",
         "unsortierte Rückgabe"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -244,28 +210,11 @@
         "validate_card nutzt card.get(feld) — None und strip()==\"\" sind beide leer; Rückgabe alphabetisch sortiert.",
         "splits_ok prüft isinstance(wert, (int, float)) je Schlüssel vor der Summe; is_semver splitet an Punkten und verlangt genau drei isdigit-Blöcke."
       ],
-      "feedbackRules": [
-        {
-          "if": "bool-vs-is",
-          "then": "splits_ok und is_semver liefern echte booleans — die Tests prüfen mit is True / is False."
-        },
-        {
-          "if": "string-splits-accepted",
-          "then": "Strings wie \"0.8\" sind keine Zahlen: isinstance-Prüfung vor der Summe, sonst summierst du Zeichenketten oder brichst ab."
-        },
-        {
-          "if": "semver-edge",
-          "then": "\"1.2.x\" und \"v1.2.0\" sind keine Semver: t.isdigit() scheitert an \"x\" beziehungsweise am Präfix im Block."
-        }
-      ],
       "typicalErrors": [
         "Whitespace-Felder als ausgefüllt gewertet",
         "Split-Strings als Zahlen akzeptiert",
         "Semver ohne Ziffernblock-Prüfung"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -351,28 +300,11 @@
         "Sammle zuerst alle normalisierten Überschriften-Zeilen (strip, lstrip('#'), strip), dann filtere pflicht.",
         "lstrip('#') entfernt auch mehrfache Rauten — aber nur am Anfang."
       ],
-      "feedbackRules": [
-        {
-          "if": "substring-match",
-          "then": "„Setup“ im Fließtext ist keine Überschrift — nur #-Zeilen erfüllen den Vertrag."
-        },
-        {
-          "if": "order-lost",
-          "then": "Die Rückgabe folgt der Reihenfolge in pflicht, nicht der Fundreihenfolge im Text."
-        },
-        {
-          "if": "hash-in-middle",
-          "then": "lstrip('#') greift nur führende Rauten — ein Hash mitten im Titel bleibt Teil des Textes."
-        }
-      ],
       "typicalErrors": [
         "Fließtext-Treffer zugelassen",
         "Reihenfolge der Rückgabe verdreht",
         "Rauten mitten in der Zeile mit entfernt"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [

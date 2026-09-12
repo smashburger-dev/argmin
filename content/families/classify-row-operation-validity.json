@@ -9,9 +9,7 @@
       "masteryEligible": true,
       "sourceLineage": [],
       "parameters": {},
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -48,9 +46,7 @@
         "c-linalg-gauss"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "row-add"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "row-add",
@@ -78,19 +74,10 @@
       "hints": [
         "Die neue Zeile muss aus umkehrbaren Operationen auf vollständigen Gleichungen entstehen."
       ],
-      "feedbackRules": [
-        {
-          "if": "zero-row",
-          "then": "Multiplikation mit null vernichtet Information und ist nicht umkehrbar."
-        }
-      ],
       "typicalErrors": [
         "mit null skalieren",
         "rechte Seite nicht transformieren"
       ],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

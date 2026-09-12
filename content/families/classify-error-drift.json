@@ -37,9 +37,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Ein Defekt-Klassifikator erreicht in der Pilotphase 96 % Accuracy. Drei Monate später liegt dieselbe Metrik auf neuen Werkdaten bei 81 % — der Code ist unverändert, das Werk hat die Vorbehandlung umgestellt, sodass die Sensordaten seither systematisch anders aussehen. Welcher Fehlertyp liegt vor?",
       "fullSolution": "Code unverändert, Metrik bricht nach einer Umstellung der Vorbehandlung ein, die Eingabedaten sehen systematisch anders aus — das ist Daten-Drift. Korrekte Maßnahme: Verteilungen vergleichen, auf den aktuellen Daten neu bewerten und neu trainieren.",
       "hints": [
@@ -65,9 +63,6 @@
         "Drift mit Label-Noise verwechseln",
         "ohne Hinweis auf Gruppen einen Subgruppenfehler annehmen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -103,9 +98,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "prompt": "Die Eingabeverteilung bleibt stabil, aber eine Geschäftsregel ändert die Definition des positiven Labels. Danach fällt die Genauigkeit stark. Welcher Fehler ist am plausibelsten?",
       "fullSolution": "Die Labeldefinition hat sich verschoben. Das ist Label- beziehungsweise Konzept-Drift, nicht primär Input-Drift.",
       "hints": [
@@ -131,9 +124,6 @@
         "Systematische Labeländerung mit zufälligem, unabhängigen Rauschen gleichgesetzt.",
         "Eine semantische Änderung des positiven Labels auf numerische Rundungsfehler reduziert."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -170,9 +160,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Die Gesamtgenauigkeit war schon immer gut, aber eine bestimmte Sprachgruppe hat dauerhaft deutlich mehr Fehler. Welche Diagnose passt?",
       "fullSolution": "Das Muster ist ein stabiler Subgruppenfehler beziehungsweise Fairness-Risiko. Es gibt keinen Hinweis auf einen zeitlichen Drift, sondern auf ungleiche Fehler nach Gruppe.",
       "hints": [
@@ -198,9 +186,6 @@
         "Systematische gruppenspezifische Fehler als ungerichtetes Label-Rauschen verbucht.",
         "Aggregierte Genauigkeit als ausreichenden Gegenbeweis gegen Subgruppenrisiken verwendet."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

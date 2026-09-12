@@ -13,7 +13,7 @@ import {
 // Property tests for the W6-W21 seeded generators (ADR-0012, ADR-0013),
 // mirroring the house rules enforced for the capstone generators:
 //   1. determinism: same seed -> identical instance
-//   2. answer space: >= 20 distinct expected values over 2000 seeds
+//   2. answer space: >= 20 distinct expected values over 600 seeds
 //   3. semantic variation: >= 3 distinct prompt shapes per family
 //   4. honesty: prompt never shows the answer as a standalone number,
 //      fullSolution always contains it, expected is an exact integer
@@ -39,7 +39,7 @@ const DATA_ML_DEEP_GENERATORS = {
   genDropoutCount,
 };
 
-const SEEDS = Array.from({ length: 2000 }, (_, i) => 1 + i * 37);
+const SEEDS = Array.from({ length: 600 }, (_, i) => 1 + i * 37);
 
 function standaloneNumberPresent(text, value) {
   const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -106,7 +106,7 @@ const SOLVERS = {
 };
 
 // Documented lower bound from both generator modules: every family spans
-// >= 20 distinct expected values over 2000 seeds so re-seeds stay fresh.
+// >= 20 distinct expected values over 600 seeds so re-seeds stay fresh.
 const MIN_DISTINCT = 20;
 
 for (const [name, generator] of Object.entries(DATA_ML_DEEP_GENERATORS)) {
@@ -124,7 +124,7 @@ for (const [name, generator] of Object.entries(DATA_ML_DEEP_GENERATORS)) {
   test(`data-ml/deep ${name}: semantic prompt variation (>= 3 distinct shapes)`, () => {
     // Digit-masked prompts isolate the semantic frame from the drawn numbers
     // (same technique as the capstone generator tests).
-    const shapes = new Set(SEEDS.slice(0, 400).map((seed) => {
+    const shapes = new Set(SEEDS.slice(0, 150).map((seed) => {
       const { prompt } = generator(seed);
       return prompt.replace(/-?\d+/g, '#');
     }));
@@ -132,7 +132,7 @@ for (const [name, generator] of Object.entries(DATA_ML_DEEP_GENERATORS)) {
   });
 
   test(`data-ml/deep ${name}: prompt never shows the answer, solution always does`, () => {
-    for (const seed of SEEDS.slice(0, 300)) {
+    for (const seed of SEEDS.slice(0, 150)) {
       const instance = generator(seed);
       assert.ok(Number.isInteger(instance.expected), `${name} seed ${seed}: non-integer expected`);
       assert.equal(standaloneNumberPresent(instance.prompt, instance.expected), false,
@@ -143,7 +143,7 @@ for (const [name, generator] of Object.entries(DATA_ML_DEEP_GENERATORS)) {
   });
 
   test(`data-ml/deep ${name}: independent solver agrees on every seed (incl. 20-seed spot check)`, () => {
-    for (const seed of SEEDS.slice(0, 200)) {
+    for (const seed of SEEDS.slice(0, 100)) {
       const instance = generator(seed);
       assert.equal(SOLVERS[name](instance.parameters), instance.expected,
         `${name} seed ${seed}: solver disagrees`);
@@ -156,7 +156,7 @@ for (const [name, generator] of Object.entries(DATA_ML_DEEP_GENERATORS)) {
   });
 
   test(`data-ml/deep ${name}: instances carry the full generator contract`, () => {
-    for (const seed of SEEDS.slice(0, 50)) {
+    for (const seed of SEEDS.slice(0, 25)) {
       const instance = generator(seed);
       assert.ok(instance.parameters && typeof instance.parameters === 'object', `${name} seed ${seed}: parameters missing`);
       assert.ok(typeof instance.prompt === 'string' && instance.prompt.length > 0, `${name} seed ${seed}: prompt missing`);

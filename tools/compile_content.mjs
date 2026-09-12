@@ -147,16 +147,13 @@ function validateChoiceContract(label, item) {
     }
     return;
   }
-  const hasChoices = Object.hasOwn(item, 'choices');
-  const correctChoice = item.expected?.correctChoice;
-  const hasCorrectChoice = typeof correctChoice === 'string';
-  if (hasChoices !== hasCorrectChoice) {
-    throw new Error(`${label}: choices und expected.correctChoice müssen gemeinsam vorhanden sein`);
+  if (item.expected?.correctChoice !== undefined) {
+    throw new Error(`${label}: expected.correctChoice ist entfernt — die korrekte Wahl steht in choices[].correct`);
   }
-  if (!hasChoices) return;
+  if (!Object.hasOwn(item, 'choices')) return;
   const correct = item.choices.filter((choice) => choice.correct === true);
-  if (correct.length !== 1 || correct[0].id !== correctChoice) {
-    throw new Error(`${label}: choices brauchen genau eine korrekte Antwort passend zu expected.correctChoice`);
+  if (correct.length !== 1) {
+    throw new Error(`${label}: choices brauchen genau eine korrekte Antwort`);
   }
 }
 

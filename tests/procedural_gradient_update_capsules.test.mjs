@@ -42,7 +42,6 @@ test('choice capsule: 200 seeds — four distinct options, key matches', () => {
     assert.equal(new Set(g.choices.map((c) => c.text)).size, 4, `${seed}: eindeutige Texte`);
     const correct = g.choices.filter((c) => c.correct);
     assert.equal(correct.length, 1);
-    assert.equal(g.expected.correctChoice, correct[0].id);
     assert.equal(correct[0].text, mod.signCorrectText(g.parameters));
     assert.ok(!g.prompt.includes(correct[0].text.split('—')[0].trim()), `${seed}: Schlüssel im Prompt`);
     seen.add(JSON.stringify([g.parameters, g.choices.map((c) => c.id)]));

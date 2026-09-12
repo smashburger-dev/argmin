@@ -65,7 +65,7 @@ function counterexample(instance) {
 }
 
 function correctAnswer(instance) {
-  if (instance.activityType === 'single-choice') return instance.expectedAnswer.correctChoice;
+  if (instance.activityType === 'single-choice') return (instance.choices || []).find((choice) => choice.correct)?.id;
   if (instance.activityType === 'code-trace') {
     const answers = {};
     for (const variable of instance.parameters.variables) answers[variable.name] = String(variable.value);
@@ -87,7 +87,7 @@ function solvedValue(contract, instance) {
 
 function expectedValue(contract, instance) {
   if (contract.activityType === 'predict-output') return instance.expectedAnswer.output;
-  if (contract.activityType === 'single-choice') return instance.expectedAnswer.correctChoice;
+  if (contract.activityType === 'single-choice') return (instance.choices || []).find((choice) => choice.correct)?.id;
   return instance.parameters.variables
     .map(({ name, value }) => ({ name, value }))
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -191,8 +191,8 @@ test('trace-exception-path asks two options on intro and four above; position ro
       const core = TRACE_FAMILIES.instantiate('trace-exception-path', seed, 'core', caseId);
       assert.equal(intro.choices.length, 2, `${caseId}: intro fragt zwei Optionen`);
       assert.equal(core.choices.length, 4, `${caseId}: core fragt vier Optionen`);
-      introPositions.add(intro.expectedAnswer.correctChoice);
-      corePositions.add(core.expectedAnswer.correctChoice);
+      introPositions.add(intro.choices.find((choice) => choice.correct).id);
+      corePositions.add(core.choices.find((choice) => choice.correct).id);
     }
     assert.ok(introPositions.size > 1, `${caseId}: intro rotiert die korrekte Position`);
     assert.ok(corePositions.size > 1, `${caseId}: core rotiert die korrekte Position`);

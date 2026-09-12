@@ -66,135 +66,7 @@
         ]
       },
       "prompt": "Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` (Begleiter zu w05-e8) in die richtige Reihenfolge. Zwei Zeilen sind Distraktoren, die nicht zur Lösung gehören — sortiere sie aus.",
-      "fullSolution": "Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert).",
-      "variants": [
-        {
-          "parameters": {
-            "initialOrder": [
-              "d1",
-              "p3",
-              "p5",
-              "p2",
-              "d2",
-              "p4",
-              "p1"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 1 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p3",
-              "p5",
-              "p2",
-              "d2",
-              "p4",
-              "p1",
-              "d1"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 2 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p5",
-              "p2",
-              "d2",
-              "p4",
-              "p1",
-              "d1",
-              "p3"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 3 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p2",
-              "d2",
-              "p4",
-              "p1",
-              "d1",
-              "p3",
-              "p5"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 4 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "d2",
-              "p4",
-              "p1",
-              "d1",
-              "p3",
-              "p5",
-              "p2"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 5 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p4",
-              "p1",
-              "d1",
-              "p3",
-              "p5",
-              "p2",
-              "d2"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 6 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p1",
-              "d1",
-              "p3",
-              "p5",
-              "p2",
-              "d2",
-              "p4"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 7 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p1",
-              "d1",
-              "p3",
-              "p5",
-              "p2",
-              "d2",
-              "p4"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 8 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p1",
-              "d1",
-              "p3",
-              "p5",
-              "p2",
-              "d2",
-              "p4"
-            ]
-          },
-          "prompt": "Parsons matvec, Startlage um 9 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p5; Distraktoren aussortieren."
-        }
-      ]
+      "fullSolution": "Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert)."
     },
     {
       "caseId": "matvec-code-reference",
@@ -252,76 +124,15 @@
       "fullSolution": "<pre><code>def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef gauss_rank(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) &gt; 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)</code></pre>",
       "activityType": "python-code",
       "graderId": "pyodide",
-      "tolerancePolicy": {
-        "mode": "deterministic-tests",
-        "absoluteTolerance": 1e-08
-      },
       "hints": [
         "Normalisiere Eingaben zuerst mit `np.asarray`; prüfe danach ndim und innere Dimensionen.",
         "Für den Rang: Suche pro Spalte einen von null verschiedenen Pivot, vertausche Zeilen und eliminiere darunter.",
         "Trenne Shape-Validierung, Rangalgorithmus und Systemlösung in drei kleine Verträge."
       ],
-      "feedbackRules": [],
       "typicalErrors": [
         "Shape-Prüfung nach statt vor der Operation",
         "Pivotspalte ohne Zeilentausch überspringen",
         "nur einen bekannten Testfall hartcodieren"
-      ],
-      "variants": [
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[1, 0, 2], [0, 1, 1]]\nB = [[1, 1], [0, 1], [1, 0]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[1, 2], [2, 4], [3, 6]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[2, 1], [0, 1]]\nbb = [5, 1]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: 2×3 @ 3×2, Rang-1 Vielfache. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[3, 1], [1, 2]]\nB = [[1, 0], [0, 1]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[1, 1, 0], [0, 1, 1], [1, 2, 1]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[1, 0], [0, 2]]\nbb = [2, 4]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: 2×2-Identitätsprodukt, Rang 2. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[2, 0, 0], [0, 3, 0]]\nB = [[1], [1], [1]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[4, 0], [0, 5]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[3, 1, 0], [0, 2, 1], [1, 0, 2]]\nbb = [4, 5, 6]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: rechteckig 2×3 @ 3×1, 3×3-System. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[1, 2, 3]]\nB = [[1], [0], [-1]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[1, 0, 0], [2, 0, 0], [3, 0, 0]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[4, 1], [1, 3]]\nbb = [11, 10]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: Zeile mal Spalte, Rang 1. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[0, 1], [1, 0], [1, 1]]\nB = [[2, 3], [4, 5]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[1, 1], [1, 1], [2, 2]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[2, 0, 1], [0, 3, 1], [1, 1, 2]]\nbb = [3, 7, 8]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: 3×2 @ 2×2, Vollrang 3×3. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[5, -1], [2, 0]]\nB = [[0, 1], [1, 0]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[7, 14], [21, 42]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[1, 1], [0, 1]]\nbb = [3, 2]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: Vorzeichen, Rang 1 Vielfache. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[1, 1, 1], [0, 1, 2]]\nB = [[1, 0], [0, 1], [1, 1]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[1, 2, 3], [2, 4, 6], [3, 6, 9]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[5, 2], [1, 1]]\nbb = [12, 4]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: 2×3 @ 3×2, Rang-1 3×3. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[2, 2], [1, 3], [0, 1]]\nB = [[1, 0, 1], [0, 1, 1]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[2, 0], [0, 2]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[1, 2, 0], [0, 1, 1], [1, 0, 2]]\nbb = [3, 5, 7]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: 3×2 @ 2×3, 3×3-System. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nA = [[1, 0], [0, 1], [1, 1], [2, 0]]\nB = [[3, 1], [1, 2]]\n__check('matmul', np.array_equal(shape_safe_matmul(A, B), np.asarray(A) @ np.asarray(B)))\ntry:\n    shape_safe_matmul([[1, 2]], [[1, 2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n        __check('inkompatible Shapes abgelehnt', True)\n\nR = [[1, 1, 1], [2, 2, 2]]\n__check('gauss_rank', gauss_rank(R) == int(np.linalg.matrix_rank(np.asarray(R, dtype=float))))\nS = [[2, 1, 0], [0, 2, 1], [1, 0, 3]]\nbb = [1, 4, 7]\ngot = solve_system(S, bb)\n__check('solve_system', np.allclose(np.asarray(S, dtype=float) @ np.asarray(got), np.asarray(bb, dtype=float)))\n"
-          },
-          "prompt": "Matvec-Boss: 4×2 @ 2×2, Rang 1. Implementiere `shape_safe_matmul`, `gauss_rank` und `solve_system`."
-        }
       ]
     }
   ]

@@ -76,11 +76,7 @@
         "Beim 3×3-Fall den Pivot in der dritten Spalte nach dem Zeilenschritt übersehen",
         "Die drei Pivotzeilen dieses Beispiels nicht von drei bloßen Matrixspalten unterschieden",
         "Die Zwischenzeile mit Eintrag 13 nach der Elimination als Nullzeile fehlgedeutet"
-      ],
-      "tolerancePolicy": {
-        "mode": "absolute",
-        "value": 0
-      }
+      ]
     },
     {
       "caseId": "rank-3x4-line",
@@ -125,11 +121,7 @@
         "Die beiden Vielfachen der ersten Zeile in diesem 3×4-Beispiel nicht als abhängig erkannt",
         "Den Rang 1 fälschlich an der vier Spalten statt an den Pivotzeilen festgemacht",
         "Die beiden nach der Elimination entstehenden Nullzeilen als zusätzliche Pivots gezählt"
-      ],
-      "tolerancePolicy": {
-        "mode": "absolute",
-        "value": 0
-      }
+      ]
     }
   ]
 }

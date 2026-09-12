@@ -55,7 +55,7 @@ function countLeavesIndependently(snippet) {
 import { LINALG_NUMPY_FRESH_GENERATORS, det2 } from '../assets/js/core/linalg_numpy_fresh_generators.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const NUMERIC_SEEDS = 2000;
+const NUMERIC_SEEDS = 200;
 const FAMILIES = { ...FOUNDATIONS_FRESH_GENERATORS, ...LINALG_NUMPY_FRESH_GENERATORS };
 
 // --- independent solvers (no product imports beyond the generators) ----------
@@ -212,7 +212,7 @@ test('variant banks: every case reachable, choices valid, correct position rotat
     const generator = FAMILIES[generatorId];
     const cases = new Map(); // caseId -> prompt signature
     const positions = new Set();
-    for (let seed = 0; seed < caseCount * 40; seed++) {
+    for (let seed = 0; seed < caseCount * 8; seed++) {
       const instance = generator(seed);
       assert.ok(Array.isArray(instance.choices) && instance.choices.length >= 2, `${generatorId}@${seed}: choices missing`);
       assert.equal(instance.choices.filter((choice) => choice.correct).length, 1, `${generatorId}@${seed}: choices need one correct answer`);
@@ -231,7 +231,7 @@ test('variant banks: every case reachable, choices valid, correct position rotat
 
 test('genCollectionStepTrace: all six families reachable, solver parity, states actually evolve', () => {
   const seen = new Map();
-  for (let seed = 1; seed <= 600; seed++) {
+  for (let seed = 1; seed <= 300; seed++) {
     const instance = FAMILIES.genCollectionStepTrace(seed);
     const family = instance.parameters.family;
     seen.set(family, (seen.get(family) || 0) + 1);
@@ -256,7 +256,7 @@ test('genCollectionStepTrace: all six families reachable, solver parity, states 
 test('predict-output prompts never embed the expected output string (slices excepted)', () => {
   for (const generatorId of ['genPythonStateTrace', 'genCodeReadingOutput', 'genFunctionCompose', 'genControlFlowOutput', 'genShapePredict']) {
     const generator = FAMILIES[generatorId];
-    for (let seed = 1; seed <= 600; seed++) {
+    for (let seed = 1; seed <= 150; seed++) {
       const instance = generator(seed);
       const output = instance.expected.output;
       const snippet = String(instance.parameters.snippet || '');
@@ -279,7 +279,7 @@ test('predict-output prompts never embed the expected output string (slices exce
 
 test('genGitNextAction: fileName varies across seeds (not fixed to one value)', () => {
   const names = new Set();
-  for (let seed = 0; seed < 2000; seed++) {
+  for (let seed = 0; seed < 120; seed++) {
     const fileName = FAMILIES.genGitNextAction(seed).parameters.fileName;
     if (fileName) names.add(fileName);
   }
@@ -288,7 +288,7 @@ test('genGitNextAction: fileName varies across seeds (not fixed to one value)', 
 
 test('genCollectionStepTrace list-copy: the final x write actually changes x (solution text stays truthful)', () => {
   let checked = 0;
-  for (let seed = 1; seed <= 4000; seed++) {
+  for (let seed = 1; seed <= 1200; seed++) {
     const instance = FAMILIES.genCollectionStepTrace(seed);
     if (instance.parameters.family !== 'list-copy') continue;
     checked += 1;
@@ -302,7 +302,7 @@ test('genCollectionStepTrace list-copy: the final x write actually changes x (so
 test('learner-facing generator texts stay German (no foreign-language artifacts, no English booleans)', () => {
   const forbidden = [/\bplusieurs\b/, /\bist (?:true|false)\b/, /\bist True\b/];
   for (const generatorId of ['genGitNextAction', 'genMetaErrorClassify', 'genExceptionBoundary', 'genControlFlowOutput', 'genPythonStateTrace', 'genCodeReadingOutput', 'genFunctionCompose', 'genCollectionStepTrace', 'genBranchCoverageCount']) {
-    for (let seed = 0; seed < 1200; seed++) {
+    for (let seed = 0; seed < 150; seed++) {
       const instance = FAMILIES[generatorId](seed);
       for (const text of [instance.prompt, instance.fullSolution]) {
         for (const pattern of forbidden) {

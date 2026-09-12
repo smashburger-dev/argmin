@@ -29,86 +29,13 @@
         "Für normalize: erst alles auf Kleinbuchstaben, dann Zeichen für Zeichen prüfen — Satzzeichen überspringen, alles andere (inklusive ä ö ü ß und Ziffern) bleibt.",
         "chunk validiert zuerst die Parameter und sammelt dann die Fenster mit start += size − overlap, bis start die Länge erreicht."
       ],
-      "feedbackRules": [
-        {
-          "if": "punct-not-stripped",
-          "then": "Satzzeichen wie „ oder ! müssen verschwinden — prüfe dein Zeichenfilter-Set gegen die Testfälle."
-        },
-        {
-          "if": "valueerror-missing",
-          "then": "Die ValueError-Prüfung steht vor dem ersten Fenster — size ≤ 0 und overlap ≥ size sind vertragswidrig."
-        },
-        {
-          "if": "off-by-one-start",
-          "then": "Die Schleifenbedingung ist start < len(text): der letzte Start liegt unter der Länge, das Fenster darf kürzer als size sein."
-        }
-      ],
       "typicalErrors": [
         "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt",
         "Fenster mit fester Anzahl statt while-Schleife erzeugt",
         "overlap ≥ size erlaubt und Endlosschleife riskiert"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Hallo, Welt!') == __norm('Hallo, Welt!'))\n__check('chunk fensterfolge', chunk('xyzxyzxyz', 3, 1) == __chunk('xyzxyzxyz', 3, 1))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize „Hallo, Welt!“ und chunk xyz, size 3 overlap 1. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Größe: 12 m².') == __norm('Größe: 12 m².'))\n__check('chunk fensterfolge', chunk('abcdefgh', 3, 0) == __chunk('abcdefgh', 3, 0))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize mit m²/Umlaute, chunk ohne overlap. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Artikel 7, Satz 2?') == __norm('Artikel 7, Satz 2?'))\n__check('chunk fensterfolge', chunk('1234567890', 4, 2) == __chunk('1234567890', 4, 2))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize Artikel/Satz, chunk Ziffern size 4. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('„Österreich“!') == __norm('„Österreich“!'))\n__check('chunk fensterfolge', chunk('overlaptest', 5, 2) == __chunk('overlaptest', 5, 2))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize Anführungszeichen, chunk overlaptest. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('A\\n\\nB   C') == __norm('A\\n\\nB   C'))\n__check('chunk fensterfolge', chunk('short', 10, 1) == __chunk('short', 10, 1))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize Whitespace-Kollaps, kurzer chunk-Text. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Naïve café.') == __norm('Naïve café.'))\n__check('chunk fensterfolge', chunk('ijklmnop', 4, 1) == __chunk('ijklmnop', 4, 1))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize café/ï, chunk ijklmnop. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Endstand 3:2!') == __norm('Endstand 3:2!'))\n__check('chunk fensterfolge', chunk('qrstuvwx', 2, 0) == __chunk('qrstuvwx', 2, 0))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize Spielstand, chunk Schritt 2. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Bitte: Halt.') == __norm('Bitte: Halt.'))\n__check('chunk fensterfolge', chunk('aaabbbccc', 3, 2) == __chunk('aaabbbccc', 3, 2))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize Doppelpunkt, chunk overlap 2. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        },
-        {
-          "parameters": {
-            "tests": "PUNCT = \"!\\\"#$%&'()*+,-./:;<=>?@[\\\\]^_`{|}~„“”‚‘’\"\ndef __norm(text):\n    out = []\n    for ch in text.lower():\n        if ch in PUNCT:\n            continue\n        out.append(ch)\n    return \" \".join(\"\".join(out).split())\ndef __chunk(text, size, overlap):\n    step = size - overlap\n    parts = []\n    start = 0\n    while start < len(text):\n        parts.append(text[start:start + size])\n        start += step\n    return parts\n__check('normalize', normalize('Maßband, 4 mm.') == __norm('Maßband, 4 mm.'))\n__check('chunk fensterfolge', chunk('zzzzzzzzzz', 6, 3) == __chunk('zzzzzzzzzz', 6, 3))\n__check('chunk kurzer text', chunk(\"ab\", 5, 2) == [\"ab\"])\ntry:\n    chunk('abc', 0, 0)\n    __check('size 0 -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('size 0 -> ValueError', True)\n\ntry:\n    chunk('abc', 4, 4)\n    __check('overlap >= size -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('overlap >= size -> ValueError', True)\n\n"
-          },
-          "prompt": "Normalize Maßband, chunk size 6 overlap 3. Implementiere `normalize` und `chunk` nach dem Vertrag."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

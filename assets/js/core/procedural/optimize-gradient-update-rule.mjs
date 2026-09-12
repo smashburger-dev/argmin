@@ -78,7 +78,7 @@ export function genSignCapsule(seed) {
     .map((choice) => ({ ...choice, correct: choice.text === correctText }));
   return {
     parameters: drawn,
-    expected: { correctChoice: choices.find((c) => c.correct).id },
+    expected: {},
     choices,
     prompt: signPrompt(drawn),
     fullSolution: signSolution(drawn),
