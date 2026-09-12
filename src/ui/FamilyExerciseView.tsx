@@ -4,7 +4,7 @@ import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs'
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
-import { AnswerControls } from './AnswerControls';
+import { AnswerControls, FadingPrompt } from './AnswerControls';
 import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
@@ -44,6 +44,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   const [verdict, setVerdict] = useState<string | null>(null);
   const [correct, setCorrect] = useState<boolean | null>(null);
   const [errorType, setErrorType] = useState<string | null>(null);
+  const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [solutionVisible, setSolutionVisible] = useState(false);
   const [shownHints, setShownHints] = useState<string[]>([]);
   const [reviewDueAt, setReviewDueAt] = useState<string | null>(null);
@@ -132,6 +133,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       setCorrect(Boolean(result.correct));
       setErrorType(result.errorType ?? null);
       setVerdict(result.verdictText || (result.correct ? 'Richtig.' : 'Nicht richtig.'));
+      setDiagnosis(result.diagnosis ?? null);
       if (result.correct && input.masteryEligible) setMasteryNote(true);
       if (result.correct && progress) {
         const entry = (await progress.reviewQueueAll()).find((item: { exerciseId: string }) => item.exerciseId === input.definitionId);
@@ -154,6 +156,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         parameters: instance.parameters,
         expectedAnswer: instance.expectedAnswer,
         traceTable: instance.traceTable,
+        hints: instance.hints,
       },
       { level, answer, correct },
     );
@@ -170,6 +173,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   };
 
   const isCode = instance.activityType === 'python-code';
+  // worked-example-fading: der Prompt IST die Antwortfläche — die [[gap]]-
+  // Marker werden inline zu Inputs. Der Prompt-Slot rendert daher das
+  // interaktive Widget, der Answer-Bereich bleibt leer.
+  const isFading = instance.activityType === 'worked-example-fading';
   const starterCode = isCode && instance.parameters && typeof instance.parameters.starterCode === 'string'
     ? instance.parameters.starterCode
     : '';
@@ -180,6 +187,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     : verdict
       ? <div class={`feedback-box ${correct ? 'correct' : 'incorrect'}`}>
           <p class="feedback-title">{verdict}</p>
+          {diagnosis ? <p class="feedback-detail"><MathMarkup html={diagnosis} inline /></p> : null}
           {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
           {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
           {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
@@ -189,11 +197,13 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     <ExerciseFrame
       ctx={ctx}
       eyebrow={`${ctx.difficultyLabel} · Variante ${instance.seed}`}
-      prompt={<MathMarkup html={instance.prompt} />}
-      snippet={!isCode && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
+      prompt={isFading
+        ? <FadingPrompt key={instance.instanceId} exercise={instance} onAnswer={setAnswer} />
+        : <MathMarkup html={instance.prompt} />}
+      snippet={!isCode && !isFading && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
       answer={isCode
         ? <CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} />
-        : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
+        : isFading ? null : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
       actions={
         <>
           <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>

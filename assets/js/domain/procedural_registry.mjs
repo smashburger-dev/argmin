@@ -73,6 +73,8 @@ import { FAMILY_SPEC as VALIDATE_LEAKAGE_RULE_AUDIT } from '../core/procedural/v
 import { FAMILY_SPEC as VALIDATE_REPORT_GUARD_COMPOSE } from '../core/procedural/validate-report-guard-compose.mjs';
 import { FAMILY_SPEC as VALIDATE_RULE_CATALOG_SCAN } from '../core/procedural/validate-rule-catalog-scan.mjs';
 import { FAMILY_SPEC as VALIDATE_TEXT_NORMALIZE_MATCH } from '../core/procedural/validate-text-normalize-match.mjs';
+import { FAMILY_SPEC as WORKED_EXAMPLE_FADING_DISTRIBUTIVE } from '../core/procedural/worked-example-fading-distributive.mjs';
+import { FAMILY_SPEC as WORKED_EXAMPLE_FADING_LINEAR_EQUATIONS } from '../core/procedural/worked-example-fading-linear-equations.mjs';
 
 export const PROCEDURAL_FAMILY_SPECS = [
   AGGREGATE_DETECTOR_EVAL_COMPARE,
@@ -145,4 +147,6 @@ export const PROCEDURAL_FAMILY_SPECS = [
   VALIDATE_REPORT_GUARD_COMPOSE,
   VALIDATE_RULE_CATALOG_SCAN,
   VALIDATE_TEXT_NORMALIZE_MATCH,
+  WORKED_EXAMPLE_FADING_DISTRIBUTIVE,
+  WORKED_EXAMPLE_FADING_LINEAR_EQUATIONS,
 ];

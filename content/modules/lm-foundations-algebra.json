@@ -51,6 +51,35 @@
       "estimatedMinutes": 0
     },
     {
+      "placementId": "p-foundations-algebra-fading-linear-final-step",
+      "role": "curated",
+      "familyId": "worked-example-fading-linear-equations",
+      "caseId": "fade-final-step",
+      "seed": 3,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-fading-linear-middle-steps",
+      "role": "curated",
+      "familyId": "worked-example-fading-linear-equations",
+      "caseId": "fade-middle-steps",
+      "seed": 5,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-fading-linear-equations-practice",
+      "role": "practice-space",
+      "familyId": "worked-example-fading-linear-equations",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
       "placementId": "p-foundations-algebra-integer-base-power",
       "role": "curated",
       "familyId": "transform-power-log-exponent",
@@ -105,6 +134,24 @@
       "placementId": "p-foundations-algebra-transform-expression-simplify-canonica",
       "role": "practice-space",
       "familyId": "transform-expression-simplify-canonical",
+      "difficulty": "core",
+      "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-algebra-fading-distributive-final-gap",
+      "role": "curated",
+      "familyId": "worked-example-fading-distributive",
+      "caseId": "distribute-final-gap",
+      "seed": 11,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-fading-distributive-practice",
+      "role": "practice-space",
+      "familyId": "worked-example-fading-distributive",
       "difficulty": "core",
       "estimatedMinutes": 0
     },

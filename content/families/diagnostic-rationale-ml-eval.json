@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "familyId": "diagnostic-rationale-ml-eval",
+  "contract": {
+    "familyId": "diagnostic-rationale-ml-eval",
+    "familyGroup": "diagnose-cause",
+    "summary": "Begründet die Ursache einer irreführenden oder abgebrochenen ML-Auswertung, bevor ein Fix genannt wird.",
+    "taskArchetype": "rationale-note",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "shift-minus-one-leakage",
+        "propertyTest": false
+      },
+      {
+        "caseId": "score-on-train",
+        "propertyTest": false
+      },
+      {
+        "caseId": "fold-nan-crash",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core"
+    ],
+    "competencyIds": [
+      "c-ml-cv",
+      "c-ml-erroranalysis"
+    ],
+    "graderId": "deterministic",
+    "activityType": "diagnostic-rationale"
+  },
+  "cases": [
+    {
+      "caseId": "shift-minus-one-leakage",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "off-by-one",
+        "mustContain": [
+          "ziel|label",
+          "zeile|shift|zukunft|nächste|naechste"
+        ],
+        "mustNotContain": [
+          "overfitting|auswendig"
+        ],
+        "minWords": 15
+      },
+      "prompt": "Ein Team meldet eine Test-Accuracy von 0.99 — im Produktivsystem versagt dasselbe Modell vollständig, denn dort existiert naturgemäß kein `ziel_plus`. Erkläre die Ursache des täuschend hohen Scores, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `shift(-1)` zieht den `ziel`-Wert der Folgezeile in die aktuelle Zeile — die Zeilen sind um eins verschoben (off-by-one), das Feature `ziel_plus` enthält also die Zukunft. Der 0.99-Score misst Leakage, nicht Lernleistung; der Fix entfernt das ziel-abgeleitete Feature.",
+      "hints": [
+        "Von welcher Zeile holt `shift(-1)` den Wert — und war diese Information zum Vorhersagezeitpunkt schon bekannt?",
+        "Welche Information steckt in `ziel_plus`, die im Produktivsystem fehlt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Benenne die Verschiebung: `shift(-1)` holt den `ziel`-Wert der Folgezeile — die Ursache ist die Zukunft im Feature, nicht das Modell."
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "den Split pauschal als undicht bezeichnet, ohne das ziel-abgeleitete Feature zu benennen",
+        "Overfitting als Erklärung — das Modell generalisiert korrekt, das Feature ist der Fehler",
+        "0.99 als Modellgüte gewertet statt als Leakage-Signal"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "df[\"ziel_plus\"] = df[\"ziel\"].shift(-1)\ntrain, test = train_test_split(df, test_size=0.2, random_state=3)\nmodel.fit(train[[\"kurs\", \"ziel_plus\"]], train[\"ziel\"])\nscore = model.score(test[[\"kurs\", \"ziel_plus\"]], test[\"ziel\"])"
+      }
+    },
+    {
+      "caseId": "score-on-train",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-ml-erroranalysis"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "swapped",
+        "mustContain": [
+          "train|gesehen|trainingsdaten",
+          "test|score|bewertet|metrik"
+        ],
+        "minWords": 12
+      },
+      "prompt": "Das Notebook meldet stolz „Test-Accuracy: 0.99\" — im Produktivsystem bricht dasselbe Modell ein. Erkläre die Ursache des falschen Vertrauens in den Score, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `model.score` bekommt `train[features]` und `train[\"y\"]` — die Partitionen sind vertauscht: bewertet wird auf den Trainingsdaten, die das Modell beim Fit schon gesehen hat, nicht auf dem Test-Set. Die 0.99 ist eine Trainings-Accuracy; der Fix übergibt `test[features]` und `test[\"y\"]`.",
+      "hints": [
+        "Welches Dataframe bekommt `model.score` — das beim Fit gesehene oder das zurückbehaltene?",
+        "Vergleiche die Argumente von `fit` und `score`."
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Benenne beide Partitionen: `score` läuft auf `train`, nicht auf `test` — die vertauschten Daten sind die Ursache."
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "Overfitting als Ursache genannt, ohne den `score`-Aufruf zu prüfen",
+        "`test_size` oder `random_state` für das Problem gehalten",
+        "die hohe Zahl als echten Test-Score gelesen statt als Trainings-Score"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "train, test = train_test_split(df, test_size=0.2, random_state=7)\nmodel.fit(train[features], train[\"y\"])\nacc = model.score(train[features], train[\"y\"])\nprint(\"Test-Accuracy:\", acc)"
+      }
+    },
+    {
+      "caseId": "fold-nan-crash",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "ValueError",
+        "mustContain": [
+          "nan|fehlend|lücke|luecke",
+          "kauf|ziel|spalte"
+        ],
+        "minWords": 15
+      },
+      "prompt": "Die Cross-Validation läuft zweimal durch und bricht in Fold 3 ab: `ValueError: Input y contains NaN`. Die Features werden pro Fold imputiert; `df` stammt aus einem Log-Join — einige Zeilen tragen keinen `kauf`-Eintrag (das Ziel). Erkläre die Ursache des Abbruchs, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `df[\"kauf\"]` — das Ziel — enthält NaN, imputiert werden aber nur die Features. Zeilen ohne `kauf`-Wert landen im Trainingsfold 3, `model.fit` verlangt ein vollständiges y und wirft den ValueError; der Fix entfernt oder markiert ziel-lose Zeilen vor dem Split.",
+      "hints": [
+        "Die Meldung nennt `y` — welche Spalte ist das Ziel, und wurde sie imputiert?",
+        "Was passiert mit Zeilen ohne `kauf`-Eintrag, wenn sie in einem Trainingsfold landen?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Benenne, wo die NaN sitzen: nicht in den imputierten Features, sondern in `kauf` — dem Ziel."
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "den ValueError dem Modell statt den Daten zugeschrieben",
+        "die Imputation für fehlerhaft erklärt — sie deckt nur die Features ab, nicht das Ziel",
+        "die KFold-Zufallsauswahl als Ursache vermutet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "for fold, (tr, te) in enumerate(KFold(5).split(df)):\n    Xtr = SimpleImputer(strategy=\"mean\").fit_transform(df.iloc[tr][features])\n    model.fit(Xtr, df.iloc[tr][\"kauf\"])"
+      }
+    }
+  ]
+}

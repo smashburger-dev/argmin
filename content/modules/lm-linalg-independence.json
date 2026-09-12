@@ -85,6 +85,39 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-independence-08-mcq-independence-statements",
+      "role": "curated",
+      "familyId": "multiple-choice-linalg-independence",
+      "caseId": "independence-statements",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-independence-06-mcq-independent-sets-r2",
+      "role": "curated",
+      "familyId": "multiple-choice-linalg-independence",
+      "caseId": "independent-sets-r2",
+      "seed": 1,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-independence-09-mcq-independent-sets-r3",
+      "role": "curated",
+      "familyId": "multiple-choice-linalg-independence",
+      "caseId": "independent-sets-r3",
+      "seed": 1,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-independence-04-formula-det2-independence-practice",
       "role": "practice-space",
       "familyId": "formula-det2-independence",

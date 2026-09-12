@@ -33,9 +33,10 @@ Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die U
 
 ### Seed-Generatoren für Familienfälle
 
-- `parameters.seedGenerator: 'genLinearEquation'|'genPowerExpr'|'genLogExpr'` + `deterministicSeed` in der Aufgabe; der Grader (`expectedNumeric`) berechnet `expected` aus Generator + **aktuellem** Seed.
-- Der im JSON dokumentierte `prompt` ist die Generator-Ausgabe zum Default-Seed (Test erzwingt Identität — kein Seed-Drift).
-- „Neue Zahlen“-Knopf (nur bei `seedGenerator`): `ExerciseRuntime.reseed()` zieht einen frischen Seed; Prompt wird neu generiert, der nächste Versuch wird mit diesem Seed gewertet und persistiert (`attempt.seed`).
+- Prozedurale Familien (Registry, `authorityMode: 'seeded'`) generieren die Instanz zur Laufzeit aus `familyId` + `caseId` + Route-Seed + Schwierigkeit; der Grader wertet die Instanz, nicht den Seed.
+- „Neue Zahlen“/Review-Instanzen kommen über den Route-Seed (`#/family/<familyId>/<caseId>/<seed>/<difficulty>`) — ein neuer Seed zieht eine neue Instanz, kein Runtime-Reseed.
+- Die im JSON dokumentierten Exemplar-Cases sind Generator-Ausgaben zum Autor-Seed (Golden-Corpus pinnt Instanz-Digests über 64 Seeds — kein Seed-Drift).
+- Historisches Metadaten-Rest: `parameters.seedGenerator`/`expected.{generator,defaultSeed,defaultExpected}` in älteren Familien-JSONs sind inerte Provenienz-Angaben ohne Runtime-Funktion.
 - Hinweise/Lösung beschreiben den Lösungsweg generisch (zahlenunabhängig), nie die konkrete Instanz.
 
 ## 4. Graderwahl
@@ -56,6 +57,12 @@ Schema der neuen Antwortformate (LM-R4):
 - `code-trace`: `parameters.snippet` (Python-Code als String), `parameters.variables` = `[{name, value}]` (ganzzahlige Endwerte); `expectedAnswer` = `{kind: 'variable-values'}`.
 - `predict-output`: `parameters.snippet`; `expectedAnswer` = `{kind: 'output-lines', output: '<print-Ausgabe>'}` (Python-Listennotation).
 
+Schema der Aufgabentypen aus `plan-neue-aufgabentypen.md` (alle `deterministic`):
+
+- `multiple-choice`: `choices` = `[{id, text}]` wie `single-choice`, aber `expectedAnswer` = `{kind: 'choice-indices', correctIds: [id…], scoring?}` — **kein** `correct`-Flag an den Choices, kein `correctChoice`. `scoring`: `'all-or-nothing'` (Default) oder `'per-correct'` (Treffer +1/n, Fehlgriff −1/n, Floor 0). Unbekannte IDs zählen als Fehlgriff. Mindestens zwei **verschiedene** `correctIds` — bei einer korrekten Option ist es `single-choice`. Optionale `feedbackRules` mit `if: "selected.includes('id')"` bzw. `"!selected.includes('id')"` liefern distraktorbezogenes Feedback.
+- `diagnostic-rationale`: `parameters.snippet` (fehlerhafter Code/Daten), `expectedAnswer` = `{kind: 'diagnosis', diagnosisCode, mustContain: [kw…], mustNotContain?: [kw…], minWords}`. Keyword-Match ist umlaut-/case-robust mit **Wortgrenzen** („int" matcht nicht „print", „train" nicht „train_test_split"); `|` trennt Alternativen („except|ausnahmeblock"); `mustNotContain` vetoes Fehlkonzept-Formulierungen; eine Distinct-Word-Schwelle fängt Keyword-Salat ab. Feedback benennt nur die fehlende **Dimension**, nie die Schlüsselwörter — optionale `feedbackRules` mit `if: '<errorType>'` (z. B. `missing-diagnosis`, `invalid-input`) liefern fallbezogenes Feedback. `diagnosisCode` aus der Taxonomie (§8) — Metadaten für Erklär-Karten, kein Grading-Input.
+- `worked-example-fading`: `prompt` mit `[[gap]]`-Markern (LaTeX-Kontext erlaubt), `expectedAnswer` = `{kind: 'gaps', gaps: [{answer, input: 'numeric'|'expression'}]}` — Markerzahl = `gaps.length` (Validator). `numeric` akzeptiert Dezimalkomma und Brüche; `expression` prüft Äquivalenz über Probe-Scopes (feste Tabelle + aus dem Aufgabenpaar abgeleitete Werte; implizite Multiplikation wie `2x` wird abgelehnt — Rechenzeichen explizit; Target muss auf allen Scopes endlich sein). Falsche Lücken werden mit 1-basiertem Index im Feedback benannt — optionale `feedbackRules` mit `if: 'gap-<0-basierter Index>'` bzw. `'gap-<i>-<aspekt>'` liefern lückenbezogenes Feedback.
+
 ## 5. Feedback-Stufen und Mastery-Policy
 
 Worked-Example-Stufe (neu, LM-R5) → Eingabevalidierung → richtig/falsch → diagnosebezogenes Feedback (`feedbackRules`) → Hinweis 1 → Hinweis 2 → Teillösung → volle Lösung **nach** eigenem Versuch (reveal markiert den Versuch als nicht-mastery-fähig). Nie die volle Lösung ungefragt im selben Blickfang wie die Aufgabe zeigen.
@@ -69,7 +76,7 @@ Verbindliche, in der Aufgabenansicht sichtbare Policy (`exercise_runtime.js` + `
 - Eine **angezeigte Lösung** disqualifiziert nur dieselbe `instanceId`. Eine neue Seed-Instanz oder ein ausdrücklich gestarteter Zyklus kann frische Evidence liefern. „Aufgabe zurücksetzen“ bleibt die getrennte Aktion zum Löschen der Historie.
 - Grader-Ausgänge mit `masteryEligible: false` (z. B. `manual-rubric`) erzeugen **nie** Mastery — sie bleiben Bearbeitungsnachweise. Gleiches gilt für das Worked-Example-Studium.
 - **Aufgaben-Level `masteryEligible: false`** (Diagnose-Muster, W1): Diagnoseaufgaben tragen das Feld direkt am Aufgabenobjekt; jeder Versuch wird mit `masteryEligible: false` persistiert, kann nie Mastery erzeugen, nie das Gate öffnen und erscheint nie in der Wiederholungsliste. Die Statuszeile zeigt ausdrücklich „zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis“. Gate-Evidenzaufgaben dürfen das Feld nicht tragen (Validator-/Testregel).
-- **`single-choice` als Mastery-Nachweis** (R14, präzisiert): Choice-Fälle dürfen Mastery-Evidence liefern, wenn sie Diagnose oder Transfer verlangen statt bloßer Wiedererkennung — konkret: mindestens zwei plausible Distraktoren, die typische Fehlkonzepte adressieren, und `fullSolution`/`feedbackRules`, die erklären, warum jede Alternative falsch ist. Reine Auffrischungs- oder Wiedererkennungsfragen bleiben `masteryEligible: false` und tragen eine `fullSolution`-Notiz als Bearbeitungsnachweis. `manual-rubric` und `short-rationale` sind nie mastery-fähig.
+- **`single-choice`/`multiple-choice` als Mastery-Nachweis** (R14, präzisiert): Choice-Fälle dürfen Mastery-Evidence liefern, wenn sie Diagnose oder Transfer verlangen statt bloßer Wiedererkennung — konkret: mindestens zwei plausible Distraktoren, die typische Fehlkonzepte adressieren, und `fullSolution`/`feedbackRules`, die erklären, warum jede Alternative falsch ist. Reine Auffrischungs- oder Wiedererkennungsfragen bleiben `masteryEligible: false` und tragen eine `fullSolution`-Notiz als Bearbeitungsnachweis. `manual-rubric`, `short-rationale` und `diagnostic-rationale` sind nie mastery-fähig (`diagnostic-rationale` erzwingt `masteryEligible: false` fail-closed auf Familien-, Case- und Placement-Ebene).
 - **Mastery ist zeitlich bedingt** (ADR-0008): gültig bis Woche+2 / +5 / +11 nach dem letzten qualifizierten Treffer (Expanding-Slots, konfigurierbar über `reviewParams` im settings-Store); nach Ablauf erscheint die Aufgabe in der Wiederholungsliste, ein qualifizierter Review-Treffer erneuert. Nach dem dritten Slot wiederholt der Default das 11-Wochen-Intervall. `postLadderPolicy: 'consolidate'` bleibt nur für Altimporte lesbar.
 - Ein Woche-Gate öffnet nur, wenn alle seine Evidenzaufgaben nach genau dieser Policy **aktuell** erfüllt sind; Evidenzaufgaben mit `manual-rubric` können ein Gate nie öffnen.
 
@@ -94,7 +101,7 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 - Signatur `genX(seed) -> { parameters, expected, prompt }`: `prompt` ist der **komplette deutsche Aufgabentext** als Plain Text mit Unicode-Mathematik (z. B. `log₂(64)`, `3^4`, `·`) — bewusst **ohne** `$...$`-KaTeX, damit der Prompt nach „Neue Zahlen“ ohne Math-Neurendering austauschbar ist.
 - `expected` wird IMMER von einem exportierten Referenzsolver berechnet (`solveLinearEquation`, `logInt`, …), nie hardcodet; die Invarianten (ganzzahlig, handrechenbare Bereiche, kein Divisions-Normalfall, Log-Argument > 0 und echte Potenz der Basis) stehen als Docstring am Generator UND werden im Property-Test über ≥ 200 Seeds erzwungen.
 - Antworten bleiben standardmäßig ganzzahlig; für Deep-Learning-/Metrik-Aufgaben sind toleranzbasierte Dezimalantworten erlaubt (Rundung auf 3 Stellen, dokumentierte `tolerancePolicy`, Referenzsolver rechnet den Sollwert) (`parseIntegerAnswer`), damit Eingabe-UI und Grader einheitlich bleiben; „kurze Dezimalbrüche“ sind als Bereich erlaubt, aber nicht nötig.
-- Grader-Anbindung: `parameters.seedGenerator` in der Aufgabe; `expectedNumeric` nutzt Generator + aktuellen Seed (Fix-Instanzen mit `expectedAnswer.value` bleiben vorrangig). Tests: gleicher Seed = identischer Prompt, 20 Seeds je Generator gegen den echten Grader, plus Negativtest Seed-Drift zwischen JSON und Generator.
+- Grader-Anbindung: die Registry instanziiert `generate({seed, caseId, difficulty})` und reicht `generated.expected` als `expectedAnswer` an den Grader; der Seed liegt am Placement/der Route. Tests: gleicher Seed = identischer Prompt, ≥200 Seeds je Generator gegen den echten Grader, plus Negativtest Seed-Drift zwischen JSON und Generator.
 
 **Lokale Lesezugänge** (Konvention, private-build-only):
 
@@ -140,6 +147,10 @@ Fehlkonzept-Codes aus `feedbackRules`, die kein Grader-errorType abbildet.
 | `unparsed` | algebraischer Term nicht parsebar | `pyodide-sympy` |
 | `not-equivalent` | Term parsebar, aber nicht äquivalent | `pyodide-sympy` |
 | `grader-error` | Fehlkonfiguration/interner Fehler — nie ein Lernendenfehler | alle Grader |
+| `missing-choice` | korrekte Option in Mehrfachauswahl nicht gewählt | `multiple-choice` |
+| `extra-choice` | falsche Option in Mehrfachauswahl gewählt | `multiple-choice` |
+| `missing-diagnosis` | Freitext-Diagnose zu knapp oder ohne die geforderte Ursache | `diagnostic-rationale` |
+| `wrong-gap` | Lücke im Worked-Example-Fading falsch ausgefüllt (Gap-Index im Feedback) | `worked-example-fading` |
 | `trace-row-N` | erste falsche Zeile der interaktiven Trace-Tabelle (dynamisch, N 1-basiert) | `src/ui/TraceTableView.tsx` |
 | Python-Laufzeit | `SyntaxError`, beliebige `<ExceptionName>` (z. B. `ValueError`), Fallback `PythonError`, `Timeout`, `WorkerRestarted`, `WorkdirError`, `WorkspaceError`, `PackageError` | `pyodide_worker.mjs`/`pyodide_runner.js` via `gradePython` |
 | `off-by-one` | Index-/Grenzverschiebung um eins (Fehlkonzept) | feedbackRules in `optimize-decode-greedy-loop`, `reproduce-pipeline-status-report` (Varianten `*-off-by-one` in weiteren Familien); `x-off-by-one` |

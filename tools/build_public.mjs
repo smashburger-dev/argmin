@@ -47,6 +47,7 @@ const ALLOWED_FILES = [
   'assets/js/core/foundations_trace_families.mjs',
   'assets/js/core/foundations_linalg_families.mjs',
   'assets/js/core/linalg_numpy_fresh_generators.mjs',
+  'assets/js/core/viz_checkpoint_grader.mjs',
   'assets/js/core/data_ml_generators.mjs',
   'assets/js/core/data_ml_families.mjs',
   'assets/js/domain/activity_route.mjs',

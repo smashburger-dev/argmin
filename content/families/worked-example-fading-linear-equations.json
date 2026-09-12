@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "familyId": "worked-example-fading-linear-equations",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "fade-final-step",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "p2-wef-linear-final"
+      ],
+      "competencyIds": [
+        "c-algebra"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "fade-final-step",
+        "difficulty": "intro",
+        "fade": "final",
+        "a": 4,
+        "b": 5,
+        "c": 17,
+        "x2": 6
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          { "answer": "3", "input": "numeric" }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $4x + 5 = 17$. Das Musterbeispiel zeigt die komplette Umformung — nur die letzte Zeile fehlt. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $4x + 5 = 17 \\;|\\;-5$<br>$4x = 12$<br>$x = [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$4x + 5 = 17 \\;|\\;-5$<br>$4x = 12$<br>$x = 3$<br>Probe: $4 \\cdot 3 + 5 = 17$ stimmt.",
+      "hints": [
+        "Die letzte Zeile entsteht durch Division der Mittelzeile durch den Koeffizienten vor x.",
+        "Mittelzeile geteilt durch a: das Ergebnis ist x."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-value",
+          "then": "Die Mittelzeile durch a teilen — nicht die Ausgangsgleichung oder die Operation als Ergebnis eintragen."
+        },
+        {
+          "if": "gap-0-sign",
+          "then": "Das Vorzeichen von x kommt aus der Mittelzeile: positives ax ergibt positives x."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1: Division durch a übersprungen — der Mittelwert m statt x eingetragen",
+        "Lücke 1: Vorzeichen verwechselt, obwohl ax und x dasselbe Vorzeichen haben"
+      ]
+    },
+    {
+      "caseId": "fade-middle-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "p2-wef-linear-middle"
+      ],
+      "competencyIds": [
+        "c-algebra"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "fade-middle-steps",
+        "difficulty": "core",
+        "fade": "middle",
+        "a": 6,
+        "b": -5,
+        "c": 49,
+        "x2": 18
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          { "answer": "54", "input": "numeric" },
+          { "answer": "9", "input": "numeric" }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $6x - 5 = 49$. Die Umformungsoperation ist vorgegeben — ergänze beide Ergebniszeilen. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $6x - 5 = 49 \\;|\\;+5$<br>$6x = [[gap]]$<br>$x = [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$6x - 5 = 49 \\;|\\;+5$<br>$6x = 54$<br>$x = 9$<br>Probe: $6 \\cdot 9 - 5 = 49$ stimmt.",
+      "hints": [
+        "Erste Lücke: wende die gezeigte Operation auf beide Seiten an — rechts bleibt eine Zahl.",
+        "Zweite Lücke: teile die Mittelzeile durch den Koeffizienten vor x."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-sign",
+          "then": "Beim Wegschaffen von −b auf beiden Seiten addieren — die erste Lücke kann größer als c sein."
+        },
+        {
+          "if": "gap-0-value",
+          "then": "Erste Lücke = c plus die gezeigte Operation, nicht c minus b."
+        },
+        {
+          "if": "gap-1-value",
+          "then": "Zweite Lücke = erste Lücke geteilt durch a — der Schritt ist Division, nicht Ablesen."
+        },
+        {
+          "if": "step-skipped",
+          "then": "Die Reihenfolge ist fest: erst die Konstante wegschaffen (Mittelzeile), dann durch a teilen."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1: Differenz statt Summe gebildet — b mit falschem Vorzeichen auf die rechte Seite gebracht",
+        "Lücke 2: Schritt übersprungen — die Mittelzeile nochmal statt x eingetragen",
+        "Lücke 2: falscher Faktor — durch b statt durch a geteilt"
+      ]
+    },
+    {
+      "caseId": "fade-all-steps",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "p2-wef-linear-all"
+      ],
+      "competencyIds": [
+        "c-algebra"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "fade-all-steps",
+        "difficulty": "stretch",
+        "fade": "all",
+        "a": 4,
+        "b": 13,
+        "c": 23,
+        "x2": 5
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          { "answer": "13", "input": "numeric" },
+          { "answer": "10", "input": "numeric" },
+          { "answer": "2,5", "input": "numeric" }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $4x + 13 = 23$. Ab der Ausgangsgleichung fehlt jeder Schritt — ergänze Rechenoperation und Ergebniszeilen. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $4x + 13 = 23 \\;|\\;-[[gap]]$<br>$4x = [[gap]]$<br>$x = [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$4x + 13 = 23 \\;|\\;-13$<br>$4x = 10$<br>$x = 2{,}5$<br>Probe: $4 \\cdot 2{,}5 + 13 = 23$ stimmt.",
+      "hints": [
+        "Erste Lücke: der Betrag der Konstanten, die weggeschafft wird — das Vorzeichen der Operation steht schon.",
+        "Danach wie gehabt: Mittelzeile = Ergebnis der Operation, letzte Zeile = Mittelzeile geteilt durch a."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-sign",
+          "then": "In die erste Lücke gehört nur der Betrag — das Operationszeichen steht bereits vor der Lücke."
+        },
+        {
+          "if": "gap-0-value",
+          "then": "Weggeschafft wird der konstante Summand b — sein Betrag gehört in die Lücke."
+        },
+        {
+          "if": "gap-1-value",
+          "then": "Mittelzeile = c verändert um die gewählte Operation, nicht c selbst."
+        },
+        {
+          "if": "gap-2-value",
+          "then": "Letzte Lücke = Mittelzeile geteilt durch a; ein Komma-Ergebnis ist erlaubt (z. B. 2,5)."
+        },
+        {
+          "if": "step-skipped",
+          "then": "Jeder Schritt baut auf dem vorherigen auf: Operation → Mittelzeile → Division durch a."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1: Vorzeichen der Operation doppelt eingetragen — nur der Betrag gehört in die Lücke",
+        "Lücke 1: statt |b| das Ergebnis x eingetragen (Schrittfolge vertauscht)",
+        "Lücke 2: Konstante nur einseitig verrechnet — m falsch",
+        "Lücke 3: Komma-Ergebnis falsch gerundet oder als Bruchrest stehen gelassen"
+      ]
+    }
+  ]
+}

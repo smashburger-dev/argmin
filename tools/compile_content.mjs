@@ -139,6 +139,14 @@ function validateChallengeContracts(document) {
 }
 
 function validateChoiceContract(label, item) {
+  if (item.expected?.kind === 'choice-indices') {
+    const correctIds = item.expected.correctIds;
+    const ids = new Set((item.choices ?? []).map((choice) => choice.id));
+    if (!Array.isArray(correctIds) || correctIds.length < 2 || !correctIds.every((id) => ids.has(id))) {
+      throw new Error(`${label}: expected.correctIds braucht >=2 ids aus choices`);
+    }
+    return;
+  }
   const hasChoices = Object.hasOwn(item, 'choices');
   const correctChoice = item.expected?.correctChoice;
   const hasCorrectChoice = typeof correctChoice === 'string';
@@ -695,14 +703,13 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
   const familyDocument = familyDocuments.get(placement.familyId);
   const familyTitle = familyDocument?.contract?.summary || family.summary;
-  const staticCase = familyDocument?.cases?.some((entry) => entry.caseId === placement.caseId);
   const title = instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
   seen.add(definitionId);
   return {
     definitionId, familyId: placement.familyId, caseId: placement.caseId, seed: placement.seed ?? 0, difficulty: placement.difficulty, title,
     activityType: instance.kind ?? instance.activityType, competencyIds: [...(instance.competencyIds || [])],
     estimatedMinutes: placement.estimatedMinutes ?? 8, masteryEligible: instance.masteryEligible === true,
-    seeded: !staticCase && family.authorityMode === 'seeded', moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
+    seeded: family.authorityMode === 'seeded', moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
   };
 }
 

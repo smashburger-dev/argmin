@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 1,
+  "familyId": "multiple-choice-ml-linear",
+  "contract": {
+    "familyId": "multiple-choice-ml-linear",
+    "familyGroup": "classify-concept",
+    "summary": "Beurteilt Aussagen zur Kleinste-Quadrate-Lösung, zu Ridge und zur Residuenanalyse über mehrere Optionen hinweg.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "least-squares-normal-equation",
+        "propertyTest": true
+      },
+      {
+        "caseId": "ridge-statements",
+        "propertyTest": false
+      },
+      {
+        "caseId": "residual-diagnostics",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-ml-linear"
+    ],
+    "graderId": "deterministic",
+    "activityType": "multiple-choice"
+  },
+  "cases": [
+    {
+      "caseId": "least-squares-normal-equation",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-linear"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "b",
+          "c"
+        ],
+        "scoring": "per-correct"
+      },
+      "prompt": "Welche Aussagen zur Kleinste-Quadrate-Lösung $\\hat{w} = (X^{T}X)^{-1}X^{T}y$ stimmen? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "(a) stimmt: $\\hat{w}$ ist definiert als Minimierer der quadrierten Residuensumme $\\|y - Xw\\|^2$; die geschlossene Form folgt aus Nullsetzen des Gradienten. (b) stimmt: die Formel braucht die Inverse von $X^{T}X$ — bei linear abhängigen Spalten von $X$ (oder mehr Features als Beobachtungen) ist $X^{T}X$ singulär und die Lösung ist ohne Zusatz wie Regularisierung nicht eindeutig. (c) stimmt: die Normalgleichung $X^{T}(y - X\\hat{w}) = 0$ sagt genau, dass der Residuenvektor senkrecht auf dem Spaltenraum von $X$ steht. (d) stimmt nicht: die geschlossene Form ist exakt — sie löst das Minimierungsproblem analytisch; Gradientenabstieg ist eine iterative Alternative, keine Genauigkeitssteigerung. (e) stimmt nicht: $\\hat{w}$ ist linear in $y$; mit $-y$ wird die Lösung zu $-\\hat{w}$, nicht unverändert.",
+      "hints": [
+        "Leite gedanklich ab: Nullsetzen des Gradienten von $\\|y - Xw\\|^2$ ergibt die Normalgleichung $X^{T}X\\hat{w} = X^{T}y$ — daraus lassen sich mehrere Aussagen direkt ablesen.",
+        "Prüfe, wann die Matrix $X^{T}X$ nicht invertierbar ist und ob die Formel exakt oder nur approximativ ist."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('d')",
+          "then": "Die geschlossene Form ist exakt: sie erfüllt die Normalgleichung und damit das Minimum. Iterative Verfahren sind eine Alternative für große Systeme, liefern aber nicht „das wahre“ Minimum genauer."
+        },
+        {
+          "if": "selected.includes('e')",
+          "then": "$\\hat{w}$ ist linear in $y$: Skalieren von $y$ skaliert $\\hat{w}$ um denselben Faktor — Vorzeichen inklusive. Bei $-y$ wird die Lösung zu $-\\hat{w}$."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "Die definierende Eigenschaft der KQ-Lösung ist genau die Minimierung von $\\|y - Xw\\|^2$ — äquivalent dazu erfüllt $\\hat{w}$ die Normalgleichung $X^{T}X\\hat{w} = X^{T}y$."
+        },
+        {
+          "if": "!selected.includes('b')",
+          "then": "$X^{T}X$ ist singulär, sobald die Spalten von $X$ abhängig sind oder mehr Features als Beobachtungen vorliegen — dann existiert die Inverse nicht und die geschlossene Form braucht einen Zusatz wie Regularisierung."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "Die Normalgleichung $X^{T}(y - X\\hat{w}) = 0$ besagt wörtlich, dass der Residuenvektor orthogonal auf allen Spalten von $X$ steht — das ist die Orthogonalprojektion von $y$ auf den Spaltenraum."
+        }
+      ],
+      "typicalErrors": [
+        "Geschlossene Form als Näherung und Iteration als exaktes Verfahren verwechselt.",
+        "Vorzeichen- oder Skalierungsrichtung der Lösung in $y$ falsch eingeschätzt.",
+        "Singularität von $X^{T}X$ bei abhängigen Spalten nicht mit der Invertierbarkeitsvoraussetzung verknüpft."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\hat{w}$ minimiert die Summe der quadrierten Residuen $\\|y - Xw\\|^2$."
+        },
+        {
+          "id": "b",
+          "text": "Die Formel liefert nur dann eine eindeutige Lösung, wenn $X^{T}X$ invertierbar ist — bei abhängigen Spalten von $X$ bricht sie ohne Zusatzmaßnahmen zusammen."
+        },
+        {
+          "id": "c",
+          "text": "Der Residuenvektor $y - X\\hat{w}$ steht senkrecht auf dem Spaltenraum von $X$."
+        },
+        {
+          "id": "d",
+          "text": "Die geschlossene Form ist nur eine Näherung; das exakte Minimum erreicht man ausschließlich iterativ per Gradientenabstieg."
+        },
+        {
+          "id": "e",
+          "text": "Multipliziert man die Zielvariable $y$ mit $-1$, bleibt $\\hat{w}$ unverändert."
+        }
+      ],
+      "variants": [
+        {
+          "parameters": {},
+          "expected": {
+            "kind": "choice-indices",
+            "correctIds": [
+              "a",
+              "b",
+              "c"
+            ],
+            "scoring": "per-correct"
+          },
+          "prompt": "Welche Aussagen zur Kleinste-Quadrate-Lösung $\\hat{w} = (X^{T}X)^{-1}X^{T}y$ stimmen? Wähle alle zutreffenden Optionen aus.",
+          "fullSolution": "(a) stimmt: die Normalgleichung $X^{T}X\\hat{w} = X^{T}y$ ist die Umformung des Minimum-Kriteriums und wird von der geschlossenen Form erfüllt. (b) stimmt: singuläres $X^{T}X$ — etwa bei mehr Features als Beobachtungen — macht die Lösung uneindeutig, erst ein Zusatz wie Regularisierung schafft Eindeutigkeit. (c) stimmt: $X^{T}(y - X\\hat{w}) = 0$ heißt, der Fehlervektor steht orthogonal auf jeder Spalte von $X$. (d) stimmt nicht: die Formel ist keine Näherung, sondern die exakte analytische Lösung; Iterationsverfahren sind Alternativen, keine Voraussetzung. (e) stimmt nicht: $\\hat{w}$ ist linear in $y$ — verdoppelt man $y$, verdoppelt sich $\\hat{w}$.",
+          "hints": [
+            "Die Normalgleichung $X^{T}X\\hat{w} = X^{T}y$ enthält die Orthogonalitätsaussage und die Invertierbarkeitsbedingung zugleich.",
+            "Nutze die Linearität von $\\hat{w}$ in $y$, um Skalierungsaussagen zu prüfen."
+          ],
+          "choices": [
+            {
+              "id": "a",
+              "text": "$\\hat{w}$ erfüllt die Normalgleichung $X^{T}X\\hat{w} = X^{T}y$."
+            },
+            {
+              "id": "b",
+              "text": "Ist $X^{T}X$ singulär — zum Beispiel bei mehr Features als Beobachtungen — liefert die Formel ohne Zusatz keine eindeutige Lösung."
+            },
+            {
+              "id": "c",
+              "text": "Der Fehlervektor $y - X\\hat{w}$ ist orthogonal zu jeder Spalte von $X$."
+            },
+            {
+              "id": "d",
+              "text": "Weil die geschlossene Form das Minimum nur approximiert, ist in der Praxis immer ein Iterationsverfahren nötig."
+            },
+            {
+              "id": "e",
+              "text": "Verdoppelt man die Zielvariable $y$, halbiert sich $\\hat{w}$."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "ridge-statements",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-linear",
+        "c-ml-regularization"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "b",
+          "d"
+        ],
+        "scoring": "all-or-nothing"
+      },
+      "prompt": "Welche Aussagen zur Ridge-Regression $w_{\\text{ridge}} = (X^{T}X + \\lambda I)^{-1}X^{T}y$ mit $\\lambda > 0$ stimmen? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "(a) stimmt: $X^{T}X$ ist positiv semidefinit, $+\\lambda I$ hebt alle Eigenwerte auf mindestens $\\lambda > 0$ — die Summe ist invertierbar, auch wenn $X^{T}X$ singulär ist. (b) stimmt: größeres $\\lambda$ erhöht die Strafe $\\lambda\\|w\\|^2$ relativ zum Fehlerterm und drückt die Koeffizienten stärker Richtung null. (c) stimmt nicht: die Strafe $\\lambda\\|w\\|^2$ wirkt auf die Koeffizientengröße, und dieselbe physikalische Größe erzeugt in Millimetern einen tausendfach anderen Koeffizienten als in Metern — ohne Standardisieren bestraft $\\lambda$ die Merkmale ungleich, Skalierung bleibt nötig. (d) stimmt: für $\\lambda \\to 0$ verschwindet der Strafterm und $w_{\\text{ridge}}$ konvergiert gegen die Kleinste-Quadrate-Lösung. (e) stimmt nicht: Ridge minimiert $\\|y - Xw\\|^2 + \\lambda\\|w\\|^2$ — der Strafterm wird addiert, nicht abgezogen; ein abgezogener Term würde große Koeffizienten belohnen.",
+      "hints": [
+        "Schreibe die Zielfunktion $\\|y - Xw\\|^2 + \\lambda\\|w\\|^2$ hin und verfolge, was $\\lambda$ mit den Koeffizienten macht — Vorzeichen und Grenzfall $\\lambda \\to 0$ eingeschlossen.",
+        "Die Strafe kennt die physikalische Einheit der Merkmale nicht: Überlege, was mit dem Koeffizienten passiert, wenn dieselbe Strecke in Metern statt Millimetern gemessen wird."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('c')",
+          "then": "Die Strafe wirkt auf die Koeffizientengröße — und die hängt von der Einheit ab: dieselbe Länge erzeugt in mm einen 1000-mal kleineren Koeffizienten als in m. Ohne Standardisieren bestraft $\\lambda$ die Merkmale unfair; Skalierung bleibt nötig."
+        },
+        {
+          "if": "selected.includes('e')",
+          "then": "Der Strafterm wird addiert: $\\|y - Xw\\|^2 + \\lambda\\|w\\|^2$. Ein Minuszeichen würde große Koeffizienten belohnen statt bestrafen — das Gegenteil von Regularisierung."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "$X^{T}X + \\lambda I$ ist für $\\lambda > 0$ positiv definit (alle Eigenwerte $\\geq \\lambda$) und damit invertierbar — genau das rettet die geschlossene Form bei abhängigen Spalten."
+        },
+        {
+          "if": "!selected.includes('b')",
+          "then": "Größeres $\\lambda$ gewichtet den Strafterm stärker gegenüber dem Fehlerterm — das Optimum verschiebt sich zu kleineren Koeffizienten, also stärker Richtung null."
+        },
+        {
+          "if": "!selected.includes('d')",
+          "then": "Für $\\lambda \\to 0$ geht die Strafe gegen null und $(X^{T}X + \\lambda I)^{-1}X^{T}y$ konvergiert gegen $(X^{T}X)^{-1}X^{T}y$ — die Kleinste-Quadrate-Lösung."
+        }
+      ],
+      "typicalErrors": [
+        "Regularisierung als Ersatz für Feature-Scaling gelesen, obwohl die Strafe von der Koeffizienten- und damit Einheitengröße abhängt.",
+        "Vorzeichen des Strafterms vertauscht (abgezogen statt addiert).",
+        "Die Rolle von $\\lambda I$ für die Invertierbarkeit und den Grenzfall $\\lambda \\to 0$ nicht verknüpft."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das addierte $\\lambda I$ macht $X^{T}X + \\lambda I$ auch dann invertierbar, wenn $X^{T}X$ singulär ist (abhängige Spalten)."
+        },
+        {
+          "id": "b",
+          "text": "Ein größeres $\\lambda$ zieht die Koeffizienten stärker Richtung null."
+        },
+        {
+          "id": "c",
+          "text": "Ridge bestraft alle Koeffizienten gleichmäßig — egal, ob ein Merkmal in Metern oder Millimetern vorliegt; Standardisieren ist daher unnötig."
+        },
+        {
+          "id": "d",
+          "text": "Für $\\lambda \\to 0$ konvergiert die Ridge-Lösung gegen die Kleinste-Quadrate-Lösung."
+        },
+        {
+          "id": "e",
+          "text": "Ridge minimiert $\\|y - Xw\\|^2 - \\lambda\\|w\\|^2$ — der Regularisierungsterm wird von der Fehlersumme abgezogen."
+        }
+      ]
+    },
+    {
+      "caseId": "residual-diagnostics",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-ml-linear"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "c",
+          "d"
+        ],
+        "scoring": "per-correct"
+      },
+      "prompt": "Ein lineares Regressionsmodell wurde gefittet. Welche Aussagen zu Residuenanalyse und Fehlermaßen stimmen? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "(a) stimmt: eine Trichterform — die Residuen streuen stärker für große $\\hat{y}$ — zeigt nicht-konstante Fehlervarianz, die quadratische Verluste von großen Werten dominieren lässt. (b) stimmt nicht: ein hohes $R^2$ auf Trainingsdaten sagt nichts über neue Daten; Overfitting kann $R^2$ auf Train hoch und auf Test niedrig halten — Generalisierung braucht eine Test- oder Validierungsauswertung. (c) stimmt: $\\mathrm{RMSE} = \\sqrt{\\mathrm{MSE}}$ hat die Einheit von $y$, weil die Wurzel die quadrierte Einheit rückgängig macht. (d) stimmt: ein systematischer Trend der Residuen über $\\hat{y}$ (z. B. kleine Vorhersagen zu niedrig, große zu hoch) ist ein Hinweis, dass ein Term fehlt oder das Modell strukturell zu einfach ist. (e) stimmt nicht: der MSE quadriert jedes Residuum — ein einzelner großer Ausreißer trägt überproportional bei und kann den Mittelwert dominieren.",
+      "hints": [
+        "Trenne die beiden Fragen: Was sagen die Formen im Residuenplot aus (Trend, Trichter, Ausreißer) — und was sagt ein Kennwert auf Trainingsdaten aus?",
+        "Die Wurzel im RMSE macht die Quadrierung des MSE rückgängig; zugleich macht genau diese Quadrierung Ausreißer stark."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('b')",
+          "then": "$R^2$ auf Train misst Anpassung an gesehene Daten, keine Generalisierung — Overfitting erzeugt genau die Lücke hohes Train-$R^2$ bei schwachem Test-Score; bewertet wird auf Test- oder Validierungsdaten."
+        },
+        {
+          "if": "selected.includes('e')",
+          "then": "Der MSE quadriert Residuen: ein Ausreißer mit doppelt so großem Fehler trägt vierfach zur Summe bei — einzelne große Residuen können den Mittelwert dominieren, nicht verschwinden."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "Die Trichterform ist das klassische Zeichen nicht-konstanter Fehlervarianz: die Residuen fächern mit wachsendem $\\hat{y}$ auf."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "Der MSE trägt die quadrierte Einheit des Ziels; die Wurzel im RMSE kehrt das um — der RMSE liegt wieder in der Einheit von $y$."
+        },
+        {
+          "if": "!selected.includes('d')",
+          "then": "Ein systematischer Trend heißt, die Residuen sind nicht zufällig um null verteilt — das Modell lässt Struktur unerklärt und ist vermutlich zu einfach."
+        }
+      ],
+      "typicalErrors": [
+        "Einen hohen Train-$R^2$ als Generalisierungsgarantie gelesen statt Test- oder Validierungsevidenz zu verlangen.",
+        "Unterschätzt, dass quadrierte Residuen einzelne Ausreißer im MSE dominieren lassen.",
+        "Formen im Residuenplot (Trichter, Trend) nicht auf konkrete Modellmängel abgebildet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Eine Trichterform im Residuenplot — die Streuung wächst mit $\\hat{y}$ — deutet auf nicht-konstante Fehlervarianz hin."
+        },
+        {
+          "id": "b",
+          "text": "Ein $R^2$ von $0{,}9$ auf den Trainingsdaten garantiert eine gute Generalisierung auf neue Daten."
+        },
+        {
+          "id": "c",
+          "text": "Der RMSE liegt in derselben Einheit wie die Zielvariable."
+        },
+        {
+          "id": "d",
+          "text": "Ein systematischer Trend der Residuen über $\\hat{y}$ kann bedeuten, dass das Modell strukturell zu einfach ist."
+        },
+        {
+          "id": "e",
+          "text": "Ein einzelner großer Ausreißer verändert den MSE kaum, weil der Mittelwert über viele Residuen geht."
+        }
+      ]
+    }
+  ]
+}

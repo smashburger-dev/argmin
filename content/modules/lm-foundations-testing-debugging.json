@@ -118,6 +118,28 @@
       "familyId": "trace-exception-path",
       "difficulty": "core",
       "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-sum-skips-first-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-python-errors",
+      "caseId": "sum-skips-first",
+      "seed": 3,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-nameerror-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-python-errors",
+      "caseId": "nameerror-undefined-var",
+      "seed": 1,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": false
     }
   ],
   "projectIds": [

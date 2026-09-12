@@ -3,7 +3,7 @@
   "role": "Hypothesen- und Vertragregistry der CognitiveFamilies. Verbindliche Familienvertraege (familyGroup, summary, membershipEvidence) und erwartete Mitgliederzahl. Mitgliedschaften (memberSourceIds), Domains und Zaehlungen werden vom Assembler aus den Shards abgeleitet und mit --write zurueckgeschrieben; hypothesisMemberSourceIds sind nicht-authoritative Starthilfen aus dem Designprozess.",
   "namingRule": "familyId = <strand-token>-<name>, kebab-case, eindeutig im Token-Multiset (Assemblers prueft stille Varianten wie trace-assignment-state gegen assignment-state-trace maschinell). Kanonischer Name ist nur der Registry-Eintrag; Designprosa-Namen sind Aliase ohne Gueltigkeit.",
   "hypothesisSource": "design/design-cognitive-first.md Familieninventar, adversarial geprueft in design/design-comparison.md Abschnitt 2.1 und 3",
-  "derivationRule": "assemble-v2.mjs prueft zeichengetreue Vertraege und expectedMemberCount gegen die Shards; Abweichungen sind Fehler und werden nur nach dokumentierter Rats- bzw. Orchestratorentscheidung in dieser Datei reconciliert.",
+  "derivationRule": "Mitgliedschaften, Domains und Zaehlungen werden manuell reconciliert; die Abweichungsliste ist in tests/family_golden_corpus.test.mjs (missing/extra-Pins) explizit gepinnt und jede stille Drift scheitert dort.",
   "families": [
     {
       "familyId": "aggregate-accumulator-count",
@@ -3325,7 +3325,123 @@
         "research-capstone"
       ],
       "memberCount": 1
+    },
+    {
+      "familyId": "multiple-choice-linalg-independence",
+      "familyGroup": "classify-concept",
+      "summary": "Prüft Vektormengen und Aussagen zur linearen Unabhängigkeit über Mehrfachauswahl.",
+      "membershipEvidence": {
+        "solutionPath": "Jede Option einzeln auf lineare Abhängigkeit prüfen (Kollinearität, Nullvektor, Dimensionsargument) und alle zutreffenden auswählen.",
+        "referenceModel": "Definition linearer (Un)Abhängigkeit in R^2 und R^3.",
+        "errorHypothesen": [
+          "Paarweise Nichtparallelität mit Unabhängigkeit verwechselt",
+          "Dimensionsargument (mehr als n Vektoren in R^n) übersehen",
+          "Nullvektor-Beteiligung ignoriert"
+        ]
+      },
+      "expectedMemberCount": 3,
+      "memberSourceIds": [],
+      "domains": [
+        "linear-algebra"
+      ],
+      "memberCount": 3
+    },
+    {
+      "familyId": "multiple-choice-ml-linear",
+      "familyGroup": "classify-concept",
+      "summary": "Beurteilt Aussagen zur Kleinste-Quadrate-Lösung, zu Ridge und zu Residuendiagnostik über Mehrfachauswahl.",
+      "membershipEvidence": {
+        "solutionPath": "Jede Aussage gegen die Normalgleichung, die Ridge-Objektive und Residuen-Eigenschaften prüfen und alle zutreffenden auswählen.",
+        "referenceModel": "Kleinste-Quadrate-Theorie inkl. Regularisierung und Residuenanalyse.",
+        "errorHypothesen": [
+          "Regularisierung mit Feature-Scaling verwechselt",
+          "Vorzeichen des Strafterms verwechselt",
+          "Train-Kennzahl als Generalisierungsgarantie gelesen"
+        ]
+      },
+      "expectedMemberCount": 3,
+      "memberSourceIds": [],
+      "domains": [
+        "data-ml"
+      ],
+      "memberCount": 3
+    },
+    {
+      "familyId": "diagnostic-rationale-python-errors",
+      "familyGroup": "diagnose-cause",
+      "summary": "Begründet die Ursache eines Python-Fehlers, bevor ein Fix genannt wird.",
+      "membershipEvidence": {
+        "solutionPath": "Aus Fehlerbild und Code die verursachende Mechanik benennen (Indexmodell, Exception-Handling, Datentyp, Schlüssel, Namensbindung).",
+        "referenceModel": "Python-Fehlermodell: Indizes, Exceptions, Typen, Dict-Keys, Namen.",
+        "errorHypothesen": [
+          "Symptom statt Ursache benannt",
+          "Falsche Programmstelle beschuldigt"
+        ]
+      },
+      "expectedMemberCount": 5,
+      "memberSourceIds": [],
+      "domains": [
+        "foundations"
+      ],
+      "memberCount": 5
+    },
+    {
+      "familyId": "diagnostic-rationale-ml-eval",
+      "familyGroup": "diagnose-cause",
+      "summary": "Begründet die Ursache einer irreführenden oder abgebrochenen ML-Auswertung, bevor ein Fix genannt wird.",
+      "membershipEvidence": {
+        "solutionPath": "Aus Pipeline-Code und Fehlerbild die verursachende Evaluationsfalle benennen (Leakage, Train-Score, NaN im Ziel).",
+        "referenceModel": "Evaluationsvertrag: Split-Hygiene, Leakage, Zielspalten-Qualität.",
+        "errorHypothesen": [
+          "Overfitting als Erklärung für Leakage",
+          "Score-Herkunft nicht hinterfragt"
+        ]
+      },
+      "expectedMemberCount": 3,
+      "memberSourceIds": [],
+      "domains": [
+        "data-ml"
+      ],
+      "memberCount": 3
+    },
+    {
+      "familyId": "worked-example-fading-linear-equations",
+      "familyGroup": "worked-example-fading",
+      "summary": "Ergänzt ausgeblendete Schritte in einem Musterbeispiel zum Lösen linearer Gleichungen (Fading-Stufen).",
+      "membershipEvidence": {
+        "solutionPath": "Äquivalenzumformung Schritt für Schritt: Term beidseitig umformen, dann nach x auflösen.",
+        "referenceModel": "Lösungsweg ax+b=c in kanonischen Schritten.",
+        "errorHypothesen": [
+          "Vorzeichen der Umformung verwechselt",
+          "Zwischenergebnis statt Endwert eingetragen"
+        ]
+      },
+      "expectedMemberCount": 3,
+      "memberSourceIds": [],
+      "domains": [
+        "foundations"
+      ],
+      "memberCount": 3
+    },
+    {
+      "familyId": "worked-example-fading-distributive",
+      "familyGroup": "worked-example-fading",
+      "summary": "Ergänzt ausgeblendete Schritte in einem Musterbeispiel zum Ausmultiplizieren von a(bx+c)±d (Fading-Stufen).",
+      "membershipEvidence": {
+        "solutionPath": "Distributivgesetz anwenden: Faktor auf beide Summanden verteilen, dann zusammenfassen.",
+        "referenceModel": "Ausmultiplizieren a(bx+c)±d in kanonischen Schritten.",
+        "errorHypothesen": [
+          "Nur einen Summanden mit dem Faktor multipliziert",
+          "Vorzeichen des Konstanten-Terms verwechselt"
+        ]
+      },
+      "expectedMemberCount": 3,
+      "memberSourceIds": [],
+      "domains": [
+        "foundations"
+      ],
+      "memberCount": 3
     }
   ],
-  "derivationNote": "memberSourceIds, domains und memberCount wurden von assemble-v2.mjs --write aus den bestaendigten Shards abgeleitet; hypothesisMemberSourceIds bleiben als Design-Hypothese zur Auditierung stehen."
+  "derivationNote": "memberSourceIds, domains und memberCount werden manuell reconciliert und ueber die Testsuite (family_contract, family_golden_corpus missing/extra-Pins) geprueft; hypothesisMemberSourceIds bleiben als Design-Hypothese zur Auditierung stehen."
 }

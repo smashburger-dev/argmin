@@ -85,8 +85,8 @@ test('family golden corpus has no behavioural differences', () => {
 });
 
 test('golden corpus coverage delta against canonical families is explicit', () => {
-  // Fixture: 107 Familien, canonical-families.json: 132. Die Differenz ist
-  // bekannt und hier explizit gepinnt; jede stille Drift scheitert.
+  // Die Differenz golden ↔ canonical ist bekannt und hier explizit gepinnt;
+  // jede stille Drift scheitert (fehlende/überschüssige Familien).
   const canonicalIds = JSON.parse(
     readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'),
   ).families.map((family) => family.familyId).sort();

@@ -57,8 +57,14 @@
           "items": { "enum": ["intro", "core", "stretch", "challenge"] }
         },
         "competencyIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
-        "graderId": { "type": "string", "minLength": 1 },
-        "activityType": { "type": "string", "minLength": 1 }
+        "graderId": { "enum": ["deterministic", "pyodide", "pyodide-sympy", "manual-rubric"] },
+        "activityType": {
+          "enum": [
+            "numeric", "single-choice", "vector", "algebraic-expression",
+            "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
+            "multiple-choice", "diagnostic-rationale", "worked-example-fading"
+          ]
+        }
       }
     },
     "case": {
@@ -97,8 +103,14 @@
         "feedbackRules": { "type": "array" },
         "typicalErrors": { "type": "array" },
         "tolerancePolicy": { "type": "object" },
-        "activityType": { "type": "string" },
-        "graderId": { "type": "string" },
+        "activityType": {
+          "enum": [
+            "numeric", "single-choice", "vector", "algebraic-expression",
+            "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
+            "multiple-choice", "diagnostic-rationale", "worked-example-fading"
+          ]
+        },
+        "graderId": { "enum": ["deterministic", "pyodide", "pyodide-sympy", "manual-rubric"] },
         "traceTable": {},
         "rubric": {},
         "starterCode": { "type": "string" },

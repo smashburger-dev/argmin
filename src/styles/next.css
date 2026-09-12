@@ -418,6 +418,9 @@ main { min-width: 0; }
 .answer-field input, .answer-field textarea { font: 14px/1.5 var(--mono); }
 .answer-field textarea { resize: vertical; }
 .answer-field small { color: var(--text-2); font: 500 12px/1.45 var(--sans); }
+.fading-control { line-height: 2.2; }
+.fading-gap { display: inline-block; width: 8ch; min-height: 36px; margin: 0 var(--s1); padding: var(--s1) var(--s2); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: 14px/1.4 var(--mono); text-align: center; vertical-align: baseline; }
+.fading-gap:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); outline: none; }
 .worked-example-callout { margin-bottom: var(--s3); padding: clamp(20px, 4vw, 34px); border: 1px solid var(--border); border-radius: var(--radius); background: var(--accent-soft); }
 .worked-example-callout h2 { max-width: 780px; }
 .worked-example-steps { display: grid; gap: var(--s3); margin: var(--s5) 0 0; padding: 0; list-style: none; counter-reset: worked-step; }

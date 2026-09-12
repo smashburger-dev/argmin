@@ -71,6 +71,39 @@
       "familyId": "validate-required-field-raise",
       "difficulty": "core",
       "estimatedMinutes": 0
+    },
+    {
+      "placementId": "p-foundations-files-errors-except-pass-swallow-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-python-errors",
+      "caseId": "except-pass-swallow",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-foundations-files-errors",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-foundations-files-errors-csv-age-str-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-python-errors",
+      "caseId": "csv-age-str-compare",
+      "seed": 1,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-foundations-files-errors",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-foundations-files-errors-row-key-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-python-errors",
+      "caseId": "row-key-case",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-foundations-files-errors",
+      "masteryEligible": false
     }
   ],
   "projectIds": [

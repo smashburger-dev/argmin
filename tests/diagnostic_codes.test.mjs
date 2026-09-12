@@ -24,6 +24,10 @@ const CANONICAL_CODES = new Set([
   'unparsed',
   'not-equivalent',
   'grader-error',
+  'missing-choice',
+  'extra-choice',
+  'missing-diagnosis',
+  'wrong-gap',
   // domain misconception codes grounded in family feedbackRules
   'off-by-one',
   'except-pass',
