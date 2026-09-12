@@ -13,5 +13,16 @@
     { "kind": "polygon", "points": [["c-o", 1], ["2*c-o", 1], ["2*c", 1.8], ["c", 1.8]], "color": "#16713a" },
     { "kind": "polygon", "points": [["2*c-2*o", 2], ["3*c-2*o", 2], ["3*c-o", 2.8], ["2*c-o", 2.8]], "color": "#9c4b00" },
     { "kind": "text", "at": [0, -0.5], "text": "Chunks = {floor(10/(c-o)-0.0001)+1}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze c = 4 und o = 1. Wie viele Chunks ergeben sich aus einem Text der Länge 10?",
+    "input": "numeric",
+    "expected": 4,
+    "tolerance": 1e-6,
+    "hints": ["Die Schrittweite zwischen Chunk-Starts ist c − o = 3. Startpositionen: 0, 3, 6, 9."],
+    "typicalErrors": [
+      { "match": 3, "feedback": "floor(10/(c−o)) = 3 vergisst den letzten Chunk — die Formel addiert +1 für den Start bei Position 0." },
+      { "match": 2, "feedback": "Das ignoriert die Überlappung: Die effektive Schrittweite ist c − o = 3, nicht c = 4." }
+    ]
+  }
 }

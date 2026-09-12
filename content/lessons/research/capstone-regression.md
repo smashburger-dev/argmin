@@ -65,7 +65,7 @@ Klammern).
 
 **Evaluationsphase — Feste Evaluation: der Hash, der den Vergleich verweigert.** Der zweite
 Eval-Lauf verbessert Recall von 0,75 auf 0,80 — aber der sha256 über das
-Golden Set weicht ab: Jemand hat eine Query „korrigiert".
+Golden Set weicht ab: Jemand hat eine Query „korrigiert“.
 `verify_golden_hash` verweigert den Vergleich, bis das Set wieder dem
 eingefrorenen Stand entspricht; erst dann wertet das Regelwerk aus und
 entscheidet `angenommen/abgelehnt/abgebrochen`

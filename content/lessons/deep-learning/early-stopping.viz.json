@@ -10,5 +10,16 @@
     { "kind": "functiongraph", "expr": "exp(-0.3*x)+0.004*x^2", "label": "Validierung", "color": "#294bd6" },
     { "kind": "point", "at": ["t", "exp(-0.3*t)+0.004*t^2"], "label": "Stopp", "color": "#b72f2a" },
     { "kind": "text", "at": [1, -0.5], "text": "Val = {exp(-0.3*t)+0.004*t^2}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze t = 10. Welchen Validierungsfehler zeigt der rote Punkt?",
+    "input": "numeric",
+    "expected": 0.45,
+    "tolerance": 0.01,
+    "hints": ["Val(t) = e^(−0,3t) + 0,004·t² — rechne beide Terme bei t = 10 aus."],
+    "typicalErrors": [
+      { "match": 0.05, "feedback": "Das ist nur der Trainingsanteil e^(−3). Der Overfitting-Term 0,004·t² = 0,4 fehlt." },
+      { "match": 0.09, "feedback": "Der Overfitting-Term ist 0,004·t² — quadriert, nicht linear in t." }
+    ]
+  }
 }

@@ -40,6 +40,10 @@ Stand: Batch 1 + R14-Umsetzung abgeschlossen (siehe „Umgesetzt").
 | P1 | JS-first→public-first-Migration | **25 Familien** in `content/families/*.json` serialisiert; Generatoren lesen Fallkörper via `staticCaseBody`/`staticVariantInstance` aus der Registry (Eigenregistrierung per `with { type: 'json' }`-Import, Geschwister-Muster). Instantiate-Probes byte-identisch (Choice 508 KB, Construct 672, Trace/Linalg 4864, DataML+Git ~59.600 Instanzen). `family_golden_corpus`-`missing`-Pin auf `reflect-error-journal-rationale` reduziert |
 | P1 | `capstone-pipeline.md` Aufteilung | 5 Phasen-Lektionen (`l-capstone-freeze/runner/regression/repro/acceptance`, je 70–79 Zeilen Worked-Example + eigene Checkpoints); Module umverdrahtet, `ms-research-capstone`-lessonIds aktualisiert, `build_public.mjs`-Allowlist angepasst; alte Lektion gelöscht |
 | P1 | `lm-foundations-functions` Stretch | curated `both-orders-linear-functions` stretch (Seed 3, probe-verifiziert) — Stretch-Profil existierte parametrisch, kein dritter Case-Typ nötig |
+| P2 | Milestone-Coverage funktional | `tools/validate_milestones.mjs` prüft jede `coverage[].requiredArtifacts`-Zeile gegen das kompilierte Bundle (Prädikate: Lektionsverknüpfung, mastery-fähige Family-Aktivität, lektionsgebundene Übung via exercise/checkpoint-Block, `#/family/`-Link oder `lessonId`-Placement, formativer Check via `masteryEligible:false`/checkpoint/intro-Placement, Review-Scheduler-Kopplung, Projektverknüpfung via `module.projectIds`/`project.competencyIds`/project-step-Block); Fund: `c-numpy-basics` forderte `project-step`, widersprach aber `projectIds: []` des Milestones — Artefakt entfernt; `MilestoneCard` (TodayView) zeigt aktuellen Milestone in Katalog-Reihenfolge statt `ms-foundations`-Hardcodierung |
+| P1 | Benotete Viz-Kopplung | Alle 24 `*.viz.json` tragen ein `checkpoint`-Objekt (Kontrakt: `prompt`, `input` numeric/vector, `expected`, `tolerance`, `hints`, `typicalErrors`; Option A aus `plan-interaktive-elemente.md`). Mechanismus: optionales `checkpoint` in `schemas/visualization.schema.json`, Grading in `assets/js/core/viz_checkpoint_grader.mjs` (deutsche Dezimalkommas, Brüche, komponentenweise Toleranz), UI `VizCheckpointPanel` in `VisualizationBlock.tsx`, Validierung in `validate_content.mjs`. **Formativ** — kein Mastery-Write (R14) |
+| P2 | `diagnosticCodes`-Taxonomie | Kanonische Tabelle in `authoring-guide.md` §8; `tests/diagnostic_codes.test.mjs` prüft beide Richtungen (explanations→Taxonomie, grader-errorTypes→Taxonomie); alle 5 Explanation-Cards bereits konform |
+| P2 | Quote-Vereinheitlichung | 14 Lesson-Markdowns auf `„…“` (Repo-Konvention), Code-Fences/Primes unberührt |
 
 Verifikation: `validate_content.mjs` (265 Aktivitäten), `coverage:check`,
 `compile_content.mjs`, `build_public.mjs`, vollständige Node-Suite
@@ -48,10 +52,14 @@ erfüllen `minimumDistinctDefinitions`.
 
 ## P1-Backlog (offen)
 
-Status nach P1-Batch: Die meisten Tabellenzeilen sind umgesetzt (siehe
-„Umgesetzt"). Verbleibend offen: benotete Viz-Transferkopplung (braucht
-`predict-then-verify`-Blocktyp, Plan-Doku), Stretch-Placement für
-`lm-foundations-functions` (braucht dritten Case-Typ), `capstone-pipeline.md`-Aufteilung, `construct-ensemble`-Seed-Abdeckung falls gewünscht, und die 24-Familien-JS-first-Migration — letztere ist ein eigener PR-Kandidat samt Policy-Entscheid unten.
+Status nach P1/P2-Batches: nahezu alle Tabellenzeilen sind umgesetzt (siehe
+„Umgesetzt"). Verbleibend offen: `construct-ensemble`-Seed-Abdeckung falls
+gewünscht, `projectIds: []` ist Schema-required (44 Module ohne Projekt —
+bewusst so belassen, Entfernen wäre Schema-Entscheid), ~60
+`practice-space`-Placements mit `estimatedMinutes: 0` (offene
+Kalibrierungsfrage), neue Aufgabentypen (`multiple-choice`,
+`worked-example-fading`, `diagnostic-rationale` — siehe
+`plan-neue-aufgabentypen.md`).
 
 ### Foundations
 
@@ -105,7 +113,7 @@ Status nach P1-Batch: Die meisten Tabellenzeilen sind umgesetzt (siehe
 | `docs/authoring-guide.md` | Absatz public-first vs. JS-first und `diagnosticCodes`-Taxonomie ergänzen (R14-Teil erledigt) | Katalogklarheit | C2 |
 | `content/competency-family-coverage.json` | Generierungslogik dokumentieren; Overdeclaration auflösen oder erklären | R15 | B7 |
 | `content/tracks/common-core.json`, `content/tracks/research-evaluation.json` | Reihenfolge `c-git-basics` / `c-meta-learning` korrigieren | R11 | B7 |
-| `schemas/learning-module.schema.json:62` | Entscheiden, ob `diagnostic`/`guided-practice` als Placement-Rollen hinzukommen | R5/R15 | B7 |
+| `schemas/learning-module.schema.json:62` | entschieden: keine neuen Placement-Rollen (siehe Policy-Entscheidungen) | R5/R15 | B7 |
 
 ### Projects/Explanations
 
@@ -139,4 +147,4 @@ Status nach P1-Batch: Die meisten Tabellenzeilen sind umgesetzt (siehe
 | **choice-mastery (R14)** | entschieden: weiche Auslegung, verbindlich in `authoring-guide.md` §5. Kriterien: ≥2 plausible Distraktoren auf Fehlkonzepte + erklärende `fullSolution`/`feedbackRules`, sonst `masteryEligible: false`. `manual-rubric`/`short-rationale` nie mastery-fähig. |
 | **public-first vs. JS-first** | offen: Migration der 24 JS-only-Familien oder explizite JS-first-Erlaubnis im Guide. |
 | **predict-then-verify scope** | offen: nur `.viz.json` oder auch Pyodide/NumPy-Live-Demos. |
-| **diagnostic/guided-practice roles** | offen: Schema-Erweiterung + `ModuleView`, oder reine Milestone-Artefakte. |
+| **diagnostic/guided-practice roles** | entschieden: **keine** neuen Placement-Rollen — `diagnostic`/`guided-practice` bleiben Milestone-Artefakttypen in `coverage[].requiredArtifacts`. Begründung: `role` in `learning-module.schema.json:62` hat zwei klar getrennte Bedeutungen (`curated` = kuratierter Lernpfad, `practice-space` = freies Üben); `diagnostic`/`guided-practice` sind dagegen Kompositions-Anforderungen auf Milestone-Ebene, keine Placement-Semantik. Konkrete Realisierung im Katalog: diagnostic = `masteryEligible:false`-Case, lesson-checkpoint oder intro-Placement; guided-practice = exercise/checkpoint-Block, `#/family/`-Link oder `lessonId`-gebundenes Placement. Verbindlich geprüft durch `tools/validate_milestones.mjs`. |

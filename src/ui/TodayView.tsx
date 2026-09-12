@@ -80,18 +80,26 @@ function PlanDay({ day, exerciseById, competencyById }: {
 }
 
 function MilestoneCard({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
-  const foundation = catalog.milestones.find((item) => item.milestoneId === 'ms-foundations');
-  const competencyIds = foundation?.competencyIds ?? [];
-  const evidenceCount = competencyIds.filter((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')).length;
-  const percent = competencyIds.length ? Math.round(evidenceCount / competencyIds.length * 100) : 0;
+  const covered = (item: CatalogData['milestones'][number]) =>
+    item.competencyIds.filter((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')).length;
+  // Aktueller Milestone = erster nicht vollständig nachgewiesener in
+  // Katalog-Reihenfolge; sind alle erfüllt, steht der letzte als erreicht da.
+  const current = catalog.milestones.find((item) => covered(item) < item.competencyIds.length)
+    ?? catalog.milestones[catalog.milestones.length - 1];
+  if (!current) return null;
+  const evidenceCount = covered(current);
+  const total = current.competencyIds.length;
+  const reached = evidenceCount >= total;
+  const percent = total ? Math.round(evidenceCount / total * 100) : 0;
   return (
     <article class="status-card milestone-card">
-      <p class="card-kicker">Aktueller Milestone</p>
-      <p class="milestone-sub">{foundation?.description}</p>
-      <div class="meter meter-lg" aria-label={`${evidenceCount} von ${competencyIds.length} Kompetenzen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
+      <p class="card-kicker">{reached ? 'Milestone erreicht' : 'Aktueller Milestone'}</p>
+      <h2>{current.title}</h2>
+      <p class="milestone-sub">{current.description}</p>
+      <div class="meter meter-lg" aria-label={`${evidenceCount} von ${total} Kompetenzen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
         <span style={{ width: `${percent}%` }} />
       </div>
-      <p class="meter-label">{evidenceCount} von {competencyIds.length} Kompetenzen.</p>
+      <p class="meter-label">{evidenceCount} von {total} Kompetenzen{reached ? ' — erreicht.' : '.'}</p>
       <a class="text-link" href="#/learn">Im Lernpfad weiter →</a>
     </article>
   );

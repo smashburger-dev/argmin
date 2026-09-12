@@ -19,5 +19,16 @@
     { "kind": "segment", "from": [3, 4], "to": [3, "m*3+b"], "dash": true, "color": "#9c4b00" },
     { "kind": "segment", "from": [4, 5.5], "to": [4, "m*4+b"], "dash": true, "color": "#9c4b00" },
     { "kind": "text", "at": [0, -1], "text": "MSE = ((2-(m+b))^2+(2.5-(2*m+b))^2+(4-(3*m+b))^2+(5.5-(4*m+b))^2)/4", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze m = 1 und b = 0. Welchen Wert hat das MSE der vier Punkte?",
+    "input": "numeric",
+    "expected": 1.125,
+    "tolerance": 1e-6,
+    "hints": ["Residuen sind yᵢ − (m·xᵢ + b): 1; 0,5; 1; 1,5. Quadrieren und durch 4 teilen."],
+    "typicalErrors": [
+      { "match": 4.5, "feedback": "Das ist die Summe der quadrierten Residuen — das MSE teilt noch durch die Anzahl 4." },
+      { "match": 1.5, "feedback": "Das ist das größte einzelne Residuum, nicht der Mittelwert der Quadrate." }
+    ]
+  }
 }

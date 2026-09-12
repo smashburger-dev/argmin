@@ -9,5 +9,16 @@
     { "kind": "functiongraph", "expr": "(x-3)^2+lam*x^2", "label": "Verlust", "color": "#294bd6" },
     { "kind": "point", "at": ["3/(1+lam)", "(3/(1+lam)-3)^2+lam*(3/(1+lam))^2"], "label": "w*", "color": "#b72f2a" },
     { "kind": "text", "at": [-4, -1], "text": "w* = {3/(1+lam)}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze λ = 2. Bei welchem w* liegt das Minimum der Verlustfunktion?",
+    "input": "numeric",
+    "expected": 1,
+    "tolerance": 1e-6,
+    "hints": ["Ableitung von (w−3)² + λw² null setzen: 2(w−3) + 2λw = 0, dann nach w auflösen."],
+    "typicalErrors": [
+      { "match": 3, "feedback": "Das ist das unregularisierte Minimum bei λ = 0. Mit λ = 2 schrumpft w* auf 3/(1+2)." },
+      { "match": 1.5, "feedback": "3/λ = 1,5 ist nicht die Regel — die Ableitung ergibt w* = 3/(1+λ)." }
+    ]
+  }
 }

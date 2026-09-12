@@ -537,6 +537,20 @@ main:focus { outline: none; }
 .visualization-block { margin: var(--s5) 0; }
 .visualization-block figcaption { margin: 0 0 var(--s2); color: var(--text-2); font-size: 15px; line-height: 1.5; }
 .visualization-block figcaption strong { color: var(--text); }
+.viz-checkpoint { margin-top: var(--s4); padding: var(--s4); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.viz-checkpoint-prompt { margin: 0 0 var(--s3); font-weight: 600; line-height: 1.5; }
+.viz-checkpoint-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); }
+.viz-checkpoint-row input { min-height: 44px; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: 14px/1.5 var(--mono); }
+.viz-checkpoint-input { width: 14ch; }
+.viz-checkpoint-vector { display: inline-flex; align-items: center; gap: var(--s1); font-weight: 650; }
+.viz-checkpoint-vector input { width: 9ch; }
+.viz-checkpoint-feedback { margin: var(--s3) 0 0; padding: var(--s2) var(--s3); border-radius: var(--radius-sm); font-weight: 650; }
+.viz-checkpoint-feedback.correct { background: var(--ok-soft); }
+.viz-checkpoint-feedback.wrong { background: var(--danger-soft); }
+.viz-checkpoint-hints { margin-top: var(--s3); }
+.viz-checkpoint-hints summary { cursor: pointer; color: var(--accent-hover); font-size: 14px; font-weight: 650; }
+.viz-checkpoint-hints ol { display: grid; gap: var(--s2); margin: var(--s2) 0 0; padding-left: var(--s5); }
+.viz-checkpoint-hints li { color: var(--text-2); line-height: 1.45; }
 
 @media (max-width: 920px) {
   .app-body { grid-template-columns: 1fr; }

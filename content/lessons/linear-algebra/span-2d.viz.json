@@ -14,5 +14,16 @@
     { "kind": "polygon", "points": [[0, 0], [2, 1], ["2+2*k", "1+k+s"], ["2*k", "k+s"]], "color": "#294bd6" },
     { "kind": "text", "at": [-4, -3], "text": "det(u,v) = {2*s}", "color": "#294bd6" },
     { "kind": "text", "at": [-4, -4], "text": "Vorhersage: Bei welchem s wird det(u,v) = 0 — und hängt das von k ab? Erst schätzen, dann mit den Slidern prüfen.", "color": "#b72f2a" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze k = −1 und s = 1,5. Welchen Wert hat det(u, v) mit u = (2, 1) und v = (2k, k+s)?",
+    "input": "numeric",
+    "expected": 3,
+    "tolerance": 1e-6,
+    "hints": ["det(u,v) = u₁·v₂ − u₂·v₁ = 2·(k+s) − 1·2k — erst vereinfachen, dann einsetzen."],
+    "typicalErrors": [
+      { "match": -3, "feedback": "Vorzeichen vertauscht: det(u,v) = u₁v₂ − u₂v₁, nicht umgekehrt." },
+      { "match": 1, "feedback": "Das ist nur 2·(k+s) — der zweite Term −u₂·v₁ = −1·2k fehlt noch." }
+    ]
+  }
 }

@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { compileExpression, compileTemplate, compileValue } from '../../assets/js/domain/expression_eval.mjs';
-import type { VisualizationCoord, VisualizationExpr, VisualizationSpec } from '../app/types';
+import { gradeVizCheckpoint } from '../../assets/js/core/viz_checkpoint_grader.mjs';
+import type { VisualizationCoord, VisualizationExpr, VisualizationSpec, VizCheckpoint } from '../app/types';
+import { Button } from './Button';
+import { MathMarkup } from './MathMarkup';
 export type { VisualizationSpec } from '../app/types';
 
 type Expr = VisualizationExpr;
 type Coord = VisualizationCoord;
+
+export type { VizCheckpoint } from '../app/types';
 
 interface JxgSlider { Value: () => number }
 interface JxgCurve { dataX: number[]; dataY: number[]; updateDataArray: () => void }
@@ -88,6 +93,64 @@ export function buildBoard(board: JxgBoard, spec: VisualizationSpec) {
   board.update();
 }
 
+interface VizCheckpointFeedback {
+  ok: boolean;
+  correct: boolean;
+  verdictText: string;
+}
+
+/** Compact formative checkpoint under the board. Grading is deterministic
+ *  and in-memory only — deliberately NO IndexedDB write and NO
+ *  mastery/progress update (formativ per Option-A-Kontrakt). */
+function VizCheckpointPanel({ checkpoint }: { checkpoint: VizCheckpoint }) {
+  const isVector = checkpoint.input === 'vector';
+  const [scalar, setScalar] = useState('');
+  const [vector, setVector] = useState<[string, string]>(['', '']);
+  const [feedback, setFeedback] = useState<VizCheckpointFeedback | null>(null);
+  const hints = checkpoint.hints || [];
+  const submit = (event: Event) => {
+    event.preventDefault();
+    setFeedback(gradeVizCheckpoint(checkpoint, isVector ? vector : scalar));
+  };
+  const editVector = (index: number, value: string) => {
+    setVector(index === 0 ? [value, vector[1]] : [vector[0], value]);
+    setFeedback(null);
+  };
+  return (
+    <div class="viz-checkpoint">
+      <p class="viz-checkpoint-prompt"><MathMarkup html={checkpoint.prompt} inline /></p>
+      <form class="viz-checkpoint-row" onSubmit={submit}>
+        {isVector ? (
+          <span class="viz-checkpoint-vector">
+            <span aria-hidden="true">(</span>
+            <input aria-label="x-Komponente" inputMode="decimal" autocomplete="off" value={vector[0]}
+              onInput={(event) => editVector(0, event.currentTarget.value)} />
+            <span aria-hidden="true">;</span>
+            <input aria-label="y-Komponente" inputMode="decimal" autocomplete="off" value={vector[1]}
+              onInput={(event) => editVector(1, event.currentTarget.value)} />
+            <span aria-hidden="true">)</span>
+          </span>
+        ) : (
+          <input class="viz-checkpoint-input" aria-label="Antwort" inputMode="decimal" autocomplete="off" value={scalar}
+            onInput={(event) => { setScalar(event.currentTarget.value); setFeedback(null); }} />
+        )}
+        <Button variant="primary" size="sm" type="submit">Prüfen</Button>
+      </form>
+      {feedback ? (
+        <p class={`viz-checkpoint-feedback ${feedback.correct ? 'correct' : 'wrong'}`} role="status">
+          <MathMarkup html={feedback.verdictText} inline />
+        </p>
+      ) : null}
+      {hints.length ? (
+        <details class="viz-checkpoint-hints">
+          <summary>Hinweise ({hints.length})</summary>
+          <ol>{hints.map((hint, index) => <li key={index}><MathMarkup html={hint} inline /></li>)}</ol>
+        </details>
+      ) : null}
+    </div>
+  );
+}
+
 export function VisualizationBlock({ id, spec }: { id: string; spec: VisualizationSpec }) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const boardRef = useRef<JxgBoard | null>(null);
@@ -115,6 +178,7 @@ export function VisualizationBlock({ id, spec }: { id: string; spec: Visualizati
       <div id={domId} class="jxgbox viz-board" aria-label={spec.title} />
       {status === 'loading' ? <p role="status">Visualisierung wird geladen.</p> : null}
       {status === 'error' ? <p role="alert">Die lokale JSXGraph-Runtime konnte nicht geladen werden.</p> : null}
+      {status === 'ready' && spec.checkpoint ? <VizCheckpointPanel checkpoint={spec.checkpoint} /> : null}
     </figure>
   );
 }

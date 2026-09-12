@@ -10,5 +10,16 @@
     { "kind": "functiongraph", "expr": "((2-lambda)*x+3-lambda)/(1-lambda)", "label": "Zeile 2'", "color": "#294bd6" },
     { "kind": "point", "at": [-2, -1], "label": "S", "color": "#b72f2a" },
     { "kind": "text", "at": [-4, -3], "text": "Zeile2' = Zeile2 − λ·Zeile1", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze λ = −1 (Zeile 2′ wird zu y = 1,5x + 2). Welche y-Koordinate hat der Schnittpunkt mit Zeile 1 (y = x + 1)?",
+    "input": "numeric",
+    "expected": -1,
+    "tolerance": 1e-6,
+    "hints": ["Setze x + 1 = 1,5x + 2 und löse nach x — oder nutze, dass Zeilenoperationen die Lösung nicht verändern."],
+    "typicalErrors": [
+      { "match": 2, "feedback": "Das ist der y-Achsenabschnitt von Zeile 2′ (bei x = 0), nicht der Schnittpunkt mit Zeile 1." },
+      { "match": 3, "feedback": "Vorzeichenfehler beim Umstellen: x + 1 = 1,5x + 2 ergibt x = −2, nicht x = 2." }
+    ]
+  }
 }

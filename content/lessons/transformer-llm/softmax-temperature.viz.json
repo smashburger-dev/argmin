@@ -21,5 +21,16 @@
     { "kind": "text", "at": [0, -0.28], "text": "q₁ = {exp(2/temp)*min(1,max(0,k))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))}", "color": "#b72f2a" },
     { "kind": "text", "at": [1.5, -0.28], "text": "q₂ = {exp(1/temp)*min(1,max(0,k-1))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))}", "color": "#16713a" },
     { "kind": "text", "at": [3, -0.28], "text": "q₃ = {min(1,max(0,k-2))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze T = 0,5 und k = 2. Welcher Anteil q₁ bleibt auf dem ersten Token nach der Top-k-Renormalisierung?",
+    "input": "numeric",
+    "expected": 0.88,
+    "tolerance": 0.005,
+    "hints": ["Bei k = 2 zählen nur die zwei größten Logits: q₁ = e^(2/T)/(e^(2/T) + e^(1/T)) = 1/(1 + e^(−2)) für T = 0,5."],
+    "typicalErrors": [
+      { "match": 0.87, "feedback": "Das ist ungefähr p₁ = 0,867 vor der Renormalisierung — bei k = 2 fällt das dritte Token weg und die Masse verteilt sich auf zwei Tokens neu." },
+      { "match": 0.67, "feedback": "Das ist p₁ bei T = 1. Prüfe die Temperatur: T = 0,5 macht die Verteilung schärfer." }
+    ]
+  }
 }

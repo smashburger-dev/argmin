@@ -13,5 +13,16 @@
     { "kind": "segment", "from": ["mu", 0], "to": ["mu", 0.6], "dash": true, "color": "#b72f2a" },
     { "kind": "text", "at": [-5.5, -0.05], "text": "Mittelwert μ = {mu}", "color": "#b72f2a" },
     { "kind": "text", "at": [-5.8, 0.55], "text": "Vorhersage: Welches Intervall um μ trägt ca. 95 % der Fläche? Erst schätzen — dann bei μ = 0, s = 1 am Graphen ablesen.", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze μ = 0 und s = 2. Wie hoch ist der Gipfel der Dichtekurve (der Wert bei x = μ)?",
+    "input": "numeric",
+    "expected": 0.2,
+    "tolerance": 0.005,
+    "hints": ["Die Normaldichte ist bei x = μ maximal: φ(μ) = 1/(s·√(2π))."],
+    "typicalErrors": [
+      { "match": 0.4, "feedback": "Das ist der Gipfel für s = 1. Bei s = 2 halbiert sich die Maximaldichte auf 1/(2·√(2π))." },
+      { "match": 0.25, "feedback": "Der Nenner ist s·√(2π) ≈ 2·2,51, nicht 2·s = 4." }
+    ]
+  }
 }

@@ -11,5 +11,15 @@
     { "kind": "functiongraph", "expr": "(a*x+1)^2", "label": "g∘f", "color": "#294bd6" },
     { "kind": "point", "at": [1, "(a+1)^2"], "color": "#b72f2a" },
     { "kind": "text", "at": [-3.5, -1], "text": "g(f(1)) = {(a+1)^2}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze a = 2. Welchen Wert hat die Komposition g(f(1))?",
+    "input": "numeric",
+    "expected": 9,
+    "tolerance": 1e-6,
+    "hints": ["Rechne von innen nach außen: erst f(1) = a·1 + 1, dann wende g darauf an."],
+    "typicalErrors": [
+      { "match": 3, "feedback": "Das ist nur der innere Wert f(1) = 3 (und zugleich f(g(1))). Gesucht ist g(f(1)) = f(1)²." }
+    ]
+  }
 }

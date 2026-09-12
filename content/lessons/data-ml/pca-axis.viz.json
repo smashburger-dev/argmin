@@ -14,5 +14,16 @@
     { "kind": "point", "at": [1, 0.5], "color": "#b72f2a" },
     { "kind": "functiongraph", "expr": "tan(theta)*x", "label": "Achse", "color": "#294bd6" },
     { "kind": "text", "at": [-5.5, -4.5], "text": "Varianz entlang Achse = {(((-4)*cos(theta)+(-2)*sin(theta))^2+((-2)*cos(theta)+(-1)*sin(theta))^2+((-1)*cos(theta)+(-0.5)*sin(theta))^2+(cos(theta)+0.5*sin(theta))^2+((2)*cos(theta)+(1)*sin(theta))^2+((4)*cos(theta)+(2)*sin(theta))^2)/6}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Die Punkte liegen auf der Geraden y = x/2. Bei welchem Winkel θ (in rad) wird die Varianz entlang der Achse maximal?",
+    "input": "numeric",
+    "expected": 0.46,
+    "tolerance": 0.02,
+    "hints": ["Die Varianz ist maximal in Richtung der Datenachse: θ = atan(Steigung) = atan(0,5)."],
+    "typicalErrors": [
+      { "match": 0.5, "feedback": "0,5 ist die Steigung der Geraden — der Winkel ist atan(0,5) ≈ 0,4636 rad." },
+      { "match": 1.11, "feedback": "atan(2) ≈ 1,107 wäre der Winkel für Steigung 2 — die Daten steigen aber mit Steigung 1/2." }
+    ]
+  }
 }

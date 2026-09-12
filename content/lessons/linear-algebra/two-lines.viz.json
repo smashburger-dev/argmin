@@ -13,5 +13,16 @@
     { "kind": "functiongraph", "expr": "(c2+1*x)/2", "label": "L₂", "color": "#9c4b00" },
     { "kind": "point", "at": ["(2*c1-c2)/5", "(c1+2*c2)/5"], "label": "S", "color": "#294bd6" },
     { "kind": "text", "at": [-4, -3.5], "text": "Lösung ({(2*c1-c2)/5} ; {(c1+2*c2)/5})", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze c₁ = 3 und c₂ = −1. Welche x-Koordinate hat der Schnittpunkt der beiden Geraden?",
+    "input": "numeric",
+    "expected": 1.4,
+    "tolerance": 1e-6,
+    "hints": ["Setze die Geradengleichungen gleich: c₁ − 2x = (c₂ + x)/2 und löse nach x auf."],
+    "typicalErrors": [
+      { "match": 0.2, "feedback": "Das ist die y-Koordinate des Schnittpunkts — gefragt ist x." },
+      { "match": -1.4, "feedback": "Vorzeichenfehler: 2c₁ − c₂ = 6 − (−1) = 7, geteilt durch 5." }
+    ]
+  }
 }
