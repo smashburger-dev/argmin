@@ -76,16 +76,33 @@ const fillTemplate = (template, values) => Object.keys(values).reduce(
 // übernimmt beim späteren Bundle-Load keine Fremdkörper; Muster wie in
 // foundations_choice_families.mjs, damit Generatoren auch ohne Bundle-
 // Registrierung laufen, z. B. direkte EXERCISE_FAMILIES-Nutzung in Tests).
-for (const doc of [
-  guardedLoopDoc,
-  regressionSuiteDoc,
-  bugfixWorkflowDoc,
-  testStructureDoc,
-  expressionCanonicalDoc,
-  powerLogDoc,
-]) {
-  registerStaticCases(doc.familyId, doc.cases);
+// Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
+// können in gebündelten Chunk-Graphen noch uninitialisiert sein.
+let constructDocsRegistered = false;
+function ensureConstructDocs() {
+  if (constructDocsRegistered) return;
+  constructDocsRegistered = true;
+  for (const doc of [
+    guardedLoopDoc,
+    regressionSuiteDoc,
+    bugfixWorkflowDoc,
+    testStructureDoc,
+    expressionCanonicalDoc,
+    powerLogDoc,
+  ]) {
+    registerStaticCases(doc.familyId, doc.cases);
+  }
 }
+
+const constructCaseBody = (familyId, caseId) => {
+  ensureConstructDocs();
+  return staticCaseBody(familyId, caseId);
+};
+
+const constructVariantInstance = (familyId, caseId, seed, difficulty) => {
+  ensureConstructDocs();
+  return staticVariantInstance(familyId, caseId, seed, difficulty);
+};
 
 
 // --- Familie 1: transform-linear-equation-isolate (numeric-exact) ---------
@@ -158,7 +175,7 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
   if (caseId === 'two-step-fixed-instance') {
-    const body = staticCaseBody('transform-linear-equation-isolate', caseId);
+    const body = constructCaseBody('transform-linear-equation-isolate', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
@@ -356,7 +373,7 @@ export function generatePowerLogFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'product-and-power-of-power' && caseId !== 'integer-base-power') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const body = staticCaseBody('transform-power-log-exponent', caseId);
+  const body = constructCaseBody('transform-power-log-exponent', caseId);
   if (caseId === 'product-and-power-of-power') {
     const p = drawPowerShape(seed, body.parameters.tiers[tier], tier === 0, body.parameters.bases, body.parameters.introBases);
     const { value } = solvePowerLogExponent(p);
@@ -483,7 +500,7 @@ export function generateExpressionCanonicalFamily({ seed, caseId, difficulty }) 
   if (caseId !== 'combine-like-terms' && caseId !== 'distribute-sign-constant-chain') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const body = staticCaseBody('transform-expression-simplify-canonical', caseId);
+  const body = constructCaseBody('transform-expression-simplify-canonical', caseId);
   const mathTerm = (term) => term.replace(/\*/g, ' \\cdot ');
   let parameters;
   let source;
@@ -665,7 +682,7 @@ export function solveValidateCount(parameters) {
   if (parameters.task === 'zaehle') return { referenceCode: ZAEHLE_REFERENZ };
   if (parameters.task === 'inspect') return { referenceCode: INSPECT_REFERENZ };
   if (parameters.caseId === 'separate-error-kinds') {
-    return { kind: staticCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
+    return { kind: constructCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
   }
   throw new Error(`Unbekannte Aufgabe ${parameters.task}`);
 }
@@ -765,7 +782,7 @@ export function generateValidateCountFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'separate-error-kinds') {
-    return staticVariantInstance('aggregate-validate-and-count-records', caseId, seed, difficulty);
+    return constructVariantInstance('aggregate-validate-and-count-records', caseId, seed, difficulty);
   }
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   if (caseId === 'parse-validate-summarize') {
@@ -941,7 +958,7 @@ export function generateRegressionSuiteFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'normalize-and-assert-suite' && caseId !== 'normalize-and-assert-extended') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const body = staticCaseBody('construct-regression-test-suite', caseId);
+  const body = constructCaseBody('construct-regression-test-suite', caseId);
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   const suite = body.parameters.suite;
   const baseTests = suite === 'extended' ? PALINDROM_TESTS_EXTENDED : PALINDROM_TESTS;
@@ -1027,7 +1044,7 @@ export const TEST_STRUCTURE_CONTRACT = {
 
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveTestStructure(parameters) {
-  const order = staticCaseBody('construct-test-structure-aaa', parameters.parsonsCase).expected.solutionOrder;
+  const order = constructCaseBody('construct-test-structure-aaa', parameters.parsonsCase).expected.solutionOrder;
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
 }
@@ -1038,7 +1055,7 @@ export function generateTestStructureFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'arrange-act-assert' && caseId !== 'arrange-act-assert-filter') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const body = staticCaseBody('construct-test-structure-aaa', caseId);
+  const body = constructCaseBody('construct-test-structure-aaa', caseId);
   return parsonsGenerate({
     seed,
     difficulty,
@@ -1077,7 +1094,7 @@ export const GUARDED_LOOP_CONTRACT = {
 /** Unabhängiger Solver: Lösungssequenz aus dem Fallschlüssel; beim Countdown
  *  zusätzlich die arithmetische Kontrollsumme N(N+1)/2. */
 export function solveGuardedLoop(parameters) {
-  const order = staticCaseBody('construct-guarded-loop', parameters.parsonsCase).expected.solutionOrder;
+  const order = constructCaseBody('construct-guarded-loop', parameters.parsonsCase).expected.solutionOrder;
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   if (parameters.parsonsCase === 'countdown-accumulator-structure') {
     const n = parameters.start;
@@ -1092,7 +1109,7 @@ export function generateGuardedLoopFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'positive-values-structure' && caseId !== 'countdown-accumulator-structure') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const body = staticCaseBody('construct-guarded-loop', caseId);
+  const body = constructCaseBody('construct-guarded-loop', caseId);
   if (caseId === 'positive-values-structure') {
     return parsonsGenerate({
       seed,
@@ -1171,14 +1188,14 @@ const REQUIRED_ORDERS = {
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
   if (parameters.caseId === 'paper-card-required-fields') {
-    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
   if (
     parameters.caseId === 'protocol-validator'
     || parameters.caseId === 'validate-card-fields'
     || parameters.caseId === 'readme-required-headings'
   ) {
-    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
   const order = REQUIRED_ORDERS[parameters.parsonsCase];
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
@@ -1194,7 +1211,7 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
     || caseId === 'validate-card-fields'
     || caseId === 'readme-required-headings'
   ) {
-    return staticVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
+    return constructVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
   }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
@@ -1256,7 +1273,7 @@ export const BUGFIX_WORKFLOW_CONTRACT = {
 
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveBugfixWorkflow(parameters) {
-  const order = staticCaseBody('construct-safe-bugfix-workflow', parameters.parsonsCase).expected.solutionOrder;
+  const order = constructCaseBody('construct-safe-bugfix-workflow', parameters.parsonsCase).expected.solutionOrder;
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
 }
@@ -1267,7 +1284,7 @@ export function generateBugfixWorkflowFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'bugfix-flow-with-test-contract' && caseId !== 'datafix-flow-with-test-contract') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const body = staticCaseBody('construct-safe-bugfix-workflow', caseId);
+  const body = constructCaseBody('construct-safe-bugfix-workflow', caseId);
   return parsonsGenerate({
     seed,
     difficulty,
@@ -1310,7 +1327,7 @@ export const COVERAGE_LEAF_TIERS = [[2, 3], [3, 4], [4, 4], [4, 5]];
 /** Unabhängiger Solver: statisch 5, sonst Blattzahl des Entscheidungsbaums. */
 export function solveTestDesignCoverage(parameters) {
   if (parameters.caseId === 'elif-chain-five-outcomes') {
-    return { value: staticCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
+    return { value: constructCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
   }
   return { value: countBranchCoverageLeaves(parameters.branchShape) };
 }
@@ -1319,7 +1336,7 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'elif-chain-five-outcomes') {
-    const body = staticCaseBody('validate-test-design-coverage', caseId);
+    const body = constructCaseBody('validate-test-design-coverage', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { ...(body.parameters || {}) } };
   }

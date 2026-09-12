@@ -613,8 +613,6 @@ export function genBranchCoverageCount(seed) {
 // keeps direct generator use (tests, tools) working without a bundle load;
 // the seed mechanics below stay in JavaScript.
 
-registerStaticCases(gitOperationDoc.familyId, gitOperationDoc.cases);
-
 /** Authored case meta from the public body: the correct option sits first
  *  in `choices` (canonical order, rotation happens per seed), `state`,
  *  `insight`, `staticFlow` and `challengeDistractors` live in `parameters`. */
@@ -628,15 +626,24 @@ const gitCaseMeta = (body) => ({
   staticFlow: body.parameters.staticFlow === true,
 });
 
-const GIT_CASES = gitOperationDoc.cases
-  .filter((body) => body.parameters?.staticFlow !== true)
-  .map(gitCaseMeta);
+// Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
+// können in gebündelten Chunk-Graphen noch uninitialisiert sein.
+let gitCases = null;
+function ensureGitDocs() {
+  if (!gitCases) {
+    registerStaticCases(gitOperationDoc.familyId, gitOperationDoc.cases);
+    gitCases = gitOperationDoc.cases
+      .filter((body) => body.parameters?.staticFlow !== true)
+      .map(gitCaseMeta);
+  }
+  return gitCases;
+}
 
 /** Semantic variant bank (B): a described repository state, asked for the
  *  fitting next action. Six professionally distinct states; correct
  *  position rotates with the case. */
 export function genGitNextAction(seed) {
-  return caseBank(GIT_CASES, seed, {
+  return caseBank(ensureGitDocs(), seed, {
     // File-name localization happens inside finish (it needs the epoch and
     // the case's usesFile check); caseBank itself only resolves case and
     // rotation. The epoch varies the file name (seed % N picks the case, so
@@ -659,7 +666,7 @@ export function genGitNextAction(seed) {
 }
 
 export function gitNextActionCaseCount() {
-  return GIT_CASES.length;
+  return ensureGitDocs().length;
 }
 
 const GIT_OPERATION_CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
@@ -668,6 +675,7 @@ function gitOperationCase(caseId) {
   if (!gitOperationDoc.cases.some((item) => item.caseId === caseId)) {
     throw new Error(`Unbekannter Git-Fall ${caseId}`);
   }
+  ensureGitDocs();
   return gitCaseMeta(staticCaseBody(gitOperationDoc.familyId, caseId));
 }
 

@@ -44,16 +44,23 @@ export const FROZEN_META_ERROR_SEED = 3401;
 
 // Eigenregistrierung der öffentlichen Fallkörper (idempotent — die
 // Registry übernimmt beim späteren Bundle-Load keine Fremdkörper).
-for (const doc of [
-  stringImmutabilityDoc,
-  setOperationDoc,
-  errorHypothesisDoc,
-  testAttitudeDoc,
-  controlConstructDoc,
-  pythonCollectionDoc,
-  exceptionPlacementDoc,
-]) {
-  registerStaticCases(doc.familyId, doc.cases);
+// Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
+// können in gebündelten Chunk-Graphen noch uninitialisiert sein.
+let choiceDocsRegistered = false;
+function ensureChoiceDocs() {
+  if (choiceDocsRegistered) return;
+  choiceDocsRegistered = true;
+  for (const doc of [
+    stringImmutabilityDoc,
+    setOperationDoc,
+    errorHypothesisDoc,
+    testAttitudeDoc,
+    controlConstructDoc,
+    pythonCollectionDoc,
+    exceptionPlacementDoc,
+  ]) {
+    registerStaticCases(doc.familyId, doc.cases);
+  }
 }
 
 /** Generische statische Choice-Maschine: Der Seed rotiert nur die Position
@@ -65,6 +72,7 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
   if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
   const choiceCount = CHOICE_COUNT[difficulty];
   if (!choiceCount) throw new Error(`Unbekanntes Profil ${difficulty}`);
+  ensureChoiceDocs();
   const meta = staticCaseBody(familyId, caseId);
   const correct = meta.choices.find((choice) => choice.correct)?.text;
   const distractors = meta.choices.filter((choice) => !choice.correct).map((choice) => choice.text);
@@ -89,6 +97,7 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
 /** Unabhängiger Solver: Die korrekte Antwort folgt aus der caseId allein,
  *  nicht aus Seed, Rotation oder Profil. */
 function solveStaticChoice(familyId, parameters) {
+  ensureChoiceDocs();
   const meta = staticCaseBody(familyId, parameters?.caseId);
   return { correctText: meta.choices.find((choice) => choice.correct).text };
 }
