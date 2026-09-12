@@ -14,5 +14,16 @@
     { "kind": "point", "at": ["x0-lr*2*x0", "(x0-lr*2*x0)^2"], "label": "x₁", "color": "#16713a" },
     { "kind": "arrow", "from": ["x0", "x0^2"], "to": ["x0-lr*2*x0", "(x0-lr*2*x0)^2"], "color": "#9c4b00" },
     { "kind": "text", "at": [-4.5, -1], "text": "x₁ = {x0-lr*2*x0}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze x₀ = 2 und lr = 0,4. Welchen Wert hat x₁ nach einem Gradientenschritt auf f(x) = x²?",
+    "input": "numeric",
+    "expected": 0.4,
+    "tolerance": 1e-6,
+    "hints": ["Der Gradient von x² bei x₀ ist 2x₀. Dann gilt x₁ = x₀ − lr·(2x₀)."],
+    "typicalErrors": [
+      { "match": 3.6, "feedback": "Falsches Vorzeichen: Der Schritt geht entgegen dem Gradienten — x₀ − lr·2x₀, nicht plus." },
+      { "match": 1.6, "feedback": "Das ist nur die Schrittweite lr·2x₀ = 1,6. Gefragt ist der neue Punkt x₁ = x₀ − 1,6." }
+    ]
+  }
 }

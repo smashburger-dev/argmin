@@ -11,5 +11,16 @@
     { "kind": "functiongraph", "expr": "4/(x+1)+0.3*x", "domain": [0, 10], "label": "Summe", "color": "#294bd6" },
     { "kind": "point", "at": ["k", "4/(k+1)+0.3*k"], "color": "#b72f2a" },
     { "kind": "text", "at": [0, -0.5], "text": "Gesamtfehler = {4/(k+1)+0.3*k}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Stelle k so ein, dass der Gesamtfehler 4/(k+1) + 0,3k minimal wird. Bei welchem k liegt das Minimum ungefähr?",
+    "input": "numeric",
+    "expected": 2.65,
+    "tolerance": 0.15,
+    "hints": ["Setze die Ableitung gleich null: −4/(k+1)² + 0,3 = 0 und löse nach k auf."],
+    "typicalErrors": [
+      { "match": 3.2, "feedback": "Dort schneiden sich Bias²- und Varianzkurve (k ≈ 3,19) — aber der Schnittpunkt der Summanden ist nicht das Minimum der Summe." },
+      { "match": 10, "feedback": "Maximale Flexibilität minimiert nur den Bias²-Term — die Varianz 0,3·k wächst dabei weiter." }
+    ]
+  }
 }

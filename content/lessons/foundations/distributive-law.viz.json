@@ -13,5 +13,16 @@
     { "kind": "polygon", "points": [[0, 0], ["b", 0], ["b", "a"], [0, "a"]], "color": "#16713a" },
     { "kind": "polygon", "points": [["b", 0], ["b+c", 0], ["b+c", "a"], ["b", "a"]], "color": "#9c4b00" },
     { "kind": "text", "at": [0.2, -1], "text": "a·(b+c) = {a*b} + {a*c} = {a*(b+c)}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze a = 4, b = 2 und c = 3. Welche Gesamtfläche hat das Rechteck a·(b+c)?",
+    "input": "numeric",
+    "expected": 20,
+    "tolerance": 1e-6,
+    "hints": ["Zerlege in zwei Teilrechtecke: a·(b+c) = a·b + a·c."],
+    "typicalErrors": [
+      { "match": 11, "feedback": "Das ist a·b + c = 4·2 + 3. Das Distributivgesetz verlangt a·b + a·c." },
+      { "match": 9, "feedback": "Das ist a + b + c. Gesucht ist das Produkt a·(b+c), keine Summe." }
+    ]
+  }
 }

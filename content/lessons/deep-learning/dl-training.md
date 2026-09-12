@@ -59,7 +59,7 @@ Feste Seeds machen all das reproduzierbar: `rng = np.random.default_rng(seed)` f
 - Validierungsverlust auf Trainingsgewichten mitteln, nachdem in den Validierungsdaten skaliert wurde (Leakage aus der Lektion „Cross-Validation und Leakage-Kontrolle“).
 - Schritte statt Epochen zählen und Werte nicht vergleichbar machen.
 - BCE ohne Clipping auf Wahrscheinlichkeiten $0$ oder $1$ fahren.
-- Ohne festen Seed zwei Läufe "vergleichen".
+- Ohne festen Seed zwei Läufe „vergleichen“.
 
 ## Direkter Check
 

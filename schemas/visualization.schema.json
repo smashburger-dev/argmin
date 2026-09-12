@@ -36,7 +36,8 @@
           { "$ref": "#/$defs/curve" }
         ]
       }
-    }
+    },
+    "checkpoint": { "$ref": "#/$defs/checkpoint" }
   },
   "$defs": {
     "expr": { "anyOf": [{ "type": "number" }, { "type": "string", "minLength": 1 }] },
@@ -136,6 +137,65 @@
         "points": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/coord" } },
         "color": { "$ref": "#/$defs/color" },
         "dash": { "type": "boolean" }
+      }
+    },
+    "checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt", "input", "expected"],
+      "properties": {
+        "prompt": { "type": "string", "minLength": 1 },
+        "input": { "enum": ["numeric", "vector"] },
+        "expected": {
+          "anyOf": [
+            { "type": "number" },
+            { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
+          ]
+        },
+        "tolerance": { "type": "number", "exclusiveMinimum": 0, "default": 1e-6 },
+        "hints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "typicalErrors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/checkpointTypicalError" }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "input": { "const": "numeric" } },
+            "required": ["input"]
+          },
+          "then": { "properties": { "expected": { "type": "number" } } }
+        },
+        {
+          "if": {
+            "properties": { "input": { "const": "vector" } },
+            "required": ["input"]
+          },
+          "then": {
+            "properties": {
+              "expected": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } }
+            }
+          }
+        }
+      ]
+    },
+    "checkpointTypicalError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["match", "feedback"],
+      "properties": {
+        "match": {
+          "anyOf": [
+            { "type": "number" },
+            { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" } },
+            { "type": "string", "minLength": 1 }
+          ]
+        },
+        "feedback": { "type": "string", "minLength": 1 }
       }
     }
   }

@@ -120,6 +120,30 @@ freien Variablen. Der Block steht direkt nach dem Worked Example und verwendet
 - Kanonische Aktivitäten liegen als Familienfälle unter `content/families/` und werden über Placements in LearningModules entdeckt. `solver-verified` ist erst nach einem Test mit Sollantwort und mindestens einem Gegenbeispiel zulässig.
 - Ein Teil älterer Familien liegt noch JS-first unter `assets/js/core/*_families.mjs` und ist nur über das JS-Registry erreichbar. Diese Familien gelten als Migrationskandidaten; neue Familien werden ausschließlich public-first als JSON angelegt.
 - `content/competency-family-coverage.json` ist generiert (`node tools/build_coverage_matrix.mjs`, Check: `npm run coverage:check`) und wird nicht von Hand gepflegt. Es bildet Familien-`competencyIds` auf Modul-Placements ab; die deklarierte Familienmenge einer Kompetenz darf die geplacede übersteigen, weil Cross-Kompetenz-Tagging als Evidenz mitzählt.
-- `diagnosticCodes` in Explanations verwenden das Fehlertyp-Vokabular der Grader (`wrong-value`, `wrong-choice`, `wrong-order`, `wrong-output`, `swapped`, `unparsed`, `not-equivalent`, `off-by-one`, `invalid-input`, `grader-error`, dynamisch `trace-row-N`). Domänenspezifische Codes sind erlaubt, müssen aber im jeweiligen Explanation-Dokument begründet sein; wo ein Grader-Fehlertyp existiert, gewinnt er.
+- `diagnosticCodes` in Explanations verwenden die kanonische Taxonomie unten. Domänenspezifische Codes sind erlaubt, müssen aber im jeweiligen Explanation-Dokument begründet sein; wo ein Grader-Fehlertyp existiert, gewinnt er.
+
+#### `diagnosticCodes`-Taxonomie
+
+Kanonisches Vokabular für `diagnosticCodes` in `content/explanations/`. Die
+erste Gruppe sind `errorType`-Werte, die `assets/js/core/graders.js` real
+emittiert; die zweite Gruppe sind Laufzeit-/UI-Codes; die dritte benannte
+Fehlkonzept-Codes aus `feedbackRules`, die kein Grader-errorType abbildet.
+
+| Code | Bedeutung | Wo verwendet |
+|------|-----------|--------------|
+| `invalid-input` | Eingabe leer, nicht parsebar oder formatwidrig | alle deterministischen Grader, `manual-rubric`, `pyodide-sympy` |
+| `wrong-value` | numerischer Wert falsch | `numeric`, `vector`, `code-trace` |
+| `wrong-choice` | falsche Option gewählt | `single-choice` |
+| `swapped` | Wertepaar in vertauschter Reihenfolge | `vector` (Paar-Grader) |
+| `wrong-order` | Zeilenreihenfolge falsch (inkl. Distraktor/fehlende Zeile) | `parsons` |
+| `wrong-output` | vorhergesagte Ausgabe falsch | `predict-output` |
+| `unparsed` | algebraischer Term nicht parsebar | `pyodide-sympy` |
+| `not-equivalent` | Term parsebar, aber nicht äquivalent | `pyodide-sympy` |
+| `grader-error` | Fehlkonfiguration/interner Fehler — nie ein Lernendenfehler | alle Grader |
+| `trace-row-N` | erste falsche Zeile der interaktiven Trace-Tabelle (dynamisch, N 1-basiert) | `src/ui/TraceTableView.tsx` |
+| Python-Laufzeit | `SyntaxError`, beliebige `<ExceptionName>` (z. B. `ValueError`), Fallback `PythonError`, `Timeout`, `WorkerRestarted`, `WorkdirError`, `WorkspaceError`, `PackageError` | `pyodide_worker.mjs`/`pyodide_runner.js` via `gradePython` |
+| `off-by-one` | Index-/Grenzverschiebung um eins (Fehlkonzept) | feedbackRules in `optimize-decode-greedy-loop`, `reproduce-pipeline-status-report` (Varianten `*-off-by-one` in weiteren Familien); `x-off-by-one` |
+| `except-pass` | `except: pass` verschluckt den Fehler statt ihn präzise zu behandeln | feedbackRule in `reproduce-pipeline-status-report`; `x-error-boundary` |
+| `missing-before-hash` | Hash-/Commit-Artefakt ohne vorherigen Testbeleg | feedbackRule in `validate-rule-catalog-scan`; `x-git-workflow` |
 - Der Foundations-Vertragstest verlangt für jede Kompetenz ausreichend mastery-fähige Familienfälle gemäß `minimumDistinctDefinitions`.
 - Lokale Projekte deklarieren Starterdateien und das exakte erlaubte Kommando. Der Compiler prüft Projektidentität, Pfade und Testdatei-Hashes. Projekt-Reports bleiben Selbstberichte ohne Mastery-Evidence.

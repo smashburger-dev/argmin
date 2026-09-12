@@ -13,5 +13,16 @@
     { "kind": "point", "at": ["t", "1-t^2"], "label": "Recall", "color": "#9c4b00" },
     { "kind": "point", "at": ["t", "2*(0.5+0.5*t)*(1-t^2)/(0.5+0.5*t+1-t^2)"], "label": "F1", "color": "#b72f2a" },
     { "kind": "text", "at": [0, -0.05], "text": "P={0.5+0.5*t}, R={1-t^2}, F1={2*(0.5+0.5*t)*(1-t^2)/(0.5+0.5*t+1-t^2)}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze t = 0,5. Welchen Wert hat F1 am aktuellen Schwellwert?",
+    "input": "numeric",
+    "expected": 0.75,
+    "tolerance": 1e-6,
+    "hints": ["Berechne zuerst P = 0,5 + 0,5t und R = 1 − t², dann F1 = 2PR/(P+R)."],
+    "typicalErrors": [
+      { "match": 1.125, "feedback": "Das ist 2PR ohne den Nenner — F1 ist das harmonische Mittel 2PR/(P+R)." },
+      { "match": 0.56, "feedback": "P·R ≈ 0,56 ist nicht F1 — F1 = 2PR/(P+R)." }
+    ]
+  }
 }

@@ -113,6 +113,22 @@ export type VisualizationObject =
   | { kind: 'text'; at: VisualizationCoord; text: string; color?: string }
   | { kind: 'polygon'; points: VisualizationCoord[]; color?: string }
   | { kind: 'curve'; points: VisualizationCoord[]; color?: string; dash?: boolean };
+export interface VizCheckpointTypicalError {
+  match: number | [number, number] | string;
+  feedback: string;
+}
+
+/** Formative checkpoint contract embedded in .viz.json specs (Option A,
+ *  docs/content-review/plan-interaktive-elemente.md). */
+export interface VizCheckpoint {
+  prompt: string;
+  input: 'numeric' | 'vector';
+  expected: number | [number, number];
+  tolerance?: number;
+  hints?: string[];
+  typicalErrors?: VizCheckpointTypicalError[];
+}
+
 export interface VisualizationSpec {
   schemaVersion: 1;
   engine: 'jsxgraph';
@@ -123,6 +139,7 @@ export interface VisualizationSpec {
   keepAspectRatio?: boolean;
   sliders?: VisualizationSlider[];
   objects: VisualizationObject[];
+  checkpoint?: VizCheckpoint;
 }
 
 export interface Lesson {

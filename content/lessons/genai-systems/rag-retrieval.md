@@ -44,7 +44,7 @@ $$\mathrm{MRR} = \frac{1}{|Q|}\sum_{q \in Q} \frac{1}{\mathrm{rank}_q},$$
 
 ## Warum die Trennung zählt
 
-Wenn Retrieval und Generierung zusammen gemessen werden, kannst du Fehlerursachen nicht zuordnen: War das richtige Dokument nicht dabei (Retrieval-Fehler) oder wurde es falsch zusammengefasst (Antwort-Fehler)? Erst die getrennte Messung macht die Pipeline debuggbar. Deshalb gilt in dieser Lektion: Retrieval echt und deterministisch, Antwortbildung als Stub — ein Stub wählt z. B. den ersten Satz des besten Dokuments, der einen Anfrageterm enthält, und meldet "kein treffer" ehrlich zurück, wenn nichts passt.
+Wenn Retrieval und Generierung zusammen gemessen werden, kannst du Fehlerursachen nicht zuordnen: War das richtige Dokument nicht dabei (Retrieval-Fehler) oder wurde es falsch zusammengefasst (Antwort-Fehler)? Erst die getrennte Messung macht die Pipeline debuggbar. Deshalb gilt in dieser Lektion: Retrieval echt und deterministisch, Antwortbildung als Stub — ein Stub wählt z. B. den ersten Satz des besten Dokuments, der einen Anfrageterm enthält, und meldet „kein treffer“ ehrlich zurück, wenn nichts passt.
 
 ## Typische Fehler
 
@@ -52,7 +52,7 @@ Wenn Retrieval und Generierung zusammen gemessen werden, kannst du Fehlerursache
 - Anfrage anders normalisiert als die Dokumente (Kommas drin, Großbuchstaben) — der Schnitt mit dem Vokabular wird leer.
 - Am Golden Set optimieren, während es die Metrik definiert.
 - Chunkgrenze mitten in einem Fakt, weil kein Overlap gesetzt wurde.
-- Gleichstände im Score ohne Tie-Break-Regel: Ranking "atmet" zwischen Läufen.
+- Gleichstände im Score ohne Tie-Break-Regel: Ranking „atmet“ zwischen Läufen.
 
 ## Direkter Check
 

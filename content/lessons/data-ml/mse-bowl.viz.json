@@ -10,5 +10,16 @@
     { "kind": "point", "at": ["w", "((w*1-2)^2+(w*2-4)^2+(w*3-6)^2)/3"], "color": "#b72f2a" },
     { "kind": "functiongraph", "expr": "((2*(w-2)*1+2*(2*w-4)*2+2*(3*w-6)*3)/3)*(x-w)+((w*1-2)^2+(w*2-4)^2+(w*3-6)^2)/3", "domain": ["w-1", "w+1"], "dash": true, "color": "#9c4b00" },
     { "kind": "text", "at": [-0.5, -5], "text": "Gradient = {(2*(w-2)*1+2*(2*w-4)*2+2*(3*w-6)*3)/3}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze w = 2,5. Welchen Wert hat der Gradient der MSE an dieser Stelle?",
+    "input": "numeric",
+    "expected": 4.67,
+    "tolerance": 0.01,
+    "hints": ["MSE(w) = (14/3)·(w−2)² — die Ableitung ist (28/3)·(w−2); setze w = 2,5 ein."],
+    "typicalErrors": [
+      { "match": 1.17, "feedback": "Das ist der Funktionswert MSE(2,5) = (14/3)·0,25, nicht die Ableitung." },
+      { "match": -4.67, "feedback": "Vorzeichen beachten: w = 2,5 liegt rechts vom Minimum, der Gradient ist dort positiv (der Updateschritt geht trotzdem nach links)." }
+    ]
+  }
 }

@@ -58,9 +58,9 @@ Klammern).
 
 **Reproduktionsphase — Reproduktion und Dokumentation: der Doppellauf-Digest.** `repro_check()`
 führt die Pipeline zweimal in zwei frischen Verzeichnissen aus und vergleicht
-die Artefakt-Digests — nur „reproduzierbar: ja" mit übereinstimmenden Digests
+die Artefakt-Digests — nur „reproduzierbar: ja“ mit übereinstimmenden Digests
 zählt (`tests/test_w38_repro.py`). Der erste README-Entwurf behauptet
-„produktionsreif und sicher gegen Injektion"; der Overclaim-Scanner markiert
+„produktionsreif und sicher gegen Injektion“; der Overclaim-Scanner markiert
 beide Phrasen und verlangt Limitationen statt Werbetext.
 
 ## Capstone-Artefakte sind Work Evidence

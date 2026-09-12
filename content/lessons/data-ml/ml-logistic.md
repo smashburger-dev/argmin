@@ -38,7 +38,7 @@ $$
 F_1 = \frac{2 \cdot \text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} = \frac{2 \cdot 0{,}8 \cdot \tfrac{2}{3}}{0{,}8 + \tfrac{2}{3}} = \frac{8}{11} \approx 0{,}727.
 $$
 
-Precision fragt „Wie viele der als positiv gemeldeten Fälle stimmen?", Recall fragt „Wie viele der tatsächlichen positiven Fälle wurden gefunden?". Beide zusammen zu verbessern ist der Punkt — eins allein zu maximieren ist billig.
+Precision fragt „Wie viele der als positiv gemeldeten Fälle stimmen?“, Recall fragt „Wie viele der tatsächlichen positiven Fälle wurden gefunden?“. Beide zusammen zu verbessern ist der Punkt — eins allein zu maximieren ist billig.
 
 ## Schwellenwert und Fehlerkosten
 
@@ -52,10 +52,10 @@ Beispiel Spamfilter: Eine gelöschte wichtige E-Mail (FP) schadet 50 €, zugest
 
 ## Typische Fehler
 
-- Accuracy als alleinige Metrik bei unbalancierten Klassen feiern (90 % „immer negativ" kann 90 % Accuracy bedeuten).
+- Accuracy als alleinige Metrik bei unbalancierten Klassen feiern (90 % „immer negativ“ kann 90 % Accuracy bedeuten).
 - Precision und Recall vertauschen — Nenner verwechselt.
 - Den Schwellenwert 0,5 als kostenoptimal behandeln, ohne FP/FN-Kosten zu prüfen.
-- Die Ausgabe der Sigmoid als „Anteil" oder „Score" missdeuten — es ist eine Wahrscheinlichkeit für Klasse 1.
+- Die Ausgabe der Sigmoid als „Anteil“ oder „Score“ missdeuten — es ist eine Wahrscheinlichkeit für Klasse 1.
 - F1 für Nicht-Binärfälle ungeprüft übernehmen, obwohl macro/micro-Verfahren unterschiedliche Aussagen machen.
 
 ## Direkter Check
