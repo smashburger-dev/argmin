@@ -33,8 +33,6 @@ export const SUBWORD_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-tokenizer'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

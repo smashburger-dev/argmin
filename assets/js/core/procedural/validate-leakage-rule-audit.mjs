@@ -210,8 +210,6 @@ export const LEAKAGE_AUDIT_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'challenge'],
   competencyIds: ['c-ml-cv'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // The per-case prelude (renamed reference copy) is emitted once at the top of

@@ -244,8 +244,6 @@ export const RIDGE_LASSO_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch'],
   competencyIds: ['c-ml-regularization', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Seeded section: optional case preamble (the __ref_ridge copy) once, then

@@ -107,7 +107,7 @@ export function makeLinalgChoiceCapsuleFamily({
 
   return {
     capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { ...contract, generate, solve },
+    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
   };
 }
 
@@ -167,7 +167,7 @@ export function makeNumericFamily({
     return solveSeeded(parameters);
   };
 
-  return { generate, solve, spec: { ...contract, generate, solve } };
+  return { generate, solve, spec: { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve } };
 }
 
 /** Solved family over a per-caseId definition map (the data_ml pattern):
@@ -212,5 +212,5 @@ export function makeSolvedFamily({
     };
   };
 
-  return { generate, solve, spec: { ...contract, generate, solve } };
+  return { generate, solve, spec: { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve } };
 }

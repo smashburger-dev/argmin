@@ -243,8 +243,6 @@ export const CATALOG_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-capstone-pipeline', 'c-genai-security', 'c-ml-repro', 'c-python-functions', 'c-research-cards'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

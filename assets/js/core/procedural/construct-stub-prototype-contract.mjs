@@ -234,8 +234,6 @@ export const STUB_CONTRACT = {
   ],
   difficultyProfiles: ['core'],
   competencyIds: ['c-genai-prototype', 'c-python-functions'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Seeded block: renamed reference copy once, then per draw the literal config,

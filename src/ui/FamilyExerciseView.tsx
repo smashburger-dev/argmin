@@ -10,6 +10,7 @@ import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
 import { TraceTableView } from './TraceTableView';
 import { ExerciseFrame } from './ExerciseFrame';
+import { formatGermanDate } from './format';
 import { getExerciseContext, randomVariantSeed } from './exercise-context';
 import type { CatalogData } from '../app/types';
 
@@ -180,7 +181,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       ? <div class={`feedback-box ${correct ? 'correct' : 'incorrect'}`}>
           <p class="feedback-title">{verdict}</p>
           {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
-          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {new Date(reviewDueAt).toLocaleDateString('de-DE')}</p> : null}
+          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
           {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
         </div>
       : null;

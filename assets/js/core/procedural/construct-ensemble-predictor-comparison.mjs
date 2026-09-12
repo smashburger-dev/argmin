@@ -303,8 +303,6 @@ export const ENSEMBLE_CONTRACT = {
   ],
   difficultyProfiles: ['stretch', 'challenge'],
   competencyIds: ['c-ml-ensembles', 'c-numpy-basics'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be

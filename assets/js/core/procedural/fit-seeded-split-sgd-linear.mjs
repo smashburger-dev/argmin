@@ -252,8 +252,6 @@ export const SEEDED_SGD_CONTRACT = {
   caseTypes: [{ caseId: 'seeded-split-sgd-linear', propertyTest: false }],
   difficultyProfiles: ['stretch'],
   competencyIds: ['c-dl-training', 'c-grad-regression'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Seeded block: the renamed reference helper once, then the per-draw check

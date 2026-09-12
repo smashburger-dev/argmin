@@ -300,8 +300,6 @@ export const SECURE_CONTRACT = {
   ],
   difficultyProfiles: ['stretch'],
   competencyIds: ['c-genai-prototype', 'c-python-functions'],
-  graderId: 'pyodide',
-  activityType: 'python-code',
 };
 
 // Seeded block: renamed reference copy once, then the per-draw check lines.

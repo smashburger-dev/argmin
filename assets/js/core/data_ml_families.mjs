@@ -739,8 +739,6 @@ export const COUNT_REMAINING_ROWS_CONTRACT = {
   caseTypes: COUNT_REMAINING_ROWS_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-pandas-cleaning'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const COUNT_REMAINING_ROWS = makeSolvedFamily({
@@ -763,8 +761,6 @@ export const FORMULA_RATIO_PERCENT_CONTRACT = {
   caseTypes: FORMULA_RATIO_PERCENT_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-eda-viz', 'c-dl-papers', 'c-ml-cv'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const FORMULA_RATIO_PERCENT = makeSolvedFamily({
@@ -787,8 +783,6 @@ export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
   caseTypes: MSE_GRADIENT_CLOSED_FORM_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-grad-regression'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const MSE_GRADIENT_CLOSED_FORM = makeSolvedFamily({
@@ -811,8 +805,6 @@ export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
   caseTypes: AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-ml-baseline'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const AGGREGATE_MAJORITY_RULE_COUNT = makeSolvedFamily({
@@ -835,8 +827,6 @@ export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
   caseTypes: FORMULA_QUADRATIC_ERROR_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-ml-linear'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const FORMULA_QUADRATIC_ERROR = makeSolvedFamily({
@@ -859,8 +849,6 @@ export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
   caseTypes: AGGREGATE_CONFUSION_METRIC_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-ml-logistic', 'c-genai-eval', 'c-genai-security', 'c-research-responsible'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const AGGREGATE_CONFUSION_METRIC = makeSolvedFamily({
@@ -883,8 +871,6 @@ export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
   caseTypes: FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-ml-cv'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const FORMULA_METRIC_SPREAD_RANGE = makeSolvedFamily({
@@ -914,8 +900,6 @@ export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
     'c-dl-tokenizer',
     'c-dl-finetuning',
   ],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const FORMULA_COUNT_FROM_CONSTRUCTION = makeSolvedFamily({
@@ -938,8 +922,6 @@ export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
   caseTypes: FORMULA_STAT_FROM_TABLE_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-dl-inference', 'c-dl-papers', 'c-research-cards'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const FORMULA_STAT_FROM_TABLE = makeSolvedFamily({
@@ -962,8 +944,6 @@ export const AGGREGATE_TOPK_RELEVANCE_CONTRACT = {
   caseTypes: AGGREGATE_TOPK_RELEVANCE_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-genai-rag'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const AGGREGATE_TOPK_RELEVANCE = makeSolvedFamily({
@@ -986,8 +966,6 @@ export const VALIDATE_GOALSHIFT_CONTRACT = {
   caseTypes: VALIDATE_GOALSHIFT_CASE_TYPES,
   difficultyProfiles: [...DATA_ML_DIFFICULTY_PROFILES, 'challenge'],
   competencyIds: ['c-research-question', 'c-python-functions'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const VALIDATE_GOALSHIFT = makeSolvedFamily({
@@ -1010,8 +988,6 @@ export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
   caseTypes: OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES,
   difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
   competencyIds: ['c-dl-autograd'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
 };
 
 const OPTIMIZE_BACKPROP_PATH_SUM = makeSolvedFamily({
@@ -1045,8 +1021,6 @@ export const SIGMOID_REGIME_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-ml-logistic'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const SIGMOID = makeChoiceCapsuleFamily({
@@ -1086,8 +1060,6 @@ export const BENCHMARK_READING_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-papers'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const BENCHMARK = makeChoiceCapsuleFamily({
@@ -1127,8 +1099,6 @@ export const LORA_TRADEOFF_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-dl-finetuning'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const LORA = makeChoiceCapsuleFamily({
@@ -1170,8 +1140,6 @@ export const MISSINGNESS_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-pandas-cleaning'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const MISSINGNESS = makeChoiceCapsuleFamily({
@@ -1212,8 +1180,6 @@ export const CONFOUNDING_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-eda-viz'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const CONFOUNDING = makeChoiceCapsuleFamily({
@@ -1254,8 +1220,6 @@ export const TASK_TYPE_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-ml-baseline'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const TASK_TYPE = makeChoiceCapsuleFamily({
@@ -1299,8 +1263,6 @@ export const ERROR_DRIFT_CONTRACT = {
   ],
   difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-ml-erroranalysis'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const ERROR_DRIFT = makeChoiceCapsuleFamily({
@@ -1342,8 +1304,6 @@ export const SVM_MARGIN_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch'],
   competencyIds: ['c-ml-svm-pca'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const SVM_MARGIN = makeChoiceCapsuleFamily({
@@ -1363,104 +1323,24 @@ export const solveSvmMarginFamily = SVM_MARGIN.solve;
 export const generateSvmMarginFamily = SVM_MARGIN.generate;
 
 export const DATA_ML_FAMILY_SPECS = [
-  {
-    ...COUNT_REMAINING_ROWS_CONTRACT,
-    generate: generateCountRemainingRowsFamily,
-    solve: solveCountRemainingRows,
-  },
-  {
-    ...FORMULA_RATIO_PERCENT_CONTRACT,
-    generate: generateFormulaRatioPercentMetricFamily,
-    solve: solveFormulaRatioPercentMetric,
-  },
-  {
-    ...MSE_GRADIENT_CLOSED_FORM_CONTRACT,
-    generate: generateMseGradientClosedFormFamily,
-    solve: solveMseGradientClosedForm,
-  },
-  {
-    ...AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT,
-    generate: generateAggregateMajorityRuleCountFamily,
-    solve: solveAggregateMajorityRuleCount,
-  },
-  {
-    ...FORMULA_QUADRATIC_ERROR_CONTRACT,
-    generate: generateFormulaQuadraticErrorMetricFamily,
-    solve: solveFormulaQuadraticErrorMetric,
-  },
-  {
-    ...AGGREGATE_CONFUSION_METRIC_CONTRACT,
-    generate: generateAggregateConfusionMetricFamily,
-    solve: solveAggregateConfusionMetric,
-  },
-  {
-    ...FORMULA_METRIC_SPREAD_RANGE_CONTRACT,
-    generate: generateFormulaMetricSpreadRangeFamily,
-    solve: solveFormulaMetricSpreadRange,
-  },
-  {
-    ...FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT,
-    generate: generateFormulaCountFromConstructionFamily,
-    solve: solveFormulaCountFromConstruction,
-  },
-  {
-    ...FORMULA_STAT_FROM_TABLE_CONTRACT,
-    generate: generateFormulaStatFromTableFamily,
-    solve: solveFormulaStatFromTable,
-  },
-  {
-    ...OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT,
-    generate: generateOptimizeBackpropPathSumFamily,
-    solve: solveOptimizeBackpropPathSum,
-  },
-  {
-    ...AGGREGATE_TOPK_RELEVANCE_CONTRACT,
-    generate: generateAggregateTopkRelevanceArithmeticFamily,
-    solve: solveAggregateTopkRelevanceArithmetic,
-  },
-  {
-    ...VALIDATE_GOALSHIFT_CONTRACT,
-    generate: generateValidateGoalshiftFlagRulesFamily,
-    solve: solveValidateGoalshiftFlagRules,
-  },
-  {
-    ...SIGMOID_REGIME_CONTRACT,
-    generate: generateSigmoidRegimeFamily,
-    solve: solveSigmoidRegimeFamily,
-  },
-  {
-    ...BENCHMARK_READING_CONTRACT,
-    generate: generateBenchmarkReadingFamily,
-    solve: solveBenchmarkReadingFamily,
-  },
-  {
-    ...LORA_TRADEOFF_CONTRACT,
-    generate: generateLoraTradeoffFamily,
-    solve: solveLoraTradeoffFamily,
-  },
-  {
-    ...MISSINGNESS_CONTRACT,
-    generate: generateMissingnessFamily,
-    solve: solveMissingnessFamily,
-  },
-  {
-    ...CONFOUNDING_CONTRACT,
-    generate: generateConfoundingFamily,
-    solve: solveConfoundingFamily,
-  },
-  {
-    ...TASK_TYPE_CONTRACT,
-    generate: generateTaskTypeFamily,
-    solve: solveTaskTypeFamily,
-  },
-  {
-    ...ERROR_DRIFT_CONTRACT,
-    generate: generateErrorDriftFamily,
-    solve: solveErrorDriftFamily,
-  },
-  {
-    ...SVM_MARGIN_CONTRACT,
-    generate: generateSvmMarginFamily,
-    solve: solveSvmMarginFamily,
-  },
+  COUNT_REMAINING_ROWS.spec,
+  FORMULA_RATIO_PERCENT.spec,
+  MSE_GRADIENT_CLOSED_FORM.spec,
+  AGGREGATE_MAJORITY_RULE_COUNT.spec,
+  FORMULA_QUADRATIC_ERROR.spec,
+  AGGREGATE_CONFUSION_METRIC.spec,
+  FORMULA_METRIC_SPREAD_RANGE.spec,
+  FORMULA_COUNT_FROM_CONSTRUCTION.spec,
+  FORMULA_STAT_FROM_TABLE.spec,
+  OPTIMIZE_BACKPROP_PATH_SUM.spec,
+  AGGREGATE_TOPK_RELEVANCE.spec,
+  VALIDATE_GOALSHIFT.spec,
+  SIGMOID.spec,
+  BENCHMARK.spec,
+  LORA.spec,
+  MISSINGNESS.spec,
+  CONFOUNDING.spec,
+  TASK_TYPE.spec,
+  ERROR_DRIFT.spec,
+  SVM_MARGIN.spec,
 ];

@@ -26,8 +26,6 @@ export const EVAL_HAZARD_CONTRACT = {
   ],
   difficultyProfiles: ['intro'],
   competencyIds: ['c-genai-eval'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({

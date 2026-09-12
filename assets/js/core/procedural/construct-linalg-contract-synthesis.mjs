@@ -29,8 +29,6 @@ export const LINALG_SYNTH_CONTRACT = {
   ],
   difficultyProfiles: ['challenge', 'core', 'stretch'],
   competencyIds: ['c-numpy-basics', 'c-linalg-gauss'],
-  graderId: 'deterministic',
-  activityType: 'single-choice',
 };
 
 const FAMILY_IMPL = makeChoiceFamily({
