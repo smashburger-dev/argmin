@@ -103,6 +103,9 @@
     }
   ],
   "projectIds": [],
+  "explanationIds": [
+    "x-collection-state"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

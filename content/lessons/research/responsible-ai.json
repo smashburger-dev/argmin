@@ -31,7 +31,7 @@
     {
       "blockId": "responsible-ai-apply",
       "type": "exercise",
-      "contentRef": "lessons/research/responsible-ai.md"
+      "contentRef": "lessons/research/responsible-ai-exercise.md"
     }
   ],
   "sourceRefs": [

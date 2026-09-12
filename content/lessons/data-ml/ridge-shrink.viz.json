@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "engine": "jsxgraph",
   "title": "Ridge-Schrumpfung",
-  "caption": "Ziehe λ: Mit stärkerer Regularisierung wandert das Minimum der Verlustfunktion näher zu null.",
+  "caption": "Ziehe λ: Mit stärkerer Regularisierung wandert das Minimum der Verlustfunktion näher zu null. Vorhersage: Berechne w* bei λ = 2 (Faustregel w* = 3/(1+λ)), dann stelle λ = 2 und prüfe Punkt und Anzeige.",
   "boundingbox": [-5, 16, 7, -2],
   "sliders": [{ "name": "lam", "label": "λ", "range": [0, 5], "value": 1, "step": 0.1 }],
   "objects": [

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "engine": "jsxgraph",
   "title": "MSE-Schüssel",
-  "caption": "Ziehe w: Der Punkt zeigt den Fehler der Geraden und die Tangente die lokale Steigung der MSE.",
+  "caption": "Ziehe w: Der Punkt zeigt den Fehler der Geraden und die Tangente die lokale Steigung der MSE. Vorhersage: Wie groß ist der Gradient bei w = 2,5 ungefähr — und in welche Richtung muss w wandern? Stelle w = 2,5 und prüfe die Anzeige.",
   "boundingbox": [-1, 18, 5, -8],
   "sliders": [{ "name": "w", "label": "w", "range": [0, 4], "value": 1, "step": 0.1 }],
   "objects": [

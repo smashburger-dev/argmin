@@ -62,6 +62,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-foundations-algebra-product-and-power-of-power",
+      "role": "curated",
+      "familyId": "transform-power-log-exponent",
+      "caseId": "product-and-power-of-power",
+      "seed": 17,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-foundations-algebra-transform-power-log-exponent-practice",
       "role": "practice-space",
       "familyId": "transform-power-log-exponent",
@@ -77,6 +88,17 @@
       "difficulty": "core",
       "estimatedMinutes": 8,
       "lessonId": "l-foundations-algebra",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-foundations-algebra-combine-like-terms",
+      "role": "curated",
+      "familyId": "transform-expression-simplify-canonical",
+      "caseId": "combine-like-terms",
+      "seed": 19,
+      "difficulty": "challenge",
+      "estimatedMinutes": 10,
+      "lessonId": "l-foundations-algebra-transformations",
       "masteryEligible": true
     },
     {

@@ -60,7 +60,7 @@
       "caseId": "freeze-checker",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
+      "estimatedMinutes": 25,
       "lessonId": "l-capstone-pipeline",
       "masteryEligible": true
     },
@@ -71,7 +71,7 @@
       "caseId": "freeze-assert-parsons",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 28,
+      "estimatedMinutes": 32,
       "lessonId": "l-capstone-pipeline",
       "masteryEligible": true
     },
@@ -82,7 +82,7 @@
       "caseId": "pipeline-freeze-report",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 42,
+      "estimatedMinutes": 45,
       "lessonId": "l-capstone-pipeline",
       "masteryEligible": true
     },

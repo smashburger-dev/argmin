@@ -31,7 +31,7 @@
     {
       "blockId": "capstone-baseline-apply",
       "type": "exercise",
-      "contentRef": "lessons/research/capstone-baseline.md"
+      "contentRef": "lessons/research/capstone-baseline-exercise.md"
     }
   ],
   "sourceRefs": [

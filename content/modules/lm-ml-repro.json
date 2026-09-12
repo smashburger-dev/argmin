@@ -98,7 +98,9 @@
       "estimatedMinutes": 0
     }
   ],
-  "projectIds": [],
+  "projectIds": [
+    "p-ml-repro-comparison"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

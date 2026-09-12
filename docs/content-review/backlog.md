@@ -15,13 +15,40 @@ Stand: Batch 1 + R14-Umsetzung abgeschlossen (siehe „Umgesetzt").
 | P0 6 | defekte `feedbackRule` | entfernt |
 | P0 7/8 | R14-Choice-Mastery | weiche Auslegung verbindlich in `authoring-guide.md` §5 + `rubrik.md` R14 präzisiert; `c-meta-learning`: neue Parsons-Familie `construct-error-journal-order`; `c-linalg-independence`: `formula-det2-independence` curated |
 | P2 | `einmarshen`-Typo, `·`-Notation, `*`-Prompt-Rendering | behoben (Generator-Fix nach Audit-Korrektur: ` \cdot ` mit Leerzeichen) |
+| P1 | Subgoal-Labels + Completion-Fading | `algebra.md`, `algebra-transformations.md` (Fettungs-Format nach Repo-Konvention, Probe als `???`-Selbstprüfung) |
+| P1 | `estimatedMinutes` Foundations | `algebra.json` 20, `algebra-transformations.json` 25, `learning.json` 15 |
+| P1 | Stretch/Challenge-Placements | `lm-foundations-algebra` (+2), `lm-foundations-python-state` (+1), `lm-foundations-code-reading` (+1), `lm-linalg-matrices` (+2), `lm-linalg-systems` (+1), `lm-linalg-independence` (+3), `lm-linalg-gauss` (+`rank-3x4-line`) — alle probe-instanziiert |
+| P1 | Python-Intro-Trace/Predict-Curation | verifiziert bereits korrekt (B1b-Befund galt statischem Katalog, Cases kommen aus JS-Verträgen) |
+| P1 | `trace-call-composition` Vertrag | `competencyIds`, `hints`, `feedbackRules`, `typicalErrors`, `tolerancePolicy`, `activityType`, `graderId` ergänzt |
+| P1 | `product-definition-rationale` masteryEligible | entfernt (manual-rubric ohnehin nicht mastery-fähig, R15-Konsistenz) |
+| P1 | `formula-scalar-product` Vertrag | Hints/feedbackRules/typicalErrors für 5 Cases, Fehlwerte nachgerechnet |
+| P1 | Viz-Transferfragen | `span-2d`, `normal-density` (text-Objekt), 6× `data-ml/*.viz` (caption), `softmax-temperature` (caption + k-Slider mit Top-k-Renormierung) — schwache predict-then-verify-Form, benotete Kopplung braucht neuen Blocktyp (Plan-Doku) |
+| P1 | R14-Audit ML-Familien | alle Cases erfüllen die präzisierte R14 — kein Flip nötig; Qualitätsfix: ID-gebundene feedbackRules durch Catch-all `choice !== 'none'` ersetzt (Varianten-Permutation), `threshold-under-asymmetric-cost`-fullSolutions angereichert |
+| P1 | `construct-ensemble-predictor-comparison` | Mehrheitsregel in Prompt/Docstrings/Solver + `strict-majority`-Regel |
+| P1 | `fit-weight-decay-ablation` | Docstring-Objective, `final_loss_*`-Semantik, `import numpy` in Tests; `.mjs`-Anchor synchronisiert |
+| P1 | `validate-report-guard-compose` | `baseline-report` validiert `digest` in `ergebnis` (sha256 kanonische Serialisierung); `.mjs` + Seeded-Emission synchronisiert (echter Digest + 4. brokenArm) |
+| P1 | `dl-training.md` LR-Schedules | Abschnitt Step/Cosine/Plateau ergänzt |
+| P1 | `estimatedMinutes` restliche Module | `lm-dl-*` practice-space 0→8; `lm-capstone/genai/research-*` auf 25/30/32/45 kalibriert |
+| P1 | Worked Example ≠ Exercise | 4 Research-Lessons: Exercise-`contentRef` auf neue `*-exercise.md` |
+| P1 | Track-Reihenfolge | `common-core`, `research-evaluation`: `c-meta-learning` vor `c-git-basics`; `applied-ai`: `c-meta-learning` ergänzt (dangling require) |
+| P1 | `diagnosticCodes` | `error-boundary` → `except-pass`, `git-workflow` → `missing-before-hash` (Family-Feedbackcodes statt freier Codes) |
+| P1 | `projectIds`/`explanationIds` | 5 Explanation-Cards und 4 Projekte in 10 Module verdrahtet |
+| P1 | `w30_core.py` Starter-Frage | entschieden: beibehalten (hash-gepinnter Scope-Freeze-Kern, `pipeline.py` importiert ihn korrekt) |
+| P1 | `projectVersion` B6-Befund | **revidiert**: Live-Validator `learner_project_check.py` verlangt String — `"2"` bleibt String, kein Schema verlangt int |
+| P1 | `lm-linalg-numpy-shape-contracts` | `synthesis-singular-guard` als core-Placement eingefügt (Rampenlücke core→challenge); Practice-Placements auf Fremd-Kompetenzen **behalten** — Spiral-Interleaving ist intendiert (R11); `feedbackRules: []` auf `final-boss-authored` nicht füllbar: `gradePython` wertet keine Regeln aus, Testnamen-Feedback kommt aus dem Pyodide-Lauf |
+| P1 | Authoring-Guide Ergänzungen | JS-first-Status, Coverage-Generierung, `diagnosticCodes`-Vokabular in §8 dokumentiert |
 
-Verifikation: `validate_content.mjs` (255 Aktivitäten), `coverage:check`,
+Verifikation: `validate_content.mjs` (265 Aktivitäten), `coverage:check`,
 `compile_content.mjs`, `build_public.mjs`, vollständige Node-Suite
 (1374 pass, 1 erwarteter Skip). Inventar-Policy-Check: 46/46 Kompetenzen
 erfüllen `minimumDistinctDefinitions`.
 
 ## P1-Backlog (offen)
+
+Status nach P1-Batch: Die meisten Tabellenzeilen sind umgesetzt (siehe
+„Umgesetzt"). Verbleibend offen: benotete Viz-Transferkopplung (braucht
+`predict-then-verify`-Blocktyp, Plan-Doku), Stretch-Placement für
+`lm-foundations-functions` (braucht dritten Case-Typ), `capstone-pipeline.md`-Aufteilung, `construct-ensemble`-Seed-Abdeckung falls gewünscht, und die 24-Familien-JS-first-Migration — letztere ist ein eigener PR-Kandidat samt Policy-Entscheid unten.
 
 ### Foundations
 

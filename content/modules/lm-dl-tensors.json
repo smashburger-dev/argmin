@@ -93,7 +93,7 @@
       "caseId": "linear-param-count",
       "seed": 1802,
       "difficulty": "core",
-      "estimatedMinutes": 0,
+      "estimatedMinutes": 8,
       "lessonId": "l-dl-tensors"
     }
   ],

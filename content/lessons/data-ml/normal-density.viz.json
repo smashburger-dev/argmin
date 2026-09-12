@@ -11,6 +11,7 @@
   "objects": [
     { "kind": "functiongraph", "expr": "exp(-(x-mu)^2/(2*s^2))/(s*sqrt(2*pi))", "color": "#294bd6" },
     { "kind": "segment", "from": ["mu", 0], "to": ["mu", 0.6], "dash": true, "color": "#b72f2a" },
-    { "kind": "text", "at": [-5.5, -0.05], "text": "Mittelwert μ = {mu}", "color": "#b72f2a" }
+    { "kind": "text", "at": [-5.5, -0.05], "text": "Mittelwert μ = {mu}", "color": "#b72f2a" },
+    { "kind": "text", "at": [-5.8, 0.55], "text": "Vorhersage: Welches Intervall um μ trägt ca. 95 % der Fläche? Erst schätzen — dann bei μ = 0, s = 1 am Graphen ablesen.", "color": "#294bd6" }
   ]
 }

@@ -120,7 +120,13 @@
       "estimatedMinutes": 0
     }
   ],
-  "projectIds": [],
+  "projectIds": [
+    "p-foundations-data-checker"
+  ],
+  "explanationIds": [
+    "x-git-workflow",
+    "x-off-by-one"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

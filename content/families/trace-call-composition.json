@@ -10,6 +10,10 @@
       "sourceLineage": [
         "w01-e6"
       ],
+      "competencyIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
       "parameters": {
         "form": "area-perimeter",
         "a": 3,
@@ -21,6 +25,34 @@
       },
       "prompt": "Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.",
       "fullSolution": "flaeche(3, 4) = 3 · 4 = 12; umfang(3, 4) = 2 · (3 + 4) = 14. Ausgabe: <code>12 14</code>.",
+      "hints": [
+        "Welchen Wert liefert jeder Aufruf einzeln? Rechne zuerst flaeche(3, 4) aus, dann umfang(3, 4) — jede Funktion setzt für ihre Parameter die übergebenen Zahlen ein.",
+        "flaeche(3, 4) = 3 · 4 = 12. Für umfang(3, 4) gilt die Klammer: 2 · (3 + 4). Die Ausgabe enthält beide Ergebnisse durch Leerzeichen getrennt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die print-Zeile gibt zwei Werte in einer Zeile aus — durch Leerzeichen getrennt, z. B. `12 14`. Rechne beide Aufrufe aus."
+        },
+        {
+          "if": "one-call-only",
+          "then": "Ein einzelnes Ergebnis ist zu wenig: print(flaeche(3, 4), umfang(3, 4)) ruft beide Funktionen auf — erst flaeche, dann umfang."
+        },
+        {
+          "if": "order-swapped",
+          "then": "Reihenfolge beachten: print gibt zuerst flaeche(3, 4) = 12, dann umfang(3, 4) = 14 aus."
+        }
+      ],
+      "typicalErrors": [
+        "nur einen der beiden Aufrufe berechnet",
+        "Klammer in umfang übersehen: 2 · 3 + 4 statt 2 · (3 + 4)",
+        "Werte in der Ausgabe vertauscht (umfang vor flaeche)"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic",
       "traceTable": {
         "lines": [
           "flaeche(3, 4)",

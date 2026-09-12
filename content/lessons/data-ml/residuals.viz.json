@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "engine": "jsxgraph",
   "title": "Residuen einer Regression",
-  "caption": "Ziehe m und b: Die gestrichelten Strecken zeigen die Residuen zwischen Messpunkten und Regressionsgerade.",
+  "caption": "Ziehe m und b: Die gestrichelten Strecken zeigen die Residuen zwischen Messpunkten und Regressionsgerade. Vorhersage: Bei m = 1, b = 0 — welcher Punkt trägt am meisten zum MSE bei? Finde dann eine Einstellung mit MSE unter 0,1 und prüfe den Wert unten.",
   "boundingbox": [-1, 8, 6, -2],
   "sliders": [
     { "name": "m", "label": "m", "range": [0.2, 2], "value": 1, "step": 0.1 },
