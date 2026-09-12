@@ -17,7 +17,7 @@
     "research-evaluation"
   ],
   "lessonIds": [
-    "l-capstone-pipeline"
+    "l-capstone-freeze"
   ],
   "placements": [
     {
@@ -28,7 +28,7 @@
       "seed": 0,
       "difficulty": "intro",
       "estimatedMinutes": 6,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-freeze",
       "masteryEligible": false
     },
     {
@@ -39,7 +39,7 @@
       "seed": 3511,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-freeze",
       "masteryEligible": true
     },
     {
@@ -50,7 +50,7 @@
       "seed": 0,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-freeze",
       "masteryEligible": true
     },
     {
@@ -61,7 +61,7 @@
       "seed": 0,
       "difficulty": "core",
       "estimatedMinutes": 25,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-freeze",
       "masteryEligible": true
     },
     {
@@ -72,7 +72,7 @@
       "seed": 0,
       "difficulty": "stretch",
       "estimatedMinutes": 32,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-freeze",
       "masteryEligible": true
     },
     {
@@ -83,7 +83,7 @@
       "seed": 0,
       "difficulty": "challenge",
       "estimatedMinutes": 45,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-freeze",
       "masteryEligible": true
     },
     {
@@ -94,7 +94,7 @@
       "seed": 3511,
       "difficulty": "core",
       "estimatedMinutes": 0,
-      "lessonId": "l-capstone-pipeline"
+      "lessonId": "l-capstone-freeze"
     }
   ],
   "projectIds": [],

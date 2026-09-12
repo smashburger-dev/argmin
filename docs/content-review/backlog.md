@@ -37,6 +37,9 @@ Stand: Batch 1 + R14-Umsetzung abgeschlossen (siehe „Umgesetzt").
 | P1 | `projectVersion` B6-Befund | **revidiert**: Live-Validator `learner_project_check.py` verlangt String — `"2"` bleibt String, kein Schema verlangt int |
 | P1 | `lm-linalg-numpy-shape-contracts` | `synthesis-singular-guard` als core-Placement eingefügt (Rampenlücke core→challenge); Practice-Placements auf Fremd-Kompetenzen **behalten** — Spiral-Interleaving ist intendiert (R11); `feedbackRules: []` auf `final-boss-authored` nicht füllbar: `gradePython` wertet keine Regeln aus, Testnamen-Feedback kommt aus dem Pyodide-Lauf |
 | P1 | Authoring-Guide Ergänzungen | JS-first-Status, Coverage-Generierung, `diagnosticCodes`-Vokabular in §8 dokumentiert |
+| P1 | JS-first→public-first-Migration | **25 Familien** in `content/families/*.json` serialisiert; Generatoren lesen Fallkörper via `staticCaseBody`/`staticVariantInstance` aus der Registry (Eigenregistrierung per `with { type: 'json' }`-Import, Geschwister-Muster). Instantiate-Probes byte-identisch (Choice 508 KB, Construct 672, Trace/Linalg 4864, DataML+Git ~59.600 Instanzen). `family_golden_corpus`-`missing`-Pin auf `reflect-error-journal-rationale` reduziert |
+| P1 | `capstone-pipeline.md` Aufteilung | 5 Phasen-Lektionen (`l-capstone-freeze/runner/regression/repro/acceptance`, je 70–79 Zeilen Worked-Example + eigene Checkpoints); Module umverdrahtet, `ms-research-capstone`-lessonIds aktualisiert, `build_public.mjs`-Allowlist angepasst; alte Lektion gelöscht |
+| P1 | `lm-foundations-functions` Stretch | curated `both-orders-linear-functions` stretch (Seed 3, probe-verifiziert) — Stretch-Profil existierte parametrisch, kein dritter Case-Typ nötig |
 
 Verifikation: `validate_content.mjs` (265 Aktivitäten), `coverage:check`,
 `compile_content.mjs`, `build_public.mjs`, vollständige Node-Suite

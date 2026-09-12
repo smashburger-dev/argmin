@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-regression-test-suite",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "normalize-and-assert-suite",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w04-e3"
+      ],
+      "parameters": {
+        "task": "palindrom",
+        "suite": "standard",
+        "starterCode": "def ist_palindrom(s):\n    \"\"\"True, wenn s nach Normalisierung (klein, ohne Leerzeichen) ein Palindrom ist.\"\"\"\n    ...\n\ndef teste_palindrom():\n    \"\"\"Mindestens fuenf assert-Regressionstests; Rueckgabe: Anzahl der Pruefungen.\"\"\"\n    ...\n"
+      },
+      "expected": {
+        "kind": "reference-solver"
+      },
+      "prompt": "Implementiere `ist_palindrom(s)` (True, wenn der Text nach Normalisierung vorwärts wie rückwärts gleich ist; Normalisierung: Kleinbuchstaben, Leerzeichen entfernt) und dazu `teste_palindrom()` — eine Regressionstest-Funktion mit mindestens 5 assert-Prüfungen, die auch die bekannten Fehlerfälle (Groß-/Kleinschreibung, Leerzeichen, leerer Text) festhält. `teste_palindrom()` gibt bei Erfolg die Anzahl der ausgeführten Prüfungen zurück. Der Testcode prüft beide Funktionen.",
+      "fullSolution": "${referenceCode}\n\nNormalisierung zuerst: s.lower() und Leerzeichen entfernen (join mit split())."
+    },
+    {
+      "caseId": "normalize-and-assert-extended",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w04-e3",
+        "generated"
+      ],
+      "parameters": {
+        "task": "palindrom",
+        "suite": "extended",
+        "starterCode": "def ist_palindrom(s):\n    \"\"\"True, wenn s nach Normalisierung (klein, ohne Leerzeichen) ein Palindrom ist.\"\"\"\n    ...\n\ndef teste_palindrom():\n    \"\"\"Mindestens fuenf assert-Regressionstests; Rueckgabe: Anzahl der Pruefungen.\"\"\"\n    ...\n"
+      },
+      "expected": {
+        "kind": "reference-solver"
+      },
+      "prompt": "Implementiere `ist_palindrom(s)` (True, wenn der Text nach Normalisierung vorwärts wie rückwärts gleich ist; Normalisierung: Kleinbuchstaben, Leerzeichen entfernt) und dazu `teste_palindrom()` — eine Regressionstest-Funktion mit mindestens 8 assert-Prüfungen, die auch die bekannten Fehlerfälle (Groß-/Kleinschreibung, Leerzeichen, leerer Text) festhält. `teste_palindrom()` gibt bei Erfolg die Anzahl der ausgeführten Prüfungen zurück. Der Testcode prüft beide Funktionen.",
+      "fullSolution": "${referenceCode}\n\nNormalisierung zuerst: s.lower() und Leerzeichen entfernen (join mit split())."
+    }
+  ]
+}

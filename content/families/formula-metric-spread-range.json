@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-metric-spread-range",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "cv-fold-accuracy-spread",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w12-e2",
+        "w17-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genCvSpread"
+      },
+      "competencyIds": [
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genCvSpread",
+        "defaultSeed": 12001,
+        "defaultExpected": 32
+      },
+      "prompt": "Eine 4-Fold-Cross-Validation für Defektvorhersage liefert die Accuracy-Werte 62 %, 75 %, 80 %, 94 %. Wie groß ist die Spannweite zwischen bestem und schlechtestem Fold, in Prozentpunkten?",
+      "fullSolution": "Spannweite = Maximum − Minimum der Fold-Scores, angegeben in Prozentpunkten. Eine große Spannweite signalisiert instabile Leistung über die Folds — der Mittelwert allein reicht als Bericht nicht. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Die Spannweite ist Maximum minus Minimum der Fold-Ergebnisse.",
+        "Die Differenz zweier Prozentwerte wird in Prozentpunkten angegeben, nicht in Prozent."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 94",
+          "then": "Das ist nur das Maximum — für die Spannweite noch das Minimum abziehen."
+        },
+        {
+          "if": "value === 78",
+          "then": "Das ist ungefähr der Mittelwert. Gesucht ist die Differenz zwischen bestem und schlechtestem Fold."
+        }
+      ],
+      "typicalErrors": [
+        "Mittelwert statt Spannweite berechnen",
+        "Minimum vergessen",
+        "Prozent und Prozentpunkte verwechseln"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "seedGenerator": "genCvSpread"
+          },
+          "expected": {
+            "kind": "seeded-integer",
+            "generator": "genCvSpread",
+            "defaultSeed": 17001,
+            "defaultExpected": 32
+          },
+          "prompt": "Eine 10-Fold-Cross-Validation für Abbruchprognose liefert die Accuracy-Werte 70 %, 70 %, 58 %, 81 %, 83 %, 90 %, 70 %, 72 %, 71 %, 64 %. Wie groß ist die Spannweite zwischen bestem und schlechtestem Fold, in Prozentpunkten?",
+          "fullSolution": "Spannweite = max(Werte) − min(Werte). Die berichtete Streuung gehört neben den Mittelwert in jeden ehrlichen Ergebnisbericht. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+          "hints": [
+            "Die Spannweite ist Maximum minus Minimum der berichteten Werte.",
+            "Suche zuerst den größten und den kleinsten Accuracy-Wert, bevor du subtrahierst."
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "seed-rerun-accuracy-spread",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "parameters": {
+        "seedGenerator": "genSeedSpread"
+      },
+      "competencyIds": [
+        "c-ml-repro",
+        "c-ml-cv"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genSeedSpread",
+        "defaultSeed": 17002,
+        "defaultExpected": 34
+      },
+      "prompt": "Dasselbe Modell wird mit 5 verschiedenen Seeds trainiert und liefert die Test-Accuracy-Werte 61 %, 61 %, 90 %, 68 %, 95 %. Wie groß ist die Seed-Spannweite (bester minus schlechtester Lauf) in Prozentpunkten?",
+      "fullSolution": "Maximum = 95 %, Minimum = 61 %. Spannweite = 34 Prozentpunkte (Seed-Sensitivität; ein reproduzierbarer Lauf mit festem Seed hätte Spannweite 0).",
+      "hints": [
+        "Die Spannweite ist Maximum minus Minimum der Läufe.",
+        "Erst den besten und den schlechtesten Lauf bestimmen — die Differenz wird in Prozentpunkten angegeben."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 95",
+          "then": "95 ist nur der beste Lauf — für die Spannweite noch das Minimum abziehen."
+        },
+        {
+          "if": "value === 61",
+          "then": "61 ist nur der schlechteste Lauf — gesucht ist die Differenz, nicht ein Einzelwert."
+        },
+        {
+          "if": "value === 0",
+          "then": "Spannweite 0 hätte ein reproduzierbarer Lauf mit festem Seed — hier variieren die Seeds."
+        }
+      ],
+      "typicalErrors": [
+        "Mittelwert statt Spannweite berechnen",
+        "Maximum oder Minimum statt der Differenz angeben",
+        "Prozent und Prozentpunkte verwechseln"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

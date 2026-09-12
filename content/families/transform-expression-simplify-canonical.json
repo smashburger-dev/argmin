@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "familyId": "transform-expression-simplify-canonical",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "combine-like-terms",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w01-e2"
+      ],
+      "parameters": {
+        "tiers": [
+          { "vars": 2, "consts": 2, "coef": 5 },
+          { "vars": 3, "consts": 2, "coef": 9 },
+          { "vars": 3, "consts": 3, "coef": 9 },
+          { "vars": 4, "consts": 3, "coef": 12 }
+        ]
+      },
+      "expected": {
+        "kind": "expression"
+      },
+      "prompt": "Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als `2*x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.",
+      "fullSolution": "$${source} = ${canonicalMath}$. Gleiche Variablen zusammenfassen, gleiche Konstanten zusammenfassen. Kanonische Zielform: ${canonical}."
+    },
+    {
+      "caseId": "distribute-sign-constant-chain",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-algebra-final-boss-01"
+      ],
+      "parameters": {
+        "tiers": [
+          { "coef": 3, "constant": 6 },
+          { "coef": 4, "constant": 9 },
+          { "coef": 5, "constant": 12 },
+          { "coef": 6, "constant": 15 }
+        ]
+      },
+      "expected": {
+        "kind": "expression"
+      },
+      "prompt": "Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als `2*x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.",
+      "fullSolution": "$${source} = ${canonicalMath}$. Das Minus vor der zweiten Klammer wirkt auf beide Summanden darin. Kanonische Zielform: ${canonical}."
+    }
+  ]
+}

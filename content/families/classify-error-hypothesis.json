@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-error-hypothesis",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "base-vs-exponent-confusion",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-algebra-debug-01"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Bei gleicher Basis werden die Exponenten addiert, aber die Basis bleibt 2.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Die Exponenten müssten multipliziert werden.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Potenzen dürfen nie multipliziert werden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nur das Ergebnis 7 ist falsch; die Basis 4 stimmt.",
+          "correct": false
+        }
+      ],
+      "prompt": "Eine Lösung behauptet `2^3 · 2^4 = 4^7`. Welche Diagnose trifft den ersten Fehler?",
+      "fullSolution": "`2^3 · 2^4 = 2^(3+4) = 2^7`. Die Basis wird nicht zu 4.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "seeded-error-pattern-cases",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-meta-error-classify-01"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Das Journal umschreiben, damit der Fehler nicht mehr als offen erscheint.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Datenstruktur komplett austauschen, weil sie sich inkonsistent verhält.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein größenordnungsgrößerer Testfall laufen lassen — wenn der passt, ist es kein echtes Problem.",
+          "correct": false
+        }
+      ],
+      "prompt": "Beobachtung: Bei genau fünf Durchläufen fehlt dir am Ende immer das letzte Element; bei vier Durchläufen passt alles.\n\nWelcher nächste Schritt des Debug-Prozesses (Beobachtung → Reproduktion → Hypothese → frischer Test) passt am besten zu dieser Beobachtung?",
+      "fullSolution": "Richtig ist: Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen.\nDie Beobachtung passt zum Fehlerbild „off-by-one“. Ein guter Debug-Schritt benennt die Hypothese explizit und prüft sie an einem frischen, gezielten Testfall — statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "error-journal-next-test",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-meta-error-log-01"
+      ],
+      "competencyIds": [
+        "c-meta-learning"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beobachtung und kleinste Reproduktion notieren, die Vorzeichenregel als Ursachenhypothese benennen und dieselbe Regel an einer frischen Instanz gezielt testen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nur ‚Algebra schlecht‘ notieren und die gesamte Lektion erneut lesen",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Musterlösung abschreiben und den Fehler als erledigt markieren",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Den Kompetenzstatus manuell auf nachgewiesen setzen",
+          "correct": false
+        }
+      ],
+      "prompt": "Eine generierte Gleichungsaufgabe wurde mit falschem Vorzeichen gelöst. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?",
+      "fullSolution": "Der vollständige Eintrag enthält beobachtbares Symptom, kleinste Reproduktion, eine konkrete Ursachenhypothese und einen frischen Test. So entsteht eine überprüfbare Handlung statt eines pauschalen Urteils.",
+      "hints": [
+        "Eine Hypothese muss durch einen nächsten Versuch widerlegbar sein.",
+        "Trenne Beobachtung, Ursache und nächsten Test."
+      ],
+      "typicalErrors": [
+        "pauschales Selbsturteil",
+        "Ursache ohne Gegenprobe",
+        "Musterlösung mit eigenem Abruf verwechseln"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

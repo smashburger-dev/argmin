@@ -42,7 +42,13 @@ import {
 } from './foundations_fresh_generators.mjs';
 import { shuffle } from './generator_draw_kit.mjs';
 import { logTerm, signed } from './foundations_generators.mjs';
-import { staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import guardedLoopDoc from '../../../content/families/construct-guarded-loop.json' with { type: 'json' };
+import regressionSuiteDoc from '../../../content/families/construct-regression-test-suite.json' with { type: 'json' };
+import bugfixWorkflowDoc from '../../../content/families/construct-safe-bugfix-workflow.json' with { type: 'json' };
+import testStructureDoc from '../../../content/families/construct-test-structure-aaa.json' with { type: 'json' };
+import expressionCanonicalDoc from '../../../content/families/transform-expression-simplify-canonical.json' with { type: 'json' };
+import powerLogDoc from '../../../content/families/transform-power-log-exponent.json' with { type: 'json' };
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -57,6 +63,46 @@ function assertProfile(difficulty) {
 function profileTier(difficulty) {
   return CONSTRUCT_PROFILES.indexOf(difficulty);
 }
+
+/** Autorenvorlagen aus den Fallkörpern (content/families/*.json) füllen:
+ *  `${name}`-Platzhalter werden durch den Wert ersetzt; die Semantik bleibt
+ *  gegenüber den früheren JS-Template-Literalen zeichenidentisch. */
+const fillTemplate = (template, values) => Object.keys(values).reduce(
+  (text, key) => text.replaceAll(`\${${key}}`, String(values[key])),
+  template,
+);
+
+// Eigenregistrierung der öffentlichen Fallkörper (idempotent — die Registry
+// übernimmt beim späteren Bundle-Load keine Fremdkörper; Muster wie in
+// foundations_choice_families.mjs, damit Generatoren auch ohne Bundle-
+// Registrierung laufen, z. B. direkte EXERCISE_FAMILIES-Nutzung in Tests).
+// Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
+// können in gebündelten Chunk-Graphen noch uninitialisiert sein.
+let constructDocsRegistered = false;
+function ensureConstructDocs() {
+  if (constructDocsRegistered) return;
+  constructDocsRegistered = true;
+  for (const doc of [
+    guardedLoopDoc,
+    regressionSuiteDoc,
+    bugfixWorkflowDoc,
+    testStructureDoc,
+    expressionCanonicalDoc,
+    powerLogDoc,
+  ]) {
+    registerStaticCases(doc.familyId, doc.cases);
+  }
+}
+
+const constructCaseBody = (familyId, caseId) => {
+  ensureConstructDocs();
+  return staticCaseBody(familyId, caseId);
+};
+
+const constructVariantInstance = (familyId, caseId, seed, difficulty) => {
+  ensureConstructDocs();
+  return staticVariantInstance(familyId, caseId, seed, difficulty);
+};
 
 
 // --- Familie 1: transform-linear-equation-isolate (numeric-exact) ---------
@@ -129,7 +175,7 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
   if (caseId === 'two-step-fixed-instance') {
-    const body = staticCaseBody('transform-linear-equation-isolate', caseId);
+    const body = constructCaseBody('transform-linear-equation-isolate', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { ...(body.parameters || {}) } };
   }
@@ -269,25 +315,10 @@ export function solvePowerLogExponent(parameters) {
   return { value: logInt(parameters.base, parameters.arg) };
 }
 
-const POWER_BASES = [2, 3, 5, 10];
-const POWER_TIERS = [
-  { prod: [2, 3, 1, 2, 5], pow: [2, 3, 2, 2, 5] },
-  { prod: [2, 6, 1, 4, 8], pow: [2, 4, 2, 3, 10] },
-  { prod: [2, 7, 1, 5, 10], pow: [2, 5, 2, 3, 12] },
-  { prod: [3, 8, 2, 5, 12], pow: [3, 5, 2, 3, 14] },
-];
-
-const LOG_KMAX_TIERS = [
-  { 2: 3, other: 2 },
-  { 2: 6, other: 4 },
-  { 2: 7, other: 4 },
-  { 2: 8, other: 4 },
-];
-
-function drawPowerShape(seed, tier, introBases) {
+function drawPowerShape(seed, tier, intro, bases, introBases) {
   const r = rng(seed >>> 0);
-  const bases = introBases ? [2, 3] : POWER_BASES;
-  const base = bases[randInt(r, 0, bases.length - 1)];
+  const pool = intro ? introBases : bases;
+  const base = pool[randInt(r, 0, pool.length - 1)];
   if (r() >= 0.5) {
     const m = randInt(r, tier.prod[0], tier.prod[1]);
     const n = randInt(r, tier.prod[2], Math.min(tier.prod[3], tier.prod[4] - m));
@@ -298,9 +329,9 @@ function drawPowerShape(seed, tier, introBases) {
   return { shape: 'power', base, m, k };
 }
 
-function drawLogShape(seed, tier) {
+function drawLogShape(seed, tier, bases) {
   const r = rng(seed >>> 0);
-  const base = POWER_BASES[randInt(r, 0, POWER_BASES.length - 1)];
+  const base = bases[randInt(r, 0, bases.length - 1)];
   const kMax = base === 2 ? tier[2] : tier.other;
   if (r() >= 0.5) {
     const m = randInt(r, 1, kMax);
@@ -311,44 +342,60 @@ function drawLogShape(seed, tier) {
   return { shape: 'log-single', base, k, arg: base ** k };
 }
 
-function powerLogPrompt(p) {
-  if (p.shape === 'product') {
-    return `Vereinfache ${p.base}^${p.m} · ${p.base}^${p.n} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${p.base} an (also n aus ${p.base}^n).`;
-  }
-  if (p.shape === 'power') {
-    return `Vereinfache (${p.base}^${p.m})^${p.k} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${p.base} an (also n aus ${p.base}^n).`;
-  }
+function powerLogPrompt(p, templates) {
+  if (p.shape === 'product') return fillTemplate(templates.product, p);
+  if (p.shape === 'power') return fillTemplate(templates.power, p);
   if (p.shape === 'log-sum') {
-    return `Berechne ${logTerm(p.base, p.argM)} + ${logTerm(p.base, p.argN)} und gib das Ergebnis als ganze Zahl ein.`;
+    return fillTemplate(templates['log-sum'], { logM: logTerm(p.base, p.argM), logN: logTerm(p.base, p.argN) });
   }
-  return `Berechne ${logTerm(p.base, p.arg)} und gib das Ergebnis als ganze Zahl ein.`;
+  return fillTemplate(templates['log-single'], { log: logTerm(p.base, p.arg) });
 }
 
-function powerLogSolution(p, value) {
-  if (p.shape === 'product') return `Gleiche Basis im Produkt: Exponenten addieren — ${p.base}^${p.m} · ${p.base}^${p.n} = ${p.base}^${value}. Antwort: ${value}.`;
-  if (p.shape === 'power') return `Potenz einer Potenz: Exponenten multiplizieren — (${p.base}^${p.m})^${p.k} = ${p.base}^${value}. Antwort: ${value}.`;
-  if (p.shape === 'log-sum') return `${logTerm(p.base, p.argM)} = ${logInt(p.base, p.argM)}, ${logTerm(p.base, p.argN)} = ${logInt(p.base, p.argN)}; Summe der Exponenten: ${value}.`;
-  return `${logTerm(p.base, p.arg)} = ${value}, denn ${p.base}^${value} = ${p.arg}.`;
+function powerLogSolution(p, value, templates) {
+  if (p.shape === 'product') return fillTemplate(templates.product, { ...p, value });
+  if (p.shape === 'power') return fillTemplate(templates.power, { ...p, value });
+  if (p.shape === 'log-sum') {
+    return fillTemplate(templates['log-sum'], {
+      logM: logTerm(p.base, p.argM),
+      valM: logInt(p.base, p.argM),
+      logN: logTerm(p.base, p.argN),
+      valN: logInt(p.base, p.argN),
+      value,
+    });
+  }
+  return fillTemplate(templates['log-single'], { log: logTerm(p.base, p.arg), value, base: p.base, arg: p.arg });
 }
 
 export function generatePowerLogFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
+  if (caseId !== 'product-and-power-of-power' && caseId !== 'integer-base-power') {
+    throw new Error(`Unbekannter Fall ${caseId}`);
+  }
+  const body = constructCaseBody('transform-power-log-exponent', caseId);
   if (caseId === 'product-and-power-of-power') {
-    const p = drawPowerShape(seed, POWER_TIERS[tier], tier === 0);
+    const p = drawPowerShape(seed, body.parameters.tiers[tier], tier === 0, body.parameters.bases, body.parameters.introBases);
     const { value } = solvePowerLogExponent(p);
-    return { parameters: p, expected: { kind: 'integer', value }, prompt: powerLogPrompt(p), fullSolution: powerLogSolution(p, value) };
+    return {
+      parameters: p,
+      expected: { ...body.expected, value },
+      prompt: powerLogPrompt(p, body.parameters.promptTemplates),
+      fullSolution: powerLogSolution(p, value, body.parameters.solutionTemplates),
+    };
   }
-  if (caseId === 'integer-base-power') {
-    const p = drawLogShape(seed, LOG_KMAX_TIERS[tier]);
-    const { value } = solvePowerLogExponent(p);
-    if (p.arg > 10000 || (p.argM != null && (p.argM > 10000 || p.argN > 10000))) {
-      throw new Error('Log-Argument überschreitet die Kopfrechengrenze');
-    }
-    return { parameters: p, expected: { kind: 'integer', value }, prompt: powerLogPrompt(p), fullSolution: powerLogSolution(p, value) };
+  const p = drawLogShape(seed, body.parameters.kMaxTiers[tier], body.parameters.bases);
+  const { value } = solvePowerLogExponent(p);
+  const argCap = body.parameters.argCap;
+  if (p.arg > argCap || (p.argM != null && (p.argM > argCap || p.argN > argCap))) {
+    throw new Error('Log-Argument überschreitet die Kopfrechengrenze');
   }
-  throw new Error(`Unbekannter Fall ${caseId}`);
+  return {
+    parameters: p,
+    expected: { ...body.expected, value },
+    prompt: powerLogPrompt(p, body.parameters.promptTemplates),
+    fullSolution: powerLogSolution(p, value, body.parameters.solutionTemplates),
+  };
 }
 
 // --- Familie 3: transform-expression-simplify-canonical ----------------------
@@ -401,20 +448,6 @@ export function solveExpressionCanonical(parameters) {
   return { aCoef, bConst, canonicalExpression: canonicalLinear(aCoef, bConst) };
 }
 
-const COMBINE_TIERS = [
-  { vars: 2, consts: 2, coef: 5 },
-  { vars: 3, consts: 2, coef: 9 },
-  { vars: 3, consts: 3, coef: 9 },
-  { vars: 4, consts: 3, coef: 12 },
-];
-
-const DISTRIBUTE_TIERS = [
-  { coef: 3, constant: 6 },
-  { coef: 4, constant: 9 },
-  { coef: 5, constant: 12 },
-  { coef: 6, constant: 15 },
-];
-
 function drawCombine(seed, tier) {
   const r = rng(seed >>> 0);
   for (let attempt = 0; attempt < 32; attempt += 1) {
@@ -464,27 +497,31 @@ export function generateExpressionCanonicalFamily({ seed, caseId, difficulty }) 
   assertSeed(seed);
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
+  if (caseId !== 'combine-like-terms' && caseId !== 'distribute-sign-constant-chain') {
+    throw new Error(`Unbekannter Fall ${caseId}`);
+  }
+  const body = constructCaseBody('transform-expression-simplify-canonical', caseId);
+  const mathTerm = (term) => term.replace(/\*/g, ' \\cdot ');
   let parameters;
   let source;
-  let hint;
   if (caseId === 'combine-like-terms') {
-    parameters = drawCombine(seed, COMBINE_TIERS[tier]);
+    parameters = drawCombine(seed, body.parameters.tiers[tier]);
     source = combineSource(parameters);
-    hint = 'Gleiche Variablen zusammenfassen, gleiche Konstanten zusammenfassen.';
-  } else if (caseId === 'distribute-sign-constant-chain') {
-    parameters = drawDistribute(seed, DISTRIBUTE_TIERS[tier]);
-    source = distributeSource(parameters);
-    hint = 'Das Minus vor der zweiten Klammer wirkt auf beide Summanden darin.';
   } else {
-    throw new Error(`Unbekannter Fall ${caseId}`);
+    parameters = drawDistribute(seed, body.parameters.tiers[tier]);
+    source = distributeSource(parameters);
   }
   const solved = solveExpressionCanonical(parameters);
   return {
     parameters,
-    expected: { kind: 'expression', expression: solved.canonicalExpression, equivalence: SYMPY_EQUIVALENCE_RULE },
+    expected: { ...body.expected, expression: solved.canonicalExpression, equivalence: SYMPY_EQUIVALENCE_RULE },
     title: 'Vereinfache den Term so weit wie möglich und gib ihn ein.',
-    prompt: `Vereinfache $${source.replace(/\*/g, ' \\cdot ')}$ so weit wie möglich und gib den Term ein (z. B. als \`2*x + 7\`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.`,
-    fullSolution: `$${source.replace(/\*/g, ' \\cdot ')} = ${solved.canonicalExpression.replace(/\*/g, ' \\cdot ')}$. ${hint} Kanonische Zielform: ${solved.canonicalExpression}.`,
+    prompt: fillTemplate(body.prompt, { source: mathTerm(source) }),
+    fullSolution: fillTemplate(body.fullSolution, {
+      source: mathTerm(source),
+      canonicalMath: mathTerm(solved.canonicalExpression),
+      canonical: solved.canonicalExpression,
+    }),
   };
 }
 
@@ -645,7 +682,7 @@ export function solveValidateCount(parameters) {
   if (parameters.task === 'zaehle') return { referenceCode: ZAEHLE_REFERENZ };
   if (parameters.task === 'inspect') return { referenceCode: INSPECT_REFERENZ };
   if (parameters.caseId === 'separate-error-kinds') {
-    return { kind: staticCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
+    return { kind: constructCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
   }
   throw new Error(`Unbekannte Aufgabe ${parameters.task}`);
 }
@@ -745,7 +782,7 @@ export function generateValidateCountFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'separate-error-kinds') {
-    return staticVariantInstance('aggregate-validate-and-count-records', caseId, seed, difficulty);
+    return constructVariantInstance('aggregate-validate-and-count-records', caseId, seed, difficulty);
   }
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   if (caseId === 'parse-validate-summarize') {
@@ -864,15 +901,6 @@ __check("Nicht-Palindrom bleibt falsch", ist_palindrom("Kein Palindrom") is Fals
 anzahl = teste_palindrom()
 __check("mindestens acht Pruefungen", isinstance(anzahl, int) and anzahl >= 8, "anzahl=" + repr(anzahl))`;
 
-export const PALINDROM_STARTER = `def ist_palindrom(s):
-    """True, wenn s nach Normalisierung (klein, ohne Leerzeichen) ein Palindrom ist."""
-    ...
-
-def teste_palindrom():
-    """Mindestens fuenf assert-Regressionstests; Rueckgabe: Anzahl der Pruefungen."""
-    ...
-`;
-
 /** Gegenbeispiel aus typicalErrors (w04-e3): weder lower() noch
  *  Leerzeichen-Entfernung — "Anna" und "Relief pfeiler" scheitern. */
 export const PALINDROM_MUTANT_NAIVE = `def ist_palindrom(s):
@@ -927,21 +955,13 @@ function palindromExtraCases(seed, count) {
 export function generateRegressionSuiteFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
-  const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
-  let suite;
-  let baseTests;
-  let minCount;
-  if (caseId === 'normalize-and-assert-suite') {
-    suite = 'standard';
-    baseTests = PALINDROM_TESTS;
-    minCount = 5;
-  } else if (caseId === 'normalize-and-assert-extended') {
-    suite = 'extended';
-    baseTests = PALINDROM_TESTS_EXTENDED;
-    minCount = 8;
-  } else {
+  if (caseId !== 'normalize-and-assert-suite' && caseId !== 'normalize-and-assert-extended') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
+  const body = constructCaseBody('construct-regression-test-suite', caseId);
+  const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
+  const suite = body.parameters.suite;
+  const baseTests = suite === 'extended' ? PALINDROM_TESTS_EXTENDED : PALINDROM_TESTS;
   const extraCases = palindromExtraCases(seed, extraCount);
   const extraTests = extraCases.length
     ? `\n${extraCases.map((s) => `__check("Seed-Fall ${seed}", ist_palindrom("${pyEscape(s)}") is ${palindromOutcome(s) ? 'True' : 'False'})`).join('\n')}`
@@ -949,15 +969,15 @@ export function generateRegressionSuiteFamily({ seed, caseId, difficulty }) {
   const { referenceCode } = solveRegressionSuite({ suite });
   return {
     parameters: {
-      task: 'palindrom',
+      task: body.parameters.task,
       suite,
-      starterCode: PALINDROM_STARTER,
+      starterCode: body.parameters.starterCode,
       tests: `${baseTests}${extraTests}`,
       seedExtraCases: extraCases,
     },
-    expected: { kind: 'reference-solver', referenceSolver: referenceCode },
-    prompt: `Implementiere \`ist_palindrom(s)\` (True, wenn der Text nach Normalisierung vorwärts wie rückwärts gleich ist; Normalisierung: Kleinbuchstaben, Leerzeichen entfernt) und dazu \`teste_palindrom()\` — eine Regressionstest-Funktion mit mindestens ${minCount} assert-Prüfungen, die auch die bekannten Fehlerfälle (Groß-/Kleinschreibung, Leerzeichen, leerer Text) festhält. \`teste_palindrom()\` gibt bei Erfolg die Anzahl der ausgeführten Prüfungen zurück. Der Testcode prüft beide Funktionen.`,
-    fullSolution: `${referenceCode}\n\nNormalisierung zuerst: s.lower() und Leerzeichen entfernen (join mit split()).`,
+    expected: { ...body.expected, referenceSolver: referenceCode },
+    prompt: body.prompt,
+    fullSolution: fillTemplate(body.fullSolution, { referenceCode }),
   };
 }
 
@@ -1022,34 +1042,9 @@ export const TEST_STRUCTURE_CONTRACT = {
   activityType: 'parsons',
 };
 
-const AAA_FRAGMENTS = {
-  'arrange-act-assert': [
-    { id: 'p1', text: 'rows = [{"id": "a1"}, {"id": "a1"}]' },
-    { id: 'p2', text: 'issues = duplicate_issues(rows)' },
-    { id: 'p3', text: 'assert issues == [{"row": 3, "value": "a1"}]' },
-    { id: 'd1', text: 'expected = issues' },
-  ],
-  'arrange-act-assert-filter': [
-    { id: 'p1', text: 'orders = [{"id": "b2", "paid": false}, {"id": "b2", "paid": true}]' },
-    { id: 'p2', text: 'open = unpaid_orders(orders)' },
-    { id: 'p3', text: 'assert open == [{"id": "b2"}]' },
-    { id: 'd1', text: 'expected = open' },
-  ],
-};
-
-const AAA_ORDERS = {
-  'arrange-act-assert': ['p1', 'p2', 'p3'],
-  'arrange-act-assert-filter': ['p1', 'p2', 'p3'],
-};
-
-const AAA_DISTRACTORS = {
-  'arrange-act-assert': ['d1'],
-  'arrange-act-assert-filter': ['d1'],
-};
-
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveTestStructure(parameters) {
-  const order = AAA_ORDERS[parameters.parsonsCase];
+  const order = constructCaseBody('construct-test-structure-aaa', parameters.parsonsCase).expected.solutionOrder;
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
 }
@@ -1060,18 +1055,16 @@ export function generateTestStructureFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'arrange-act-assert' && caseId !== 'arrange-act-assert-filter') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const prompt = caseId === 'arrange-act-assert'
-    ? 'Ordne einen kleinen Test nach Arrange, Act, Assert. Eine Zeile würde die Erwartung dem fehlerhaften Ergebnis anpassen und gehört nicht hinein.'
-    : 'Ordne einen kleinen Test nach Arrange, Act, Assert. Eine Zeile würde die Erwartung aus dem fehlerhaften Ergebnis übernehmen und gehört nicht hinein.';
+  const body = constructCaseBody('construct-test-structure-aaa', caseId);
   return parsonsGenerate({
     seed,
     difficulty,
     parsonsCase: caseId,
-    fragments: AAA_FRAGMENTS[caseId],
-    solutionOrder: AAA_ORDERS[caseId],
-    distractors: AAA_DISTRACTORS[caseId],
-    prompt,
-    fullSolution: 'Die feste Eingabe kommt zuerst, danach der Funktionsaufruf und zuletzt der Vergleich mit einer unabhängig notierten Erwartung.',
+    fragments: body.parameters.fragments,
+    solutionOrder: body.expected.solutionOrder,
+    distractors: body.expected.distractors,
+    prompt: body.prompt,
+    fullSolution: body.fullSolution,
   });
 }
 
@@ -1098,27 +1091,10 @@ export const GUARDED_LOOP_CONTRACT = {
   activityType: 'parsons',
 };
 
-const GUARDED_POSITIVE_FRAGMENTS = [
-  { id: 'p1', text: 'def positive_values(values):' },
-  { id: 'p2', text: '    result = []' },
-  { id: 'p3', text: '    for value in values:' },
-  { id: 'p4', text: '        if value > 0:' },
-  { id: 'p5', text: '            result.append(value)' },
-  { id: 'p6', text: '    return result' },
-  { id: 'd1', text: '        result.append(value)' },
-];
-
-const GUARDED_ORDERS = {
-  'positive-values-structure': ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'],
-  'countdown-accumulator-structure': ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'],
-};
-
-const COUNTDOWN_START_TIERS = [[3, 4], [3, 5], [4, 6], [5, 7]];
-
 /** Unabhängiger Solver: Lösungssequenz aus dem Fallschlüssel; beim Countdown
  *  zusätzlich die arithmetische Kontrollsumme N(N+1)/2. */
 export function solveGuardedLoop(parameters) {
-  const order = GUARDED_ORDERS[parameters.parsonsCase];
+  const order = constructCaseBody('construct-guarded-loop', parameters.parsonsCase).expected.solutionOrder;
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   if (parameters.parsonsCase === 'countdown-accumulator-structure') {
     const n = parameters.start;
@@ -1130,44 +1106,37 @@ export function solveGuardedLoop(parameters) {
 export function generateGuardedLoopFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
+  if (caseId !== 'positive-values-structure' && caseId !== 'countdown-accumulator-structure') {
+    throw new Error(`Unbekannter Fall ${caseId}`);
+  }
+  const body = constructCaseBody('construct-guarded-loop', caseId);
   if (caseId === 'positive-values-structure') {
     return parsonsGenerate({
       seed,
       difficulty,
       parsonsCase: caseId,
-      fragments: GUARDED_POSITIVE_FRAGMENTS,
-      solutionOrder: GUARDED_ORDERS[caseId],
-      distractors: ['d1'],
-      prompt: 'Ordne die Zeilen für `positive_values(values)`. Die Funktion soll nur positive Werte in ursprünglicher Reihenfolge zurückgeben. Eine Zeile ist ein Distraktor.',
-      fullSolution: 'Nach Funktionskopf und leerer Liste folgt die Schleife. Der if-Zweig hängt positive Werte an. return steht nach der Schleife.',
+      fragments: body.parameters.fragments,
+      solutionOrder: body.expected.solutionOrder,
+      distractors: body.expected.distractors,
+      prompt: body.prompt,
+      fullSolution: body.fullSolution,
     });
   }
-  if (caseId === 'countdown-accumulator-structure') {
-    const tier = COUNTDOWN_START_TIERS[profileTier(difficulty)];
-    const start = randInt(rng(seed >>> 0), tier[0], tier[1]);
-    const fragments = [
-      { id: 'p1', text: `n = ${start}` },
-      { id: 'p2', text: 'total = 0' },
-      { id: 'p3', text: 'while n > 0:' },
-      { id: 'p4', text: '    total = total + n' },
-      { id: 'p5', text: '    n = n - 1' },
-      { id: 'p6', text: 'print(total)' },
-      { id: 'd1', text: '    n = n + 1' },
-    ];
-    const total = (start * (start + 1)) / 2;
-    return parsonsGenerate({
-      seed,
-      difficulty,
-      parsonsCase: caseId,
-      fragments,
-      solutionOrder: GUARDED_ORDERS[caseId],
-      distractors: ['d1'],
-      prompt: `Ordne die Zeilen für eine Countdown-Summe ab ${start}. Die Schleife muss terminieren: Eine Zeile würde sie endlos laufen lassen und gehört nicht hinein.`,
-      fullSolution: `n läuft von ${start} bis 1, total sammelt die Summe ${total}. Das Update n = n - 1 sichert die Terminierung; n = n + 1 wäre der Distraktor.`,
-      extraParameters: { start },
-    });
-  }
-  throw new Error(`Unbekannter Fall ${caseId}`);
+  const tier = body.parameters.startTiers[profileTier(difficulty)];
+  const start = randInt(rng(seed >>> 0), tier[0], tier[1]);
+  const fragments = body.parameters.fragments.map((f) => ({ ...f, text: fillTemplate(f.text, { start }) }));
+  const total = (start * (start + 1)) / 2;
+  return parsonsGenerate({
+    seed,
+    difficulty,
+    parsonsCase: caseId,
+    fragments,
+    solutionOrder: body.expected.solutionOrder,
+    distractors: body.expected.distractors,
+    prompt: fillTemplate(body.prompt, { start }),
+    fullSolution: fillTemplate(body.fullSolution, { start, total }),
+    extraParameters: { start },
+  });
 }
 
 // --- Familie 8: validate-required-field-raise (program-ordering) --------------
@@ -1219,14 +1188,14 @@ const REQUIRED_ORDERS = {
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
   if (parameters.caseId === 'paper-card-required-fields') {
-    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
   if (
     parameters.caseId === 'protocol-validator'
     || parameters.caseId === 'validate-card-fields'
     || parameters.caseId === 'readme-required-headings'
   ) {
-    return { kind: staticCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
   }
   const order = REQUIRED_ORDERS[parameters.parsonsCase];
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
@@ -1242,7 +1211,7 @@ export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
     || caseId === 'validate-card-fields'
     || caseId === 'readme-required-headings'
   ) {
-    return staticVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
+    return constructVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
   }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
@@ -1302,33 +1271,9 @@ export const BUGFIX_WORKFLOW_CONTRACT = {
   activityType: 'parsons',
 };
 
-const BUGFIX_FRAGMENTS = {
-  'bugfix-flow-with-test-contract': [
-    { id: 'p1', text: 'Fehler mit einem einzelnen Test reproduzieren' },
-    { id: 'p2', text: 'kleinsten Fix schreiben' },
-    { id: 'p3', text: 'Einzeltest und gesamte Suite ausführen' },
-    { id: 'p4', text: 'git status und git diff lesen' },
-    { id: 'p5', text: 'zugehörige Dateien vormerken und committen' },
-    { id: 'd1', text: 'fehlschlagenden Test löschen' },
-  ],
-  'datafix-flow-with-test-contract': [
-    { id: 'p1', text: 'Fehlerhafte Zeilen mit dem Prüfzähler isolieren' },
-    { id: 'p2', text: 'kleinste Datenkorrektur schreiben' },
-    { id: 'p3', text: 'Prüfzähler erneut laufen lassen' },
-    { id: 'p4', text: 'Diff der Datensätze lesen' },
-    { id: 'p5', text: 'Korrektur committen' },
-    { id: 'd1', text: 'Prüfscript löschen' },
-  ],
-};
-
-const BUGFIX_ORDERS = {
-  'bugfix-flow-with-test-contract': ['p1', 'p2', 'p3', 'p4', 'p5'],
-  'datafix-flow-with-test-contract': ['p1', 'p2', 'p3', 'p4', 'p5'],
-};
-
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveBugfixWorkflow(parameters) {
-  const order = BUGFIX_ORDERS[parameters.parsonsCase];
+  const order = constructCaseBody('construct-safe-bugfix-workflow', parameters.parsonsCase).expected.solutionOrder;
   if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
   return { solutionOrder: [...order] };
 }
@@ -1339,18 +1284,16 @@ export function generateBugfixWorkflowFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'bugfix-flow-with-test-contract' && caseId !== 'datafix-flow-with-test-contract') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
-  const prompt = caseId === 'bugfix-flow-with-test-contract'
-    ? 'Ordne den sicheren Arbeitsfluss für einen kleinen Bugfix. Eine Zeile umgeht den Testvertrag und gehört nicht hinein.'
-    : 'Ordne den sicheren Arbeitsfluss für eine kleine Datenkorrektur. Eine Zeile umgeht den Testvertrag und gehört nicht hinein.';
+  const body = constructCaseBody('construct-safe-bugfix-workflow', caseId);
   return parsonsGenerate({
     seed,
     difficulty,
     parsonsCase: caseId,
-    fragments: BUGFIX_FRAGMENTS[caseId],
-    solutionOrder: BUGFIX_ORDERS[caseId],
-    distractors: ['d1'],
-    prompt,
-    fullSolution: 'Reproduzieren bzw. isolieren, minimal korrigieren, vollständig prüfen, Diff lesen und erst dann den geschlossenen Commit erstellen.',
+    fragments: body.parameters.fragments,
+    solutionOrder: body.expected.solutionOrder,
+    distractors: body.expected.distractors,
+    prompt: body.prompt,
+    fullSolution: body.fullSolution,
   });
 }
 
@@ -1384,7 +1327,7 @@ export const COVERAGE_LEAF_TIERS = [[2, 3], [3, 4], [4, 4], [4, 5]];
 /** Unabhängiger Solver: statisch 5, sonst Blattzahl des Entscheidungsbaums. */
 export function solveTestDesignCoverage(parameters) {
   if (parameters.caseId === 'elif-chain-five-outcomes') {
-    return { value: staticCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
+    return { value: constructCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
   }
   return { value: countBranchCoverageLeaves(parameters.branchShape) };
 }
@@ -1393,7 +1336,7 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'elif-chain-five-outcomes') {
-    const body = staticCaseBody('validate-test-design-coverage', caseId);
+    const body = constructCaseBody('validate-test-design-coverage', caseId);
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { ...(body.parameters || {}) } };
   }

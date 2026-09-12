@@ -96,15 +96,7 @@ test('golden corpus coverage delta against canonical families is explicit', () =
   const missing = canonicalIds.filter((familyId) => !goldenIds.includes(familyId));
   const extra = goldenIds.filter((familyId) => !canonicalIds.includes(familyId));
   assert.deepEqual(missing, [
-    'aggregate-accumulator-count', 'aggregate-majority-rule-count', 'aggregate-topk-relevance-arithmetic',
-    'classify-control-construct', 'classify-error-hypothesis', 'classify-exception-placement',
-    'classify-git-operation', 'classify-python-collection-choice', 'classify-set-operation-semantics',
-    'classify-string-immutability', 'classify-test-attitude', 'construct-guarded-loop',
-    'construct-regression-test-suite', 'construct-safe-bugfix-workflow', 'construct-test-structure-aaa',
-    'count-remaining-rows-cleaning-rule', 'formula-count-from-construction', 'formula-det2-independence',
-    'formula-metric-spread-range', 'optimize-backprop-path-sum', 'reflect-error-journal-rationale',
-    'trace-collection-state', 'trace-dict-state-update', 'trace-exception-path',
-    'transform-expression-simplify-canonical', 'transform-power-log-exponent',
+    'reflect-error-journal-rationale',
   ], `stille Drift im Golden-Korpus, fehlend: ${missing.join(', ')}`);
   assert.deepEqual(extra, ['classify-shape-contract', 'construct-error-journal-order'], `stille Drift im Golden-Korpus, extra: ${extra.join(', ')}`);
 });

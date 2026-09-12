@@ -41,6 +41,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-foundations-functions-both-orders-stretch",
+      "role": "curated",
+      "familyId": "trace-call-composition",
+      "caseId": "both-orders-linear-functions",
+      "seed": 3,
+      "difficulty": "stretch",
+      "estimatedMinutes": 10,
+      "lessonId": "l-foundations-functions",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-foundations-functions-trace-call-composition-practice",
       "role": "practice-space",
       "familyId": "trace-call-composition",
