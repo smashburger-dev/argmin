@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-git-operation",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "diff-unstaged",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-next-action-01"
+      ],
+      "parameters": {
+        "state": "Du hast an mehreren Dateien gearbeitet. Nichts ist gestaged. Bevor du entscheidest, was in den Commit soll, willst du sehen, welche Textänderungen die Arbeitskopie gegenüber dem letzten Commit enthält.",
+        "insight": "git diff zeigt unstagede Textänderungen der Arbeitskopie; --staged würde nichts zeigen, weil noch nichts gestaged ist.",
+        "challengeDistractors": [
+          "git diff --staged",
+          "git status",
+          "git add -p"
+        ]
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a",
+        "kind": "seeded-choice",
+        "generator": "genGitNextAction",
+        "defaultSeed": 0,
+        "defaultChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "git diff",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "git diff --staged",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "git status",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "git push",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Du hast an mehreren Dateien gearbeitet. Nichts ist gestaged. Bevor du entscheidest, was in den Commit soll, willst du sehen, welche Textänderungen die Arbeitskopie gegenüber dem letzten Commit enthält.\n\nWelche Git-Operation passt jetzt?",
+      "fullSolution": "Richtig: git diff. git diff zeigt unstagede Textänderungen der Arbeitskopie; --staged würde nichts zeigen, weil noch nichts gestaged ist.",
+      "hints": [
+        "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+        "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "diff-staged",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-next-action-01"
+      ],
+      "parameters": {
+        "state": "Du hast Dateien mit git add vorgemerkt. Nun willst du genau die vorgemerkten Änderungen prüfen, bevor du committest.",
+        "insight": "git diff --staged vergleicht den Staging-Bereich mit dem letzten Commit; git diff (ohne Flag) zeigt dagegen nur unstagede Änderungen.",
+        "challengeDistractors": [
+          "git diff",
+          "git status",
+          "git add -p"
+        ]
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a",
+        "kind": "seeded-choice",
+        "generator": "genGitNextAction",
+        "defaultSeed": 3901,
+        "defaultChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "git diff --staged",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "git diff",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "git log",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "git clone",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Du hast Dateien mit git add vorgemerkt. Nun willst du genau die vorgemerkten Änderungen prüfen, bevor du committest.\n\nWelche Git-Operation passt jetzt?",
+      "fullSolution": "Richtig: git diff --staged. git diff --staged vergleicht den Staging-Bereich mit dem letzten Commit; git diff (ohne Flag) zeigt dagegen nur unstagede Änderungen.",
+      "hints": [
+        "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+        "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "push",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-next-action-01"
+      ],
+      "parameters": {
+        "state": "Du hast einen Commit erstellt. Dein lokaler Branch liegt damit vor dem Branch im Remote-Repository (origin).",
+        "insight": "push überträgt lokale Commits ins Remote; pull/fetch holen stattdessen Remote-Stand ab."
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a",
+        "kind": "seeded-choice",
+        "generator": "genGitNextAction",
+        "defaultSeed": 2,
+        "defaultChoice": "c"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "git push",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "git pull",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "git fetch",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "git commit --amend",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Du hast einen Commit erstellt. Dein lokaler Branch liegt damit vor dem Branch im Remote-Repository (origin).\n\nWelche Git-Operation passt jetzt?",
+      "fullSolution": "Richtig: git push. push überträgt lokale Commits ins Remote; pull/fetch holen stattdessen Remote-Stand ab.",
+      "hints": [
+        "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+        "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "merge-main",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-next-action-01"
+      ],
+      "parameters": {
+        "state": "Du arbeitest auf dem Branch feature. main hat seit deinem Abzweig neue Commits bekommen. Du willst deinen Branch auf den aktuellen main-Stand bringen — ohne deinen Branch zu wechseln.",
+        "insight": "merge main integriert main in den aktuellen Branch (feature). checkout main würde den Branch wechseln, statt zu integrieren."
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a",
+        "kind": "seeded-choice",
+        "generator": "genGitNextAction",
+        "defaultSeed": 3,
+        "defaultChoice": "d"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "git merge main",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "git checkout main",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "git push origin feature",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "git branch main",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Du arbeitest auf dem Branch feature. main hat seit deinem Abzweig neue Commits bekommen. Du willst deinen Branch auf den aktuellen main-Stand bringen — ohne deinen Branch zu wechseln.\n\nWelche Git-Operation passt jetzt?",
+      "fullSolution": "Richtig: git merge main. merge main integriert main in den aktuellen Branch (feature). checkout main würde den Branch wechseln, statt zu integrieren.",
+      "hints": [
+        "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+        "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "conflict-resolved",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-next-action-01"
+      ],
+      "parameters": {
+        "state": "Während eines Merges gab es einen Konflikt in einer Datei. Du hast die Konfliktmarkierungen bereinigt und die Datei gespeichert. Der Merge läuft noch.",
+        "insight": "Nach dem Bereinigen markiert git add die Datei als gelöst; der ausstehende Merge-Commit wird danach abgeschlossen."
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a",
+        "kind": "seeded-choice",
+        "generator": "genGitNextAction",
+        "defaultSeed": 4,
+        "defaultChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "git add der Datei, dann git commit abschließen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "git push sofort ausführen",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "git restore --staged . und neu beginnen",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "git commit --amend auf den letzten Commit",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Während eines Merges gab es einen Konflikt in einer Datei. Du hast die Konfliktmarkierungen bereinigt und die Datei gespeichert. Der Merge läuft noch.\n\nWelche Git-Operation passt jetzt?",
+      "fullSolution": "Richtig: git add der Datei, dann git commit abschließen. Nach dem Bereinigen markiert git add die Datei als gelöst; der ausstehende Merge-Commit wird danach abgeschlossen.",
+      "hints": [
+        "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+        "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "restore-file",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-next-action-01"
+      ],
+      "parameters": {
+        "state": "Du hast lokale Änderungen in einer Datei, die noch nicht gestaged sind. Du entscheidest: diese Änderungen willst du verwerfen und die Datei auf den Stand des letzten Commits zurücksetzen.",
+        "insight": "restore setzt unstaged Änderungen der Arbeitskopie zurück; rm würde die Datei aus dem Projekt entfernen."
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a",
+        "kind": "seeded-choice",
+        "generator": "genGitNextAction",
+        "defaultSeed": 5,
+        "defaultChoice": "b"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "git restore datei.py",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "git rm datei.py",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "git commit -m \"verwerfen\"",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "git stash apply",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Du hast lokale Änderungen in einer Datei, die noch nicht gestaged sind. Du entscheidest: diese Änderungen willst du verwerfen und die Datei auf den Stand des letzten Commits zurücksetzen.\n\nWelche Git-Operation passt jetzt?",
+      "fullSolution": "Richtig: git restore datei.py. restore setzt unstaged Änderungen der Arbeitskopie zurück; rm würde die Datei aus dem Projekt entfernen.",
+      "hints": [
+        "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
+        "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "merge-conflict-test-flow",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-merge-debug-01"
+      ],
+      "parameters": {
+        "staticFlow": true,
+        "state": "Beim Merge eines Feature-Branches entsteht ein Konflikt in `checker.py`. Beide Branches hatten vor dem Merge grüne Tests.",
+        "insight": "Lies zuerst beide Varianten und löse die fachliche Absicht. Danach prüfst du die neu entstandene Kombination mit Tests und Diff. Erst dieser Zustand wird als Merge-Commit gespeichert."
+      },
+      "competencyIds": [
+        "c-git-basics"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Immer `--ours` wählen, weil der aktuelle Branch Vorrang hat",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Konfliktmarker unverändert committen; die frühere grüne Suite reicht als Beleg",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Die Historie neu schreiben, damit kein Konflikt mehr sichtbar ist",
+          "correct": false
+        }
+      ],
+      "prompt": "Situation: Beim Merge eines Feature-Branches entsteht ein Konflikt in `checker.py`. Beide Branches hatten vor dem Merge grüne Tests.\n\nWelcher Ablauf liefert den belastbarsten Abschluss?",
+      "fullSolution": "Richtig: Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen. Lies zuerst beide Varianten und löse die fachliche Absicht. Danach prüfst du die neu entstandene Kombination mit Tests und Diff. Erst dieser Zustand wird als Merge-Commit gespeichert.",
+      "hints": [
+        "Ein Merge kombiniert zwei Änderungen; frühere Tests prüfen diese Kombination noch nicht.",
+        "Git-Status, Diff und Tests beantworten verschiedene Fragen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice !== 'a'",
+          "then": "Nach dem Bereinigen der Konfliktmarkierungen markiert git add die Datei als gelöst — erst dann schließt git commit den Merge ab."
+        }
+      ],
+      "typicalErrors": [
+        "grüne Tests vor dem Merge als Beleg danach behandeln",
+        "Konflikt mechanisch statt fachlich lösen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

@@ -18,6 +18,8 @@
 // variables may carry `type: 'repr'` (canonical Python literals).
 
 import { rng, randInt, nonzeroInt, variantCaseIndex, variantEpoch, buildRotatedChoices } from './generator_draw_kit.mjs';
+import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
+import gitOperationDoc from '../../../content/families/classify-git-operation.json' with { type: 'json' };
 
 
 /** Python repr for the values our generators produce. Sets are rendered
@@ -605,51 +607,30 @@ export function genBranchCoverageCount(seed) {
 }
 
 // --- c-git-basics: git state variant bank (B) -----------------------------------
+// Public-first: the authored case bodies (bank states, the pinned merge
+// flow and the challenge distractor sets) live in
+// content/families/classify-git-operation.json. Registration at import time
+// keeps direct generator use (tests, tools) working without a bundle load;
+// the seed mechanics below stay in JavaScript.
 
-const GIT_CASES = [
-  {
-    caseId: 'diff-unstaged',
-    state: 'Du hast an mehreren Dateien gearbeitet. Nichts ist gestaged. Bevor du entscheidest, was in den Commit soll, willst du sehen, welche Textänderungen die Arbeitskopie gegenüber dem letzten Commit enthält.',
-    correct: 'git diff',
-    distractors: ['git diff --staged', 'git status', 'git push'],
-    insight: 'git diff zeigt unstagede Textänderungen der Arbeitskopie; --staged würde nichts zeigen, weil noch nichts gestaged ist.',
-  },
-  {
-    caseId: 'diff-staged',
-    state: 'Du hast Dateien mit git add vorgemerkt. Nun willst du genau die vorgemerkten Änderungen prüfen, bevor du committest.',
-    correct: 'git diff --staged',
-    distractors: ['git diff', 'git log', 'git clone'],
-    insight: 'git diff --staged vergleicht den Staging-Bereich mit dem letzten Commit; git diff (ohne Flag) zeigt dagegen nur unstagede Änderungen.',
-  },
-  {
-    caseId: 'push',
-    state: 'Du hast einen Commit erstellt. Dein lokaler Branch liegt damit vor dem Branch im Remote-Repository (origin).',
-    correct: 'git push',
-    distractors: ['git pull', 'git fetch', 'git commit --amend'],
-    insight: 'push überträgt lokale Commits ins Remote; pull/fetch holen stattdessen Remote-Stand ab.',
-  },
-  {
-    caseId: 'merge-main',
-    state: 'Du arbeitest auf dem Branch feature. main hat seit deinem Abzweig neue Commits bekommen. Du willst deinen Branch auf den aktuellen main-Stand bringen — ohne deinen Branch zu wechseln.',
-    correct: 'git merge main',
-    distractors: ['git checkout main', 'git push origin feature', 'git branch main'],
-    insight: 'merge main integriert main in den aktuellen Branch (feature). checkout main würde den Branch wechseln, statt zu integrieren.',
-  },
-  {
-    caseId: 'conflict-resolved',
-    state: 'Während eines Merges gab es einen Konflikt in einer Datei. Du hast die Konfliktmarkierungen bereinigt und die Datei gespeichert. Der Merge läuft noch.',
-    correct: 'git add der Datei, dann git commit abschließen',
-    distractors: ['git push sofort ausführen', 'git restore --staged . und neu beginnen', 'git commit --amend auf den letzten Commit'],
-    insight: 'Nach dem Bereinigen markiert git add die Datei als gelöst; der ausstehende Merge-Commit wird danach abgeschlossen.',
-  },
-  {
-    caseId: 'restore-file',
-    state: 'Du hast lokale Änderungen in einer Datei, die noch nicht gestaged sind. Du entscheidest: diese Änderungen willst du verwerfen und die Datei auf den Stand des letzten Commits zurücksetzen.',
-    correct: 'git restore datei.py',
-    distractors: ['git rm datei.py', 'git commit -m "verwerfen"', 'git stash apply'],
-    insight: 'restore setzt unstaged Änderungen der Arbeitskopie zurück; rm würde die Datei aus dem Projekt entfernen.',
-  },
-];
+registerStaticCases(gitOperationDoc.familyId, gitOperationDoc.cases);
+
+/** Authored case meta from the public body: the correct option sits first
+ *  in `choices` (canonical order, rotation happens per seed), `state`,
+ *  `insight`, `staticFlow` and `challengeDistractors` live in `parameters`. */
+const gitCaseMeta = (body) => ({
+  caseId: body.caseId,
+  state: body.parameters.state,
+  correct: body.choices.find((choice) => choice.correct).text,
+  distractors: body.choices.filter((choice) => !choice.correct).map((choice) => choice.text),
+  insight: body.parameters.insight,
+  challengeDistractors: body.parameters.challengeDistractors ?? null,
+  staticFlow: body.parameters.staticFlow === true,
+});
+
+const GIT_CASES = gitOperationDoc.cases
+  .filter((body) => body.parameters?.staticFlow !== true)
+  .map(gitCaseMeta);
 
 /** Semantic variant bank (B): a described repository state, asked for the
  *  fitting next action. Six professionally distinct states; correct
@@ -682,21 +663,17 @@ export function gitNextActionCaseCount() {
 }
 
 const GIT_OPERATION_CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
-const GIT_OPERATION_CHALLENGE_DISTRACTORS = {
-  'diff-unstaged': ['git diff --staged', 'git status', 'git add -p'],
-  'diff-staged': ['git diff', 'git status', 'git add -p'],
-};
 
 function gitOperationCase(caseId) {
-  const meta = GIT_CASES.find((item) => item.caseId === caseId)
-    || GIT_OPERATION_STATIC[caseId];
-  if (!meta) throw new Error(`Unbekannter Git-Fall ${caseId}`);
-  return meta;
+  if (!gitOperationDoc.cases.some((item) => item.caseId === caseId)) {
+    throw new Error(`Unbekannter Git-Fall ${caseId}`);
+  }
+  return gitCaseMeta(staticCaseBody(gitOperationDoc.familyId, caseId));
 }
 
 function gitOperationOptions(meta, difficulty, choiceCount) {
   const distractors = difficulty === 'challenge'
-    ? (GIT_OPERATION_CHALLENGE_DISTRACTORS[meta.caseId] || meta.distractors)
+    ? (meta.challengeDistractors || meta.distractors)
     : meta.distractors;
   return [meta.correct, ...distractors.slice(0, choiceCount - 1)];
 }
@@ -707,23 +684,6 @@ export function solveGitOperation(parameters) {
   return { correctText: gitOperationCase(parameters.caseId).correct };
 }
 
-// Gepinnte statische Quelle für den Merge-Fall
-// Unabhängiger Lookup neben GIT_CASES, damit die Seed-Generator-Baseline
-// (genGitNextAction) unangetastet bleibt.
-const GIT_OPERATION_STATIC = {
-  'merge-conflict-test-flow': {
-    caseId: 'merge-conflict-test-flow',
-    state: 'Beim Merge eines Feature-Branches entsteht ein Konflikt in `checker.py`. Beide Branches hatten vor dem Merge grüne Tests.',
-    correct: 'Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen',
-    distractors: [
-      'Immer `--ours` wählen, weil der aktuelle Branch Vorrang hat',
-      'Konfliktmarker unverändert committen; die frühere grüne Suite reicht als Beleg',
-      'Die Historie neu schreiben, damit kein Konflikt mehr sichtbar ist',
-    ],
-    insight: 'Lies zuerst beide Varianten und löse die fachliche Absicht. Danach prüfst du die neu entstandene Kombination mit Tests und Diff. Erst dieser Zustand wird als Merge-Commit gespeichert.',
-  },
-};
-
 /** S4C family generator for classify-git-operation. Case type is pinned;
  *  seed rotates the correct position and, on stretch/challenge, localizes a
  *  working-tree file name. intro/core leave that file step empty (vacuous-axis). */
@@ -732,7 +692,7 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   const choiceCount = GIT_OPERATION_CHOICE_COUNT[difficulty];
   if (!choiceCount) throw new Error(`Unbekanntes Profil ${difficulty}`);
   const meta = gitOperationCase(caseId);
-  const varyFile = (difficulty === 'stretch' || difficulty === 'challenge') && !GIT_OPERATION_STATIC[caseId];
+  const varyFile = (difficulty === 'stretch' || difficulty === 'challenge') && !meta.staticFlow;
   const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
   const fileName = varyFile ? fileNames[randInt(rng(seed), 0, fileNames.length - 1)] : null;
   const options = gitOperationOptions(meta, difficulty, choiceCount);
@@ -740,7 +700,7 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   const ids = ['a', 'b', 'c', 'd'].slice(0, options.length);
   const choices = buildRotatedChoices(options, rotation, ids);
   const fileNote = fileName ? ` Die Arbeitsdatei heißt ${fileName}.` : '';
-  const question = GIT_OPERATION_STATIC[caseId]
+  const question = meta.staticFlow
     ? 'Welcher Ablauf liefert den belastbarsten Abschluss?'
     : 'Welche Git-Operation passt jetzt?';
   return {

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-dict-state-update",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "dict-start-key-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections"
+      ],
+      "parameters": {
+        "family": "dict-steps",
+        "domain": {
+          "vocabulary": "erster Schlüssel ist 'start', zweiter Schlüssel 'ende'",
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: Zuweisung an einen vorhandenen Schlüssel überschreibt den Wert; del entfernt den Schlüssel komplett.",
+      "hints": [
+        "Wende jede Zeile einzeln auf das Dictionary an: Zuweisung an einen vorhandenen Schlüssel überschreibt seinen Wert.",
+        "del entfernt den Schlüssel komplett — notiere den Zustand von lage nach jeder der vier Zeilen."
+      ],
+      "typicalErrors": [
+        "Überschreiben als Anhängen eines zweiten Eintrags gelesen",
+        "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "dict-ziel-pfad-key-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections"
+      ],
+      "parameters": {
+        "family": "dict-steps",
+        "domain": {
+          "vocabulary": "erster Schlüssel ist 'ziel' oder 'pfad', zweiter Schlüssel 'start'",
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: Zuweisung an einen vorhandenen Schlüssel überschreibt den Wert; del entfernt den Schlüssel komplett.",
+      "hints": [
+        "Wende jede Zeile einzeln auf das Dictionary an: Zuweisung an einen vorhandenen Schlüssel überschreibt seinen Wert.",
+        "del entfernt den Schlüssel komplett — notiere den Zustand von lage nach jeder der vier Zeilen."
+      ],
+      "typicalErrors": [
+        "Überschreiben als Anhängen eines zweiten Eintrags gelesen",
+        "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    }
+  ]
+}

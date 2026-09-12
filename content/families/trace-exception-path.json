@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-exception-path",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "valueerror",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 0,
+        "domain": {
+          "code": "int(\"3,<d>\") mit Ziffer d in [1, 9]"
+        }
+      },
+      "expected": {
+        "correctText": "ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
+      "distractors": [
+        "TypeError — die Operation ist für diese Typen nicht definiert.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "IndexError — der Index liegt außerhalb der Sequenz.",
+        "Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis."
+      ],
+      "hints": [
+        "Schaue auf das Literal im int()-Aufruf: int() verlangt eine gültige Ganzzahl als String.",
+        "Ein Komma im String ist kein gültiges Zahlenliteral — welche Ausnahme wirft int() dann?"
+      ],
+      "typicalErrors": [
+        "das Komma-Literal als gültige Zahl gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "typeerror-concat",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 1,
+        "domain": {
+          "code": "\"ki\" + 5 (konstant)"
+        }
+      },
+      "expected": {
+        "correctText": "TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "IndexError — der Index liegt außerhalb der Sequenz.",
+        "Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis."
+      ],
+      "hints": [
+        "Prüfe die Operanden von +: str und int lassen sich nicht automatisch verbinden.",
+        "Welche Ausnahme wirft Python bei einer für diese Typen undefinierten Operation?"
+      ],
+      "typicalErrors": [
+        "implizite Typumwandlung von int zu str angenommen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "keyerror",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 2,
+        "domain": {
+          "code": "alter = {\"anna\": <18-30>}\\nalter[\"<berta|caro|dilan>\"]"
+        }
+      },
+      "expected": {
+        "correctText": "KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "TypeError — die Operation ist für diese Typen nicht definiert.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "IndexError — der Index liegt außerhalb der Sequenz.",
+        "Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis."
+      ],
+      "hints": [
+        "Prüfe, ob der abgefragte Schlüssel im Dictionary wirklich existiert.",
+        "Der Zugriff über eckige Klammern auf einen fehlenden Schlüssel wirft welche Ausnahme?"
+      ],
+      "typicalErrors": [
+        "angenommen, der Schlüssel existiere oder ein Standardwert werde geliefert"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "filenotfound",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 3,
+        "domain": {
+          "code": "open(\"notizen_nicht_da.txt\") (konstant)"
+        }
+      },
+      "expected": {
+        "correctText": "FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "TypeError — die Operation ist für diese Typen nicht definiert.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "IndexError — der Index liegt außerhalb der Sequenz.",
+        "Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis."
+      ],
+      "hints": [
+        "open() im Lesemodus braucht eine existierende Datei.",
+        "Welche Ausnahme signalisiert eine fehlende Datei?"
+      ],
+      "typicalErrors": [
+        "fehlende Datei mit einer anderen Ausnahmeart verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "indexerror",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 4,
+        "domain": {
+          "code": "werte = [<1-9>, <1-9>]\\nwerte[<5-9>]"
+        }
+      },
+      "expected": {
+        "correctText": "IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "TypeError — die Operation ist für diese Typen nicht definiert.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis."
+      ],
+      "hints": [
+        "Zähle die Listeneinträge und vergleiche mit dem Zugriffsindex.",
+        "Ein Index hinter dem Listenende wirft welche Ausnahme?"
+      ],
+      "typicalErrors": [
+        "Index um eins verzählt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "typeerror-len",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 5,
+        "domain": {
+          "code": "len(5) (konstant)"
+        }
+      },
+      "expected": {
+        "correctText": "TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "IndexError — der Index liegt außerhalb der Sequenz.",
+        "Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis."
+      ],
+      "hints": [
+        "len() braucht ein Objekt mit Länge — hat eine ganze Zahl eine?",
+        "Welche Ausnahme wirft len() auf einem int?"
+      ],
+      "typicalErrors": [
+        "len(5) als 1 gewertet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "no-error-int",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 6,
+        "domain": {
+          "code": "int(\"<10-99>\")"
+        }
+      },
+      "expected": {
+        "correctText": "Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl {literal}."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText}",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "TypeError — die Operation ist für diese Typen nicht definiert.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "IndexError — der Index liegt außerhalb der Sequenz."
+      ],
+      "hints": [
+        "Prüfe das String-Literal im int()-Aufruf: ist es eine gültige Ganzzahl?",
+        "Ein gültiges Ziffernliteral läuft fehlerfrei — welches Ergebnis liefert der Ausdruck?"
+      ],
+      "typicalErrors": [
+        "gültiges Ziffernliteral für einen Fehlerfall gehalten"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "no-error-mul",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-exception-boundary-01"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "parameters": {
+        "caseIndex": 7,
+        "domain": {
+          "code": "\"<2-4>\" * <2-3>"
+        }
+      },
+      "expected": {
+        "correctText": "Kein Fehler — der Ausdruck liefert problemlos den String \"{repeated}\"."
+      },
+      "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
+      "fullSolution": "Richtig: {correctText}",
+      "distractors": [
+        "ValueError — das Literal passt nicht zum erwarteten Typ.",
+        "TypeError — die Operation ist für diese Typen nicht definiert.",
+        "KeyError — der Schlüssel fehlt im Mapping.",
+        "FileNotFoundError — die Datei existiert nicht.",
+        "IndexError — der Index liegt außerhalb der Sequenz."
+      ],
+      "hints": [
+        "String mal Zahl wiederholt den String — das ist eine definierte Operation.",
+        "Welches Ergebnis liefert die String-Wiederholung konkret?"
+      ],
+      "typicalErrors": [
+        "String-Multiplikation fälschlich als TypeError eingeschätzt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

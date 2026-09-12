@@ -1,0 +1,307 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-count-from-construction",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "linear-param-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w18-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genLinearParamCount"
+      },
+      "competencyIds": [
+        "c-dl-tensors"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genLinearParamCount",
+        "defaultSeed": 1802,
+        "defaultExpected": 77
+      },
+      "prompt": "Zwei MLPs mit je einer versteckten Schicht unterscheiden sich nur in deren Breite: Netz A hat 4, Netz B 11 versteckte Neuronen. Beide lesen 6 Features, geben 4 Ausgaben aus und tragen überall Bias. Wie viele zusätzliche trainierbare Parameter hat Netz B gegenüber Netz A?",
+      "fullSolution": "Ein Netz mit versteckter Breite $h$ hat $d \\cdot h + h + h \\cdot \\mathrm{out} + \\mathrm{out}$ Parameter. Die Differenz zwischen den Breiten ist $(h_B - h_A) \\cdot (d + 1 + \\mathrm{out})$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Ein Layer $d \\to h$ mit Bias hat $d \\cdot h + h$ Parameter — erst für die Eingabeschicht, dann für die Ausgabeschicht aufsummieren.",
+        "Die Differenz zweier Netze, die sich nur in der Breite $h$ der versteckten Schicht unterscheiden, ist $(h_B - h_A) \\cdot (d + 1 + \\mathrm{out})$ — die Ausgabeschicht wächst nämlich mit."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 70",
+          "then": "Das ist $(11 - 4) \\cdot (6 + 4)$ — die +1 für den Bias der versteckten Schicht fehlt."
+        },
+        {
+          "if": "value === 66",
+          "then": "Hier fehlt der Ausgabe-Bias: gerechnet ist $(11 - 4) \\cdot (6 + 1 + 3)$ statt $\\ldots + 4$."
+        },
+        {
+          "if": "value === 7",
+          "then": "7 ist nur die Differenz der Neuronen — multipliziere mit den Parametern, die pro zusätzlichem Neuron dazukommen."
+        }
+      ],
+      "typicalErrors": [
+        "Bias-Parameter weglassen und nur $d \\cdot h$ zählen",
+        "nur die versteckte Schicht zählen und die Ausgabeschicht vergessen, die mit $h$ mitwächst",
+        "Differenz der Neuronenzahlen statt der Parameterdifferenz angeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "sgd-update-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w20-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genSgdSteps"
+      },
+      "competencyIds": [
+        "c-dl-training"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genSgdSteps",
+        "defaultSeed": 2002,
+        "defaultExpected": 15
+      },
+      "prompt": "Ein Datensatz mit 291 Beispielen wird mit Batchgröße 64 trainiert; der letzte Batch einer Epoche darf kleiner sein. Wie viele Optimizer-Updates enthält das Training insgesamt über 3 Epochen?",
+      "fullSolution": "Batches pro Epoche: $\\lceil n / B \\rceil$, denn der letzte Batch darf kleiner sein. Updates insgesamt: $E \\cdot \\lceil n / B \\rceil$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Updates pro Epoche = Anzahl der Batches = $\\lceil n / B \\rceil$ — der letzte, kleinere Batch zählt als voller Schritt.",
+        "Über $E$ Epochen multiplizierst du diese Zahl mit $E$."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 12",
+          "then": "12 wäre $\\lfloor 291/64 \\rfloor \\cdot 3$ abgerundet — der Rest von 27 Beispielen bildet einen eigenen Batch, also aufrunden."
+        },
+        {
+          "if": "value === 5",
+          "then": "5 ist die Zahl der Batches pro Epoche — über 3 Epochen fehlt der Faktor."
+        },
+        {
+          "if": "value === 13",
+          "then": "Hier wurde 291/64 ≈ 4,5 gerundet statt aufgezählt: 4 volle Batches plus ein Restbatch ergeben 5 pro Epoche."
+        }
+      ],
+      "typicalErrors": [
+        "abgerundet statt aufgerundet (Restbatch vergessen)",
+        "Schritte pro Epoche mit Schritten insgesamt verwechselt",
+        "glatte Division angenommen, obwohl ein Rest bleibt"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "dropout-mask-kept-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w21-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genDropoutCount"
+      },
+      "competencyIds": [
+        "c-dl-regularization"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genDropoutCount",
+        "defaultSeed": 2102,
+        "defaultExpected": 8
+      },
+      "prompt": "Zwei aufeinanderfolgende Dropout-Schichten mit Behaltenswahrscheinlichkeit p = 0,6 arbeiten auf 21 Aktivierungen mit unabhängigen, festen Masken (1 = behalten, 0 = droppen). Maske 1: `101110101000011011110`. Maske 2: `111001101100110010110`. Wie viele Aktivierungen überleben beide Schichten?",
+      "fullSolution": "Überleben beide Schichten heißt: Position trägt in Maske 1 UND Maske 2 eine 1 — das positionweise UND der Maskenziffern zählen. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Erst Schicht 1: Positionen mit 1 in Maske 1 überleben. Dann Schicht 2 auf genau diesen Positionen.",
+        "Gesucht ist das positionweise UND: zähle die Stellen, an denen BEIDE Masken eine 1 tragen — Spalte für Spalte vergleichen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 13",
+          "then": "13 ist die Zahl der Einsen in Maske 2 — danach fehlt noch der Filter durch Maske 1."
+        },
+        {
+          "if": "value === 12",
+          "then": "12 ist die Zahl der Einsen in Maske 1 — auch hier muss noch die zweite Maske hineinwirken."
+        },
+        {
+          "if": "value === 21",
+          "then": "21 ist die Gesamtzahl der Aktivierungen — gedroppt wird in beiden Schichten, also können nicht alle überleben."
+        }
+      ],
+      "typicalErrors": [
+        "nur eine Maske gezählt",
+        "Einsen beider Masken addiert statt UND-verknüpft",
+        "Skalierungsfaktor 1/p auf die Anzahl angewendet"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "attention-tensor-cells",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w22-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genAttentionShape"
+      },
+      "competencyIds": [
+        "c-dl-attention"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genAttentionShape",
+        "defaultSeed": 2211,
+        "defaultExpected": 45
+      },
+      "prompt": "Ein Decoder darf beim Token 10 nur die Tokens 1 bis 10 sehen (kausale Maske): alle Score-Zellen, in denen ein Token auf ein späteres Token schaut, werden vor dem Softmax auf −∞ gesetzt. Wie viele Zellen einer 10×10-Score-Matrix werden so verdeckt?",
+      "fullSolution": "Formen ableiten: Score-Matrix $n \\times m$, Ausgabe $n \\times d_v$, kausale Maske verdeckt $n(n-1)/2$ Zellen, Skalierungsdivisor $\\sqrt{d_k}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Erst die Form bestimmen: Zeilen- und Spaltenzahl der beteiligten Matrizen. Bei der kausalen Maske sind die sichtbaren Zellen die auf und unterhalb der Diagonale.",
+        "Shape-Vertrag: $QK^\\top$ hat eine Zeile je Query und eine Spalte je Key; die Ausgabe erbt Zeilen von $A$ und Spalten von $V$; bei der Skalierung ist der Divisor $\\sqrt{d_k}$."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 100",
+          "then": "Das ist die Gesamtzahl der Zellen — verdeckt werden nur die oberhalb der Diagonale."
+        },
+        {
+          "if": "value === 55",
+          "then": "n·(n+1)/2 zählt die Zellen unterhalb einschließlich der falschen Diagonale — unterhalb der Diagonale sind es n·(n−1)/2."
+        },
+        {
+          "if": "value === 90",
+          "then": "Ohne Division durch 2 — jede verdeckte Zelle liegt genau einmal oberhalb der Diagonale."
+        }
+      ],
+      "typicalErrors": [
+        "Zeilen- mit Spaltenzahl vertauscht",
+        "Diagonale in die Maskenzählung einbezogen",
+        "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "bpe-vocab-size",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w23-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genVocabAfterMerges"
+      },
+      "competencyIds": [
+        "c-dl-tokenizer"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genVocabAfterMerges",
+        "defaultSeed": 2311,
+        "defaultExpected": 97
+      },
+      "prompt": "Ein Subword-Tokenizer startet mit 31 Zeichen-Tokens. Ein BPE-Lauf lernt 62 Merges; jeder Merge fügt genau ein neues Symbol ins Vokabular ein. Zusätzlich kommen 4 Sondertokens (etwa <pad>, <unk>, <eos>) dazu. Wie groß ist das Vokabular danach?",
+      "fullSolution": "Vokabulargröße = Zeichen + Merges + Sondertokens; jeder Merge fügt genau ein neues Symbol hinzu. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Das Vokabular setzt sich aus drei Posten zusammen: Zeichen-Tokens am Anfang, genau ein neues Symbol pro gelerntem Merge, dazu reservierte Sondertokens.",
+        "Bei Zielgrößen rückwärts rechnen: Merges = Ziel − Zeichen − Sondertokens; Sondertokens = Ziel − Zeichen − Merges."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 93",
+          "then": "Das ist Zeichen + Merges — die Sondertokens fehlen noch."
+        },
+        {
+          "if": "value === 35",
+          "then": "Das ist Zeichen + Sondertokens — die gelernten Merges fehlen."
+        },
+        {
+          "if": "value === 66",
+          "then": "Die Zeichen sind doppelt gezählt; jede Größe geht genau einmal ein."
+        }
+      ],
+      "typicalErrors": [
+        "Sondertokens vergessen",
+        "Merges doppelt gezählt (Symbole und Ausgangspaare)",
+        "bei Zielgrößen die Rückrechnung andersherum aufgestellt"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "lora-param-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w25-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genLoraParamCount"
+      },
+      "competencyIds": [
+        "c-dl-finetuning"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genLoraParamCount",
+        "defaultSeed": 2511,
+        "defaultExpected": 1184
+      },
+      "prompt": "LoRA friert die Matrix W (176×416) ein und lernt nur ΔW = B·A mit A als 2×416-Matrix und B als 176×2-Matrix (Skalierung α/r frei gewählt). Wie viele freie Parameter haben A und B zusammen?",
+      "fullSolution": "LoRA: $r\\,(d_{in} + d_{out})$ freie Parameter gegen $d_{out} \\cdot d_{in}$ beim vollen Fine-Tuning; Ersparnis = Differenz. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "A hat die Form r×d_in, B die Form d_out×r — die Parameterzahlen sind r·d_in + d_out·r.",
+        "Voll-Fine-Tuning zählt d_out · d_in Parameter; die Ersparnis ist die Differenz."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 73216",
+          "then": "Das ist die volle Matrix (d_out · d_in) — gefragt sind die LoRA-Faktoren."
+        },
+        {
+          "if": "value === 592",
+          "then": "d_in + d_in ohne Rang-Faktor — A und B tragen je r Zeilen/Spalten."
+        },
+        {
+          "if": "value === 832",
+          "then": "Das ist nur Faktor A (r · d_in); B kommt mit r · d_out dazu."
+        }
+      ],
+      "typicalErrors": [
+        "Rang-Faktor nur auf einen Term angewandt",
+        "Formen von A und B vertauscht",
+        "Ersparnis als Quotient statt Differenz berechnet"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

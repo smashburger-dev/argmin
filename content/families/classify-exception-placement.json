@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-exception-placement",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "translate-error-to-issue",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-files-choice-01"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Dort, wo eine Zeile in einen konkreten Issue-Eintrag übersetzt werden kann.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Ganz innen mit `except Exception: pass`, damit kein Fehler sichtbar bleibt.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Gar nicht; jede ungültige CSV-Zelle soll das ganze Programm beenden.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "In jedem Funktionsaufruf unabhängig davon, ob eine Entscheidung möglich ist.",
+          "correct": false
+        }
+      ],
+      "prompt": "`parse_age` wirft bei ungültigem Text `ValueError`. Wo sollte der CLI-Datenprüfer diesen erwarteten Fehler behandeln?",
+      "fullSolution": "Der Aufrufer kennt Zeilennummer und Spalte und kann den ValueError dort in einen präzisen Issue-Eintrag übersetzen.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

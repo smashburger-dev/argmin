@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-string-immutability",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "string-item-assignment-typeerror",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w02-e3"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Das Programm bricht mit einem TypeError ab: Strings unterstützen keine Zuweisung an einzelne Zeichen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Es gibt \"Mda\" aus, weil das erste Zeichen ersetzt wird.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Es gibt \"MAda\" aus, weil das Zeichen eingefügt statt ersetzt wird.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Es gibt \"Ada\" aus, weil Zuweisungen an Strings still ignoriert werden.",
+          "correct": false
+        }
+      ],
+      "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>name = \"Ada\"\nname[0] = \"M\"\nprint(name)</code>",
+      "fullSolution": "name[0] = \"M\" wirft TypeError: 'str' object does not support item assignment. Strings sind unveränderlich; jede Änderung erzeugt einen neuen String. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-test-attitude",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "csv-off-by-one-reproduce-smallest",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-testing-choice-01"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Den kleinsten Fall reproduzieren und prüfen, ob Header und nullbasierter Index in der Umrechnung fehlen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Die Erwartung ohne weitere Prüfung auf 2 ändern.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Alle Tests vorübergehend löschen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Den Fehler mit `except Exception` unterdrücken.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Test erwartet für die zweite Datenzeile CSV-Zeilennummer 3, dein Code meldet 2. Was ist der beste nächste Diagnoseschritt?",
+      "fullSolution": "Die Differenz um eins spricht für Header- oder Indexumrechnung. Der kleine reproduzierbare Fall kann diese Hypothese bestätigen oder verwerfen.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

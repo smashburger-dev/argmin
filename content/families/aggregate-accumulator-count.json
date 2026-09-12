@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-accumulator-count",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "elif-branch-value",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-flow-output-01"
+      ],
+      "competencyIds": [
+        "c-python-control-flow",
+        "c-python-collections"
+      ],
+      "parameters": {
+        "shape": "elif",
+        "domain": {
+          "x": "ganze Zahl ungleich 0 in [-12, 12]",
+          "t1": "ganze Zahl in [-8, 8]",
+          "t2": "t1 - ganze Zahl in [2, 6]",
+          "k": "ganze Zahl in [2, 5]"
+        }
+      },
+      "expected": {
+        "kind": "output-lines"
+      },
+      "prompt": "Was gibt dieses Programm aus? Erst den aktiven Zweig bestimmen (genau einer läuft), dann den Wert — beides zusammen in einer Zeile.",
+      "fullSolution": "x = {x}. Erste Bedingung x > {t1} ist {cond1}; falls sie falsch ist: zweite Bedingung x < {t2} ist {cond2}. Aktiver Zweig: {branch} mit Wert {value}. Ausgabe: {output}.",
+      "hints": [
+        "Bestimme zuerst den Wert von x und prüfe die Bedingungen von oben nach unten — der erste wahre Zweig gewinnt.",
+        "Nur genau einer der drei Zweige läuft: Ist x > t1, gilt Zweig A; ist das falsch, entscheidet x < t2 zwischen B und C. Rechne den Zweigwert aus und schreibe Buchstabe und Wert in eine Zeile."
+      ],
+      "typicalErrors": [
+        "beide Zweige ausgewertet statt nur des ersten wahren",
+        "Buchstabe oder Wert in der Ausgabe vergessen"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "while-counter-with-stop-state",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-flow-output-01"
+      ],
+      "competencyIds": [
+        "c-python-control-flow",
+        "c-python-collections"
+      ],
+      "parameters": {
+        "shape": "while",
+        "domain": {
+          "step": "ganze Zahl in [2, 4]",
+          "stop": "ganze Zahl in [1, 4]",
+          "n0": "stop + (iterations - 1) * step + ganze Zahl in [1, step]",
+          "iterations": "ganze Zahl in [2, 5]"
+        }
+      },
+      "expected": {
+        "kind": "output-lines"
+      },
+      "prompt": "Was gibt dieses Programm aus? Die Schleife vollständig durchlaufen (auch den Abbruch) — zwei Zahlen in einer Zeile.",
+      "fullSolution": "Durchläufe: {durchlaeufe}. Die Schleife endet bei n = {nEnd} (n > {stop} ist dann falsch). Ausgabe: {output}.",
+      "hints": [
+        "Trage die Schleife Durchlauf für Durchlauf aus: in jeder Runde wird summe um n erhöht und danach n verkleinert.",
+        "Die Schleife läuft, solange n > stop gilt — auch den letzten Durchlauf und den Abbruchwert von n beachten. Die Ausgabe ist summe gefolgt vom Endwert von n."
+      ],
+      "typicalErrors": [
+        "Schleife einen Durchlauf zu früh oder zu spät beendet",
+        "Endwert von n mit der Summe in der Ausgabe verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "for-filter-accumulator",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-flow-output-01"
+      ],
+      "competencyIds": [
+        "c-python-control-flow",
+        "c-python-collections"
+      ],
+      "parameters": {
+        "shape": "forfilter",
+        "domain": {
+          "nums": "sechs ganze Zahlen in [-9, 9], mindestens eine gerade",
+          "factor": "ganze Zahl in [2, 3]"
+        }
+      },
+      "expected": {
+        "kind": "output-lines"
+      },
+      "prompt": "Was gibt dieses Programm aus? Listen in Python-Schreibweise angeben, z. B. [1, 2].",
+      "fullSolution": "Gerade Werte aus {werte}: {gerade}. Jeder wird mit {factor} multipliziert: {out}.",
+      "hints": [
+        "Filtere zuerst die geraden Werte aus werte, bevor du multiplizierst.",
+        "Jedes Ergebnis ist w * factor für die geraden w — die Ausgabe ist eine Python-Liste, z. B. [1, 2]."
+      ],
+      "typicalErrors": [
+        "ungerade Werte mit in die Ausgabe genommen",
+        "Liste ohne eckige Klammern oder mit falschen Vorzeichen notiert"
+      ],
+      "tolerancePolicy": {
+        "mode": "whitespace-normalized"
+      },
+      "activityType": "predict-output",
+      "graderId": "deterministic"
+    }
+  ]
+}

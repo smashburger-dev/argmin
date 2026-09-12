@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-python-collection-choice",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "membership-set-for-dedup",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collections-choice-01"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ein Set `seen`, das jede erstmals gelesene ID aufnimmt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Eine Zahl, die nur die bisherige Zeilenanzahl speichert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ein String mit allen IDs ohne Trennzeichen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nur die zuletzt gelesene ID.",
+          "correct": false
+        }
+      ],
+      "prompt": "Du verarbeitest IDs in Reihenfolge und willst bei jeder ID schnell prüfen, ob sie bereits vorkam. Welche zusätzliche Struktur passt am besten?",
+      "fullSolution": "Ein Set speichert eindeutige IDs. `id in seen` prüft, ob die ID bereits verarbeitet wurde.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-backprop-path-sum",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "chain-rule-path-sum",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genBackpropChain"
+      },
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genBackpropChain",
+        "defaultSeed": 1902,
+        "defaultExpected": -3
+      },
+      "prompt": "Der Verlust L hängt über zwei Zweige vom Eingang x ab. Zweig A hat die lokalen Gradienten 1 und 3, Zweig B die lokalen Gradienten 3 und −2; beide Zweige gehen additiv in L ein. Wie groß ist ∂L/∂x?",
+      "fullSolution": "Beitrag je Zweig = Produkt der lokalen Gradienten (Upstream 1). Gesamt: $\\partial L/\\partial x = g_{A1} \\cdot g_{A2} + g_{B1} \\cdot g_{B2}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Jeder Zweig ist ein eigener Kettenregel-Pfad: multipliziere die lokalen Gradienten entlang des Zweigs (Upstream ist 1).",
+        "Weil beide Zweige additiv in L eingehen, addieren sich ihre Beiträge: Produkt aus A plus Produkt aus B."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 3",
+          "then": "Das ist nur Zweig A (1 · 3) — Zweig B trägt 3 · (−2) = −6 zusätzlich bei."
+        },
+        {
+          "if": "value === -6",
+          "then": "Das ist nur Zweig B — Zweig A fehlt noch mit +3."
+        },
+        {
+          "if": "value === -18",
+          "then": "Die Zweige werden nicht multipliziert: sie sind parallele Pfade zu L, ihre Beiträge werden addiert."
+        }
+      ],
+      "typicalErrors": [
+        "nur einen Zweig beitragen lassen",
+        "die Zweigprodukte miteinander multipliziert statt addiert",
+        "Vorzeichen eines lokalen Gradienten verloren"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

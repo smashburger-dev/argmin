@@ -34,7 +34,7 @@
         "Potenz- und Logarithmusaufgaben über Definitionen prüfen",
         "Vorzeichen- und Operationsfehler lokalisieren"
        ],
-       "estimatedMinutes": 45,
+       "estimatedMinutes": 20,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -47,7 +47,7 @@
         {
          "ref": "lessons/foundations/algebra.md",
          "lines": 33,
-         "words": 321,
+         "words": 354,
          "block": "worked-example"
         }
        ]
@@ -61,7 +61,7 @@
         "gleichartige Terme erkennen und zusammenfassen",
         "eine Umformung mit Einsetzen kontrollieren"
        ],
-       "estimatedMinutes": 35,
+       "estimatedMinutes": 25,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -73,8 +73,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/algebra-transformations.md",
-         "lines": 36,
-         "words": 245,
+         "lines": 34,
+         "words": 248,
          "block": "worked-example"
         }
        ]
@@ -130,7 +130,31 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-product-and-power-of-power",
+       "familyId": "transform-power-log-exponent",
+       "caseId": "product-and-power-of-power",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-transform-power-log-exponent-practice",
@@ -140,7 +164,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-algebra-distribute-sign-constant-chain",
@@ -150,7 +177,31 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "expression",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-combine-like-terms",
+       "familyId": "transform-expression-simplify-canonical",
+       "caseId": "combine-like-terms",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-foundations-algebra-transformations",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "expression",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-transform-expression-simplify-canonica",
@@ -160,7 +211,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-algebra-base-vs-exponent-confusion",
@@ -170,7 +224,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-seeded-error-pattern-cases",
@@ -180,7 +241,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-classify-error-hypothesis-practice",
@@ -190,7 +258,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -202,7 +273,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 6,
+    "masteryEligibleDefinitions": 8,
     "policySatisfiable": true
    }
   },
@@ -242,7 +313,7 @@
         "Potenz- und Logarithmusaufgaben über Definitionen prüfen",
         "Vorzeichen- und Operationsfehler lokalisieren"
        ],
-       "estimatedMinutes": 45,
+       "estimatedMinutes": 20,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -255,7 +326,7 @@
         {
          "ref": "lessons/foundations/algebra.md",
          "lines": 33,
-         "words": 321,
+         "words": 354,
          "block": "worked-example"
         }
        ]
@@ -269,7 +340,7 @@
         "gleichartige Terme erkennen und zusammenfassen",
         "eine Umformung mit Einsetzen kontrollieren"
        ],
-       "estimatedMinutes": 35,
+       "estimatedMinutes": 25,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -281,8 +352,8 @@
        "mdFiles": [
         {
          "ref": "lessons/foundations/algebra-transformations.md",
-         "lines": 36,
-         "words": 245,
+         "lines": 34,
+         "words": 248,
          "block": "worked-example"
         }
        ]
@@ -338,7 +409,31 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-product-and-power-of-power",
+       "familyId": "transform-power-log-exponent",
+       "caseId": "product-and-power-of-power",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-transform-power-log-exponent-practice",
@@ -348,7 +443,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-algebra-distribute-sign-constant-chain",
@@ -358,7 +456,31 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "expression",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-combine-like-terms",
+       "familyId": "transform-expression-simplify-canonical",
+       "caseId": "combine-like-terms",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-foundations-algebra-transformations",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "expression",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-transform-expression-simplify-canonica",
@@ -368,7 +490,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-algebra-base-vs-exponent-confusion",
@@ -378,7 +503,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-seeded-error-pattern-cases",
@@ -388,7 +520,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-algebra"
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-algebra-classify-error-hypothesis-practice",
@@ -398,7 +537,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -410,7 +552,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 6,
+    "masteryEligibleDefinitions": 8,
     "policySatisfiable": true
    }
   },
@@ -494,6 +636,20 @@
        "caseMissing": true
       },
       {
+       "placementId": "p-foundations-python-state-chain3-overwrite-print",
+       "familyId": "trace-assignment-state",
+       "caseId": "chain3-overwrite-print",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-python-state",
+       "familyProcedural": false,
+       "familyCaseCount": 15,
+       "familyHasBank": false,
+       "caseMissing": true
+      },
+      {
        "placementId": "p-foundations-python-state-trace-assignment-state-practice",
        "familyId": "trace-assignment-state",
        "caseId": null,
@@ -516,7 +672,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 2,
+    "masteryEligibleDefinitions": 3,
     "policySatisfiable": true
    }
   },
@@ -603,6 +759,20 @@
        "caseMissing": true
       },
       {
+       "placementId": "p-foundations-code-reading-join-split-predict",
+       "familyId": "trace-assignment-state",
+       "caseId": "join-split-predict",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-code-reading",
+       "familyProcedural": false,
+       "familyCaseCount": 15,
+       "familyHasBank": false,
+       "caseMissing": true
+      },
+      {
        "placementId": "p-foundations-code-reading-trace-assignment-state-practice",
        "familyId": "trace-assignment-state",
        "caseId": null,
@@ -654,7 +824,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 3,
+    "masteryEligibleDefinitions": 4,
     "policySatisfiable": true
    }
   },
@@ -727,8 +897,8 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "?",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -739,6 +909,20 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
+       "lessonId": "l-foundations-functions",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseMissing": true
+      },
+      {
+       "placementId": "p-foundations-functions-both-orders-stretch",
+       "familyId": "trace-call-composition",
+       "caseId": "both-orders-linear-functions",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
        "lessonId": "l-foundations-functions",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -801,7 +985,7 @@
         "einen Fehler mit einem prüfbaren nächsten Schritt dokumentieren",
         "Review nach Fälligkeit statt Streak planen"
        ],
-       "estimatedMinutes": 25,
+       "estimatedMinutes": 15,
        "releaseStatus": "draft",
        "blockTypes": [
         "reflection"
@@ -826,7 +1010,14 @@
        "difficulty": "stretch",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-learning"
+       "lessonId": "l-foundations-learning",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-learning-error-journal-order",
@@ -940,7 +1131,7 @@
        "lessonId": "l-linalg-matrices",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -959,8 +1150,8 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "integer",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -976,8 +1167,8 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "integer",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -993,8 +1184,8 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "integer",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -1010,8 +1201,8 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "integer",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -1027,8 +1218,8 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "?",
-       "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -1037,7 +1228,7 @@
        "caseId": "product-definition-rationale",
        "role": "curated",
        "difficulty": "core",
-       "masteryEligible": true,
+       "masteryEligible": false,
        "estimatedMinutes": 6,
        "lessonId": "l-linalg-matrices",
        "familyProcedural": false,
@@ -1059,7 +1250,7 @@
        "lessonId": "l-linalg-matrices",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1076,7 +1267,7 @@
        "lessonId": "l-linalg-matrices",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -1098,6 +1289,37 @@
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-matrices-12-shape-vector-matmul-chain",
+       "familyId": "classify-matrix-shape",
+       "caseId": "shape-vector-matmul-chain",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-linalg-matrices",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-matrices-13-matmul-entry-seeded",
+       "familyId": "formula-scalar-product",
+       "caseId": "matmul-entry-seeded",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-linalg-matrices",
+       "familyProcedural": false,
+       "familyCaseCount": 7,
+       "familyHasBank": false,
+       "caseMissing": true
       },
       {
        "placementId": "p-linalg-matrices-11-formula-scalar-product-practice",
@@ -1245,7 +1467,7 @@
        "lessonId": "l-linalg-systems",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -1262,7 +1484,7 @@
        "lessonId": "l-linalg-systems",
        "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1279,11 +1501,25 @@
        "lessonId": "l-linalg-systems",
        "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-systems-07-system-seeded-2x2",
+       "familyId": "transform-system-2x2-elimination",
+       "caseId": "system-seeded-2x2",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-linalg-systems",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseMissing": true
       },
       {
        "placementId": "p-linalg-systems-06-transform-system-2x2-elimination-practice",
@@ -1308,7 +1544,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 5,
+    "masteryEligibleDefinitions": 6,
     "policySatisfiable": true
    }
   },
@@ -1380,7 +1616,7 @@
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1397,7 +1633,7 @@
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 1,
@@ -1414,7 +1650,7 @@
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1431,7 +1667,7 @@
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1448,9 +1684,26 @@
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-gauss-07-rank-3x4-line",
+       "familyId": "transform-rank-dependence-rowops",
+       "caseId": "rank-3x4-line",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 12,
+       "lessonId": "l-linalg-gauss",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1477,7 +1730,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 4,
+    "masteryEligibleDefinitions": 5,
     "policySatisfiable": true
    }
   },
@@ -1548,7 +1801,7 @@
        "lessonId": "l-linalg-independence",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1565,7 +1818,7 @@
        "lessonId": "l-linalg-independence",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
@@ -1579,7 +1832,65 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-linalg-independence"
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-05-dependent-triple-span",
+       "familyId": "classify-independence-multiple",
+       "caseId": "dependent-triple-span",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-06-rank-3x3-full",
+       "familyId": "transform-rank-dependence-rowops",
+       "caseId": "rank-3x3-full",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-07-rank-3x4-line",
+       "familyId": "transform-rank-dependence-rowops",
+       "caseId": "rank-3x4-line",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 12,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-linalg-independence-04-formula-det2-independence-practice",
@@ -1589,7 +1900,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -1601,7 +1915,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 2,
+    "masteryEligibleDefinitions": 4,
     "policySatisfiable": true
    }
   },
@@ -1697,6 +2011,23 @@
        "caseHasWorkedExample": false
       },
       {
+       "placementId": "p-linalg-numpy-shape-contracts-03-synthesis-singular-guard",
+       "familyId": "construct-linalg-contract-synthesis",
+       "caseId": "synthesis-singular-guard",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 12,
+       "lessonId": "l-numpy-shape-contracts",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": true,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
        "placementId": "p-linalg-numpy-shape-contracts-03-final-boss-authored",
        "familyId": "construct-matvec-shape-contract",
        "caseId": "final-boss-authored",
@@ -1751,7 +2082,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-linalg-numpy-shape-contracts-06-transform-system-2x2-elimination-practice",
@@ -1776,7 +2110,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 3,
+    "masteryEligibleDefinitions": 4,
     "policySatisfiable": true
    }
   },
@@ -1844,7 +2178,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-control-flow"
+       "lessonId": "l-foundations-control-flow",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-control-flow-classify-control-construct-practi",
@@ -1854,7 +2195,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-control-flow-string-item-assignment-typeerror",
@@ -1864,7 +2208,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-control-flow"
+       "lessonId": "l-foundations-control-flow",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-control-flow-classify-string-immutability-prac",
@@ -1874,7 +2225,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-control-flow-countdown-accumulator-structure",
@@ -1884,7 +2238,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-control-flow"
+       "lessonId": "l-foundations-control-flow",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "ordered-lines",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-control-flow-construct-guarded-loop-practice",
@@ -1894,7 +2255,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-control-flow-while-counter-with-stop-state",
@@ -1904,7 +2268,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-control-flow"
+       "lessonId": "l-foundations-control-flow",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "output-lines",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-control-flow-for-filter-accumulator",
@@ -1914,7 +2285,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-control-flow"
+       "lessonId": "l-foundations-control-flow",
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "output-lines",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-control-flow-aggregate-accumulator-count-pract",
@@ -1924,7 +2302,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 3,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -2006,7 +2387,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-collections"
+       "lessonId": "l-foundations-collections",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-collections-classify-set-operation-semantics-p",
@@ -2016,7 +2404,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-collections-membership-set-for-dedup",
@@ -2026,7 +2417,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-collections"
+       "lessonId": "l-foundations-collections",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-collections-classify-python-collection-choice-",
@@ -2036,7 +2434,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-collections-list-copy-steps",
@@ -2046,7 +2447,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-collections"
+       "lessonId": "l-foundations-collections",
+       "familyProcedural": false,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "variable-values",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-collections-list-alias-steps",
@@ -2056,7 +2464,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-collections"
+       "lessonId": "l-foundations-collections",
+       "familyProcedural": false,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "variable-values",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-collections-trace-collection-state-practice",
@@ -2066,7 +2481,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 5,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-collections-dict-start-key-steps",
@@ -2076,7 +2494,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-collections"
+       "lessonId": "l-foundations-collections",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "variable-values",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-collections-trace-dict-state-update-practice",
@@ -2086,7 +2511,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -2167,7 +2595,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-files-errors"
+       "lessonId": "l-foundations-files-errors",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-files-errors-classify-exception-placement-prac",
@@ -2177,7 +2612,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-files-errors-parse-validate-summarize",
@@ -2234,7 +2672,9 @@
        "familyHasBank": false
       }
      ],
-     "projectIds": []
+     "projectIds": [
+      "p-foundations-data-checker"
+     ]
     }
    ],
    "explanationCards": [
@@ -2307,7 +2747,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-testing-debugging"
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-testing-debugging-classify-test-attitude-pract",
@@ -2317,7 +2764,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-testing-debugging-normalize-and-assert-suite",
@@ -2327,7 +2777,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-testing-debugging"
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "reference-solver",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-testing-debugging-construct-regression-test-su",
@@ -2337,7 +2794,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-testing-debugging-arrange-act-assert",
@@ -2347,7 +2807,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-testing-debugging"
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "ordered-lines",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-testing-debugging-construct-test-structure-aaa",
@@ -2357,7 +2824,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       },
       {
        "placementId": "p-foundations-testing-debugging-nested-if-decision-tree",
@@ -2394,7 +2864,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-testing-debugging"
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": false,
+       "familyCaseCount": 8,
+       "familyHasBank": false,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-testing-debugging-keyerror",
@@ -2404,7 +2881,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-testing-debugging"
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": false,
+       "familyCaseCount": 8,
+       "familyHasBank": false,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-foundations-testing-debugging-trace-exception-path-practic",
@@ -2414,10 +2898,15 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 8,
+       "familyHasBank": false
       }
      ],
-     "projectIds": []
+     "projectIds": [
+      "p-foundations-data-checker"
+     ]
     }
    ],
    "explanationCards": [
@@ -2497,7 +2986,14 @@
        "difficulty": "stretch",
        "masteryEligible": true,
        "estimatedMinutes": 12,
-       "lessonId": "l-foundations-git"
+       "lessonId": "l-foundations-git",
+       "familyProcedural": false,
+       "familyCaseCount": 7,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-git-op-unstaged",
@@ -2507,7 +3003,14 @@
        "difficulty": "intro",
        "masteryEligible": true,
        "estimatedMinutes": 5,
-       "lessonId": "l-foundations-git"
+       "lessonId": "l-foundations-git",
+       "familyProcedural": false,
+       "familyCaseCount": 7,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-git-op-staged",
@@ -2517,7 +3020,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-git"
+       "lessonId": "l-foundations-git",
+       "familyProcedural": false,
+       "familyCaseCount": 7,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-git-practice-space",
@@ -2527,7 +3037,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 7,
+       "familyHasBank": false
       },
       {
        "placementId": "p-git-bugfix-flow-curated",
@@ -2537,7 +3050,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-foundations-git"
+       "lessonId": "l-foundations-git",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "ordered-lines",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-git-bugfix-flow-practice",
@@ -2547,7 +3067,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -2652,7 +3175,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-data-cleaning"
+       "lessonId": "l-data-cleaning",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-data-cleaning-duplicate-rows",
@@ -2662,7 +3192,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-data-cleaning"
+       "lessonId": "l-data-cleaning",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-data-cleaning-trace-library-api-output",
@@ -2723,7 +3260,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -3134,7 +3674,7 @@
        "lessonId": "l-ml-baseline",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -3148,7 +3688,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 7,
-       "lessonId": "l-ml-baseline"
+       "lessonId": "l-ml-baseline",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-ml-baseline-sklearn-trace",
@@ -3209,7 +3756,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -3657,7 +4207,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 6,
-       "lessonId": "l-ml-cv"
+       "lessonId": "l-ml-cv",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-ml-cv-leakage",
@@ -3718,7 +4275,10 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false
       }
      ],
      "projectIds": []
@@ -3831,7 +4391,7 @@
        "lessonId": "l-ml-error-analysis",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -4148,7 +4708,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-ml-ensembles"
+       "lessonId": "l-ml-ensembles",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-ml-ensembles-trace",
@@ -4209,7 +4776,14 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -4296,7 +4870,7 @@
        "lessonId": "l-ml-svm-pca",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -4480,7 +5054,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-ml-repro"
+       "lessonId": "l-ml-repro",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-ml-repro-seed-spread",
@@ -4490,7 +5071,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-ml-repro"
+       "lessonId": "l-ml-repro",
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-ml-repro-trace",
@@ -4551,10 +5139,19 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": null
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 2,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
-     "projectIds": []
+     "projectIds": [
+      "p-ml-repro-comparison"
+     ]
     }
    ],
    "explanationCards": [],
@@ -4641,7 +5238,7 @@
        "lessonId": "l-dl-tensors",
        "familyProcedural": false,
        "familyCaseCount": 3,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -4655,7 +5252,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-dl-tensors"
+       "lessonId": "l-dl-tensors",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-dl-tensors-shape",
@@ -4732,8 +5336,15 @@
        "role": "practice-space",
        "difficulty": "core",
        "masteryEligible": null,
-       "estimatedMinutes": 0,
-       "lessonId": "l-dl-tensors"
+       "estimatedMinutes": 8,
+       "lessonId": "l-dl-tensors",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -4835,7 +5446,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-dl-autograd"
+       "lessonId": "l-dl-autograd",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-dl-autograd-trace",
@@ -4912,8 +5530,15 @@
        "role": "practice-space",
        "difficulty": "core",
        "masteryEligible": null,
-       "estimatedMinutes": 0,
-       "lessonId": "l-dl-autograd"
+       "estimatedMinutes": 8,
+       "lessonId": "l-dl-autograd",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -4978,8 +5603,8 @@
        "mdFiles": [
         {
          "ref": "lessons/deep-learning/dl-training.md",
-         "lines": 55,
-         "words": 493,
+         "lines": 67,
+         "words": 767,
          "block": "worked-example"
         },
         {
@@ -5017,7 +5642,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-dl-training"
+       "lessonId": "l-dl-training",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-dl-training-trace",
@@ -5094,8 +5726,15 @@
        "role": "practice-space",
        "difficulty": "core",
        "masteryEligible": null,
-       "estimatedMinutes": 0,
-       "lessonId": "l-dl-training"
+       "estimatedMinutes": 8,
+       "lessonId": "l-dl-training",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -5200,7 +5839,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-dl-regularization"
+       "lessonId": "l-dl-regularization",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-dl-regularization-trace",
@@ -5277,8 +5923,15 @@
        "role": "practice-space",
        "difficulty": "core",
        "masteryEligible": null,
-       "estimatedMinutes": 0,
-       "lessonId": "l-dl-regularization"
+       "estimatedMinutes": 8,
+       "lessonId": "l-dl-regularization",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -5381,7 +6034,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-tf-attention"
+       "lessonId": "l-tf-attention",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-tf-attention-trace",
@@ -5459,7 +6119,14 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": "l-tf-attention"
+       "lessonId": "l-tf-attention",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -5556,7 +6223,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-tf-tokenizer"
+       "lessonId": "l-tf-tokenizer",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-tf-tokenizer-trace",
@@ -5634,7 +6308,14 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": "l-tf-tokenizer"
+       "lessonId": "l-tf-tokenizer",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -5921,7 +6602,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-tf-finetuning"
+       "lessonId": "l-tf-finetuning",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-tf-finetuning-trace",
@@ -5999,7 +6687,14 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": "l-tf-finetuning"
+       "lessonId": "l-tf-finetuning",
+       "familyProcedural": false,
+       "familyCaseCount": 6,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -6284,7 +6979,14 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-genai-rag"
+       "lessonId": "l-genai-rag",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-genai-rag-3",
@@ -6310,7 +7012,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-genai-rag",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -6327,7 +7029,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
+       "estimatedMinutes": 30,
        "lessonId": "l-genai-rag",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -6344,7 +7046,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
+       "estimatedMinutes": 45,
        "lessonId": "l-genai-rag",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -6362,7 +7064,14 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": "l-genai-rag"
+       "lessonId": "l-genai-rag",
+       "familyProcedural": false,
+       "familyCaseCount": 1,
+       "familyHasBank": false,
+       "caseType": "seeded-integer",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": []
@@ -6495,7 +7204,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-genai-eval",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -6512,7 +7221,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
+       "estimatedMinutes": 30,
        "lessonId": "l-genai-eval",
        "familyProcedural": false,
        "familyCaseCount": 7,
@@ -6529,7 +7238,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
+       "estimatedMinutes": 45,
        "lessonId": "l-genai-eval",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -6681,7 +7390,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-genai-security",
        "familyProcedural": false,
        "familyCaseCount": 7,
@@ -6698,7 +7407,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
+       "estimatedMinutes": 30,
        "lessonId": "l-genai-security",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -6715,7 +7424,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
+       "estimatedMinutes": 45,
        "lessonId": "l-genai-security",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -6868,7 +7577,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-genai-prototype",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -6885,7 +7594,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
+       "estimatedMinutes": 30,
        "lessonId": "l-genai-prototype",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -6902,7 +7611,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
+       "estimatedMinutes": 45,
        "lessonId": "l-genai-prototype",
        "familyProcedural": false,
        "familyCaseCount": 6,
@@ -6927,7 +7636,9 @@
        "caseMissing": true
       }
      ],
-     "projectIds": []
+     "projectIds": [
+      "p-rag-secure-prototype"
+     ]
     }
    ],
    "explanationCards": [],
@@ -6996,9 +7707,9 @@
          "block": "checkpoint"
         },
         {
-         "ref": "lessons/research/research-question.md",
-         "lines": 66,
-         "words": 867,
+         "ref": "lessons/research/research-question-exercise.md",
+         "lines": 29,
+         "words": 356,
          "block": "exercise"
         }
        ]
@@ -7060,7 +7771,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-research-question",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -7077,7 +7788,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 26,
+       "estimatedMinutes": 30,
        "lessonId": "l-research-question",
        "familyProcedural": false,
        "familyCaseCount": 4,
@@ -7094,7 +7805,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 40,
+       "estimatedMinutes": 45,
        "lessonId": "l-research-question",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -7186,9 +7897,9 @@
          "block": "checkpoint"
         },
         {
-         "ref": "lessons/research/research-cards.md",
-         "lines": 50,
-         "words": 721,
+         "ref": "lessons/research/research-cards-exercise.md",
+         "lines": 59,
+         "words": 353,
          "block": "exercise"
         }
        ]
@@ -7253,7 +7964,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-research-cards",
        "familyProcedural": false,
        "familyCaseCount": 4,
@@ -7270,7 +7981,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 26,
+       "estimatedMinutes": 30,
        "lessonId": "l-research-cards",
        "familyProcedural": false,
        "familyCaseCount": 4,
@@ -7287,7 +7998,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 40,
+       "estimatedMinutes": 45,
        "lessonId": "l-research-cards",
        "familyProcedural": false,
        "familyCaseCount": 4,
@@ -7384,9 +8095,9 @@
          "block": "checkpoint"
         },
         {
-         "ref": "lessons/research/responsible-ai.md",
-         "lines": 54,
-         "words": 915,
+         "ref": "lessons/research/responsible-ai-exercise.md",
+         "lines": 41,
+         "words": 433,
          "block": "exercise"
         }
        ]
@@ -7448,7 +8159,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-responsible-ai",
        "familyProcedural": false,
        "familyCaseCount": 7,
@@ -7465,7 +8176,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 27,
+       "estimatedMinutes": 30,
        "lessonId": "l-responsible-ai",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -7482,7 +8193,7 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 40,
+       "estimatedMinutes": 45,
        "lessonId": "l-responsible-ai",
        "familyProcedural": false,
        "familyCaseCount": 2,
@@ -7577,9 +8288,9 @@
          "block": "checkpoint"
         },
         {
-         "ref": "lessons/research/capstone-baseline.md",
-         "lines": 54,
-         "words": 888,
+         "ref": "lessons/research/capstone-baseline-exercise.md",
+         "lines": 28,
+         "words": 374,
          "block": "exercise"
         }
        ]
@@ -7641,7 +8352,7 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
+       "estimatedMinutes": 25,
        "lessonId": "l-capstone-baseline",
        "familyProcedural": false,
        "familyCaseCount": 1,
@@ -7658,7 +8369,7 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 27,
+       "estimatedMinutes": 30,
        "lessonId": "l-capstone-baseline",
        "familyProcedural": false,
        "familyCaseCount": 3,
@@ -7675,14 +8386,14 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 40,
+       "estimatedMinutes": 45,
        "lessonId": "l-capstone-baseline",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
        "caseHasFeedbackRules": true,
-       "caseHintCount": 2,
+       "caseHintCount": 3,
        "caseHasWorkedExample": false
       },
       {
@@ -7740,15 +8451,15 @@
      ],
      "lessons": [
       {
-       "lessonId": "l-capstone-pipeline",
-       "path": "content/lessons/research/capstone-pipeline.json",
-       "title": "Reproduzierbare Capstone-Pipeline",
+       "lessonId": "l-capstone-freeze",
+       "path": "content/lessons/research/capstone-freeze.json",
+       "title": "Capstone-Pipeline: Freeze und Abhängigkeitsordnung",
        "objectives": [
-        "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
-        "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",
-        "Doppellauf-Reproduktion, gepinnte Versionen, Overclaim-freie Dokumentation und eine Demo aus festen Messwerten vornehmen — mit Work Evidence statt Mastery-Behauptung"
+        "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und den gepinnten Kern in einem sha256-Manifest einfrieren und mit assert_frozen() gegen stille Anpassungen absichern",
+        "versionierte Seeds und Konfiguration als Experimentwechsel behandeln, der eine neue Version verlangt statt einer stillschweigenden Korrektur",
+        "die Abhängigkeitsordnung der Pipeline-Stages aus IO-Verträgen topologisch sortieren und Zyklen als Designfehler erkennen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 15,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
@@ -7760,15 +8471,15 @@
        ],
        "mdFiles": [
         {
-         "ref": "lessons/research/capstone-pipeline.md",
-         "lines": 157,
-         "words": 1159,
+         "ref": "lessons/research/capstone-freeze.md",
+         "lines": 71,
+         "words": 502,
          "block": "worked-example"
         },
         {
-         "ref": "lessons/research/capstone-pipeline-checkpoint.md",
+         "ref": "lessons/research/capstone-freeze-checkpoint.md",
          "lines": 10,
-         "words": 152,
+         "words": 146,
          "block": "checkpoint"
         }
        ]
@@ -7783,7 +8494,7 @@
        "difficulty": "intro",
        "masteryEligible": false,
        "estimatedMinutes": 6,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": true,
@@ -7800,7 +8511,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -7814,7 +8525,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false,
@@ -7830,8 +8541,8 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 25,
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 4,
        "familyHasBank": false,
@@ -7847,8 +8558,8 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 32,
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
@@ -7864,8 +8575,8 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 45,
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -7882,7 +8593,7 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -7900,35 +8611,32 @@
      ],
      "lessons": [
       {
-       "lessonId": "l-capstone-pipeline",
-       "path": "content/lessons/research/capstone-pipeline.json",
-       "title": "Reproduzierbare Capstone-Pipeline",
+       "lessonId": "l-capstone-acceptance",
+       "path": "content/lessons/research/capstone-acceptance.json",
+       "title": "Capstone-Pipeline: Abschlussdiagnose und Abnahme",
        "objectives": [
-        "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
-        "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",
-        "Doppellauf-Reproduktion, gepinnte Versionen, Overclaim-freie Dokumentation und eine Demo aus festen Messwerten vornehmen — mit Work Evidence statt Mastery-Behauptung"
+        "die Abschlussdiagnose aus Evidenzregeln ableiten: zwei unabhängige Treffer, zwei Definitionen, vierzehn Tage Abstand, keine disqualifizierte Instanz",
+        "eine Demo ausschließlich aus eingefrorenen Messwerten erzeugen und mit Assert gegen heimliche Neuberechnung absichern",
+        "alle Verträge der Pipeline deterministisch abnehmen und das Regelwerk-Verdict als Tabelle statt Gefühl lesen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 15,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
-        "visualization",
         "checkpoint"
        ],
-       "vizRefs": [
-        "lessons/research/chunk-overlap.viz.json"
-       ],
+       "vizRefs": [],
        "mdFiles": [
         {
-         "ref": "lessons/research/capstone-pipeline.md",
-         "lines": 157,
-         "words": 1159,
+         "ref": "lessons/research/capstone-acceptance.md",
+         "lines": 77,
+         "words": 511,
          "block": "worked-example"
         },
         {
-         "ref": "lessons/research/capstone-pipeline-checkpoint.md",
+         "ref": "lessons/research/capstone-acceptance-checkpoint.md",
          "lines": 10,
-         "words": 152,
+         "words": 119,
          "block": "checkpoint"
         }
        ]
@@ -7943,7 +8651,7 @@
        "difficulty": "intro",
        "masteryEligible": false,
        "estimatedMinutes": 6,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-acceptance",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": true,
@@ -7960,7 +8668,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-acceptance",
        "familyProcedural": true,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -7977,7 +8685,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-acceptance",
        "familyProcedural": true,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -7993,8 +8701,8 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 25,
+       "lessonId": "l-capstone-acceptance",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
@@ -8010,8 +8718,8 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 32,
+       "lessonId": "l-capstone-acceptance",
        "familyProcedural": true,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8027,8 +8735,8 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 45,
+       "lessonId": "l-capstone-acceptance",
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
@@ -8038,7 +8746,9 @@
        "caseHasWorkedExample": false
       }
      ],
-     "projectIds": []
+     "projectIds": [
+      "p-rag-capstone"
+     ]
     },
     {
      "moduleId": "lm-capstone-repro",
@@ -8049,35 +8759,32 @@
      ],
      "lessons": [
       {
-       "lessonId": "l-capstone-pipeline",
-       "path": "content/lessons/research/capstone-pipeline.json",
-       "title": "Reproduzierbare Capstone-Pipeline",
+       "lessonId": "l-capstone-repro",
+       "path": "content/lessons/research/capstone-repro.json",
+       "title": "Capstone-Pipeline: Evidenz und Reproduzierbarkeit",
        "objectives": [
-        "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
-        "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",
-        "Doppellauf-Reproduktion, gepinnte Versionen, Overclaim-freie Dokumentation und eine Demo aus festen Messwerten vornehmen — mit Work Evidence statt Mastery-Behauptung"
+        "Reproduktion als Doppellauf mit Digest-Vergleich über der kanonischen Serialisierung prüfen und Versionen exakt statt als Bereichs-Spec pinnen",
+        "Dokumentation mit Pflichtüberschriften, ohne Overclaims und ohne absolute Pfade des eigenen Rechners verlangen",
+        "Demo und Berichte als Work Evidence von Mastery unterscheiden und die Grenze des selbstberichteten Nachweises offenlegen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 15,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
-        "visualization",
         "checkpoint"
        ],
-       "vizRefs": [
-        "lessons/research/chunk-overlap.viz.json"
-       ],
+       "vizRefs": [],
        "mdFiles": [
         {
-         "ref": "lessons/research/capstone-pipeline.md",
-         "lines": 157,
-         "words": 1159,
+         "ref": "lessons/research/capstone-repro.md",
+         "lines": 76,
+         "words": 514,
          "block": "worked-example"
         },
         {
-         "ref": "lessons/research/capstone-pipeline-checkpoint.md",
+         "ref": "lessons/research/capstone-repro-checkpoint.md",
          "lines": 10,
-         "words": 152,
+         "words": 120,
          "block": "checkpoint"
         }
        ]
@@ -8092,7 +8799,7 @@
        "difficulty": "intro",
        "masteryEligible": false,
        "estimatedMinutes": 6,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-repro",
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": true,
@@ -8109,7 +8816,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-repro",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8126,7 +8833,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-repro",
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
@@ -8142,8 +8849,8 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 25,
+       "lessonId": "l-capstone-repro",
        "familyProcedural": false,
        "familyCaseCount": 4,
        "familyHasBank": false,
@@ -8159,8 +8866,8 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 32,
+       "lessonId": "l-capstone-repro",
        "familyProcedural": false,
        "familyCaseCount": 4,
        "familyHasBank": false,
@@ -8176,8 +8883,8 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 45,
+       "lessonId": "l-capstone-repro",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8198,35 +8905,32 @@
      ],
      "lessons": [
       {
-       "lessonId": "l-capstone-pipeline",
-       "path": "content/lessons/research/capstone-pipeline.json",
-       "title": "Reproduzierbare Capstone-Pipeline",
+       "lessonId": "l-capstone-regression",
+       "path": "content/lessons/research/capstone-regression.json",
+       "title": "Capstone-Pipeline: Regression und Evaluationsregeln",
        "objectives": [
-        "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
-        "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",
-        "Doppellauf-Reproduktion, gepinnte Versionen, Overclaim-freie Dokumentation und eine Demo aus festen Messwerten vornehmen — mit Work Evidence statt Mastery-Behauptung"
+        "die feste Evaluation gegen Nachjustieren absichern und Retrievalfehler von Antwortfehlern getrennt messen",
+        "Subgruppen-Recalls berichten und systematische Versagensfälle in die Regressionstabelle überführen statt unter den Teppich",
+        "das defensive Red-Team gegen den eigenen Toy-Prototyp mit Regelwerk-Verdict (angenommen, abgelehnt, abgebrochen) abschließen"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 15,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
-        "visualization",
         "checkpoint"
        ],
-       "vizRefs": [
-        "lessons/research/chunk-overlap.viz.json"
-       ],
+       "vizRefs": [],
        "mdFiles": [
         {
-         "ref": "lessons/research/capstone-pipeline.md",
-         "lines": 157,
-         "words": 1159,
+         "ref": "lessons/research/capstone-regression.md",
+         "lines": 73,
+         "words": 520,
          "block": "worked-example"
         },
         {
-         "ref": "lessons/research/capstone-pipeline-checkpoint.md",
+         "ref": "lessons/research/capstone-regression-checkpoint.md",
          "lines": 10,
-         "words": 152,
+         "words": 147,
          "block": "checkpoint"
         }
        ]
@@ -8241,7 +8945,7 @@
        "difficulty": "intro",
        "masteryEligible": false,
        "estimatedMinutes": 6,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": true,
@@ -8258,7 +8962,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8272,7 +8976,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8288,8 +8992,8 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 25,
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 4,
        "familyHasBank": false,
@@ -8305,8 +9009,8 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 32,
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false,
@@ -8322,8 +9026,8 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 45,
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
@@ -8340,7 +9044,7 @@
        "difficulty": "core",
        "masteryEligible": null,
        "estimatedMinutes": 0,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-regression",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8358,35 +9062,32 @@
      ],
      "lessons": [
       {
-       "lessonId": "l-capstone-pipeline",
-       "path": "content/lessons/research/capstone-pipeline.json",
-       "title": "Reproduzierbare Capstone-Pipeline",
+       "lessonId": "l-capstone-runner",
+       "path": "content/lessons/research/capstone-runner.json",
+       "title": "Capstone-Pipeline: Stage-Runner und Budgets",
        "objectives": [
-        "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
-        "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",
-        "Doppellauf-Reproduktion, gepinnte Versionen, Overclaim-freie Dokumentation und eine Demo aus festen Messwerten vornehmen — mit Work Evidence statt Mastery-Behauptung"
+        "Pipeline-Stages mit IO-Verträgen betreiben und Fehlerzustände als Sentinel-Status (ok, fehler, timeout) statt stiller Fallbacks behandeln",
+        "Timeouts und Budgets mit einer injizierten virtuellen Uhr deterministisch prüfen, ohne reale Wartezeit",
+        "eine Demo aus eingefrorenen Messwerten mit Assert gegen jede Neuberechnung absichern"
        ],
-       "estimatedMinutes": 60,
+       "estimatedMinutes": 15,
        "releaseStatus": "draft",
        "blockTypes": [
         "worked-example",
-        "visualization",
         "checkpoint"
        ],
-       "vizRefs": [
-        "lessons/research/chunk-overlap.viz.json"
-       ],
+       "vizRefs": [],
        "mdFiles": [
         {
-         "ref": "lessons/research/capstone-pipeline.md",
-         "lines": 157,
-         "words": 1159,
+         "ref": "lessons/research/capstone-runner.md",
+         "lines": 80,
+         "words": 560,
          "block": "worked-example"
         },
         {
-         "ref": "lessons/research/capstone-pipeline-checkpoint.md",
+         "ref": "lessons/research/capstone-runner-checkpoint.md",
          "lines": 10,
-         "words": 152,
+         "words": 136,
          "block": "checkpoint"
         }
        ]
@@ -8401,7 +9102,7 @@
        "difficulty": "intro",
        "masteryEligible": false,
        "estimatedMinutes": 6,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-runner",
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": true,
@@ -8418,7 +9119,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 8,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-runner",
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
@@ -8435,7 +9136,7 @@
        "difficulty": "core",
        "masteryEligible": true,
        "estimatedMinutes": 10,
-       "lessonId": "l-capstone-pipeline",
+       "lessonId": "l-capstone-runner",
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
@@ -8451,8 +9152,8 @@
        "role": "curated",
        "difficulty": "core",
        "masteryEligible": true,
-       "estimatedMinutes": 22,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 25,
+       "lessonId": "l-capstone-runner",
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
@@ -8468,8 +9169,8 @@
        "role": "curated",
        "difficulty": "stretch",
        "masteryEligible": true,
-       "estimatedMinutes": 28,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 32,
+       "lessonId": "l-capstone-runner",
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
@@ -8485,8 +9186,8 @@
        "role": "curated",
        "difficulty": "challenge",
        "masteryEligible": true,
-       "estimatedMinutes": 42,
-       "lessonId": "l-capstone-pipeline",
+       "estimatedMinutes": 45,
+       "lessonId": "l-capstone-runner",
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,

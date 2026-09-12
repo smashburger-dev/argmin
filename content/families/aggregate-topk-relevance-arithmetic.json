@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-topk-relevance-arithmetic",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "recall-at-k-window",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w27-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genRecallAtK"
+      },
+      "competencyIds": [
+        "c-genai-rag"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genRecallAtK",
+        "defaultSeed": 2711,
+        "defaultExpected": 2
+      },
+      "prompt": "Für eine Testanfrage eines Retrieval-Systems sind 12 Dokumente als relevant markiert: A, B, D, E, F, G, H, I, J, K, L, N. Das Ranking des Systems (Top 7): G, B, C, M, E, K, N. Wie viele der gelisteten Top-7-Dokumente sind nicht relevant?",
+      "fullSolution": "Schnitt der Top 7 mit der Relevant-Menge: {G, B, E, K, N} → 5 Treffer. Nicht relevant: 7 − 5 = 2. Mit „Neue Zahlen“ erscheint eine neue Instanz (Treffer/Prozent/fehlende/nicht relevante) mit demselben Lösungsweg.",
+      "hints": [
+        "Bestimme erst den Schnitt: Welche der gelisteten Dokumente stehen auch in der Relevant-Liste?",
+        "Die Top-7 umfassen 7 Dokumente; davon abgezogen die relevanten Treffer ergibt die nicht relevanten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 5",
+          "then": "5 ist die Zahl der relevanten Dokumente, die in den Top 7 stehen — gefragt war die nicht relevanten (7 − 5)."
+        },
+        {
+          "if": "value === 7",
+          "then": "7 ist die Fenstergröße insgesamt; ziehe die relevanten Treffer ab."
+        },
+        {
+          "if": "value === 12",
+          "then": "12 ist die Zahl aller relevant markierten Dokumente, nicht der Anteil im Ranking-Fenster."
+        }
+      ],
+      "typicalErrors": [
+        "alle relevanten Dokumente statt des Top-k-Schnitts gezählt",
+        "Recall-Formel mit dem falschen Nenner (Top-k statt relevante) gerechnet",
+        "Fenstergröße mit Trefferzahl verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

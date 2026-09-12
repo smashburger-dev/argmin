@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "familyId": "count-remaining-rows-cleaning-rule",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "missing-target-rows",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w06-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genCompleteRows"
+      },
+      "competencyIds": [
+        "c-pandas-cleaning"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genCompleteRows",
+        "defaultSeed": 6001,
+        "defaultExpected": 170
+      },
+      "prompt": "Ein Bestelldatensatz hat 200 Zeilen. In der Zielspalte fehlen 30 Werte; Zeilen mit fehlendem Zielwert werden gelöscht. Wie viele Zeilen bleiben übrig?",
+      "fullSolution": "Bestimme die Anzahl der Zeilen mit fehlendem Zielwert (direkt gegeben oder als Anteil · Zeilenzahl) und ziehe sie von der Gesamtzahl ab: verbleibende Zeilen = Zeilen − Zeilen mit fehlendem Zielwert. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "„Zeilen mit fehlendem Zielwert werden gelöscht“ heißt: Gesamtblatt minus die Zeilen mit Lücke.",
+        "Wenn die Anzahl fehlender Werte nicht direkt gegeben ist, berechne sie aus dem Prozentsatz: Zeilen · rate/100 — dann abziehen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 200",
+          "then": "Das ist die Ausgangszahl — die Zeilen mit fehlendem Zielwert müssen noch abgezogen werden."
+        },
+        {
+          "if": "value === 30",
+          "then": "30 ist die Anzahl der gelöschten Zeilen, gefragt sind die verbleibenden."
+        },
+        {
+          "if": "value === 230",
+          "then": "Falsches Vorzeichen: Gelöschte Zeilen werden abgezogen, nicht addiert."
+        }
+      ],
+      "typicalErrors": [
+        "Prozentsatz nicht in eine Zeilenzahl umgerechnet",
+        "gelöschte statt verbleibende Zeilen angegeben",
+        "fehlende Werte in Nebenspalten mit fehlenden Zielwerten verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "duplicate-rows",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w06-e6"
+      ],
+      "parameters": {
+        "seedGenerator": "genDedupRows"
+      },
+      "competencyIds": [
+        "c-pandas-cleaning"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genDedupRows",
+        "defaultSeed": 6002,
+        "defaultExpected": 281
+      },
+      "prompt": "Ein Event-Log hat 287 Zeilen. 6 Zeilen sind exakte Duplikate (identische Werte in allen Spalten) und werden gelöscht. 18 weitere Zeilen teilen nur den Schlüssel, unterscheiden sich aber in den Werten und bleiben erhalten. Wie viele Zeilen bleiben?",
+      "fullSolution": "Entferne nur exakte Duplikate (identisch in allen Spalten): Zeilenzahl − exakte Duplikate. Schlüssel-Duplikate mit abweichenden Werten sind keine exakten Duplikate und bleiben — ihr Konflikt ist eine Entscheidung, kein Kopie-Löschen. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Trenne exakte Duplikate (alle Spalten identisch) von Schlüssel-Duplikaten (gleicher Schlüssel, andere Werte).",
+        "Nur die exakten Duplikate werden gelöscht — Schlüssel-Konflikte bleiben in dieser Variante bewusst erhalten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 263",
+          "then": "287 − 6 − 18 rechnet auch die Schlüssel-Duplikate weg — sie bleiben hier aber erhalten, weil ihre Werte abweichen."
+        },
+        {
+          "if": "value === 287",
+          "then": "Noch nichts entfernt — die exakten Duplikate fehlen im Ergebnis."
+        },
+        {
+          "if": "value === 293",
+          "then": "Falsches Vorzeichen: Duplikate werden entfernt, nicht hinzugefügt."
+        }
+      ],
+      "typicalErrors": [
+        "Schlüssel-Duplikate wie exakte Duplikate behandelt",
+        "Konfliktzeilen gemittelt statt erhalten",
+        "Anzahl der Duplikate statt der verbleibenden Zeilen angegeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

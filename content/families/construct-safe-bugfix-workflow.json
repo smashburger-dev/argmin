@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-safe-bugfix-workflow",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "bugfix-flow-with-test-contract",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-parsons-01"
+      ],
+      "parameters": {
+        "parsonsCase": "bugfix-flow-with-test-contract",
+        "fragments": [
+          { "id": "p1", "text": "Fehler mit einem einzelnen Test reproduzieren" },
+          { "id": "p2", "text": "kleinsten Fix schreiben" },
+          { "id": "p3", "text": "Einzeltest und gesamte Suite ausführen" },
+          { "id": "p4", "text": "git status und git diff lesen" },
+          { "id": "p5", "text": "zugehörige Dateien vormerken und committen" },
+          { "id": "d1", "text": "fehlschlagenden Test löschen" }
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": ["p1", "p2", "p3", "p4", "p5"],
+        "distractors": ["d1"]
+      },
+      "prompt": "Ordne den sicheren Arbeitsfluss für einen kleinen Bugfix. Eine Zeile umgeht den Testvertrag und gehört nicht hinein.",
+      "fullSolution": "Reproduzieren bzw. isolieren, minimal korrigieren, vollständig prüfen, Diff lesen und erst dann den geschlossenen Commit erstellen."
+    },
+    {
+      "caseId": "datafix-flow-with-test-contract",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-git-parsons-01",
+        "generated"
+      ],
+      "parameters": {
+        "parsonsCase": "datafix-flow-with-test-contract",
+        "fragments": [
+          { "id": "p1", "text": "Fehlerhafte Zeilen mit dem Prüfzähler isolieren" },
+          { "id": "p2", "text": "kleinste Datenkorrektur schreiben" },
+          { "id": "p3", "text": "Prüfzähler erneut laufen lassen" },
+          { "id": "p4", "text": "Diff der Datensätze lesen" },
+          { "id": "p5", "text": "Korrektur committen" },
+          { "id": "d1", "text": "Prüfscript löschen" }
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": ["p1", "p2", "p3", "p4", "p5"],
+        "distractors": ["d1"]
+      },
+      "prompt": "Ordne den sicheren Arbeitsfluss für eine kleine Datenkorrektur. Eine Zeile umgeht den Testvertrag und gehört nicht hinein.",
+      "fullSolution": "Reproduzieren bzw. isolieren, minimal korrigieren, vollständig prüfen, Diff lesen und erst dann den geschlossenen Commit erstellen."
+    }
+  ]
+}

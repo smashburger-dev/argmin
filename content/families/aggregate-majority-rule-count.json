@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "familyId": "aggregate-majority-rule-count",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "majority-baseline-errors",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w09-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genBaselineCorrect"
+      },
+      "competencyIds": [
+        "c-ml-baseline"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genBaselineCorrect",
+        "defaultSeed": 9001,
+        "defaultExpected": 149
+      },
+      "prompt": "Ein Klassifikationsdatensatz hat 76 Beispiele der Klasse „Defekt“, 92 der Klasse „Verschleiß“ und 73 der Klasse „in Ordnung“. Eine Trivial-Baseline sagt immer die häufigste Klasse vorher. Wie viele Beispiele werden falsch klassifiziert?",
+      "fullSolution": "Die häufigste Klasse bestimmen (größte Klassenanzahl). Die Baseline klassifiziert genau deren Beispiele richtig, alle Beispiele der anderen Klassen falsch. Fehlerzahl = Gesamtanzahl der Beispiele − Anzahl der häufigsten Klasse. Mit „Neue Zahlen\" erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Die Majority-Baseline sagt immer die häufigste Klasse vorher — welche Klasse hat die größte Anzahl?",
+        "Falsch liegen alle Beispiele der anderen Klassen: Gesamtzahl minus Anzahl der häufigsten Klasse."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 241",
+          "then": "Das ist die Gesamtzahl aller Beispiele — gezählt werden soll die Anzahl der Fehler."
+        },
+        {
+          "if": "value === 92",
+          "then": "92 ist die Zahl der Richtigt-Klassifizierten. Gesucht sind die Falschen: Gesamtzahl minus 92."
+        }
+      ],
+      "typicalErrors": [
+        "Anzahl der richtigen Vorhersagen statt der Fehler angegeben",
+        "Klassenanzahl statt Klassenhäufigkeit verglichen",
+        "bei drei Klassen nur die zweitgrößte Klasse abziehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "ensemble-majority-output-count",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w15-e2"
+      ],
+      "parameters": {
+        "seedGenerator": "genEnsembleAccuracy"
+      },
+      "competencyIds": [
+        "c-ml-ensembles"
+      ],
+      "expected": {
+        "kind": "seeded-integer",
+        "generator": "genEnsembleAccuracy",
+        "defaultSeed": 15001,
+        "defaultExpected": 11
+      },
+      "prompt": "Drei Modelle geben auf 20 Testbeispielen Binärausgaben (1 = Klasse A, 0 = Klasse B). Modell-Ausgaben, je eine Ziffer pro Beispiel: `01000010001000001001`, `11100011111100000111`, `01111011111111111011`. Ein Mehrheitsensemble gibt 1 aus, wenn mindestens zwei der drei Modelle 1 ausgeben. Für wie viele Beispiele gibt das Ensemble 1 aus?",
+      "fullSolution": "Spaltenweise zählen: Das Ensemble gibt 1 aus, wo mindestens zwei der drei Modelle 1 ausgeben. Zähle diese Spalten. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Gehe spaltenweise vor: Jede Position ist ein Beispiel; zähle die Einsen über die drei Modelle.",
+        "Das Ensemble gibt 1 aus, wenn die Spaltensumme >= 2 ist — zähle nur diese Spalten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 20",
+          "then": "20 wäre „alle Beispiele“ — geprüft wird die Mehrheitsregel pro Spalte, nicht die Gesamtanzahl der Einsen."
+        },
+        {
+          "if": "value < 5",
+          "then": "So wenige Mehrheits-Spalten gibt es nicht — hast du vielleicht Spalten mit genau einer Eins mitgezählt?"
+        }
+      ],
+      "typicalErrors": [
+        "Zeilenweise statt spaltenweise zählen",
+        "Spalten mit genau einer Eins mitzählen",
+        "Anzahl der Einsen insgesamt statt der Mehrheits-Spalten angeben"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

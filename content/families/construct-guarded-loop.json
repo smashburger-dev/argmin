@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "familyId": "construct-guarded-loop",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "positive-values-structure",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-parsons-01"
+      ],
+      "parameters": {
+        "parsonsCase": "positive-values-structure",
+        "fragments": [
+          { "id": "p1", "text": "def positive_values(values):" },
+          { "id": "p2", "text": "    result = []" },
+          { "id": "p3", "text": "    for value in values:" },
+          { "id": "p4", "text": "        if value > 0:" },
+          { "id": "p5", "text": "            result.append(value)" },
+          { "id": "p6", "text": "    return result" },
+          { "id": "d1", "text": "        result.append(value)" }
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": ["p1", "p2", "p3", "p4", "p5", "p6"],
+        "distractors": ["d1"]
+      },
+      "prompt": "Ordne die Zeilen für `positive_values(values)`. Die Funktion soll nur positive Werte in ursprünglicher Reihenfolge zurückgeben. Eine Zeile ist ein Distraktor.",
+      "fullSolution": "Nach Funktionskopf und leerer Liste folgt die Schleife. Der if-Zweig hängt positive Werte an. return steht nach der Schleife."
+    },
+    {
+      "caseId": "countdown-accumulator-structure",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-parsons-01",
+        "generated"
+      ],
+      "parameters": {
+        "parsonsCase": "countdown-accumulator-structure",
+        "startTiers": [[3, 4], [3, 5], [4, 6], [5, 7]],
+        "fragments": [
+          { "id": "p1", "text": "n = ${start}" },
+          { "id": "p2", "text": "total = 0" },
+          { "id": "p3", "text": "while n > 0:" },
+          { "id": "p4", "text": "    total = total + n" },
+          { "id": "p5", "text": "    n = n - 1" },
+          { "id": "p6", "text": "print(total)" },
+          { "id": "d1", "text": "    n = n + 1" }
+        ]
+      },
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": ["p1", "p2", "p3", "p4", "p5", "p6"],
+        "distractors": ["d1"]
+      },
+      "prompt": "Ordne die Zeilen für eine Countdown-Summe ab ${start}. Die Schleife muss terminieren: Eine Zeile würde sie endlos laufen lassen und gehört nicht hinein.",
+      "fullSolution": "n läuft von ${start} bis 1, total sammelt die Summe ${total}. Das Update n = n - 1 sichert die Terminierung; n = n + 1 wäre der Distraktor."
+    }
+  ]
+}

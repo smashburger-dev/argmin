@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-collection-state",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "list-mutate-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-mutate",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: append hängt ein Element an, extend hängt jedes Element der Liste an, liste[0] = … überschreibt vorhandene Position 0.",
+      "hints": [
+        "Wende jede Zeile einzeln auf den aktuellen Listenstand an — append hängt ein Element an, extend jedes Element der übergebenen Liste.",
+        "liste[0] = … überschreibt Position 0, ohne die Liste zu verlängern. Notiere den Zustand nach jeder der vier Zeilen."
+      ],
+      "typicalErrors": [
+        "extend wie append behandelt (ein Element statt mehrerer angehängt)",
+        "Indexzuweisung als Anhängen statt als Überschreiben gelesen"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "list-alias-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-alias",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: y = x erzeugt keine Kopie, sondern einen zweiten Namen für dieselbe Liste. Jede Mutation über y ist sofort in x sichtbar — und umgekehrt.",
+      "hints": [
+        "y = x erzeugt keinen zweiten Speicher: beide Namen zeigen auf dieselbe Liste.",
+        "Mutationen über y sind in x sofort sichtbar — tracke x deshalb über alle vier Zeilen."
+      ],
+      "typicalErrors": [
+        "y = x als Kopie gelesen und die append-Mutation in x übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "list-copy-steps",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-copy",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9], ungleich a"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welche Werte hat x nach jeder Zeile — und welche Liste steht am Ende in y? Jede Zeile einzeln anwenden; Python-Schreibweise verwenden (z. B. [1, 2]).",
+      "fullSolution": "x.copy() legt eine eigenständige Liste an: append über y ändert x nicht. Erst x[0] = {dDistinct} verändert x. x-Verlauf: {verlauf}; y am Ende: {yEnd}.",
+      "hints": [
+        "x.copy() erzeugt eine eigenständige Liste — Änderungen an y wirken nicht auf x.",
+        "Erst die letzte Zeile verändert x; y am Ende enthält das angehängte Element."
+      ],
+      "typicalErrors": [
+        "append auf y fälschlich in x eingetragen",
+        "y_ende vergessen oder mit dem x-Endstand verwechselt"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "list-rebind-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-rebind",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: x = x + [ … ] baut eine NEUE Liste und bindet sie an x; x += [ … ] erweitert dagegen die vorhandene Liste direkt (in-place). Am Ende zeigt y auf dieselbe Liste.",
+      "hints": [
+        "x = x + [ … ] baut eine neue Liste und bindet sie an x; x += [ … ] verändert die vorhandene Liste in-place.",
+        "Am Ende zeigt y auf dieselbe Liste wie x — der Zustand nach y = x ist daher der x-Stand."
+      ],
+      "typicalErrors": [
+        "+ und += vertauscht (Neue Liste vs. in-place-Erweiterung)",
+        "den Alias-Effekt der letzten Zeile y = x übersehen"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "set-add-discard-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "set-steps",
+        "domain": {
+          "e1": "'ki', 'lern' oder 'code'",
+          "e2": "Pool ohne e1",
+          "e3": "Pool ohne e1"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: Ein Set speichert jedes Element nur einmal: add eines vorhandenen Elements ändert den Zustand nicht, discard entfernt zuverlässig.",
+      "hints": [
+        "Ein Set speichert jedes Element nur einmal — add eines vorhandenen Elements ändert den Zustand nicht.",
+        "discard entfernt zuverlässig; die Reihenfolge der Elemente ist für die Bewertung nicht relevant."
+      ],
+      "typicalErrors": [
+        "Duplikate im Set-Zustand notiert",
+        "discard fälschlich als Fehler statt als Entfernen gewertet"
+      ],
+      "tolerancePolicy": {
+        "mode": "python-repr-normalized"
+      },
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    }
+  ]
+}

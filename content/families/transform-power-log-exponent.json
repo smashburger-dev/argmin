@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "familyId": "transform-power-log-exponent",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "product-and-power-of-power",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w01-e9"
+      ],
+      "parameters": {
+        "bases": [2, 3, 5, 10],
+        "introBases": [2, 3],
+        "tiers": [
+          { "prod": [2, 3, 1, 2, 5], "pow": [2, 3, 2, 2, 5] },
+          { "prod": [2, 6, 1, 4, 8], "pow": [2, 4, 2, 3, 10] },
+          { "prod": [2, 7, 1, 5, 10], "pow": [2, 5, 2, 3, 12] },
+          { "prod": [3, 8, 2, 5, 12], "pow": [3, 5, 2, 3, 14] }
+        ],
+        "promptTemplates": {
+          "product": "Vereinfache ${base}^${m} · ${base}^${n} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).",
+          "power": "Vereinfache (${base}^${m})^${k} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n)."
+        },
+        "solutionTemplates": {
+          "product": "Gleiche Basis im Produkt: Exponenten addieren — ${base}^${m} · ${base}^${n} = ${base}^${value}. Antwort: ${value}.",
+          "power": "Potenz einer Potenz: Exponenten multiplizieren — (${base}^${m})^${k} = ${base}^${value}. Antwort: ${value}."
+        }
+      },
+      "expected": {
+        "kind": "integer"
+      }
+    },
+    {
+      "caseId": "integer-base-power",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w01-e10"
+      ],
+      "parameters": {
+        "bases": [2, 3, 5, 10],
+        "kMaxTiers": [
+          { "2": 3, "other": 2 },
+          { "2": 6, "other": 4 },
+          { "2": 7, "other": 4 },
+          { "2": 8, "other": 4 }
+        ],
+        "argCap": 10000,
+        "promptTemplates": {
+          "log-sum": "Berechne ${logM} + ${logN} und gib das Ergebnis als ganze Zahl ein.",
+          "log-single": "Berechne ${log} und gib das Ergebnis als ganze Zahl ein."
+        },
+        "solutionTemplates": {
+          "log-sum": "${logM} = ${valM}, ${logN} = ${valN}; Summe der Exponenten: ${value}.",
+          "log-single": "${log} = ${value}, denn ${base}^${value} = ${arg}."
+        }
+      },
+      "expected": {
+        "kind": "integer"
+      }
+    }
+  ]
+}

@@ -32,6 +32,31 @@ function requireTraceProfile(difficulty) {
   if (!TRACE_DIFFICULTY_PROFILES.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
 }
 
+// Public-first-Fallkörper: prompt/fullSolution liegen als {name}-Templates in
+// content/families/*.json; generate() rendert sie mit den geseedeten Werten.
+// Fehlende Platzhalter schlagen fehl statt unersetzt in den Lerntext zu laufen.
+const renderCaseTemplate = (template, scope, familyId) => {
+  if (typeof template !== 'string') throw new Error(`${familyId}: Fallkörper ohne Text`);
+  return template.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g, (match, name) => {
+    if (!Object.hasOwn(scope, name)) throw new Error(`${familyId}: Platzhalter ${name} ohne Wert`);
+    return String(scope[name]);
+  });
+};
+
+// Autorisierte Nebenfelder des Fallkörpers (hints/feedback/typicalErrors/
+// tolerance/competency/grader-Meta), die unverändert durch generate() laufen —
+// wie bei staticVariantInstance. parameters/expected/prompt/fullSolution
+// werden familienspezifisch zusammengesetzt.
+const authoredCaseExtras = (body) => {
+  const {
+    caseId: _caseId, difficultyProfile: _difficultyProfile, masteryEligible: _masteryEligible,
+    sourceLineage: _sourceLineage, variants: _variants, parameters: _parameters,
+    expected: _expected, prompt: _prompt, fullSolution: _fullSolution,
+    ...extras
+  } = body;
+  return extras;
+};
+
 const drawTraceInstance = (generate, options) => drawFamilyInstance(generate, { ...options, profiles: TRACE_DIFFICULTY_PROFILES });
 
 const maxAbs = (values) => values.reduce((peak, value) => Math.max(peak, Math.abs(value)), 0);
@@ -420,6 +445,41 @@ export function solveAccumulatorCount(parameters) {
   throw new Error(`aggregate-accumulator-count: unbekannte Form ${shape}`);
 }
 
+/** Render-Scope für die Lösungstemplates des Falls: dieselbe Arithmetik
+ *  wie der Solver, aus den gezogenen Fallparametern abgeleitet. */
+function accumulatorScope(parameters, output) {
+  if (parameters.shape === 'elif') {
+    const { x, t1, t2, k, branch } = parameters;
+    const value = branch === 'A' ? x * k : branch === 'B' ? x + k : x - k;
+    return {
+      x, t1, t2, k, branch, value, output,
+      cond1: x > t1 ? 'wahr' : 'falsch',
+      cond2: x <= t1 && x < t2 ? 'wahr' : 'falsch',
+    };
+  }
+  if (parameters.shape === 'while') {
+    let n = parameters.n0;
+    let total = 0;
+    const steps = [];
+    while (n > parameters.stop) {
+      total += n;
+      steps.push(`n=${n}, summe=${total}`);
+      n -= parameters.step;
+    }
+    return { durchlaeufe: steps.join(' · '), nEnd: n, stop: parameters.stop, output };
+  }
+  if (parameters.shape === 'forfilter') {
+    const evens = parameters.nums.filter((value) => value % 2 === 0);
+    return {
+      werte: `[${parameters.nums.join(', ')}]`,
+      gerade: `[${evens.join(', ')}]`,
+      factor: parameters.factor,
+      out: output,
+    };
+  }
+  throw new Error(`aggregate-accumulator-count: unbekannte Form ${parameters.shape}`);
+}
+
 export function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
   const shape = ACCUMULATOR_SHAPES[caseId];
   if (!shape) throw new Error(`Unbekannter Fall ${caseId}`);
@@ -430,11 +490,15 @@ export function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
     wantShape: (candidate) => candidate.parameters.shape === shape,
     profileAccepts: accumulatorProfileAccepts(caseId, difficulty),
   });
+  const body = staticCaseBody('aggregate-accumulator-count', caseId);
+  const scope = accumulatorScope(drawn.parameters, drawn.expected.output);
   return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
+    ...authoredCaseExtras(body),
+    masteryEligible: body.masteryEligible,
+    parameters: { caseId, difficulty, ...drawn.parameters, shape: body.parameters.shape },
     expected: { output: drawn.expected.output },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
+    prompt: renderCaseTemplate(body.prompt, scope, 'aggregate-accumulator-count'),
+    fullSolution: renderCaseTemplate(body.fullSolution, scope, 'aggregate-accumulator-count'),
     traceTable: accumulatorTraceTable(drawn),
   };
 }
@@ -614,6 +678,21 @@ function collectionProfileAccepts(difficulty) {
   };
 }
 
+/** Render-Scope für die Falltemplates: varName und der resimulierte
+ *  Zustandsverlauf; für list-copy zusätzlich der y-Endstand und der
+ *  Unterscheidungswert der letzten Zeile. */
+function stepTraceScope(simulated, codes) {
+  const scope = {
+    varName: simulated.varName,
+    verlauf: simulated.states.map((state) => simulated.render(state)).join(' → '),
+  };
+  if (simulated.yEnd) {
+    scope.yEnd = simulated.render(simulated.yEnd);
+    scope.dDistinct = intsOf(codes[3]).at(-1);
+  }
+  return scope;
+}
+
 export function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
   const shape = COLLECTION_SHAPES[caseId];
   if (!shape) throw new Error(`Unbekannter Fall ${caseId}`);
@@ -624,11 +703,17 @@ export function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
     wantShape: (candidate) => candidate.parameters.family === shape,
     profileAccepts: shape === 'set-steps' ? null : collectionProfileAccepts(difficulty),
   });
+  const body = staticCaseBody('trace-collection-state', caseId);
+  const codes = traceCodeLines(drawn.parameters.snippet);
+  const simulated = shape === 'set-steps' ? simulateSetTrace(codes) : simulateListTrace(shape, codes);
+  const scope = stepTraceScope(simulated, codes);
   return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'variable-values' },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
+    ...authoredCaseExtras(body),
+    masteryEligible: body.masteryEligible,
+    parameters: { caseId, difficulty, ...drawn.parameters, family: body.parameters.family },
+    expected: { ...body.expected },
+    prompt: renderCaseTemplate(body.prompt, scope, 'trace-collection-state'),
+    fullSolution: renderCaseTemplate(body.fullSolution, scope, 'trace-collection-state'),
   };
 }
 
@@ -676,11 +761,16 @@ export function generateTraceDictFamily({ seed, caseId, difficulty }) {
       && (dictVocabulary(candidate.parameters) === 'start') === wantStart,
     profileAccepts: collectionProfileAccepts(difficulty),
   });
+  const body = staticCaseBody('trace-dict-state-update', caseId);
+  const codes = traceCodeLines(drawn.parameters.snippet);
+  const scope = stepTraceScope(simulateDictTrace(codes), codes);
   return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'variable-values' },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
+    ...authoredCaseExtras(body),
+    masteryEligible: body.masteryEligible,
+    parameters: { caseId, difficulty, ...drawn.parameters, family: body.parameters.family },
+    expected: { ...body.expected },
+    prompt: renderCaseTemplate(body.prompt, scope, 'trace-dict-state-update'),
+    fullSolution: renderCaseTemplate(body.fullSolution, scope, 'trace-dict-state-update'),
   };
 }
 
@@ -731,46 +821,42 @@ function exceptionCodeOf(prompt) {
   return String(prompt).split('\n\n').at(-1);
 }
 
-/** Unabhängiger Solver: korrekter Antworttext aus Fall und Code. */
-const solveExceptionValueError = () => ({ correctText: 'ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' });
-const solveExceptionTypeConcat = () => ({ correctText: 'TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' });
-const solveExceptionKeyError = () => ({ correctText: 'KeyError — Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' });
-const solveExceptionFileNotFound = () => ({ correctText: 'FileNotFoundError — Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' });
-const solveExceptionIndexError = () => ({ correctText: 'IndexError — Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' });
-const solveExceptionTypeLen = () => ({ correctText: 'TypeError — len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' });
-const solveExceptionNoErrorInt = (parameters) => {
-  const value = String(parameters.code).match(/"(\d+)"/)?.[1];
-  if (value === undefined) throw new Error('trace-exception-path: kein Int-Literal im Code');
-  return { correctText: `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.` };
-};
-const solveExceptionNoErrorMul = (parameters) => {
-  const digits = String(parameters.code).match(/"(\d+)"/)?.[1];
-  const times = Number(String(parameters.code).split('*')[1]);
-  if (digits === undefined || !Number.isSafeInteger(times)) {
+/** Unabhängiger Solver: der korrekte Antworttext steht autorisiert im
+ *  Fallkörper (expected.correctText); die fehlerfreien Fälle rendern
+ *  {literal}/{repeated} aus dem gezogenen Code, Fehlerfälle sind konstant.
+ *  instantiate() gleicht den Text gegen die gezogene korrekte Wahl ab. */
+function exceptionCorrectText(body, code) {
+  const template = body.expected?.correctText;
+  if (typeof template !== 'string') {
+    throw new Error(`trace-exception-path: Fall ${body.caseId} ohne correctText`);
+  }
+  const literal = String(code).match(/"(\d+)"/)?.[1];
+  const times = Number(String(code).split('*')[1]);
+  const scope = {
+    literal,
+    repeated: literal !== undefined && Number.isSafeInteger(times) ? literal.repeat(times) : undefined,
+  };
+  if (template.includes('{literal}') && scope.literal === undefined) {
+    throw new Error('trace-exception-path: kein Int-Literal im Code');
+  }
+  if (template.includes('{repeated}') && scope.repeated === undefined) {
     throw new Error('trace-exception-path: kein String-Multiplikand im Code');
   }
-  return { correctText: `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".` };
-};
-const TRACE_EXCEPTION_SOLVERS = {
-  valueerror: solveExceptionValueError,
-  'typeerror-concat': solveExceptionTypeConcat,
-  keyerror: solveExceptionKeyError,
-  filenotfound: solveExceptionFileNotFound,
-  indexerror: solveExceptionIndexError,
-  'typeerror-len': solveExceptionTypeLen,
-  'no-error-int': solveExceptionNoErrorInt,
-  'no-error-mul': solveExceptionNoErrorMul,
-};
+  return renderCaseTemplate(template, scope, 'trace-exception-path');
+}
 
 export function solveTraceException(parameters) {
-  const solver = TRACE_EXCEPTION_SOLVERS[parameters.caseId];
-  if (!solver) throw new Error(`trace-exception-path: unbekannter Fall ${parameters.caseId}`);
-  return solver(parameters);
+  if (!EXCEPTION_CASE_IDS.includes(parameters.caseId)) {
+    throw new Error(`trace-exception-path: unbekannter Fall ${parameters.caseId}`);
+  }
+  const body = staticCaseBody('trace-exception-path', parameters.caseId);
+  return { correctText: exceptionCorrectText(body, parameters.code) };
 }
 
 export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (!EXCEPTION_CASE_IDS.includes(caseId)) throw new Error(`Unbekannter Fall ${caseId}`);
+  const body = staticCaseBody('trace-exception-path', caseId);
   const drawn = drawTraceInstance(genExceptionBoundary, {
     seed,
     caseId,
@@ -778,19 +864,25 @@ export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
     wantShape: (candidate) => candidate.parameters.caseId === caseId,
     profileAccepts: null,
   });
-  const parameters = {
-    caseId,
-    difficulty,
-    caseIndex: drawn.parameters.caseIndex,
-    code: exceptionCodeOf(drawn.prompt),
+  const code = exceptionCodeOf(drawn.prompt);
+  const scope = { code, correctText: exceptionCorrectText(body, code) };
+  const base = {
+    ...authoredCaseExtras(body),
+    masteryEligible: body.masteryEligible,
+    parameters: {
+      caseId,
+      difficulty,
+      caseIndex: body.parameters.caseIndex,
+      code,
+    },
+    prompt: renderCaseTemplate(body.prompt, scope, 'trace-exception-path'),
+    fullSolution: renderCaseTemplate(body.fullSolution, scope, 'trace-exception-path'),
   };
   if (difficulty !== 'intro') {
     return {
-      parameters,
+      ...base,
       expected: drawn.expected,
       choices: drawn.choices,
-      prompt: drawn.prompt,
-      fullSolution: drawn.fullSolution,
     };
   }
   const correct = drawn.choices.find((choice) => choice.correct);
@@ -799,11 +891,9 @@ export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   const rotation = variantCaseIndex(seed, EXCEPTION_INTRO_CHOICES);
   const ids = ['a', 'b'];
   return {
-    parameters,
+    ...base,
     expected: { correctChoice: ids[rotation] },
     choices: buildRotatedChoices([correct.text, distractor.text], rotation, ids),
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
   };
 }
 

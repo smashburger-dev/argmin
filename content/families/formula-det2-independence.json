@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "formula-det2-independence",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "det2-seeded-columns",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-linalg-det2-01"
+      ],
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "parameters": {
+        "A": {
+          "kind": "int-matrix",
+          "dims": [2, 2],
+          "entries": "ganze Zahlen ungleich 0 in [-5, 5]",
+          "constraint": "det(A) != 0; Rejection-Sampling bis 200 Versuche, Ersatzmatrix [[1, 2], [3, 4]]"
+        }
+      },
+      "expected": {
+        "kind": "integer"
+      },
+      "prompt": "Die Spalten der Matrix\n\nA =\n{matrix}\n\nsollen auf lineare Unabhängigkeit geprüft werden. Berechne die Determinante det(A) als ganze Zahl — det(A) ≠ 0 beweist die Unabhängigkeit der Spalten.",
+      "fullSolution": "det(A) = a·d − b·c = {m00}·{m11} − {m01}·{m10} = {ad} − {bc} = {det}. Da det(A) ≠ 0, sind die Spalten linear unabhängig.",
+      "hints": [
+        "Berechne die Determinante als a·d − b·c — Hauptdiagonale minus Nebendiagonale.",
+        "det(A) ≠ 0 beweist die Unabhängigkeit der Spalten; achte auf das Vorzeichen der Nebendiagonale."
+      ],
+      "typicalErrors": [
+        "Vorzeichen der Nebendiagonale falsch behandelt",
+        "Determinante berechnet, aber den Unabhängigkeitsschluss nicht gezogen"
+      ],
+      "tolerancePolicy": {
+        "mode": "exact-integer"
+      },
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    }
+  ]
+}

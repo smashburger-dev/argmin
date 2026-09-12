@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-capstone-regression",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Pipeline: Regression und Evaluationsregeln",
+  "objectives": [
+    "die feste Evaluation gegen Nachjustieren absichern und Retrievalfehler von Antwortfehlern getrennt messen",
+    "Subgruppen-Recalls berichten und systematische Versagensfälle in die Regressionstabelle überführen statt unter den Teppich",
+    "das defensive Red-Team gegen den eigenen Toy-Prototyp mit Regelwerk-Verdict (angenommen, abgelehnt, abgebrochen) abschließen"
+  ],
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro"
+  ],
+  "estimatedMinutes": 15,
+  "blocks": [
+    {
+      "blockId": "capstone-regression-core",
+      "type": "worked-example",
+      "contentRef": "lessons/research/capstone-regression.md"
+    },
+    {
+      "blockId": "capstone-regression-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/research/capstone-regression-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "wilson-good-enough",
+      "role": "primary",
+      "locator": "Good Enough Practices for Scientific Computing — Setup, Software, Tests und Fehlerbehandlung als Mindestgerüst der Pipeline"
+    },
+    {
+      "sourceId": "turing-way",
+      "role": "primary",
+      "locator": "The Turing Way, Guide for Reproducible Research — Versionierung, Umgebungen und Dokumentation als Reproduktionsvertrag"
+    },
+    {
+      "sourceId": "sandve-repro-rules",
+      "role": "reference",
+      "locator": "Sandve et al., Ten Simple Rules for Reproducible Computational Research — jede Zahl aus Code und Daten ableitbar halten"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

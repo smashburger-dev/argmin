@@ -30,6 +30,21 @@ import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './solved_famil
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
+// Public-first-Fallkörper: prompt/fullSolution liegen als {name}-Templates in
+// content/families/*.json; generate() rendert sie mit den geseedeten Werten.
+// Fehlende Platzhalter schlagen fehl statt unersetzt in den Lerntext zu laufen.
+const renderCaseTemplate = (template, scope, familyId) => {
+  if (typeof template !== 'string') throw new Error(`${familyId}: Fallkörper ohne Text`);
+  return template.replace(/\{([A-Za-z_][A-Za-z0-9_]*)\}/g, (match, name) => {
+    if (!Object.hasOwn(scope, name)) throw new Error(`${familyId}: Platzhalter ${name} ohne Wert`);
+    return String(scope[name]);
+  });
+};
+
+// Matrix-Layout des Generators (drei Zeichen pro Eintrag) — gleiche
+// Formatierung wie matrixText in linalg_numpy_fresh_generators.mjs.
+const det2MatrixText = (m) => m.map((row) => `[${row.map((v) => String(v).padStart(3)).join('  ')}]`).join('\n');
+
 const maxAbsEntry = (parameters) => Math.max(
   ...parameters.A.flat().map((value) => Math.abs(value)),
   ...parameters.B.flat().map((value) => Math.abs(value)),
@@ -183,9 +198,29 @@ export const DET2_CONTRACT = {
 const det2Kit = makeNumericFamily({
   contract: DET2_CONTRACT,
   seededCaseId: 'det2-seeded-columns',
-  draw: genDet2,
+  // Die Spaltenziehung (nonzeroInt ×4 plus det≠0-Rejection) bleibt im
+  // Generator; der autorisierte Text kommt aus dem Fallkörper in
+  // content/families/formula-det2-independence.json.
+  draw: (subseed) => {
+    const drawn = genDet2(subseed);
+    const body = staticCaseBody('formula-det2-independence', 'det2-seeded-columns');
+    const [a, b] = [drawn.parameters.A[0], drawn.parameters.A[1]];
+    const scope = {
+      matrix: det2MatrixText(drawn.parameters.A),
+      m00: a[0], m01: a[1], m10: b[0], m11: b[1],
+      ad: a[0] * b[1], bc: a[1] * b[0], det: drawn.expected,
+    };
+    return {
+      ...drawn,
+      prompt: renderCaseTemplate(body.prompt, scope, 'formula-det2-independence'),
+      fullSolution: renderCaseTemplate(body.fullSolution, scope, 'formula-det2-independence'),
+    };
+  },
   profileAccepts: det2ProfileAccepts,
-  toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
+  toExpected: (drawn) => ({
+    ...staticCaseBody('formula-det2-independence', 'det2-seeded-columns').expected,
+    value: drawn.expected,
+  }),
   solveSeeded: (parameters) => ({ value: det2(parameters.A) }),
 });
 export const generateDet2Family = det2Kit.generate;

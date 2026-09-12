@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "lessonId": "l-capstone-pipeline",
-  "version": 2,
+  "lessonId": "l-capstone-freeze",
+  "version": 1,
   "locale": "de",
-  "title": "Reproduzierbare Capstone-Pipeline",
+  "title": "Capstone-Pipeline: Freeze und Abhängigkeitsordnung",
   "objectives": [
-    "Datenfluss, GenAI-Komponenten, Tests und Evaluation zu einer reproduzierbaren Pipeline mit Manifest, Freeze und IO-Verträgen zusammensetzen",
-    "Retrieval-, Subgruppen- und Sicherheitsmetriken gegen eingefrorene Erwartungen prüfen und ein Regelwerk-Verdict daraus ableiten",
-    "Doppellauf-Reproduktion, gepinnte Versionen, Overclaim-freie Dokumentation und eine Demo aus festen Messwerten vornehmen — mit Work Evidence statt Mastery-Behauptung"
+    "Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und den gepinnten Kern in einem sha256-Manifest einfrieren und mit assert_frozen() gegen stille Anpassungen absichern",
+    "versionierte Seeds und Konfiguration als Experimentwechsel behandeln, der eine neue Version verlangt statt einer stillschweigenden Korrektur",
+    "die Abhängigkeitsordnung der Pipeline-Stages aus IO-Verträgen topologisch sortieren und Zyklen als Designfehler erkennen"
   ],
   "competencyIds": [
     "c-capstone-pipeline"
@@ -16,22 +16,22 @@
     "c-research-capstone",
     "c-ml-repro"
   ],
-  "estimatedMinutes": 60,
+  "estimatedMinutes": 15,
   "blocks": [
     {
-      "blockId": "capstone-pipeline-core",
+      "blockId": "capstone-freeze-core",
       "type": "worked-example",
-      "contentRef": "lessons/research/capstone-pipeline.md"
+      "contentRef": "lessons/research/capstone-freeze.md"
     },
     {
-      "blockId": "capstone-pipeline-viz",
+      "blockId": "capstone-freeze-viz",
       "type": "visualization",
       "contentRef": "lessons/research/chunk-overlap.viz.json"
     },
     {
-      "blockId": "capstone-pipeline-check",
+      "blockId": "capstone-freeze-check",
       "type": "checkpoint",
-      "contentRef": "lessons/research/capstone-pipeline-checkpoint.md"
+      "contentRef": "lessons/research/capstone-freeze-checkpoint.md"
     }
   ],
   "sourceRefs": [
@@ -54,16 +54,6 @@
       "sourceId": "sandve-repro-rules",
       "role": "reference",
       "locator": "Sandve et al., Ten Simple Rules for Reproducible Computational Research — jede Zahl aus Code und Daten ableitbar halten"
-    },
-    {
-      "sourceId": "acm-artifact-badging",
-      "role": "reference",
-      "locator": "ACM Artefact Badging — Available/Functional/Reproduced als Stufen überprüfbarer Artefakte"
-    },
-    {
-      "sourceId": "rougier-figures",
-      "role": "practice",
-      "locator": "Rougier et al., Ten Simple Rules for Better Figures — Demo-Ansichten aus eingefrorenen Messwerten, nicht aus Gedächtnis"
     }
   ],
   "rightsId": "ki-lernplattform-original",

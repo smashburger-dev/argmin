@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-set-operation-semantics",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "dedup-and-intersection",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w03-e2"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "len(a) ist 2 und a & b ist {\"lern\"} — Mengen speichern jedes Element nur einmal, & bildet den Durchschnitt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "len(a) ist 3 und a & b ist {\"lern\"} — das doppelte \"ki\" bleibt erhalten.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "len(a) ist 2 und a & b ist {\"ki\", \"lern\", \"plattform\"} — & verbindet beide Mengen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "len(a) ist 3 und a & b ist {\"ki\", \"lern\", \"plattform\"} — & verbindet und erhält Duplikate.",
+          "correct": false
+        }
+      ],
+      "prompt": "Gegeben:\n\n<code>a = {\"ki\", \"lern\", \"ki\"}\nb = {\"lern\", \"plattform\"}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?",
+      "fullSolution": "a = {\"ki\", \"lern\"} (Duplikat entfällt), len(a) = 2. a & b = {\"lern\"}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-control-construct",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "for-over-existing-collection",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-choice-01"
+      ],
+      "expected": {
+        "correctChoice": "a"
+      },
+      "choices": [
+        {
+          "id": "a",
+          "text": "`for value in values:`",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "`while True:` ohne expliziten Abbruch",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Eine rekursive Funktion ohne Basisfall",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein einzelnes `if`, das nur das erste Element prüft",
+          "correct": false
+        }
+      ],
+      "prompt": "Du willst jeden Wert einer bereits vorhandenen Liste genau einmal prüfen. Welche Schleifenform drückt diese Absicht am direktesten aus?",
+      "fullSolution": "`for value in values` iteriert direkt über jedes vorhandene Element. Eine while-Schleife ist passender, wenn die Wiederholung von einer sich ändernden Bedingung statt von einer vorhandenen Collection abhängt.",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    }
+  ]
+}
