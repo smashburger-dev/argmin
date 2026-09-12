@@ -4,10 +4,6 @@ import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { legacyOracle } from './helpers/legacy_oracle.mjs';
-import {
-  genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount,
-} from '../assets/js/core/genai_research_generators.mjs';
 
 // Content contract tests for weeks 27-30 (RAG, evaluation, defensive GenAI
 // security, prototype). The packs are registered in content/catalog.json;
@@ -15,33 +11,6 @@ import {
 // the compiler cannot mask an authoring defect.
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const W27_W30_SEED_GENERATORS = {
-  genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount,
-};
-const WEEKS = ['w27', 'w28', 'w29', 'w30'];
-const COMPETENCY_BY_WEEK = {
-  w27: 'c-genai-rag',
-  w28: 'c-genai-eval',
-  w29: 'c-genai-security',
-  w30: 'c-genai-prototype',
-};
-const GENERATOR_BY_WEEK = {
-  w27: 'genRecallAtK',
-  w28: 'genF1orPrecision',
-  w29: 'genInjectionFlagCount',
-  w30: 'genAllowedActionCount',
-};
-const SEED_RANGE = {
-  w27: [2701, 2760],
-  w28: [2801, 2860],
-  w29: [2901, 2960],
-  w30: [3001, 3060],
-};
-const REQUIRED = ['exerciseId', 'schemaVersion', 'skillIds', 'type', 'prompt', 'locale',
-  'grader', 'parameters', 'deterministicSeed', 'tolerancePolicy', 'hints',
-  'fullSolution', 'difficulty', 'estimatedMinutes', 'sourceLineage', 'license',
-  'validationStatus', 'testedSeedCount'];
-const AUTHORITATIVE = new Set(['deterministic', 'pyodide', 'pyodide-sympy']);
 const ALLOWED_SOURCES = new Set([
   'arxiv-rag-2020', 'iir-book-ch8', 'craswell-mrr-2009', 'ragas-docs',
   'owasp-genai-llm-top10', 'nist-airmf', 'mitre-atlas', 'openai-cookbook',
@@ -49,41 +18,6 @@ const ALLOWED_SOURCES = new Set([
 ]);
 
 const readJson = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
-const pack = (weekId) => legacyOracle.weeks[weekId];
-const exercisesOf = (weekId) => pack(weekId).exercises;
-const tier = (d) => (d <= 1 ? 'basic' : d === 2 ? 'core' : d === 3 ? 'advanced' : 'finalBoss');
-
-const ALL_EXERCISES = WEEKS.flatMap((weekId) => exercisesOf(weekId).map((ex) => ({ weekId, ex })));
-
-// --- week pack structure -----------------------------------------------------------
-
-
-
-
-
-
-
-// --- numeric seed-generator slots ---------------------------------------------------
-
-
-
-// --- predict-output slots ------------------------------------------------------------
-
-
-
-// --- python-code slots ----------------------------------------------------------------
-
-
-
-
-
-
-
-// --- competency coverage ---------------------------------------------------------------
-
-
-
-
 
 // --- lessons -----------------------------------------------------------------------------
 
@@ -139,8 +73,6 @@ test('w27-w30 lesson markdown is German, in budget and links only its own exerci
     assert.ok(words >= 500 && words <= 900, `${lesson.file}.md has ${words} words (budget 500-900)`);
     assert.match(md, /## Direkter Check/, `${lesson.file}.md: Direkter Check fehlt`);
     assert.equal(md.includes('```html'), false, `${lesson.file}.md: raw HTML verboten`);
-    const weekId = `w${lesson.id.slice(-6) === 'l-genai' ? '' : ''}`; // not used; explicit below
-    void weekId;
     const links = [...md.matchAll(/#\/family\/([^/]+)\//g)].map((m) => m[1]);
     assert.ok(links.length >= 3, `${lesson.file}.md: too few exercise links`);
     for (const familyId of links) assert.ok(FAMILIES_BY_LESSON[lesson.file].has(familyId), `${lesson.file}.md links foreign family ${familyId}`);

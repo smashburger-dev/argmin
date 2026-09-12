@@ -32,7 +32,6 @@ import {
   rng, variantCaseIndex, buildRotatedChoices, drawFamilyInstance,
 } from './generator_draw_kit.mjs';
 import { staticBodyInstance, staticCaseBody, staticVariantInstance } from '../domain/family_registry.mjs';
-export { staticBodyInstance, staticVariantInstance };
 
 const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 

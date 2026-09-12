@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { configureExerciseFamilies, familyEventInput } from '../assets/js/domain/exercise_registry.mjs';
 import { createFamilyRegistry, registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import { compileContent, validateSourceDocument } from '../tools/compile_content.mjs';
+import { assertFamilyActivityContracts } from '../assets/js/core/graders.js';
 
 const root = join(fileURLToPath(new URL('..', import.meta.url)));
 const familyDir = join(root, 'content/families');
@@ -48,6 +49,15 @@ const ANSWER_BUILDERS = {
     instance.parameters.variables.map((variable) => [variable.name, String(variable.value)]),
   ),
   'predict-output': (instance) => instance.expectedAnswer.output,
+  'multiple-choice': (instance) => instance.expectedAnswer.correctIds,
+  'diagnostic-rationale': (instance) => {
+    const { mustContain, minWords } = instance.expectedAnswer;
+    const words = mustContain.map((keyword) => keyword.split('|')[0]);
+    const filler = 'die ursache liegt genau in diesem punkt der betrachtung genauer'.split(' ');
+    for (let index = 0; words.length < minWords + 2; index += 1) words.push(filler[index % filler.length]);
+    return words.join(' ');
+  },
+  'worked-example-fading': (instance) => instance.expectedAnswer.gaps.map((gap) => gap.answer),
 };
 
 const MUTANT_BUILDERS = {
@@ -67,6 +77,14 @@ const MUTANT_BUILDERS = {
     return { [variable.name]: value };
   },
   'predict-output': (instance) => `${instance.expectedAnswer.output}\nx`,
+  'multiple-choice': (instance) => {
+    const wrong = instance.choices.find((choice) => !instance.expectedAnswer.correctIds.includes(choice.id));
+    return [...instance.expectedAnswer.correctIds.slice(0, -1), wrong.id];
+  },
+  'diagnostic-rationale': () => 'keine ahnung',
+  'worked-example-fading': (instance) => instance.expectedAnswer.gaps.map(
+    (gap, index) => (index === 0 ? (gap.answer === '999' ? '998' : '999') : gap.answer),
+  ),
 };
 
 const supported = (instance) => instance.graderId === 'deterministic'
@@ -87,6 +105,13 @@ function assertChoices(instance) {
   if (!instance.choices) return;
   assert.ok(instance.choices.length >= 2, `${instance.familyId}:${instance.caseId}: too few choices`);
   assert.equal(new Set(instance.choices.map((choice) => choice.text)).size, instance.choices.length);
+  if (instance.expectedAnswer?.kind === 'choice-indices') {
+    const ids = new Set(instance.choices.map((choice) => choice.id));
+    assert.ok(instance.expectedAnswer.correctIds.length >= 2
+      && instance.expectedAnswer.correctIds.every((id) => ids.has(id)),
+    `${instance.familyId}:${instance.caseId}: correctIds ausserhalb choices`);
+    return;
+  }
   assert.equal(instance.choices.filter((choice) => choice.correct).length, 1);
 }
 
@@ -100,6 +125,7 @@ function assertStaticMastery(instance) {
 test('all registered family contracts and taxonomy are valid', () => {
   for (const doc of docs) {
     validateSourceDocument('exercise-family-cases', doc, root);
+    assertFamilyActivityContracts(doc);
     for (const item of doc.cases) {
       for (const competencyId of item.competencyIds || []) {
         assert.ok(competencyIds.has(competencyId), `${doc.familyId}:${item.caseId}: unknown competency ${competencyId}`);

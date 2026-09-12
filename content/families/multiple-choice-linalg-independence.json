@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "familyId": "multiple-choice-linalg-independence",
+  "contract": {
+    "familyId": "multiple-choice-linalg-independence",
+    "familyGroup": "classify-concept",
+    "summary": "Prüft Vektormengen und Aussagen zur linearen Unabhängigkeit über mehrere Optionen hinweg.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "static",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "independent-sets-r2",
+        "propertyTest": false
+      },
+      {
+        "caseId": "independence-statements",
+        "propertyTest": true
+      },
+      {
+        "caseId": "independent-sets-r3",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-linalg-independence"
+    ],
+    "graderId": "deterministic",
+    "activityType": "multiple-choice"
+  },
+  "cases": [
+    {
+      "caseId": "independent-sets-r2",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "c"
+        ],
+        "scoring": "per-correct"
+      },
+      "prompt": "Welche der folgenden Vektormengen im $\\mathbb{R}^2$ sind linear unabhängig? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "(a) unabhängig: $(1,0)$ und $(0,1)$ sind die Standardbasis — nur die triviale Nullkombination existiert. (b) abhängig: $(2,4) = 2\\,(1,2)$, die Vektoren sind kollinear. (c) unabhängig: kein Skalar $\\lambda$ erfüllt gleichzeitig $3\\lambda = -1$ und $-\\lambda = 2$ (äquivalent: $\\det = 3\\cdot 2 - (-1)(-1) = 5 \\neq 0$). (d) abhängig: drei Vektoren im $\\mathbb{R}^2$ sind immer abhängig; konkret gilt $(1,1) = \\tfrac{1}{2}(2,0) + \\tfrac{1}{2}(0,2)$. (e) abhängig: jede Menge mit dem Nullvektor ist abhängig, denn $1\\cdot(0,0) + 0\\cdot(1,3) = 0$ ist eine nichttriviale Nullkombination.",
+      "hints": [
+        "Prüfe jedes Paar auf einen gemeinsamen Skalarfaktor — und zähle bei jeder Menge, ob mehr Vektoren als die Dimension vorliegen.",
+        "Der Nullvektor macht jede Menge automatisch abhängig: der Koeffizient vor ihm darf frei gewählt werden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('b')",
+          "then": "$(2,4) = 2\\,(1,2)$ — die Vektoren sind kollinear und daher abhängig; Nichtnullvektor zu sein reicht für Unabhängigkeit nicht."
+        },
+        {
+          "if": "selected.includes('d')",
+          "then": "Drei Vektoren im $\\mathbb{R}^2$ sind immer abhängig (mehr Vektoren als Dimension); hier konkret $(1,1) = \\tfrac{1}{2}(2,0) + \\tfrac{1}{2}(0,2)$."
+        },
+        {
+          "if": "selected.includes('e')",
+          "then": "Die Menge enthält den Nullvektor — mit Koeffizient $1$ vor $(0,0)$ und $0$ vor $(1,3)$ liegt eine nichttriviale Nullkombination vor."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "$(1,0)$ und $(0,1)$ bilden die Standardbasis: $\\alpha(1,0) + \\beta(0,1) = (\\alpha,\\beta) = 0$ erzwingt $\\alpha = \\beta = 0$ — die Menge ist unabhängig."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "Kein einziger Faktor macht aus $(3,-1)$ den Vektor $(-1,2)$: $\\lambda = -\\tfrac{1}{3}$ aus der ersten Komponente widerspricht $\\lambda = -2$ aus der zweiten — die Menge ist unabhängig."
+        }
+      ],
+      "typicalErrors": [
+        "Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen.",
+        "Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.",
+        "Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\{(1,0),\\ (0,1)\\}$"
+        },
+        {
+          "id": "b",
+          "text": "$\\{(1,2),\\ (2,4)\\}$"
+        },
+        {
+          "id": "c",
+          "text": "$\\{(3,-1),\\ (-1,2)\\}$"
+        },
+        {
+          "id": "d",
+          "text": "$\\{(1,1),\\ (2,0),\\ (0,2)\\}$"
+        },
+        {
+          "id": "e",
+          "text": "$\\{(0,0),\\ (1,3)\\}$"
+        }
+      ]
+    },
+    {
+      "caseId": "independence-statements",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "c",
+          "e"
+        ],
+        "scoring": "all-or-nothing"
+      },
+      "prompt": "Welche der folgenden Aussagen über lineare Unabhängigkeit stimmen? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "(a) stimmt: $v_3 = v_1 + v_2$ liefert die nichttriviale Nullkombination $v_1 + v_2 - v_3 = 0$. (b) stimmt nicht: zwei Vektoren sind schon abhängig, wenn sie kollinear sind — der Nullvektor ist nur ein Spezialfall; $(1,2)$ und $(2,4)$ sind beide ungleich null und trotzdem abhängig. (c) stimmt: im $\\mathbb{R}^n$ ist jede Menge mit mehr als $n$ Vektoren linear abhängig, weil ein homogenes System mit mehr Unbekannten als Gleichungen eine nichttriviale Lösung besitzt. (d) stimmt nicht: paarweise Nichtparallelität reicht nicht — in $\\{(1,0),(0,1),(1,1)\\}$ ist kein Paar parallel, aber $(1,1) = (1,0) + (0,1)$ macht die Menge abhängig. (e) stimmt: mit dem Nullvektor in der Menge ist $1\\cdot 0 + \\sum 0\\cdot v_i = 0$ eine nichttriviale Nullkombination.",
+      "hints": [
+        "Übersetze jede Aussage in die Definition zurück: Unabhängigkeit heißt, nur die triviale Nullkombination existiert.",
+        "Suche bei den allgemeinen Aussagen jeweils ein konkretes Gegenbeispiel mit zwei oder drei kleinen Vektoren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('b')",
+          "then": "Abhängigkeit beginnt schon bei Kollinearität: $(1,2)$ und $(2,4)$ sind beide vom Nullvektor verschieden und trotzdem abhängig — der Nullvektor ist nur der Extremfall $\\lambda = 0$."
+        },
+        {
+          "if": "selected.includes('d')",
+          "then": "Paarweise Nichtparallelität reicht nicht: $\\{(1,0),(0,1),(1,1)\\}$ hat kein paralleles Paar, aber $(1,1) = (1,0)+(0,1)$ — Unabhängigkeit verlangt, dass keine Kombination der anderen einen Vektor erzeugt."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "Die Aussage stimmt: eine Darstellung eines Vektors als Kombination anderer lässt sich immer in eine nichttriviale Nullkombination umstellen — die Menge ist abhängig."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "Mehr als $n$ Vektoren im $\\mathbb{R}^n$ erzeugen ein homogenes System mit mehr Unbekannten als Gleichungen — das hat immer eine nichttriviale Lösung, die Menge ist also abhängig."
+        },
+        {
+          "if": "!selected.includes('e')",
+          "then": "Der Nullvektor erlaubt den Koeffizienten $1$ in der Nullkombination, ohne dass ein anderer Koeffizient ungleich null sein müsste — die Menge ist damit nie unabhängig."
+        }
+      ],
+      "typicalErrors": [
+        "Lineare Abhängigkeit nur mit dem Nullvektor in Verbindung gebracht statt mit Kollinearität und Kombinationen.",
+        "Paarweise Nichtparallelität mit Unabhängigkeit der Gesamtmenge verwechselt.",
+        "Die Schranke $n$ für unabhängige Mengen im $\\mathbb{R}^n$ nicht angewendet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ist ein Vektor der Menge die Summe zweier anderer, so ist die Menge linear abhängig."
+        },
+        {
+          "id": "b",
+          "text": "Zwei Vektoren sind genau dann linear abhängig, wenn einer von ihnen der Nullvektor ist."
+        },
+        {
+          "id": "c",
+          "text": "Jede Menge mit mehr als $n$ Vektoren im $\\mathbb{R}^n$ ist linear abhängig."
+        },
+        {
+          "id": "d",
+          "text": "Sind die Vektoren einer Menge paarweise nicht parallel, so ist die Menge linear unabhängig."
+        },
+        {
+          "id": "e",
+          "text": "Enthält eine Menge den Nullvektor, so ist sie linear abhängig."
+        }
+      ],
+      "variants": [
+        {
+          "parameters": {},
+          "expected": {
+            "kind": "choice-indices",
+            "correctIds": [
+              "a",
+              "c",
+              "e"
+            ],
+            "scoring": "all-or-nothing"
+          },
+          "prompt": "Welche der folgenden Aussagen über lineare Unabhängigkeit stimmen? Wähle alle zutreffenden Optionen aus.",
+          "fullSolution": "(a) stimmt: $v_3 = 2v_1 - v_2$ ergibt $2v_1 - v_2 - v_3 = 0$, eine nichttriviale Nullkombination. (b) stimmt nicht: $(1,1)$ und $(-2,-2)$ sind ohne Nullvektor abhängig, weil sie kollinear sind. (c) stimmt: fünf Vektoren im $\\mathbb{R}^4$ überschreiten die Dimension und sind daher immer abhängig. (d) stimmt nicht: paarweise Nichtkollinearität verbietet keine Kombination aus mehreren Vektoren — $(1,1,0) = (1,0,0) + (0,1,0)$ zeigt eine abhängige Menge ohne kollineares Paar. (e) stimmt: jede Menge mit dem Nullvektor besitzt die nichttriviale Nullkombination mit Koeffizient $1$ vor ihm.",
+          "hints": [
+            "Eine Linearkombination, die einen Vektor der Menge erzeugt, lässt sich immer in eine nichttriviale Nullkombination umstellen.",
+            "Teste allgemeine Aussagen mit kleinen Vektoren im $\\mathbb{R}^2$ oder $\\mathbb{R}^3$ als Gegenbeispiel."
+          ],
+          "choices": [
+            {
+              "id": "a",
+              "text": "Gilt $v_3 = 2v_1 - v_2$, so ist $\\{v_1, v_2, v_3\\}$ linear abhängig."
+            },
+            {
+              "id": "b",
+              "text": "Zwei Vektoren im $\\mathbb{R}^2$ sind genau dann linear abhängig, wenn einer der Nullvektor ist."
+            },
+            {
+              "id": "c",
+              "text": "Im $\\mathbb{R}^4$ ist jede Menge aus fünf Vektoren linear abhängig."
+            },
+            {
+              "id": "d",
+              "text": "Sind die Vektoren einer Menge paarweise nicht kollinear, so ist die Menge linear unabhängig."
+            },
+            {
+              "id": "e",
+              "text": "Der Nullvektor kann zu keiner linear unabhängigen Menge gehören."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "caseId": "independent-sets-r3",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "c1-authored"
+      ],
+      "competencyIds": [
+        "c-linalg-independence"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "c"
+        ],
+        "scoring": "per-correct"
+      },
+      "prompt": "Welche der folgenden Vektormengen sind im $\\mathbb{R}^3$ linear unabhängig? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "(a) unabhängig: die Standardbasis des $\\mathbb{R}^3$. (b) abhängig: $(1,1,2) = (1,0,1) + (0,1,1)$ — der dritte Vektor ist die Summe der beiden ersten. (c) unabhängig: $\\det \\begin{pmatrix} 1 & 2 & 0 \\\\ 0 & 1 & 1 \\\\ 2 & 0 & 1 \\end{pmatrix} = 1\\cdot(1\\cdot 1 - 1\\cdot 0) - 2\\cdot(0\\cdot 1 - 1\\cdot 2) = 1 + 4 = 5 \\neq 0$. (d) abhängig, obwohl kein Paar parallel ist: $(1,-1,0) + (0,1,-1) + (-1,0,1) = (0,0,0)$ — eine nichttriviale Nullkombination. (e) abhängig: vier Vektoren im $\\mathbb{R}^3$ überschreiten die Dimension; konkret ist $(1,1,1) = \\tfrac{1}{2}\\big((2,0,0) + (0,2,0) + (0,0,2)\\big)$.",
+      "hints": [
+        "Prüfe bei Dreiermengen im $\\mathbb{R}^3$, ob ein Vektor als Summe oder Kombination der anderen schreibbar ist — Parallelität ist dafür nicht nötig.",
+        "Zähle zuerst die Vektoren gegen die Dimension und suche dann nach Nullkombinationen wie $v_1 + v_2 + v_3 = 0$."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('b')",
+          "then": "Der dritte Vektor ist die Summe der beiden ersten: $(1,1,2) = (1,0,1) + (0,1,1)$ — damit ist die Menge abhängig."
+        },
+        {
+          "if": "selected.includes('d')",
+          "then": "Kein Paar ist parallel, aber $(1,-1,0) + (0,1,-1) + (-1,0,1) = 0$ ist eine nichttriviale Nullkombination — die Menge ist abhängig."
+        },
+        {
+          "if": "selected.includes('e')",
+          "then": "Vier Vektoren im $\\mathbb{R}^3$ sind immer abhängig; hier gilt zusätzlich $(1,1,1) = \\tfrac{1}{2}\\big((2,0,0)+(0,2,0)+(0,0,2)\\big)$."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "Die drei Einheitsvektoren erlauben nur die triviale Nullkombination — sie bilden die Standardbasis des $\\mathbb{R}^3$."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "Die Determinante der aus den drei Vektoren gebildeten Matrix ist $5 \\neq 0$ — keine nichttriviale Nullkombination existiert, die Menge ist unabhängig."
+        }
+      ],
+      "typicalErrors": [
+        "Summen-Abhängigkeit ($v_3 = v_1 + v_2$) bei nicht parallelen Vektoren übersehen.",
+        "Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.",
+        "Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet."
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "$\\{(1,0,0),\\ (0,1,0),\\ (0,0,1)\\}$"
+        },
+        {
+          "id": "b",
+          "text": "$\\{(1,0,1),\\ (0,1,1),\\ (1,1,2)\\}$"
+        },
+        {
+          "id": "c",
+          "text": "$\\{(1,2,0),\\ (0,1,1),\\ (2,0,1)\\}$"
+        },
+        {
+          "id": "d",
+          "text": "$\\{(1,-1,0),\\ (0,1,-1),\\ (-1,0,1)\\}$"
+        },
+        {
+          "id": "e",
+          "text": "$\\{(2,0,0),\\ (0,2,0),\\ (0,0,2),\\ (1,1,1)\\}$"
+        }
+      ]
+    }
+  ]
+}

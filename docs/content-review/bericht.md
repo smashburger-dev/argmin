@@ -13,7 +13,7 @@ Branch `enamel-sprocket`. Geprüft: 8 Domain-Reviews (B1a–B7), 2 Gegenprüfung
 | Non-Choice-Mastery `c-meta-learning` | behoben: neue Parsons-Familie `construct-error-journal-order` (curated + practice-space) |
 | Non-Choice-Mastery `c-linalg-independence` | behoben: `formula-det2-independence:det2-seeded-columns` curated in `lm-linalg-independence` |
 | Verbleibende P1s | offen (Abschnitt 5) |
-| Neue Aufgabentypen / interaktive Elemente | plan-only (`plan-neue-aufgabentypen.md`, `plan-interaktive-elemente.md`) |
+| Neue Aufgabentypen / interaktive Elemente | umgesetzt (Nachtrag): `multiple-choice`, `diagnostic-rationale`, `worked-example-fading` implementiert und platziert; Viz-Checkpoints in allen 24 `.viz.json` |
 
 Alle 46 Kompetenzen erfüllen jetzt ihre `evidencePolicy.minimumDistinctDefinitions`
 (Inventar-Policy-Check: 46/46 `policySatisfiable`).

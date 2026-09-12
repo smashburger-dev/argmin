@@ -22,8 +22,13 @@ const sample = [];
 {
   const byFamily = new Map();
   for (const doc of familyDocs) {
+    // Nur die ersten drei liefernden Familien landen im Sample — spätere
+    // Docs werden ohnehin weggeschnitten, kein einziges Instantiate nötig.
+    if (byFamily.size >= 3 && !byFamily.has(doc.familyId)) break;
     for (const item of doc.cases || []) {
       for (let seed = 0; seed < 64; seed += 1) {
+        const list = byFamily.get(doc.familyId);
+        if (list && list.length >= 4) break; // Familie voll — Seed-Scan beenden
         try {
           const instance = registry.instantiate(doc.familyId, seed, item.difficultyProfile, item.caseId);
           if (instance.graderId !== 'deterministic') continue;
@@ -34,11 +39,9 @@ const sample = [];
           // (z. B. Angriffstaxonomie ohne Zahlen) sind für den Mock-Trace
           // strukturell nicht darstellbar und gehören nicht in die Stichprobe.
           if (!/-?\d/.test(JSON.stringify(instance.parameters))) continue;
-          const list = byFamily.get(instance.familyId) || [];
-          if (list.length < 4) {
-            list.push({ familyId: instance.familyId, caseId: instance.caseId, difficulty: instance.difficulty, seed });
-            byFamily.set(instance.familyId, list);
-          }
+          const kept = list || [];
+          kept.push({ familyId: instance.familyId, caseId: instance.caseId, difficulty: instance.difficulty, seed });
+          byFamily.set(instance.familyId, kept);
         } catch {
           continue;
         }

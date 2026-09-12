@@ -76,6 +76,39 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-ml-linear-mcq-least-squares",
+      "role": "curated",
+      "familyId": "multiple-choice-ml-linear",
+      "caseId": "least-squares-normal-equation",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-linear-mcq-ridge-statements",
+      "role": "curated",
+      "familyId": "multiple-choice-ml-linear",
+      "caseId": "ridge-statements",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-ml-linear-mcq-residual-diagnostics",
+      "role": "curated",
+      "familyId": "multiple-choice-ml-linear",
+      "caseId": "residual-diagnostics",
+      "seed": 1,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-ml-linear-practice-space",
       "role": "practice-space",
       "familyId": "formula-quadratic-error-metric",

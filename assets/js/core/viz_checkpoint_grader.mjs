@@ -12,7 +12,9 @@ export const DEFAULT_VIZ_CHECKPOINT_TOLERANCE = 1e-6;
 // ("3/4", "-1/2", "1,5/2"). The comma is always a decimal mark, never a
 // separator (German locale). Scientific notation is rejected on purpose:
 // checkpoint prompts ask for plain values and `1e-3` reads as a typo risk.
-const DECIMAL = '[+-]?(?:\\d+(?:[.,]\\d*)?|[.,]\\d+)';
+// A decimal separator requires digits on both sides: '1,' and '1.' are
+// typos (invalid), ',5'/'- .5' style leading separators still parse as 0.5.
+const DECIMAL = '[+-]?(?:\\d+(?:[.,]\\d+)?|[.,]\\d+)';
 const NUMBER_RE = new RegExp(`^${DECIMAL}$`);
 const FRACTION_RE = new RegExp(`^(${DECIMAL})\\/(${DECIMAL})$`);
 const toNumber = (text) => Number(text.replace(',', '.'));

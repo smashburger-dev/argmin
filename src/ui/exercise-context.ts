@@ -11,6 +11,9 @@ export const activityTypeLabels = {
   'python-code': 'Programmieraufgabe',
   parsons: 'Code ordnen',
   'short-rationale': 'Begründung',
+  'multiple-choice': 'Mehrfachauswahl',
+  'diagnostic-rationale': 'Fehlerdiagnose',
+  'worked-example-fading': 'Lückentext',
 } as const;
 
 export function activityLabel(activityType: string | undefined) {

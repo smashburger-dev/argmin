@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 1,
+  "familyId": "diagnostic-rationale-python-errors",
+  "contract": {
+    "familyId": "diagnostic-rationale-python-errors",
+    "familyGroup": "diagnose-cause",
+    "summary": "Begründet die Ursache eines Python-Fehlers, bevor ein Fix genannt wird.",
+    "taskArchetype": "rationale-note",
+    "authorityMode": "static",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "sum-skips-first",
+        "propertyTest": false
+      },
+      {
+        "caseId": "except-pass-swallow",
+        "propertyTest": false
+      },
+      {
+        "caseId": "csv-age-str-compare",
+        "propertyTest": false
+      },
+      {
+        "caseId": "row-key-case",
+        "propertyTest": false
+      },
+      {
+        "caseId": "nameerror-undefined-var",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core"
+    ],
+    "competencyIds": [
+      "c-python-files-errors",
+      "c-testing-debugging"
+    ],
+    "graderId": "deterministic",
+    "activityType": "diagnostic-rationale"
+  },
+  "cases": [
+    {
+      "caseId": "sum-skips-first",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "off-by-one",
+        "mustContain": [
+          "index|schleife|null",
+          "element|wert|summe"
+        ],
+        "mustNotContain": [
+          "test ist falsch|fehler im test"
+        ],
+        "minWords": 12
+      },
+      "prompt": "Der Test `assert summe([10, 20, 30]) == 60` schlägt fehl: `summe` liefert 50 statt 60. Erkläre die Ursache des Fehlers, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `range(1, len(werte))` startet beim Index 1 statt beim Index 0 — die Schleife überspringt das erste Element, die untere Grenze ist um eins verschoben (off-by-one). Darum fehlt die 10 in der Summe; der Fix ist `range(len(werte))`.",
+      "hints": [
+        "Welchen Index erreicht `range(1, len(werte))` als Erstes — und welcher bleibt aus?",
+        "Zähle die Schleife von Hand nach: Welcher Wert landet in `total` und welcher fehlt?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Benenne den Mechanismus: Welcher Index wird als Erster besucht und welcher Wert der Liste bleibt dadurch außen vor?"
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "das Symptom nacherzählt („die Summe ist falsch“) statt die Grenze zu benennen",
+        "den Test oder die Erwartung für fehlerhaft erklärt statt die Schleife",
+        "range-Verhalten verwechselt: den Startwert statt der Grenze verdächtigt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "def summe(werte):\n    total = 0\n    for i in range(1, len(werte)):\n        total += werte[i]\n    return total"
+      }
+    },
+    {
+      "caseId": "except-pass-swallow",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-python-files-errors"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "except-pass",
+        "mustContain": [
+          "except|ausnahme",
+          "verschluck|lautlos|verschwind|zeile"
+        ],
+        "mustNotContain": [
+          "geschlossen|schliesst"
+        ],
+        "minWords": 12
+      },
+      "prompt": "Das Skript soll alle Zahlen aus `werte.csv` summieren. Die Datei hat sechs Zeilen, darunter die Kopfzeile `wert` und den Eintrag `12,5`. Ausgegeben wird nur `30.0` — ohne jede Fehlermeldung. Erkläre die Ursache des falschen Ergebnisses, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: Der leere `except`-Block fängt jede Ausnahme und verschluckt sie kommentarlos — Zeilen, die `float` nicht verarbeiten kann (Kopfzeile `wert`, Kommazahl `12,5`), verschwinden lautlos. Die Summe sieht plausibel aus, ist aber zu klein; der Fix fängt nur `ValueError` und meldet die Zeile.",
+      "hints": [
+        "Was passiert mit einer Zeile, die `float` nicht verarbeiten kann — und wer erfährt davon?",
+        "Vergleiche den gefangenen Fehlertyp mit dem, was eine kaputte Zeile wirklich auslöst."
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Benenne den `except`-Block und was er mit jeder Ausnahme macht — das Verschlucken ist die Ursache, nicht die Summe."
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "nur das Symptom benennt („die Summe ist zu klein“)",
+        "die fehlende Fehlermeldung als Beweis für korrekte Daten gewertet",
+        "die nicht geschlossene Datei als Hauptursache genannt — ein echter Mangel, aber nicht die Ursache der falschen Summe"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "summe = 0\nfor zeile in open(\"werte.csv\"):\n    try:\n        summe += float(zeile.strip())\n    except:\n        pass\nprint(summe)"
+      }
+    },
+    {
+      "caseId": "csv-age-str-compare",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-python-files-errors"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "TypeError",
+        "mustContain": [
+          "str|text|zeichenkette",
+          "int|typ|zahl"
+        ],
+        "minWords": 12
+      },
+      "prompt": "Der Lauf bricht ab: `TypeError: '>=' not supported between instances of 'str' and 'int'`. Erkläre die Ursache des Abbruchs, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `csv.DictReader` liefert jedes Feld als `str` — `row[\"alter\"]` ist der String `'23'`, kein `int`. Python vergleicht `str` nicht per `>=` mit `int` und wirft deshalb den TypeError; der Fix wandelt das Feld vorher mit `int(...)` um.",
+      "hints": [
+        "Welchen Typ liefert `DictReader` für jedes Feld?",
+        "Lies die TypeError-Meldung wörtlich: Welche zwei Typen stehen sich im Vergleich gegenüber?"
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Nenne die beiden Typen im Vergleich: Was liefert `DictReader` und womit wird es verglichen?"
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "die TypeError-Meldung abschreiben statt den Typ-Ursprung zu erklären",
+        "CSV-Felder als Zahlen missverstanden",
+        "den `>=`-Operator für das Problem gehalten statt der Feldtypen"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "import csv\n\nwith open(\"personen.csv\") as f:\n    for row in csv.DictReader(f):\n        if row[\"alter\"] >= 18:\n            print(row[\"name\"])"
+      }
+    },
+    {
+      "caseId": "row-key-case",
+      "difficultyProfile": "core",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-python-files-errors"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "KeyError",
+        "mustContain": [
+          "alter",
+          "spalte|header|key|schreib|gross|groß"
+        ],
+        "mustNotContain": [
+          "trennzeichen|semikolon"
+        ],
+        "minWords": 15
+      },
+      "prompt": "Der Lauf bricht in der ersten Datenzeile ab: `KeyError: 'alter'`. Die Kopfzeile von `personen.csv` lautet `Name;Alter;Stadt`. Erkläre die Ursache des KeyError, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `DictReader` bildet die Schlüssel exakt aus der Kopfzeile — dort steht die Spalte `Alter` mit großem A. `row[\"alter\"]` fragt einen Schlüssel ab, den es in dieser Groß-/Kleinschreibung nicht gibt; der Fix gleicht die Schreibweise an oder normalisiert die Header.",
+      "hints": [
+        "Woher nimmt `DictReader` seine Schlüssel — und wie steht die Spalte exakt in der Kopfzeile?",
+        "Vergleiche `alter` im Code Zeichen für Zeichen mit der Kopfzeile."
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Benenne die Spalte aus der Kopfzeile und den Unterschied zur Abfrage — die Schreibweise ist die Ursache."
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "das Trennzeichen als Ursache vermutet — `delimiter=\";\"` ist korrekt gesetzt",
+        "den KeyError nur nacherzählt statt die Schreibweise zu benennen",
+        "die Spalte für fehlend oder die Datei für leer erklärt"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "import csv\n\nwith open(\"personen.csv\") as f:\n    for row in csv.DictReader(f, delimiter=\";\"):\n        print(row[\"alter\"])"
+      }
+    },
+    {
+      "caseId": "nameerror-undefined-var",
+      "difficultyProfile": "intro",
+      "masteryEligible": false,
+      "sourceLineage": [
+        "generated"
+      ],
+      "competencyIds": [
+        "c-testing-debugging"
+      ],
+      "expected": {
+        "kind": "diagnosis",
+        "diagnosisCode": "NameError",
+        "mustContain": [
+          "messwerte|name",
+          "definier|existiert|bekannt|werte|aufruf"
+        ],
+        "minWords": 12,
+        "mustNotContain": [
+          "anteil hat einen fehler|fehler in der funktion|funktion fehlerhaft"
+        ]
+      },
+      "prompt": "Der Lauf bricht ab: `NameError: name 'messwerte' is not defined`. Die Funktion `anteil` ist separat getestet und fehlerfrei. Erkläre die Ursache des NameError, bevor du einen Fix nennst.",
+      "fullSolution": "Musterdiagnose: `messwerte` wurde nirgends definiert — die Liste heißt `werte`. Der NameError meldet die Benutzung in `print`, die Ursache ist der verwechselte Name beim Aufruf; der Fix übergibt `werte` oder benennt die Variable konsistent.",
+      "hints": [
+        "Welche Namen sind zum Zeitpunkt des Aufrufs definiert — und welcher davon ähnelt `messwerte`?",
+        "Der Fehler sitzt am Aufruf, nicht in der Funktion: Vergleiche den übergebenen Namen mit der definierten Variable."
+      ],
+      "feedbackRules": [
+        {
+          "if": "missing-diagnosis",
+          "then": "Prüfe, welche Variable zum Aufrufzeitpunkt existiert — die gemeldete Stelle benutzt einen Namen, der nie definiert wurde."
+        },
+        {
+          "if": "invalid-input",
+          "then": "Schreibe eine kurze Begründung zur Fehlerursache — der Fix allein zählt nicht als Diagnose."
+        }
+      ],
+      "typicalErrors": [
+        "die Funktion `anteil` für die Ursache gehalten",
+        "den NameError nacherzählt statt die fehlende Definition zu benennen",
+        "eine leere oder fehlende Datei als Ursache vermutet"
+      ],
+      "tolerancePolicy": {
+        "mode": "none"
+      },
+      "activityType": "diagnostic-rationale",
+      "graderId": "deterministic",
+      "parameters": {
+        "snippet": "werte = [10, 20, 30]\n\ndef anteil(liste):\n    total = sum(liste)\n    return [w / total for w in liste]\n\nprint(anteil(messwerte))"
+      }
+    }
+  ]
+}

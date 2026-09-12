@@ -69,9 +69,11 @@
     },
     "graderId": { "enum": ["deterministic", "pyodide", "pyodide-sympy", "manual-rubric"] },
     "activityType": {
+      "$comment": "Case-Verträge der neuen Typen: multiple-choice nutzt choices + expected {kind:'choice-indices', correctIds, scoring?}; diagnostic-rationale nutzt expected {kind:'diagnosis', diagnosisCode, mustContain, minWords} und ist nie mastery-fähig (R14); worked-example-fading nutzt [[gap]]-Marker im prompt + expected {kind:'gaps', gaps:[{answer, input:'numeric'|'expression'}]}.",
       "enum": [
         "numeric", "single-choice", "vector", "algebraic-expression",
-        "python-code", "short-rationale", "parsons", "code-trace", "predict-output"
+        "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
+        "multiple-choice", "diagnostic-rationale", "worked-example-fading"
       ]
     }
   }

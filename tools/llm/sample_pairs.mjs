@@ -14,6 +14,8 @@ import { FOUNDATIONS_CONSTRUCT_SPECS } from '../../assets/js/domain/foundations_
 import { TRACE_FAMILY_SPECS } from '../../assets/js/domain/foundations_trace_registry.mjs';
 import { LINALG_FAMILY_SPECS } from '../../assets/js/domain/foundations_linalg_registry.mjs';
 import { DATA_ML_FAMILY_SPECS } from '../../assets/js/core/data_ml_families.mjs';
+import { FAMILY_SPEC as WORKED_FADING_DISTRIBUTIVE } from '../../assets/js/core/procedural/worked-example-fading-distributive.mjs';
+import { FAMILY_SPEC as WORKED_FADING_LINEAR_EQUATIONS } from '../../assets/js/core/procedural/worked-example-fading-linear-equations.mjs';
 
 export const HOLD_SEED_MIN = 90000;
 export const HOLD_SEED_MAX = 90999;
@@ -45,6 +47,8 @@ export function jsFamilyIds() {
     ...TRACE_FAMILY_SPECS.map((spec) => spec.familyId),
     ...LINALG_FAMILY_SPECS.map((spec) => spec.familyId),
     ...DATA_ML_FAMILY_SPECS.map((spec) => spec.familyId),
+    WORKED_FADING_DISTRIBUTIVE.familyId,
+    WORKED_FADING_LINEAR_EQUATIONS.familyId,
   ];
 }
 

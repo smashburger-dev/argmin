@@ -83,6 +83,27 @@ export function correctAnswer(instance) {
       instance.parameters.variables.map((variable) => [variable.name, String(variable.value)]),
     );
     case 'predict-output': return instance.expectedAnswer.output;
+    case 'multiple-choice': return instance.expectedAnswer.correctIds;
+    case 'worked-example-fading': return instance.expectedAnswer.gaps.map((gap) => gap.answer);
+    case 'diagnostic-rationale': {
+      // First alternative per keyword in a full sentence — clears word-boundary
+      // match, minWords and the distinct-word floor like a real diagnosis.
+      // Scaffold words are filtered against mustNotContain vetoes first.
+      const fold = (value) => String(value).toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
+      const vetoed = (instance.expectedAnswer.mustNotContain ?? [])
+        .flatMap((kw) => fold(kw).split('|').map((part) => part.trim()).filter(Boolean));
+      const keywords = instance.expectedAnswer.mustContain
+        .map((keyword) => String(keyword).split('|').find((part) => part.trim()).trim());
+      const safe = (word) => !vetoed.some((alt) => fold(word).startsWith(alt));
+      const scaffold = ['die', 'ursache', 'liegt', 'bei', 'und', 'das', 'erklaert', 'den',
+        'beobachteten', 'fehler', 'im', 'detail', 'grenzt', 'alternativen',
+        'nachvollziehbar', 'ein', 'aus', 'sich', 'komplett', 'haengt', 'zusammen']
+        .filter(safe);
+      const minWords = instance.expectedAnswer.minWords || 1;
+      const body = `Die Ursache liegt bei ${keywords.join(' und ')} — ${scaffold.slice(0, Math.max(minWords, 8)).join(' ')}.`;
+      return body;
+    }
     default: return undefined;
   }
 }
@@ -106,6 +127,15 @@ const mutantAnswer = (instance) => {
       return answers;
     }
     case 'predict-output': return `${instance.expectedAnswer.output}\nx`;
+    case 'multiple-choice': {
+      const correct = new Set(instance.expectedAnswer.correctIds.map(String));
+      const wrong = (instance.choices || []).map((choice) => String(choice.id)).find((id) => !correct.has(id));
+      return [...instance.expectedAnswer.correctIds.slice(0, -1), wrong].filter(Boolean);
+    }
+    case 'worked-example-fading': return instance.expectedAnswer.gaps.map((gap, index) => (
+      index === 0 ? (gap.input === 'numeric' ? '999999' : `(${gap.answer})+987654`) : gap.answer
+    ));
+    case 'diagnostic-rationale': return 'Zu kurz.';
     default: return undefined;
   }
 };
@@ -113,6 +143,11 @@ const mutantAnswer = (instance) => {
 const mutantText = (instance, mutant) => {
   if (instance.activityType === 'single-choice') {
     return instance.choices.find((choice) => choice.id === mutant)?.text || String(mutant);
+  }
+  if (instance.activityType === 'multiple-choice') {
+    return (Array.isArray(mutant) ? mutant : [mutant])
+      .map((id) => instance.choices.find((choice) => choice.id === id)?.text || String(id))
+      .join('; ');
   }
   return typeof mutant === 'string' ? mutant : JSON.stringify(mutant);
 };

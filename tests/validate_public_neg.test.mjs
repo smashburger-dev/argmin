@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { makeBuildDir, runValidator, cleanupDir } from './build_dir_helper.mjs';
+import { makeBuildDir, runValidator, cleanupDir, buildMissing } from './build_dir_helper.mjs';
 
-test('validator accepts a public build with a valid compiled bundle', () => {
+test('validator accepts a public build with a valid compiled bundle', { skip: buildMissing }, () => {
   const dir = makeBuildDir();
   try {
     const result = runValidator(dir);
@@ -12,7 +12,7 @@ test('validator accepts a public build with a valid compiled bundle', () => {
   } finally { cleanupDir(dir); }
 });
 
-test('validator rejects a private marker embedded in a family document', () => {
+test('validator rejects a private marker embedded in a family document', { skip: buildMissing }, () => {
   const dir = makeBuildDir();
   try {
     const path = join(dir, 'content/content-bundle.json');
@@ -25,7 +25,7 @@ test('validator rejects a private marker embedded in a family document', () => {
   } finally { cleanupDir(dir); }
 });
 
-test('validator fails when the compiled content bundle is missing', () => {
+test('validator fails when the compiled content bundle is missing', { skip: buildMissing }, () => {
   const dir = makeBuildDir();
   try {
     rmSync(join(dir, 'content/content-bundle.json'));
@@ -35,7 +35,7 @@ test('validator fails when the compiled content bundle is missing', () => {
   } finally { cleanupDir(dir); }
 });
 
-test('validator rejects a malformed compiled bundle', () => {
+test('validator rejects a malformed compiled bundle', { skip: buildMissing }, () => {
   const dir = makeBuildDir();
   try {
     const path = join(dir, 'content/content-bundle.json');

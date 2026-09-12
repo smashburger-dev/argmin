@@ -1,5 +1,12 @@
 # Plan: Neue Aufgabentypen
 
+> **Status (2026, nach v0.6): UMGESETZT.** `multiple-choice`, `diagnostic-rationale`
+> und `worked-example-fading` sind implementiert und platziert — allerdings mit
+> abweichenden Verträgen: `correctIds` statt `correctIndices`, `kind: 'choice-indices'`/
+> `'diagnosis'`/`'gaps'`, alles über den `deterministic`-Dispatch (keine separaten
+> Grader-IDs). Dieser Text bleibt als Planungsartefakt; verbindlich sind
+> `docs/authoring-guide.md` §4 und `tests/activity_types.test.mjs`.
+
 Planungsdokument für die German KI-Lernplattform v0.7+. Keine Implementierung in v0.6.
 
 ## Status quo

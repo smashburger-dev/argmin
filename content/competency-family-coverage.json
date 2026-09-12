@@ -8,9 +8,10 @@
       "familyIds": [
         "transform-expression-simplify-canonical",
         "transform-linear-equation-isolate",
-        "transform-power-log-exponent"
+        "transform-power-log-exponent",
+        "worked-example-fading-distributive"
       ],
-      "placedCaseCount": 6,
+      "placedCaseCount": 7,
       "seededFamilyCount": 0
     },
     {
@@ -18,9 +19,10 @@
       "familyIds": [
         "classify-error-hypothesis",
         "transform-expression-simplify-canonical",
-        "transform-linear-equation-isolate"
+        "transform-linear-equation-isolate",
+        "worked-example-fading-linear-equations"
       ],
-      "placedCaseCount": 6,
+      "placedCaseCount": 8,
       "seededFamilyCount": 0
     },
     {
@@ -123,9 +125,10 @@
         "classify-independence-multiple",
         "classify-rank-solution-case",
         "formula-det2-independence",
+        "multiple-choice-linalg-independence",
         "transform-rank-dependence-rowops"
       ],
-      "placedCaseCount": 7,
+      "placedCaseCount": 10,
       "seededFamilyCount": 0
     },
     {
@@ -190,9 +193,10 @@
       "familyIds": [
         "aggregate-validate-and-count-records",
         "classify-exception-placement",
+        "diagnostic-rationale-python-errors",
         "validate-required-field-raise"
       ],
-      "placedCaseCount": 3,
+      "placedCaseCount": 6,
       "seededFamilyCount": 0
     },
     {
@@ -203,10 +207,11 @@
         "classify-test-attitude",
         "construct-regression-test-suite",
         "construct-test-structure-aaa",
+        "diagnostic-rationale-python-errors",
         "trace-exception-path",
         "validate-test-design-coverage"
       ],
-      "placedCaseCount": 9,
+      "placedCaseCount": 11,
       "seededFamilyCount": 0
     },
     {
@@ -271,9 +276,10 @@
       "familyIds": [
         "fit-predict-metrics",
         "formula-quadratic-error-metric",
-        "formula-ratio-percent-metric"
+        "formula-ratio-percent-metric",
+        "multiple-choice-ml-linear"
       ],
-      "placedCaseCount": 5,
+      "placedCaseCount": 8,
       "seededFamilyCount": 0
     },
     {
@@ -290,6 +296,7 @@
       "familyIds": [
         "classify-cv-leakage",
         "classify-parameter-origin",
+        "diagnostic-rationale-ml-eval",
         "fit-early-stopping-roundtrip",
         "fit-weight-decay-ablation",
         "formula-metric-spread-range",
@@ -298,7 +305,7 @@
         "reproduce-seeded-split",
         "validate-leakage-rule-audit"
       ],
-      "placedCaseCount": 10,
+      "placedCaseCount": 12,
       "seededFamilyCount": 0
     },
     {
@@ -309,9 +316,10 @@
         "aggregate-grouped-metrics-report",
         "classify-error-drift",
         "classify-fairness-aggregation",
+        "diagnostic-rationale-ml-eval",
         "formula-ratio-percent-metric"
       ],
-      "placedCaseCount": 9,
+      "placedCaseCount": 10,
       "seededFamilyCount": 0
     },
     {
@@ -320,9 +328,10 @@
         "classify-cv-leakage",
         "classify-regularizer-effect",
         "formula-ratio-percent-metric",
-        "formula-ridge-lasso-closed-form"
+        "formula-ridge-lasso-closed-form",
+        "multiple-choice-ml-linear"
       ],
-      "placedCaseCount": 5,
+      "placedCaseCount": 6,
       "seededFamilyCount": 0
     },
     {

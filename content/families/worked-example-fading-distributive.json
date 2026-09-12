@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "familyId": "worked-example-fading-distributive",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "distribute-final-gap",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "p2-wef-dist-final"
+      ],
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "distribute-final-gap",
+        "difficulty": "intro",
+        "fade": "final",
+        "a": 3,
+        "p": 3,
+        "q": -1,
+        "d": -3
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          { "answer": "6", "input": "numeric" }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $3(3x - 1) - 3$. Das Ausmultiplizieren ist fertig gezeigt — ergänze nur die zusammengefasste Konstante. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $3(3x - 1) - 3$<br>$= 9x - 3 - 3$<br>$= 9x - [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$3(3x - 1) - 3$<br>$= 9x - 3 - 3$<br>$= 9x - 6$<br>Zuerst jedes Glied in der Klammer mit $3$ multiplizieren ($3 \\cdot 3x = 9x$, $3 \\cdot (-1) = -3$), dann die Konstanten $-3$ und $-3$ zusammenfassen.",
+      "hints": [
+        "Nur die Konstanten werden zusammengefasst — der x-Term bleibt unverändert.",
+        "Vorzeichen vor der Lücke steht schon: in die Lücke gehört der Betrag der zusammengefassten Konstanten."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-sign",
+          "then": "Das Vorzeichen vor der Lücke steht bereits — ein Minus in der Lücke verdoppelt es."
+        },
+        {
+          "if": "gap-0-value",
+          "then": "Nur die beiden Konstanten verrechnen (a·q und d), nicht das Produkt mit x anfassen."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1: Vorzeichen doppelt eingetragen — das Minus vor der Lücke steht bereits",
+        "Lücke 1: Konstanten verwechselt — q statt a·q mit d verrechnet"
+      ]
+    },
+    {
+      "caseId": "distribute-products-gap",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "p2-wef-dist-products"
+      ],
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "distribute-products-gap",
+        "difficulty": "core",
+        "fade": "products",
+        "a": 3,
+        "p": 6,
+        "q": -6,
+        "d": 9
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          { "answer": "18", "input": "numeric" },
+          { "answer": "18", "input": "numeric" },
+          { "answer": "9", "input": "numeric" }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $3(6x - 6) + 9$. Die Struktur der Umformung steht — ergänze die beiden Ausmultiplikations-Produkte und die Schlusskonstante. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $3(6x - 6) + 9$<br>$= [[gap]]x - [[gap]] + 9$<br>$= 18x - [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$3(6x - 6) + 9$<br>$= 18x - 18 + 9$<br>$= 18x - 9$<br>Zuerst jedes Glied in der Klammer mit $3$ multiplizieren ($3 \\cdot 6x = 18x$, $3 \\cdot (-6) = -18$), dann die Konstanten $-18$ und $9$ zusammenfassen.",
+      "hints": [
+        "Jedes Klammerglied wird mit dem äußeren Faktor multipliziert: a·(p·x) und a·q — das d bleibt unverändert.",
+        "Schlusszeile: nur die beiden Konstanten a·q und d zusammenfassen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-value",
+          "then": "Erste Lücke = a·p — der äußere Faktor multipliziert den x-Koeffizienten, nicht addiert."
+        },
+        {
+          "if": "gap-1-value",
+          "then": "Zweite Lücke = |a·q| — das Vorzeichen des Produkts steht bereits vor der Lücke."
+        },
+        {
+          "if": "gap-2-value",
+          "then": "Letzte Lücke = |a·q + d| — Konstanten zusammenfassen, Vorzeichen steht vor der Lücke."
+        },
+        {
+          "if": "step-skipped",
+          "then": "Zwei Schritte nacheinander: erst ausmultiplizieren, dann Konstanten zusammenfassen."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1: a+p addiert statt a·p multipliziert",
+        "Lücke 2: q statt a·q eingetragen — innerer Faktor ohne äußeren Faktor",
+        "Lücke 2 oder 3: Vorzeichen beim Ausmultiplizieren verwechselt (Minus in der Klammer übersehen)",
+        "Lücke 3: x-Term in die Konstante hineingerechnet"
+      ]
+    },
+    {
+      "caseId": "distribute-all-gap",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "p2-wef-dist-all"
+      ],
+      "competencyIds": [
+        "c-algebra-basics"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "distribute-all-gap",
+        "difficulty": "stretch",
+        "fade": "all",
+        "a": 5,
+        "p": 7,
+        "q": -5,
+        "d": 11
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          { "answer": "35", "input": "numeric" },
+          { "answer": "25", "input": "numeric" },
+          { "answer": "11", "input": "numeric" },
+          { "answer": "35", "input": "numeric" },
+          { "answer": "14", "input": "numeric" }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $5(7x - 5) + 11$. Ab dem Ausgangsterm fehlt jeder Wert — ergänze beide Zeilen vollständig. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $5(7x - 5) + 11$<br>$= [[gap]]x - [[gap]] + [[gap]]$<br>$= [[gap]]x - [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$5(7x - 5) + 11$<br>$= 35x - 25 + 11$<br>$= 35x - 14$<br>Zuerst jedes Glied in der Klammer mit $5$ multiplizieren ($5 \\cdot 7x = 35x$, $5 \\cdot (-5) = -25$), dann die Konstanten $-25$ und $11$ zusammenfassen.",
+      "hints": [
+        "Zeile 2 ist die reine Ausmultiplikation: a·p vor x, |a·q| als Konstante, d unverändert übernommen.",
+        "Zeile 3 wiederholt den x-Term aus Zeile 2 und fasst nur die Konstanten zusammen."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-value",
+          "then": "Erste Lücke = a·p — Produkt der beiden Faktoren."
+        },
+        {
+          "if": "gap-1-sign",
+          "then": "Das Vorzeichen des zweiten Produkts steht vor der Lücke — a·q kann negativ sein, die Lücke nimmt den Betrag."
+        },
+        {
+          "if": "gap-2-value",
+          "then": "Dritte Lücke = |d| — der äußere Summand wird unverändert übernommen, nicht mitmultipliziert."
+        },
+        {
+          "if": "gap-3-value",
+          "then": "Der x-Term wiederholt sich unverändert aus Zeile 2 — gleiche Antwort wie Lücke 1."
+        },
+        {
+          "if": "gap-4-value",
+          "then": "Letzte Lücke = |a·q + d| — nur die Konstanten, Vorzeichen steht vor der Lücke."
+        },
+        {
+          "if": "step-skipped",
+          "then": "Erst komplett ausmultiplizieren (Zeile 2), dann Konstanten zusammenfassen (Zeile 3)."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1/4: a+p addiert statt a·p multipliziert",
+        "Lücke 2: Vorzeichen von a·q verwechselt — das Minus steht bereits vor der Lücke",
+        "Lücke 3: d mit a multipliziert — der äußere Summand bleibt unverändert",
+        "Lücke 5: Schritt übersprungen — Zeile-2-Konstante statt a·q+d eingetragen"
+      ]
+    }
+  ]
+}

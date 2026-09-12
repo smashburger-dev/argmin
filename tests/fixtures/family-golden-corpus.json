@@ -74,6 +74,8 @@
     "construct-stub-prototype-contract": "3c812f03e020c2b5e3d414fffdfe887b1b7e22c1aaac89b266b5757fefcf0ffe",
     "construct-test-structure-aaa": "3fcc83e1ec64818df800f8507471ee2b19df375fb169825a16c6d989f5dd5fe3",
     "count-remaining-rows-cleaning-rule": "15566ecddb5c94dab2ddce43d48e3abe75aeadfb6c27725707fc83c4a7e586d1",
+    "diagnostic-rationale-ml-eval": "ae218b7981ade21b977fc1f944da15e1bb7d548f8789734faef938879835f56b",
+    "diagnostic-rationale-python-errors": "b0b331c5cd3f72ad31fcb6e63fd962ebc96ac2ad5293d6cbb65bc024d5ff4888",
     "fit-early-stopping-roundtrip": "9822a434d5966372b225f34181237c6457ff5ca14a93e12175fe2d23b29cc0ff",
     "fit-forward-layer-chain-contract": "b862b64ee436a2e2e38ddba125de4becfad889ddff21de265a4662f350bc2cc7",
     "fit-mlp-val-curve-argmin": "5280d89d65839dbd300d2ba01de908ec27003eed224d8938dc8f0ae68dbc4ddc",
@@ -91,6 +93,8 @@
     "formula-ridge-lasso-closed-form": "a22f693398e378927c6b80d2a47617b3b335ad64560859907235398d6cf474cb",
     "formula-scalar-product": "b33e0b136ac785a1b43b2662f969c629ac446aaa17cc2d801ffd6dc267fcbf9e",
     "formula-stat-from-table": "c521c4486d3c3b9370e6a07f4786295c6819d8b897958682069cdd01567934db",
+    "multiple-choice-linalg-independence": "2263004d5b47d1f9e00b929d053ba229920660557b7d3b3d9979f4c799544b57",
+    "multiple-choice-ml-linear": "568be1d23e8b89a3fbc9e6abdf698ac023ec60680526c468b49be102dff635b6",
     "optimize-backprop-gradient-check": "813432a7d404a7deb107c02569f520ff85e842f0760b59497c8cebd63dd02320",
     "optimize-backprop-path-sum": "25f58a8a0e82b672bf2ca3296a7ab6663fd406d712c247665cb52eeed675e7c4",
     "optimize-bpe-merge-learn": "27dad59b82073c1563c0401e8e5a2832a9bee2d5f754d6bd9f7a28489eb3dabb",
@@ -134,6 +138,8 @@
     "validate-rule-catalog-scan": "409cb9a015821f748c66a8be649f5e4e325f651ce34c9e329d6300cf48fadb09",
     "validate-shape-contract": "7c8755985b9861190013c877ba04ab6b5cf92b57840728bdef593fdb447c7e8c",
     "validate-test-design-coverage": "bcf0abc7e6037dcee6a9391d59606374ee680e52a0818acbac845829877c423e",
-    "validate-text-normalize-match": "e8e808ae15d60af20c13ac6c6b56edaa1e9d2eb0851cb3090701adcaab45d347"
+    "validate-text-normalize-match": "e8e808ae15d60af20c13ac6c6b56edaa1e9d2eb0851cb3090701adcaab45d347",
+    "worked-example-fading-distributive": "bd923cb88d612ed64ca9d29145996873b74bbc78ff72db1ca1d9a67e74b295d9",
+    "worked-example-fading-linear-equations": "e2479bc86c5d053999160b0778ea709f4e01f7b942b13f4cc602d016164ee7c8"
   }
 }

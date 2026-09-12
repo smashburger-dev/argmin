@@ -121,7 +121,7 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty) {
   } = chosen;
   return {
     ...generated,
-    masteryEligible: body.masteryEligible,
+    masteryEligible: chosen.graderId !== 'manual-rubric' && body.masteryEligible === true,
     parameters: {
       caseId,
       difficulty,
@@ -184,11 +184,11 @@ const ACTIVITY_HINTS = {
 };
 
 /**
- * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown }} instance
+ * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown, hints?: string[] | null }} instance
  * @param {{ level?: number, answer?: unknown, correct?: boolean | null, firstBadRow?: number | null }} context
  */
 export function familyHint(
-  { summary = null, activityType = '', choices = null, parameters = null, expectedAnswer = null, traceTable = null } = {},
+  { summary = null, activityType = '', choices = null, parameters = null, expectedAnswer = null, traceTable = null, hints = null } = {},
   { level = 0, answer = null, correct = null, firstBadRow = null } = {},
 ) {
   if (level === 1) return typeof summary === 'string' && summary ? summary : null;
@@ -198,6 +198,7 @@ export function familyHint(
     { answer, correct },
   );
   if (activityHint !== undefined) return activityHint;
+  if (Array.isArray(hints) && hints.length) return hints[0];
   if (traceTable && Number.isInteger(firstBadRow) && firstBadRow >= 0) {
     return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
   }
@@ -234,6 +235,11 @@ export function createFamilyRegistry(families) {
     if (!family.difficultyProfiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
     const resolvedCase = resolveCaseId(family, seed, caseId);
     const generated = family.generate({ seed, caseId: resolvedCase, difficulty });
+    // Procedural generators emit the per-seed instance but not the authored
+    // case material that lives on the exemplar doc (hints, feedbackRules).
+    // Fall back to the registered case body so authored hints reach learners.
+    let authored = null;
+    try { authored = staticCaseBody(familyId, resolvedCase); } catch { /* no doc body registered */ }
     const solved = family.solve(generated.parameters);
     const correct = (generated.choices || []).find((choice) => choice.correct);
     if (correct && solved.correctText && correct.text !== solved.correctText) {
@@ -266,6 +272,10 @@ export function createFamilyRegistry(families) {
       ...(generated.rubric ? { rubric: generated.rubric } : null),
       expectedAnswer: generated.expected,
       fullSolution: generated.fullSolution,
+      // Authored feedback material for graders and the hint path; optional.
+      ...(generated.feedbackRules ?? authored?.feedbackRules ? { feedbackRules: generated.feedbackRules ?? authored?.feedbackRules } : null),
+      ...(generated.hints ?? authored?.hints ? { hints: generated.hints ?? authored?.hints } : null),
+      ...(generated.typicalErrors ?? authored?.typicalErrors ? { typicalErrors: generated.typicalErrors ?? authored?.typicalErrors } : null),
       // S4D1: optionale Trace-Tabelle (Interaktionsvariante). Nur gesetzt,
       // wenn der Generator Zustände kennt; sonst undefined.
       ...(generated.traceTable ? { traceTable: generated.traceTable } : null),

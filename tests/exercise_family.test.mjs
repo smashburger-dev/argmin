@@ -1,32 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { graders } from '../assets/js/core/graders.js';
-import {
-  GIT_OPERATION_CONTRACT,
-  generateGitOperationFamily,
-  solveGitOperation,
-} from '../assets/js/core/foundations_fresh_generators.mjs';
+import { GIT_OPERATION_CONTRACT } from '../assets/js/core/foundations_fresh_generators.mjs';
 import {
   createFamilyRegistry,
   familyEventInput,
-  familyIdTokens,
   instantiate,
-  grade,
-  assertFamilyPlacement,
-  EXERCISE_FAMILIES,
 } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases, staticFamilySpec } from '../assets/js/domain/family_registry.mjs';
 import { buildLearningEvent, isJournalWorthy } from '../assets/js/domain/learning_event.mjs';
-import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
 import { assertModuleBindings } from '../assets/js/domain/learning_module.mjs';
-import { validateSourceDocument } from '../tools/compile_content.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
 const ids = {
   competencies: new Set(['c-git-basics']),
   tracks: new Set(['common-core']),
@@ -52,9 +35,6 @@ const familyModule = {
 function propertyCases(family) {
   return family.caseTypes.filter((item) => item.propertyTest !== false);
 }
-
-
-
 
 
 
@@ -241,16 +221,6 @@ test('curated placement without definitionId needs case type, seed and masteryEl
     /keine Einzelaufgabe kopieren/,
   );
 });
-
-
-
-
-
-
-
-
-
-
 
 
 

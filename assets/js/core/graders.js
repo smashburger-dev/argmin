@@ -3,6 +3,11 @@
 // { correct, verdictText, errorType, diagnosis? } (async allowed).
 
 import { parseIntegerAnswer, parseIntegerPair, solveLinear2, matmul, dot, rank } from './linalg_generators.mjs';
+import { parseCheckpointNumber, DEFAULT_VIZ_CHECKPOINT_TOLERANCE } from './viz_checkpoint_grader.mjs';
+// SymPy-free expression comparison for fading gaps reuses the existing
+// visualization expression compiler (same precedent as exercise_runtime.js,
+// which already imports from ../domain/). No new sympy path in the browser.
+import { compileExpression } from '../domain/expression_eval.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
 // never pay for the pyodide runner module in their chunk.
 const loadPyodideRunner = () => import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner);
@@ -13,7 +18,7 @@ function expectedNumeric(exercise) {
   // Fixed instances in the exercise JSON are authoritative: an explicit
   // expectedAnswer.value (w01 diagnose tasks) wins over everything else.
   const ea = exercise.expectedAnswer;
-  const fixed = ea && (ea.kind === 'integer' || ea.kind === 'seeded-integer') && Number.isInteger(ea.value)
+  const fixed = ea && ea.kind === 'integer' && Number.isInteger(ea.value)
     ? ea.value
     : null;
   if (fixed !== null) return fixed;
@@ -397,6 +402,419 @@ function gradePredictOutput(exercise, raw) {
   return { correct, verdictText: correct ? 'Richtig — genau diese Ausgabe.' : 'Nicht richtig.', errorType: correct ? null : 'wrong-output', diagnosis };
 }
 
+// --- multiple-choice (expected.kind 'choice-indices') ----------------------------
+
+/** All matching feedbackRules join into one diagnosis. Supported `if` forms
+ *  (used by authored multiple-choice cases): selected.includes('id') and
+ *  !selected.includes('id'). Anything else is ignored, not evaluated. */
+function multipleChoiceDiagnosis(exercise, chosen) {
+  const parts = [];
+  for (const rule of exercise.feedbackRules || []) {
+    const match = String(rule.if).match(/^(!?)selected\.includes\('([^']+)'\)$/);
+    if (!match) continue;
+    if ((match[1] === '!') !== chosen.has(match[2])) parts.push(rule.then);
+  }
+  return parts.length ? parts.join(' ') : null;
+}
+
+/** Multiple correct options: the answer is the array of selected choice ids.
+ *  Exact set equality is always required for `correct`. scoring
+ *  'all-or-nothing' (default) → score is 1 or 0; 'per-correct' →
+ *  score = max(0, (hits - extra) / |correctIds|): every correct pick earns
+ *  +1/n, every wrong pick costs 1/n, floored at 0. */
+function gradeMultipleChoice(exercise, selected) {
+  const expected = exercise.expectedAnswer;
+  const correctIds = expected && expected.kind === 'choice-indices' && Array.isArray(expected.correctIds)
+    ? expected.correctIds.map(String)
+    : null;
+  if (!correctIds || !correctIds.length) {
+    return { correct: false, verdictText: 'Interner Fehler: correctIds fehlen.', errorType: 'grader-error' };
+  }
+  const scoring = expected.scoring ?? 'all-or-nothing';
+  if (scoring !== 'all-or-nothing' && scoring !== 'per-correct') {
+    return { correct: false, verdictText: `Interner Fehler: unbekanntes scoring "${scoring}".`, errorType: 'grader-error' };
+  }
+  const list = Array.isArray(selected) ? selected : selected == null ? [] : [selected];
+  if (!list.length) {
+    return { correct: false, verdictText: 'Bitte mindestens eine Option auswählen.', errorType: 'invalid-input' };
+  }
+  const chosen = new Set(list.map(String));
+  const target = new Set(correctIds);
+  const hits = [...chosen].filter((id) => target.has(id)).length;
+  const extra = chosen.size - hits;
+  const missing = target.size - hits;
+  const correct = missing === 0 && extra === 0;
+  const score = correct ? 1 : scoring === 'per-correct' ? Math.max(0, (hits - extra) / target.size) : 0;
+  const errorType = correct ? null : missing > 0 && extra > 0 ? 'wrong-choice' : missing > 0 ? 'missing-choice' : 'extra-choice';
+  return {
+    correct,
+    score,
+    verdictText: correct ? 'Richtig — alle zutreffenden Optionen ausgewählt.'
+      : score > 0 ? `Teilweise richtig — ${hits} von ${target.size} zutreffenden Optionen${extra ? `, ${extra} davon zu viel` : ''}.`
+      : 'Nicht richtig.',
+    errorType,
+    diagnosis: correct ? null : multipleChoiceDiagnosis(exercise, chosen) ?? (missing > 0 && extra > 0
+      ? 'Es fehlen zutreffende Optionen, und mindestens eine Auswahl trifft nicht zu.'
+      : missing > 0
+        ? 'Es fehlen zutreffende Optionen — prüfe, ob weitere Aussagen stimmen.'
+        : 'Mindestens eine gewählte Option trifft nicht zu.'),
+  };
+}
+
+// --- diagnostic-rationale (expected.kind 'diagnosis') ---------------------------
+
+/** Umlaut-robust substring check for German free text: NFC normalization,
+ *  lowercase, umlaut folding (ä→ae …, ß→ss) and whitespace collapse, applied
+ *  symmetrically to learner text and mustContain keywords — „für" matches
+ *  „fuer", „Nullbasiert" matches „nullbasiert". */
+function normalizeDiagnosisText(value) {
+  return String(value ?? '')
+    .normalize('NFC')
+    .toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Word-boundary keyword match on normalized text: the keyword must start at
+ *  a token boundary and may carry letter inflection („alter" matches
+ *  „Alters", not „unterhalten"); `_` and digits stay word-internal, so
+ *  `train` does not match `train_test_split`. `|` separates alternatives
+ *  („except|ausnahmeblock" accepts either). */
+function keywordCovered(haystack, keyword) {
+  const alternatives = normalizeDiagnosisText(keyword).split('|').map((part) => part.trim()).filter(Boolean);
+  return alternatives.some((alternative) => {
+    const escaped = alternative.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(?:^|[^a-z0-9_])${escaped}[a-z]*(?:[^a-z0-9_]|$)`).test(haystack);
+  });
+}
+
+/** Diagnostic rationale: deterministic keyword coverage — the text must reach
+ *  minWords (word-boundary distinct-word floor guards against keyword salad)
+ *  and cover every mustContain keyword (each may list `|`-alternatives);
+ *  mustNotContain terms veto misconception phrasings. Feedback names the
+ *  missing DIMENSION, never the keywords themselves. diagnosisCode is
+ *  taxonomy metadata for explanation-card mapping, not a grading input. */
+function gradeDiagnosis(exercise, raw) {
+  const expected = exercise.expectedAnswer;
+  const configured = expected && expected.kind === 'diagnosis'
+    && typeof expected.diagnosisCode === 'string' && expected.diagnosisCode.trim()
+    && Array.isArray(expected.mustContain) && expected.mustContain.length > 0
+    && expected.mustContain.every((keyword) => typeof keyword === 'string' && keyword.trim())
+    && (expected.mustNotContain === undefined || (Array.isArray(expected.mustNotContain)
+      && expected.mustNotContain.every((keyword) => typeof keyword === 'string' && keyword.trim())))
+    && Number.isInteger(expected.minWords) && expected.minWords >= 1;
+  if (!configured) {
+    return { correct: false, verdictText: 'Interner Fehler: Diagnose-Erwartung fehlerhaft konfiguriert.', errorType: 'grader-error' };
+  }
+  const text = String(raw ?? '').trim();
+  if (!text) return { correct: false, verdictText: 'Bitte eine Diagnose eingeben.', errorType: 'invalid-input' };
+  const tokens = text.split(/\s+/).filter(Boolean).map(normalizeDiagnosisText);
+  const words = tokens.length;
+  const distinct = new Set(tokens).size;
+  const haystack = normalizeDiagnosisText(text);
+  const vetoed = (expected.mustNotContain ?? []).some((keyword) => keywordCovered(haystack, keyword));
+  const covered = expected.mustContain.filter((keyword) => keywordCovered(haystack, keyword)).length;
+  const missing = expected.mustContain.length - covered;
+  const tooShort = words < expected.minWords || distinct < Math.min(expected.minWords, 8);
+  const correct = !tooShort && missing === 0 && !vetoed;
+  const errorType = correct ? null : 'missing-diagnosis';
+  const fallbackDiagnosis = tooShort && missing > 0
+    ? `Die Diagnose ist zu knapp (${words} von mindestens ${expected.minWords} Wörtern) und benennt die Fehlerursache noch nicht vollständig.`
+    : tooShort
+      ? `Zu knapp: ${words} von mindestens ${expected.minWords} Wörtern — beschreibe die Fehlerursache ausführlicher.`
+      : 'Die Diagnose benennt die eigentliche Fehlerursache noch nicht präzise — prüfe, welche falsche Annahme erklärt werden muss.';
+  return {
+    correct,
+    verdictText: correct ? 'Stichhaltige Diagnose.' : 'Diagnose noch nicht vollständig.',
+    errorType,
+    diagnosis: correct ? null : errorTypeFeedback(exercise, errorType) ?? fallbackDiagnosis,
+    diagnosisCode: expected.diagnosisCode,
+  };
+}
+
+/** Authored feedbackRules keyed on the grader errorType (e.g.
+ *  'missing-diagnosis', 'invalid-input'): first matching rule wins. */
+function errorTypeFeedback(exercise, code) {
+  for (const rule of exercise.feedbackRules || []) {
+    if (rule && rule.if === code && typeof rule.then === 'string' && rule.then.trim()) return rule.then;
+  }
+  return null;
+}
+
+// --- worked-example-fading (expected.kind 'gaps') --------------------------------
+
+// Deterministic expression equivalence without sympy. The probe pool is the
+// fixed table plus three values derived from the expression pair itself —
+// a learner cannot precompute a polynomial that vanishes on every probe,
+// because the derived values depend on the expected answer they do not know.
+const EXPRESSION_PROBES = [0.5, 1, -2, 3, -1.5, 7, 0.25, -4, 2, 0.75];
+
+function derivedProbes(...sources) {
+  let hash = 0;
+  for (const ch of sources.join('|')) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  return [0, 1, 2].map((i) => {
+    hash = (hash * 1103515245 + 12345 + i * 7919) >>> 0;
+    return (hash % 14000) / 1000 - 7;
+  });
+}
+
+function expressionNames(...sources) {
+  const names = new Set();
+  for (const source of sources) {
+    for (const match of String(source).matchAll(/[A-Za-z_][A-Za-z0-9_]*/g)) names.add(match[0]);
+  }
+  return [...names].sort();
+}
+
+const expressionScope = (names, round, probes) => {
+  const scope = {};
+  names.forEach((name, index) => { scope[name] = probes[(index + round) % probes.length]; });
+  return scope;
+};
+
+const nearValue = (a, b) => a === b
+  || (Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b)));
+
+/** Contract-time check: the authored target must be finite on every probe
+ *  scope — rejects degenerate answers like log(-1), sqrt(x) or 1/0 that would
+ *  be unwinnable or trivially matched by any non-finite student input. */
+function expressionTargetFinite(source) {
+  const names = expressionNames(source);
+  const probes = EXPRESSION_PROBES.concat(derivedProbes(source));
+  let target;
+  try { target = compileExpression(source, names); } catch { return false; }
+  for (let round = 0; round < probes.length; round++) {
+    if (!Number.isFinite(target(expressionScope(names, round, probes)))) return false;
+  }
+  return true;
+}
+
+/** true | false | 'invalid' | 'grader-error' — numeric gaps reuse the
+ *  checkpoint scalar parser (decimal comma + fractions); the authored answer
+ *  must parse too, otherwise the case is misconfigured. */
+function checkNumericGap(gap, raw) {
+  const target = parseCheckpointNumber(gap.answer);
+  if (!target.ok) return 'grader-error';
+  const got = parseCheckpointNumber(raw);
+  if (!got.ok) return 'invalid';
+  return Math.abs(got.value - target.value) <= DEFAULT_VIZ_CHECKPOINT_TOLERANCE;
+}
+
+/** true | false | 'invalid' | 'grader-error' — both sides compile with the
+ *  union of free identifiers; equality is decided on the probe scopes. Every
+ *  name sees every pool value across the rounds. */
+function checkExpressionGap(gap, raw) {
+  const targetSource = normalizeExpressionInput(gap.answer);
+  const gotSource = normalizeExpressionInput(raw);
+  const names = expressionNames(targetSource, gotSource);
+  const probes = EXPRESSION_PROBES.concat(derivedProbes(targetSource, gotSource));
+  let target;
+  try { target = compileExpression(targetSource, names); } catch { return 'grader-error'; }
+  let student;
+  try { student = compileExpression(gotSource, names); } catch { return 'invalid'; }
+  for (let round = 0; round < probes.length; round++) {
+    const scope = expressionScope(names, round, probes);
+    if (!nearValue(student(scope), target(scope))) return false;
+  }
+  return true;
+}
+
+/** Worked-example fading: gaps[] pair positionally with the [[gap]] markers
+ *  in the prompt. correct = every gap matches; wrong-gap feedback names the
+ *  1-based gap indices. */
+function gradeFading(exercise, answers) {
+  const expected = exercise.expectedAnswer;
+  const gaps = expected && expected.kind === 'gaps' && Array.isArray(expected.gaps) ? expected.gaps : null;
+  if (!gaps || !gaps.length || gaps.some((gap) => !gap || typeof gap.answer !== 'string' || !gap.answer.trim()
+    || (gap.input !== 'numeric' && gap.input !== 'expression'))) {
+    return { correct: false, verdictText: 'Interner Fehler: Lücken-Konfiguration fehlerhaft.', errorType: 'grader-error' };
+  }
+  const markers = String(exercise.prompt ?? '').split('[[gap]]').length - 1;
+  if (markers !== gaps.length) {
+    return { correct: false, verdictText: 'Interner Fehler: Anzahl der Lücken passt nicht zum Beispieltext.', errorType: 'grader-error' };
+  }
+  const list = Array.isArray(answers) ? answers : [];
+  const wrong = [];
+  for (let index = 0; index < gaps.length; index++) {
+    const gap = gaps[index];
+    const raw = list[index];
+    if (raw == null || !String(raw).trim()) {
+      return { correct: false, verdictText: `Bitte alle Lücken ausfüllen — Lücke ${index + 1} ist leer.`, errorType: 'invalid-input' };
+    }
+    const result = gap.input === 'expression' ? checkExpressionGap(gap, raw) : checkNumericGap(gap, raw);
+    if (result === 'grader-error') {
+      return { correct: false, verdictText: `Interner Fehler: Sollwert der Lücke ${index + 1} nicht lesbar.`, errorType: 'grader-error' };
+    }
+    if (result === 'invalid') {
+      return {
+        correct: false,
+        verdictText: gap.input === 'expression'
+          ? `Lücke ${index + 1}: Der Term ist nicht lesbar — Rechenzeichen explizit schreiben (z. B. 2*x).`
+          : `Lücke ${index + 1}: Bitte eine Zahl eingeben — Dezimalzahl (z. B. 1,5) oder Bruch (z. B. 3/4).`,
+        errorType: 'invalid-input',
+      };
+    }
+    if (result === false) wrong.push(index + 1);
+  }
+  if (!wrong.length) return { correct: true, verdictText: 'Richtig — alle Schritte ergänzt.', errorType: null };
+  // Authored rules keyed 'gap-<0-based>' or 'gap-<0-based>-<aspect>' fire when
+  // that gap is wrong — per-gap hints beat the generic index listing.
+  const authored = wrong.flatMap((i) => (exercise.feedbackRules || [])
+    .filter((rule) => rule && typeof rule.if === 'string' && new RegExp(`^gap-${i - 1}(?:-|$)`).test(rule.if)
+      && typeof rule.then === 'string' && rule.then.trim())
+    .map((rule) => rule.then));
+  return {
+    correct: false,
+    verdictText: 'Nicht richtig.',
+    errorType: 'wrong-gap',
+    diagnosis: authored.length ? authored.join(' ')
+      : wrong.length === 1
+        ? `Lücke ${wrong[0]} stimmt noch nicht — rechne diesen Schritt nach.`
+        : `Lücken ${wrong.slice(0, -1).join(', ')} und ${wrong[wrong.length - 1]} stimmen noch nicht — rechne diese Schritte nach.`,
+  };
+}
+
+// --- case contracts (validator + tests, same role as assertVizCheckpointContract) --
+
+/** Canonical diagnosticCodes taxonomy, mirrored from docs/authoring-guide.md
+ *  §8 (which stays the prose source): deterministic grader errorTypes,
+ *  runtime/UI code patterns and named misconception codes. The validator
+ *  rejects unknown diagnosisCodes in diagnostic-rationale cases. */
+const CANONICAL_DIAGNOSTIC_CODES = new Set([
+  'invalid-input', 'wrong-value', 'wrong-choice', 'swapped', 'wrong-order', 'wrong-output',
+  'unparsed', 'not-equivalent', 'grader-error',
+  'missing-choice', 'extra-choice', 'missing-diagnosis', 'wrong-gap',
+  'off-by-one', 'except-pass', 'missing-before-hash',
+]);
+const CANONICAL_DIAGNOSTIC_PATTERNS = [
+  /^trace-row-\d+$/,
+  /^[A-Z][A-Za-z]*Error$/,
+  /^(Timeout|WorkerRestarted|PackageError)$/,
+];
+export const isCanonicalDiagnosticCode = (code) => typeof code === 'string'
+  && (CANONICAL_DIAGNOSTIC_CODES.has(code) || CANONICAL_DIAGNOSTIC_PATTERNS.some((pattern) => pattern.test(code)));
+
+function assertMultipleChoiceContract(label, item) {
+  const fail = (message) => { throw new Error(`${label}: ${message}`); };
+  const expected = item.expected;
+  if (expected?.kind !== 'choice-indices' || !Array.isArray(expected.correctIds) || !expected.correctIds.length) {
+    fail("multiple-choice braucht expected {kind:'choice-indices', correctIds:[...]}");
+  }
+  if (expected.scoring !== undefined && expected.scoring !== 'all-or-nothing' && expected.scoring !== 'per-correct') {
+    fail(`multiple-choice: unbekanntes scoring "${expected.scoring}"`);
+  }
+  const ids = (item.choices || []).map((choice) => String(choice?.id));
+  if (!ids.length || new Set(ids).size !== ids.length) fail('multiple-choice braucht choices mit eindeutigen ids');
+  if (new Set(expected.correctIds.map(String)).size < 2) {
+    fail('multiple-choice braucht mindestens zwei verschiedene correctIds — sonst ist es single-choice');
+  }
+  for (const id of expected.correctIds) {
+    if (!ids.includes(String(id))) fail(`correctId "${id}" hat keine passende choice`);
+  }
+}
+
+function assertDiagnosisContract(label, item) {
+  const fail = (message) => { throw new Error(`${label}: ${message}`); };
+  const expected = item.expected;
+  if (expected?.kind !== 'diagnosis') fail("diagnostic-rationale braucht expected {kind:'diagnosis'}");
+  if (!isCanonicalDiagnosticCode(expected.diagnosisCode)) {
+    fail(`diagnosisCode "${expected.diagnosisCode}" liegt nicht in der kanonischen Taxonomie (docs/authoring-guide.md §8)`);
+  }
+  if (!Array.isArray(expected.mustContain) || !expected.mustContain.length
+    || expected.mustContain.some((keyword) => typeof keyword !== 'string' || !keyword.trim()
+      || !normalizeDiagnosisText(keyword).split('|').some((part) => part.trim()))) {
+    fail('diagnostic-rationale braucht mustContain-Keywords mit mindestens einer nicht-leeren Alternative');
+  }
+  if (expected.mustNotContain !== undefined
+    && (!Array.isArray(expected.mustNotContain)
+      || expected.mustNotContain.some((keyword) => typeof keyword !== 'string' || !keyword.trim()))) {
+    fail('diagnostic-rationale: mustNotContain muss ein Array nicht-leerer Strings sein');
+  }
+  const vetoSet = new Set((expected.mustNotContain ?? []).map(normalizeDiagnosisText));
+  const overlaps = expected.mustContain.some((keyword) => normalizeDiagnosisText(keyword)
+    .split('|').map((part) => part.trim()).filter(Boolean).some((part) => vetoSet.has(part)));
+  if (overlaps) fail('diagnostic-rationale: mustContain und mustNotContain überschneiden sich — Fall wäre ungewinnbar');
+  if (!Number.isInteger(expected.minWords) || expected.minWords < 1 || expected.minWords > 200) {
+    fail('diagnostic-rationale braucht minWords als ganze Zahl zwischen 1 und 200');
+  }
+}
+
+function assertFadingContract(label, item) {
+  const fail = (message) => { throw new Error(`${label}: ${message}`); };
+  const expected = item.expected;
+  if (expected?.kind !== 'gaps' || !Array.isArray(expected.gaps) || !expected.gaps.length) {
+    fail("worked-example-fading braucht expected {kind:'gaps', gaps:[...]}");
+  }
+  const markers = String(item.prompt ?? '').split('[[gap]]').length - 1;
+  if (markers !== expected.gaps.length) {
+    fail(`prompt hat ${markers} [[gap]]-Marker, expected.gaps hat ${expected.gaps.length} Einträge`);
+  }
+  expected.gaps.forEach((gap, index) => {
+    const at = `gaps[${index}]`;
+    if (!gap || typeof gap.answer !== 'string' || !gap.answer.trim()) fail(`${at}.answer muss ein nicht-leerer String sein`);
+    if (gap.input === 'numeric') {
+      if (!parseCheckpointNumber(gap.answer).ok) fail(`${at}.answer "${gap.answer}" ist keine lesbare Zahl`);
+    } else if (gap.input === 'expression') {
+      const source = normalizeExpressionInput(gap.answer);
+      try { compileExpression(source, expressionNames(source)); } catch { fail(`${at}.answer "${gap.answer}" ist kein lesbarer Term`); }
+      if (!expressionTargetFinite(source)) fail(`${at}.answer "${gap.answer}" ist auf den Probe-Scopes nicht endlich — degeneriertes Target`);
+    } else {
+      fail(`${at}.input muss "numeric" oder "expression" sein`);
+    }
+  });
+}
+
+/** Semantic case contracts the JSON schema cannot express, checked by
+ *  tools/validate_content.mjs for every family document. Variants replace
+ *  expected/choices/prompt wholesale (same merge as variantOf). R14:
+ *  diagnostic-rationale is fail-closed mastery-ineligible at family AND case
+ *  level; multiple-choice and worked-example-fading stay case-governed. */
+// Case-level activityType/graderId stay schema-free strings, so the contract
+// pins them to the known sets — an unknown type would otherwise surface as a
+// runtime crash instead of a content error.
+const KNOWN_ACTIVITY_TYPES = new Set([
+  'numeric', 'single-choice', 'multiple-choice', 'vector', 'parsons', 'code-trace',
+  'predict-output', 'python-code', 'algebraic-expression', 'short-rationale',
+  'diagnostic-rationale', 'worked-example-fading',
+]);
+const KNOWN_GRADERS = new Set(['deterministic', 'pyodide', 'pyodide-sympy', 'manual-rubric']);
+
+export function assertFamilyActivityContracts(document) {
+  const contract = document?.contract || {};
+  const familyType = contract.activityType;
+  if (familyType === 'diagnostic-rationale' && contract.masteryEligible !== false) {
+    throw new Error(`${document?.familyId}: diagnostic-rationale-Familien brauchen masteryEligible: false (R14, fail-closed)`);
+  }
+  for (const item of document?.cases || []) {
+    const type = item.activityType ?? familyType;
+    const label = `${document?.familyId}:${item.caseId}`;
+    if (item.activityType !== undefined && !KNOWN_ACTIVITY_TYPES.has(item.activityType)) {
+      throw new Error(`${label}: unbekannter activityType "${item.activityType}"`);
+    }
+    if (item.graderId !== undefined && !KNOWN_GRADERS.has(item.graderId)) {
+      throw new Error(`${label}: unbekannte graderId "${item.graderId}"`);
+    }
+    // R14 fail-closed: a diagnostic-rationale family makes every case
+    // non-mastery regardless of the case's own activityType — otherwise a
+    // mastery-flagged foreign-type case could leak evidence into the family.
+    if (type === 'diagnostic-rationale' || familyType === 'diagnostic-rationale') {
+      if (item.masteryEligible !== false) {
+        throw new Error(`${label}: diagnostic-rationale-Fälle brauchen masteryEligible: false (R14, fail-closed)`);
+      }
+    }
+    const check = type === 'multiple-choice' ? assertMultipleChoiceContract
+      : type === 'diagnostic-rationale' ? assertDiagnosisContract
+      : type === 'worked-example-fading' ? assertFadingContract
+      : null;
+    if (!check) continue;
+    check(label, item);
+    for (const [index, variant] of (item.variants || []).entries()) {
+      check(`${label}:variant-${index + 1}`, { ...item, ...variant });
+    }
+  }
+}
+
 // --- registry ------------------------------------------------------------------------
 
 export const graders = {
@@ -409,6 +827,9 @@ export const graders = {
       if (type === 'parsons') return gradeParsons(exercise, answer);
       if (type === 'code-trace') return gradeCodeTrace(exercise, answer);
       if (type === 'predict-output') return gradePredictOutput(exercise, answer);
+      if (type === 'multiple-choice') return gradeMultipleChoice(exercise, answer);
+      if (type === 'diagnostic-rationale') return gradeDiagnosis(exercise, answer);
+      if (type === 'worked-example-fading') return gradeFading(exercise, answer);
       throw new Error('deterministic: unbekannter Aufgabentyp ' + type);
     },
   },
