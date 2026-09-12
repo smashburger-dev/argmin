@@ -41,7 +41,18 @@
       "masteryEligible": true
     },
     {
-      "placementId": "p-linalg-independence-03-formula-det2-independence-practice",
+      "placementId": "p-linalg-independence-03-det2-seeded-columns",
+      "role": "curated",
+      "familyId": "formula-det2-independence",
+      "caseId": "det2-seeded-columns",
+      "seed": 7,
+      "difficulty": "core",
+      "estimatedMinutes": 5,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-independence-04-formula-det2-independence-practice",
       "role": "practice-space",
       "familyId": "formula-det2-independence",
       "difficulty": "core",

@@ -9,15 +9,15 @@ Löse $5x - 7 = 2x + 8$.
 1. Subtrahiere $2x$ auf beiden Seiten: $3x - 7 = 8$.
 2. Addiere $7$ auf beiden Seiten: $3x = 15$.
 3. Teile beide Seiten durch $3$: $x = 5$.
-4. Prüfe im Original: links $5 · 5 - 7 = 18$, rechts $2 · 5 + 8 = 18$.
+4. Prüfe im Original: links $5 \cdot 5 - 7 = 18$, rechts $2 \cdot 5 + 8 = 18$.
 
 Die Probe ist kein Schmuck am Ende. Sie trennt einen plausibel aussehenden Rechenweg von einer bestätigten Lösung.
 
 ## Potenzen und Logarithmen
 
-Bei gleicher Basis addiert eine Multiplikation die Exponenten: $a^m · a^n = a^{(m+n)}$. Beispiel: $2^3 · 2^4 = 2^{(3+4)} = 2^7 = 128$.
+Bei gleicher Basis addiert eine Multiplikation die Exponenten: $a^m \cdot a^n = a^{(m+n)}$. Beispiel: $2^3 \cdot 2^4 = 2^{(3+4)} = 2^7 = 128$.
 
-Wenn eine Potenz erneut potenziert wird, werden die Exponenten multipliziert: $(a^m)^n = a^{(m·n)}$. Beispiel: $(3^2)^3 = 3^{(2·3)} = 3^6 = 729$. Diese Regel gilt nicht für eine Addition von Potenzen.
+Wenn eine Potenz erneut potenziert wird, werden die Exponenten multipliziert: $(a^m)^n = a^{(m\cdot n)}$. Beispiel: $(3^2)^3 = 3^{(2\cdot 3)} = 3^6 = 729$. Diese Regel gilt nicht für eine Addition von Potenzen.
 
 Ein Logarithmus beantwortet eine Exponentenfrage. Bestimme zum Beispiel $log_2(32)$: Gesucht ist $k$ mit $2^k = 32$. Weil $2^5 = 32$, gilt $log_2(32) = 5$. Übersetze eine Logarithmusaufgabe bei Unsicherheit in diese Potenzform zurück.
 

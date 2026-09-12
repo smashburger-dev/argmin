@@ -163,12 +163,6 @@ export const ERROR_HYPOTHESIS_CASES = [
       'Eine Hypothese muss durch einen nächsten Versuch widerlegbar sein.',
       'Trenne Beobachtung, Ursache und nächsten Test.',
     ],
-    feedbackRules: [
-      {
-        if: "choice !== 'observable-test'",
-        then: 'Erst beobachten, dann reproduzieren: Ein neuer Testfall mit demselben Fehler bestätigt die Hypothese, bevor sie ins Journal kommt.',
-      },
-    ],
     typicalErrors: ['pauschales Selbsturteil', 'Ursache ohne Gegenprobe', 'Musterlösung mit eigenem Abruf verwechseln'],
     tolerancePolicy: { mode: 'exact' },
   },

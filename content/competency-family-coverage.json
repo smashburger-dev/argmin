@@ -77,9 +77,10 @@
       "competencyId": "c-meta-learning",
       "familyIds": [
         "classify-error-hypothesis",
-        "classify-test-attitude"
+        "classify-test-attitude",
+        "construct-error-journal-order"
       ],
-      "placedCaseCount": 4,
+      "placedCaseCount": 5,
       "seededFamilyCount": 0
     },
     {
@@ -121,9 +122,10 @@
       "familyIds": [
         "classify-independence-multiple",
         "classify-rank-solution-case",
+        "formula-det2-independence",
         "transform-rank-dependence-rowops"
       ],
-      "placedCaseCount": 3,
+      "placedCaseCount": 4,
       "seededFamilyCount": 0
     },
     {

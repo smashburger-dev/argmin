@@ -12,6 +12,6 @@
     { "kind": "polygon", "points": [[0, 0], ["c", 0], ["c", 0.8], [0, 0.8]], "color": "#294bd6" },
     { "kind": "polygon", "points": [["c-o", 1], ["2*c-o", 1], ["2*c", 1.8], ["c", 1.8]], "color": "#16713a" },
     { "kind": "polygon", "points": [["2*c-2*o", 2], ["3*c-2*o", 2], ["3*c-o", 2.8], ["2*c-o", 2.8]], "color": "#9c4b00" },
-    { "kind": "text", "at": [0, -0.5], "text": "Chunks = {floor((10-o)/(c-o)-0.0001)+1}", "color": "#294bd6" }
+    { "kind": "text", "at": [0, -0.5], "text": "Chunks = {floor(10/(c-o)-0.0001)+1}", "color": "#294bd6" }
   ]
 }

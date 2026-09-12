@@ -193,7 +193,7 @@ export function genDropoutCount(seed) {
         expected: answer,
         prompt: `Ein Dropout-Layer mit Behaltenswahrscheinlichkeit p = ${p.toString().replace('.', ',')} erhält ${n} Aktivierungen und legt diese feste, per Seed gezogene Maske an (1 = behalten, 0 = droppen): \`${mask1.join('')}\`. ${variant === 'kept' ? 'Wie viele Aktivierungen bleiben nach dem Dropout-Schritt erhalten?' : 'Wie viele Aktivierungen werden von der Maske gedroppt?'}`,
         fullSolution: variant === 'kept'
-          ? `Einsen in der Maske zählen: ${kept} von ${n} Aktivierungen bleiben erhalten (Skalierung 1/p = ${p.toString().replace('.', ',')} ändert die Anzahl nicht).`
+          ? `Einsen in der Maske zählen: ${kept} von ${n} Aktivierungen bleiben erhalten (Skalierung 1/p = ${(1/p).toFixed(2).replace('.', ',')} ändert die Anzahl nicht).`
           : `Nullen in der Maske zählen: ${n} − ${kept} = ${answer} Aktivierungen werden gedroppt.`,
       };
     }
