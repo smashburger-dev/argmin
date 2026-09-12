@@ -263,8 +263,8 @@ export function App() {
               : section === 'sources' ? <SourcesView catalog={catalog} />
                 : section === 'tools' ? <ToolsView catalog={catalog} />
                   : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
-                : section === 'module' ? <Suspense fallback={<section class="view"><p role="status">Modul wird geladen.</p></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} progress={progress} /></Suspense>
-                : section === 'family' ? <Suspense fallback={<section class="view"><p role="status">Variante wird geladen.</p></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>
+                : section === 'module' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Modul wird geladen</h1></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} progress={progress} /></Suspense>
+                : section === 'family' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Variante wird geladen</h1></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>
                 : section === 'lesson' ? <LessonView catalog={catalog} lessonId={routeId} />
                     : section === 'project' ? <ProjectView catalog={catalog} projectId={routeId} />
                     : section === 'competency' ? <CompetencyView catalog={catalog} progress={progress} competencyId={routeId} />
