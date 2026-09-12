@@ -93,7 +93,7 @@
       "caseId": "dropout-mask-kept-count",
       "seed": 2102,
       "difficulty": "core",
-      "estimatedMinutes": 0,
+      "estimatedMinutes": 8,
       "lessonId": "l-dl-regularization"
     }
   ],

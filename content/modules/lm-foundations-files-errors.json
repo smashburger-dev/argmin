@@ -73,7 +73,12 @@
       "estimatedMinutes": 0
     }
   ],
-  "projectIds": [],
+  "projectIds": [
+    "p-foundations-data-checker"
+  ],
+  "explanationIds": [
+    "x-error-boundary"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

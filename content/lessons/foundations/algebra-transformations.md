@@ -6,12 +6,10 @@ Eine Termumformung verändert die Darstellung, nicht den Wert. Du brauchst dafü
 
 Vereinfache $3(x + 2) - 2(x - 1)$.
 
-1. Verteile $3$ auf beide Teile der ersten Klammer: $3x + 6$.
-2. Verteile $-2$ auf beide Teile der zweiten Klammer: $-2x + 2$.
-3. Schreibe den ganzen Term: $3x + 6 - 2x + 2$.
-4. Fasse die $x$-Terme zusammen: $3x - 2x = x$.
-5. Fasse die Zahlen zusammen: $6 + 2 = 8$.
-6. Ergebnis: $x + 8$.
+1. **Erste Klammer ausmultiplizieren**: Verteile $3$ auf beide Teile der ersten Klammer: $3x + 6$.
+2. **Zweite Klammer mit Vorzeichen ausmultiplizieren**: Verteile $-2$ auf beide Teile der zweiten Klammer: $-2x + 2$.
+3. **Term vollständig anschreiben**: $3x + 6 - 2x + 2$.
+4. **Gleichartige Terme zusammenfassen — dein Zug**: $x$-Terme: $3x - 2x = ???$; Zahlen: $6 + 2 = ???$. Ergebnis: $???$.
 
 Das Vorzeichen vor der zweiten Klammer gehört zum Faktor. Aus $-2(x - 1)$ wird deshalb $-2x + 2$.
 

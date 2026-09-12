@@ -10,7 +10,7 @@
         "transform-linear-equation-isolate",
         "transform-power-log-exponent"
       ],
-      "placedCaseCount": 4,
+      "placedCaseCount": 6,
       "seededFamilyCount": 0
     },
     {
@@ -20,7 +20,7 @@
         "transform-expression-simplify-canonical",
         "transform-linear-equation-isolate"
       ],
-      "placedCaseCount": 5,
+      "placedCaseCount": 6,
       "seededFamilyCount": 0
     },
     {
@@ -29,7 +29,7 @@
         "optimize-decode-greedy-loop",
         "trace-assignment-state"
       ],
-      "placedCaseCount": 10,
+      "placedCaseCount": 12,
       "seededFamilyCount": 0
     },
     {
@@ -48,7 +48,7 @@
         "trace-toposort-dependency-order",
         "trace-training-loop-count"
       ],
-      "placedCaseCount": 29,
+      "placedCaseCount": 31,
       "seededFamilyCount": 0
     },
     {
@@ -92,7 +92,7 @@
         "formula-scalar-product",
         "trace-assignment-state"
       ],
-      "placedCaseCount": 13,
+      "placedCaseCount": 15,
       "seededFamilyCount": 0
     },
     {
@@ -114,7 +114,7 @@
         "transform-rank-dependence-rowops",
         "transform-system-2x2-elimination"
       ],
-      "placedCaseCount": 8,
+      "placedCaseCount": 12,
       "seededFamilyCount": 0
     },
     {
@@ -125,7 +125,7 @@
         "formula-det2-independence",
         "transform-rank-dependence-rowops"
       ],
-      "placedCaseCount": 4,
+      "placedCaseCount": 7,
       "seededFamilyCount": 0
     },
     {
@@ -155,7 +155,7 @@
         "trace-library-api-output",
         "validate-shape-contract"
       ],
-      "placedCaseCount": 35,
+      "placedCaseCount": 36,
       "seededFamilyCount": 0
     },
     {

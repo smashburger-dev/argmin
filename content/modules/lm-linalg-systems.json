@@ -85,6 +85,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-systems-07-system-seeded-2x2",
+      "role": "curated",
+      "familyId": "transform-system-2x2-elimination",
+      "caseId": "system-seeded-2x2",
+      "seed": 11,
+      "difficulty": "challenge",
+      "estimatedMinutes": 10,
+      "lessonId": "l-linalg-systems",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-systems-06-transform-system-2x2-elimination-practice",
       "role": "practice-space",
       "familyId": "transform-system-2x2-elimination",

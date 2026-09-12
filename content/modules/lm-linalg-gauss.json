@@ -74,6 +74,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-gauss-07-rank-3x4-line",
+      "role": "curated",
+      "familyId": "transform-rank-dependence-rowops",
+      "caseId": "rank-3x4-line",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 12,
+      "lessonId": "l-linalg-gauss",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-gauss-06-transform-system-2x2-elimination-practice",
       "role": "practice-space",
       "familyId": "transform-system-2x2-elimination",

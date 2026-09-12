@@ -59,7 +59,7 @@
       "caseId": "fairness-metric-compare",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
+      "estimatedMinutes": 25,
       "lessonId": "l-responsible-ai",
       "masteryEligible": true
     },
@@ -70,7 +70,7 @@
       "caseId": "parity-threshold-selection",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 27,
+      "estimatedMinutes": 30,
       "lessonId": "l-responsible-ai",
       "masteryEligible": true
     },
@@ -81,7 +81,7 @@
       "caseId": "report-guard-compose",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 40,
+      "estimatedMinutes": 45,
       "lessonId": "l-responsible-ai",
       "masteryEligible": true
     },

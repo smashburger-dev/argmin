@@ -53,16 +53,8 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'a'",
-          "then": "„Lernen aus Daten“ macht ein Verfahren nicht überwacht — ohne Zielvariable ist es unüberwacht (PCA, k-Means)."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "k vorzugeben ist Hyperparameter-Wahl wie λ bei Ridge — k-Means nutzt während des Laufens keine Labels."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Genau umgekehrt: SVM braucht Labels; und Abstandsbasierte wie SVM und k-Means brauchen Skalen am dringendsten."
+          "if": "choice !== 'none'",
+          "then": "„Lernen aus Daten“ macht ein Verfahren nicht überwacht — überwacht heißt Zielvariable, und die hat nur die SVM. k ist ein Hyperparameter wie λ bei Ridge, kein Label pro Punkt. Und skalenempfindlich sind alle drei: SVM und k-Means über Distanzen, PCA über Varianzen — deshalb vorher standardisieren (Statistiken nur aus Train)."
         }
       ],
       "typicalErrors": [
@@ -407,16 +399,8 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'a'",
-          "then": "PCA sucht Varianzrichtungen in den Eingabemerkmalen und benötigt im beschriebenen Fall keine Zielwerte; Überwachung ist hier nicht die Begründung."
-        },
-        {
-          "if": "choice === 'b'",
-          "then": "Varianz hängt von der Einheit ab: Ein Merkmal in großen Einheiten kann PCA dominieren, weshalb die Aussage die Skalierungsfrage verneint."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "PCA und k-Means sind beide ohne Labels möglich; die Aussage schreibt PCA fälschlich eine Zielvariable zu."
+          "if": "choice !== 'none'",
+          "then": "PCA sucht Varianzrichtungen in den Merkmalen — keine Zielvariable, also unüberwacht, und Hauptkomponenten sagen kein Ziel vorher. Varianz ist einheitenabhängig (Var(cX) = c²·Var(X)): große Einheiten dominieren sonst die Komponenten, deshalb Standardisieren aus Train-Statistiken. Labels braucht PCA nie — k-Means ebenso wenig."
         }
       ],
       "typicalErrors": [
@@ -761,16 +745,8 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'b'",
-          "then": "Standardisierung erzeugt keine Labels; sie verändert nur die Skalen der Merkmale, auf denen die RBF-Distanzen berechnet werden."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "Ein RBF-Kernel verarbeitet reelle Merkmale und verlangt keine Ganzzahlen; der relevante Punkt ist die vergleichbare Distanzskala."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Eine SVM bleibt überwacht, weil sie Trainingslabels nutzt; fehlende Standardisierung ändert nicht den Aufgabentyp."
+          "if": "choice !== 'none'",
+          "then": "Standardisierung erzeugt keine Labels — sie verändert nur die Skalen, auf denen die RBF-Distanzen rechnen. Der Kernel arbeitet auf reellen Vektoren und verlangt keine Ganzzahlen. Und ohne Skalierung bleibt die SVM überwacht — nur die Distanzgeometrie wird von großen Einheiten dominiert (Skalen nur aus Train)."
         }
       ],
       "typicalErrors": [

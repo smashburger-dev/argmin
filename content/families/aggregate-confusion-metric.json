@@ -50,16 +50,8 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'a'",
-          "then": "Tiefer Schwellenwert erzeugt viele FP — jede fälschlich aussortierte Mail kostet 50 €. Genau das ist hier der teure Fehler."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "0,5 ist nur bei symmetrischen Kosten eine vernünftige Standardwahl — bei Kosten 50 € vs. 0,05 € verschiebt sich das Optimum deutlich."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Der Schwellenwert bestimmt das Verhältnis von FP und FN — genau das geht in die Kosten ein. Accuracy gewichtet beide Fehler gleich."
+          "if": "choice !== 'none'",
+          "then": "Rechne das Kostenverhältnis: Ein FP kostet hier rund das Tausendfache eines FN. Die Schwelle senken erzeugt genau diese teuren FP; 0,5 ist nur bei symmetrischen Kosten eine sinnvolle Standardwahl; und die Schwelle steuert gerade das FP/FN-Verhältnis, das in die Kosten eingeht — Accuracy gewichtet beide Fehler gleich und ignoriert die Asymmetrie."
         }
       ],
       "typicalErrors": [
@@ -104,7 +96,7 @@
             }
           ],
           "prompt": "Spamfilter: FP (legitime Mail im Spam) 40 €, FN 0,04 €. Welche Schwellen-Strategie senkt die erwarteten Kosten?",
-          "fullSolution": "FP/FN = 1000. Schwelle hoch, weniger FP."
+          "fullSolution": "40 / 0,04 = 1000: Jeder FP wiegt tausend FN. Die Schwelle hoch verschiebt Vorhersagen von positiv nach negativ — weniger teure FP, etwas mehr billige FN. Gesamtkosten sinken."
         },
         {
           "parameters": {
@@ -137,7 +129,7 @@
             }
           ],
           "prompt": "Betrugsalarm: falsches Einfrieren eines Kontos (FP) kostet 200, übersehener Kleinstbetrug (FN) 1. Strategie?",
-          "fullSolution": "FP dominiert. Weniger Alarme, höhere Schwelle."
+          "fullSolution": "200 / 1 = 200: Ein falscher Alarm kostet zweihundert übersehene Fälle. Höhere Schwelle heißt weniger FP — das überwiegt die zusätzlichen billigen FN."
         },
         {
           "parameters": {
@@ -170,7 +162,7 @@
             }
           ],
           "prompt": "Werbeblocker: fälschlich geblockte legitime Anzeige 80, durchgerutschte Spam-Anzeige 0,08. Schwelle?",
-          "fullSolution": "Teure FP → Schwelle hoch."
+          "fullSolution": "80 / 0,08 = 1000: Der FP dominiert die Kostenbilanz. Schwelle anheben senkt die FP-Zahl — mehr durchgerutschte FN sind im Vergleich billig."
         },
         {
           "parameters": {
@@ -203,7 +195,7 @@
             }
           ],
           "prompt": "Moderation: falsches Entfernen eines harmlosen Posts 25, übersehenes toxisches Kurzposting 0,05. Kostenminimale Schwelle?",
-          "fullSolution": "FP/FN = 500. Anheben."
+          "fullSolution": "25 / 0,05 = 500: Auch hier ist der FP der teure Fehler. Schwelle anheben — weniger Fehlalarme kaufen sich ein paar billige FN."
         },
         {
           "parameters": {
@@ -236,7 +228,7 @@
             }
           ],
           "prompt": "Filter: FP 100 €, FN 0,10 €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?",
-          "fullSolution": "Faktor 1000 wie im Basisbeispiel, andere Euro-Beträge. Schwelle hoch."
+          "fullSolution": "100 / 0,10 = 1000: Gleiches Verhältnis wie im Basisbeispiel, andere Euro-Beträge. Schwelle hoch, FP-Zahl runter."
         },
         {
           "parameters": {
@@ -269,7 +261,7 @@
             }
           ],
           "prompt": "QA-Scanner: Ausschuss eines guten Teils (FP) 60, entgangener Mini-Defekt (FN) 0,20. Strategie?",
-          "fullSolution": "FP teurer → weniger Positive, Schwelle rauf."
+          "fullSolution": "60 / 0,20 = 300: Der FP ist dreihundertmal so teuer. Schwelle rauf heißt weniger Positive und damit weniger FP — die Mehrentscheidung pro FN bleibt billig."
         },
         {
           "parameters": {
@@ -302,7 +294,7 @@
             }
           ],
           "prompt": "Phishing-Warnung: Fehlalarm an eine Kundin 15, übersehene Nuisance-Mail 0,03. Schwelle?",
-          "fullSolution": "FP-dominant. Anheben."
+          "fullSolution": "15 / 0,03 = 500: FP dominiert. Schwelle anheben verschiebt Vorhersagen Richtung negativ und senkt die teure FP-Quote."
         },
         {
           "parameters": {
@@ -335,7 +327,7 @@
             }
           ],
           "prompt": "SOC-Alert: falscher Incident-Call (FP) 500, verpasste Low-Severity-Mail (FN) 0,5. Kostenstrategie?",
-          "fullSolution": "Faktor 1000. Höhere Schwelle, weniger Alarme."
+          "fullSolution": "500 / 0,5 = 1000: Der FP kostet tausend FN. Höhere Schwelle → weniger Fehlalarme; die zusätzlichen verpassten Low-Severity-Fälle sind billig."
         },
         {
           "parameters": {
@@ -368,7 +360,7 @@
             }
           ],
           "prompt": "Ein Spamfilter gibt Wahrscheinlichkeiten aus. FP kostet 50 €, FN 0,10 €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?",
-          "fullSolution": "Wie die Basisfrage mit FN 0,10 statt 0,05: FP bleibt dominant, Schwelle hoch."
+          "fullSolution": "50 / 0,10 = 500: Wie die Basisfrage mit FN 0,10 statt 0,05 — der FP bleibt dominant. Schwelle hoch."
         }
       ]
     },

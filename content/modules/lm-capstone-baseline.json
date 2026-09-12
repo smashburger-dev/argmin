@@ -60,7 +60,7 @@
       "caseId": "canonical-hash-verify",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
+      "estimatedMinutes": 25,
       "lessonId": "l-capstone-baseline",
       "masteryEligible": true
     },
@@ -71,7 +71,7 @@
       "caseId": "run-digest-assert",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 27,
+      "estimatedMinutes": 30,
       "lessonId": "l-capstone-baseline",
       "masteryEligible": true
     },
@@ -82,7 +82,7 @@
       "caseId": "baseline-report",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 40,
+      "estimatedMinutes": 45,
       "lessonId": "l-capstone-baseline",
       "masteryEligible": true
     },

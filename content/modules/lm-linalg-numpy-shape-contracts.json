@@ -40,6 +40,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-numpy-shape-contracts-03-synthesis-singular-guard",
+      "role": "curated",
+      "familyId": "construct-linalg-contract-synthesis",
+      "caseId": "synthesis-singular-guard",
+      "seed": 9,
+      "difficulty": "core",
+      "estimatedMinutes": 12,
+      "lessonId": "l-numpy-shape-contracts",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-numpy-shape-contracts-03-final-boss-authored",
       "role": "curated",
       "familyId": "construct-matvec-shape-contract",

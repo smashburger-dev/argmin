@@ -2,15 +2,24 @@
   "schemaVersion": 1,
   "engine": "jsxgraph",
   "title": "Softmax-Temperatur",
-  "caption": "Ziehe T: Die Temperatur verteilt die Softmax-Wahrscheinlichkeiten der Logits (2, 1, 0) unterschiedlich stark.",
-  "boundingbox": [-1, 1.2, 5, -0.2],
-  "sliders": [{ "name": "temp", "label": "T", "range": [0.2, 3], "value": 1, "step": 0.1 }],
+  "caption": "Ziehe T und k: Die Balken zeigen die Softmax-Wahrscheinlichkeiten p der Logits (2, 1, 0), die zweite Reihe die Top-k-renormalisierten q. Vorhersage: Bei T = 0,5 und k = 2 — welcher Anteil bleibt auf dem ersten Token? Und bei k = 1 — welches Token trägt die ganze Masse? Stelle ein und prüfe q.",
+  "boundingbox": [-1, 1.2, 5, -0.35],
+  "sliders": [
+    { "name": "temp", "label": "T", "range": [0.2, 3], "value": 1, "step": 0.1 },
+    { "name": "k", "label": "k (Top-k)", "range": [1, 3], "value": 3, "step": 1 }
+  ],
   "objects": [
     { "kind": "segment", "from": [0, 0], "to": ["exp(2/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))", 0], "color": "#b72f2a" },
     { "kind": "segment", "from": [1.5, 0], "to": ["1.5+exp(1/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))", 0], "color": "#16713a" },
     { "kind": "segment", "from": [3, 0], "to": ["3+exp(0/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))", 0], "color": "#294bd6" },
+    { "kind": "segment", "from": [0, -0.12], "to": ["exp(2/temp)*min(1,max(0,k))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))", -0.12], "color": "#b72f2a" },
+    { "kind": "segment", "from": [1.5, -0.12], "to": ["1.5+exp(1/temp)*min(1,max(0,k-1))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))", -0.12], "color": "#16713a" },
+    { "kind": "segment", "from": [3, -0.12], "to": ["3+min(1,max(0,k-2))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))", -0.12], "color": "#294bd6" },
     { "kind": "text", "at": [0, 0.8], "text": "p₁ = {exp(2/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#b72f2a" },
     { "kind": "text", "at": [0, 0.55], "text": "p₂ = {exp(1/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#16713a" },
-    { "kind": "text", "at": [0, 0.3], "text": "p₃ = {exp(0/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#294bd6" }
+    { "kind": "text", "at": [0, 0.3], "text": "p₃ = {exp(0/temp)/(exp(2/temp)+exp(1/temp)+exp(0/temp))}", "color": "#294bd6" },
+    { "kind": "text", "at": [0, -0.28], "text": "q₁ = {exp(2/temp)*min(1,max(0,k))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))}", "color": "#b72f2a" },
+    { "kind": "text", "at": [1.5, -0.28], "text": "q₂ = {exp(1/temp)*min(1,max(0,k-1))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))}", "color": "#16713a" },
+    { "kind": "text", "at": [3, -0.28], "text": "q₃ = {min(1,max(0,k-2))/(exp(2/temp)*min(1,max(0,k))+exp(1/temp)*min(1,max(0,k-1))+min(1,max(0,k-2)))}", "color": "#294bd6" }
   ]
 }

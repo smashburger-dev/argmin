@@ -5,7 +5,7 @@
   "locale": "de",
   "title": "Erwarteten Fehler an der Entscheidungsgrenze behandeln",
   "competencyIds": ["c-python-files-errors"],
-  "diagnosticCodes": ["exception-boundary", "wrong-order"],
+  "diagnosticCodes": ["except-pass", "wrong-order"],
   "helpLevel": 2,
   "body": "Fange nur den Fehlertyp, den ungültige Eingabedaten erwartbar auslösen.",
   "steps": ["Benenne den riskanten Parsingaufruf.", "Benenne den erwarteten Fehlertyp.", "Suche die Ebene mit Zeilen- und Spaltenkontext.", "Erzeuge dort einen präzisen Issue-Eintrag."],

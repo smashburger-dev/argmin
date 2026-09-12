@@ -30,6 +30,18 @@ $$v \leftarrow \mu \, v + g, \qquad w \leftarrow w - \mathrm{lr} \cdot v.$$
 
 Bei konstantem Gradienten wächst $v$ geometrisch gegen $g / (1 - \mu)$ — bei $\mu = 0{,}5$ auf das Doppelte von $g$. Das glättet Zickzack und beschleunigt konsistente Richtungen.
 
+## Lernraten-Schedules
+
+Ein konstantes $\mathrm{lr}$ ist die Ausnahme, nicht die Regel. Ein Schedule legt fest, wie sich die Schrittweite über die Epochen verändert — Loss und Gradienten bleiben unverändert, nur der Faktor im Update $w \leftarrow w - \mathrm{lr}_e \cdot g$ wandert. Drei Standardformen:
+
+- **Step Decay:** $\mathrm{lr}_e = \mathrm{lr}_0 \cdot \gamma^{\lfloor e / S \rfloor}$ — alle $S$ Epochen wird die Lernrate mit $\gamma$ (typisch $0{,}5$ oder $0{,}1$) multipliziert. Grob lernen am Anfang, fein am Ende; die Stufen sind ein festes Kalenderdatum und kennen die Kurve nicht.
+- **Cosine:** $\mathrm{lr}_e = \mathrm{lr}_{\min} + \tfrac{1}{2}\,(\mathrm{lr}_0 - \mathrm{lr}_{\min})\bigl(1 + \cos(\pi e / E)\bigr)$ — glatter Abfall von $\mathrm{lr}_0$ auf $\mathrm{lr}_{\min}$ über die geplanten $E$ Epochen, ohne harte Stufe. Braucht die Gesamtepochenzahl im Voraus.
+- **Reduce on Plateau:** kein Kalender, sondern ein Signal — sinkt der überwachte Verlust (meist der Validierungs-MSE) für $P$ Epochen nicht mehr, wird $\mathrm{lr}$ halbiert. Reagiert auf die Kurve statt auf die Uhr, hängt aber an einer sauberen Messung: mit verrauschtem oder unpassendem Monitor springt der Schedule zu früh oder nie.
+
+Oft kommt ein vierter Baustein davor: **Warmup** fährt $\mathrm{lr}$ in den ersten Epochen linear von $0$ auf $\mathrm{lr}_0$ hoch — das stabilisiert große Lernraten und ist bei Transformern Standard, auf Toy-SGD optional.
+
+Praktisch: Step und Cosine sind aus der Epochennummer reproduzierbar; Plateau braucht dieselbe Validierungskurve wie das Early Stopping und ein Gedächtnis (wie viele Epochen ohne neue Bestmarke). Faustregel: oszilliert der Validierungsverlust, ist $\mathrm{lr}$ zu groß — ein Schedule ist die systematische Antwort statt Hand-Justage. Auf Toy-Größen reicht oft schon Step Decay mit $\gamma = 0{,}5$ alle $S = 100$ Epochen, um das Zittern am Ende eines konstanten $\mathrm{lr}$ zu glätten.
+
 ## Lernkurven und Overfitting
 
 Teile die Daten **vor** dem Training: ein Trainings- und ein Validierungsanteil, erzeugt über eine Seed-Permutation. Notiere pro Epoche beide Verluste als Zahlenliste. Das diagnostische Muster:

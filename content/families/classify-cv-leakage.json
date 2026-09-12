@@ -53,16 +53,8 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'b'",
-          "then": "Von einer Ziel-Spalte in den Features steht nichts in der Beschreibung — der einzige Verstoß liegt bei den verwendeten Zeilen."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "Deterministisch heißt reproduzierbar, nicht unkritisch: Die Frage ist, ob Testzeilen in eine Train-Statistik eingeflossen sind — hier ja."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Ein deterministischer Split ist gerade das Mittel zur Kontrolle; das Problem ist die Reihenfolge der Schritte, nicht der Seed."
+          "if": "choice !== 'none'",
+          "then": "Prüfe die drei Verdachtstypen gegen das Szenario: Ziel-Leakage liegt nicht vor — keine Spalte stammt aus dem Ziel. „Kein Leakage“ stimmt nicht: Determinismus, Robustheit oder ein großes n ändern nichts daran, dass Testzeilen in der Statistik stecken. Der Split selbst ist nicht undicht — der Fehler ist die Reihenfolge: Die Statistik wird vor dem Split über alle Zeilen berechnet (Statistik-Leakage)."
         }
       ],
       "typicalErrors": [
@@ -489,16 +481,8 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'b'",
-          "then": "Das ist Leakage: Testset-Werte fließen über Mittelwert/Standardabweichung in das Training. Statistiken nur aus dem Trainingsteil berechnen, dann auf Test anwenden."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "Zahlen 1–8 erzeugen eine falsche Reihenfolge zwischen Stadtteilen; außerdem bestraft λ unskalierte Merkmale unfair — One-Hot plus Standardisieren ist der Weg."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "preis_pro_m2 ist aus dem Ziel berechnet — das Modell lernt die Antwort abzulesen (Leakage), kein echtes Signal."
+          "if": "choice !== 'none'",
+          "then": "Alle drei Abkürzungen scheitern: Skalierungsstatistiken über den vollen Satz leaken Testinformation in die Feature-Skalen; durchnummerierte Kategorien erzeugen eine falsche Ordnung und lassen λ die Merkmale unfair bestrafen; die aus dem Ziel berechnete Spalte ist Label-Leakage — entfernen."
         }
       ],
       "typicalErrors": [

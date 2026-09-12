@@ -52,6 +52,39 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-independence-05-dependent-triple-span",
+      "role": "curated",
+      "familyId": "classify-independence-multiple",
+      "caseId": "dependent-triple-span",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-independence-06-rank-3x3-full",
+      "role": "curated",
+      "familyId": "transform-rank-dependence-rowops",
+      "caseId": "rank-3x3-full",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 10,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
+      "placementId": "p-linalg-independence-07-rank-3x4-line",
+      "role": "curated",
+      "familyId": "transform-rank-dependence-rowops",
+      "caseId": "rank-3x4-line",
+      "seed": 0,
+      "difficulty": "challenge",
+      "estimatedMinutes": 12,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-independence-04-formula-det2-independence-practice",
       "role": "practice-space",
       "familyId": "formula-det2-independence",
