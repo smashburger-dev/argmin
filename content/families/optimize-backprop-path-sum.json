@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w19-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genBackpropChain"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-dl-autograd"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genBackpropChain",
-        "defaultSeed": 1902,
-        "defaultExpected": -3
-      },
       "prompt": "Der Verlust L hängt über zwei Zweige vom Eingang x ab. Zweig A hat die lokalen Gradienten 1 und 3, Zweig B die lokalen Gradienten 3 und −2; beide Zweige gehen additiv in L ein. Wie groß ist ∂L/∂x?",
       "fullSolution": "Beitrag je Zweig = Produkt der lokalen Gradienten (Upstream 1). Gesamt: $\\partial L/\\partial x = g_{A1} \\cdot g_{A2} + g_{B1} \\cdot g_{B2}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -47,9 +39,6 @@
         "die Zweigprodukte miteinander multipliziert statt addiert",
         "Vorzeichen eines lokalen Gradienten verloren"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

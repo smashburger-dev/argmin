@@ -64,9 +64,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Konzept-Check Regularisierung: Was ist der zentrale Unterschied zwischen Ridge (L2) und Lasso (L1) bei linearer Regression? Konzept-Checks zählen als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "fullSolution": "Ridge (L2, λΣw²) schrumpft stetig gegen null; Lasso (L1, λΣ|w|) kann Koeffizienten exakt auf null setzen und damit Feature-Selektion leisten. Im 1D-Fall sieht man es direkt: Ridge teilt durch (Σx²+λ), Lasso wendet sign(c)·max(|c|−λ, 0) an.",
       "hints": [
@@ -92,9 +90,6 @@
         "Sparsity als Nebeneffekt von kleinem lambda erklären",
         "Regularisierung mit Normalisierung der Eingaben verwechseln"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -102,9 +97,7 @@
           "parameters": {
             "setting": "Merkmalsauswahl"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -134,9 +127,7 @@
           "parameters": {
             "setting": "Fit-Ergebnis"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -166,9 +157,7 @@
           "parameters": {
             "setting": "korrelierte Merkmale"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -198,9 +187,7 @@
           "parameters": {
             "setting": "logistische Regression"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -230,9 +217,7 @@
           "parameters": {
             "setting": "hohe Dimension"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -262,9 +247,7 @@
           "parameters": {
             "setting": "Interpretierbarkeit"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -294,9 +277,7 @@
           "parameters": {
             "setting": "Strafform"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -326,9 +307,7 @@
           "parameters": {
             "setting": "lambda-Größe"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -358,9 +337,7 @@
           "parameters": {
             "setting": "Pipeline-Wahl"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -418,9 +395,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Welche Aussage beschreibt Elastic Net am besten?",
       "fullSolution": "Elastic Net kombiniert L1- und L2-Strafe. Es kann Sparsity durch L1 erzeugen und zugleich die stabilisierende Schrumpfung von L2 nutzen.",
       "hints": [
@@ -446,9 +421,6 @@
         "Sparsity als Gleichsetzen sämtlicher Koeffizienten missverstanden.",
         "Regularisierungstechnik fälschlich auf die Baumfamilie beschränkt."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -456,9 +428,7 @@
           "parameters": {
             "setting": "Mischstrafe"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -488,9 +458,7 @@
           "parameters": {
             "setting": "Formel"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -520,9 +488,7 @@
           "parameters": {
             "setting": "Gruppe"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -552,9 +518,7 @@
           "parameters": {
             "setting": "nicht OLS"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -584,9 +548,7 @@
           "parameters": {
             "setting": "nicht gleiche Gewichte"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -616,9 +578,7 @@
           "parameters": {
             "setting": "Modellklasse"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -648,9 +608,7 @@
           "parameters": {
             "setting": "Hyperparameter"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -680,9 +638,7 @@
           "parameters": {
             "setting": "Pipeline"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -712,9 +668,7 @@
           "parameters": {
             "setting": "Kurzdefinition"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -772,9 +726,7 @@
           "correct": true
         }
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Warum wird $\\lambda$ typischerweise per Validierung gewählt und nicht auf dem Testset optimiert?",
       "fullSolution": "Die Wahl von $\\lambda$ ist Modellselektion. Wird das Testset dafür verwendet, ist die Testschätzung nicht mehr unabhängig und die Generalisierung wird zu optimistisch eingeschätzt.",
       "hints": [
@@ -800,9 +752,6 @@
         "Optimierungsziel und Auswahlverfahren für Hyperparameter nicht getrennt.",
         "Validierung fälschlich als datenlosen Schritt ohne Vergleich von Kandidaten verstanden."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -810,9 +759,7 @@
           "parameters": {
             "setting": "Testset-Rolle"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -842,9 +789,7 @@
           "parameters": {
             "setting": "kein Gewicht"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -874,9 +819,7 @@
           "parameters": {
             "setting": "Train vs Val"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -906,9 +849,7 @@
           "parameters": {
             "setting": "CV"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -938,9 +879,7 @@
           "parameters": {
             "setting": "Optimism"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -970,9 +909,7 @@
           "parameters": {
             "setting": "Datenbedarf"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1002,9 +939,7 @@
           "parameters": {
             "setting": "Ridge-Pipeline"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1034,9 +969,7 @@
           "parameters": {
             "setting": "Lasso-Gitter"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1066,9 +999,7 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",

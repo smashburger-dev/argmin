@@ -91,21 +91,21 @@ test('static variants select deterministic cases and stay solver-aligned', () =>
         masteryEligible: true,
         sourceLineage: [],
         parameters: { base: true },
-        expected: { correctChoice: 'a' },
+        expected: {},
         choices: [baseChoice('Basis', true), baseChoice('Distraktor', false)],
         prompt: 'Basis',
         fullSolution: 'Basis',
         variants: [
           {
             parameters: { value: 1 },
-            expected: { correctChoice: 'a' },
+            expected: {},
             choices: [baseChoice('Variante 1', true), baseChoice('Distraktor 1', false)],
             prompt: 'Variante 1',
             fullSolution: 'Variante 1',
           },
           {
             parameters: { value: 2 },
-            expected: { correctChoice: 'a' },
+            expected: {},
             choices: [baseChoice('Variante 2', true), baseChoice('Distraktor 2', false)],
             prompt: 'Variante 2',
             fullSolution: 'Variante 2',
@@ -118,7 +118,7 @@ test('static variants select deterministic cases and stay solver-aligned', () =>
         masteryEligible: true,
         sourceLineage: [],
         parameters: { base: true },
-        expected: { correctChoice: 'a' },
+        expected: {},
         choices: [baseChoice('Nur Basis', true), baseChoice('Distraktor', false)],
         prompt: 'Nur Basis',
         fullSolution: 'Nur Basis',
@@ -174,7 +174,7 @@ test('mergeInto names the home family and does not rewrite the instance identity
     activityType: 'single-choice',
     generate: ({ caseId, difficulty }) => ({
       parameters: { caseId, difficulty },
-      expected: { correctChoice: 'a' },
+      expected: {},
       choices: [
         { id: 'a', text: 'behalten', correct: true },
         { id: 'b', text: 'umziehen', correct: false },

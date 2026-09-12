@@ -31,86 +31,13 @@
         "Erst alle Zeilen berechnen, dann sortieren — Schlüssel (-relative_pct, paperId).",
         "Rundung mit int(round(...)); bei baseline 0 ist relative_pct definiert als 0."
       ],
-      "feedbackRules": [
-        {
-          "if": "sort-ascending",
-          "then": "Absteigend nach relativem Gewinn sortieren — der stärkste relative Zugewinn steht zuerst."
-        },
-        {
-          "if": "tie-ignored",
-          "then": "Bei gleichem relative_pct entscheidet paperId aufsteigend."
-        },
-        {
-          "if": "direction-ignored",
-          "then": "Das verdict folgt dem Zahlenvergleich — kleiner-is-besser-Metriken zeigen sich hier als „regressed“ und müssen im Text interpretiert werden."
-        }
-      ],
       "typicalErrors": [
         "aufsteigend statt absteigend sortiert",
         "Tie-Break übersehen",
         "Verdikt ohne Zahlenvergleich vergeben"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'p-a', 'metric': 'BLEU', 'baseline': 10.0, 'system': 12.0}, {'paperId': 'p-b', 'metric': 'F1', 'baseline': 50.0, 'system': 50.0}, {'paperId': 'p-c', 'metric': 'err', 'baseline': 8.0, 'system': 5.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: drei Paper p-a/p-b/p-c. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'z-9', 'metric': 'acc', 'baseline': 80.0, 'system': 88.0}, {'paperId': 'a-1', 'metric': 'acc', 'baseline': 80.0, 'system': 88.0}, {'paperId': 'm-2', 'metric': 'loss', 'baseline': 1.0, 'system': 1.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: Tie-Break a-1 vor z-9, plus flat. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'n0', 'metric': 'x', 'baseline': 0.0, 'system': 4.0}, {'paperId': 'n1', 'metric': 'x', 'baseline': 2.0, 'system': 2.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: baseline 0 und flat. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'r1', 'metric': 'GLEU', 'baseline': 30.0, 'system': 33.0}, {'paperId': 'r2', 'metric': 'GLEU', 'baseline': 40.0, 'system': 36.0}, {'paperId': 'r3', 'metric': 'GLEU', 'baseline': 20.0, 'system': 30.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: r1–r3 gemischte Verdicts. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'lora-x', 'metric': 'params', 'baseline': 100.0, 'system': 5.0}, {'paperId': 'full-x', 'metric': 'params', 'baseline': 100.0, 'system': 100.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: Parameterzahl stark reduziert vs flat. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'k1', 'metric': 'm', 'baseline': 1.0, 'system': 1.5}, {'paperId': 'k2', 'metric': 'm', 'baseline': 10.0, 'system': 15.0}, {'paperId': 'k3', 'metric': 'm', 'baseline': 100.0, 'system': 150.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: gleiche relative 50%, Tie-Break Ids. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'f-err', 'metric': 'Fehlerrate', 'baseline': 20.0, 'system': 12.0}, {'paperId': 'f-ok', 'metric': 'Genauigkeit', 'baseline': 70.0, 'system': 77.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: Fehlerrate sinkt (trotzdem regressed als Zahl). Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 's1', 'metric': 's', 'baseline': 9.0, 'system': 9.0}, {'paperId': 's2', 'metric': 's', 'baseline': 9.0, 'system': 10.0}, {'paperId': 's0', 'metric': 's', 'baseline': 9.0, 'system': 8.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: s0/s1/s2 um 9 herum. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        },
-        {
-          "parameters": {
-            "tests": "PAPERS = [{'paperId': 'u', 'metric': 'u', 'baseline': 4.0, 'system': 5.0}, {'paperId': 'v', 'metric': 'v', 'baseline': 4.0, 'system': 4.0}, {'paperId': 'w', 'metric': 'w', 'baseline': 4.0, 'system': 2.0}, {'paperId': 't', 'metric': 't', 'baseline': 8.0, 'system': 8.0}]\ndef __want(papers):\n    rows = []\n    for paper in papers:\n        baseline = float(paper[\"baseline\"])\n        system = float(paper[\"system\"])\n        absolute = system - baseline\n        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))\n        if system > baseline:\n            verdict = \"improved\"\n        elif system == baseline:\n            verdict = \"flat\"\n        else:\n            verdict = \"regressed\"\n        rows.append({\"paperId\": paper[\"paperId\"], \"metric\": paper[\"metric\"], \"absolute\": absolute, \"relative_pct\": relative, \"verdict\": verdict})\n    rows.sort(key=lambda r: (-r[\"relative_pct\"], r[\"paperId\"]))\n    return rows\ntable = evidence_table(PAPERS)\n__check('zeilen', table == __want(PAPERS))\n__check('leere Liste', evidence_table([]) == [])\n__check('Zeilenstruktur', set(table[0].keys()) == {\"paperId\", \"metric\", \"absolute\", \"relative_pct\", \"verdict\"})\n"
-          },
-          "prompt": "Evidenztabelle: vier Zeilen u/v/w/t. Implementiere `evidence_table` (absolute, relative_pct, verdict, Sortierung)."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

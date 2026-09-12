@@ -77,9 +77,6 @@
         "Overfitting als Erklärung — das Modell generalisiert korrekt, das Feature ist der Fehler",
         "0.99 als Modellgüte gewertet statt als Leakage-Signal"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {
@@ -126,9 +123,6 @@
         "`test_size` oder `random_state` für das Problem gehalten",
         "die hohe Zahl als echten Test-Score gelesen statt als Trainings-Score"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {
@@ -175,9 +169,6 @@
         "die Imputation für fehlerhaft erklärt — sie deckt nur die Features ab, nicht das Ziel",
         "die KFold-Zufallsauswahl als Ursache vermutet"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {

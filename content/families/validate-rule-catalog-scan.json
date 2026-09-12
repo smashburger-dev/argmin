@@ -29,86 +29,13 @@
         "scan_secrets iteriert card.items(), überspringt Nicht-Strings (isinstance) und prüft jedes Muster mit re.search — Groß-/Kleinschreibung steckt in (?i).",
         "check_consistency vergleicht mit .get(): Fehlt ein Feld auf beiden Seiten, ist None == None keine Abweichung."
       ],
-      "feedbackRules": [
-        {
-          "if": "crash-on-numbers",
-          "then": "re.search auf Zahlen wirft TypeError — Nicht-Strings vorher mit isinstance überspringen."
-        },
-        {
-          "if": "case-sensitive-scan",
-          "then": "Die Muster tragen (?i): \"API-Key\" muss genauso treffen wie \"api-key\" — kein eigenen lower()-Bau nötig, aber auch nicht schädlich."
-        },
-        {
-          "if": "missing-field-abweichung",
-          "then": "Eine Abweichung liegt nur bei ungleichen vorhandenen Werten vor — None gegen None ist konsistent, None gegen einen Wert ist eine Abweichung."
-        }
-      ],
       "typicalErrors": [
         "Nicht-String-Werte nicht übersprungen (TypeError)",
         "Großschreibung nicht berücksichtigt",
         "fehlende Felder als Abweichung gewertet"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'zweck': 'support', 'kontakt': 'team'}) == __scan({'zweck': 'support', 'kontakt': 'team'}))\n__check('consistency', check_consistency({'name': 'faq', 'metrik': 'f1', 'n_beispiele': 10}, {'datensatz': 'faq', 'metrik': 'f1', 'n_beispiele': 10}) == __cons({'name': 'faq', 'metrik': 'f1', 'n_beispiele': 10}, {'datensatz': 'faq', 'metrik': 'f1', 'n_beispiele': 10}))\n"
-          },
-          "prompt": "Scan: saubere Karte, konsistent. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'zweck': 'api-schluessel liegt hier', 'notiz': 'bearer abcdefghijklmnopqr'}) == __scan({'zweck': 'api-schluessel liegt hier', 'notiz': 'bearer abcdefghijklmnopqr'}))\n__check('consistency', check_consistency({'name': 'x', 'metrik': 'r', 'n_beispiele': 1}, {'datensatz': 'y', 'metrik': 'r', 'n_beispiele': 1}) == __cons({'name': 'x', 'metrik': 'r', 'n_beispiele': 1}, {'datensatz': 'y', 'metrik': 'r', 'n_beispiele': 1}))\n"
-          },
-          "prompt": "Scan: api-schluessel und bearer, Name weicht. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'grenze': 'sk-kurz'}) == __scan({'grenze': 'sk-kurz'}))\n__check('consistency', check_consistency({'name': 'a', 'metrik': 'm', 'n_beispiele': 3}, {'datensatz': 'a', 'metrik': 'm', 'n_beispiele': 9}) == __cons({'name': 'a', 'metrik': 'm', 'n_beispiele': 3}, {'datensatz': 'a', 'metrik': 'm', 'n_beispiele': 9}))\n"
-          },
-          "prompt": "Scan: zu kurzes token, Umfang weicht. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'n_beispiele': 5, 'split_train': 0.2}) == __scan({'n_beispiele': 5, 'split_train': 0.2}))\n__check('consistency', check_consistency({'name': 'c', 'n_beispiele': 5}, {'datensatz': 'c', 'metrik': 'z', 'n_beispiele': 5}) == __cons({'name': 'c', 'n_beispiele': 5}, {'datensatz': 'c', 'metrik': 'z', 'n_beispiele': 5}))\n"
-          },
-          "prompt": "Scan: keine Strings, Metrik fehlt auf Karte. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'secret': 'ghp-abcdefghijklmno', 'note': 'ok'}) == __scan({'secret': 'ghp-abcdefghijklmno', 'note': 'ok'}))\n__check('consistency', check_consistency({'name': 'd', 'metrik': 'q', 'n_beispiele': 2}, {'datensatz': 'd', 'metrik': 'q', 'n_beispiele': 2}) == __cons({'name': 'd', 'metrik': 'q', 'n_beispiele': 2}, {'datensatz': 'd', 'metrik': 'q', 'n_beispiele': 2}))\n"
-          },
-          "prompt": "Scan: ghp-Token, Karte konsistent. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'a': 'xoxb-1234567890abcd', 'b': 'kein treffer'}) == __scan({'a': 'xoxb-1234567890abcd', 'b': 'kein treffer'}))\n__check('consistency', check_consistency({'name': 'e', 'metrik': 't', 'n_beispiele': 4}, {'datensatz': 'e', 'metrik': 'u', 'n_beispiele': 4}) == __cons({'name': 'e', 'metrik': 't', 'n_beispiele': 4}, {'datensatz': 'e', 'metrik': 'u', 'n_beispiele': 4}))\n"
-          },
-          "prompt": "Scan: xoxb-Token, Metrik weicht. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'k': 'API key hidden', 'p': 'bearer 1234567890abcdef'}) == __scan({'k': 'API key hidden', 'p': 'bearer 1234567890abcdef'}))\n__check('consistency', check_consistency({'name': 'f', 'metrik': 'v', 'n_beispiele': 8}, {'datensatz': 'g', 'metrik': 'v', 'n_beispiele': 7}) == __cons({'name': 'f', 'metrik': 'v', 'n_beispiele': 8}, {'datensatz': 'g', 'metrik': 'v', 'n_beispiele': 7}))\n"
-          },
-          "prompt": "Scan: API key + bearer, Name und Umfang weichen. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'z': 'token ohne muster'}) == __scan({'z': 'token ohne muster'}))\n__check('consistency', check_consistency({'name': 'h'}, {'datensatz': 'h', 'metrik': 'w', 'n_beispiele': 1}) == __cons({'name': 'h'}, {'datensatz': 'h', 'metrik': 'w', 'n_beispiele': 1}))\n"
-          },
-          "prompt": "Scan: harmloser token-String, Felder fehlen. Implementiere `scan_secrets` und `check_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "import re\nGEHEIMNIS_MUSTER = [\n    (\"api-schluessel\", r\"(?i)api[-_ ]?(?:schluessel|key|token)\"),\n    (\"token\", r\"(?i)\\\\b(?:sk|ghp|xoxb)-[a-z0-9]{12,}\"),\n    (\"bearer\", r\"(?i)\\\\bbearer\\\\s+[a-z0-9._-]{16,}\"),\n]\ndef __scan(card):\n    befunde = []\n    for feld, wert in card.items():\n        if not isinstance(wert, str):\n            continue\n        for code, muster in GEHEIMNIS_MUSTER:\n            if re.search(muster, wert):\n                befunde.append(feld + \":\" + code)\n    return sorted(befunde)\ndef __cons(card, protocol):\n    probleme = []\n    if card.get(\"name\") != protocol.get(\"datensatz\"):\n        probleme.append(\"datensatz-abweichung\")\n    if card.get(\"metrik\") != protocol.get(\"metrik\"):\n        probleme.append(\"metrik-abweichung\")\n    if card.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        probleme.append(\"umfang-abweichung\")\n    return sorted(probleme)\n__check('scan', scan_secrets({'m': 'api-token plus sk-abcdefghijklmn'}) == __scan({'m': 'api-token plus sk-abcdefghijklmn'}))\n__check('consistency', check_consistency({'name': 'i', 'metrik': 'f1', 'n_beispiele': 11}, {'datensatz': 'i', 'metrik': 'f1', 'n_beispiele': 11}) == __cons({'name': 'i', 'metrik': 'f1', 'n_beispiele': 11}, {'datensatz': 'i', 'metrik': 'f1', 'n_beispiele': 11}))\n"
-          },
-          "prompt": "Scan: api-token und sk-Secret, konsistent. Implementiere `scan_secrets` und `check_consistency`."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "cross-card-consistency",
@@ -136,86 +63,13 @@
         "Set-Größen vergleichen: len({a, b, c}) > 1 heißt, nicht alle Werte stimmen überein — das deckt datensatz- und metrik-unstimmig ab.",
         "Die fehlt-Codes laufen über die drei Pflichtlisten mit kartenpräfix; Rückgabe sortiert und ohne Duplikate (sorted(set(...)))."
       ],
-      "feedbackRules": [
-        {
-          "if": "pairwise-only",
-          "then": "Stimmigkeit heißt: ALLE beteiligten Werte gleich — ein Set-Vergleich fängt auch den Fall ab, dass zwei Karten gleich sind und die dritte abweicht."
-        },
-        {
-          "if": "duplicates-in-result",
-          "then": "Ein Feld kann mehrere Ursachen haben — die Ergebnisliste ist eindeutig (set) und alphabetisch sortiert."
-        },
-        {
-          "if": "missing-fields-ignored",
-          "then": "Fehlende oder leere Pflichtfelder erzeugen eigene karte.feld-fehlt-Codes, auch wenn die übrigen Werte konsistent sind."
-        }
-      ],
       "typicalErrors": [
         "nur paarweise verglichen statt aller Werte zugleich",
         "fehlende Pflichtfelder nicht als eigenen Code geführt",
         "Duplikate in der Ergebnisliste"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: konsistentes Quartett korpus-a/mod-a. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'acc'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: datacard.metrik acc. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: leere modelcard.version. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-b', 'metrik': 'f1', 'schwelle': 0.9, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: modell und schwelle weichen. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-b', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 99, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: Name und Umfang weichen. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': '  ', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: datacard.lizenz Whitespace. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'x', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'x', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'x', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: alle außer datacard auf Metrik x. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': 'z', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: schwellenwert fehlt. Implementiere `cross_card_consistency`."
-        },
-        {
-          "parameters": {
-            "tests": "DATA_PFLICHT = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\", \"bekannte_luecken\"]\nMODELL_PFLICHT = [\"name\", \"zweck\", \"version\", \"trainingsdaten\", \"metrik\", \"schwellenwert\", \"bekannte_grenzen\"]\nSYSTEM_PFLICHT = [\"modell\", \"metrik\", \"schwelle\", \"kontrolle\"]\nDC, MC, SC, PR = {'name': 'korpus-a', 'zweck': '', 'herkunft': 'h', 'lizenz': 'l', 'n_beispiele': 10, 'bekannte_luecken': 'k', 'metrik': 'f1'}, {'name': 'mod-a', 'zweck': 'z', 'version': '1.0.0', 'trainingsdaten': 'korpus-a', 'metrik': 'f1', 'schwellenwert': 0.5, 'bekannte_grenzen': 'g'}, {'modell': 'mod-a', 'metrik': 'f1', 'schwelle': 0.5, 'kontrolle': 'c'}, {'datensatz': 'korpus-a', 'metrik': 'f1', 'n_beispiele': 10}\ndef __want(datacard, modelcard, systemcard, protocol):\n    befunde = []\n    namen = {datacard.get(\"name\"), modelcard.get(\"trainingsdaten\"), protocol.get(\"datensatz\")}\n    if len(namen) > 1:\n        befunde.append(\"datensatz-unstimmig\")\n    metriken = {datacard.get(\"metrik\"), modelcard.get(\"metrik\"), systemcard.get(\"metrik\"), protocol.get(\"metrik\")}\n    if len(metriken) > 1:\n        befunde.append(\"metrik-unstimmig\")\n    if modelcard.get(\"name\") != systemcard.get(\"modell\"):\n        befunde.append(\"modell-unstimmig\")\n    if modelcard.get(\"schwellenwert\") != systemcard.get(\"schwelle\"):\n        befunde.append(\"schwelle-unstimmig\")\n    if datacard.get(\"n_beispiele\") != protocol.get(\"n_beispiele\"):\n        befunde.append(\"umfang-unstimmig\")\n    for label, karte, pflicht in ((\"datacard\", datacard, DATA_PFLICHT), (\"modelcard\", modelcard, MODELL_PFLICHT), (\"systemcard\", systemcard, SYSTEM_PFLICHT)):\n        for feld in pflicht:\n            wert = karte.get(feld)\n            if wert is None or str(wert).strip() == \"\":\n                befunde.append(label + \".\" + feld + \"-fehlt\")\n    return sorted(set(befunde))\n__check('cross', cross_card_consistency(DC, MC, SC, PR) == __want(DC, MC, SC, PR))\n"
-          },
-          "prompt": "Cross-Card: datacard.zweck leer. Implementiere `cross_card_consistency`."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "freeze-checker",
@@ -243,86 +97,13 @@
         "Iteriere über pins, nicht über dateien — der Pin-Katalog ist der Vertrag.",
         "hashlib.sha256(inhalt.encode('utf-8')).hexdigest() liefert den Hex-String zum Vergleich mit dem Pin."
       ],
-      "feedbackRules": [
-        {
-          "if": "checks-pins-keys",
-          "then": "Der Freeze prüft den PIN-Katalog: Dateien ohne Pin sind nicht Teil des Vertrags und erzeugen keine Verstöße."
-        },
-        {
-          "if": "missing-before-hash",
-          "then": "Erst Anwesenheit, dann Hash — auf einem fehlenden Schlüssel würde der Hash-Vergleich sonst crashen."
-        },
-        {
-          "if": "none-pin-hashed",
-          "then": "Ein None-Pin ist bewusst Anwesenheitsprüfung; ihn wie einen String zu hashen verbiegt den Lernenden-Vertrag."
-        }
-      ],
       "typicalErrors": [
         "über dateien statt pins iteriert",
         "fehlende Datei gehasht statt abgefangen",
         "None-Pins wie Hash-Pins behandelt"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'a.txt': 'aaa', 'b.txt': 'bbb'}\npins = {'a.txt': None, 'b.txt': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: zwei Dateien, nur Anwesenheit. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'cfg': 'x=1'}\npins = {'cfg': 'deadbeef'}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: cfg mit falschem Hash. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {}\npins = {'missing.md': None, 'also.json': '00'}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: beide Dateien fehlen. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'p.py': 'print(1)'}\npins = {'p.py': None, 'q.py': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: p.py da, q.py fehlt. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'g.json': '{}', 'h.json': '[]'}\npins = {'g.json': None, 'h.json': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: zwei JSON-Inhalte ok. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'k': 'hello'}\npins = {'k': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: eine Datei hello, None-Pin. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'m': 'alpha', 'n': 'beta'}\npins = {'m': '0000000000000000000000000000000000000000000000000000000000000000', 'n': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: m falscher Hash, n nur da. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'z': 'zzz'}\npins = {'a': None, 'z': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: a fehlt, z da. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        },
-        {
-          "parameters": {
-            "tests": "import hashlib\ndateien = {'u': '1', 'v': '2', 'w': '3'}\npins = {'u': None, 'v': None, 'w': None}\ndef __want(dateien, pins):\n    verstoesse = []\n    for name, pin in pins.items():\n        if name not in dateien:\n            verstoesse.append(name + \": fehlt\")\n        elif pin is not None and hashlib.sha256(dateien[name].encode(\"utf-8\")).hexdigest() != pin:\n            verstoesse.append(name + \": hash weicht ab\")\n    return {\"verstoesse\": sorted(verstoesse)}\n# replace string pins that are not hex of content: keep as given\n__check('pruefe_pins', pruefe_pins(dateien, pins) == __want(dateien, pins))\nok_name = next(iter(dateien), None)\nif ok_name:\n    good = hashlib.sha256(dateien[ok_name].encode(\"utf-8\")).hexdigest()\n    __check('match hash', pruefe_pins(dateien, {ok_name: good}) == {\"verstoesse\": []})\n"
-          },
-          "prompt": "Pins: u/v/w alle anwesend. Implementiere `pruefe_pins` (fehlt / hash weicht ab)."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "pin-version-check",
@@ -350,86 +131,13 @@
         "any(m in str(spec) for m in marker) prüft alle vier Marker in einem Ausdruck.",
         "Sortiert wird die fertige „name: spec“-Liste — nicht nur die Namen."
       ],
-      "feedbackRules": [
-        {
-          "if": "nur-greater-equal",
-          "then": "Auch <=, ~= und * sind Bereichs-/Wildcard-Marker — der Pin-Vertrag kennt vier Verstöße, nicht einen."
-        },
-        {
-          "if": "unsorted",
-          "then": "Die Verstöße-Liste ist sortiert — nur die Namen zu sortieren und die Specs zu verketten reicht nicht."
-        },
-        {
-          "if": "exakt-geflaggt",
-          "then": "Ein exakter Spec wie '8.3' ist der Normalfall des Pinning — kein Verstoß."
-        }
-      ],
       "typicalErrors": [
         "nur >= als Marker geprüft",
         "unsortierte Verstöße zurückgegeben",
         "exakte Specs fälschlich geflaggt"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "spezis = {'a': '1.0', 'b': '2'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Versionen a=1.0 b=2, beide exakt. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'x': '>=2', 'y': '3'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Version x >=2, y exakt. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'n': '~=1.2', 'p': '<=9', 'q': '*'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Drei Marker ~= <= *. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Leere Spec-Map. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'lib': '1.*', 'ok': '4.0'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Stern in 1.* plus exaktes 4.0. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'z': '8.3', 'w': '8.3.*'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "z exakt, w mit Stern. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'a': '<=0.1', 'b': '>=0.1'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Beide Vergleichsmarker. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'k': '1.2.3', 'm': '1.2.3'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Zwei exakte SemVer-Strings. Implementiere `pruefe_pins_versionen`."
-        },
-        {
-          "parameters": {
-            "tests": "spezis = {'t': '~=2.0', 'u': '2.0', 'v': '*'}\nmarker = (\">=\", \"<=\", \"~=\", \"*\")\n__want = {\"verletzungen\": sorted(f\"{name}: {spec}\" for name, spec in spezis.items() if any(m in str(spec) for m in marker))}\n__check('pins', pruefe_pins_versionen(spezis) == __want)\n"
-          },
-          "prompt": "Mix ~= , exakt und Stern. Implementiere `pruefe_pins_versionen`."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

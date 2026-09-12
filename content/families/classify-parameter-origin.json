@@ -44,9 +44,7 @@
       "parameters": {
         "topic": "Hyperparameter vs. Parameter"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "prompt": "Was ist der wesentliche Unterschied zwischen Hyperparametern und Parametern eines Modells?",
       "fullSolution": "Parameter (Gewichte, Intercepts) entstehen aus dem Training auf Daten; Hyperparameter (Fold-Anzahl k, Regularisierungsstärke, Lernrate) werden vor dem Training festgelegt und steuern den Lernprozess — ihre Wahl gehört in die Cross-Validation, nicht in den Gradientenabstieg.",
       "hints": [
@@ -72,9 +70,6 @@
         "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln",
         "glauben, einfache Modelle hätten keine Hyperparameter"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -107,9 +102,7 @@
           "parameters": {
             "topic": "k-NN k vs Abstände"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -139,9 +132,7 @@
           "parameters": {
             "topic": "Lernrate vs Gewichte"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -171,9 +162,7 @@
           "parameters": {
             "topic": "lambda vs Ridge-Koeffizienten"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -203,9 +192,7 @@
           "parameters": {
             "topic": "n_estimators vs Blattwerte"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -235,9 +222,7 @@
           "parameters": {
             "topic": "Dropout vs Gewichte"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -267,9 +252,7 @@
           "parameters": {
             "topic": "Kernelbreite vs SVM-Gewichte"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -299,9 +282,7 @@
           "parameters": {
             "topic": "Fold-Zahl"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -331,9 +312,7 @@
           "parameters": {
             "topic": "Batchgröße vs Gewichte"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -363,9 +342,7 @@
           "parameters": {
             "topic": "Kurzdefinition mit Beispielen"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -403,9 +380,7 @@
       "parameters": {
         "topic": "Hyperparameter vs. Parameter"
       },
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Bei einem Entscheidungsbaum wird die maximale Tiefe per Cross-Validation aus den Werten 3, 5 und 8 gewählt. Was ist die Tiefe?",
       "fullSolution": "Die maximale Tiefe wird vor dem Training gewählt und per Validierung abgestimmt; sie ist ein Hyperparameter, kein gelernter Modellparameter.",
       "hints": [
@@ -431,9 +406,6 @@
         "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt.",
         "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -466,9 +438,7 @@
           "parameters": {
             "topic": "max_depth Gitter"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -498,9 +468,7 @@
           "parameters": {
             "topic": "min_samples_leaf"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -530,9 +498,7 @@
           "parameters": {
             "topic": "ccp_alpha"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -562,9 +528,7 @@
           "parameters": {
             "topic": "nicht Split-Schwellwert"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -594,9 +558,7 @@
           "parameters": {
             "topic": "nicht Validierungsfehler"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -626,9 +588,7 @@
           "parameters": {
             "topic": "nicht y"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -658,9 +618,7 @@
           "parameters": {
             "topic": "Random-Forest max_depth"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -690,9 +648,7 @@
           "parameters": {
             "topic": "max_leaf_nodes"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -722,9 +678,7 @@
           "parameters": {
             "topic": "Basisfrage Tiefe"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -762,9 +716,7 @@
       "parameters": {
         "topic": "Hyperparameter vs. Parameter"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "prompt": "Bei einer linearen Regression werden die Koeffizienten nach dem Fit aus den Trainingsdaten berechnet. Wie ordnest du sie ein?",
       "fullSolution": "Die Koeffizienten werden aus den Trainingsdaten gelernt und sind Modellparameter. Die Lernroutine schätzt sie, statt dass sie vorab gesetzt werden.",
       "hints": [
@@ -790,9 +742,6 @@
         "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet.",
         "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -825,9 +774,7 @@
           "parameters": {
             "topic": "OLS beta"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -857,9 +804,7 @@
           "parameters": {
             "topic": "Intercept"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -889,9 +834,7 @@
           "parameters": {
             "topic": "logistisches w"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -921,9 +864,7 @@
           "parameters": {
             "topic": "nicht Leakage"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -953,9 +894,7 @@
           "parameters": {
             "topic": "nicht Metadata"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -985,9 +924,7 @@
           "parameters": {
             "topic": "Ridge w nach Fit"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1017,9 +954,7 @@
           "parameters": {
             "topic": "SVM dual"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1049,9 +984,7 @@
           "parameters": {
             "topic": "Standardisierungs-mu"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1081,9 +1014,7 @@
           "parameters": {
             "topic": "Basisfrage Koeffizienten"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",

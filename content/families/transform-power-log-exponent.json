@@ -11,13 +11,81 @@
         "w01-e9"
       ],
       "parameters": {
-        "bases": [2, 3, 5, 10],
-        "introBases": [2, 3],
+        "bases": [
+          2,
+          3,
+          5,
+          10
+        ],
+        "introBases": [
+          2,
+          3
+        ],
         "tiers": [
-          { "prod": [2, 3, 1, 2, 5], "pow": [2, 3, 2, 2, 5] },
-          { "prod": [2, 6, 1, 4, 8], "pow": [2, 4, 2, 3, 10] },
-          { "prod": [2, 7, 1, 5, 10], "pow": [2, 5, 2, 3, 12] },
-          { "prod": [3, 8, 2, 5, 12], "pow": [3, 5, 2, 3, 14] }
+          {
+            "prod": [
+              2,
+              3,
+              1,
+              2,
+              5
+            ],
+            "pow": [
+              2,
+              3,
+              2,
+              2,
+              5
+            ]
+          },
+          {
+            "prod": [
+              2,
+              6,
+              1,
+              4,
+              8
+            ],
+            "pow": [
+              2,
+              4,
+              2,
+              3,
+              10
+            ]
+          },
+          {
+            "prod": [
+              2,
+              7,
+              1,
+              5,
+              10
+            ],
+            "pow": [
+              2,
+              5,
+              2,
+              3,
+              12
+            ]
+          },
+          {
+            "prod": [
+              3,
+              8,
+              2,
+              5,
+              12
+            ],
+            "pow": [
+              3,
+              5,
+              2,
+              3,
+              14
+            ]
+          }
         ],
         "promptTemplates": {
           "product": "Vereinfache ${base}^${m} · ${base}^${n} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).",
@@ -40,12 +108,29 @@
         "w01-e10"
       ],
       "parameters": {
-        "bases": [2, 3, 5, 10],
+        "bases": [
+          2,
+          3,
+          5,
+          10
+        ],
         "kMaxTiers": [
-          { "2": 3, "other": 2 },
-          { "2": 6, "other": 4 },
-          { "2": 7, "other": 4 },
-          { "2": 8, "other": 4 }
+          {
+            "2": 3,
+            "other": 2
+          },
+          {
+            "2": 6,
+            "other": 4
+          },
+          {
+            "2": 7,
+            "other": 4
+          },
+          {
+            "2": 8,
+            "other": 4
+          }
         ],
         "argCap": 10000,
         "promptTemplates": {

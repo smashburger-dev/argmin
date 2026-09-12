@@ -30,10 +30,6 @@
         {
           "if": "element-count-mismatch",
           "then": "Die Tokenliste hat drei Einträge — das <eos>-Token wird mitgezählt."
-        },
-        {
-          "if": "output-lines-mismatch",
-          "then": "Zwei Ausgabezeilen: erst die ID-Liste, dann der dekodierte String."
         }
       ],
       "typicalErrors": [
@@ -41,112 +37,8 @@
         "max_len als exklusive Grenze falsch gelesen",
         "Join-Reihenfolge der Token vertauscht"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
-      "graderId": "deterministic",
-      "variants": [
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'x', 1: 'y', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[0, 1, 2]\nxy<eos>"
-          },
-          "prompt": "Greedy-Decode x/y/<eos>. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[0, 1, 2]\nxy<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'm', 1: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 1)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[0, 1]\nm<eos>"
-          },
-          "prompt": "Greedy-Decode m dann eos. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[0, 1]\nm<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'a', 1: 'a', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[0, 1, 2]\naa<eos>"
-          },
-          "prompt": "Greedy-Decode doppeltes a. Sage ID-Liste und Join vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[0, 1, 2]\naa<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'z', 1: 'w', 2: 'q', 3: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1, (0, 1): 2, (0, 1, 2): 3}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 3)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[0, 1, 2, 3]\nzwq<eos>"
-          },
-          "prompt": "Greedy-Decode vier Token bis eos. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[0, 1, 2, 3]\nzwq<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'k', 1: '<eos>', 2: 'x'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 1}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 1)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[0, 1]\nk<eos>"
-          },
-          "prompt": "Greedy-Decode stoppt nach k. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[0, 1]\nk<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'p', 1: 'q', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 1, (1,): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[1, 2]\nq<eos>"
-          },
-          "prompt": "Greedy-Decode startet mit q. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[1, 2]\nq<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'n', 1: 'o', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 0, (0,): 0, (0, 0): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[0, 0, 2]\nnn<eos>"
-          },
-          "prompt": "Greedy-Decode wiederholt n. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[0, 0, 2]\nnn<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'u', 1: 'v', 2: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 1, (1,): 0, (1, 0): 2}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 2)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[1, 0, 2]\nvu<eos>"
-          },
-          "prompt": "Greedy-Decode v dann u. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[1, 0, 2]\nvu<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        },
-        {
-          "parameters": {
-            "snippet": "VOCAB = {0: 'a', 1: 'b', 2: 'c', 3: '<eos>'}\n\ndef step_fn(ids):\n    table = {(): 2, (2,): 3}\n    return table[tuple(ids)]\n\ndef greedy_decode(step_fn, init_ids, max_len, eos):\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = step_fn(ids)\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n\nout = greedy_decode(step_fn, [], 5, 3)\nprint(out)\nprint(\"\".join(VOCAB[i] for i in out))\n"
-          },
-          "expected": {
-            "kind": "output-lines",
-            "output": "[2, 3]\nc<eos>"
-          },
-          "prompt": "Greedy-Decode startet bei c. Sage beide print-Zeilen vorher.",
-          "fullSolution": "Die Ausgabe ist <code>[2, 3]\nc<eos></code> — durch denselben Algorithmus wie im Basis-Fall, mit den neuen Fixturen."
-        }
-      ]
+      "graderId": "deterministic"
     },
     {
       "caseId": "greedy-decode-function",
@@ -176,86 +68,13 @@
         "ids = list(init_ids) kopiert; die Schleifenbedingung ist len(ids) < max_len.",
         "step_fn bekommt eine eigene Kopie der Folge (list(ids)); nach dem Anhängen von eos sofort abbrechen."
       ],
-      "feedbackRules": [
-        {
-          "if": "init-mutated",
-          "then": "init_ids darf nie verändert werden — list(init_ids) vor der Schleife."
-        },
-        {
-          "if": "off-by-one",
-          "then": "Die Grenze ist exklusiv: angehängt wird nur, solange len(ids) < max_len gilt."
-        },
-        {
-          "if": "eos-dropped",
-          "then": "Das eos-Token bleibt in der Rückgabe stehen — es wird nicht entfernt."
-        }
-      ],
       "typicalErrors": [
         "Eingabeliste mutiert statt kopiert",
         "max_len-Grenze um eins verschoben",
         "eos aus der Rückgabe entfernt"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 1, (1,): 2, (1, 2): 3}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 4, 3)\ncur = []\nwhile len(cur) < 4:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 3:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 3 or len(got) == 4)\n"
-          },
-          "prompt": "Kette 1-2-3, eos=3, max_len=4. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 8, (8,): 8}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 5, 8)\ncur = []\nwhile len(cur) < 5:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 8:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 8 or len(got) == 5)\n"
-          },
-          "prompt": "Sofort eos=8, max_len=5. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 2, (2,): 4, (2, 4): 6, (2, 4, 6): 0}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 10, 0)\ncur = []\nwhile len(cur) < 10:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 0:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 0 or len(got) == 10)\n"
-          },
-          "prompt": "Kette 2-4-6-0, eos=0. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 9, (9,): 1, (9, 1): 9}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 3, 9)\ncur = []\nwhile len(cur) < 3:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 9:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 9 or len(got) == 3)\n"
-          },
-          "prompt": "eos=9 erscheint auch später, max_len=3. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 4, (4,): 5, (4, 5): 4}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 8, 4)\ncur = []\nwhile len(cur) < 8:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 4:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 4 or len(got) == 8)\n"
-          },
-          "prompt": "Zweites 4 ist eos nach 4,5. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 7}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 2, 7)\ncur = []\nwhile len(cur) < 2:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 7:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 7 or len(got) == 2)\n"
-          },
-          "prompt": "Ein Schritt, eos=7, max_len=2. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 5, (5,): 6, (5, 6): 5}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 4, 5)\ncur = []\nwhile len(cur) < 4:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 5:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 5 or len(got) == 4)\n"
-          },
-          "prompt": "Kette 5-6-5, eos=5 stoppt beim dritten Token. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 10, (10,): 11, (10, 11): 12}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 20, 12)\ncur = []\nwhile len(cur) < 20:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 12:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 12 or len(got) == 20)\n"
-          },
-          "prompt": "Kette 10-11-12, großes max_len. `greedy_decode` kopiert init, stoppt bei eos."
-        },
-        {
-          "parameters": {
-            "tests": "TABLE = {(): 6, (6,): 6, (6, 6): 6}\n\ndef table_step(ids):\n    return TABLE[tuple(ids)]\n\ndef always_four(ids):\n    return 4\n\ngot = greedy_decode(table_step, [], 3, 99)\ncur = []\nwhile len(cur) < 3:\n    nxt = TABLE[tuple(cur)]\n    cur.append(nxt)\n    if nxt == 99:\n        break\n__check('kette bis eos', got == cur)\n__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])\n__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])\ninit = [1, 2]\ngreedy_decode(always_four, init, 6, 9)\n__check('init nicht mutiert', init == [1, 2])\n__check('eos in der Kette oder max_len', got[-1] == 99 or len(got) == 3)\n"
-          },
-          "prompt": "Kein eos 99, max_len=3 füllt 6,6,6. `greedy_decode` kopiert init, stoppt bei eos."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

@@ -508,7 +508,14 @@ function gradeDiagnosis(exercise, raw) {
     return { correct: false, verdictText: 'Interner Fehler: Diagnose-Erwartung fehlerhaft konfiguriert.', errorType: 'grader-error' };
   }
   const text = String(raw ?? '').trim();
-  if (!text) return { correct: false, verdictText: 'Bitte eine Diagnose eingeben.', errorType: 'invalid-input' };
+  if (!text) {
+    return {
+      correct: false,
+      verdictText: 'Bitte eine Diagnose eingeben.',
+      errorType: 'invalid-input',
+      diagnosis: errorTypeFeedback(exercise, 'invalid-input'),
+    };
+  }
   const tokens = text.split(/\s+/).filter(Boolean).map(normalizeDiagnosisText);
   const words = tokens.length;
   const distinct = new Set(tokens).size;
@@ -780,6 +787,35 @@ const KNOWN_ACTIVITY_TYPES = new Set([
 ]);
 const KNOWN_GRADERS = new Set(['deterministic', 'pyodide', 'pyodide-sympy', 'manual-rubric']);
 
+/** feedbackRules `if` keys each grader actually evaluates — anything else is
+ *  dead authored content and fails closed. Types without a reader (python-code,
+ *  vector, algebraic-expression, short-rationale) may not carry rules at all. */
+const FEEDBACK_KEY_FORMS = {
+  'numeric': [/^value === .+$/],
+  'single-choice': [/^choice === '[^']+'$/, /^choice !== '[^']+'$/],
+  'parsons': [/^order-length-mismatch$/],
+  'code-trace': [/^value:[^+\s]+(\+value:[^+\s]+)*$/],
+  'predict-output': [/^element-count-mismatch$/],
+  'multiple-choice': [/^!?selected\.includes\('[^']+'\)$/],
+  'diagnostic-rationale': [/^(missing-diagnosis|invalid-input)$/],
+  'worked-example-fading': [/^gap-\d+(-|$)/],
+};
+
+function assertFeedbackKeys(label, type, item) {
+  // Procedural docs resolve their type in the .mjs spec, not in the JSON —
+  // when the type is unknown here, a key only has to match SOME known form.
+  const forms = type ? (FEEDBACK_KEY_FORMS[type] ?? []) : Object.values(FEEDBACK_KEY_FORMS).flat();
+  for (const rule of item.feedbackRules || []) {
+    const key = rule && typeof rule.if === 'string' ? rule.if : String(rule?.if);
+    if (!forms.some((form) => form.test(key))) {
+      throw new Error(`${label}: feedbackRules.if "${key}" ist für Typ "${type ?? 'unbekannt'}" unerreichbar`);
+    }
+    if (typeof rule.then !== 'string' || !rule.then.trim()) {
+      throw new Error(`${label}: feedbackRules.then muss ein nicht-leerer String sein`);
+    }
+  }
+}
+
 export function assertFamilyActivityContracts(document) {
   const contract = document?.contract || {};
   const familyType = contract.activityType;
@@ -807,10 +843,13 @@ export function assertFamilyActivityContracts(document) {
       : type === 'diagnostic-rationale' ? assertDiagnosisContract
       : type === 'worked-example-fading' ? assertFadingContract
       : null;
-    if (!check) continue;
-    check(label, item);
+    assertFeedbackKeys(label, type, item);
+    if (check) check(label, item);
     for (const [index, variant] of (item.variants || []).entries()) {
-      check(`${label}:variant-${index + 1}`, { ...item, ...variant });
+      const merged = { ...item, ...variant };
+      const variantLabel = `${label}:variant-${index + 1}`;
+      assertFeedbackKeys(variantLabel, merged.activityType ?? familyType, merged);
+      if (check) check(variantLabel, merged);
     }
   }
 }

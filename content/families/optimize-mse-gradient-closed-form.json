@@ -31,28 +31,11 @@
         "Residuen vektoriell als r = w * x + b − y; dann dw = (2/n) · sum(x * r) und db = (2/n) · sum(r) — der einzige Unterschied ist der Faktor x.",
         "num_grad ist die zentrale Differenz (f(x+h) − f(x−h)) / (2h); im Test wird MSE als Funktion nur von w (b fest) bzw. nur von b übergeben."
       ],
-      "feedbackRules": [
-        {
-          "if": "x-factor-missing",
-          "then": "In dw muss jedes Residuum mit seinem x-Wert multipliziert werden — ohne den Faktor berechnest du db."
-        },
-        {
-          "if": "one-sided-difference",
-          "then": "Einseitige Differenz (f(x+h) − f(x))/h erreicht die geforderte Genauigkeit nicht zuverlässig — zentrale Differenz nutzen."
-        },
-        {
-          "if": "factor-2n-wrong",
-          "then": "Beide Ableitungen tragen den Faktor 2/n (Kettenregel 2r und Mittelung 1/n)."
-        }
-      ],
       "typicalErrors": [
         "den Faktor 2/n vergessen oder nur 2 genommen",
         "in dw den x-Faktor unterschlagen",
         "einseitige statt zentrale Differenz im Gradientencheck"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [

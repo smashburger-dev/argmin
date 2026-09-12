@@ -85,9 +85,6 @@
         "den Test oder die Erwartung für fehlerhaft erklärt statt die Schleife",
         "range-Verhalten verwechselt: den Startwert statt der Grenze verdächtigt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {
@@ -137,9 +134,6 @@
         "die fehlende Fehlermeldung als Beweis für korrekte Daten gewertet",
         "die nicht geschlossene Datei als Hauptursache genannt — ein echter Mangel, aber nicht die Ursache der falschen Summe"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {
@@ -186,9 +180,6 @@
         "CSV-Felder als Zahlen missverstanden",
         "den `>=`-Operator für das Problem gehalten statt der Feldtypen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {
@@ -238,9 +229,6 @@
         "den KeyError nur nacherzählt statt die Schreibweise zu benennen",
         "die Spalte für fehlend oder die Datei für leer erklärt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {
@@ -290,9 +278,6 @@
         "den NameError nacherzählt statt die fehlende Definition zu benennen",
         "eine leere oder fehlende Datei als Ursache vermutet"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
       "parameters": {

@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w32-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genCardAudit"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-research-cards"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genCardAudit",
-        "defaultSeed": 3211,
-        "defaultExpected": 6
-      },
       "prompt": "Ein Karten-Audit prüft zwei Karten gegen die Pflichtfeldsätze. Modellkarte „karte-a“ mit dem Pflichtfeldsatz name, zweck, version, trainingsdaten, metrik, schwellenwert, bekannte_grenzen, kontakt — erfasst sind zweck: „“, version: „1.2.0“, trainingsdaten: „faq-korpus“, metrik: „recall@5“, schwellenwert: „0,75“, kontakt: „team-support“. Datenkarte „karte-b“ mit dem Pflichtfeldsatz name, zweck, herkunft, zeitraum, lizenz, n_beispiele, split_train, split_dev, bekannte_luecken, kontakt — erfasst sind name: „“, herkunft: „forum-export“, zeitraum: „jahreswechsel“, lizenz: „cc-by-vier“, n_beispiele: „1200“, split_train: „80 %“, split_dev: „10 %“, bekannte_luecken: „umlaute fehlen“, kontakt: „“. Wie viele Pflichtfelder fehlen insgesamt (nicht erfasst oder leer)?",
       "fullSolution": "Vergleiche pro Karte die Erfassungsliste mit dem Pflichtfeldsatz: Nicht aufgeführte Felder und Felder mit leerem Wert „“ zählen beide als fehlend; die Summe über alle Karten ist die Antwort. Mit „Neue Zahlen“ erscheint ein neues Karten-Set mit demselben Lösungsweg.",
       "hints": [
@@ -47,9 +39,6 @@
         "nur eine Karte geprüft",
         "Felder gezählt, die nicht im Pflichtfeldsatz stehen"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -94,9 +83,6 @@
         "Grenzfall Dauer = Budget als Timeout gewertet",
         "Startzeiten addiert statt subtrahiert"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -141,9 +127,6 @@
         "exakte Pins mitgezählt",
         "Wildcard als harmlos eingestuft"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

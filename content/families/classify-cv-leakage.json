@@ -42,9 +42,7 @@
           "fit on train, evaluate on test"
         ]
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Ein Team beschreibt seine Pipeline mit 200 Zeilen: (1) Fehlende Werte der Spalte „Einkommen“ werden mit dem Spaltenmittelwert gefüllt — berechnet über alle 200 Zeilen. (2) Danach wird deterministisch in Train und Test geteilt. (3) Ein Modell wird auf Train gefittet und auf Test bewertet. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
       "fullSolution": "Der Mittelwert wird über alle 200 Zeilen geschätzt, bevor geteilt wird — die Testzeilen stecken also in der Trainingsstatistik (Statistik-Leakage vor dem Split). Korrekt wäre: erst teilen, den Fill-Wert nur auf Train berechnen und auf Test anwenden.",
       "hints": [
@@ -62,9 +60,6 @@
         "Determinismus mit Unbedenklichkeit verwechseln",
         "die Reihenfolge Füllen → Split nicht als Problem erkennen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -103,9 +98,7 @@
             "n": 150,
             "column": "Alter"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -141,9 +134,7 @@
             "n": 400,
             "column": "Einkommen"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -179,9 +170,7 @@
             "n": 80,
             "column": "Fläche"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -217,9 +206,7 @@
             "n": 300,
             "column": "Stadtteil"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -255,9 +242,7 @@
             "n": 250,
             "column": "Kreditrahmen"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -293,9 +278,7 @@
             "n": 180,
             "column": "Laborwert"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -331,9 +314,7 @@
             "n": 500,
             "column": "Dauer"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -369,9 +350,7 @@
             "n": 220,
             "column": "Umsatz"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -407,9 +386,7 @@
             "n": 90,
             "column": "Temperatur"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -470,9 +447,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Feature Engineering für ein Ridge-Modell zur Mietpreisvorhersage: Features sind Stadtteil (kategorial, 8 Ausprägungen), Wohnfläche in m² (42–190) und Baujahr (1900–2020). Im Datensatz liegt zusätzlich die Spalte preis_pro_m2, die aus Ziel und Fläche berechnet wurde. Welcher Vorverarbeitungsweg ist korrekt?",
       "fullSolution": "Kategorial → One-Hot (keine falsche Ordnung). Numerisch → standardisieren mit Trainingsstatistiken, damit λ alle Koeffizienten gleich fair bestraft. Ziel-abgeleitete Spalten (preis_pro_m2) sind Leakage und fliegen raus. Standardisieren vor dem Split auf dem vollen Datensatz wäre ebenfalls Leakage.",
       "hints": [
@@ -490,9 +465,6 @@
         "kategoriale Ausprägungen durchnummerieren",
         "ziel-abgeleitete Spalten als Features behalten"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -505,9 +477,7 @@
             ],
             "leaky": "miete_pro_qm"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -542,9 +512,7 @@
             ],
             "leaky": "preis_pro_ps"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -579,9 +547,7 @@
             ],
             "leaky": "kosten_pro_tag"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -616,9 +582,7 @@
             ],
             "leaky": "restschuld_quote"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -653,9 +617,7 @@
             ],
             "leaky": "deckung_pro_kg"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -690,9 +652,7 @@
             ],
             "leaky": "verspaetung_pro_km"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -727,9 +687,7 @@
             ],
             "leaky": "umsatz_pro_gb"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -764,9 +722,7 @@
             ],
             "leaky": "ertrag_pro_ha_normiert_am_ziel"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -801,9 +757,7 @@
             ],
             "leaky": "preis_pro_m2"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",

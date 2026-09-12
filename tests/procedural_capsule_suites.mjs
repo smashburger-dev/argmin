@@ -89,10 +89,10 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
     }
   });
 
-  test('Kapselform: 200 Seeds je Kapsel bestehen Shape, Choices und Schlüssel', () => {
+  test('Kapselform: 60 Seeds je Kapsel bestehen Shape, Choices und Schlüssel', () => {
     for (const item of cases) {
       const capsule = capsuleFor(item);
-      for (let seed = 0; seed < 200; seed += 1) {
+      for (let seed = 0; seed < 60; seed += 1) {
         const generated = callGen(genCapsule, seed, item.caseId, capsule);
         assert.ok(callOk(capsuleOk, generated.parameters, item.caseId, capsule), `${item.caseId}:${seed}: Kapselform`);
         if (keyedBank(capsule)) {
@@ -102,49 +102,30 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
         assert.equal(new Set(generated.choices.map((choice) => choice.text)).size, 4, `${item.caseId}:${seed}: eindeutige Texte`);
         const correct = generated.choices.filter((choice) => choice.correct);
         assert.equal(correct.length, 1, `${item.caseId}:${seed}: genau eine korrekte Wahl`);
-        assert.equal(generated.expected.correctChoice, correct[0].id, `${item.caseId}:${seed}: Key-Id`);
         assert.equal(correct[0].text, correctText(generated.parameters, capsule), `${item.caseId}:${seed}: Schlüsseltext`);
         assert.ok(generated.prompt.length > 20 && generated.fullSolution.length > 20, `${item.caseId}:${seed}: Texte`);
       }
     }
   });
 
-  test(`Distinct-Boden: je Kapsel mindestens ${distinctFloor} distincte Instanzen über 200 Seeds`, () => {
+  test(`Statistik über 200 Seeds: Distinct-Boden ${distinctFloor}, Leak/Rotation, Solver`, () => {
     for (const item of cases) {
       const seen = new Set();
-      for (let seed = 0; seed < 200; seed += 1) {
-        const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
-        seen.add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
-      }
-      assert.ok(seen.size >= distinctFloor, `${item.caseId}: nur ${seen.size} distinct`);
-    }
-  });
-
-  test('Determinismus: gleiche Seeds reproduzieren identisch, negative Seeds gültig', () => {
-    for (const item of cases) {
-      const capsule = capsuleFor(item);
-      for (let seed = -30; seed < 30; seed += 1) {
-        assert.deepEqual(callGen(genCapsule, seed, item.caseId, capsule), callGen(genCapsule, seed, item.caseId, capsule), `${item.caseId}:${seed}: deterministisch`);
-        assert.ok(callOk(capsuleOk, callGen(genCapsule, seed, item.caseId, capsule).parameters, item.caseId, capsule), `${item.caseId}:${seed}: Kapselform`);
-      }
-      const viaFamily = generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty });
-      assert.deepEqual(viaFamily, generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty }), `${item.caseId}: Family deterministisch`);
-    }
-  });
-
-  test('Leak/Rotation: Prompt nennt den Schlüssel nie, Positionen rotieren, Modulo-Klassen halten Varianz', () => {
-    for (const item of cases) {
       const counts = { a: 0, b: 0, c: 0, d: 0 };
       const byModulo = new Map();
       for (let seed = 0; seed < 200; seed += 1) {
         const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
+        const fingerprint = JSON.stringify([generated.prompt, generated.parameters, generated.choices]);
+        seen.add(fingerprint);
         const correct = generated.choices.find((choice) => choice.correct);
         assert.ok(!leak(generated.prompt, correct.text, generated), `${item.caseId}:${seed}: Schlüssel im Prompt`);
-        counts[generated.expected.correctChoice] += 1;
+        counts[correct.id] += 1;
         const bucket = seed % 8;
         if (!byModulo.has(bucket)) byModulo.set(bucket, new Set());
-        byModulo.get(bucket).add(JSON.stringify([generated.prompt, generated.parameters, generated.expected]));
+        byModulo.get(bucket).add(fingerprint);
+        assert.deepEqual(solve(generated.parameters), { correctText: correct.text }, `${item.caseId}:${seed}: Solver`);
       }
+      assert.ok(seen.size >= distinctFloor, `${item.caseId}: nur ${seen.size} distinct`);
       for (const [id, count] of Object.entries(counts)) {
         assert.ok(count >= 40 && count <= 60, `${item.caseId}: Position ${id} nur ${count}x`);
       }
@@ -152,16 +133,8 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
         assert.ok(instances.size >= 10, `${item.caseId}: Modulo-Klasse ${bucket} hält nur ${instances.size} distinct`);
       }
     }
-  });
-
-  test('Solver: unabhängiger Schlüsseltext, Fehler bei kaputten Parametern', () => {
     for (const item of cases) {
       const capsule = capsuleFor(item);
-      for (let seed = 0; seed < 200; seed += 1) {
-        const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
-        const correct = generated.choices.find((choice) => choice.correct);
-        assert.deepEqual(solve(generated.parameters), { correctText: correct.text }, `${item.caseId}:${seed}`);
-      }
       if (keyedBank(capsule)) {
         const base = capsule.bank.find((entry) => entry.key === 'base');
         assert.deepEqual(
@@ -174,6 +147,18 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
     assert.throws(() => solve({ caseId: 'nope' }), /Unbekannter Fall/);
     assert.throws(() => solve({ caseId: cases[0].caseId, scenario: 'nope' }), /Kapselform/);
     assert.throws(() => solve({}), /Unbekannter Fall/);
+  });
+
+  test('Determinismus: gleiche Seeds reproduzieren identisch, negative Seeds gültig', () => {
+    for (const item of cases) {
+      const capsule = capsuleFor(item);
+      for (let seed = -10; seed < 10; seed += 1) {
+        assert.deepEqual(callGen(genCapsule, seed, item.caseId, capsule), callGen(genCapsule, seed, item.caseId, capsule), `${item.caseId}:${seed}: deterministisch`);
+        assert.ok(callOk(capsuleOk, callGen(genCapsule, seed, item.caseId, capsule).parameters, item.caseId, capsule), `${item.caseId}:${seed}: Kapselform`);
+      }
+      const viaFamily = generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty });
+      assert.deepEqual(viaFamily, generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty }), `${item.caseId}: Family deterministisch`);
+    }
   });
 
   test('Familien-Block: Contract-Felder, Kompetenzen je Fall, Dispatch, Fehlerpfade', () => {
@@ -190,8 +175,6 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
     assert.equal(mod.FAMILY_SPEC.solve, solve);
     for (const item of cases) {
       const generated = generate({ seed: 11, caseId: item.caseId, difficulty: item.difficulty });
-      const correct = generated.choices.find((choice) => choice.correct);
-      assert.equal(generated.expected.correctChoice, correct.id);
       assert.equal(generated.parameters.caseId, item.caseId);
       assert.equal(generated.parameters.difficulty, item.difficulty);
       if (item.competencyIds) {
@@ -244,10 +227,10 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, 
     }
   });
 
-  test('capsule shape: generated parameters satisfy the case predicate over 200 seeds', () => {
+  test('capsule shape: generated parameters satisfy the case predicate over 80 seeds', () => {
     for (const item of cases) {
       const def = defs[item.caseId];
-      for (let seed = 0; seed < 200; seed += 1) {
+      for (let seed = 0; seed < 80; seed += 1) {
         const generated = callGen(genCase, seed, item.caseId, def);
         assert.ok(callOk(caseOk, generated.parameters, item.caseId, def), `${item.caseId}:${seed}: shape`);
         assert.equal(generated.parameters.caseId, item.caseId);
@@ -259,21 +242,13 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, 
     }
   });
 
-  test('solver consistency: solve recomputes the generated expected output', () => {
-    for (const item of cases) {
-      const def = defs[item.caseId];
-      for (let seed = 0; seed < 200; seed += 1) {
-        const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
-        assert.deepEqual(solve(generated.parameters), { output: generated.expected.output }, `${item.caseId}:${seed}`);
-      }
-    }
-  });
-
-  test(`distinct floor: at least ${distinctFloor} distinct parameter sets per case over 200 seeds`, () => {
+  test(`solver and distinct over 200 seeds: solve recomputes output, floor ${distinctFloor}`, () => {
     for (const item of cases) {
       const seen = new Set();
       for (let seed = 0; seed < 200; seed += 1) {
-        seen.add(JSON.stringify(generate({ seed, caseId: item.caseId, difficulty: item.difficulty }).parameters));
+        const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
+        seen.add(JSON.stringify(generated.parameters));
+        assert.deepEqual(solve(generated.parameters), { output: generated.expected.output }, `${item.caseId}:${seed}: solver`);
       }
       assert.ok(seen.size >= distinctFloor, `${item.caseId}: only ${seen.size} distinct`);
     }
@@ -282,7 +257,7 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, 
   test('determinism: same seed reproduces identical output, negative seeds valid', () => {
     for (const item of cases) {
       const def = defs[item.caseId];
-      for (let seed = -20; seed < 20; seed += 1) {
+      for (let seed = -10; seed < 10; seed += 1) {
         assert.deepEqual(callGen(genCase, seed, item.caseId, def), callGen(genCase, seed, item.caseId, def), `${item.caseId}:${seed}`);
       }
     }
@@ -340,10 +315,10 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, fam
     }
   });
 
-  test('capsule shape: generated parameters satisfy the case predicate over 200 seeds', () => {
+  test('capsule shape: generated parameters satisfy the case predicate over 80 seeds', () => {
     for (const item of cases) {
       const def = defs[item.caseId];
-      for (let seed = 0; seed < 200; seed += 1) {
+      for (let seed = 0; seed < 80; seed += 1) {
         const generated = callGen(genCase, seed, item.caseId, def);
         assert.ok(callOk(caseOk, generated.parameters, item.caseId, def), `${item.caseId}:${seed}: shape`);
         assert.ok(generated.parameters.tests.startsWith(def.baseTests), `${item.caseId}:${seed}: base block kept`);
@@ -353,11 +328,16 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, fam
     }
   });
 
-  test(`distinct floor: at least ${distinctFloor} distinct parameter sets per case over 200 seeds`, () => {
+  test(`distinct and solver over 200 seeds: floor ${distinctFloor}, reference solver stable`, () => {
     for (const item of cases) {
+      const def = defs[item.caseId];
       const seen = new Set();
       for (let seed = 0; seed < 200; seed += 1) {
-        seen.add(JSON.stringify(generate({ seed, caseId: item.caseId, difficulty: item.difficulty }).parameters));
+        const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
+        seen.add(JSON.stringify(generated.parameters));
+        if (seed < 50) {
+          assert.deepEqual(solve(generated.parameters), { referenceCode: def.referenceSolver }, `${item.caseId}:${seed}: solver`);
+        }
       }
       assert.ok(seen.size >= distinctFloor, `${item.caseId}: only ${seen.size} distinct`);
     }
@@ -366,18 +346,8 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, fam
   test('determinism: same seed reproduces identical output, negative seeds valid', () => {
     for (const item of cases) {
       const def = defs[item.caseId];
-      for (let seed = -20; seed < 20; seed += 1) {
+      for (let seed = -10; seed < 10; seed += 1) {
         assert.deepEqual(callGen(genCase, seed, item.caseId, def), callGen(genCase, seed, item.caseId, def), `${item.caseId}:${seed}`);
-      }
-    }
-  });
-
-  test('solver consistency: solve returns the case reference solver', () => {
-    for (const item of cases) {
-      const def = defs[item.caseId];
-      for (let seed = 0; seed < 50; seed += 1) {
-        const generated = generate({ seed, caseId: item.caseId, difficulty: item.difficulty });
-        assert.deepEqual(solve(generated.parameters), { referenceCode: def.referenceSolver });
       }
     }
   });

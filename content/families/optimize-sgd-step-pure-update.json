@@ -31,86 +31,13 @@
         "Alles in einer Funktion: forward für loss, dieselben Zwischengrößen für die Gradienten, dann ein frisches Dictionary mit p − lr · grad — die Eingabe bleibt unangetastet.",
         "Für den numerischen Check: bei lr = 0 ist der zurückgegebene Verlust genau L der übergebenen Parameter — damit kann der Test (L(W2+h) − L(W2−h))/2h bilden und mit deiner Schrittweite vergleichen."
       ],
-      "feedbackRules": [
-        {
-          "if": "mutates-input",
-          "then": "new_params muss ein neues Dictionary mit neuen Arrays sein; In-place-Updates zerstören den lr=0-Test."
-        },
-        {
-          "if": "loss-after-update",
-          "then": "loss beschreibt das Modell VOR dem Update — sonst stimmt die numerische Vergleichsrechnung nicht."
-        },
-        {
-          "if": "update-sign-flipped",
-          "then": "Abstieg: p ← p − lr · grad. Mit Plus steigt der Verlust und der 40-Schritte-Test fällt durch."
-        }
-      ],
       "typicalErrors": [
         "Eingabe-Dictionary in-place verändert",
         "Verlust nach dem Update statt davor zurückgegeben",
         "Update in Gradientenrichtung (Plus statt Minus)"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2001)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2001: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2002)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2002: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2003)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2003: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2004)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2004: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2005)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2005: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2006)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2006: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2007)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2007: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2008)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2008: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        },
-        {
-          "parameters": {
-            "tests": "rng = np.random.default_rng(2009)\nX = rng.normal(size=(20, 3))\ny = (X[:, :1] * 1.5 - X[:, 1:2] * 0.5 + 0.25) + 0.05 * rng.normal(size=(20, 1))\nparams = {\n    'W1': rng.normal(size=(3, 8)) * 0.5,\n    'b1': np.zeros(8),\n    'W2': rng.normal(size=(8, 1)) * 0.5,\n    'b2': np.zeros(1),\n}\nsnapshot = {k: v.copy() for k, v in params.items()}\nloss0, params0 = train_step(X, y, params, 0.0)\n__check('lr=0 aendert Parameter nicht', all(np.array_equal(params[k], snapshot[k]) for k in params) and all(np.array_equal(params0[k], snapshot[k]) for k in params0))\n__check('loss ist float', isinstance(loss0, float) and np.isfinite(loss0))\nloss_ref = float(np.mean((np.maximum(0.0, X @ snapshot['W1'] + snapshot['b1']) @ snapshot['W2'] + snapshot['b2'] - y) ** 2))\n__check('loss = aktueller MSE', abs(loss0 - loss_ref) < 1e-12)\n_, params_small = train_step(X, y, params, 0.001)\nloss_small, _ = train_step(X, y, params_small, 0.0)\n__check('kleiner Schritt senkt Verlust', loss_small < loss0)\nh = 1e-5\nWp = {**snapshot, 'W2': snapshot['W2'].copy()}; Wp['W2'][0, 0] += h\nWm = {**snapshot, 'W2': snapshot['W2'].copy()}; Wm['W2'][0, 0] -= h\nnum_grad = (train_step(X, y, Wp, 0.0)[0] - train_step(X, y, Wm, 0.0)[0]) / (2 * h)\n_, params_step = train_step(X, y, params, 0.01)\n__check('Update folgt numerischem Gradienten', abs((snapshot['W2'][0, 0] - params_step['W2'][0, 0]) / 0.01 - num_grad) < 1e-5)\ncurrent = {k: v.copy() for k, v in params.items()}\nfirst = train_step(X, y, current, 0.0)[0]\nfor _ in range(40):\n    _, current = train_step(X, y, current, 0.01)\nlast = train_step(X, y, current, 0.0)[0]\n__check('40 Schritte senken Verlust', last < first)\n__check('Doppelaufruf deterministisch', train_step(X, y, params, 0.01)[0] == loss0 and np.array_equal(train_step(X, y, params, 0.01)[1]['W1'], train_step(X, y, params, 0.01)[1]['W1']))\n"
-          },
-          "prompt": "train_step RNG 2009: lr=0 lässt Parameter, kleiner Schritt senkt MSE."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "sgd-momentum-step",
@@ -140,86 +67,13 @@
         "Berechne v neu und verwende genau dieses v für das Minus-Update.",
         "Kopiere die Arrays durch die Rechnung; prüfe die Eingaben nach dem Aufruf unverändert."
       ],
-      "feedbackRules": [
-        {
-          "if": "momentum-omitted",
-          "then": "Für w gilt 0,9·[0,5,1]+[2,-4]=[2,45,-3,1]; der alte Geschwindigkeitswert ist nicht optional."
-        },
-        {
-          "if": "plus-update",
-          "then": "Mit lr=0,1 wird [1,-2] minus 0,1·[2,45,-3,1] zu [0,755,-1,69]."
-        },
-        {
-          "if": "input-mutated",
-          "then": "Der Test vergleicht params und velocity nach dem Aufruf mit ihren ursprünglichen Arrays; In-place-Schreiben wäre hier falsch."
-        }
-      ],
       "typicalErrors": [
         "Momentumterm nicht in die neue Geschwindigkeit aufgenommen",
         "Gradientenupdate mit Plus statt Minus ausgeführt",
         "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([2.0, 0.0]), \"b\": np.array([1.0])}\ngrads = {\"w\": np.array([1.0, 2.0]), \"b\": np.array([0.5])}\nvelocity = {\"w\": np.array([0.0, 0.0]), \"b\": np.array([1.0])}\nlr, mu = 0.2, 0.8\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [2.0, 0.0]) and np.array_equal(velocity[\"w\"], [0.0, 0.0]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.2, μ=0.8, Start w=[2.0, 0.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([0.0, 1.0]), \"b\": np.array([-1.0])}\ngrads = {\"w\": np.array([4.0, -2.0]), \"b\": np.array([2.0])}\nvelocity = {\"w\": np.array([1.0, 0.0]), \"b\": np.array([0.5])}\nlr, mu = 0.05, 0.9\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [0.0, 1.0]) and np.array_equal(velocity[\"w\"], [1.0, 0.0]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.05, μ=0.9, Start w=[0.0, 1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([3.0, -1.0]), \"b\": np.array([0.0])}\ngrads = {\"w\": np.array([0.0, 1.0]), \"b\": np.array([3.0])}\nvelocity = {\"w\": np.array([0.2, 0.2]), \"b\": np.array([0.0])}\nlr, mu = 0.1, 0.5\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [3.0, -1.0]) and np.array_equal(velocity[\"w\"], [0.2, 0.2]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.1, μ=0.5, Start w=[3.0, -1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([1.0, 1.0]), \"b\": np.array([2.0])}\ngrads = {\"w\": np.array([-1.0, 1.0]), \"b\": np.array([-2.0])}\nvelocity = {\"w\": np.array([0.0, -0.5]), \"b\": np.array([0.25])}\nlr, mu = 0.25, 0.7\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [1.0, 1.0]) and np.array_equal(velocity[\"w\"], [0.0, -0.5]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.25, μ=0.7, Start w=[1.0, 1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([5.0, -3.0]), \"b\": np.array([0.5])}\ngrads = {\"w\": np.array([2.0, 2.0]), \"b\": np.array([1.0])}\nvelocity = {\"w\": np.array([1.0, -1.0]), \"b\": np.array([0.0])}\nlr, mu = 0.01, 0.99\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [5.0, -3.0]) and np.array_equal(velocity[\"w\"], [1.0, -1.0]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.01, μ=0.99, Start w=[5.0, -3.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([-1.0, -1.0]), \"b\": np.array([4.0])}\ngrads = {\"w\": np.array([0.5, 0.5]), \"b\": np.array([0.5])}\nvelocity = {\"w\": np.array([0.0, 1.0]), \"b\": np.array([0.0])}\nlr, mu = 0.3, 0.6\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [-1.0, -1.0]) and np.array_equal(velocity[\"w\"], [0.0, 1.0]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.3, μ=0.6, Start w=[-1.0, -1.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([0.4, 0.8]), \"b\": np.array([-0.2])}\ngrads = {\"w\": np.array([0.2, -0.4]), \"b\": np.array([0.8])}\nvelocity = {\"w\": np.array([0.1, 0.1]), \"b\": np.array([0.1])}\nlr, mu = 0.15, 0.85\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [0.4, 0.8]) and np.array_equal(velocity[\"w\"], [0.1, 0.1]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.15, μ=0.85, Start w=[0.4, 0.8]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([10.0, 0.0]), \"b\": np.array([1.0])}\ngrads = {\"w\": np.array([1.0, 0.0]), \"b\": np.array([1.0])}\nvelocity = {\"w\": np.array([0.0, 0.0]), \"b\": np.array([0.0])}\nlr, mu = 0.1, 0.9\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [10.0, 0.0]) and np.array_equal(velocity[\"w\"], [0.0, 0.0]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.1, μ=0.9, Start w=[10.0, 0.0]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nparams = {\"w\": np.array([1.5, -0.5]), \"b\": np.array([0.25])}\ngrads = {\"w\": np.array([3.0, 1.0]), \"b\": np.array([-1.0])}\nvelocity = {\"w\": np.array([0.5, -0.5]), \"b\": np.array([0.5])}\nlr, mu = 0.05, 0.8\nnew_params, new_velocity = momentum_step(params, grads, velocity, lr, mu)\nwant_v = {k: mu * np.asarray(velocity[k], dtype=float) + np.asarray(grads[k], dtype=float) for k in params}\nwant_p = {k: np.asarray(params[k], dtype=float) - lr * want_v[k] for k in params}\n__check('Momentumgeschwindigkeit', np.allclose(new_velocity[\"w\"], want_v[\"w\"]))\n__check('Update mit neuer Geschwindigkeit', np.allclose(new_params[\"w\"], want_p[\"w\"]))\n__check('Bias getrennt', np.allclose(new_params[\"b\"], want_p[\"b\"]))\n__check('Eingabe unverändert', np.array_equal(params[\"w\"], [1.5, -0.5]) and np.array_equal(velocity[\"w\"], [0.5, -0.5]))\n"
-          },
-          "prompt": "Ein Momentum-Schritt: lr=0.05, μ=0.8, Start w=[1.5, -0.5]. Vertrag bleibt $v\\leftarrow\\mu v+g$, $p\\leftarrow p-\\mathrm{lr}\\,v$."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

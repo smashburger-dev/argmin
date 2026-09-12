@@ -4,7 +4,7 @@ Stand: 2026-08-25 (erweitert um LM-R2/LM-R4/LM-R5-Felder). Gilt für alle Aufgab
 
 ## 1. Pflichtfelder je Aufgabe
 
-`exerciseId`, `schemaVersion`, `skillIds`, `type`, `prompt`, `locale` (immer `de`), `grader`, `parameters`, `deterministicSeed`, `expectedAnswer` ODER `referenceSolver`, `tolerancePolicy`, `hints`, `feedbackRules`, `fullSolution`, `difficulty` (1-5: 1 Basic, 2 Core, 3 Advanced, 4-5 Final Boss; die Coverage-Matrix mappt entsprechend), `estimatedMinutes`, `sourceLineage`, `license`, `validationStatus`, `testedSeedCount`. Der Validator (`tools/validate_content.mjs`) erzwingt sie und prüft den Typ gegen eine Whititelist: `numeric`, `single-choice`, `vector`, `algebraic-expression`, `python-code`, `short-rationale`, `parsons`, `code-trace`, `predict-output`.
+`exerciseId`, `schemaVersion`, `skillIds`, `type`, `prompt`, `locale` (immer `de`), `grader`, `parameters`, `deterministicSeed`, `expectedAnswer` ODER `referenceSolver`, `hints`, `feedbackRules`, `fullSolution`, `difficulty` (1-5: 1 Basic, 2 Core, 3 Advanced, 4-5 Final Boss; die Coverage-Matrix mappt entsprechend), `estimatedMinutes`, `sourceLineage`, `license`, `validationStatus`, `testedSeedCount`. Der Validator (`tools/validate_content.mjs`) erzwingt sie und prüft den Typ gegen eine Whititelist: `numeric`, `single-choice`, `vector`, `algebraic-expression`, `python-code`, `short-rationale`, `parsons`, `code-trace`, `predict-output`.
 
 ## 2. Quellenlinie und Lizenz
 
@@ -36,7 +36,7 @@ Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die U
 - Prozedurale Familien (Registry, `authorityMode: 'seeded'`) generieren die Instanz zur Laufzeit aus `familyId` + `caseId` + Route-Seed + Schwierigkeit; der Grader wertet die Instanz, nicht den Seed.
 - „Neue Zahlen“/Review-Instanzen kommen über den Route-Seed (`#/family/<familyId>/<caseId>/<seed>/<difficulty>`) — ein neuer Seed zieht eine neue Instanz, kein Runtime-Reseed.
 - Die im JSON dokumentierten Exemplar-Cases sind Generator-Ausgaben zum Autor-Seed (Golden-Corpus pinnt Instanz-Digests über 64 Seeds — kein Seed-Drift).
-- Historisches Metadaten-Rest: `parameters.seedGenerator`/`expected.{generator,defaultSeed,defaultExpected}` in älteren Familien-JSONs sind inerte Provenienz-Angaben ohne Runtime-Funktion.
+- Historische Metadaten-Reste (`parameters.seedGenerator`, `expected.{generator,defaultSeed,defaultExpected,defaultChoice}`, `tolerancePolicy`) wurden entfernt — inerte Provenienz ohne Runtime-Funktion. `feedbackRules[].if` muss einen Schlüssel tragen, den der Grader des Falls auswertet (`value === N`, `choice ===/!== 'id'`, `order-length-mismatch`, `value:<var>(+value:<var>)*`, `element-count-mismatch`, `[!]selected.includes('id')`, `missing-diagnosis`/`invalid-input`, `gap-<i>(-<aspekt>)`) — unerreichbare Schlüssel scheitern an `assertFamilyActivityContracts`.
 - Hinweise/Lösung beschreiben den Lösungsweg generisch (zahlenunabhängig), nie die konkrete Instanz.
 
 ## 4. Graderwahl
@@ -100,7 +100,7 @@ Jedes Hilfeereignis (Beispiel, Hinweis, Teillösung, Lösung) wird als Versuch-E
 - Familiengeneratoren exportieren identisches `rng()`-Verhalten (mulberry32) — Browser und Node ziehen dieselben Instanzen.
 - Signatur `genX(seed) -> { parameters, expected, prompt }`: `prompt` ist der **komplette deutsche Aufgabentext** als Plain Text mit Unicode-Mathematik (z. B. `log₂(64)`, `3^4`, `·`) — bewusst **ohne** `$...$`-KaTeX, damit der Prompt nach „Neue Zahlen“ ohne Math-Neurendering austauschbar ist.
 - `expected` wird IMMER von einem exportierten Referenzsolver berechnet (`solveLinearEquation`, `logInt`, …), nie hardcodet; die Invarianten (ganzzahlig, handrechenbare Bereiche, kein Divisions-Normalfall, Log-Argument > 0 und echte Potenz der Basis) stehen als Docstring am Generator UND werden im Property-Test über ≥ 200 Seeds erzwungen.
-- Antworten bleiben standardmäßig ganzzahlig; für Deep-Learning-/Metrik-Aufgaben sind toleranzbasierte Dezimalantworten erlaubt (Rundung auf 3 Stellen, dokumentierte `tolerancePolicy`, Referenzsolver rechnet den Sollwert) (`parseIntegerAnswer`), damit Eingabe-UI und Grader einheitlich bleiben; „kurze Dezimalbrüche“ sind als Bereich erlaubt, aber nicht nötig.
+- Antworten bleiben standardmäßig ganzzahlig; für Deep-Learning-/Metrik-Aufgaben sind toleranzbasierte Dezimalantworten erlaubt (Rundung auf 3 Stellen, Referenzsolver rechnet den Sollwert) (`parseIntegerAnswer`), damit Eingabe-UI und Grader einheitlich bleiben; „kurze Dezimalbrüche“ sind als Bereich erlaubt, aber nicht nötig.
 - Grader-Anbindung: die Registry instanziiert `generate({seed, caseId, difficulty})` und reicht `generated.expected` als `expectedAnswer` an den Grader; der Seed liegt am Placement/der Route. Tests: gleicher Seed = identischer Prompt, ≥200 Seeds je Generator gegen den echten Grader, plus Negativtest Seed-Drift zwischen JSON und Generator.
 
 **Lokale Lesezugänge** (Konvention, private-build-only):

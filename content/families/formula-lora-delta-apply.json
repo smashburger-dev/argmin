@@ -31,86 +31,13 @@
         "Delta = (alpha / r) * (B @ A) — die Matrixmultiplikation zuerst, dann skalieren; die Form ist (d_out, d_in).",
         "Alle Verträge vor der Rechnung prüfen: Rang, Dimensionen, Formgleichheit mit W."
       ],
-      "feedbackRules": [
-        {
-          "if": "wrong-order",
-          "then": "B @ A liefert (d_out × d_in); A @ B hätte die Formen vertauscht."
-        },
-        {
-          "if": "scale-missing",
-          "then": "Der Faktor alpha/r gehört vor das Produkt — im Test ist er ganzzahlig, damit exakt geprüft werden kann."
-        },
-        {
-          "if": "contracts-unchecked",
-          "then": "Rang- und Formverletzungen müssen ValueError werfen, bevor gerechnet wird."
-        }
-      ],
       "typicalErrors": [
         "BA gegen AB vertauscht",
         "Skalierung α/r vergessen",
         "Rang-/Formverträge ungeprüft"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "A = [[1, 0], [0, 1]]\nB = [[2, 1], [0, 3]]\nalpha = 2\nr = 2\nW = [[0, 0], [0, 0]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[0, 0], [0, 0]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA 2×2-Identität A, alpha=r=2, W=0. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[2, 0, 1]]\nB = [[3], [1], [0]]\nalpha = 3\nr = 1\nW = [[1, 1, 1], [1, 1, 1], [1, 1, 1]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[1, 1, 1], [1, 1, 1], [1, 1, 1]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA Rang-1, din=3, alpha=3. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, 2], [0, 1], [1, 0]]\nB = [[1, 0, 0], [0, 1, 0]]\nalpha = 6\nr = 3\nW = [[5, 5], [5, 5]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[5, 5], [5, 5]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA r=3, dout=2, alpha=6. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[4, 0], [0, 2]]\nB = [[1, 0], [0, 1]]\nalpha = 4\nr = 2\nW = [[2, 2], [2, 2]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[2, 2], [2, 2]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA diagonales A, B=I, alpha=4. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, 1, 0], [0, 1, 1]]\nB = [[0, 2], [1, 0], [2, 1]]\nalpha = 2\nr = 2\nW = [[9, 9, 9], [9, 9, 9], [9, 9, 9]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[9, 9, 9], [9, 9, 9], [9, 9, 9]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA 2×3 A, gemischtes B. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, 0, 0, 1]]\nB = [[2], [-1]]\nalpha = 1\nr = 1\nW = [[0, 0, 0, 0], [0, 0, 0, 0]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[0, 0, 0, 0], [0, 0, 0, 0]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA Rang-1, din=4, alpha=1. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[0, 1], [1, 0]]\nB = [[0, 1], [1, 0]]\nalpha = 8\nr = 2\nW = [[3, 0], [0, 3]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[3, 0], [0, 3]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA Permutations-A/B, alpha=8. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[2, 2], [2, 2]]\nB = [[1, 1], [1, 1]]\nalpha = 2\nr = 2\nW = [[1, 0], [0, 1]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[1, 0], [0, 1]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA lauter Zweien, W=I. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, -1], [0, 1]]\nB = [[2, 0], [0, -2]]\nalpha = 4\nr = 2\nW = [[-1, -1], [-1, -1]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('Skalierung alpha/r', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\nW_new = apply_lora(W, A, B, alpha, r)\n__check('apply_lora addiert', np.array_equal(W_new, np.asarray(W, dtype=float) + delta))\n__check('W wird nicht mutiert', np.array_equal(np.asarray(W), [[-1, -1], [-1, -1]]))\nA_bad = list(A) + [[1] * len(A[0])]\ntry:\n    lora_delta(A_bad, B, alpha, r)\n    __check('falscher Rang -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falscher Rang -> ValueError', True)\n\nbad_W = [[0.0] * (len(delta[0]) + 1) for _ in range(len(delta))]\ntry:\n    apply_lora(bad_W, A, B, alpha, r)\n    __check('falsche Form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n        __check('falsche Form -> ValueError', True)\n\n"
-          },
-          "prompt": "LoRA mit Vorzeichenwechsel, alpha=4. Implementiere `lora_delta` und `apply_lora` mit Rang- und Formvertrag."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "lora-delta-scaled-update",
@@ -140,86 +67,13 @@
         "Der Rang steht in A.shape[0] und B.shape[1].",
         "Erzeuge neue Arrays statt W oder velocity-artige Eingaben in-place zu verändern."
       ],
-      "feedbackRules": [
-        {
-          "if": "wrong-order",
-          "then": "Das konkrete Produkt ist B @ A mit Form d_out×d_in; A @ B hätte hier inkompatible innere Dimensionen."
-        },
-        {
-          "if": "scale-missing",
-          "then": "Bei alpha=4 und r=2 wird das Produkt mit 2 skaliert, bevor es zu W addiert wird."
-        },
-        {
-          "if": "contracts-unchecked",
-          "then": "Eine A-Form mit drei Rangzeilen verletzt den Rang-2-Vertrag und muss vor der Addition ValueError auslösen."
-        }
-      ],
       "typicalErrors": [
         "BA und AB trotz inkompatibler Innenformen vertauscht",
         "den Faktor alpha/r beim Delta ausgelassen",
         "W-Form erst nach einer unzulässigen Addition geprüft"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "A = [[1, 0], [0, 2]]\nB = [[3, 0], [0, 1]]\nalpha = 2\nr = 2\nW = [[7, 7], [7, 7]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[7, 7], [7, 7]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: A diagonal, B diagonal, W konstant 7. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[2, 1], [1, 2]]\nB = [[1, 0], [0, 1]]\nalpha = 4\nr = 2\nW = [[0, 1], [1, 0]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[0, 1], [1, 0]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: B=I, alpha=4, W Antidiagonale. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, 1]]\nB = [[2], [3]]\nalpha = 2\nr = 1\nW = [[4, 4], [4, 4]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[4, 4], [4, 4]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: Rang-1, dout=2. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[0, 3], [1, 0]]\nB = [[1, 2], [0, 1]]\nalpha = 6\nr = 2\nW = [[8, 8], [8, 8]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[8, 8], [8, 8]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: alpha=6, W=8. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[5, 0], [0, 5]]\nB = [[0, 1], [1, 0]]\nalpha = 5\nr = 2\nW = [[1, 1], [1, 1]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[1, 1], [1, 1]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: A=5I, B Vertauschung. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, 2, 3], [0, 1, 0]]\nB = [[1, 0], [0, 1], [1, 1]]\nalpha = 2\nr = 2\nW = [[2, 2, 2], [2, 2, 2], [2, 2, 2]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[2, 2, 2], [2, 2, 2], [2, 2, 2]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: din=3, r=2. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, 0], [2, 0]]\nB = [[4, 1], [0, 2]]\nalpha = 8\nr = 2\nW = [[10, 10], [10, 10]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[10, 10], [10, 10]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: alpha=8, W=10. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[3, 1], [0, 3]]\nB = [[2, 0], [1, 2]]\nalpha = 3\nr = 2\nW = [[0, 0], [0, 0]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[0, 0], [0, 0]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: W=0, alpha=3. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        },
-        {
-          "parameters": {
-            "tests": "A = [[1, -2], [2, 1]]\nB = [[0, 1], [1, 0]]\nalpha = 4\nr = 2\nW = [[5, 0], [0, 5]]\ndelta = (alpha / r) * (np.asarray(B, dtype=float) @ np.asarray(A, dtype=float))\n__check('Delta mit alpha/r', np.array_equal(lora_delta(A, B, alpha, r), delta))\n__check('alpha verdoppelt Delta', np.array_equal(lora_delta(A, B, alpha * 2, r), 2 * lora_delta(A, B, alpha, r)))\n__check('Basis plus Delta', np.array_equal(apply_lora(W, A, B, alpha, r), np.asarray(W, dtype=float) + delta))\n__check('Eingabe unverändert', np.array_equal(np.asarray(W), [[5, 0], [0, 5]]))\ntry:\n    lora_delta([[1, 2, 3], [0, 1, 0], [1, 0, 1]], B, alpha, r)\n    __check('Rangfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Rangfehler', True)\n\ntry:\n    apply_lora([[1, 2, 3]], A, B, alpha, r)\n    __check('Formfehler', False, 'kein ValueError')\nexcept ValueError:\n        __check('Formfehler', True)\n\n"
-          },
-          "prompt": "Skalierte LoRA: Vorzeichen in A, W=5I. Implementiere `lora_delta`/`apply_lora` ohne Mutation."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

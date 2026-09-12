@@ -9,9 +9,7 @@
       "masteryEligible": true,
       "sourceLineage": [],
       "parameters": {},
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -50,9 +48,7 @@
         "c-linalg-independence"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "rank-two-free"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "rank-two-free",
@@ -81,20 +77,11 @@
         "Zähle die Pivotzeilen, nicht die Gesamtzahl der Zeilen.",
         "Eine Zeile $0=0$ ist kein Widerspruch; vergleiche Pivotzahl und Variablenzahl."
       ],
-      "feedbackRules": [
-        {
-          "if": "contradiction",
-          "then": "Ein Widerspruch hätte rechts einen von null verschiedenen Wert, zum Beispiel $0=4$."
-        }
-      ],
       "typicalErrors": [
         "Nullzeile als Widerspruch lesen",
         "Rang mit Zeilenzahl verwechseln",
         "freie Variable übersehen"
       ],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

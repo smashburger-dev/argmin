@@ -81,14 +81,13 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
   const ids = CHOICE_IDS.slice(0, options.length);
   return {
     parameters: { caseId, difficulty, ...(meta.parameters || {}) },
-    expected: { correctChoice: ids[rotation] },
+    expected: {},
     choices: buildRotatedChoices(options, rotation, ids),
     prompt: meta.prompt,
     fullSolution: meta.fullSolution,
     ...(meta.hints ? { hints: meta.hints } : {}),
     ...(meta.feedbackRules ? { feedbackRules: meta.feedbackRules } : {}),
     ...(meta.typicalErrors ? { typicalErrors: meta.typicalErrors } : {}),
-    ...(meta.tolerancePolicy ? { tolerancePolicy: meta.tolerancePolicy } : {}),
     ...(meta.competencyIds ? { competencyIds: meta.competencyIds } : {}),
     ...(meta.masteryEligible !== undefined ? { masteryEligible: meta.masteryEligible } : {}),
   };

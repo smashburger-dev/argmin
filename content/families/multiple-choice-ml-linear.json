@@ -86,9 +86,6 @@
         "Vorzeichen- oder Skalierungsrichtung der Lösung in $y$ falsch eingeschätzt.",
         "Singularität von $X^{T}X$ bei abhängigen Spalten nicht mit der Invertierbarkeitsvoraussetzung verknüpft."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "multiple-choice",
       "graderId": "deterministic",
       "choices": [
@@ -210,9 +207,6 @@
         "Vorzeichen des Strafterms vertauscht (abgezogen statt addiert).",
         "Die Rolle von $\\lambda I$ für die Invertierbarkeit und den Grenzfall $\\lambda \\to 0$ nicht verknüpft."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "multiple-choice",
       "graderId": "deterministic",
       "choices": [
@@ -291,9 +285,6 @@
         "Unterschätzt, dass quadrierte Residuen einzelne Ausreißer im MSE dominieren lassen.",
         "Formen im Residuenplot (Trichter, Trend) nicht auf konkrete Modellmängel abgebildet."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "multiple-choice",
       "graderId": "deterministic",
       "choices": [

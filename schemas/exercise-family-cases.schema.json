@@ -102,7 +102,6 @@
         },
         "feedbackRules": { "type": "array" },
         "typicalErrors": { "type": "array" },
-        "tolerancePolicy": { "type": "object" },
         "activityType": {
           "enum": [
             "numeric", "single-choice", "vector", "algebraic-expression",

@@ -14,9 +14,7 @@
         "scenario": "Ausfall ja/nein mit historischen Labels",
         "target": "Ausfall im nächsten Zyklus"
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -64,9 +62,6 @@
         "überwachtes und unüberwachtes Lernen verwechseln",
         "Kategorien als stetiges Ziel behandeln, weil sie als Zahlen kodiert sind"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -81,9 +76,7 @@
         "scenario": "Hauspreis stetig mit Labels",
         "target": "Verkaufspreis"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -131,9 +124,6 @@
         "Einen stetigen Hauspreis ohne Begründung in zwei Klassen eingeteilt.",
         "Eine Preisvorhersage fälschlich als Folge von Entscheidungen mit Belohnungen modelliert."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -148,9 +138,7 @@
         "scenario": "Kaufprofile ohne Zielvariable",
         "target": null
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -198,9 +186,6 @@
         "Die Ausgabe von Cluster-IDs mit vorgegebenen Klassenzielen verwechselt.",
         "Numerische Eingabespalten fälschlich als kontinuierliches Vorhersageziel interpretiert."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

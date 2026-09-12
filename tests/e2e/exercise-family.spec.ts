@@ -17,7 +17,6 @@ test('golden path 2: family placements instantiate two case types without a JSON
     const { instantiate, grade } = await import(familyUrl) as {
       instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => {
         caseId: string;
-        expectedAnswer: { correctChoice: string };
         choices: Array<{ id: string; correct: boolean }>;
         definitionId?: string;
       };
@@ -27,13 +26,15 @@ test('golden path 2: family placements instantiate two case types without a JSON
     const staged = instantiate('classify-git-operation', 11, 'core', 'diff-staged');
     const unstagedWrong = unstaged.choices.find((choice) => choice.correct !== true)?.id;
     const stagedWrong = staged.choices.find((choice) => choice.correct !== true)?.id;
+    const unstagedRight = unstaged.choices.find((choice) => choice.correct === true)?.id;
+    const stagedRight = staged.choices.find((choice) => choice.correct === true)?.id;
     return {
       unstagedCase: unstaged.caseId,
       stagedCase: staged.caseId,
       copied: unstaged.definitionId ?? staged.definitionId ?? null,
-      unstagedRight: (await grade(unstaged, unstaged.expectedAnswer.correctChoice)).correct,
+      unstagedRight: (await grade(unstaged, String(unstagedRight))).correct,
       unstagedWrong: (await grade(unstaged, String(unstagedWrong))).correct,
-      stagedRight: (await grade(staged, staged.expectedAnswer.correctChoice)).correct,
+      stagedRight: (await grade(staged, String(stagedRight))).correct,
       stagedWrong: (await grade(staged, String(stagedWrong))).correct,
     };
   });

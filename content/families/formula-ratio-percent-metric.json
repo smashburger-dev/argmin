@@ -31,28 +31,11 @@
         "Zwei Zähler in einem Durchlauf über die Zeilen; delta = system − baseline kann negativ sein.",
         "relative_percent nur bei baseline > 0 berechnen und auf int runden — sonst 0."
       ],
-      "feedbackRules": [
-        {
-          "if": "relative-unrounded",
-          "then": "relative_percent ist eine ganze Zahl: int(round(100·delta/baseline))."
-        },
-        {
-          "if": "zero-baseline-crash",
-          "then": "baseline_correct == 0 ist per Definition relative_percent = 0 — keine Division durch null."
-        },
-        {
-          "if": "row-schema-unchecked",
-          "then": "Zeilen mit anderer Länge als 2 werfen ValueError."
-        }
-      ],
       "typicalErrors": [
         "relative Verbesserung nicht gerundet bzw. als float",
         "Division durch null bei Baseline 0",
         "Zeilenform ungeprüft"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
@@ -136,24 +119,11 @@
         "treffer enthält nur Fälle mit f[1] True; korrekt filtert darunter nach f[2] — der q3-Fall zählt in keiner Antwortquote.",
         "Zweite Zeile ist die bereinigte Quote (korrekt/treffer), dritte die naive (korrekt/alle) — jeweils auf 3 Stellen gerundet."
       ],
-      "feedbackRules": [
-        {
-          "if": "first-line-wrong",
-          "then": "Treffer sind q1, q2, q4, q5 — q3 hat f[1] False und zählt nicht."
-        },
-        {
-          "if": "third-line-wrong",
-          "then": "Naiv teilt durch alle fünf Fälle: 2/5 = 0.4 — die bereinigte Quote 2/4 = 0.5 steht eine Zeile darüber."
-        }
-      ],
       "typicalErrors": [
         "Retrieval-Fehlerfälle in die bereinigte Quote genommen",
         "naive und bereinigte Zeile vertauscht",
         "Rundung auf 3 Stellen vergessen"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic",
       "variants": [
@@ -282,24 +252,11 @@
         "Berechne zuerst die vier Einzelwerte: versand 2/2, recht 2/1, rabatt 2/1, garantie 2/2.",
         "Der Mittelwert der vier Subgruppen-Werte ist nicht der Gesamt-Recall — hier ist er zufällig gleich, weil alle Gruppen gleich groß sind."
       ],
-      "feedbackRules": [
-        {
-          "if": "first-line-wrong",
-          "then": "versand = 2/2 = 1.0, rabatt = 1/2 = 0.5 — Python druckt das als „1.0 0.5“."
-        },
-        {
-          "if": "second-line-wrong",
-          "then": "Summe 3.0 über 4 Gruppen → 0.75 → 75.0 nach round(…, 1)."
-        }
-      ],
       "typicalErrors": [
         "Mittelwert der Anzahlen statt der Quotienten gebildet",
         "round auf ganze Stellen angewendet",
         "leere Gruppe mit 0.5 statt 0.0 belegt"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic",
       "variants": [

@@ -99,190 +99,13 @@
         "Zuerst sammeln, dann entscheiden: Die Schleife füllt verstoesse, der raise kommt ganz am Schluss.",
         "Die beiden Rückgabe-Zeilen sind der stille Fallback — genau den verbietet der Freeze-Vertrag."
       ],
-      "feedbackRules": [
-        {
-          "if": "raise-zu-frueh",
-          "then": "Der raise gehört nach die Schleife — sonst meldet assert_frozen nur den ersten Verstoß und verschweigt den Rest."
-        },
-        {
-          "if": "fallback-drin",
-          "then": "Eine Rückgabe mit status 'fehler' und leerer Liste ist der stille Fallback: Der Aufrufer sieht ein Ergebnis statt eines Abbruchs."
-        }
-      ],
       "typicalErrors": [
         "raise in die Schleife gezogen (nur erster Verstoß sichtbar)",
         "Fehler-Objekt statt Assertion zurückgegeben",
         "hash-Prüfung vor der Anwesenheitsprüfung"
       ],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "parsons",
-      "graderId": "deterministic",
-      "variants": [
-        {
-          "parameters": {
-            "initialOrder": [
-              "p1",
-              "d2",
-              "p6",
-              "p4",
-              "p2",
-              "p9",
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 1 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "d2",
-              "p6",
-              "p4",
-              "p2",
-              "p9",
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 2 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p6",
-              "p4",
-              "p2",
-              "p9",
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 3 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p4",
-              "p2",
-              "p9",
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2",
-              "p6"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 4 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p2",
-              "p9",
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2",
-              "p6",
-              "p4"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 5 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p9",
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2",
-              "p6",
-              "p4",
-              "p2"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 6 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "d1",
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2",
-              "p6",
-              "p4",
-              "p2",
-              "p9"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 7 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p5",
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2",
-              "p6",
-              "p4",
-              "p2",
-              "p9",
-              "d1"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 8 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p7",
-              "p8",
-              "p3",
-              "p1",
-              "d2",
-              "p6",
-              "p4",
-              "p2",
-              "p9",
-              "d1",
-              "p5"
-            ]
-          },
-          "prompt": "Parsons Freeze-Assert, Startlage um 9 rotiert. Dieselbe Zeilenzahl, eindeutige Reihenfolge p1…p9; Distraktoren aussortieren."
-        }
-      ]
+      "graderId": "deterministic"
     },
     {
       "caseId": "demo-from-frozen-report",
@@ -310,86 +133,13 @@
         "Ein einziger !=-Vergleich prüft dicts tief — Python vergleicht verschachtelt.",
         "Zurückgegeben wird der EINGEFRORENE Bericht, nicht die frische Kopie."
       ],
-      "feedbackRules": [
-        {
-          "if": "returns-fresh",
-          "then": "Zurückgegeben wird der eingefrorene Bericht — die Demo erzählt den Freeze, nicht den Drift."
-        },
-        {
-          "if": "silent-merge",
-          "then": "Abweichungen zusammenzuführen oder zu ignorieren ist der stille Fallback — hier wird gelaut scheitern verlangt."
-        },
-        {
-          "if": "mutates-input",
-          "then": "Die Funktion darf bericht und frisch nicht verändern — sonst zerstört sie genau den Freeze, den sie schützen soll."
-        }
-      ],
       "typicalErrors": [
         "frische Werte statt der eingefrorenen zurückgegeben",
         "Abweichung still geschluckt",
         "Eingaben verändert"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "BERICHT = {'a': 1, 'b': 2}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'a': 1, 'b': 2}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'a': 1, 'b': 9})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'a': 1, 'b': 2})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: dict a/b, Abweichung b. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'recall': 0.5}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'recall': 0.5}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'recall': 0.9})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'recall': 0.5})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: eine Metrik, Abweichung 0.5 vs 0.9. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'x': [1, 2, 3]}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'x': [1, 2, 3]}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'x': [1, 2, 0]})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'x': [1, 2, 3]})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: Liste x, letztes Element weicht. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'n': 0, 'ok': True}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'n': 0, 'ok': True}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'ok': False, 'n': 0})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'n': 0, 'ok': True})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: ok True vs False. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'m': {'k': 3}}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'m': {'k': 3}}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'m': {'k': 4}})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'m': {'k': 3}})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: verschachtelt k weicht. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'z': None}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'z': None}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'z': 0})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'z': None})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: None vs 0. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'s': 'text'}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'s': 'text'}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'s': 'Text'})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'s': 'text'})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: String-Großschreibung weicht. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'p': 1.25, 'q': 2}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'p': 1.25, 'q': 2}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'p': 1.25, 'q': 3})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'p': 1.25, 'q': 2})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: float p gleich, q weicht. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        },
-        {
-          "parameters": {
-            "tests": "BERICHT = {'u': {'v': {'w': 1}}}\n__check('identisch ok', demo_aus_bericht(BERICHT, {'u': {'v': {'w': 1}}}) == {\"metriken\": BERICHT, \"quelle\": \"eingefroren\", \"geprueft\": True})\ntry:\n    demo_aus_bericht(BERICHT, {'u': {'v': {'w': 2}}})\n    __check('abweichung scheitert laut', False)\nexcept AssertionError as e:\n    __check('abweichung scheitert laut', \"demo-abweichung\" in str(e))\n__check('bericht unangetastet', BERICHT == {'u': {'v': {'w': 1}}})\n__check('verschachtelt geprueft', demo_aus_bericht({\"a\": {\"b\": [1, 2]}}, {\"a\": {\"b\": [1, 2]}})[\"geprueft\"] is True)\ntry:\n    demo_aus_bericht({\"a\": 1}, {\"a\": 2})\n    __check('tiefenvergleich', False)\nexcept AssertionError:\n    __check('tiefenvergleich', True)\n"
-          },
-          "prompt": "Demo-Freeze: Tiefe 3, w weicht. Implementiere `demo_aus_bericht` (AssertionError demo-abweichung)."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

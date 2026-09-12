@@ -27,7 +27,7 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
 
 ## Was dich erwartet
 
-- **46 Lektionen und über 250 Aufgaben** in kleinen, verständlichen Schritten. Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI.
+- **50 Lektionen und über 280 Aufgaben** in kleinen, verständlichen Schritten. Mathe, Lineare Algebra, ML, Deep Learning, Transformer, GenAI.
 
 [![Der Lernpfad in argmin: Module in sinnvoller Reihenfolge, dunkles Theme](docs/media/lernpfad-dark.png)](https://smashburger-dev.github.io/argmin/)
 
@@ -35,11 +35,12 @@ Das war's. Dein Fortschritt bleibt in deinem Browser auf deinem Gerät. Du kanns
   + NumPy für Matrizen und Vektoren, sauber gesetzte Formeln (KaTeX) und interaktive Grafiken zum Anfassen (JSXGraph)… LOKAL!
 
   ![Demo: Code in den Editor tippen, prüfen, alle Tests bestehen](docs/media/python-demo.gif)
-- **Üben, bis es sitzt.** Konzeptfragen, Coding, Ablauf, Parsons, Vektor: neuer Seed, neu erzeugte Aufgabe. Gleicher Seed, gleiche Aufgabe.
+- **Üben, bis es sitzt.** Konzeptfragen, Mehrfachauswahl, Fehlerdiagnose, Coding, Ablauf, Parsons, Vektor, Lücken in Musterlösungen: neuer Seed, neu erzeugte Aufgabe. Gleicher Seed, gleiche Aufgabe.
+- **Visualisierungen, die zurückfragen.** Jede interaktive Grafik endet mit einer Vorhersage-Aufgabe — erst schätzen, dann prüfen.
 - **Ehrliches Feedback.** Deine Antworten werden nachvollziehbar und deterministisch geprüft. Keine KI, die rät, ob du richtig liegst.
 - **Ein Plan, der zu dir passt.** Wiederholungen zum richtigen Zeitpunkt und ein Wochenplan nach deinem Zeitbudget
 
-Was seit 0.5 neu ist, steht im [Changelog](CHANGELOG.md).
+Was seit 0.6.5 neu ist, steht im [Changelog](CHANGELOG.md).
 
 ## In Arbeit / Geplant
 

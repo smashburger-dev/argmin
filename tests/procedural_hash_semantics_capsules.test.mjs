@@ -22,7 +22,7 @@ test('Familien-Extras: Fallkörper-Größe, Schwierigkeitsprofil, Schlüssel-Id'
   assert.equal(doc.cases.length, 1);
   const body = doc.cases.find((item) => item.caseId === CASE_ID);
   assert.equal(body.difficultyProfile, 'intro');
-  assert.equal(body.expected.correctChoice, 'd');
+  assert.equal(body.choices.find((choice) => choice.correct).id, 'd');
   assert.deepEqual(mod.HASH_SEMANTICS_CONTRACT.competencyIds, ['c-research-capstone']);
 });
 

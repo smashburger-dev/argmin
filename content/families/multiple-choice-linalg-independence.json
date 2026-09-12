@@ -86,9 +86,6 @@
         "Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.",
         "Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "multiple-choice",
       "graderId": "deterministic",
       "choices": [
@@ -167,9 +164,6 @@
         "Paarweise Nichtparallelität mit Unabhängigkeit der Gesamtmenge verwechselt.",
         "Die Schranke $n$ für unabhängige Mengen im $\\mathbb{R}^n$ nicht angewendet."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "multiple-choice",
       "graderId": "deterministic",
       "choices": [
@@ -289,9 +283,6 @@
         "Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.",
         "Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "multiple-choice",
       "graderId": "deterministic",
       "choices": [

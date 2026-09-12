@@ -109,9 +109,6 @@
         "den geplanten Test vor die Hypothese setzen",
         "den Abruf vor den Test legen oder weglassen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "variants": [
         {
           "parameters": {

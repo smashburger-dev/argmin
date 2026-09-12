@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "builderVersion": "1.0.0",
-  "contentHash": "ace21d7b0368dc0c9383e4f285d24bbb3c07fcba8cfbe12f207c44bbb296223e",
-  "digest": "a2d36fc61c3bf71cfd135dc223d5b88fc7832ab01877c339db312c689e96fbe3",
-  "items": 4384,
-  "mutants": 4384,
+  "contentHash": "af95552f0247d66283139f76492391f40d3247947958b7c2ae863131799aaa51",
+  "digest": "b1157faa150b4b142172ec5a8ca24c689cc9cab7ba2c779c4332da0188caeebb",
+  "items": 4198,
+  "mutants": 4198,
   "uncovered": 185,
   "mutantRejectionRate": 1,
   "heldSeedRange": {

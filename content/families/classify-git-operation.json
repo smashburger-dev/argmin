@@ -22,13 +22,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a",
-        "kind": "seeded-choice",
-        "generator": "genGitNextAction",
-        "defaultSeed": 0,
-        "defaultChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -57,10 +51,6 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
-      "feedbackRules": [],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -83,13 +73,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a",
-        "kind": "seeded-choice",
-        "generator": "genGitNextAction",
-        "defaultSeed": 3901,
-        "defaultChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -118,10 +102,6 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
-      "feedbackRules": [],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -139,13 +119,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a",
-        "kind": "seeded-choice",
-        "generator": "genGitNextAction",
-        "defaultSeed": 2,
-        "defaultChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -174,10 +148,6 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
-      "feedbackRules": [],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -195,13 +165,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a",
-        "kind": "seeded-choice",
-        "generator": "genGitNextAction",
-        "defaultSeed": 3,
-        "defaultChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -230,10 +194,6 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
-      "feedbackRules": [],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -251,13 +211,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a",
-        "kind": "seeded-choice",
-        "generator": "genGitNextAction",
-        "defaultSeed": 4,
-        "defaultChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -286,10 +240,6 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
-      "feedbackRules": [],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -307,13 +257,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a",
-        "kind": "seeded-choice",
-        "generator": "genGitNextAction",
-        "defaultSeed": 5,
-        "defaultChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -342,10 +286,6 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
-      "feedbackRules": [],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -364,9 +304,7 @@
       "competencyIds": [
         "c-git-basics"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -405,9 +343,6 @@
         "grüne Tests vor dem Merge als Beleg danach behandeln",
         "Konflikt mechanisch statt fachlich lösen"
       ],
-      "tolerancePolicy": {
-        "mode": "exact"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

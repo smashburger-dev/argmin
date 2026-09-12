@@ -38,9 +38,6 @@
       "typicalErrors": [
         "das Komma-Literal als gültige Zahl gelesen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -79,9 +76,6 @@
       "typicalErrors": [
         "implizite Typumwandlung von int zu str angenommen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -120,9 +114,6 @@
       "typicalErrors": [
         "angenommen, der Schlüssel existiere oder ein Standardwert werde geliefert"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -161,9 +152,6 @@
       "typicalErrors": [
         "fehlende Datei mit einer anderen Ausnahmeart verwechselt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -202,9 +190,6 @@
       "typicalErrors": [
         "Index um eins verzählt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -243,9 +228,6 @@
       "typicalErrors": [
         "len(5) als 1 gewertet"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -284,9 +266,6 @@
       "typicalErrors": [
         "gültiges Ziffernliteral für einen Fehlerfall gehalten"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -325,9 +304,6 @@
       "typicalErrors": [
         "String-Multiplikation fälschlich als TypeError eingeschätzt"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

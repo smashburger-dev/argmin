@@ -140,7 +140,7 @@ export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'diff
     const rotation = variantCaseIndex(seed, opts.length);
     return {
       parameters: { scenario: entry.key },
-      expected: { correctChoice: CHOICE_IDS[rotation] },
+      expected: {},
       choices: buildRotatedChoices(opts, rotation, CHOICE_IDS),
       prompt: entry.prompt,
       fullSolution: entry.solution,
@@ -219,7 +219,7 @@ export function makeChoiceCapsuleFamily({
     const rotation = variantCaseIndex(seed, options.length);
     return {
       parameters,
-      expected: { correctChoice: CHOICE_IDS[rotation] },
+      expected: {},
       choices: buildRotatedChoices(options, rotation, CHOICE_IDS),
       prompt: buildPrompt(parameters, capsule),
       fullSolution: buildSolution(parameters, capsule),

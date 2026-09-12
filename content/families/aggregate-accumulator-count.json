@@ -36,9 +36,6 @@
         "beide Zweige ausgewertet statt nur des ersten wahren",
         "Buchstabe oder Wert in der Ausgabe vergessen"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic"
     },
@@ -75,9 +72,6 @@
         "Schleife einen Durchlauf zu früh oder zu spät beendet",
         "Endwert von n mit der Summe in der Ausgabe verwechselt"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic"
     },
@@ -112,9 +106,6 @@
         "ungerade Werte mit in die Ausgabe genommen",
         "Liste ohne eckige Klammern oder mit falschen Vorzeichen notiert"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic"
     }

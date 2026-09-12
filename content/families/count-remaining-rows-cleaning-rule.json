@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w06-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genCompleteRows"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-pandas-cleaning"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genCompleteRows",
-        "defaultSeed": 6001,
-        "defaultExpected": 170
-      },
       "prompt": "Ein Bestelldatensatz hat 200 Zeilen. In der Zielspalte fehlen 30 Werte; Zeilen mit fehlendem Zielwert werden gelöscht. Wie viele Zeilen bleiben übrig?",
       "fullSolution": "Bestimme die Anzahl der Zeilen mit fehlendem Zielwert (direkt gegeben oder als Anteil · Zeilenzahl) und ziehe sie von der Gesamtzahl ab: verbleibende Zeilen = Zeilen − Zeilen mit fehlendem Zielwert. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -47,9 +39,6 @@
         "gelöschte statt verbleibende Zeilen angegeben",
         "fehlende Werte in Nebenspalten mit fehlenden Zielwerten verwechselt"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -60,18 +49,10 @@
       "sourceLineage": [
         "w06-e6"
       ],
-      "parameters": {
-        "seedGenerator": "genDedupRows"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-pandas-cleaning"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genDedupRows",
-        "defaultSeed": 6002,
-        "defaultExpected": 281
-      },
       "prompt": "Ein Event-Log hat 287 Zeilen. 6 Zeilen sind exakte Duplikate (identische Werte in allen Spalten) und werden gelöscht. 18 weitere Zeilen teilen nur den Schlüssel, unterscheiden sich aber in den Werten und bleiben erhalten. Wie viele Zeilen bleiben?",
       "fullSolution": "Entferne nur exakte Duplikate (identisch in allen Spalten): Zeilenzahl − exakte Duplikate. Schlüssel-Duplikate mit abweichenden Werten sind keine exakten Duplikate und bleiben — ihr Konflikt ist eine Entscheidung, kein Kopie-Löschen. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
       "hints": [
@@ -97,9 +78,6 @@
         "Konfliktzeilen gemittelt statt erhalten",
         "Anzahl der Duplikate statt der verbleibenden Zeilen angegeben"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

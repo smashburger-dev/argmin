@@ -67,7 +67,7 @@ export function makeLinalgChoiceCapsuleFamily({
     const ids = choiceIds(capsule);
     return {
       parameters,
-      expected: { correctChoice: ids[rotation] },
+      expected: {},
       choices: buildRotatedChoices(options, rotation, ids),
       prompt: buildPrompt(parameters, capsule),
       fullSolution: buildSolution(parameters, capsule),

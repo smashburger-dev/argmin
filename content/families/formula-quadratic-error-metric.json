@@ -17,9 +17,7 @@
         "mse": 25,
         "unit": "Euro"
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -67,9 +65,6 @@
         "die Einheiten von MSE (quadratisch) und RMSE (Zieleinheit) verwechseln",
         "glauben, RMSE brauche die Einzelfehler"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -78,9 +73,7 @@
             "mse": 36,
             "unit": "kg"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -111,9 +104,7 @@
             "mse": 49,
             "unit": "min"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -144,9 +135,7 @@
             "mse": 100,
             "unit": "°C"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -177,9 +166,7 @@
             "mse": 9,
             "unit": "m"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -210,9 +197,7 @@
             "mse": 16,
             "unit": "s"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -243,9 +228,7 @@
             "mse": 81,
             "unit": "Euro"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -276,9 +259,7 @@
             "mse": 4,
             "unit": "kWh"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -309,9 +290,7 @@
             "mse": 64,
             "unit": "mm"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -342,9 +321,7 @@
             "mse": 121,
             "unit": "Tage"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",

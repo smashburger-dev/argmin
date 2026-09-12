@@ -36,9 +36,6 @@
         "extend wie append behandelt (ein Element statt mehrerer angehängt)",
         "Indexzuweisung als Anhängen statt als Überschreiben gelesen"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     },
@@ -74,9 +71,6 @@
       "typicalErrors": [
         "y = x als Kopie gelesen und die append-Mutation in x übersehen"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     },
@@ -113,9 +107,6 @@
         "append auf y fälschlich in x eingetragen",
         "y_ende vergessen oder mit dem x-Endstand verwechselt"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     },
@@ -152,9 +143,6 @@
         "+ und += vertauscht (Neue Liste vs. in-place-Erweiterung)",
         "den Alias-Effekt der letzten Zeile y = x übersehen"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     },
@@ -190,9 +178,6 @@
         "Duplikate im Set-Zustand notiert",
         "discard fälschlich als Fehler statt als Entfernen gewertet"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     }

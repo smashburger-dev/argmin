@@ -31,86 +31,13 @@
         "loss_history notiert den reinen MSE (ohne Strafterm!) zu Epochenbeginn; der Gradient dagegen MIT λ·w — Verlust und Gradient haben hier bewusst verschiedene Definitionen.",
         "compare_decay ruft train_decay zweimal mit demselben Seed auf — Seed und Daten fix, nur λ unterscheidet sich: das ist die ganze Faire-Ablation-Disziplin."
       ],
-      "feedbackRules": [
-        {
-          "if": "penalty-in-loss",
-          "then": "Im loss_history steht der reine MSE — die Strafe gehört nur in den Gradienten, sonst vergleichst du Äpfel mit Birnen."
-        },
-        {
-          "if": "different-seeds",
-          "then": "Zwei verschiedene Seeds machen die Ablation unfair: Init-Rauschen und Datenvertrag müssen identisch sein, nur λ darf sich ändern."
-        },
-        {
-          "if": "norm-not-float",
-          "then": "np.linalg.norm liefert np.float64 — die Vergleichswerte müssen mit float() in echte Python-floats gegossen werden."
-        }
-      ],
       "typicalErrors": [
         "Strafterm in den notierten Verlust eingebaut",
         "für die Ablation verschiedene Seeds verwendet",
         "Normen als np.float64 statt float zurückgegeben"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2107)\nn = 90\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.06, 0.05, 350, 42)\nrun2 = train_decay(X, y, 0.06, 0.05, 350, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 350)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 350, 42)\ncmp = compare_decay(X, y, 0.06, 0.05, 350, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.06, 0.05, 350, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=90 lam=0.06 epochs=350. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2108)\nn = 120\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.04, 0.05, 400, 42)\nrun2 = train_decay(X, y, 0.04, 0.05, 400, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 400)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 400, 42)\ncmp = compare_decay(X, y, 0.04, 0.05, 400, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.04, 0.05, 400, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=120 lam=0.04. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2109)\nn = 80\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.08, 0.04, 380, 42)\nrun2 = train_decay(X, y, 0.08, 0.04, 380, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 380)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.04, 380, 42)\ncmp = compare_decay(X, y, 0.08, 0.04, 380, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.08, 0.04, 380, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=80 lam=0.08 lr=0.04. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2110)\nn = 110\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.05, 0.06, 360, 42)\nrun2 = train_decay(X, y, 0.05, 0.06, 360, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 360)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.06, 360, 42)\ncmp = compare_decay(X, y, 0.05, 0.06, 360, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.05, 0.06, 360, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=110 lr=0.06. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2111)\nn = 70\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.03, 0.05, 420, 42)\nrun2 = train_decay(X, y, 0.03, 0.05, 420, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 420)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 420, 42)\ncmp = compare_decay(X, y, 0.03, 0.05, 420, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.03, 0.05, 420, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=70 lam=0.03 längeres Training. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2112)\nn = 130\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.07, 0.05, 300, 42)\nrun2 = train_decay(X, y, 0.07, 0.05, 300, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 300)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 300, 42)\ncmp = compare_decay(X, y, 0.07, 0.05, 300, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.07, 0.05, 300, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=130 lam=0.07 epochs=300. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2113)\nn = 100\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.02, 0.05, 450, 42)\nrun2 = train_decay(X, y, 0.02, 0.05, 450, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 450)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 450, 42)\ncmp = compare_decay(X, y, 0.02, 0.05, 450, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.02, 0.05, 450, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation lam=0.02, 450 Schritte. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2114)\nn = 95\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.09, 0.04, 400, 42)\nrun2 = train_decay(X, y, 0.09, 0.04, 400, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 400)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.04, 400, 42)\ncmp = compare_decay(X, y, 0.09, 0.04, 400, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.09, 0.04, 400, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation lam=0.09 n=95. Implementiere `train_decay` und `compare_decay`."
-        },
-        {
-          "parameters": {
-            "tests": "import numpy as np\nrng = np.random.default_rng(2115)\nn = 105\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.05, 0.05, 380, 42)\nrun2 = train_decay(X, y, 0.05, 0.05, 380, 42)\n__check('Determinismus', np.array_equal(run1['w'], run2['w']) and run1['loss_history'] == run2['loss_history'])\n__check('Schluessel train', set(run1.keys()) == {'w', 'loss_history'})\n__check('Verlaufslaenge', len(run1['loss_history']) == 380)\n__check('Verlust faellt', run1['loss_history'][-1] < run1['loss_history'][0])\n__check('w-Form', run1['w'].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 380, 42)\ncmp = compare_decay(X, y, 0.05, 0.05, 380, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp['norm_plain'] - float(np.linalg.norm(plain['w']))) < 1e-12 and abs(cmp['final_loss_plain'] - plain['loss_history'][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.05, 0.05, 380, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp['norm_decay'] < cmp['norm_plain'])\n__check('Norm-Werte plausibel', cmp['norm_decay'] > 0.0 and cmp['norm_plain'] > cmp['norm_decay'])\n"
-          },
-          "prompt": "Ablation n=105, Standard-lam 0.05. Implementiere `train_decay` und `compare_decay`."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

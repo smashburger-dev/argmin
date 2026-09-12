@@ -20,9 +20,7 @@
           4
         ]
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -65,9 +63,7 @@
           3
         ]
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "c",
@@ -114,10 +110,7 @@
         "Bei elementweiser Addition die Zeilen- und Spaltenzahl vertauscht.",
         "Broadcasting als pauschale Erlaubnis für jede beliebige Matrixform verstanden.",
         "Die quadratische Voraussetzung der Matrixmultiplikation fälschlich auf Addition übertragen."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     },
     {
       "caseId": "shape-vector-matmul-chain",
@@ -136,9 +129,7 @@
           4
         ]
       },
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -185,10 +176,7 @@
         "Bei $AB$ die äußeren Dimensionen nicht als Ergebnisform verwendet.",
         "Die Gültigkeit eines Produkts nur für eine Faktor-Reihenfolge geprüft.",
         "Eine einzelne Operanden-Dimension fälschlich als Form beider Produkte übernommen."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+      ]
     }
   ]
 }

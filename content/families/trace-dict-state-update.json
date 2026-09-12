@@ -35,9 +35,6 @@
         "Überschreiben als Anhängen eines zweiten Eintrags gelesen",
         "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     },
@@ -73,9 +70,6 @@
         "Überschreiben als Anhängen eines zweiten Eintrags gelesen",
         "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
       ],
-      "tolerancePolicy": {
-        "mode": "python-repr-normalized"
-      },
       "activityType": "code-trace",
       "graderId": "deterministic"
     }

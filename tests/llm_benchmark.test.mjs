@@ -78,10 +78,9 @@ test('benchmark pin matches the freshly built fixture', () => {
 });
 
 test('two builder runs produce the identical fixture digest', async () => {
-  const first = await buildFixture(root);
   const second = await buildFixture(root);
-  assert.ok(first.items.length > 0 && second.items.length > 0, 'Builder lieferte keine Items');
-  assert.equal(fixtureDigest(first), fixtureDigest(second), 'Builder nicht deterministisch');
+  assert.ok(fixture.items.length > 0 && second.items.length > 0, 'Builder lieferte keine Items');
+  assert.equal(fixtureDigest(fixture), fixtureDigest(second), 'Builder nicht deterministisch');
 });
 
 test('fixture validates against the llm-benchmark schema', () => {

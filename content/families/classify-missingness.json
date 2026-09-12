@@ -13,9 +13,7 @@
       "parameters": {
         "thema": "zielabhängige Missingness"
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "In einer Kundentabelle fehlt der Zielwert „Umsatz“ genau bei den Kunden mit sehr hohen Umsätzen, weil diese keine Einwilligung zur Weitergabe gegeben haben. Was droht, wenn du alle Zeilen mit fehlendem Zielwert einfach löschst?",
       "fullSolution": "Das Fehlen hängt vom Zielwert ab (zielabhängige Missingness, kein MCAR). Löschen entfernt genau die hohen Umsätze, der Mittelwert der Verbleibenden liegt darunter — systematische Unterschätzung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -41,9 +39,6 @@
         "Verzerrung mit kleiner Stichprobe verwechselt",
         "Löschen als neutral behandelt, weil „nur Zeilen entfernt“ werden"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",
@@ -79,9 +74,7 @@
       "parameters": {
         "thema": "wertabhängiges Zensieren"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "prompt": "In einem Krankenhaus fallen Laborwerte genau dann aus, wenn ein Messgerät bei extremen Werten abschaltet. Was ist die sauberste Diagnose?",
       "fullSolution": "Das Fehlen hängt vom Messwert beziehungsweise seinem Extrembereich ab und ist daher nicht MCAR. Eine naive Löschung kann die Verteilung systematisch verzerren.",
       "hints": [
@@ -107,9 +100,6 @@
         "Den Anteil vorhandener Werte als Beleg für unverzerrtes Löschen verwendet.",
         "Das Entstehen eines fehlenden Messwerts mit dessen späterer Imputation verwechselt."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",
@@ -145,9 +135,7 @@
       "parameters": {
         "thema": "zielabhängige Missingness"
       },
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Bei einer freiwilligen Umfrage fehlt das Einkommen besonders häufig bei sehr hohen Einkommen. Welche Folgerung ist korrekt?",
       "fullSolution": "Die Ausfälle hängen plausibel vom nicht beobachteten Einkommen ab. Complete-Case-Analysen können den Mittelwert nach unten verzerren; die Missingness-Mechanik muss untersucht werden.",
       "hints": [
@@ -173,9 +161,6 @@
         "Systematisch fehlende hohe Einkommen ohne Blick auf die Verzerrungsrichtung zusammengezählt.",
         "Eine Medianimputation als voraussetzungsfreie Reparatur wertabhängiger Ausfälle angenommen."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",

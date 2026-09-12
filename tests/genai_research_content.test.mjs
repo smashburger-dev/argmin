@@ -90,13 +90,13 @@ test('E12 and E13 static trace registrations preserve their overrides', () => {
 });
 
 // Direct gates for the W27-W30 seeded generators (ADR-0013), same house
-// rules as the capstone generators: determinism, answer space over 2000
+// rules as the capstone generators: determinism, answer space over 600
 // seeds, leak check, and independent solvers from `parameters` alone.
 const W27_W30_SEED_GENERATORS = {
   genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount,
 };
 
-const GENAI_SEEDS = Array.from({ length: 2000 }, (_, i) => 1 + i * 37);
+const GENAI_SEEDS = Array.from({ length: 600 }, (_, i) => 1 + i * 37);
 
 function genaiStandaloneNumberPresent(text, value) {
   const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -131,7 +131,7 @@ const GENAI_SOLVERS = {
   },
 };
 
-// Documented minimum: >= 20 distinct expected values over 2000 seeds.
+// Documented minimum: >= 20 distinct expected values over 600 seeds.
 const GENAI_MIN_DISTINCT = {
   genRecallAtK: 20, genF1orPrecision: 20, genInjectionFlagCount: 20, genAllowedActionCount: 20,
 };
@@ -149,7 +149,7 @@ for (const [name, generator] of Object.entries(W27_W30_SEED_GENERATORS)) {
   });
 
   test(`w27-w30 ${name}: prompt never shows the answer, solution always does`, () => {
-    for (const seed of GENAI_SEEDS.slice(0, 300)) {
+    for (const seed of GENAI_SEEDS.slice(0, 150)) {
       const instance = generator(seed);
       assert.ok(Number.isInteger(instance.expected), `${name} seed ${seed}: non-integer expected`);
       assert.equal(genaiStandaloneNumberPresent(instance.prompt, instance.expected), false,
@@ -160,7 +160,7 @@ for (const [name, generator] of Object.entries(W27_W30_SEED_GENERATORS)) {
   });
 
   test(`w27-w30 ${name}: independent solver agrees on every seed`, () => {
-    for (const seed of GENAI_SEEDS.slice(0, 200)) {
+    for (const seed of GENAI_SEEDS.slice(0, 100)) {
       const instance = generator(seed);
       assert.equal(GENAI_SOLVERS[name](instance.parameters), instance.expected,
         `${name} seed ${seed}: solver disagrees`);

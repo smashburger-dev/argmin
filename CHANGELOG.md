@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.5 — 2026-09-12
+
+Drei neue Aufgabentypen: **Mehrfachauswahl** (mehrere richtige Antworten, alles-oder-nichts oder Teilpunkte), **Fehlerdiagnose** (du benennst die Fehlerursache im eigenen Text — formativ, fließt nicht in die Meisterschaft) und **Worked-Example-Fading** (Lücken in Musterlösungen, die von „nur Endergebnis" bis „alle Zwischenschritte" wachsen). Dazu schließt jetzt jede Visualisierung mit einer **Vorhersage-Aufgabe** ab: Slider-Werte vorgeben, Größe vorhersagen, deterministisch prüfen — mit deutschem Komma und typischen Fehlvorhersagen als erklärtem Feedback.
+
+Unter der Haube: Alle 139 Aufgabenfamilien liegen als validierte JSON-Inhalte vor, Milestone-Anforderungen werden beim Bauen gegen den Katalog geprüft (der Build schlägt fehl, wenn eine Kompetenz geforderte Artefakte nicht liefert), und ein Audit hat Authoren-Material wiederbelebt, das nie bei Lernenden ankam — Hinweise, Fehlerregeln und typische Fehler werden jetzt angezeigt. Außerdem: ~10.000 Zeilen tote Varianten und überholte Metadaten entfernt, die Distinctness-Prüfung misst jetzt ehrlicher, und der LLM-Benchmark deckt alle neuen Typen ab. Prüfung und Referenzlösungen bleiben wie immer deterministisch.
+
 ## 0.5.0 — 2026-09-11
 
 Neu für Lernende: ein Spotlight-Rundgang beim ersten Start, der die wichtigsten Bereiche der App zeigt — in den Einstellungen jederzeit wiederholbar. Unter der Haube weiter aufgeräumt: Die letzte parallele Generator-Schicht ist gefallen, statische Fall-Helfer leben jetzt an einer einzigen Stelle — weiterhin bei byte-identischen Aufgaben. Dazu: schnellere lokale E2E-Läufe.

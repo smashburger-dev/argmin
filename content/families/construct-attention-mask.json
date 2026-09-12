@@ -31,86 +31,13 @@
         "causal_mask ist untere Dreiecksmatrix inklusive Diagonale — np.tril hilft; padding_mask prüft die Längen, bevor sie baut.",
         "masked_softmax: Formprüfung, dann komplett verdeckte Zeilen erkennen ((mask.sum(axis=1) == 0).any()), Scores via np.where auf −∞, Zeilenmaximum abziehen, normalisieren."
       ],
-      "feedbackRules": [
-        {
-          "if": "partial-row-rejected",
-          "then": "Nur Zeilen ohne eine einzige sichtbare Zelle sind illegal — teilweise maskierte Zeilen sind der Normalfall."
-        },
-        {
-          "if": "mask-shape-unchecked",
-          "then": "Die Maskenform muss vor der Anwendung gegen S geprüft werden."
-        },
-        {
-          "if": "overflow",
-          "then": "Ohne Abziehen des Zeilenmaximums liefert exp(1000) inf — Stabilität ist Teil des Vertrags."
-        }
-      ],
       "typicalErrors": [
         "teilweise maskierte Zeilen fälschlich abgelehnt",
         "Maskenform ungeprüft angewendet",
         "Overflow bei großen Scores ohne Maximum-Subtraktion"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(2).shape == (2, 2))\n__check('kausale Maske tril', np.array_equal(causal_mask(2), np.tril(np.ones((2, 2), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(2).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([1, 2], 3).tolist() == [[j < l for j in range(3)] for l in [1, 2]])\nw = masked_softmax([[3.0, -1.0]])\nS = np.asarray([[3.0, -1.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([4], 3)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Kausale Maske n=2, Padding-Längen [1,2], L=3. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(4).shape == (4, 4))\n__check('kausale Maske tril', np.array_equal(causal_mask(4), np.tril(np.ones((4, 4), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(4).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([4, 1, 0, 2], 4).tolist() == [[j < l for j in range(4)] for l in [4, 1, 0, 2]])\nw = masked_softmax([[0.0, 2.0, 2.0]])\nS = np.asarray([[0.0, 2.0, 2.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([5], 4)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Kausale Maske n=4, eine Null-Länge. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(3).shape == (3, 3))\n__check('kausale Maske tril', np.array_equal(causal_mask(3), np.tril(np.ones((3, 3), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(3).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([3, 3, 1], 3).tolist() == [[j < l for j in range(3)] for l in [3, 3, 1]])\nw = masked_softmax([[1.0, 1.0, 1.0]])\nS = np.asarray([[1.0, 1.0, 1.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([4], 3)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Kausale Maske 3, volle erste zwei Sequenzen. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(5).shape == (5, 5))\n__check('kausale Maske tril', np.array_equal(causal_mask(5), np.tril(np.ones((5, 5), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(5).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([1, 1, 1, 1, 5], 5).tolist() == [[j < l for j in range(5)] for l in [1, 1, 1, 1, 5]])\nw = masked_softmax([[4.0, 0.0]])\nS = np.asarray([[4.0, 0.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([6], 5)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Kausale Maske n=5, L=5. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(3).shape == (3, 3))\n__check('kausale Maske tril', np.array_equal(causal_mask(3), np.tril(np.ones((3, 3), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(3).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([2, 0, 2], 2).tolist() == [[j < l for j in range(2)] for l in [2, 0, 2]])\nw = masked_softmax([[10.0, -10.0]])\nS = np.asarray([[10.0, -10.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([3], 2)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Padding L=2, eine leere Sequenz. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(6).shape == (6, 6))\n__check('kausale Maske tril', np.array_equal(causal_mask(6), np.tril(np.ones((6, 6), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(6).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([3, 3, 3], 3).tolist() == [[j < l for j in range(3)] for l in [3, 3, 3]])\nw = masked_softmax([[0.5, 0.0, -0.5]])\nS = np.asarray([[0.5, 0.0, -0.5]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([4], 3)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Kausale Maske n=6, Softmax-Zeile 3. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(2).shape == (2, 2))\n__check('kausale Maske tril', np.array_equal(causal_mask(2), np.tril(np.ones((2, 2), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(2).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([0, 2], 2).tolist() == [[j < l for j in range(2)] for l in [0, 2]])\nw = masked_softmax([[1.0, 0.0]])\nS = np.asarray([[1.0, 0.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([3], 2)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Erste Sequenz leer, L=2. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(4).shape == (4, 4))\n__check('kausale Maske tril', np.array_equal(causal_mask(4), np.tril(np.ones((4, 4), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(4).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([2, 2, 2, 2], 2).tolist() == [[j < l for j in range(2)] for l in [2, 2, 2, 2]])\nw = masked_softmax([[2.0, 2.0]])\nS = np.asarray([[2.0, 2.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([3], 2)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Alle Längen = L=2. Implementiere causal_mask, padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('kausale Maske Form', causal_mask(3).shape == (3, 3))\n__check('kausale Maske tril', np.array_equal(causal_mask(3), np.tril(np.ones((3, 3), dtype=bool))))\n__check('kausale Maske Diagonale True', bool(causal_mask(3).diagonal().all()))\n__check('Padding-Maske Laengen', padding_mask([1, 2, 3], 4).tolist() == [[j < l for j in range(4)] for l in [1, 2, 3]])\nw = masked_softmax([[0.0, 1.0, 0.0, 1.0]])\nS = np.asarray([[0.0, 1.0, 0.0, 1.0]], dtype=float)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('stabile Softmax-Zeile', np.allclose(w, ref, atol=1e-9))\nbig = masked_softmax([[1000.0, 999.0]])\n__check('grosse Scores ohne Overflow', np.all(np.isfinite(big)))\n__check('Zeilensummen 1', np.allclose(masked_softmax([[3.0, 1.0], [0.0, 0.0]]).sum(axis=1), 1.0))\nw_m = masked_softmax([[5.0, 1.0], [0.0, 0.0]], mask=[[True, False], [True, True]])\n__check('maskierte Zelle Gewicht 0', np.allclose(w_m[0], [1.0, 0.0], atol=1e-12))\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[False, False]])\n    __check('komplett maskierte Zeile -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('komplett maskierte Zeile -> ValueError', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], mask=[[True, False, True]])\n    __check('Maskenform geprueft -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Maskenform geprueft -> ValueError', True)\n\ntry:\n    padding_mask([5], 4)\n    __check('Laenge ausserhalb L -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('Laenge ausserhalb L -> ValueError', True)\n\n"
-          },
-          "prompt": "Längen 1,2,3 bei L=4. Implementiere causal_mask, padding_mask und masked_softmax."
-        }
-      ]
+      "graderId": "pyodide"
     },
     {
       "caseId": "construct-padding-mask-softmax",
@@ -140,86 +67,13 @@
         "Prüfe jede Länge vor dem Erzeugen der Bool-Matrix.",
         "Nach dem Maskieren Maximum abziehen; eine Zeile ohne True darf nicht normalisiert werden."
       ],
-      "feedbackRules": [
-        {
-          "if": "bad-padding",
-          "then": "Bei length=1 wird nur Position 0 sichtbar; Positionen 1 und 2 bleiben im konkreten Test False."
-        },
-        {
-          "if": "unstable-softmax",
-          "then": "Scores 1000 und 999 benötigen die Maximum-Subtraktion, damit keine Inf-Werte entstehen."
-        },
-        {
-          "if": "empty-row-accepted",
-          "then": "Eine vollständig maskierte Zeile besitzt keine Normalisierungsmasse und muss ValueError auslösen."
-        }
-      ],
       "typicalErrors": [
         "Paddingpositionen als sichtbar markiert",
         "Softmax vor statt nach der Maskierung normalisiert",
         "leere sichtbare Zeile durch Nullsumme geteilt"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide",
-      "variants": [
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([2, 1, 3], 3).tolist() == [[j < l for j in range(3)] for l in [2, 1, 3]])\nw = masked_softmax([[1.0, 0.0, 2.0]], [[True, True, False]])\nS = np.asarray([[1.0, 0.0, 2.0]], dtype=float)\nkeep = np.asarray([[True, True, False]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([4], 3)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "Padding [2,1,3] L=3, Maske blendet letzte Spalte. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([3, 3], 3).tolist() == [[j < l for j in range(3)] for l in [3, 3]])\nw = masked_softmax([[0.0, 0.0, 0.0]], [[True, True, True]])\nS = np.asarray([[0.0, 0.0, 0.0]], dtype=float)\nkeep = np.asarray([[True, True, True]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([4], 3)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "Zwei volle Sequenzen L=3. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([1, 0, 1], 2).tolist() == [[j < l for j in range(2)] for l in [1, 0, 1]])\nw = masked_softmax([[4.0, -1.0]], [[True, False]])\nS = np.asarray([[4.0, -1.0]], dtype=float)\nkeep = np.asarray([[True, False]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([3], 2)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "Eine Null-Länge, L=2. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([4, 2], 4).tolist() == [[j < l for j in range(4)] for l in [4, 2]])\nw = masked_softmax([[2.0, 2.0, 2.0, 2.0]], [[True, True, True, False]])\nS = np.asarray([[2.0, 2.0, 2.0, 2.0]], dtype=float)\nkeep = np.asarray([[True, True, True, False]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([5], 4)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "L=4, zweite Sequenz Länge 2. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([2, 2, 2], 2).tolist() == [[j < l for j in range(2)] for l in [2, 2, 2]])\nw = masked_softmax([[9.0, 1.0]], [[False, True]])\nS = np.asarray([[9.0, 1.0]], dtype=float)\nkeep = np.asarray([[False, True]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([3], 2)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "L=2, nur zweite Position sichtbar. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([0, 3, 2], 3).tolist() == [[j < l for j in range(3)] for l in [0, 3, 2]])\nw = masked_softmax([[0.0, 5.0, -5.0]], [[True, True, True]])\nS = np.asarray([[0.0, 5.0, -5.0]], dtype=float)\nkeep = np.asarray([[True, True, True]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([4], 3)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "Erste Sequenz leer. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([1, 1, 1, 1], 1).tolist() == [[j < l for j in range(1)] for l in [1, 1, 1, 1]])\nw = masked_softmax([[3.0]], [[True]])\nS = np.asarray([[3.0]], dtype=float)\nkeep = np.asarray([[True]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([2], 1)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "L=1, vier Sequenzen Länge 1. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([5, 1], 5).tolist() == [[j < l for j in range(5)] for l in [5, 1]])\nw = masked_softmax([[1.0, 2.0, 3.0, 4.0, 5.0]], [[True, False, False, False, False]])\nS = np.asarray([[1.0, 2.0, 3.0, 4.0, 5.0]], dtype=float)\nkeep = np.asarray([[True, False, False, False, False]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([6], 5)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "L=5, nur erste Position. Implementiere padding_mask und masked_softmax."
-        },
-        {
-          "parameters": {
-            "tests": "__check('Padding-Maske', padding_mask([2, 4], 4).tolist() == [[j < l for j in range(4)] for l in [2, 4]])\nw = masked_softmax([[0.0, 1.0, 0.0, 1.0]], [[True, True, False, False]])\nS = np.asarray([[0.0, 1.0, 0.0, 1.0]], dtype=float)\nkeep = np.asarray([[True, True, False, False]], dtype=bool)\nS = np.where(keep, S, -np.inf)\nS = S - S.max(axis=1, keepdims=True)\nref = np.exp(S); ref = ref / ref.sum(axis=1, keepdims=True)\n__check('maskiertes Softmax', np.allclose(w, ref, atol=1e-9))\n__check('stabil bei grossen Scores', np.all(np.isfinite(masked_softmax([[1000.0, 999.0]], [[True, True]]))))\ntry:\n    padding_mask([5], 4)\n    __check('ungueltige Laenge', False, 'kein ValueError')\nexcept ValueError:\n    __check('ungueltige Laenge', True)\n\ntry:\n    masked_softmax([[1.0, 2.0]], [[False, False]])\n    __check('leere Zeile', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere Zeile', True)\n\n"
-          },
-          "prompt": "Längen 2 und 4 bei L=4. Implementiere padding_mask und masked_softmax."
-        }
-      ]
+      "graderId": "pyodide"
     }
   ]
 }

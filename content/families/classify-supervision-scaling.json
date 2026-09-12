@@ -42,9 +42,7 @@
         "w16-e3"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Zuordnung Skalen und Aufsicht: Du hast SVM (Klassifikation mit Labels), PCA (Richtungen größter Varianz) und k-Means (Clustering). Welche Aussage über die drei Verfahren ist korrekt?",
       "fullSolution": "SVM ist überwacht (Labels), PCA und k-Means unüberwacht. Alle drei reagieren auf Merkmals-Skalen: SVM und k-Means über Distanzen, PCA über Varianzen — deshalb vorher standardisieren (Statistiken nur aus dem Trainingsteil).",
       "hints": [
@@ -62,9 +60,6 @@
         "Skalierungsbedarf nur bei einem Verfahren vermuten",
         "PCA wegen „Komponenten“ als überwacht einstufen"
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -94,9 +89,7 @@
           "parameters": {
             "setting": "Labels vs Distanz"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -126,9 +119,7 @@
           "parameters": {
             "setting": "nicht alle überwacht"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -158,9 +149,7 @@
           "parameters": {
             "setting": "k ist kein Label"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -190,9 +179,7 @@
           "parameters": {
             "setting": "PCA ohne y"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -222,9 +209,7 @@
           "parameters": {
             "setting": "Einheiten"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -254,9 +239,7 @@
           "parameters": {
             "setting": "Pipeline-Reihenfolge"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -286,9 +269,7 @@
           "parameters": {
             "setting": "RBF-SVM vs k-Means"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -318,9 +299,7 @@
           "parameters": {
             "setting": "Varianz PCA"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -350,9 +329,7 @@
           "parameters": {
             "setting": "Kurzfrage Drei"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -388,9 +365,7 @@
         "c1-authored"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Welche Aussage verbindet PCA und Skalierung korrekt?",
       "fullSolution": "PCA ist unüberwacht und maximiert Varianzrichtungen. Unterschiedliche Einheiten können Varianzen dominieren, daher ist Standardisierung oft sinnvoll und muss aus dem Trainingsteil bestimmt werden.",
       "hints": [
@@ -408,9 +383,6 @@
         "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert.",
         "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -440,9 +412,7 @@
           "parameters": {
             "setting": "keine Ziele"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -472,9 +442,7 @@
           "parameters": {
             "setting": "nicht Vorhersage"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -504,9 +472,7 @@
           "parameters": {
             "setting": "Einheiten"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -536,9 +502,7 @@
           "parameters": {
             "setting": "nicht immer Labels"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -568,9 +532,7 @@
           "parameters": {
             "setting": "Train-Statistik"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -600,9 +562,7 @@
           "parameters": {
             "setting": "cm vs kg"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -632,9 +592,7 @@
           "parameters": {
             "setting": "whitening vs Labels"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -664,9 +622,7 @@
           "parameters": {
             "setting": "Supervised PCA Verwechslung"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -696,9 +652,7 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -734,9 +688,7 @@
         "c1-authored"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Warum sollte eine SVM mit RBF-Kernel Merkmale typischerweise standardisieren?",
       "fullSolution": "Distanzen und damit Kernelwerte hängen an den Merkmalskalen. Ein Merkmal mit großer Einheit kann die Geometrie dominieren; die Skalierungsparameter werden nur aus dem Training gelernt.",
       "hints": [
@@ -754,9 +706,6 @@
         "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt.",
         "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -786,9 +735,7 @@
           "parameters": {
             "setting": "RBF-Distanz"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -818,9 +765,7 @@
           "parameters": {
             "setting": "keine Labels aus z"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -850,9 +795,7 @@
           "parameters": {
             "setting": "reell"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -882,9 +825,7 @@
           "parameters": {
             "setting": "bleibt überwacht"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -914,9 +855,7 @@
           "parameters": {
             "setting": "linear SVM"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -946,9 +885,7 @@
           "parameters": {
             "setting": "Euro vs Stück"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -978,9 +915,7 @@
           "parameters": {
             "setting": "Train-only"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1010,9 +945,7 @@
           "parameters": {
             "setting": "C vs Skala"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -1042,9 +975,7 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",

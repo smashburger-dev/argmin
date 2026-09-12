@@ -490,7 +490,7 @@ export function genMetaErrorClassify(seed) {
   return caseBank(META_CASES, seed, {
     finish: ({ metaCase, caseIndex, choices, correctChoiceId, correctText }) => ({
       parameters: { caseId: metaCase.caseId, caseIndex },
-      expected: { correctChoice: correctChoiceId },
+      expected: {},
       choices,
       prompt: `Beobachtung: ${metaCase.symptom}\n\nWelcher n\u00e4chste Schritt des Debug-Prozesses (Beobachtung \u2192 Reproduktion \u2192 Hypothese \u2192 frischer Test) passt am besten zu dieser Beobachtung?`,
       fullSolution: `Richtig ist: ${correctText}\nDie Beobachtung passt zum Fehlerbild \u201e${metaCase.caseId}\u201c. Ein guter Debug-Schritt benennt die Hypothese explizit und pr\u00fcft sie an einem frischen, gezielten Testfall \u2014 statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.`,
@@ -555,7 +555,7 @@ export function genExceptionBoundary(seed) {
     },
     finish: ({ metaCase, caseIndex, choices, correctChoiceId, correctText, detail }) => ({
       parameters: { caseId: metaCase.caseId, caseIndex },
-      expected: { correctChoice: correctChoiceId },
+      expected: {},
       choices,
       prompt: `Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n${detail.code}`,
       fullSolution: `Richtig: ${correctText}${detail.noError ? '' : ` Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.`}`,
@@ -656,7 +656,7 @@ export function genGitNextAction(seed) {
       const localizedChoices = fileName ? choices.map((choice) => ({ ...choice, text: localize(choice.text) })) : choices;
       return {
         parameters: { caseId: metaCase.caseId, caseIndex, ...(fileName ? { fileName } : {}) },
-        expected: { correctChoice: correctChoiceId },
+        expected: {},
         choices: localizedChoices,
         prompt: `Situation: ${localize(metaCase.state)}\n\nWelcher Schritt passt jetzt am besten?`,
         fullSolution: `Richtig: ${localize(options[0])}. ${localize(metaCase.insight)}`,
@@ -713,7 +713,7 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
     : 'Welche Git-Operation passt jetzt?';
   return {
     parameters: { caseId, difficulty, ...(fileName ? { fileName } : {}) },
-    expected: { correctChoice: ids[rotation] },
+    expected: {},
     choices,
     prompt: `Situation: ${meta.state}${fileNote}\n\n${question}`,
     fullSolution: `Richtig: ${meta.correct}. ${meta.insight}`,

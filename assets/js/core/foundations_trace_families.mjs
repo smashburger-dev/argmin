@@ -892,7 +892,7 @@ export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   const ids = ['a', 'b'];
   return {
     ...base,
-    expected: { correctChoice: ids[rotation] },
+    expected: {},
     choices: buildRotatedChoices([correct.text, distractor.text], rotation, ids),
   };
 }

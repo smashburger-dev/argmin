@@ -27,7 +27,7 @@ test('anchor extras: pinned profile and key position of the oracle case', () => 
   assert.equal(doc.cases.length, 1);
   const body = doc.cases.find((item) => item.caseId === CASE_ID);
   assert.equal(body.difficultyProfile, 'intro');
-  assert.equal(body.expected.correctChoice, 'b');
+  assert.equal(body.choices.find((choice) => choice.correct).id, 'b');
 });
 
 test('bank extras: 12-16 scenarios, exactly one oracle row, no filler texts', () => {

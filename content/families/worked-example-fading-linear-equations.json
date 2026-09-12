@@ -27,7 +27,10 @@
       "expected": {
         "kind": "gaps",
         "gaps": [
-          { "answer": "3", "input": "numeric" }
+          {
+            "answer": "3",
+            "input": "numeric"
+          }
         ]
       },
       "prompt": "Vervollständige den Lösungsweg für $4x + 5 = 17$. Das Musterbeispiel zeigt die komplette Umformung — nur die letzte Zeile fehlt. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $4x + 5 = 17 \\;|\\;-5$<br>$4x = 12$<br>$x = [[gap]]$",
@@ -75,8 +78,14 @@
       "expected": {
         "kind": "gaps",
         "gaps": [
-          { "answer": "54", "input": "numeric" },
-          { "answer": "9", "input": "numeric" }
+          {
+            "answer": "54",
+            "input": "numeric"
+          },
+          {
+            "answer": "9",
+            "input": "numeric"
+          }
         ]
       },
       "prompt": "Vervollständige den Lösungsweg für $6x - 5 = 49$. Die Umformungsoperation ist vorgegeben — ergänze beide Ergebniszeilen. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $6x - 5 = 49 \\;|\\;+5$<br>$6x = [[gap]]$<br>$x = [[gap]]$",
@@ -97,10 +106,6 @@
         {
           "if": "gap-1-value",
           "then": "Zweite Lücke = erste Lücke geteilt durch a — der Schritt ist Division, nicht Ablesen."
-        },
-        {
-          "if": "step-skipped",
-          "then": "Die Reihenfolge ist fest: erst die Konstante wegschaffen (Mittelzeile), dann durch a teilen."
         }
       ],
       "typicalErrors": [
@@ -133,9 +138,18 @@
       "expected": {
         "kind": "gaps",
         "gaps": [
-          { "answer": "13", "input": "numeric" },
-          { "answer": "10", "input": "numeric" },
-          { "answer": "2,5", "input": "numeric" }
+          {
+            "answer": "13",
+            "input": "numeric"
+          },
+          {
+            "answer": "10",
+            "input": "numeric"
+          },
+          {
+            "answer": "2,5",
+            "input": "numeric"
+          }
         ]
       },
       "prompt": "Vervollständige den Lösungsweg für $4x + 13 = 23$. Ab der Ausgangsgleichung fehlt jeder Schritt — ergänze Rechenoperation und Ergebniszeilen. Fülle jede Lücke mit dem passenden Wert — ein Vorzeichen vor einer Lücke steht bereits im Beispiel. <br> $4x + 13 = 23 \\;|\\;-[[gap]]$<br>$4x = [[gap]]$<br>$x = [[gap]]$",
@@ -160,10 +174,6 @@
         {
           "if": "gap-2-value",
           "then": "Letzte Lücke = Mittelzeile geteilt durch a; ein Komma-Ergebnis ist erlaubt (z. B. 2,5)."
-        },
-        {
-          "if": "step-skipped",
-          "then": "Jeder Schritt baut auf dem vorherigen auf: Operation → Mittelzeile → Division durch a."
         }
       ],
       "typicalErrors": [

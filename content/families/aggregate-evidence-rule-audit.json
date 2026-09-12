@@ -76,9 +76,6 @@
         "alle Instanzen gestrichen",
         "Definitionen als Treffer mitgezählt"
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic",
       "variants": [
@@ -261,24 +258,11 @@
         "In E wird Instanz b disqualifiziert — welche Treffer bleiben, und wie groß ist ihre Menge?",
         "In E2 zählen beide Instanzen; der Abstand ergibt sich aus den Tageszahlen der Tagesspalte (02 bis 21)."
       ],
-      "feedbackRules": [
-        {
-          "if": "first-line-wrong",
-          "then": "Ohne b bleibt nur Treffer a → weniger als 2 Treffer → nicht_erfuellt, egal wie alt die Definition ist."
-        },
-        {
-          "if": "second-line-wrong",
-          "then": "E2: Treffer {a, b}, Tage 02 und 21 → Abstand 19 ≥ 14 und 2 Treffer → erfuellt."
-        }
-      ],
       "typicalErrors": [
         "disqualifizierte Instanz mitgezählt",
         "Abstand über alle Ereignisse statt nur der Treffer gerechnet",
         "Tagesspalte als ganze Zahl statt [-2:] gelesen"
       ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic",
       "variants": [
@@ -445,28 +429,11 @@
         "Zwei Sets/Dicts bauen: eines für Treffer-Daten je Instanz, eines für Definitions-Instanzen — beide ohne die gesperrten.",
         "Der Abstand nutzt min/max über die Treffer-DATEN, nicht über alle Ereignisse."
       ],
-      "feedbackRules": [
-        {
-          "if": "counts-events",
-          "then": "Gezählt werden INSTANZEN, nicht Ereignisse — drei Hits auf derselben Instanz sind ein Treffer."
-        },
-        {
-          "if": "sperrt-alles",
-          "then": "Die Lösungsanzeige sperrt genau ihre Instanz — alles zu sperren wäre die harte, hier nicht vereinbarte Variante."
-        },
-        {
-          "if": "abstand-mit-definitionen",
-          "then": "Definitionen zählen in ihrer eigenen Regel — in den 14-Tage-Abstand fließen nur Treffer-Daten."
-        }
-      ],
       "typicalErrors": [
         "Ereignisse statt Instanzen gezählt",
         "Lösungsanzeige global gesperrt",
         "Abstand über alle Ereignisdaten berechnet"
       ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "variants": [
