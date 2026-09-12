@@ -12,14 +12,14 @@ test('week plan translates small mouse-wheel ticks into horizontal scroll', asyn
     await page.waitForTimeout(60);
   }
   await expect.poll(async () => track.evaluate((element) => element.scrollLeft)).toBeGreaterThan(start + 200);
-  await page.waitForTimeout(1600);
-  const settled = await track.evaluate((element) => {
+  // Snap-Settle pollt bis zur Ruhe — fester Timeout flake't unter CI-Last.
+  await expect.poll(async () => track.evaluate((element) => {
     const slide = element.querySelector<HTMLElement>(':scope > *');
     const gap = Number.parseFloat(getComputedStyle(element).columnGap) || 0;
     const step = (slide?.offsetWidth ?? element.clientWidth) + gap;
-    return { left: element.scrollLeft, mod: element.scrollLeft % step, step };
-  });
-  expect(Math.min(settled.mod, settled.step - settled.mod)).toBeLessThan(3);
+    const mod = element.scrollLeft % step;
+    return Math.min(mod, step - mod);
+  })).toBeLessThan(3);
 });
 
 test('week plan hands vertical scroll back to the page at its right edge', async ({ page }) => {

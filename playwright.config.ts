@@ -14,6 +14,9 @@ export default defineConfig({
   workers: process.env.CI ? 4 : '50%',
   forbidOnly: true,
   retries: 0,
+  // Kalter vite-dev-Transform des lazy Familien-/Modul-Chunks kann in CI
+  // unter 4 Workern >5s dauern — Assertions auf echten Inhalt brauchen Puffer.
+  expect: { timeout: 15000 },
   reporter: 'line',
   use: {
     baseURL: `http://127.0.0.1:${port}`,
