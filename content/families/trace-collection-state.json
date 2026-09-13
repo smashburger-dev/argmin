@@ -75,6 +75,45 @@
       "graderId": "deterministic"
     },
     {
+      "caseId": "list-alias-negative",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-alias",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]; mindestens einer von a, b negativ",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile — und welche Liste steht jeweils hinter y? Beide Referenzen im Blick behalten, jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2]).",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: y = x erzeugt keine Kopie, sondern einen zweiten Namen für dieselbe Liste — der x-Zustand ist daher ab Zeile 2 zugleich der y-Zustand.\n\nJede Mutation über y (append) ist sofort in x sichtbar, und die Indexzuweisung über x gilt ebenso für y: beide Referenzen zeigen zu jeder Zeile dasselbe Objekt.",
+      "hints": [
+        "y = x erzeugt keinen zweiten Speicher: beide Namen zeigen auf dieselbe Liste — eine Mutation über die eine Referenz verändert beide Sichten.",
+        "Tracke die Liste zeilenweise: append über y verlängert die gemeinsame Liste, die Indexzuweisung über x überschreibt Position 0 derselben Liste. Der y-Zustand ist zu jeder Zeile der x-Stand."
+      ],
+      "typicalErrors": [
+        "y = x als Kopie gelesen und die append-Mutation in x übersehen",
+        "nur x getrackt und die geteilte Sicht auf y ignoriert",
+        "Vorzeichen der negativen Startwerte beim Überschreiben verloren"
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic",
+      "title": "Listen-Alias: beide Referenzen verfolgen"
+    },
+    {
       "caseId": "list-copy-steps",
       "difficultyProfile": "intro",
       "masteryEligible": true,

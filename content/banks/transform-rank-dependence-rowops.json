@@ -23,9 +23,18 @@
         3,
         4
       ],
-      "targetRank": 1,
+      "targetRank": 2,
       "bound": 20,
       "caseId": "rank-3x4-line"
+    },
+    "challenge-4x4": {
+      "dims": [
+        4,
+        4
+      ],
+      "targetRank": 2,
+      "bound": 15,
+      "caseId": "rank-4x4-two-combo"
     }
   }
 }

@@ -43,6 +43,7 @@
       "caseId": "retrieval-evaluate-queries",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w27-e6"
       ],
@@ -73,7 +74,8 @@
         "bei MRR alle relevanten Dokumente summiert"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Mini-Suchindex mit Metriken bewerten"
     }
   ]
 }

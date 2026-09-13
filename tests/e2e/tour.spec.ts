@@ -19,7 +19,7 @@ test('spotlight tour walks all steps, navigates by hash and persists tourDone', 
 
   const next = dialog.getByRole('button', { name: 'Weiter', exact: true });
   await expect(dialog.getByRole('heading', { name: 'Alles in Reichweite', exact: true })).toBeVisible();
-  await expect(page.getByText(/Schritt \d+ von 8/)).toBeVisible();
+  await expect(page.getByText(/Schritt \d+ von 9/)).toBeVisible();
   await next.click();
 
   await expect(dialog.getByRole('heading', { name: 'Dein nächster Schritt', exact: true })).toBeVisible();
@@ -38,6 +38,10 @@ test('spotlight tour walks all steps, navigates by hash and persists tourDone', 
 
   await expect(dialog.getByRole('heading', { name: 'Review', exact: true })).toBeVisible();
   await expect(page).toHaveURL(/#\/review/);
+  await next.click();
+
+  await expect(dialog.getByRole('heading', { name: 'Tägliche Challenge', exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/#\/challenge/);
   await next.click();
 
   await expect(dialog.getByRole('heading', { name: 'Fortschritt', exact: true })).toBeVisible();

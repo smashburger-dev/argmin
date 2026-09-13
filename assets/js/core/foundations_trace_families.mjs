@@ -324,7 +324,12 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
 // die gepinnte statische Quelle w01-e6 (zwei unabhängige Aufrufe, Autorität
 // fix, propertyTest: false) — gleiche Antwortform, gleicher Lösungsweg.
 
-function callCompositionProfileAccepts(difficulty) {
+function callCompositionProfileAccepts(caseId, difficulty) {
+  // Case identity wins over the profile axis: the negative-chain case always
+  // draws the strict shape so its name stays honest at every difficulty.
+  if (caseId === 'both-orders-negative-chain') {
+    return (parameters) => parameters.ga < 0 && maxAbs([parameters.fb, parameters.gb, parameters.v]) >= 4;
+  }
   if (difficulty === 'core') return null;
   if (difficulty === 'intro') {
     return (parameters) => maxAbs([parameters.fb, parameters.gb, parameters.v]) <= 3;
@@ -355,13 +360,17 @@ export function generateTraceCallCompositionFamily({ seed, caseId, difficulty })
     const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
     return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
   }
-  if (caseId !== 'both-orders-linear-functions') throw new Error(`Unbekannter Fall ${caseId}`);
+  // Both linear-composition cases draw from genFunctionCompose; the challenge
+  // case shares the same profile axis (negative ga + larger magnitudes).
+  if (caseId !== 'both-orders-linear-functions' && caseId !== 'both-orders-negative-chain') {
+    throw new Error(`Unbekannter Fall ${caseId}`);
+  }
   const drawn = drawTraceInstance(genFunctionCompose, {
     seed,
     caseId,
     difficulty,
     wantShape: () => true,
-    profileAccepts: callCompositionProfileAccepts(difficulty),
+    profileAccepts: callCompositionProfileAccepts(caseId, difficulty),
   });
   const generated = {
     parameters: { caseId, difficulty, form: 'linear-both-orders', ...drawn.parameters },
@@ -381,6 +390,7 @@ export const TRACE_CALL_COMPOSITION_CONTRACT = {
   masteryEligible: true,
   caseTypes: [
     { caseId: 'both-orders-linear-functions' },
+    { caseId: 'both-orders-negative-chain', propertyTest: false },
     { caseId: 'two-functions-one-print', propertyTest: false },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
@@ -396,10 +406,16 @@ export const TRACE_CALL_COMPOSITION_CONTRACT = {
 const ACCUMULATOR_SHAPES = {
   'elif-branch-value': 'elif',
   'while-counter-with-stop-state': 'while',
+  'while-two-accumulators': 'while',
   'for-filter-accumulator': 'forfilter',
 };
 
 function accumulatorProfileAccepts(caseId, difficulty) {
+  // Case identity wins over the profile axis: the two-accumulator case always
+  // draws the strict shape so its name stays honest at every difficulty.
+  if (caseId === 'while-two-accumulators') {
+    return (parameters) => parameters.iterations >= 4 && parameters.n0 >= 12;
+  }
   if (difficulty === 'core') return null;
   if (caseId === 'elif-branch-value') {
     if (difficulty === 'intro') return (parameters) => Math.abs(parameters.x) <= 6;
@@ -513,6 +529,7 @@ export const ACCUMULATOR_COUNT_CONTRACT = {
   caseTypes: [
     { caseId: 'elif-branch-value' },
     { caseId: 'while-counter-with-stop-state' },
+    { caseId: 'while-two-accumulators', propertyTest: false },
     { caseId: 'for-filter-accumulator' },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
@@ -531,6 +548,7 @@ export const ACCUMULATOR_COUNT_CONTRACT = {
 const COLLECTION_SHAPES = {
   'list-mutate-steps': 'list-mutate',
   'list-alias-steps': 'list-alias',
+  'list-alias-negative': 'list-alias',
   'list-copy-steps': 'list-copy',
   'list-rebind-steps': 'list-rebind',
   'set-add-discard-steps': 'set-steps',
@@ -668,7 +686,16 @@ function traceSnippetNumbers(snippet) {
   return intsOf(traceCodeLines(snippet).join('\n'));
 }
 
-function collectionProfileAccepts(difficulty) {
+function collectionProfileAccepts(difficulty, caseId) {
+  // Case identity wins over the profile axis: the alias case always requires
+  // a negative initial literal and larger magnitudes, at every difficulty.
+  if (caseId === 'list-alias-negative') {
+    return (parameters) => {
+      const [initLine] = traceCodeLines(parameters.snippet);
+      return intsOf(initLine).some((value) => value < 0)
+        && maxAbs(traceSnippetNumbers(parameters.snippet)) >= 7;
+    };
+  }
   if (difficulty === 'core') return null;
   if (difficulty === 'intro') return (parameters) => maxAbs(traceSnippetNumbers(parameters.snippet)) <= 5;
   if (difficulty === 'stretch') return (parameters) => hasNegative(traceSnippetNumbers(parameters.snippet));
@@ -701,7 +728,7 @@ export function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
     caseId,
     difficulty,
     wantShape: (candidate) => candidate.parameters.family === shape,
-    profileAccepts: shape === 'set-steps' ? null : collectionProfileAccepts(difficulty),
+    profileAccepts: shape === 'set-steps' ? null : collectionProfileAccepts(difficulty, caseId),
   });
   const body = staticCaseBody('trace-collection-state', caseId);
   const codes = traceCodeLines(drawn.parameters.snippet);
@@ -727,6 +754,7 @@ export const TRACE_COLLECTION_CONTRACT = {
   caseTypes: [
     { caseId: 'list-mutate-steps' },
     { caseId: 'list-alias-steps' },
+    { caseId: 'list-alias-negative', propertyTest: false },
     { caseId: 'list-copy-steps' },
     { caseId: 'list-rebind-steps' },
     { caseId: 'set-add-discard-steps' },

@@ -79,6 +79,7 @@
       "caseId": "deep-forward-chain",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w18-e6"
       ],
@@ -109,7 +110,8 @@
         "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Tiefe Forward-Kette mit Verträgen"
     }
   ]
 }

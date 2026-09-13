@@ -40,7 +40,7 @@ import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
-import { shuffle } from './generator_draw_kit.mjs';
+import { parsonsInitialOrder as kitParsonsInitialOrder } from './generator_draw_kit.mjs';
 import { logTerm, signed } from './foundations_generators.mjs';
 import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
 import guardedLoopDoc from '../../../content/families/construct-guarded-loop.json' with { type: 'json' };
@@ -987,24 +987,7 @@ export function generateRegressionSuiteFamily({ seed, caseId, difficulty }) {
 // Poolreihenfolge). Lösung und Distraktoren sind fallfixiert; der Solver
 // kennt nur die geordnete Lösungssequenz je Fall (Referenzvertrag).
 
-const shuffledIds = (ids, seed) => shuffle(rng(seed >>> 0), ids);
-
-function parsonsInitialOrder(pool, seed, difficulty) {
-  if (profileTier(difficulty) === 0) {
-    const r = rng(seed >>> 0);
-    const out = [...pool];
-    const i = out.length > 1 ? randInt(r, 0, out.length - 2) : 0;
-    [out[i], out[i + 1]] = [out[i + 1], out[i]];
-    return out;
-  }
-  let bump = 0;
-  let order = shuffledIds(pool, ((seed * 31 + profileTier(difficulty)) >>> 0));
-  while (bump < 8 && order.every((id, index) => id === pool[index])) {
-    bump += 1;
-    order = shuffledIds(pool, (((seed * 31) + profileTier(difficulty) + bump * 101) >>> 0));
-  }
-  return order;
-}
+const parsonsInitialOrder = (pool, seed, difficulty) => kitParsonsInitialOrder(pool, seed, difficulty, CONSTRUCT_PROFILES);
 
 function parsonsGenerate({ seed, difficulty, parsonsCase, fragments, solutionOrder, distractors, prompt, fullSolution, extraParameters }) {
   const pool = [...solutionOrder, ...distractors];

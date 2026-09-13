@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import type { CatalogData } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
@@ -7,6 +8,11 @@ import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
+
+// Lazy boundary: ChallengeTeaser lives in ChallengeView.tsx behind the
+// same lazy chunk as the challenge route — a static import here would pull
+// the family-core chunk (generator_draw_kit et al.) into the eager bundle.
+const ChallengeTeaser = lazy(() => import('./ChallengeView').then((module) => ({ default: module.ChallengeTeaser })));
 
 const TODAY_BOOSTS = [
   'geht die Rechnung auf.',
@@ -215,6 +221,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           {resume ? <a class="text-link resume-link" href={resume.href}>{resume.label}</a> : null}
         </article>
         <MilestoneCard catalog={catalog} progress={progress} />
+        <Suspense fallback={null}><ChallengeTeaser catalog={catalog} /></Suspense>
         <FollowUpCard executableReviews={executableReviews} nextNonReview={nextNonReview} exerciseById={exerciseById} competencyById={competencyById} />
       </div>
       <section class="weekly-plan" aria-labelledby="weekly-plan-title" data-tour="today-plan">

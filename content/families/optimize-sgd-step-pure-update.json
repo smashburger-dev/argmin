@@ -7,6 +7,7 @@
       "caseId": "pure-train-step",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w19-e6"
       ],
@@ -37,7 +38,8 @@
         "Update in Gradientenrichtung (Plus statt Minus)"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Autograd-Trainingsschritt"
     },
     {
       "caseId": "sgd-momentum-step",
@@ -73,7 +75,8 @@
         "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Momentum-SGD-Schritt"
     }
   ]
 }

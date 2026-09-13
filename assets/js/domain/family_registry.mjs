@@ -192,13 +192,15 @@ export function familyHint(
   { level = 0, answer = null, correct = null, firstBadRow = null } = {},
 ) {
   if (level === 1) return typeof summary === 'string' && summary ? summary : null;
+  if (!Number.isInteger(level) || level < 2) return null;
+  const authored = Array.isArray(hints) ? hints[level - 2] : null;
+  if (typeof authored === 'string' && authored) return authored;
   if (level !== 2) return null;
   const activityHint = ACTIVITY_HINTS[activityType]?.(
     { choices, parameters, expectedAnswer },
     { answer, correct },
   );
   if (activityHint !== undefined) return activityHint;
-  if (Array.isArray(hints) && hints.length) return hints[0];
   if (traceTable && Number.isInteger(firstBadRow) && firstBadRow >= 0) {
     return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
   }

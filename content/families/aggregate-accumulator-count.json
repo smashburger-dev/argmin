@@ -76,6 +76,45 @@
       "graderId": "deterministic"
     },
     {
+      "caseId": "while-two-accumulators",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-python-control-flow",
+        "c-python-collections"
+      ],
+      "parameters": {
+        "shape": "while",
+        "domain": {
+          "step": "ganze Zahl in [2, 4]",
+          "stop": "ganze Zahl in [1, 4]",
+          "n0": "stop + (iterations - 1) * step + ganze Zahl in [1, step]",
+          "iterations": "ganze Zahl in [2, 5]"
+        }
+      },
+      "expected": {
+        "kind": "output-lines"
+      },
+      "prompt": "Was gibt dieses Programm aus? Zwei Zähler gleichzeitig mitführen: summe sammelt die durchlaufenen n-Werte, n läuft gegen die Abbruchgrenze — beide Zahlen am Ende in einer Zeile.",
+      "fullSolution": "Durchläufe: {durchlaeufe}.\n\nDie Schleife bricht ab, sobald n > {stop} falsch wird — der Endwert ist n = {nEnd}. Ausgabe: {output}.",
+      "hints": [
+        "Tracke die beiden Größen getrennt: in jeder Runde wird zuerst summe um n erhöht, danach n um den Schritt verringert.",
+        "Die Iterationsgrenze ist n > stop: nach dem letzten Durchlauf steht in n ein Wert ≤ stop. Die Ausgabe ist summe gefolgt von diesem Endwert — nicht der letzte addierte n-Wert."
+      ],
+      "typicalErrors": [
+        "nur die Summe notiert und den Endwert von n vergessen",
+        "Schleife einen Durchlauf zu früh oder zu spät beendet",
+        "Endwert von n und die letzte Summe in der Ausgabe vertauscht"
+      ],
+      "activityType": "predict-output",
+      "graderId": "deterministic",
+      "title": "Zwei Zähler in der while-Schleife"
+    },
+    {
       "caseId": "for-filter-accumulator",
       "difficultyProfile": "core",
       "masteryEligible": true,

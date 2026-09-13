@@ -12,7 +12,7 @@
             "Rang ohne Zeilentausch: Pivotspalte mit Null oben wird übersprungen.",
             "Ein hartkodierter Testfall je Funktion als Beleg."
           ],
-          "solution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle."
+          "solution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System.\n\nPrüfen vor Rechnen, keine hartkodierten Fälle."
         },
         {
           "key": "matvec-erst-dann-shape",

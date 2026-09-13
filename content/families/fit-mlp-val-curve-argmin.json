@@ -7,6 +7,7 @@
       "caseId": "mlp-val-curve-argmin",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w20-e6"
       ],
@@ -37,7 +38,8 @@
         "argmin 1-basiert oder als np.int64 statt int zurückgegeben"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "MLP-Training: Argmin der Val-Kurve"
     }
   ]
 }

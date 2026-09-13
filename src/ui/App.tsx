@@ -21,6 +21,7 @@ import { initPageEase } from './page-ease';
 
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
 const FamilyExerciseView = lazy(() => import('./FamilyExerciseView').then((module) => ({ default: module.FamilyExerciseView })));
+const ChallengeView = lazy(() => import('./ChallengeView').then((module) => ({ default: module.ChallengeView })));
 
 const iconProps = {
   width: 16,
@@ -63,6 +64,11 @@ const navigation: NavigationItem[] = [
     ),
   },
   {
+    route: 'challenge', label: 'Challenge', secondary: true, icon: (
+      <svg {...iconProps}><path d="M9 1.8 4.3 8.7h3.1L6.4 14.2l5.3-7.7H8.6z" /></svg>
+    ),
+  },
+  {
     route: 'sources', label: 'Lektüren', secondary: true, icon: (
       <svg {...iconProps}><path d="M4 2.5h5.5L13 6v7.5H4zM9.5 2.5V6H13M6.5 8.5h4M6.5 11h4" /></svg>
     ),
@@ -96,6 +102,7 @@ const routeTitles: Record<string, string> = {
   today: 'Heute',
   learn: 'Lernen',
   review: 'Review',
+  challenge: 'Challenge',
   progress: 'Fortschritt',
   settings: 'Einstellungen',
   diagnostic: 'Diagnose',
@@ -255,6 +262,7 @@ export function App() {
   const view = section === 'today' ? <TodayView catalog={catalog} progress={progress} />
     : section === 'learn' ? <LearnView catalog={catalog} progress={progress} />
       : section === 'review' ? <ReviewView catalog={catalog} progress={progress} />
+      : section === 'challenge' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Challenge wird geladen</h1></section>}><ChallengeView catalog={catalog} progress={progress} /></Suspense>
         : section === 'progress' ? <ProgressView catalog={catalog} progress={progress} />
           : section === 'settings' ? progressReady
             ? <SettingsView catalog={catalog} progress={progress} onSave={savePreferences} onRestartTour={() => setTourStep(0)} />
@@ -313,7 +321,7 @@ export function App() {
       <footer class="mobile-context" aria-label="Lokaler Status">
         <span>Local-first</span>
         <span>{catalog.competencies.length} Kompetenzen</span>
-        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more"><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a></nav>
+        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more"><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/challenge">Challenge</a></nav>
       </footer>
       {showOnboarding ? (
         <OnboardingOverlay

@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,19 +17,10 @@ import {
   generateTraceAssignmentFamily,
   gradeTraceTable,
 } from '../assets/js/core/foundations_trace_families.mjs';
-import {
-  createFamilyRegistry,
-  familyEventInput,
-  familyIdTokens,
-} from '../assets/js/domain/exercise_registry.mjs';
 import { TRACE_FAMILIES } from '../assets/js/domain/foundations_trace_registry.mjs';
-import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
-import { buildLearningEvent } from '../assets/js/domain/learning_event.mjs';
-import { validateSourceDocument } from '../tools/compile_content.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
 const CONTENT_TYPE_ARCHETYPE = {
   'predict-output': 'output-predict-lines',
   'code-trace': 'state-trace-vars',
@@ -92,14 +82,6 @@ function expectedValue(contract, instance) {
     .map(({ name, value }) => ({ name, value }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
-
-
-
-
-
-
-
-
 
 for (const contract of TRACE_FAMILY_CONTRACTS) {
   test(`${contract.familyId}: case type, seed and profile instantiate distinct variants`, () => {
@@ -179,6 +161,20 @@ test('profile intro/stretch/challenge hold their documented numeric bounds', () 
     assert.ok(Math.max(Math.abs(linear.fb), Math.abs(linear.gb), Math.abs(linear.v)) <= 3);
     const elif = pick('aggregate-accumulator-count', 'elif-branch-value', 'challenge', seed);
     assert.ok(Math.abs(elif.x) >= 8);
+    // Challenge-flagged trace cases carry a case-keyed predicate: the strict
+    // shape holds at every profile, so a dead gate would surface here.
+    for (const difficulty of ['intro', 'challenge']) {
+      const two = pick('aggregate-accumulator-count', 'while-two-accumulators', difficulty, seed);
+      assert.ok(two.iterations >= 4 && two.n0 >= 12, `while-two-accumulators@${difficulty}: ${JSON.stringify(two)}`);
+      const alias = pick('trace-collection-state', 'list-alias-negative', difficulty, seed);
+      const lines = alias.snippet.trim().split('\n').map((line) => line.trim());
+      const numbers = lines.join(' ').match(/-?\d+/g).map(Number);
+      assert.ok(lines[0].match(/-?\d+/g).map(Number).some((v) => v < 0), `list-alias-negative@${difficulty}: ${lines[0]}`);
+      assert.ok(numbers.length >= 4 && Math.max(...numbers.map(Math.abs)) >= 7);
+      const chain = pick('trace-call-composition', 'both-orders-negative-chain', difficulty, seed);
+      assert.ok(chain.ga < 0);
+      assert.ok(Math.max(Math.abs(chain.fb), Math.abs(chain.gb), Math.abs(chain.v)) >= 4);
+    }
   }
 });
 
@@ -199,11 +195,10 @@ test('trace-exception-path asks two options on intro and four above; position ro
   }
 });
 
-
-
-
-
-
+const SHARD = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-shard.json'), 'utf8'));
+const shardCasesFor = (familyId) => SHARD.entries
+  .filter((item) => item.cognitiveFamily.familyId === familyId)
+  .map((item) => item.caseTemplate.caseId);
 
 // Taxonomie-Kreuzcheck: Shard-Mitglieder (foundations.json, Foundations-Umfang)
 // je Familie. runtime = geseedeter Laufzeitfall, static-content = fixer Content
@@ -216,7 +211,7 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.',
     referenceModel: 'Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).',
     errorHypotheses: ['reads-new-value', 'overwrite-forgotten', 'print-order', 'state-object-confusion'],
-    shardCases: ['reassign-two-variables-print', 'three-variable-overwrite-chain', 'temp-variable-with-distractors', 'chain3-overwrite-print', 'method-chain-transform'],
+    shardCases: shardCasesFor('trace-assignment-state'),
     runtimeArchetype: 'output-predict-lines',
     refinements: {
       'accumulate-reassign-print': 'dritte Zuweisungsform von genPythonStateTrace (n/m-Akkumulation), dieselbe Schablone, kein Shard-Falltyp',
@@ -253,9 +248,11 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Aufrufkomposition von innen nach außen auswerten und das Endergebnis bestimmen.',
     referenceModel: 'Deterministische Auswertungssemantik der Aufrufkomposition.',
     errorHypotheses: ['Falsche Auswertungsreihenfolge der Aufrufe', 'Argumentzuordnung vertauscht'],
-    shardCases: ['nested-call-value-chain', 'two-functions-one-print', 'both-orders-linear-functions'],
+    shardCases: shardCasesFor('trace-call-composition'),
     runtimeArchetype: 'output-predict-lines',
-    refinements: {},
+    refinements: {
+      'both-orders-negative-chain': 'zweiter genFunctionCompose-Falltyp auf derselben Schablone; challenge-Profil (ga < 0, größere Beträge) trägt die Kommutativitäts-Falle',
+    },
     staticContent: [
       { sourceId: 'w01-e5', contentType: 'code-trace', caseId: 'nested-call-value-chain' },
       { sourceId: 'w01-e6', contentType: 'predict-output', caseId: 'two-functions-one-print' },
@@ -269,12 +266,13 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Collection-Operation Schritt für Schritt anwenden und den resultierenden Collection-Zustand angeben.',
     referenceModel: 'Collection-Zustand mit deterministischer Update-Semantik (Mutation statt Kopie).',
     errorHypotheses: ['Mutation und Kopie verwechselt', 'Index- oder Slice-Grenzen falsch gezogen'],
-    shardCases: ['half-open-slices-with-join', 'list-copy-alias-steps'],
+    shardCases: shardCasesFor('trace-collection-state'),
     splitCoverage: { 'list-copy-alias-steps': ['list-alias-steps', 'list-copy-steps'] },
     runtimeArchetype: 'state-trace-vars',
     refinements: {
       'list-mutate-steps': 'genCollectionStepTrace-Form ohne Shard-Falltyp, dieselbe Mutationsschablone',
       'list-alias-steps': 'eine Hälfte von list-copy-alias-steps (Aliasing ohne Kopie)',
+      'list-alias-negative': 'list-alias-Schablone als challenge-Fall: negative Startwerte, beide Referenzen x und y getrackt',
       'list-copy-steps': 'eine Hälfte von list-copy-alias-steps (Kopie ohne Aliasing)',
       'list-rebind-steps': 'genCollectionStepTrace-Form ohne Shard-Falltyp (Rebinding vs. In-place)',
       'set-add-discard-steps': 'genCollectionStepTrace-Form ohne Shard-Falltyp (Set-Semantik, Profillage vakant: Wortschatz fix)',
@@ -291,10 +289,11 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Akkumulator initialisieren, über die Folge iterieren und den Zählerstand fortschreiben.',
     referenceModel: 'Akkumulatorzustand über einer endlichen Folge.',
     errorHypotheses: ['Startwert oder Update des Akkumulators falsch', 'Elemente doppelt oder gar nicht gezählt'],
-    shardCases: ['stepped-range-prepend-accumulator', 'while-counter-with-stop-state', 'for-if-else-accumulator'],
+    shardCases: shardCasesFor('aggregate-accumulator-count'),
     runtimeArchetype: 'output-predict-lines',
     refinements: {
       'elif-branch-value': 'genControlFlowOutput-Form ohne Shard-Falltyp (Zweigwert statt Zähler)',
+      'while-two-accumulators': 'zweiter while-Falltyp als challenge-Fall: zwei Zählerstände (summe und End-n) unter strengerer Profilschranke',
       'for-filter-accumulator': 'genControlFlowOutput-Form ohne Shard-Falltyp (Filter-Akkumulator)',
     },
     staticContent: [
@@ -309,7 +308,7 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Dictionary-Operationen (Inkrement, del, setdefault, get-Standard) Zeile für Zeile anwenden und den Endzustand von Werten und Schlüsselmenge ablesen.',
     referenceModel: 'Dict-Zustand mit deterministischer Update-Semantik (Überschreiben, Löschen, Einfügen nur bei Fehlen, get-Standard); ein Mini-Interpreter wertet die Operationen in Ordnung aus.',
     errorHypotheses: ['Dict-Update-Semantik falsch angewendet (Überschreiben, del, setdefault, get-Standard)', 'Aggregation über das falsche Dict-Objekt (Werte statt Schlüssel)'],
-    shardCases: ['del-setdefault-increment', 'get-default-counting'],
+    shardCases: shardCasesFor('trace-dict-state-update'),
     runtimeArchetype: 'state-trace-vars',
     refinements: {
       'dict-start-key-steps': 'dict-steps-Schablone, partitioniert nach start-Schlüsselvokabular; Lösungsweg und Referenzmodell identisch',
@@ -327,7 +326,7 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Ausführungspfad verfolgen und bestimmen, welche Ausnahme wo ausgelöst oder abgefangen wird.',
     referenceModel: 'Programm mit deterministischem Ausnahme- und Fehlerfluss.',
     errorHypotheses: ['Falscher Zweig gewählt', 'Reihenfolge der Ausnahmebehandlung missverstanden'],
-    shardCases: ['assert-raise-and-catch', 'seeded-operation-type-cases'],
+    shardCases: shardCasesFor('trace-exception-path'),
     splitCoverage: {
       'seeded-operation-type-cases': ['valueerror', 'typeerror-concat', 'keyerror', 'filenotfound', 'indexerror', 'typeerror-len', 'no-error-int', 'no-error-mul'],
     },
@@ -382,9 +381,8 @@ test('taxonomy crosscheck covers every shard case and documents every refinement
 });
 
 test('trace contracts follow the shard word-for-word (solution, reference, errors)', () => {
-  const shard = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-shard.json'), 'utf8'));
   const byFamily = new Map();
-  for (const candidate of shard.entries) {
+  for (const candidate of SHARD.entries) {
     const familyId = candidate.cognitiveFamily.familyId;
     if (!byFamily.has(familyId)) byFamily.set(familyId, candidate.cognitiveFamily);
   }
@@ -395,11 +393,6 @@ test('trace contracts follow the shard word-for-word (solution, reference, error
     assert.equal(shardFamily.membershipEvidence.solutionPath, entry.solutionPath);
     assert.equal(shardFamily.membershipEvidence.referenceModel, entry.referenceModel);
     assert.deepEqual(shardFamily.membershipEvidence.errorHypotheses, entry.errorHypotheses);
-    const shardCaseIds = new Set(
-      shard.entries.filter((item) => item.cognitiveFamily.familyId === entry.familyId)
-        .map((item) => item.caseTemplate.caseId),
-    );
-    assert.deepEqual([...shardCaseIds].sort(), [...entry.shardCases].sort(), `${entry.familyId}: Shard-Fälle`);
   }
 });
 

@@ -26,6 +26,14 @@ test('seeded draws stay inside the declared domains', () => {
         assert.ok(typeof p.metric === 'string' && p.metric.length > 0, 'metric set');
         assert.ok(typeof p.baseline === 'number' && p.baseline >= 0, 'baseline domain');
         assert.ok(typeof p.system === 'number' && p.system >= 0, 'system domain');
+        // direction is an explicit contract field and stays derivable from
+        // the metric: error rates and parameter counts are lower-is-better
+        assert.ok(p.direction === 'higher' || p.direction === 'lower', 'direction domain');
+        assert.equal(
+          p.direction,
+          ['Fehlerrate', 'Parameter (Mio.)'].includes(p.metric) ? 'lower' : 'higher',
+          'direction follows metric',
+        );
       }
       // every drawn paper must be baked into the emitted test block
       for (const p of entry.papers) {

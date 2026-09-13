@@ -49,6 +49,30 @@ export function shuffle(random, values) {
   return out;
 }
 
+const shuffledIds = (ids, seed) => shuffle(rng(seed >>> 0), ids);
+
+/** Seeded parsons start order shared by the construct and freeze families:
+ *  the first tier performs exactly one adjacent swap (nearly-solved
+ *  didactic); every other tier draws a permutation that differs from the
+ *  pool order (bounded bump keeps it deterministic). */
+export function parsonsInitialOrder(pool, seed, difficulty, tiers = ['intro', 'core', 'stretch', 'challenge']) {
+  const tier = tiers.indexOf(difficulty);
+  if (tier === 0) {
+    const r = rng(seed >>> 0);
+    const out = [...pool];
+    const i = out.length > 1 ? randInt(r, 0, out.length - 2) : 0;
+    [out[i], out[i + 1]] = [out[i + 1], out[i]];
+    return out;
+  }
+  let bump = 0;
+  let order = shuffledIds(pool, ((seed * 31 + tier) >>> 0));
+  while (bump < 8 && order.every((id, index) => id === pool[index])) {
+    bump += 1;
+    order = shuffledIds(pool, (((seed * 31) + tier + bump * 101) >>> 0));
+  }
+  return order;
+}
+
 /** Bounded retry helper: fn(random) is repeated until guard() holds. The
  *  scope names the calling family in the degenerate-draw error. */
 export function until(random, fn, guard, { maxTries = 96, scope = 'generator_draw_kit' } = {}) {

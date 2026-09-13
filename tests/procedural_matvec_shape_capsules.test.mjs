@@ -12,11 +12,7 @@ import * as mod from '../assets/js/core/procedural/construct-matvec-shape-contra
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const doc = JSON.parse(readFileSync(join(root, 'content/families/construct-matvec-shape-contract.json'), 'utf8'));
 
-const CASES = [
-  { caseId: 'matvec-contract-order', difficulty: 'intro' },
-  { caseId: 'matvec-code-reference', difficulty: 'core' },
-  { caseId: 'final-boss-authored', difficulty: 'challenge' },
-];
+const CASES = doc.cases.map((item) => ({ caseId: item.caseId, difficulty: item.difficultyProfile }));
 
 test('anchor: contract null, case anchors verbatim', () => {
   assert.equal(doc.contract, null);
@@ -67,6 +63,34 @@ test('code capsules: 200 seeds — tests rebuilt, solver consistent', () => {
       assert.equal(generated.graderId, 'pyodide');
     }
   }
+});
+
+test('boss capsule: rank_with_pivots returns (rank, pivot columns), matrix_rank banned', () => {
+  const def = mod.MATVEC_CASES['final-boss-authored'];
+  assert.ok(!def.starterCode.includes('gauss_rank') && def.starterCode.includes('def rank_with_pivots('), 'starter renamed');
+  assert.ok(!def.baseTests.includes('gauss_rank'), 'base tests renamed');
+  assert.ok(def.baseTests.includes("'matrix_rank' not in rank_with_pivots.__code__.co_names"), 'shortcut ban pinned');
+  assert.ok(def.referenceSolver.includes('def rank_with_pivots(') && def.referenceSolver.includes('pivot_cols.append(col)'), 'solver collects pivot columns');
+  const ranks = new Set();
+  const pivotSets = new Set();
+  let sawZeroRow = false;
+  for (let seed = 0; seed < 400; seed += 1) {
+    const generated = mod.genMatvecCase(seed, def);
+    for (const sc of generated.parameters.seedCases) {
+      assert.equal(sc.rank, sc.pivots.length, `${seed}: rank equals pivot count`);
+      ranks.add(sc.rank);
+      pivotSets.add(sc.pivots.join(','));
+      if (sc.rankRows.some((row) => row.every((v) => v === 0))) sawZeroRow = true;
+      const rowsLit = `[${sc.rankRows.map((row) => `[${row.join(', ')}]`).join(', ')}]`;
+      assert.ok(
+        generated.parameters.tests.includes(`rank_with_pivots(${rowsLit}) == (${sc.rank}, [${sc.pivots.join(', ')}])`),
+        `${seed}: seeded check pins the (rank, pivots) tuple`,
+      );
+    }
+  }
+  assert.deepEqual([...ranks].sort((a, b) => a - b), [1, 2, 3], 'all target ranks reachable');
+  assert.ok(pivotSets.size > 3, `nur ${pivotSets.size} distincte Pivot-Mengen`);
+  assert.ok(sawZeroRow, 'keine Nullzeile gezogen');
 });
 
 test('determinism and dispatch errors', () => {

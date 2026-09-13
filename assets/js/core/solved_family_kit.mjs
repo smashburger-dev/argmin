@@ -115,7 +115,10 @@ export function makeLinalgChoiceCapsuleFamily({
  *  answer from parameters ({value}/{output}/{solution} — never reads
  *  expected). With `capsules` the draw is bound to the difficulty's capsule
  *  (caseId check against capsule.caseId); otherwise `seededCaseId` names the
- *  single drawn case. */
+ *  single drawn case. Extra capsules may share a profile through the
+ *  '<profile>-<suffix>' key convention ('challenge-4x4' resolves on
+ *  'challenge'). `caseMeta` merges per-case { masteryEligible,
+ *  competencyIds } into the instance, same as makeLinalgChoiceCapsuleFamily. */
 export function makeNumericFamily({
   contract,
   staticCaseIds = [],
@@ -129,6 +132,7 @@ export function makeNumericFamily({
   toExpected,
   solveStatic = null,
   solveSeeded,
+  caseMeta = {},
 }) {
   const staticInstance = (caseId, seed, difficulty) => (staticVariants
     ? staticVariantInstance(contract.familyId, caseId, seed, difficulty)
@@ -138,8 +142,12 @@ export function makeNumericFamily({
     if (staticCaseIds.includes(caseId)) return staticInstance(caseId, seed, difficulty);
     let capsule = null;
     if (capsules) {
-      capsule = capsules[difficulty];
-      if (!capsule || capsule.caseId !== caseId) {
+      const direct = capsules[difficulty];
+      capsule = (direct && direct.caseId === caseId) ? direct
+        : Object.entries(capsules).find(([key, entry]) => (
+          key.startsWith(`${difficulty}-`) && entry.caseId === caseId
+        ))?.[1] ?? null;
+      if (!capsule) {
         throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
       }
     } else if (caseId !== seededCaseId) {
@@ -153,11 +161,13 @@ export function makeNumericFamily({
       profileAccepts: profileAccepts(difficulty, capsule),
       profiles: contract.difficultyProfiles,
     });
+    const meta = caseMeta[caseId];
     return {
       parameters: { caseId, difficulty, ...extraParameters, ...drawn.parameters },
       expected: toExpected(drawn),
       prompt: drawn.prompt,
       fullSolution: drawn.fullSolution,
+      ...(meta ? { masteryEligible: meta.masteryEligible, competencyIds: [...meta.competencyIds] } : {}),
     };
   };
 
@@ -185,6 +195,9 @@ export function makeSolvedFamily({
   const generate = ({ seed, caseId, difficulty }) => {
     const caseDef = cases[caseId];
     if (!caseDef) throw new Error(`${contract.familyId}: unbekannter Fall ${caseId}`);
+    if (caseDef.difficulty && caseDef.difficulty !== difficulty) {
+      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+    }
     if (!caseDef.generator) {
       const body = staticCaseBody(contract.familyId, caseId);
       if (body.difficultyProfile !== difficulty) {

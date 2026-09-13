@@ -74,39 +74,47 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(trio.parameters.tests.includes('majority_vote(__p'), 'trio: vote literal baked');
       assert.ok(trio.parameters.tests.includes('seeded linear rmse'), 'trio: linear rmse check baked');
     }
-    const flat = mod.genEnsembleCase(seed, 'voting-tie-and-tree', mod.ENSEMBLE_CASES['voting-tie-and-tree']);
-    assert.ok(flat.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
-    assert.ok(flat.parameters.tests.includes('seeded vote 1'), `${seed}: seeded checks`);
-    assert.equal(flat.parameters.seedCases.length, 2, 'flat extraCount');
-    for (const entry of flat.parameters.seedCases) {
+    const challenge = mod.genEnsembleCase(seed, 'voting-tie-and-tree', mod.ENSEMBLE_CASES['voting-tie-and-tree']);
+    assert.ok(challenge.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
+    assert.ok(challenge.parameters.tests.includes('seeded vote 1'), `${seed}: seeded checks`);
+    assert.equal(challenge.parameters.seedCases.length, 2, 'challenge extraCount');
+    for (const entry of challenge.parameters.seedCases) {
       const m = entry.preds.length;
-      assert.ok(m === 2 || m === 4, 'flat: even model count');
-      const n = assertPreds(entry.preds, 2, 4, 2, 5, 1, 'flat.preds');
-      assert.ok(n >= 2 && n <= 5, 'flat: example count');
+      assert.ok(m === 2 || m === 4, 'challenge: even model count');
+      assertPreds(entry.preds, 2, 4, 3, 6, 1, 'challenge.preds');
       assert.equal(
         entry.preds.filter((row) => row[0] === 1).length,
         m / 2,
-        'flat: column 0 is an exact tie',
+        'challenge: column 0 is an exact tie',
       );
-      assertTree(entry.tree, 0, 'flat.tree');
-      assert.ok('leaf' in entry.tree.left && 'leaf' in entry.tree.right, 'flat: depth-1 tree');
-      assert.ok(entry.tree.threshold >= 1.5 && entry.tree.threshold <= 5.5, 'flat: threshold range');
+      assertTree(entry.tree, 0, 'challenge.tree');
+      assert.ok(!('leaf' in entry.tree.left), 'challenge: left child splits again');
+      assert.ok('leaf' in entry.tree.right, 'challenge: right child is a leaf');
       assert.ok(
-        [entry.tree.threshold - 1, entry.tree.threshold, entry.tree.threshold + 1.5].includes(entry.xval),
-        'flat: xval on/near boundary',
+        'leaf' in entry.tree.left.left && 'leaf' in entry.tree.left.right,
+        'challenge: depth-2 tree',
       );
-      assertCompareData(entry, 'flat');
-      assert.equal(entry.rmsePred.length, entry.rmseY.length, 'flat: rmse vectors aligned');
-      assert.ok(entry.rmsePred.length >= 2 && entry.rmsePred.length <= 4, 'flat: rmse length');
-      assert.ok(
-        entry.rmsePred.every((v) => Number.isInteger(v) && v >= 0 && v <= 3)
-          && entry.rmseY.every((v) => Number.isInteger(v) && v >= 0 && v <= 3),
-        'flat: rmse values',
-      );
-      assert.ok(flat.parameters.tests.includes('seeded vote tie'), 'flat: tie check baked');
-      assert.ok(flat.parameters.tests.includes('seeded rmse funktion'), 'flat: rmse check baked');
+      assert.ok(Number.isInteger(entry.xval) && entry.xval >= 0 && entry.xval <= 8, 'challenge: xval range');
+      assertCompareData(entry, 'challenge');
+      assert.ok(challenge.parameters.tests.includes('seeded vote tie'), 'challenge: tie check baked');
+      assert.ok(challenge.parameters.tests.includes('seeded linear rmse'), 'challenge: linear rmse check baked');
     }
   }
+});
+
+test('challenge case: trio substance, tie rule only in prompt and tests', () => {
+  const trio = mod.ENSEMBLE_CASES['voting-tree-linear-rmse'];
+  const challenge = mod.ENSEMBLE_CASES['voting-tie-and-tree'];
+  assert.ok(!challenge.starterCode.includes('tie'), 'starter leaves the tie rule unstated');
+  assert.ok(challenge.prompt.includes('Gleichstand'), 'prompt carries the tie rule');
+  assert.ok(
+    challenge.baseTests.startsWith('__check("tie counts as one", majority_vote([[1, 0], [0, 0]]) == [1, 0])'),
+    'base tests open with the tie check',
+  );
+  assert.ok(challenge.baseTests.endsWith(trio.baseTests), 'trio base block appended');
+  assert.equal(challenge.referenceSolver, trio.referenceSolver, 'shared reference solver');
+  assert.equal(challenge.fullSolution, trio.fullSolution, 'shared full solution');
+  assert.equal(challenge.prompt, trio.prompt, 'shared prompt');
 });
 
 test('family extras: contract competencies and case types', () => {

@@ -18,17 +18,21 @@ import {
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PARSONS = FREEZE_GUARD_CASES['freeze-assert-parsons'];
 const DEMO = FREEZE_GUARD_CASES['demo-from-frozen-report'];
+const NESTED = FREEZE_GUARD_CASES['freeze-assert-parsons-nested'];
 const PARSONS_POOL = [...PARSONS.solutionOrder, ...PARSONS.distractors];
-const drawParsons = (seed) => generateFreezeGuardFamily({ seed, caseId: 'freeze-assert-parsons', difficulty: 'stretch' });
-const drawDemo = (seed) => generateFreezeGuardFamily({ seed, caseId: 'demo-from-frozen-report', difficulty: 'core' });
+const NESTED_POOL = [...NESTED.solutionOrder, ...NESTED.distractors];
+const drawParsons = (seed) => generateFreezeGuardFamily({ seed, caseId: 'freeze-assert-parsons', difficulty: PARSONS.difficulty });
+const drawDemo = (seed) => generateFreezeGuardFamily({ seed, caseId: 'demo-from-frozen-report', difficulty: DEMO.difficulty });
+const drawNested = (seed) => generateFreezeGuardFamily({ seed, caseId: 'freeze-assert-parsons-nested', difficulty: NESTED.difficulty });
 
-test('anchor: contract null, both cases preserved verbatim', () => {
+test('anchor: contract null, all cases preserved verbatim', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/construct-freeze-assert-guard.json'), 'utf8'));
   assert.equal(doc.contract, null);
-  assert.equal(doc.cases.length, 2);
+  assert.equal(doc.cases.length, 3);
   const parsons = doc.cases.find((item) => item.caseId === 'freeze-assert-parsons');
   const demo = doc.cases.find((item) => item.caseId === 'demo-from-frozen-report');
-  assert.ok(parsons && demo, 'anchors missing');
+  const nested = doc.cases.find((item) => item.caseId === 'freeze-assert-parsons-nested');
+  assert.ok(parsons && demo && nested, 'anchors missing');
   assert.deepEqual(PARSONS.fragments, parsons.parameters.fragments, 'parsons: fragments verbatim');
   assert.deepEqual(PARSONS.solutionOrder, parsons.expected.solutionOrder, 'parsons: order verbatim');
   assert.deepEqual(PARSONS.distractors, parsons.expected.distractors, 'parsons: distractors verbatim');
@@ -39,6 +43,19 @@ test('anchor: contract null, both cases preserved verbatim', () => {
   assert.equal(DEMO.referenceSolver, demo.expected.referenceSolver, 'demo: solver verbatim');
   assert.equal(DEMO.prompt, demo.prompt, 'demo: prompt verbatim');
   assert.equal(DEMO.fullSolution, demo.fullSolution, 'demo: solution verbatim');
+  // Challenge parsons mirrors the seed-0 draw: fixed fragments/order, the
+  // initial order is a non-identity permutation of the 15-line pool.
+  assert.equal(nested.challengeEligible, true, 'nested: challenge flag');
+  assert.equal(nested.difficultyProfile, 'challenge', 'nested: profile');
+  assert.deepEqual(NESTED.fragments, nested.parameters.fragments, 'nested: fragments verbatim');
+  assert.deepEqual(NESTED.solutionOrder, nested.expected.solutionOrder, 'nested: order verbatim');
+  assert.deepEqual(NESTED.distractors, nested.expected.distractors, 'nested: distractors verbatim');
+  assert.equal(NESTED.prompt, nested.prompt, 'nested: prompt verbatim');
+  assert.equal(NESTED.fullSolution, nested.fullSolution, 'nested: solution verbatim');
+  assert.equal(nested.expected.solutionOrder.length, 11, 'nested: 11 solution lines');
+  assert.ok(nested.expected.distractors.length >= 3, 'nested: >=3 distractors');
+  const nestedSeed0 = drawNested(0);
+  assert.deepEqual(nested.parameters.initialOrder, nestedSeed0.parameters.initialOrder, 'nested: initialOrder = seed 0');
 });
 
 test('capsule shape: generated instances satisfy freezeCaseOk over 200 seeds per case', () => {
@@ -53,6 +70,16 @@ test('capsule shape: generated instances satisfy freezeCaseOk over 200 seeds per
     assert.deepEqual(parsons.expected.solutionOrder, PARSONS.solutionOrder);
     assert.equal(parsons.activityType, 'parsons');
     assert.equal(parsons.graderId, 'deterministic');
+    const nested = drawNested(seed);
+    assert.ok(freezeCaseOk(nested.parameters, NESTED), `nested:${seed}: shape`);
+    assert.deepEqual(nested.parameters.fragments, NESTED.fragments);
+    const nestedOrder = nested.parameters.initialOrder;
+    assert.deepEqual([...nestedOrder].sort(), [...NESTED_POOL].sort(), `nested:${seed}: permutation of pool`);
+    assert.ok(nestedOrder.some((id, index) => id !== NESTED_POOL[index]), `nested:${seed}: non-identity order`);
+    assert.equal(nested.expected.kind, 'ordered-lines');
+    assert.deepEqual(nested.expected.solutionOrder, NESTED.solutionOrder);
+    assert.equal(nested.activityType, 'parsons');
+    assert.equal(nested.graderId, 'deterministic');
     const demo = drawDemo(seed);
     assert.ok(freezeCaseOk(demo.parameters, DEMO), `demo:${seed}: shape`);
     assert.ok(demo.parameters.tests.startsWith(DEMO.baseTests), `demo:${seed}: base block kept`);
@@ -61,12 +88,7 @@ test('capsule shape: generated instances satisfy freezeCaseOk over 200 seeds per
     assert.equal(demo.prompt, DEMO.prompt);
     assert.equal(demo.activityType, 'python-code');
     assert.equal(demo.graderId, 'pyodide');
-  }
-});
-
-test('seeded draws stay inside the declared domains', () => {
-  for (let seed = 0; seed < 200; seed += 1) {
-    const demo = drawDemo(seed);
+    // Seeded draws stay inside the declared domains.
     assert.equal(demo.parameters.seedCases.length, 2, `${seed}: two extras`);
     for (const entry of demo.parameters.seedCases) {
       const keys = Object.keys(entry.bericht);
@@ -82,12 +104,15 @@ test('seeded draws stay inside the declared domains', () => {
 test('distinct floor: at least 40 distinct parameter sets per case over 200 seeds', () => {
   const parsonsSeen = new Set();
   const demoSeen = new Set();
+  const nestedSeen = new Set();
   for (let seed = 0; seed < 200; seed += 1) {
     parsonsSeen.add(JSON.stringify(drawParsons(seed).parameters));
     demoSeen.add(JSON.stringify(drawDemo(seed).parameters));
+    nestedSeen.add(JSON.stringify(drawNested(seed).parameters));
   }
   assert.ok(parsonsSeen.size >= 40, `parsons: only ${parsonsSeen.size} distinct`);
   assert.ok(demoSeen.size >= 40, `demo: only ${demoSeen.size} distinct`);
+  assert.ok(nestedSeen.size >= 40, `nested: only ${nestedSeen.size} distinct`);
 });
 
 test('determinism: same seed reproduces identical output, negative seeds valid', () => {
@@ -96,6 +121,8 @@ test('determinism: same seed reproduces identical output, negative seeds valid',
     assert.ok(freezeCaseOk(genFreezeGuardCase(seed, PARSONS).parameters, PARSONS), `parsons:${seed}: shape`);
     assert.deepEqual(genFreezeGuardCase(seed, DEMO), genFreezeGuardCase(seed, DEMO), `demo:${seed}`);
     assert.ok(freezeCaseOk(genFreezeGuardCase(seed, DEMO).parameters, DEMO), `demo:${seed}: shape`);
+    assert.deepEqual(genFreezeGuardCase(seed, NESTED), genFreezeGuardCase(seed, NESTED), `nested:${seed}`);
+    assert.ok(freezeCaseOk(genFreezeGuardCase(seed, NESTED).parameters, NESTED), `nested:${seed}: shape`);
   }
 });
 
@@ -103,6 +130,7 @@ test('solver consistency: solve returns order for parsons and reference code for
   for (let seed = 0; seed < 50; seed += 1) {
     assert.deepEqual(solveFreezeGuardFamily(drawParsons(seed).parameters), { solutionOrder: PARSONS.solutionOrder });
     assert.deepEqual(solveFreezeGuardFamily(drawDemo(seed).parameters), { referenceCode: DEMO.referenceSolver });
+    assert.deepEqual(solveFreezeGuardFamily(drawNested(seed).parameters), { solutionOrder: NESTED.solutionOrder });
   }
 });
 
@@ -111,12 +139,15 @@ test('family block: dispatch, contract, errors', () => {
   assert.equal(FREEZE_GUARD_CONTRACT.familyGroup, 'construct-program');
   assert.equal(FREEZE_GUARD_CONTRACT.authorityMode, 'seeded');
   assert.equal(FREEZE_GUARD_CONTRACT.masteryEligible, true);
-  assert.deepEqual(FREEZE_GUARD_CONTRACT.difficultyProfiles, ['core', 'stretch']);
-  assert.deepEqual(FREEZE_GUARD_CONTRACT.caseTypes.map((item) => item.caseId).sort(), ['demo-from-frozen-report', 'freeze-assert-parsons']);
+  assert.deepEqual(FREEZE_GUARD_CONTRACT.difficultyProfiles, ['core', 'stretch', 'challenge']);
+  assert.deepEqual(FREEZE_GUARD_CONTRACT.caseTypes.map((item) => item.caseId).sort(), ['demo-from-frozen-report', 'freeze-assert-parsons', 'freeze-assert-parsons-nested']);
   assert.deepEqual(FREEZE_GUARD_CONTRACT.competencyIds, ['c-capstone-pipeline', 'c-python-functions']);
   assert.equal(FAMILY_SPEC.generate, generateFreezeGuardFamily);
   assert.equal(FAMILY_SPEC.solve, solveFreezeGuardFamily);
   assert.throws(() => generateFreezeGuardFamily({ seed: 0, caseId: 'freeze-assert-parsons', difficulty: 'core' }), /Unbekannter Fall/);
+  assert.throws(() => generateFreezeGuardFamily({ seed: 0, caseId: 'freeze-assert-parsons', difficulty: 'challenge' }), /Unbekannter Fall/);
+  assert.throws(() => generateFreezeGuardFamily({ seed: 0, caseId: 'demo-from-frozen-report', difficulty: 'challenge' }), /Unbekannter Fall/);
+  assert.throws(() => generateFreezeGuardFamily({ seed: 0, caseId: 'freeze-assert-parsons-nested', difficulty: 'stretch' }), /Unbekannter Fall/);
   assert.throws(() => generateFreezeGuardFamily({ seed: 0, caseId: 'nope', difficulty: 'stretch' }), /Unbekannter Fall/);
   assert.throws(() => generateFreezeGuardFamily({ seed: 0.5, caseId: 'freeze-assert-parsons', difficulty: 'stretch' }), /Seed/);
   assert.throws(() => solveFreezeGuardFamily({}), /Kapselform/);

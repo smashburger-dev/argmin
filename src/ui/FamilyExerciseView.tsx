@@ -24,8 +24,13 @@ function parseFamilyRef(ref: string): {
   caseId?: string;
   seed: number;
   difficulty: string;
+  from?: string;
 } {
-  const [familyId = '', casePart = '', seedPart = '', difficulty = ''] = String(ref).split('/');
+  // Query suffix rides inside the hash route (#/family/.../challenge?from=challenge)
+  // — split it off before the segment parse so 'from' stays a flag, not a
+  // difficulty segment.
+  const [path = '', query = ''] = String(ref).split('?');
+  const [familyId = '', casePart = '', seedPart = '', difficulty = ''] = path.split('/');
   if (!familyId) throw new Error('Familie fehlt.');
   if (!difficulty) throw new Error('Schwierigkeitsstufe fehlt.');
   const caseId = casePart && casePart !== '-' ? casePart : undefined;
@@ -34,7 +39,8 @@ function parseFamilyRef(ref: string): {
     : /^\d+$/.test(seedPart)
       ? Number(seedPart) >>> 0
       : (() => { throw new Error(`Startwert ungültig: ${seedPart}`); })();
-  return { familyId, caseId, seed, difficulty };
+  const from = new URLSearchParams(query).get('from') ?? undefined;
+  return { familyId, caseId, seed, difficulty, from };
 }
 
 configureExerciseFamilies(loadFamilyIndex());
@@ -100,10 +106,16 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} nextSeed={nextSeed} />;
   }
 
+  // Stay-in-challenge flow: ?from=challenge tags ledger events with
+  // context 'challenge' (drives streak/solved counts in the picker) and
+  // retargets the frame's back button to the challenge overview.
+  const fromChallenge = parsed?.from === 'challenge';
+  const eventExtra = fromChallenge ? { context: 'challenge' } : {};
+
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
     if (!learningLedger) return;
     await learningLedger.record({
-      ...familyEventInput(instance),
+      ...familyEventInput(instance, eventExtra),
       eventType,
       event,
       hintsUsed,
@@ -117,7 +129,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     setFailed(null);
     try {
       const result = await EXERCISE_FAMILIES.grade(instance, answer);
-      const input = familyEventInput(instance);
+      const input = familyEventInput(instance, eventExtra);
       const hintsUsed = shownHints.length;
       if (learningLedger) {
         await learningLedger.record({
@@ -172,6 +184,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     await recordAssistance('solution-revealed', 'solution-revealed', shownHints.length, true);
   };
 
+  // Hint-Leiter: Level 1 = Familien-Summary, danach authored hints
+  // (familyHint serviert sie in Reihenfolge); ohne authored hints bleibt
+  // Level 2 der generische Aktivitäts-Hint. Max = Summary + Leiterlänge.
+  const maxHintLevel = 1 + Math.max(1, Array.isArray(instance.hints) ? instance.hints.length : 0);
   const isCode = instance.activityType === 'python-code';
   // worked-example-fading: der Prompt IST die Antwortfläche — die [[gap]]-
   // Marker werden inline zu Inputs. Der Prompt-Slot rendert daher das
@@ -182,6 +198,14 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     : '';
 
   const ctx = getExerciseContext(catalog, instance, summary, nextSeed);
+  // Stay inside the challenge window: a fresh variant keeps the context flag,
+  // and the "next task" slot points at the remaining daily set instead of the
+  // module flow.
+  if (fromChallenge) {
+    ctx.nextVariantHref = `${ctx.nextVariantHref}?from=challenge`;
+    ctx.nextTaskHref = '#/challenge';
+    ctx.nextTaskTitle = 'Tages-Set';
+  }
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict
@@ -197,6 +221,9 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
           {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
           {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
           {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
+          {fromChallenge && correct === true
+            ? <div class="actions"><Button variant="primary" href="#/challenge">Nächste Challenge</Button></div>
+            : null}
         </div>
       : null;
   return (
@@ -213,7 +240,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       actions={
         <>
           <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>
-          {shownHints.length < 2 && !solutionVisible ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/2</Button> : null}
+          {shownHints.length < maxHintLevel && !solutionVisible ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHintLevel}</Button> : null}
           {!solutionVisible && instance.fullSolution ? <Button variant="ghost" onClick={() => void revealSolution()}>Lösung anzeigen</Button> : null}
         </>
       }
@@ -223,6 +250,8 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div>
         : undefined}
       done={correct === true || solutionVisible}
+      backHref={fromChallenge ? '#/challenge' : undefined}
+      backLabel={fromChallenge ? 'Zur Challenge' : undefined}
     />
   );
 }

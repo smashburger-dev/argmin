@@ -102,9 +102,10 @@
       "familyIds": [
         "classify-column-combination",
         "classify-rank-solution-case",
-        "formula-scalar-product"
+        "formula-scalar-product",
+        "transform-system-2x2-elimination"
       ],
-      "placedCaseCount": 3,
+      "placedCaseCount": 4,
       "seededFamilyCount": 0
     },
     {
@@ -113,10 +114,11 @@
         "classify-rank-solution-case",
         "classify-row-operation-validity",
         "construct-linalg-contract-synthesis",
+        "multiple-choice-linalg-independence",
         "transform-rank-dependence-rowops",
         "transform-system-2x2-elimination"
       ],
-      "placedCaseCount": 12,
+      "placedCaseCount": 13,
       "seededFamilyCount": 0
     },
     {
@@ -128,7 +130,7 @@
         "multiple-choice-linalg-independence",
         "transform-rank-dependence-rowops"
       ],
-      "placedCaseCount": 10,
+      "placedCaseCount": 11,
       "seededFamilyCount": 0
     },
     {
@@ -279,7 +281,7 @@
         "formula-ratio-percent-metric",
         "multiple-choice-ml-linear"
       ],
-      "placedCaseCount": 8,
+      "placedCaseCount": 9,
       "seededFamilyCount": 0
     },
     {
@@ -331,7 +333,7 @@
         "formula-ridge-lasso-closed-form",
         "multiple-choice-ml-linear"
       ],
-      "placedCaseCount": 6,
+      "placedCaseCount": 7,
       "seededFamilyCount": 0
     },
     {

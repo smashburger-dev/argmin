@@ -7,6 +7,7 @@
       "caseId": "weight-decay-ablation",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w21-e6"
       ],
@@ -37,7 +38,8 @@
         "Normen als np.float64 statt float zurückgegeben"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Weight-Decay-Ablation auswerten"
     }
   ]
 }

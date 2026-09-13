@@ -35,12 +35,14 @@
         "übergebene Restrisiken-Liste mutiert statt sortiert zu kopieren"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Responsible-Report komponieren"
     },
     {
       "caseId": "baseline-report",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w34-e6"
       ],
@@ -71,7 +73,8 @@
         "Fehlerliste ohne getrennte Arten akzeptiert"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Baseline-Report mit Guards"
     }
   ]
 }

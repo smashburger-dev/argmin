@@ -140,6 +140,137 @@
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
+    },
+    {
+      "caseId": "freeze-assert-parsons-nested",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "p2-freeze-parsons-nested"
+      ],
+      "parameters": {
+        "fragments": [
+          {
+            "id": "p1",
+            "text": "def assert_frozen(dateien, bereiche):"
+          },
+          {
+            "id": "p2",
+            "text": "    verstoesse = []"
+          },
+          {
+            "id": "p3",
+            "text": "    for bereich, pins in bereiche.items():"
+          },
+          {
+            "id": "p4",
+            "text": "        datei_block = dateien.get(bereich, {})"
+          },
+          {
+            "id": "p5",
+            "text": "        for name, pin in pins.items():"
+          },
+          {
+            "id": "p6",
+            "text": "            if name not in datei_block:"
+          },
+          {
+            "id": "p7",
+            "text": "                verstoesse.append(f\"{bereich}/{name}: fehlt\")"
+          },
+          {
+            "id": "p8",
+            "text": "            elif pin is not None and sha256(datei_block[name]) != pin:"
+          },
+          {
+            "id": "p9",
+            "text": "                verstoesse.append(f\"{bereich}/{name}: hash weicht ab\")"
+          },
+          {
+            "id": "p10",
+            "text": "    if verstoesse:"
+          },
+          {
+            "id": "p11",
+            "text": "        raise AssertionError(f\"{len(verstoesse)} Verstoesse: \" + \"; \".join(verstoesse))"
+          },
+          {
+            "id": "d1",
+            "text": "                break"
+          },
+          {
+            "id": "d2",
+            "text": "    return verstoesse"
+          },
+          {
+            "id": "d3",
+            "text": "            raise AssertionError(name + \": verstoss\")"
+          },
+          {
+            "id": "d4",
+            "text": "    if not verstoesse:"
+          }
+        ],
+        "initialOrder": [
+          "p7",
+          "d2",
+          "p3",
+          "d4",
+          "d1",
+          "p4",
+          "p8",
+          "p2",
+          "p10",
+          "p5",
+          "p9",
+          "d3",
+          "p6",
+          "p1",
+          "p11"
+        ]
+      },
+      "competencyIds": [
+        "c-capstone-pipeline",
+        "c-python-functions"
+      ],
+      "expected": {
+        "kind": "ordered-lines",
+        "solutionOrder": [
+          "p1",
+          "p2",
+          "p3",
+          "p4",
+          "p5",
+          "p6",
+          "p7",
+          "p8",
+          "p9",
+          "p10",
+          "p11"
+        ],
+        "distractors": [
+          "d1",
+          "d2",
+          "d3",
+          "d4"
+        ]
+      },
+      "prompt": "Verschachtelter Freeze-Check als Parsons-Problem: <code>assert_frozen(dateien, bereiche)</code> prüft <code>bereiche</code> der Form <code>{bereich: {name: pin}}</code> gegen <code>dateien</code>. Bringe die Zeilen in die richtige Reihenfolge, sodass die Funktion über beide Schleifen <strong>alle</strong> Verstöße sammelt und erst am Ende <strong>einmal</strong> mit <code>AssertionError</code> scheitert — kein Early-Exit, kein stiller Fallback. Vier Zeilen gehören nicht zur Lösung.",
+      "fullSolution": "Reihenfolge: Signatur, leere Verstoß-Liste, äußere Schleife über die Bereiche, Datei-Block pro Bereich holen, innere Schleife über die Pins, fehlt-Zweig, hash-Zweig — und erst nach beiden Schleifen ein einziges <code>raise AssertionError</code> mit allen gesammelten Verstößen.\n\nDraußen bleiben vier Zeilen: <code>break</code> (d1) verlässt nur die innere Schleife und stoppt nach dem ersten Verstoß — der Rest wird nie geprüft. <code>return verstoesse</code> (d2) gibt die Fehler still zurück statt laut zu scheitern. Das eingerückte <code>raise</code> (d3) liegt im Schleifenrumpf und wirft bereits beim ersten Durchlauf. <code>if not verstoesse</code> (d4) dreht die Bedingung um — es würde scheitern, wenn alles sauber ist (oder vor der Schleife eine garantiert leere Liste prüfen).",
+      "hints": [
+        "Die äußere Schleife wählt den Bereich, die innere prüft jeden Pin — beide schreiben in dieselbe Liste verstoesse, die erst nach den Schleifen gelesen wird.",
+        "Der einzige raise steht ganz am Ende auf Funktionsebene. Vier Zeilen brechen den Sammel-Vertrag: break (früher Ausstieg), return (stille Rückgabe), das eingerückte raise (wirft sofort), if not verstoesse (umgekehrte Bedingung)."
+      ],
+      "typicalErrors": [
+        "raise in die innere Schleife gezogen — nur der erste Verstoß wird sichtbar",
+        "break statt Sammeln — früher Ausstieg lässt den Rest der Bereiche ungeprüft",
+        "Verstoß-Liste still zurückgegeben statt AssertionError zu werfen",
+        "if not verstoesse — umgekehrte Bedingung scheitert genau im sauberen Fall"
+      ],
+      "activityType": "parsons",
+      "graderId": "deterministic",
+      "title": "Freeze-Guard: sammeln, dann einmal werfen"
     }
   ]
 }

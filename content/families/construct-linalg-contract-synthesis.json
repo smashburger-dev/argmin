@@ -7,7 +7,9 @@
       "caseId": "synthesis-three-contracts",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
-      "sourceLineage": [],
+      "sourceLineage": [
+        "c1-authored"
+      ],
       "parameters": {},
       "expected": {},
       "choices": [
@@ -33,7 +35,12 @@
         }
       ],
       "prompt": "Drei Verträge in einer Synthese: Shape prüfen und `matvec` rechnen, Rang per Elimination mit Zeilentausch, System per `solve` mit Shape-Prüfung. Welche Implementierung erfüllt alle drei?",
-      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle."
+      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System.\n\nPrüfen vor Rechnen, keine hartkodierten Fälle.",
+      "hints": [
+        "Behandle die drei Verträge als getrennte Prüfungen: Für jede Option muss erkennbar sein, was vor dem Rechnen abgesichert wird — erst validieren, dann operieren.",
+        "Die Rang-Pflicht entscheidet sich am Null-Pivot: Eine Null an der Pivotposition verlangt einen Zeilentausch mit anschließender Elimination; die Spalte zu überspringen oder durch null zu teilen bricht den Vertrag."
+      ],
+      "title": "Drei Linalg-Verträge erfüllen"
     },
     {
       "caseId": "synthesis-singular-guard",

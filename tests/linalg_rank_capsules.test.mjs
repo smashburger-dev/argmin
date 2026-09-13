@@ -94,8 +94,12 @@ function rankFraction(A) {
   return r;
 }
 
-const CAPSULE_KEYS = ['core', 'stretch', 'challenge'];
-const CASE_FOR = { core: 'rank-3x3-staircase', stretch: 'rank-3x3-full', challenge: 'rank-3x4-line' };
+// Derived from the capsule bank — the deepEqual pin below stays the oracle.
+// Bank key → difficulty profile: extra capsules share a profile via the
+// '<profile>-<suffix>' key convention ('challenge-4x4' runs on 'challenge').
+const CAPSULE_KEYS = Object.keys(RANK_CAPSULES);
+const CASE_FOR = Object.fromEntries(Object.entries(RANK_CAPSULES).map(([key, capsule]) => [key, capsule.caseId]));
+const PROFILE_FOR = Object.fromEntries(CAPSULE_KEYS.map((key) => [key, key.split('-')[0]]));
 
 test('Orakel-27: alle statischen Matrizen solver-bestätigt und innerhalb 7/5/20', () => {
   let count = 0;
@@ -114,10 +118,11 @@ test('Orakel-27: alle statischen Matrizen solver-bestätigt und innerhalb 7/5/20
 test('Kapseltabelle: Bounds 7/5/20 mit Fallbindung', () => {
   assert.deepEqual(RANK_CAPSULES.core, { dims: [3, 3], targetRank: 2, bound: 7, caseId: 'rank-3x3-staircase' });
   assert.deepEqual(RANK_CAPSULES.stretch, { dims: [3, 3], targetRank: 3, bound: 5, caseId: 'rank-3x3-full' });
-  assert.deepEqual(RANK_CAPSULES.challenge, { dims: [3, 4], targetRank: 1, bound: 20, caseId: 'rank-3x4-line' });
+  assert.deepEqual(RANK_CAPSULES.challenge, { dims: [3, 4], targetRank: 2, bound: 20, caseId: 'rank-3x4-line' });
+  assert.deepEqual(RANK_CAPSULES['challenge-4x4'], { dims: [4, 4], targetRank: 2, bound: 15, caseId: 'rank-4x4-two-combo' });
 });
 
-test('Kapsel-Statistik 3x200: Form, Bound, Leak, Modulo; Bruch-Gauss bis Seed 60', () => {
+test('Kapsel-Statistik 4x200: Form, Bound, Leak, Modulo; Bruch-Gauss bis Seed 60', () => {
   for (const key of CAPSULE_KEYS) {
     const capsule = RANK_CAPSULES[key];
     const byModulo = new Map();
@@ -164,16 +169,17 @@ test('Familien-Block: Dispatch, Contract, Solve', () => {
   assert.deepEqual(RANK_CONTRACT.difficultyProfiles, ['core', 'stretch', 'challenge']);
   assert.deepEqual(RANK_CONTRACT.caseTypes.map((item) => item.caseId).sort(), Object.values(CASE_FOR).sort());
   for (const key of CAPSULE_KEYS) {
-    const generated = generateRankFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key });
+    const generated = generateRankFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: PROFILE_FOR[key] });
     assert.equal(generated.expected.kind, 'integer');
     assert.equal(generated.expected.value, RANK_CAPSULES[key].targetRank);
     assert.deepEqual(solveRankFamily(generated.parameters), { value: RANK_CAPSULES[key].targetRank });
     assert.ok(generated.prompt.length > 20);
-    assert.deepEqual(generateRankFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: key }), generated);
+    assert.deepEqual(generateRankFamily({ seed: 11, caseId: CASE_FOR[key], difficulty: PROFILE_FOR[key] }), generated);
   }
   assert.throws(() => generateRankFamily({ seed: 0, caseId: 'rank-3x3-staircase', difficulty: 'stretch' }), /Unbekannter Fall/);
   assert.throws(() => generateRankFamily({ seed: 0, caseId: 'rank-3x3-full', difficulty: 'intro' }), /Unbekannt/);
   assert.throws(() => generateRankFamily({ seed: 0, caseId: 'rank-3x3-staircase', difficulty: 'intro' }), /Unbekannt/);
+  assert.throws(() => generateRankFamily({ seed: 0, caseId: 'rank-4x4-two-combo', difficulty: 'core' }), /Unbekannter Fall/);
 });
 
 test('Familien-Block: Registry löst, gradet und bleibt deterministisch', async () => {

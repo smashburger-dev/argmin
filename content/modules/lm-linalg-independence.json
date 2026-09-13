@@ -118,6 +118,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-linalg-independence-10-mcq-rank-nullity-combined",
+      "role": "curated",
+      "familyId": "multiple-choice-linalg-independence",
+      "caseId": "rank-nullity-combined",
+      "seed": 1,
+      "difficulty": "challenge",
+      "estimatedMinutes": 10,
+      "lessonId": "l-linalg-independence",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-linalg-independence-04-formula-det2-independence-practice",
       "role": "practice-space",
       "familyId": "formula-det2-independence",

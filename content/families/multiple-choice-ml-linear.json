@@ -20,11 +20,16 @@
       {
         "caseId": "residual-diagnostics",
         "propertyTest": false
+      },
+      {
+        "caseId": "bias-variance-regularization",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
       "core",
-      "stretch"
+      "stretch",
+      "challenge"
     ],
     "competencyIds": [
       "c-ml-linear"
@@ -307,6 +312,95 @@
         {
           "id": "e",
           "text": "Ein einzelner großer Ausreißer verändert den MSE kaum, weil der Mittelwert über viele Residuen geht."
+        }
+      ]
+    },
+    {
+      "caseId": "bias-variance-regularization",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "title": "Bias-Varianz und Regularisierung",
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-ml-linear",
+        "c-ml-regularization"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "b",
+          "c"
+        ],
+        "scoring": "per-correct"
+      },
+      "prompt": "Welche Aussagen zum Bias-Varianz-Tradeoff, zu Ridge- und Lasso-Regularisierung und zur Feature-Skalierung stimmen? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "Das regularisierte Ziel ist $\\|y - Xw\\|^2 + \\lambda\\,\\mathrm{pen}(w)$ mit $\\mathrm{pen}(w) = \\|w\\|_2^2$ bei Ridge bzw. $\\|w\\|_1$ bei Lasso. Wächst $\\lambda$, gewinnt der Strafterm gegenüber dem Fehlerterm: die Koeffizienten schrumpfen, die Varianz des Modells sinkt und der Bias steigt — der Trainingsfehler wird dabei typischerweise größer, nicht kleiner. Für $\\lambda \\to 0$ verschwindet die Strafe und beide Verfahren gehen in die unregularisierte Kleinste-Quadrate-Lösung über.\n\n(a) stimmt: Ridge shrinkt Koeffizienten mit Faktoren kleiner als $1$ stetig Richtung null — exakte Nullen entstehen nicht, Sparsity bleibt der $L_1$-Strafe vorbehalten. (b) stimmt: die $L_1$-Strafe hat bei null einen Knick; das Optimum kann exakt auf einer Achse $w_j = 0$ liegen und blendet das Merkmal damit aus. (c) stimmt: ohne Strafterm bleibt nur $\\|y - Xw\\|^2$ — also genau das KQ-Problem. (d) stimmt nicht: größeres $\\lambda$ erhöht den Bias und senkt die Varianz — das ist der Tradeoff, kein gleichmäßiger Gewinn auf beiden Seiten. (e) stimmt nicht: die Strafe verteuert die Anpassung an die Trainingsdaten — gesenkt wird der erwartete Testfehler über die Varianz, nicht der Trainingsfehler. (f) stimmt nicht: die Strafe wirkt auf die Koeffizientengröße, und die hängt von der Einheit des Merkmals ab — ohne Standardisieren bestraft $\\lambda$ die Merkmale ungleich.",
+      "hints": [
+        "Lege jede Aussage auf den Bias-Varianz-Tradeoff: mehr $\\lambda$ heißt mehr Bias, weniger Varianz — und einen tendenziell höheren Trainingsfehler.",
+        "Trenne $L_2$ von $L_1$: Ridge shrinkt stetig gegen null (nie exakt), Lasso kann exakt null setzen. Die Strafe sieht nur Koeffizientengrößen — die Skalierung der Merkmale bleibt relevant."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('d')",
+          "then": "Der Tradeoff läuft entgegengesetzt: größeres $\\lambda$ erhöht den Bias (systematische Verzerrung Richtung null) und senkt die Varianz — ein gleichzeitiges Absenken beider Größen gibt es nicht."
+        },
+        {
+          "if": "selected.includes('e')",
+          "then": "Die Strafe verteuert das Anpassen an die Trainingsdaten: der Trainingsfehler steigt typischerweise mit $\\lambda$ — gesenkt wird der erwartete Test- bzw. Generalisierungsfehler über die kleinere Varianz."
+        },
+        {
+          "if": "selected.includes('f')",
+          "then": "Die Strafe wirkt auf Koeffizientengrößen — und ein Koeffizient pro Kilometer ist tausendmal so groß wie pro Meter. Ohne Standardisieren bestraft $\\lambda$ die Merkmale ungleich; Skalierung bleibt nötig."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "Ridge shrinkt mit Faktoren $\\sigma_i^2/(\\sigma_i^2 + \\lambda) < 1$ stetig gegen null — exakt null wird kein Koeffizient; das kann nur die $L_1$-Strafe."
+        },
+        {
+          "if": "!selected.includes('b')",
+          "then": "Die $L_1$-Strafe $\\|w\\|_1$ hat bei null einen Knick — das Optimum kann exakt auf der Achse $w_j = 0$ liegen und liefert so ein Modell mit ausgeblendeten Merkmalen."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "Für $\\lambda \\to 0$ verschwindet der Strafterm in $\\|y - Xw\\|^2 + \\lambda\\,\\mathrm{pen}(w)$ — übrig bleibt das Kleinste-Quadrate-Problem, gegen das beide Lösungen konvergieren."
+        }
+      ],
+      "typicalErrors": [
+        "Ridge-Shrinkage mit Lasso-Sparsity verwechselt — die $L_2$-Strafe setzt keine exakten Nullen.",
+        "Einen geringeren Testfehler mit einem geringeren Trainingsfehler gleichgesetzt.",
+        "Die Einheitenabhängigkeit der Koeffizientenstrafe übersehen und Feature-Skalierung für unnötig gehalten."
+      ],
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ridge schrumpft die Koeffizienten Richtung null, setzt sie für endliches $\\lambda$ aber nie exakt auf null."
+        },
+        {
+          "id": "b",
+          "text": "Lasso kann Koeffizienten exakt auf null setzen und erzeugt so ein Modell mit weniger aktiven Merkmalen (Sparsity)."
+        },
+        {
+          "id": "c",
+          "text": "Für $\\lambda \\to 0$ konvergieren Ridge- und Lasso-Lösung gegen die unregularisierte Kleinste-Quadrate-Lösung."
+        },
+        {
+          "id": "d",
+          "text": "Ein größeres $\\lambda$ senkt Bias und Varianz des Modells gleichermaßen."
+        },
+        {
+          "id": "e",
+          "text": "Regularisierung reduziert den Fehler auf den Trainingsdaten."
+        },
+        {
+          "id": "f",
+          "text": "Feature-Skalierung ist bei Ridge unnötig, weil die Strafe alle Koeffizienten gleich behandelt."
         }
       ]
     }

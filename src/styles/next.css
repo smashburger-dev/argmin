@@ -150,7 +150,7 @@ main { min-width: 0; }
 
 .today-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .75fr); gap: var(--s4); }
 .today-grid > :nth-child(3):last-child { grid-column: 1 / -1; }
-.primary-card, .status-card, .reason-panel, .empty-state, .settings-panel, .source-card, .tool-card, .unit-card, .roadmap-card, .activity-card, .diagnostic-card, .review-card, .lesson-list a, .project-panel, .report-panel, .deliverables, .exercise-work, .exercise-feedback, .editor-panel, .output-panel, .lesson-prose, .lesson-tasks, .lesson-pagination > a, .visualization-controls, .progress-summary, .policy, .journal { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
+.primary-card, .status-card, .reason-panel, .empty-state, .settings-panel, .source-card, .tool-card, .unit-card, .roadmap-card, .activity-card, .diagnostic-card, .review-card, .challenge-card, .lesson-list a, .project-panel, .report-panel, .deliverables, .exercise-work, .exercise-feedback, .editor-panel, .output-panel, .lesson-prose, .lesson-tasks, .lesson-pagination > a, .visualization-controls, .progress-summary, .policy, .journal { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); }
 .primary-card { display: flex; flex-direction: column; gap: var(--s4); padding: clamp(24px, 3vw, 36px); background: linear-gradient(180deg, var(--surface) 20%, color-mix(in srgb, var(--accent-soft) 65%, var(--surface))); color: var(--text); box-shadow: var(--shadow-sm), inset 0 1px 0 rgb(255 255 255 / .45); }
 .primary-card .actions { margin-top: auto; padding-top: var(--s5); }
 :root[data-theme="dark"] .primary-card { box-shadow: var(--shadow-sm), inset 0 1px 0 rgb(255 255 255 / .07); }
@@ -271,6 +271,19 @@ main { min-width: 0; }
 .state-review_due { border-color: var(--danger); background: var(--danger); }
 .review-card { display: flex; align-items: center; justify-content: space-between; gap: var(--s5); padding: var(--s5); }
 .review-card p { margin: var(--s2) 0 0; color: var(--text-2); }
+.challenge-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s5); margin-bottom: var(--s5); }
+.challenge-stat { color: var(--text-2); font-size: 14px; }
+.challenge-stat strong { color: var(--text); font-size: 18px; font-weight: 650; }
+.challenge-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4); }
+.challenge-card { display: flex; flex-direction: column; gap: var(--s3); padding: clamp(20px, 3vw, 32px); }
+.challenge-card .card-kicker { display: flex; align-items: center; gap: var(--s2); margin-bottom: 0; }
+.challenge-card h2 { font-size: clamp(19px, 2vw, 22px); }
+.challenge-card > p:not(.card-kicker) { margin: 0; color: var(--text-2); line-height: 1.55; }
+.challenge-card .actions { margin-top: auto; padding-top: var(--s3); }
+.challenge-card.is-solved { border-color: color-mix(in srgb, var(--ok) 55%, var(--border)); }
+.challenge-tag-solved { border-color: var(--ok); color: var(--ok); }
+.challenge-teaser .meter-label { margin-top: var(--s3); font-size: 14px; }
+.challenge-teaser .text-link { margin-top: var(--s2); }
 .progress-summary { display: grid; gap: var(--s5); margin-bottom: var(--s6); padding: clamp(24px, 4vw, 40px); }
 .progress-summary-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); }
 .progress-summary-stats > div { display: grid; gap: var(--s2); justify-items: center; text-align: center; }
@@ -585,7 +598,7 @@ main:focus { outline: none; }
   .split-header { display: block; }
   .module-competence { max-width: none; margin-top: var(--s4); }
   .search-field { margin-top: var(--s5); }
-  .today-grid, .diagnostic-grid, .competency-detail-grid, .project-grid, .report-panel, .lesson-list, .lesson-pagination, .source-grid, .tool-grid, .module-sections .lesson-list, .onboarding-tracks { grid-template-columns: minmax(0, 1fr); }
+  .today-grid, .diagnostic-grid, .competency-detail-grid, .project-grid, .report-panel, .lesson-list, .lesson-pagination, .source-grid, .tool-grid, .module-sections .lesson-list, .onboarding-tracks, .challenge-grid { grid-template-columns: minmax(0, 1fr); }
   .module-path > li > a { grid-template-columns: 36px minmax(0, 1fr); }
   .module-meta { grid-column: 2; white-space: normal; }
   .progress-summary-stats { grid-template-columns: minmax(0, 1fr); }

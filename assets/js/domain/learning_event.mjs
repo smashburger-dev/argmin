@@ -57,6 +57,7 @@ export function buildLearningEvent(input = {}) {
     errorType: input.errorType ?? null,
     revealedSolution,
     ...(input.occurredAt ? { occurredAt: input.occurredAt } : {}),
+    ...(input.context ? { context: String(input.context) } : {}),
     ...('event' in input ? { event: input.event } : {}),
   };
 }

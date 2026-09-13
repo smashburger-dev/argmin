@@ -199,6 +199,87 @@
         "Lücke 3: d mit a multipliziert — der äußere Summand bleibt unverändert",
         "Lücke 5: Schritt übersprungen — Zeile-2-Konstante statt a·q+d eingetragen"
       ]
+    },
+    {
+      "caseId": "distribute-double-gap",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "p2-wef-dist-double"
+      ],
+      "competencyIds": [
+        "c-algebra-basics",
+        "c-algebra"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "distribute-double-gap",
+        "difficulty": "challenge",
+        "fade": "double",
+        "a": 7,
+        "p": 9,
+        "q": -5,
+        "c": 5,
+        "m": 9,
+        "n": -8
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          {
+            "answer": "63",
+            "input": "numeric"
+          },
+          {
+            "answer": "-35",
+            "input": "numeric"
+          },
+          {
+            "answer": "45",
+            "input": "numeric"
+          },
+          {
+            "answer": "-40",
+            "input": "numeric"
+          },
+          {
+            "answer": "108",
+            "input": "numeric"
+          },
+          {
+            "answer": "-75",
+            "input": "numeric"
+          }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $7(9x - 5) + 5(9x - 8)$. Zwei Klammern, zwei Zwischenergebnisse — ergänze beide Ausmultiplikationen und die Schlusszeile vollständig. Fülle jede Lücke mit dem vollständigen Wert inklusive Vorzeichen (z. B. −35 oder +18). <br> $7(9x - 5) + 5(9x - 8)$<br>$= [[gap]]x [[gap]] + [[gap]]x [[gap]]$<br>$= [[gap]]x [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$7(9x - 5) + 5(9x - 8)$<br>$= 63x - 35 + 45x - 40$<br>$= 108x - 75$<br>Stufe 1: beide Klammern getrennt ausmultiplizieren ($7 \\cdot 9x = 63x$, $7 \\cdot (-5) = -35$ und $5 \\cdot 9x = 45x$, $5 \\cdot (-8) = -40$).<br>Stufe 2: die x-Terme $63x$ und $45x$ sowie die Konstanten $-35$ und $-40$ zusammenfassen.",
+      "hints": [
+        "Stufe 1 zuerst: jede Klammer für sich ausmultiplizieren — a·p und c·m vor x, a·q und c·n als Konstanten. Das Vorzeichen gehört zur Lücke: a·q und c·n können negativ sein.",
+        "Stufe 2: die beiden x-Terme und die beiden Konstanten getrennt zusammenfassen — auch die Schlusskonstante kann negativ sein."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-2-value",
+          "then": "Dritte Lücke = c·m — die zweite Klammer hat ihren eigenen äußeren Faktor, nicht denselben wie die erste."
+        },
+        {
+          "if": "gap-4-value",
+          "then": "Fünfte Lücke = a·p + c·m — die x-Koeffizienten beider Produkte addieren, nicht multiplizieren."
+        },
+        {
+          "if": "gap-5-sign",
+          "then": "Das Vorzeichen vor der letzten Lücke steht bereits — in die Lücke gehört |a·q + c·n|."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 3/4: zweite Klammer mit a statt c multipliziert",
+        "Lücke 5: Produkte multipliziert statt Koeffizienten addiert (a·p·c·m)",
+        "Lücke 6: Konstanten einzeln übernommen statt a·q + c·n zusammengefasst"
+      ],
+      "title": "Zwei Produkte ausmultiplizieren (Lücken)"
     }
   ]
 }

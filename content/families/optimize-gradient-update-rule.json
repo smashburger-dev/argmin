@@ -141,6 +141,7 @@
       "caseId": "lora-fit-toy",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w25-e6"
       ],
@@ -171,7 +172,8 @@
         "Skalierung α/r in der Kettenregel vergessen"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "LoRA-Update am Toy-Modell"
     }
   ]
 }

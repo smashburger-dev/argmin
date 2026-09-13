@@ -117,8 +117,15 @@ function validateChoiceContracts(document) {
 }
 
 function validateChallengeContracts(document) {
-  for (const item of document.cases || []) {
-    if (item.challengeEligible !== true) continue;
+  const flagged = (document.cases || []).filter((item) => item.challengeEligible === true);
+  if (flagged.length === 0) return;
+  // The instantiate smoke-check needs the family wired into the exercise
+  // registry. In the compile flow validateSourceDocument runs before
+  // registerStaticCases/configureExerciseFamilies, so flagged docs register
+  // themselves here (idempotent: case bodies merge, the spec is rebuilt).
+  registerStaticCases(document.familyId, document.cases);
+  if (!EXERCISE_FAMILIES.get(document.familyId)) configureExerciseFamilies([document]);
+  for (const item of flagged) {
     const label = `${document.familyId}:${item.caseId}`;
     if (item.difficultyProfile !== 'challenge') {
       throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt difficultyProfile challenge`);
@@ -134,6 +141,61 @@ function validateChallengeContracts(document) {
     }
     if (!Array.isArray(item.sourceLineage) || item.sourceLineage.length === 0) {
       throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt gesetzte sourceLineage`);
+    }
+    // Fail-closed smoke-check: a flagged case must instantiate on the
+    // challenge profile. For contract:null docs (procedural families) this
+    // also proves the JS spec actually carries the case and the profile.
+    let instance = null;
+    try {
+      instance = EXERCISE_FAMILIES.instantiate(document.familyId, 0, 'challenge', item.caseId);
+    } catch (error) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT instantiate-Smoke-Check fehlgeschlagen: ${error.message}`);
+    }
+    // contract:null docs mirror a JS spec — the instantiated case is the
+    // authoritative structure; authored docs are checked on the JSON body.
+    const authored = document.contract != null;
+    const expected = authored ? item.expected : instance.expectedAnswer;
+    const parameters = authored ? item.parameters : instance.parameters;
+    const hints = (authored ? item.hints : instance.hints) ?? item.hints;
+    const competencyIds = authored
+      ? item.competencyIds ?? document.contract?.competencyIds
+      : instance.competencyIds ?? item.competencyIds;
+    const fullSolution = (authored ? item.fullSolution : instance.fullSolution) ?? item.fullSolution;
+    const activityType = item.activityType
+      ?? instance.activityType
+      ?? document.contract?.activityType
+      ?? EXERCISE_FAMILIES.get(document.familyId)?.activityType
+      ?? null;
+    // Generic minima for every flagged case.
+    if (!Array.isArray(hints) || hints.length < 2) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 hints`);
+    }
+    const solutionBlocks = String(fullSolution).split(/\n\s*\n/).filter((block) => block.trim().length > 0);
+    if (solutionBlocks.length < 2 && String(fullSolution).trim().length < 80) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt eine substantielle fullSolution (>=2 Absaetze oder >=80 Zeichen)`);
+    }
+    // Structural minimum per activity type, fail-closed.
+    const tests = parameters?.tests;
+    const testsText = Array.isArray(tests) ? tests.join('\n') : (typeof tests === 'string' ? tests : '');
+    const expectedKind = expected?.kind;
+    if (activityType === 'python-code' || activityType === 'code-tests' || tests != null) {
+      const requiredFunctions = Array.isArray(expected?.requiredFunctions) ? expected.requiredFunctions.length : 0;
+      const checkCalls = (testsText.match(/__check\(/g) || []).length;
+      if (requiredFunctions < 2 && checkCalls < 8) {
+        throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 requiredFunctions oder >=8 __check-Aufrufe`);
+      }
+    } else if (activityType === 'worked-example-fading' || expectedKind === 'gaps') {
+      const gapCount = Array.isArray(expected?.gaps) ? expected.gaps.length : 0;
+      if (gapCount < 4) {
+        throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=4 gaps`);
+      }
+    } else if (activityType === 'multiple-choice' || expectedKind === 'choice-indices') {
+      const distinctIds = new Set(Array.isArray(expected?.correctIds) ? expected.correctIds : []);
+      if (distinctIds.size < 2) {
+        throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 verschiedene correctIds`);
+      }
+    } else if (!Array.isArray(competencyIds) || competencyIds.length < 2) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 competencyIds`);
     }
   }
 }
@@ -700,7 +762,8 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
   const familyDocument = familyDocuments.get(placement.familyId);
   const familyTitle = familyDocument?.contract?.summary || family.summary;
-  const title = instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
+  const caseTitle = familyDocument?.cases?.find((item) => item.caseId === placement.caseId)?.title;
+  const title = caseTitle || instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
   seen.add(definitionId);
   return {
     definitionId, familyId: placement.familyId, caseId: placement.caseId, seed: placement.seed ?? 0, difficulty: placement.difficulty, title,
@@ -708,6 +771,20 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
     estimatedMinutes: placement.estimatedMinutes ?? 8, masteryEligible: instance.masteryEligible === true,
     seeded: family.authorityMode === 'seeded', moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
   };
+}
+
+// Display title for a challenge-flagged case that has no module placement:
+// instantiate at the challenge profile and reuse the familyActivities
+// derivation. Registration is lazy so projection also works when this runs
+// without the validation pass having populated EXERCISE_FAMILIES first.
+function challengeCaseTitle(family, caseId) {
+  try {
+    if (!EXERCISE_FAMILIES.get(family.familyId)) configureExerciseFamilies([family]);
+    const instance = EXERCISE_FAMILIES.instantiate(family.familyId, 0, 'challenge', caseId);
+    return instance.title || stripPromptMarkup(instance.prompt, 80) || '';
+  } catch {
+    return '';
+  }
 }
 
 // Route-scoped index sections: four heavy sections ship as sidecar chunks
@@ -729,9 +806,28 @@ export function buildSplitArtifacts(bundle) {
       familyId: family.familyId,
       summary: family.contract?.summary || '',
       contract: family.contract,
-      cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible, challengeEligible }) => ({
-        caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}),
-      })),
+      cases: family.cases.map((item) => {
+        const { caseId, difficultyProfile, masteryEligible, challengeEligible, title } = item;
+        const projected = { caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}) };
+        // Challenge cards render titles and the activity-type tag before the
+        // family route loads, so derive them here the same way
+        // buildFamilyActivities does. An authored case-level `title`
+        // overrides the generated instance title.
+        if (challengeEligible === true || typeof title === 'string') {
+          const derived = typeof title === 'string' && title ? title : challengeCaseTitle(family, caseId);
+          if (derived) projected.title = derived;
+        }
+        if (challengeEligible === true) {
+          if (!family.contract?.activityType && !EXERCISE_FAMILIES.get(family.familyId)) {
+            configureExerciseFamilies([family]);
+          }
+          const type = item.activityType
+            ?? family.contract?.activityType
+            ?? EXERCISE_FAMILIES.get(family.familyId)?.activityType;
+          if (type) projected.activityType = type;
+        }
+        return projected;
+      }),
     })),
   };
   const lessonBodies = bundle.lessons.map((lesson) => {
