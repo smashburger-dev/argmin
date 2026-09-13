@@ -41,6 +41,7 @@
       "caseId": "pipeline-freeze-report",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w35-e6"
       ],
@@ -69,7 +70,8 @@
       ],
       "fullSolution": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) >= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# Freeze zuerst, Stages rein deterministic, Digest kanonisch — Doppellauf liefert dasselbe Objekt.",
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Pipeline-Freeze mit Digest"
     },
     {
       "caseId": "reproduction-verdict-rules",

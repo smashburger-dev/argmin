@@ -25,6 +25,11 @@ function assertContractExtras(contract, { familyGroup, difficultyProfiles } = {}
   if (difficultyProfiles !== undefined) assert.deepEqual(contract.difficultyProfiles, difficultyProfiles);
 }
 
+function assertMasteryConsistent(doc, contract, familyId) {
+  const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
+  assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
+}
+
 // cases: [{ caseId, difficulty, competencyIds? }]
 // mod: module namespace; capsules keyed by caseId or by difficulty.
 // Parametrisierte Kapseln (makeChoiceCapsuleFamily) tragen Zahlen-/Parameter-
@@ -168,8 +173,7 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
     assert.equal(mod.FAMILY_SPEC.graderId, 'deterministic');
     assertContractExtras(contract, { familyGroup, difficultyProfiles });
     assert.equal(typeof contract.taskArchetype, 'string');
-    const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
-    assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
+    assertMasteryConsistent(doc, contract, familyId);
     assert.deepEqual(contract.caseTypes.map((entry) => entry.caseId), cases.map((item) => item.caseId));
     assert.equal(mod.FAMILY_SPEC.generate, generate);
     assert.equal(mod.FAMILY_SPEC.solve, solve);
@@ -180,9 +184,9 @@ export function choiceCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, f
       if (item.competencyIds) {
         assert.deepEqual(generated.competencyIds, item.competencyIds, `${item.caseId}: Kompetenz-Override`);
       }
+      const wrongProfile = item.difficulty === 'intro' ? 'core' : 'intro';
+      assert.throws(() => generate({ seed: 0, caseId: item.caseId, difficulty: wrongProfile }), /Unbekannter Fall/);
     }
-    const wrongProfile = cases[0].difficulty === 'intro' ? 'core' : 'intro';
-    assert.throws(() => generate({ seed: 0, caseId: cases[0].caseId, difficulty: wrongProfile }), /Unbekannter Fall/);
     assert.throws(() => generate({ seed: 0, caseId: 'nope', difficulty: cases[0].difficulty }), /Unbekannter Fall/);
     assert.throws(() => generate({ seed: 0.5, caseId: cases[0].caseId, difficulty: cases[0].difficulty }), /Seed muss eine ganze Zahl sein/);
   });
@@ -269,13 +273,14 @@ export function predictCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, 
     assert.equal(mod.FAMILY_SPEC.activityType, 'predict-output');
     assert.equal(mod.FAMILY_SPEC.graderId, 'deterministic');
     assertContractExtras(contract, { familyGroup, difficultyProfiles });
-    const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
-    assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
+    assertMasteryConsistent(doc, contract, familyId);
     assert.deepEqual(contract.caseTypes.map((entry) => entry.caseId), cases.map((item) => item.caseId));
     assert.equal(mod.FAMILY_SPEC.generate, generate);
     assert.equal(mod.FAMILY_SPEC.solve, solve);
-    const wrongProfile = cases[0].difficulty === 'core' ? 'stretch' : 'core';
-    assert.throws(() => generate({ seed: 0, caseId: cases[0].caseId, difficulty: wrongProfile }), /Unbekannter Fall/);
+    for (const item of cases) {
+      const wrongProfile = item.difficulty === 'core' ? 'stretch' : 'core';
+      assert.throws(() => generate({ seed: 0, caseId: item.caseId, difficulty: wrongProfile }), /Unbekannter Fall/, `${item.caseId}: falsches Profil`);
+    }
     assert.throws(() => generate({ seed: 0, caseId: 'nope', difficulty: cases[0].difficulty }), /Unbekannter Fall/);
     assert.throws(() => generate({ seed: 0.5, caseId: cases[0].caseId, difficulty: cases[0].difficulty }), /Seed/);
     assert.throws(() => solve({}), /Kapselform/);
@@ -358,8 +363,7 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, fam
     assert.equal(mod.FAMILY_SPEC.activityType, 'python-code');
     assert.equal(mod.FAMILY_SPEC.graderId, 'pyodide');
     assertContractExtras(contract, { familyGroup, difficultyProfiles });
-    const expectedMastery = doc.cases.some((entry) => entry.graderId !== 'manual-rubric' && entry.masteryEligible === true);
-    assert.equal(contract.masteryEligible, expectedMastery, `${familyId}: masteryEligible weicht vom Fallkörper ab`);
+    assertMasteryConsistent(doc, contract, familyId);
     assert.deepEqual(contract.caseTypes.map((entry) => entry.caseId), cases.map((item) => item.caseId));
     assert.equal(mod.FAMILY_SPEC.generate, generate);
     assert.equal(mod.FAMILY_SPEC.solve, solve);
@@ -369,9 +373,9 @@ export function codeCapsuleSuite(familyId, mod, cases, { distinctFloor = 40, fam
       if (item.competencyIds) {
         assert.deepEqual(generated.competencyIds ?? contract.competencyIds, item.competencyIds, `${item.caseId}: Kompetenz-Override`);
       }
+      const wrongProfile = item.difficulty === 'core' ? 'stretch' : 'core';
+      assert.throws(() => generate({ seed: 0, caseId: item.caseId, difficulty: wrongProfile }), /Unbekannter Fall/, `${item.caseId}: falsches Profil`);
     }
-    const wrongProfile = cases[0].difficulty === 'core' ? 'stretch' : 'core';
-    assert.throws(() => generate({ seed: 0, caseId: cases[0].caseId, difficulty: wrongProfile }), /Unbekannter Fall/);
     assert.throws(() => generate({ seed: 0, caseId: 'nope', difficulty: cases[0].difficulty }), /Unbekannter Fall/);
     assert.throws(() => generate({ seed: 0.5, caseId: cases[0].caseId, difficulty: cases[0].difficulty }), /Seed/);
     assert.throws(() => solve({}), /Kapselform|Unbekannter Fall/);

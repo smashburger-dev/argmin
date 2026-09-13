@@ -36,7 +36,7 @@ interface CompiledIndex {
     familyId: string;
     summary?: string;
     contract: (Record<string, unknown> & { activityType?: string }) | null;
-    cases: Array<{ caseId: string; difficultyProfile: string; masteryEligible: boolean }>;
+    cases: Array<{ caseId: string; difficultyProfile: string; masteryEligible: boolean; challengeEligible?: boolean; title?: string; activityType?: string }>;
   }>;
 }
 

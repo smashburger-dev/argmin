@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.0 — 2026-09-12
+
+Neu für Lernende: die **tägliche Challenge** unter `#/challenge` — ein pro Tag deterministisch gezogenes Set schwerer Aufgaben aus den Modulen, mit denen du schon arbeitest. Fälle wiederholen sich nicht innerhalb des Fensters, gelöste Challenges zählen eine Serie in Tagen, und auf der Heute-Seite zeigt eine Karte den Tages-Stand. Challenges markieren sich im Fortschritt als eigener Kontext, und nach dem Lösen geht es direkt zur nächsten Challenge statt zurück ins Modul. Der Rundgang hat einen neunten Schritt für die Challenge bekommen.
+
+Unter der Haube: Challenge-Fälle werden im Katalog mit `challengeEligible` markiert und müssen einen verschärften Vertrag erfüllen (mindestens zwei Hinweise, ausführliche Musterlösung, typabhängige Mindestanforderungen). Der Rundgang und die Heute-Kachel laden den Aufgaben-Code weiter erst bei Bedarf — kein Startup-Aufwand. Dazu ein neuer sechsstufiger Lückentext-Fall fürs Ausmultiplizieren zweier Produkte.
+
 ## 0.6.5 — 2026-09-12
 
 Drei neue Aufgabentypen: **Mehrfachauswahl** (mehrere richtige Antworten, alles-oder-nichts oder Teilpunkte), **Fehlerdiagnose** (du benennst die Fehlerursache im eigenen Text — formativ, fließt nicht in die Meisterschaft) und **Worked-Example-Fading** (Lücken in Musterlösungen, die von „nur Endergebnis" bis „alle Zwischenschritte" wachsen). Dazu schließt jetzt jede Visualisierung mit einer **Vorhersage-Aufgabe** ab: Slider-Werte vorgeben, Größe vorhersagen, deterministisch prüfen — mit deutschem Komma und typischen Fehlvorhersagen als erklärtem Feedback.

@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildSplitArtifacts, compileContent, writeSplitArtifacts } from '../tools/compile_content.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
@@ -22,7 +23,20 @@ test('split index plus bodies plus sections rebuild every lesson, activity and f
     familyId: family.familyId,
     summary: family.contract?.summary || '',
     contract: family.contract,
-    cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible }) => ({ caseId, difficultyProfile, masteryEligible })),
+    cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible, challengeEligible, title, activityType }) => (
+      challengeEligible === true || typeof title === 'string'
+        ? {
+          caseId,
+          difficultyProfile,
+          masteryEligible,
+          ...(challengeEligible === true ? { challengeEligible: true } : {}),
+          ...(typeof title === 'string' && title ? { title } : {}),
+          ...(challengeEligible === true
+            ? { activityType: activityType ?? family.contract?.activityType ?? EXERCISE_FAMILIES.get(family.familyId)?.activityType }
+            : {}),
+        }
+        : { caseId, difficultyProfile, masteryEligible }
+    )),
   })));
   for (const key of sectionKeys) {
     assert.equal(publicSplit.index[key], undefined);

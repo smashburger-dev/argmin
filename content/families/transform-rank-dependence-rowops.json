@@ -82,37 +82,40 @@
       "caseId": "rank-3x4-line",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "c1-authored"
       ],
       "parameters": {
+        "caseId": "rank-3x4-line",
+        "difficulty": "challenge",
         "A": [
           [
-            1,
-            2,
-            3,
-            4
+            -8,
+            12,
+            -18,
+            -17
           ],
           [
-            2,
-            4,
-            6,
-            8
-          ],
-          [
-            -1,
-            -2,
             -3,
-            -4
+            4,
+            -7,
+            -15
+          ],
+          [
+            8,
+            -12,
+            18,
+            17
           ]
         ]
       },
       "expected": {
         "kind": "integer",
-        "value": 1
+        "value": 2
       },
-      "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}1&2&3&4\\\\2&4&6&8\\\\-1&-2&-3&-4\\end{pmatrix}\\] mit Gauß-Elimination.",
-      "fullSolution": "Zeile 2 ist $2$-mal Zeile 1 und Zeile 3 ist $-1$-mal Zeile 1. Nach Elimination bleibt genau eine Pivotzeile, also ist $\\operatorname{rang}(A)=1$.",
+      "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}-8&12&-18&-17\\\\-3&4&-7&-15\\\\8&-12&18&17\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.",
+      "fullSolution": "Nach Elimination bleiben genau 2 Pivotzeile(n); alle übrigen Zeilen sind Linearkombinationen dieser Pivotzeilen. Daher ist $\\operatorname{rang}(A)=2$.",
       "hints": [
         "Suche Pivotzeilen nach dem Zeilentausch und der Elimination.",
         "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
@@ -121,7 +124,61 @@
         "Die beiden Vielfachen der ersten Zeile in diesem 3×4-Beispiel nicht als abhängig erkannt",
         "Den Rang 1 fälschlich an der vier Spalten statt an den Pivotzeilen festgemacht",
         "Die beiden nach der Elimination entstehenden Nullzeilen als zusätzliche Pivots gezählt"
-      ]
+      ],
+      "title": "Rang einer 3×4-Matrix"
+    },
+    {
+      "caseId": "rank-4x4-two-combo",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "parameters": {
+        "A": [
+          [
+            -7,
+            10,
+            13,
+            -9
+          ],
+          [
+            11,
+            -5,
+            9,
+            -12
+          ],
+          [
+            7,
+            -10,
+            -13,
+            9
+          ],
+          [
+            -11,
+            5,
+            -9,
+            12
+          ]
+        ]
+      },
+      "expected": {
+        "kind": "integer",
+        "value": 2
+      },
+      "prompt": "Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}-7&10&13&-9\\\\11&-5&9&-12\\\\7&-10&-13&9\\\\-11&5&-9&12\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.",
+      "fullSolution": "Zeile III ist $-1$-mal Zeile I und Zeile IV ist $-1$-mal Zeile II: $-( -7,10,13,-9 )=(7,-10,-13,9)$ und $-( 11,-5,9,-12 )=(-11,5,-9,12)$.\n\nNach Elimination bleiben die zwei unabhängigen Pivotzeilen I und II (keine Vielfachen voneinander); zwei Nullzeilen entstehen. Daher ist $\\operatorname{rang}(A)=2$.",
+      "hints": [
+        "Prüfe zuerst, ob Zeilen Vielfache oder Summen anderer Zeilen sind — hier sind zwei Zeilen negierte Kopien.",
+        "Nach der Elimination zählen nur die Pivotzeilen; die zwei entstehenden Nullzeilen erhöhen den Rang nicht."
+      ],
+      "typicalErrors": [
+        "Die negierten Kopien von Zeile I und II nicht als Abhängigkeiten erkannt",
+        "Vier Zeilen mit vier Spalten verwechselt und Rang 4 angenommen",
+        "Bei der 4×4-Elimination die Pivotspur verloren und Nullzeilen mitgezählt"
+      ],
+      "title": "Rang einer 4×4-Matrix (zwei Abhängigkeiten)"
     }
   ]
 }

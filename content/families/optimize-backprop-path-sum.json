@@ -41,6 +41,59 @@
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
+    },
+    {
+      "caseId": "two-path-chain-sum",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "parameters": {
+        "variant": "two-path",
+        "w": 1,
+        "a": 3,
+        "b": 1,
+        "c": 1,
+        "s": 3
+      },
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "expected": {
+        "kind": "integer",
+        "value": 45
+      },
+      "prompt": "Ein Rechengraph wertet den Verlust $L = f(g(w) \\cdot h(w))$ aus; $w$ wirkt über zwei Pfade auf $L$: über $g(w) = 3\\,w^2$ und über $h(w) = 1\\,w + 1$, danach $f(u) = 3\\,u$. Berechne $\\partial L/\\partial w$ an der Stelle $w = 1$.",
+      "fullSolution": "Vorwärts an $w = 1$: $g = 3\\cdot1^2 = 3$ mit $g' = 2\\cdot3\\cdot1 = 6$ und $h = 1\\cdot1 + 1 = 2$ mit $h' = 1$; damit $u = g\\cdot h = 6$ und $f'(u) = 3$.\n\nPfad über $g$: $f'\\cdot h\\cdot g' = 3\\cdot(2)\\cdot(6) = 36$. Pfad über $h$: $f'\\cdot g\\cdot h' = 3\\cdot(3)\\cdot(1) = 9$. Beide Pfadbeiträge summieren sich: $\\partial L/\\partial w = 36 + (9) = 45$.",
+      "hints": [
+        "Wertebestimmung zuerst: $g$, $h$, ihre lokalen Ableitungen $g'=2aw$ und $h'=b$ sowie $f'(u)$ an der Stelle ausrechnen.",
+        "Der Pfad über $g$ trägt $f'\\cdot h\\cdot g'$ bei, der Pfad über $h$ trägt $f'\\cdot g\\cdot h'$ bei — beide Beiträge werden addiert, nicht multipliziert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 36",
+          "then": "Das ist nur der Pfad über g (3 · 2 · 6) — der Pfad über h trägt 3 · 3 · 1 = 9 zusätzlich bei."
+        },
+        {
+          "if": "value === 9",
+          "then": "Das ist nur der Pfad über h — der Pfad über g fehlt noch mit +36."
+        },
+        {
+          "if": "value === 324",
+          "then": "Die Pfade laufen parallel von w nach L: ihre Beiträge werden addiert, nicht multipliziert."
+        }
+      ],
+      "typicalErrors": [
+        "nur einen Pfad differenziert",
+        "die Pfadbeiträge multipliziert statt addiert",
+        "g' = 2aw nicht ausgewertet und stattdessen den Koeffizienten a verwendet"
+      ],
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "title": "Backprop über zwei Pfade summieren"
     }
   ]
 }

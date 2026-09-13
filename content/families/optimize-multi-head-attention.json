@@ -7,6 +7,7 @@
       "caseId": "multi-head-attention",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w22-e6"
       ],
@@ -37,7 +38,8 @@
         "Konkatenation und Ausgabeprojektion in falscher Reihenfolge"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Multi-Head-Attention von Hand"
     }
   ]
 }

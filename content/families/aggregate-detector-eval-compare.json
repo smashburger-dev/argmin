@@ -7,6 +7,7 @@
       "caseId": "run-eval-compare-rulesets",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w28-e6"
       ],
@@ -35,12 +36,14 @@
         "Gleichstand in compare_rulesets falsch behandelt"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Eval-Lauf: zwei Regelwerke vergleichen"
     },
     {
       "caseId": "detector-table-best-f1",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w29-e6"
       ],
@@ -69,7 +72,8 @@
         "flagged nur als tp gezählt"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Detektor-Tabelle: beste F1 wählen"
     }
   ]
 }

@@ -59,6 +59,65 @@
           }
         ]
       }
+    },
+    {
+      "caseId": "both-orders-negative-chain",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "form": "linear-both-orders",
+        "fa": 2,
+        "fb": -5,
+        "ga": -2,
+        "gb": -6,
+        "v": -3,
+        "snippet": "def f(x):\n    return 2 * x + (-5)\n\ndef g(x):\n    return -2 * x + (-6)\n\nprint(f(g(-3)), g(f(-3)))"
+      },
+      "expected": {
+        "output": "-5 16"
+      },
+      "prompt": "Was gibt dieses Programm aus? Beide Aufrufe genau in der gedruckten Reihenfolge berechnen — die Reihenfolge der Anwendung ist Teil der Aufgabe. Zwei Zahlen in einer Zeile, durch Leerzeichen getrennt.",
+      "fullSolution": "g(-3) = -2 · -3 + -6 = 0; f(0) = 2 · 0 + -5 = -5. Andersherum: f(-3) = -11; g(-11) = -2 · -11 + -6 = 16. Ausgabe: -5 16. Die beiden Bahnen unterscheiden sich, weil die Funktionen nicht vertauschbar sind.",
+      "hints": [
+        "Jede Bahn von innen nach außen rechnen: erst g(v) bestimmen, dann f auf dieses Zwischenergebnis anwenden — danach die Gegenrichtung f(v), dann g.",
+        "f(g(v)) und g(f(v)) sind im Allgemeinen verschieden: das negative ga kippt das Vorzeichen in beiden Bahnen unterschiedlich — die Funktionen nicht als vertauschbar annehmen."
+      ],
+      "typicalErrors": [
+        "Kommutativität angenommen und beide Bahnen gleichgesetzt",
+        "Vorzeichen von ga in einer Bahn verloren",
+        "äußere Funktion auf v statt auf das Zwischenergebnis angewendet"
+      ],
+      "activityType": "predict-output",
+      "graderId": "deterministic",
+      "title": "Komposition in beiden Richtungen",
+      "traceTable": {
+        "lines": [
+          "f(g(-3))",
+          "g(f(-3))"
+        ],
+        "stateVars": [
+          "innen",
+          "außen"
+        ],
+        "expectedStates": [
+          {
+            "innen": "0",
+            "außen": "-5"
+          },
+          {
+            "innen": "-11",
+            "außen": "16"
+          }
+        ]
+      }
     }
   ]
 }

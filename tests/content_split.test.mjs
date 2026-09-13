@@ -17,8 +17,13 @@ test('split index keeps summaries but never lesson or family bodies', { skip: bu
   assert.equal(index.lessons.length, bundle.lessons.length);
   assert.deepEqual(index.familyActivities, bundle.familyActivities);
   for (const lesson of index.lessons) assert.deepEqual(lesson.blocks, []);
+  const allowedCaseKeys = new Set(['caseId', 'challengeEligible', 'difficultyProfile', 'masteryEligible', 'title', 'activityType']);
   for (const family of index.families) {
-    for (const item of family.cases) assert.deepEqual(Object.keys(item).sort(), ['caseId', 'difficultyProfile', 'masteryEligible'].sort());
+    for (const item of family.cases) {
+      const keys = Object.keys(item);
+      for (const required of ['caseId', 'difficultyProfile', 'masteryEligible']) assert.ok(keys.includes(required), `Index-Key fehlt: ${required}`);
+      for (const key of keys) assert.ok(allowedCaseKeys.has(key), `unerlaubter Index-Key: ${key}`);
+    }
   }
 });
 

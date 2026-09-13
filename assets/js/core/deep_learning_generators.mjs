@@ -7,7 +7,7 @@
 // never appears as a standalone number in the prompt (bounded redraw guard),
 // and full solutions always contain the answer.
 
-import { bindFamilyDraw, pick, randInt, rng } from './generator_draw_kit.mjs';
+import { bindFamilyDraw, nonzeroInt, pick, randInt, rng } from './generator_draw_kit.mjs';
 
 const { until, clean } = bindFamilyDraw({ maxTries: 96, scope: 'deep_learning_generators' });
 
@@ -207,6 +207,47 @@ export function genDropoutCount(seed) {
       expected: both,
       prompt: `Zwei aufeinanderfolgende Dropout-Schichten mit Behaltenswahrscheinlichkeit p = ${p.toString().replace('.', ',')} arbeiten auf ${n} Aktivierungen mit unabhängigen, festen Masken (1 = behalten, 0 = droppen). Maske 1: \`${mask1.join('')}\`. Maske 2: \`${mask2.join('')}\`. Wie viele Aktivierungen überleben beide Schichten?`,
       fullSolution: `Positionszählig UND der Masken: an ${both} von ${n} Positionen steht in beiden Masken eine 1 — so viele Aktivierungen überleben beide Schichten.`,
+    };
+  });
+}
+
+// --- challenge: two-path backprop -------------------------------------------
+
+/** Signs rendered as a trailing `+ n` / `− n` term so h(w) = b·w + c stays
+ *  readable for negative intercepts. */
+const signedTerm = (value) => (value < 0 ? `- ${Math.abs(value)}` : `+ ${value}`);
+
+/** Two-path compute graph L = f(g(w)·h(w)) with g(w) = a·w², h(w) = b·w + c
+ *  and f(u) = s·u, all small integers. w reaches L through g and through h,
+ *  so dL/dw is the sum of both path products — three real stages of chain
+ *  rule work without code. The until-guard keeps h(w) nonzero and the two
+ *  path contributions distinct and non-canceling. */
+export function genBackpropTwoPath(seed) {
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const [w, a, b, c, s] = until(r,
+      (rr) => [
+        randInt(rr, 1, 3),
+        nonzeroInt(rr, -3, 3),
+        nonzeroInt(rr, -3, 3),
+        randInt(rr, -3, 3),
+        pick(rr, [1, 2, 3]),
+      ],
+      ([w0, , b0, c0]) => b0 * w0 + c0 !== 0
+        && b0 * w0 + 2 * c0 !== 0
+        && 3 * b0 * w0 + 2 * c0 !== 0);
+    const gValue = a * w * w;
+    const gLocal = 2 * a * w;
+    const hValue = b * w + c;
+    const u = gValue * hValue;
+    const pathG = s * hValue * gLocal;
+    const pathH = s * gValue * b;
+    const answer = pathG + pathH;
+    return {
+      parameters: { variant: 'two-path', w, a, b, c, s },
+      expected: answer,
+      prompt: `Ein Rechengraph wertet den Verlust $L = f(g(w) \\cdot h(w))$ aus; $w$ wirkt über zwei Pfade auf $L$: über $g(w) = ${a}\\,w^2$ und über $h(w) = ${b}\\,w ${signedTerm(c)}$, danach $f(u) = ${s}\\,u$. Berechne $\\partial L/\\partial w$ an der Stelle $w = ${w}$.`,
+      fullSolution: `Vorwärts an $w = ${w}$: $g = ${a}\\cdot${w}^2 = ${gValue}$ mit $g' = 2\\cdot${a}\\cdot${w} = ${gLocal}$ und $h = ${b}\\cdot${w} ${signedTerm(c)} = ${hValue}$ mit $h' = ${b}$; damit $u = g\\cdot h = ${u}$ und $f'(u) = ${s}$.\n\nPfad über $g$: $f'\\cdot h\\cdot g' = ${s}\\cdot(${hValue})\\cdot(${gLocal}) = ${pathG}$. Pfad über $h$: $f'\\cdot g\\cdot h' = ${s}\\cdot(${gValue})\\cdot(${b}) = ${pathH}$. Beide Pfadbeiträge summieren sich: $\\partial L/\\partial w = ${pathG} + (${pathH}) = ${answer}$.`,
     };
   });
 }

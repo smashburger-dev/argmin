@@ -109,6 +109,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-ml-linear-mcq-bias-variance-regularization",
+      "role": "curated",
+      "familyId": "multiple-choice-ml-linear",
+      "caseId": "bias-variance-regularization",
+      "seed": 1,
+      "difficulty": "challenge",
+      "estimatedMinutes": 10,
+      "lessonId": "l-ml-linear",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-ml-linear-practice-space",
       "role": "practice-space",
       "familyId": "formula-quadratic-error-metric",

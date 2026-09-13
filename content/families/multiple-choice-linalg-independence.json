@@ -20,12 +20,17 @@
       {
         "caseId": "independent-sets-r3",
         "propertyTest": false
+      },
+      {
+        "caseId": "rank-nullity-combined",
+        "propertyTest": false
       }
     ],
     "difficultyProfiles": [
       "intro",
       "core",
-      "stretch"
+      "stretch",
+      "challenge"
     ],
     "competencyIds": [
       "c-linalg-independence"
@@ -305,6 +310,95 @@
         {
           "id": "e",
           "text": "$\\{(2,0,0),\\ (0,2,0),\\ (0,0,2),\\ (1,1,1)\\}$"
+        }
+      ]
+    },
+    {
+      "caseId": "rank-nullity-combined",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "title": "Rang, Nullität und Unabhängigkeit kombiniert",
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-linalg-independence",
+        "c-linalg-gauss"
+      ],
+      "parameters": {},
+      "expected": {
+        "kind": "choice-indices",
+        "correctIds": [
+          "a",
+          "c",
+          "e"
+        ],
+        "scoring": "per-correct"
+      },
+      "prompt": "Sei $A = \\begin{pmatrix} 1 & 2 & 0 & 3 \\\\ 2 & 1 & 1 & 1 \\\\ 4 & 5 & 1 & 7 \\end{pmatrix} \\in \\mathbb{R}^{3 \\times 4}$. Welche Aussagen über Rang, Nullität, Unabhängigkeit und Lösbarkeit stimmen? Wähle alle zutreffenden Optionen aus.",
+      "fullSolution": "Zuerst den Rang bestimmen: Zeile 3 minus das Doppelte von Zeile 1 minus Zeile 2 ergibt die Nullzeile, denn $2\\,(1,2,0,3) + (2,1,1,1) = (4,5,1,7) = \\text{Zeile 3}$. Zeilen 1 und 2 sind nicht proportional, also unabhängig — es gilt $\\operatorname{Rang}(A) = 2$, und der Rangsatz liefert eine Nullität von $4 - 2 = 2$.\n\n(a) stimmt: der Rang ist $2$, wie die Zeilenrechnung zeigt. (b) stimmt nicht: die Nullität zählt die freien Variablen, also Spalten minus Rang $= 4 - 2 = 2$, nicht $3$. (c) stimmt: $\\text{Zeile 3} = 2\\cdot\\text{Zeile 1} + \\text{Zeile 2}$ ist eine explizite Abhängigkeit. (d) stimmt nicht: die Dimension des Spaltenraums ist der Spaltenrang, und Spaltenrang $=$ Zeilenrang $= 2$. (e) stimmt: vier Spalten in einem zweidimensionalen Spaltenraum müssen abhängig sein; konkret gilt $c_1 + c_2 - 2c_3 = c_4$. (f) stimmt nicht: $Ax = b$ ist nur für $b$ im zweidimensionalen Spaltenraum lösbar — für $b = (0,0,1)$ etwa gilt $(-2,-1,1)^{T}A = 0$, aber $(-2,-1,1) \\cdot b = 1 \\neq 0$, also ist das System unlösbar.",
+      "hints": [
+        "Bestimme zuerst den Rang: Prüfe, ob die dritte Zeile eine Kombination der ersten beiden ist — daraus folgen Zeilenrang, Dimension des Spaltenraums und per Rangsatz die Nullität.",
+        "Lösbarkeit von $Ax = b$ für jedes $b \\in \\mathbb{R}^3$ verlangt Rang $3$ — suche einen Vektor $y$ mit $y^{T}A = 0$, um ein unlösbares $b$ zu finden."
+      ],
+      "feedbackRules": [
+        {
+          "if": "selected.includes('b')",
+          "then": "Die Nullität ist die Dimension des Kerns: Spalten minus Rang $= 4 - 2 = 2$, nicht $3$ — die Zeilenzahl $3$ ist hier die Verwechslungsfalle."
+        },
+        {
+          "if": "selected.includes('d')",
+          "then": "Die Dimension des Spaltenraums ist der Spaltenrang, und Spaltenrang $=$ Zeilenrang $= 2$ — die Matrix hat drei Zeilen, aber nur zwei davon sind unabhängig."
+        },
+        {
+          "if": "selected.includes('f')",
+          "then": "Rang $2 < 3$ heißt: der Spaltenraum ist eine echte Ebene im $\\mathbb{R}^3$. Für $b = (0,0,1)$ ist $Ax = b$ unlösbar, denn $(-2,-1,1)^{T}A = 0$, aber $(-2,-1,1) \\cdot b = 1 \\neq 0$."
+        },
+        {
+          "if": "!selected.includes('a')",
+          "then": "$\\text{Zeile 3} = 2\\cdot\\text{Zeile 1} + \\text{Zeile 2}$ zieht den Rang auf $2$; Zeilen 1 und 2 sind nicht proportional — $\\operatorname{Rang}(A) = 2$ stimmt."
+        },
+        {
+          "if": "!selected.includes('c')",
+          "then": "$2\\cdot\\text{Zeile 1} + \\text{Zeile 2} = (4,5,1,7) = \\text{Zeile 3}$ — eine explizite Kombination, die die Zeilenabhängigkeit beweist."
+        },
+        {
+          "if": "!selected.includes('e')",
+          "then": "Vier Spalten in einem zweidimensionalen Spaltenraum sind immer abhängig; konkret gilt $c_1 + c_2 - 2c_3 = c_4$."
+        }
+      ],
+      "typicalErrors": [
+        "Nullität aus der Zeilenzahl statt aus Spalten minus Rang abgeleitet.",
+        "Drei Zeilen pauschal als unabhängig gelesen — die Zeilenzahl sagt nichts über den Rang aus.",
+        "Lösbarkeit von $Ax = b$ für ein $b$ mit Lösbarkeit für jedes $b$ verwechselt."
+      ],
+      "activityType": "multiple-choice",
+      "graderId": "deterministic",
+      "choices": [
+        {
+          "id": "a",
+          "text": "$A$ hat Rang $2$."
+        },
+        {
+          "id": "b",
+          "text": "Die Nullität von $A$ ist $3$."
+        },
+        {
+          "id": "c",
+          "text": "Die Zeilen von $A$ sind linear abhängig."
+        },
+        {
+          "id": "d",
+          "text": "Der Spaltenraum von $A$ hat Dimension $3$."
+        },
+        {
+          "id": "e",
+          "text": "Die Spalten von $A$ sind linear abhängig."
+        },
+        {
+          "id": "f",
+          "text": "$Ax = b$ ist für jedes $b \\in \\mathbb{R}^3$ lösbar."
         }
       ]
     }

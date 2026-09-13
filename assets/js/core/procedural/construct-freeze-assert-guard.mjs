@@ -9,32 +9,7 @@
 
 import { RAISED_HELPER } from './py_test_kit.mjs';
 
-import { pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
-
-const PROFILE_TIERS = ['intro', 'core', 'stretch', 'challenge'];
-
-const shuffledIds = (ids, seed) => shuffle(rng(seed >>> 0), ids);
-
-// Seeded parsons start order: intro tier performs exactly one adjacent swap
-// of the pool (nearly-solved didactic); every other tier draws a permutation
-// that differs from the pool order (bounded bump keeps it deterministic).
-function parsonsInitialOrder(pool, seed, difficulty) {
-  const tier = PROFILE_TIERS.indexOf(difficulty);
-  if (tier === 0) {
-    const r = rng(seed >>> 0);
-    const out = [...pool];
-    const i = out.length > 1 ? randInt(r, 0, out.length - 2) : 0;
-    [out[i], out[i + 1]] = [out[i + 1], out[i]];
-    return out;
-  }
-  let bump = 0;
-  let order = shuffledIds(pool, ((seed * 31 + tier) >>> 0));
-  while (bump < 8 && order.every((id, index) => id === pool[index])) {
-    bump += 1;
-    order = shuffledIds(pool, (((seed * 31) + tier + bump * 101) >>> 0));
-  }
-  return order;
-}
+import { parsonsInitialOrder, pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
 const FREEZE_FRAGMENTS = [
   { id: 'p1', text: 'def assert_frozen(dateien, pins):' },
@@ -52,6 +27,36 @@ const FREEZE_FRAGMENTS = [
 
 const FREEZE_ORDER = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'];
 const FREEZE_DISTRACTORS = ['d1', 'd2'];
+
+// Challenge parsons: nested pins ({bereich: {name: pin}}) walked by two loops
+// that feed ONE violation list and a single terminal raise. The four
+// distractors each break the collect-then-raise contract in a different way.
+const FREEZE_NESTED_FRAGMENTS = [
+  { id: 'p1', text: 'def assert_frozen(dateien, bereiche):' },
+  { id: 'p2', text: '    verstoesse = []' },
+  { id: 'p3', text: '    for bereich, pins in bereiche.items():' },
+  { id: 'p4', text: '        datei_block = dateien.get(bereich, {})' },
+  { id: 'p5', text: '        for name, pin in pins.items():' },
+  { id: 'p6', text: '            if name not in datei_block:' },
+  { id: 'p7', text: '                verstoesse.append(f"{bereich}/{name}: fehlt")' },
+  { id: 'p8', text: '            elif pin is not None and sha256(datei_block[name]) != pin:' },
+  { id: 'p9', text: '                verstoesse.append(f"{bereich}/{name}: hash weicht ab")' },
+  { id: 'p10', text: '    if verstoesse:' },
+  { id: 'p11', text: '        raise AssertionError(f"{len(verstoesse)} Verstoesse: " + "; ".join(verstoesse))' },
+  { id: 'd1', text: '                break' },
+  { id: 'd2', text: '    return verstoesse' },
+  { id: 'd3', text: '            raise AssertionError(name + ": verstoss")' },
+  { id: 'd4', text: '    if not verstoesse:' },
+];
+
+const FREEZE_NESTED_ORDER = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'p11'];
+const FREEZE_NESTED_DISTRACTORS = ['d1', 'd2', 'd3', 'd4'];
+
+const FREEZE_NESTED_PROMPT = 'Verschachtelter Freeze-Check als Parsons-Problem: <code>assert_frozen(dateien, bereiche)</code> prüft <code>bereiche</code> der Form <code>{bereich: {name: pin}}</code> gegen <code>dateien</code>. Bringe die Zeilen in die richtige Reihenfolge, sodass die Funktion über beide Schleifen <strong>alle</strong> Verstöße sammelt und erst am Ende <strong>einmal</strong> mit <code>AssertionError</code> scheitert — kein Early-Exit, kein stiller Fallback. Vier Zeilen gehören nicht zur Lösung.';
+
+// Two blocks: the solution order, then why each distractor violates the
+// collect-then-raise contract (the challenge contract asks for >=2 blocks).
+const FREEZE_NESTED_SOLUTION = 'Reihenfolge: Signatur, leere Verstoß-Liste, äußere Schleife über die Bereiche, Datei-Block pro Bereich holen, innere Schleife über die Pins, fehlt-Zweig, hash-Zweig — und erst nach beiden Schleifen ein einziges <code>raise AssertionError</code> mit allen gesammelten Verstößen.\n\nDraußen bleiben vier Zeilen: <code>break</code> (d1) verlässt nur die innere Schleife und stoppt nach dem ersten Verstoß — der Rest wird nie geprüft. <code>return verstoesse</code> (d2) gibt die Fehler still zurück statt laut zu scheitern. Das eingerückte <code>raise</code> (d3) liegt im Schleifenrumpf und wirft bereits beim ersten Durchlauf. <code>if not verstoesse</code> (d4) dreht die Bedingung um — es würde scheitern, wenn alles sauber ist (oder vor der Schleife eine garantiert leere Liste prüfen).';
 
 const FREEZE_PROMPT = 'Freeze-Check als Parsons-Problem: Bringe die Zeilen in die richtige Reihenfolge, sodass <code>assert_frozen(dateien, pins)</code> Verstöße sammelt und bei Abweichungen mit <code>AssertionError</code> scheitert — ohne stillen Fallback. Zwei Zeilen gehören nicht zur Lösung.';
 
@@ -154,6 +159,20 @@ export const FREEZE_GUARD_CASES = {
     distractors: FREEZE_DISTRACTORS,
     prompt: FREEZE_PROMPT,
     fullSolution: FREEZE_SOLUTION,
+  },
+  // Challenge profile: the nested collect-then-raise guard. Same parsons
+  // machinery as the stretch case — the seed only draws the start order.
+  'freeze-assert-parsons-nested': {
+    difficulty: 'challenge',
+    kind: 'parsons',
+    activityType: 'parsons',
+    graderId: 'deterministic',
+    caseId: 'freeze-assert-parsons-nested',
+    fragments: FREEZE_NESTED_FRAGMENTS,
+    solutionOrder: FREEZE_NESTED_ORDER,
+    distractors: FREEZE_NESTED_DISTRACTORS,
+    prompt: FREEZE_NESTED_PROMPT,
+    fullSolution: FREEZE_NESTED_SOLUTION,
   },
   'demo-from-frozen-report': {
     difficulty: 'core',
@@ -276,8 +295,9 @@ export const FREEZE_GUARD_CONTRACT = {
   caseTypes: [
     { caseId: 'freeze-assert-parsons', propertyTest: false },
     { caseId: 'demo-from-frozen-report', propertyTest: false },
+    { caseId: 'freeze-assert-parsons-nested', propertyTest: false },
   ],
-  difficultyProfiles: ['core', 'stretch'],
+  difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-capstone-pipeline', 'c-python-functions'],
   graderId: 'deterministic',
   activityType: 'parsons',

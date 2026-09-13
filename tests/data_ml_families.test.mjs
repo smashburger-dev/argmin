@@ -59,6 +59,8 @@ const CASES = [
   ['optimize-mse-gradient-closed-form', 'grad-mse-numpy-reference', 'core', ['c-grad-regression', 'c-numpy-basics'], { packages: ['numpy'], wrongDifficulty: 'stretch', throws: 'Unbekanntes Profil' }],
   ['formula-metric-spread-range', 'seed-rerun-accuracy-spread', 'core', ['c-ml-repro', 'c-ml-cv'], { seed: 17002 }],
   ['trace-assignment-state', 'rng-stream-reseed-trace', 'core', ['c-ml-repro', 'c-numpy-basics']],
+  // Challenge-Pool: two-path compute graph sums both path derivatives.
+  ['optimize-backprop-path-sum', 'two-path-chain-sum', 'challenge', ['c-dl-autograd', 'c-grad-regression'], {}],
 ];
 
 for (const [familyId, caseId, difficulty, competencyIds, opts = {}] of CASES) {
@@ -75,6 +77,21 @@ for (const [familyId, caseId, difficulty, competencyIds, opts = {}] of CASES) {
     }
   });
 }
+
+test('two-path-chain-sum: challenge gate holds (s !== 1) and the solver sums both paths', () => {
+  const seen = new Set();
+  for (let seed = 0; seed < 64; seed += 1) {
+    const instance = EXERCISE_FAMILIES.instantiate('optimize-backprop-path-sum', seed, 'challenge', 'two-path-chain-sum');
+    assert.notEqual(instance.parameters.s, 1, `seed ${seed}: s`);
+    const { w, a, b, c, s } = instance.parameters;
+    // Independent re-derivation: f=s·u, g=a·w², h=b·w+c over u=g·h.
+    const g = a * w * w, h = b * w + c;
+    const expected = s * (h * 2 * a * w + g * b);
+    assert.equal(instance.expectedAnswer.value, expected, `seed ${seed}: Pfadsumme`);
+    seen.add(JSON.stringify([w, a, b, c, s]));
+  }
+  assert.ok(seen.size >= 40, `nur ${seen.size} distinct draws`);
+});
 
 test('rng-stream-reseed-trace liefert die erwartete Ausgabe', () => {
   const trace = EXERCISE_FAMILIES.instantiate('trace-assignment-state', 0, 'core', 'rng-stream-reseed-trace');

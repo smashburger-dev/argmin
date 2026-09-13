@@ -1,18 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  LINALG_DIFFICULTY_PROFILES,
-  SCALAR_PRODUCT_CONTRACT,
-  generateScalarProductFamily,
-  solveScalarProduct,
-} from '../assets/js/core/foundations_linalg_families.mjs';
+import { generateScalarProductFamily } from '../assets/js/core/foundations_linalg_families.mjs';
 import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
-import { sanitizePublicValue } from '../tools/public_content.mjs';
 import './helpers/register_static_cases.mjs';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
@@ -56,10 +49,6 @@ test('seeded profiles hold their numeric bounds', () => {
   }
 });
 
-
-
-
-
 test('seeded linalg cases solve, grade and hold profile bounds', async () => {
   for (const [familyId, caseId] of [
     ['formula-det2-independence', 'det2-seeded-columns'],
@@ -76,6 +65,7 @@ test('seeded linalg cases solve, grade and hold profile bounds', async () => {
   const detRight = await EXERCISE_FAMILIES.grade(det, String(det.expectedAnswer.value));
   assert.equal(detRight.correct, true);
   const sys = EXERCISE_FAMILIES.instantiate('transform-system-2x2-elimination', 11, 'core', 'system-seeded-2x2');
+  assert.deepEqual(sys.competencyIds, ['c-linalg-gauss', 'c-linalg-systems']);
   const [x, y] = sys.expectedAnswer.solution;
   const sysRight = await EXERCISE_FAMILIES.grade(sys, `(${x}, ${y})`);
   assert.equal(sysRight.correct, true);

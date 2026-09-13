@@ -13,7 +13,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: 'intro',
     title: 'Kurzer Rundgang',
-    body: 'In acht kurzen Schritten zeigen wir dir, wo was liegt. Du kannst die Tour jederzeit beenden und später in den Einstellungen neu starten.',
+    body: 'In neun kurzen Schritten zeigen wir dir, wo was liegt. Du kannst die Tour jederzeit beenden und später in den Einstellungen neu starten.',
   },
   {
     id: 'nav',
@@ -49,6 +49,13 @@ export const TOUR_STEPS: TourStep[] = [
     target: 'review-view',
     title: 'Review',
     body: 'Fällige Kurzabrufe aus allen Kompetenzen sammeln sich hier. Regelmäßiges Wiederholen hält deine Nachweise frisch.',
+  },
+  {
+    id: 'challenge',
+    route: 'challenge',
+    target: 'challenge-view',
+    title: 'Tägliche Challenge',
+    body: 'Jeden Tag zieht die Challenge ein festes Set schwerer Aufgaben aus deinen aktiven Modulen — ohne Wiederholung. Deine Serie zählt, wie viele Tage in Folge du löst.',
   },
   {
     id: 'progress',

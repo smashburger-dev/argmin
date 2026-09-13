@@ -52,7 +52,7 @@ export const instantiate = (familyId, seed, difficulty, caseId) => (
 // Ein Fall teilt sich die Review-Gruppe über Profile hinweg: ein Reveal
 // disqualifiziert den Fall in allen Profilen (beabsichtigt, gleiche
 // Fallfrage). Hinweise/Offenlegung für Varianten kommen je Domäne (S4D1+).
-export function familyEventInput(instance) {
+export function familyEventInput(instance, extra = {}) {
   if (!instance || typeof instance.familyId !== 'string' || typeof instance.caseId !== 'string') {
     throw new Error('Familieninstanz braucht familyId und caseId');
   }
@@ -64,6 +64,7 @@ export function familyEventInput(instance) {
     competencyIds: [...(instance.competencyIds || [])],
     seed: instance.seed ?? 0,
     masteryEligible: instance.masteryEligible === true,
+    ...(extra.context ? { context: String(extra.context) } : {}),
   };
 }
 export const grade = (instance, answer) => EXERCISE_FAMILIES.grade(instance, answer);

@@ -7,15 +7,15 @@
 //     w05-e8 oracle block; the seed draws extra (A, v) probes plus an
 //     AssertionError contract path.
 //   - final-boss-authored (challenge, pyodide): base tests verbatim plus
-//     seeded probes — a compatible matmul pair, a rank-2-by-construction
-//     matrix and an invertible 2x2/3x3 system.
+//     seeded probes — a compatible matmul pair, a rank-by-construction
+//     matrix (drawn target rank 1-3, optional zero row, checked as a
+//     (rank, pivot-columns) tuple) and an invertible 2x2 system.
 // parameters carry only the drawn values plus the rebuilt artefacts
 // (fragments/initialOrder or tests) — nothing answer-relevant leaks.
 // Blueprints: reproduce-seeded-split.mjs, classify-eval-hazard.mjs.
 
-import { refCopy } from './py_test_kit.mjs';
 
-import { randInt, rng, shuffle, until } from '../generator_draw_kit.mjs';
+import { randInt, nonzeroInt, rng, shuffle, until } from '../generator_draw_kit.mjs';
 
 const DRAW_SCOPE = 'construct-matvec-shape-contract';
 
@@ -54,6 +54,32 @@ function drawOrder(r) {
   const ids = [...ORDER_FRAGMENTS, ...distractors].map((f) => f.id);
   const initialOrder = until(r, () => shuffle(r, ids), (order) => order.join() !== ids.join(), { scope: DRAW_SCOPE });
   return { distractors, initialOrder };
+}
+
+// --- case 3 helpers: pivot oracle for the seeded rank draws -------------------
+
+// JS mirror of the reference pivot rule: the first row at/below the current
+// row with |value| > 1e-10 becomes the pivot — swap it up, normalize,
+// eliminate below, record the column. The drawn matrices are built from an
+// integer echelon basis so every > 1e-10 comparison stays exact.
+function rankWithPivots(rows) {
+  const M = rows.map((row) => row.map(Number));
+  const pivots = [];
+  let row = 0;
+  for (let col = 0; col < M[0].length && row < M.length; col += 1) {
+    const pivot = M.findIndex((entry, i) => i >= row && Math.abs(entry[col]) > 1e-10);
+    if (pivot < 0) continue;
+    [M[row], M[pivot]] = [M[pivot], M[row]];
+    const d = M[row][col];
+    M[row] = M[row].map((v) => v / d);
+    for (let lower = row + 1; lower < M.length; lower += 1) {
+      const f = M[lower][col];
+      M[lower] = M[lower].map((v, i) => v - f * M[row][i]);
+    }
+    pivots.push(col);
+    row += 1;
+  }
+  return { rank: pivots.length, pivots };
 }
 
 export const MATVEC_CASES = {
@@ -124,7 +150,6 @@ __r4 = matvec([[1, 2], [3, 4]], [1, 1])
 __check('Listen als Eingabe akzeptiert (Ergebnis ist ndarray)', isinstance(__r4, np.ndarray) and np.array_equal(__r4, np.array([3, 7])), 'np.asarray vor der Rechnung verwenden')
 `,
     referenceSolver: "def matvec(A, v):\n    A = np.asarray(A); v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v",
-    refNames: ['matvec'],
     activityType: 'python-code',
     graderId: 'pyodide',
     prompt: "Implementiere `matvec(A, v)`, das $A\\,v$ mit NumPy berechnet und VOR der Berechnung prüft, dass `A` 2-dimensional, `v` 1-dimensional und `A.shape[1] == v.shape[0]` ist — sonst `AssertionError`. Der Testcode ist von deiner Eingabe getrennt und prüft Wert und Shape-Verhalten.",
@@ -138,20 +163,20 @@ __check('Listen als Eingabe akzeptiert (Ergebnis ist ndarray)', isinstance(__r4,
       const badV = Array.from({ length: n + 1 }, () => randInt(r, -7, 7));
       return { A, v, badV };
     },
+    seededChecks: matvecSeededChecks,
   },
   'final-boss-authored': {
     caseId: 'final-boss-authored',
     kind: 'code',
     difficulty: 'challenge',
     packages: ['numpy'],
-    starterCode: "import numpy as np\n\n\ndef shape_safe_matmul(A, B):\n    pass\n\n\ndef gauss_rank(A):\n    pass\n\n\ndef solve_system(A, b):\n    pass\n",
-    baseTests: "import numpy as np\n\n__check('2x3 @ 3x2', np.array_equal(shape_safe_matmul([[1,2,3],[4,5,6]], [[1,0],[0,1],[1,1]]), np.array([[4,5],[10,11]])))\n__check('rechteckiges Produkt', np.array_equal(shape_safe_matmul([[2,-1]], [[3],[4]]), np.array([[2]])))\ntry:\n    shape_safe_matmul([[1,2]], [[1,2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('inkompatible Shapes abgelehnt', True)\nexcept Exception as exc:\n    __check('inkompatible Shapes abgelehnt', False, type(exc).__name__)\n__check('Rang 2 bei abhängiger Zeile', gauss_rank([[1,0,1],[0,1,1],[1,1,2]]) == 2)\n__check('Rang 3 bei Vollrang', gauss_rank([[2,1,0],[0,3,1],[1,0,2]]) == 3)\n__check('Rang 1 bei Vielfachen', gauss_rank([[1,2],[2,4],[-3,-6]]) == 1)\n__s1 = solve_system([[2,1],[1,-3]], [5,-8])\n__check('2x2-System', np.allclose(__s1, np.array([1,3])))\n__s2 = solve_system([[3,1,0],[1,4,1],[0,2,5]], [7,12,17])\n__check('3x3-System', np.allclose(np.asarray([[3,1,0],[1,4,1],[0,2,5]]) @ np.asarray(__s2), np.array([7,12,17])))",
-    referenceSolver: "def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef gauss_rank(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) > 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)",
-    refNames: ['shape_safe_matmul', 'gauss_rank', 'solve_system'],
+    starterCode: "import numpy as np\n\n\ndef shape_safe_matmul(A, B):\n    pass\n\n\ndef rank_with_pivots(A):\n    pass\n\n\ndef solve_system(A, b):\n    pass\n",
+    baseTests: "import numpy as np\n\n__check('2x3 @ 3x2', np.array_equal(shape_safe_matmul([[1,2,3],[4,5,6]], [[1,0],[0,1],[1,1]]), np.array([[4,5],[10,11]])))\n__check('rechteckiges Produkt', np.array_equal(shape_safe_matmul([[2,-1]], [[3],[4]]), np.array([[2]])))\ntry:\n    shape_safe_matmul([[1,2]], [[1,2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('inkompatible Shapes abgelehnt', True)\nexcept Exception as exc:\n    __check('inkompatible Shapes abgelehnt', False, type(exc).__name__)\n__check('Rang 2 bei abhängiger Zeile', rank_with_pivots([[1,0,1],[0,1,1],[1,1,2]]) == (2, [0, 1]))\n__check('Rang 3 bei Vollrang', rank_with_pivots([[2,1,0],[0,3,1],[1,0,2]]) == (3, [0, 1, 2]))\n__check('Rang 1 bei Vielfachen', rank_with_pivots([[1,2],[2,4],[-3,-6]]) == (1, [0]))\n__check('Rang 2 trotz Nullzeile', rank_with_pivots([[0,0,0],[1,0,1],[0,1,1]]) == (2, [0, 1]))\n__check('kein matrix_rank-shortcut', 'matrix_rank' not in rank_with_pivots.__code__.co_names)\n__s1 = solve_system([[2,1],[1,-3]], [5,-8])\n__check('2x2-System', np.allclose(__s1, np.array([1,3])))\n__s2 = solve_system([[3,1,0],[1,4,1],[0,2,5]], [7,12,17])\n__check('3x3-System', np.allclose(np.asarray([[3,1,0],[1,4,1],[0,2,5]]) @ np.asarray(__s2), np.array([7,12,17])))",
+    referenceSolver: "def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef rank_with_pivots(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    pivot_cols = []\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) > 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        pivot_cols.append(col)\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row, pivot_cols\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)",
     activityType: 'python-code',
     graderId: 'pyodide',
-    prompt: "Implementiere drei Funktionen: `shape_safe_matmul(A, B)` prüft 2D-Shapes und multipliziert Matrizen; `gauss_rank(A)` bestimmt den Rang über Pivot-Elimination; `solve_system(A, b)` löst ein quadratisches System mit eindeutiger Lösung. Die Tests enthalten rechteckige Matrizen, abhängige Zeilen und Fehlerfälle.",
-    fullSolution: "<pre><code>def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef gauss_rank(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) &gt; 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)</code></pre>",
+    prompt: "Implementiere drei Funktionen: `shape_safe_matmul(A, B)` prüft 2D-Shapes und multipliziert Matrizen; `rank_with_pivots(A)` bestimmt per Pivot-Elimination (pro Spalte erste Zeile ab der aktuellen mit |wert| > 1e-10 als Pivot, Zeilentausch, normieren, darunter eliminieren) den Rang und gibt das Tupel `(rang, pivot_spalten)` mit sortierter Liste der Pivot-Spaltenindizes zurück; `solve_system(A, b)` löst ein quadratisches System mit eindeutiger Lösung. Die Tests enthalten rechteckige Matrizen, abhängige Zeilen, Nullzeilen und Fehlerfälle.",
+    fullSolution: "<pre><code>def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef rank_with_pivots(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    pivot_cols = []\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) &gt; 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        pivot_cols.append(col)\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row, pivot_cols\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)</code></pre>",
     extraCount: 3,
     draw(r) {
       const m = randInt(r, 1, 3);
@@ -160,21 +185,35 @@ __check('Listen als Eingabe akzeptiert (Ergebnis ist ndarray)', isinstance(__r4,
       const A = Array.from({ length: m }, () => Array.from({ length: k }, () => randInt(r, -5, 5)));
       const B = Array.from({ length: k }, () => Array.from({ length: n }, () => randInt(r, -5, 5)));
       const badB = Array.from({ length: k + 1 }, () => Array.from({ length: n }, () => randInt(r, -5, 5)));
-      // rank-2-by-construction: r3 = a*r1 + b*r2 with independent r1, r2.
-      const x = randInt(r, -3, 3);
-      const y = randInt(r, 1, 4);
-      const a = randInt(r, -2, 2);
-      const b = randInt(r, -2, 2);
-      const rankRows = [[1, x, randInt(r, -3, 3)], [0, y, randInt(r, -3, 3)]];
-      rankRows.push(rankRows[0].map((v, i) => a * v + b * rankRows[1][i]));
+      // rank-by-construction: `targetRank` basis rows in staggered echelon
+      // form (unit leading entry, zeros left of it) so the pivot columns are
+      // exactly the drawn `cols`; filler rows are small-integer combos and a
+      // zero row is inserted at a random position half of the time.
+      const targetRank = randInt(r, 1, 3);
+      const cols = shuffle(r, [0, 1, 2]).slice(0, targetRank).sort((a, b) => a - b);
+      const basis = cols.map((col) => {
+        const row = [0, 0, 0];
+        row[col] = 1;
+        for (let c = col + 1; c < 3; c += 1) row[c] = randInt(r, -3, 3);
+        return row;
+      });
+      const rankRows = basis.map((row) => [...row]);
+      while (rankRows.length < 3) {
+        const coeffs = basis.map(() => randInt(r, -2, 2));
+        if (coeffs.every((c) => c === 0)) coeffs[randInt(r, 0, coeffs.length - 1)] = nonzeroInt(r, -2, 2);
+        rankRows.push(basis[0].map((_, i) => coeffs.reduce((sum, c, j) => sum + c * basis[j][i], 0)));
+      }
+      if (randInt(r, 0, 1) === 1) rankRows.splice(randInt(r, 0, rankRows.length), 0, [0, 0, 0]);
+      const { rank, pivots } = rankWithPivots(rankRows);
       // invertible 2x2 via det != 0 guard, plus a matching rhs.
       let M;
       do {
         M = Array.from({ length: 2 }, () => Array.from({ length: 2 }, () => randInt(r, -4, 4)));
       } while (M[0][0] * M[1][1] - M[0][1] * M[1][0] === 0);
       const rhs = [randInt(r, -6, 6), randInt(r, -6, 6)];
-      return { A, B, badB, rankRows, M, rhs };
+      return { A, B, badB, rankRows, rank, pivots, M, rhs };
     },
+    seededChecks: bossSeededChecks,
   },
 };
 
@@ -207,20 +246,16 @@ function bossSeededChecks(entry, index) {
     `    __check('seeded matmul-vertrag ${index}', True)`,
     'except Exception as exc:',
     `    __check('seeded matmul-vertrag ${index}', False, type(exc).__name__)`,
-    `__check('seeded rang ${index}', gauss_rank(${pyList(entry.rankRows)}) == 2)`,
+    `__check('seeded rang ${index}', rank_with_pivots(${pyList(entry.rankRows)}) == (${entry.rank}, ${pyList(entry.pivots)}))`,
     `__bx${index} = solve_system(${pyList(entry.M)}, ${pyList(entry.rhs)})`,
     `__check('seeded solve ${index}', np.allclose(np.asarray(${pyList(entry.M)}) @ np.asarray(__bx${index}), np.asarray(${pyList(entry.rhs)})))`,
   ].join('\n');
 }
 
-const SEEDED_EMITTERS = {
-  'matvec-code-reference': matvecSeededChecks,
-  'final-boss-authored': bossSeededChecks,
-};
-
+// Kit convention: per-case `seededChecks(entry, index)` emitters (same as
+// construct-ensemble-predictor-comparison and rank-evidence-table).
 function seededBlock(caseDef, seedCases) {
-  const emit = SEEDED_EMITTERS[caseDef.caseId];
-  const checks = seedCases.map((entry, i) => emit(entry, i + 1)).join('\n');
+  const checks = seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n');
   return `# seeded extra cases\n${checks}`;
 }
 

@@ -7,6 +7,7 @@
       "caseId": "toy-inference-pipeline",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w24-e6"
       ],
@@ -38,7 +39,8 @@
         "Startfolge zur max_len-Grenze falsch gezählt"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Toy-Inferenz-Pipeline implementieren"
     }
   ]
 }

@@ -41,6 +41,7 @@
       "caseId": "cross-card-consistency",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w32-e6"
       ],
@@ -69,7 +70,8 @@
         "Duplikate in der Ergebnisliste"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Cross-Card-Konsistenz-Audit"
     },
     {
       "caseId": "freeze-checker",

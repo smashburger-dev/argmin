@@ -2,7 +2,9 @@
 // W06 generators; this module only supplies profile filtering and family
 // instance shape.
 
-import { makeChoiceCapsuleFamily } from './generator_draw_kit.mjs';
+import {
+  makeChoiceCapsuleFamily,
+} from './generator_draw_kit.mjs';
 import { makeSolvedFamily } from './solved_family_kit.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import {
@@ -71,6 +73,7 @@ import {
 } from './data_ml_generators.mjs';
 import {
   genBackpropChain,
+  genBackpropTwoPath,
   genDropoutCount,
   genLinearParamCount,
   genSgdSteps,
@@ -131,6 +134,9 @@ const PROFILE_PREDICATES = {
   'sgd-update-count': { intro: (p) => p.variant === 'epochs', stretch: (p) => p.variant === 'until' || p.variant === 'momentum' },
   'dropout-mask-kept-count': { intro: (p) => p.variant === 'kept', stretch: (p) => p.variant === 'both' },
   'chain-rule-path-sum': { intro: (p) => p.variant === 'path', stretch: (p) => p.variant === 'fork' },
+  // challenge: the outer stage must be a real scaling so all three graph
+  // stages (inner branches, product, f) always carry weight.
+  'two-path-chain-sum': { challenge: (p) => p.s !== 1 },
   'attention-tensor-cells': { intro: (p) => p.variant === 'score-cells', stretch: (p) => p.variant === 'mask-cells' || p.variant === 'scale-divisor' },
   'bpe-vocab-size': { intro: (p) => p.variant === 'total', stretch: (p) => p.variant === 'merges-needed' },
   'lora-param-count': { intro: (p) => p.variant === 'lora', stretch: (p) => p.variant === 'saved' },
@@ -575,8 +581,23 @@ const FAMILY_DEFINITIONS = {
         generator: genBackpropChain,
         competencyIds: ['c-dl-autograd'],
       },
+      'two-path-chain-sum': {
+        generator: genBackpropTwoPath,
+        // Lock-model gate: the case exists only at challenge — the
+        // PROFILE_PREDICATES entry (s !== 1) then always applies.
+        difficulty: 'challenge',
+        competencyIds: ['c-dl-autograd', 'c-grad-regression'],
+      },
     },
     solve(parameters) {
+      if (parameters.variant === 'two-path') {
+        // Multipath chain rule: the path through g contributes f'·h·g', the
+        // path through h contributes f'·g·h' — the total sums both paths.
+        return {
+          value: parameters.s * (parameters.b * parameters.w + parameters.c) * (2 * parameters.a * parameters.w)
+            + parameters.s * (parameters.a * parameters.w * parameters.w) * parameters.b,
+        };
+      }
       if (parameters.variant === 'path') {
         return { value: parameters.locals.reduce((product, local) => product * local, 1) };
       }
@@ -727,6 +748,7 @@ const VALIDATE_GOALSHIFT_CASE_TYPES = [
 
 const OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES = [
   { caseId: 'chain-rule-path-sum', sourceLineage: ['w19-e2'], competencyIds: ['c-dl-autograd'] },
+  { caseId: 'two-path-chain-sum', sourceLineage: ['agent-generated'], competencyIds: ['c-dl-autograd', 'c-grad-regression'] },
 ];
 
 export const COUNT_REMAINING_ROWS_CONTRACT = {
@@ -986,8 +1008,8 @@ export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
   authorityMode: 'seeded',
   masteryEligible: true,
   caseTypes: OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-dl-autograd'],
+  difficultyProfiles: [...DATA_ML_DIFFICULTY_PROFILES, 'challenge'],
+  competencyIds: ['c-dl-autograd', 'c-grad-regression'],
 };
 
 const OPTIMIZE_BACKPROP_PATH_SUM = makeSolvedFamily({

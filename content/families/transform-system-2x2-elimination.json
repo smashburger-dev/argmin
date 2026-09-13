@@ -68,6 +68,54 @@
       },
       "prompt": "Löse das Gleichungssystem \\[ 2x + y = 5, \\qquad x - 3y = -8 \\] und gib die Lösung als Paar `(x, y)` ein.",
       "fullSolution": "Aus I: $y=5-2x$. Einsetzen in II: $x - 3(5-2x) = -8 \\Rightarrow 7x = 7 \\Rightarrow x=1$, $y=3$. Probe: $2+3=5$, $1-9=-8$."
+    },
+    {
+      "caseId": "system-seeded-2x2",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "parameters": {
+        "A": [
+          [
+            -4,
+            3
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "b": [
+          -10,
+          8
+        ]
+      },
+      "competencyIds": [
+        "c-linalg-gauss",
+        "c-linalg-systems"
+      ],
+      "expected": {
+        "kind": "integer-pair",
+        "solution": [
+          4,
+          2
+        ]
+      },
+      "prompt": "Löse das lineare Gleichungssystem\n\n  -4x + 3y = -10\n  1x + 2y = 8\n\nmit dem Gauß-Verfahren und gib die Lösung als Paar (x, y) an — in der Schreibweise (x, y).",
+      "fullSolution": "I + 4·II eliminiert $x$: $(-4x+3y)+(4x+8y) = -10+32 \\Rightarrow 11y = 22 \\Rightarrow y = 2$. Rückeinsetzen in II: $x + 4 = 8 \\Rightarrow x = 4$.\n\nProbe: $-4\\cdot4 + 3\\cdot2 = -16 + 6 = -10$ und $4 + 4 = 8$ — beide Gleichungen stimmen, die Lösung ist $(x, y) = (4, 2)$.",
+      "hints": [
+        "Multipliziere die zweite Gleichung mit 4, damit $x$ beim Addieren der Gleichungen wegfällt.",
+        "Setze das gefundene $y$ in eine der beiden Gleichungen zurück und prüfe das Paar anschließend in beiden."
+      ],
+      "typicalErrors": [
+        "Vorzeichenfehler beim Addieren der eliminierten Terme",
+        "x und y im Lösungspaar vertauscht",
+        "Probe nur in einer der beiden Gleichungen gemacht"
+      ],
+      "title": "2×2-System mit großen Koeffizienten"
     }
   ]
 }

@@ -63,7 +63,8 @@
         "rechte Bin-Kante falsch behandelt"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Statistik: describe und Binning"
     }
   ]
 }

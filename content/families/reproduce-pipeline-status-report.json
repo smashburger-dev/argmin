@@ -109,6 +109,7 @@
       "caseId": "start-pipeline-integration",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w36-e6"
       ],
@@ -137,7 +138,8 @@
         "Ergebnisse und Zeiten in einem dict vermischt"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Stage-Runner integrieren"
     },
     {
       "caseId": "verdict-rules",
@@ -205,7 +207,8 @@
         "unsortierte Fehlliste zurückgegeben"
       ],
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Abnahme über alle Verträge"
     }
   ]
 }

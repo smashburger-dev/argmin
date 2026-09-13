@@ -182,6 +182,103 @@
         "Lücke 2: Konstante nur einseitig verrechnet — m falsch",
         "Lücke 3: Komma-Ergebnis falsch gerundet oder als Bruchrest stehen gelassen"
       ]
+    },
+    {
+      "caseId": "fade-two-sided",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "p2-wef-linear-two-sided"
+      ],
+      "competencyIds": [
+        "c-algebra",
+        "c-algebra-basics"
+      ],
+      "activityType": "worked-example-fading",
+      "graderId": "deterministic",
+      "parameters": {
+        "caseId": "fade-two-sided",
+        "difficulty": "challenge",
+        "fade": "two-sided",
+        "a": 6,
+        "b": 3,
+        "c": -7,
+        "d": 94,
+        "x2": 14
+      },
+      "expected": {
+        "kind": "gaps",
+        "gaps": [
+          {
+            "answer": "7",
+            "input": "numeric"
+          },
+          {
+            "answer": "13",
+            "input": "numeric"
+          },
+          {
+            "answer": "-3",
+            "input": "numeric"
+          },
+          {
+            "answer": "13",
+            "input": "numeric"
+          },
+          {
+            "answer": "91",
+            "input": "numeric"
+          },
+          {
+            "answer": "7",
+            "input": "numeric"
+          }
+        ]
+      },
+      "prompt": "Vervollständige den Lösungsweg für $6x + 3 = -7x + 94$. Die Gleichung hat x auf beiden Seiten — ergänze beide Umformungsoperationen, beide Zwischenzeilen und die Lösung vollständig. Fülle jede Lücke mit dem vollständigen Wert inklusive Vorzeichen (z. B. −5 oder +7) — in den Operationslücken steht, was beidseitig verrechnet wird. <br> $6x + 3 = -7x + 94 \\;|\\;[[gap]]x$<br>$[[gap]]x + 3 = 94 \\;|\\;[[gap]]$<br>$[[gap]]x = [[gap]]$<br>$x = [[gap]]$",
+      "fullSolution": "Vollständiger Lösungsweg:<br>$6x + 3 = -7x + 94 \\;|\\;+ 7x$<br>$13x + 3 = 94 \\;|\\;- 3$<br>$13x = 91$<br>$x = 7$<br>Probe: $6 \\cdot 7 + 3 = -7 \\cdot 7 + 94$ stimmt.\n\nStrategie: erst die x-Terme auf eine Seite (+ 7x beidseitig), dann die Konstanten auf die andere (- 3 beidseitig) — die umgekehrte Reihenfolge führt zum selben Ergebnis.",
+      "hints": [
+        "Strategie: erst alle x-Terme auf eine Seite — die erste Operationslücke ist der rechte x-Koeffizient mit umgekehrtem Vorzeichen; der zusammengefasste Koeffizient auf der linken Seite ist a − c.",
+        "Danach die Konstante auf die andere Seite (zweite Operationslücke = −b). Die letzte Lücke teilt die rechte Seite durch den zusammengefassten Koeffizienten — ein Komma-Ergebnis ist erlaubt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "gap-0-sign",
+          "then": "Die erste Lücke trägt ihr Vorzeichen selbst — x-Terme kommen nach links, also −c (bei negativem c wird das ein Plus)."
+        },
+        {
+          "if": "gap-0-value",
+          "then": "Erste Lücke = der rechte x-Koeffizient mit umgekehrtem Vorzeichen — nicht der linke Koeffizient und nicht die Konstante."
+        },
+        {
+          "if": "gap-1-value",
+          "then": "Zusammengefasster x-Koeffizient = a − c — das Vorzeichen von c mitrechnen (minus eine negative Zahl wird plus)."
+        },
+        {
+          "if": "gap-2-sign",
+          "then": "Die Konstanten-Operation ist −b: bei negativem b wird addiert, bei positivem subtrahiert."
+        },
+        {
+          "if": "gap-3-value",
+          "then": "Derselbe Koeffizient wie in der Zeile darüber — a − c, nicht a + c."
+        },
+        {
+          "if": "gap-4-value",
+          "then": "Rechte Seite = d − b — nicht d allein und nicht d + b."
+        },
+        {
+          "if": "gap-5-value",
+          "then": "Letzte Lücke = rechte Seite geteilt durch den zusammengefassten Koeffizienten (a − c), nicht durch a."
+        }
+      ],
+      "typicalErrors": [
+        "Lücke 1: rechtes x-Glied ohne Vorzeichenwechsel übertragen (+c statt −c)",
+        "Lücke 2/4: a + c statt a − c als zusammengefasster Koeffizient",
+        "Lücke 5: d statt d − b eingetragen — die Konstante wurde nur einseitig verrechnet",
+        "Lücke 6: durch a statt durch a − c geteilt"
+      ],
+      "title": "Beidseitige Gleichung komplett umformen"
     }
   ]
 }

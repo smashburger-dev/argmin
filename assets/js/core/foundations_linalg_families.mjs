@@ -263,9 +263,16 @@ const system2x2Kit = makeNumericFamily({
   profileAccepts: linear2ProfileAccepts,
   toExpected: (drawn) => ({ kind: 'integer-pair', solution: [...drawn.expected] }),
   solveSeeded: (parameters) => ({ solution: solveLinear2(parameters.A, parameters.b) }),
+  // The challenge-flagged seeded case carries two competencies — the
+  // contract advertises only c-linalg-gauss.
+  caseMeta: {
+    'system-seeded-2x2': { competencyIds: ['c-linalg-gauss', 'c-linalg-systems'] },
+  },
 });
+
 export const generateSystem2x2Family = system2x2Kit.generate;
 export const solveSystem2x2 = system2x2Kit.solve;
+const system2x2Spec = system2x2Kit.spec;
 
 // --- validate-shape-contract ---------------------------------------------------
 // Geseedet über genShapePredict plus statischen w18-e3 (drei Printzeilen).
@@ -330,11 +337,15 @@ export const RANK_CONTRACT = {
     { caseId: 'rank-3x3-staircase' },
     { caseId: 'rank-3x3-full' },
     { caseId: 'rank-3x4-line' },
+    { caseId: 'rank-4x4-two-combo' },
   ],
   difficultyProfiles: ['core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-independence', 'c-linalg-gauss'],
 };
 
+// The challenge profile hosts two cases: the extra bank capsule carries the
+// profile as a '<profile>-<suffix>' key prefix ('challenge-4x4' →
+// 'challenge'); the kit resolves it through its caseId fallback.
 const rankKit = makeNumericFamily({
   contract: RANK_CONTRACT,
   capsules: RANK_CAPSULES,
@@ -346,8 +357,10 @@ const rankKit = makeNumericFamily({
   toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
   solveSeeded: (parameters) => ({ value: rank(parameters.A) }),
 });
+
 export const generateRankFamily = rankKit.generate;
 export const solveRankFamily = rankKit.solve;
+const rankSpec = rankKit.spec;
 
 // --- classify-independence-multiple ----------------------------------------------
 // Geseedet über genIndependenceCapsule: Vektor-Zahlenbank plus Rotation, ein
@@ -576,9 +589,9 @@ export const solveRankSolutionFamily = rankSolutionKit.solve;
 export const LINALG_FAMILY_SPECS = [
   scalarProductKit.spec,
   det2Kit.spec,
-  system2x2Kit.spec,
+  system2x2Spec,
   shapeContractKit.spec,
-  rankKit.spec,
+  rankSpec,
   independenceKit.spec,
   matrixShapeKit.spec,
   columnCombinationKit.spec,
