@@ -96,7 +96,7 @@ export function genBackpropChain(seed) {
         parameters: { variant, a, n },
         expected: answer,
         prompt: `Ein Rechengraph verkettet ${n} identische Knoten, jeder mit lokalem Gradienten ${fmtSigned(a)} bzgl. seines Eingangs; der Upstream-Gradient am Ausgang ist 1. Wie groß ist der Gradient des Verlusts bzgl. des Eingangs?`,
-        fullSolution: `Kettenregel über ${n} gleiche Faktoren: (${fmtSigned(a)})^${n} = ${answer}.`,
+        fullSolution: `Kettenregel über $${n}$ gleiche Faktoren: $(${a})^{${n}} = ${answer}$.`,
       };
     }
     const draw = (rr) => [
@@ -170,7 +170,7 @@ export function genSgdSteps(seed) {
       parameters: { variant, n, g },
       expected: answer,
       prompt: `SGD mit Momentum: die Geschwindigkeit startet bei v = 0, der Gradient bleibt konstant ${g} und das Momentum ist m = 0,5 (Update v ← m · v + Gradient). Wie groß ist v nach ${n} Schritten?`,
-      fullSolution: `v ist geometrische Summe: v = ${g} · (1 + 0,5 + … + 0,5^${n - 1}) = ${g} · (2 − 0,5^${n - 1}) = 2 · ${g} − ${g / 2 ** (n - 1)} = ${answer}.`,
+      fullSolution: `v ist geometrische Summe: $v = ${g} \\cdot (1 + 0{,}5 + \\dots + 0{,}5^{${n - 1}}) = ${g} \\cdot (2 - 0{,}5^{${n - 1}}) = 2 \\cdot ${g} - ${g / 2 ** (n - 1)} = ${answer}$.`,
     };
   });
 }

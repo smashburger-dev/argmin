@@ -22,6 +22,57 @@ class FakeWorker {
 
 const delay = (ms, value) => new Promise((resolve) => setTimeout(() => resolve(value), ms));
 
+class SilentWorker {
+  constructor() {
+    this.onmessage = null;
+    this.onerror = null;
+    this.terminated = false;
+  }
+
+  postMessage() {}
+
+  terminate() {
+    this.terminated = true;
+  }
+}
+
+test('a stalled init resolves the run instead of hanging forever', async () => {
+  const OriginalWorker = globalThis.Worker;
+  globalThis.Worker = SilentWorker;
+  try {
+    const runner = new PyodideRunner('fake-worker.mjs', 1000, 30);
+    const result = await runner.run({ code: 'pass', tests: [], packages: [] });
+    assert.equal(result.errorType, 'WorkerInitFailed');
+    assert.match(result.errorMessage, /Zeitlimit/);
+    assert.equal(runner.worker, null);
+    assert.equal(runner.initPosted, false);
+  } finally {
+    globalThis.Worker = OriginalWorker;
+  }
+});
+
+test('init is posted once while waiters queue', async () => {
+  const OriginalWorker = globalThis.Worker;
+  let initCount = 0;
+  globalThis.Worker = class extends SilentWorker {
+    postMessage(message) {
+      if (message.type === 'init') initCount += 1;
+    }
+  };
+  try {
+    const runner = new PyodideRunner('fake-worker.mjs', 1000, 30);
+    const first = runner.run({ code: 'pass' });
+    const second = runner.run({ code: 'pass' });
+    await delay(0);
+    assert.equal(initCount, 1);
+    const [a, b] = await Promise.all([first, second]);
+    assert.equal(a.errorType, 'WorkerInitFailed');
+    assert.equal(b.errorType, 'WorkerInitFailed');
+  } finally {
+    globalThis.Worker = OriginalWorker;
+  }
+});
+
 test('restart resolves an active run instead of leaving it pending', async () => {
   const OriginalWorker = globalThis.Worker;
   globalThis.Worker = FakeWorker;

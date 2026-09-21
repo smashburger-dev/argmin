@@ -28,6 +28,7 @@ const CANONICAL_CODES = new Set([
   'extra-choice',
   'missing-diagnosis',
   'wrong-gap',
+  'runtime-unavailable',
   // domain misconception codes grounded in family feedbackRules
   'off-by-one',
   'except-pass',
@@ -38,7 +39,7 @@ const CANONICAL_CODES = new Set([
 const CANONICAL_PATTERNS = [
   /^trace-row-\d+$/, // interactive trace table, first wrong row (1-based)
   /^[A-Z][A-Za-z]*Error$/, // Python runtime: SyntaxError, ValueError, PythonError, WorkdirError, ...
-  /^(Timeout|WorkerRestarted|PackageError)$/,
+  /^(Timeout|PackageError|ModuleLoadError|Worker\w+)$/, // worker lifecycle: WorkerRestarted, WorkerInitTimeout, WorkerInitFailed, WorkerError, ...
 ];
 
 function isCanonical(code) {

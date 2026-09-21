@@ -57,7 +57,7 @@
           "items": { "enum": ["intro", "core", "stretch", "challenge"] }
         },
         "competencyIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
-        "graderId": { "enum": ["deterministic", "pyodide", "pyodide-sympy", "manual-rubric"] },
+        "graderId": { "enum": ["deterministic", "pyodide", "manual-rubric"] },
         "activityType": {
           "enum": [
             "numeric", "single-choice", "vector", "algebraic-expression",
@@ -110,7 +110,7 @@
             "multiple-choice", "diagnostic-rationale", "worked-example-fading"
           ]
         },
-        "graderId": { "enum": ["deterministic", "pyodide", "pyodide-sympy", "manual-rubric"] },
+        "graderId": { "enum": ["deterministic", "pyodide", "manual-rubric"] },
         "traceTable": {},
         "rubric": {},
         "starterCode": { "type": "string" },

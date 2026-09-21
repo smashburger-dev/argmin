@@ -23,6 +23,8 @@ Alle Komponenten permissiv: MIT (KaTeX), MIT/LGPL dual — MIT gewählt (JSXGrap
 ## Offline-Fähigkeit
 Vollständig: alle Runtimes unter `vendor/`, kein CDN zur Laufzeit (Rebuild der Numbas-Runtime mit `--mathjax-4-url ../mathjax4`, da der Default-Build MathJax von jsdelivr lädt). Ausnahme dokumentiert: keine.
 
+**Nachtrag 2026-09-21:** Der hier zurückgestellte Service Worker ist jetzt gesetzt (`tools/sw.js` → generiertes `sw.js` im Public-Build). Versionierter Precache für den kompletten Build inkl. Lazy-Chunks, separater stabiler `argmin-runtime`-Cache für `vendor/pyodide/` (übersteht Deploys), Navigation netz-zuerst mit Fallback auf den geprecachten Shell — kein `skipWaiting`, damit offene Tabs ihre Chunk-Version behalten. e2e-Nachweis: `tests/e2e/offline.spec.ts`.
+
 ## Bundle- und Ladeauswirkung
 Initial lädt nur Shell + KaTeX (~1,3 MB). Numbas (~3 MB numbas.js + MathJax ~2 MB), JSXGraph (~1 MB), Pyodide (core 6,4 MB + Wheels on demand) nur bei Bedarf. Messwerte der Spikes: Pyodide-Init 1,3 s lokal; NumPy-Run 0,6 s nach Wheel-Load; SymPy-Run 2,4 s.
 

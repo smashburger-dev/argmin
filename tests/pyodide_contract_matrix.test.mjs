@@ -16,7 +16,7 @@ test('contract matrix covers exactly the authored pyodide definitions', () => {
   for (const definition of matrix.definitions) {
     assert.ok(definition.tests.trim(), `${definition.definitionId} has no test code`);
     assert.ok(definition.referenceSolver.trim(), `${definition.definitionId} has no reference solver`);
-    const allowed = new Set(['numpy', 'sympy', 'mpmath']);
+    const allowed = new Set(['numpy']);
     for (const pkg of definition.packages) assert.ok(allowed.has(pkg), `${definition.definitionId} uses non-whitelisted package ${pkg}`);
   }
 });

@@ -88,12 +88,16 @@
           }
         ],
         "promptTemplates": {
-          "product": "Vereinfache ${base}^${m} · ${base}^${n} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).",
-          "power": "Vereinfache (${base}^${m})^${k} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n)."
+          "product": "Vereinfache $${base}^{${m}} \\cdot ${base}^{${n}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).",
+          "power": "Vereinfache $(${base}^{${m}})^{${k}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).",
+          "log-sum": "Berechne $${logM} + ${logN}$ und gib das Ergebnis als ganze Zahl ein.",
+          "log-single": "Berechne $${log}$ und gib das Ergebnis als ganze Zahl ein."
         },
         "solutionTemplates": {
-          "product": "Gleiche Basis im Produkt: Exponenten addieren — ${base}^${m} · ${base}^${n} = ${base}^${value}. Antwort: ${value}.",
-          "power": "Potenz einer Potenz: Exponenten multiplizieren — (${base}^${m})^${k} = ${base}^${value}. Antwort: ${value}."
+          "product": "Gleiche Basis im Produkt: Exponenten addieren — $${base}^{${m}} \\cdot ${base}^{${n}} = ${base}^{${value}}$. Antwort: ${value}.",
+          "power": "Potenz einer Potenz: Exponenten multiplizieren — $(${base}^{${m}})^{${k}} = ${base}^{${value}}$. Antwort: ${value}.",
+          "log-sum": "$${logM} = ${valM}$ und $${logN} = ${valN}$; Summe der Exponenten: ${value}.",
+          "log-single": "$${log} = ${value}$, denn $${base}^{${value}} = ${arg}$."
         }
       },
       "expected": {
@@ -134,12 +138,16 @@
         ],
         "argCap": 10000,
         "promptTemplates": {
-          "log-sum": "Berechne ${logM} + ${logN} und gib das Ergebnis als ganze Zahl ein.",
-          "log-single": "Berechne ${log} und gib das Ergebnis als ganze Zahl ein."
+          "product": "Vereinfache $${base}^{${m}} \\cdot ${base}^{${n}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).",
+          "power": "Vereinfache $(${base}^{${m}})^{${k}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).",
+          "log-sum": "Berechne $${logM} + ${logN}$ und gib das Ergebnis als ganze Zahl ein.",
+          "log-single": "Berechne $${log}$ und gib das Ergebnis als ganze Zahl ein."
         },
         "solutionTemplates": {
-          "log-sum": "${logM} = ${valM}, ${logN} = ${valN}; Summe der Exponenten: ${value}.",
-          "log-single": "${log} = ${value}, denn ${base}^${value} = ${arg}."
+          "product": "Gleiche Basis im Produkt: Exponenten addieren — $${base}^{${m}} \\cdot ${base}^{${n}} = ${base}^{${value}}$. Antwort: ${value}.",
+          "power": "Potenz einer Potenz: Exponenten multiplizieren — $(${base}^{${m}})^{${k}} = ${base}^{${value}}$. Antwort: ${value}.",
+          "log-sum": "$${logM} = ${valM}$ und $${logN} = ${valN}$; Summe der Exponenten: ${value}.",
+          "log-single": "$${log} = ${value}$, denn $${base}^{${value}} = ${arg}$."
         }
       },
       "expected": {

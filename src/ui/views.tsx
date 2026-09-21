@@ -406,6 +406,28 @@ export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
     setThemePreference(preference);
     saveThemePreference(preference);
   };
+  const [offlineStatus, setOfflineStatus] = useState('');
+  const prefetchOffline = async () => {
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
+      setOfflineStatus('Der Offline-Cache ist noch nicht aktiv — bitte einmal neu laden und erneut versuchen.');
+      return;
+    }
+    try {
+      const manifestResponse = await fetch('offline-manifest.json');
+      if (!manifestResponse.ok) throw new Error(`Manifest ${manifestResponse.status}`);
+      const manifest = await manifestResponse.json() as { files: string[] };
+      let done = 0;
+      for (const file of manifest.files) {
+        const response = await fetch(file);
+        if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
+        done += 1;
+        if (done % 50 === 0) setOfflineStatus(`Lade … ${done} von ${manifest.files.length}`);
+      }
+      setOfflineStatus(`Offline-Paket vollständig: ${manifest.files.length} Dateien gecacht (inkl. Python-Laufzeit).`);
+    } catch (error) {
+      setOfflineStatus(`Download abgebrochen: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
   return (
     <section class="view" aria-labelledby="settings-title">
       <header class="view-header"><p class="eyebrow">Lokal</p><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p class="lede">Pfad, Zeitbudget und Darstellung bleiben unter deiner Kontrolle.</p></header>
@@ -436,6 +458,7 @@ export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
         <div><p class="card-kicker">Orientierung</p><h2 id="tour-settings-title">Rundgang</h2><p>Die kurze Tour zeigt, wo was liegt.</p></div>
         <div class="actions"><Button variant="secondary" type="button" onClick={onRestartTour}>Rundgang erneut starten</Button></div>
       </section>
+      <section class="settings-panel" aria-labelledby="offline-title"><div><p class="card-kicker">Offline</p><h2 id="offline-title">Offline-Paket laden</h2><p>Die App funktioniert nach dem ersten Laden offline. Wer auch die Python-Laufzeit (~22 MB) vorab sichern will — etwa vor einer Reise — lädt sie hier komplett in den Browser-Cache.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void prefetchOffline()}>Offline-Paket laden</Button><p class="save-status" role="status">{offlineStatus}</p></div></section>
       <section class="settings-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</Button><Button variant="secondary" type="button" onClick={() => importInput.current?.click()}>JSON importieren</Button><input ref={importInput} id="progress-import" type="file" aria-label="JSON importieren" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
     </section>
   );

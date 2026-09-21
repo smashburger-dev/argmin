@@ -10,7 +10,7 @@
       "competencyIds": ["c-python-functions", "c-numpy-basics", "c-testing-debugging"],
       "routes": [{ "label": "NumPy-Labor öffnen", "href": "#/lab/w05-e8", "type": "internal" }],
       "sourceRefs": ["numpy-docs", "py-tutorial-official-3.14"],
-      "capabilities": ["Python-Code ausführen", "NumPy, SymPy und mpmath laden", "stdout, stderr und Tests getrennt anzeigen"],
+      "capabilities": ["Python-Code ausführen", "NumPy laden", "stdout, stderr und Tests getrennt anzeigen"],
       "limitations": ["Keine Netzwerkzugriffe", "Nur freigegebene Pakete", "Kein Ersatz für lokale CLI-Projekte"],
       "availability": "public",
       "rightsId": "ki-lernplattform-original",
@@ -31,15 +31,15 @@
       "releaseStatus": "solver-verified"
     },
     {
-      "toolId": "t-sympy-equivalence",
-      "title": "SymPy-Äquivalenzprüfung",
-      "summary": "Algebraische Eingaben werden im Worker expandiert und symbolisch auf exakte Äquivalenz geprüft.",
+      "toolId": "t-expression-equivalence",
+      "title": "Term-Äquivalenzprüfung",
+      "summary": "Algebraische Eingaben werden numerisch an 13 deterministischen Stützstellen mit dem Zielterm verglichen.",
       "kind": "grader",
       "competencyIds": ["c-algebra", "c-algebra-basics"],
       "routes": [],
       "sourceRefs": ["generated"],
       "capabilities": ["Äquivalente Schreibweisen akzeptieren", "Implizite Multiplikation lesen", "Stringvergleich vermeiden"],
-      "limitations": ["Nur freigegebene symbolische Aufgabendomänen", "Worker-Start kann beim ersten Aufruf dauern"],
+      "limitations": ["Numerischer Check an festen Stützstellen, kein symbolischer Beweis", "Nur freigegebene algebraische Aufgabendomänen"],
       "availability": "public",
       "rightsId": "ki-lernplattform-original",
       "releaseStatus": "solver-verified"

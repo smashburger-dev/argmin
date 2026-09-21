@@ -179,7 +179,7 @@ Math/Linalg-Lane (Audit §4.2).
   Ergebnis ganzzahlig < 10⁶ (kopfrechenbarer Zahlbereich bleibt im
   Auswerteteil); der allgemeine Term ist ein Binomial- oder
   Differenzenausdruck, den der Referenzsolver in beiden Formen als
-  äquivalent akzeptiert (SymPy-Grader).
+  äquivalent akzeptiert (Probe-Äquivalenzgrader).
 - **Solver-Logik**: `solveConstrainedCount(n, k, s)` berechnet den
   geschlossenen Wert über die kanonische Zerlegung (Pflicht-Slot
   besetzen → Rest verteilen) UND via Brute-Force-Zählung für

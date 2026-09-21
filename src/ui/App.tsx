@@ -17,6 +17,8 @@ import { OnboardingOverlay } from './OnboardingOverlay';
 import { TourOverlay } from './TourOverlay';
 import { TOUR_STEPS } from './tour-steps';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
+import type { ExerciseSummary } from '../app/types';
+import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { initPageEase } from './page-ease';
 
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
@@ -144,6 +146,7 @@ export function App() {
   const [tourStep, setTourStep] = useState<number | null>(null);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const [navCollapsed, setNavCollapsed] = useState(() => typeof localStorage !== 'undefined' && localStorage.getItem(NAV_KEY) === 'rail');
+  const [navDrawerOpen, setNavDrawerOpen] = useState(false);
   const progressRequest = useRef(0);
   const refreshProgress = useCallback(async () => {
     const request = ++progressRequest.current;
@@ -195,21 +198,75 @@ export function App() {
   useEffect(() => {
     const section = route.split('/')[0] || 'today';
     document.title = `${routeTitles[section] ?? 'argmin'} – argmin`;
+    setNavDrawerOpen(false);
     window.scrollTo(0, 0);
     mainRef.current?.focus({ preventScroll: true });
     requestAnimationFrame(() => document.querySelector<HTMLElement>('main h1')?.focus());
   }, [route]);
 
   const [section = 'today', routeId = ''] = route.split('/');
+  const famParts = route.split('/');
+  // Recent attempted exercises per module, deduped and recency-sorted by the
+  // history timeline (id = 'familyId:caseId').
+  const recentExerciseByModule = (moduleId: string) => progress.history
+    .filter((entry) => entry.kind === 'attempt')
+    .map((entry) => catalog.exercises.find((exercise) => exercise.definitionId === entry.id))
+    .filter((exercise): exercise is ExerciseSummary => Boolean(exercise && exercise.moduleId === moduleId))
+    .slice(0, 2);
   const recentEntries = progress.recentModules.slice(0, 2).flatMap((moduleId) => {
     const entryModule = catalog.learningModules.find((item) => item.moduleId === moduleId);
     if (!entryModule) return [];
     const lessonId = progress.recentLessons.find((id) => entryModule.lessonIds.includes(id));
     const entryLesson = lessonId ? catalog.lessons.find((item) => item.lessonId === lessonId) : undefined;
-    return [{ module: entryModule, lesson: entryLesson }];
+    return [{ module: entryModule, lesson: entryLesson, exercises: recentExerciseByModule(moduleId) }];
   });
-  const familyRef = section === 'family' ? route.split('/').slice(1).join('/') : '';
+  const currentExercise = section === 'family' && famParts.length >= 3
+    ? catalog.exercises.find((exercise) => exercise.familyId === famParts[1] && exercise.caseId === famParts[2])
+    : undefined;
+  // A family route outside the two recents still gets its module branch so the
+  // accent marker always has a home in the rail.
+  if (currentExercise?.moduleId) {
+    const existing = recentEntries.find((entry) => entry.module.moduleId === currentExercise.moduleId);
+    if (existing) {
+      if (!existing.exercises.some((exercise) => exercise.definitionId === currentExercise.definitionId)) {
+        existing.exercises.unshift(currentExercise);
+      }
+    } else {
+      const entryModule = catalog.learningModules.find((item) => item.moduleId === currentExercise.moduleId);
+      if (entryModule) recentEntries.unshift({ module: entryModule, lesson: undefined, exercises: [currentExercise] });
+    }
+  }
+  const familyRef = section === 'family' ? famParts.slice(1).join('/') : '';
   const activeNavigation = learnSections.includes(section) ? 'learn' : section;
+
+  useEffect(() => {
+    if (!navDrawerOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setNavDrawerOpen(false); };
+    addEventListener('keydown', onKey);
+    return () => removeEventListener('keydown', onKey);
+  }, [navDrawerOpen]);
+
+  const navLinks = (showRecent: boolean) => navigation.map((item) => (
+    <Fragment key={item.route}>
+      <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined} class={item.secondary ? 'nav-secondary' : undefined}>
+        {item.icon}
+        <span>{item.label}</span>
+      </a>
+      {item.route === 'learn' && showRecent && recentEntries.length > 0 && (
+        <div class="nav-recent" role="group" aria-label="Zuletzt geöffnet">
+          {recentEntries.map(({ module, lesson, exercises }) => (
+            <Fragment key={module.moduleId}>
+              <a class="nav-recent-module" href={`#/module/${module.moduleId}`} aria-current={section === 'module' && routeId === module.moduleId ? 'page' : undefined} title={module.title}><span>{module.title}</span></a>
+              {lesson ? <a class="nav-recent-lesson" href={`#/lesson/${lesson.lessonId}`} aria-current={section === 'lesson' && routeId === lesson.lessonId ? 'page' : undefined} title={lesson.title}><span>{lesson.title}</span></a> : null}
+              {exercises.map((exercise) => (
+                <a key={exercise.definitionId} class="nav-recent-exercise" href={routeForDefinition(exercise)} aria-current={currentExercise?.definitionId === exercise.definitionId ? 'page' : undefined} title={exercise.title}><span>{exercise.title}</span></a>
+              ))}
+            </Fragment>
+          ))}
+        </div>
+      )}
+    </Fragment>
+  ));
 
   const savePreferences = async (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => {
     const safeMinutes = Math.min(2400, Math.max(30, Math.round(weeklyMinutes / 15) * 15));
@@ -282,7 +339,11 @@ export function App() {
     <div class="app-shell">
       <header class="topbar">
         <div class="topbar-left">
+          <Button variant="ghost" size="sm" class="nav-drawer-toggle" aria-label="Navigation öffnen" aria-expanded={navDrawerOpen} onClick={() => setNavDrawerOpen(true)}>
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" /></svg>
+          </Button>
           <span class="local-status"><span aria-hidden="true" />Lokal</span>
+          <span class="topbar-catalog">Katalog {catalog.version}</span>
         </div>
         <SponsorSlots />
         <a class="brand" href="#/today" aria-label="argmin, zur Heute-Ansicht">
@@ -295,29 +356,27 @@ export function App() {
         <nav class="main-nav" aria-label="Hauptnavigation" data-tour="nav-main">
           <div class="nav-main">
             <Button variant="ghost" size="sm" class="nav-toggle" aria-label={navCollapsed ? 'Navigation ausklappen' : 'Navigation einklappen'} aria-expanded={!navCollapsed} onClick={toggleNav}>{navToggleIcon(navCollapsed)}</Button>
-            {navigation.map((item) => (
-              <Fragment key={item.route}>
-                <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined} class={item.secondary ? 'nav-secondary' : undefined}>
-                  {item.icon}
-                  <span>{item.label}</span>
-                </a>
-                {item.route === 'learn' && !navCollapsed && recentEntries.length > 0 && (
-                  <div class="nav-recent" role="group" aria-label="Zuletzt geöffnet">
-                    {recentEntries.map(({ module, lesson }) => (
-                      <Fragment key={module.moduleId}>
-                        <a class="nav-recent-module" href={`#/module/${module.moduleId}`} aria-current={section === 'module' && routeId === module.moduleId ? 'page' : undefined} title={module.title}><span>{module.title}</span></a>
-                        {lesson ? <a class="nav-recent-lesson" href={`#/lesson/${lesson.lessonId}`} aria-current={section === 'lesson' && routeId === lesson.lessonId ? 'page' : undefined} title={lesson.title}><span>{lesson.title}</span></a> : null}
-                      </Fragment>
-                    ))}
-                  </div>
-                )}
-              </Fragment>
-            ))}
+            {navLinks(!navCollapsed)}
           </div>
           <div class="nav-footer">Katalog {catalog.version}</div>
         </nav>
         <main id="main-content" ref={mainRef} tabIndex={-1}>{view}</main>
       </div>
+      {navDrawerOpen ? (
+        <div class="nav-drawer" role="dialog" aria-modal="true" aria-label="Navigation">
+          <button type="button" class="nav-drawer-backdrop" aria-label="Navigation schließen" onClick={() => setNavDrawerOpen(false)} />
+          <div class="nav-drawer-panel" onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setNavDrawerOpen(false); }}>
+            <div class="nav-drawer-head">
+              <span>Navigation</span>
+              <Button variant="ghost" size="sm" aria-label="Navigation schließen" onClick={() => setNavDrawerOpen(false)}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+              </Button>
+            </div>
+            {navLinks(true)}
+            <div class="nav-footer">Katalog {catalog.version}</div>
+          </div>
+        </div>
+      ) : null}
       <footer class="mobile-context" aria-label="Lokaler Status">
         <span>Local-first</span>
         <span>{catalog.competencies.length} Kompetenzen</span>

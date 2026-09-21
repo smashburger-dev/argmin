@@ -58,6 +58,7 @@ const ANSWER_BUILDERS = {
     return words.join(' ');
   },
   'worked-example-fading': (instance) => instance.expectedAnswer.gaps.map((gap) => gap.answer),
+  'algebraic-expression': (instance) => instance.expectedAnswer.expression,
 };
 
 const MUTANT_BUILDERS = {
@@ -85,6 +86,7 @@ const MUTANT_BUILDERS = {
   'worked-example-fading': (instance) => instance.expectedAnswer.gaps.map(
     (gap, index) => (index === 0 ? (gap.answer === '999' ? '998' : '999') : gap.answer),
   ),
+  'algebraic-expression': (instance) => `(${instance.expectedAnswer.expression}) + 1`,
 };
 
 const supported = (instance) => instance.graderId === 'deterministic'

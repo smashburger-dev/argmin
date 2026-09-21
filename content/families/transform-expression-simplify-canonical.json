@@ -37,7 +37,7 @@
       "expected": {
         "kind": "expression"
       },
-      "prompt": "Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als `2*x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.",
+      "prompt": "Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als `2*x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung wertet beide Terme numerisch an 13 Stützstellen aus, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.",
       "fullSolution": "$${source} = ${canonicalMath}$. Gleiche Variablen zusammenfassen, gleiche Konstanten zusammenfassen. Kanonische Zielform: ${canonical}."
     },
     {
@@ -70,7 +70,7 @@
       "expected": {
         "kind": "expression"
       },
-      "prompt": "Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als `2*x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung ist exakt per SymPy, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.",
+      "prompt": "Vereinfache $${source}$ so weit wie möglich und gib den Term ein (z. B. als `2*x + 7`). Äquivalente Schreibweisen gelten als richtig — die Prüfung wertet beide Terme numerisch an 13 Stützstellen aus, nicht textuell. Schreibe Multiplikation mit * (2*x) und Potenzen mit ^ oder **.",
       "fullSolution": "$${source} = ${canonicalMath}$. Das Minus vor der zweiten Klammer wirkt auf beide Summanden darin. Kanonische Zielform: ${canonical}."
     }
   ]

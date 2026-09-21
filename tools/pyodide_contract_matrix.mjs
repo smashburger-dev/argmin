@@ -13,7 +13,7 @@ import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildPythonTests, buildSympyEquivalenceRun } from '../assets/js/core/graders.js';
+import { buildPythonTests } from '../assets/js/core/graders.js';
 import { compileContent } from './compile_content.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 
@@ -41,7 +41,7 @@ export function buildPyodideContractMatrix(projectRoot = root) {
       activity.difficulty,
       activity.caseId,
     );
-    if (instance.graderId !== 'pyodide' && instance.graderId !== 'pyodide-sympy') continue;
+    if (instance.graderId !== 'pyodide') continue;
     definitions.push(buildDefinition(activity, instance));
   }
   for (const definition of definitions) {
@@ -92,10 +92,6 @@ export function runtimeHash(projectRoot = root, definitions = []) {
 
 function buildDefinition(activity, instance) {
   const base = { definitionId: activity.definitionId, competencyIds: activity.competencyIds, contract: contractKey({ ...instance, grader: instance.graderId }) };
-  if (instance.graderId === 'pyodide-sympy') {
-    const run = buildSympyEquivalenceRun(instance.expectedAnswer?.expression ?? '', instance.expectedAnswer?.expression ?? '');
-    return { ...base, packages: run.packages, tests: run.tests, referenceSolver: run.code };
-  }
   return { ...base, packages: instance.parameters?.packages || [], tests: buildPythonTests({ ...instance, grader: instance.graderId }), referenceSolver: instance.expectedAnswer?.referenceSolver || instance.fullSolution || '' };
 }
 

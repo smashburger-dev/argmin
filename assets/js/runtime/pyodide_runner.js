@@ -10,11 +10,14 @@ function failureResult(errorType, errorMessage, durationMs = 0) {
 }
 
 export class PyodideRunner {
-  constructor(url, timeoutMs = 30000) {
+  constructor(url, timeoutMs = 30000, initTimeoutMs = 120000) {
     this.url = url;
     this.defaultTimeoutMs = timeoutMs;
+    this.initTimeoutMs = initTimeoutMs;
     this.worker = null;
     this.ready = false;
+    this.initPosted = false;
+    this.initTimer = null;
     this.version = null;
     this.readyWaiters = [];
     this.seq = 0;
@@ -32,13 +35,22 @@ export class PyodideRunner {
       };
     }
     if (!this.ready) {
-      this.worker.postMessage({ type: 'init' });
+      if (!this.initPosted) {
+        this.initPosted = true;
+        this.initTimer = setTimeout(() => {
+          this.restart('WorkerInitTimeout', 'Pyodide-Initialisierung überschritt das Zeitlimit — Worker neu gestartet');
+        }, this.initTimeoutMs);
+        this.worker.postMessage({ type: 'init' });
+      }
       return new Promise((res, rej) => this.readyWaiters.push([res, rej]));
     }
     return Promise.resolve();
   }
 
   restart(errorType = 'WorkerRestarted', errorMessage = 'Worker neu gestartet') {
+    if (this.initTimer) clearTimeout(this.initTimer);
+    this.initTimer = null;
+    this.initPosted = false;
     if (this.worker) this.worker.terminate();
     this.worker = null;
     this.ready = false;
@@ -54,6 +66,8 @@ export class PyodideRunner {
   onmessage(msg) {
     if (msg.type === 'ready') {
       this.ready = true;
+      if (this.initTimer) clearTimeout(this.initTimer);
+      this.initTimer = null;
       this.version = msg.version;
       for (const [res] of this.readyWaiters) res();
       this.readyWaiters = [];
@@ -71,7 +85,11 @@ export class PyodideRunner {
 
   /** run({code, tests, packages, seed, timeoutMs}) -> structured result */
   async run(payload) {
-    await this.ensureWorker();
+    try {
+      await this.ensureWorker();
+    } catch (e) {
+      return failureResult('WorkerInitFailed', String(e?.message || e));
+    }
     const timeoutMs = payload.timeoutMs || this.defaultTimeoutMs;
     const id = ++this.seq;
     return new Promise((resolve) => {

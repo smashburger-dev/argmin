@@ -118,7 +118,7 @@
         "transform-rank-dependence-rowops",
         "transform-system-2x2-elimination"
       ],
-      "placedCaseCount": 13,
+      "placedCaseCount": 14,
       "seededFamilyCount": 0
     },
     {
@@ -130,7 +130,7 @@
         "multiple-choice-linalg-independence",
         "transform-rank-dependence-rowops"
       ],
-      "placedCaseCount": 11,
+      "placedCaseCount": 12,
       "seededFamilyCount": 0
     },
     {

@@ -171,15 +171,11 @@ const ALLOWED_FILES = [
   'vendor/pyodide/python_stdlib.zip',
   'vendor/pyodide/pyodide-lock.json',
   'vendor/pyodide/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl',
-  'vendor/pyodide/sympy-1.14.0-py3-none-any.whl',
-  'vendor/pyodide/mpmath-1.4.1-py3-none-any.whl',
   'vendor/pyodide/package.json',
   'vendor/licenses/THIRD_PARTY_NOTICES.json',
   'vendor/licenses/pyodide-314.0.5-MPL-2.0.txt',
   'vendor/licenses/python-3.14.2-PSF-LICENSE.txt',
   'vendor/licenses/numpy-2.4.6-LICENSES.txt',
-  'vendor/licenses/sympy-1.14.0-LICENSES.txt',
-  'vendor/licenses/mpmath-1.4.1-BSD-3-Clause.txt',
   // MathLive (MIT) — math input
   'vendor/mathlive/mathlive.min.mjs',
   'vendor/mathlive/LICENSE.txt',
@@ -373,6 +369,20 @@ if (nextDirArg) {
     'vendor/licenses/NPM_BUNDLE_NOTICES.md',
     ...npmBundleNotices.components.map((component) => component.licenseFile),
   );
+
+  // Offline service worker: the precache list is the disk walk at this point
+  // (all content + hashed bundles + vendored assets are already copied).
+  // Excluded: the two generated control files and vendor/pyodide — the worker
+  // runtime is cache-first on first use instead of ~22 MB upfront.
+  const swExcludes = (rel) => rel === 'PUBLIC-BUILD.md' || rel === 'sw.js' || rel === 'offline-manifest.json' || rel.startsWith('vendor/pyodide/');
+  const buildFiles = walk(out).map((p) => relative(out, p).replaceAll('\\', '/')).sort();
+  const buildId = createHash('sha256')
+    .update(buildFiles.map((rel) => `${rel}:${createHash('sha256').update(readFileSync(join(out, rel))).digest('hex')}`).join('\n'))
+    .digest('hex').slice(0, 16);
+  const swSource = readFileSync(join(root, 'tools/sw.js'), 'utf8');
+  writeFileSync(join(out, 'sw.js'), swSource.replaceAll('__BUILD_ID__', buildId).replaceAll('__PRECACHE__', JSON.stringify(buildFiles.filter((rel) => !swExcludes(rel)))));
+  writeFileSync(join(out, 'offline-manifest.json'), `${JSON.stringify({ buildId, files: buildFiles }, null, 2)}\n`);
+  targets.push('sw.js', 'offline-manifest.json');
 }
 
 const noticeManifestPath = join(out, 'vendor/licenses/THIRD_PARTY_NOTICES.json');
@@ -423,9 +433,8 @@ const npmNoticeLine = npmBundleNotices
 
 // Public marker + attribution (CC BY 4.0 for generated content, dependency
 // licenses shipped next to the artifacts). Embeds a build manifest (path +
-// SHA-256 for every produced file except this one) so that
-// tools/validate_content.mjs --dir build-next can enforce that the build
-// contains EXACTLY the files this script produced, byte for byte.
+// SHA-256 for every produced file except this one); the produced-vs-expected
+// file check below enforces that the build contains exactly this set.
 const manifestEntries = walk(out)
   .map((p) => relative(out, p))
   .sort()

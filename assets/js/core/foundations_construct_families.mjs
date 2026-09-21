@@ -10,8 +10,9 @@
 //
 // Leitplanken:
 // - Kein LLM irgendwo; Autoritäten sind exakte Solver (Algebra),
-//   SymPy-Äquivalenzklasse (Terme, Grader pyodide-sympy) oder eingebettete
-//   Referenzimplementationen mit Pyodide-Testbündel (Code-Familien).
+//   die Probe-Äquivalenzprüfung (Terme, Grader deterministic) oder
+//   eingebettete Referenzimplementationen mit Pyodide-Testbündel
+//   (Code-Familien).
 // - Bestehende Zähler aus foundations_fresh_generators.mjs
 //   (countBranchCoverageLeaves, genBranchCoverageCount) werden gelesen und
 //   wiederverwendet, nicht neu implementiert. exceptionBoundaryCaseCount
@@ -43,6 +44,7 @@ import {
 import { parsonsInitialOrder as kitParsonsInitialOrder } from './generator_draw_kit.mjs';
 import { logTerm, signed } from './foundations_generators.mjs';
 import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { expressionTargetFinite } from './graders.js';
 import guardedLoopDoc from '../../../content/families/construct-guarded-loop.json' with { type: 'json' };
 import regressionSuiteDoc from '../../../content/families/construct-regression-test-suite.json' with { type: 'json' };
 import bugfixWorkflowDoc from '../../../content/families/construct-safe-bugfix-workflow.json' with { type: 'json' };
@@ -399,11 +401,12 @@ export function generatePowerLogFamily({ seed, caseId, difficulty }) {
 }
 
 // --- Familie 3: transform-expression-simplify-canonical ----------------------
-// (expression-equivalence, Grader pyodide-sympy, kein LLM). Shard-Fälle:
+// (expression-equivalence, Grader deterministic, kein LLM). Shard-Fälle:
 // combine-like-terms (w01-e2), distribute-sign-constant-chain
 // (f-algebra-final-boss-01). Autorität ist die Termäquivalenzklasse mit
-// kanonischer Normalform Ax+B; der Laufzeitgrader beweist sie per SymPy, der
-// Familiensolver rechnet A und B exakt aus den Fallparametern.
+// kanonischer Normalform Ax+B; der Laufzeitgrader prüft sie numerisch an
+// 13 Stützstellen, der Familiensolver rechnet A und B exakt aus den
+// Fallparametern.
 
 export const EXPRESSION_CANONICAL_CONTRACT = {
   familyId: 'transform-expression-simplify-canonical',
@@ -418,13 +421,13 @@ export const EXPRESSION_CANONICAL_CONTRACT = {
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-algebra', 'c-algebra-basics'],
-  graderId: 'pyodide-sympy',
+  graderId: 'deterministic',
   activityType: 'algebraic-expression',
 };
 
-export const SYMPY_EQUIVALENCE_RULE = 'sympy: simplify(expand(student) - expand(expected)) == 0';
+export const PROBE_EQUIVALENCE_RULE = 'probe: 13 deterministic evaluations, rel. tolerance 1e-9';
 
-/** Kanonische Normalform für Ax+B (sympy-parsebar: explizites *, ^ / **). */
+/** Kanonische Normalform für Ax+B (expression-parsebar: explizites *). */
 export function canonicalLinear(aCoef, bConst) {
   const xTerm = aCoef === 1 ? 'x' : aCoef === -1 ? '-x' : `${aCoef}*x`;
   if (bConst === 0) return xTerm;
@@ -512,9 +515,12 @@ export function generateExpressionCanonicalFamily({ seed, caseId, difficulty }) 
     source = distributeSource(parameters);
   }
   const solved = solveExpressionCanonical(parameters);
+  if (!expressionTargetFinite(solved.canonicalExpression)) {
+    throw new Error(`${caseId}: kanonischer Zielterm "${solved.canonicalExpression}" ist auf den Probe-Scopes nicht endlich`);
+  }
   return {
     parameters,
-    expected: { ...body.expected, expression: solved.canonicalExpression, equivalence: SYMPY_EQUIVALENCE_RULE },
+    expected: { ...body.expected, expression: solved.canonicalExpression, equivalence: PROBE_EQUIVALENCE_RULE },
     title: 'Vereinfache den Term so weit wie möglich und gib ihn ein.',
     prompt: fillTemplate(body.prompt, { source: mathTerm(source) }),
     fullSolution: fillTemplate(body.fullSolution, {

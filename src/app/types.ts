@@ -85,6 +85,7 @@ export interface ExerciseSummary {
   caseId?: string;
   seed?: number;
   seeded?: boolean;
+  moduleId?: string;
 }
 
 export interface LessonBlock {

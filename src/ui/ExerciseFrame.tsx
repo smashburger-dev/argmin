@@ -55,7 +55,7 @@ export function ExerciseFrame({
         ...(ctx.lesson && ctx.lesson.title !== ctx.module?.title
           ? [{ href: ctx.lessonHref, label: ctx.lesson.title }]
           : []),
-        { label: ctx.title },
+        { label: ctx.detail || ctx.title },
       ]} />
       <header class="view-header">
         <p class="eyebrow">{eyebrow}</p>

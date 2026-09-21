@@ -47,7 +47,7 @@ Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die U
 | `parsons` (Zeilen ordnen + Distraktoren) | `deterministic` | reine Reihenfolgeprüfung; Adaptivität ist Content-Sache (Muster: w05-e14) |
 | `code-trace` (Variablenwerte nach n Schritten) | `deterministic` | ganzzahliger Vergleich je Variable; Tracing vor Schreiben (Muster: w05-e15) |
 | `predict-output` (Ausgabe vorhersagen) | `deterministic` | whitespace-normalisierte Ausgabenormalisierung, exakte Werte (Muster: w05-e16) |
-| Term-Vereinfachung, exakte Algebra | `pyodide-sympy` | exakte Äquivalenz (SymPy); niemals Stringgleichheit |
+| Term-Vereinfachung, exakte Algebra | `deterministic` | Probe-Äquivalenz an 13 deterministischen Stützstellen (implizite Multiplikation und `**` werden normalisiert); niemals Stringgleichheit |
 | Python/NumPy | `pyodide` | getrennte Tests, Zeitlimit, deterministischer Seed |
 | Begründung, Kritik | `manual-rubric` | Rubric mit Pflichtbestandteilen; zählt nie als Mastery |
 
@@ -61,7 +61,7 @@ Schema der Aufgabentypen aus `plan-neue-aufgabentypen.md` (alle `deterministic`)
 
 - `multiple-choice`: `choices` = `[{id, text}]` wie `single-choice`, aber `expectedAnswer` = `{kind: 'choice-indices', correctIds: [id…], scoring?}` — **kein** `correct`-Flag an den Choices, kein `correctChoice`. `scoring`: `'all-or-nothing'` (Default) oder `'per-correct'` (Treffer +1/n, Fehlgriff −1/n, Floor 0). Unbekannte IDs zählen als Fehlgriff. Mindestens zwei **verschiedene** `correctIds` — bei einer korrekten Option ist es `single-choice`. Optionale `feedbackRules` mit `if: "selected.includes('id')"` bzw. `"!selected.includes('id')"` liefern distraktorbezogenes Feedback.
 - `diagnostic-rationale`: `parameters.snippet` (fehlerhafter Code/Daten), `expectedAnswer` = `{kind: 'diagnosis', diagnosisCode, mustContain: [kw…], mustNotContain?: [kw…], minWords}`. Keyword-Match ist umlaut-/case-robust mit **Wortgrenzen** („int" matcht nicht „print", „train" nicht „train_test_split"); `|` trennt Alternativen („except|ausnahmeblock"); `mustNotContain` vetoes Fehlkonzept-Formulierungen; eine Distinct-Word-Schwelle fängt Keyword-Salat ab. Feedback benennt nur die fehlende **Dimension**, nie die Schlüsselwörter — optionale `feedbackRules` mit `if: '<errorType>'` (z. B. `missing-diagnosis`, `invalid-input`) liefern fallbezogenes Feedback. `diagnosisCode` aus der Taxonomie (§8) — Metadaten für Erklär-Karten, kein Grading-Input.
-- `worked-example-fading`: `prompt` mit `[[gap]]`-Markern (LaTeX-Kontext erlaubt), `expectedAnswer` = `{kind: 'gaps', gaps: [{answer, input: 'numeric'|'expression'}]}` — Markerzahl = `gaps.length` (Validator). `numeric` akzeptiert Dezimalkomma und Brüche; `expression` prüft Äquivalenz über Probe-Scopes (feste Tabelle + aus dem Aufgabenpaar abgeleitete Werte; implizite Multiplikation wie `2x` wird abgelehnt — Rechenzeichen explizit; Target muss auf allen Scopes endlich sein). Falsche Lücken werden mit 1-basiertem Index im Feedback benannt — optionale `feedbackRules` mit `if: 'gap-<0-basierter Index>'` bzw. `'gap-<i>-<aspekt>'` liefern lückenbezogenes Feedback.
+- `worked-example-fading`: `prompt` mit `[[gap]]`-Markern (LaTeX-Kontext erlaubt), `expectedAnswer` = `{kind: 'gaps', gaps: [{answer, input: 'numeric'|'expression'}]}` — Markerzahl = `gaps.length` (Validator). `numeric` akzeptiert Dezimalkomma und Brüche; `expression` prüft Äquivalenz über Probe-Scopes (feste Tabelle + aus dem Aufgabenpaar abgeleitete Werte; implizite Multiplikation wie `2x` wird abgelehnt — Rechenzeichen explizit; im Gegensatz dazu normalisiert `algebraic-expression` sie vor dem Probe-Check; Target muss auf allen Scopes endlich sein). Falsche Lücken werden mit 1-basiertem Index im Feedback benannt — optionale `feedbackRules` mit `if: 'gap-<0-basierter Index>'` bzw. `'gap-<i>-<aspekt>'` liefern lückenbezogenes Feedback.
 
 ## 5. Feedback-Stufen und Mastery-Policy
 
@@ -138,21 +138,22 @@ Fehlkonzept-Codes aus `feedbackRules`, die kein Grader-errorType abbildet.
 
 | Code | Bedeutung | Wo verwendet |
 |------|-----------|--------------|
-| `invalid-input` | Eingabe leer, nicht parsebar oder formatwidrig | alle deterministischen Grader, `manual-rubric`, `pyodide-sympy` |
+| `invalid-input` | Eingabe leer, nicht parsebar oder formatwidrig | alle deterministischen Grader, `manual-rubric` |
 | `wrong-value` | numerischer Wert falsch | `numeric`, `vector`, `code-trace` |
 | `wrong-choice` | falsche Option gewählt | `single-choice` |
 | `swapped` | Wertepaar in vertauschter Reihenfolge | `vector` (Paar-Grader) |
 | `wrong-order` | Zeilenreihenfolge falsch (inkl. Distraktor/fehlende Zeile) | `parsons` |
 | `wrong-output` | vorhergesagte Ausgabe falsch | `predict-output` |
-| `unparsed` | algebraischer Term nicht parsebar | `pyodide-sympy` |
-| `not-equivalent` | Term parsebar, aber nicht äquivalent | `pyodide-sympy` |
+| `unparsed` | algebraischer Term nicht parsebar | `algebraic-expression` (deterministic) |
+| `not-equivalent` | Term parsebar, aber nicht äquivalent an den 13 Stützstellen | `algebraic-expression` (deterministic) |
 | `grader-error` | Fehlkonfiguration/interner Fehler — nie ein Lernendenfehler | alle Grader |
 | `missing-choice` | korrekte Option in Mehrfachauswahl nicht gewählt | `multiple-choice` |
 | `extra-choice` | falsche Option in Mehrfachauswahl gewählt | `multiple-choice` |
 | `missing-diagnosis` | Freitext-Diagnose zu knapp oder ohne die geforderte Ursache | `diagnostic-rationale` |
 | `wrong-gap` | Lücke im Worked-Example-Fading falsch ausgefüllt (Gap-Index im Feedback) | `worked-example-fading` |
 | `trace-row-N` | erste falsche Zeile der interaktiven Trace-Tabelle (dynamisch, N 1-basiert) | `src/ui/TraceTableView.tsx` |
-| Python-Laufzeit | `SyntaxError`, beliebige `<ExceptionName>` (z. B. `ValueError`), Fallback `PythonError`, `Timeout`, `WorkerRestarted`, `WorkdirError`, `WorkspaceError`, `PackageError` | `pyodide_worker.mjs`/`pyodide_runner.js` via `gradePython` |
+| `runtime-unavailable` | Python-Laufzeit nicht ladbar (stalled init, Timeout, Paket-Fehler) — Infrastrukturproblem, nie ein Lernendenfehler | `python-code` via `gradePython` |
+| Python-Laufzeit | `SyntaxError`, beliebige `<ExceptionName>` (z. B. `ValueError`), Fallback `PythonError`, `Timeout`, `WorkerRestarted`, `WorkerError`, `WorkerInitTimeout`, `WorkerInitFailed`, `ModuleLoadError`, `WorkdirError`, `WorkspaceError`, `PackageError` | `pyodide_worker.mjs`/`pyodide_runner.js` via `gradePython` |
 | `off-by-one` | Index-/Grenzverschiebung um eins (Fehlkonzept) | feedbackRules in `optimize-decode-greedy-loop`, `reproduce-pipeline-status-report` (Varianten `*-off-by-one` in weiteren Familien); `x-off-by-one` |
 | `except-pass` | `except: pass` verschluckt den Fehler statt ihn präzise zu behandeln | feedbackRule in `reproduce-pipeline-status-report`; `x-error-boundary` |
 | `missing-before-hash` | Hash-/Commit-Artefakt ohne vorherigen Testbeleg | feedbackRule in `validate-rule-catalog-scan`; `x-git-workflow` |
