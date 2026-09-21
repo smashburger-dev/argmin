@@ -104,6 +104,7 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
     caseId: activity.caseId,
     seed: activity.seed,
     seeded: activity.seeded,
+    moduleId: activity.moduleId,
   };
 }
 

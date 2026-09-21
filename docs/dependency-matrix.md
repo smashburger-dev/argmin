@@ -1,6 +1,6 @@
 # Dependency-Matrix (KI-Lernplattform)
 
-Stand: 2026-09-01 (S1B: Numbas/MathJax vollständig entfernt). Alle Versionen sind gepinnt und liegen lokal unter `ki-lernplattform/vendor/`. Kein CDN ist zur Laufzeit erforderlich. `vendor/licenses/THIRD_PARTY_NOTICES.json` ordnet jedem Public-Artefakt versionsgenaue Lizenztexte, Quell-URLs und Hashes zu.
+Stand: 2026-09-01 (S1B: Numbas/MathJax vollständig entfernt; danach: SymPy/mpmath-Wheels durch den JS-Probe-Grader für `algebraic-expression` ersetzt). Alle Versionen sind gepinnt und liegen lokal unter `ki-lernplattform/vendor/`. Kein CDN ist zur Laufzeit erforderlich. `vendor/licenses/THIRD_PARTY_NOTICES.json` ordnet jedem Public-Artefakt versionsgenaue Lizenztexte, Quell-URLs und Hashes zu.
 
 ## Produktive Abhängigkeiten
 
@@ -11,8 +11,6 @@ Stand: 2026-09-01 (S1B: Numbas/MathJax vollständig entfernt). Alle Versionen si
 | Pyodide | 314.0.5 | Python im Module-Web-Worker | MPL-2.0 | `vendor/pyodide/pyodide.mjs`, `pyodide.asm.mjs`, `pyodide.asm.wasm`, `pyodide-lock.json` | ~12 MB Core-Artefakte im Quellbaum | nur bei Codeaufgaben |
 | CPython-Standardbibliothek | 3.14.2 | Python-Standardbibliothek in Pyodide | PSF-2.0 und im CPython-Lizenztext genannte Bestandteile | `vendor/pyodide/python_stdlib.zip` | ~2,4 MB | mit Pyodide |
 | NumPy (Pyodide-Wheel) | 2.4.6 | NumPy-Aufgaben | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 laut Wheel-METADATA | `vendor/pyodide/numpy-2.4.6-*.whl` | ~2,8 MB | on demand via `loadPackage` |
-| SymPy (Pyodide-Wheel) | 1.14.0 | exakte Algebra im CAS-Adapter-Fallback | BSD-3-Clause AND MIT | `vendor/pyodide/sympy-1.14.0-*.whl` | ~4,0 MB | on demand |
-| mpmath (Pyodide-Wheel) | 1.4.1 | SymPy-Abhängigkeit | BSD-3-Clause | `vendor/pyodide/mpmath-1.4.1-*.whl` | ~0,4 MB | mit SymPy |
 | MathLive | 0.110.0 | mathematische Eingabe (`<math-field>`, virtuelle Tastatur, ascii-math-Ausgabe) | MIT | `vendor/mathlive/mathlive.min.mjs`, `fonts/*.woff2`, `LICENSE.txt`, `package.json` | ~1,1 MB | nur bei Term-Aufgaben (algebraic-expression) |
 
 Quellen der Downloads: `tools/vendor_fetch.sh` (npm-Registry-Tarballs, Pyodide-GitHub-Release `pyodide-core-314.0.5.tar.bz2`, jsdelivr-Spiegel der Pyodide-Wheels mit Abgleich gegen `pyodide-lock.json`, MathLive-npm-Tarball 0.110.0 mit SHA-256-Pin `3d8ce458805388d65b2a6743eafbb712afbdd77793255f0a010b20d27513217d`). ts-fsrs 5.4.1 wurde am 2026-09-02 in S1A vollständig entfernt (vormals manuell vendorter npm-Tarball, ADR-0008).
@@ -47,7 +45,7 @@ Alle Einträge sind in `package-lock.json` exakt aufgelöst. `npm audit` meldete
 | Moodle CodeRunner | GPL-2.0 | Moodle-Frage-Typ; Sandbox-Infrastruktur nötig. |
 | PrairieLearn | AGPL-3.0 | Node-Server mit Datenbank; kein statischer Offline-Betrieb. |
 | nbgrader | BSD-3-Clause | braucht Jupyter(-Hub)-Server-Dateisystem; in JupyterLite nicht funktionsfähig (offenes Issue jupyterlite#160, Community-Konsens im Jupyter-Forum). |
-| Cortex Compute Engine | MIT | ~2,7 MB Bundle; eigenes CAS wird nicht neu erfunden (Auftragsregel); SymPy deckt den Bedarf. Wiedervorlage falls SymPy-Weg scheitert. |
+| Cortex Compute Engine | MIT | ~2,7 MB Bundle; eigenes CAS wird nicht neu erfunden (Auftragsregel); die Probe-Äquivalenzprüfung in `graders.js` deckt den Bedarf für `algebraic-expression`. Wiedervorlage falls symbolische Beweise nötig werden. |
 | JupyterLite | BSD-3-Clause | aufgeschoben (ADR-0005): Release-Archiv ist statisch vendorbar, Integration aber erst nach Woche-5-Pilot und mit Noas Freigabe. |
 
 ## Entwicklung/Tests (lokal, keine Installation erfolgt)

@@ -3,7 +3,7 @@
 Status: Angenommen (Spike bestanden 2026-08-24, Isolation gehärtet 2026-08-29). Datum: 2026-08-24.
 
 ## Entscheidung
-`assets/js/runtime/pyodide_worker.mjs` (Module-Worker) + host-seitiger Runner (`PyodideRunner`): Lazy-Init erst beim Öffnen einer Codeaufgabe, gepinnte Version 314.0.5, Paket-Whitelist (numpy, sympy, mpmath), deterministisches Seeding, ein frischer Python-Namensraum pro Lauf, Lernenden-Code und Tests im selben lauflokalen Namensraum, strukturierte Ergebnisse, je 64 KiB stdout/stderr, validierte Workdir-Namen sowie Zeitlimit mit Terminate-und-Neustart. Restart, Worker-Crash und Timeout lösen alle laufenden Promises definiert auf.
+`assets/js/runtime/pyodide_worker.mjs` (Module-Worker) + host-seitiger Runner (`PyodideRunner`): Lazy-Init erst beim Öffnen einer Codeaufgabe, gepinnte Version 314.0.5, Paket-Whitelist (numpy; sympy/mpmath bis 2026-09-11, dann entfernt — ADR-0002 Nachtrag), deterministisches Seeding, ein frischer Python-Namensraum pro Lauf, Lernenden-Code und Tests im selben lauflokalen Namensraum, strukturierte Ergebnisse, je 64 KiB stdout/stderr, validierte Workdir-Namen sowie Zeitlimit mit Terminate-und-Neustart. Restart, Worker-Crash und Timeout lösen alle laufenden Promises definiert auf.
 
 ## Getesteter Integrationsweg (Messwerte, 2026-08-24, lokal, Brave)
 | Fall | Ergebnis |
@@ -15,7 +15,7 @@ Status: Angenommen (Spike bestanden 2026-08-24, Isolation gehärtet 2026-08-29).
 | Endlosschleife | Abbruch nach 3.000 ms, Worker terminiert+neugestartet |
 | Nachlauf nach Neustart | folgender Lauf funktioniert (23 ms) |
 | hohe Ausgabe (70.000 Zeichen, Abnahme 2026-08-29) | auf 64 KiB begrenzt, `stdoutTruncated=true`, Worker überlebt |
-| SymPy-Äquivalenz | äquivalent=True, nicht-äquivalent=False (2,4 s) |
+| SymPy-Äquivalenz | äquivalent=True, nicht-äquivalent=False (2,4 s) — Pfad seit 2026-09-11 entfernt, Terme laufen über den JS-Probe-Grader |
 
 Fehler während des Spikes (behoben): relativer Import eine Ebene zu kurz; JS-Zeile im Python-Prelude. Pitfall übernommen: `Float(0.0)==0` ist in SymPy `False` → Grader parst Antworten mit `sympify` (exakt), nie über Python-Float-Literale.
 
@@ -25,7 +25,7 @@ Fehler während des Spikes (behoben): relativer Import eine Ebene zu kurz; JS-Ze
 - Interrupt über SharedArrayBuffer: braucht COOP/COEP-Header; für lokale Single-User-Nutzung disproportional — Terminate/Restart ist pragmatisch und gemessen.
 
 ## Lizenz / Offline / Bundle
-MPL-2.0; vollständig offline (`vendor/pyodide/` inkl. Wheels, Lockfile liegt daneben); core 6,4 MB + numpy ~2,9 MB (Wheel) + sympy ~4,2 MB + mpmath 0,4 MB nur on demand.
+MPL-2.0; vollständig offline (`vendor/pyodide/` inkl. Wheels, Lockfile liegt daneben); core 6,4 MB + numpy ~2,9 MB (Wheel) nur on demand (sympy ~4,2 MB + mpmath 0,4 MB bis 2026-09-11, danach entfernt).
 
 ## Wartungszustand / Aufwand / Rückbau
 Pyodide 314.0.5 (2026-08-17, Python 3.14.2). Aufwand gering (eine Datei + Runnerklasse). Rückbau: Datei löschen, `pyodide`-Adapter aus Registry entfernen; Rest der Plattform läuft weiter.

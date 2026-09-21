@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
@@ -5,7 +6,6 @@ import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
 import { AnswerControls, FadingPrompt } from './AnswerControls';
-import { CodeEditor } from './CodeEditor';
 import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
 import { TraceTableView } from './TraceTableView';
@@ -42,6 +42,29 @@ function parseFamilyRef(ref: string): {
   const from = new URLSearchParams(query).get('from') ?? undefined;
   return { familyId, caseId, seed, difficulty, from };
 }
+
+// CodeMirror rides in its own lazy chunk: it only ships when a python-code
+// task actually opens. If that chunk cannot load (e.g. offline before the
+// service worker cached it), the plain textarea keeps the exercise usable.
+const CodeEditor = lazy(async () => {
+  try {
+    const module = await import('./CodeEditor');
+    return { default: module.CodeEditor };
+  } catch {
+    return {
+      default: ({ initialValue, onChange }: { initialValue: string; onChange: (value: string) => void }) => (
+        <textarea
+          class="code-editor-plain"
+          rows={14}
+          value={initialValue}
+          aria-label="Python-Codeeditor"
+          aria-describedby="editor-help"
+          onInput={(event) => onChange((event.target as HTMLTextAreaElement).value)}
+        />
+      ),
+    };
+  }
+});
 
 configureExerciseFamilies(loadFamilyIndex());
 
@@ -235,7 +258,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         : <MathMarkup html={instance.prompt} />}
       snippet={!isCode && !isFading && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
       answer={isCode
-        ? <CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} />
+        ? <Suspense fallback={<p class="editor-loading">Editor wird geladen …</p>}><CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} /></Suspense>
         : isFading ? null : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
       actions={
         <>

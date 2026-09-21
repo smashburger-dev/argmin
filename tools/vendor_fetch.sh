@@ -25,15 +25,21 @@ if [ ! -f "$V/jsxgraph/package.json" ]; then
   rm "$V/tmp/jsxgraph.tgz"
 fi
 
-# --- Pyodide 314.0.5 core (MPL-2.0) + numpy/sympy wheels from the lockfile ---
+# --- Pyodide 314.0.5 core (MPL-2.0) + numpy wheel from the lockfile ---
 P=314.0.5
 if [ ! -f "$V/pyodide/pyodide.mjs" ]; then
   fetch "https://github.com/pyodide/pyodide/releases/download/$P/pyodide-core-$P.tar.bz2" "$V/tmp/pyodide-core.tar.bz2"
   mkdir -p "$V/pyodide" && tar -xjf "$V/tmp/pyodide-core.tar.bz2" -C "$V/pyodide"
   rm "$V/tmp/pyodide-core.tar.bz2"
 fi
+# The pyodide-core tarball ships Node/CLI entrypoints and type stubs that the
+# browser never loads and the public build already excludes. Drop them from
+# the vendored checkout so the tracked tree only carries what can ship.
+rm -f "$V/pyodide/python" "$V/pyodide/python.bat" "$V/pyodide/python.exe" \
+  "$V/pyodide/python_cli_entry.mjs" "$V/pyodide/pyodide.js" \
+  "$V/pyodide/pyodide.d.ts" "$V/pyodide/ffi.d.ts"
 fetch "https://cdn.jsdelivr.net/pyodide/v$P/full/pyodide-lock.json" "$V/pyodide/pyodide-lock.json"
-for pkg in numpy sympy mpmath; do
+for pkg in numpy; do
   fn=$(python3 - "$V/pyodide/pyodide-lock.json" "$pkg" <<'EOF'
 import json, sys
 lock = json.load(open(sys.argv[1]))
@@ -61,8 +67,6 @@ from zipfile import ZipFile
 root, out = map(Path, argv[1:])
 specs = [
     ('numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl', 'numpy-2.4.6-LICENSES.txt', lambda n: '.dist-info/licenses/' in n),
-    ('sympy-1.14.0-py3-none-any.whl', 'sympy-1.14.0-LICENSES.txt', lambda n: '.dist-info/licenses/' in n or n == 'sympy/parsing/latex/LICENSE.txt'),
-    ('mpmath-1.4.1-py3-none-any.whl', 'mpmath-1.4.1-BSD-3-Clause.txt', lambda n: n.endswith('.dist-info/licenses/LICENSE')),
 ]
 for wheel, target, include in specs:
     with ZipFile(root / wheel) as archive:

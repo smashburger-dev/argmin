@@ -35,6 +35,8 @@ export interface ExerciseContext {
   module?: LearningModule;
   lesson?: Lesson;
   title: string;
+  /** Specific case title for breadcrumbs/nav — the h1 stays generic. */
+  detail?: string;
   summary: string;
   difficultyLabel: string;
   lessonHref?: string;
@@ -79,7 +81,7 @@ function placementRoute(catalog: CatalogData, placement: ExercisePlacement | und
   const exercise = placement.definitionId
     ? catalog.exercises.find((item) => item.definitionId === placement.definitionId)
     : exerciseFor(catalog, placement.familyId, placement.caseId);
-  if (exercise) return { href: routeForDefinition(exercise), title: activityLabel(exercise.activityType) };
+  if (exercise) return { href: routeForDefinition(exercise), title: exercise.title || activityLabel(exercise.activityType) };
   if (!placement.caseId) return null;
   const family = familyFor(catalog, placement.familyId);
   return {
@@ -106,10 +108,12 @@ export function getExerciseContext(catalog: CatalogData, instance: ExerciseInsta
   const lesson = lessonId ? catalog.lessons.find((item) => item.lessonId === lessonId) : undefined;
   const next = placementRoute(catalog, nextPlacement(catalog, module, placement));
   const family = familyFor(catalog, instance.familyId);
+  const exercise = exerciseFor(catalog, instance.familyId, instance.caseId);
   return {
     module,
     lesson,
     title: activityLabel(instance.activityType),
+    detail: exercise?.title,
     summary: family?.summary ?? summary ?? '',
     difficultyLabel: difficultyLabelFor(instance.difficulty),
     lessonHref: lesson ? `#/lesson/${lesson.lessonId}` : undefined,

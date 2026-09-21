@@ -85,6 +85,7 @@ export function correctAnswer(instance) {
     case 'predict-output': return instance.expectedAnswer.output;
     case 'multiple-choice': return instance.expectedAnswer.correctIds;
     case 'worked-example-fading': return instance.expectedAnswer.gaps.map((gap) => gap.answer);
+    case 'algebraic-expression': return instance.expectedAnswer.expression;
     case 'diagnostic-rationale': {
       // First alternative per keyword in a full sentence — clears word-boundary
       // match, minWords and the distinct-word floor like a real diagnosis.
@@ -135,6 +136,7 @@ const mutantAnswer = (instance) => {
     case 'worked-example-fading': return instance.expectedAnswer.gaps.map((gap, index) => (
       index === 0 ? (gap.input === 'numeric' ? '999999' : `(${gap.answer})+987654`) : gap.answer
     ));
+    case 'algebraic-expression': return `(${instance.expectedAnswer.expression}) + 1`;
     case 'diagnostic-rationale': return 'Zu kurz.';
     default: return undefined;
   }

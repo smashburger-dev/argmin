@@ -63,7 +63,8 @@ async function progressImport(page: Page): Promise<void> {
     mimeType: 'application/json',
     buffer: Buffer.from('{'),
   });
-  await expect(page.getByRole('status')).toHaveText('Die Datei enthält kein gültiges JSON.');
+  const status = page.locator('form[data-tour="settings-form"]').getByRole('status');
+  await expect(status).toHaveText('Die Datei enthält kein gültiges JSON.');
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'JSON exportieren' }).click();
   const path = await (await downloadPromise).path();
@@ -71,7 +72,7 @@ async function progressImport(page: Page): Promise<void> {
   page.once('dialog', (dialog) => void dialog.accept());
   const buffer = await (await import('node:fs/promises')).readFile(path as string);
   await page.locator('#progress-import').setInputFiles({ name: 'fortschritt.json', mimeType: 'application/json', buffer });
-  await expect(page.getByRole('status')).toHaveText('Import abgeschlossen.');
+  await expect(status).toHaveText('Import abgeschlossen.');
 }
 
 const { defaultBrowserType: _androidBrowser, ...android } = devices['Galaxy S5'];

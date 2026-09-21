@@ -17,7 +17,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install sympy
       - run: npm run build:release
       - run: npm test
       - run: npm run test:project-runner
@@ -35,7 +34,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install sympy
       - uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright

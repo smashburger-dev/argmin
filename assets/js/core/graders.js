@@ -4,13 +4,32 @@
 
 import { parseIntegerAnswer, parseIntegerPair, solveLinear2, matmul, dot, rank } from './linalg_generators.mjs';
 import { parseCheckpointNumber, DEFAULT_VIZ_CHECKPOINT_TOLERANCE } from './viz_checkpoint_grader.mjs';
-// SymPy-free expression comparison for fading gaps reuses the existing
-// visualization expression compiler (same precedent as exercise_runtime.js,
-// which already imports from ../domain/). No new sympy path in the browser.
+// Expression comparison is pure JS: the probe-based equivalence check reuses
+// the domain expression compiler for fading gaps AND algebraic-expression
+// grading (same precedent as exercise_runtime.js). No sympy in the browser.
 import { compileExpression } from '../domain/expression_eval.mjs';
 // The worker host loads lazily: deterministic tasks (the vast majority)
-// never pay for the pyodide runner module in their chunk.
-const loadPyodideRunner = () => import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner);
+// never pay for the pyodide runner module in their chunk. The dynamic import
+// itself can stall on a dead connection, so it is raced against a deadline.
+const loadPyodideRunner = () => Promise.race([
+  import('../runtime/pyodide_runner.js').then((m) => m.pyodideRunner),
+  new Promise((_, reject) => setTimeout(() => reject(new Error('runtime module load timeout')), 30000)),
+]);
+
+// Worker-side failures that are not the learner's fault: init stalls,
+// package fetch failures, restarts. Surfaced honestly instead of being
+// reported as a wrong answer.
+const RUNTIME_ERROR_TYPES = new Set(['Timeout', 'PackageError', 'WorkerError', 'WorkerRestarted', 'WorkerInitTimeout', 'WorkerInitFailed']);
+
+function runtimeUnavailable(result) {
+  const label = result.errorType === 'Timeout' ? 'Zeitlimit überschritten' : `Laufzeitfehler (${result.errorType})`;
+  return {
+    correct: false,
+    result,
+    verdictText: `Die Python-Laufzeit konnte nicht geladen werden: ${label}. Ohne Netzverbindung oder bei sehr langsamem Netz kann der erste Start eine Weile dauern — bitte erneut versuchen.`,
+    errorType: 'runtime-unavailable',
+  };
+}
 
 // --- deterministic -----------------------------------------------------------
 
@@ -107,7 +126,12 @@ function expectedPair(exercise) {
 
 async function gradePython(exercise, code, ctx) {
   const tests = buildPythonTests(exercise);
-  const pyodideRunner = await loadPyodideRunner();
+  let pyodideRunner;
+  try {
+    pyodideRunner = await loadPyodideRunner();
+  } catch (e) {
+    return runtimeUnavailable({ errorType: 'ModuleLoadError', errorMessage: String(e?.message || e) });
+  }
   const result = await pyodideRunner.run({
     code,
     tests,
@@ -115,6 +139,7 @@ async function gradePython(exercise, code, ctx) {
     seed: exercise.deterministicSeed,
     timeoutMs: 60000,
   });
+  if (result.errorType && RUNTIME_ERROR_TYPES.has(result.errorType)) return runtimeUnavailable(result);
   const correct = result.ok && (result.testResults || []).length > 0 && result.testResults.every((t) => t.passed);
   return {
     correct,
@@ -130,39 +155,12 @@ export function buildPythonTests(exercise) {
   return '';
 }
 
-// --- pyodide-sympy (exact algebraic equivalence) -------------------------------
+// --- algebraic-expression (probe-based equivalence) --------------------------
 
 // Observed MathLive 0.110.0 ascii-math output (browser-verified 2026-08-24):
 // "x^2+x-6", "(x+3)(x-2)", "-6", "x/2", "(x+1)/2", "x^(-1)" and implicit
-// multiplication "2x". The parser therefore enables implicit multiplication
-// application — everything else (function calls, names beyond x) stays
-// rejected by the JS charset gate before Pyodide is even started.
-const SYMPY_EQUIV = `
-import json
-from sympy import expand, simplify, Symbol
-from sympy.parsing.sympy_parser import (
-    parse_expr, standard_transformations, implicit_multiplication_application,
-)
-__x = Symbol('x')
-__tsf = standard_transformations + (implicit_multiplication_application,)
-def __canon(s):
-    s = str(s).strip().replace('^', '**')
-    return parse_expr(s, local_dict={'x': __x}, transformations=__tsf)
-__student = __canon(json.loads(r'''${'__PAYLOAD__'}''')[0])
-__expected = __canon(json.loads(r'''${'__PAYLOAD__'}''')[1])
-__diff = simplify(expand(__student) - expand(__expected))
-print(json.dumps({'equivalent': __diff == 0}))
-`;
-const SYMPY_TESTS = `
-import json
-__parsed = json.loads(__out.buffer.getvalue().strip().splitlines()[-1])
-__check('exakt äquivalent', __parsed['equivalent'] is True)
-`;
-
-// Observed MathLive `ascii-math` output artifacts that are mathematically
-// meaningful but not in the plain ASCII alphabet the SymPy payload expects.
-// Only normalizations verified against real MathLive 0.110.0 output (see
-// docs/dependency-matrix.md) — never pass raw LaTeX to SymPy.
+// multiplication "2x". Only normalizations verified against real MathLive
+// output (see docs/dependency-matrix.md) — never pass raw LaTeX to a parser.
 function normalizeExpressionInput(raw) {
   return String(raw)
     .replace(/\u2212/g, '-')        // unicode minus
@@ -175,36 +173,50 @@ function normalizeExpressionInput(raw) {
     .replace(/\s+/g, '');
 }
 
-/** Build the exact SymPy-equivalence worker run for a student/expected
- *  expression pair (ADR-0013 grader contract; also the single source for
- *  the browser contract matrix, which must mirror the grader byte-for-byte). */
-export function buildSympyEquivalenceRun(studentExpression, expectedExpression) {
-  const payload = JSON.stringify([normalizeExpressionInput(studentExpression), String(expectedExpression)]);
-  return {
-    code: SYMPY_EQUIV.split('__PAYLOAD__').join(payload),
-    tests: SYMPY_TESTS,
-    packages: ['sympy'],
-  };
+// algebraic-expression accepts everything the old sympy parse accepted:
+// "**" maps to "^" and implicit multiplication (2x, 2(x+1), (x+3)(x-2),
+// x(x+1), "x 2") gains an explicit "*". Whitespace-adjacency rules run
+// before the strip so "x 2" keeps parity with sympy's implicit
+// multiplication. Fading gaps keep the strict normalizeExpressionInput —
+// implicit multiplication is documented as not accepted there
+// (docs/authoring-guide.md).
+function normalizeAlgebraicExpression(raw) {
+  return String(raw ?? '')
+    .replace(/−/g, '-')
+    .replace(/[·⋅×]/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/⁢/g, '*')
+    .replace(/[⁡⁣⁤]/g, '')
+    .replace(/\*\*/g, '^')
+    .replace(/([0-9x)])\s*(?=[x(])/g, '$1*')
+    .replace(/([0-9x)])\s+(?=\d)/g, '$1*')
+    .replace(/\)\s*(?=\d)/g, ')*')
+    .replace(/\s+/g, '');
 }
 
-async function gradeSympyExpression(exercise, answerText) {
-  const raw = normalizeExpressionInput(answerText);
+/** algebraic-expression: numeric probe equivalence against the expected
+ *  canonical term — 13 probe scopes (10 fixed + 3 derived from the source
+ *  pair) decide equality. Numerically strong, not a symbolic proof. */
+function gradeExpression(exercise, answerText) {
+  const raw = normalizeAlgebraicExpression(answerText);
   if (!raw) return { correct: false, verdictText: 'Bitte einen Term eingeben.', errorType: 'invalid-input' };
-  if (!/^[x0-9+\-*/^ ().]+$/.test(raw)) {
+  if (!/^[x0-9+\-*/^().]+$/.test(raw)) {
     return { correct: false, verdictText: 'Der Term enthält unerlaubte Zeichen. Nur x, Zahlen und + - * / ^ ( ).', errorType: 'invalid-input' };
   }
-  const run = buildSympyEquivalenceRun(raw, exercise.expectedAnswer.expression);
-  const pyodideRunner = await loadPyodideRunner();
-  const result = await pyodideRunner.run({
-    code: run.code, tests: run.tests, packages: run.packages, seed: exercise.deterministicSeed, timeoutMs: 60000,
-  });
-  const correct = result.ok && (result.testResults || []).some((t) => t.name.includes('äquivalent') && t.passed);
-  const unparsed = result.stderr && /SympifyError|SyntaxError|TokenError|ParseException/.test(result.stderr);
+  const verdict = expressionEquivalent(
+    normalizeAlgebraicExpression(exercise.expectedAnswer?.expression),
+    raw,
+  );
+  if (verdict === 'grader-error') {
+    return { correct: false, verdictText: 'Interner Fehler: Zielterm nicht lesbar.', errorType: 'grader-error' };
+  }
+  if (verdict === 'invalid') {
+    return { correct: false, verdictText: 'Der Term konnte nicht gelesen werden.', errorType: 'unparsed' };
+  }
   return {
-    correct,
-    result,
-    verdictText: correct ? 'Exakt äquivalent (SymPy-Beweis).' : (unparsed ? 'Der Term konnte nicht gelesen werden.' : 'Nicht äquivalent zum Zielterm.'),
-    errorType: correct ? null : (unparsed ? 'unparsed' : 'not-equivalent'),
+    correct: verdict === true,
+    verdictText: verdict === true ? 'Äquivalent zum Zielterm (numerisch an 13 Stützstellen geprüft).' : 'Nicht äquivalent zum Zielterm.',
+    errorType: verdict === true ? null : 'not-equivalent',
   };
 }
 
@@ -585,8 +597,9 @@ const nearValue = (a, b) => a === b
 
 /** Contract-time check: the authored target must be finite on every probe
  *  scope — rejects degenerate answers like log(-1), sqrt(x) or 1/0 that would
- *  be unwinnable or trivially matched by any non-finite student input. */
-function expressionTargetFinite(source) {
+ *  be unwinnable or trivially matched by any non-finite student input.
+ *  Exported so expression-producing family generators can gate the same way. */
+export function expressionTargetFinite(source) {
   const names = expressionNames(source);
   const probes = EXPRESSION_PROBES.concat(derivedProbes(source));
   let target;
@@ -610,10 +623,10 @@ function checkNumericGap(gap, raw) {
 
 /** true | false | 'invalid' | 'grader-error' — both sides compile with the
  *  union of free identifiers; equality is decided on the probe scopes. Every
- *  name sees every pool value across the rounds. */
-function checkExpressionGap(gap, raw) {
-  const targetSource = normalizeExpressionInput(gap.answer);
-  const gotSource = normalizeExpressionInput(raw);
+ *  name sees every pool value across the rounds. Callers normalize each side
+ *  themselves: fading gaps keep the strict rules, algebraic-expression
+ *  grading adds implicit-multiplication normalization first. */
+function expressionEquivalent(targetSource, gotSource) {
   const names = expressionNames(targetSource, gotSource);
   const probes = EXPRESSION_PROBES.concat(derivedProbes(targetSource, gotSource));
   let target;
@@ -625,6 +638,10 @@ function checkExpressionGap(gap, raw) {
     if (!nearValue(student(scope), target(scope))) return false;
   }
   return true;
+}
+
+function checkExpressionGap(gap, raw) {
+  return expressionEquivalent(normalizeExpressionInput(gap.answer), normalizeExpressionInput(raw));
 }
 
 /** Worked-example fading: gaps[] pair positionally with the [[gap]] markers
@@ -747,6 +764,15 @@ function assertDiagnosisContract(label, item) {
   }
 }
 
+/** algebraic-expression cases declare expected {kind:'expression'}; the
+ *  expression string itself is produced by the family solver at runtime and
+ *  contract-checked there (expressionTargetFinite in the generator). */
+function assertExpressionContract(label, item) {
+  if (item.expected?.kind !== 'expression') {
+    throw new Error(`${label}: algebraic-expression braucht expected {kind:'expression'}`);
+  }
+}
+
 function assertFadingContract(label, item) {
   const fail = (message) => { throw new Error(`${label}: ${message}`); };
   const expected = item.expected;
@@ -785,7 +811,7 @@ const KNOWN_ACTIVITY_TYPES = new Set([
   'predict-output', 'python-code', 'algebraic-expression', 'short-rationale',
   'diagnostic-rationale', 'worked-example-fading',
 ]);
-const KNOWN_GRADERS = new Set(['deterministic', 'pyodide', 'pyodide-sympy', 'manual-rubric']);
+const KNOWN_GRADERS = new Set(['deterministic', 'pyodide', 'manual-rubric']);
 
 /** feedbackRules `if` keys each grader actually evaluates — anything else is
  *  dead authored content and fails closed. Types without a reader (python-code,
@@ -842,6 +868,7 @@ export function assertFamilyActivityContracts(document) {
     const check = type === 'multiple-choice' ? assertMultipleChoiceContract
       : type === 'diagnostic-rationale' ? assertDiagnosisContract
       : type === 'worked-example-fading' ? assertFadingContract
+      : type === 'algebraic-expression' ? assertExpressionContract
       : null;
     assertFeedbackKeys(label, type, item);
     if (check) check(label, item);
@@ -869,15 +896,12 @@ export const graders = {
       if (type === 'multiple-choice') return gradeMultipleChoice(exercise, answer);
       if (type === 'diagnostic-rationale') return gradeDiagnosis(exercise, answer);
       if (type === 'worked-example-fading') return gradeFading(exercise, answer);
+      if (type === 'algebraic-expression') return gradeExpression(exercise, answer);
       throw new Error('deterministic: unbekannter Aufgabentyp ' + type);
     },
   },
   pyodide: {
     grade: (exercise, code) => gradePython(exercise, code),
-    needsWorker: true,
-  },
-  'pyodide-sympy': {
-    grade: (exercise, text) => gradeSympyExpression(exercise, text),
     needsWorker: true,
   },
   'manual-rubric': {

@@ -61,8 +61,8 @@ export function logInt(base, arg) {
 
 export const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
 const coeff = (a) => `${a}x`;
-const SUB = { 2: '\u2082', 3: '\u2083', 5: '\u2085', 10: '\u2081\u2080' };
-export const logTerm = (b, arg) => `log${SUB[b] || '_' + b}(${arg})`;
+// LaTeX fragment — callers wrap it in $...$ so KaTeX typesets the subscript.
+export const logTerm = (b, arg) => `\\log_{${b}}(${arg})`;
 
 // --- generators -----------------------------------------------------------------
 
@@ -111,7 +111,7 @@ export function genPowerExpr(seed) {
     return {
       parameters: { shape: 'product', base, m, n },
       expected: powerLawProduct(m, n),
-      prompt: `Vereinfache ${base}^${m} · ${base}^${n} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).`,
+      prompt: `Vereinfache $${base}^{${m}} \\cdot ${base}^{${n}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).`,
     };
   }
   const m = randInt(r, 2, 4);
@@ -119,7 +119,7 @@ export function genPowerExpr(seed) {
   return {
     parameters: { shape: 'power', base, m, k },
     expected: powerLawPower(m, k),
-    prompt: `Vereinfache (${base}^${m})^${k} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).`,
+    prompt: `Vereinfache $(${base}^{${m}})^{${k}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).`,
   };
 }
 
@@ -138,14 +138,14 @@ export function genLogExpr(seed) {
     return {
       parameters: { shape: 'sum', base, m, n },
       expected: logInt(base, base ** m) + logInt(base, base ** n),
-      prompt: `Berechne ${logTerm(base, base ** m)} + ${logTerm(base, base ** n)} und gib das Ergebnis als ganze Zahl ein.`,
+      prompt: `Berechne $${logTerm(base, base ** m)} + ${logTerm(base, base ** n)}$ und gib das Ergebnis als ganze Zahl ein.`,
     };
   }
   const k = randInt(r, 1, kMax);
   return {
     parameters: { shape: 'single', base, k },
     expected: logInt(base, base ** k),
-    prompt: `Berechne ${logTerm(base, base ** k)} und gib das Ergebnis als ganze Zahl ein.`,
+    prompt: `Berechne $${logTerm(base, base ** k)}$ und gib das Ergebnis als ganze Zahl ein.`,
   };
 }
 

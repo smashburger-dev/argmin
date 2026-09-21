@@ -261,6 +261,57 @@ test('worked-example-fading: unparseable authored answers are grader-errors, not
   assert.equal((await det.grade(badExpr, ['x+1'])).errorType, 'grader-error');
 });
 
+// --- algebraic-expression --------------------------------------------------------
+
+const expressionExercise = (expression) => ({
+  activityType: 'algebraic-expression',
+  parameters: {},
+  expectedAnswer: { kind: 'expression', expression },
+});
+
+test('algebraic-expression: equivalent spellings pass the probe check', async () => {
+  const e = expressionExercise('5*x - 1');
+  for (const answer of [
+    '5*x - 1', '5x-1', '5x - 1', '(5*x) - 1', '-1 + 5x', 'x*5 - 1',
+    '5*x**1 - 1', '5*x − 1', '4*x + x - 1', '2(x - 1) + 3x + 1',
+  ]) {
+    assert.equal((await det.grade(e, answer)).correct, true, answer);
+  }
+});
+
+test('algebraic-expression: expanded and factored forms are equivalent', async () => {
+  const e = expressionExercise('(x+3)*(x-2)');
+  assert.equal((await det.grade(e, 'x^2 + x - 6')).correct, true);
+  assert.equal((await det.grade(e, '(x+3)(x-2)')).correct, true);
+  assert.equal((await det.grade(e, 'x(x+1) - 6')).correct, true);
+  assert.equal((await det.grade(e, 'x*x + x - 6')).correct, true);
+});
+
+test('algebraic-expression: near misses are not-equivalent', async () => {
+  const e = expressionExercise('5*x - 1');
+  assert.equal((await det.grade(e, '5*x - 2')).errorType, 'not-equivalent');
+  assert.equal((await det.grade(e, '4*x - 1')).errorType, 'not-equivalent');
+  assert.equal((await det.grade(e, 'x')).errorType, 'not-equivalent');
+  assert.equal((await det.grade(e, 'x2')).errorType, 'not-equivalent'); // parses as free identifier (sympy parity: x*2 is also wrong)
+  assert.equal((await det.grade(e, 'x 2')).errorType, 'not-equivalent'); // x*2 ≢ 5x-1
+  assert.equal((await det.grade(e, '5*x - 1 + x - x')).correct, true); // x−x cancels on every probe
+});
+
+test('algebraic-expression: charset gate and parse errors stay honest', async () => {
+  const e = expressionExercise('5*x - 1');
+  assert.equal((await det.grade(e, '')).errorType, 'invalid-input');
+  assert.equal((await det.grade(e, '   ')).errorType, 'invalid-input');
+  assert.equal((await det.grade(e, 'y + 1')).errorType, 'invalid-input');
+  assert.equal((await det.grade(e, 'sin(x)')).errorType, 'invalid-input');
+  assert.equal((await det.grade(e, '5*x -')).errorType, 'unparsed');
+  assert.equal((await det.grade(e, 'x +')).errorType, 'unparsed');
+});
+
+test('algebraic-expression: malformed expected fails closed', async () => {
+  const e = expressionExercise('x+');
+  assert.equal((await det.grade(e, 'x + 1')).errorType, 'grader-error');
+});
+
 // --- dispatch ------------------------------------------------------------------
 
 test('deterministic grader dispatches all three new activityTypes', async () => {
@@ -348,6 +399,14 @@ test('expected-kind contracts: unknown diagnosisCode, bad correctIds, marker mis
     prompt: 'zwei [[gap]] Marker [[gap]]',
     expected: { kind: 'gaps', gaps: [{ answer: '1', input: 'numeric' }] },
   }])), /\[\[gap\]\]-Marker|Marker/);
+  assert.throws(() => assertFamilyActivityContracts(familyDoc(null, [{
+    caseId: 'e', masteryEligible: true, activityType: 'algebraic-expression',
+    expected: { kind: 'integer', value: 4 },
+  }])), /kind:'expression'/);
+  assert.doesNotThrow(() => assertFamilyActivityContracts(familyDoc(null, [{
+    caseId: 'e', masteryEligible: true, activityType: 'algebraic-expression',
+    expected: { kind: 'expression' },
+  }])));
 });
 
 test('variants inherit the case contract via merge (variant expected + prompt count)', () => {

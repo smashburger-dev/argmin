@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.0 — 2026-09-21
+
+Neu für Lernende: **argmin läuft offline.** Nach dem ersten Laden funktioniert die komplette App ohne Internet — Lektionen, Aufgaben, Prüfung, Fortschritt. Wer Python-Aufgaben unterwegs ohne Netz lösen will, holt sich in den Einstellungen über „Offline-Paket laden" die Laufzeit vorab aufs Gerät.
+
+Dazu besseres **Orientieren auf dem Handy**: Ein Menü oben links öffnet die komplette Navigation samt Verlauf — die Module, an denen du arbeitest, und die zuletzt bearbeiteten Aufgaben. Ein Akzent-Punkt zeigt, in welchem Zweig du gerade bist. Das Logo sitzt mittig in der Kopfzeile, unten bleibt Platz für die fünf Bereiche. In der Seitenleiste am Rechner siehst du denselben Verlauf jetzt als Unterzweig unter dem Modul.
+
+Aufgaben sind **klarer gestellt**: Potenzen und Logarithmen kommen sauber gesetzt statt als Rohtext, und bei „auf eine Potenz bringen" steht ausdrücklich dabei, dass nur der Exponent gefragt ist. Der Aufgabentitel in der Kopfzeile nennt den Typ; Krümelpfad und Verlauf zeigen die konkrete Aufgabe — und „Nächste Aufgabe" verrät jetzt, was wirklich dran ist.
+
+**Schneller und ehrlicher:** Terme vereinfachen wird in Millisekunden geprüft statt erst die Python-Laufzeit zu starten. Und kann die Laufzeit wirklich einmal nicht laden (wackeliges Netz), meldet die Aufgabe das ehrlich als Ladeproblem — statt endlos zu drehen oder fälschlich „falsch" zu sagen.
+
+Unter der Haube: Ein Service Worker legt den kompletten Build in einem versionierten Zwischenspeicher ab — App-Gerüst, alle Lektionen und Aufgaben inklusive. Die Python-Laufzeit liegt in einem separaten, stabilen Zwischenspeicher, der Aktualisierungen übersteht; beim Installieren wird netzfrisch geladen, damit keine Mischung aus altem und neuem Stand entsteht. SymPy und mpmath sind entfernt (−4,6 MB): Die Term-Äquivalenz läuft über die bestehende JS-Stützstellenprüfung — 13 deterministische Auswertungen mit dokumentierter numerischer Garantie statt symbolischem CAS. Eingaben wie `2x`, `x(x+1)` oder `**` werden vor der Prüfung normalisiert, genau wie die Mathe-Tastatur sie liefert. Der Code-Editor lädt erst, wenn eine Python-Aufgabe ihn braucht — die Aufgabenansicht ist dadurch ~150 KB (gzip) leichter; lädt er nicht, übernimmt ein einfaches Textfeld. Und das vendored Python-Verzeichnis trägt nur noch Dateien, die auch ausgeliefert werden.
+
 ## 0.7.0 — 2026-09-12
 
 Neu für Lernende: die **tägliche Challenge** unter `#/challenge` — ein pro Tag deterministisch gezogenes Set schwerer Aufgaben aus den Modulen, mit denen du schon arbeitest. Fälle wiederholen sich nicht innerhalb des Fensters, gelöste Challenges zählen eine Serie in Tagen, und auf der Heute-Seite zeigt eine Karte den Tages-Stand. Challenges markieren sich im Fortschritt als eigener Kontext, und nach dem Lösen geht es direkt zur nächsten Challenge statt zurück ins Modul. Der Rundgang hat einen neunten Schritt für die Challenge bekommen.

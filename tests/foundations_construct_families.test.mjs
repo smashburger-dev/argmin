@@ -1,10 +1,10 @@
 // S4D1 Konstrukt-Familien: Vertrags-, Fail-closed-, Distinctness-, Solver-,
 // Property- und Taxonomie-Tests für die zehn Foundations-Konstruktions- und
 // Prüf-Familien. Spiegelstruktur zu tests/exercise_family.test.mjs (S4C).
-// Unabhängigkeit: Numerik/Parsons werden über den echten Grader geprüft,
-// Code- und Termfamilien über python3 + SymPy (Referenz muss bestehen,
-// dokumentierte Mutanten müssen scheitern); JS-Orakel im Test sind aus den
-// Aufgabentexten abgeschrieben, nicht aus dem Produkt importiert.
+// Unabhängigkeit: Numerik/Parsons/Terme werden über den echten Grader
+// geprüft, Code-Familien über python3 (Referenz muss bestehen, dokumentierte
+// Mutanten müssen scheitern); JS-Orakel im Test sind aus den Aufgabentexten
+// abgeschrieben, nicht aus dem Produkt importiert.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -23,7 +23,7 @@ import {
   solvePowerLogExponent,
   generatePowerLogFamily,
   EXPRESSION_CANONICAL_CONTRACT,
-  SYMPY_EQUIVALENCE_RULE,
+  PROBE_EQUIVALENCE_RULE,
   canonicalLinear,
   solveExpressionCanonical,
   generateExpressionCanonicalFamily,
@@ -229,7 +229,7 @@ test('code bundles: curated base is byte-identical, extras follow the profile ti
 const PYTHON_HARNESS = `
 import json, sys
 payload = json.load(sys.stdin)
-report = {'bundles': [], 'sympy': []}
+report = {'bundles': []}
 def run_bundle(ref, tests):
     checks = []
     def __check(label, cond, detail=''):
@@ -244,21 +244,6 @@ def run_bundle(ref, tests):
 for b in payload['bundles']:
     r = run_bundle(b['ref'], b['tests'])
     report['bundles'].append({'name': b['name'], 'expect': b['expect'], 'checks': r['checks'], 'error': r['error']})
-try:
-    from sympy import expand, simplify, Symbol
-    from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application
-    __x = Symbol('x')
-    __tsf = standard_transformations + (implicit_multiplication_application,)
-    def __canon(s):
-        return parse_expr(str(s).strip().replace('^', '**'), local_dict={'x': __x}, transformations=__tsf)
-    for s in payload['sympy']:
-        try:
-            ok = bool(simplify(expand(__canon(s['student'])) - expand(__canon(s['expected']))) == 0)
-            report['sympy'].append({'name': s['name'], 'expect': s['expect'], 'equivalent': ok, 'error': None})
-        except Exception as e:
-            report['sympy'].append({'name': s['name'], 'expect': s['expect'], 'equivalent': False, 'error': type(e).__name__})
-except ImportError as e:
-    report['sympyError'] = 'sympy fehlt: %s' % e
 print(json.dumps(report))
 `;
 
@@ -266,7 +251,7 @@ function runPythonAuthority(payload) {
   try {
     execFileSync('python3', ['--version'], { stdio: ['ignore', 'pipe', 'pipe'] });
   } catch {
-    assert.fail('python3 fehlt: Code- und Termfamilien brauchen die ausführbare Autorität (python3 + sympy).');
+    assert.fail('python3 fehlt: Code-Familien brauchen die ausführbare Autorität.');
   }
   const out = execFileSync('python3', ['-c', PYTHON_HARNESS], {
     input: JSON.stringify(payload),
@@ -299,7 +284,6 @@ test('python authority: references pass every check, documented mutants fail', (
   assert.ok(twoColonSeed >= 0, 'Zwei-Doppelpunkt-Seed gefunden');
 
   const bundles = [];
-  const sympy = [];
   const push = (name, expect, familyId, caseId, seed, difficulty, code) => {
     const b = codeBundle(familyId, caseId, seed, difficulty, code);
     bundles.push({ name, expect, ref: b.ref, tests: b.tests });
@@ -318,25 +302,7 @@ test('python authority: references pass every check, documented mutants fail', (
   push('pal-ref-extended', 'pass', 'construct-regression-test-suite', 'normalize-and-assert-extended', 7, 'core', solveRegressionSuite({ suite: 'extended' }).referenceCode);
   push('pal-naive-mutant', 'fail', 'construct-regression-test-suite', 'normalize-and-assert-suite', 7, 'challenge', PALINDROM_MUTANT_NAIVE);
 
-  for (const caseId of ['combine-like-terms', 'distribute-sign-constant-chain']) {
-    for (const seed of [5, 6, 7]) {
-      const generated = generateExpressionCanonicalFamily({ seed, caseId, difficulty: 'core' });
-      const solved = solveExpressionCanonical(generated.parameters);
-      sympy.push({ name: `${caseId}#${seed}-correct`, expect: true, student: generated.expected.expression, expected: generated.expected.expression });
-      sympy.push({
-        name: `${caseId}#${seed}-offbyone`,
-        expect: false,
-        student: canonicalLinear(solved.aCoef + 1, solved.bConst),
-        expected: generated.expected.expression,
-      });
-    }
-  }
-
-  const report = runPythonAuthority({ bundles, sympy });
-  if (report.sympyError) {
-    assert.match(report.sympyError, /sympy fehlt/i);
-    return;
-  }
+  const report = runPythonAuthority({ bundles });
   for (const entry of report.bundles) {
     if (entry.expect === 'pass') {
       assert.equal(entry.error, null, `${entry.name}: Bündel läuft fehlerfrei`);
@@ -347,14 +313,29 @@ test('python authority: references pass every check, documented mutants fail', (
       assert.ok(entry.error !== null || failed.length > 0, `${entry.name}: Mutant scheitert`);
     }
   }
-  for (const entry of report.sympy) {
-    assert.equal(entry.error, null, `${entry.name}: SymPy liest beide Terme`);
-    assert.equal(entry.equivalent, entry.expect, `${entry.name}: Äquivalenz wie erwartet`);
-  }
   assert.equal(
     report.bundles.find((b) => b.name === 'zaehle-twocolon-mutant').checks.filter((c) => !c.passed).length >= 1,
     true,
   );
+});
+
+test('expression family: deterministic probe grader accepts equivalents and rejects mutants', async () => {
+  for (const caseId of ['combine-like-terms', 'distribute-sign-constant-chain']) {
+    for (const seed of [5, 6, 7]) {
+      const instance = instantiate('transform-expression-simplify-canonical', seed, 'core', caseId);
+      const solved = solveExpressionCanonical(instance.parameters);
+      assert.equal(instance.expectedAnswer.expression, solved.canonicalExpression);
+      assert.equal(instance.expectedAnswer.equivalence, PROBE_EQUIVALENCE_RULE);
+      for (const answer of [solved.canonicalExpression, `(${solved.canonicalExpression})`]) {
+        const verdict = await grade(instance, answer);
+        assert.equal(verdict.correct, true, `${caseId}#${seed}: "${answer}"`);
+      }
+      const mutant = canonicalLinear(solved.aCoef + 1, solved.bConst);
+      const verdict = await grade(instance, mutant);
+      assert.equal(verdict.correct, false, `${caseId}#${seed}: Mutant "${mutant}"`);
+      assert.equal(verdict.errorType, 'not-equivalent');
+    }
+  }
 });
 
 test('taxonomy cross-check: contracts match the foundations shard', () => {

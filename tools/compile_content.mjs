@@ -124,7 +124,14 @@ function validateChallengeContracts(document) {
   // registerStaticCases/configureExerciseFamilies, so flagged docs register
   // themselves here (idempotent: case bodies merge, the spec is rebuilt).
   registerStaticCases(document.familyId, document.cases);
-  if (!EXERCISE_FAMILIES.get(document.familyId)) configureExerciseFamilies([document]);
+  // A bare `get()` hit is not enough: another validated document can rebuild
+  // the registry (configureExerciseFamilies replaces it wholesale), leaving a
+  // stale spec whose profiles/cases do not match this document. Re-register
+  // whenever the flagged cases' profiles are not covered.
+  const registered = EXERCISE_FAMILIES.get(document.familyId);
+  if (!registered || flagged.some((item) => !registered.difficultyProfiles.includes(item.difficultyProfile))) {
+    configureExerciseFamilies([document]);
+  }
   for (const item of flagged) {
     const label = `${document.familyId}:${item.caseId}`;
     if (item.difficultyProfile !== 'challenge') {
@@ -732,6 +739,12 @@ function promptSnippet(prompt, maxLength = 110) {
 function stripPromptMarkup(prompt, maxLength = 80) {
   const text = String(prompt || '')
     .replace(/<[^>]*>/g, '')
+    // A display-math block ($$..$$ or \[..\]) ends the readable title.
+    .split(/\$\$|\\\[/)[0]
+    .replace(/\\log_\{?(\w+)\}?/g, 'log_$1')
+    .replace(/\^\{([^}]*)\}/g, '^$1')
+    .replace(/\\cdot/g, '·')
+    .replace(/\$/g, '')
     .replace(/\s+/g, ' ')
     .trim();
   if (text.length <= maxLength) return text;

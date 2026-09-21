@@ -28,7 +28,7 @@ import { normalizeWorkspacePayload } from './workspace_protocol.mjs';
 const PYODIDE_BASE = ['..', '..', '..', 'vendor', 'pyodide', ''].join('/');
 const INDEX_URL = new URL(PYODIDE_BASE, import.meta.url).href;
 // Packages the platform may load; anything else is refused.
-const PACKAGE_WHITELIST = new Set(['numpy', 'sympy', 'mpmath']);
+const PACKAGE_WHITELIST = new Set(['numpy']);
 const MAX_OUTPUT_CHARS = 64 * 1024;
 const WORKDIR_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 

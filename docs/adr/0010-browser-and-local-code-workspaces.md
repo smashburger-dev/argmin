@@ -21,7 +21,7 @@ Jeder Lauf erhält:
 - zurückgesetzte benutzerdefinierte Einträge in `sys.modules` und `sys.path`;
 - maximal 64 KiB stdout und stderr;
 - einen Host-Timeout mit Worker-Neustart;
-- ausschließlich `numpy`, `sympy` und `mpmath` aus der bestehenden Paket-Allowlist.
+- ausschließlich `numpy` aus der bestehenden Paket-Allowlist (`sympy`/`mpmath` seit 2026-09-11 nicht mehr vendort — ADR-0002 Nachtrag).
 
 Pyodide ist eine Komfort- und Reproduzierbarkeitsgrenze, keine Sicherheits-Sandbox für feindlichen Code.
 
