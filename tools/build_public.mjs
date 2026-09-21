@@ -373,7 +373,7 @@ if (nextDirArg) {
   // Offline service worker: the precache list is the disk walk at this point
   // (all content + hashed bundles + vendored assets are already copied).
   // Excluded: the two generated control files and vendor/pyodide — the worker
-  // runtime is cache-first on first use instead of ~22 MB upfront.
+  // runtime is cache-first on first use instead of ~16 MB upfront.
   const swExcludes = (rel) => rel === 'PUBLIC-BUILD.md' || rel === 'sw.js' || rel === 'offline-manifest.json' || rel.startsWith('vendor/pyodide/');
   const buildFiles = walk(out).map((p) => relative(out, p).replaceAll('\\', '/')).sort();
   const buildId = createHash('sha256')

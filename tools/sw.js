@@ -6,7 +6,7 @@ const CACHE = 'argmin-__BUILD_ID__';
 // runtime; activate() only deletes versioned caches.
 const RUNTIME_CACHE = 'argmin-runtime';
 // Precache covers the app shell plus every lazy chunk and content file, so
-// routes never visited online still work offline. vendor/pyodide (~22 MB) is
+// routes never visited online still work offline. vendor/pyodide (~16 MB) is
 // deliberately excluded: it is runtime-cached on first Python use, and the
 // settings prefetch button warms it explicitly via offline-manifest.json.
 const PRECACHE = __PRECACHE__;
