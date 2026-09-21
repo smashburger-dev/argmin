@@ -6,25 +6,15 @@ Für Agenten zum Kopieren:
 
 > Lies AGENTS.md und WIP.md. Übernimm Punkt N aus WIP.md. Halte dich an die dort genannten Dateien und Prüfbefehle, ändere keine Grader und kein IndexedDB-Schema, erzeuge Release-Bäume nur über die Build-Tools.
 
-## 1. Frontend Rework
+## 1. Kontinuierlich: Aufgaben, Lektüren, Fehler
 
-**Ziel:** Color Rework und ein ruhigeres Layout. Kein Design-System-Umbau.
+**Ziel:** Neue Aufgabenfälle oder -familien, neue Lektüren-Einträge, gefundene Fehler beheben. Laufender Betrieb, kein Enddatum.
 
-**Wo:** `src/ui/` (App-Shell, Heute, Lernen, Lektion, Aufgabe, Fortschritt, Einstellungen), `src/styles/next.css`, `src/app/theme.ts`, `src/ui/Button.tsx`. Screenshots in `docs/media/` nur anfassen, wenn sich der sichtbare Stand wirklich ändert.
+**Wo:** Aufgaben in `content/families/` (neue Familien zusätzlich in `assets/js/domain/` registrieren), Lektionen in `content/lessons/`, Lektüren in `content/sources.json` und Rechte in `content/source-rights.json`. Fehler überall — zuerst reproduzieren, dann an der Wurzel beheben. Der [Autoren-Leitfaden](docs/authoring-guide.md) erklärt den Aufbau von Inhalten.
 
-**Regeln:** Lerntexte und Aufgabeninhalte nicht umschreiben. Grader und IndexedDB unverändert. Hell und Dunkel beide prüfen. Tastaturfokus und `:focus-visible` behalten.
+**Regeln:** Lerntexte deutsch, Identifier englisch. Jede Aufgabe behält eine deterministische Prüfung — kein Fall ohne nachvollziehbaren Grader. `challengeEligible` nur setzen, wenn der Challenge-Vertrag erfüllt ist.
 
-**Fertig, wenn:** `npm run typecheck` und `npm run test:e2e -- --project=chromium` grün sind und die geänderten Screens in `npm run dev:next` (Desktop und schmales Viewport) durchgeklickt wurden.
-
-## 2. Intro / Tour
-
-**Ziel:** Beim ersten Öffnen eine kurze, wegklickbare Tour: Heute, Lernen, Review; Varianten kommen vom Seed; Fortschritt bleibt lokal. Kein Tutorial-Roman, drei bis fünf Schritte.
-
-**Wo:** `src/ui/App.tsx`, `src/ui/TodayView.tsx`, `src/styles/next.css`. Gesehen-Flag in `localStorage`, nicht in IndexedDB (kein Schema-Bump). Playwright in `tests/e2e/`.
-
-**Regeln:** Deutsch, Du-Ansprache wie im README. Tour blockiert Lernen nicht. Nochmal anzeigen geht über die Einstellungen. Kein Account, kein Netz.
-
-**Fertig, wenn:** Compile/Validierung unnötig (kein Content). `npm run typecheck`, ein Playwright-Test für Erstbesuch und Skip, und einmal selbst im Browser: leerer Storage → Tour → Skip bzw. zu Ende klicken → Reload ohne Tour.
+**Fertig, wenn:** `node tools/compile_content.mjs && node tools/validate_content.mjs` und `node --test tests/` grün sind; bei UI-Änderungen zusätzlich `npm run typecheck` und die betroffenen Playwright-Specs.
 
 ## Wie Aufgaben und Varianten funktionieren
 

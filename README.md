@@ -46,8 +46,8 @@ Was seit 0.8.0 neu ist, steht im [Changelog](CHANGELOG.md).
 
 ## In Arbeit / Geplant
 
-- **Frontend Rework.** Farben und ein klareres Layout.
-- **Intro / Tour.** Beim ersten Öffnen kurz: wo Heute, Lernen und Review liegen, dass Varianten vom Seed kommen, dass der Fortschritt lokal bleibt. Wegklickbar.
+- **Kontinuierlich.** Neue Aufgaben und Lektüren, Fehler finden und beheben. Wie du Inhalte schreibst, steht in [CONTRIBUTING.md](CONTRIBUTING.md); was gerade ansteht, in [WIP.md](WIP.md).
+- **Barrierefreiheit.** Tastatur, Screenreader und Kontraste weiter prüfen — die automatischen Checks laufen seit 0.8.0 auch über die Dialoge.
 
 Fortschritt zwischen Geräten bleibt Datei-Export/Import in den Einstellungen. Sync ohne Account ist eine Idee, kein Versprechen.
 
@@ -58,7 +58,7 @@ argmin lebt davon, dass Menschen mitdenken. Du musst nicht programmieren können
 - Dir ist ein Tippfehler, eine unklare Erklärung oder ein Fehler aufgefallen? [Öffne ein Issue](https://github.com/smashburger-dev/argmin/issues/new) Jede Rückmeldung hilft!
 - Du möchtest eine Lektion oder Aufgabe verbessern oder schreiben? In [CONTRIBUTING.md](CONTRIBUTING.md) steht, wie das geht!
 - Du willst am Code mitarbeiten? Willkommen :D unten steht, wie du lokal startest.
-- Mitbauen mit oder ohne KI-Agent. In [WIP.md](WIP.md) stehen Frontend Rework und Intro/Tour mit Dateien und Prüfbefehlen.
+- Mitbauen mit oder ohne KI-Agent. In [WIP.md](WIP.md) steht, was gerade ansteht — mit Dateien und Prüfbefehlen.
 
 ## Hier kannst du am meisten beitragen
 
@@ -79,7 +79,7 @@ npm run dev:next
 
 Öffne anschließend <http://127.0.0.1:4173/> im Browser. (Bitte nicht als `file://` öffnen — die App braucht einen lokalen Server, den `npm run dev:next` für dich startet.)
 
-**Mitbauen mit oder ohne KI-Agent.** Offen ist [WIP.md](WIP.md): Oberfläche und Einstiegs-Tour.
+**Mitbauen mit oder ohne KI-Agent.** Offen ist [WIP.md](WIP.md): neue Aufgaben, Lektüren und Fehlerbehebungen.
 
 ## Wie das Projekt aufgebaut ist
 
