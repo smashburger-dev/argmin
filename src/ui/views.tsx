@@ -426,6 +426,29 @@ export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
       setOfflineStatus(`Download abgebrochen: ${error instanceof Error ? error.message : String(error)}`);
     }
   };
+  const removeOffline = async () => {
+    if (!('caches' in window)) {
+      setOfflineStatus('Cache-Speicher ist in diesem Browser nicht verfügbar.');
+      return;
+    }
+    try {
+      const before = (await navigator.storage?.estimate?.())?.usage;
+      const keys = (await caches.keys()).filter((key) => key.startsWith('argmin-'));
+      if (keys.length === 0) {
+        setOfflineStatus('Es war kein Offline-Paket gespeichert.');
+        return;
+      }
+      await Promise.all(keys.map((key) => caches.delete(key)));
+      const after = (await navigator.storage?.estimate?.())?.usage;
+      const freed = typeof before === 'number' && typeof after === 'number' ? Math.max(0, before - after) : null;
+      const suffix = ' Die App lädt neue Inhalte jetzt wieder aus dem Netz; die Python-Laufzeit wird beim nächsten Einsatz erneut geladen.';
+      setOfflineStatus(freed !== null && freed > 0
+        ? `Offline-Paket entfernt — rund ${Math.max(1, Math.round(freed / 1048576))} MB freigegeben.${suffix}`
+        : `Offline-Paket entfernt.${suffix}`);
+    } catch (error) {
+      setOfflineStatus(`Entfernen fehlgeschlagen: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
   return (
     <section class="view" aria-labelledby="settings-title">
       <header class="view-header"><p class="eyebrow">Lokal</p><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p class="lede">Pfad, Zeitbudget und Darstellung bleiben unter deiner Kontrolle.</p></header>
@@ -456,7 +479,7 @@ export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
         <div><p class="card-kicker">Orientierung</p><h2 id="tour-settings-title">Rundgang</h2><p>Die kurze Tour zeigt, wo was liegt.</p></div>
         <div class="actions"><Button variant="secondary" type="button" onClick={onRestartTour}>Rundgang erneut starten</Button></div>
       </section>
-      <section class="settings-panel" aria-labelledby="offline-title"><div><p class="card-kicker">Offline</p><h2 id="offline-title">Offline-Paket laden</h2><p>Die App funktioniert nach dem ersten Laden offline. Wer auch die Python-Laufzeit (~16 MB) vorab sichern will — etwa vor einer Reise — lädt sie hier komplett in den Browser-Cache.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void prefetchOffline()}>Offline-Paket laden</Button><p class="save-status" role="status">{offlineStatus}</p></div></section>
+      <section class="settings-panel" aria-labelledby="offline-title"><div><p class="card-kicker">Offline</p><h2 id="offline-title">Offline-Paket</h2><p>Die App funktioniert nach dem ersten Laden offline. Wer auch die Python-Laufzeit (~16 MB) vorab sichern will — etwa vor einer Reise — lädt sie hier komplett in den Browser-Cache. „Entfernen“ gibt den Speicher wieder frei.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void prefetchOffline()}>Offline-Paket laden</Button><Button variant="secondary" type="button" onClick={() => void removeOffline()}>Paket entfernen</Button><p class="save-status" role="status">{offlineStatus}</p></div></section>
       <section class="settings-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</Button><Button variant="secondary" type="button" onClick={() => importInput.current?.click()}>JSON importieren</Button><input ref={importInput} id="progress-import" type="file" aria-label="JSON importieren" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
     </section>
   );

@@ -20,7 +20,7 @@ export const TOUR_STEPS: TourStep[] = [
     route: 'today',
     target: 'nav-main',
     title: 'Alles in Reichweite',
-    body: 'Hier wechselst du zwischen Heute, Lernen, Review, Fortschritt und Einstellungen. Lektüren und Werkzeuge liegen darunter, auf kleinen Bildschirmen unter „Mehr“.',
+    body: 'Hier wechselst du zwischen Heute, Lernen, Review, Fortschritt und Einstellungen. Lektüren und Werkzeuge liegen darunter; auf kleinen Bildschirmen öffnet das Menü oben links die Navigation.',
   },
   {
     id: 'today-primary',

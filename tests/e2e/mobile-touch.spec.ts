@@ -43,14 +43,17 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
 }
 
 async function tapNavigation(page: Page): Promise<void> {
+  const openDrawer = async () => {
+    await page.getByRole('button', { name: 'Navigation öffnen' }).tap();
+    return page.getByRole('dialog', { name: 'Navigation' });
+  };
   await page.goto('/index.html#/today');
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
-  const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
-  await nav.getByRole('link', { name: 'Lernen' }).tap();
+  await (await openDrawer()).getByRole('link', { name: 'Lernen' }).tap();
   await expect(page.getByRole('heading', { level: 1, name: /Dein Lernpfad:/ })).toBeVisible();
-  await nav.getByRole('link', { name: 'Einstellungen' }).tap();
+  await (await openDrawer()).getByRole('link', { name: 'Einstellungen' }).tap();
   await expect(page.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeVisible();
-  await nav.getByRole('link', { name: 'Heute', exact: true }).tap();
+  await (await openDrawer()).getByRole('link', { name: 'Heute', exact: true }).tap();
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
 }
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.5 — 2026-09-22
+
+Mobile aufgeräumt und Speicher freigebbar.
+
+Neu für Lernende: **Der Speicher lässt sich zurückholen.** In den Einstellungen entfernt „Paket entfernen“ das Offline-Paket — die Python-Laufzeit und alle gecachten Dateien, rund 16–20 MB je nach Stand. Die Statusmeldung nennt die freigegebene Größe. Danach brauchen neue Inhalte wieder Netz; die Laufzeit lädt sich beim nächsten Python-Einsatz oder erneut über „Offline-Paket laden“. Lernfortschritt bleibt unangetastet — der liegt in einer eigenen Datenbank, nicht im Paket-Cache.
+
+Auf dem Handy ist die **untere Leiste mit den Bereichen weg** — das Menü oben links (jetzt mit demselben Seitenleisten-Symbol wie am Rechner) öffnet die komplette Navigation, die fixierte Leiste war damit doppelt. Die Katalog-Versionsnummer steht nicht mehr in der Kopfzeile; sie bleibt am Fuß der Navigation und im Menü.
+
+Für Beitragende: `.main-nav` wird unter 920 px schlicht ausgeblendet statt zur Bottom-Bar umgebaut — die Regeln für die fixierte Leiste und ihre Link-Verdichtung sind entfernt. Der Rundgang-Schritt „Alles in Reichweite“ verweist auf kleinen Bildschirmen aufs Menü; fällt das Navigations-Ziel weg, zentriert die Tour-Karte wie vorgesehen. Der Entfernen-Button löscht alle `argmin-*` Caches (versionierter Build-Cache + `argmin-runtime`), ohne den Service Worker abzumelden — danach füllt der Write-Through nur noch, was tatsächlich abgerufen wird.
+
 ## 0.8.1 — 2026-09-21
 
 Wartungs-Release — für Lernende ändert sich nichts Sichtbares, die Fundamente sind aber sauberer und ehrlicher dokumentiert.

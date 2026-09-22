@@ -248,7 +248,7 @@ export function App() {
 
   const navLinks = (showRecent: boolean) => navigation.map((item) => (
     <Fragment key={item.route}>
-      <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined} class={item.secondary ? 'nav-secondary' : undefined}>
+      <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined}>
         {item.icon}
         <span>{item.label}</span>
       </a>
@@ -340,10 +340,9 @@ export function App() {
       <header class="topbar">
         <div class="topbar-left">
           <Button variant="ghost" size="sm" class="nav-drawer-toggle" aria-label="Navigation öffnen" aria-expanded={navDrawerOpen} onClick={() => setNavDrawerOpen(true)}>
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" /></svg>
+            {navToggleIcon(true)}
           </Button>
           <span class="local-status"><span aria-hidden="true" />Lokal</span>
-          <span class="topbar-catalog">Katalog {catalog.version}</span>
         </div>
         <SponsorSlots />
         <a class="brand" href="#/today" aria-label="argmin, zur Heute-Ansicht">
