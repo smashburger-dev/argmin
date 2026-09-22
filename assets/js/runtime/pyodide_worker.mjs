@@ -152,13 +152,13 @@ except ImportError:
 import os, shutil
 for __module_name, __module in list(sys.modules.items()):
     __module_file = getattr(__module, '__file__', '') or ''
-    if str(__module_file).startswith('/home/pydide/'):
+    if str(__module_file).startswith('/home/argmin/'):
         del sys.modules[__module_name]
-__wd = '/home/pydide/${workdir}'
+__wd = '/home/argmin/${workdir}'
 shutil.rmtree(__wd, ignore_errors=True)
 os.makedirs(__wd, exist_ok=True)
 os.chdir(__wd)
-sys.path[:] = [__path for __path in sys.path if not str(__path).startswith('/home/pydide/')]
+sys.path[:] = [__path for __path in sys.path if not str(__path).startswith('/home/argmin/')]
 sys.path.insert(0, __wd)
 for __workspace_file in json.loads(__workspace_files):
     __target = os.path.join(__wd, __workspace_file['path'])

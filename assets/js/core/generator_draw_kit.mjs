@@ -14,7 +14,7 @@ export const bindFamilyDraw = (options) => ({
 // shrink-complexity pass; every semantic knob of the previous per-file copies
 // is an explicit option so each family keeps its exact RNG consumption,
 // retry bounds, error scope and leak-guard strictness — the seed golden
-// corpus in tests/fixtures/generator-golden-corpus.json pins the bytes).
+// corpus in tests/fixtures/family-golden-corpus.json pins the bytes).
 
 /** Seed-Varianten: Fallwahl aus dem Seed (negativ-sicher, `seed % N` ohne
  *  `abs` bricht für negative Seeds — caseBank hatte genau diesen Defekt). */
@@ -133,7 +133,7 @@ export function drawFamilyInstance(generate, { seed, caseId, difficulty, wantSha
   return fallback;
 }
 
-const CHOICE_IDS = ['a', 'b', 'c', 'd'];
+export const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 
 /** Baut das Standard-Surface einer reinen Choice-Kapsel-Familie: Szenario-Bank
  *  + Antwort-Rotation. Module behalten Bank und Contract, die Generator-/

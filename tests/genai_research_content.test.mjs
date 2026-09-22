@@ -98,10 +98,7 @@ const W27_W30_SEED_GENERATORS = {
 
 const GENAI_SEEDS = Array.from({ length: 600 }, (_, i) => 1 + i * 37);
 
-function genaiStandaloneNumberPresent(text, value) {
-  const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(?<![\\d.,])${escaped}(?![\\d.,%])`).test(text);
-}
+import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
 
 // Independent reference solvers: they only read `parameters`.
 const GENAI_SOLVERS = {
@@ -152,7 +149,7 @@ for (const [name, generator] of Object.entries(W27_W30_SEED_GENERATORS)) {
     for (const seed of GENAI_SEEDS.slice(0, 150)) {
       const instance = generator(seed);
       assert.ok(Number.isInteger(instance.expected), `${name} seed ${seed}: non-integer expected`);
-      assert.equal(genaiStandaloneNumberPresent(instance.prompt, instance.expected), false,
+      assert.equal(standaloneNumberPresent(instance.prompt, instance.expected), false,
         `${name} seed ${seed}: prompt leaks answer ${instance.expected}`);
       assert.ok(instance.fullSolution.includes(String(instance.expected)),
         `${name} seed ${seed}: solution misses answer`);

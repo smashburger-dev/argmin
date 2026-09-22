@@ -173,13 +173,14 @@ function normalizeExpressionInput(raw) {
     .replace(/\s+/g, '');
 }
 
-// algebraic-expression accepts everything the old sympy parse accepted:
+// algebraic-expression normalizes into the probe compiler's language:
 // "**" maps to "^" and implicit multiplication (2x, 2(x+1), (x+3)(x-2),
 // x(x+1), "x 2") gains an explicit "*". Whitespace-adjacency rules run
 // before the strip so "x 2" keeps parity with sympy's implicit
-// multiplication. Fading gaps keep the strict normalizeExpressionInput —
-// implicit multiplication is documented as not accepted there
-// (docs/authoring-guide.md).
+// multiplication. SymPy-only constructs (Rational(), 'E', 1e-3) are not
+// part of that language — the math keyboard never emits them. Fading gaps
+// keep the strict normalizeExpressionInput — implicit multiplication is
+// documented as not accepted there (docs/authoring-guide.md).
 function normalizeAlgebraicExpression(raw) {
   return String(raw ?? '')
     .replace(/−/g, '-')

@@ -41,10 +41,7 @@ const DATA_ML_DEEP_GENERATORS = {
 
 const SEEDS = Array.from({ length: 600 }, (_, i) => 1 + i * 37);
 
-function standaloneNumberPresent(text, value) {
-  const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(?<![\\d.,])${escaped}(?![\\d.,%])`).test(text);
-}
+import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
 
 // Independent reference solvers: they only read `parameters`, never the
 // generator internals, so agreement is a real cross-check.

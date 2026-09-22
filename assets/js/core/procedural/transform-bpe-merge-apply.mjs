@@ -6,6 +6,7 @@
 // grading contract cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
 import { makeCaseFamily } from './case_family_kit.mjs';
+import { pyStrList } from './py_test_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
 
@@ -166,7 +167,6 @@ export const BPE_CASES = {
   },
 };
 
-const pyStrList = (v) => `[${v.map((s) => `"${s}"`).join(', ')}]`;
 const pyMerges = (m) => `[${m.map(([a, b]) => `("${a}", "${b}")`).join(', ')}]`;
 
 // Appends the seeded literal checks: every drawn word/symbol sequence and

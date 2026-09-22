@@ -2,7 +2,7 @@
 // Ein geseedeter Fall und statische Falltypen teilen den kanonischen
 // Lösungsweg; Code-Ausgabe und Begründung bleiben getrennte Familienfälle.
 //
-// Alle elf Familien laufen über die Kit-Factories in linalg_family_kit.mjs:
+// Alle elf Familien laufen über die Kit-Factories in solved_family_kit.mjs:
 // makeNumericFamily liefert generate/solve/spec für die fünf numerischen
 // Wrapper (statische Fälle + Seed-Ziehung), makeLinalgChoiceCapsuleFamily
 // liefert capsuleOk/correctText/genCapsule/generate/solve/spec für die sechs
@@ -322,8 +322,8 @@ export const solveShapeContract = shapeContractKit.solve;
 // Definition (buildPythonTests-Verzweigung), Startercode übernommen.
 
 // --- transform-rank-dependence-rowops ------------------------------------------
-// Pilot: geseedet über genRankCapsule, eine Kapsel je Profil mit
-// caseId-Rangbindung (core/stretch/challenge → staircase/full/line).
+// Pilot: geseedet über genRankCapsule, caseId-Rangbindung je Profil
+// (core/stretch → staircase/full; challenge → line und two-combo).
 // Der Content-Contract ist null, der Vertrag lebt hier.
 
 export const RANK_CONTRACT = {

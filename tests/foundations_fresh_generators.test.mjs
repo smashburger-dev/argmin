@@ -1,119 +1,27 @@
 // Session-B quality gate for the 13 fresh-variation generator families
-// (ADR-0015). Numeric/procedural families run 2000 seeds each; semantic
-// variant banks are enumerated completely. Every expected value is checked
-// against an INDEPENDENT solver written in this file — never the product
-// functions. The stored default instances (content JSON) are checked for
-// semantic seed variation and independent solvers
-// must grade the same instance identically.
+// (ADR-0015). Numeric families run 200 seeds (some deeper loops run up to
+// 1200); semantic variant banks are enumerated completely. genDet2 is
+// cross-checked against an independent solver written in this file;
+// genCollectionStepTrace against the local solveStepTrace re-execution.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-import { graders } from '../assets/js/core/graders.js';
 import {
   FOUNDATIONS_FRESH_GENERATORS,
   metaErrorCaseCount,
   exceptionBoundaryCaseCount,
   gitNextActionCaseCount,
 } from '../assets/js/core/foundations_fresh_generators.mjs';
+import { LINALG_NUMPY_FRESH_GENERATORS } from '../assets/js/core/linalg_numpy_fresh_generators.mjs';
 
-/** Independent leaf counter: parses the generated snippet's control flow by
- *  indentation instead of reusing the product table (no circular check). */
-function countLeavesIndependently(snippet) {
-  const code = snippet.replace(/^\d+\s+/gm, '');
-  let leaves = 1;
-  let sawPrint = false;
-  for (const line of code.split('\n')) {
-    if (/^\s*print\(/.test(line)) {
-      sawPrint = true;
-      break;
-    }
-  }
-  if (!sawPrint) return null;
-  // walk the decision structure: count observable outcomes
-  const lines = code.split('\n');
-  let leafCount = 0;
-  let depth = -1;
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const indent = line.length - line.trimStart().length;
-    const isBranch = /^\s*(if|elif|else)\b/.test(line);
-    if (isBranch && (depth === -1 || indent === depth)) {
-      depth = indent;
-      // an if/elif branch is a leaf unless a deeper if follows inside it
-      const next = lines.slice(i + 1).find((l) => l.trim());
-      const nextIndent = next ? next.length - next.trimStart().length : -1;
-      const nextIsBranch = next ? /^\s*(if|elif|else)\b/.test(next) : false;
-      if (!(nextIsBranch && nextIndent > indent)) leafCount += 1;
-    }
-  }
-  return leafCount;
+/** Independent det2 check: same formula, but written here so the assertion
+ *  below does not compare the product function against itself. */
+function det2Independently(p) {
+  return p.A[0][0] * p.A[1][1] - p.A[0][1] * p.A[1][0];
 }
-import { LINALG_NUMPY_FRESH_GENERATORS, det2 } from '../assets/js/core/linalg_numpy_fresh_generators.mjs';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const NUMERIC_SEEDS = 200;
 const FAMILIES = { ...FOUNDATIONS_FRESH_GENERATORS, ...LINALG_NUMPY_FRESH_GENERATORS };
-
-// --- independent solvers (no product imports beyond the generators) ----------
-
-const independent = {
-  genPythonStateTrace: (p) => {
-    if (p.shape === 'reassign') return [p.a0 + p.k1 - p.k2, p.a0 + p.k1].join(' ');
-    if (p.shape === 'chain3') {
-      const y = p.x0 * p.k1;
-      const z = y - p.x0;
-      return [z + p.k2, y, z].join(' ');
-    }
-    const n1 = p.n0 + p.k1;
-    const m = n1 * p.f1;
-    return [m - p.g1, m].join(' ');
-  },
-  genCodeReadingOutput: (p) => {
-    if (p.shape === 'slice') return p.word.slice(p.a, p.b);
-    if (p.shape === 'join') return p.parts.slice(p.i, p.j).join(p.sep ?? '-');
-    if (p.shape === 'comprehension') {
-      const out = p.nums.filter((n) => n > p.threshold).map((n) => n * p.factor);
-      return `[${out.join(', ')}]`;
-    }
-    const clean = p.word.trim();
-    if (p.mode === 0) return clean.toUpperCase();
-    if (p.mode === 1) return clean.split(' ').map((word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`).join(' ');
-    return `${clean[0].toUpperCase()}${clean.slice(1).toLowerCase()}`;
-  },
-  genFunctionCompose: (p) => {
-    const f = (x) => p.fa * x + p.fb;
-    const g = (x) => p.ga * x + p.gb;
-    return `${f(g(p.v))} ${g(f(p.v))}`;
-  },
-  genControlFlowOutput: (p) => {
-    if (p.shape === 'elif') {
-      const value = p.x > p.t1 ? p.x * p.k : (p.x < p.t2 ? p.x + p.k : p.x - p.k);
-      const branch = p.x > p.t1 ? 'A' : (p.x < p.t2 ? 'B' : 'C');
-      return `${branch} ${value}`;
-    }
-    if (p.shape === 'while') {
-      let n = p.n0;
-      let total = 0;
-      while (n > p.stop) { total += n; n -= p.step; }
-      return `${total} ${n}`;
-    }
-    const out = p.nums.filter((n) => n % 2 === 0).map((n) => n * p.factor);
-    return `[${out.join(', ')}]`;
-  },
-  genMatmulEntryFresh: (p) => p.A[p.entry[0] - 1][0] * p.B[0][p.entry[1] - 1] + p.A[p.entry[0] - 1][1] * p.B[1][p.entry[1] - 1],
-  genDet2: (p) => p.A[0][0] * p.A[1][1] - p.A[0][1] * p.A[1][0],
-  genShapePredict: (p) => {
-    const cols = p.n / p.rows;
-    if (p.shape === 'reshape-auto') return `(${p.rows}, ${cols})`;
-    if (p.shape === 'row-broadcast') return `(${p.rows}, ${cols})`;
-    if (p.shape === 'transpose') return `(${cols}, ${p.rows})`;
-    return `(${p.n1}, ${p.n2})`;
-  },
-};
 
 // The step-trace solver re-executes the snippet semantics from parameters.
 function solveStepTrace(p) {
@@ -179,14 +87,12 @@ test('all fresh families expose their registered generator ids', () => {
 
 // --- 2. determinism + answer spaces + independent solvers ---------------------
 
-
-
 test('genDet2 invariant: determinant is never zero (independence actually holds)', () => {
   for (let seed = 1; seed <= NUMERIC_SEEDS; seed++) {
     const instance = FAMILIES.genDet2(seed);
     assert.notEqual(instance.expected, 0, `seed ${seed} produced a dependent column set`);
     assert.ok(Math.abs(instance.expected) <= 50);
-    assert.equal(instance.expected, det2(instance.parameters.A));
+    assert.equal(instance.expected, det2Independently(instance.parameters));
   }
 });
 
@@ -249,9 +155,7 @@ test('genCollectionStepTrace: all six families reachable, solver parity, states 
   assert.ok([...seen.values()].every((count) => count >= 20), 'every family appears substantially');
 });
 
-// --- 5. cross-shell grading parity for all 13 families ---------------------------
-
-// --- 6. prompt-leak protection ------------------------------------------------------
+// --- 5. prompt-leak protection ------------------------------------------------------
 
 test('predict-output prompts never embed the expected output string (slices excepted)', () => {
   for (const generatorId of ['genPythonStateTrace', 'genCodeReadingOutput', 'genFunctionCompose', 'genControlFlowOutput', 'genShapePredict']) {

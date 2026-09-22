@@ -9,6 +9,7 @@
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt } from '../generator_draw_kit.mjs';
+import { pyLit, refCopy } from './py_test_kit.mjs';
 
 const AUDIT_STARTER = `def audit_pipeline(steps):
     # a step leaks if its lower-cased action matches at least one rule:
@@ -128,24 +129,6 @@ const LEAK_ACTIONS = [
 ];
 
 const STEP_NAMES = ['split', 'scale', 'impute', 'fit', 'report', 'engineer', 'valid', 'build', 'score', 'select'];
-
-// Minimal JS -> Python literal serializer for the JSON-safe draw structures.
-const pyLit = (value) => {
-  if (value === null || value === undefined) return 'None';
-  if (value === true) return 'True';
-  if (value === false) return 'False';
-  if (typeof value === 'number') return String(value);
-  if (typeof value === 'string') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(pyLit).join(', ')}]`;
-  return `{${Object.entries(value).map(([k, v]) => `${JSON.stringify(k)}: ${pyLit(v)}`).join(', ')}}`;
-};
-
-// Renames the public functions of the reference solver so the test block can
-// keep an inline oracle copy next to the seeded literals.
-const refCopy = (source, names) => names.reduce(
-  (text, name) => text.replaceAll(`def ${name}(`, `def __ref_${name}(`),
-  source,
-);
 
 const drawActions = (r, len) => Array.from(
   { length: len },

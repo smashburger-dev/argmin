@@ -83,7 +83,7 @@ export class PyodideRunner {
     }
   }
 
-  /** run({code, tests, packages, seed, timeoutMs}) -> structured result */
+  /** run({code, tests, packages, seed, timeoutMs, workdir, files, entrypoint}) -> structured result */
   async run(payload) {
     try {
       await this.ensureWorker();

@@ -2,8 +2,9 @@
 // B2: Trace-Verifikation. Jede Spur wird per family_registry.solve
 // (Solver-Konsistenz) plus graders.js (registry.grade) nachgradiert.
 // Nur bestehende Spuren landen im Output. Verwerfungsquote plus Gruende
-// und Deutsch-Rate werden geloggt. Exit 0 bei IO-Erfolg (auch mit
-// Verwerfungen), Exit 1 bei Datei- oder Schemafehlern.
+// und Deutsch-Rate werden geloggt. Exit 0 sobald die Datei gelesen und
+// geparst ist (auch mit Verwerfungen, inkl. Record-Schemafehlern);
+// Exit 1 bei fehlendem --in, unlesbarer Datei oder JSON-Parsefehler.
 //
 // Gebrauch: node tools/llm/verify_traces.mjs --in teacher-traces.jsonl
 //   --out verified-traces.jsonl --report verify-report.json

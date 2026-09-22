@@ -67,7 +67,7 @@ function resolveContentPath(contentRoot, path, allowedExtensions = ['.json']) {
   return absolute;
 }
 
-const schemaCache = new Map(); // keyed by schema-content hash: in-process schema edits invalidate
+const schemaCache = new Map(); // keyed by projectRoot; the schema-content hash lands in contractVersion metadata
 
 function schemaContracts(projectRoot) {
   if (schemaCache.has(projectRoot)) return schemaCache.get(projectRoot);
@@ -725,17 +725,6 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
 // Lesson and family bodies stay out of the initial index and are loaded by id.
 
 const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
-// List views show a short prompt snippet; the full prompt stays in the
-// per-exercise body chunk. Without this, the index (and with it the initial
-// chunk) grows linearly with prompt text.
-function promptSnippet(prompt, maxLength = 110) {
-  const text = String(prompt || '').replace(/\s+/g, ' ').trim();
-  if (text.length <= maxLength) return text;
-  const cut = text.slice(0, maxLength);
-  const boundary = Math.max(cut.lastIndexOf(' '), cut.lastIndexOf('$'));
-  return `${cut.slice(0, boundary > 40 ? boundary : maxLength)} …`;
-}
-
 function stripPromptMarkup(prompt, maxLength = 80) {
   const text = String(prompt || '')
     .replace(/<[^>]*>/g, '')
@@ -800,7 +789,7 @@ function challengeCaseTitle(family, caseId) {
   }
 }
 
-// Route-scoped index sections: four heavy sections ship as sidecar chunks
+// Route-scoped index sections: three heavy sections ship as sidecar chunks
 // loaded through sectionChunks, keeping them out of the initial bundle.
 const SECTION_FIELDS = {
   sources: 'sources',

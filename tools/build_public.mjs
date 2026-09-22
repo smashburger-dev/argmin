@@ -372,7 +372,7 @@ if (nextDirArg) {
 
   // Offline service worker: the precache list is the disk walk at this point
   // (all content + hashed bundles + vendored assets are already copied).
-  // Excluded: the two generated control files and vendor/pyodide — the worker
+  // Excluded: the three generated control files and vendor/pyodide — the worker
   // runtime is cache-first on first use instead of ~16 MB upfront.
   const swExcludes = (rel) => rel === 'PUBLIC-BUILD.md' || rel === 'sw.js' || rel === 'offline-manifest.json' || rel.startsWith('vendor/pyodide/');
   const buildFiles = walk(out).map((p) => relative(out, p).replaceAll('\\', '/')).sort();
@@ -463,7 +463,7 @@ ${manifestJson}
 // --- 4) verify the produced tree: nothing extra, nothing private ---------------
 const produced = walk(out).map((p) => relative(out, p)).sort();
 const expected = [...new Set([...targets, 'content/content-bundle.json', 'vendor/licenses/THIRD_PARTY_NOTICES.md', 'PUBLIC-BUILD.md'])].sort();
-if (produced.length !== expected.length) {
+if (produced.join('\n') !== expected.join('\n')) {
   const extra = produced.filter((p) => !expected.includes(p));
   const missing = expected.filter((p) => !produced.includes(p));
   fail(`Build-Baum weicht ab. Zusätzlich: ${extra.join(', ')} — Fehlend: ${missing.join(', ')}`);

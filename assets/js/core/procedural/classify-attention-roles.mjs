@@ -11,7 +11,7 @@
 //     scores; V still supplies the content of the visible keys.
 // parameters carry only the scenario key, so nothing answer-relevant leaks
 // into instance.parameters. Mirrors genSvmMarginCapsule in
-// data_ml_generators.mjs.
+// data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

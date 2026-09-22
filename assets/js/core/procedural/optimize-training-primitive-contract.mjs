@@ -7,6 +7,7 @@
 // drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
 import { makeCaseFamily } from './case_family_kit.mjs';
+import { pyVec, pyMat, pyBoolMat } from './py_test_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
 
@@ -216,12 +217,8 @@ def weight_decay_update(w, grad, lr, lam):
 
 # dropout(x=[[2,-4],[6,8]], mask, p=0.5) -> [[4, 0], [12, 16]]; weight_decay_update(2.0, 0.4, 0.5, 0.2) = 1.6`;
 
-// Python literal emitters: ints stay ints, probability/decay banks render
-// exact short decimals, masks render True/False.
-const pyNum = (n) => String(n);
-const pyVec = (values) => `[${values.map(pyNum).join(', ')}]`;
-const pyMat = (rows) => `[${rows.map(pyVec).join(', ')}]`;
-const pyBoolMat = (rows) => `[${rows.map((row) => `[${row.map((v) => (v ? 'True' : 'False')).join(', ')}]`).join(', ')}]`;
+// Python literal emitters come from py_test_kit: ints stay ints,
+// probability/decay banks render exact short decimals, masks True/False.
 
 const drawVec = (r, len, lo, hi) => Array.from({ length: len }, () => randInt(r, lo, hi));
 

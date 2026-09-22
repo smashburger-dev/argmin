@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 // Challenge-UI spec (plan: .agents/plans/2026-09-09-challenge.md).
-// The catalog ships 23 challengeEligible cases (pilot flagging), but a
+// The catalog ships 29 challengeEligible cases (pilot flagging), but a
 // fresh browser has no touched module — the pool stays empty and the view
 // renders its "no active module" state. Card/window assertions land once
 // a spec seeds module activity. No e2e spec mocks the clock — determinism
@@ -40,16 +40,15 @@ test('today teaser stays hidden while the pool is empty and no streak exists', a
   test.skip(browserName !== 'chromium', 'Teaser check runs in Chromium.');
   await page.goto('/index.html#/today');
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
-  // Pool is empty (no challengeEligible cases) and no challenge attempts
-  // exist, so the quadrant card must not render.
+  // Pool is empty (no touched module, so no eligible cases surface) and no
+  // challenge attempts exist, so the quadrant card must not render.
   await expect(page.locator('.challenge-teaser')).toHaveCount(0);
 });
 
 test('?from=challenge keeps the exercise in challenge context', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'Stay-in-challenge flow runs in Chromium.');
-  // No challengeEligible content yet — a regular difficulty with the
-  // ?from=challenge suffix exercises the same code path (context tagging,
-  // back target, next-challenge CTA).
+  // A regular difficulty with the ?from=challenge suffix exercises the same
+  // code path (context tagging, back target, next-challenge CTA).
   await page.goto('/index.html#/family/classify-git-operation/diff-unstaged/7/intro?from=challenge');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   const back = page.getByRole('link', { name: 'Zur Challenge' });

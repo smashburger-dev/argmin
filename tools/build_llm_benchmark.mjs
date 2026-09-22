@@ -1,6 +1,6 @@
 // A1: deterministic LLM-benchmark builder (no LLM, no network).
 // Freezes held oracle instances plus solver-verified mutants into
-// tests/fixtures/llm-benchmark.<commit>-<contenthash>.json.
+// tests/fixtures/llm-benchmark.<contenthash16>.json (commit lands in metadata).
 //
 // Hold unit is (familyId, caseId, difficulty, moduloClass), never the raw
 // seed: static cases enumerate every variant index, procedural cases take

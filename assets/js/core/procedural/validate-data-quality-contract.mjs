@@ -6,7 +6,7 @@
 // paths compare by type and message), so the grading contract cannot drift.
 // Mirrors palindromExtraCases in foundations_construct_families.mjs.
 
-import { RAISED_HELPER } from './py_test_kit.mjs';
+import { pyLit, refCopy, RAISED_HELPER } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
@@ -182,29 +182,6 @@ const ROWS_CONTRACT = {
 
 const BAD_ROW_KINDS = ['columns-missing', 'columns-extra', 'id-type', 'wert-type', 'wert-bool'];
 const ROW_FLAW_KINDS = ['columns-missing', 'columns-extra', 'id-bool', 'alter-none', 'alter-low', 'alter-high', 'umsatz-str'];
-
-// Minimal JS -> Python literal serializer for the JSON-safe draw structures
-// (dicts, lists, strings, numbers, booleans, null). Double-quoted strings are
-// valid Python; True/False/None cover bool and null.
-const pyLit = (value) => {
-  if (value === null || value === undefined) return 'None';
-  if (value === true) return 'True';
-  if (value === false) return 'False';
-  if (typeof value === 'number') return String(value);
-  if (typeof value === 'string') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(pyLit).join(', ')}]`;
-  return `{${Object.entries(value).map(([k, v]) => `${JSON.stringify(k)}: ${pyLit(v)}`).join(', ')}}`;
-};
-
-// Returns ("ok", result) or (exception type, message): lets one comparison
-// cover both value returns and the contracted ValueError paths.
-
-// Renames the public functions of the reference solver so the test block can
-// keep an inline oracle copy next to the seeded literals.
-const refCopy = (source, names) => names.reduce(
-  (text, name) => text.replaceAll(`def ${name}(`, `def __ref_${name}(`),
-  source,
-);
 
 const drawBadRow = (r) => {
   const kind = pick(r, BAD_ROW_KINDS);

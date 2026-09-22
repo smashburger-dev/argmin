@@ -2,7 +2,7 @@
 // House rules mirror the foundations, linalg, and data-ML generators: mulberry32 rng, exact
 // integer expected values (the numeric grader is integer-exact; floats are
 // graded through python-code tasks), wide answer spaces (>= 20 distinct
-// expected values over 2000 seeds, enforced by the deep-learning generator tests,
+// expected values over 600 seeds, enforced by tests/data_ml_generators.test.mjs,
 // semantic variation (>= 3 prompt shapes per family), the answer
 // never appears as a standalone number in the prompt (bounded redraw guard),
 // and full solutions always contain the answer.

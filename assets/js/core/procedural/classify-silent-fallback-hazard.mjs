@@ -6,7 +6,7 @@
 // hides a stage failure behind an ordinary value; the fix is a named status
 // sentinel the caller can check and the runner can report). parameters carry
 // only the scenario key, so nothing answer-relevant leaks into
-// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_generators.mjs.
+// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

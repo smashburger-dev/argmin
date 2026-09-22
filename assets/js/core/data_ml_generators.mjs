@@ -1,4 +1,5 @@
-// Seeded generators for weeks 6-17 (data & classic ML), ADR-0012 Option A.
+// Seeded generators for weeks 6-17 (data & classic ML), ADR-0012 Option A,
+// plus capsule machinery for the eight classify-* families (W25/W26 ff.).
 //
 // Contract (mirrors w01/w05 house rules):
 //   - mulberry32 rng, identical to the other generator modules;
@@ -6,7 +7,7 @@
 //   - `expected` is always an exact integer (the numeric grader is
 //     integer-exact by design; floats are graded through python-code tasks);
 //   - answer spaces are deliberately wide (>= 20 distinct expected values over
-//     2000 seeds, enforced by tests/data_ml_generators.test.mjs) so gate
+//     600 seeds, enforced by tests/data_ml_generators.test.mjs) so gate
 //     re-seeds produce meaningful new instances, not memorisable answers;
 //   - variation is semantic (direction, metric, framing, defect kind), never
 //     just noise: every family mixes >= 3 prompt shapes;
@@ -385,8 +386,6 @@ export function genEnsembleAccuracy(seed) {
   });
 }
 
-// --- W16: PCA -----------------------------------------------------------------------
-
 // --- W11: Sigmoid-Regime-Kapseln (classify-sigmoid-regime) ----------------------
 // Drei Kapseln 1:1 auf den Bestandsfällen (intro/core/stretch → large-z/
 // threshold/log-odds). Die Zahlenbanken decken die 9 kuratierten Orakel je
@@ -743,6 +742,8 @@ export function drawLoraParameters(r, capsule) {
   }
   return { rank: randInt(r, 1, 16), alpha: randInt(r, 2, 64) };
 }
+
+// --- W16: PCA -----------------------------------------------------------------------
 
 export function genPcaVariancePercent(seed) {
   const random = rng(seed);

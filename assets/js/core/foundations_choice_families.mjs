@@ -22,7 +22,7 @@
 // Kein UI, kein Ledger, kein Content-Edit. Die Generatoren stehen bewusst
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
-import { variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
+import { variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
 import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
 import stringImmutabilityDoc from '../../../content/families/classify-string-immutability.json' with { type: 'json' };
 import setOperationDoc from '../../../content/families/classify-set-operation-semantics.json' with { type: 'json' };
@@ -33,13 +33,13 @@ import pythonCollectionDoc from '../../../content/families/classify-python-colle
 import exceptionPlacementDoc from '../../../content/families/classify-exception-placement.json' with { type: 'json' };
 
 const CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
-const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 
 /** Eingefrorener Seed der autorisierten Default-Instanz von
  *  f-meta-error-classify-01 (sourceLineage.seed, expectedAnswer.defaultSeed).
- *  Der Fallkörper in content/families/classify-error-hypothesis.json ist
- *  byte-identisch mit genMetaErrorClassify(3401) (Fall off-by-one, korrekte
- *  Wahl an Position b der eingefrorenen Instanz). */
+ *  Der Fallkörper in content/families/classify-error-hypothesis.json
+ *  serialisiert die Inhalte von genMetaErrorClassify(3401) (Fall off-by-one)
+ *  in kanonischer Ordnung: korrekte Wahl an Position a, Distraktoren in
+ *  rotierter Bank-Reihenfolge. */
 export const FROZEN_META_ERROR_SEED = 3401;
 
 // Eigenregistrierung der öffentlichen Fallkörper (idempotent — die

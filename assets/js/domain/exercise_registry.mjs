@@ -25,9 +25,9 @@ const jsFamilySpecs = [
   ...FOUNDATIONS_CONSTRUCT_SPECS,
   // S4D1: sechs Trace-Familien (Foundations).
   ...TRACE_FAMILY_SPECS,
-  // S4D5: Skalarprodukt-Familie (linalg).
+  // S4D5: elf Linalg-Familien.
   ...LINALG_FAMILY_SPECS,
-  // S4D8: Datenbereinigung.
+  // S4D8: zwanzig Daten-/ML-Familien.
   ...DATA_ML_FAMILY_SPECS,
   // Prozedurale Einzel-Module (pro Familie eine Datei in core/procedural/).
   ...PROCEDURAL_FAMILY_SPECS,

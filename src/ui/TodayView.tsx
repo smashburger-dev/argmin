@@ -11,7 +11,7 @@ import { learnerExerciseLabel, minutesLabel } from './learner-labels';
 
 // Lazy boundary: ChallengeTeaser lives in ChallengeView.tsx behind the
 // same lazy chunk as the challenge route — a static import here would pull
-// the family-core chunk (generator_draw_kit et al.) into the eager bundle.
+// the challenge adapter chain into the eager bundle.
 const ChallengeTeaser = lazy(() => import('./ChallengeView').then((module) => ({ default: module.ChallengeTeaser })));
 
 const TODAY_BOOSTS = [

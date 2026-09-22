@@ -2,7 +2,8 @@
 // worked examples whose solution scaffold carries [[gap]] slots (contract:
 // activityType 'worked-example-fading', graderId 'deterministic', expected
 // { kind: 'gaps', gaps: [{ answer, input }] } in prompt order). The three
-// caseIds pin the fading stage; the difficulty tier only widens the
+// caseIds pin the fading stage (four: three progressive stages plus the
+// two-sided challenge case); the difficulty tier only widens the
 // coefficient ranges:
 //   fade-final-step   — only the result line x = … is blanked (early fading)
 //   fade-middle-steps — both result lines after the shown operation (mid)

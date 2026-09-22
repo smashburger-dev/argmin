@@ -1,6 +1,7 @@
-// S4D8 data-cleaning family contracts. The seeded cases reuse the canonical
-// W06 generators; this module only supplies profile filtering and family
-// instance shape.
+// S4D8 data/ML family contracts (twenty families, W06–W39). The seeded
+// cases reuse the canonical W06 generators; this module supplies profile
+// filtering, family instance shape, and — for the classify-* families —
+// the full contract.
 
 import {
   makeChoiceCapsuleFamily,

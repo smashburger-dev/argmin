@@ -5,7 +5,7 @@
 // scenarios that assign a usage to its provenance-duty class (prüfbarer
 // Vertrag: Provenienz, Zweck, Evaluationsrahmen, Grenzen). parameters carry
 // only the scenario key, so nothing answer-relevant leaks into
-// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_generators.mjs.
+// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

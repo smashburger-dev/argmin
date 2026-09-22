@@ -6,7 +6,7 @@
 // registration, argument scope, default-deny for unknown calls, technical
 // enforcement over prompt requests). parameters carry only the scenario key,
 // so nothing answer-relevant leaks into instance.parameters. Mirrors
-// genSvmMarginCapsule in data_ml_generators.mjs.
+// genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

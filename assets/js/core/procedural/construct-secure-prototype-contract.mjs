@@ -6,7 +6,7 @@
 // evaluated against a renamed __ref_ copy of the reference solver, so the
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
-import { refCopy } from './py_test_kit.mjs';
+import { refCopy, pyLit as py } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
@@ -141,18 +141,8 @@ const SECURE_PROMPT = 'Vollständiger abgesicherter Prototyp: <code>build_secure
 
 const SECURE_SOLUTION = SECURE_REFERENCE;
 
-// Renames the module-level reference names inside an emitted copy so the
-// seeded block cannot collide with the learner's own definitions (and a
-// redefined NO_HIT/BLOCK constant cannot poison the oracle).
-
 // Serializes drawn data as Python literals (the pools stay quote- and
 // backslash-free, so the generated test block has no escaping hazards).
-const py = (value) => {
-  if (typeof value === 'string') return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
-  if (typeof value === 'number') return `${value}`;
-  if (Array.isArray(value)) return `[${value.map(py).join(', ')}]`;
-  return `{${Object.entries(value).map(([key, v]) => `${py(key)}: ${py(v)}`).join(', ')}}`;
-};
 
 // JS mirror of the reference _terms — used only to draw probe queries that
 // share a term with a chosen document; the emitted checks never read it.
@@ -162,7 +152,7 @@ const secureTerms = (text) => new Set(
     .map((ch) => (SECURE_PUNCT.has(ch) ? ' ' : ch))
     .join('')
     .split(/\s+/)
-    .filter((word) => word.length >= 4 && !/^\\d+$/.test(word)),
+    .filter((word) => word.length >= 4 && !/^\d+$/.test(word)),
 );
 
 // Draw pools: German docs in the w30-e5 register, lowercase injection phrases

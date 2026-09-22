@@ -8,8 +8,6 @@ import { MathMarkup } from './MathMarkup';
 import { formatGermanDate } from './format';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
-/** Loads a route-scoped content section once per session. null while the
- *  sidecar chunk is in flight — views render an honest loading state. */
 /** Loads a route-scoped section once per session. Returns the section, or
  *  null while loading, or 'failed' when the chunk could not be fetched — a
  *  failed dynamic import poisons the module map, so the honest recovery is a

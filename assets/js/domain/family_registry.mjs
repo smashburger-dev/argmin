@@ -107,7 +107,8 @@ export const staticBodyInstance = (familyId, caseId, difficulty) => {
 };
 
 /** Static case with seed-driven variant resolution: the variant index lands
- *  in parameters, masteryEligible comes from the case body. */
+ *  in parameters when the case body carries variants; masteryEligible is the
+ *  case body's flag, suppressed for manual-rubric graders. */
 export function staticVariantInstance(familyId, caseId, seed, difficulty) {
   const body = staticCaseBody(familyId, caseId);
   const { body: chosen, index } = variantOf(body, seed ?? 0);
@@ -155,10 +156,12 @@ function resolveCaseId(family, seed, caseId) {
 
 // S4D2: domänenspezifische Hinweise, strikt aus Instanzdaten abgeleitet
 // (kein erfundener Content). Stufe 1 ist die kuratierte Strategie der
-// Familie. Stufe 2 leitet aus Antwortdaten ab: Distraktor-Ausschluss,
-// Richtung bei ganzen Zahlen, Parsons-Erstzeile, Trace-Zeilenzeiger.
-// Null, wenn nichts ableitbar ist. Offenlegung läuft nicht hierüber,
-// sondern als solution-revealed-Ereignis in der Ansicht.
+// Familie. Ab Stufe 2 gewinnen zuerst die authored hints des Cases
+// (hints[level-2]); darüber hinaus gibt es nur diese. Ohne authored hint
+// leitet Stufe 2 aus Antwortdaten ab: Distraktor-Ausschluss, Richtung bei
+// ganzen Zahlen, Parsons-Erstzeile, Trace-Zeilenzeiger. Null, wenn nichts
+// vorliegt. Offenlegung läuft nicht hierüber, sondern als
+// solution-revealed-Ereignis in der Ansicht.
 const hintForChoice = ({ choices }) => {
   if (!Array.isArray(choices)) return undefined;
   const wrong = choices.find((choice) => !choice.correct);

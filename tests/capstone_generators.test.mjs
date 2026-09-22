@@ -26,10 +26,7 @@ const W31_W39_SEED_GENERATORS = {
 
 const SEEDS = Array.from({ length: 600 }, (_, i) => 1 + i * 37);
 
-function standaloneNumberPresent(text, value) {
-  const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(?<![\\d.,])${escaped}(?![\\d.,%])`).test(text);
-}
+import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
 
 // Independent reference solvers: they only read `parameters`, never the
 // generator internals, so agreement is a real cross-check.
@@ -163,7 +160,7 @@ for (const [name, generator] of Object.entries(W31_W39_SEED_GENERATORS)) {
   });
 
   test(`w31-w39 ${name}: family invariants hold (>= 200 seeds)`, () => {
-    for (const seed of SEEDS.slice(0, 100)) {
+    for (const seed of SEEDS.slice(0, 200)) {
       const instance = generator(seed);
       assert.ok(INVARIANTS[name](instance), `${name} seed ${seed}: invariant broken`);
     }

@@ -7,6 +7,7 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { makeCaseFamily } from './case_family_kit.mjs';
+import { pyVec, pyMat, pyBoolMat } from './py_test_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
 
@@ -111,12 +112,8 @@ const MHA_PROMPT = 'Final Boss Multi-Head: Implementiere <code>multi_head_attent
 const MHA_SOLUTION = `${MHA_REFERENCE}# Kopfzerlegung als Slice-Sicht auf die Projektionen; die Tests vergleichen gegen
 # eine unabhaengige Schleifen-Referenz fuer 1, 2 und 4 Koepfe (mit und ohne Maske).`;
 
-// Python literal emitters: ints stay ints, float banks render exact decimals,
-// masks render True/False.
-const pyNum = (n) => String(n);
-const pyVec = (values) => `[${values.map(pyNum).join(', ')}]`;
-const pyMat = (rows) => `[${rows.map(pyVec).join(', ')}]`;
-const pyBoolMat = (rows) => `[${rows.map((row) => `[${row.map((v) => (v ? 'True' : 'False')).join(', ')}]`).join(', ')}]`;
+// Python literal emitters come from py_test_kit: ints stay ints, masks render
+// True/False.
 
 const drawMatrix = (r, nRows, nCols, lo, hi) =>
   Array.from({ length: nRows }, () => Array.from({ length: nCols }, () => randInt(r, lo, hi)));

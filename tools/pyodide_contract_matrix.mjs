@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Pyodide contract matrix (ADR-0013 inherited-debt A):
-// inventories every pyodide-graded exercise definition across the authored
-// week packs, groups them into unique worker test contracts, and writes a
+// inventories every pyodide-graded exercise definition across the curated
+// module placements, groups them into unique worker test contracts, and writes a
 // machine-readable matrix. The browser smoke (tests/e2e/pyodide-contracts.spec.ts)
 // turns this matrix into tests/e2e/pyodide-contract-receipt.json; the node test
 // tests/pyodide_contract_matrix.test.mjs refuses untested families.

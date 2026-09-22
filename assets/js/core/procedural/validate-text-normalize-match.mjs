@@ -8,7 +8,7 @@
 // ValueError path for non Je-desto input. Mirrors the capsule recipe of
 // formula-descriptive-stats-numpy.mjs.
 
-import { RAISED_HELPER, refCopy } from './py_test_kit.mjs';
+import { pyLit, RAISED_HELPER, refCopy } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt } from '../generator_draw_kit.mjs';
@@ -25,22 +25,6 @@ const CASE_PAYLOADS = {
     fullSolution: "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\n# alle Fixtur-Urteile der Tests werden reproduziert (lokal python3-verifiziert)",
   },
 };
-
-// Minimal JS -> Python literal serializer for the JSON-safe draw structures
-// (dicts, lists, strings, numbers, booleans, null). Double-quoted strings are
-// valid Python; True/False/None cover bool and null.
-const pyLit = (value) => {
-  if (value === null || value === undefined) return 'None';
-  if (value === true) return 'True';
-  if (value === false) return 'False';
-  if (typeof value === 'number') return String(value);
-  if (typeof value === 'string') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(pyLit).join(', ')}]`;
-  return `{${Object.entries(value).map(([k, v]) => `${JSON.stringify(k)}: ${pyLit(v)}`).join(', ')}}`;
-};
-
-// Returns ("ok", result) or (exception type, message): lets one comparison
-// cover both value returns and the contracted ValueError paths.
 
 
 // JS mirror of the is_testable contract on the draw pools: absolute wording

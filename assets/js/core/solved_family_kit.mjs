@@ -29,11 +29,9 @@
 //   parameter set through solveSeeded).
 
 import {
-  rng, variantCaseIndex, buildRotatedChoices, drawFamilyInstance,
+  rng, variantCaseIndex, buildRotatedChoices, drawFamilyInstance, CHOICE_IDS,
 } from './generator_draw_kit.mjs';
 import { staticBodyInstance, staticCaseBody, staticVariantInstance } from '../domain/family_registry.mjs';
-
-const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 
 /** Parametrized choice-capsule family: the seed draw yields computed
  *  parameters (not a bank key), options/prompt/solution are built from the

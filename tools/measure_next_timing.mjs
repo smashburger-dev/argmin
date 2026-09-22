@@ -7,7 +7,7 @@
 //   - #/today: milliseconds to visible H1, to usable navigation,
 //     transferred bytes for document + JS/CSS/JSON
 //   - first lesson open (#/lesson/l-foundations-algebra)
-//   - first exercise open (#/exercise/f-collections-choice-01)
+//   - first exercise open (#/family/classify-git-operation/diff-unstaged/7/intro)
 //   - external (non-same-origin) request count (must stay 0)
 // Reports median and spread (min/max) across runs as JSON on stdout.
 
@@ -35,7 +35,7 @@ async function measureRun(browser) {
   page.on('response', async (response) => {
     const url = new URL(response.url());
     if (url.origin !== new URL(base).origin) return;
-    if (!/\.(js|css|json|wasm|zip|whl)$/.test(url.pathname)) return;
+    if (!/\.(html|js|css|json|wasm|zip|whl)$/.test(url.pathname)) return;
     try { transferredBytes += (await response.body()).length; } catch { /* body gone */ }
   });
 
@@ -53,7 +53,7 @@ async function measureRun(browser) {
   const lessonMs = Date.now() - lessonStart;
 
   const exerciseStart = Date.now();
-  await page.goto(`${base}/index.html#/exercise/f-collections-choice-01`);
+  await page.goto(`${base}/index.html#/family/classify-git-operation/diff-unstaged/7/intro`);
   await page.locator('main h1').first().waitFor({ state: 'visible' });
   const exerciseMs = Date.now() - exerciseStart;
 

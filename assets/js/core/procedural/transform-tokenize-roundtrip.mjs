@@ -6,6 +6,7 @@
 // the grading contract cannot drift. Mirrors formula-descriptive-stats-numpy.mjs.
 
 import { makeCaseFamily } from './case_family_kit.mjs';
+import { pyStrList } from './py_test_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
 
@@ -176,7 +177,6 @@ export const TOKENIZE_CASES = {
 };
 
 const pyList = (v) => `[${v.join(', ')}]`;
-const pyStrList = (v) => `[${v.map((s) => `"${s}"`).join(', ')}]`;
 
 // Appends the seeded literal checks: expected ids are computed from the fixed
 // VOCAB mirrors above and baked in as JS-computed literals; the round-trip

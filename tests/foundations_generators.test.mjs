@@ -94,12 +94,6 @@ test('genLogExpr: 200 seeds, argument > 0 and exact power, result integer, arg <
   }
 });
 
-// --- grader wiring: 20 seeds per generator against the REAL deterministic grader ----
-
-
-
-
-
 // --- edge cases -------------------------------------------------------------------
 
 test('w01-e1 fixed diagnose instance grades through the real grader (expectedAnswer.value authoritative)', async () => {

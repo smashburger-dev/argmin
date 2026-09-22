@@ -292,7 +292,7 @@ test('algebraic-expression: near misses are not-equivalent', async () => {
   assert.equal((await det.grade(e, '5*x - 2')).errorType, 'not-equivalent');
   assert.equal((await det.grade(e, '4*x - 1')).errorType, 'not-equivalent');
   assert.equal((await det.grade(e, 'x')).errorType, 'not-equivalent');
-  assert.equal((await det.grade(e, 'x2')).errorType, 'not-equivalent'); // parses as free identifier (sympy parity: x*2 is also wrong)
+  assert.equal((await det.grade(e, 'x2')).errorType, 'not-equivalent'); // x2 stays a free identifier, not x*2 — probes disagree
   assert.equal((await det.grade(e, 'x 2')).errorType, 'not-equivalent'); // x*2 ≢ 5x-1
   assert.equal((await det.grade(e, '5*x - 1 + x - x')).correct, true); // x−x cancels on every probe
 });

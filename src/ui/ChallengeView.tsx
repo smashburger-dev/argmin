@@ -9,10 +9,10 @@ import { Button } from './Button';
 import type { CatalogData } from '../app/types';
 
 // Daily-challenge view (plan: .agents/plans/2026-09-09-challenge.md).
-// Deliberately lazy-loaded via App.tsx: the challenge adapter pulls
-// challenge_picker.mjs -> generator_draw_kit.mjs, which vite.config.ts
-// pins into the family-core chunk — this file must never be reached from
-// an eager import or the whole family subsystem turns into startup cost.
+// Deliberately lazy-loaded via App.tsx: the challenge adapter chain
+// (challenge.ts -> challenge_picker.mjs + content-repository) stays out of
+// the eager bundle; challenge_picker is self-contained precisely so this
+// chain never reaches the family-core chunk.
 // The ProgressStore singleton (not the ProgressSnapshot prop) feeds
 // loadChallengeSet, matching how local-progress.ts reads the store.
 
@@ -190,8 +190,8 @@ export function ChallengeView({ catalog, progress }: { catalog: CatalogData; pro
 }
 
 /** Quadrant card for TodayView's .today-grid. Mounted lazily so the
- *  challenge adapter (and transitively the family-core chunk) never lands
- *  in the eager bundle. Returns null until the set is loaded and whenever
+ *  challenge adapter chain never lands in the eager bundle. Returns null
+ *  until the set is loaded and whenever
  *  there is nothing worth teasing — no skeleton, no layout shift cost for
  *  the common "no challenges" state. */
 export function ChallengeTeaser({ catalog }: { catalog: CatalogData }) {

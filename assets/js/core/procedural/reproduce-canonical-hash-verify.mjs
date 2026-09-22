@@ -24,9 +24,6 @@ const CASE_PAYLOADS = {
   },
 };
 
-// Renames the module-level reference functions inside an emitted copy so the
-// seeded block cannot collide with the learner's own definitions.
-
 // Serializes drawn data as Python literals (the pools stay quote-free ASCII,
 // so the generated test block has no escaping hazards).
 const py = (value) => {

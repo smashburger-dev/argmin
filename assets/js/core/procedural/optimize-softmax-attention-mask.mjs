@@ -8,6 +8,7 @@
 // formula-descriptive-stats-numpy.mjs.
 
 import { makeCaseFamily } from './case_family_kit.mjs';
+import { pyVec, pyMat, pyBoolMat } from './py_test_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
 
@@ -166,17 +167,15 @@ const ATTN_SOLUTION = `${ATTN_REFERENCE}# Die Tests vergleichen gegen eine unabh
 const TOY_SOLUTION = `${TOY_REFERENCE}# toy_forward([0, 1, 2], WEIGHTS) -> 6 Logits; Doppelaufruf liefert byte-identische
 # Ergebnisse (fixe Gewichte, kein Zufall) - der Test erzwingt beides gegen die Referenz.`;
 
-// Python literal emitters: ints stay ints, masks render True/False.
-const pyNum = (n) => String(n);
-const pyVec = (values) => `[${values.map(pyNum).join(', ')}]`;
-const pyMat = (rows) => `[${rows.map(pyVec).join(', ')}]`;
-const pyBoolMat = (rows) => `[${rows.map((row) => `[${row.map((v) => (v ? 'True' : 'False')).join(', ')}]`).join(', ')}]`;
+// Python literal emitters come from py_test_kit: ints stay ints, masks render
+// True/False.
 
 const drawMatrix = (r, nRows, nCols, lo, hi) =>
   Array.from({ length: nRows }, () => Array.from({ length: nCols }, () => randInt(r, lo, hi)));
 
 // Mask bank: null (unmasked), causal lower triangle, random rows — the random
-// variant forces the diagonal True so every query row keeps at least one key.
+// variant pins column min(i, m - 1) per row so every query row keeps at least
+// one visible key (for n > m rows pin the last column, not the diagonal).
 const ATTN_MASK_KINDS = ['none', 'causal', 'random'];
 
 const drawMask = (r, n, m, kind) => {

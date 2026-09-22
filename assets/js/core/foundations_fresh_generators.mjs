@@ -17,7 +17,7 @@
 // validated fail-closed by the family runtime; code-trace
 // variables may carry `type: 'repr'` (canonical Python literals).
 
-import { rng, randInt, nonzeroInt, variantCaseIndex, variantEpoch, buildRotatedChoices } from './generator_draw_kit.mjs';
+import { rng, randInt, nonzeroInt, variantCaseIndex, variantEpoch, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
 import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
 import gitOperationDoc from '../../../content/families/classify-git-operation.json' with { type: 'json' };
 
@@ -468,8 +468,7 @@ const caseBank = (cases, seed, { localize = (text) => text, buildOptions = null,
   const distractors = detail ? detail.distractors : metaCase.distractors;
   const options = [correct, ...distractors].map(localize);
   const rotation = (caseIndex + epoch) % options.length;
-  const ids = ['a', 'b', 'c', 'd'];
-  const choices = buildRotatedChoices(options, rotation, ids);
+  const choices = buildRotatedChoices(options, rotation, CHOICE_IDS);
   return finish({
     metaCase,
     caseIndex,
@@ -477,7 +476,7 @@ const caseBank = (cases, seed, { localize = (text) => text, buildOptions = null,
     correctText: options[0],
     options,
     choices,
-    correctChoiceId: ids[rotation],
+    correctChoiceId: CHOICE_IDS[rotation],
     detail,
   });
 };
@@ -485,7 +484,8 @@ const caseBank = (cases, seed, { localize = (text) => text, buildOptions = null,
 /** Semantic variant bank (B): which debugging step fits the observed error
  *  class. The seed picks one of five professionally distinct cases; the
  *  correct choice rotates position with the case. Delayed reviews can avoid
- *  the immediately previous case because `caseIdOf` is exported. */
+ *  the immediately previous case because every instance exposes
+ *  `parameters.caseId`/`caseIndex`. */
 export function genMetaErrorClassify(seed) {
   return caseBank(META_CASES, seed, {
     finish: ({ metaCase, caseIndex, choices, correctChoiceId, correctText }) => ({

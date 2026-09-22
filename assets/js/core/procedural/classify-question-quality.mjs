@@ -5,7 +5,7 @@
 // question quartets in which exactly one formulation carries a fixed metric,
 // a fixed comparison and a falsifiable prediction. parameters carry only the
 // scenario key, so nothing answer-relevant leaks into instance.parameters.
-// Mirrors genSvmMarginCapsule in data_ml_generators.mjs.
+// Mirrors genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

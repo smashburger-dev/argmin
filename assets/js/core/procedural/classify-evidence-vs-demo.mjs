@@ -6,7 +6,7 @@
 // Mastery via deterministic partial tests), demo-vs-evidence trains the
 // overclaim detector on bounded vs absolute README claims. parameters carry
 // only the scenario key, so nothing answer-relevant leaks into
-// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_generators.mjs.
+// instance.parameters. Mirrors genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

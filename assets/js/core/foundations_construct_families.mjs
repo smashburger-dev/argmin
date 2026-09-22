@@ -22,7 +22,7 @@
 //   sind KEINE Laufzeit-Falltypen (Multi-Archetyp-Doku siehe FAMILY_NOTES):
 //   divide-both-sides-fully (choice-diagnose in transform-linear-equation-
 //   isolate) und append-return-in-loop (code-test in construct-guarded-loop).
-//   Sechs parametrische Geschwister-Falltypen (je einer für die vier
+//   Fünf parametrische Geschwister-Falltypen (je einer für die vier
 //   Single-Case-Parsons/Code-Familien plus einer für die Regressionssuite)
 //   teilen Lösungsweg, Referenzmodell und Fehlerhypothesen mit ihrem
 //   Shard-Fall und erfüllen das Zwei-Falltypen-Minimum der Registry.

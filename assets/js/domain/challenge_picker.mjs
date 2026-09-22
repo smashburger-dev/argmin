@@ -2,7 +2,8 @@
 // index, module activity signals and attempt history into a deterministic
 // per-UTC-day challenge set (plan: .agents/plans/2026-09-09-challenge.md).
 // No I/O, no Date.now() defaults — every input is injected so Node tests
-// are deterministic (same convention as core/review_scheduler.js).
+// are deterministic (stricter than assets/js/core/review_scheduler.js, which
+// keeps Date.now() defaults at its exported call sites).
 // Self-contained on purpose: importing generator_draw_kit would pull the
 // family-core chunk into the challenge path — and its mid-init cycle back
 // into the FamilyExerciseView chunk crashes the built bundle. The seed

@@ -6,7 +6,7 @@
 // weighted-average effect with small numeric examples, fairness-aggregation
 // probes why per-group FPR reporting is mandatory. parameters carry only the
 // scenario key, so nothing answer-relevant leaks into instance.parameters.
-// Mirrors genSvmMarginCapsule in data_ml_generators.mjs.
+// Mirrors genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

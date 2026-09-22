@@ -6,7 +6,7 @@
 // renamed __ref_ copy of the reference functions (normalize + chunk), so the
 // grading contract cannot drift. Mirrors reproduce-canonical-hash-verify.mjs.
 
-import { refCopy } from './py_test_kit.mjs';
+import { refCopy, pyLit as py } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt } from '../generator_draw_kit.mjs';
@@ -85,12 +85,6 @@ const CHUNK_SOLUTION = `${CHUNK_REFERENCE}
 
 // Serializes drawn data as Python literals (the pools stay quote- and
 // backslash-free, so the generated test block has no escaping hazards).
-const py = (value) => {
-  if (typeof value === 'string') return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
-  if (typeof value === 'number') return `${value}`;
-  if (Array.isArray(value)) return `[${value.map(py).join(', ')}]`;
-  return `{${Object.entries(value).map(([key, v]) => `${py(key)}: ${py(v)}`).join(', ')}}`;
-};
 
 // Draw pools for normalize probes: umlaut-bearing words, digits and a
 // punctuation set that stays inside the PUNCT contract (no quotes/backslash).
@@ -196,9 +190,6 @@ export const CHUNK_CONTRACT = {
   competencyIds: ['c-genai-rag', 'c-python-functions'],
 };
 
-// Seeded block: renamed reference copy once, then per draw one normalize
-// probe, one valid window probe and one invalid-parameter probe (ValueError
-// path, same try/except shape as the base block).
 const FAMILY = makeCaseFamily({
   contract: CHUNK_CONTRACT,
   cases: CHUNK_CASES,

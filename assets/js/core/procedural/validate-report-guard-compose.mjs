@@ -7,20 +7,12 @@
 //   - baseline-report: metric/values/error-list draws plus a verweigert path
 //     (a required guard input deliberately missing).
 
-import { refCopy } from './py_test_kit.mjs';
+import { refCopy, pyLit as py } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
 
 
-const py = (value) => {
-  if (typeof value === 'string') return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
-  if (typeof value === 'number') return `${value}`;
-  if (typeof value === 'boolean') return value ? 'True' : 'False';
-  if (value === null) return 'None';
-  if (Array.isArray(value)) return `[${value.map(py).join(', ')}]`;
-  return `{${Object.entries(value).map(([key, v]) => `${py(key)}: ${py(v)}`).join(', ')}}`;
-};
 
 const RISK_POOL = [
   'regel-detektor erkennt nur bekannte muster',

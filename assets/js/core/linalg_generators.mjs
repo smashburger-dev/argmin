@@ -124,7 +124,7 @@ export function rank(A) {
 }
 
 /** w05-e10: 3x3 integer matrix with a controlled rank in {1, 2, 3},
- *  invariant: entries bounded |a_ij| <= 6, no obvious row multiples unless
+ *  invariant: entries bounded |a_ij| <= 8, no obvious row multiples unless
  *  rank 1, verified against the rank() reference solver. */
 export function genRank3(seed) {
   const r = rng(seed);
@@ -151,8 +151,8 @@ export function genRank3(seed) {
   return { parameters: { A, expectedRank: rank(A) }, expected: rank(A) };
 }
 
-/** Pilot-Kapseln für transform-rank-dependence-rowops (v2-Bounds 7/5/20):
- *  je Profil genau eine Kapsel mit dims, Zielrang, Bound und Fallbindung. */
+/** Pilot-Kapseln für transform-rank-dependence-rowops (Bounds 7/5/20/15):
+ *  challenge trägt zwei Kapseln über den '<profil>-<suffix>'-Schlüssel. */
 export const RANK_CAPSULES = rankBank.capsules;
 
 const rankLatex = (A) => A.map((row) => row.join('&')).join('\\\\');

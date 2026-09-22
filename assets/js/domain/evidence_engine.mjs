@@ -72,7 +72,8 @@ export class EvidenceEngine {
   }
 
   evaluateAll(events, nowMs = Date.now()) {
-    // Competency membership is the only filter evaluateCompetency applies,
+    // Competency membership is the only bucket-relevant filter
+    // evaluateCompetency applies (it also drops events without time),
     // so bucketing the events once by competencyIds and evaluating each
     // competency over its own bucket is result-identical to the naive
     // O(competencies x events) full scan — and one pass on large histories.

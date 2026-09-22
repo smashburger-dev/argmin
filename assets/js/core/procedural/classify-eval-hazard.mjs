@@ -6,7 +6,7 @@
 // halluziniert, falsch-faktisch, unvollständig) including the cascade
 // priority of the documented rule order. parameters carry only the scenario
 // key, so nothing answer-relevant leaks into instance.parameters. Mirrors
-// genSvmMarginCapsule in data_ml_generators.mjs.
+// genSvmMarginCapsule in data_ml_families.mjs.
 
 import { makeChoiceFamily } from '../generator_draw_kit.mjs';
 

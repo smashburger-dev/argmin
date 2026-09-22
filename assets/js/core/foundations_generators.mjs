@@ -8,8 +8,9 @@
 // markup — seeded prompts must render without a math pass after re-rolling)
 // and `expected` is computed by a reference solver, never hardcoded.
 
-/** Deterministic small PRNG (mulberry32) — identical implementation to
- *  linalg_generators.mjs so seeds behave identically in browser and Node. */
+/** Deterministic small PRNG (mulberry32) — canonical implementation,
+ *  re-exported to every generator module via generator_draw_kit.mjs so
+ *  seeds behave identically in browser and Node. */
 export function rng(seed) {
   let a = seed >>> 0;
   return function () {
@@ -100,7 +101,7 @@ export function genLinearEquation(seed) {
 /** w01-e9: power laws, two shapes — the ANSWER is always the resulting
  *  exponent (small integer, hand-computable without evaluating the power):
  *  - 'product': b^m · b^n  -> m + n   (m in [2,6], n in [1,4], m+n <= 8)
- *  - 'power':   (b^m)^k    -> m * k   (m in [2,4], k in [2,3], m*k <= 10)
+ *  - 'power':   (b^m)^k    -> m * k   (m in [2,4], k in [2, floor(10/m)], m*k <= 10)
  *  Bases from {2,3,5,10}. */
 export function genPowerExpr(seed) {
   const r = rng(seed);

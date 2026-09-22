@@ -7,7 +7,7 @@
 // the equal path, __raised for the AssertionError path). Mirrors
 // validate-data-quality-contract.mjs.
 
-import { RAISED_HELPER } from './py_test_kit.mjs';
+import { pyLit, RAISED_HELPER } from './py_test_kit.mjs';
 
 import { parsonsInitialOrder, pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
 
@@ -97,18 +97,6 @@ const DEMO_PROMPT = 'Demo-Disziplin: <code>demo_aus_bericht(bericht, frisch)</co
 const DEMO_SOLUTION = `${DEMO_IMPL}
 
 # Ein Vergleich, ein Fehlerweg, ein Rückgabewert — die Demo lügt nicht.`;
-
-// Minimal JS -> Python literal serializer for the JSON-safe draw structures
-// (dicts, lists, strings, numbers). Double-quoted strings are valid Python.
-const pyLit = (value) => {
-  if (value === null || value === undefined) return 'None';
-  if (value === true) return 'True';
-  if (value === false) return 'False';
-  if (typeof value === 'number') return String(value);
-  if (typeof value === 'string') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(pyLit).join(', ')}]`;
-  return `{${Object.entries(value).map(([k, v]) => `${JSON.stringify(k)}: ${pyLit(v)}`).join(', ')}}`;
-};
 
 // Returns (exception type, message) or ("ok", result): lets one comparison
 // cover both value returns and the contracted AssertionError path.

@@ -5,7 +5,7 @@
 //   - `expected` is always an exact integer (the numeric grader is
 //     integer-exact by design; floats are graded through python-code tasks);
 //   - answer spaces are deliberately wide (>= 20 distinct expected values over
-//     2000 seeds, enforced by the GenAI research generator tests);
+//     600 seeds, enforced by the GenAI research generator tests);
 //   - variation is semantic (metric, direction, framing), never just noise:
 //     every family mixes >= 3 prompt shapes;
 //   - the answer never appears as a standalone number in the prompt (a
@@ -67,8 +67,6 @@ export function genRecallAtK(seed) {
     };
   });
 }
-
-// --- W27: chunking arithmetic --------------------------------------------------------
 
 // --- W28: precision / recall / F1 from integer confusion counts ---------------------
 

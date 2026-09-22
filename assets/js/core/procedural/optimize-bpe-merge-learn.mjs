@@ -9,6 +9,7 @@
 // transform-bpe-merge-apply.mjs.
 
 import { makeCaseFamily } from './case_family_kit.mjs';
+import { pyStrList } from './py_test_kit.mjs';
 
 import { randInt, shuffle } from '../generator_draw_kit.mjs';
 
@@ -143,7 +144,6 @@ export const LEARN_CASES = {
   },
 };
 
-const pyStrList = (values) => `[${values.map((s) => `"${s}"`).join(', ')}]`;
 
 // Appends the seeded literal checks: every drawn corpus and merge budget is
 // concrete in the test string and asserted with == against the __ref_-copy

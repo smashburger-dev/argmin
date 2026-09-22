@@ -10,9 +10,9 @@ interface Fragment {
 }
 
 // S4D2: Antwort-Inputs je Aktivitätstyp,
-// für Definitions- und Familienübungen gemeinsam genutzt. Arbeitet auf der
-// minimalen Struktur (activityType, parameters, choices, rubric), die beide
-// Instanzformen liefern.
+// für Familienübungen genutzt (Consumer: FamilyExerciseView). Arbeitet auf
+// der minimalen Struktur (activityType, parameters, choices, rubric), die
+// die Instanzformen liefern.
 export interface AnswerableExercise {
   activityType: string;
   prompt?: string;
