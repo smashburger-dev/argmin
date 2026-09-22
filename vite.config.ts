@@ -35,6 +35,12 @@ export default defineConfig({
               {
                 test: /core\/procedural\//,
                 name: (id) => {
+                  // Die geteilten Kits (py_test_kit, case_family_kit) tragen
+                  // keinen Familien-Praefix — sie gehoeren in family-core:
+                  // Familien-Module rufen sie bei der Modul-Initialisierung
+                  // auf, und ein Platz im View-Chunk schliesst den
+                  // Lazy-Chunk-Zyklus ("x is not a function" im Preview).
+                  if (/_kit\.mjs$/.test(id)) return 'family-core';
                   const match = /core\/procedural\/([a-z]+)-/.exec(id);
                   return match ? `procedural-${match[1]}` : null;
                 },
