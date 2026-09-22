@@ -2,6 +2,7 @@ import { progress } from '../../assets/js/core/progress_store.js';
 import { evaluateLearningState } from '../../assets/js/core/learning_ledger.mjs';
 import { resolveReviewParams } from '../../assets/js/core/review_scheduler.js';
 import { buildHistoryTimeline } from '../../assets/js/domain/history_timeline.mjs';
+import { instanceKey, isSolutionReveal } from '../../assets/js/domain/learning_policy.mjs';
 import type { CatalogData, EvidenceState } from '../app/types';
 
 export interface DueReview {
@@ -66,6 +67,37 @@ export interface ProgressSnapshot {
   weeklyMinutes: number;
   trackId: string;
   reviewSlotsWeeks: number[];
+}
+
+import { PROGRESS_CHANNEL_NAME, notifyProgressChanged } from '../../assets/js/core/progress_notify.mjs';
+export { PROGRESS_CHANNEL_NAME, notifyProgressChanged };
+
+/** Lifetime assistance on one instance key — the same disqualifiers the
+ *  evidence engine applies across mounts (reveal state and shown hints in a
+ *  view are per-mount; a reveal or hint from an earlier visit still counts
+ *  against the competency claim). Cycles never rotate per activity, so the
+ *  stored cycleId is fetched after a recorded attempt rather than assumed.
+ *  hint-used events carry hintsUsed = ladder level at click time, so the
+ *  lifetime count is the max recorded level, not the event count.
+ */
+export async function instanceAssistance(
+  activityId: string,
+  definitionId: string,
+  seed: number,
+): Promise<{ revealed: boolean; hintsUsed: number }> {
+  if (!progress) return { revealed: false, hintsUsed: 0 };
+  const cycleId = await progress.getOrCreateCycle(activityId);
+  const key = instanceKey({ definitionId, cycleId, seed });
+  let revealed = false;
+  let hintsUsed = 0;
+  for (const event of await progress.attemptsFor(definitionId) as Array<Record<string, unknown>>) {
+    if (instanceKey(event) !== key) continue;
+    if (isSolutionReveal(event)) revealed = true;
+    if (event.eventType === 'hint-used' && typeof event.hintsUsed === 'number') {
+      hintsUsed = Math.max(hintsUsed, event.hintsUsed);
+    }
+  }
+  return { revealed, hintsUsed };
 }
 
 const emptySnapshot = (catalog: CatalogData): ProgressSnapshot => ({
@@ -176,7 +208,7 @@ export async function recordLessonOpened(lessonId: string): Promise<void> {
   const touch: Record<string, number> = typeof touchStored === 'object' && touchStored !== null ? { ...(touchStored as Record<string, number>) } : {};
   touch[lessonId] = Date.now();
   await progress.setSetting('lessonTouch', touch);
-  if (changed) dispatchEvent(new CustomEvent('learning-progress-changed'));
+  if (changed) notifyProgressChanged();
 }
 
 export async function recordModuleOpened(moduleId: string): Promise<void> {
@@ -200,7 +232,7 @@ export async function recordModuleOpened(moduleId: string): Promise<void> {
     next = (touch[first] ?? 0) <= (touch[second] ?? 0) ? [moduleId, second] : [first, moduleId];
   }
   await progress.setSetting('recentModules', next);
-  dispatchEvent(new CustomEvent('learning-progress-changed'));
+  notifyProgressChanged();
 }
 
 export async function loadOnboardingDone(): Promise<boolean> {
@@ -231,5 +263,5 @@ export async function saveLearningPreferences(weeklyMinutes: number, trackId: st
     progress.setSetting('reviewParams', { expandingSlotsWeeks: reviewSlotsWeeks }),
   ]);
   await progress.rebuildReviewQueue();
-  dispatchEvent(new CustomEvent('learning-progress-changed'));
+  notifyProgressChanged();
 }

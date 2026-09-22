@@ -419,7 +419,7 @@
       "expected": {
         "kind": "rubric"
       },
-      "prompt": "Erkläre in 3-5 Sätzen ohne Unterlagen: Warum ist das Produkt $C=AB$ nur definiert, wenn Spaltenzahl($A$) = Zeilenzahl($B$), und wie entsteht der Eintrag $c_{ij}$? Begründe mit dem Spaltenbild ($Ab$ kombiniert Spalten). Schreibe zuerst deinen eigenen Versuch — die Musterantwort erscheint erst danach.",
+      "prompt": "Erkläre in 3-5 Sätzen ohne Unterlagen: Warum ist das Produkt $C=AB$ nur definiert, wenn Spaltenzahl($A$) = Zeilenzahl($B$), und wie entsteht der Eintrag $c_{ij}$? Begründe mit dem Spaltenbild ($Ab$ kombiniert Spalten). Schreibe zuerst deinen eigenen Versuch — die Musterantwort dient danach zum Vergleich.",
       "fullSolution": "Musterantwort: Jeder Eintrag $c_{ij}=\\sum_k a_{ik}b_{kj}$ ist ein Skalarprodukt der $i$-ten Zeile von $A$ mit der $j$-ten Spalte von $B$; ein Skalarprodukt braucht gleich lange Vektoren, also Spaltenzahl($A$)=Zeilenzahl($B$). Im Spaltenbild ist $Ab$ eine gewichtete Summe der Spalten von $A$; $AB$ wendet dies auf alle Spalten von $B$ an. $C$ erbt die Zeilenzahl von $A$ und die Spaltenzahl von $B$. Beispiel: $A\\in\\mathbb{R}^{3\\times2}$, $B\\in\\mathbb{R}^{2\\times4}$ macht $AB\\in\\mathbb{R}^{3\\times4}$, während $BA$ undefiniert bleibt.",
       "activityType": "short-rationale",
       "graderId": "manual-rubric"

@@ -1,3 +1,5 @@
+import { MASTERY_MAX_HINTS } from '../domain/learning_policy.mjs';
+
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
 const stableHash = (value) => {
@@ -28,7 +30,7 @@ function exclusionFor(attempt, eventType, competencyIds) {
   if (eventType !== 'attempt') return 'assistance-event';
   if (attempt.revealedSolution) return 'solution-revealed';
   if (attempt.masteryEligible === false) return 'not-mastery-eligible';
-  if ((attempt.hintsUsed || 0) > 1) return 'too-much-assistance';
+  if ((attempt.hintsUsed || 0) > MASTERY_MAX_HINTS) return 'too-much-assistance';
   if (attempt.correct !== true) return 'incorrect';
   return null;
 }

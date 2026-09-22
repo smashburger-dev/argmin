@@ -154,36 +154,114 @@ function resolveCaseId(family, seed, caseId) {
   return cases[variantCaseIndex(seed, cases.length)].caseId;
 }
 
-// S4D2: domänenspezifische Hinweise, strikt aus Instanzdaten abgeleitet
-// (kein erfundener Content). Stufe 1 ist die kuratierte Strategie der
-// Familie. Ab Stufe 2 gewinnen zuerst die authored hints des Cases
-// (hints[level-2]); darüber hinaus gibt es nur diese. Ohne authored hint
-// leitet Stufe 2 aus Antwortdaten ab: Distraktor-Ausschluss, Richtung bei
-// ganzen Zahlen, Parsons-Erstzeile, Trace-Zeilenzeiger. Null, wenn nichts
-// vorliegt. Offenlegung läuft nicht hierüber, sondern als
-// solution-revealed-Ereignis in der Ansicht.
+// S4D2: domain hints derived strictly from instance data (no invented
+// content). Level 1 is the family's curated summary. From level 2 the
+// case's authored hints serve in order (hints[level-2]); only level 2 has
+// an additional activity-type fallback. Without an authored hint, level 2
+// derives from answer data where possible — distractor elimination,
+// direction for integers, first Parsons line, trace row pointer — else a
+// generic per-type strategy that never leaks the solution. A fallback
+// returns undefined when the case carries no material it can honestly
+// reason about (a bare {activityType} instance gets null, not a canned
+// line). Disclosure is not part of this ladder; it runs as a
+// solution-revealed event in the view.
 const hintForChoice = ({ choices }) => {
-  if (!Array.isArray(choices)) return undefined;
-  const wrong = choices.find((choice) => !choice.correct);
-  return wrong ? `„${wrong.text}“ scheidet aus.` : null;
+  if (!Array.isArray(choices) || !choices.length) return undefined;
+  // Naming a distractor only helps while at least one other wrong option
+  // stays unknown — with a single wrong option the elimination IS the
+  // answer, which would make the hint a disguised reveal.
+  const wrongs = choices.filter((choice) => !choice.correct);
+  if (wrongs.length >= 2) return `„${wrongs[0].text}“ scheidet aus.`;
+  return 'Welche Option verletzt die Regel aus der Aufgabe? Schließe sie aus und begründe die Wahl.';
 };
 const hintForNumeric = ({ expectedAnswer }, { answer, correct }) => {
-  if (!(expectedAnswer && expectedAnswer.kind === 'integer' && correct === false)) return undefined;
-  const want = expectedAnswer.value;
-  const got = Number(answer);
-  if (Number.isFinite(got) && got !== want) return got < want ? 'Gesucht ist eine größere Zahl.' : 'Gesucht ist eine kleinere Zahl.';
-  return null;
+  if (expectedAnswer && expectedAnswer.kind === 'integer' && correct === false) {
+    const want = expectedAnswer.value;
+    const got = Number(answer);
+    if (!Number.isFinite(got)) return 'Die Eingabe wird noch nicht als Zahl gelesen — Dezimalpunkt statt Komma?';
+    if (got !== want) return got < want ? 'Gesucht ist eine größere Zahl.' : 'Gesucht ist eine kleinere Zahl.';
+    return null;
+  }
+  // Before the first attempt there is no answer to compare — serve an
+  // honest estimation strategy instead of a dead hint level.
+  if (correct == null && expectedAnswer && expectedAnswer.kind === 'integer') {
+    return 'Schätze das Ergebnis zuerst grob — ein plausibler Überschlag macht Rechenfehler sofort sichtbar.';
+  }
+  return undefined;
 };
 const hintForParsons = ({ parameters, expectedAnswer }, { correct }) => {
-  if (!(expectedAnswer && Array.isArray(expectedAnswer.solutionOrder) && correct === false)) return undefined;
-  const fragments = parameters && Array.isArray(parameters.fragments) ? parameters.fragments : [];
-  const first = fragments.find((fragment) => fragment && fragment.id === expectedAnswer.solutionOrder[0]);
-  return first ? `Beginne mit: „${first.text}“.` : null;
+  if (expectedAnswer && Array.isArray(expectedAnswer.solutionOrder) && correct === false) {
+    const fragments = parameters && Array.isArray(parameters.fragments) ? parameters.fragments : [];
+    const first = fragments.find((fragment) => fragment && fragment.id === expectedAnswer.solutionOrder[0]);
+    return first ? `Beginne mit: „${first.text}“.` : null;
+  }
+  if (correct == null && expectedAnswer && Array.isArray(expectedAnswer.solutionOrder)) {
+    return 'Sortiere zuerst die Zeilen, deren Position sicher ist — Distraktoren fallen dabei von selbst auf.';
+  }
+  return undefined;
 };
+const hintForPythonCode = ({ parameters, expectedAnswer }) => (
+  parameters || expectedAnswer
+    ? 'Lies die Fehlermeldung von unten nach oben — die letzte Zeile nennt den Fehlertyp, die Zeilen darüber den Ort.'
+    : undefined
+);
+const hintForCodeTrace = ({ parameters, expectedAnswer }) => (
+  parameters || expectedAnswer
+    ? 'Notiere nach jeder Zeile die Werte aller Variablen — eine Zuweisung verändert nur ihre eigene Variable.'
+    : undefined
+);
+const hintForPredictOutput = ({ parameters, expectedAnswer, traceTable }, { firstBadRow }) => {
+  if (traceTable) {
+    if (Number.isInteger(firstBadRow) && firstBadRow >= 0) {
+      return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
+    }
+    return 'Eine Zuweisung verändert nur ihre eigene Variable — alle anderen Werte übernimmst du unverändert in die nächste Zeile.';
+  }
+  if (expectedAnswer || parameters) {
+    return 'Führe den Code Zeile für Zeile gedanklich aus und notiere jede Ausgabe sofort — Reihenfolge und Zeilenumbrüche zählen.';
+  }
+  return undefined;
+};
+const hintForMultipleChoice = ({ choices }) => {
+  if (!Array.isArray(choices) || !choices.length) return undefined;
+  // Same reveal guard as single-choice: naming the only wrong option
+  // discloses the full correct set.
+  const wrongs = choices.filter((choice) => !choice.correct);
+  if (wrongs.length >= 2) return `„${wrongs[0].text}“ scheidet aus.`;
+  return 'Prüfe jede Option einzeln auf wahr oder falsch, bevor du auswählst — mehrere können zutreffen.';
+};
+const hintForDiagnosis = ({ expectedAnswer }) => (
+  expectedAnswer && expectedAnswer.kind === 'diagnosis'
+    ? 'Benenne die eigentliche Fehlerursache in eigenen Worten: Welche Annahme stimmt nicht, und was folgt daraus?'
+    : undefined
+);
+const hintForFading = ({ expectedAnswer }) => (
+  expectedAnswer && expectedAnswer.kind === 'gaps'
+    ? 'Betrachte jede Lücke im Kontext des Schritts davor: Welcher Wert muss stehen, damit der nächste Schritt stimmt?'
+    : undefined
+);
+const hintForVector = ({ expectedAnswer }) => (
+  expectedAnswer && Array.isArray(expectedAnswer.solution)
+    ? 'Rechne komponentenweise — ein Vektor ist ein Tupel unabhängiger Zahlen.'
+    : undefined
+);
+const hintForExpression = ({ expectedAnswer }) => (
+  expectedAnswer && typeof expectedAnswer.expression === 'string'
+    ? 'Forme schrittweise um — oder prüfe deinen Term mit einer konkreten Zahl für x.'
+    : undefined
+);
 const ACTIVITY_HINTS = {
   'single-choice': hintForChoice,
   numeric: hintForNumeric,
   parsons: hintForParsons,
+  'python-code': hintForPythonCode,
+  'code-trace': hintForCodeTrace,
+  'predict-output': hintForPredictOutput,
+  'multiple-choice': hintForMultipleChoice,
+  'diagnostic-rationale': hintForDiagnosis,
+  'worked-example-fading': hintForFading,
+  vector: hintForVector,
+  'algebraic-expression': hintForExpression,
 };
 
 /**
@@ -199,15 +277,61 @@ export function familyHint(
   const authored = Array.isArray(hints) ? hints[level - 2] : null;
   if (typeof authored === 'string' && authored) return authored;
   if (level !== 2) return null;
-  const activityHint = ACTIVITY_HINTS[activityType]?.(
-    { choices, parameters, expectedAnswer },
-    { answer, correct },
-  );
-  if (activityHint !== undefined) return activityHint;
+  const material = { choices, parameters, expectedAnswer, traceTable };
+  let activityHint = ACTIVITY_HINTS[activityType]?.(material, { answer, correct, firstBadRow });
+  if (!activityHint && (answer !== null || correct !== null || firstBadRow !== null)) {
+    // The context-refined fallback can come back empty for inputs it cannot
+    // reason about — retry under the neutral context familyMaxHints counted,
+    // so a promised level never dead-clicks.
+    activityHint = ACTIVITY_HINTS[activityType]?.(material, { answer: null, correct: null, firstBadRow: null });
+  }
+  if (activityHint) return activityHint;
+  // Defensive tail for non-predict-output instances carrying a traceTable:
+  // predict-output itself serves the row pointer through its fallback.
   if (traceTable && Number.isInteger(firstBadRow) && firstBadRow >= 0) {
     return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
   }
   return null;
+}
+
+/** Number of hint levels the sequential ladder actually serves for this
+ *  instance — what the view may promise on the hint button without a dead
+ *  click. Level 1 counts only when the family summary is a non-empty
+ *  string; authored `hints` fill levels 2..n in order, and level 2 (only)
+ *  is additionally covered by the activity-type fallback when the case
+ *  material supports it under a neutral context ({answer:null,
+ *  correct:null, firstBadRow:null} — i.e. before any attempt). Hints that
+ *  need a prior wrong answer to refine — like the numeric up/down pointer
+ *  — are not counted, so the result is a floor, not a ceiling. The ladder
+ *  is contiguous: counting stops at the first level familyHint would not
+ *  serve, and a missing level-1 summary reports 0 even when authored hints
+ *  exist (the first click would be dead).
+ * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown, hints?: string[] | null }} instance */
+export function familyMaxHints(
+  { summary = null, activityType = '', choices = null, parameters = null, expectedAnswer = null, traceTable = null, hints = null } = {},
+) {
+  if (typeof summary !== 'string' || !summary) return 0;
+  const authored = Array.isArray(hints) ? hints : [];
+  let count = 1;
+  for (let level = 2; ; level += 1) {
+    const authoredHint = authored[level - 2];
+    if (typeof authoredHint === 'string' && authoredHint) {
+      count += 1;
+      continue;
+    }
+    if (level === 2) {
+      const fallback = ACTIVITY_HINTS[activityType]?.(
+        { choices, parameters, expectedAnswer, traceTable },
+        { answer: null, correct: null, firstBadRow: null },
+      );
+      if (typeof fallback === 'string' && fallback) {
+        count += 1;
+        continue;
+      }
+    }
+    break;
+  }
+  return count;
 }
 
 export function createFamilyRegistry(families) {

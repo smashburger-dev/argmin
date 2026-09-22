@@ -1,5 +1,7 @@
 import { useState } from 'preact/hooks';
-import { familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { familyEventInput, familyHint, familyMaxHints } from '../../assets/js/domain/exercise_registry.mjs';
+import { MASTERY_MAX_HINTS } from '../../assets/js/domain/learning_policy.mjs';
+import { instanceAssistance } from '../adapters/local-progress';
 import { gradeTraceTable } from '../../assets/js/core/foundations_trace_families.mjs';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
@@ -29,7 +31,11 @@ export interface TraceTableInstance {
   difficulty: string;
   activityType: string;
   prompt: string;
-  parameters?: { snippet?: unknown };
+  parameters?: { snippet?: unknown } & Record<string, unknown>;
+  choices?: Array<{ id: string; text: string; correct?: boolean }>;
+  expectedAnswer?: Record<string, unknown>;
+  hints?: string[];
+  masteryEligible?: boolean;
   traceTable: TraceTableData;
   fullSolution?: string;
 }
@@ -44,7 +50,7 @@ function emptyStates(rows: number, vars: string[]): Array<Record<string, string>
   return Array.from({ length: rows }, () => Object.fromEntries(vars.map((name) => [name, ''])));
 }
 
-export function TraceTableView({ catalog, instance, summary, nextSeed }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string; nextSeed?: number }) {
+export function TraceTableView({ catalog, instance, summary, nextSeed, from }: { catalog: CatalogData; instance: TraceTableInstance; summary?: string; nextSeed?: number; from?: string }) {
   const table = instance.traceTable;
   const rows = table.lines.length;
   const [cells, setCells] = useState<Array<Record<string, string>>>(() => emptyStates(rows, table.stateVars));
@@ -53,6 +59,7 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
   const [revealed, setRevealed] = useState(false);
   const [reviewDueAt, setReviewDueAt] = useState<string | null>(null);
   const [masteryNote, setMasteryNote] = useState(false);
+  const [masteryDenied, setMasteryDenied] = useState<'hints' | 'reveal' | null>(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState<string | null>(null);
 
@@ -60,22 +67,40 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
     setCells((prev) => prev.map((entry, index) => (index === row ? { ...entry, [name]: value } : entry)));
   };
 
+  // Stay-in-challenge flow, same as FamilyExerciseView: ?from=challenge tags
+  // ledger events with context 'challenge' and retargets navigation.
+  const fromChallenge = from === 'challenge';
+  const eventExtra = fromChallenge ? { context: 'challenge' } : {};
+
+  // One shared hint source for familyHint and familyMaxHints so the button
+  // cap always matches what the hint path can actually serve. activityType
+  // stays 'predict-output' (the trace table is a predict-output variant —
+  // the instance may declare code-trace/single-choice).
+  const hintSource = { ...instance, summary, activityType: 'predict-output', traceTable: table };
+  const maxHints = familyMaxHints(hintSource);
+
   const openHint = async () => {
     const level = shownHints.length + 1;
     const hint = familyHint(
-      { summary, activityType: 'predict-output', traceTable: table },
+      hintSource,
       { level, firstBadRow: verdict && !verdict.correct ? verdict.firstBadRow : null },
     );
     if (!hint) return;
     setShownHints((current) => [...current, hint]);
     if (learningLedger) {
-      await learningLedger.record({
-        ...familyEventInput(instance as never),
-        eventType: 'hint-used',
-        event: `hint-${level}`,
-        hintsUsed: level,
-        revealedSolution: false,
-      });
+      try {
+        await learningLedger.record({
+          ...familyEventInput(instance as never, eventExtra),
+          eventType: 'hint-used',
+          event: `hint-${level}`,
+          hintsUsed: level,
+          revealedSolution: false,
+        });
+      } catch (error) {
+        // Assistance tracking is best-effort — the attempt event carries
+        // hintsUsed, so a lost auxiliary write must not break the UI flow.
+        console.error('assistance event write failed', error);
+      }
     }
   };
 
@@ -83,15 +108,23 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
     if (busy || revealed) return;
     setBusy(true);
     setFailed(null);
+    setMasteryNote(false);
+    setMasteryDenied(null);
     try {
       const result = gradeTraceTable(table, cells) as TraceTableVerdict;
-      const input = familyEventInput(instance as never);
+      const input = familyEventInput(instance as never, eventExtra);
+      // Assistance is lifetime-scoped per instance key — a reload must not
+      // refund the hint budget on the same variant.
+      const assistance = progress
+        ? await instanceAssistance(input.activityId, input.definitionId, input.seed ?? 0)
+        : { revealed: false, hintsUsed: 0 };
+      const hintsUsed = Math.max(shownHints.length, assistance.hintsUsed);
       if (learningLedger) {
         await learningLedger.record({
           ...input,
           eventType: 'attempt',
           answer: JSON.stringify(cells),
-          hintsUsed: shownHints.length,
+          hintsUsed,
           correct: result.correct,
           masteryEligible: input.masteryEligible,
           errorType: result.correct || result.firstBadRow === null
@@ -100,7 +133,15 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
         });
       }
       setVerdict(result);
-      if (result.correct && input.masteryEligible) setMasteryNote(true);
+      // Mastery note must mirror the ledger rule (buildLearningEvent):
+      // correct + masteryEligible + hintsUsed <= MASTERY_MAX_HINTS, no reveal.
+      // A reveal from an earlier mount still disqualifies this instanceKey —
+      // cycles never rotate per activity, so the store is the source of truth.
+      if (result.correct && input.masteryEligible && progress) {
+        if (assistance.revealed) setMasteryDenied('reveal');
+        else if (hintsUsed <= MASTERY_MAX_HINTS) setMasteryNote(true);
+        else setMasteryDenied('hints');
+      }
       if (result.correct && progress) {
         const entry = (await progress.reviewQueueAll()).find((item: { exerciseId: string }) => item.exerciseId === input.definitionId);
         setReviewDueAt(entry?.nextDueAt ?? null);
@@ -113,13 +154,28 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
   };
 
   const ctx = getExerciseContext(catalog, instance, summary || 'Aufgabe', nextSeed);
+  if (fromChallenge) {
+    ctx.nextVariantHref = `${ctx.nextVariantHref}?from=challenge`;
+    ctx.nextTaskHref = '#/challenge';
+    ctx.nextTaskTitle = 'Tages-Set';
+  }
+  // Warn only when the NEXT hint would push the attempt over the mastery
+  // hint budget — the first hint stays free of alarm.
+  const nextHintCostsEvidence = instance.masteryEligible === true
+    && shownHints.length < maxHints
+    && shownHints.length + 1 > MASTERY_MAX_HINTS
+    && !revealed
+    && verdict?.correct !== true;
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict?.correct
       ? <div class="feedback-box correct">
           <p class="feedback-title">Richtig, alle Zustände stimmen.</p>
           {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
+          {masteryDenied === 'hints' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — zu viele Hinweise genutzt (höchstens {MASTERY_MAX_HINTS} erlaubt).</p> : null}
+          {masteryDenied === 'reveal' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — die Lösung wurde für diese Variante bereits angesehen.</p> : null}
           {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
+          {fromChallenge ? <div class="actions"><Button variant="primary" href="#/challenge">Nächste Challenge</Button></div> : null}
         </div>
       : verdict
         ? <div class="feedback-box incorrect">
@@ -171,20 +227,25 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
       answer={answer}
       actions={
         <>
-          <Button variant="primary" disabled={busy || revealed || verdict?.correct === true} onClick={submit}>Tabelle prüfen</Button>
-          {shownHints.length < 2 && !revealed && verdict?.correct !== true ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/2</Button> : null}
+          <Button variant="primary" disabled={busy || revealed || verdict?.correct === true} onClick={() => void submit()}>Tabelle prüfen</Button>
+          {shownHints.length < maxHints && !revealed && verdict?.correct !== true ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHints}</Button> : null}
+          {nextHintCostsEvidence ? <p class="privacy-note" style={{ flexBasis: '100%' }}>Dieser Hinweis kostet den Kompetenzbeleg für diese Variante.</p> : null}
           {!revealed && verdict?.correct !== true ? <Button variant="ghost" onClick={() => void (async () => {
             if (!window.confirm('Lösung ansehen? Diese Variante kann danach keinen Kompetenznachweis mehr liefern.')) return;
             setRevealed(true);
             setVerdict(null);
             if (learningLedger) {
-              await learningLedger.record({
-                ...familyEventInput(instance as never),
-                eventType: 'solution-revealed',
-                event: 'solution-revealed',
-                hintsUsed: shownHints.length,
-                revealedSolution: true,
-              });
+              try {
+                await learningLedger.record({
+                  ...familyEventInput(instance as never, eventExtra),
+                  eventType: 'solution-revealed',
+                  event: 'solution-revealed',
+                  hintsUsed: shownHints.length,
+                  revealedSolution: true,
+                });
+              } catch (error) {
+                console.error('assistance event write failed', error);
+              }
             }
           })()}>Lösung anzeigen</Button> : null}
         </>
@@ -193,6 +254,8 @@ export function TraceTableView({ catalog, instance, summary, nextSeed }: { catal
       hints={shownHints}
       solution={revealed ? <div class="solution-panel"><h2>Lösung</h2><p>Die erwarteten Zustände stehen jetzt in der Tabelle.</p></div> : undefined}
       done={revealed || verdict?.correct === true}
+      backHref={fromChallenge ? '#/challenge' : undefined}
+      backLabel={fromChallenge ? 'Zur Challenge' : undefined}
     />
   );
 }

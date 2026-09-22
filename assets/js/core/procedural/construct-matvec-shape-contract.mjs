@@ -87,7 +87,7 @@ export const MATVEC_CASES = {
     caseId: 'matvec-contract-order',
     kind: 'parsons',
     difficulty: 'intro',
-    prompt: "Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` (Begleiter zu w05-e8) in die richtige Reihenfolge. Zwei Zeilen sind Distraktoren, die nicht zur Lösung gehören — sortiere sie aus.",
+    prompt: "Bringe die Zeilen der Referenzimplementierung von `matvec(A, v)` in die richtige Reihenfolge. Zwei Zeilen sind Distraktoren, die nicht zur Lösung gehören — sortiere sie aus.",
     baseFragments: [...ORDER_FRAGMENTS, DISTRACTOR_POOL[0], DISTRACTOR_POOL[1]],
     baseInitialOrder: ORDER_BASE_INITIAL,
     baseSolution: 'Richtige Folge: `def matvec(A, v):` → `A = np.asarray(A)` → `v = np.asarray(v)` → `assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]` → `return A @ v`. Die Distraktoren prüfen die Dimensionen vertauscht (würde gültige Aufrufe ablehnen) bzw. rechnen `v @ A` (für 1-d v nicht definiert).',

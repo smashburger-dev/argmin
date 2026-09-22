@@ -29,10 +29,12 @@ function sectionError(view: string) {
   return <p role="alert" class="content-error">{view} konnten nicht geladen werden. Bitte lade die Seite neu (Abschnittsdatei fehlt oder Verbindung unterbrochen).</p>;
 }
 import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
+import { buildWeeklyLearningPlan } from '../adapters/learning-plan';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
+import { daySeed } from '../../assets/js/domain/challenge_picker.mjs';
 import { countLabel, learnerExerciseLabel, minutesLabel, reasonCodeLabel } from './learner-labels';
 import { moduleState } from './ProgressView';
 
@@ -330,9 +332,31 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
   );
 }
 
+// FNV-1a over UTF-16 code units — same hash parameters as challenge_picker's
+// rank hash. Local copy: the picker keeps its own private fnv1a so the seed
+// format stays free to differ.
+const fnv1a = (text: string): number => {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+};
+
 export function ReviewView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const byId = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
   const { executable, archived } = partitionReviewQueue(progress.dueReviews, byId.keys());
+  const plan = useMemo(() => buildWeeklyLearningPlan(catalog, progress), [catalog, progress]);
+  // Deterministic per-day interleave: rank by a day-seeded hash so the queue
+  // mixes competencies instead of sorting strictly by nextDueAt — the order
+  // is identical for every render and tab on the same local day, and rotates
+  // tomorrow. Archived entries keep their input order (no action attached).
+  const interleaveSeed = daySeed(new Date(), 'review-interleave/v1');
+  const queued = executable
+    .map((review, index) => ({ review, rank: fnv1a(`${interleaveSeed}:${review.exerciseId}`), index }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index)
+    .map((entry) => entry.review);
   return (
     <section class="view" aria-labelledby="review-title" data-tour="review-view">
       <header class="view-header"><p class="eyebrow">Abruf statt Wiederlesen</p><h1 id="review-title" tabIndex={-1}>Review</h1><p class="lede">Fällige Abrufe aus allen Kompetenzen an einem Ort.</p></header>
@@ -348,8 +372,11 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               <span>archiviert</span>
             </>}
           </div>
+          {plan.reviewOverflowCount > 0
+            ? <p class="plan-note">+{plan.reviewOverflowCount} {plan.reviewOverflowCount === 1 ? 'Review liegt' : 'Reviews liegen'} über dem wöchentlichen Review-Budget — alles Fällige bleibt hier gelistet.</p>
+            : null}
           <div class="review-list" data-tour="review-queue">
-            {executable.map((review) => {
+            {queued.map((review) => {
               const definition = byId.get(review.exerciseId);
               if (!definition) return null; // unreachable after the partition; keeps the type narrowing honest
               const route = routeForDefinition(definition);
@@ -405,25 +432,81 @@ export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
     saveThemePreference(preference);
   };
   const [offlineStatus, setOfflineStatus] = useState('');
+  const [offlineBusy, setOfflineBusy] = useState(false);
+  const [storageInfo, setStorageInfo] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    const storage = navigator.storage;
+    if (!storage?.persisted || !storage?.estimate) return;
+    void Promise.all([storage.persisted(), storage.estimate()])
+      .then(([persisted, estimate]) => {
+        if (!live) return;
+        const mb = typeof estimate?.usage === 'number' ? Math.max(1, Math.round(estimate.usage / 1048576)) : null;
+        setStorageInfo(`Speicher dauerhaft gesichert: ${persisted ? 'ja' : 'nein'}${mb === null ? '' : ` · belegt ~${mb} MB`}`);
+      })
+      .catch(() => {});
+    return () => { live = false; };
+  }, []);
   const prefetchOffline = async () => {
-    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
-      setOfflineStatus('Der Offline-Cache ist noch nicht aktiv — bitte einmal neu laden und erneut versuchen.');
+    // Writes straight into the Cache API — no active service worker needed,
+    // so the button already works on the very first visit (the worker does
+    // not clients.claim, so controller is null until a reload).
+    if (!('caches' in window)) {
+      setOfflineStatus('Cache-Speicher ist in diesem Browser nicht verfügbar.');
       return;
     }
+    setOfflineBusy(true);
+    let cancelled = false;
     try {
-      const manifestResponse = await fetch('offline-manifest.json');
+      // Cache-busted query: a stale service worker matches cache-first by URL,
+      // so an unversioned request could return last deploy's manifest and fill
+      // a cache that activate() deletes on the next reload.
+      const manifestResponse = await fetch(`offline-manifest.json?v=${Date.now()}`);
       if (!manifestResponse.ok) throw new Error(`Manifest ${manifestResponse.status}`);
-      const manifest = await manifestResponse.json() as { files: string[] };
+      const manifest = await manifestResponse.json() as { buildId?: string; pyodideVersion?: string; files?: string[] };
+      const files = Array.isArray(manifest.files) ? manifest.files : [];
+      if (!files.length) throw new Error('Manifest ohne Dateiliste');
+      // The cache names come from the manifest (this build's service worker
+      // derives the same names); an already-open cache is the fallback for
+      // manifests without the fields.
+      const existingKeys = await caches.keys();
+      const precacheName = typeof manifest.buildId === 'string' && manifest.buildId
+        ? `argmin-${manifest.buildId}`
+        : existingKeys.find((key) => key.startsWith('argmin-') && !key.startsWith('argmin-runtime'));
+      if (!precacheName) throw new Error('Cache-Name nicht ableitbar — bitte einmal neu laden.');
+      const runtimeName = typeof manifest.pyodideVersion === 'string' && manifest.pyodideVersion
+        ? `argmin-runtime-${manifest.pyodideVersion}`
+        : existingKeys.find((key) => key.startsWith('argmin-runtime'));
+      if (!runtimeName) throw new Error('Runtime-Cache nicht ableitbar — bitte einmal neu laden.');
+      const precache = await caches.open(precacheName);
+      const runtimeCache = await caches.open(runtimeName);
+      const targetFor = (file: string) => (file.startsWith('vendor/pyodide/') ? runtimeCache : precache);
+      // Same-origin GETs pass through the SW cache-first handler — a stale
+      // worker could serve last deploy's bytes for un-hashed files, so every
+      // fetch carries the manifest's build id as a cache buster. The cache
+      // key stays the clean URL.
+      const version = typeof manifest.buildId === 'string' && manifest.buildId ? manifest.buildId : String(Date.now());
       let done = 0;
-      for (const file of manifest.files) {
-        const response = await fetch(file);
-        if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
-        done += 1;
-        if (done % 50 === 0) setOfflineStatus(`Lade … ${done} von ${manifest.files.length}`);
-      }
-      setOfflineStatus(`Offline-Paket vollständig: ${manifest.files.length} Dateien gecacht (inkl. Python-Laufzeit).`);
+      const queue = [...files];
+      const pull = async () => {
+        for (let file = queue.shift(); file !== undefined && !cancelled; file = queue.shift()) {
+          const cache = targetFor(file);
+          if (!(await cache.match(file))) {
+            const response = await fetch(`${file}?v=${version}`);
+            if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
+            await cache.put(file, response);
+          }
+          done += 1;
+          if (done % 25 === 0) setOfflineStatus(`Lade … ${done} von ${files.length}`);
+        }
+      };
+      await Promise.all(Array.from({ length: 12 }, () => pull()));
+      setOfflineStatus(`Offline-Paket vollständig: ${files.length} Dateien gecacht (inkl. Python-Laufzeit).`);
     } catch (error) {
+      cancelled = true;
       setOfflineStatus(`Download abgebrochen: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setOfflineBusy(false);
     }
   };
   const removeOffline = async () => {
@@ -479,7 +562,7 @@ export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
         <div><p class="card-kicker">Orientierung</p><h2 id="tour-settings-title">Rundgang</h2><p>Die kurze Tour zeigt, wo was liegt.</p></div>
         <div class="actions"><Button variant="secondary" type="button" onClick={onRestartTour}>Rundgang erneut starten</Button></div>
       </section>
-      <section class="settings-panel" aria-labelledby="offline-title"><div><p class="card-kicker">Offline</p><h2 id="offline-title">Offline-Paket</h2><p>Die App funktioniert nach dem ersten Laden offline. Wer auch die Python-Laufzeit (~16 MB) vorab sichern will — etwa vor einer Reise — lädt sie hier komplett in den Browser-Cache. „Entfernen“ gibt den Speicher wieder frei.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void prefetchOffline()}>Offline-Paket laden</Button><Button variant="secondary" type="button" onClick={() => void removeOffline()}>Paket entfernen</Button><p class="save-status" role="status">{offlineStatus}</p></div></section>
+      <section class="settings-panel" aria-labelledby="offline-title"><div><p class="card-kicker">Offline</p><h2 id="offline-title">Offline-Paket</h2><p>Die App funktioniert nach dem ersten Laden offline. Wer auch die Python-Laufzeit (~16 MB) vorab sichern will — etwa vor einer Reise — lädt sie hier komplett in den Browser-Cache. „Entfernen“ gibt den Speicher wieder frei.</p>{storageInfo ? <p class="privacy-note">{storageInfo}</p> : null}</div><div class="actions"><Button variant="secondary" type="button" disabled={offlineBusy} onClick={() => void prefetchOffline()}>Offline-Paket laden</Button><Button variant="secondary" type="button" disabled={offlineBusy} onClick={() => void removeOffline()}>Paket entfernen</Button><p class="save-status" role="status">{offlineStatus}</p></div></section>
       <section class="settings-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</Button><Button variant="secondary" type="button" onClick={() => importInput.current?.click()}>JSON importieren</Button><input ref={importInput} id="progress-import" type="file" aria-label="JSON importieren" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
     </section>
   );

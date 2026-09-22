@@ -144,6 +144,39 @@ test('S4D7 code family runs pyodide tests in the browser', async ({ page, browse
   await editor.fill(reference);
   await page.getByRole('button', { name: 'Antwort prüfen' }).click({ timeout: 20000 });
   await expect(page.getByText(/Alle Tests bestanden/)).toBeVisible({ timeout: 120000 });
+
+  // Sandbox run: executes the code without tests, renders stdout and must
+  // not write a ledger attempt.
+  const attemptsBefore = await page.evaluate(async () => {
+    const { progress } = await import('/assets/js/core/' + 'progress_store.js');
+    return (await progress.allOf('attempts') as unknown[]).length;
+  });
+  await editor.fill('print("ausgabe-probe")');
+  await page.getByRole('button', { name: 'Nur ausführen' }).click();
+  const stdoutDetails = page.locator('details').filter({ hasText: 'Ausgabe (stdout)' });
+  await expect(stdoutDetails).toBeVisible({ timeout: 60000 });
+  await stdoutDetails.locator('summary').click();
+  await expect(stdoutDetails.locator('pre')).toContainText('ausgabe-probe');
+  const attemptsAfter = await page.evaluate(async () => {
+    const { progress } = await import('/assets/js/core/' + 'progress_store.js');
+    return (await progress.allOf('attempts') as unknown[]).length;
+  });
+  expect(attemptsAfter).toBe(attemptsBefore);
+});
+
+test('?from=challenge keeps trace-table attempts in challenge context', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Stay-in-challenge trace flow runs in Chromium.');
+  await page.goto('/index.html#/family/trace-assignment-state/reassign-two-variables-print/7/core?from=challenge');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Zur Challenge' })).toHaveAttribute('href', '#/challenge');
+  await page.getByRole('button', { name: 'Tabelle prüfen' }).click();
+  await expect(page.getByText(/stimmt noch nicht/)).toBeVisible();
+  const stored = await page.evaluate(async () => {
+    const { progress } = await import('/assets/js/core/' + 'progress_store.js');
+    const attempts = await progress.allOf('attempts') as Array<{ context?: string }>;
+    return attempts.at(-1);
+  });
+  expect(stored?.context).toBe('challenge');
 });
 
 test('S4D2 numeric family grades typed answers and opens domain hints', async ({ page, browserName }) => {
@@ -156,7 +189,7 @@ test('S4D2 numeric family grades typed answers and opens domain hints', async ({
     };
     return EXERCISE_FAMILIES.instantiate('transform-linear-equation-isolate', 5, 'intro', 'two-step-seeded-retrieval').expectedAnswer.value;
   });
-  await page.getByRole('button', { name: 'Hinweis 1/2' }).click();
+  await page.getByRole('button', { name: /^Hinweis 1\/\d+$/ }).click();
   await expect(page.locator('.hint-stack').getByText('Gleichung', { exact: false })).toBeVisible();
   await page.getByLabel('Antwort als ganze Zahl').fill(String(expected));
   await page.getByRole('button', { name: 'Antwort prüfen' }).click();

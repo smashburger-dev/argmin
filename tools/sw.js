@@ -1,10 +1,11 @@
 // Offline service worker for the static build. tools/build_public.mjs injects
-// __BUILD_ID__ and __PRECACHE__ per release and writes this file into the
-// build tree root — do not hand-edit the generated copy.
+// __BUILD_ID__, __PYODIDE_VERSION__ and __PRECACHE__ per release and writes
+// this file into the build tree root — do not hand-edit the generated copy.
 const CACHE = 'argmin-__BUILD_ID__';
-// Pyodide files live in a stable cache so deploys do not wipe the warmed
-// runtime; activate() only deletes versioned caches.
-const RUNTIME_CACHE = 'argmin-runtime';
+// Pyodide files live in a cache keyed by the vendored runtime version, so
+// deploys of the app do not wipe the warmed runtime — but a pyodide vendor
+// bump does retire the stale runtime instead of serving it forever.
+const RUNTIME_CACHE = 'argmin-runtime-__PYODIDE_VERSION__';
 // Precache covers the app shell plus every lazy chunk and content file, so
 // routes never visited online still work offline. vendor/pyodide (~16 MB) is
 // deliberately excluded: it is runtime-cached on first Python use, and the
@@ -23,6 +24,9 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
+  // Deletes every argmin-* cache except the current precache and the current
+  // runtime cache — this also retires older argmin-runtime-* versions and the
+  // legacy unversioned 'argmin-runtime' cache.
   event.waitUntil(caches.keys().then((keys) => Promise.all(
     keys.filter((key) => key.startsWith('argmin-') && key !== CACHE && key !== RUNTIME_CACHE)
       .map((key) => caches.delete(key)),

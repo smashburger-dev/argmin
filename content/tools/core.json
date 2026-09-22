@@ -8,7 +8,7 @@
       "summary": "Mehrdatei-Python im isolierten Pyodide-Worker mit begrenzter Laufzeit und strukturierter Testausgabe.",
       "kind": "workspace",
       "competencyIds": ["c-python-functions", "c-numpy-basics", "c-testing-debugging"],
-      "routes": [{ "label": "NumPy-Labor öffnen", "href": "#/lab/w05-e8", "type": "internal" }],
+      "routes": [{ "label": "NumPy-Aufgabe im Browser öffnen", "href": "#/family/construct-matvec-shape-contract/matvec-code-reference/0/core", "type": "internal" }],
       "sourceRefs": ["numpy-docs", "py-tutorial-official-3.14"],
       "capabilities": ["Python-Code ausführen", "NumPy laden", "stdout, stderr und Tests getrennt anzeigen"],
       "limitations": ["Keine Netzwerkzugriffe", "Nur freigegebene Pakete", "Kein Ersatz für lokale CLI-Projekte"],

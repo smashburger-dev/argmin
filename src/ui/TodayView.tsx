@@ -231,6 +231,9 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           </div>
           <span>{plan.totalMinutes} von {plan.availableMinutes} Min. · <a href="#/settings">Budget anpassen</a></span>
         </div>
+        {plan.reviewOverflowCount > 0 ? (
+          <p class="plan-note">+{plan.reviewOverflowCount} {plan.reviewOverflowCount === 1 ? 'fälliger Review' : 'fällige Reviews'} über dem Wochenbudget — der Plan zeigt nur, was ins Budget passt; der Rest bleibt unter <a href="#/review">Review</a> fällig.</p>
+        ) : null}
         {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan. Kurze Aufgaben liefern belastbarere Hinweise als Selbsteinschätzung allein. Nach der Diagnose fällt Nachgewiesenes heraus.</p> : null}
         {plan.days.some((day) => day.items.length) ? (
           <Carousel label="Wochenplan-Tage">

@@ -1,4 +1,4 @@
-import { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
+import { createFamilyRegistry, familyHint, familyMaxHints as baseFamilyMaxHints, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
 import {
   GIT_OPERATION_CONTRACT,
   generateGitOperationFamily,
@@ -12,6 +12,20 @@ import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
 import { PROCEDURAL_FAMILY_SPECS } from './procedural_registry.mjs';
 
 export { createFamilyRegistry, familyHint, familyIdTokens };
+
+// The instantiated exercise does not carry `summary` — the level-1 hint is
+// the family contract's summary, which views resolve separately (same as
+// they do for familyHint). familyMaxHints(instance) therefore resolves it
+// from the registry by familyId so callers can pass the raw instance; an
+// explicit instance.summary wins. Semantics: number of sequential hint
+// levels familyHint actually serves under a neutral (pre-attempt) context
+// — 1 + authored hints + level-2 activity fallback coverage, 0 when even
+// level 1 is dead. Context-refined hints (e.g. numeric up/down after a
+// wrong answer) are not counted: a floor, not a ceiling.
+export const familyMaxHints = (instance) => baseFamilyMaxHints({
+  ...instance,
+  summary: instance?.summary ?? EXERCISE_FAMILIES.get(instance?.familyId)?.summary,
+});
 
 const jsFamilySpecs = [
   {
