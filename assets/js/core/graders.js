@@ -25,7 +25,10 @@ function runtimeUnavailable(result) {
   const label = result.errorType === 'Timeout' ? 'Zeitlimit überschritten' : `Laufzeitfehler (${result.errorType})`;
   return {
     correct: false,
-    result,
+    // Normalize ok:false — synthetic results built without a workspace run
+    // (e.g. ModuleLoadError) carry no ok field, and the view's failure branch
+    // must still render errorType/errorMessage.
+    result: { ok: false, ...result },
     verdictText: `Die Python-Laufzeit konnte nicht geladen werden: ${label}. Ohne Netzverbindung oder bei sehr langsamem Netz kann der erste Start eine Weile dauern — bitte erneut versuchen.`,
     errorType: 'runtime-unavailable',
   };
@@ -239,7 +242,9 @@ function gradeRubric(exercise, text, checks) {
     correct: honest === total,
     selfAssessed: { checked: honest, total },
     masteryEligible: false,
-    verdictText: `Selbsteinschätzung: ${honest} von ${total} Pflichtbestandteilen erfüllt. Die Musterantwort ist jetzt sichtbar; dieser Versuch zählt nicht als Mastery-Nachweis.`,
+    // Honest wording: the model answer is not displayed by grading — it
+    // only becomes visible after a separate reveal click in the view.
+    verdictText: `Selbsteinschätzung: ${honest} von ${total} Pflichtbestandteilen erfüllt. Die Musterantwort kannst du jetzt einsehen; dieser Versuch zählt nicht als Mastery-Nachweis.`,
     errorType: null,
   };
 }

@@ -1,10 +1,13 @@
 import { lazy, Suspense } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint, familyMaxHints } from '../../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
+import { MASTERY_MAX_HINTS } from '../../assets/js/domain/learning_policy.mjs';
+import { instanceAssistance } from '../adapters/local-progress';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
+import { runPython, warmPythonRuntime, type WorkspaceResult } from '../adapters/python-workspace';
 import { AnswerControls, FadingPrompt } from './AnswerControls';
 import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
@@ -78,7 +81,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   const [shownHints, setShownHints] = useState<string[]>([]);
   const [reviewDueAt, setReviewDueAt] = useState<string | null>(null);
   const [masteryNote, setMasteryNote] = useState(false);
+  const [masteryDenied, setMasteryDenied] = useState<'hints' | 'reveal' | null>(null);
   const [busy, setBusy] = useState(false);
+  const [runBusy, setRunBusy] = useState(false);
+  const [workspace, setWorkspace] = useState<WorkspaceResult | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const [instance, setInstance] = useState<ReturnType<typeof EXERCISE_FAMILIES.instantiate> | null>(null);
   const [summary, setSummary] = useState('');
@@ -109,6 +115,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
         setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
         setInstance(next);
+        // Warm the pyodide worker at mount so the first submit does not pay
+        // the init latency. Silent on failure: the submit path reports
+        // runtime errors itself.
+        if (next.activityType === 'python-code') warmPythonRuntime();
       } catch (error) {
         if (active) setFailed(error instanceof Error ? error.message : String(error));
       }
@@ -126,7 +136,7 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   // S4D1: Trace-Tabelle als Interaktionsvariante, sobald der Generator
   // Zustände kennt (instance.traceTable). Sonst normale Familienübung.
   if (instance.traceTable) {
-    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} nextSeed={nextSeed} />;
+    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} nextSeed={nextSeed} from={parsed?.from} />;
   }
 
   // Stay-in-challenge flow: ?from=challenge tags ledger events with
@@ -135,25 +145,47 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   const fromChallenge = parsed?.from === 'challenge';
   const eventExtra = fromChallenge ? { context: 'challenge' } : {};
 
+  // One shared hint source for familyHint and familyMaxHints so the button
+  // cap always matches the levels the hint path can actually serve. The
+  // instance spread carries familyId/caseId too — the summary lives on the
+  // family, not the instance, so it is added explicitly.
+  const hintSource = { ...instance, summary };
+  const maxHints = familyMaxHints(hintSource);
+
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
     if (!learningLedger) return;
-    await learningLedger.record({
-      ...familyEventInput(instance, eventExtra),
-      eventType,
-      event,
-      hintsUsed,
-      revealedSolution,
-    });
+    try {
+      await learningLedger.record({
+        ...familyEventInput(instance, eventExtra),
+        eventType,
+        event,
+        hintsUsed,
+        revealedSolution,
+      });
+    } catch (error) {
+      // Assistance tracking is best-effort — the attempt event itself carries
+      // hintsUsed, so a lost auxiliary write must not break the UI flow.
+      console.error('assistance event write failed', error);
+    }
   };
 
   const submit = async () => {
-    if (answer === null || answer === undefined || answer === '' || busy || solutionVisible) return;
+    if (answer === null || answer === undefined || answer === '' || busy || runBusy || solutionVisible || correct === true) return;
     setBusy(true);
     setFailed(null);
+    setMasteryNote(false);
+    setMasteryDenied(null);
     try {
       const result = await EXERCISE_FAMILIES.grade(instance, answer);
       const input = familyEventInput(instance, eventExtra);
-      const hintsUsed = shownHints.length;
+      // Assistance is lifetime-scoped per instance key — a reload used to
+      // refund the hint budget on the same variant. The stored record is the
+      // source of truth for hints used in earlier mounts (and for a reveal
+      // that disqualifies this variant retroactively).
+      const assistance = progress
+        ? await instanceAssistance(input.activityId, input.definitionId, input.seed ?? 0)
+        : { revealed: false, hintsUsed: 0 };
+      const hintsUsed = Math.max(shownHints.length, assistance.hintsUsed);
       if (learningLedger) {
         await learningLedger.record({
           ...input,
@@ -169,7 +201,14 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       setErrorType(result.errorType ?? null);
       setVerdict(result.verdictText || (result.correct ? 'Richtig.' : 'Nicht richtig.'));
       setDiagnosis(result.diagnosis ?? null);
-      if (result.correct && input.masteryEligible) setMasteryNote(true);
+      setWorkspace(result.result && typeof result.result === 'object' ? result.result as WorkspaceResult : null);
+      // Mastery note must mirror the ledger rule (buildLearningEvent):
+      // correct + masteryEligible + hintsUsed <= MASTERY_MAX_HINTS, no reveal.
+      if (result.correct && input.masteryEligible && progress) {
+        if (assistance.revealed) setMasteryDenied('reveal');
+        else if (hintsUsed <= MASTERY_MAX_HINTS) setMasteryNote(true);
+        else setMasteryDenied('hints');
+      }
       if (result.correct && progress) {
         const entry = (await progress.reviewQueueAll()).find((item: { exerciseId: string }) => item.exerciseId === input.definitionId);
         setReviewDueAt(entry?.nextDueAt ?? null);
@@ -182,19 +221,9 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   };
 
   const openHint = async () => {
+    if (busy || runBusy || correct === true) return;
     const level = shownHints.length + 1;
-    const hint = familyHint(
-      {
-        summary,
-        activityType: instance.activityType,
-        choices: instance.choices,
-        parameters: instance.parameters,
-        expectedAnswer: instance.expectedAnswer,
-        traceTable: instance.traceTable,
-        hints: instance.hints,
-      },
-      { level, answer, correct },
-    );
+    const hint = familyHint(hintSource, { level, answer, correct });
     if (!hint) return;
     setShownHints((current) => [...current, hint]);
     await recordAssistance('hint-used', `hint-${level}`, level, false);
@@ -207,10 +236,29 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     await recordAssistance('solution-revealed', 'solution-revealed', shownHints.length, true);
   };
 
-  // Hint-Leiter: Level 1 = Familien-Summary, danach authored hints
-  // (familyHint serviert sie in Reihenfolge); ohne authored hints bleibt
-  // Level 2 der generische Aktivitäts-Hint. Max = Summary + Leiterlänge.
-  const maxHintLevel = 1 + Math.max(1, Array.isArray(instance.hints) ? instance.hints.length : 0);
+  // Sandbox run: executes the learner code without tests and deliberately
+  // writes no ledger event — the submit path stays the only evidence writer.
+  const runOnly = async () => {
+    if (runBusy || busy || solutionVisible || typeof answer !== 'string') return;
+    setRunBusy(true);
+    setFailed(null);
+    // A sandbox run is a fresh evaluation — stale verdicts from an earlier
+    // submit must not linger above the new output.
+    setVerdict(null);
+    setCorrect(null);
+    setDiagnosis(null);
+    setErrorType(null);
+    setMasteryNote(false);
+    setMasteryDenied(null);
+    try {
+      setWorkspace(await runPython(instance, answer));
+    } catch (error) {
+      setFailed(error instanceof Error ? error.message : String(error));
+    } finally {
+      setRunBusy(false);
+    }
+  };
+
   const isCode = instance.activityType === 'python-code';
   // worked-example-fading: der Prompt IST die Antwortfläche — die [[gap]]-
   // Marker werden inline zu Inputs. Der Prompt-Slot rendert daher das
@@ -229,6 +277,48 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     ctx.nextTaskHref = '#/challenge';
     ctx.nextTaskTitle = 'Tages-Set';
   }
+  // Plain <pre> output, no MathMarkup: tracebacks shred on < and backticks.
+  // Streams sit in collapsed <details> — a 64 KiB traceback must not break
+  // scroll length or screenreader flow of the feedback box.
+  const workspaceOutput = (ws: WorkspaceResult) => (
+    <div class="output-content">
+      {ws.ok !== true && (ws.errorType || ws.errorMessage)
+        ? <details>
+            <summary>Technische Meldung</summary>
+            <pre>{[ws.errorType, ws.errorMessage].filter(Boolean).join('\n')}</pre>
+          </details>
+        : null}
+      {Array.isArray(ws.testResults) && ws.testResults.length > 0
+        ? <ul>
+            {ws.testResults.map((entry, index) => (
+              <li key={index}>{entry.passed ? '✓' : '✗'} {entry.name}{entry.detail ? ` — ${entry.detail}` : ''}</li>
+            ))}
+          </ul>
+        : null}
+      {typeof ws.stdout === 'string' && ws.stdout.length > 0
+        ? <details>
+            <summary>Ausgabe (stdout)</summary>
+            <pre>{ws.stdout}</pre>
+            {ws.stdoutTruncated ? <p class="feedback-detail">Ausgabe gekürzt.</p> : null}
+          </details>
+        : null}
+      {typeof ws.stderr === 'string' && ws.stderr.length > 0
+        ? <details>
+            <summary>Fehlerausgabe (stderr)</summary>
+            <pre>{ws.stderr}</pre>
+            {ws.stderrTruncated ? <p class="feedback-detail">Ausgabe gekürzt.</p> : null}
+          </details>
+        : null}
+    </div>
+  );
+  const workspaceNode = isCode && workspace ? workspaceOutput(workspace) : null;
+  // Warn only when the NEXT hint would push the attempt over the mastery
+  // hint budget — the first hint stays free of alarm.
+  const nextHintCostsEvidence = instance.masteryEligible === true
+    && shownHints.length < maxHints
+    && shownHints.length + 1 > MASTERY_MAX_HINTS
+    && !solutionVisible
+    && correct !== true;
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict
@@ -241,14 +331,17 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
                 <ul>{instance.typicalErrors.map((item: string, index: number) => <li key={index}><MathMarkup html={item} inline /></li>)}</ul>
               </div>
             : null}
-          {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
+          {masteryNote && !solutionVisible ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
+          {masteryDenied === 'hints' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — zu viele Hinweise genutzt (höchstens {MASTERY_MAX_HINTS} erlaubt).</p> : null}
+          {masteryDenied === 'reveal' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — die Lösung wurde für diese Variante bereits angesehen.</p> : null}
           {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
           {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
+          {workspaceNode}
           {fromChallenge && correct === true
             ? <div class="actions"><Button variant="primary" href="#/challenge">Nächste Challenge</Button></div>
             : null}
         </div>
-      : null;
+      : workspaceNode;
   return (
     <ExerciseFrame
       ctx={ctx}
@@ -262,8 +355,10 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         : isFading ? null : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
       actions={
         <>
-          <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>
-          {shownHints.length < maxHintLevel && !solutionVisible ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHintLevel}</Button> : null}
+          <Button variant="primary" disabled={busy || runBusy || solutionVisible || correct === true} onClick={() => void submit()}>Antwort prüfen</Button>
+          {isCode ? <Button variant="secondary" disabled={busy || runBusy || solutionVisible} onClick={() => void runOnly()}>Nur ausführen</Button> : null}
+          {shownHints.length < maxHints && !solutionVisible && correct !== true ? <Button variant="secondary" disabled={busy || runBusy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHints}</Button> : null}
+          {nextHintCostsEvidence ? <p class="privacy-note" style={{ flexBasis: '100%' }}>Dieser Hinweis kostet den Kompetenzbeleg für diese Variante.</p> : null}
           {!solutionVisible && instance.fullSolution ? <Button variant="ghost" onClick={() => void revealSolution()}>Lösung anzeigen</Button> : null}
         </>
       }

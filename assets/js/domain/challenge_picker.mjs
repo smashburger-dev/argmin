@@ -1,6 +1,6 @@
 // Daily-challenge engine: pure functions that turn the compiled family
 // index, module activity signals and attempt history into a deterministic
-// per-UTC-day challenge set (plan: .agents/plans/2026-09-09-challenge.md).
+// per-local-day challenge set (plan: .agents/plans/2026-09-09-challenge.md).
 // No I/O, no Date.now() defaults — every input is injected so Node tests
 // are deterministic (stricter than assets/js/core/review_scheduler.js, which
 // keeps Date.now() defaults at its exported call sites).
@@ -32,7 +32,15 @@ const fnv1a = (text) => {
 
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-const utcDayKey = (ms) => new Date(ms).toISOString().slice(0, 10);
+const pad = (value, width) => String(value).padStart(width, '0');
+
+/** Local calendar day 'YYYY-MM-DD' from a timestamp or Date: the learner's
+ *  "today" flips at local midnight, not at UTC midnight (the old UTC key
+ *  rolled the day over at 01:00/02:00 local time for German users). */
+const localDayKey = (value) => {
+  const date = value instanceof Date ? value : new Date(value);
+  return `${pad(date.getFullYear(), 4)}-${pad(date.getMonth() + 1, 2)}-${pad(date.getDate(), 2)}`;
+};
 
 const asSet = (value) => (value instanceof Set ? value : new Set(value || []));
 
@@ -78,28 +86,34 @@ const definitionIdOf = (item) => `${item.familyId}:${item.caseId}`;
  * @property {boolean} shortfall
  */
 
-/** Stable seed for one UTC calendar day: FNV-1a over
+/** Stable seed for one LOCAL calendar day: FNV-1a over
  *  `${namespace}:${YYYY-MM-DD}`. Accepts a Date, an ISO timestamp or a bare
  *  'YYYY-MM-DD' day key (used verbatim — day-level input needs no clock
- *  resolution and cannot be shifted by local-time parsing). Throws on
+ *  resolution and cannot be shifted by timezone parsing). Date/timestamp
+ *  input resolves to the local calendar day, so the daily set changes at
+ *  local midnight. Determinism is per local day — intended. Throws on
  *  unparseable input: a wrong day seed would silently reshuffle the set.
  * @param {string | Date} dateIso
  * @param {string} [namespace]
  * @returns {number} uint32 day seed */
-export function daySeedUTC(dateIso, namespace = DEFAULT_CHALLENGE_NAMESPACE) {
+export function daySeed(dateIso, namespace = DEFAULT_CHALLENGE_NAMESPACE) {
   let day;
   if (dateIso instanceof Date) {
-    if (!Number.isFinite(dateIso.getTime())) throw new Error('daySeedUTC: invalid Date');
-    day = dateIso.toISOString().slice(0, 10);
+    if (!Number.isFinite(dateIso.getTime())) throw new Error('daySeed: invalid Date');
+    day = localDayKey(dateIso);
   } else if (typeof dateIso === 'string' && DATE_ONLY_RE.test(dateIso)) {
     day = dateIso;
   } else {
     const ms = Date.parse(dateIso);
-    if (!Number.isFinite(ms)) throw new Error(`daySeedUTC: unparseable date ${JSON.stringify(dateIso)}`);
-    day = new Date(ms).toISOString().slice(0, 10);
+    if (!Number.isFinite(ms)) throw new Error(`daySeed: unparseable date ${JSON.stringify(dateIso)}`);
+    day = localDayKey(ms);
   }
   return fnv1a(`${namespace}:${day}`);
 }
+
+// Back-compat alias kept for existing call sites: despite the name, the
+// day key is the LOCAL calendar day — the UTC derivation was the bug.
+export const daySeedUTC = daySeed;
 
 /** Problems served per day: pools too small to fill the minimum serve what
  *  they have (count is a non-negative integer even for odd pool sizes),
@@ -234,34 +248,64 @@ export function pickDailyChallenges({ daySeed, pool = [], history = [], nowMs } 
 
 const isAttemptEvent = (event) => (event?.eventType ?? 'attempt') === 'attempt';
 
-/** Consecutive UTC days with at least one attempt event tagged
- *  context 'challenge', counted back from today. Today gets the usual
- *  streak grace: an unfinished today does not break the run, so counting
- *  starts yesterday when today has no challenge attempt yet. Events without
- *  a context field (written before it existed) never extend the streak.
- * @param {ChallengeAttemptInput[]} attempts
- * @param {number} nowMs
+/** Consecutive local days with at least one SOLVED challenge item, counted
+ *  back from today — "solved" means the same predicate as
+ *  solvedChallengeCount: a correct, unrevealed attempt in challenge context
+ *  whose definitionId belonged to that day's picked set. Self-labelling a
+ *  route with ?from=challenge is not enough — the set membership check
+ *  keeps the streak honest (variants of a set item share its definitionId
+ *  and still count). Today gets the usual streak grace: an unfinished
+ *  today does not break the run. The cursor steps by calendar date
+ *  (setDate), not by fixed 24h — a millisecond step can skip a 23-hour
+ *  day across DST. Past-day sets are reconstructed from the same pool and
+ *  the history that existed before that day — an approximation when the
+ *  pool itself changed, conservative rather than inflated.
+ * @param {{ attempts?: ChallengeAttemptInput[], pool?: ChallengePoolEntry[], history?: ChallengeHistoryEntry[], nowMs: number }} input
  * @returns {number} */
-export function challengeStreakDays(attempts, nowMs) {
+export function challengeStreakDays({ attempts, pool = [], history = [], nowMs } = {}) {
   if (!Number.isFinite(nowMs)) return 0;
-  const days = new Set();
+  const solvedByDay = new Map();
   for (const event of attempts || []) {
-    if (event?.context !== CHALLENGE_CONTEXT || !isAttemptEvent(event)) continue;
+    if (event?.context !== CHALLENGE_CONTEXT || !isAttemptEvent(event) || event.correct !== true) continue;
+    if (event.revealedSolution === true) continue;
+    const definitionId = event.definitionId || event.exerciseId;
     const at = Date.parse(event.occurredAt ?? event.ts);
-    if (Number.isFinite(at)) days.add(utcDayKey(at));
+    if (typeof definitionId !== 'string' || !Number.isFinite(at)) continue;
+    const key = localDayKey(at);
+    if (!solvedByDay.has(key)) solvedByDay.set(key, new Set());
+    solvedByDay.get(key).add(definitionId);
   }
-  let cursor = Math.floor(nowMs / DAY_MS) * DAY_MS;
-  if (!days.has(utcDayKey(cursor))) cursor -= DAY_MS;
+  const setsByDay = new Map();
+  const itemsForDay = (key) => {
+    if (!setsByDay.has(key)) {
+      const [year, month, day] = key.split('-').map(Number);
+      const dayMs = new Date(year, month - 1, day, 12).getTime();
+      const priorHistory = (history || []).filter(
+        (entry) => Number.isFinite(Date.parse(entry?.occurredAt ?? entry?.ts)) && Date.parse(entry.occurredAt ?? entry.ts) <= dayMs,
+      );
+      const set = pickDailyChallenges({ daySeed: daySeed(key), pool, history: priorHistory, nowMs: dayMs });
+      setsByDay.set(key, new Set(set.items.map(definitionIdOf)));
+    }
+    return setsByDay.get(key);
+  };
+  const dayCounts = (key) => {
+    const solved = solvedByDay.get(key);
+    if (!solved) return false;
+    const items = itemsForDay(key);
+    return [...solved].some((id) => items.has(id));
+  };
+  const cursor = new Date(nowMs);
+  if (!dayCounts(localDayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
   let streak = 0;
-  while (days.has(utcDayKey(cursor))) {
+  while (dayCounts(localDayKey(cursor))) {
     streak += 1;
-    cursor -= DAY_MS;
+    cursor.setDate(cursor.getDate() - 1);
   }
   return streak;
 }
 
 /** How many of today's picked items were solved in challenge context on
- *  this UTC day: a correct, unrevealed attempt event whose definitionId
+ *  this local day: a correct, unrevealed attempt event whose definitionId
  *  matches `familyId:caseId`. The seed is intentionally not required — a
  *  same-case solve under any seed counts (callers wanting per-seed stats
  *  can still match exactly).
@@ -271,13 +315,13 @@ export function challengeStreakDays(attempts, nowMs) {
  * @returns {number} */
 export function solvedChallengeCount(items, attempts, nowMs) {
   if (!Number.isFinite(nowMs)) return 0;
-  const today = utcDayKey(nowMs);
+  const today = localDayKey(nowMs);
   const solved = new Set();
   for (const event of attempts || []) {
     if (event?.context !== CHALLENGE_CONTEXT || event.correct !== true || !isAttemptEvent(event)) continue;
     if (event.revealedSolution === true) continue;
     const at = Date.parse(event.occurredAt ?? event.ts);
-    if (!Number.isFinite(at) || utcDayKey(at) !== today) continue;
+    if (!Number.isFinite(at) || localDayKey(at) !== today) continue;
     const definitionId = event.definitionId || event.exerciseId;
     if (typeof definitionId === 'string') solved.add(definitionId);
   }

@@ -33,6 +33,7 @@ const ALLOWED_FILES = [
   'LICENSE-CONTENT.md',
   'assets/js/core/exercise_runtime.js',
   'assets/js/core/learning_ledger.mjs',
+  'assets/js/core/progress_notify.mjs',
   'assets/js/core/graders.js',
   'assets/js/core/progress_store.js',
   'assets/js/core/progress_migration.mjs',
@@ -371,17 +372,42 @@ if (nextDirArg) {
   );
 
   // Offline service worker: the precache list is the disk walk at this point
-  // (all content + hashed bundles + vendored assets are already copied).
-  // Excluded: the three generated control files and vendor/pyodide — the worker
-  // runtime is cache-first on first use instead of ~16 MB upfront.
-  const swExcludes = (rel) => rel === 'PUBLIC-BUILD.md' || rel === 'sw.js' || rel === 'offline-manifest.json' || rel.startsWith('vendor/pyodide/');
+  // (all content + hashed bundles + vendored assets are already copied),
+  // minus what offline boot never requests. Excluded: the generated control
+  // files; vendor/pyodide (runtime-cached on first use instead of ~16 MB
+  // upfront); the raw content trees that ship in the release but are compiled
+  // into JS chunks and never fetched (lessons, families, banks, modules,
+  // explanations, content-bundle.json); and the repo-side assets/js/ sources
+  // that vite bundles — except the two module-worker files, which are fetched
+  // verbatim via new Worker() and its static import. content/catalog.json and
+  // content/projects/** stay precached: progress_store.js and ProjectView
+  // fetch them at runtime. The offline manifest stays complete — the settings
+  // prefetch warms every shipped file.
+  const swRuntimeFetched = new Set([
+    'assets/js/runtime/pyodide_worker.mjs',
+    'assets/js/runtime/workspace_protocol.mjs',
+  ]);
+  const swExcludes = (rel) => rel === 'PUBLIC-BUILD.md' || rel === 'sw.js' || rel === 'offline-manifest.json'
+    || rel.startsWith('vendor/pyodide/')
+    || rel === 'content/content-bundle.json'
+    || /^content\/(lessons|families|banks|modules|explanations)\//.test(rel)
+    || (rel.startsWith('assets/js/') && !swRuntimeFetched.has(rel));
   const buildFiles = walk(out).map((p) => relative(out, p).replaceAll('\\', '/')).sort();
   const buildId = createHash('sha256')
     .update(buildFiles.map((rel) => `${rel}:${createHash('sha256').update(readFileSync(join(out, rel))).digest('hex')}`).join('\n'))
     .digest('hex').slice(0, 16);
+  // The vendored pyodide version keys the runtime cache so a vendor bump
+  // invalidates the stale runtime instead of serving it cache-first forever.
+  const pyodideVersion = JSON.parse(readFileSync(join(out, 'vendor/pyodide/package.json'), 'utf8')).version;
+  if (typeof pyodideVersion !== 'string' || !pyodideVersion) fail('vendor/pyodide/package.json liefert keine Version');
   const swSource = readFileSync(join(root, 'tools/sw.js'), 'utf8');
-  writeFileSync(join(out, 'sw.js'), swSource.replaceAll('__BUILD_ID__', buildId).replaceAll('__PRECACHE__', JSON.stringify(buildFiles.filter((rel) => !swExcludes(rel)))));
-  writeFileSync(join(out, 'offline-manifest.json'), `${JSON.stringify({ buildId, files: buildFiles }, null, 2)}\n`);
+  const swOutput = swSource
+    .replaceAll('__BUILD_ID__', buildId)
+    .replaceAll('__PYODIDE_VERSION__', pyodideVersion)
+    .replaceAll('__PRECACHE__', JSON.stringify(buildFiles.filter((rel) => !swExcludes(rel))));
+  if (/__[A-Z_]+__/.test(swOutput)) fail('sw.js enthaelt nach der Injektion noch Platzhalter');
+  writeFileSync(join(out, 'sw.js'), swOutput);
+  writeFileSync(join(out, 'offline-manifest.json'), `${JSON.stringify({ buildId, pyodideVersion, files: buildFiles }, null, 2)}\n`);
   targets.push('sw.js', 'offline-manifest.json');
 }
 

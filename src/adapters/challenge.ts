@@ -53,7 +53,7 @@ export interface ChallengeSet {
   windowDays: number;
   /** True when fewer than `count` items could be served — never refilled. */
   shortfall: boolean;
-  /** Consecutive UTC days with a challenge-context attempt. */
+  /** Consecutive local days with a solved challenge-context attempt. */
   streak: number;
   /** Items of today's set already solved in challenge context today. */
   solvedToday: number;
@@ -129,7 +129,7 @@ export async function loadChallengeSet(
   const set = pickDailyChallenges({ daySeed: daySeedUTC(new Date(nowMs)), pool, history, nowMs });
   return {
     ...set,
-    streak: challengeStreakDays(records, nowMs),
+    streak: challengeStreakDays({ attempts: records, pool, history, nowMs }),
     solvedToday: solvedChallengeCount(set.items, records, nowMs),
   };
 }

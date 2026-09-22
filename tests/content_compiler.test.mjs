@@ -257,7 +257,10 @@ test('a new exercise is a family placement without catalog, UI, ledger or build-
 test('tool cards preserve public runtimes, repositories and visualization routes', () => {
   const publicBundle = compileContent({ projectRoot: root, profile: 'public' });
   assert.equal(publicBundle.tools.length, 7);
-  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-browser-python-workspace' && tool.routes.some((route) => route.href === '#/lab/w05-e8')));
+  // The workspace tool links to the real in-app Python exercise — the old
+  // '#/lab/w05-e8' hash had no router handler and was a dead link.
+  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-browser-python-workspace' && tool.routes.some((route) => route.href === '#/family/construct-matvec-shape-contract/matvec-code-reference/0/core')));
+  assert.equal(JSON.stringify(publicBundle).includes('#/lab/'), false);
   assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-expression-equivalence' && tool.routes.length === 0));
   assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-matrix-column-visualization' && tool.routes.some((route) => route.href === '#/visualization/column-picture')));
   assert.ok(publicBundle.tools.some((tool) => tool.kind === 'repository' && tool.sourceRefs.includes('dlwp-notebooks')));

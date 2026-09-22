@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.8.6 — 2026-09-22
+
+Ehrlichkeits- und Robustheits-Release: zwölf verifizierte Bugs gefixt, acht spürbare Verbesserungen.
+
+Neu für Lernende: **Python-Aufgaben erklären sich jetzt selbst.** Statt nur „Der Code lief nicht fehlerfrei" zeigt das Feedback die echten Testergebnisse (welcher Test scheiterte und warum), Ausgaben und die technische Fehlermeldung — aufgeklappt, damit lange Tracebacks nichts zerreißen. Bei Python-Aufgaben gibt es außerdem „Nur ausführen": Code ausprobieren ohne Bewertung — der Lauf zählt nicht als Versuch.
+
+**Hinweise sind jetzt ehrlich.** Vor dem Klick steht da, wenn ein Hinweis den Kompetenzbeleg kostet; Buttons ohne verfügbaren Hinweis tauchen gar nicht erst auf (vorher: stiller toter Klick). Und wer die Lösung schon einmal angesehen hat — auch in einer früheren Sitzung — bekommt nicht mehr fälschlich „Kann als Kompetenzbeleg zählen" versprochen.
+
+**Die Challenge-Serie zählt nur noch echte Tages-Siege:** gelöste Aufgaben aus dem jeweiligen Tages-Set, nicht mehr jeder Versuch mit Challenge-Kennzeichen. Der Tag wechselt um lokale Mitternacht statt mitten in der Nacht nach Weltzeit.
+
+**Zwei Tabs bleiben synchron** — Fortschritt, den du in einem Fenster machst, erscheint sofort im anderen, ohne Neu laden.
+
+**Suche** (in der Navigation): findet Kompetenzen, Lektionen, Aufgaben, Module und Projekte — überall aus dem Katalog, lokal im Browser.
+
+**Offline-Paket** lädt jetzt schon beim ersten Besuch zuverlässig (vorher kam „bitte neu laden"); dazu eine Statuszeile, die Speicherbelegung und dauerhafte Sicherung ehrlich anzeigt. Die Review-Warteschlange zeigt an, wenn mehr fällig ist als das Wochenbudget vorsieht, und mischt die Reihenfolge tagesdeterministisch über Kompetenzen statt strikt nach Fälligkeit.
+
+Für Beitragende: `RUNTIME_CACHE` ist jetzt versioniert (`argmin-runtime-<pyodideVersion>`) — ein Vendor-Bump serviert die alte Laufzeit nicht mehr endlos cache-first; `activate()` räumt alte Runtime-Caches mit auf. Der Precache fällt von 836 auf 349 Dateien: nur noch, was der Offline-Start wirklich anfragt (`catalog.json`, die zwei Worker-Module, Bundles) — rohe Content-Bäume und Repo-Sources bleiben im Release, aber nicht im Install-Set; das Offline-Manifest umfasst weiterhin alles. Der Prefetch schreibt direkt über die Cache-API mit cache-bustetem Manifest (ein offener Tab mit altem Service Worker kann so nicht in einen Cache schreiben, den der neue beim Aktivieren löscht) und lädt parallel. `familyMaxHints(instance)` liefert die ehrliche Hinweis-Obergrenze; `familyHint` fällt bei kontext-unbrauchbaren Eingaben auf den neutralen Hinweis zurück statt auf `null`; der Distraktor-Fallback nennt nur noch eine falsche Option, wenn danach mindestens eine weitere unbekannt bleibt (bei zwei Optionen war die Elimination die ganze Lösung). Cross-Tab-Sync läuft über `BroadcastChannel` aus `core/progress_notify.mjs` — konstruktions-guarded, damit ein verbotener Channel nie einen committeten Write fehlschlagen lässt. `challengeStreakDays` prüft Tages-Set-Membership + `revealedSolution` (gleiche Prädikate wie `solvedChallengeCount`). Fehlerkanten: synthetische Grader-Results tragen jetzt `ok: false`; Assistenz-Events sind best-effort statt unhandled rejection; der tote `#/lab/`-Link zeigt auf die echte Familien-Route.
+
 ## 0.8.5 — 2026-09-22
 
 Mobile aufgeräumt und Speicher freigebbar.

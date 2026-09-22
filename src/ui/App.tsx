@@ -3,13 +3,14 @@ import { Fragment } from 'preact';
 import type { JSX } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
-import { loadOnboardingDone, loadProgressSnapshot, loadTourDone, saveLearningPreferences, saveOnboardingDone, saveTourDone, type ProgressSnapshot } from '../adapters/local-progress';
+import { loadOnboardingDone, loadProgressSnapshot, loadTourDone, PROGRESS_CHANNEL_NAME, saveLearningPreferences, saveOnboardingDone, saveTourDone, type ProgressSnapshot } from '../adapters/local-progress';
 import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ReviewView, SettingsView, SourcesView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
 import { VisualizationView } from './VisualizationView';
 import { ProgressView } from './ProgressView';
 import { TodayView } from './TodayView';
+import { SearchView } from './SearchView';
 import { Button } from './Button';
 import { BrandWordmark } from './Brand';
 import { SponsorSlots } from './Sponsor';
@@ -66,6 +67,11 @@ const navigation: NavigationItem[] = [
     ),
   },
   {
+    route: 'search', label: 'Suche', secondary: true, icon: (
+      <svg {...iconProps}><circle cx="7" cy="7" r="4.2" /><path d="M10.4 10.4 14 14" /></svg>
+    ),
+  },
+  {
     route: 'challenge', label: 'Challenge', secondary: true, icon: (
       <svg {...iconProps}><path d="M9 1.8 4.3 8.7h3.1L6.4 14.2l5.3-7.7H8.6z" /></svg>
     ),
@@ -110,6 +116,7 @@ const routeTitles: Record<string, string> = {
   diagnostic: 'Diagnose',
   sources: 'Lektüren',
   tools: 'Werkzeuge',
+  search: 'Suche',
   visualization: 'Visualisierung',
   module: 'Modul',
   family: 'Aufgabe',
@@ -170,9 +177,15 @@ export function App() {
     const refresh = () => { void refreshProgress().catch(() => setProgressReady(true)); };
     refresh();
     addEventListener('learning-progress-changed', refresh);
+    // Cross-tab: a second open tab receives the ping and reloads its snapshot
+    // instead of staying stale until reload. Refresh is read-only and guarded
+    // by progressRequest, so a bounced message cannot loop.
+    const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(PROGRESS_CHANNEL_NAME) : null;
+    if (channel) channel.onmessage = refresh;
     return () => {
       progressRequest.current += 1;
       removeEventListener('learning-progress-changed', refresh);
+      channel?.close();
     };
   }, [refreshProgress]);
 
@@ -327,6 +340,7 @@ export function App() {
             : section === 'diagnostic' ? <DiagnosticView catalog={catalog} progress={progress} />
               : section === 'sources' ? <SourcesView catalog={catalog} />
                 : section === 'tools' ? <ToolsView catalog={catalog} />
+                  : section === 'search' ? <SearchView catalog={catalog} />
                   : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
                 : section === 'module' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Modul wird geladen</h1></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} progress={progress} /></Suspense>
                 : section === 'family' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Variante wird geladen</h1></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>
@@ -379,7 +393,7 @@ export function App() {
       <footer class="mobile-context" aria-label="Lokaler Status">
         <span>Local-first</span>
         <span>{catalog.competencies.length} Kompetenzen</span>
-        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more"><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a><a href="#/challenge">Challenge</a></nav>
+        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more">{navigation.filter((item) => item.secondary).map((item) => <a key={item.route} href={`#/${item.route}`}>{item.label}</a>)}</nav>
       </footer>
       {showOnboarding ? (
         <OnboardingOverlay
