@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.1 — 2026-09-21
+
+Wartungs-Release — für Lernende ändert sich nichts Sichtbares, die Fundamente sind aber sauberer und ehrlicher dokumentiert.
+
+Unter der Haube: Ein systematischer Audit hat alle ~4.300 Code-Kommentare gegen die Implementierung geprüft und ~70 falsche oder überholte Behauptungen korrigiert — falsche Seed-Zählungen, Modulverweise auf nicht existierende Dateien, veraltete Zahlen und leere Abschnitts-Header. Dabei sind zwei latente Fehler aufgefallen und behoben: Ein Timing-Werkzeug maß die Fehlerseite statt einer echten Aufgabe, und zwei „keine Ziffern"-Filter filterten nichts (falsch escaptes Regex). Ein Test, der Determinanten zirkulär gegen die Produktfunktion prüfte, prüft jetzt gegen einen unabhängigen Solver.
+
+Für Beitragende: Geteilte Python-Test-Helfer leben jetzt zentral in `assets/js/core/procedural/py_test_kit.mjs` — Serializer (`pyLit`), Vektor-/Matrix-Emitter, `refCopy`, `pyStrList`. ~90 Zeilen toter Test-Code und ~15 duplizierte Hilfsfunktionen sind entfernt, der Release-Build vergleicht echte Dateimengen statt nur Anzahlen, und der Worker-Arbeitsbereich liegt unter `/home/argmin/` statt eines Tippfehler-Pfads. Wer eine neue Aufgabenfamilie anlegt, importiert die Emitter aus dem Kit statt sie zu kopieren.
+
 ## 0.8.0 — 2026-09-21
 
 Neu für Lernende: **argmin läuft offline.** Nach dem ersten Laden funktioniert die komplette App ohne Internet — Lektionen, Aufgaben, Prüfung, Fortschritt. Wer Python-Aufgaben unterwegs ohne Netz lösen will, holt sich in den Einstellungen über „Offline-Paket laden" die Laufzeit vorab aufs Gerät.
