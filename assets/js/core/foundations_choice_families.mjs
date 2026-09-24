@@ -23,7 +23,7 @@
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
 import { variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
-import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
+import { registerStaticCases, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import stringImmutabilityDoc from '../../../content/families/classify-string-immutability.json' with { type: 'json' };
 import setOperationDoc from '../../../content/families/classify-set-operation-semantics.json' with { type: 'json' };
 import errorHypothesisDoc from '../../../content/families/classify-error-hypothesis.json' with { type: 'json' };
@@ -63,42 +63,51 @@ function ensureChoiceDocs() {
   }
 }
 
-/** Generische statische Choice-Maschine: Der Seed rotiert nur die Position
- *  der korrekten Antwort (intro zeigt 2, alle anderen Profile 4 Optionen).
- *  Die korrekte Antwort ist eine reine Funktion der caseId. Der Fallkörper
- *  kommt aus der Registry; die korrekte Option steht in der autorisierten
- *  Reihenfolge an Position 0 der choices-Liste. */
+/** Generische statische Choice-Maschine: Der Seed waehlt den Variantenkoerper
+ *  via variantOf (ohne Aufloesung zeigte jeder Seed denselben Fall) und
+ *  rotiert die Position der korrekten Antwort (intro zeigt 2, alle anderen
+ *  Profile 4 Optionen). Der Fallkörper kommt aus der Registry; die korrekte
+ *  Option steht in der autorisierten Reihenfolge an Position 0 der
+ *  choices-Liste. */
 function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
   if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
   const choiceCount = CHOICE_COUNT[difficulty];
   if (!choiceCount) throw new Error(`Unbekanntes Profil ${difficulty}`);
   ensureChoiceDocs();
   const meta = staticCaseBody(familyId, caseId);
-  const correct = meta.choices.find((choice) => choice.correct)?.text;
-  const distractors = meta.choices.filter((choice) => !choice.correct).map((choice) => choice.text);
+  const { body: chosen, index } = variantOf(meta, seed);
+  const correct = chosen.choices.find((choice) => choice.correct)?.text;
+  const distractors = chosen.choices.filter((choice) => !choice.correct).map((choice) => choice.text);
   const options = [correct, ...distractors.slice(0, choiceCount - 1)];
   const rotation = variantCaseIndex(seed, options.length);
   const ids = CHOICE_IDS.slice(0, options.length);
   return {
-    parameters: { caseId, difficulty, ...(meta.parameters || {}) },
+    parameters: {
+      caseId,
+      difficulty,
+      ...(Array.isArray(meta.variants) && meta.variants.length ? { variant: index } : {}),
+      ...(chosen.parameters || {}),
+    },
     expected: {},
     choices: buildRotatedChoices(options, rotation, ids),
-    prompt: meta.prompt,
-    fullSolution: meta.fullSolution,
-    ...(meta.hints ? { hints: meta.hints } : {}),
-    ...(meta.feedbackRules ? { feedbackRules: meta.feedbackRules } : {}),
-    ...(meta.typicalErrors ? { typicalErrors: meta.typicalErrors } : {}),
-    ...(meta.competencyIds ? { competencyIds: meta.competencyIds } : {}),
-    ...(meta.masteryEligible !== undefined ? { masteryEligible: meta.masteryEligible } : {}),
+    prompt: chosen.prompt,
+    fullSolution: chosen.fullSolution,
+    ...(chosen.hints ? { hints: chosen.hints } : {}),
+    ...(chosen.feedbackRules ? { feedbackRules: chosen.feedbackRules } : {}),
+    ...(chosen.typicalErrors ? { typicalErrors: chosen.typicalErrors } : {}),
+    ...(chosen.competencyIds ? { competencyIds: chosen.competencyIds } : {}),
+    ...(chosen.masteryEligible !== undefined ? { masteryEligible: chosen.masteryEligible } : {}),
   };
 }
 
-/** Unabhängiger Solver: Die korrekte Antwort folgt aus der caseId allein,
- *  nicht aus Seed, Rotation oder Profil. */
+/** Unabhängiger Solver: Die korrekte Antwort folgt aus dem gezogenen
+ *  Variantenkörper — parameters.variant loest ihn wie in
+ *  staticFamilySpec.solve ueber den Index auf. */
 function solveStaticChoice(familyId, parameters) {
   ensureChoiceDocs();
   const meta = staticCaseBody(familyId, parameters?.caseId);
-  return { correctText: meta.choices.find((choice) => choice.correct).text };
+  const { body } = variantOf(meta, parameters?.variant ?? 0);
+  return { correctText: body.choices.find((choice) => choice.correct).text };
 }
 
 // --- classify-string-immutability (Shard-Fall, Quelle w02-e3) ---------------
