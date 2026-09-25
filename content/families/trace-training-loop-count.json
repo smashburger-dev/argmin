@@ -23,8 +23,8 @@
       "prompt": "Trainingsschleife lesen: Was gibt dieses Programm aus? Sage die Ausgaben der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis: <code>-(-n // B)</code> ist Aufrunden in Ganzzahlarithmetik; <code>w</code> startet als float.",
       "fullSolution": "Batches: $\\lceil 90/40 \\rceil = 3$ pro Epoche, über 3 Epochen $3 \\cdot 3 = 9$ Updates. Parameter: $w = 10{,}0 - 3 \\cdot (0{,}5 \\cdot 4{,}0) = 4{,}0$. Ausgabe: <code>9</code> und <code>4.0</code>.",
       "hints": [
-        "Pro Epoche: aufrunden(90/40) = 3 Batches — auch wenn der letzte nur 30 Beispiele hat. Drei Epochen multiplizieren das.",
-        "Jeder der drei Updates zieht 0,5 · 4 = 2 ab: 10,0 − 2 − 2 − 2. Achtung: print eines floats zeigt die .0-Endung."
+        "Die Anzahl Batches pro Epoche ergibt sich aus Aufrunden von n/B — auch ein unvollständiger Restbatch zählt mit. Die Epochenzahl multipliziert sie.",
+        "Jedes der drei Updates zieht 0,5 · g vom Startwert 10,0 ab — die drei Gradienten einzeln verrechnen, sie können verschieden sein. Achtung: print eines floats zeigt die .0-Endung."
       ],
       "feedbackRules": [
         {
@@ -33,7 +33,7 @@
         }
       ],
       "typicalErrors": [
-        "abgerundet (2 Batches) und 6 ausgegeben",
+        "ab- statt aufgerundet und den unvollständigen Restbatch unterschlagen",
         "die float-Endung .0 in der Vorhersage unterschlagen",
         "Update nur einmal statt dreimal gerechnet"
       ],
@@ -61,7 +61,7 @@
       "fullSolution": "range erzeugt die Starts [0, 4, 8]. Der letzte Start 8 hätte nur zwei Elemente und wird durch start + bs <= n verworfen; pro Epoche bleiben zwei Batches, also vier über zwei Epochen.",
       "hints": [
         "Schreibe zuerst die von range erzeugten Startwerte auf.",
-        "Bei Drop-last zählt nur ein Start mit start + bs <= n; multipliziere danach mit den zwei Epochen."
+        "Bei Drop-last zählt nur ein Start mit start + bs <= n; multipliziere danach mit der Epochenzahl."
       ],
       "feedbackRules": [
         {
@@ -72,7 +72,7 @@
       "typicalErrors": [
         "den letzten unvollständigen Batch als vollständig gezählt",
         "range-Ende mit einem inklusiven n verwechselt",
-        "die Epochenzahl nicht auf die zwei gültigen Batches angewendet"
+        "die Epochenzahl nicht auf die gültigen Batches angewendet"
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -98,7 +98,7 @@
       "fullSolution": "0,80 verbessert sich auf 0,60. Die folgenden Verluste 0,60 und 0,595 verbessern den Bestwert nicht um mehr als 0,01; beim vierten Durchlauf erreicht wait daher 2. Der Abbruch erfolgt in Epoche 4, der beste Verlust bleibt 0,6.",
       "hints": [
         "Eine Verbesserung muss strikt größer als min_delta sein.",
-        "Zähle die nicht ausreichenden Verbesserungen ab dem Bestwert 0,60 und stoppe bei wait=2."
+        "Zähle die nicht ausreichenden Verbesserungen ab dem ersten Bestwert und stoppe, sobald wait die patience erreicht."
       ],
       "feedbackRules": [
         {

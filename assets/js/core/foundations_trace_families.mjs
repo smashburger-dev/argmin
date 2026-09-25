@@ -19,13 +19,40 @@ import {
   genCollectionStepTrace,
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
-import { staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { TRACE_GENERATORS, drawTraceParams } from './trace_assignment_generators.mjs';
+import traceAssignmentDoc from '../../../content/families/trace-assignment-state.json' with { type: 'json' };
+import accumulatorCountDoc from '../../../content/families/aggregate-accumulator-count.json' with { type: 'json' };
+import collectionStateDoc from '../../../content/families/trace-collection-state.json' with { type: 'json' };
+import dictStateDoc from '../../../content/families/trace-dict-state-update.json' with { type: 'json' };
+import exceptionPathDoc from '../../../content/families/trace-exception-path.json' with { type: 'json' };
+
+// Authored case bodies carry didactics/oracles for the seeded cases — lazily
+// registered like ensureConstructDocs, because chunk order in the bundle is
+// unbound and standalone module graphs (e2e, worker) would otherwise see an
+// empty registry.
+let traceDocsReady = false;
+function ensureTraceDocs() {
+  if (traceDocsReady) return;
+  for (const doc of [
+    traceAssignmentDoc,
+    accumulatorCountDoc,
+    collectionStateDoc,
+    dictStateDoc,
+    exceptionPathDoc,
+  ]) {
+    registerStaticCases(doc.familyId, doc.cases);
+  }
+  traceDocsReady = true;
+}
+
+const traceCaseBody = (familyId, caseId) => { ensureTraceDocs(); return staticCaseBody(familyId, caseId); };
 
 export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
 // Ziehlogik aus generator_draw_kit (eine Stelle, keine Duplikate).
 // traceSubseed bleibt als Alias erhalten.
-import { drawFamilyInstance, familySubseed, variantCaseIndex, buildRotatedChoices } from './generator_draw_kit.mjs';
+import { drawFamilyInstance, familySubseed, variantCaseIndex, buildRotatedChoices, rng, randInt } from './generator_draw_kit.mjs';
 export { drawFamilyInstance, familySubseed as traceSubseed };
 
 function requireTraceProfile(difficulty) {
@@ -127,22 +154,12 @@ function assignmentProfileAccepts(caseId, difficulty) {
   return predicates[difficulty] || predicates.challenge;
 }
 
+// `rng-stream-reseed-trace` bleibt authored: Der erwartete Wert hängt an
+// numpys PCG64-Stream und ist in JS nicht ehrlich reproduzierbar. Alle anderen
+// ehemals statischen Fälle laufen über TRACE_GENERATORS (seeded literal
+// shards) und tauchen hier nicht mehr auf.
 const TRACE_ASSIGNMENT_STATIC_KEYS = {
-  'gradient-loop-two-updates': 'output',
-  'tree-majority-vote-trace': 'kind',
   'rng-stream-reseed-trace': 'output',
-  'manual-backward-step-trace': 'kind',
-  'fixed-dropout-mask-trace': 'output',
-  'stable-softmax-rows-trace': 'output',
-  'char-encode-roundtrip-trace': 'output',
-  'freeze-param-filter-trace': 'output',
-  'absolute-vs-relative-gain-trace': 'kind',
-  'metric-name-normalize-trace': 'output',
-  'stage-runner-error-states': 'kind',
-  'column-picture-trace': 'kind',
-  'overclaim-scanner-trace': 'output',
-  'card-check-variable-trace': 'kind',
-  'rpn-priority-trace': 'kind',
 };
 
 const solveAssignmentReassign = (parameters) => {
@@ -184,11 +201,17 @@ const TRACE_ASSIGNMENT_SOLVERS = {
   transform: solveAssignmentTransform,
 };
 
-/** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
+/** Solver: wertet die Fallparameter aus. Für Literal-Shard-Cases rechnet
+ *  `expected` die Ausgabe aus den Literalparametern nach (predict-output) bzw.
+ *  liefert den Variablenzustands-Contract — die Werte stehen dort
+ *  vertragsgemäß in parameters.variables; ihre Korrektheit pinnt die
+ *  Äquivalenz-Fixture gegen die früher authored Bank. */
 export function solveTraceAssignment(parameters) {
+  const generator = TRACE_GENERATORS[parameters.caseId];
+  if (generator) return generator.expected(parameters);
   const staticKey = TRACE_ASSIGNMENT_STATIC_KEYS[parameters.caseId];
   if (staticKey) {
-    const { body } = variantOf(staticCaseBody('trace-assignment-state', parameters.caseId), parameters.variant ?? 0);
+    const { body } = variantOf(traceCaseBody('trace-assignment-state', parameters.caseId), parameters.variant ?? 0);
     return { [staticKey]: body.expected[staticKey] };
   }
   const solver = TRACE_ASSIGNMENT_SOLVERS[parameters.shape];
@@ -197,7 +220,39 @@ export function solveTraceAssignment(parameters) {
 }
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
+  const generator = TRACE_GENERATORS[caseId];
+  if (generator) {
+    // Seeded literal shards: draw parameters, derive snippet/expected from the
+    // same draw, and inherit the authored didactics (hints, typicalErrors,
+    // feedbackRules) from the registered base body.
+    const params = drawTraceParams(caseId, seed);
+    const built = generator.build(params);
+    const body = traceCaseBody('trace-assignment-state', caseId);
+    const {
+      caseId: _cid,
+      difficultyProfile: _dp,
+      masteryEligible: _me,
+      sourceLineage: _sl,
+      variants: _v,
+      ...base
+    } = body;
+    return {
+      ...base,
+      masteryEligible: body.graderId !== 'manual-rubric' && body.masteryEligible === true,
+      parameters: {
+        caseId,
+        difficulty,
+        ...params,
+        snippet: built.snippet,
+        ...(built.variables ? { variables: built.variables } : {}),
+      },
+      expected: built.expected,
+      prompt: built.prompt,
+      fullSolution: built.fullSolution,
+    };
+  }
   if (TRACE_ASSIGNMENT_STATIC_KEYS[caseId]) {
+    ensureTraceDocs();
     return staticVariantInstance('trace-assignment-state', caseId, seed, difficulty);
   }
   const stateShape = ASSIGNMENT_STATE_SHAPES[caseId];
@@ -238,17 +293,14 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
     { caseId: 'method-chain-transform' },
     {
       caseId: 'gradient-loop-two-updates',
-      propertyTest: false,
       competencyIds: ['c-grad-regression', 'c-python-reading'],
     },
     {
       caseId: 'tree-majority-vote-trace',
-      propertyTest: false,
       competencyIds: ['c-ml-ensembles', 'c-python-reading'],
     },
     {
       caseId: 'column-picture-trace',
-      propertyTest: false,
       competencyIds: ['c-linalg-matrices', 'c-python-reading'],
     },
     {
@@ -258,57 +310,46 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
     },
     {
       caseId: 'manual-backward-step-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-autograd', 'c-python-reading'],
     },
     {
       caseId: 'fixed-dropout-mask-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-regularization', 'c-numpy-basics'],
     },
     {
       caseId: 'stable-softmax-rows-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-attention', 'c-python-basics'],
     },
     {
       caseId: 'char-encode-roundtrip-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-tokenizer', 'c-python-basics'],
     },
     {
       caseId: 'freeze-param-filter-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-finetuning', 'c-python-basics'],
     },
     {
       caseId: 'absolute-vs-relative-gain-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-papers', 'c-python-basics'],
     },
     {
       caseId: 'card-check-variable-trace',
-      propertyTest: false,
       competencyIds: ['c-research-cards', 'c-python-reading'],
     },
     {
       caseId: 'rpn-priority-trace',
-      propertyTest: false,
       competencyIds: ['c-research-responsible', 'c-python-reading'],
     },
     {
       caseId: 'metric-name-normalize-trace',
-      propertyTest: false,
       competencyIds: ['c-research-question', 'c-python-reading'],
     },
     {
       caseId: 'stage-runner-error-states',
-      propertyTest: false,
       competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
     },
     {
       caseId: 'overclaim-scanner-trace',
-      propertyTest: false,
       competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
     },
   ],
@@ -353,12 +394,48 @@ export function solveTraceCallComposition(parameters) {
   throw new Error(`trace-call-composition: unbekannte Form ${parameters.form}`);
 }
 
+// two-functions-one-print: gepinnter authored Fall w01-e6 — jetzt mit ehrlichem
+// (a,b)-Draw. Jede zahlentragende Zeile (Prompt-Snippet, Lösung, Hints,
+// Trace-Tabelle) wird aus dem Draw gebaut; authored Zahlen wären auf anderen
+// Seeds falsch. Kuratierter intro-Placement bleibt (propertyTest: false).
+const drawAreaPerimeterArgs = (seed) => {
+  const random = rng(familySubseed(seed, 'two-functions-one-print', 'area-perimeter'));
+  return { a: randInt(random, 2, 9), b: randInt(random, 2, 9) };
+};
+
 export function generateTraceCallCompositionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (caseId === 'two-functions-one-print') {
-    const body = staticCaseBody('trace-call-composition', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+    const { a, b } = drawAreaPerimeterArgs(seed);
+    const area = a * b;
+    const perimeter = 2 * (a + b);
+    const output = `${area} ${perimeter}`;
+    return {
+      parameters: {
+        caseId, difficulty, form: 'area-perimeter', a, b,
+        snippet: `def flaeche(a, b):\n    return a * b\n\ndef umfang(a, b):\n    return 2 * (a + b)\n\nprint(flaeche(${a}, ${b}), umfang(${a}, ${b}))`,
+      },
+      expected: { output },
+      prompt: 'Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.',
+      fullSolution: `flaeche(${a}, ${b}) = ${a} · ${b} = ${area}; umfang(${a}, ${b}) = 2 · (${a} + ${b}) = ${perimeter}. Ausgabe: <code>${output}</code>.`,
+      hints: [
+        `Welchen Wert liefert jeder Aufruf einzeln? Rechne zuerst flaeche(${a}, ${b}) aus, dann umfang(${a}, ${b}) — jede Funktion setzt für ihre Parameter die übergebenen Zahlen ein.`,
+        `flaeche(${a}, ${b}) = ${a} · ${b} = ${area}. Für umfang(${a}, ${b}) gilt die Klammer: 2 · (${a} + ${b}). Die Ausgabe enthält beide Ergebnisse durch Leerzeichen getrennt.`,
+      ],
+      feedbackRules: [
+        { if: 'element-count-mismatch', then: `Die print-Zeile gibt zwei Werte in einer Zeile aus — durch Leerzeichen getrennt, z. B. \`${output}\`. Rechne beide Aufrufe aus.` },
+      ],
+      typicalErrors: [
+        'nur einen der beiden Aufrufe berechnet',
+        `Klammer in umfang übersehen: 2 · ${a} + ${b} statt 2 · (${a} + ${b})`,
+        'Werte in der Ausgabe vertauscht (umfang vor flaeche)',
+      ],
+      traceTable: {
+        lines: [`flaeche(${a}, ${b})`, `umfang(${a}, ${b})`],
+        stateVars: ['ergebnis'],
+        expectedStates: [{ ergebnis: `${area}` }, { ergebnis: `${perimeter}` }],
+      },
+    };
   }
   // Both linear-composition cases draw from genFunctionCompose; the challenge
   // case shares the same profile axis (negative ga + larger magnitudes).
@@ -506,7 +583,7 @@ export function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
     wantShape: (candidate) => candidate.parameters.shape === shape,
     profileAccepts: accumulatorProfileAccepts(caseId, difficulty),
   });
-  const body = staticCaseBody('aggregate-accumulator-count', caseId);
+  const body = traceCaseBody('aggregate-accumulator-count', caseId);
   const scope = accumulatorScope(drawn.parameters, drawn.expected.output);
   return {
     ...authoredCaseExtras(body),
@@ -730,7 +807,7 @@ export function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
     wantShape: (candidate) => candidate.parameters.family === shape,
     profileAccepts: shape === 'set-steps' ? null : collectionProfileAccepts(difficulty, caseId),
   });
-  const body = staticCaseBody('trace-collection-state', caseId);
+  const body = traceCaseBody('trace-collection-state', caseId);
   const codes = traceCodeLines(drawn.parameters.snippet);
   const simulated = shape === 'set-steps' ? simulateSetTrace(codes) : simulateListTrace(shape, codes);
   const scope = stepTraceScope(simulated, codes);
@@ -789,7 +866,7 @@ export function generateTraceDictFamily({ seed, caseId, difficulty }) {
       && (dictVocabulary(candidate.parameters) === 'start') === wantStart,
     profileAccepts: collectionProfileAccepts(difficulty),
   });
-  const body = staticCaseBody('trace-dict-state-update', caseId);
+  const body = traceCaseBody('trace-dict-state-update', caseId);
   const codes = traceCodeLines(drawn.parameters.snippet);
   const scope = stepTraceScope(simulateDictTrace(codes), codes);
   return {
@@ -877,14 +954,14 @@ export function solveTraceException(parameters) {
   if (!EXCEPTION_CASE_IDS.includes(parameters.caseId)) {
     throw new Error(`trace-exception-path: unbekannter Fall ${parameters.caseId}`);
   }
-  const body = staticCaseBody('trace-exception-path', parameters.caseId);
+  const body = traceCaseBody('trace-exception-path', parameters.caseId);
   return { correctText: exceptionCorrectText(body, parameters.code) };
 }
 
 export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (!EXCEPTION_CASE_IDS.includes(caseId)) throw new Error(`Unbekannter Fall ${caseId}`);
-  const body = staticCaseBody('trace-exception-path', caseId);
+  const body = traceCaseBody('trace-exception-path', caseId);
   const drawn = drawTraceInstance(genExceptionBoundary, {
     seed,
     caseId,

@@ -33,6 +33,58 @@ const withSeededChoiceOrder = (generated, seed) => (
     : generated
 );
 
+const CHOICE_ID_RULE = /^choice (===|!==) '([^']+)'$/;
+const VALUE_LITERAL_RULE = /^value === /;
+
+const deepEqual = (a, b) => {
+  if (Object.is(a, b)) return true;
+  if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const keysA = Object.keys(a);
+  if (keysA.length !== Object.keys(b).length) return false;
+  return keysA.every((key) => Object.hasOwn(b, key) && deepEqual(a[key], b[key]));
+};
+
+// Authored `choice === 'x'` rules bind an option id that seeded rotation
+// reassigns — they stay true only while they name the same option *text*.
+// Unresolvable ids (catch-alls like 'none') survive only on the authored
+// option set itself.
+const bindChoiceRule = (rule, authoredChoices, drawnChoices) => {
+  const match = typeof rule?.if === 'string' ? CHOICE_ID_RULE.exec(rule.if) : null;
+  if (!match) return rule;
+  const authoredChoice = authoredChoices.find((choice) => choice.id === match[2]);
+  if (authoredChoice) {
+    const drawn = drawnChoices.find((choice) => choice.text === authoredChoice.text);
+    return drawn ? { ...rule, if: `choice ${match[1]} '${drawn.id}'` } : null;
+  }
+  const authoredTexts = new Set(authoredChoices.map((choice) => choice.text));
+  const sameOptionTexts = drawnChoices.length === authoredChoices.length
+    && drawnChoices.every((choice) => authoredTexts.has(choice.text));
+  return sameOptionTexts ? rule : null;
+};
+
+// Authored feedbackRules describe the anchor instance: `value ===` literals
+// name that draw's misconceptions and `choice ===` ids its option layout.
+// On a seeded instance both are stale — rebind choice rules through option
+// texts and keep value rules only while the drawn parameters are the
+// authored ones. Everything else (gap-*, value:name, includes-Regeln, …)
+// passes through unchanged.
+const rebindAuthoredFeedback = (authored, generated) => {
+  const rules = authored?.feedbackRules;
+  if (!Array.isArray(rules) || !rules.length) return undefined;
+  const authoredChoices = authored.choices || [];
+  const drawnChoices = generated.choices || [];
+  const isAnchor = deepEqual(generated.parameters, authored.parameters);
+  const bound = [];
+  for (const rule of rules) {
+    const rebound = typeof rule?.if === 'string' && VALUE_LITERAL_RULE.test(rule.if)
+      ? (isAnchor ? rule : null)
+      : bindChoiceRule(rule, authoredChoices, drawnChoices);
+    if (rebound) bound.push(rebound);
+  }
+  return bound.length ? bound : undefined;
+};
+
 export function registerStaticCases(familyId, cases) {
   if (!FAMILY_ID.test(familyId)) throw new Error(`Ungültige familyId ${familyId}`);
   if (!Array.isArray(cases)) throw new Error(`${familyId}: Fälle müssen eine Liste sein`);
@@ -231,11 +283,13 @@ const hintForPredictOutput = ({ parameters, expectedAnswer, traceTable }, { firs
   }
   return undefined;
 };
-const hintForMultipleChoice = ({ choices }) => {
+const hintForMultipleChoice = ({ choices, expectedAnswer }) => {
   if (!Array.isArray(choices) || !choices.length) return undefined;
-  // Same reveal guard as single-choice: naming the only wrong option
-  // discloses the full correct set.
-  const wrongs = choices.filter((choice) => !choice.correct);
+  // Multiple-choice carries no per-choice `correct` flag — the correct set
+  // lives on expectedAnswer. Eliminate a known-wrong option only, never an
+  // option that could belong to the correct set.
+  const correctIds = new Set(expectedAnswer?.correctIds || []);
+  const wrongs = correctIds.size ? choices.filter((choice) => !correctIds.has(choice.id)) : [];
   if (wrongs.length >= 2) return `„${wrongs[0].text}“ scheidet aus.`;
   return 'Prüfe jede Option einzeln auf wahr oder falsch, bevor du auswählst — mehrere können zutreffen.';
 };
@@ -383,6 +437,7 @@ export function createFamilyRegistry(families) {
     if (correct && solved.correctText && correct.text !== solved.correctText) {
       throw new Error(`${familyId}: Solver und Generator weichen ab`);
     }
+    const feedbackRules = generated.feedbackRules ?? rebindAuthoredFeedback(authored, generated);
     return {
       familyId,
       caseId: resolvedCase,
@@ -411,7 +466,8 @@ export function createFamilyRegistry(families) {
       expectedAnswer: generated.expected,
       fullSolution: generated.fullSolution,
       // Authored feedback material for graders and the hint path; optional.
-      ...(generated.feedbackRules ?? authored?.feedbackRules ? { feedbackRules: generated.feedbackRules ?? authored?.feedbackRules } : null),
+      // Authored rules are anchor-bound — rebind/drop them per draw.
+      ...(feedbackRules ? { feedbackRules } : null),
       ...(generated.hints ?? authored?.hints ? { hints: generated.hints ?? authored?.hints } : null),
       ...(generated.typicalErrors ?? authored?.typicalErrors ? { typicalErrors: generated.typicalErrors ?? authored?.typicalErrors } : null),
       // S4D1: optionale Trace-Tabelle (Interaktionsvariante). Nur gesetzt,

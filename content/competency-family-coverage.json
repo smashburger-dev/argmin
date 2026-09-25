@@ -37,7 +37,6 @@
     {
       "competencyId": "c-python-reading",
       "familyIds": [
-        "aggregate-confusion-metric",
         "aggregate-evidence-rule-audit",
         "construct-matvec-shape-contract",
         "formula-ratio-percent-metric",
@@ -313,7 +312,6 @@
     {
       "competencyId": "c-ml-erroranalysis",
       "familyIds": [
-        "aggregate-confusion-metric",
         "aggregate-detector-eval-compare",
         "aggregate-grouped-metrics-report",
         "classify-error-drift",
@@ -321,7 +319,7 @@
         "diagnostic-rationale-ml-eval",
         "formula-ratio-percent-metric"
       ],
-      "placedCaseCount": 10,
+      "placedCaseCount": 9,
       "seededFamilyCount": 0
     },
     {
@@ -514,7 +512,7 @@
         "classify-rule-cascade-priority",
         "validate-report-guard-compose"
       ],
-      "placedCaseCount": 11,
+      "placedCaseCount": 10,
       "seededFamilyCount": 0
     },
     {

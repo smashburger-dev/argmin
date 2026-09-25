@@ -41,9 +41,10 @@ import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
-import { parsonsInitialOrder as kitParsonsInitialOrder } from './generator_draw_kit.mjs';
+import { parsonsInitialOrder as kitParsonsInitialOrder, shuffle, until } from './generator_draw_kit.mjs';
+import { refCopy, pyLit } from './procedural/py_test_kit.mjs';
 import { logTerm, signed } from './foundations_generators.mjs';
-import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
 import { expressionTargetFinite } from './graders.js';
 import guardedLoopDoc from '../../../content/families/construct-guarded-loop.json' with { type: 'json' };
 import regressionSuiteDoc from '../../../content/families/construct-regression-test-suite.json' with { type: 'json' };
@@ -51,6 +52,9 @@ import bugfixWorkflowDoc from '../../../content/families/construct-safe-bugfix-w
 import testStructureDoc from '../../../content/families/construct-test-structure-aaa.json' with { type: 'json' };
 import expressionCanonicalDoc from '../../../content/families/transform-expression-simplify-canonical.json' with { type: 'json' };
 import powerLogDoc from '../../../content/families/transform-power-log-exponent.json' with { type: 'json' };
+import requiredFieldDoc from '../../../content/families/validate-required-field-raise.json' with { type: 'json' };
+import validateCountDoc from '../../../content/families/aggregate-validate-and-count-records.json' with { type: 'json' };
+import errorJournalOrderDoc from '../../../content/families/construct-error-journal-order.json' with { type: 'json' };
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -91,6 +95,9 @@ function ensureConstructDocs() {
     testStructureDoc,
     expressionCanonicalDoc,
     powerLogDoc,
+    requiredFieldDoc,
+    validateCountDoc,
+    errorJournalOrderDoc,
   ]) {
     registerStaticCases(doc.familyId, doc.cases);
   }
@@ -99,11 +106,6 @@ function ensureConstructDocs() {
 const constructCaseBody = (familyId, caseId) => {
   ensureConstructDocs();
   return staticCaseBody(familyId, caseId);
-};
-
-const constructVariantInstance = (familyId, caseId, seed, difficulty) => {
-  ensureConstructDocs();
-  return staticVariantInstance(familyId, caseId, seed, difficulty);
 };
 
 
@@ -221,7 +223,17 @@ export const FAMILY_NOTES = [
   },
   { familyId: 'transform-power-log-exponent', staticOnly: [], addedParametric: [] },
   { familyId: 'transform-expression-simplify-canonical', staticOnly: [], addedParametric: [] },
-  { familyId: 'aggregate-validate-and-count-records', staticOnly: [], addedParametric: [] },
+  {
+    familyId: 'aggregate-validate-and-count-records',
+    staticOnly: [],
+    addedParametric: [
+      {
+        caseId: 'separate-error-kinds',
+        parentCaseId: 'parse-validate-summarize',
+        reason: 'Gleicher Validierungs-Zähl-Weg (Kriterium auf Datensätze, Treffer pro Eimer zählen, w37-e5); zweistufiges Kriterium — retrieval „leer“ dominiert die Antwort-Ebene. Zuvor authored-statisch serviert, jetzt geseedete Fixture-Liste über dem kuratierten Bündel.',
+      },
+    ],
+  },
   {
     familyId: 'construct-regression-test-suite',
     staticOnly: [],
@@ -683,12 +695,16 @@ export const INSPECT_STARTER = `def inspect_rows(rows):
     return issues
 `;
 
-/** Unabhängiger Solver: gibt die Referenzimplementation des Falls zurück. */
+/** Unabhängiger Solver: gibt die Referenzimplementation des Falls zurück.
+ *  separate-error-kinds ist kapsel-gebunden: nur Parameter, deren Fixtures
+ *  den Testblock byte-identisch rebuilden, liefern den Referenzsolver
+ *  (Muster solveRequiredField — fail-closed gegen manipulierte Fixtures). */
 export function solveValidateCount(parameters) {
   if (parameters.task === 'zaehle') return { referenceCode: ZAEHLE_REFERENZ };
   if (parameters.task === 'inspect') return { referenceCode: INSPECT_REFERENZ };
   if (parameters.caseId === 'separate-error-kinds') {
-    return { kind: constructCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.kind };
+    if (!separateErrorParamsOk(parameters)) throw new Error(`Unbekannter Fall ${parameters.caseId}`);
+    return { referenceCode: constructCaseBody('aggregate-validate-and-count-records', parameters.caseId).expected.referenceSolver };
   }
   throw new Error(`Unbekannte Aufgabe ${parameters.task}`);
 }
@@ -784,11 +800,149 @@ function inspectExtraRows(seed, count) {
 
 const EXTRA_COUNTS = [0, 1, 2, 3];
 
+// --- Fall separate-error-kinds: geseedete Fixture-Liste -----------------------
+// Der Capstone-Fall (w37-e5) bleibt propertyTest:false — einzige Ausspielung
+// ist das kuratierte lm-capstone-regression-Placement (seed 0, stretch). Der
+// Seed zieht gezielt einen Arm der authored Domäne (retrieval ok|leer ×
+// antwort ok|kein_treffer|blockiert, Listenlänge 0–6 — die neun ehemaligen
+// authored Varianten bilden denselben Raum ab: leere Liste, alle sauber,
+// nur Retrievalfehler, nur Antwortfehler, alle drei Eimer, freier Mix). Das
+// kuratierte Bündel bleibt byte-identischer Prefix; die __want-Inline-Orakel
+// der Varianten werden durch eine __ref_-Orakelkopie ersetzt (Muster
+// REQUIRED_PYTHON_CASES).
+
+const SEPARATE_ERROR_RETRIEVAL = ['ok', 'leer'];
+const SEPARATE_ERROR_ANTWORT = ['ok', 'kein_treffer', 'blockiert'];
+const SEPARATE_ERROR_ARMS = ['empty', 'all-clean', 'retrieval-only', 'answer-only', 'all-kinds', 'mixed'];
+const SEPARATE_ERROR_MAX_LEN = 6;
+const SEPARATE_ERROR_FUNCTIONS = ['trenne_fehler'];
+
+const separateErrorRecord = (retrieval, antwort) => ({ retrieval, antwort });
+
+const drawSeparateErrorEntry = (r) => separateErrorRecord(
+  SEPARATE_ERROR_RETRIEVAL[randInt(r, 0, SEPARATE_ERROR_RETRIEVAL.length - 1)],
+  SEPARATE_ERROR_ANTWORT[randInt(r, 0, SEPARATE_ERROR_ANTWORT.length - 1)],
+);
+
+/** Kategorie eines Datensatzes: retrieval „leer“ dominiert die Antwort-Ebene
+ *  (Referenzsemantik des Falls, ehrlich wie das Orakel zählt). */
+const separateErrorCategory = (entry) => (
+  entry.retrieval === 'leer' ? 'retrieval_fehler' : entry.antwort === 'ok' ? 'sauber' : 'antwort_fehler'
+);
+
+const separateErrorListOk = (fixtures) => fixtures.every(
+  (entry) => entry && typeof entry === 'object'
+    && SEPARATE_ERROR_RETRIEVAL.includes(entry.retrieval)
+    && SEPARATE_ERROR_ANTWORT.includes(entry.antwort),
+);
+
+function drawSeparateErrorList(seed) {
+  const r = rng(seed);
+  const arm = SEPARATE_ERROR_ARMS[randInt(r, 0, SEPARATE_ERROR_ARMS.length - 1)];
+  if (arm === 'empty') return { arm, fixtures: [] };
+  if (arm === 'all-clean') {
+    const n = randInt(r, 2, 5);
+    return { arm, fixtures: Array.from({ length: n }, () => separateErrorRecord('ok', 'ok')) };
+  }
+  if (arm === 'retrieval-only') {
+    const n = randInt(r, 2, 4);
+    return { arm, fixtures: Array.from({ length: n }, () => separateErrorRecord('leer', SEPARATE_ERROR_ANTWORT[randInt(r, 0, SEPARATE_ERROR_ANTWORT.length - 1)])) };
+  }
+  if (arm === 'answer-only') {
+    const n = randInt(r, 2, 4);
+    return { arm, fixtures: Array.from({ length: n }, () => separateErrorRecord('ok', SEPARATE_ERROR_ANTWORT[randInt(r, 1, SEPARATE_ERROR_ANTWORT.length - 1)])) };
+  }
+  if (arm === 'all-kinds') {
+    // Je ein Vertreter pro Eimer plus 0–3 freie Einträge (konstruiert, kein
+    // Retry nötig), dann ehrlich gemischt.
+    const fixtures = [
+      separateErrorRecord('leer', SEPARATE_ERROR_ANTWORT[randInt(r, 0, SEPARATE_ERROR_ANTWORT.length - 1)]),
+      separateErrorRecord('ok', SEPARATE_ERROR_ANTWORT[randInt(r, 1, SEPARATE_ERROR_ANTWORT.length - 1)]),
+      separateErrorRecord('ok', 'ok'),
+    ];
+    const extras = randInt(r, 0, SEPARATE_ERROR_MAX_LEN - fixtures.length);
+    for (let i = 0; i < extras; i += 1) fixtures.push(drawSeparateErrorEntry(r));
+    return { arm, fixtures: shuffle(r, fixtures) };
+  }
+  // mixed: freie Ziehung über die volle Domäne, aber mindestens zwei Eimer.
+  const fixtures = until(
+    r,
+    () => Array.from({ length: randInt(r, 2, SEPARATE_ERROR_MAX_LEN) }, () => drawSeparateErrorEntry(r)),
+    (list) => new Set(list.map(separateErrorCategory)).size >= 2,
+    { scope: 'separate-error-kinds' },
+  );
+  return { arm, fixtures };
+}
+
+const GERMAN_COUNT_WORDS = ['keine', 'ein', 'zwei', 'drei', 'vier', 'fünf', 'sechs'];
+
+/** Kurzbeschreibung der gezogenen Liste im Duktus der authored Varianten-
+ *  Prompts („Zwei Datensätze: sauber plus retrieval leer“). */
+function separateErrorNote(fixtures) {
+  if (!fixtures.length) return 'Leere Liste.';
+  const counts = { sauber: 0, retrieval_fehler: 0, antwort_fehler: 0 };
+  for (const entry of fixtures) counts[separateErrorCategory(entry)] += 1;
+  const parts = [];
+  if (counts.sauber) parts.push(`${GERMAN_COUNT_WORDS[counts.sauber]} sauber`);
+  if (counts.retrieval_fehler) parts.push(`${GERMAN_COUNT_WORDS[counts.retrieval_fehler]} retrieval „leer“`);
+  if (counts.antwort_fehler) parts.push(`${GERMAN_COUNT_WORDS[counts.antwort_fehler]} Antwortfehler`);
+  const head = fixtures.length === 1
+    ? 'Ein Datensatz'
+    : `${GERMAN_COUNT_WORDS[fixtures.length].replace(/^./, (c) => c.toUpperCase())} Datensätze`;
+  return `${head}: ${parts.join(' plus ')} — jeden Datensatz genau einmal zählen.`;
+}
+
+/** Kuratiertes Bündel als byte-identischer Prefix plus seeded Block:
+ *  __ref_-Orakelkopie der Referenz und Gleichheits-Checks über der gezogenen
+ *  Liste (ersetzt die toten __want-Orakel der ehemaligen Varianten). */
+function separateErrorTests(body, fixtures) {
+  const preamble = refCopy(body.expected.referenceSolver, SEPARATE_ERROR_FUNCTIONS);
+  return `${body.parameters.tests}\n\n# seeded extra cases\n${preamble}\n__seeded = ${pyLit(fixtures)}\n__check('seeded zaehlung', trenne_fehler(__seeded) == __ref_trenne_fehler(__seeded))\n__check('seeded summe', (lambda r: r["retrieval_fehler"] + r["antwort_fehler"] + r["sauber"])(trenne_fehler(__seeded)) == len(__seeded))`;
+}
+
+/** Kapsel-Params-Gate für den Solver (Muster requiredPythonParamsOk):
+ *  Domänen-Records, deren pyLit-Form den Testblock byte-identisch rebuildet,
+ *  authored starterCode. */
+function separateErrorParamsOk(parameters) {
+  try {
+    const body = constructCaseBody('aggregate-validate-and-count-records', 'separate-error-kinds');
+    return Array.isArray(parameters?.seedFixtures)
+      && parameters.seedFixtures.length <= SEPARATE_ERROR_MAX_LEN
+      && separateErrorListOk(parameters.seedFixtures)
+      && parameters.tests === separateErrorTests(body, parameters.seedFixtures)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+function genSeparateErrorKinds(seed, difficulty) {
+  const body = constructCaseBody('aggregate-validate-and-count-records', 'separate-error-kinds');
+  const { arm, fixtures } = drawSeparateErrorList(seed);
+  const spec = VALIDATE_COUNT_CONTRACT.caseTypes.find((entry) => entry.caseId === 'separate-error-kinds');
+  return {
+    parameters: {
+      caseId: 'separate-error-kinds',
+      difficulty,
+      packages: body.parameters.packages,
+      starterCode: body.parameters.starterCode,
+      tests: separateErrorTests(body, fixtures),
+      seedFixtures: fixtures.map((entry) => ({ ...entry })),
+      seedArm: arm,
+    },
+    expected: body.expected,
+    prompt: `${body.prompt}\n\nGezogene Liste: ${separateErrorNote(fixtures)}`,
+    fullSolution: body.fullSolution,
+    activityType: 'python-code',
+    graderId: 'pyodide',
+    competencyIds: spec?.competencyIds ?? VALIDATE_COUNT_CONTRACT.competencyIds,
+    masteryEligible: true,
+  };
+}
+
 export function generateValidateCountFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   if (caseId === 'separate-error-kinds') {
-    return constructVariantInstance('aggregate-validate-and-count-records', caseId, seed, difficulty);
+    return genSeparateErrorKinds(seed, difficulty);
   }
   const extraCount = EXTRA_COUNTS[profileTier(difficulty)];
   if (caseId === 'parse-validate-summarize') {
@@ -1174,33 +1328,185 @@ const REQUIRED_ORDERS = {
   'required-key-with-issue': ['p1', 'p2', 'p3', 'p4'],
 };
 
+// Geseedete Fixture-Züge für die vier python-code-Fälle. Authored Starter-
+// Code, Referenzsolver und Base-Testblock bleiben byte-identisch (werden zur
+// Laufzeit aus dem registrierten Fallkörper gelesen); der Generator hängt
+// lediglich __ref_-Orakelkopien und Gleichheits-Checks über gezogene
+// Fixtures an — dasselbe Muster wie optimize-decode-greedy-loop.
+
+const REQUIRED_FIELD_VALUE_POOL = ['a', 'x', 'ok', 'text', 'wert'];
+
+const REQUIRED_PYTHON_CASES = {
+  'paper-card-required-fields': {
+    functions: ['review_paper_card'],
+    count: 2,
+    draw(r) {
+      const fields = {};
+      const blanked = r() < 0.7 ? randInt(r, 0, 4) : -1;
+      ['frage', 'methode', 'datensatz', 'ergebnis', 'limitation'].forEach((feld, index) => {
+        fields[feld] = index === blanked
+          ? (r() < 0.5 ? '' : '   ')
+          : `${feld}-${randInt(r, 1, 9)}`;
+      });
+      const claims = [];
+      for (let index = 0; index < randInt(r, 0, 3); index += 1) {
+        if (r() < 0.4) claims.push({ claim: `c${index + 1}` });
+        else {
+          claims.push({
+            claim: `c${index + 1}`,
+            evidence: { baseline: randInt(r, 50, 90), system: randInt(r, 50, 99) },
+          });
+        }
+      }
+      return { ...fields, claims };
+    },
+    checks: (fixture, index) => [
+      `__check('seeded karte ${index}', review_paper_card(${pyLit(fixture)}) == __ref_review_paper_card(${pyLit(fixture)}))`,
+    ],
+    note: (fixture) => `Karte mit ${fixture.claims.length} Claims, leere Felder: ${['frage', 'methode', 'datensatz', 'ergebnis', 'limitation'].filter((f) => !String(fixture[f]).trim()).join(', ') || 'keine'}.`,
+  },
+  'protocol-validator': {
+    functions: ['validate_protocol'],
+    count: 2,
+    draw(r) {
+      const p = {};
+      for (const feld of ['frage', 'uv', 'dv', 'metrik', 'baseline', 'abbruchregel']) {
+        if (r() < 0.15) continue; // Feld fehlt ganz
+        p[feld] = r() < 0.15 ? '   ' : REQUIRED_FIELD_VALUE_POOL[randInt(r, 0, REQUIRED_FIELD_VALUE_POOL.length - 1)];
+      }
+      const year = 2026;
+      const preregMonth = randInt(r, 1, 10);
+      const gap = randInt(r, 20, 60);
+      p.datum_prereg = `${year}-${String(preregMonth).padStart(2, '0')}-12`;
+      if (r() < 0.25) { p.datum_hauptlauf = ''; }
+      else {
+        // ISO-Daten im selben Jahr, Monatsdifferenz trägt die Reihenfolge.
+        const hauptMonth = r() < 0.5 ? preregMonth + 2 : Math.max(1, preregMonth - 1);
+        p.datum_hauptlauf = `${year}-${String(Math.min(12, hauptMonth)).padStart(2, '0')}-${String(Math.min(28, 12 + gap)).padStart(2, '0')}`;
+      }
+      return p;
+    },
+    checks: (fixture, index) => [
+      `__check('seeded protokoll ${index}', validate_protocol(${pyLit(fixture)}) == __ref_validate_protocol(${pyLit(fixture)}))`,
+    ],
+    note: (fixture) => `Protokoll-Felder: ${Object.keys(fixture).length}, datum_hauptlauf ${fixture.datum_hauptlauf ? `'${fixture.datum_hauptlauf}'` : 'leer'}.`,
+  },
+  'validate-card-fields': {
+    functions: ['validate_card', 'splits_ok', 'is_semver'],
+    count: 2,
+    draw(r) {
+      const pool = ['name', 'zweck', 'lizenz', 'titel', 'ort', 'jahr', 'id', 'note', 'herkunft'];
+      const offset = randInt(r, 0, pool.length - 1);
+      const keyCount = randInt(r, 2, 3);
+      const keys = Array.from({ length: keyCount }, (_, i) => pool[(offset + i) % pool.length]);
+      const card = {};
+      const blankIndex = randInt(r, 0, keyCount - 1);
+      keys.forEach((key, i) => {
+        card[key] = i === blankIndex ? (r() < 0.5 ? '' : '   ') : REQUIRED_FIELD_VALUE_POOL[randInt(r, 0, 4)];
+      });
+      const extras = pool.filter((key) => !keys.includes(key));
+      const required = [...keys];
+      for (let i = 0; i < randInt(r, 0, 2); i += 1) required.push(extras[(offset + i) % extras.length]);
+      const valid = r() < 0.5;
+      const first = randInt(r, 2, 8) / 10;
+      const second = randInt(r, 0, Math.round(10 - first * 10)) / 10;
+      const third = valid ? Math.round((1 - first - second) * 100) / 100 : randInt(r, 5, 30) / 100;
+      const semver = r() < 0.6
+        ? `${randInt(r, 0, 12)}.${randInt(r, 0, 9)}.${randInt(r, 0, 9)}`
+        : ['1.2', 'v1.2.0', '1.2.x', '1.2.3.4'][randInt(r, 0, 3)];
+      return {
+        card, required,
+        splits: { split_train: first, split_dev: second, split_test: third },
+        semver,
+      };
+    },
+    checks: (fixture, index) => [
+      `__check('seeded card ${index}', validate_card(${pyLit(fixture.card)}, ${pyLit(fixture.required)}) == __ref_validate_card(${pyLit(fixture.card)}, ${pyLit(fixture.required)}))`,
+      `__check('seeded splits ${index}', splits_ok(${pyLit(fixture.splits)}) is __ref_splits_ok(${pyLit(fixture.splits)}))`,
+      `__check('seeded semver ${index}', is_semver(${pyLit(fixture.semver)}) is __ref_is_semver(${pyLit(fixture.semver)}))`,
+    ],
+    note: (fixture) => `Karte {${Object.keys(fixture.card).join(', ')}} mit ${fixture.required.length} Pflichtfeldern, splits ${fixture.splits.split_train}/${fixture.splits.split_dev}/${fixture.splits.split_test}, semver '${fixture.semver}'.`,
+  },
+  'readme-required-headings': {
+    functions: ['fehlende_uberschriften'],
+    count: 2,
+    draw(r) {
+      const pool = ['Setup', 'Karten', 'Limitations', 'Abhängigkeiten', 'Nutzung', 'Beispiele'];
+      const offset = randInt(r, 0, pool.length - 1);
+      const pflicht = Array.from({ length: randInt(r, 3, 4) }, (_, i) => pool[(offset + i) % pool.length]);
+      const lines = ['# Titel', ''];
+      for (const heading of pflicht) {
+        if (r() < 0.7) lines.push(`${'#'.repeat(randInt(r, 2, 3))}  ${heading} `, 'Inhalt.', '');
+      }
+      return { text: lines.join('\n'), pflicht };
+    },
+    checks: (fixture, index) => [
+      `__check('seeded readme ${index}', fehlende_uberschriften(${pyLit(fixture.text)}, ${pyLit(fixture.pflicht)}) == __ref_fehlende_uberschriften(${pyLit(fixture.text)}, ${pyLit(fixture.pflicht)}))`,
+    ],
+    note: (fixture) => `Pflicht [${fixture.pflicht.join(', ')}], Text mit ${fixture.text.split('\n').filter((l) => l.trim().startsWith('#')).length - 1} Abschnitts-Überschriften.`,
+  },
+};
+
+function requiredPythonParamsOk(parameters, caseId) {
+  const def = REQUIRED_PYTHON_CASES[caseId];
+  try {
+    const body = constructCaseBody('validate-required-field-raise', caseId);
+    return Array.isArray(parameters?.seedFixtures)
+      && parameters.seedFixtures.length === def.count
+      && parameters.tests === requiredPythonTests(body, def, parameters.seedFixtures)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+function requiredPythonTests(body, def, fixtures) {
+  const preamble = refCopy(body.expected.referenceSolver, def.functions);
+  const checks = fixtures.flatMap((fixture, index) => def.checks(fixture, index + 1)).join('\n');
+  return `${body.parameters.tests}\n\n# seeded extra cases\n${preamble}\n${checks}`;
+}
+
+function genRequiredPythonCase(seed, caseId, difficulty) {
+  const def = REQUIRED_PYTHON_CASES[caseId];
+  const body = constructCaseBody('validate-required-field-raise', caseId);
+  const r = rng(seed);
+  const fixtures = Array.from({ length: def.count }, () => def.draw(r));
+  const spec = REQUIRED_FIELD_CONTRACT.caseTypes.find((entry) => entry.caseId === caseId);
+  return {
+    parameters: {
+      caseId,
+      difficulty,
+      packages: body.parameters.packages,
+      starterCode: body.parameters.starterCode,
+      tests: requiredPythonTests(body, def, fixtures),
+      seedFixtures: fixtures,
+    },
+    expected: body.expected,
+    prompt: `${body.prompt}\n\nGezogene Fixtures: ${fixtures.map(def.note).join(' ')}`,
+    fullSolution: body.fullSolution,
+    activityType: 'python-code',
+    graderId: 'pyodide',
+    competencyIds: spec?.competencyIds ?? REQUIRED_FIELD_CONTRACT.competencyIds,
+    masteryEligible: true,
+  };
+}
+
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
-  if (parameters.caseId === 'paper-card-required-fields') {
-    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  if (parameters.parsonsCase) {
+    const order = REQUIRED_ORDERS[parameters.parsonsCase];
+    if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
+    return { solutionOrder: [...order] };
   }
-  if (
-    parameters.caseId === 'protocol-validator'
-    || parameters.caseId === 'validate-card-fields'
-    || parameters.caseId === 'readme-required-headings'
-  ) {
-    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  if (parameters.caseId && REQUIRED_PYTHON_CASES[parameters.caseId] && requiredPythonParamsOk(parameters, parameters.caseId)) {
+    return { referenceCode: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.referenceSolver };
   }
-  const order = REQUIRED_ORDERS[parameters.parsonsCase];
-  if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
-  return { solutionOrder: [...order] };
+  throw new Error(`Unbekannter Fall ${parameters.caseId ?? parameters.parsonsCase}`);
 }
 
 export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
-  if (
-    caseId === 'paper-card-required-fields'
-    || caseId === 'protocol-validator'
-    || caseId === 'validate-card-fields'
-    || caseId === 'readme-required-headings'
-  ) {
-    return constructVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
+  if (REQUIRED_PYTHON_CASES[caseId]) {
+    return genRequiredPythonCase(seed, caseId, difficulty);
   }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);
@@ -1347,4 +1653,58 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
     throw new Error('nested-if-decision-tree: keine Stufe im Suchfenster gefunden');
   }
   throw new Error(`Unbekannter Fall ${caseId}`);
+}
+
+// --- Familie 11: construct-error-journal-order (program-ordering) -------------
+// Bislang die einzige Familie mit authored Vertrag im JSON (authorityMode
+// 'static', serviert via staticFamilySpec/variantOf). Jetzt Construct-Pfad:
+// der einzige Fall journal-entry-order (f-meta-error-log-01) behält fünf
+// Lösungszeilen plus zwei Distraktoren authored; der Seed zieht die
+// Startreihenfolge ehrlich aus den 7! Ordnungen (Pool-Reihenfolge ausgenom-
+// men) statt einer von vier authored Ordnungen. Non-Choice-Mastery-Fix:
+// masteryEligible/parsons/deterministic bleiben exakt erhalten.
+
+export const ERROR_JOURNAL_ORDER_CONTRACT = {
+  familyId: 'construct-error-journal-order',
+  familyGroup: 'construct-program',
+  summary: 'Ordnet die Einträge eines Fehlerjournals vom beobachteten Symptom bis zum geplanten Abruf.',
+  taskArchetype: 'program-ordering',
+  authorityMode: 'seeded',
+  masteryEligible: true,
+  caseTypes: [
+    { caseId: 'journal-entry-order' },
+  ],
+  difficultyProfiles: ['core'],
+  competencyIds: ['c-meta-learning'],
+  graderId: 'deterministic',
+  activityType: 'parsons',
+};
+
+/** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
+export function solveErrorJournalOrder(parameters) {
+  const order = constructCaseBody('construct-error-journal-order', parameters.parsonsCase).expected.solutionOrder;
+  if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
+  return { solutionOrder: [...order] };
+}
+
+export function generateErrorJournalOrderFamily({ seed, caseId, difficulty }) {
+  assertSeed(seed);
+  assertProfile(difficulty);
+  if (!ERROR_JOURNAL_ORDER_CONTRACT.difficultyProfiles.includes(difficulty)) {
+    throw new Error(`Unbekanntes Profil ${difficulty}`);
+  }
+  if (caseId !== 'journal-entry-order') {
+    throw new Error(`Unbekannter Fall ${caseId}`);
+  }
+  const body = constructCaseBody('construct-error-journal-order', caseId);
+  return parsonsGenerate({
+    seed,
+    difficulty,
+    parsonsCase: caseId,
+    fragments: body.parameters.fragments,
+    solutionOrder: body.expected.solutionOrder,
+    distractors: body.expected.distractors,
+    prompt: body.prompt,
+    fullSolution: body.fullSolution,
+  });
 }

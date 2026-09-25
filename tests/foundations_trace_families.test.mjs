@@ -218,21 +218,21 @@ const TRACE_TAXONOMY = [
       'slice-predict-output': 'genCodeReadingOutput-Einmalzuweisung (Umgebungstabelle plus stdout); Überschreibungsschritt läuft vakant',
       'join-split-predict': 'genCodeReadingOutput-Einmalzuweisung (split/join); Überschreibungsschritt läuft vakant',
       'comprehension-predict': 'genCodeReadingOutput-Einmalzuweisung (Filter/Abbildung); Überschreibungsschritt läuft vakant',
-      'gradient-loop-two-updates': 'statischer W08-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
-      'tree-majority-vote-trace': 'statischer W15-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
+      'gradient-loop-two-updates': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'tree-majority-vote-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
       'rng-stream-reseed-trace': 'statischer W17-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'card-check-variable-trace': 'statischer W32-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'rpn-priority-trace': 'statischer W33-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'stage-runner-error-states': 'statischer W36-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'overclaim-scanner-trace': 'statischer W38-Fall mit Ausgabevorhersage und eigenem Kompetenz-Override',
-      'manual-backward-step-trace': 'statischer W19-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
-      'fixed-dropout-mask-trace': 'statischer W21-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'stable-softmax-rows-trace': 'statischer W22-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'char-encode-roundtrip-trace': 'statischer W23-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'freeze-param-filter-trace': 'statischer W25-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'absolute-vs-relative-gain-trace': 'statischer W26-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'metric-name-normalize-trace': 'statischer W31-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
-      'column-picture-trace': 'statischer W05-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
+      'card-check-variable-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'rpn-priority-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'stage-runner-error-states': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'overclaim-scanner-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'manual-backward-step-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'fixed-dropout-mask-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'stable-softmax-rows-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'char-encode-roundtrip-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'freeze-param-filter-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'absolute-vs-relative-gain-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'metric-name-normalize-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'column-picture-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
     },
     staticContent: [
       { sourceId: 'w01-e3', contentType: 'predict-output', caseId: 'reassign-two-variables-print' },
@@ -490,4 +490,70 @@ test('call composition tables compute inner before outer in both lanes', () => {
     assert.equal(gradeTraceTable(traceTable, traceTable.expectedStates).correct, true);
   }
   assert.equal(callCompositionTraceTable({ parameters: { form: 'unbekannt' } }), null);
+});
+
+// Literal-shard generators: the removed authored variant banks serve as the
+// equivalence fixture — build(extractedLiterals) must reproduce every formerly
+// authored instance byte-identically (expected payload + variable values).
+const TRACE_LITERAL_FIXTURE = JSON.parse(
+  readFileSync(join(root, 'tests/fixtures/trace-assignment-literals.json'), 'utf8'),
+);
+
+test('literal-shard generators reproduce all formerly authored instances', async () => {
+  const { TRACE_GENERATORS } = await import('../assets/js/core/trace_assignment_generators.mjs');
+  let checked = 0;
+  for (const [caseId, rows] of Object.entries(TRACE_LITERAL_FIXTURE)) {
+    const spec = TRACE_GENERATORS[caseId];
+    assert.ok(spec, `${caseId}: Generator fehlt`);
+    for (const row of rows) {
+      const params = { ...row.params };
+      if (caseId === 'manual-backward-step-trace') {
+        params.lr = params.lr_w;
+        delete params.lr_w;
+        delete params.lr_b;
+      }
+      const built = spec.build(params);
+      if (row.expected?.output !== undefined) {
+        assert.equal(built.expected.output, row.expected.output, `${caseId}: Ausgabe weicht ab`);
+      } else {
+        assert.equal(built.expected.output, undefined, `${caseId}: unerwartete Ausgabe`);
+      }
+      if (row.variables) {
+        assert.deepEqual(built.variables, row.variables, `${caseId}: Variablenwerte weichen ab`);
+      }
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 140);
+});
+
+test('literal-shard generators produce diverse instances and solver parity', () => {
+  for (const caseId of Object.keys(TRACE_LITERAL_FIXTURE)) {
+    const prompts = new Set();
+    const snippets = new Set();
+    for (const seed of [0, 1, 2, 3, 4, 5, 6, 7]) {
+      const inst = generateTraceAssignmentFamily({ seed, caseId, difficulty: 'core' });
+      prompts.add(inst.prompt);
+      snippets.add(inst.parameters.snippet);
+      const solved = TRACE_FAMILY_RUNTIME['trace-assignment-state'].solve(inst.parameters);
+      if (inst.expected.output !== undefined) {
+        assert.equal(solved.output, inst.expected.output, `${caseId}: Solver-Parität verletzt (seed ${seed})`);
+      } else {
+        assert.deepEqual(solved, inst.expected, `${caseId}: Solver-Parität verletzt (seed ${seed})`);
+      }
+    }
+    assert.ok(snippets.size >= 4, `${caseId}: nur ${snippets.size} unterschiedliche Snippets über 8 Seeds`);
+    assert.ok(prompts.size >= 4, `${caseId}: nur ${prompts.size} unterschiedliche Prompts über 8 Seeds`);
+  }
+});
+
+test('manual-backward draws always produce integer trace values (grader contract)', () => {
+  // Regression: local=0.5 with odd grad_out yielded fractional grad_w values,
+  // which the code-trace grader rejects as invalid input — unwinnable instance.
+  for (let seed = 0; seed < 200; seed += 1) {
+    const inst = generateTraceAssignmentFamily({ seed, caseId: 'manual-backward-step-trace', difficulty: 'core' });
+    for (const { name, value } of inst.parameters.variables) {
+      assert.ok(Number.isInteger(value), `${name}=${value} nicht ganzzahlig (seed ${seed})`);
+    }
+  }
 });

@@ -107,8 +107,8 @@
       "prompt": "Löse das lineare Gleichungssystem\n\n  -4x + 3y = -10\n  1x + 2y = 8\n\nmit dem Gauß-Verfahren und gib die Lösung als Paar (x, y) an — in der Schreibweise (x, y).",
       "fullSolution": "I + 4·II eliminiert $x$: $(-4x+3y)+(4x+8y) = -10+32 \\Rightarrow 11y = 22 \\Rightarrow y = 2$. Rückeinsetzen in II: $x + 4 = 8 \\Rightarrow x = 4$.\n\nProbe: $-4\\cdot4 + 3\\cdot2 = -16 + 6 = -10$ und $4 + 4 = 8$ — beide Gleichungen stimmen, die Lösung ist $(x, y) = (4, 2)$.",
       "hints": [
-        "Multipliziere die zweite Gleichung mit 4, damit $x$ beim Addieren der Gleichungen wegfällt.",
-        "Setze das gefundene $y$ in eine der beiden Gleichungen zurück und prüfe das Paar anschließend in beiden."
+        "Multipliziere eine der Gleichungen mit einem passenden Faktor aus den Koeffizienten, damit beim Addieren eine Variable wegfällt.",
+        "Setze die gefundene Variable in eine der beiden Gleichungen zurück und prüfe das Paar anschließend in beiden."
       ],
       "typicalErrors": [
         "Vorzeichenfehler beim Addieren der eliminierten Terme",

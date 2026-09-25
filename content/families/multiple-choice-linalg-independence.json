@@ -1,43 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "multiple-choice-linalg-independence",
-  "contract": {
-    "familyId": "multiple-choice-linalg-independence",
-    "familyGroup": "classify-concept",
-    "summary": "Prüft Vektormengen und Aussagen zur linearen Unabhängigkeit über mehrere Optionen hinweg.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "independent-sets-r2",
-        "propertyTest": false
-      },
-      {
-        "caseId": "independence-statements",
-        "propertyTest": true
-      },
-      {
-        "caseId": "independent-sets-r3",
-        "propertyTest": false
-      },
-      {
-        "caseId": "rank-nullity-combined",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-linalg-independence"
-    ],
-    "graderId": "deterministic",
-    "activityType": "multiple-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "independent-sets-r2",

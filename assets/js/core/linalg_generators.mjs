@@ -221,7 +221,7 @@ export function genRankCapsule(seed, { dims, targetRank, bound }) {
  *  Bounds decken die 27 kuratierten Orakel ab (intro maxAbs 12 über Faktor 4). */
 export const INDEPENDENCE_CAPSULES = independenceBank.capsules;
 
-const INDEPENDENCE_FACTORS = [-4, -3, -2, -1, 2, 3, 4];
+export const INDEPENDENCE_FACTORS = [-4, -3, -2, -1, 2, 3, 4];
 
 export const maxAbsVectors = (vectors) => Math.max(...vectors.flat().map((value) => Math.abs(value)));
 

@@ -18,8 +18,15 @@
 //   - degenerate draws are retried with a bounded guard.
 
 import {
-  bindFamilyDraw, pick, randInt, rng, variantCaseIndex, buildRotatedChoices, CHOICE_IDS,
+  bindFamilyDraw, pick, randInt, rng, shuffle, variantCaseIndex, buildRotatedChoices, CHOICE_IDS,
 } from './generator_draw_kit.mjs';
+import { refCopy, pyLit, pyNum, pyRound } from './procedural/py_test_kit.mjs';
+import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
+import confusionMetricDoc from '../../../content/families/aggregate-confusion-metric.json' with { type: 'json' };
+import ratioPercentDoc from '../../../content/families/formula-ratio-percent-metric.json' with { type: 'json' };
+import mseGradientDoc from '../../../content/families/optimize-mse-gradient-closed-form.json' with { type: 'json' };
+import goalShiftDoc from '../../../content/families/validate-goalshift-flag-rules.json' with { type: 'json' };
+import formulaStatDoc from '../../../content/families/formula-stat-from-table.json' with { type: 'json' };
 
 import benchmarkBank from '../../../content/banks/classify-benchmark-reading.json' with { type: 'json' };
 import confoundingBank from '../../../content/banks/classify-confounding.json' with { type: 'json' };
@@ -329,6 +336,398 @@ export function genConfusionCount(seed) {
         'actual-pos': `Tatsächlich positiv = TP + FN = ${tp} + ${fn} = ${answer}.`,
       }[metric],
     };
+  });
+}
+
+// --- aggregate-confusion-metric: seeded cases -------------------------------
+// Sechs ehemals statische Shard-Fälle ziehen Fixtures/Literale pro Seed.
+// starterCode, Base-Testblock, referenceSolver, prompt und fullSolution
+// bleiben byte-identisch authored — gelesen aus dem registrierten Fallkörper,
+// nicht dupliziert. Generierte Tests = authored Base-Block + `# seeded extra
+// cases` mit __ref_-Orakelkopie des Referenzsolvers (reine Python-Wahrheit)
+// und Gleichheits-Checks über die gezogenen Fixtures. Muster wie
+// optimize-decode-greedy-loop / validate-required-field-raise.
+
+// Lazy wie ensureGitDocs: Bundle-Chunk-Reihenfolge ist unbestimmt, die Docs
+// sind deshalb Modul-Importe und registrieren sich beim ersten Zugriff.
+let shardDocsReady = false;
+export function ensureShardDocs() {
+  if (!shardDocsReady) {
+    registerStaticCases(confusionMetricDoc.familyId, confusionMetricDoc.cases);
+    registerStaticCases(ratioPercentDoc.familyId, ratioPercentDoc.cases);
+    registerStaticCases(mseGradientDoc.familyId, mseGradientDoc.cases);
+    registerStaticCases(goalShiftDoc.familyId, goalShiftDoc.cases);
+    registerStaticCases(formulaStatDoc.familyId, formulaStatDoc.cases);
+    shardDocsReady = true;
+  }
+}
+
+const confusionBody = (caseId) => { ensureShardDocs(); return staticCaseBody('aggregate-confusion-metric', caseId); };
+const ratioBody = (caseId) => { ensureShardDocs(); return staticCaseBody('formula-ratio-percent-metric', caseId); };
+const mseGradientBody = (caseId) => { ensureShardDocs(); return staticCaseBody('optimize-mse-gradient-closed-form', caseId); };
+const goalShiftBody = (caseId) => { ensureShardDocs(); return staticCaseBody('validate-goalshift-flag-rules', caseId); };
+
+// Solver-Seite (data_ml_families): authored Referenzsolver, lazy registriert.
+export const confusionRefSolver = (caseId) => confusionBody(caseId).expected.referenceSolver;
+export const ratioRefSolver = (caseId) => ratioBody(caseId).expected.referenceSolver;
+export const gradMseRefSolver = (caseId) => mseGradientBody(caseId).expected.referenceSolver;
+export const goalShiftRefSolver = (caseId) => goalShiftBody(caseId).expected.referenceSolver;
+
+const seededPyBlock = (body, fnNames, lines) => (
+  `${body.parameters.tests}\n\n# seeded extra cases\n${refCopy(body.expected.referenceSolver, fnNames)}\n${lines.join('\n')}`
+);
+
+const pyodideInstance = (body, extraParameters, tests, note) => {
+  return {
+    parameters: {
+      packages: body.parameters.packages,
+      starterCode: body.parameters.starterCode,
+      tests,
+      ...extraParameters,
+    },
+    expected: body.expected,
+    prompt: `${body.prompt}\n\nGezogene Fixture: ${note}`,
+    fullSolution: body.fullSolution,
+    activityType: 'python-code',
+    graderId: 'pyodide',
+  };
+};
+
+export function genSigmoidPredictTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const z = randInt(r, -40, 40) / 10;
+    const n = randInt(r, 5, 8);
+    const yt = Array.from({ length: n }, () => (r() < 0.45 ? 1 : 0));
+    const yp = Array.from({ length: n }, () => randInt(r, 5, 95) / 100);
+    const t = randInt(r, 3, 7) / 10;
+    const args = `${pyLit(yt)}, ${pyLit(yp)}, ${pyLit(t)}`;
+    const tests = seededPyBlock(confusionBody('sigmoid-predict-numpy'), ['sigmoid', 'confusion', 'precision_recall_f1'], [
+      `__check('seeded sigmoid', abs(float(np.asarray(sigmoid(${pyLit(z)}))) - float(np.asarray(__ref_sigmoid(${pyLit(z)})))) < 1e-12)`,
+      `__check('seeded confusion', confusion(${args}) == __ref_confusion(${args}))`,
+      `__check('seeded prf', all(abs(a - b) < 1e-9 for a, b in zip(precision_recall_f1(confusion(${args})), __ref_precision_recall_f1(__ref_confusion(${args})))))`,
+    ]);
+    return pyodideInstance(confusionBody('sigmoid-predict-numpy'), { seedZ: z, seedYt: yt, seedYp: yp, seedT: t }, tests,
+      `z = ${z}, ${n} Zeilen, Schwelle ${t}.`);
+  });
+}
+
+export function genConfusionCostReport(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const cm = { tp: randInt(r, 1, 8), fp: randInt(r, 0, 4), fn: randInt(r, 0, 5), tn: randInt(r, 1, 8) };
+    const cfp = randInt(r, 2, 50);
+    const cfn = randInt(r, 2, 50);
+    const n = randInt(r, 4, 8);
+    const y = Array.from({ length: n }, () => randInt(r, 5, 95) / 100);
+    const t = Array.from({ length: n }, () => (r() < 0.45 ? 1 : 0));
+    const tests = seededPyBlock(confusionBody('confusion-cost-report'), ['total_cost', 'best_threshold'], [
+      `__check('seeded cost', total_cost(${pyLit(cm)}, ${cfp}, ${cfn}) == __ref_total_cost(${pyLit(cm)}, ${cfp}, ${cfn}))`,
+      `__check('seeded best', best_threshold(${pyLit(y)}, ${pyLit(t)}, ${cfp}, ${cfn}) == __ref_best_threshold(${pyLit(y)}, ${pyLit(t)}, ${cfp}, ${cfn}))`,
+    ]);
+    return pyodideInstance(confusionBody('confusion-cost-report'), { seedCm: cm, seedCfp: cfp, seedCfn: cfn, seedY: y, seedT: t }, tests,
+      `Matrix ${pyLit(cm)}, Kosten (${cfp}, ${cfn}), ${n} Scores.`);
+  });
+}
+
+const CONFUSION_ROW_WORDS = ['katze', 'hund', 'baum', 'licht', 'weg', 'haus', 'wort', 'zahl', 'bild', 'ton'];
+
+const confRowsWords = (r, count) => {
+  const pool = [...CONFUSION_ROW_WORDS];
+  return Array.from({ length: count }, () => {
+    const index = randInt(r, 0, pool.length - 1);
+    return pool.splice(index, 1)[0];
+  });
+};
+
+export function genConfusionFromRows(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const n = randInt(r, 4, 7);
+    const rows = Array.from({ length: n }, () => [
+      r() < 0.5 ? 'pos' : 'neg',
+      r() < 0.5 ? 'pos' : 'neg',
+    ]);
+    const w1 = confRowsWords(r, randInt(r, 2, 4)).join(' ');
+    const w2 = confRowsWords(r, randInt(r, 2, 4)).join(' ');
+    const answers = rows.map((row) => (r() < 0.8 ? row[1] : row[0] === 'pos' ? 'neg' : 'pos'));
+    const golds = rows.map((row) => row[1]);
+    const tests = seededPyBlock(confusionBody('confusion-from-rows'), ['_words', 'confusion', 'prf', 'exact_match_rate', 'token_f1'], [
+      `__check('seeded confusion', list(confusion(${pyLit(rows)})) == list(__ref_confusion(${pyLit(rows)})))`,
+      `__check('seeded em', abs(exact_match_rate(${pyLit(answers)}, ${pyLit(golds)}) - __ref_exact_match_rate(${pyLit(answers)}, ${pyLit(golds)})) < 1e-12)`,
+      `__check('seeded f1', abs(token_f1(${pyLit(w1)}, ${pyLit(w2)}) - __ref_token_f1(${pyLit(w1)}, ${pyLit(w2)})) < 1e-12)`,
+      `__check('seeded prf', prf(*confusion(${pyLit(rows)})[:3]) == __ref_prf(*__ref_confusion(${pyLit(rows)})[:3]))`,
+    ]);
+    return pyodideInstance(confusionBody('confusion-from-rows'), { seedRows: rows, seedW1: w1, seedW2: w2, seedAnswers: answers }, tests,
+      `${n} Label-Zeilen, Token-Paar '${w1}'/'${w2}'.`);
+  });
+}
+
+export function genFairnessMetricCompare(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const g1 = pick(r, ['stadt', 'land', 'nord', 'sued']);
+    const g2 = pick(r, ['jung', 'alt', 'west', 'ost']);
+    const zaehlungen = {
+      [g1]: { tp: randInt(r, 10, 60), fp: randInt(r, 2, 20), fn: randInt(r, 2, 20), tn: randInt(r, 30, 90) },
+      [g2]: { tp: randInt(r, 10, 60), fp: randInt(r, 2, 20), fn: randInt(r, 2, 20), tn: randInt(r, 30, 90) },
+    };
+    const tests = seededPyBlock(confusionBody('fairness-metric-compare'), ['subgroup_metrics'], [
+      `__check('seeded metrics', subgroup_metrics(${pyLit(zaehlungen)}) == __ref_subgroup_metrics(${pyLit(zaehlungen)}))`,
+    ]);
+    return pyodideInstance(confusionBody('fairness-metric-compare'), { seedZaehlungen: zaehlungen }, tests,
+      `Gruppen ${g1}/${g2}: ${pyLit(zaehlungen)}.`);
+  });
+}
+
+// predict-output: festes token_f1-Snippet, gezogene Argumentpaare.
+const METRIC_TRACE_HEAD = `def token_f1(answer, gold):
+    a = answer.lower().split()
+    g = gold.lower().split()
+    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))
+    if common == 0:
+        return 0.0
+    p = common / len(a)
+    r = common / len(g)
+    return round(2 * p * r / (p + r), 2)
+`;
+
+// JS-Spiegel von token_f1: lower + whitespace-split + Multiset-Overlap.
+const tokenF1 = (answer, gold) => {
+  const a = answer.toLowerCase().split(/\s+/).filter(Boolean);
+  const g = gold.toLowerCase().split(/\s+/).filter(Boolean);
+  const count = (list) => list.reduce((map, token) => map.set(token, (map.get(token) ?? 0) + 1), new Map());
+  const ca = count(a);
+  const cg = count(g);
+  let common = 0;
+  for (const [token, n] of ca) common += Math.min(n, cg.get(token) ?? 0);
+  if (common === 0) return 0.0;
+  const p = common / a.length;
+  const rr = common / g.length;
+  return pyRound((2 * p * rr) / (p + rr), 2);
+};
+
+const METRIC_TRACE_POOL = ['katze', 'hund', 'baum', 'licht', 'weg', 'haus', 'wort', 'zahl', 'bild', 'ton', 'satz', 'code'];
+
+export function genMetricCodeOutput(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const phrase = () => {
+      const size = randInt(r, 2, 4);
+      const pool = [...METRIC_TRACE_POOL];
+      return Array.from({ length: size }, () => pool.splice(randInt(r, 0, pool.length - 1), 1)[0]).join(' ');
+    };
+    // Paar 1 teilt mindestens ein Token (partial overlap), Paar 2 ist
+    // disjunkt (0.0) oder identisch (1.0) — die authored Arme.
+    const pool = [...METRIC_TRACE_POOL];
+    const draw = () => pool.splice(randInt(r, 0, pool.length - 1), 1)[0];
+    const shared = draw();
+    const a1 = [shared, draw(), draw()].join(' ');
+    const g1 = [shared, draw()].join(' ');
+    const disjoint = r() < 0.7;
+    const a2 = disjoint ? [draw(), draw()].join(' ') : phrase();
+    const g2 = disjoint ? [draw(), draw()].join(' ') : a2;
+    const snippet = `${METRIC_TRACE_HEAD}
+print(token_f1("${a1}", "${g1}"))
+print(token_f1("${a2}", "${g2}"))`;
+    const output = `${pyNum(tokenF1(a1, g1))}\n${pyNum(tokenF1(a2, g2))}`;
+    return {
+      parameters: { snippet, a1, g1, a2, g2 },
+      expected: { kind: 'output-lines', output },
+      prompt: `Was gibt das Programm aus? Sage die Ausgabe der beiden print-Aufrufe von <code>token_f1</code> vorher.`,
+      fullSolution: `Multiset-Overlap bestimmt p und r; gerundet auf zwei Stellen: <code>${output.replace('\n', '</code> / <code>')}</code>.`,
+      activityType: 'predict-output',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+// Solver-Seite desselben Falls: rekonstruiert die Ausgabe allein aus den
+// gezogenen Argumentpaaren (kein expected-Zugriff).
+export const metricTraceExpected = ({ a1, g1, a2, g2 }) => ({
+  output: `${pyNum(tokenF1(a1, g1))}\n${pyNum(tokenF1(a2, g2))}`,
+});
+
+// single-choice: asymmetrische Fehlerkosten — Szenario-Prosa authored,
+// Kostenpaar gezogen (fp/fn >= 200 wie authored), Optionen slots.
+const THRESHOLD_SCENARIOS = [
+  (fp, fn) => `Spamfilter: FP (legitime Mail im Spam) ${fp} €, FN ${fn} €. Welche Schwellen-Strategie senkt die erwarteten Kosten?`,
+  (fp, fn) => `Betrugsalarm: falsches Einfrieren eines Kontos (FP) kostet ${fp}, übersehener Kleinstbetrug (FN) ${fn}. Strategie?`,
+  (fp, fn) => `Werbeblocker: fälschlich geblockte legitime Anzeige ${fp}, durchgerutschte Spam-Anzeige ${fn}. Schwelle?`,
+  (fp, fn) => `Moderation: falsches Entfernen eines harmlosen Posts ${fp}, übersehenes toxisches Kurzposting ${fn}. Kostenminimale Schwelle?`,
+  (fp, fn) => `Filter: FP ${fp} €, FN ${fn} €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?`,
+  (fp, fn) => `QA-Scanner: Ausschuss eines guten Teils (FP) ${fp}, entgangener Mini-Defekt (FN) ${fn}. Strategie?`,
+  (fp, fn) => `Phishing-Warnung: Fehlalarm an eine Kundin ${fp}, übersehene Nuisance-Mail ${fn}. Schwelle?`,
+  (fp, fn) => `SOC-Alert: falscher Incident-Call (FP) ${fp}, verpasste Low-Severity-Mail (FN) ${fn}. Kostenstrategie?`,
+  (fp, fn) => `Ein Spamfilter gibt Wahrscheinlichkeiten aus. FP kostet ${fp} €, FN ${fn} €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?`,
+];
+const THRESHOLD_FP_COSTS = [15, 25, 40, 50, 60, 80, 100, 200, 500];
+const THRESHOLD_FN_COSTS = [0.03, 0.04, 0.05, 0.08, 0.1, 0.2, 0.5, 1];
+
+export const thresholdCorrectText = ({ ratio }) =>
+  `Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit positiv markieren, weil ein FP rund ${ratio}-mal teurer ist als ein FN.`;
+
+export function genThresholdCostChoice(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const scenario = randInt(r, 0, THRESHOLD_SCENARIOS.length - 1);
+    const fpCost = pick(r, THRESHOLD_FP_COSTS);
+    // authored lower bound: fp is at least ~200x as expensive as fn.
+    const fnPool = THRESHOLD_FN_COSTS.filter((cost) => fpCost / cost >= 200);
+    const fnCost = pick(r, fnPool);
+    const ratio = Math.round(fpCost / fnCost);
+    const parameters = { scenario, fpCost, fnCost, ratio };
+    const options = [
+      thresholdCorrectText(parameters),
+      'Schwellenwert senken (Richtung 0,1): Fast alles wird als positiv markiert, dadurch geht nichts unter.',
+      'Beim Standard 0,5 bleiben: Dieser Wert ist kostenunabhängig immer optimal.',
+      'Der Schwellenwert beeinflusst die Kostenbilanz nicht — entscheidend ist allein die Accuracy.',
+    ];
+    const rotation = variantCaseIndex(seed, options.length);
+    const choices = buildRotatedChoices(options, rotation, CHOICE_IDS);
+    return {
+      parameters,
+      expected: {},
+      choices,
+      prompt: THRESHOLD_SCENARIOS[scenario](fmtDe(fpCost), fmtDe(fnCost)),
+      fullSolution: `${fmtDe(fpCost)} / ${fmtDe(fnCost)} = ${fmtDe(ratio)}: Der FP dominiert die Kostenbilanz. Die Schwelle hoch verschiebt Vorhersagen von positiv nach negativ und senkt die FP-Zahl — die zusätzlichen FN sind rund ${ratio}-mal billiger.`,
+      activityType: 'single-choice',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+// --- formula-ratio-percent-metric: seeded cases -----------------------------
+// Drei ehemals statische Shard-Fälle. Python-repr-Parität: alle Quotienten
+// haben Nenner <= 1000 (>= 1e-3 im Float — kein Exponential-Drift zwischen
+// JS String() und Python str()); Operationen wörtlich wie im Snippet.
+
+const pyFloatText = (value) => (Number.isInteger(value) ? `${value}.0` : String(value));
+
+const LEDGER_ID_POOL = ['q1', 'q2', 'q3', 'q4', 'q5', 'a', 'b', 'x', 'y', 'p', 'q', 'r', 's', 't', 'u1', 'z', 'w', 'v', 'r1', 'r2', 'k', 'm', 'n', 'o'];
+
+// Ledger-Spiegel: (kennung, retrieval_treffer, antwort_korrekt) -> drei Zeilen.
+export const ledgerRatesExpected = ({ faelle }) => {
+  const treffer = faelle.filter((row) => row[1]);
+  const korrekt = treffer.filter((row) => row[2]);
+  return {
+    output: `${treffer.length}\n${pyFloatText(pyRound(korrekt.length / treffer.length, 3))}\n${pyFloatText(pyRound(korrekt.length / faelle.length, 3))}`,
+  };
+};
+
+export function genLedgerRatesOutput(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const n = randInt(r, 2, 6);
+    const pool = [...LEDGER_ID_POOL];
+    const faelle = Array.from({ length: n }, () => {
+      const id = pool.splice(randInt(r, 0, pool.length - 1), 1)[0];
+      const treffer = r() < 0.7;
+      const korrekt = treffer && r() < 0.6;
+      return [id, treffer, korrekt];
+    });
+    // ZeroDivision-Guard wie authored: mindestens ein retrieval_treffer.
+    if (!faelle.some((row) => row[1])) faelle[randInt(r, 0, n - 1)][1] = true;
+    const faelleLit = `[${faelle.map((row) => `(${pyLit(row[0])}, ${pyLit(row[1])}, ${pyLit(row[2])})`).join(', ')}]`;
+    const snippet = `faelle = ${faelleLit}
+treffer = [f for f in faelle if f[1]]
+korrekt = [f for f in treffer if f[2]]
+print(len(treffer))
+print(round(len(korrekt) / len(treffer), 3))
+print(round(len(korrekt) / len(faelle), 3))`;
+    const { output } = ledgerRatesExpected({ faelle });
+    return {
+      parameters: { snippet, faelle },
+      expected: { kind: 'output-lines', output },
+      prompt: 'Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tupel sind (kennung, retrieval_treffer, antwort_korrekt).',
+      fullSolution: `treffer = Anzahl mit <code>True</code> an Position 1, korrekt = Schnittmenge. Ausgabe: <code>${output.replaceAll('\n', '</code> / <code>')}</code>.`,
+      activityType: 'predict-output',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+const SUBGROUP_NAME_POOL = ['versand', 'recht', 'rabatt', 'garantie', 'nord', 'sued', 'ost', 'west', 'alpha', 'beta', 'g1', 'g2', 'g3', 'k', 'm', 'n', 'p', 'v', 'r', 'x', 'y', 'z', 'a', 'b'];
+
+// Subgruppen-Spiegel: recall = getroffen/gesamt (gesamt >= 1 wie authored),
+// Zeile 1 zwei gezogene Gruppen, Zeile 2 Mittel * 100 gerundet auf 1 Stelle.
+export const subgroupRecallExpected = ({ gruppen, printPair }) => {
+  const werte = Object.fromEntries(Object.entries(gruppen).map(([name, [g, t]]) => [name, g ? t / g : 0.0]));
+  const mean = 100 * Object.values(werte).reduce((sum, v) => sum + v, 0) / Object.keys(werte).length;
+  return {
+    output: `${pyFloatText(werte[printPair[0]])} ${pyFloatText(werte[printPair[1]])}\n${pyFloatText(pyRound(mean, 1))}`,
+  };
+};
+
+export function genSubgroupRecallOutput(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const count = randInt(r, 2, 4);
+    const pool = [...SUBGROUP_NAME_POOL];
+    const gruppen = {};
+    for (let i = 0; i < count; i += 1) {
+      const name = pool.splice(randInt(r, 0, pool.length - 1), 1)[0];
+      const gesamt = randInt(r, 1, 10);
+      gruppen[name] = [gesamt, randInt(r, 0, gesamt)];
+    }
+    const names = Object.keys(gruppen);
+    const first = randInt(r, 0, count - 1);
+    let second = randInt(r, 0, count - 2);
+    if (second >= first) second += 1;
+    const printPair = [names[first], names[second]];
+    const entries = names.map((name) => `    ${pyLit(name)}: (${gruppen[name][0]}, ${gruppen[name][1]}),`).join('\n');
+    const snippet = `def recall(gesamt, getroffen):
+    if not gesamt:
+        return 0.0
+    return getroffen / gesamt
+
+gruppen = {
+${entries}
+}
+werte = {name: recall(g, t) for name, (g, t) in gruppen.items()}
+print(werte[${pyLit(printPair[0])}], werte[${pyLit(printPair[1])}])
+print(round(100 * sum(werte.values()) / len(werte), 1))`;
+    const { output } = subgroupRecallExpected({ gruppen, printPair });
+    return {
+      parameters: { snippet, gruppen, printPair },
+      expected: { kind: 'output-lines', output },
+      prompt: 'Subgruppen-Recall von Hand ausführen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. gruppen enthält je Subgruppe (gesamt, getroffen).',
+      fullSolution: `recall je Gruppe, dann das gerundete Mittel in Prozent. Ausgabe: <code>${output.replaceAll('\n', '</code> / <code>')}</code>.`,
+      activityType: 'predict-output',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+// python-code: compare_systems-Shard — authored Base-Tests bleiben Prefix,
+// generierte Fälle prüfen gegen die __ref_-Orakelkopie des Referenzsolvers.
+export function genCompareSystemsTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const caseCount = randInt(r, 2, 3);
+    const seedCases = [];
+    for (let i = 0; i < caseCount; i += 1) {
+      const len = randInt(r, 3, 8);
+      const rows = Array.from({ length: len }, () => [r() < 0.55, r() < 0.55]);
+      // Arm 'baseline null' kommt authored vor — gelegentlich erzwingen.
+      if (r() < 0.25) rows.forEach((row) => { row[0] = false; });
+      seedCases.push(rows);
+    }
+    const lines = seedCases.map((rows, i) => (
+      `__check('seeded ${i + 1}', compare_systems(${pyLit(rows)}) == __ref_compare_systems(${pyLit(rows)}))`
+    ));
+    const body = ratioBody('compare-systems-metric');
+    const tests = seededPyBlock(body, ['compare_systems'], lines);
+    return pyodideInstance(body, { seedCases }, tests, `${caseCount} Vergleichstabellen mit ${seedCases.map((rows) => rows.length).join('/')} Zeilen.`);
   });
 }
 
@@ -1260,4 +1659,263 @@ export function drawSvmMarginParameters(r, capsule) {
     };
   }
   return { w: entry.w, b: entry.b, marginWidth: Math.round((2 / svmNorm(entry.w)) * 1e6) / 1e6 };
+}
+
+// --- optimize-mse-gradient-closed-form: grad-mse-numpy-reference -------------
+// Wie die Confusion-Shard-Fälle: authored Base-Testblock bleibt byte-identisch
+// Prefix; der Seed zieht (x, y, w, b, t) und hängt ein `# seeded extra cases`-
+// Paket mit __ref_-Orakelkopie des Referenzsolvers an. Die emittierten Checks
+// decken alle authored Prüfungen ab — analytisches dw/db gegen das Orakel,
+// num_grad-Konsistenz (Quadrat-Stichprobe + f_w/f_b) und den 0/0-Edge —
+// jeweils gegen __ref_grad_mse, nie gegen hartkodierte Punkte.
+
+const GRAD_MSE_VALUE_POOL = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+const GRAD_MSE_W_POOL = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3];
+const GRAD_MSE_B_POOL = [-1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+// t = 0 ausgeschlossen: die Quadrat-Stichprobe 2*t wäre sonst degeneriert.
+const GRAD_MSE_T_POOL = [-3, -2.5, -2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+const GRAD_MSE_FUNCTIONS = ['grad_mse', 'num_grad'];
+
+const gradMseSeededTests = (body, fixture) => {
+  const wLit = pyLit(fixture.w);
+  const bLit = pyLit(fixture.b);
+  const tLit = pyLit(fixture.t);
+  return seededPyBlock(body, GRAD_MSE_FUNCTIONS, [
+    `x = np.array(${pyLit(fixture.x)})`,
+    `y = np.array(${pyLit(fixture.y)})`,
+    `w, b = ${wLit}, ${bLit}`,
+    'dw, db = grad_mse(w, b, x, y)',
+    '__ref_dw, __ref_db = __ref_grad_mse(w, b, x, y)',
+    `__check('seeded dw', abs(dw - __ref_dw) < 1e-9)`,
+    `__check('seeded db', abs(db - __ref_db) < 1e-9)`,
+    'f_w = lambda u: float(np.mean((u * x + b - y) ** 2))',
+    'f_b = lambda u: float(np.mean((w * x + u - y) ** 2))',
+    `__check('seeded numgrad w', abs(num_grad(f_w, w, 1e-6) - __ref_dw) < 1e-6)`,
+    `__check('seeded numgrad b', abs(num_grad(f_b, b, 1e-6) - __ref_db) < 1e-6)`,
+    `__check('seeded numgrad quadrat', abs(num_grad(lambda t: t * t, ${tLit}, 1e-6) - (2.0 * ${tLit})) < 1e-6)`,
+    'dw2, db2 = grad_mse(0.0, 0.0, x, y)',
+    '__rw2, __rb2 = __ref_grad_mse(0.0, 0.0, x, y)',
+    `__check('seeded bei 0/0', abs(dw2 - __rw2) < 1e-9 and abs(db2 - __rb2) < 1e-9)`,
+  ]);
+};
+
+const gradMseFixtureOk = (fixture) => (
+  fixture && typeof fixture === 'object'
+  && Array.isArray(fixture.x) && fixture.x.length >= 3 && fixture.x.length <= 4
+  && fixture.x.every((v) => GRAD_MSE_VALUE_POOL.includes(v))
+  && Array.isArray(fixture.y) && fixture.y.length === fixture.x.length
+  && fixture.y.every((v) => GRAD_MSE_VALUE_POOL.includes(v))
+  && GRAD_MSE_W_POOL.includes(fixture.w)
+  && GRAD_MSE_B_POOL.includes(fixture.b)
+  && GRAD_MSE_T_POOL.includes(fixture.t)
+);
+
+/** Kapsel-Check (Muster requiredPythonParamsOk): die gespeicherte Fixture muss
+ *  den emittierten Testblock byte-identisch rekonstruieren — solve bleibt
+ *  dadurch fail-closed gegen manipulierte Parameter. */
+export function gradMseParamsOk(parameters) {
+  try {
+    const body = mseGradientBody('grad-mse-numpy-reference');
+    return gradMseFixtureOk(parameters?.seedFixture)
+      && parameters.tests === gradMseSeededTests(body, parameters.seedFixture)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+export function genGradMseNumpyTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const fixture = until(r, () => {
+      const n = randInt(r, 3, 4);
+      const x = Array.from({ length: n }, () => pick(r, GRAD_MSE_VALUE_POOL));
+      const y = Array.from({ length: n }, () => pick(r, GRAD_MSE_VALUE_POOL));
+      return { x, y, w: pick(r, GRAD_MSE_W_POOL), b: pick(r, GRAD_MSE_B_POOL), t: pick(r, GRAD_MSE_T_POOL) };
+    }, (drawn) => drawn.y.some((v) => v !== 0)
+      && drawn.x.some((xi, i) => Math.abs(drawn.w * xi + drawn.b - drawn.y[i]) > 1e-9));
+    const body = mseGradientBody('grad-mse-numpy-reference');
+    const tests = gradMseSeededTests(body, fixture);
+    const note = `Wertepaare x = [${fixture.x.join(', ')}], y = [${fixture.y.join(', ')}]; Ableitung geprüft bei w = ${fixture.w}, b = ${fixture.b}, num_grad-Stichprobe bei t = ${fixture.t}.`;
+    return pyodideInstance(body, { seedFixture: fixture }, tests, note);
+  });
+}
+
+// --- validate-goalshift-flag-rules: detect-goal-shift ------------------------
+// Fünf deterministisch gezogene Protokollpaare pro Instanz; jede Instanz
+// enthält alle fünf Edge-Arme in per-Seed rotierter Reihenfolge (kein
+// Zufalls-Hoffen): identische Kopie, fehlende Felder (`.get`-Semantik),
+// entfernte Subgruppe ohne Flag, demotivierter Primärendpunkt ohne Wechsel
+// von v2.primaer sowie normale Multi-Flag-Paare. Der authored Capstone-Draw
+// genProtocolShifts bleibt unangetastet — er ist positiv-only und kann die
+// negativen Arme nicht erzeugen.
+
+const GOALSHIFT_METRICS = ['recall@5', 'token-f1', 'f1', 'accuracy', 'precision@3', 'mrr', 'antwortquote'];
+const GOALSHIFT_SCHWELLEN = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1, 2];
+const GOALSHIFT_ENDPOINTS = ['antwortquote', 'bearbeitungszeit', 'zitattreue', 'latenz', 'kostenquote', 'deckung'];
+const GOALSHIFT_SUBGRUPPEN = ['neukunden', 'mobil', 'wochenende', 'bestand', 'nord', 'sued', 'nacht', 'wochentag', 'kleinstadt'];
+export const GOALSHIFT_ARMS = ['identisch', 'fehlende-felder', 'subgruppe-entfernt', 'primaer-demoted', 'multi-flag'];
+const GOALSHIFT_FIELDS = new Set(['metrik', 'schwelle', 'primaer', 'sekundaer', 'subgruppen']);
+const GOALSHIFT_ARM_NOTES = {
+  identisch: 'identische Kopie',
+  'fehlende-felder': 'fehlende Felder',
+  'subgruppe-entfernt': 'Subgruppe entfernt',
+  'primaer-demoted': 'primärer Endpunkt nur in v2.sekundaer',
+  'multi-flag': 'geänderte Felder',
+};
+
+/** JS-Spiegel des authored detect_goal_shift (Orakel-Wahrheit für Draw-Guards
+ *  und Tests — fehlende Felder gelten wie im Referenzsolver als leer). */
+export const goalShiftFlags = (v1, v2) => {
+  const flags = [];
+  if (v1?.metrik !== v2?.metrik) flags.push('metrik_geaendert');
+  if (v1?.schwelle !== v2?.schwelle) flags.push('schwelle_geaendert');
+  if ((v2?.sekundaer ?? []).includes(v1?.primaer)) flags.push('primaer_demoted');
+  if ((v2?.subgruppen ?? []).some((s) => !(v1?.subgruppen ?? []).includes(s))) flags.push('subgruppe_nach_freeze');
+  return flags.sort();
+};
+
+const windowPick = (r, pool, count) => {
+  const offset = randInt(r, 0, pool.length - 1);
+  return Array.from({ length: Math.min(count, pool.length) }, (_, i) => pool[(offset + i) % pool.length]);
+};
+
+const goalShiftBase = (r, { minSubgroups = 1 } = {}) => {
+  const primaer = pick(r, GOALSHIFT_ENDPOINTS);
+  const sekundaer = windowPick(r, GOALSHIFT_ENDPOINTS.filter((e) => e !== primaer), randInt(r, 1, 2));
+  const subgruppen = windowPick(r, GOALSHIFT_SUBGRUPPEN, randInt(r, minSubgroups, 3));
+  return {
+    metrik: pick(r, GOALSHIFT_METRICS),
+    schwelle: pick(r, GOALSHIFT_SCHWELLEN),
+    primaer,
+    sekundaer,
+    subgruppen,
+  };
+};
+
+const goalShiftCopy = (v) => ({
+  ...v,
+  ...(Array.isArray(v.sekundaer) ? { sekundaer: [...v.sekundaer] } : {}),
+  ...(Array.isArray(v.subgruppen) ? { subgruppen: [...v.subgruppen] } : {}),
+});
+
+const goalShiftDraw = (r, arm) => {
+  if (arm === 'identisch') {
+    const v1 = goalShiftBase(r);
+    return { arm, v1, v2: goalShiftCopy(v1) };
+  }
+  if (arm === 'subgruppe-entfernt') {
+    const v1 = goalShiftBase(r, { minSubgroups: 2 });
+    const v2 = goalShiftCopy(v1);
+    v2.subgruppen.splice(randInt(r, 0, v2.subgruppen.length - 1), 1);
+    return { arm, v1, v2 };
+  }
+  if (arm === 'primaer-demoted') {
+    const v1 = goalShiftBase(r);
+    const v2 = goalShiftCopy(v1);
+    v2.sekundaer = [...v1.sekundaer, v1.primaer];
+    return { arm, v1, v2 };
+  }
+  if (arm === 'fehlende-felder') {
+    const shape = randInt(r, 0, 3);
+    if (shape === 0) return { arm, shape, v1: {}, v2: { metrik: pick(r, GOALSHIFT_METRICS) } };
+    if (shape === 1) {
+      const metrik = pick(r, GOALSHIFT_METRICS);
+      return {
+        arm,
+        shape,
+        v1: { metrik, schwelle: pick(r, GOALSHIFT_SCHWELLEN) },
+        v2: { metrik: pick(r, GOALSHIFT_METRICS.filter((m) => m !== metrik)) },
+      };
+    }
+    if (shape === 2) {
+      const primaer = pick(r, GOALSHIFT_ENDPOINTS);
+      return {
+        arm,
+        shape,
+        v1: { primaer },
+        v2: { primaer, sekundaer: [pick(r, GOALSHIFT_ENDPOINTS.filter((e) => e !== primaer)), primaer] },
+      };
+    }
+    const metrik = pick(r, GOALSHIFT_METRICS);
+    return { arm, shape, v1: { metrik }, v2: { metrik, subgruppen: [pick(r, GOALSHIFT_SUBGRUPPEN)] } };
+  }
+  // multi-flag: 1-4 der authored Mutationen wie in den Bestandsvarianten.
+  const v1 = goalShiftBase(r);
+  const v2 = goalShiftCopy(v1);
+  const mutationen = shuffle(r, [0, 1, 2, 3]).slice(0, randInt(r, 1, 4));
+  if (mutationen.includes(0)) {
+    v2.metrik = pick(r, GOALSHIFT_METRICS.filter((m) => m !== v1.metrik));
+  }
+  if (mutationen.includes(1)) {
+    v2.schwelle = pick(r, GOALSHIFT_SCHWELLEN.filter((s) => s !== v1.schwelle));
+  }
+  if (mutationen.includes(2)) {
+    const neu = pick(r, GOALSHIFT_ENDPOINTS.filter((e) => e !== v1.primaer && !v1.sekundaer.includes(e)));
+    v2.sekundaer = [v1.primaer, ...v1.sekundaer.filter((e) => e !== neu)];
+    v2.primaer = neu;
+  }
+  if (mutationen.includes(3)) {
+    v2.subgruppen = [...v1.subgruppen, pick(r, GOALSHIFT_SUBGRUPPEN.filter((s) => !v1.subgruppen.includes(s)))];
+  }
+  return { arm, v1, v2 };
+};
+
+const goalShiftSeededTests = (body, pairs) => seededPyBlock(
+  body,
+  ['detect_goal_shift'],
+  pairs.flatMap((pair, i) => {
+    const a = pyLit(pair.v1);
+    const b = pyLit(pair.v2);
+    return [
+      `__check('seeded flags ${i + 1}', detect_goal_shift(${a}, ${b}) == __ref_detect_goal_shift(${a}, ${b}))`,
+      `__check('seeded copy ${i + 1}', detect_goal_shift(${a}, dict(${a})) == __ref_detect_goal_shift(${a}, dict(${a})))`,
+    ];
+  }),
+);
+
+const goalShiftVersionOk = (v) => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return false;
+  for (const [key, value] of Object.entries(v)) {
+    if (!GOALSHIFT_FIELDS.has(key)) return false;
+    if (key === 'metrik' && !GOALSHIFT_METRICS.includes(value)) return false;
+    if (key === 'schwelle' && !GOALSHIFT_SCHWELLEN.includes(value)) return false;
+    if (key === 'primaer' && !GOALSHIFT_ENDPOINTS.includes(value)) return false;
+    if (key === 'sekundaer' && (!Array.isArray(value) || value.length > 3 || !value.every((s) => GOALSHIFT_ENDPOINTS.includes(s)))) return false;
+    if (key === 'subgruppen' && (!Array.isArray(value) || value.length > 4 || !value.every((s) => GOALSHIFT_SUBGRUPPEN.includes(s)))) return false;
+  }
+  return true;
+};
+
+/** Kapsel-Check: die gespeicherten Paare müssen den emittierten Testblock
+ *  byte-identisch rekonstruieren — solve bleibt fail-closed. */
+export function goalShiftParamsOk(parameters) {
+  try {
+    const body = goalShiftBody('detect-goal-shift');
+    const pairs = parameters?.seedPairs;
+    return Array.isArray(pairs) && pairs.length === GOALSHIFT_ARMS.length
+      && new Set(pairs.map((pair) => pair?.arm)).size === GOALSHIFT_ARMS.length
+      && pairs.every((pair) => GOALSHIFT_ARMS.includes(pair.arm)
+        && (pair.arm !== 'fehlende-felder' || Number.isInteger(pair.shape))
+        && goalShiftVersionOk(pair.v1) && goalShiftVersionOk(pair.v2))
+      && parameters.tests === goalShiftSeededTests(body, pairs)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+export function genDetectGoalShiftTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const rotation = variantCaseIndex(seed, GOALSHIFT_ARMS.length);
+    const pairs = GOALSHIFT_ARMS.map((_, index) => goalShiftDraw(r, GOALSHIFT_ARMS[(index + rotation) % GOALSHIFT_ARMS.length]));
+    const body = goalShiftBody('detect-goal-shift');
+    const tests = goalShiftSeededTests(body, pairs);
+    const note = `${pairs.length} Protokollpaare: ${pairs.map((pair) => GOALSHIFT_ARM_NOTES[pair.arm]).join('; ')}.`;
+    return pyodideInstance(
+      { ...body, prompt: body.prompt.replace('drei Protokollpaarungen', `${pairs.length} Protokollpaarungen`) },
+      { seedPairs: pairs },
+      tests,
+      note,
+    );
+  });
 }

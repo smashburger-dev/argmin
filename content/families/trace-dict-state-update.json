@@ -19,7 +19,8 @@
           "vocabulary": "erster Schlüssel ist 'start', zweiter Schlüssel 'ende'",
           "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
-          "c": "ganze Zahl ungleich 0 in [-9, 9]"
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
         }
       },
       "expected": {
@@ -54,7 +55,8 @@
           "vocabulary": "erster Schlüssel ist 'ziel' oder 'pfad', zweiter Schlüssel 'start'",
           "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
-          "c": "ganze Zahl ungleich 0 in [-9, 9]"
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
         }
       },
       "expected": {
