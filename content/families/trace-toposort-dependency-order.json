@@ -25,11 +25,11 @@
       "fullSolution": "Start: nur gold (keine Abhängigkeiten). Danach sind punkte und regel gleichzeitig bereit → alphabetisch punkte zuerst, dann regel. bericht braucht beide → kommt zuletzt: <code>['gold', 'punkte', 'regel', 'bericht']</code>. Der Zyklentest steckt in bereit: wäre die Liste leer, gäbe es einen Kreis.",
       "hints": [
         "Welche Stufe kann zuerst laufen? Danach: welche sind gleichzeitig bereit — und wie sortiert Python die?",
-        "bereit nutzt sortierte Namen; punkte und regel stehen beide sofort nach gold parat."
+        "bereit nutzt sortierte Namen — bei mehreren gleichzeitig bereiten Stufen wählt der Algorithmus die alphabetisch kleinste."
       ],
       "typicalErrors": [
         "Einfügungsreihenfolge statt alphabetischer Tie-Break gelesen",
-        "berichte vor ihren Voraussetzungen eingeplant",
+        "eine Stufe vor ihren Voraussetzungen eingeplant",
         "set(stages[n]) & offen als Vergleich mit allen Stufen missverstanden"
       ],
       "activityType": "predict-output",

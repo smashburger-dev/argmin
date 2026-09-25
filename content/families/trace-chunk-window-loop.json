@@ -24,12 +24,12 @@
       "prompt": "Chunking lesen und vorhersagen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Das Fenster startet bei 0 und wandert um <code>size - overlap</code> weiter, solange <code>start &lt; len(text)</code>.",
       "fullSolution": "Starts: 0, 2, 4, 6 (jeweils &lt; 8), also 4 Fenster: abcd, cdef, efgh, gh. Ausgabe: <code>4</code> und <code>gh</code>. Die Fensterzahl ist ⌈8/2⌉ = 4.",
       "hints": [
-        "Schrittweite ist 4 − 2 = 2. Liste die Startindizes auf: 0, 2, 4, 6 — wo endet die Schleife und warum?",
-        "Prüfe den letzten Start einzeln: text[start:start+s] kann kürzer als s sein, wenn das Fenster über das Textende hinausläuft — was bleibt in der Liste?"
+        "Die Schrittweite ist size − overlap. Liste die Startindizes ab 0 in dieser Schrittweite auf — die Schleife läuft, solange der Start kleiner als die Textlänge ist.",
+        "Prüfe den letzten Start einzeln: weil die Schrittweite kleiner als size ist, läuft das letzte Fenster über das Textende hinaus und bleibt kürzer als size — was steht dann in der Liste?"
       ],
       "typicalErrors": [
-        "Schrittweite ohne Overlap gerechnet (8//4 statt ⌈8/2⌉)",
-        "Starts bis 8 einschließlich gezählt",
+        "Schrittweite ohne Overlap gerechnet (size statt size − overlap)",
+        "Startwerte bis einschließlich der Textlänge gezählt",
         "das letzte Fenster auf volle Größe aufgefüllt"
       ],
       "activityType": "predict-output",

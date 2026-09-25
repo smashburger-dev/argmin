@@ -36,6 +36,9 @@ import {
   TEST_DESIGN_COVERAGE_CONTRACT,
   generateTestDesignCoverageFamily,
   solveTestDesignCoverage,
+  ERROR_JOURNAL_ORDER_CONTRACT,
+  generateErrorJournalOrderFamily,
+  solveErrorJournalOrder,
 } from '../core/foundations_construct_families.mjs';
 
 export const FOUNDATIONS_CONSTRUCT_SPECS = [
@@ -49,6 +52,7 @@ export const FOUNDATIONS_CONSTRUCT_SPECS = [
   { ...REQUIRED_FIELD_CONTRACT, generate: generateRequiredFieldFamily, solve: solveRequiredField },
   { ...BUGFIX_WORKFLOW_CONTRACT, generate: generateBugfixWorkflowFamily, solve: solveBugfixWorkflow },
   { ...TEST_DESIGN_COVERAGE_CONTRACT, generate: generateTestDesignCoverageFamily, solve: solveTestDesignCoverage },
+  { ...ERROR_JOURNAL_ORDER_CONTRACT, generate: generateErrorJournalOrderFamily, solve: solveErrorJournalOrder },
 ];
 
 export const FOUNDATIONS_CONSTRUCT_FAMILIES = createFamilyRegistry(FOUNDATIONS_CONSTRUCT_SPECS);

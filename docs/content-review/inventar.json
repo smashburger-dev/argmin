@@ -123,6 +123,53 @@
        "familyHasBank": false
       },
       {
+       "placementId": "p-foundations-algebra-fading-linear-final-step",
+       "familyId": "worked-example-fading-linear-equations",
+       "caseId": "fade-final-step",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": true,
+       "estimatedMinutes": 5,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "gaps",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-fading-linear-middle-steps",
+       "familyId": "worked-example-fading-linear-equations",
+       "caseId": "fade-middle-steps",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "gaps",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-fading-linear-equations-practice",
+       "familyId": "worked-example-fading-linear-equations",
+       "caseId": null,
+       "role": "practice-space",
+       "difficulty": "core",
+       "masteryEligible": null,
+       "estimatedMinutes": 0,
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false
+      },
+      {
        "placementId": "p-foundations-algebra-integer-base-power",
        "familyId": "transform-power-log-exponent",
        "caseId": "integer-base-power",
@@ -217,6 +264,36 @@
        "familyHasBank": false
       },
       {
+       "placementId": "p-foundations-algebra-fading-distributive-final-gap",
+       "familyId": "worked-example-fading-distributive",
+       "caseId": "distribute-final-gap",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": true,
+       "estimatedMinutes": 5,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "gaps",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-fading-distributive-practice",
+       "familyId": "worked-example-fading-distributive",
+       "caseId": null,
+       "role": "practice-space",
+       "difficulty": "core",
+       "masteryEligible": null,
+       "estimatedMinutes": 0,
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false
+      },
+      {
        "placementId": "p-foundations-algebra-base-vs-exponent-confusion",
        "familyId": "classify-error-hypothesis",
        "caseId": "base-vs-exponent-confusion",
@@ -228,7 +305,7 @@
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
-       "caseType": "choice",
+       "caseType": "?",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
@@ -273,7 +350,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 8,
+    "masteryEligibleDefinitions": 11,
     "policySatisfiable": true
    }
   },
@@ -402,6 +479,53 @@
        "familyHasBank": false
       },
       {
+       "placementId": "p-foundations-algebra-fading-linear-final-step",
+       "familyId": "worked-example-fading-linear-equations",
+       "caseId": "fade-final-step",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": true,
+       "estimatedMinutes": 5,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "gaps",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-fading-linear-middle-steps",
+       "familyId": "worked-example-fading-linear-equations",
+       "caseId": "fade-middle-steps",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "gaps",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-fading-linear-equations-practice",
+       "familyId": "worked-example-fading-linear-equations",
+       "caseId": null,
+       "role": "practice-space",
+       "difficulty": "core",
+       "masteryEligible": null,
+       "estimatedMinutes": 0,
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false
+      },
+      {
        "placementId": "p-foundations-algebra-integer-base-power",
        "familyId": "transform-power-log-exponent",
        "caseId": "integer-base-power",
@@ -496,6 +620,36 @@
        "familyHasBank": false
       },
       {
+       "placementId": "p-foundations-algebra-fading-distributive-final-gap",
+       "familyId": "worked-example-fading-distributive",
+       "caseId": "distribute-final-gap",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": true,
+       "estimatedMinutes": 5,
+       "lessonId": "l-foundations-algebra",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "gaps",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-algebra-fading-distributive-practice",
+       "familyId": "worked-example-fading-distributive",
+       "caseId": null,
+       "role": "practice-space",
+       "difficulty": "core",
+       "masteryEligible": null,
+       "estimatedMinutes": 0,
+       "lessonId": null,
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false
+      },
+      {
        "placementId": "p-foundations-algebra-base-vs-exponent-confusion",
        "familyId": "classify-error-hypothesis",
        "caseId": "base-vs-exponent-confusion",
@@ -507,7 +661,7 @@
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
-       "caseType": "choice",
+       "caseType": "?",
        "caseHasFeedbackRules": false,
        "caseHintCount": 0,
        "caseHasWorkedExample": false
@@ -552,7 +706,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 8,
+    "masteryEligibleDefinitions": 11,
     "policySatisfiable": true
    }
   },
@@ -795,7 +949,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-foundations-code-reading",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
        "caseMissing": true
       },
@@ -809,7 +963,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false
       }
      ],
@@ -894,7 +1048,7 @@
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-functions",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "?",
        "caseHasFeedbackRules": true,
@@ -911,7 +1065,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-foundations-functions",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
        "caseMissing": true
       },
@@ -925,7 +1079,7 @@
        "estimatedMinutes": 10,
        "lessonId": "l-foundations-functions",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
        "caseMissing": true
       },
@@ -939,7 +1093,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false
       }
      ],
@@ -1028,7 +1182,7 @@
        "masteryEligible": true,
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-learning",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "ordered-lines",
@@ -1045,7 +1199,7 @@
        "masteryEligible": null,
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-learning",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false
       }
@@ -1269,7 +1423,7 @@
        "familyCaseCount": 3,
        "familyHasBank": true,
        "caseType": "choice",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1285,7 +1439,7 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -1418,7 +1572,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "integer-pair",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1432,7 +1586,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-linalg-systems",
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "integer-pair",
        "caseHasFeedbackRules": false,
@@ -1449,7 +1603,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-linalg-systems",
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "integer-pair",
        "caseHasFeedbackRules": false,
@@ -1469,7 +1623,7 @@
        "familyCaseCount": 3,
        "familyHasBank": true,
        "caseType": "choice",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1503,7 +1657,7 @@
        "familyCaseCount": 2,
        "familyHasBank": true,
        "caseType": "choice",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1517,9 +1671,12 @@
        "estimatedMinutes": 10,
        "lessonId": "l-linalg-systems",
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false,
-       "caseMissing": true
+       "caseType": "integer-pair",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       },
       {
        "placementId": "p-linalg-systems-06-transform-system-2x2-elimination-practice",
@@ -1531,7 +1688,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false
       }
      ],
@@ -1635,7 +1792,7 @@
        "familyCaseCount": 2,
        "familyHasBank": true,
        "caseType": "choice",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 1,
        "caseHasWorkedExample": false
       },
@@ -1649,7 +1806,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
@@ -1686,7 +1843,7 @@
        "familyCaseCount": 2,
        "familyHasBank": true,
        "caseType": "choice",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1700,7 +1857,24 @@
        "estimatedMinutes": 12,
        "lessonId": "l-linalg-gauss",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
+       "familyHasBank": true,
+       "caseType": "integer",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-gauss-08-rank-4x4-two-combo",
+       "familyId": "transform-rank-dependence-rowops",
+       "caseId": "rank-4x4-two-combo",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 15,
+       "lessonId": "l-linalg-gauss",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
        "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
@@ -1717,7 +1891,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false
       }
      ],
@@ -1730,7 +1904,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 5,
+    "masteryEligibleDefinitions": 6,
     "policySatisfiable": true
    }
   },
@@ -1817,7 +1991,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-linalg-independence",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
@@ -1868,7 +2042,7 @@
        "estimatedMinutes": 10,
        "lessonId": "l-linalg-independence",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
@@ -1885,10 +2059,78 @@
        "estimatedMinutes": 12,
        "lessonId": "l-linalg-independence",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": true,
        "caseType": "integer",
        "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-08-mcq-independence-statements",
+       "familyId": "multiple-choice-linalg-independence",
+       "caseId": "independence-statements",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 6,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-06-mcq-independent-sets-r2",
+       "familyId": "multiple-choice-linalg-independence",
+       "caseId": "independent-sets-r2",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": true,
+       "estimatedMinutes": 6,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-09-mcq-independent-sets-r3",
+       "familyId": "multiple-choice-linalg-independence",
+       "caseId": "independent-sets-r3",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-linalg-independence-10-mcq-rank-nullity-combined",
+       "familyId": "multiple-choice-linalg-independence",
+       "caseId": "rank-nullity-combined",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-linalg-independence",
+       "familyProcedural": false,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -1915,7 +2157,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 4,
+    "masteryEligibleDefinitions": 8,
     "policySatisfiable": true
    }
   },
@@ -1969,7 +2211,7 @@
         {
          "ref": "lessons/linear-algebra/numpy.md",
          "lines": 82,
-         "words": 333,
+         "words": 335,
          "block": "worked-example"
         }
        ]
@@ -2058,7 +2300,7 @@
        "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": false,
-       "caseHintCount": 0,
+       "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
       {
@@ -2097,7 +2339,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false
       }
      ],
@@ -2270,7 +2512,7 @@
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-control-flow",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "output-lines",
        "caseHasFeedbackRules": false,
@@ -2287,7 +2529,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-foundations-control-flow",
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "output-lines",
        "caseHasFeedbackRules": false,
@@ -2304,7 +2546,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 3,
+       "familyCaseCount": 4,
        "familyHasBank": false
       }
      ],
@@ -2449,7 +2691,7 @@
        "estimatedMinutes": 5,
        "lessonId": "l-foundations-collections",
        "familyProcedural": false,
-       "familyCaseCount": 5,
+       "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "variable-values",
        "caseHasFeedbackRules": false,
@@ -2466,7 +2708,7 @@
        "estimatedMinutes": 8,
        "lessonId": "l-foundations-collections",
        "familyProcedural": false,
-       "familyCaseCount": 5,
+       "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "variable-values",
        "caseHasFeedbackRules": false,
@@ -2483,7 +2725,7 @@
        "estimatedMinutes": 0,
        "lessonId": null,
        "familyProcedural": false,
-       "familyCaseCount": 5,
+       "familyCaseCount": 6,
        "familyHasBank": false
       },
       {
@@ -2670,6 +2912,57 @@
        "familyProcedural": false,
        "familyCaseCount": 4,
        "familyHasBank": false
+      },
+      {
+       "placementId": "p-foundations-files-errors-except-pass-swallow-diagnosis",
+       "familyId": "diagnostic-rationale-python-errors",
+       "caseId": "except-pass-swallow",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-foundations-files-errors",
+       "familyProcedural": true,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-files-errors-csv-age-str-diagnosis",
+       "familyId": "diagnostic-rationale-python-errors",
+       "caseId": "csv-age-str-compare",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-foundations-files-errors",
+       "familyProcedural": true,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-files-errors-row-key-diagnosis",
+       "familyId": "diagnostic-rationale-python-errors",
+       "caseId": "row-key-case",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-foundations-files-errors",
+       "familyProcedural": true,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": [
@@ -2902,6 +3195,40 @@
        "familyProcedural": false,
        "familyCaseCount": 8,
        "familyHasBank": false
+      },
+      {
+       "placementId": "p-foundations-testing-debugging-sum-skips-first-diagnosis",
+       "familyId": "diagnostic-rationale-python-errors",
+       "caseId": "sum-skips-first",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": true,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-foundations-testing-debugging-nameerror-diagnosis",
+       "familyId": "diagnostic-rationale-python-errors",
+       "caseId": "nameerror-undefined-var",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-foundations-testing-debugging",
+       "familyProcedural": true,
+       "familyCaseCount": 5,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
       }
      ],
      "projectIds": [
@@ -3179,7 +3506,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -3196,7 +3523,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -3214,7 +3541,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3231,7 +3558,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3248,7 +3575,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3375,7 +3702,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3392,7 +3719,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3409,7 +3736,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3546,7 +3873,7 @@
        "familyCaseCount": 15,
        "familyHasBank": false,
        "caseType": "?",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3563,7 +3890,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3580,7 +3907,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3692,7 +4019,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -3710,7 +4037,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3727,7 +4054,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3744,7 +4071,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3851,9 +4178,9 @@
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false,
-       "caseType": "choice",
-       "caseHasFeedbackRules": true,
-       "caseHintCount": 2,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 0,
        "caseHasWorkedExample": false
       },
       {
@@ -3897,7 +4224,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -3914,6 +4241,74 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-linear-mcq-least-squares",
+       "familyId": "multiple-choice-ml-linear",
+       "caseId": "least-squares-normal-equation",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 6,
+       "lessonId": "l-ml-linear",
+       "familyProcedural": true,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-linear-mcq-ridge-statements",
+       "familyId": "multiple-choice-ml-linear",
+       "caseId": "ridge-statements",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": true,
+       "estimatedMinutes": 6,
+       "lessonId": "l-ml-linear",
+       "familyProcedural": true,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-linear-mcq-residual-diagnostics",
+       "familyId": "multiple-choice-ml-linear",
+       "caseId": "residual-diagnostics",
+       "role": "curated",
+       "difficulty": "stretch",
+       "masteryEligible": true,
+       "estimatedMinutes": 8,
+       "lessonId": "l-ml-linear",
+       "familyProcedural": true,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-linear-mcq-bias-variance-regularization",
+       "familyId": "multiple-choice-ml-linear",
+       "caseId": "bias-variance-regularization",
+       "role": "curated",
+       "difficulty": "challenge",
+       "masteryEligible": true,
+       "estimatedMinutes": 10,
+       "lessonId": "l-ml-linear",
+       "familyProcedural": true,
+       "familyCaseCount": 4,
+       "familyHasBank": false,
+       "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -3941,7 +4336,7 @@
     "minimumIndependentHits": 2,
     "delayedHitRequired": true,
     "freshnessDays": 77,
-    "masteryEligibleDefinitions": 4,
+    "masteryEligibleDefinitions": 8,
     "policySatisfiable": true
    }
   },
@@ -4064,7 +4459,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4081,7 +4476,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4211,7 +4606,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -4225,9 +4620,9 @@
        "masteryEligible": true,
        "estimatedMinutes": 8,
        "lessonId": "l-ml-cv",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -4246,7 +4641,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4263,6 +4658,40 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-cv-fold-nan-crash-diagnosis",
+       "familyId": "diagnostic-rationale-ml-eval",
+       "caseId": "fold-nan-crash",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-ml-cv",
+       "familyProcedural": true,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
+       "caseHasFeedbackRules": true,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-cv-leakage-diagnosis",
+       "familyId": "diagnostic-rationale-ml-eval",
+       "caseId": "shift-minus-one-leakage",
+       "role": "curated",
+       "difficulty": "core",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-ml-cv",
+       "familyProcedural": true,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -4410,7 +4839,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4427,6 +4856,23 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
+       "caseHasFeedbackRules": false,
+       "caseHintCount": 2,
+       "caseHasWorkedExample": false
+      },
+      {
+       "placementId": "p-ml-error-analysis-score-on-train-diagnosis",
+       "familyId": "diagnostic-rationale-ml-eval",
+       "caseId": "score-on-train",
+       "role": "curated",
+       "difficulty": "intro",
+       "masteryEligible": false,
+       "estimatedMinutes": 6,
+       "lessonId": "l-ml-error-analysis",
+       "familyProcedural": true,
+       "familyCaseCount": 3,
+       "familyHasBank": false,
+       "caseType": "diagnosis",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -4559,9 +5005,9 @@
        "masteryEligible": true,
        "estimatedMinutes": 10,
        "lessonId": "l-ml-regularization",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 2,
-       "familyHasBank": false,
+       "familyHasBank": true,
        "caseType": "choice",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
@@ -4580,7 +5026,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4597,7 +5043,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4712,7 +5158,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -4729,7 +5175,7 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -4747,7 +5193,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4764,7 +5210,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4780,7 +5226,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -4920,7 +5366,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -4937,7 +5383,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5058,7 +5504,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5075,7 +5521,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5093,7 +5539,7 @@
        "familyCaseCount": 15,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5110,7 +5556,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5127,7 +5573,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5143,7 +5589,7 @@
        "familyProcedural": false,
        "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5256,7 +5702,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5291,7 +5737,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5308,7 +5754,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5325,7 +5771,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5341,7 +5787,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5448,9 +5894,9 @@
        "estimatedMinutes": 8,
        "lessonId": "l-dl-autograd",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5467,7 +5913,7 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5485,7 +5931,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5502,7 +5948,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5519,7 +5965,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5533,9 +5979,9 @@
        "estimatedMinutes": 8,
        "lessonId": "l-dl-autograd",
        "familyProcedural": false,
-       "familyCaseCount": 1,
+       "familyCaseCount": 2,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5646,7 +6092,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5681,7 +6127,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5698,7 +6144,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5715,7 +6161,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5731,7 +6177,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5843,7 +6289,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -5878,7 +6324,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5895,7 +6341,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5912,7 +6358,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -5928,7 +6374,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6038,7 +6484,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6073,7 +6519,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6090,7 +6536,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6107,7 +6553,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6123,7 +6569,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6227,7 +6673,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6262,7 +6708,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6279,7 +6725,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6296,7 +6742,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6312,7 +6758,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6450,7 +6896,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6467,7 +6913,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6484,7 +6930,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6606,7 +7052,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6641,7 +7087,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6658,7 +7104,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6675,7 +7121,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6691,7 +7137,7 @@
        "familyProcedural": false,
        "familyCaseCount": 6,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6812,7 +7258,7 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -6830,7 +7276,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6847,7 +7293,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6864,7 +7310,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -6983,7 +7429,7 @@
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -7001,7 +7447,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7018,7 +7464,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7035,7 +7481,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7052,7 +7498,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7068,7 +7514,7 @@
        "familyProcedural": false,
        "familyCaseCount": 1,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -7193,7 +7639,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7210,7 +7656,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7227,7 +7673,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7244,7 +7690,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7379,7 +7825,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7396,7 +7842,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7413,7 +7859,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7430,7 +7876,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7566,7 +8012,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7583,7 +8029,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7600,7 +8046,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7617,7 +8063,7 @@
        "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7759,8 +8205,8 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7777,7 +8223,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7794,7 +8240,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7811,7 +8257,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7935,7 +8381,7 @@
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -7952,8 +8398,8 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
-       "caseHasFeedbackRules": true,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7970,7 +8416,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -7987,7 +8433,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8004,7 +8450,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8020,7 +8466,7 @@
        "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
-       "caseType": "seeded-integer",
+       "caseType": "?",
        "caseHasFeedbackRules": true,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
@@ -8147,8 +8593,8 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
-       "caseHasFeedbackRules": true,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8165,7 +8611,7 @@
        "familyCaseCount": 7,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8182,7 +8628,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8199,7 +8645,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8341,7 +8787,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8358,7 +8804,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8375,7 +8821,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8392,7 +8838,7 @@
        "familyCaseCount": 2,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 3,
        "caseHasWorkedExample": false
       },
@@ -8530,7 +8976,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8547,7 +8993,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8561,10 +9007,10 @@
        "estimatedMinutes": 32,
        "lessonId": "l-capstone-freeze",
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "ordered-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8581,7 +9027,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8669,7 +9115,7 @@
        "masteryEligible": true,
        "estimatedMinutes": 8,
        "lessonId": "l-capstone-acceptance",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "integer",
@@ -8686,11 +9132,11 @@
        "masteryEligible": true,
        "estimatedMinutes": 8,
        "lessonId": "l-capstone-acceptance",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8704,10 +9150,10 @@
        "estimatedMinutes": 25,
        "lessonId": "l-capstone-acceptance",
        "familyProcedural": false,
-       "familyCaseCount": 2,
+       "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8720,11 +9166,11 @@
        "masteryEligible": true,
        "estimatedMinutes": 32,
        "lessonId": "l-capstone-acceptance",
-       "familyProcedural": true,
+       "familyProcedural": false,
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8741,7 +9187,7 @@
        "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       }
@@ -8837,8 +9283,8 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8855,7 +9301,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8872,7 +9318,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8889,7 +9335,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       }
@@ -8981,7 +9427,7 @@
        "familyCaseCount": 3,
        "familyHasBank": false,
        "caseType": "output-lines",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -8998,7 +9444,7 @@
        "familyCaseCount": 4,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -9015,7 +9461,7 @@
        "familyCaseCount": 1,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -9032,7 +9478,7 @@
        "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -9140,8 +9586,8 @@
        "familyProcedural": false,
        "familyCaseCount": 15,
        "familyHasBank": false,
-       "caseType": "variable-values",
-       "caseHasFeedbackRules": true,
+       "caseType": "?",
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -9158,7 +9604,7 @@
        "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -9175,7 +9621,7 @@
        "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       },
@@ -9192,7 +9638,7 @@
        "familyCaseCount": 6,
        "familyHasBank": false,
        "caseType": "reference-solver",
-       "caseHasFeedbackRules": true,
+       "caseHasFeedbackRules": false,
        "caseHintCount": 2,
        "caseHasWorkedExample": false
       }

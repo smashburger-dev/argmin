@@ -18,12 +18,15 @@
 //   - degenerate draws are retried with a bounded guard.
 
 import {
-  bindFamilyDraw, pick, randInt, rng, variantCaseIndex, buildRotatedChoices, CHOICE_IDS,
+  bindFamilyDraw, pick, randInt, rng, shuffle, variantCaseIndex, buildRotatedChoices, CHOICE_IDS,
 } from './generator_draw_kit.mjs';
 import { refCopy, pyLit, pyNum, pyRound } from './procedural/py_test_kit.mjs';
 import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
 import confusionMetricDoc from '../../../content/families/aggregate-confusion-metric.json' with { type: 'json' };
 import ratioPercentDoc from '../../../content/families/formula-ratio-percent-metric.json' with { type: 'json' };
+import mseGradientDoc from '../../../content/families/optimize-mse-gradient-closed-form.json' with { type: 'json' };
+import goalShiftDoc from '../../../content/families/validate-goalshift-flag-rules.json' with { type: 'json' };
+import formulaStatDoc from '../../../content/families/formula-stat-from-table.json' with { type: 'json' };
 
 import benchmarkBank from '../../../content/banks/classify-benchmark-reading.json' with { type: 'json' };
 import confoundingBank from '../../../content/banks/classify-confounding.json' with { type: 'json' };
@@ -348,20 +351,27 @@ export function genConfusionCount(seed) {
 // Lazy wie ensureGitDocs: Bundle-Chunk-Reihenfolge ist unbestimmt, die Docs
 // sind deshalb Modul-Importe und registrieren sich beim ersten Zugriff.
 let shardDocsReady = false;
-function ensureShardDocs() {
+export function ensureShardDocs() {
   if (!shardDocsReady) {
     registerStaticCases(confusionMetricDoc.familyId, confusionMetricDoc.cases);
     registerStaticCases(ratioPercentDoc.familyId, ratioPercentDoc.cases);
+    registerStaticCases(mseGradientDoc.familyId, mseGradientDoc.cases);
+    registerStaticCases(goalShiftDoc.familyId, goalShiftDoc.cases);
+    registerStaticCases(formulaStatDoc.familyId, formulaStatDoc.cases);
     shardDocsReady = true;
   }
 }
 
 const confusionBody = (caseId) => { ensureShardDocs(); return staticCaseBody('aggregate-confusion-metric', caseId); };
 const ratioBody = (caseId) => { ensureShardDocs(); return staticCaseBody('formula-ratio-percent-metric', caseId); };
+const mseGradientBody = (caseId) => { ensureShardDocs(); return staticCaseBody('optimize-mse-gradient-closed-form', caseId); };
+const goalShiftBody = (caseId) => { ensureShardDocs(); return staticCaseBody('validate-goalshift-flag-rules', caseId); };
 
 // Solver-Seite (data_ml_families): authored Referenzsolver, lazy registriert.
 export const confusionRefSolver = (caseId) => confusionBody(caseId).expected.referenceSolver;
 export const ratioRefSolver = (caseId) => ratioBody(caseId).expected.referenceSolver;
+export const gradMseRefSolver = (caseId) => mseGradientBody(caseId).expected.referenceSolver;
+export const goalShiftRefSolver = (caseId) => goalShiftBody(caseId).expected.referenceSolver;
 
 const seededPyBlock = (body, fnNames, lines) => (
   `${body.parameters.tests}\n\n# seeded extra cases\n${refCopy(body.expected.referenceSolver, fnNames)}\n${lines.join('\n')}`
@@ -1649,4 +1659,263 @@ export function drawSvmMarginParameters(r, capsule) {
     };
   }
   return { w: entry.w, b: entry.b, marginWidth: Math.round((2 / svmNorm(entry.w)) * 1e6) / 1e6 };
+}
+
+// --- optimize-mse-gradient-closed-form: grad-mse-numpy-reference -------------
+// Wie die Confusion-Shard-Fälle: authored Base-Testblock bleibt byte-identisch
+// Prefix; der Seed zieht (x, y, w, b, t) und hängt ein `# seeded extra cases`-
+// Paket mit __ref_-Orakelkopie des Referenzsolvers an. Die emittierten Checks
+// decken alle authored Prüfungen ab — analytisches dw/db gegen das Orakel,
+// num_grad-Konsistenz (Quadrat-Stichprobe + f_w/f_b) und den 0/0-Edge —
+// jeweils gegen __ref_grad_mse, nie gegen hartkodierte Punkte.
+
+const GRAD_MSE_VALUE_POOL = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+const GRAD_MSE_W_POOL = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3];
+const GRAD_MSE_B_POOL = [-1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2];
+// t = 0 ausgeschlossen: die Quadrat-Stichprobe 2*t wäre sonst degeneriert.
+const GRAD_MSE_T_POOL = [-3, -2.5, -2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+const GRAD_MSE_FUNCTIONS = ['grad_mse', 'num_grad'];
+
+const gradMseSeededTests = (body, fixture) => {
+  const wLit = pyLit(fixture.w);
+  const bLit = pyLit(fixture.b);
+  const tLit = pyLit(fixture.t);
+  return seededPyBlock(body, GRAD_MSE_FUNCTIONS, [
+    `x = np.array(${pyLit(fixture.x)})`,
+    `y = np.array(${pyLit(fixture.y)})`,
+    `w, b = ${wLit}, ${bLit}`,
+    'dw, db = grad_mse(w, b, x, y)',
+    '__ref_dw, __ref_db = __ref_grad_mse(w, b, x, y)',
+    `__check('seeded dw', abs(dw - __ref_dw) < 1e-9)`,
+    `__check('seeded db', abs(db - __ref_db) < 1e-9)`,
+    'f_w = lambda u: float(np.mean((u * x + b - y) ** 2))',
+    'f_b = lambda u: float(np.mean((w * x + u - y) ** 2))',
+    `__check('seeded numgrad w', abs(num_grad(f_w, w, 1e-6) - __ref_dw) < 1e-6)`,
+    `__check('seeded numgrad b', abs(num_grad(f_b, b, 1e-6) - __ref_db) < 1e-6)`,
+    `__check('seeded numgrad quadrat', abs(num_grad(lambda t: t * t, ${tLit}, 1e-6) - (2.0 * ${tLit})) < 1e-6)`,
+    'dw2, db2 = grad_mse(0.0, 0.0, x, y)',
+    '__rw2, __rb2 = __ref_grad_mse(0.0, 0.0, x, y)',
+    `__check('seeded bei 0/0', abs(dw2 - __rw2) < 1e-9 and abs(db2 - __rb2) < 1e-9)`,
+  ]);
+};
+
+const gradMseFixtureOk = (fixture) => (
+  fixture && typeof fixture === 'object'
+  && Array.isArray(fixture.x) && fixture.x.length >= 3 && fixture.x.length <= 4
+  && fixture.x.every((v) => GRAD_MSE_VALUE_POOL.includes(v))
+  && Array.isArray(fixture.y) && fixture.y.length === fixture.x.length
+  && fixture.y.every((v) => GRAD_MSE_VALUE_POOL.includes(v))
+  && GRAD_MSE_W_POOL.includes(fixture.w)
+  && GRAD_MSE_B_POOL.includes(fixture.b)
+  && GRAD_MSE_T_POOL.includes(fixture.t)
+);
+
+/** Kapsel-Check (Muster requiredPythonParamsOk): die gespeicherte Fixture muss
+ *  den emittierten Testblock byte-identisch rekonstruieren — solve bleibt
+ *  dadurch fail-closed gegen manipulierte Parameter. */
+export function gradMseParamsOk(parameters) {
+  try {
+    const body = mseGradientBody('grad-mse-numpy-reference');
+    return gradMseFixtureOk(parameters?.seedFixture)
+      && parameters.tests === gradMseSeededTests(body, parameters.seedFixture)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+export function genGradMseNumpyTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const fixture = until(r, () => {
+      const n = randInt(r, 3, 4);
+      const x = Array.from({ length: n }, () => pick(r, GRAD_MSE_VALUE_POOL));
+      const y = Array.from({ length: n }, () => pick(r, GRAD_MSE_VALUE_POOL));
+      return { x, y, w: pick(r, GRAD_MSE_W_POOL), b: pick(r, GRAD_MSE_B_POOL), t: pick(r, GRAD_MSE_T_POOL) };
+    }, (drawn) => drawn.y.some((v) => v !== 0)
+      && drawn.x.some((xi, i) => Math.abs(drawn.w * xi + drawn.b - drawn.y[i]) > 1e-9));
+    const body = mseGradientBody('grad-mse-numpy-reference');
+    const tests = gradMseSeededTests(body, fixture);
+    const note = `Wertepaare x = [${fixture.x.join(', ')}], y = [${fixture.y.join(', ')}]; Ableitung geprüft bei w = ${fixture.w}, b = ${fixture.b}, num_grad-Stichprobe bei t = ${fixture.t}.`;
+    return pyodideInstance(body, { seedFixture: fixture }, tests, note);
+  });
+}
+
+// --- validate-goalshift-flag-rules: detect-goal-shift ------------------------
+// Fünf deterministisch gezogene Protokollpaare pro Instanz; jede Instanz
+// enthält alle fünf Edge-Arme in per-Seed rotierter Reihenfolge (kein
+// Zufalls-Hoffen): identische Kopie, fehlende Felder (`.get`-Semantik),
+// entfernte Subgruppe ohne Flag, demotivierter Primärendpunkt ohne Wechsel
+// von v2.primaer sowie normale Multi-Flag-Paare. Der authored Capstone-Draw
+// genProtocolShifts bleibt unangetastet — er ist positiv-only und kann die
+// negativen Arme nicht erzeugen.
+
+const GOALSHIFT_METRICS = ['recall@5', 'token-f1', 'f1', 'accuracy', 'precision@3', 'mrr', 'antwortquote'];
+const GOALSHIFT_SCHWELLEN = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 1, 2];
+const GOALSHIFT_ENDPOINTS = ['antwortquote', 'bearbeitungszeit', 'zitattreue', 'latenz', 'kostenquote', 'deckung'];
+const GOALSHIFT_SUBGRUPPEN = ['neukunden', 'mobil', 'wochenende', 'bestand', 'nord', 'sued', 'nacht', 'wochentag', 'kleinstadt'];
+export const GOALSHIFT_ARMS = ['identisch', 'fehlende-felder', 'subgruppe-entfernt', 'primaer-demoted', 'multi-flag'];
+const GOALSHIFT_FIELDS = new Set(['metrik', 'schwelle', 'primaer', 'sekundaer', 'subgruppen']);
+const GOALSHIFT_ARM_NOTES = {
+  identisch: 'identische Kopie',
+  'fehlende-felder': 'fehlende Felder',
+  'subgruppe-entfernt': 'Subgruppe entfernt',
+  'primaer-demoted': 'primärer Endpunkt nur in v2.sekundaer',
+  'multi-flag': 'geänderte Felder',
+};
+
+/** JS-Spiegel des authored detect_goal_shift (Orakel-Wahrheit für Draw-Guards
+ *  und Tests — fehlende Felder gelten wie im Referenzsolver als leer). */
+export const goalShiftFlags = (v1, v2) => {
+  const flags = [];
+  if (v1?.metrik !== v2?.metrik) flags.push('metrik_geaendert');
+  if (v1?.schwelle !== v2?.schwelle) flags.push('schwelle_geaendert');
+  if ((v2?.sekundaer ?? []).includes(v1?.primaer)) flags.push('primaer_demoted');
+  if ((v2?.subgruppen ?? []).some((s) => !(v1?.subgruppen ?? []).includes(s))) flags.push('subgruppe_nach_freeze');
+  return flags.sort();
+};
+
+const windowPick = (r, pool, count) => {
+  const offset = randInt(r, 0, pool.length - 1);
+  return Array.from({ length: Math.min(count, pool.length) }, (_, i) => pool[(offset + i) % pool.length]);
+};
+
+const goalShiftBase = (r, { minSubgroups = 1 } = {}) => {
+  const primaer = pick(r, GOALSHIFT_ENDPOINTS);
+  const sekundaer = windowPick(r, GOALSHIFT_ENDPOINTS.filter((e) => e !== primaer), randInt(r, 1, 2));
+  const subgruppen = windowPick(r, GOALSHIFT_SUBGRUPPEN, randInt(r, minSubgroups, 3));
+  return {
+    metrik: pick(r, GOALSHIFT_METRICS),
+    schwelle: pick(r, GOALSHIFT_SCHWELLEN),
+    primaer,
+    sekundaer,
+    subgruppen,
+  };
+};
+
+const goalShiftCopy = (v) => ({
+  ...v,
+  ...(Array.isArray(v.sekundaer) ? { sekundaer: [...v.sekundaer] } : {}),
+  ...(Array.isArray(v.subgruppen) ? { subgruppen: [...v.subgruppen] } : {}),
+});
+
+const goalShiftDraw = (r, arm) => {
+  if (arm === 'identisch') {
+    const v1 = goalShiftBase(r);
+    return { arm, v1, v2: goalShiftCopy(v1) };
+  }
+  if (arm === 'subgruppe-entfernt') {
+    const v1 = goalShiftBase(r, { minSubgroups: 2 });
+    const v2 = goalShiftCopy(v1);
+    v2.subgruppen.splice(randInt(r, 0, v2.subgruppen.length - 1), 1);
+    return { arm, v1, v2 };
+  }
+  if (arm === 'primaer-demoted') {
+    const v1 = goalShiftBase(r);
+    const v2 = goalShiftCopy(v1);
+    v2.sekundaer = [...v1.sekundaer, v1.primaer];
+    return { arm, v1, v2 };
+  }
+  if (arm === 'fehlende-felder') {
+    const shape = randInt(r, 0, 3);
+    if (shape === 0) return { arm, shape, v1: {}, v2: { metrik: pick(r, GOALSHIFT_METRICS) } };
+    if (shape === 1) {
+      const metrik = pick(r, GOALSHIFT_METRICS);
+      return {
+        arm,
+        shape,
+        v1: { metrik, schwelle: pick(r, GOALSHIFT_SCHWELLEN) },
+        v2: { metrik: pick(r, GOALSHIFT_METRICS.filter((m) => m !== metrik)) },
+      };
+    }
+    if (shape === 2) {
+      const primaer = pick(r, GOALSHIFT_ENDPOINTS);
+      return {
+        arm,
+        shape,
+        v1: { primaer },
+        v2: { primaer, sekundaer: [pick(r, GOALSHIFT_ENDPOINTS.filter((e) => e !== primaer)), primaer] },
+      };
+    }
+    const metrik = pick(r, GOALSHIFT_METRICS);
+    return { arm, shape, v1: { metrik }, v2: { metrik, subgruppen: [pick(r, GOALSHIFT_SUBGRUPPEN)] } };
+  }
+  // multi-flag: 1-4 der authored Mutationen wie in den Bestandsvarianten.
+  const v1 = goalShiftBase(r);
+  const v2 = goalShiftCopy(v1);
+  const mutationen = shuffle(r, [0, 1, 2, 3]).slice(0, randInt(r, 1, 4));
+  if (mutationen.includes(0)) {
+    v2.metrik = pick(r, GOALSHIFT_METRICS.filter((m) => m !== v1.metrik));
+  }
+  if (mutationen.includes(1)) {
+    v2.schwelle = pick(r, GOALSHIFT_SCHWELLEN.filter((s) => s !== v1.schwelle));
+  }
+  if (mutationen.includes(2)) {
+    const neu = pick(r, GOALSHIFT_ENDPOINTS.filter((e) => e !== v1.primaer && !v1.sekundaer.includes(e)));
+    v2.sekundaer = [v1.primaer, ...v1.sekundaer.filter((e) => e !== neu)];
+    v2.primaer = neu;
+  }
+  if (mutationen.includes(3)) {
+    v2.subgruppen = [...v1.subgruppen, pick(r, GOALSHIFT_SUBGRUPPEN.filter((s) => !v1.subgruppen.includes(s)))];
+  }
+  return { arm, v1, v2 };
+};
+
+const goalShiftSeededTests = (body, pairs) => seededPyBlock(
+  body,
+  ['detect_goal_shift'],
+  pairs.flatMap((pair, i) => {
+    const a = pyLit(pair.v1);
+    const b = pyLit(pair.v2);
+    return [
+      `__check('seeded flags ${i + 1}', detect_goal_shift(${a}, ${b}) == __ref_detect_goal_shift(${a}, ${b}))`,
+      `__check('seeded copy ${i + 1}', detect_goal_shift(${a}, dict(${a})) == __ref_detect_goal_shift(${a}, dict(${a})))`,
+    ];
+  }),
+);
+
+const goalShiftVersionOk = (v) => {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return false;
+  for (const [key, value] of Object.entries(v)) {
+    if (!GOALSHIFT_FIELDS.has(key)) return false;
+    if (key === 'metrik' && !GOALSHIFT_METRICS.includes(value)) return false;
+    if (key === 'schwelle' && !GOALSHIFT_SCHWELLEN.includes(value)) return false;
+    if (key === 'primaer' && !GOALSHIFT_ENDPOINTS.includes(value)) return false;
+    if (key === 'sekundaer' && (!Array.isArray(value) || value.length > 3 || !value.every((s) => GOALSHIFT_ENDPOINTS.includes(s)))) return false;
+    if (key === 'subgruppen' && (!Array.isArray(value) || value.length > 4 || !value.every((s) => GOALSHIFT_SUBGRUPPEN.includes(s)))) return false;
+  }
+  return true;
+};
+
+/** Kapsel-Check: die gespeicherten Paare müssen den emittierten Testblock
+ *  byte-identisch rekonstruieren — solve bleibt fail-closed. */
+export function goalShiftParamsOk(parameters) {
+  try {
+    const body = goalShiftBody('detect-goal-shift');
+    const pairs = parameters?.seedPairs;
+    return Array.isArray(pairs) && pairs.length === GOALSHIFT_ARMS.length
+      && new Set(pairs.map((pair) => pair?.arm)).size === GOALSHIFT_ARMS.length
+      && pairs.every((pair) => GOALSHIFT_ARMS.includes(pair.arm)
+        && (pair.arm !== 'fehlende-felder' || Number.isInteger(pair.shape))
+        && goalShiftVersionOk(pair.v1) && goalShiftVersionOk(pair.v2))
+      && parameters.tests === goalShiftSeededTests(body, pairs)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+export function genDetectGoalShiftTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const rotation = variantCaseIndex(seed, GOALSHIFT_ARMS.length);
+    const pairs = GOALSHIFT_ARMS.map((_, index) => goalShiftDraw(r, GOALSHIFT_ARMS[(index + rotation) % GOALSHIFT_ARMS.length]));
+    const body = goalShiftBody('detect-goal-shift');
+    const tests = goalShiftSeededTests(body, pairs);
+    const note = `${pairs.length} Protokollpaare: ${pairs.map((pair) => GOALSHIFT_ARM_NOTES[pair.arm]).join('; ')}.`;
+    return pyodideInstance(
+      { ...body, prompt: body.prompt.replace('drei Protokollpaarungen', `${pairs.length} Protokollpaarungen`) },
+      { seedPairs: pairs },
+      tests,
+      note,
+    );
+  });
 }

@@ -737,6 +737,10 @@ export const GIT_OPERATION_CONTRACT = {
   caseTypes: [
     { caseId: 'diff-unstaged' },
     { caseId: 'diff-staged' },
+    { caseId: 'push' },
+    { caseId: 'merge-main' },
+    { caseId: 'conflict-resolved' },
+    { caseId: 'restore-file' },
     { caseId: 'merge-conflict-test-flow', propertyTest: false },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],

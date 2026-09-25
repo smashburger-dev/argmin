@@ -28,8 +28,15 @@ import {
   genSubgroupRecallOutput,
   subgroupRecallExpected,
   genCompareSystemsTests,
+  ensureShardDocs,
   confusionRefSolver,
   ratioRefSolver,
+  genGradMseNumpyTests,
+  gradMseRefSolver,
+  gradMseParamsOk,
+  genDetectGoalShiftTests,
+  goalShiftRefSolver,
+  goalShiftParamsOk,
   genCvSpread,
   genSeedSpread,
   genSubgroupGapPp,
@@ -173,6 +180,9 @@ const PROFILE_PREDICATES = {
   // Profile fail-closed (kein Eintrag -> 'Unbekanntes Profil').
   'confusion-cost-report': { stretch: () => true },
   'confusion-from-rows': { stretch: () => true },
+  // detect-goal-shift ist challenge-pinnt (caseDef.difficulty) — das
+  // Prädikat lässt jeden Challenge-Draw durch.
+  'detect-goal-shift': { challenge: () => true },
   'baseline-ledger-rates': { intro: (p) => p.shape === 'naive-percent', stretch: (p) => p.shape === 'gap-promille' },
   'pipeline-stage-audit': { intro: (p) => p.shape === 'valid-count', stretch: (p) => p.shape === 'missing-hashes' },
   'eval-batch-rates': {
@@ -376,6 +386,7 @@ const AGGREGATE_CONFUSION_SOLVERS = {
 };
 
 function staticExpected(familyId, parameters) {
+  ensureShardDocs();
   const { body } = variantOf(staticCaseBody(familyId, parameters.caseId), parameters.variant ?? 0);
   const expected = body.expected || {};
   if (Object.hasOwn(expected, 'value')) return { value: expected.value };
@@ -454,11 +465,19 @@ const FAMILY_DEFINITIONS = {
   'optimize-mse-gradient-closed-form': {
     cases: {
       'mse-gradient-wrt-w': { generator: genMseGradient },
-      'grad-mse-numpy-reference': {},
+      // core-pinnt wie der authored Fallkörper (difficultyProfile: core);
+      // Grading läuft über die Pyodide-Tests, solve liefert nur den
+      // authored Referenzsolver — Kapsel-Check vorher (fail-closed).
+      'grad-mse-numpy-reference': {
+        generator: genGradMseNumpyTests,
+        difficulty: 'core',
+        competencyIds: ['c-grad-regression', 'c-numpy-basics'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'grad-mse-numpy-reference') {
-        return staticExpected('optimize-mse-gradient-closed-form', parameters);
+        if (gradMseParamsOk(parameters)) return { referenceCode: gradMseRefSolver('grad-mse-numpy-reference') };
+        throw new Error(`Unbekannter Fall ${parameters.caseId}`);
       }
       const { n, w, b, points } = parameters;
       return {
@@ -693,11 +712,18 @@ const FAMILY_DEFINITIONS = {
         generator: genProtocolShifts,
         competencyIds: ['c-research-question'],
       },
-      'detect-goal-shift': {},
+      // challenge-pinnt wie der authored Fallkörper; solve liefert den
+      // authored Referenzsolver — Kapsel-Check vorher (fail-closed).
+      'detect-goal-shift': {
+        generator: genDetectGoalShiftTests,
+        difficulty: 'challenge',
+        competencyIds: ['c-research-question', 'c-python-functions'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'detect-goal-shift') {
-        return staticExpected('validate-goalshift-flag-rules', parameters);
+        if (goalShiftParamsOk(parameters)) return { referenceCode: goalShiftRefSolver('detect-goal-shift') };
+        throw new Error(`Unbekannter Fall ${parameters.caseId}`);
       }
       return { value: protocolShiftFlags(parameters.versionen.a, parameters.versionen.b).length };
     },
@@ -883,7 +909,11 @@ const MSE_GRADIENT_CLOSED_FORM = makeSolvedFamily({
   contract: MSE_GRADIENT_CLOSED_FORM_CONTRACT,
   cases: FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].cases,
   profileAccepts,
-  toExpected: toIntegerExpected,
+  // Der Pyodide-Fall trägt das authored reference-solver-Expected; der
+  // numerische Fall bleibt integer-wrap.
+  toExpected: (drawn) => (drawn.expected && typeof drawn.expected === 'object'
+    ? drawn.expected
+    : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].solve,
 });
 export const generateMseGradientClosedFormFamily = MSE_GRADIENT_CLOSED_FORM.generate;
@@ -948,6 +978,7 @@ export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
 const AGGREGATE_CONFUSION_METRIC = makeSolvedFamily({
   contract: AGGREGATE_CONFUSION_METRIC_CONTRACT,
   cases: FAMILY_DEFINITIONS['aggregate-confusion-metric'].cases,
+  ensureDocs: ensureShardDocs,
   profileAccepts,
   // Scalar draws keep the integer wrap; seeded pyodide/predict-output cases
   // emit structured expected objects that pass through unchanged.
@@ -1025,6 +1056,7 @@ export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
 const FORMULA_STAT_FROM_TABLE = makeSolvedFamily({
   contract: FORMULA_STAT_FROM_TABLE_CONTRACT,
   cases: FAMILY_DEFINITIONS['formula-stat-from-table'].cases,
+  ensureDocs: ensureShardDocs,
   profileAccepts,
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['formula-stat-from-table'].solve,
@@ -1070,7 +1102,11 @@ const VALIDATE_GOALSHIFT = makeSolvedFamily({
   contract: VALIDATE_GOALSHIFT_CONTRACT,
   cases: FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].cases,
   profileAccepts,
-  toExpected: toIntegerExpected,
+  // Der Pyodide-Fall trägt das authored reference-solver-Expected; der
+  // numerische Fall bleibt integer-wrap.
+  toExpected: (drawn) => (drawn.expected && typeof drawn.expected === 'object'
+    ? drawn.expected
+    : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve,
 });
 export const generateValidateGoalshiftFlagRulesFamily = VALIDATE_GOALSHIFT.generate;

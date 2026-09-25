@@ -20,7 +20,9 @@
           "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
           "c": "ganze Zahl ungleich 0 in [-9, 9]",
-          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "literalZeile4": "a + 1 (aus a abgeleitet, kein freier Draw)",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
         }
       },
       "expected": {
@@ -56,7 +58,8 @@
           "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
           "c": "ganze Zahl ungleich 0 in [-9, 9]",
-          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
         }
       },
       "expected": {
@@ -89,10 +92,11 @@
       "parameters": {
         "family": "list-alias",
         "domain": {
-          "a": "ganze Zahl ungleich 0 in [-9, 9]; mindestens einer von a, b negativ",
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
           "c": "ganze Zahl ungleich 0 in [-9, 9]",
-          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "jedes Profil: mindestens eines von a, b < 0 und max. |Snippet-Zahl| ≥ 7"
         }
       },
       "expected": {
@@ -130,7 +134,8 @@
           "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
           "c": "ganze Zahl ungleich 0 in [-9, 9]",
-          "d": "ganze Zahl ungleich 0 in [-9, 9], ungleich a"
+          "d": "ganze Zahl ungleich 0 in [-9, 9], ungleich a",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
         }
       },
       "expected": {
@@ -166,7 +171,8 @@
           "a": "ganze Zahl ungleich 0 in [-9, 9]",
           "b": "ganze Zahl ungleich 0 in [-9, 9]",
           "c": "ganze Zahl ungleich 0 in [-9, 9]",
-          "d": "ganze Zahl ungleich 0 in [-9, 9]"
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
         }
       },
       "expected": {
@@ -200,8 +206,9 @@
         "family": "set-steps",
         "domain": {
           "e1": "'ki', 'lern' oder 'code'",
-          "e2": "Pool ohne e1",
-          "e3": "Pool ohne e1"
+          "e2": "aus {'ki', 'lern', 'code', 'daten'} ohne e1",
+          "e3": "aus {'ki', 'lern', 'code', 'daten'} ohne e1; unabhängig von e2 gezogen (kann e2 gleichen)",
+          "profile": "ungefiltert — kein Zahlenprofil, alle Profile ziehen denselben Pool"
         }
       },
       "expected": {

@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-error-journal-order",
-  "contract": {
-    "familyId": "construct-error-journal-order",
-    "familyGroup": "construct-program",
-    "summary": "Ordnet die Einträge eines Fehlerjournals vom beobachteten Symptom bis zum geplanten Abruf.",
-    "taskArchetype": "parsons",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "journal-entry-order",
-        "propertyTest": true
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-meta-learning"
-    ],
-    "graderId": "deterministic",
-    "activityType": "parsons"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "journal-entry-order",
@@ -108,47 +87,6 @@
         "globales Selbsturteil als Ursachenhypothese aufnehmen",
         "den geplanten Test vor die Hypothese setzen",
         "den Abruf vor den Test legen oder weglassen"
-      ],
-      "variants": [
-        {
-          "parameters": {
-            "initialOrder": [
-              "p-test",
-              "p-symptom",
-              "d-abkuerzung",
-              "p-abruf",
-              "p-hypothese",
-              "d-label",
-              "p-repro"
-            ]
-          }
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "d-abkuerzung",
-              "p-repro",
-              "p-abruf",
-              "p-symptom",
-              "d-label",
-              "p-test",
-              "p-hypothese"
-            ]
-          }
-        },
-        {
-          "parameters": {
-            "initialOrder": [
-              "p-abruf",
-              "d-label",
-              "p-repro",
-              "p-test",
-              "d-abkuerzung",
-              "p-symptom",
-              "p-hypothese"
-            ]
-          }
-        }
       ]
     }
   ]

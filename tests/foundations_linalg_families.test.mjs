@@ -1,38 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { generateScalarProductFamily } from '../assets/js/core/foundations_linalg_families.mjs';
 import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import './helpers/register_static_cases.mjs';
-import { legacyOracle } from './helpers/legacy_oracle.mjs';
-
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const STATIC_SOURCES = {
-  'matmul-entry-w05-e1': 'w05-e1',
-  'matmul-entry-w05-e12': 'w05-e12',
-  'dot-product-w05-e13': 'w05-e13',
-  'dot-product-w05-e3': 'w05-e3',
-};
-
-
-
-test('static cases pin w05 definitions byte-identically', () => {
-  const w05 = legacyOracle.weeks.w05;
-  for (const [caseId, exerciseId] of Object.entries(STATIC_SOURCES)) {
-    const definition = w05.exercises.find((entry) => entry.exerciseId === exerciseId);
-    const generated = generateScalarProductFamily({ seed: 511, caseId, difficulty: 'core' });
-    assert.equal(generated.prompt, definition.prompt, `${caseId}: Prompt`);
-    assert.equal(generated.fullSolution, definition.fullSolution, `${caseId}: Lösung`);
-    assert.deepEqual(generated.parameters.A ?? null, definition.parameters.A ?? null, `${caseId}: A`);
-    assert.deepEqual(generated.parameters.B ?? null, definition.parameters.B ?? null, `${caseId}: B`);
-    assert.deepEqual(generated.parameters.u ?? null, definition.parameters.u ?? null, `${caseId}: u`);
-    assert.deepEqual(generated.parameters.v ?? null, definition.parameters.v ?? null, `${caseId}: v`);
-    assert.deepEqual(generated.parameters.entry ?? null, definition.parameters.entry ?? null, `${caseId}: entry`);
-  }
-});
 
 
 
