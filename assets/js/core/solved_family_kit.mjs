@@ -215,9 +215,17 @@ export function makeSolvedFamily({
       });
     return {
       parameters: { caseId, difficulty, ...drawn.parameters },
-      expected: toExpected(drawn),
+      expected: drawn.choices ? {} : toExpected(drawn),
       prompt: drawn.prompt,
       fullSolution: drawn.fullSolution,
+      // Seeded choice cases carry their own interaction fields; numeric
+      // draws keep the numeric contract unchanged.
+      ...(drawn.choices ? { choices: drawn.choices } : null),
+      ...(drawn.activityType ? { activityType: drawn.activityType } : null),
+      ...(drawn.masteryEligible !== undefined ? { masteryEligible: drawn.masteryEligible } : null),
+      ...(drawn.hints ? { hints: drawn.hints } : null),
+      ...(drawn.feedbackRules ? { feedbackRules: drawn.feedbackRules } : null),
+      ...(drawn.typicalErrors ? { typicalErrors: drawn.typicalErrors } : null),
       ...(caseDef.competencyIds ? { competencyIds: [...caseDef.competencyIds] } : {}),
     };
   };

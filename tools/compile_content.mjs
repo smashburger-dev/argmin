@@ -767,11 +767,18 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   const caseTitle = familyDocument?.cases?.find((item) => item.caseId === placement.caseId)?.title;
   const title = caseTitle || instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
   seen.add(definitionId);
+  // Fresh-instance review routing only makes sense for cases that actually
+  // draw new content per seed (propertyTest !== false mirrors resolveCaseId's
+  // eligibility filter). Static members of a seeded family keep their pinned
+  // route — otherwise their reviews would resolve to a different case and
+  // the queue entry could never be cleared.
+  const caseType = family.caseTypes?.find((item) => item.caseId === placement.caseId);
+  const seeded = family.authorityMode === 'seeded' && caseType?.propertyTest !== false;
   return {
     definitionId, familyId: placement.familyId, caseId: placement.caseId, seed: placement.seed ?? 0, difficulty: placement.difficulty, title,
     activityType: instance.kind ?? instance.activityType, competencyIds: [...(instance.competencyIds || [])],
     estimatedMinutes: placement.estimatedMinutes ?? 8, masteryEligible: instance.masteryEligible === true,
-    seeded: family.authorityMode === 'seeded', moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
+    seeded, moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
   };
 }
 

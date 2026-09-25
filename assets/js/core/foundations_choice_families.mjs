@@ -8,21 +8,20 @@
 // Bundle-Registrierung laufen (direkte EXERCISE_FAMILIES-Nutzung in Tests
 // und Tools). Alle Inhalte sind wörtlich aus den autoritativen
 // Family-Shards übernommen. Falltypen sind kanonische Foundations-Fälle
-// (authorityMode überall static, außer seeded-error-pattern-cases: seeded).
+// (authorityMode überall static, außer classify-error-hypothesis: seeded).
 //
-// authorityMode der Verträge ist überall static (S4D1-Vorgabe): auch der
-// seeded-error-pattern-cases-Fall ist auf die autorisierte Default-Instanz
-// (deterministicSeed 3401, Fall off-by-one) eingefroren — der Seed rotiert
-// nur die Antwortposition, niemals den Inhalt. Die eingefrorene Instanz ist
-// als Fallkörper serialisiert (Distraktor-Reihenfolge = rotierte Bank-
-// Reihenfolge). masteryEligible ist überall true (S4D1-Vorgabe;
-// w02-e3/w03-e2 zählen im Content als reiner Bearbeitungsnachweis, in der
-// Familien-Runtime als Mastery-Nachweis).
+// authorityMode der Verträge ist static (S4D1-Vorgabe), nur
+// classify-error-hypothesis führt seeded: der Potenzgesetz-Fall zieht seinen
+// Inhalt pro Seed (Fehlerart, Basis, Exponenten). Der eingefrorene
+// seeded-error-pattern-cases-Fall bleibt als Fallkörper serialisiert
+// (Distraktor-Reihenfolge = rotierte Bank-Reihenfolge). masteryEligible ist
+// überall true (S4D1-Vorgabe; w02-e3/w03-e2 zählen im Content als reiner
+// Bearbeitungsnachweis, in der Familien-Runtime als Mastery-Nachweis).
 //
 // Kein UI, kein Ledger, kein Content-Edit. Die Generatoren stehen bewusst
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
-import { variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
+import { rng, randInt, variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
 import { registerStaticCases, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import stringImmutabilityDoc from '../../../content/families/classify-string-immutability.json' with { type: 'json' };
 import setOperationDoc from '../../../content/families/classify-set-operation-semantics.json' with { type: 'json' };
@@ -130,21 +129,124 @@ export function solveSetOperation(parameters) {
   return solveStaticChoice('classify-set-operation-semantics', parameters);
 }
 
-// --- classify-error-hypothesis (drei Shard-Fälle) ---------------------------
-// base-vs-exponent-confusion: statisches Mitglied f-algebra-debug-01.
+// --- classify-error-hypothesis (ein Seed-Fall, zwei Shard-Fälle) ------------
+// base-vs-exponent-confusion: geseedeter Fall f-algebra-debug-01 — der Seed
+// zieht Fehlerart, Basis und Exponenten; Prompt, Optionen und Lösung werden
+// aus den Parametern erzeugt (Misconception-Raum: Basis mitmultipliziert,
+// Exponenten multipliziert statt addiert, Potenz-Exponenten addiert statt
+// multipliziert). Der Solver rekonstruiert correctText aus parameters.
 // seeded-error-pattern-cases: geseedetes Mitglied f-meta-error-classify-01,
-// hier eingefroren auf die autorisierte Default-Instanz (Seed 3401). Der
-// Shard führt authorityMode seeded; die Familien-Runtime friert den Inhalt
-// ein (static), weil S4D1 keine Seed-Variation des Inhalts vorsieht —
-// derselbe Freeze, den jede statische Migration eines Seed-Generators
-// vornimmt (Präzedenz w01-e1 static neben w01-e8 seeded, family-model §4).
+// hier eingefroren auf die autorisierte Default-Instanz (Seed 3401,
+// staticBodyInstance).
 // error-journal-next-test: statisches Mitglied f-meta-error-log-01.
 
+const POWER_LAW_KINDS = ['product-base-multiplied', 'product-exp-multiplied', 'power-exp-added'];
+
+const powerLawClaim = ({ kind, base, m, n }) => {
+  if (kind === 'product-base-multiplied') return `$${base}^{${m}} \\cdot ${base}^{${n}} = ${base * base}^{${m + n}}$`;
+  if (kind === 'product-exp-multiplied') return `$${base}^{${m}} \\cdot ${base}^{${n}} = ${base}^{${m * n}}$`;
+  return `$(${base}^{${m}})^{${n}} = ${base}^{${m + n}}$`;
+};
+
+const powerLawCorrectText = ({ kind, base, m, n }) => {
+  if (kind === 'product-base-multiplied') {
+    return `Bei gleicher Basis werden die Exponenten addiert — die Basis bleibt $${base}$, richtig wäre $${base}^{${m + n}}$.`;
+  }
+  if (kind === 'product-exp-multiplied') {
+    return `Bei gleicher Basis werden die Exponenten addiert, nicht multipliziert — richtig wäre $${base}^{${m + n}}$.`;
+  }
+  return `Beim Potenzieren einer Potenz werden die Exponenten multipliziert — richtig wäre $${base}^{${m * n}}$.`;
+};
+
+const powerLawDistractors = ({ kind, base, m, n }) => {
+  if (kind === 'product-base-multiplied') {
+    return [
+      `Die Exponenten müssten multipliziert werden — richtig wäre $${base}^{${m * n}}$.`,
+      `Nur der Exponent ist falsch; die Basis $${base * base}$ stimmt.`,
+      `Potenzen mit gleicher Basis dürfen nicht multipliziert werden.`,
+    ];
+  }
+  if (kind === 'product-exp-multiplied') {
+    return [
+      `Die Basis müsste mitmultipliziert werden — richtig wäre $${base * base}^{${m + n}}$.`,
+      `Der Exponent $${m * n}$ stimmt; der Fehler liegt in der Basis.`,
+      `Die Behauptung stimmt.`,
+    ];
+  }
+  return [
+    `Die Exponenten müssten addiert und die Basis quadriert werden — richtig wäre $${base * base}^{${m + n}}$.`,
+    `Die Behauptung stimmt.`,
+    `Potenzen dürfen nicht potenziert werden.`,
+  ];
+};
+
+const powerLawSolution = ({ kind, base, m, n }) => {
+  if (kind === 'product-base-multiplied') {
+    return `$${base}^{${m}} \\cdot ${base}^{${n}} = ${base}^{${m}+${n}} = ${base}^{${m + n}}$. Bei gleicher Basis werden die Exponenten addiert — die Basis wird nicht zu $${base * base}$.`;
+  }
+  if (kind === 'product-exp-multiplied') {
+    return `$${base}^{${m}} \\cdot ${base}^{${n}} = ${base}^{${m}+${n}} = ${base}^{${m + n}}$. Bei gleicher Basis werden die Exponenten addiert, nicht multipliziert.`;
+  }
+  return `$(${base}^{${m}})^{${n}} = ${base}^{${m} \\cdot ${n}} = ${base}^{${m * n}}$. Beim Potenzieren einer Potenz werden die Exponenten multipliziert, nicht addiert.`;
+};
+
+/** Seeded power-law error diagnosis: the seed draws the committed misrule,
+ *  base and exponents; distractors are the other misrules (never a rephrase
+ *  of the correct rule). Rotation keeps the pinned convention
+ *  choices[|seed| % n]. */
+function genPowerLawErrorCase({ seed, difficulty }) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const choiceCount = CHOICE_COUNT[difficulty];
+  if (!choiceCount) throw new Error(`Unbekanntes Profil ${difficulty}`);
+  const r = rng(seed >>> 0);
+  const kind = POWER_LAW_KINDS[Math.floor(r() * POWER_LAW_KINDS.length)];
+  const base = [2, 3, 5][randInt(r, 0, 2)];
+  let m;
+  let n;
+  // m·n = m+n would make a wrong claim coincide with the correct value
+  // (2^2·2^2 = 2^4 either way). 2(m+n) = m·n makes the "(b²)^(m+n)"
+  // distractor claim the true value numerically (e.g. m=n=4). Both draws
+  // are ambiguous for diagnosis, so they are excluded for every kind.
+  const ambiguous = () => m * n === m + n || 2 * (m + n) === m * n;
+  if (kind === 'power-exp-added') {
+    do { m = randInt(r, 2, 4); n = randInt(r, 2, 4); } while (ambiguous());
+  } else {
+    do { m = randInt(r, 2, 6); n = randInt(r, 2, 4); } while (ambiguous());
+  }
+  const parameters = { caseId: 'base-vs-exponent-confusion', difficulty, kind, base, m, n };
+  const correct = powerLawCorrectText(parameters);
+  const distractors = powerLawDistractors(parameters);
+  const drawn = choiceCount - 1 >= distractors.length
+    ? distractors
+    : [distractors[randInt(r, 0, distractors.length - 1)]];
+  const options = [correct, ...drawn];
+  const rotation = variantCaseIndex(seed, options.length);
+  return {
+    parameters,
+    expected: {},
+    choices: buildRotatedChoices(options, rotation, CHOICE_IDS.slice(0, options.length)),
+    title: 'Potenzgesetz-Fehlerdiagnose',
+    prompt: `Eine Lösung behauptet ${powerLawClaim(parameters)}. Welche Diagnose trifft den ersten Fehler?`,
+    fullSolution: powerLawSolution(parameters),
+    hints: [
+      'Trenne Basis und Exponent: Welche Seite der Behauptung verändert welchen Teil?',
+      kind === 'power-exp-added'
+        ? `Rechne die linke Seite aus: $(${base}^{${m}})^{${n}} = ${base}^{${m} \\cdot ${n}}$.`
+        : `Rechne die linke Seite aus: $${base}^{${m}} \\cdot ${base}^{${n}} = ${base}^{${m} + ${n}}$.`,
+    ],
+    masteryEligible: true,
+  };
+}
+
 export function generateErrorHypothesisFamily({ seed, caseId, difficulty }) {
+  if (caseId === 'base-vs-exponent-confusion') return genPowerLawErrorCase({ seed, difficulty });
   return generateStaticChoice('classify-error-hypothesis', { seed, caseId, difficulty });
 }
 
 export function solveErrorHypothesis(parameters) {
+  if (parameters?.kind && parameters?.caseId === 'base-vs-exponent-confusion') {
+    return { correctText: powerLawCorrectText(parameters) };
+  }
   return solveStaticChoice('classify-error-hypothesis', parameters);
 }
 
@@ -226,12 +328,12 @@ export const FOUNDATIONS_CHOICE_CONTRACTS = [
     familyGroup: 'classify-concept',
     summary: 'Ordnet ein beobachtetes Fehlerbild der plausibelsten Fehlerhypothese zu.',
     taskArchetype: 'choice-diagnose',
-    authorityMode: 'static',
+    authorityMode: 'seeded',
     masteryEligible: true,
     caseTypes: [
       { caseId: 'base-vs-exponent-confusion' },
-      { caseId: 'seeded-error-pattern-cases' },
-      { caseId: 'error-journal-next-test' },
+      { caseId: 'seeded-error-pattern-cases', propertyTest: false },
+      { caseId: 'error-journal-next-test', propertyTest: false },
     ],
     difficultyProfiles: [...DIFFICULTY_PROFILES],
     competencyIds: ['c-algebra', 'c-meta-learning'],

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.8 — 2026-09-24
+
+Zwei Konzeptfragen werden prozedural generiert statt ausgeschrieben.
+
+Für Lernende: **Die Potenzgesetz-Diagnose** (Konzeptfrage in der Algebra) und die **RMSE-Einheitsfrage** (Einordnung des quadratischen Fehlers) ziehen ihre Aufgaben jetzt pro Seed aus dem mathematischen Raum — Fehlerart, Basis und Exponenten bzw. Szenario und MSE-Wert variieren echt, statt nur zwischen wenigen hinterlegten Varianten zu wechseln. Die richtige Antwort wird aus den gezogenen Parametern rekonstruiert, nicht aus hinterlegtem Text gelesen; die Auswertung bleibt deterministisch. Bei der RMSE-Frage bleiben die Rückmeldungen zu falschen Optionen jetzt auch bei rotierter Reihenfolge an der richtigen Antwort.
+
+Für Beitragende: `classify-error-hypothesis` ist die erste gemischte Familie — der Potenzgesetz-Fall ist geseedet (`genPowerLawErrorCase`), die beiden übrigen Fälle bleiben authored und tragen `propertyTest: false`. `makeSolvedFamily` reicht `choices`, `activityType`, `masteryEligible`, `hints`, `feedbackRules` und `typicalErrors` aus dem Draw durch — damit können solved-Familien auch geseedete Single-Choice-Fälle tragen. **Fix am Review-Routing:** das `seeded`-Flag im Aktivitäts-Index gilt jetzt pro Fall statt pro Familie — Fälle ohne Seed-Inhalt (`propertyTest: false`) behalten ihre gepinnte Route. Bisher öffneten Reviews statischer Mitglieder gemischter Familien einen anderen Fall und konnten nie abgebaut werden. Mehrdeutige Zufallsziehungen sind ausgeschlossen (Exponentenpaare mit `m·n = m+n` oder `2(m+n) = m·n` erzeugten Aufgaben, bei denen zwei Diagnosen denselben Zahlenwert behaupten). Die gelöschten Fallkörper bleiben als deklarative Katalogzeilen erhalten (Lineage, Titel), rund 450 Zeilen authored Varianten entfallen.
+
 ## 0.8.7 — 2026-09-24
 
 Ergebnis-Anzeige verschlankt, Varianten und Mathe-Darstellung repariert.

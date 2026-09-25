@@ -98,14 +98,18 @@ test('rng-stream-reseed-trace liefert die erwartete Ausgabe', () => {
   assert.deepEqual(trace.expectedAnswer, { kind: 'output-lines', output: '26' });
 });
 
-test('static data-ml choice cases honor seeded variants', () => {
-  const base = EXERCISE_FAMILIES.instantiate('formula-quadratic-error-metric', 0, 'intro', 'rmse-unit-from-mse');
-  const next = EXERCISE_FAMILIES.instantiate('formula-quadratic-error-metric', 1, 'intro', 'rmse-unit-from-mse');
-  assert.equal(base.parameters.variant, 0);
-  assert.equal(next.parameters.variant, 1);
-  assert.notEqual(base.prompt, next.prompt);
-  assert.equal(base.choices.find((choice) => choice.correct).id, 'b');
-  assert.equal(next.choices.find((choice) => choice.correct).id, 'a');
+test('seeded rmse-unit case varies scenario and stays solver-consistent', () => {
+  const prompts = new Set();
+  for (let seed = 0; seed < 24; seed += 1) {
+    const instance = EXERCISE_FAMILIES.instantiate('formula-quadratic-error-metric', seed, 'intro', 'rmse-unit-from-mse');
+    prompts.add(instance.prompt);
+    const correct = instance.choices.filter((choice) => choice.correct);
+    assert.equal(correct.length, 1, `seed ${seed}: genau eine korrekte Wahl`);
+    const solved = EXERCISE_FAMILIES.get('formula-quadratic-error-metric').solve(instance.parameters);
+    assert.equal(correct[0].text, solved.correctText, `seed ${seed}: Solver weicht ab`);
+    assert.equal(Math.sqrt(instance.parameters.mse) ** 2, instance.parameters.mse, `seed ${seed}: mse muss Quadratzahl sein`);
+  }
+  assert.ok(prompts.size >= 10, `erwartet >=10 unterschiedliche Prompts ueber 24 Seeds, bekam ${prompts.size}`);
 });
 
 test('sklearn trace case grades and exposes the ML-baseline competency override', async () => {

@@ -1427,7 +1427,7 @@
       "caseTemplate": {
         "caseId": "base-vs-exponent-confusion",
         "graderAdapter": "deterministic",
-        "authorityMode": "static"
+        "authorityMode": "seeded"
       },
       "difficultyProfile": "core-application",
       "placement": {
