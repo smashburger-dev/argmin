@@ -1,40 +1,4 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
-
-type FamilyCase = {
-  prompt: string;
-  parameters?: {
-    variables?: Array<{ name: string; value: number | string }>;
-    initialOrder?: string[];
-  };
-  expected?: {
-    output?: string;
-    solution?: number[];
-    solutionOrder?: string[];
-    distractors?: string[];
-  };
-  variants?: Array<Partial<FamilyCase>>;
-};
-
-function loadCase(file: string, caseId: string): FamilyCase {
-  const document = JSON.parse(readFileSync(join(process.cwd(), 'content/families', file), 'utf8')) as {
-    cases: Array<FamilyCase & { caseId: string }>;
-  };
-  const body = document.cases.find((item) => item.caseId === caseId);
-  if (!body) throw new Error(`${file}:${caseId} fehlt`);
-  return body;
-}
-
-function variantOf(body: FamilyCase, seed: number): FamilyCase {
-  const all = [body, ...(body.variants || [])];
-  const variant = all[Math.abs(seed) % all.length] || body;
-  return {
-    prompt: variant.prompt ?? body.prompt,
-    parameters: { ...(body.parameters || {}), ...(variant.parameters || {}) },
-    expected: { ...(body.expected || {}), ...(variant.expected || {}) },
-  };
-}
 
 async function openFamily(page: Page, familyId: string, caseId: string, seed: number, difficulty: string) {
   await page.goto(`/index.html#/family/${familyId}/${caseId}/${seed}/${difficulty}`);
@@ -71,18 +35,26 @@ async function expectPrompt(page: Page, prompt: string) {
 
 test('WIP-3 code-trace variants grade two seeds', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'WIP-3 activity variants run in Chromium.');
-  const body = loadCase('trace-assignment-state.json', 'tree-majority-vote-trace');
-  expect(variantOf(body, 0).prompt).not.toEqual(variantOf(body, 1).prompt);
+  // Prozedurale Familie: Instanz kommt aus der Registry, nicht aus JSON-Varianten.
+  const prompts: string[] = [];
   for (const seed of [0, 1]) {
-    const chosen = variantOf(body, seed);
     await openFamily(page, 'trace-assignment-state', 'tree-majority-vote-trace', seed, 'core');
-    await expectPrompt(page, chosen.prompt);
-    for (const variable of chosen.parameters?.variables || []) {
+    const inst = await page.evaluate(async (s) => {
+      const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
+        EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { prompt: string; parameters: { variables: Array<{ name: string; value: number | string }> } } };
+      };
+      const i = EXERCISE_FAMILIES.instantiate('trace-assignment-state', s, 'core', 'tree-majority-vote-trace');
+      return { prompt: i.prompt, variables: i.parameters.variables };
+    }, seed);
+    prompts.push(inst.prompt);
+    await expectPrompt(page, inst.prompt);
+    for (const variable of inst.variables) {
       await page.locator('label').filter({ hasText: variable.name }).locator('input').fill(String(variable.value));
     }
     await page.getByRole('button', { name: 'Antwort prüfen' }).click();
     await expect(page.getByText(/Richtig/)).toBeVisible();
   }
+  expect(prompts[0]).not.toEqual(prompts[1]);
 });
 
 test('WIP-3 predict-output variants grade two seeds', async ({ page, browserName }) => {
@@ -131,15 +103,24 @@ test('WIP-3 parsons variants grade two seeds', async ({ page, browserName }) => 
 
 test('WIP-3 vector variants grade two seeds', async ({ page, browserName }) => {
   test.skip(browserName !== 'chromium', 'WIP-3 activity variants run in Chromium.');
-  const body = loadCase('formula-scalar-product.json', 'column-vector-authored');
-  expect(variantOf(body, 0).prompt).not.toEqual(variantOf(body, 1).prompt);
+  // Instanz kommt aus der Registry (seeded variants heute, Generator
+  // sobald der Fall prozeduralisiert ist).
+  const prompts: string[] = [];
   for (const seed of [0, 1]) {
-    const chosen = variantOf(body, seed);
     await openFamily(page, 'formula-scalar-product', 'column-vector-authored', seed, 'core');
-    await expectPrompt(page, chosen.prompt);
-    const [x, y] = chosen.expected?.solution || [];
+    const inst = await page.evaluate(async (s) => {
+      const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
+        EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { prompt: string; expectedAnswer: { solution: number[] } } };
+      };
+      const i = EXERCISE_FAMILIES.instantiate('formula-scalar-product', s, 'core', 'column-vector-authored');
+      return { prompt: i.prompt, solution: i.expectedAnswer.solution };
+    }, seed);
+    prompts.push(inst.prompt);
+    await expectPrompt(page, inst.prompt);
+    const [x, y] = inst.solution;
     await page.getByLabel('Lösungspaar').fill(`(${x}, ${y})`);
     await page.getByRole('button', { name: 'Antwort prüfen' }).click();
     await expect(page.getByText(/Richtig/)).toBeVisible();
   }
+  expect(prompts[0]).not.toEqual(prompts[1]);
 });

@@ -20,6 +20,10 @@
 import {
   bindFamilyDraw, pick, randInt, rng, variantCaseIndex, buildRotatedChoices, CHOICE_IDS,
 } from './generator_draw_kit.mjs';
+import { refCopy, pyLit, pyNum, pyRound } from './procedural/py_test_kit.mjs';
+import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
+import confusionMetricDoc from '../../../content/families/aggregate-confusion-metric.json' with { type: 'json' };
+import ratioPercentDoc from '../../../content/families/formula-ratio-percent-metric.json' with { type: 'json' };
 
 import benchmarkBank from '../../../content/banks/classify-benchmark-reading.json' with { type: 'json' };
 import confoundingBank from '../../../content/banks/classify-confounding.json' with { type: 'json' };
@@ -329,6 +333,391 @@ export function genConfusionCount(seed) {
         'actual-pos': `Tatsächlich positiv = TP + FN = ${tp} + ${fn} = ${answer}.`,
       }[metric],
     };
+  });
+}
+
+// --- aggregate-confusion-metric: seeded cases -------------------------------
+// Sechs ehemals statische Shard-Fälle ziehen Fixtures/Literale pro Seed.
+// starterCode, Base-Testblock, referenceSolver, prompt und fullSolution
+// bleiben byte-identisch authored — gelesen aus dem registrierten Fallkörper,
+// nicht dupliziert. Generierte Tests = authored Base-Block + `# seeded extra
+// cases` mit __ref_-Orakelkopie des Referenzsolvers (reine Python-Wahrheit)
+// und Gleichheits-Checks über die gezogenen Fixtures. Muster wie
+// optimize-decode-greedy-loop / validate-required-field-raise.
+
+// Lazy wie ensureGitDocs: Bundle-Chunk-Reihenfolge ist unbestimmt, die Docs
+// sind deshalb Modul-Importe und registrieren sich beim ersten Zugriff.
+let shardDocsReady = false;
+function ensureShardDocs() {
+  if (!shardDocsReady) {
+    registerStaticCases(confusionMetricDoc.familyId, confusionMetricDoc.cases);
+    registerStaticCases(ratioPercentDoc.familyId, ratioPercentDoc.cases);
+    shardDocsReady = true;
+  }
+}
+
+const confusionBody = (caseId) => { ensureShardDocs(); return staticCaseBody('aggregate-confusion-metric', caseId); };
+const ratioBody = (caseId) => { ensureShardDocs(); return staticCaseBody('formula-ratio-percent-metric', caseId); };
+
+// Solver-Seite (data_ml_families): authored Referenzsolver, lazy registriert.
+export const confusionRefSolver = (caseId) => confusionBody(caseId).expected.referenceSolver;
+export const ratioRefSolver = (caseId) => ratioBody(caseId).expected.referenceSolver;
+
+const seededPyBlock = (body, fnNames, lines) => (
+  `${body.parameters.tests}\n\n# seeded extra cases\n${refCopy(body.expected.referenceSolver, fnNames)}\n${lines.join('\n')}`
+);
+
+const pyodideInstance = (body, extraParameters, tests, note) => {
+  return {
+    parameters: {
+      packages: body.parameters.packages,
+      starterCode: body.parameters.starterCode,
+      tests,
+      ...extraParameters,
+    },
+    expected: body.expected,
+    prompt: `${body.prompt}\n\nGezogene Fixture: ${note}`,
+    fullSolution: body.fullSolution,
+    activityType: 'python-code',
+    graderId: 'pyodide',
+  };
+};
+
+export function genSigmoidPredictTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const z = randInt(r, -40, 40) / 10;
+    const n = randInt(r, 5, 8);
+    const yt = Array.from({ length: n }, () => (r() < 0.45 ? 1 : 0));
+    const yp = Array.from({ length: n }, () => randInt(r, 5, 95) / 100);
+    const t = randInt(r, 3, 7) / 10;
+    const args = `${pyLit(yt)}, ${pyLit(yp)}, ${pyLit(t)}`;
+    const tests = seededPyBlock(confusionBody('sigmoid-predict-numpy'), ['sigmoid', 'confusion', 'precision_recall_f1'], [
+      `__check('seeded sigmoid', abs(float(np.asarray(sigmoid(${pyLit(z)}))) - float(np.asarray(__ref_sigmoid(${pyLit(z)})))) < 1e-12)`,
+      `__check('seeded confusion', confusion(${args}) == __ref_confusion(${args}))`,
+      `__check('seeded prf', all(abs(a - b) < 1e-9 for a, b in zip(precision_recall_f1(confusion(${args})), __ref_precision_recall_f1(__ref_confusion(${args})))))`,
+    ]);
+    return pyodideInstance(confusionBody('sigmoid-predict-numpy'), { seedZ: z, seedYt: yt, seedYp: yp, seedT: t }, tests,
+      `z = ${z}, ${n} Zeilen, Schwelle ${t}.`);
+  });
+}
+
+export function genConfusionCostReport(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const cm = { tp: randInt(r, 1, 8), fp: randInt(r, 0, 4), fn: randInt(r, 0, 5), tn: randInt(r, 1, 8) };
+    const cfp = randInt(r, 2, 50);
+    const cfn = randInt(r, 2, 50);
+    const n = randInt(r, 4, 8);
+    const y = Array.from({ length: n }, () => randInt(r, 5, 95) / 100);
+    const t = Array.from({ length: n }, () => (r() < 0.45 ? 1 : 0));
+    const tests = seededPyBlock(confusionBody('confusion-cost-report'), ['total_cost', 'best_threshold'], [
+      `__check('seeded cost', total_cost(${pyLit(cm)}, ${cfp}, ${cfn}) == __ref_total_cost(${pyLit(cm)}, ${cfp}, ${cfn}))`,
+      `__check('seeded best', best_threshold(${pyLit(y)}, ${pyLit(t)}, ${cfp}, ${cfn}) == __ref_best_threshold(${pyLit(y)}, ${pyLit(t)}, ${cfp}, ${cfn}))`,
+    ]);
+    return pyodideInstance(confusionBody('confusion-cost-report'), { seedCm: cm, seedCfp: cfp, seedCfn: cfn, seedY: y, seedT: t }, tests,
+      `Matrix ${pyLit(cm)}, Kosten (${cfp}, ${cfn}), ${n} Scores.`);
+  });
+}
+
+const CONFUSION_ROW_WORDS = ['katze', 'hund', 'baum', 'licht', 'weg', 'haus', 'wort', 'zahl', 'bild', 'ton'];
+
+const confRowsWords = (r, count) => {
+  const pool = [...CONFUSION_ROW_WORDS];
+  return Array.from({ length: count }, () => {
+    const index = randInt(r, 0, pool.length - 1);
+    return pool.splice(index, 1)[0];
+  });
+};
+
+export function genConfusionFromRows(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const n = randInt(r, 4, 7);
+    const rows = Array.from({ length: n }, () => [
+      r() < 0.5 ? 'pos' : 'neg',
+      r() < 0.5 ? 'pos' : 'neg',
+    ]);
+    const w1 = confRowsWords(r, randInt(r, 2, 4)).join(' ');
+    const w2 = confRowsWords(r, randInt(r, 2, 4)).join(' ');
+    const answers = rows.map((row) => (r() < 0.8 ? row[1] : row[0] === 'pos' ? 'neg' : 'pos'));
+    const golds = rows.map((row) => row[1]);
+    const tests = seededPyBlock(confusionBody('confusion-from-rows'), ['_words', 'confusion', 'prf', 'exact_match_rate', 'token_f1'], [
+      `__check('seeded confusion', list(confusion(${pyLit(rows)})) == list(__ref_confusion(${pyLit(rows)})))`,
+      `__check('seeded em', abs(exact_match_rate(${pyLit(answers)}, ${pyLit(golds)}) - __ref_exact_match_rate(${pyLit(answers)}, ${pyLit(golds)})) < 1e-12)`,
+      `__check('seeded f1', abs(token_f1(${pyLit(w1)}, ${pyLit(w2)}) - __ref_token_f1(${pyLit(w1)}, ${pyLit(w2)})) < 1e-12)`,
+      `__check('seeded prf', prf(*confusion(${pyLit(rows)})[:3]) == __ref_prf(*__ref_confusion(${pyLit(rows)})[:3]))`,
+    ]);
+    return pyodideInstance(confusionBody('confusion-from-rows'), { seedRows: rows, seedW1: w1, seedW2: w2, seedAnswers: answers }, tests,
+      `${n} Label-Zeilen, Token-Paar '${w1}'/'${w2}'.`);
+  });
+}
+
+export function genFairnessMetricCompare(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const g1 = pick(r, ['stadt', 'land', 'nord', 'sued']);
+    const g2 = pick(r, ['jung', 'alt', 'west', 'ost']);
+    const zaehlungen = {
+      [g1]: { tp: randInt(r, 10, 60), fp: randInt(r, 2, 20), fn: randInt(r, 2, 20), tn: randInt(r, 30, 90) },
+      [g2]: { tp: randInt(r, 10, 60), fp: randInt(r, 2, 20), fn: randInt(r, 2, 20), tn: randInt(r, 30, 90) },
+    };
+    const tests = seededPyBlock(confusionBody('fairness-metric-compare'), ['subgroup_metrics'], [
+      `__check('seeded metrics', subgroup_metrics(${pyLit(zaehlungen)}) == __ref_subgroup_metrics(${pyLit(zaehlungen)}))`,
+    ]);
+    return pyodideInstance(confusionBody('fairness-metric-compare'), { seedZaehlungen: zaehlungen }, tests,
+      `Gruppen ${g1}/${g2}: ${pyLit(zaehlungen)}.`);
+  });
+}
+
+// predict-output: festes token_f1-Snippet, gezogene Argumentpaare.
+const METRIC_TRACE_HEAD = `def token_f1(answer, gold):
+    a = answer.lower().split()
+    g = gold.lower().split()
+    common = sum(min(a.count(t), g.count(t)) for t in set(a) & set(g))
+    if common == 0:
+        return 0.0
+    p = common / len(a)
+    r = common / len(g)
+    return round(2 * p * r / (p + r), 2)
+`;
+
+// JS-Spiegel von token_f1: lower + whitespace-split + Multiset-Overlap.
+const tokenF1 = (answer, gold) => {
+  const a = answer.toLowerCase().split(/\s+/).filter(Boolean);
+  const g = gold.toLowerCase().split(/\s+/).filter(Boolean);
+  const count = (list) => list.reduce((map, token) => map.set(token, (map.get(token) ?? 0) + 1), new Map());
+  const ca = count(a);
+  const cg = count(g);
+  let common = 0;
+  for (const [token, n] of ca) common += Math.min(n, cg.get(token) ?? 0);
+  if (common === 0) return 0.0;
+  const p = common / a.length;
+  const rr = common / g.length;
+  return pyRound((2 * p * rr) / (p + rr), 2);
+};
+
+const METRIC_TRACE_POOL = ['katze', 'hund', 'baum', 'licht', 'weg', 'haus', 'wort', 'zahl', 'bild', 'ton', 'satz', 'code'];
+
+export function genMetricCodeOutput(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const phrase = () => {
+      const size = randInt(r, 2, 4);
+      const pool = [...METRIC_TRACE_POOL];
+      return Array.from({ length: size }, () => pool.splice(randInt(r, 0, pool.length - 1), 1)[0]).join(' ');
+    };
+    // Paar 1 teilt mindestens ein Token (partial overlap), Paar 2 ist
+    // disjunkt (0.0) oder identisch (1.0) — die authored Arme.
+    const pool = [...METRIC_TRACE_POOL];
+    const draw = () => pool.splice(randInt(r, 0, pool.length - 1), 1)[0];
+    const shared = draw();
+    const a1 = [shared, draw(), draw()].join(' ');
+    const g1 = [shared, draw()].join(' ');
+    const disjoint = r() < 0.7;
+    const a2 = disjoint ? [draw(), draw()].join(' ') : phrase();
+    const g2 = disjoint ? [draw(), draw()].join(' ') : a2;
+    const snippet = `${METRIC_TRACE_HEAD}
+print(token_f1("${a1}", "${g1}"))
+print(token_f1("${a2}", "${g2}"))`;
+    const output = `${pyNum(tokenF1(a1, g1))}\n${pyNum(tokenF1(a2, g2))}`;
+    return {
+      parameters: { snippet, a1, g1, a2, g2 },
+      expected: { kind: 'output-lines', output },
+      prompt: `Was gibt das Programm aus? Sage die Ausgabe der beiden print-Aufrufe von <code>token_f1</code> vorher.`,
+      fullSolution: `Multiset-Overlap bestimmt p und r; gerundet auf zwei Stellen: <code>${output.replace('\n', '</code> / <code>')}</code>.`,
+      activityType: 'predict-output',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+// Solver-Seite desselben Falls: rekonstruiert die Ausgabe allein aus den
+// gezogenen Argumentpaaren (kein expected-Zugriff).
+export const metricTraceExpected = ({ a1, g1, a2, g2 }) => ({
+  output: `${pyNum(tokenF1(a1, g1))}\n${pyNum(tokenF1(a2, g2))}`,
+});
+
+// single-choice: asymmetrische Fehlerkosten — Szenario-Prosa authored,
+// Kostenpaar gezogen (fp/fn >= 200 wie authored), Optionen slots.
+const THRESHOLD_SCENARIOS = [
+  (fp, fn) => `Spamfilter: FP (legitime Mail im Spam) ${fp} €, FN ${fn} €. Welche Schwellen-Strategie senkt die erwarteten Kosten?`,
+  (fp, fn) => `Betrugsalarm: falsches Einfrieren eines Kontos (FP) kostet ${fp}, übersehener Kleinstbetrug (FN) ${fn}. Strategie?`,
+  (fp, fn) => `Werbeblocker: fälschlich geblockte legitime Anzeige ${fp}, durchgerutschte Spam-Anzeige ${fn}. Schwelle?`,
+  (fp, fn) => `Moderation: falsches Entfernen eines harmlosen Posts ${fp}, übersehenes toxisches Kurzposting ${fn}. Kostenminimale Schwelle?`,
+  (fp, fn) => `Filter: FP ${fp} €, FN ${fn} €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?`,
+  (fp, fn) => `QA-Scanner: Ausschuss eines guten Teils (FP) ${fp}, entgangener Mini-Defekt (FN) ${fn}. Strategie?`,
+  (fp, fn) => `Phishing-Warnung: Fehlalarm an eine Kundin ${fp}, übersehene Nuisance-Mail ${fn}. Schwelle?`,
+  (fp, fn) => `SOC-Alert: falscher Incident-Call (FP) ${fp}, verpasste Low-Severity-Mail (FN) ${fn}. Kostenstrategie?`,
+  (fp, fn) => `Ein Spamfilter gibt Wahrscheinlichkeiten aus. FP kostet ${fp} €, FN ${fn} €. Welche Schwellenwert-Strategie minimiert die erwarteten Kosten?`,
+];
+const THRESHOLD_FP_COSTS = [15, 25, 40, 50, 60, 80, 100, 200, 500];
+const THRESHOLD_FN_COSTS = [0.03, 0.04, 0.05, 0.08, 0.1, 0.2, 0.5, 1];
+
+export const thresholdCorrectText = ({ ratio }) =>
+  `Schwellenwert anheben (Richtung 0,9): Nur bei hoher Wahrscheinlichkeit positiv markieren, weil ein FP rund ${ratio}-mal teurer ist als ein FN.`;
+
+export function genThresholdCostChoice(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const scenario = randInt(r, 0, THRESHOLD_SCENARIOS.length - 1);
+    const fpCost = pick(r, THRESHOLD_FP_COSTS);
+    // authored lower bound: fp is at least ~200x as expensive as fn.
+    const fnPool = THRESHOLD_FN_COSTS.filter((cost) => fpCost / cost >= 200);
+    const fnCost = pick(r, fnPool);
+    const ratio = Math.round(fpCost / fnCost);
+    const parameters = { scenario, fpCost, fnCost, ratio };
+    const options = [
+      thresholdCorrectText(parameters),
+      'Schwellenwert senken (Richtung 0,1): Fast alles wird als positiv markiert, dadurch geht nichts unter.',
+      'Beim Standard 0,5 bleiben: Dieser Wert ist kostenunabhängig immer optimal.',
+      'Der Schwellenwert beeinflusst die Kostenbilanz nicht — entscheidend ist allein die Accuracy.',
+    ];
+    const rotation = variantCaseIndex(seed, options.length);
+    const choices = buildRotatedChoices(options, rotation, CHOICE_IDS);
+    return {
+      parameters,
+      expected: {},
+      choices,
+      prompt: THRESHOLD_SCENARIOS[scenario](fmtDe(fpCost), fmtDe(fnCost)),
+      fullSolution: `${fmtDe(fpCost)} / ${fmtDe(fnCost)} = ${fmtDe(ratio)}: Der FP dominiert die Kostenbilanz. Die Schwelle hoch verschiebt Vorhersagen von positiv nach negativ und senkt die FP-Zahl — die zusätzlichen FN sind rund ${ratio}-mal billiger.`,
+      activityType: 'single-choice',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+// --- formula-ratio-percent-metric: seeded cases -----------------------------
+// Drei ehemals statische Shard-Fälle. Python-repr-Parität: alle Quotienten
+// haben Nenner <= 1000 (>= 1e-3 im Float — kein Exponential-Drift zwischen
+// JS String() und Python str()); Operationen wörtlich wie im Snippet.
+
+const pyFloatText = (value) => (Number.isInteger(value) ? `${value}.0` : String(value));
+
+const LEDGER_ID_POOL = ['q1', 'q2', 'q3', 'q4', 'q5', 'a', 'b', 'x', 'y', 'p', 'q', 'r', 's', 't', 'u1', 'z', 'w', 'v', 'r1', 'r2', 'k', 'm', 'n', 'o'];
+
+// Ledger-Spiegel: (kennung, retrieval_treffer, antwort_korrekt) -> drei Zeilen.
+export const ledgerRatesExpected = ({ faelle }) => {
+  const treffer = faelle.filter((row) => row[1]);
+  const korrekt = treffer.filter((row) => row[2]);
+  return {
+    output: `${treffer.length}\n${pyFloatText(pyRound(korrekt.length / treffer.length, 3))}\n${pyFloatText(pyRound(korrekt.length / faelle.length, 3))}`,
+  };
+};
+
+export function genLedgerRatesOutput(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const n = randInt(r, 2, 6);
+    const pool = [...LEDGER_ID_POOL];
+    const faelle = Array.from({ length: n }, () => {
+      const id = pool.splice(randInt(r, 0, pool.length - 1), 1)[0];
+      const treffer = r() < 0.7;
+      const korrekt = treffer && r() < 0.6;
+      return [id, treffer, korrekt];
+    });
+    // ZeroDivision-Guard wie authored: mindestens ein retrieval_treffer.
+    if (!faelle.some((row) => row[1])) faelle[randInt(r, 0, n - 1)][1] = true;
+    const faelleLit = `[${faelle.map((row) => `(${pyLit(row[0])}, ${pyLit(row[1])}, ${pyLit(row[2])})`).join(', ')}]`;
+    const snippet = `faelle = ${faelleLit}
+treffer = [f for f in faelle if f[1]]
+korrekt = [f for f in treffer if f[2]]
+print(len(treffer))
+print(round(len(korrekt) / len(treffer), 3))
+print(round(len(korrekt) / len(faelle), 3))`;
+    const { output } = ledgerRatesExpected({ faelle });
+    return {
+      parameters: { snippet, faelle },
+      expected: { kind: 'output-lines', output },
+      prompt: 'Code lesen und vorhersagen: Was gibt dieses Programm aus? Sage alle <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Die Tupel sind (kennung, retrieval_treffer, antwort_korrekt).',
+      fullSolution: `treffer = Anzahl mit <code>True</code> an Position 1, korrekt = Schnittmenge. Ausgabe: <code>${output.replaceAll('\n', '</code> / <code>')}</code>.`,
+      activityType: 'predict-output',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+const SUBGROUP_NAME_POOL = ['versand', 'recht', 'rabatt', 'garantie', 'nord', 'sued', 'ost', 'west', 'alpha', 'beta', 'g1', 'g2', 'g3', 'k', 'm', 'n', 'p', 'v', 'r', 'x', 'y', 'z', 'a', 'b'];
+
+// Subgruppen-Spiegel: recall = getroffen/gesamt (gesamt >= 1 wie authored),
+// Zeile 1 zwei gezogene Gruppen, Zeile 2 Mittel * 100 gerundet auf 1 Stelle.
+export const subgroupRecallExpected = ({ gruppen, printPair }) => {
+  const werte = Object.fromEntries(Object.entries(gruppen).map(([name, [g, t]]) => [name, g ? t / g : 0.0]));
+  const mean = 100 * Object.values(werte).reduce((sum, v) => sum + v, 0) / Object.keys(werte).length;
+  return {
+    output: `${pyFloatText(werte[printPair[0]])} ${pyFloatText(werte[printPair[1]])}\n${pyFloatText(pyRound(mean, 1))}`,
+  };
+};
+
+export function genSubgroupRecallOutput(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const count = randInt(r, 2, 4);
+    const pool = [...SUBGROUP_NAME_POOL];
+    const gruppen = {};
+    for (let i = 0; i < count; i += 1) {
+      const name = pool.splice(randInt(r, 0, pool.length - 1), 1)[0];
+      const gesamt = randInt(r, 1, 10);
+      gruppen[name] = [gesamt, randInt(r, 0, gesamt)];
+    }
+    const names = Object.keys(gruppen);
+    const first = randInt(r, 0, count - 1);
+    let second = randInt(r, 0, count - 2);
+    if (second >= first) second += 1;
+    const printPair = [names[first], names[second]];
+    const entries = names.map((name) => `    ${pyLit(name)}: (${gruppen[name][0]}, ${gruppen[name][1]}),`).join('\n');
+    const snippet = `def recall(gesamt, getroffen):
+    if not gesamt:
+        return 0.0
+    return getroffen / gesamt
+
+gruppen = {
+${entries}
+}
+werte = {name: recall(g, t) for name, (g, t) in gruppen.items()}
+print(werte[${pyLit(printPair[0])}], werte[${pyLit(printPair[1])}])
+print(round(100 * sum(werte.values()) / len(werte), 1))`;
+    const { output } = subgroupRecallExpected({ gruppen, printPair });
+    return {
+      parameters: { snippet, gruppen, printPair },
+      expected: { kind: 'output-lines', output },
+      prompt: 'Subgruppen-Recall von Hand ausführen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. gruppen enthält je Subgruppe (gesamt, getroffen).',
+      fullSolution: `recall je Gruppe, dann das gerundete Mittel in Prozent. Ausgabe: <code>${output.replaceAll('\n', '</code> / <code>')}</code>.`,
+      activityType: 'predict-output',
+      graderId: 'deterministic',
+    };
+  });
+}
+
+// python-code: compare_systems-Shard — authored Base-Tests bleiben Prefix,
+// generierte Fälle prüfen gegen die __ref_-Orakelkopie des Referenzsolvers.
+export function genCompareSystemsTests(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const caseCount = randInt(r, 2, 3);
+    const seedCases = [];
+    for (let i = 0; i < caseCount; i += 1) {
+      const len = randInt(r, 3, 8);
+      const rows = Array.from({ length: len }, () => [r() < 0.55, r() < 0.55]);
+      // Arm 'baseline null' kommt authored vor — gelegentlich erzwingen.
+      if (r() < 0.25) rows.forEach((row) => { row[0] = false; });
+      seedCases.push(rows);
+    }
+    const lines = seedCases.map((rows, i) => (
+      `__check('seeded ${i + 1}', compare_systems(${pyLit(rows)}) == __ref_compare_systems(${pyLit(rows)}))`
+    ));
+    const body = ratioBody('compare-systems-metric');
+    const tests = seededPyBlock(body, ['compare_systems'], lines);
+    return pyodideInstance(body, { seedCases }, tests, `${caseCount} Vergleichstabellen mit ${seedCases.map((rows) => rows.length).join('/')} Zeilen.`);
   });
 }
 

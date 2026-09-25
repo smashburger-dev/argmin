@@ -222,6 +222,7 @@ export function makeSolvedFamily({
       // draws keep the numeric contract unchanged.
       ...(drawn.choices ? { choices: drawn.choices } : null),
       ...(drawn.activityType ? { activityType: drawn.activityType } : null),
+      ...(drawn.graderId ? { graderId: drawn.graderId } : null),
       ...(drawn.masteryEligible !== undefined ? { masteryEligible: drawn.masteryEligible } : null),
       ...(drawn.hints ? { hints: drawn.hints } : null),
       ...(drawn.feedbackRules ? { feedbackRules: drawn.feedbackRules } : null),

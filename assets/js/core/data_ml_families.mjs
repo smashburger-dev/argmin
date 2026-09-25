@@ -15,6 +15,21 @@ import {
   genBaselineCorrect,
   genEnsembleAccuracy,
   genConfusionCount,
+  genConfusionCostReport,
+  genConfusionFromRows,
+  genFairnessMetricCompare,
+  genMetricCodeOutput,
+  metricTraceExpected,
+  genSigmoidPredictTests,
+  genThresholdCostChoice,
+  thresholdCorrectText,
+  genLedgerRatesOutput,
+  ledgerRatesExpected,
+  genSubgroupRecallOutput,
+  subgroupRecallExpected,
+  genCompareSystemsTests,
+  confusionRefSolver,
+  ratioRefSolver,
   genCvSpread,
   genSeedSpread,
   genSubgroupGapPp,
@@ -153,6 +168,11 @@ const PROFILE_PREDICATES = {
   'protocol-shift-flag-count': { intro: (p) => p.flags?.length === 1, stretch: (p) => p.flags?.length >= 3 },
   'card-audit-missing-count': { intro: (p) => p.karten?.length === 1, stretch: (p) => p.karten?.length === 2 },
   'rmse-unit-from-mse': { intro: () => true },
+  // Stretch-pinnte Shard-Fälle: caseDef.difficulty wirft für core/intro,
+  // diese Prädikate lassen den stretch-Draw durch und bleiben für andere
+  // Profile fail-closed (kein Eintrag -> 'Unbekanntes Profil').
+  'confusion-cost-report': { stretch: () => true },
+  'confusion-from-rows': { stretch: () => true },
   'baseline-ledger-rates': { intro: (p) => p.shape === 'naive-percent', stretch: (p) => p.shape === 'gap-promille' },
   'pipeline-stage-audit': { intro: (p) => p.shape === 'valid-count', stretch: (p) => p.shape === 'missing-hashes' },
   'eval-batch-rates': {
@@ -170,7 +190,6 @@ function profileAccepts(caseId, difficulty) {
 
 const toIntegerExpected = (drawn) => ({ kind: 'integer', value: drawn.expected });
 
-const solveFormulaRatioCompare = (parameters) => staticExpected('formula-ratio-percent-metric', parameters);
 const solveFormulaRatioShrinkage = (parameters) => {
   const share = (100 * parameters.sxx) / (parameters.sxx + parameters.lam);
   return { value: parameters.phrasing === 'shrink' ? 100 - share : share };
@@ -200,15 +219,18 @@ const solveFormulaRatioDefault = (parameters) => (
     : { value: (100 * parameters.c) / parameters.n }
 );
 const FORMULA_RATIO_SOLVERS = {
-  'compare-systems-metric': solveFormulaRatioCompare,
+  // compare-systems-metric: generierte Instanzen tragen kein `variant` —
+  // der Solver liefert den authored Referenzsolver (Grading läuft über die
+  // Pyodide-Tests; der Solver dient nur dem Contract-/Digest-Pfad).
+  'compare-systems-metric': () => ({ referenceCode: ratioRefSolver('compare-systems-metric') }),
   'ridge-shrinkage-percent': solveFormulaRatioShrinkage,
   'subgroup-error-gap-pp': solveFormulaRatioSubgroupGap,
   'r2-explained-share': solveFormulaRatioR2,
   'pca-explained-variance-percent': solveFormulaRatioPca,
   'allowed-action-count': solveFormulaRatioAllowedAction,
   'baseline-ledger-rates': solveFormulaRatioBaseline,
-  'ledger-rates-output-trace': solveFormulaRatioCompare,
-  'subgroup-recall-output-trace': solveFormulaRatioCompare,
+  'ledger-rates-output-trace': ledgerRatesExpected,
+  'subgroup-recall-output-trace': subgroupRecallExpected,
 };
 
 const solveFormulaCountLinear = (parameters) => {
@@ -338,11 +360,19 @@ const solveConfusionInjection = (parameters) => {
 const solveConfusionSubgroupRate = (parameters) => ({
   value: subgroupRatePerMille(parameters.a, parameters.b, parameters.kind),
 });
+const confusionPyRef = (caseId) => () => ({ referenceCode: confusionRefSolver(caseId) });
+
 const AGGREGATE_CONFUSION_SOLVERS = {
   'confusion-marginal-count': solveConfusionMarginal,
   'answer-filter-precision-recall-f1': solveConfusionPrecisionRecall,
   'injection-filter-counts': solveConfusionInjection,
   'subgroup-rate-gap-permille': solveConfusionSubgroupRate,
+  'threshold-under-asymmetric-cost': (p) => ({ correctText: thresholdCorrectText(p) }),
+  'metric-code-output-trace': metricTraceExpected,
+  'sigmoid-predict-numpy': confusionPyRef('sigmoid-predict-numpy'),
+  'confusion-cost-report': confusionPyRef('confusion-cost-report'),
+  'confusion-from-rows': confusionPyRef('confusion-from-rows'),
+  'fairness-metric-compare': confusionPyRef('fairness-metric-compare'),
 };
 
 function staticExpected(familyId, parameters) {
@@ -397,6 +427,7 @@ const FAMILY_DEFINITIONS = {
         competencyIds: ['c-ml-svm-pca'],
       },
       'compare-systems-metric': {
+        generator: genCompareSystemsTests,
         competencyIds: ['c-dl-papers', 'c-ml-cv'],
       },
       'allowed-action-count': {
@@ -407,8 +438,14 @@ const FAMILY_DEFINITIONS = {
         generator: genBaselineLedger,
         competencyIds: ['c-research-capstone'],
       },
-      'ledger-rates-output-trace': {},
-      'subgroup-recall-output-trace': {},
+      'ledger-rates-output-trace': {
+        generator: genLedgerRatesOutput,
+        competencyIds: ['c-research-capstone', 'c-python-reading'],
+      },
+      'subgroup-recall-output-trace': {
+        generator: genSubgroupRecallOutput,
+        competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
+      },
     },
     solve(parameters) {
       return (FORMULA_RATIO_SOLVERS[parameters.caseId] || solveFormulaRatioDefault)(parameters);
@@ -478,13 +515,33 @@ const FAMILY_DEFINITIONS = {
         generator: genConfusionCount,
         competencyIds: ['c-ml-logistic'],
       },
-      'threshold-under-asymmetric-cost': {},
-      'sigmoid-predict-numpy': {},
-      'confusion-cost-report': {},
-      'metric-code-output-trace': {},
-      'confusion-from-rows': {},
+      'threshold-under-asymmetric-cost': {
+        generator: genThresholdCostChoice,
+        competencyIds: ['c-ml-logistic'],
+      },
+      'sigmoid-predict-numpy': {
+        generator: genSigmoidPredictTests,
+        competencyIds: ['c-ml-logistic'],
+      },
+      'confusion-cost-report': {
+        generator: genConfusionCostReport,
+        difficulty: 'stretch',
+        competencyIds: ['c-ml-logistic'],
+      },
+      'metric-code-output-trace': {
+        generator: genMetricCodeOutput,
+        competencyIds: ['c-genai-eval'],
+      },
+      'confusion-from-rows': {
+        generator: genConfusionFromRows,
+        difficulty: 'stretch',
+        competencyIds: ['c-genai-eval'],
+      },
       'contains-injection-rules': {},
-      'fairness-metric-compare': {},
+      'fairness-metric-compare': {
+        generator: genFairnessMetricCompare,
+        competencyIds: ['c-research-responsible'],
+      },
       'answer-filter-precision-recall-f1': {
         generator: genF1orPrecision,
         competencyIds: ['c-genai-eval'],
@@ -800,7 +857,11 @@ const FORMULA_RATIO_PERCENT = makeSolvedFamily({
   contract: FORMULA_RATIO_PERCENT_CONTRACT,
   cases: FAMILY_DEFINITIONS['formula-ratio-percent-metric'].cases,
   profileAccepts,
-  toExpected: toIntegerExpected,
+  // Scalar draws keep the integer wrap; the seeded output/pyodide cases
+  // emit structured expected objects that pass through unchanged.
+  toExpected: (drawn) => (drawn.expected && typeof drawn.expected === 'object'
+    ? drawn.expected
+    : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['formula-ratio-percent-metric'].solve,
 });
 export const generateFormulaRatioPercentMetricFamily = FORMULA_RATIO_PERCENT.generate;
@@ -888,7 +949,11 @@ const AGGREGATE_CONFUSION_METRIC = makeSolvedFamily({
   contract: AGGREGATE_CONFUSION_METRIC_CONTRACT,
   cases: FAMILY_DEFINITIONS['aggregate-confusion-metric'].cases,
   profileAccepts,
-  toExpected: toIntegerExpected,
+  // Scalar draws keep the integer wrap; seeded pyodide/predict-output cases
+  // emit structured expected objects that pass through unchanged.
+  toExpected: (drawn) => (drawn.expected && typeof drawn.expected === 'object'
+    ? drawn.expected
+    : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['aggregate-confusion-metric'].solve,
 });
 export const generateAggregateConfusionMetricFamily = AGGREGATE_CONFUSION_METRIC.generate;

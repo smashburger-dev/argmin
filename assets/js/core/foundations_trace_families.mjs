@@ -20,6 +20,7 @@ import {
   genExceptionBoundary,
 } from './foundations_fresh_generators.mjs';
 import { staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { TRACE_GENERATORS, drawTraceParams } from './trace_assignment_generators.mjs';
 
 export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -127,22 +128,12 @@ function assignmentProfileAccepts(caseId, difficulty) {
   return predicates[difficulty] || predicates.challenge;
 }
 
+// `rng-stream-reseed-trace` bleibt authored: Der erwartete Wert hängt an
+// numpys PCG64-Stream und ist in JS nicht ehrlich reproduzierbar. Alle anderen
+// ehemals statischen Fälle laufen über TRACE_GENERATORS (seeded literal
+// shards) und tauchen hier nicht mehr auf.
 const TRACE_ASSIGNMENT_STATIC_KEYS = {
-  'gradient-loop-two-updates': 'output',
-  'tree-majority-vote-trace': 'kind',
   'rng-stream-reseed-trace': 'output',
-  'manual-backward-step-trace': 'kind',
-  'fixed-dropout-mask-trace': 'output',
-  'stable-softmax-rows-trace': 'output',
-  'char-encode-roundtrip-trace': 'output',
-  'freeze-param-filter-trace': 'output',
-  'absolute-vs-relative-gain-trace': 'kind',
-  'metric-name-normalize-trace': 'output',
-  'stage-runner-error-states': 'kind',
-  'column-picture-trace': 'kind',
-  'overclaim-scanner-trace': 'output',
-  'card-check-variable-trace': 'kind',
-  'rpn-priority-trace': 'kind',
 };
 
 const solveAssignmentReassign = (parameters) => {
@@ -184,8 +175,14 @@ const TRACE_ASSIGNMENT_SOLVERS = {
   transform: solveAssignmentTransform,
 };
 
-/** Unabhängiger Solver: wertet die Fallparameter mit eigener Arithmetik aus. */
+/** Solver: wertet die Fallparameter aus. Für Literal-Shard-Cases rechnet
+ *  `expected` die Ausgabe aus den Literalparametern nach (predict-output) bzw.
+ *  liefert den Variablenzustands-Contract — die Werte stehen dort
+ *  vertragsgemäß in parameters.variables; ihre Korrektheit pinnt die
+ *  Äquivalenz-Fixture gegen die früher authored Bank. */
 export function solveTraceAssignment(parameters) {
+  const generator = TRACE_GENERATORS[parameters.caseId];
+  if (generator) return generator.expected(parameters);
   const staticKey = TRACE_ASSIGNMENT_STATIC_KEYS[parameters.caseId];
   if (staticKey) {
     const { body } = variantOf(staticCaseBody('trace-assignment-state', parameters.caseId), parameters.variant ?? 0);
@@ -197,6 +194,37 @@ export function solveTraceAssignment(parameters) {
 }
 
 export function generateTraceAssignmentFamily({ seed, caseId, difficulty }) {
+  const generator = TRACE_GENERATORS[caseId];
+  if (generator) {
+    // Seeded literal shards: draw parameters, derive snippet/expected from the
+    // same draw, and inherit the authored didactics (hints, typicalErrors,
+    // feedbackRules) from the registered base body.
+    const params = drawTraceParams(caseId, seed);
+    const built = generator.build(params);
+    const body = staticCaseBody('trace-assignment-state', caseId);
+    const {
+      caseId: _cid,
+      difficultyProfile: _dp,
+      masteryEligible: _me,
+      sourceLineage: _sl,
+      variants: _v,
+      ...base
+    } = body;
+    return {
+      ...base,
+      masteryEligible: body.graderId !== 'manual-rubric' && body.masteryEligible === true,
+      parameters: {
+        caseId,
+        difficulty,
+        ...params,
+        snippet: built.snippet,
+        ...(built.variables ? { variables: built.variables } : {}),
+      },
+      expected: built.expected,
+      prompt: built.prompt,
+      fullSolution: built.fullSolution,
+    };
+  }
   if (TRACE_ASSIGNMENT_STATIC_KEYS[caseId]) {
     return staticVariantInstance('trace-assignment-state', caseId, seed, difficulty);
   }
@@ -238,17 +266,14 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
     { caseId: 'method-chain-transform' },
     {
       caseId: 'gradient-loop-two-updates',
-      propertyTest: false,
       competencyIds: ['c-grad-regression', 'c-python-reading'],
     },
     {
       caseId: 'tree-majority-vote-trace',
-      propertyTest: false,
       competencyIds: ['c-ml-ensembles', 'c-python-reading'],
     },
     {
       caseId: 'column-picture-trace',
-      propertyTest: false,
       competencyIds: ['c-linalg-matrices', 'c-python-reading'],
     },
     {
@@ -258,57 +283,46 @@ export const TRACE_ASSIGNMENT_CONTRACT = {
     },
     {
       caseId: 'manual-backward-step-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-autograd', 'c-python-reading'],
     },
     {
       caseId: 'fixed-dropout-mask-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-regularization', 'c-numpy-basics'],
     },
     {
       caseId: 'stable-softmax-rows-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-attention', 'c-python-basics'],
     },
     {
       caseId: 'char-encode-roundtrip-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-tokenizer', 'c-python-basics'],
     },
     {
       caseId: 'freeze-param-filter-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-finetuning', 'c-python-basics'],
     },
     {
       caseId: 'absolute-vs-relative-gain-trace',
-      propertyTest: false,
       competencyIds: ['c-dl-papers', 'c-python-basics'],
     },
     {
       caseId: 'card-check-variable-trace',
-      propertyTest: false,
       competencyIds: ['c-research-cards', 'c-python-reading'],
     },
     {
       caseId: 'rpn-priority-trace',
-      propertyTest: false,
       competencyIds: ['c-research-responsible', 'c-python-reading'],
     },
     {
       caseId: 'metric-name-normalize-trace',
-      propertyTest: false,
       competencyIds: ['c-research-question', 'c-python-reading'],
     },
     {
       caseId: 'stage-runner-error-states',
-      propertyTest: false,
       competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
     },
     {
       caseId: 'overclaim-scanner-trace',
-      propertyTest: false,
       competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
     },
   ],

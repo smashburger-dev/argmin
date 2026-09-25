@@ -1,0 +1,3658 @@
+{
+ "gradient-loop-two-updates": [
+  {
+   "params": {
+    "w0": 2.0,
+    "b0": 4.0,
+    "lr": 0.1,
+    "g1": [
+     3.0,
+     -6.0
+    ],
+    "g2": [
+     1.5,
+     -3.0
+    ]
+   },
+   "snippet": "w, b, lr = 2.0, 4.0, 0.1\nfor grad_w, grad_b in [(3.0, -6.0), (1.5, -3.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))",
+   "expected": {
+    "output": "1.55 4.9"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 1.0,
+    "b0": 2.0,
+    "lr": 0.5,
+    "g1": [
+     2.0,
+     2.0
+    ],
+    "g2": [
+     0.0,
+     4.0
+    ]
+   },
+   "snippet": "w, b, lr = 1.0, 2.0, 0.5\nfor grad_w, grad_b in [(2.0, 2.0), (0.0, 4.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "0.0 -1.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 0.0,
+    "b0": 0.0,
+    "lr": 0.2,
+    "g1": [
+     1.0,
+     -1.0
+    ],
+    "g2": [
+     1.0,
+     -1.0
+    ]
+   },
+   "snippet": "w, b, lr = 0.0, 0.0, 0.2\nfor grad_w, grad_b in [(1.0, -1.0), (1.0, -1.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "-0.4 0.4"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 5.0,
+    "b0": 5.0,
+    "lr": 0.1,
+    "g1": [
+     10.0,
+     0.0
+    ],
+    "g2": [
+     0.0,
+     10.0
+    ]
+   },
+   "snippet": "w, b, lr = 5.0, 5.0, 0.1\nfor grad_w, grad_b in [(10.0, 0.0), (0.0, 10.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "4.0 4.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 3.0,
+    "b0": 1.0,
+    "lr": 1.0,
+    "g1": [
+     1.0,
+     1.0
+    ],
+    "g2": [
+     1.0,
+     1.0
+    ]
+   },
+   "snippet": "w, b, lr = 3.0, 1.0, 1.0\nfor grad_w, grad_b in [(1.0, 1.0), (1.0, 1.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "1.0 -1.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": -1.0,
+    "b0": 4.0,
+    "lr": 0.25,
+    "g1": [
+     4.0,
+     8.0
+    ],
+    "g2": [
+     -4.0,
+     0.0
+    ]
+   },
+   "snippet": "w, b, lr = -1.0, 4.0, 0.25\nfor grad_w, grad_b in [(4.0, 8.0), (-4.0, 0.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "-1.0 2.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 2.0,
+    "b0": 2.0,
+    "lr": 0.5,
+    "g1": [
+     0.0,
+     0.0
+    ],
+    "g2": [
+     2.0,
+     2.0
+    ]
+   },
+   "snippet": "w, b, lr = 2.0, 2.0, 0.5\nfor grad_w, grad_b in [(0.0, 0.0), (2.0, 2.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "1.0 1.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 10.0,
+    "b0": 0.0,
+    "lr": 0.1,
+    "g1": [
+     20.0,
+     10.0
+    ],
+    "g2": [
+     10.0,
+     10.0
+    ]
+   },
+   "snippet": "w, b, lr = 10.0, 0.0, 0.1\nfor grad_w, grad_b in [(20.0, 10.0), (10.0, 10.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "7.0 -2.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 1.5,
+    "b0": 1.5,
+    "lr": 0.2,
+    "g1": [
+     2.5,
+     2.5
+    ],
+    "g2": [
+     2.5,
+     2.5
+    ]
+   },
+   "snippet": "w, b, lr = 1.5, 1.5, 0.2\nfor grad_w, grad_b in [(2.5, 2.5), (2.5, 2.5)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "0.5 0.5"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "w0": 0.5,
+    "b0": 9.0,
+    "lr": 0.5,
+    "g1": [
+     -1.0,
+     2.0
+    ],
+    "g2": [
+     1.0,
+     2.0
+    ]
+   },
+   "snippet": "w, b, lr = 0.5, 9.0, 0.5\nfor grad_w, grad_b in [(-1.0, 2.0), (1.0, 2.0)]:\n    w = w - lr * grad_w\n    b = b - lr * grad_b\nprint(round(w, 3), round(b, 3))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "0.5 7.0"
+   },
+   "variables": null
+  }
+ ],
+ "tree-majority-vote-trace": [
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      4,
+      3
+     ],
+     [
+      6,
+      3
+     ],
+     [
+      6,
+      5
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((4, 3))\npred_b = predict((6, 3))\npred_c = predict((6, 5))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "votes",
+     "value": 1
+    },
+    {
+     "name": "pred",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      9,
+      9
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((1, 1))\npred_b = predict((1, 1))\npred_c = predict((9, 9))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 3
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      6,
+      5
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((6, 5))\npred_b = predict((6, 5))\npred_c = predict((6, 5))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 3
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 0,
+    "tl": 0,
+    "tr": 0,
+    "qs": [
+     [
+      -1,
+      -1
+     ],
+     [
+      1,
+      1
+     ],
+     [
+      1,
+      -1
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 0:\n        if x[1] <= 0:\n            return 1\n        return 0\n    if x[1] <= 0:\n        return 0\n    return 1\n\npred_a = predict((-1, -1))\npred_b = predict((1, 1))\npred_c = predict((1, -1))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 2
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      5,
+      2
+     ],
+     [
+      5,
+      3
+     ],
+     [
+      7,
+      4
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((5, 2))\npred_b = predict((5, 3))\npred_c = predict((7, 4))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 1
+    },
+    {
+     "name": "pred",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 10,
+    "tl": 10,
+    "tr": 0,
+    "qs": [
+     [
+      0,
+      0
+     ],
+     [
+      11,
+      1
+     ],
+     [
+      11,
+      -1
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 10:\n        if x[1] <= 10:\n            return 1\n        return 0\n    if x[1] <= 0:\n        return 0\n    return 1\n\npred_a = predict((0, 0))\npred_b = predict((11, 1))\npred_c = predict((11, -1))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 2
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      4,
+      0
+     ],
+     [
+      8,
+      8
+     ],
+     [
+      0,
+      9
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((4, 0))\npred_b = predict((8, 8))\npred_c = predict((0, 9))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 2
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 2,
+    "tl": 2,
+    "tr": 2,
+    "qs": [
+     [
+      0,
+      0
+     ],
+     [
+      3,
+      3
+     ],
+     [
+      3,
+      0
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 2:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 2:\n        return 0\n    return 1\n\npred_a = predict((0, 0))\npred_b = predict((3, 3))\npred_c = predict((3, 0))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 2
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      9,
+      1
+     ],
+     [
+      9,
+      1
+     ],
+     [
+      9,
+      9
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((9, 1))\npred_b = predict((9, 1))\npred_c = predict((9, 9))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 1
+    },
+    {
+     "name": "pred",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "params": {
+    "t0": 5,
+    "tl": 2,
+    "tr": 4,
+    "qs": [
+     [
+      2,
+      2
+     ],
+     [
+      2,
+      2
+     ],
+     [
+      2,
+      2
+     ]
+    ]
+   },
+   "snippet": "def predict(x):\n    if x[0] <= 5:\n        if x[1] <= 2:\n            return 1\n        return 0\n    if x[1] <= 4:\n        return 0\n    return 1\n\npred_a = predict((2, 2))\npred_b = predict((2, 2))\npred_c = predict((2, 2))\nvotes = pred_a + pred_b + pred_c\npred = 1 if votes >= 2 else 0\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "votes",
+     "value": 3
+    },
+    {
+     "name": "pred",
+     "value": 1
+    }
+   ]
+  }
+ ],
+ "manual-backward-step-trace": [
+  {
+   "params": {
+    "grad_out": 6.0,
+    "local": -2.0,
+    "w0": 4.0,
+    "lr_w": 0.5,
+    "b0": 1.0,
+    "lr_b": 0.5
+   },
+   "snippet": "grad_out = 6        # dL/dz (Upstream)\nlocal = -2          # dz/dw (lokal)\ngrad_w = grad_out * local\nw = 4.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 1.0 - 0.5 * grad_b",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": -12
+    },
+    {
+     "name": "w",
+     "value": 10
+    },
+    {
+     "name": "grad_b",
+     "value": 6
+    },
+    {
+     "name": "b",
+     "value": -2
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 2.0,
+    "local": 3.0,
+    "w0": 1.0,
+    "lr_w": 0.5,
+    "b0": 0.0,
+    "lr_b": 0.5
+   },
+   "snippet": "grad_out = 2\nlocal = 3\ngrad_w = grad_out * local\nw = 1.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 0.0 - 0.5 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": 6
+    },
+    {
+     "name": "w",
+     "value": -2
+    },
+    {
+     "name": "grad_b",
+     "value": 2
+    },
+    {
+     "name": "b",
+     "value": -1
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 1.0,
+    "local": 1.0,
+    "w0": 0.0,
+    "lr_w": 1.0,
+    "b0": 0.0,
+    "lr_b": 1.0
+   },
+   "snippet": "grad_out = 1\nlocal = 1\ngrad_w = grad_out * local\nw = 0.0 - 1.0 * grad_w\ngrad_b = grad_out * 1\nb = 0.0 - 1.0 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": 1
+    },
+    {
+     "name": "w",
+     "value": -1
+    },
+    {
+     "name": "grad_b",
+     "value": 1
+    },
+    {
+     "name": "b",
+     "value": -1
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 4.0,
+    "local": -1.0,
+    "w0": 2.0,
+    "lr_w": 0.25,
+    "b0": 2.0,
+    "lr_b": 0.25
+   },
+   "snippet": "grad_out = 4\nlocal = -1\ngrad_w = grad_out * local\nw = 2.0 - 0.25 * grad_w\ngrad_b = grad_out * 1\nb = 2.0 - 0.25 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": -4
+    },
+    {
+     "name": "w",
+     "value": 3
+    },
+    {
+     "name": "grad_b",
+     "value": 4
+    },
+    {
+     "name": "b",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 10.0,
+    "local": 0.0,
+    "w0": 5.0,
+    "lr_w": 0.1,
+    "b0": 5.0,
+    "lr_b": 0.1
+   },
+   "snippet": "grad_out = 10\nlocal = 0\ngrad_w = grad_out * local\nw = 5.0 - 0.1 * grad_w\ngrad_b = grad_out * 1\nb = 5.0 - 0.1 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": 0
+    },
+    {
+     "name": "w",
+     "value": 5
+    },
+    {
+     "name": "grad_b",
+     "value": 10
+    },
+    {
+     "name": "b",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 3.0,
+    "local": 3.0,
+    "w0": 9.0,
+    "lr_w": 1.0,
+    "b0": 9.0,
+    "lr_b": 1.0
+   },
+   "snippet": "grad_out = 3\nlocal = 3\ngrad_w = grad_out * local\nw = 9.0 - 1.0 * grad_w\ngrad_b = grad_out * 1\nb = 9.0 - 1.0 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": 9
+    },
+    {
+     "name": "w",
+     "value": 0
+    },
+    {
+     "name": "grad_b",
+     "value": 3
+    },
+    {
+     "name": "b",
+     "value": 6
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": -2.0,
+    "local": 4.0,
+    "w0": 0.0,
+    "lr_w": 0.5,
+    "b0": 1.0,
+    "lr_b": 0.5
+   },
+   "snippet": "grad_out = -2\nlocal = 4\ngrad_w = grad_out * local\nw = 0.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 1.0 - 0.5 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": -8
+    },
+    {
+     "name": "w",
+     "value": 4
+    },
+    {
+     "name": "grad_b",
+     "value": -2
+    },
+    {
+     "name": "b",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 8.0,
+    "local": 0.5,
+    "w0": 4.0,
+    "lr_w": 0.5,
+    "b0": 0.0,
+    "lr_b": 0.5
+   },
+   "snippet": "grad_out = 8\nlocal = 0.5\ngrad_w = grad_out * local\nw = 4.0 - 0.5 * grad_w\ngrad_b = grad_out * 1\nb = 0.0 - 0.5 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": 4
+    },
+    {
+     "name": "w",
+     "value": 2
+    },
+    {
+     "name": "grad_b",
+     "value": 8
+    },
+    {
+     "name": "b",
+     "value": -4
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 1.0,
+    "local": -3.0,
+    "w0": 3.0,
+    "lr_w": 2.0,
+    "b0": 3.0,
+    "lr_b": 2.0
+   },
+   "snippet": "grad_out = 1\nlocal = -3\ngrad_w = grad_out * local\nw = 3.0 - 2.0 * grad_w\ngrad_b = grad_out * 1\nb = 3.0 - 2.0 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": -3
+    },
+    {
+     "name": "w",
+     "value": 9
+    },
+    {
+     "name": "grad_b",
+     "value": 1
+    },
+    {
+     "name": "b",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "grad_out": 5.0,
+    "local": 2.0,
+    "w0": 10.0,
+    "lr_w": 0.2,
+    "b0": 0.0,
+    "lr_b": 0.2
+   },
+   "snippet": "grad_out = 5\nlocal = 2\ngrad_w = grad_out * local\nw = 10.0 - 0.2 * grad_w\ngrad_b = grad_out * 1\nb = 0.0 - 0.2 * grad_b\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "grad_w",
+     "value": 10
+    },
+    {
+     "name": "w",
+     "value": 8
+    },
+    {
+     "name": "grad_b",
+     "value": 5
+    },
+    {
+     "name": "b",
+     "value": -1
+    }
+   ]
+  }
+ ],
+ "fixed-dropout-mask-trace": [
+  {
+   "params": {
+    "mask": [
+     1,
+     0,
+     0,
+     1,
+     1,
+     0,
+     1,
+     0
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, False, False, True, True, False, True, False])\nx = np.arange(1, 9)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))",
+   "expected": {
+    "output": "17\n4"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     1,
+     1,
+     0,
+     0
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, True, False, False])\nx = np.arange(1, 5)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "3\n2"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([False, False, False, True])\nx = np.arange(1, 5)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "4\n1"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, True, True, True, True])\nx = np.arange(1, 6)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "15\n5"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     1,
+     0,
+     1,
+     0,
+     1,
+     0
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, False, True, False, True, False])\nx = np.arange(1, 7)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "9\n3"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     0,
+     1,
+     1,
+     1
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([False, True, True, True])\nx = np.arange(1, 5)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "9\n3"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, True, True, False, False, False, False])\nx = np.arange(1, 8)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "6\n3"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     0,
+     0,
+     0,
+     1,
+     1
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([False, False, False, True, True])\nx = np.arange(1, 6)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "9\n2"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     1,
+     0,
+     1,
+     0,
+     1,
+     0,
+     1,
+     0
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, False, True, False, True, False, True, False])\nx = np.arange(1, 9)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "16\n4"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "mask": [
+     1,
+     1,
+     0,
+     1,
+     0
+    ]
+   },
+   "snippet": "import numpy as np\nmask = np.array([True, True, False, True, False])\nx = np.arange(1, 6)\nkept = x[mask]\nprint(kept.sum())\nprint(int(mask.sum()))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "7\n3"
+   },
+   "variables": null
+  }
+ ],
+ "stable-softmax-rows-trace": [
+  {
+   "params": {
+    "r1": [
+     2,
+     0
+    ],
+    "r2": [
+     0,
+     1,
+     1
+    ]
+   },
+   "snippet": "import math\n\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\n\nprint(row_softmax([2, 0]))\nprint(row_softmax([0, 1, 1]))",
+   "expected": {
+    "output": "[0.881, 0.119]\n[0.155, 0.422, 0.422]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     0,
+     0
+    ],
+    "r2": [
+     1,
+     1,
+     1
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([0, 0]))\nprint(row_softmax([1, 1, 1]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.5, 0.5]\n[0.333, 0.333, 0.333]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     3,
+     0
+    ],
+    "r2": [
+     0,
+     0,
+     2
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([3, 0]))\nprint(row_softmax([0, 0, 2]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.953, 0.047]\n[0.107, 0.107, 0.787]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     1,
+     -1
+    ],
+    "r2": [
+     2,
+     2,
+     0
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([1, -1]))\nprint(row_softmax([2, 2, 0]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.881, 0.119]\n[0.468, 0.468, 0.063]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     0,
+     5
+    ],
+    "r2": [
+     0,
+     1,
+     2
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([0, 5]))\nprint(row_softmax([0, 1, 2]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.007, 0.993]\n[0.09, 0.245, 0.665]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     4,
+     4
+    ],
+    "r2": [
+     -1,
+     -1,
+     -1
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([4, 4]))\nprint(row_softmax([-1, -1, -1]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.5, 0.5]\n[0.333, 0.333, 0.333]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     10,
+     0
+    ],
+    "r2": [
+     0,
+     0,
+     0
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([10, 0]))\nprint(row_softmax([0, 0, 0]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[1.0, 0.0]\n[0.333, 0.333, 0.333]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     1,
+     2
+    ],
+    "r2": [
+     3,
+     1,
+     1
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([1, 2]))\nprint(row_softmax([3, 1, 1]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.269, 0.731]\n[0.787, 0.107, 0.107]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     -2,
+     0
+    ],
+    "r2": [
+     5,
+     5,
+     1
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([-2, 0]))\nprint(row_softmax([5, 5, 1]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.119, 0.881]\n[0.495, 0.495, 0.009]"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "r1": [
+     0,
+     1
+    ],
+    "r2": [
+     2,
+     0,
+     0
+    ]
+   },
+   "snippet": "import math\ndef row_softmax(xs):\n    m = max(xs)\n    exps = [math.exp(x - m) for x in xs]\n    s = sum(exps)\n    return [round(e / s, 3) for e in exps]\nprint(row_softmax([0, 1]))\nprint(row_softmax([2, 0, 0]))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0.269, 0.731]\n[0.787, 0.107, 0.107]"
+   },
+   "variables": null
+  }
+ ],
+ "char-encode-roundtrip-trace": [
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "cab"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\n\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\n\nids = encode(\"cab\")\nprint(ids)\nprint(len(set(ids)) == len(ids))",
+   "expected": {
+    "output": "[0, 4, 2, 3, 1]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "ab"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"ab\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 2, 3, 1]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "aa"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"aa\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 2, 2, 1]\nFalse"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "x": 2,
+     "y": 3
+    },
+    "word": "xy"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"x\": 2, \"y\": 3}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"xy\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 2, 3, 1]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 9,
+     "</w>": 8,
+     "a": 1,
+     "b": 2,
+     "c": 3
+    },
+    "word": "cab"
+   },
+   "snippet": "vocab = {\"<pad>\": 9, \"</w>\": 8, \"a\": 1, \"b\": 2, \"c\": 3}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"cab\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[9, 3, 1, 2, 8]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "c"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"c\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 4, 1]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "bac"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"bac\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 3, 2, 4, 1]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "bb"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"bb\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 3, 3, 1]\nFalse"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "m": 2,
+     "n": 3
+    },
+    "word": "mn"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"m\": 2, \"n\": 3}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"mn\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 2, 3, 1]\nTrue"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "vocab": {
+     "<pad>": 0,
+     "</w>": 1,
+     "a": 2,
+     "b": 3,
+     "c": 4
+    },
+    "word": "abc"
+   },
+   "snippet": "vocab = {\"<pad>\": 0, \"</w>\": 1, \"a\": 2, \"b\": 3, \"c\": 4}\ndef encode(s):\n    return [vocab[\"<pad>\"]] + [vocab[ch] for ch in s] + [vocab[\"</w>\"]]\nids = encode(\"abc\")\nprint(ids)\nprint(len(set(ids)) == len(ids))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[0, 2, 3, 4, 1]\nTrue"
+   },
+   "variables": null
+  }
+ ],
+ "freeze-param-filter-trace": [
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "backbone.w1",
+     "backbone.w2",
+     "head.w3"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\n\nparams = freeze([\"backbone.w1\", \"backbone.w2\", \"head.w3\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])",
+   "expected": {
+    "output": "1\nbackbone.w1"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "head.a",
+     "head.b",
+     "head.c"
+    ],
+    "tail": "safe"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"head.a\", \"head.b\", \"head.c\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0] if any(not t for t in params.values()) else \"-\")\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "3\n-"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "backbone.a",
+     "backbone.b"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"backbone.a\", \"backbone.b\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "0\nbackbone.a"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "encoder",
+    "names": [
+     "encoder.w",
+     "head.w",
+     "encoder.b"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"encoder\") else True) for n in names}\nparams = freeze([\"encoder.w\", \"head.w\", \"encoder.b\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "1\nencoder.b"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "z.head",
+     "backbone.z",
+     "y.head"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"z.head\", \"backbone.z\", \"y.head\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "2\nbackbone.z"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "backbone.w3",
+     "head.w1",
+     "head.w2",
+     "head.w3"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"backbone.w3\", \"head.w1\", \"head.w2\", \"head.w3\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "3\nbackbone.w3"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "stem",
+    "names": [
+     "stem.0",
+     "stem.1",
+     "cls.w"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"stem\") else True) for n in names}\nparams = freeze([\"stem.0\", \"stem.1\", \"cls.w\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "1\nstem.0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "backbone.a",
+     "backbone.b",
+     "backbone.c",
+     "top.x"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"backbone.a\", \"backbone.b\", \"backbone.c\", \"top.x\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "1\nbackbone.a"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "head.only"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"head.only\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(\"-\")\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "1\n-"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "prefix": "backbone",
+    "names": [
+     "backbone.w1",
+     "neck.w",
+     "head.w3"
+    ],
+    "tail": "plain"
+   },
+   "snippet": "def freeze(names):\n    return {n: (False if n.startswith(\"backbone\") else True) for n in names}\nparams = freeze([\"backbone.w1\", \"neck.w\", \"head.w3\"])\nprint(sum(1 for trainable in params.values() if trainable))\nprint(sorted(n for n, t in params.items() if not t)[0])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "2\nbackbone.w1"
+   },
+   "variables": null
+  }
+ ],
+ "absolute-vs-relative-gain-trace": [
+  {
+   "params": {
+    "pairs": [
+     [
+      72,
+      78
+     ],
+     [
+      250,
+      262
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(72, 78)\na2, r2 = gains(250, 262)",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "a1",
+     "value": 6
+    },
+    {
+     "name": "r1",
+     "value": 8
+    },
+    {
+     "name": "a2",
+     "value": 12
+    },
+    {
+     "name": "r2",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      100,
+      110
+     ],
+     [
+      50,
+      60
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(100, 110)\na2, r2 = gains(50, 60)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 10
+    },
+    {
+     "name": "r1",
+     "value": 10
+    },
+    {
+     "name": "a2",
+     "value": 10
+    },
+    {
+     "name": "r2",
+     "value": 20
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      10,
+      20
+     ],
+     [
+      200,
+      220
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(10, 20)\na2, r2 = gains(200, 220)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 10
+    },
+    {
+     "name": "r1",
+     "value": 100
+    },
+    {
+     "name": "a2",
+     "value": 20
+    },
+    {
+     "name": "r2",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      80,
+      80
+     ],
+     [
+      40,
+      50
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(80, 80)\na2, r2 = gains(40, 50)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 0
+    },
+    {
+     "name": "r1",
+     "value": 0
+    },
+    {
+     "name": "a2",
+     "value": 10
+    },
+    {
+     "name": "r2",
+     "value": 25
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      25,
+      50
+     ],
+     [
+      25,
+      20
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(25, 50)\na2, r2 = gains(25, 20)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 25
+    },
+    {
+     "name": "r1",
+     "value": 100
+    },
+    {
+     "name": "a2",
+     "value": -5
+    },
+    {
+     "name": "r2",
+     "value": -20
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      90,
+      99
+     ],
+     [
+      12,
+      15
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(90, 99)\na2, r2 = gains(12, 15)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 9
+    },
+    {
+     "name": "r1",
+     "value": 10
+    },
+    {
+     "name": "a2",
+     "value": 3
+    },
+    {
+     "name": "r2",
+     "value": 25
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      5,
+      6
+     ],
+     [
+      8,
+      10
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(5, 6)\na2, r2 = gains(8, 10)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 1
+    },
+    {
+     "name": "r1",
+     "value": 20
+    },
+    {
+     "name": "a2",
+     "value": 2
+    },
+    {
+     "name": "r2",
+     "value": 25
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      150,
+      180
+     ],
+     [
+      70,
+      77
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(150, 180)\na2, r2 = gains(70, 77)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 30
+    },
+    {
+     "name": "r1",
+     "value": 20
+    },
+    {
+     "name": "a2",
+     "value": 7
+    },
+    {
+     "name": "r2",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      4
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(1, 2)\na2, r2 = gains(2, 4)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 1
+    },
+    {
+     "name": "r1",
+     "value": 100
+    },
+    {
+     "name": "a2",
+     "value": 2
+    },
+    {
+     "name": "r2",
+     "value": 100
+    }
+   ]
+  },
+  {
+   "params": {
+    "pairs": [
+     [
+      60,
+      66
+     ],
+     [
+      33,
+      33
+     ]
+    ]
+   },
+   "snippet": "def gains(base, new):\n    absolut = new - base\n    relativ = round((new - base) / base * 100)\n    return absolut, relativ\n\na1, r1 = gains(60, 66)\na2, r2 = gains(33, 33)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "a1",
+     "value": 6
+    },
+    {
+     "name": "r1",
+     "value": 10
+    },
+    {
+     "name": "a2",
+     "value": 0
+    },
+    {
+     "name": "r2",
+     "value": 0
+    }
+   ]
+  }
+ ],
+ "card-check-variable-trace": [
+  {
+   "params": {
+    "card": {
+     "name": "faq-korpus",
+     "zweck": "support",
+     "split_train": 0.8,
+     "split_dev": 0.1,
+     "split_test": 0.1
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "herkunft",
+     "lizenz",
+     "n_beispiele"
+    ]
+   },
+   "snippet": "card = {\"name\": \"faq-korpus\", \"zweck\": \"support\", \"split_train\": 0.8, \"split_dev\": 0.1, \"split_test\": 0.1}\npflicht = [\"name\", \"zweck\", \"herkunft\", \"lizenz\", \"n_beispiele\"]\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 3
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 8
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "name": "x",
+     "split_train": 0.5,
+     "split_dev": 0.5
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "lizenz"
+    ]
+   },
+   "snippet": "card = {'name': 'x', 'split_train': 0.5, 'split_dev': 0.5}\npflicht = ['name', 'zweck', 'lizenz']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 2
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "name": "k",
+     "zweck": "t",
+     "herkunft": "h",
+     "lizenz": "mit",
+     "n_beispiele": 3,
+     "split_train": 1.0
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "herkunft",
+     "lizenz",
+     "n_beispiele"
+    ]
+   },
+   "snippet": "card = {'name': 'k', 'zweck': 't', 'herkunft': 'h', 'lizenz': 'mit', 'n_beispiele': 3, 'split_train': 1.0}\npflicht = ['name', 'zweck', 'herkunft', 'lizenz', 'n_beispiele']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 0
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 6
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "split_train": 0.2,
+     "split_dev": 0.3,
+     "split_test": 0.5
+    },
+    "pflicht": [
+     "name"
+    ]
+   },
+   "snippet": "card = {'split_train': 0.2, 'split_dev': 0.3, 'split_test': 0.5}\npflicht = ['name']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 1
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "name": "n",
+     "zweck": "z",
+     "split_train": 0.7,
+     "split_dev": 0.2,
+     "split_test": 0.1
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "herkunft"
+    ]
+   },
+   "snippet": "card = {'name': 'n', 'zweck': 'z', 'split_train': 0.7, 'split_dev': 0.2, 'split_test': 0.1}\npflicht = ['name', 'zweck', 'herkunft']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 1
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 6
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "a": 1,
+     "split_x": 0.4,
+     "split_y": 0.6
+    },
+    "pflicht": [
+     "a",
+     "b",
+     "c"
+    ]
+   },
+   "snippet": "card = {'a': 1, 'split_x': 0.4, 'split_y': 0.6}\npflicht = ['a', 'b', 'c']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 2
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "name": "faq",
+     "lizenz": "cc",
+     "split_train": 0.9,
+     "split_test": 0.1
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "lizenz"
+    ]
+   },
+   "snippet": "card = {'name': 'faq', 'lizenz': 'cc', 'split_train': 0.9, 'split_test': 0.1}\npflicht = ['name', 'zweck', 'lizenz']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 1
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "zweck": "eval",
+     "split_train": 0.0,
+     "split_dev": 0.0,
+     "split_test": 1.0
+    },
+    "pflicht": [
+     "name",
+     "zweck"
+    ]
+   },
+   "snippet": "card = {'zweck': 'eval', 'split_train': 0.0, 'split_dev': 0.0, 'split_test': 1.0}\npflicht = ['name', 'zweck']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 1
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "name": "m",
+     "herkunft": "web",
+     "lizenz": "mit",
+     "n_beispiele": 9
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "herkunft",
+     "lizenz",
+     "n_beispiele"
+    ]
+   },
+   "snippet": "card = {'name': 'm', 'herkunft': 'web', 'lizenz': 'mit', 'n_beispiele': 9}\npflicht = ['name', 'zweck', 'herkunft', 'lizenz', 'n_beispiele']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 1
+    },
+    {
+     "name": "promille",
+     "value": 0
+    },
+    {
+     "name": "felder",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "card": {
+     "name": "p",
+     "zweck": "train",
+     "herkunft": "lab",
+     "lizenz": "intern",
+     "n_beispiele": 1,
+     "split_train": 0.6,
+     "split_dev": 0.2,
+     "split_test": 0.2
+    },
+    "pflicht": [
+     "name",
+     "zweck",
+     "herkunft",
+     "lizenz",
+     "n_beispiele"
+    ]
+   },
+   "snippet": "card = {'name': 'p', 'zweck': 'train', 'herkunft': 'lab', 'lizenz': 'intern', 'n_beispiele': 1, 'split_train': 0.6, 'split_dev': 0.2, 'split_test': 0.2}\npflicht = ['name', 'zweck', 'herkunft', 'lizenz', 'n_beispiele']\nn_fehlt = len([f for f in pflicht if f not in card])\nsumme = round(sum(v for k, v in card.items() if k.startswith(\"split_\")), 3)\npromille = int(round(summe * 1000))\nfelder = len(card) + n_fehlt\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "n_fehlt",
+     "value": 0
+    },
+    {
+     "name": "promille",
+     "value": 1000
+    },
+    {
+     "name": "felder",
+     "value": 8
+    }
+   ]
+  }
+ ],
+ "rpn-priority-trace": [
+  {
+   "params": {
+    "triples": [
+     [
+      4,
+      2,
+      2
+     ],
+     [
+      5,
+      3,
+      1
+     ],
+     [
+      3,
+      1,
+      2
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(4, 2, 2)\nr2 = rpn(5, 3, 1)\nr3 = rpn(3, 1, 2)\nhoechste = max(r1, r2, r3)",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "r1",
+     "value": 16
+    },
+    {
+     "name": "r2",
+     "value": 15
+    },
+    {
+     "name": "r3",
+     "value": 6
+    },
+    {
+     "name": "hoechste",
+     "value": 16
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      1,
+      1,
+      1
+     ],
+     [
+      2,
+      2,
+      2
+     ],
+     [
+      3,
+      3,
+      1
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(1, 1, 1)\nr2 = rpn(2, 2, 2)\nr3 = rpn(3, 3, 1)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 1
+    },
+    {
+     "name": "r2",
+     "value": 8
+    },
+    {
+     "name": "r3",
+     "value": 9
+    },
+    {
+     "name": "hoechste",
+     "value": 9
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      5,
+      1,
+      1
+     ],
+     [
+      1,
+      5,
+      1
+     ],
+     [
+      1,
+      1,
+      5
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(5, 1, 1)\nr2 = rpn(1, 5, 1)\nr3 = rpn(1, 1, 5)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 5
+    },
+    {
+     "name": "r2",
+     "value": 5
+    },
+    {
+     "name": "r3",
+     "value": 5
+    },
+    {
+     "name": "hoechste",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      2,
+      2,
+      1
+     ],
+     [
+      2,
+      1,
+      2
+     ],
+     [
+      4,
+      1,
+      1
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(2, 2, 1)\nr2 = rpn(2, 1, 2)\nr3 = rpn(4, 1, 1)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 4
+    },
+    {
+     "name": "r2",
+     "value": 4
+    },
+    {
+     "name": "r3",
+     "value": 4
+    },
+    {
+     "name": "hoechste",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      9,
+      1,
+      1
+     ],
+     [
+      1,
+      1,
+      1
+     ],
+     [
+      1,
+      2,
+      2
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(9, 1, 1)\nr2 = rpn(1, 1, 1)\nr3 = rpn(1, 2, 2)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 9
+    },
+    {
+     "name": "r2",
+     "value": 1
+    },
+    {
+     "name": "r3",
+     "value": 4
+    },
+    {
+     "name": "hoechste",
+     "value": 9
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      3,
+      3,
+      3
+     ],
+     [
+      2,
+      2,
+      2
+     ],
+     [
+      1,
+      1,
+      1
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(3, 3, 3)\nr2 = rpn(2, 2, 2)\nr3 = rpn(1, 1, 1)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 27
+    },
+    {
+     "name": "r2",
+     "value": 8
+    },
+    {
+     "name": "r3",
+     "value": 1
+    },
+    {
+     "name": "hoechste",
+     "value": 27
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      4,
+      4,
+      1
+     ],
+     [
+      8,
+      1,
+      1
+     ],
+     [
+      2,
+      2,
+      2
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(4, 4, 1)\nr2 = rpn(8, 1, 1)\nr3 = rpn(2, 2, 2)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 16
+    },
+    {
+     "name": "r2",
+     "value": 8
+    },
+    {
+     "name": "r3",
+     "value": 8
+    },
+    {
+     "name": "hoechste",
+     "value": 16
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      6,
+      1,
+      2
+     ],
+     [
+      3,
+      2,
+      2
+     ],
+     [
+      1,
+      1,
+      1
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(6, 1, 2)\nr2 = rpn(3, 2, 2)\nr3 = rpn(1, 1, 1)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 12
+    },
+    {
+     "name": "r2",
+     "value": 12
+    },
+    {
+     "name": "r3",
+     "value": 1
+    },
+    {
+     "name": "hoechste",
+     "value": 12
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      2,
+      3,
+      4
+     ],
+     [
+      4,
+      3,
+      2
+     ],
+     [
+      1,
+      5,
+      2
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(2, 3, 4)\nr2 = rpn(4, 3, 2)\nr3 = rpn(1, 5, 2)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 24
+    },
+    {
+     "name": "r2",
+     "value": 24
+    },
+    {
+     "name": "r3",
+     "value": 10
+    },
+    {
+     "name": "hoechste",
+     "value": 24
+    }
+   ]
+  },
+  {
+   "params": {
+    "triples": [
+     [
+      7,
+      1,
+      1
+     ],
+     [
+      1,
+      7,
+      1
+     ],
+     [
+      1,
+      1,
+      8
+     ]
+    ]
+   },
+   "snippet": "def rpn(risiko, praevalenz, kontrolle):\n    return risiko * praevalenz * kontrolle\n\nr1 = rpn(7, 1, 1)\nr2 = rpn(1, 7, 1)\nr3 = rpn(1, 1, 8)\nhoechste = max(r1, r2, r3)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "r1",
+     "value": 7
+    },
+    {
+     "name": "r2",
+     "value": 7
+    },
+    {
+     "name": "r3",
+     "value": 8
+    },
+    {
+     "name": "hoechste",
+     "value": 8
+    }
+   ]
+  }
+ ],
+ "metric-name-normalize-trace": [
+  {
+   "params": {
+    "h1": "Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten",
+    "h2": "Je kleiner die Überlappung, desto geringer die recall@5-Quote"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\ne = extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner die Überlappung, desto geringer die recall@5-Quote\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])",
+   "expected": {
+    "kind": "output-lines",
+    "output": "die chunkgröße\nder anteil korrekter antworten\ndie überlappung\ndie recall@5-quote"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je groesser der Batch, desto kleiner der Verlust",
+    "h2": "Je hoeher die Temperatur, desto groesser die Entropie"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je groesser der Batch, desto kleiner der Verlust\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je hoeher die Temperatur, desto groesser die Entropie\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "der batch\nder verlust\ndie temperatur\ndie entropie"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je kleiner k, desto hoeher precision",
+    "h2": "Je groesser n, desto kleiner der Fehler"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je kleiner k, desto hoeher precision\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je groesser n, desto kleiner der Fehler\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "k\nprecision\nn\nder fehler"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je laenger der Prompt, desto hoeher die Kosten",
+    "h2": "Je kuerzer die Antwort, desto geringer die Latenz"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je laenger der Prompt, desto hoeher die Kosten\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kuerzer die Antwort, desto geringer die Latenz\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "der prompt\ndie kosten\ndie antwort\ndie latenz"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je tiefer das Netz, desto groesser der Datensatzbedarf",
+    "h2": "Je schmaler der Hidden, desto kleiner die Parameterzahl"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je tiefer das Netz, desto groesser der Datensatzbedarf\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je schmaler der Hidden, desto kleiner die Parameterzahl\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "das netz\nder datensatzbedarf\nder hidden\ndie parameterzahl"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je groesser dropout, desto robuster das Modell",
+    "h2": "Je kleiner lr, desto langsamer das Training"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je groesser dropout, desto robuster das Modell\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner lr, desto langsamer das Training\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "dropout\ndas modell\nlr\ndas training"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je mehr Daten, desto besser der Recall",
+    "h2": "Je weniger Rauschen, desto hoeher die Praezision"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je mehr Daten, desto besser der Recall\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je weniger Rauschen, desto hoeher die Praezision\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "daten\nder recall\nrauschen\ndie praezision"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je groesser der Seed-Spread, desto unsicherer die Zahl",
+    "h2": "Je kleiner die Luecke, desto fairer das System"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je groesser der Seed-Spread, desto unsicherer die Zahl\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner die Luecke, desto fairer das System\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "der seed-spread\ndie zahl\ndie luecke\ndas system"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je hoeher alpha, desto staerker LoRA",
+    "h2": "Je kleiner r, desto weniger Parameter"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je hoeher alpha, desto staerker LoRA\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je kleiner r, desto weniger Parameter\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "alpha\nlora\nr\nparameter"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "h1": "Je groesser der Kontext, desto teurer der Call",
+    "h2": "Je knapper das Budget, desto frueher der Abbruch"
+   },
+   "snippet": "def extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    vorderer, hinterer = kern.split(\", desto \")\n    uv = \" \".join(vorderer.split()[2:]).lower()\n    dv = \" \".join(hinterer.split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\ne = extract_variables(\"Je groesser der Kontext, desto teurer der Call\")\nprint(e[\"uv\"])\nprint(e[\"dv\"])\nz = extract_variables(\"Je knapper das Budget, desto frueher der Abbruch\")\nprint(z[\"uv\"])\nprint(z[\"dv\"])\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "der kontext\nder call\ndas budget\nder abbruch"
+   },
+   "variables": null
+  }
+ ],
+ "stage-runner-error-states": [
+  {
+   "params": {
+    "ok": 7,
+    "langsam": 1,
+    "msg": "daten weg",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "kaputt_fn",
+      50
+     ],
+     [
+      "speichern",
+      "langsam_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     40,
+     100,
+     100,
+     200
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\n\ndef ok_fn():\n    return 7\n\ndef kaputt_fn():\n    raise ValueError(\"daten weg\")\n\ndef langsam_fn():\n    return 1\n\nuhr = iter([0, 40, 100, 100, 200])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok fehler timeout"
+    },
+    {
+     "name": "summe",
+     "value": 7
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 3,
+    "langsam": 1,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "kaputt_fn",
+      50
+     ],
+     [
+      "speichern",
+      "langsam_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     10,
+     0,
+     0,
+     100
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 3\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 1\nuhr = iter([0, 10, 0, 0, 100])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok fehler timeout"
+    },
+    {
+     "name": "summe",
+     "value": 3
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 1,
+    "langsam": 2,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "ok_fn",
+      50
+     ],
+     [
+      "speichern",
+      "langsam_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     1,
+     0,
+     0,
+     0,
+     1
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 1\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 2\nuhr = iter([0, 1, 0, 0, 0, 1])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", ok_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok ok ok"
+    },
+    {
+     "name": "summe",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 9,
+    "langsam": 1,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "kaputt_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "ok_fn",
+      50
+     ],
+     [
+      "speichern",
+      "ok_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     0,
+     1,
+     0,
+     1
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 9\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 1\nuhr = iter([0, 0, 1, 0, 1])\na = stage(\"laden\", kaputt_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", ok_fn, 50, uhr.__next__)\nc = stage(\"speichern\", ok_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "fehler ok ok"
+    },
+    {
+     "name": "summe",
+     "value": 18
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 4,
+    "langsam": 4,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "ok_fn",
+      50
+     ],
+     [
+      "speichern",
+      "ok_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     80,
+     0,
+     80,
+     0,
+     80
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 4\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 4\nuhr = iter([0, 80, 0, 80, 0, 80])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", ok_fn, 50, uhr.__next__)\nc = stage(\"speichern\", ok_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "timeout timeout timeout"
+    },
+    {
+     "name": "summe",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 5,
+    "langsam": 6,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "ok_fn",
+      50
+     ],
+     [
+      "speichern",
+      "langsam_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     100
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 5\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 6\nuhr = iter([0, 0, 0, 0, 0, 100])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", ok_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok ok timeout"
+    },
+    {
+     "name": "summe",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 2,
+    "langsam": 8,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "kaputt_fn",
+      50
+     ],
+     [
+      "speichern",
+      "langsam_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     1,
+     9,
+     0,
+     1
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 2\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 8\nuhr = iter([0, 1, 9, 0, 1])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok fehler ok"
+    },
+    {
+     "name": "summe",
+     "value": 10
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 0,
+    "langsam": 0,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "ok_fn",
+      50
+     ],
+     [
+      "speichern",
+      "ok_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 0\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 0\nuhr = iter([0, 0, 0, 0, 0, 0])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", ok_fn, 50, uhr.__next__)\nc = stage(\"speichern\", ok_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok ok ok"
+    },
+    {
+     "name": "summe",
+     "value": 0
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 11,
+    "langsam": 1,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      50
+     ],
+     [
+      "rechnen",
+      "kaputt_fn",
+      50
+     ],
+     [
+      "speichern",
+      "langsam_fn",
+      50
+     ]
+    ],
+    "clock": [
+     0,
+     51,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 11\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 1\nuhr = iter([0, 51, 0, 0, 0, 0])\na = stage(\"laden\", ok_fn, 50, uhr.__next__)\nb = stage(\"rechnen\", kaputt_fn, 50, uhr.__next__)\nc = stage(\"speichern\", langsam_fn, 50, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "timeout fehler ok"
+    },
+    {
+     "name": "summe",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "ok": 7,
+    "langsam": 7,
+    "msg": "x",
+    "stages": [
+     [
+      "laden",
+      "ok_fn",
+      10
+     ],
+     [
+      "rechnen",
+      "ok_fn",
+      10
+     ],
+     [
+      "speichern",
+      "ok_fn",
+      10
+     ]
+    ],
+    "clock": [
+     0,
+     7,
+     0,
+     7,
+     0,
+     7
+    ]
+   },
+   "snippet": "def stage(name, fn, budget, uhr):\n    start = uhr()\n    try:\n        wert = fn()\n    except ValueError:\n        return {\"status\": \"fehler\", \"grund\": name}\n    dauer = uhr() - start\n    if dauer > budget:\n        return {\"status\": \"timeout\", \"grund\": name}\n    return {\"status\": \"ok\", \"wert\": wert}\ndef ok_fn():\n    return 7\ndef kaputt_fn():\n    raise ValueError(\"x\")\ndef langsam_fn():\n    return 7\nuhr = iter([0, 7, 0, 7, 0, 7])\na = stage(\"laden\", ok_fn, 10, uhr.__next__)\nb = stage(\"rechnen\", ok_fn, 10, uhr.__next__)\nc = stage(\"speichern\", ok_fn, 10, uhr.__next__)\nstatus_zeile = a[\"status\"] + \" \" + b[\"status\"] + \" \" + c[\"status\"]\nsumme = a.get(\"wert\", 0) + b.get(\"wert\", 0) + c.get(\"wert\", 0)\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "status_zeile",
+     "value": "ok ok ok"
+    },
+    {
+     "name": "summe",
+     "value": 21
+    }
+   ]
+  }
+ ],
+ "overclaim-scanner-trace": [
+  {
+   "params": {
+    "phrasen": [
+     "produktionsreif",
+     "sicher gegen",
+     "halluziniert nie"
+    ],
+    "text": "Unser Prototyp ist produktionsreif und halluziniert nie bei Versandanfragen.",
+    "probe": "Der Stub kopiert nur Saetze."
+   },
+   "snippet": "PHRASEN = [\"produktionsreif\", \"sicher gegen\", \"halluziniert nie\"]\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = \"Unser Prototyp ist produktionsreif und halluziniert nie bei Versandanfragen.\"\nprint(scan(text, PHRASEN))\nprint(len(scan(\"Der Stub kopiert nur Saetze.\", PHRASEN)))",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['halluziniert nie', 'produktionsreif']\n0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "bereit",
+     "perfekt"
+    ],
+    "text": "Das System ist bereit und perfekt.",
+    "probe": "Nur ein Stub."
+   },
+   "snippet": "PHRASEN = ['bereit', 'perfekt']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'Das System ist bereit und perfekt.'\nprint(scan(text, PHRASEN))\nprint(len(scan('Nur ein Stub.', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['bereit', 'perfekt']\n0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "produktionsreif"
+    ],
+    "text": "noch experimentell",
+    "probe": "produktionsreif morgen"
+   },
+   "snippet": "PHRASEN = ['produktionsreif']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'noch experimentell'\nprint(scan(text, PHRASEN))\nprint(len(scan('produktionsreif morgen', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[]\n1"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "sicher gegen",
+     "nie"
+    ],
+    "text": "sicher gegen injection, halluziniert nie",
+    "probe": "ok"
+   },
+   "snippet": "PHRASEN = ['sicher gegen', 'nie']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'sicher gegen injection, halluziniert nie'\nprint(scan(text, PHRASEN))\nprint(len(scan('ok', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['nie', 'sicher gegen']\n0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "gold",
+     "perfekt"
+    ],
+    "text": "kein gold standard",
+    "probe": "perfekt nicht"
+   },
+   "snippet": "PHRASEN = ['gold', 'perfekt']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'kein gold standard'\nprint(scan(text, PHRASEN))\nprint(len(scan('perfekt nicht', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['gold']\n1"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "produktionsreif",
+     "sicher gegen",
+     "halluziniert nie"
+    ],
+    "text": "nichts davon",
+    "probe": "auch nicht"
+   },
+   "snippet": "PHRASEN = ['produktionsreif', 'sicher gegen', 'halluziniert nie']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'nichts davon'\nprint(scan(text, PHRASEN))\nprint(len(scan('auch nicht', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "[]\n0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "demo",
+     "stub"
+    ],
+    "text": "Der Demo-Stub reicht.",
+    "probe": "Produktion"
+   },
+   "snippet": "PHRASEN = ['demo', 'stub']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'Der Demo-Stub reicht.'\nprint(scan(text, PHRASEN))\nprint(len(scan('Produktion', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['demo', 'stub']\n0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "sota",
+     "unfehlbar"
+    ],
+    "text": "unfehlbar und sota",
+    "probe": "sota"
+   },
+   "snippet": "PHRASEN = ['sota', 'unfehlbar']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'unfehlbar und sota'\nprint(scan(text, PHRASEN))\nprint(len(scan('sota', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['sota', 'unfehlbar']\n1"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "halluziniert nie"
+    ],
+    "text": "Halluziniert nie bei FAQ.",
+    "probe": "manchmal"
+   },
+   "snippet": "PHRASEN = ['halluziniert nie']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'Halluziniert nie bei FAQ.'\nprint(scan(text, PHRASEN))\nprint(len(scan('manchmal', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['halluziniert nie']\n0"
+   },
+   "variables": null
+  },
+  {
+   "params": {
+    "phrasen": [
+     "produktionsreif",
+     "bereit"
+    ],
+    "text": "bereit aber nicht produktionsreif",
+    "probe": ""
+   },
+   "snippet": "PHRASEN = ['produktionsreif', 'bereit']\n\ndef scan(text, phrasen):\n    t = text.lower()\n    return sorted(p for p in phrasen if p in t)\n\ntext = 'bereit aber nicht produktionsreif'\nprint(scan(text, PHRASEN))\nprint(len(scan('', PHRASEN)))\n",
+   "expected": {
+    "kind": "output-lines",
+    "output": "['bereit', 'produktionsreif']\n0"
+   },
+   "variables": null
+  }
+ ],
+ "column-picture-trace": [
+  {
+   "params": {
+    "s1": [
+     2,
+     1
+    ],
+    "s2": [
+     1,
+     3
+    ],
+    "x": [
+     1,
+     2
+    ]
+   },
+   "snippet": "spalte1 = (2, 1)\nspalte2 = (1, 3)\nx = (1, 2)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]",
+   "expected": {
+    "kind": "variable-values"
+   },
+   "variables": [
+    {
+     "name": "b0",
+     "value": 4
+    },
+    {
+     "name": "b1",
+     "value": 7
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     1,
+     0
+    ],
+    "s2": [
+     0,
+     1
+    ],
+    "x": [
+     3,
+     4
+    ]
+   },
+   "snippet": "spalte1 = (1, 0)\nspalte2 = (0, 1)\nx = (3, 4)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 3
+    },
+    {
+     "name": "b1",
+     "value": 4
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     2,
+     2
+    ],
+    "s2": [
+     1,
+     0
+    ],
+    "x": [
+     1,
+     1
+    ]
+   },
+   "snippet": "spalte1 = (2, 2)\nspalte2 = (1, 0)\nx = (1, 1)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 3
+    },
+    {
+     "name": "b1",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     0,
+     1
+    ],
+    "s2": [
+     1,
+     0
+    ],
+    "x": [
+     5,
+     7
+    ]
+   },
+   "snippet": "spalte1 = (0, 1)\nspalte2 = (1, 0)\nx = (5, 7)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 7
+    },
+    {
+     "name": "b1",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     3,
+     1
+    ],
+    "s2": [
+     1,
+     3
+    ],
+    "x": [
+     2,
+     0
+    ]
+   },
+   "snippet": "spalte1 = (3, 1)\nspalte2 = (1, 3)\nx = (2, 0)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 6
+    },
+    {
+     "name": "b1",
+     "value": 2
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     -1,
+     2
+    ],
+    "s2": [
+     2,
+     -1
+    ],
+    "x": [
+     1,
+     1
+    ]
+   },
+   "snippet": "spalte1 = (-1, 2)\nspalte2 = (2, -1)\nx = (1, 1)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 1
+    },
+    {
+     "name": "b1",
+     "value": 1
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     4,
+     0
+    ],
+    "s2": [
+     0,
+     5
+    ],
+    "x": [
+     1,
+     1
+    ]
+   },
+   "snippet": "spalte1 = (4, 0)\nspalte2 = (0, 5)\nx = (1, 1)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 4
+    },
+    {
+     "name": "b1",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     1,
+     1
+    ],
+    "s2": [
+     1,
+     1
+    ],
+    "x": [
+     2,
+     3
+    ]
+   },
+   "snippet": "spalte1 = (1, 1)\nspalte2 = (1, 1)\nx = (2, 3)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 5
+    },
+    {
+     "name": "b1",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     2,
+     1
+    ],
+    "s2": [
+     -1,
+     1
+    ],
+    "x": [
+     4,
+     1
+    ]
+   },
+   "snippet": "spalte1 = (2, 1)\nspalte2 = (-1, 1)\nx = (4, 1)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 7
+    },
+    {
+     "name": "b1",
+     "value": 5
+    }
+   ]
+  },
+  {
+   "params": {
+    "s1": [
+     0,
+     2
+    ],
+    "s2": [
+     3,
+     0
+    ],
+    "x": [
+     1,
+     2
+    ]
+   },
+   "snippet": "spalte1 = (0, 2)\nspalte2 = (3, 0)\nx = (1, 2)\nb0 = x[0]*spalte1[0] + x[1]*spalte2[0]\nb1 = x[0]*spalte1[1] + x[1]*spalte2[1]\n",
+   "expected": null,
+   "variables": [
+    {
+     "name": "b0",
+     "value": 6
+    },
+    {
+     "name": "b1",
+     "value": 2
+    }
+   ]
+  }
+ ]
+}

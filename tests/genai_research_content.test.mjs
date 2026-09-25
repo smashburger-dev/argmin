@@ -79,14 +79,11 @@ test('E12 and E13 static trace registrations preserve their overrides', () => {
 
   const metricTrace = families.instantiate('trace-assignment-state', 0, 'core', 'metric-name-normalize-trace');
   assert.deepEqual(metricTrace.competencyIds, ['c-research-question', 'c-python-reading']);
-  assert.deepEqual(metricTrace.expectedAnswer, {
-    kind: 'output-lines',
-    output: 'die chunkgröße\n' +
-      'der anteil korrekter antworten\n' +
-      'die überlappung\n' +
-      'die recall@5-quote',
-  });
-  assert.ok(TRACE_ASSIGNMENT_CONTRACT.caseTypes.some((caseType) => caseType.caseId === 'metric-name-normalize-trace' && caseType.propertyTest === false));
+  // Seeded literal-shard generator: vier normalisierte Ausgabezeilen.
+  const lines = String(metricTrace.expectedAnswer.output).split('\n');
+  assert.equal(lines.length, 4);
+  assert.ok(lines.every((line) => line.length > 0 && line === line.toLowerCase()));
+  assert.ok(TRACE_ASSIGNMENT_CONTRACT.caseTypes.some((caseType) => caseType.caseId === 'metric-name-normalize-trace' && caseType.propertyTest !== false));
 });
 
 // Direct gates for the W27-W30 seeded generators (ADR-0013), same house

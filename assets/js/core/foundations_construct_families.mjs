@@ -42,6 +42,7 @@ import {
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
 import { parsonsInitialOrder as kitParsonsInitialOrder } from './generator_draw_kit.mjs';
+import { refCopy, pyLit } from './procedural/py_test_kit.mjs';
 import { logTerm, signed } from './foundations_generators.mjs';
 import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
 import { expressionTargetFinite } from './graders.js';
@@ -51,6 +52,7 @@ import bugfixWorkflowDoc from '../../../content/families/construct-safe-bugfix-w
 import testStructureDoc from '../../../content/families/construct-test-structure-aaa.json' with { type: 'json' };
 import expressionCanonicalDoc from '../../../content/families/transform-expression-simplify-canonical.json' with { type: 'json' };
 import powerLogDoc from '../../../content/families/transform-power-log-exponent.json' with { type: 'json' };
+import requiredFieldDoc from '../../../content/families/validate-required-field-raise.json' with { type: 'json' };
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -91,6 +93,7 @@ function ensureConstructDocs() {
     testStructureDoc,
     expressionCanonicalDoc,
     powerLogDoc,
+    requiredFieldDoc,
   ]) {
     registerStaticCases(doc.familyId, doc.cases);
   }
@@ -1174,33 +1177,185 @@ const REQUIRED_ORDERS = {
   'required-key-with-issue': ['p1', 'p2', 'p3', 'p4'],
 };
 
+// Geseedete Fixture-Züge für die vier python-code-Fälle. Authored Starter-
+// Code, Referenzsolver und Base-Testblock bleiben byte-identisch (werden zur
+// Laufzeit aus dem registrierten Fallkörper gelesen); der Generator hängt
+// lediglich __ref_-Orakelkopien und Gleichheits-Checks über gezogene
+// Fixtures an — dasselbe Muster wie optimize-decode-greedy-loop.
+
+const REQUIRED_FIELD_VALUE_POOL = ['a', 'x', 'ok', 'text', 'wert'];
+
+const REQUIRED_PYTHON_CASES = {
+  'paper-card-required-fields': {
+    functions: ['review_paper_card'],
+    count: 2,
+    draw(r) {
+      const fields = {};
+      const blanked = r() < 0.7 ? randInt(r, 0, 4) : -1;
+      ['frage', 'methode', 'datensatz', 'ergebnis', 'limitation'].forEach((feld, index) => {
+        fields[feld] = index === blanked
+          ? (r() < 0.5 ? '' : '   ')
+          : `${feld}-${randInt(r, 1, 9)}`;
+      });
+      const claims = [];
+      for (let index = 0; index < randInt(r, 0, 3); index += 1) {
+        if (r() < 0.4) claims.push({ claim: `c${index + 1}` });
+        else {
+          claims.push({
+            claim: `c${index + 1}`,
+            evidence: { baseline: randInt(r, 50, 90), system: randInt(r, 50, 99) },
+          });
+        }
+      }
+      return { ...fields, claims };
+    },
+    checks: (fixture, index) => [
+      `__check('seeded karte ${index}', review_paper_card(${pyLit(fixture)}) == __ref_review_paper_card(${pyLit(fixture)}))`,
+    ],
+    note: (fixture) => `Karte mit ${fixture.claims.length} Claims, leere Felder: ${['frage', 'methode', 'datensatz', 'ergebnis', 'limitation'].filter((f) => !String(fixture[f]).trim()).join(', ') || 'keine'}.`,
+  },
+  'protocol-validator': {
+    functions: ['validate_protocol'],
+    count: 2,
+    draw(r) {
+      const p = {};
+      for (const feld of ['frage', 'uv', 'dv', 'metrik', 'baseline', 'abbruchregel']) {
+        if (r() < 0.15) continue; // Feld fehlt ganz
+        p[feld] = r() < 0.15 ? '   ' : REQUIRED_FIELD_VALUE_POOL[randInt(r, 0, REQUIRED_FIELD_VALUE_POOL.length - 1)];
+      }
+      const year = 2026;
+      const preregMonth = randInt(r, 1, 10);
+      const gap = randInt(r, 20, 60);
+      p.datum_prereg = `${year}-${String(preregMonth).padStart(2, '0')}-12`;
+      if (r() < 0.25) { p.datum_hauptlauf = ''; }
+      else {
+        // ISO-Daten im selben Jahr, Monatsdifferenz trägt die Reihenfolge.
+        const hauptMonth = r() < 0.5 ? preregMonth + 2 : Math.max(1, preregMonth - 1);
+        p.datum_hauptlauf = `${year}-${String(Math.min(12, hauptMonth)).padStart(2, '0')}-${String(Math.min(28, 12 + gap)).padStart(2, '0')}`;
+      }
+      return p;
+    },
+    checks: (fixture, index) => [
+      `__check('seeded protokoll ${index}', validate_protocol(${pyLit(fixture)}) == __ref_validate_protocol(${pyLit(fixture)}))`,
+    ],
+    note: (fixture) => `Protokoll-Felder: ${Object.keys(fixture).length}, datum_hauptlauf ${fixture.datum_hauptlauf ? `'${fixture.datum_hauptlauf}'` : 'leer'}.`,
+  },
+  'validate-card-fields': {
+    functions: ['validate_card', 'splits_ok', 'is_semver'],
+    count: 2,
+    draw(r) {
+      const pool = ['name', 'zweck', 'lizenz', 'titel', 'ort', 'jahr', 'id', 'note', 'herkunft'];
+      const offset = randInt(r, 0, pool.length - 1);
+      const keyCount = randInt(r, 2, 3);
+      const keys = Array.from({ length: keyCount }, (_, i) => pool[(offset + i) % pool.length]);
+      const card = {};
+      const blankIndex = randInt(r, 0, keyCount - 1);
+      keys.forEach((key, i) => {
+        card[key] = i === blankIndex ? (r() < 0.5 ? '' : '   ') : REQUIRED_FIELD_VALUE_POOL[randInt(r, 0, 4)];
+      });
+      const extras = pool.filter((key) => !keys.includes(key));
+      const required = [...keys];
+      for (let i = 0; i < randInt(r, 0, 2); i += 1) required.push(extras[(offset + i) % extras.length]);
+      const valid = r() < 0.5;
+      const first = randInt(r, 2, 8) / 10;
+      const second = randInt(r, 0, Math.round(10 - first * 10)) / 10;
+      const third = valid ? Math.round((1 - first - second) * 100) / 100 : randInt(r, 5, 30) / 100;
+      const semver = r() < 0.6
+        ? `${randInt(r, 0, 12)}.${randInt(r, 0, 9)}.${randInt(r, 0, 9)}`
+        : ['1.2', 'v1.2.0', '1.2.x', '1.2.3.4'][randInt(r, 0, 3)];
+      return {
+        card, required,
+        splits: { split_train: first, split_dev: second, split_test: third },
+        semver,
+      };
+    },
+    checks: (fixture, index) => [
+      `__check('seeded card ${index}', validate_card(${pyLit(fixture.card)}, ${pyLit(fixture.required)}) == __ref_validate_card(${pyLit(fixture.card)}, ${pyLit(fixture.required)}))`,
+      `__check('seeded splits ${index}', splits_ok(${pyLit(fixture.splits)}) is __ref_splits_ok(${pyLit(fixture.splits)}))`,
+      `__check('seeded semver ${index}', is_semver(${pyLit(fixture.semver)}) is __ref_is_semver(${pyLit(fixture.semver)}))`,
+    ],
+    note: (fixture) => `Karte {${Object.keys(fixture.card).join(', ')}} mit ${fixture.required.length} Pflichtfeldern, splits ${fixture.splits.split_train}/${fixture.splits.split_dev}/${fixture.splits.split_test}, semver '${fixture.semver}'.`,
+  },
+  'readme-required-headings': {
+    functions: ['fehlende_uberschriften'],
+    count: 2,
+    draw(r) {
+      const pool = ['Setup', 'Karten', 'Limitations', 'Abhängigkeiten', 'Nutzung', 'Beispiele'];
+      const offset = randInt(r, 0, pool.length - 1);
+      const pflicht = Array.from({ length: randInt(r, 3, 4) }, (_, i) => pool[(offset + i) % pool.length]);
+      const lines = ['# Titel', ''];
+      for (const heading of pflicht) {
+        if (r() < 0.7) lines.push(`${'#'.repeat(randInt(r, 2, 3))}  ${heading} `, 'Inhalt.', '');
+      }
+      return { text: lines.join('\n'), pflicht };
+    },
+    checks: (fixture, index) => [
+      `__check('seeded readme ${index}', fehlende_uberschriften(${pyLit(fixture.text)}, ${pyLit(fixture.pflicht)}) == __ref_fehlende_uberschriften(${pyLit(fixture.text)}, ${pyLit(fixture.pflicht)}))`,
+    ],
+    note: (fixture) => `Pflicht [${fixture.pflicht.join(', ')}], Text mit ${fixture.text.split('\n').filter((l) => l.trim().startsWith('#')).length - 1} Abschnitts-Überschriften.`,
+  },
+};
+
+function requiredPythonParamsOk(parameters, caseId) {
+  const def = REQUIRED_PYTHON_CASES[caseId];
+  try {
+    const body = constructCaseBody('validate-required-field-raise', caseId);
+    return Array.isArray(parameters?.seedFixtures)
+      && parameters.seedFixtures.length === def.count
+      && parameters.tests === requiredPythonTests(body, def, parameters.seedFixtures)
+      && parameters.starterCode === body.parameters.starterCode;
+  } catch { return false; }
+}
+
+function requiredPythonTests(body, def, fixtures) {
+  const preamble = refCopy(body.expected.referenceSolver, def.functions);
+  const checks = fixtures.flatMap((fixture, index) => def.checks(fixture, index + 1)).join('\n');
+  return `${body.parameters.tests}\n\n# seeded extra cases\n${preamble}\n${checks}`;
+}
+
+function genRequiredPythonCase(seed, caseId, difficulty) {
+  const def = REQUIRED_PYTHON_CASES[caseId];
+  const body = constructCaseBody('validate-required-field-raise', caseId);
+  const r = rng(seed);
+  const fixtures = Array.from({ length: def.count }, () => def.draw(r));
+  const spec = REQUIRED_FIELD_CONTRACT.caseTypes.find((entry) => entry.caseId === caseId);
+  return {
+    parameters: {
+      caseId,
+      difficulty,
+      packages: body.parameters.packages,
+      starterCode: body.parameters.starterCode,
+      tests: requiredPythonTests(body, def, fixtures),
+      seedFixtures: fixtures,
+    },
+    expected: body.expected,
+    prompt: `${body.prompt}\n\nGezogene Fixtures: ${fixtures.map(def.note).join(' ')}`,
+    fullSolution: body.fullSolution,
+    activityType: 'python-code',
+    graderId: 'pyodide',
+    competencyIds: spec?.competencyIds ?? REQUIRED_FIELD_CONTRACT.competencyIds,
+    masteryEligible: true,
+  };
+}
+
 /** Unabhängiger Solver: Lösungssequenz allein aus dem Fallschlüssel. */
 export function solveRequiredField(parameters) {
-  if (parameters.caseId === 'paper-card-required-fields') {
-    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  if (parameters.parsonsCase) {
+    const order = REQUIRED_ORDERS[parameters.parsonsCase];
+    if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
+    return { solutionOrder: [...order] };
   }
-  if (
-    parameters.caseId === 'protocol-validator'
-    || parameters.caseId === 'validate-card-fields'
-    || parameters.caseId === 'readme-required-headings'
-  ) {
-    return { kind: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.kind };
+  if (parameters.caseId && REQUIRED_PYTHON_CASES[parameters.caseId] && requiredPythonParamsOk(parameters, parameters.caseId)) {
+    return { referenceCode: constructCaseBody('validate-required-field-raise', parameters.caseId).expected.referenceSolver };
   }
-  const order = REQUIRED_ORDERS[parameters.parsonsCase];
-  if (!order) throw new Error(`Unbekannter Fall ${parameters.parsonsCase}`);
-  return { solutionOrder: [...order] };
+  throw new Error(`Unbekannter Fall ${parameters.caseId ?? parameters.parsonsCase}`);
 }
 
 export function generateRequiredFieldFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
-  if (
-    caseId === 'paper-card-required-fields'
-    || caseId === 'protocol-validator'
-    || caseId === 'validate-card-fields'
-    || caseId === 'readme-required-headings'
-  ) {
-    return constructVariantInstance('validate-required-field-raise', caseId, seed, difficulty);
+  if (REQUIRED_PYTHON_CASES[caseId]) {
+    return genRequiredPythonCase(seed, caseId, difficulty);
   }
   if (caseId !== 'specific-except-with-issue' && caseId !== 'required-key-with-issue') {
     throw new Error(`Unbekannter Fall ${caseId}`);

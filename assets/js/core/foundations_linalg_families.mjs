@@ -27,6 +27,7 @@ import {
 } from './linalg_generators.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './solved_family_kit.mjs';
+import { rng, randInt, drawFamilyInstance } from './generator_draw_kit.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -61,13 +62,11 @@ function matmulProfileAccepts(difficulty) {
 }
 
 const SCALAR_STATIC_CASES = [
-  'scalar-loop-output',
   'product-definition-rationale',
   'matmul-entry-w05-e1',
   'matmul-entry-w05-e12',
   'dot-product-w05-e13',
   'dot-product-w05-e3',
-  'column-vector-authored',
 ];
 
 /** Statischer Schlüssel: erwartete Ausgabe aus dem registrierten Fallkörper
@@ -93,8 +92,116 @@ const solveScalarSeeded = (parameters) => {
     const [i, j] = entry;
     return { value: A[i - 1][0] * B[0][j - 1] + A[i - 1][1] * B[1][j - 1] };
   }
+  if (parameters.form === 'scalar-loop-rows') {
+    const { A, x } = parameters;
+    return { output: `[${A[0][0] * x[0] + A[0][1] * x[1]}, ${A[1][0] * x[0] + A[1][1] * x[1]}]` };
+  }
+  if (parameters.form === 'column-system') {
+    return { solution: solveLinear2(parameters.A, parameters.b).map(intNorm) };
+  }
   throw new Error(`formula-scalar-product: unbekannte Form ${parameters.form}`);
 };
+
+// --- scalar-loop-output / column-vector-authored (früher statische Shards) --
+// scalar-loop-output: festes Snippet-Template, Seed zieht A (2x2, Einträge
+// -5..5 inkl. Nullen — authored umfasst Identität/Permutation/Diagonale) und
+// x; die Ausgabe ist die Zeile-mal-Spalte-Produktliste. column-vector-
+// authored: Spalten a1,a2 ∈ [-5,5]² (Spalte ≠ 0, det ≠ 0) plus Lösung
+// x ∈ [-9,9]²; b = x1·a1 + x2·a2, |b_i| ≤ 20 (authored-Maximalbetrag 17).
+
+const numFactor = (value) => (value < 0 ? `(${value})` : String(value));
+
+// -0 aus Produkttermen/Cramer normalisieren (deepStrictEqual und Anzeige
+// unterscheiden -0 von 0, der Zahlenvergleich des Graders nicht).
+const intNorm = (value) => (value === 0 ? 0 : value);
+
+const scalarLoopSnippet = ({ A, x }) => `A = ((${A[0][0]}, ${A[0][1]}), (${A[1][0]}, ${A[1][1]}))
+x = (${x[0]}, ${x[1]})
+zeilen = []
+for i in range(2):
+    zeilen.append(A[i][0]*x[0] + A[i][1]*x[1])
+print(zeilen)
+`;
+
+const scalarLoopOutput = ({ A, x }) => `[${A[0][0] * x[0] + A[0][1] * x[1]}, ${A[1][0] * x[0] + A[1][1] * x[1]}]`;
+
+const SCALAR_GENERATORS = {
+  'scalar-loop-output': {
+    draw(r) {
+      const A = [[randInt(r, -5, 5), randInt(r, -5, 5)], [randInt(r, -5, 5), randInt(r, -5, 5)]];
+      const x = [randInt(r, -5, 5), randInt(r, -5, 5)];
+      return { A, x };
+    },
+    wantShape: ({ A, x }) => !A.flat().every((v) => v === 0) && !(x[0] === 0 && x[1] === 0),
+    emit({ A, x }) {
+      const output = scalarLoopOutput({ A, x });
+      return {
+        form: 'scalar-loop-rows',
+        parameters: { form: 'scalar-loop-rows', A, x, snippet: scalarLoopSnippet({ A, x }) },
+        expected: { kind: 'output-lines', output },
+        prompt: `Skalarprodukt-Schleife: A = ((${A[0][0]}, ${A[0][1]}), (${A[1][0]}, ${A[1][1]})), x = (${x[0]}, ${x[1]}). Sage print(zeilen) vorher.`,
+        fullSolution: `zeilen[0] = ${numFactor(A[0][0])}·${numFactor(x[0])} + ${numFactor(A[0][1])}·${numFactor(x[1])} = ${A[0][0] * x[0] + A[0][1] * x[1]}; zeilen[1] = ${numFactor(A[1][0])}·${numFactor(x[0])} + ${numFactor(A[1][1])}·${numFactor(x[1])} = ${A[1][0] * x[0] + A[1][1] * x[1]}. Ausgabe: <code>${output}</code> — Zeile-mal-Spalte wie beim Matrixprodukt.`,
+        activityType: 'predict-output',
+        graderId: 'deterministic',
+      };
+    },
+  },
+  'column-vector-authored': {
+    draw(r) {
+      const a1 = [randInt(r, -5, 5), randInt(r, -5, 5)];
+      const a2 = [randInt(r, -5, 5), randInt(r, -5, 5)];
+      const x = [randInt(r, -9, 9), randInt(r, -9, 9)];
+      return { a1, a2, x };
+    },
+    // Prädikat auf parameters-Sicht (row-major A + b); x = (0,0) zeigt sich
+    // als b = (0,0), da die Spalten hier linear unabhängig gezogen werden.
+    wantShape({ A, b }) {
+      const det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
+      if (det === 0 || (b[0] === 0 && b[1] === 0)) return false;
+      return Math.abs(b[0]) <= 20 && Math.abs(b[1]) <= 20;
+    },
+    emit({ a1, a2, x }) {
+      // Zeilenform für parameters/grader; die Prompt-Semantik bleibt
+      // spaltenorientiert wie authored.
+      const A = [[a1[0], a2[0]], [a1[1], a2[1]]];
+      const b = [a1[0] * x[0] + a2[0] * x[1], a1[1] * x[0] + a2[1] * x[1]].map(intNorm);
+      return {
+        form: 'column-system',
+        parameters: { form: 'column-system', A, b },
+        expected: { kind: 'integer-pair', solution: x.map(intNorm) },
+        prompt: `Spalten (${a1[0]}, ${a1[1]}) und (${a2[0]}, ${a2[1]}), Ziel (${b[0]}, ${b[1]}). Finde (x1, x2).`,
+        fullSolution: `Die Koeffizienten sind $(x_1,x_2)=(${x[0]},${x[1]})$. Die Probe liefert $${x[0]}\\cdot(${a1[0]},${a1[1]})^T+${x[1]}\\cdot(${a2[0]},${a2[1]})^T=(${b[0]},${b[1]})^T$.`,
+        activityType: 'vector',
+        graderId: 'deterministic',
+        competencyIds: ['c-linalg-systems'],
+      };
+    },
+  },
+};
+
+function genScalarSeededCase({ seed, caseId, difficulty }, def) {
+  const drawn = drawFamilyInstance(
+    (subseed) => def.emit(def.draw(rng(subseed))),
+    { seed, caseId, difficulty, wantShape: (d) => def.wantShape(d.parameters) },
+  );
+  return {
+    ...drawn,
+    parameters: { caseId, difficulty, ...drawn.parameters },
+  };
+}
+
+export function generateScalarProductFamily({ seed, caseId, difficulty }) {
+  const def = SCALAR_GENERATORS[caseId];
+  if (def) return genScalarSeededCase({ seed, caseId, difficulty }, def);
+  return scalarProductKit.generate({ seed, caseId, difficulty });
+}
+
+export function solveScalarProduct(parameters) {
+  if (parameters?.caseId && SCALAR_GENERATORS[parameters.caseId]) {
+    return solveScalarSeeded(parameters);
+  }
+  return scalarProductKit.solve(parameters);
+}
 
 export const SCALAR_PRODUCT_CONTRACT = {
   familyId: 'formula-scalar-product',
@@ -109,8 +216,8 @@ export const SCALAR_PRODUCT_CONTRACT = {
     { caseId: 'matmul-entry-w05-e12', propertyTest: false },
     { caseId: 'dot-product-w05-e13', propertyTest: false },
     { caseId: 'dot-product-w05-e3', propertyTest: false },
-    { caseId: 'column-vector-authored', propertyTest: false },
-    { caseId: 'scalar-loop-output', propertyTest: false },
+    { caseId: 'column-vector-authored' },
+    { caseId: 'scalar-loop-output' },
     { caseId: 'product-definition-rationale', propertyTest: false },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
@@ -129,8 +236,7 @@ const scalarProductKit = makeNumericFamily({
   solveStatic: solveScalarStatic,
   solveSeeded: solveScalarSeeded,
 });
-export const generateScalarProductFamily = scalarProductKit.generate;
-export const solveScalarProduct = scalarProductKit.solve;
+
 
 // --- classify-matrix-shape ---------------------------------------------------
 // Geseedet über genMatrixShapeCapsule: dims-Bank plus Rotation, ein Template
@@ -587,7 +693,10 @@ export const generateRankSolutionFamily = rankSolutionKit.generate;
 export const solveRankSolutionFamily = rankSolutionKit.solve;
 
 export const LINALG_FAMILY_SPECS = [
-  scalarProductKit.spec,
+  // scalar-loop-output und column-vector-authored werden per Dispatch
+  // generiert — das Spec trägt die gewrappten Funktionen, nicht die
+  // Kit-Closures (die für die beiden caseIds 'Unbekannter Fall' wuerfen).
+  { ...scalarProductKit.spec, generate: generateScalarProductFamily, solve: solveScalarProduct },
   det2Kit.spec,
   system2x2Spec,
   shapeContractKit.spec,

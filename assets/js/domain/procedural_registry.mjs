@@ -4,12 +4,14 @@
 // Registrierung zentral beim Parent.
 
 import { FAMILY_SPEC as AGGREGATE_DETECTOR_EVAL_COMPARE } from '../core/procedural/aggregate-detector-eval-compare.mjs';
+import { FAMILY_SPEC as AGGREGATE_EVIDENCE_RULE_AUDIT } from '../core/procedural/aggregate-evidence-rule-audit.mjs';
 import { FAMILY_SPEC as AGGREGATE_GROUPED_METRICS_REPORT } from '../core/procedural/aggregate-grouped-metrics-report.mjs';
 import { FAMILY_SPEC as AGGREGATE_PARITY_THRESHOLD_SELECTION } from '../core/procedural/aggregate-parity-threshold-selection.mjs';
 import { FAMILY_SPEC as AGGREGATE_RETRIEVAL_RANKING_METRIC } from '../core/procedural/aggregate-retrieval-ranking-metric.mjs';
 import { FAMILY_SPEC as CLASSIFY_ATTACK_SURFACE } from '../core/procedural/classify-attack-surface.mjs';
 import { FAMILY_SPEC as CLASSIFY_ATTENTION_ROLES } from '../core/procedural/classify-attention-roles.mjs';
 import { FAMILY_SPEC as CLASSIFY_BACKPROP_PATH_RULE } from '../core/procedural/classify-backprop-path-rule.mjs';
+import { FAMILY_SPEC as CLASSIFY_CV_LEAKAGE } from '../core/procedural/classify-cv-leakage.mjs';
 import { FAMILY_SPEC as CLASSIFY_DECODING_STRATEGY } from '../core/procedural/classify-decoding-strategy.mjs';
 import { FAMILY_SPEC as CLASSIFY_DROPOUT_REGIME } from '../core/procedural/classify-dropout-regime.mjs';
 import { FAMILY_SPEC as CLASSIFY_EVAL_HAZARD } from '../core/procedural/classify-eval-hazard.mjs';
@@ -78,12 +80,14 @@ import { FAMILY_SPEC as WORKED_EXAMPLE_FADING_LINEAR_EQUATIONS } from '../core/p
 
 export const PROCEDURAL_FAMILY_SPECS = [
   AGGREGATE_DETECTOR_EVAL_COMPARE,
+  AGGREGATE_EVIDENCE_RULE_AUDIT,
   AGGREGATE_GROUPED_METRICS_REPORT,
   AGGREGATE_PARITY_THRESHOLD_SELECTION,
   AGGREGATE_RETRIEVAL_RANKING_METRIC,
   CLASSIFY_ATTACK_SURFACE,
   CLASSIFY_ATTENTION_ROLES,
   CLASSIFY_BACKPROP_PATH_RULE,
+  CLASSIFY_CV_LEAKAGE,
   CLASSIFY_DECODING_STRATEGY,
   CLASSIFY_DROPOUT_REGIME,
   CLASSIFY_EVAL_HAZARD,

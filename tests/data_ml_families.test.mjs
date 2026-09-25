@@ -127,7 +127,7 @@ test('sklearn trace case grades and exposes the ML-baseline competency override'
   assert.equal((await EXERCISE_FAMILIES.grade(instance, '[0, 1, 2]')).correct, false);
 });
 
-test('gradient trace static case grades through the real registry path', async () => {
+test('gradient trace seeded case grades through the real registry path', async () => {
   const instance = EXERCISE_FAMILIES.instantiate(
     'trace-assignment-state',
     0,
@@ -135,10 +135,10 @@ test('gradient trace static case grades through the real registry path', async (
     'gradient-loop-two-updates',
   );
   assert.deepEqual(instance.competencyIds, ['c-grad-regression', 'c-python-reading']);
-  assert.equal(instance.expectedAnswer.output, '1.55 4.9');
+  assert.equal(typeof instance.expectedAnswer.output, 'string');
   assert.equal(instance.traceTable, undefined);
-  assert.equal((await EXERCISE_FAMILIES.grade(instance, '1.55 4.9')).correct, true);
-  assert.equal((await EXERCISE_FAMILIES.grade(instance, '1.7 4.6')).correct, false);
+  assert.equal((await EXERCISE_FAMILIES.grade(instance, instance.expectedAnswer.output)).correct, true);
+  assert.equal((await EXERCISE_FAMILIES.grade(instance, '999 999')).correct, false);
 });
 
 test('NumPy trace grades and exposes case competency override', async () => {
