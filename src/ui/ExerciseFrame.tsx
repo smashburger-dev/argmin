@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import type { ExerciseContext } from './exercise-context';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Button } from './Button';
+import { MathMarkup } from './MathMarkup';
 
 type Props = {
   ctx: ExerciseContext;
@@ -73,7 +74,7 @@ export function ExerciseFrame({
           {feedback ? <div class="exercise-feedback" data-tour="exercise-feedback" role="status" tabIndex={-1} ref={feedbackBox}>{feedback}</div> : null}
           {hints.length > 0 && (
             <div class="hint-stack">
-              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> {hint}</p>)}
+              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> <MathMarkup html={hint} inline /></p>)}
             </div>
           )}
           {solution}

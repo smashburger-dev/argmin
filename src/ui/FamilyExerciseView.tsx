@@ -75,7 +75,6 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   const [answer, setAnswer] = useState<unknown>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
   const [correct, setCorrect] = useState<boolean | null>(null);
-  const [errorType, setErrorType] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [solutionVisible, setSolutionVisible] = useState(false);
   const [shownHints, setShownHints] = useState<string[]>([]);
@@ -198,7 +197,6 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         });
       }
       setCorrect(Boolean(result.correct));
-      setErrorType(result.errorType ?? null);
       setVerdict(result.verdictText || (result.correct ? 'Richtig.' : 'Nicht richtig.'));
       setDiagnosis(result.diagnosis ?? null);
       setWorkspace(result.result && typeof result.result === 'object' ? result.result as WorkspaceResult : null);
@@ -247,7 +245,6 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     setVerdict(null);
     setCorrect(null);
     setDiagnosis(null);
-    setErrorType(null);
     setMasteryNote(false);
     setMasteryDenied(null);
     try {
@@ -335,7 +332,6 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
           {masteryDenied === 'hints' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — zu viele Hinweise genutzt (höchstens {MASTERY_MAX_HINTS} erlaubt).</p> : null}
           {masteryDenied === 'reveal' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — die Lösung wurde für diese Variante bereits angesehen.</p> : null}
           {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
-          {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
           {workspaceNode}
           {fromChallenge && correct === true
             ? <div class="actions"><Button variant="primary" href="#/challenge">Nächste Challenge</Button></div>

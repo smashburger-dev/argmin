@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.7 — 2026-09-24
+
+Ergebnis-Anzeige verschlankt, Varianten und Mathe-Darstellung repariert.
+
+Für Lernende: **Das Urteil nach „Antwort prüfen“ ist jetzt schlicht eine farbige Zeile** — grün bei richtig, rot bei falsch, mit feiner Kontur und optisch zentriertem Text. Die graue Kartenbox um das Ergebnis fällt weg, ebenso die Zeile „Fehlertyp: …“ unter dem Urteil: Der Fehlertyp war ein technischer Vermerk, der im Lernkontext nur störte. Er wird weiterhin mit jedem Versuch gespeichert — er steht im Fortschritts-Journal und hilft bei Fehlermeldungen, nur eben nicht mehr im sichtbaren Feedback. Gilt für alle Aufgabenarten (Auswahl, Zahlen, Trace-Tabellen, Python, Kontrollpunkte in Lektionen).
+
+**„Nächste Variante“ liefert jetzt wirklich andere Aufgaben.** Bei Konzeptfragen mit hinterlegten Varianten (z. B. die Potenzgesetz-Diagnose) zeigte jeder Seed denselben Fall — die Variantenauflösung lief an den statischen Auswahl-Familien vorbei. Jetzt wechseln Aufgabenstellung und Antwortmenge mit dem Seed; die Auswertung bleibt deterministisch und ID-basiert. Zusätzlich rotiert die Reihenfolge der Antwortoptionen statischer Fälle mit dem Seed.
+
+**Mathematische Formeln werden überall gesetzt.** Formeln in Aufgabentext, Antwortoptionen, Lösung und Hinweisen laufen durch KaTeX; Hinweise mit Formeln erschienen zuvor als Rohtext mit sichtbaren `$`-Markierungen. Die Konzeptfrage zur Potenzgesetz-Diagnose nutzt Formelsatz ($2^3 \cdot 2^4$ statt Code-Ticks), und einzelne Stellen mit ungesetzter Notation (z. B. `e^{z}` in einer Lösung) sind bereinigt.
+
 ## 0.8.6 — 2026-09-22
 
 Ehrlichkeits- und Robustheits-Release: zwölf verifizierte Bugs gefixt, acht spürbare Verbesserungen.

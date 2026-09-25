@@ -14,7 +14,7 @@
       "choices": [
         {
           "id": "a",
-          "text": "Bei gleicher Basis werden die Exponenten addiert, aber die Basis bleibt 2.",
+          "text": "Bei gleicher Basis werden die Exponenten addiert, aber die Basis bleibt $2$.",
           "correct": true
         },
         {
@@ -29,14 +29,94 @@
         },
         {
           "id": "d",
-          "text": "Nur das Ergebnis 7 ist falsch; die Basis 4 stimmt.",
+          "text": "Nur das Ergebnis $7$ ist falsch; die Basis $4$ stimmt.",
           "correct": false
         }
       ],
-      "prompt": "Eine Lösung behauptet `2^3 · 2^4 = 4^7`. Welche Diagnose trifft den ersten Fehler?",
-      "fullSolution": "`2^3 · 2^4 = 2^(3+4) = 2^7`. Die Basis wird nicht zu 4.",
+      "prompt": "Eine Lösung behauptet $2^3 \\cdot 2^4 = 4^7$. Welche Diagnose trifft den ersten Fehler?",
+      "fullSolution": "$2^3 \\cdot 2^4 = 2^{3+4} = 2^7$. Bei gleicher Basis werden die Exponenten addiert — die Basis wird nicht zu $4$.",
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "Eine Lösung behauptet $5^2 \\cdot 5^3 = 5^6$. Welche Diagnose trifft den ersten Fehler?",
+          "fullSolution": "$5^2 \\cdot 5^3 = 5^{2+3} = 5^5$. Bei gleicher Basis werden die Exponenten addiert, nicht multipliziert.",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Basis stimmt, aber die Exponenten werden addiert — richtig wäre $5^5$.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Basis müsste beim Multiplizieren zu $25$ werden.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der Exponent $6$ stimmt; der Fehler liegt woanders.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Potenzen mit gleicher Basis dürfen nicht multipliziert werden.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "prompt": "Eine Lösung behauptet $3^4 \\cdot 3^2 = 9^6$. Welche Diagnose trifft den ersten Fehler?",
+          "fullSolution": "$3^4 \\cdot 3^2 = 3^{4+2} = 3^6$. Die Exponenten wurden richtig addiert — die Basis darf nicht mitmultipliziert werden.",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Die Basis bleibt $3$ — richtig wäre $3^6$, nicht $9^6$.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Exponenten müssten multipliziert werden — richtig wäre $3^8$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Behauptung ist richtig.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Potenzen dürfen nur addiert, nie multipliziert werden.",
+              "correct": false
+            }
+          ]
+        },
+        {
+          "prompt": "Eine Lösung behauptet $(2^3)^2 = 2^5$. Welche Diagnose trifft den ersten Fehler?",
+          "fullSolution": "$(2^3)^2 = 2^{3 \\cdot 2} = 2^6$. Beim Potenzieren einer Potenz werden die Exponenten multipliziert, nicht addiert.",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beim Potenzieren werden die Exponenten multipliziert — richtig wäre $2^6$.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Basis müsste quadriert werden: $4^6$.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Der äußere Exponent $2$ wird ignoriert — es bleibt $2^3$.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Behauptung ist richtig.",
+              "correct": false
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "seeded-error-pattern-cases",

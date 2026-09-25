@@ -1,5 +1,5 @@
 import { graders } from '../core/graders.js';
-import { variantCaseIndex } from '../core/generator_draw_kit.mjs';
+import { rng, shuffle, variantCaseIndex } from '../core/generator_draw_kit.mjs';
 
 // S4D1: zentrale Familien-Runtime (eine Semantik, keine Duplikate).
 // Hierher ausgelagert, damit exercise_registry.mjs und die dünnen
@@ -23,6 +23,15 @@ export const variantOf = (body, seed) => {
     },
   };
 };
+
+// Authored choice cases have no generator — without a seeded shuffle every
+// seed serves the identical option order, so "Nächste Variante" changed only
+// the seed in the address bar. Grading stays id-based and order-free.
+const withSeededChoiceOrder = (generated, seed) => (
+  Array.isArray(generated.choices) && generated.choices.length > 1
+    ? { ...generated, choices: shuffle(rng(seed ?? 0), generated.choices) }
+    : generated
+);
 
 export function registerStaticCases(familyId, cases) {
   if (!FAMILY_ID.test(familyId)) throw new Error(`Ungültige familyId ${familyId}`);
@@ -80,7 +89,7 @@ export function staticFamilySpec(doc) {
         variants: _variants,
         ...generated
       } = chosen;
-      return {
+      return withSeededChoiceOrder({
         ...generated,
         masteryEligible: isMasteryEligible(body),
         parameters: {
@@ -89,7 +98,7 @@ export function staticFamilySpec(doc) {
           variant: index,
           ...(chosen.parameters || {}),
         },
-      };
+      }, seed);
     },
     solve: (parameters) => {
       const { body } = variantOf(staticCaseBody(doc.familyId, parameters.caseId), parameters.variant ?? 0);
@@ -120,7 +129,7 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty) {
     variants: _variants,
     ...generated
   } = chosen;
-  return {
+  return withSeededChoiceOrder({
     ...generated,
     masteryEligible: chosen.graderId !== 'manual-rubric' && body.masteryEligible === true,
     parameters: {
@@ -129,7 +138,7 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty) {
       ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
       ...(chosen.parameters || {}),
     },
-  };
+  }, seed);
 }
 
 export function familyIdTokens(familyId) {

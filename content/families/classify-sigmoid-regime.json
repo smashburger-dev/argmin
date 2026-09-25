@@ -40,7 +40,7 @@
         }
       ],
       "prompt": "Die Sigmoid-Funktion $\\sigma(z) = \\frac{1}{1+e^{-z}}$ bildet reelle Zahlen auf $(0,1)$ ab. Welche Aussage ist korrekt?",
-      "fullSolution": "σ(0) = 1/(1 + e⁰) = 1/2. Wegen σ(−z) = 1/(1 + e^{z}) = 1 − σ(z) liegt der Symmetriepunkt bei (0 | 0,5). Die Ausgabe ist immer eine Zahl streng zwischen 0 und 1.",
+      "fullSolution": "$\\sigma(0) = \\tfrac{1}{1 + e^0} = \\tfrac{1}{2}$. Wegen $\\sigma(-z) = \\tfrac{1}{1 + e^{z}} = 1 - \\sigma(z)$ liegt der Symmetriepunkt bei $(0 \\mid 0{,}5)$. Die Ausgabe ist immer eine Zahl streng zwischen 0 und 1.",
       "hints": [
         "Setze z = 0 ein: Zähler und Nenner bestehen nur noch aus Einsen.",
         "Für große negative z geht σ gegen 0, aber bleibt positiv; für große positive z geht σ gegen 1."

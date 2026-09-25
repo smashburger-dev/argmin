@@ -272,7 +272,10 @@ test('foundations choice cases keep their compact parameter contract', () => {
     for (const caseType of family.caseTypes) {
       for (const difficulty of validProfiles(familyId, caseType.caseId)) {
         const instance = registry.instantiate(familyId, 5, difficulty, caseType.caseId);
-        assert.deepEqual(Object.keys(instance.parameters).sort(), ['caseId', 'difficulty']);
+        const expected = staticBody(familyId, caseType.caseId)?.variants?.length
+          ? ['caseId', 'difficulty', 'variant']
+          : ['caseId', 'difficulty'];
+        assert.deepEqual(Object.keys(instance.parameters).sort(), expected);
       }
     }
   }
@@ -318,16 +321,28 @@ test('foundations choice solvers match rotated choices over 32 seeds', () => {
             correct[0].id,
             `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Rotation nicht deterministisch`,
           );
-          assert.equal(
-            instance.prompt,
-            reference.prompt,
-            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Seed veraendert den Inhalt`,
-          );
-          assert.deepEqual(
-            instance.choices.map((choice) => choice.text).sort(),
-            reference.choices.map((choice) => choice.text).sort(),
-            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Seed veraendert die Auswahlmenge`,
-          );
+          const hasVariants = Boolean(staticBody(familyId, caseType.caseId)?.variants?.length);
+          if (hasVariants) {
+            const authoredPrompts = new Set(
+              [staticBody(familyId, caseType.caseId), ...staticBody(familyId, caseType.caseId).variants]
+                .map((body) => body.prompt),
+            );
+            assert.ok(
+              authoredPrompts.has(instance.prompt),
+              `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Prompt kommt aus keiner autorisierten Variante`,
+            );
+          } else {
+            assert.equal(
+              instance.prompt,
+              reference.prompt,
+              `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Seed veraendert den Inhalt`,
+            );
+            assert.deepEqual(
+              instance.choices.map((choice) => choice.text).sort(),
+              reference.choices.map((choice) => choice.text).sort(),
+              `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Seed veraendert die Auswahlmenge`,
+            );
+          }
         }
         if (caseType.caseId === 'seeded-error-pattern-cases') {
           const frozen = registry.instantiate(familyId, 3401, difficulty, caseType.caseId);
@@ -336,6 +351,23 @@ test('foundations choice solvers match rotated choices over 32 seeds', () => {
       }
     }
   }
+});
+
+test('authored variants actually vary the served body (regression: variantOf was dead in choice families)', () => {
+  // base-vs-exponent-confusion authored 3 variants; before the fix every seed
+  // served the base body, so "Naechste Variante" changed only the URL.
+  const familyId = 'classify-error-hypothesis';
+  const caseId = 'base-vs-exponent-confusion';
+  const family = registry.get(familyId);
+  const prompts = new Set();
+  for (let seed = 0; seed < 16; seed += 1) {
+    const instance = registry.instantiate(familyId, seed, 'intro', caseId);
+    prompts.add(instance.prompt);
+    const solved = family.solve(instance.parameters);
+    const correct = instance.choices.find((choice) => choice.correct);
+    assert.equal(correct.text, solved.correctText, `seed ${seed}: Solver weicht vom servierten Variantenkoerper ab`);
+  }
+  assert.ok(prompts.size >= 3, `erwartet >=3 unterschiedliche Prompts ueber 16 Seeds, bekam ${prompts.size}`);
 });
 
 test('static Python cases carry executable content', () => {
