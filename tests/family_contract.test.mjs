@@ -28,7 +28,17 @@ const canonical = JSON.parse(readFileSync(
   'utf8',
 )).families;
 const docsById = new Map(docs.map((doc) => [doc.familyId, doc]));
-const staticBody = (familyId, caseId) => docsById.get(familyId)?.cases.find((item) => item.caseId === caseId);
+const AUTHORED_BODY_KEYS = [
+  'prompt', 'choices', 'snippet', 'starterCode', 'tests', 'traceTable',
+  'output', 'rubric', 'fragments', 'initialOrder', 'solutionOrder', 'distractors',
+];
+const staticBody = (familyId, caseId) => {
+  const body = docsById.get(familyId)?.cases.find((item) => item.caseId === caseId);
+  // Declaration-only stubs keep the catalog row (lineage, title) for cases
+  // whose body is fully generated — they carry no authored content and
+  // count as absent here so seeded semantics apply.
+  return body && AUTHORED_BODY_KEYS.some((key) => body[key] !== undefined) ? body : undefined;
+};
 const registeredFamilies = canonical.filter((family) => registry.get(family.familyId));
 const FOUNDATIONS_CHOICE_FAMILY_IDS = [
   'classify-control-construct',
@@ -272,7 +282,15 @@ test('foundations choice cases keep their compact parameter contract', () => {
     for (const caseType of family.caseTypes) {
       for (const difficulty of validProfiles(familyId, caseType.caseId)) {
         const instance = registry.instantiate(familyId, 5, difficulty, caseType.caseId);
-        const expected = staticBody(familyId, caseType.caseId)?.variants?.length
+        const body = staticBody(familyId, caseType.caseId);
+        if (!body) {
+          // Fully seeded case: the generator draws its parameters; the
+          // compact contract only requires caseId + difficulty to be present.
+          assert.ok(instance.parameters.caseId === caseType.caseId);
+          assert.ok(instance.parameters.difficulty === difficulty);
+          continue;
+        }
+        const expected = body.variants?.length
           ? ['caseId', 'difficulty', 'variant']
           : ['caseId', 'difficulty'];
         assert.deepEqual(Object.keys(instance.parameters).sort(), expected);
@@ -321,8 +339,13 @@ test('foundations choice solvers match rotated choices over 32 seeds', () => {
             correct[0].id,
             `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Rotation nicht deterministisch`,
           );
-          const hasVariants = Boolean(staticBody(familyId, caseType.caseId)?.variants?.length);
-          if (hasVariants) {
+          const caseBody = staticBody(familyId, caseType.caseId);
+          const hasVariants = Boolean(caseBody?.variants?.length);
+          if (!caseBody) {
+            // Fully seeded case: content varies per seed by design; the
+            // determinism, option count and solver-parity asserts above
+            // already hold it.
+          } else if (hasVariants) {
             const authoredPrompts = new Set(
               [staticBody(familyId, caseType.caseId), ...staticBody(familyId, caseType.caseId).variants]
                 .map((body) => body.prompt),
@@ -353,19 +376,33 @@ test('foundations choice solvers match rotated choices over 32 seeds', () => {
   }
 });
 
-test('authored variants actually vary the served body (regression: variantOf was dead in choice families)', () => {
-  // base-vs-exponent-confusion authored 3 variants; before the fix every seed
-  // served the base body, so "Naechste Variante" changed only the URL.
+test('seeded power-law case varies content and stays solver-consistent', () => {
+  // base-vs-exponent-confusion draws {kind, base, m, n} per seed — the solver
+  // must reconstruct correctText from parameters for every draw.
   const familyId = 'classify-error-hypothesis';
   const caseId = 'base-vs-exponent-confusion';
   const family = registry.get(familyId);
   const prompts = new Set();
-  for (let seed = 0; seed < 16; seed += 1) {
+  const kinds = new Set();
+  for (let seed = 0; seed < 32; seed += 1) {
     const instance = registry.instantiate(familyId, seed, 'intro', caseId);
     prompts.add(instance.prompt);
+    kinds.add(instance.parameters.kind);
     const solved = family.solve(instance.parameters);
-    const correct = instance.choices.find((choice) => choice.correct);
-    assert.equal(correct.text, solved.correctText, `seed ${seed}: Solver weicht vom servierten Variantenkoerper ab`);
+    const correct = instance.choices.filter((choice) => choice.correct);
+    assert.equal(correct.length, 1, `seed ${seed}: genau eine korrekte Wahl`);
+    assert.equal(correct[0].text, solved.correctText, `seed ${seed}: Solver weicht vom servierten Koerper ab`);
+  }
+  assert.ok(prompts.size >= 12, `erwartet >=12 unterschiedliche Prompts ueber 32 Seeds, bekam ${prompts.size}`);
+  assert.equal(kinds.size, 3, `alle drei Fehlerarten sollen auftreten, bekam ${[...kinds].join(',')}`);
+});
+
+test('authored variants still vary the served body where they exist', () => {
+  // classify-cv-leakage authors 9 variants per case (contract-driven docs go
+  // through variantOf in staticFamilySpec.generate).
+  const prompts = new Set();
+  for (let seed = 0; seed < 16; seed += 1) {
+    prompts.add(registry.instantiate('classify-cv-leakage', seed, 'core', 'impute-before-split').prompt);
   }
   assert.ok(prompts.size >= 3, `erwartet >=3 unterschiedliche Prompts ueber 16 Seeds, bekam ${prompts.size}`);
 });

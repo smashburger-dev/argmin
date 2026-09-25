@@ -4,8 +4,9 @@
 // Contract (mirrors w01/w05 house rules):
 //   - mulberry32 rng, identical to the other generator modules;
 //   - every generator returns { parameters, expected, prompt, fullSolution };
-//   - `expected` is always an exact integer (the numeric grader is
-//     integer-exact by design; floats are graded through python-code tasks);
+//   - `expected` is an exact integer for numeric cases (the numeric grader is
+//     integer-exact by design); single-choice draws (genRmseUnitFromMse)
+//     return `expected: {}` plus choices/feedbackRules instead;
 //   - answer spaces are deliberately wide (>= 20 distinct expected values over
 //     600 seeds, enforced by tests/data_ml_generators.test.mjs) so gate
 //     re-seeds produce meaningful new instances, not memorisable answers;
@@ -16,7 +17,9 @@
 //     contain it;
 //   - degenerate draws are retried with a bounded guard.
 
-import { bindFamilyDraw, pick, randInt, rng } from './generator_draw_kit.mjs';
+import {
+  bindFamilyDraw, pick, randInt, rng, variantCaseIndex, buildRotatedChoices, CHOICE_IDS,
+} from './generator_draw_kit.mjs';
 
 import benchmarkBank from '../../../content/banks/classify-benchmark-reading.json' with { type: 'json' };
 import confoundingBank from '../../../content/banks/classify-confounding.json' with { type: 'json' };
@@ -199,6 +202,79 @@ export function genMseFromResiduals(seed) {
         ? `Ein Regressionsmodell für ${context} hat auf ${n} Testpunkten die Residuen rᵢ = ${residuals.join(', ')}. Wie groß ist der MSE?`
         : `Ein Regressionsmodell für ${context} hat auf ${n} Testpunkten die Residuen rᵢ = ${residuals.join(', ')}. Wie groß ist der durchschnittliche quadrierte Fehler?`,
       fullSolution: `MSE = (1/${n})·Σrᵢ² = (1/${n})·${sumSquares} = ${answer}.`,
+    };
+  });
+}
+
+// RMSE/MSE unit diagnosis (seeded replacement for the authored variant bank):
+// the seed draws a (context, unit) pair and a perfect square for MSE; the
+// four option slots are the stable misconception space (name confusion,
+// unit cancellation, needs-residuals vs. the correct root-in-target-unit).
+const RMSE_SCENARIOS = [
+  { context: 'Reparaturkosten', unit: 'Euro' },
+  { context: 'Liefergewichte', unit: 'kg' },
+  { context: 'Fahrzeiten', unit: 'min' },
+  { context: 'Temperaturen', unit: '°C' },
+  { context: 'Abstände', unit: 'm' },
+  { context: 'Latenzzeiten', unit: 's' },
+  { context: 'Verkaufspreise', unit: 'Euro' },
+  { context: 'Energieverbräuche', unit: 'kWh' },
+  { context: 'Fertigungstoleranzen', unit: 'mm' },
+  { context: 'Liegedauern', unit: 'Tage' },
+];
+const RMSE_SQUARES = [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144];
+
+export const rmseCorrectOptionText = ({ mse, unit }) =>
+  `RMSE = $\\sqrt{${mse}} = ${Math.sqrt(mse)}$ — die Wurzel bringt den Wert zurück in die Zieleinheit ${unit}.`;
+
+const rmseDistractorTexts = ({ mse }) => [
+  `RMSE = ${mse} — MSE und RMSE sind beides Fehlermaße und unterscheiden sich nur im Namen.`,
+  `RMSE = ${Math.sqrt(mse)}, aber einheitenlos — die Wurzel kürzt die Einheit heraus.`,
+  'Aus dem MSE allein lässt sich der RMSE nicht berechnen — dazu braucht es die einzelnen Residuen.',
+];
+
+const RMSE_FEEDBACK = [
+  'Die Quadratwurzel fehlt: RMSE = √MSE. Nur der RMSE liegt in der Zieleinheit.',
+  'Der Wert stimmt, aber die Einheit bleibt: die Wurzel aus einer quadrierten Einheit ist wieder die Zieleinheit.',
+  'Der MSE-Wert reicht: RMSE = √MSE, die einzelnen Residuen sind dafür nicht nötig.',
+];
+
+export function genRmseUnitFromMse(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const { context, unit } = pick(r, RMSE_SCENARIOS);
+    const mse = pick(r, RMSE_SQUARES);
+    const root = Math.sqrt(mse);
+    const parameters = { context, unit, mse };
+    const distractors = rmseDistractorTexts(parameters);
+    const options = [rmseCorrectOptionText(parameters), ...distractors];
+    const rotation = variantCaseIndex(seed, options.length);
+    const choices = buildRotatedChoices(options, rotation, CHOICE_IDS);
+    // Feedback rules keyed by the rotated ids so each distractor keeps its
+    // explanation regardless of position (authored ids rotated loose in
+    // 0.8.7; generated rules stay attached to the drawn text).
+    const feedbackRules = choices
+      .filter((choice) => !choice.correct)
+      .map((choice) => ({ if: `choice === '${choice.id}'`, then: RMSE_FEEDBACK[distractors.indexOf(choice.text)] }));
+    return {
+      parameters,
+      expected: {},
+      activityType: 'single-choice',
+      masteryEligible: false,
+      choices,
+      prompt: `Ein Regressionsmodell für ${context} (Ziel in ${unit}) hat auf dem Testset $\\mathrm{MSE} = ${mse}$. Welche Aussage über den RMSE ist korrekt?`,
+      fullSolution: `$\\mathrm{RMSE} = \\sqrt{\\mathrm{MSE}} = \\sqrt{${mse}} = ${root}$. Der MSE trägt die Einheit ${unit}², die Wurzel führt den Wert zurück auf ${unit}.`,
+      hints: [
+        'MSE mittelt quadrierte Fehler; die Wurzel macht die Quadrierung rückgängig.',
+        `Welche Einheit trägt der RMSE, wenn das Ziel in ${unit} gemessen wird?`,
+      ],
+      feedbackRules,
+      typicalErrors: [
+        'Wurzel beim Übergang MSE → RMSE vergessen',
+        'die Einheiten von MSE (quadriert) und RMSE (Zieleinheit) verwechseln',
+        'glauben, RMSE brauche die Einzelfehler',
+      ],
     };
   });
 }

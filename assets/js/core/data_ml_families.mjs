@@ -20,6 +20,8 @@ import {
   genSubgroupGapPp,
   genShrinkagePercent,
   genMseFromResiduals,
+  genRmseUnitFromMse,
+  rmseCorrectOptionText,
   genMseGradient,
   genR2Share,
   genPcaVariancePercent,
@@ -150,6 +152,7 @@ const PROFILE_PREDICATES = {
   'recall-at-k-window': { intro: (p) => p.shape === 'hits', stretch: (p) => p.shape === 'percent' || p.shape === 'irrelevant' },
   'protocol-shift-flag-count': { intro: (p) => p.flags?.length === 1, stretch: (p) => p.flags?.length >= 3 },
   'card-audit-missing-count': { intro: (p) => p.karten?.length === 1, stretch: (p) => p.karten?.length === 2 },
+  'rmse-unit-from-mse': { intro: () => true },
   'baseline-ledger-rates': { intro: (p) => p.shape === 'naive-percent', stretch: (p) => p.shape === 'gap-promille' },
   'pipeline-stage-audit': { intro: (p) => p.shape === 'valid-count', stretch: (p) => p.shape === 'missing-hashes' },
   'eval-batch-rates': {
@@ -431,12 +434,16 @@ const FAMILY_DEFINITIONS = {
   },
   'formula-quadratic-error-metric': {
     cases: {
-      'rmse-unit-from-mse': {},
+      'rmse-unit-from-mse': {
+        generator: genRmseUnitFromMse,
+        difficulty: 'intro',
+        competencyIds: ['c-ml-linear'],
+      },
       'mse-from-residuals': { generator: genMseFromResiduals },
     },
     solve(parameters) {
       if (parameters.caseId === 'rmse-unit-from-mse') {
-        return staticExpected('formula-quadratic-error-metric', parameters);
+        return { correctText: rmseCorrectOptionText(parameters) };
       }
       return {
         value: parameters.residuals.reduce((sum, residual) => sum + residual ** 2, 0) / parameters.n,
@@ -688,6 +695,9 @@ const AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES = [
 ];
 
 const FORMULA_QUADRATIC_ERROR_CASE_TYPES = [
+  // propertyTest: false is load-bearing, not just test gating: the case is
+  // bound to the intro profile, so '-' caseId resolution (practice space,
+  // review routes) must never draw it for other difficulties.
   { caseId: 'rmse-unit-from-mse', propertyTest: false },
   { caseId: 'mse-from-residuals', sourceLineage: ['w10-e2'] },
 ];
