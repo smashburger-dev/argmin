@@ -27,15 +27,9 @@ export const PROVENANCE_DUTY_CONTRACT = {
   competencyIds: ['c-research-cards'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: PROVENANCE_DUTY_CONTRACT,
   capsules: PROVENANCE_DUTY_CAPSULES,
   shapeError: 'Provenienz-Pflicht-Parameter verletzen die Kapselform',
 });
 
-export const provenanceDutyCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const provenanceDutyCorrectText = FAMILY_IMPL.correctText;
-export const genProvenanceDutyCapsule = FAMILY_IMPL.genCapsule;
-export const generateProvenanceDutyFamily = FAMILY_IMPL.generate;
-export const solveProvenanceDutyFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

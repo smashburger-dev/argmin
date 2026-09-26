@@ -192,7 +192,7 @@ export const ENSEMBLE_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: ENSEMBLE_CONTRACT,
   cases: ENSEMBLE_CASES,
   shapeError: 'Ensemble-Parameter verletzen die Kapselform',
@@ -201,8 +201,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const ensembleCaseOk = FAMILY.caseOk;
-export const genEnsembleCase = FAMILY.genCase;
-export const solveEnsembleFamily = FAMILY.solve;
-export const generateEnsembleFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

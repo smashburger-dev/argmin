@@ -11,10 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './helpers/register_static_cases.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
-import {
-  generateMseGradientClosedFormFamily as generate,
-  solveMseGradientClosedForm as solve,
-} from '../assets/js/core/data_ml_families.mjs';
+
 import { gradMseParamsOk } from '../assets/js/core/data_ml_generators.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -216,6 +213,12 @@ for item in bundle:
         err = '%s: %s' % (type(exc).__name__, exc)
     print(json.dumps({'name': item['name'], 'failed': [c[0] for c in checks if not c[1]], 'error': err}))
 `;
+import { DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'optimize-mse-gradient-closed-form');
+const generate = spec.generate;
+const solve = spec.solve;
+
 
 test('python: Referenz besteht alle Checks, Mutanten scheitern zuverlässig', (t) => {
   if (!PY3) return t.skip('python3 nicht verfügbar');

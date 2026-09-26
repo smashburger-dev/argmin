@@ -6,16 +6,12 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/classify-provenance-duty.mjs';
-import {
-  PROVENANCE_DUTY_CAPSULES,
-  PROVENANCE_DUTY_CONTRACT,
-  generateProvenanceDutyFamily,
-} from '../assets/js/core/procedural/classify-provenance-duty.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { PROVENANCE_DUTY_CAPSULES, PROVENANCE_DUTY_CONTRACT } from '../assets/js/core/procedural/classify-provenance-duty.mjs';
 
-choiceCapsuleSuite('classify-provenance-duty', mod, [
-  { caseId: 'provenance-duty', difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
+const spec = mod.FAMILY_SPEC;
+const generateProvenanceDutyFamily = spec.generate;
+
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'provenance-duty';

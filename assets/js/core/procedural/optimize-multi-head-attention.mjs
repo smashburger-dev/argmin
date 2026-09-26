@@ -211,7 +211,7 @@ export const MHA_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: MHA_CONTRACT,
   cases: MHA_CASES,
   shapeError: 'Multi-Head-Attention-Parameter verletzen die Kapselform',
@@ -220,8 +220,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const mhaCaseOk = FAMILY.caseOk;
-export const genMhaCase = FAMILY.genCase;
-export const solveMhaFamily = FAMILY.solve;
-export const generateMhaFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

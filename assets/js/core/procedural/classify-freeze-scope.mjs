@@ -27,15 +27,9 @@ export const FREEZE_SCOPE_CONTRACT = {
   competencyIds: ['c-capstone-pipeline'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: FREEZE_SCOPE_CONTRACT,
   capsules: FREEZE_SCOPE_CAPSULES,
   shapeError: 'Freeze-Scope-Parameter verletzen die Kapselform',
 });
 
-export const freezeScopeCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const freezeScopeCorrectText = FAMILY_IMPL.correctText;
-export const genFreezeScopeCapsule = FAMILY_IMPL.genCapsule;
-export const generateFreezeScopeFamily = FAMILY_IMPL.generate;
-export const solveFreezeScopeFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

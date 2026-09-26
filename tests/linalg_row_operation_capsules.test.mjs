@@ -1,6 +1,6 @@
 // Familie classify-row-operation-validity: Kapsel-Gates (single-choice-adaptiert).
 // Run: node --test tests/linalg_row_operation_capsules.test.mjs
-// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// Gemeinsame Gates leben in tests/helpers/kit_suites.mjs — die Kit-Produkte
 // (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
 // foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
 // linalg_generators.mjs.
@@ -10,16 +10,16 @@ import {
   ROW_OPERATION_CAPSULES,
   rowOperationInstanceOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import {
-  ROW_OPERATION_CONTRACT,
-  rowOperationCapsuleOk,
-  rowOperationCorrectText,
-  genRowOperationCapsule,
-  generateRowOperationFamily,
-  solveRowOperationFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
-import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
+import { ROW_OPERATION_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-row-operation-validity');
+const rowOperationCapsuleOk = spec.kit.capsuleOk;
+const rowOperationCorrectText = spec.kit.correctText;
+const genRowOperationCapsule = spec.kit.genCapsule;
+const generateRowOperationFamily = spec.generate;
+const solveRowOperationFamily = spec.solve;
+
 
 // --- 18 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Lösung und Bound (Gleichungen 9,
@@ -107,19 +107,3 @@ test('Kapseltabelle: Arten, Bounds und Fallbindung', () => {
   assert.deepEqual(ROW_OPERATION_CAPSULES.intro, { kind: 'multiplier', min: 1, max: 12, caseId: 'row-operation-choice-contract' });
 });
 
-linalgChoiceCapsuleSuite('classify-row-operation-validity', {
-  capsules: ROW_OPERATION_CAPSULES,
-  contract: ROW_OPERATION_CONTRACT,
-  capsuleOk: rowOperationCapsuleOk,
-  correctText: rowOperationCorrectText,
-  genCapsule: genRowOperationCapsule,
-  generate: generateRowOperationFamily,
-  solve: solveRowOperationFamily,
-  registry: LINALG_FAMILIES,
-}, CASE_FOR, {
-  difficultyProfiles: ['intro', 'core'],
-  meta: {
-    core: { masteryEligible: true, competencyIds: ['c-linalg-gauss'] },
-    intro: { masteryEligible: false, competencyIds: ['c-linalg-gauss'] },
-  },
-});

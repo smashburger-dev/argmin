@@ -6,16 +6,12 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/classify-rag-stage.mjs';
-import {
-  RAG_STAGE_CAPSULES,
-  RAG_STAGE_CONTRACT,
-  generateRagStageFamily,
-} from '../assets/js/core/procedural/classify-rag-stage.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { RAG_STAGE_CAPSULES, RAG_STAGE_CONTRACT } from '../assets/js/core/procedural/classify-rag-stage.mjs';
 
-choiceCapsuleSuite('classify-rag-stage', mod, [
-  { caseId: 'rag-stage-separation', difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
+const spec = mod.FAMILY_SPEC;
+const generateRagStageFamily = spec.generate;
+
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'rag-stage-separation';

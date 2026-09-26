@@ -5,16 +5,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/reproduce-seeded-split.mjs';
-import {
-  SPLIT_CASES,
-  genSplitCase,
-} from '../assets/js/core/procedural/reproduce-seeded-split.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { SPLIT_CASES } from '../assets/js/core/procedural/reproduce-seeded-split.mjs';
 
-codeCapsuleSuite('reproduce-seeded-split', mod, [
-  { caseId: 'deterministic-split-numpy', difficulty: 'core', competencyIds: ['c-ml-baseline', 'c-numpy-basics'] },
-  { caseId: 'kfold-indices-numpy', difficulty: 'core', competencyIds: ['c-ml-cv', 'c-numpy-basics'] },
-], { familyGroup: 'reproduce-hash', difficultyProfiles: ['core'] });
+const spec = mod.FAMILY_SPEC;
+const genSplitCase = spec.kit.genCase;
+
+
 
 test('capsule extras: seeded block marker stays emitted', () => {
   for (const caseId of ['deterministic-split-numpy', 'kfold-indices-numpy']) {

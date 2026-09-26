@@ -7,19 +7,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  DOC_BANK,
-  FAMILY_SPEC,
-  MISS_QUERIES,
-  STUB_DOC_CASES,
-  STUB_DOC_CONTRACT,
-  genStubDocCase,
-  generateStubDocFamily,
-  missCandidates,
-  runStub,
-  solveStubDocFamily,
-  stubDocCaseOk,
-} from '../assets/js/core/procedural/trace-stub-doc-sentence-select.mjs';
+import { DOC_BANK, FAMILY_SPEC, MISS_QUERIES, STUB_DOC_CASES, STUB_DOC_CONTRACT, missCandidates, runStub } from '../assets/js/core/procedural/trace-stub-doc-sentence-select.mjs';
+
+const spec = FAMILY_SPEC;
+const genStubDocCase = spec.kit.genCase;
+const solveStubDocFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['stub-doc-sentence-select'];
@@ -42,17 +35,14 @@ const refStub = (query, docs) => {
   return docs[best].split('.')[0].trim();
 };
 
-test('anchor: contract null, cases fully preserved as oracle', () => {
+test('anchor extras: expected form, solution pin and stub mirror on the bank base', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/trace-stub-doc-sentence-select.json'), 'utf8'));
-  assert.equal(doc.contract, null);
   assert.equal(doc.cases.length, 1);
   for (const caseId of CASE_IDS) {
     const body = doc.cases.find((item) => item.caseId === caseId);
     assert.ok(body, `${caseId}: anchor missing`);
     const def = STUB_DOC_CASES[caseId];
-    assert.equal(body.parameters.snippet, def.baseSnippet, `${caseId}: base snippet verbatim`);
     assert.deepEqual(body.expected, { kind: 'output-lines', output: def.baseOutput }, `${caseId}: expected form`);
-    assert.equal(body.prompt, def.prompt, `${caseId}: prompt verbatim`);
     assert.equal(body.fullSolution, def.baseSolution, `${caseId}: solution verbatim`);
     assert.deepEqual(body.competencyIds, def.competencyIds, `${caseId}: competencies verbatim`);
   }
@@ -62,16 +52,12 @@ test('anchor: contract null, cases fully preserved as oracle', () => {
   assert.equal(refStub('Wie erfolgt der Versand?', DOC_BANK[0].docs), 'Der Versand erfolgt mit DHL');
 });
 
-test('capsule shape: generated parameters satisfy stubDocCaseOk over 200 seeds', () => {
+test('snippet extras: expected kind pinned, snippet carries the drawn literals', () => {
   for (const caseId of CASE_IDS) {
     const def = STUB_DOC_CASES[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genStubDocCase(seed, caseId, def);
-      assert.ok(stubDocCaseOk(generated.parameters, caseId, def), `${caseId}:${seed}: shape`);
-      assert.equal(generated.parameters.caseId, caseId);
-      assert.equal(generated.parameters.difficulty, def.difficulty);
       assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
-      assert.equal(generated.prompt, def.prompt);
       assert.ok(generated.parameters.snippet.includes(`print(antwort("${generated.parameters.queryHit}", DOCS))`), 'snippet carries hit query');
       assert.ok(generated.parameters.snippet.includes(`print(antwort("${generated.parameters.queryMiss}", DOCS))`), 'snippet carries miss query');
       for (const docText of generated.parameters.docs) {
@@ -125,37 +111,7 @@ test('seeded draws stay inside the declared domains', () => {
   assert.ok(seenMisses.size >= 4, `miss queries covered: ${seenMisses.size}`);
 });
 
-test('distinct floor: at least 40 distinct parameter sets per case over 200 seeds', () => {
-  for (const caseId of CASE_IDS) {
-    const def = STUB_DOC_CASES[caseId];
-    const seen = new Set();
-    for (let seed = 0; seed < 200; seed += 1) {
-      seen.add(JSON.stringify(generateStubDocFamily({ seed, caseId, difficulty: def.difficulty }).parameters));
-    }
-    assert.ok(seen.size >= 40, `${caseId}: only ${seen.size} distinct`);
-  }
-});
-
-test('determinism: same seed reproduces identical output, negative seeds valid', () => {
-  for (const caseId of CASE_IDS) {
-    const def = STUB_DOC_CASES[caseId];
-    for (let seed = -20; seed < 20; seed += 1) {
-      assert.deepEqual(genStubDocCase(seed, caseId, def), genStubDocCase(seed, caseId, def), `${caseId}:${seed}`);
-    }
-  }
-});
-
-test('solver consistency: solve reproduces the generated expected output', () => {
-  for (const caseId of CASE_IDS) {
-    const def = STUB_DOC_CASES[caseId];
-    for (let seed = 0; seed < 50; seed += 1) {
-      const generated = generateStubDocFamily({ seed, caseId, difficulty: def.difficulty });
-      assert.equal(solveStubDocFamily(generated.parameters).output, generated.expected.output);
-    }
-  }
-});
-
-test('family block: dispatch, contract, errors', () => {
+test('family extras: contract pins and solve rejects a tampered snippet', () => {
   assert.equal(STUB_DOC_CONTRACT.familyId, 'trace-stub-doc-sentence-select');
   assert.equal(STUB_DOC_CONTRACT.authorityMode, 'seeded');
   assert.equal(STUB_DOC_CONTRACT.taskArchetype, 'output-predict-lines');
@@ -167,12 +123,6 @@ test('family block: dispatch, contract, errors', () => {
   assert.deepEqual(STUB_DOC_CONTRACT.caseTypes, [
     { caseId: 'stub-doc-sentence-select', propertyTest: false },
   ]);
-  assert.equal(FAMILY_SPEC.generate, generateStubDocFamily);
-  assert.equal(FAMILY_SPEC.solve, solveStubDocFamily);
-  assert.throws(() => generateStubDocFamily({ seed: 0, caseId: 'stub-doc-sentence-select', difficulty: 'stretch' }), /Unbekannter Fall/);
-  assert.throws(() => generateStubDocFamily({ seed: 0, caseId: 'nope', difficulty: 'core' }), /Unbekannter Fall/);
-  assert.throws(() => generateStubDocFamily({ seed: 0.5, caseId: 'stub-doc-sentence-select', difficulty: 'core' }), /Seed/);
-  assert.throws(() => solveStubDocFamily({}), /Kapselform/);
   const good = genStubDocCase(0, 'stub-doc-sentence-select', STUB_DOC_CASES['stub-doc-sentence-select']).parameters;
   assert.throws(() => solveStubDocFamily({ ...good, snippet: 'x' }), /Kapselform/);
 });

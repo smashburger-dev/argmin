@@ -207,15 +207,10 @@ export const BPE_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: BPE_CONTRACT,
   cases: BPE_CASES,
   shapeError: 'BPE-Parameter verletzen die Kapselform',
   seededBlock: (caseDef, caseId, seedCases) => `# seeded extra cases\n${seededSection(caseDef, caseId, seedCases)}`,
 });
 
-export const bpeCaseOk = FAMILY.caseOk;
-export const genBpeCase = FAMILY.genCase;
-export const solveBpeFamily = FAMILY.solve;
-export const generateBpeFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

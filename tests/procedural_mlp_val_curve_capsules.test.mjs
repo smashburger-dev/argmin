@@ -5,25 +5,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/fit-mlp-val-curve-argmin.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genValCurveCase = spec.kit.genCase;
+
 
 // The case defs do not carry `packages`; the JSON anchors pin it to ['numpy'],
 // so the suite surface adds it for the verbatim anchor check.
-const suiteMod = {
-  ...mod,
-  VAL_CURVE_CASES: Object.fromEntries(
-    Object.entries(mod.VAL_CURVE_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
-  ),
-};
 
-codeCapsuleSuite('fit-mlp-val-curve-argmin', suiteMod, [
-  { caseId: 'mlp-val-curve-argmin', difficulty: 'challenge' },
-], { familyGroup: 'fit-model', difficultyProfiles: ['challenge'] });
 
 test('seeded draws stay inside the declared domains', () => {
   const def = mod.VAL_CURVE_CASES['mlp-val-curve-argmin'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genValCurveCase(seed, 'mlp-val-curve-argmin', def);
+    const generated = genValCurveCase(seed, 'mlp-val-curve-argmin', def);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.equal(generated.parameters.seedCases.length, 2, 'extraCount');
     for (const [i, entry] of generated.parameters.seedCases.entries()) {

@@ -135,46 +135,86 @@ export function drawFamilyInstance(generate, { seed, caseId, difficulty, wantSha
 
 export const CHOICE_IDS = ['a', 'b', 'c', 'd'];
 
-/** Baut das Standard-Surface einer reinen Choice-Kapsel-Familie: Szenario-Bank
- *  + Antwort-Rotation. Module behalten Bank und Contract, die Generator-/
- *  Solver-Mechanik lebt hier genau einmal. `shapeError` bleibt familienspezifisch,
- *  weil Tests und Fehlertexte auf den Wortlaut pinnen. */
-export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'difficulty' }) {
-  const options = (entry) => [entry.correct, ...entry.wrong];
+/** Baut das Standard-Surface einer Choice-Kapsel-Familie und gibt den fertigen
+ *  Spec zurück. Zwei Modi über dieselbe Mechanik (Kapselform + Rotation):
+ *
+ *  Bank-Modus (kein `drawParameters`): die Seed-Ziehung pickt genau einen
+ *  Bank-Eintrag (`scenario`-Key), Optionen sind [correct, ...wrong], die Form
+ *  verlangt einen gefundenen Eintrag mit vier verschiedenen Optionen und
+ *  Prompt/Lösung kommen aus dem Eintrag.
+ *
+ *  Parametrisierter Modus: die Ziehung liefert gerechnete Parameter, die
+ *  Familie liefert die Hooks:
+ *    drawParameters(r, capsule) -> parameters
+ *    buildOptions(parameters, capsule) -> [correct, wrong1, wrong2, wrong3]
+ *    validate(parameters, capsule) -> boolean  (domainspezifische Kapselform;
+ *      ob Optionseindeutigkeit geprueft wird, entscheidet die Familie)
+ *    buildPrompt/buildSolution(parameters, capsule) -> string
+ *    choiceIds(capsule) -> choice ids (default a/b/c/d; einige Kapselarten
+ *      tragen semantische ids)
+ *    caseMeta[caseId] -> { masteryEligible, competencyIds } wird nach
+ *      fullSolution in die Instanz gemerged (Kopie der competencyIds)
+ *    shapeError: String oder (capsule) -> String
+ *    keyBy 'difficulty' (capsules keyed by profile) oder 'caseId'.
+ *
+ *  Interna für die Kit-Suites hängen am Spec unter `kit`; der Golden-Korpus
+ *  ignoriert den Schlüssel. */
+export function makeChoiceFamily({
+  contract, capsules, shapeError, keyBy = 'difficulty',
+  drawParameters, buildOptions, validate, buildPrompt, buildSolution,
+  choiceIds = () => CHOICE_IDS, caseMeta = {},
+}) {
+  const bankEntry = (parameters, capsule) => (
+    capsule.bank.find((item) => item.key === parameters.scenario)
+  );
+  const bankOptions = (parameters, capsule) => {
+    const entry = bankEntry(parameters, capsule);
+    return [entry.correct, ...entry.wrong];
+  };
+  const draw = drawParameters ?? ((random, capsule) => ({ scenario: pick(random, capsule.bank).key }));
+  const optionsOf = buildOptions ?? bankOptions;
+  const shapeOk = validate ?? ((parameters, capsule) => (
+    Boolean(bankEntry(parameters, capsule)) && new Set(bankOptions(parameters, capsule)).size === 4
+  ));
+  const promptOf = buildPrompt ?? ((parameters, capsule) => bankEntry(parameters, capsule).prompt);
+  const solutionOf = buildSolution ?? ((parameters, capsule) => bankEntry(parameters, capsule).solution);
+  const fail = (capsule) => new Error(typeof shapeError === 'function' ? shapeError(capsule) : shapeError);
 
   const capsuleOk = (parameters, capsule) => {
     try {
       if (!parameters || typeof parameters !== 'object') return false;
-      const entry = capsule.bank.find((item) => item.key === parameters.scenario);
-      if (!entry) return false;
-      return new Set(options(entry)).size === 4;
+      return shapeOk(parameters, capsule);
     } catch { return false; }
   };
 
   const correctText = (parameters, capsule) => {
-    const entry = capsule.bank.find((item) => item.key === parameters?.scenario);
-    if (!entry || !capsuleOk(parameters, capsule)) throw new Error(shapeError);
-    return entry.correct;
+    if (!capsuleOk(parameters, capsule)) throw fail(capsule);
+    return optionsOf(parameters, capsule)[0];
   };
 
   const genCapsule = (seed, capsule) => {
     const r = rng(seed);
-    const entry = pick(r, capsule.bank);
-    const opts = options(entry);
-    const rotation = variantCaseIndex(seed, opts.length);
+    const parameters = draw(r, capsule);
+    const options = optionsOf(parameters, capsule);
+    const rotation = variantCaseIndex(seed, options.length);
     return {
-      parameters: { scenario: entry.key },
+      parameters,
       expected: {},
-      choices: buildRotatedChoices(opts, rotation, CHOICE_IDS),
-      prompt: entry.prompt,
-      fullSolution: entry.solution,
+      choices: buildRotatedChoices(options, rotation, choiceIds(capsule)),
+      prompt: promptOf(parameters, capsule),
+      fullSolution: solutionOf(parameters, capsule),
     };
   };
 
-  const generate = ({ seed, caseId, difficulty }) => {
+  const capsuleFor = (caseId, difficulty) => {
     const capsule = keyBy === 'caseId' ? capsules[caseId] : capsules[difficulty];
     const matches = keyBy === 'caseId' ? capsule?.difficulty === difficulty : capsule?.caseId === caseId;
-    if (!capsule || !matches) {
+    return capsule && matches ? capsule : null;
+  };
+
+  const generate = ({ seed, caseId, difficulty }) => {
+    const capsule = capsuleFor(caseId, difficulty);
+    if (!capsule) {
       throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
     }
     const drawn = drawFamilyInstance((subseed) => genCapsule(subseed, capsule), {
@@ -185,6 +225,7 @@ export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'diff
       profileAccepts: (parameters) => capsuleOk(parameters, capsule),
       profiles: contract.difficultyProfiles,
     });
+    const meta = caseMeta[caseId];
     return {
       parameters: { caseId, difficulty, ...drawn.parameters },
       expected: { ...drawn.expected },
@@ -192,6 +233,7 @@ export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'diff
       prompt: drawn.prompt,
       fullSolution: drawn.fullSolution,
       ...(capsule.competencyIds ? { competencyIds: capsule.competencyIds } : {}),
+      ...(meta ? { masteryEligible: meta.masteryEligible, competencyIds: [...meta.competencyIds] } : {}),
     };
   };
 
@@ -204,85 +246,13 @@ export function makeChoiceFamily({ contract, capsules, shapeError, keyBy = 'diff
   };
 
   return {
-    capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
-  };
-}
-
-/** Parametrisierte Choice-Kapsel-Familie: die Seed-Ziehung liefert gerechnete
- *  Parameter (nicht nur einen Bankschlüssel), Optionen/Prompt/Lösung werden aus
- *  den Parametern gebaut und die korrekte Position rotiert. Die Familie liefert
- *  die Hooks — das Kit liefert capsuleOk/correctText/genCapsule/generate/solve.
- *
- *  drawParameters(r, capsule) -> parameters
- *  buildOptions(parameters, capsule) -> [correct, wrong1, wrong2, wrong3]
- *  validate(parameters, capsule) -> boolean  (domainspezifische Kapselform;
- *    ob Optionseindeutigkeit geprueft wird, entscheidet die Familie)
- *  buildPrompt/buildSolution(parameters, capsule) -> string
- *  keyBy 'difficulty' (capsules keyed by profile) oder 'caseId'. */
-export function makeChoiceCapsuleFamily({
-  contract, capsules, shapeError, keyBy = 'difficulty',
-  drawParameters, buildOptions, validate, buildPrompt, buildSolution,
-}) {
-  const capsuleOk = (parameters, capsule) => {
-    try {
-      if (!parameters || typeof parameters !== 'object') return false;
-      return validate(parameters, capsule);
-    } catch { return false; }
-  };
-
-  const correctText = (parameters, capsule) => {
-    if (!capsuleOk(parameters, capsule)) throw new Error(shapeError);
-    return buildOptions(parameters, capsule)[0];
-  };
-
-  const genCapsule = (seed, capsule) => {
-    const r = rng(seed);
-    const parameters = drawParameters(r, capsule);
-    const options = buildOptions(parameters, capsule);
-    const rotation = variantCaseIndex(seed, options.length);
-    return {
-      parameters,
-      expected: {},
-      choices: buildRotatedChoices(options, rotation, CHOICE_IDS),
-      prompt: buildPrompt(parameters, capsule),
-      fullSolution: buildSolution(parameters, capsule),
-    };
-  };
-
-  const generate = ({ seed, caseId, difficulty }) => {
-    const capsule = keyBy === 'caseId' ? capsules[caseId] : capsules[difficulty];
-    const matches = keyBy === 'caseId' ? capsule?.difficulty === difficulty : capsule?.caseId === caseId;
-    if (!capsule || !matches) {
-      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-    }
-    const drawn = drawFamilyInstance((subseed) => genCapsule(subseed, capsule), {
-      seed,
-      caseId,
-      difficulty,
-      wantShape: (instance) => capsuleOk(instance.parameters, capsule),
-      profileAccepts: (parameters) => capsuleOk(parameters, capsule),
-      profiles: contract.difficultyProfiles,
-    });
-    return {
-      parameters: { caseId, difficulty, ...drawn.parameters },
-      expected: { ...drawn.expected },
-      choices: drawn.choices,
-      prompt: drawn.prompt,
-      fullSolution: drawn.fullSolution,
-    };
-  };
-
-  const solve = (parameters) => {
-    const capsule = keyBy === 'caseId'
-      ? capsules[parameters?.caseId]
-      : Object.values(capsules).find((item) => item.caseId === parameters?.caseId);
-    if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-    return { correctText: correctText(parameters, capsule) };
-  };
-
-  return {
-    capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
+    graderId: 'deterministic',
+    activityType: 'single-choice',
+    ...contract,
+    generate,
+    solve,
+    kit: {
+      type: 'choice', capsules, keyBy, capsuleOk, correctText, genCapsule, caseMeta,
+    },
   };
 }

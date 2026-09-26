@@ -5,23 +5,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/optimize-backprop-gradient-check.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genBackpropCase = spec.kit.genCase;
+
 
 // genBackpropCase/backpropCaseOk take the canonical caseId-in-the-middle
 // arity from the shared case-family kit ((seed, caseId, def) /
 // (parameters, caseId, def)). The case defs do not carry `packages`; the
 // JSON anchors pin it to ['numpy'].
-const suiteMod = {
-  ...mod,
-  BACKPROP_CASES: Object.fromEntries(
-    Object.entries(mod.BACKPROP_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
-  ),
-};
 
-codeCapsuleSuite('optimize-backprop-gradient-check', suiteMod, [
-  { caseId: 'linear-mse-gradients', difficulty: 'core' },
-  { caseId: 'mlp-backprop-relu-mse', difficulty: 'stretch' },
-], { familyGroup: 'optimize-update', difficultyProfiles: ['core', 'stretch'] });
 
 // JS mirror of the forward pre-activation used by the draw guard (kink-free
 // ReLU domain). Only used for assertions — the emitted test block recomputes
@@ -36,7 +29,7 @@ const halfMat = (m, lo, hi) => m.every((row) => row.every((v) => v * 2 === Math.
 test('seeded linear draws stay inside the declared domains', () => {
   const def = mod.BACKPROP_CASES['linear-mse-gradients'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genBackpropCase(seed, 'linear-mse-gradients', def);
+    const generated = genBackpropCase(seed, 'linear-mse-gradients', def);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     for (const entry of generated.parameters.seedCases) {
       const n = entry.X.length;
@@ -57,7 +50,7 @@ test('seeded linear draws stay inside the declared domains', () => {
 test('seeded MLP draws stay inside the declared domains incl. kink-free guard', () => {
   const def = mod.BACKPROP_CASES['mlp-backprop-relu-mse'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genBackpropCase(seed, 'mlp-backprop-relu-mse', def);
+    const generated = genBackpropCase(seed, 'mlp-backprop-relu-mse', def);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     for (const entry of generated.parameters.seedCases) {
       const n = entry.X.length;

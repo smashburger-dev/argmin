@@ -180,15 +180,10 @@ export const LEARN_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: LEARN_CONTRACT,
   cases: LEARN_CASES,
   shapeError: 'BPE-Learn-Parameter verletzen die Kapselform',
   seededBlock: (caseDef, _caseId, seedCases) => `# seeded extra cases\n${seededSection(caseDef, seedCases)}`,
 });
 
-export const learnCaseOk = FAMILY.caseOk;
-export const genLearnCase = FAMILY.genCase;
-export const solveLearnFamily = FAMILY.solve;
-export const generateLearnFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

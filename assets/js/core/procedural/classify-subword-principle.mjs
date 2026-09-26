@@ -35,15 +35,9 @@ export const SUBWORD_CONTRACT = {
   competencyIds: ['c-dl-tokenizer'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: SUBWORD_CONTRACT,
   capsules: SUBWORD_CAPSULES,
   shapeError: 'Subword-Parameter verletzen die Kapselform',
 });
 
-export const subwordCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const subwordCorrectText = FAMILY_IMPL.correctText;
-export const genSubwordCapsule = FAMILY_IMPL.genCapsule;
-export const generateSubwordFamily = FAMILY_IMPL.generate;
-export const solveSubwordFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

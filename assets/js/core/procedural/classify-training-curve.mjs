@@ -34,15 +34,9 @@ export const TRAINING_CURVE_CONTRACT = {
   competencyIds: ['c-dl-training'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: TRAINING_CURVE_CONTRACT,
   capsules: TRAINING_CURVE_CAPSULES,
   shapeError: 'Training-Curve-Parameter verletzen die Kapselform',
 });
 
-export const trainingCurveCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const trainingCurveCorrectText = FAMILY_IMPL.correctText;
-export const genTrainingCurveCapsule = FAMILY_IMPL.genCapsule;
-export const generateTrainingCurveFamily = FAMILY_IMPL.generate;
-export const solveTrainingCurveFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

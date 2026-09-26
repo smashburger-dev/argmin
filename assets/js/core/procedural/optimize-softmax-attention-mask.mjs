@@ -267,7 +267,7 @@ export const ATTN_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: ATTN_CONTRACT,
   cases: ATTN_CASES,
   shapeError: 'Softmax-Attention-Parameter verletzen die Kapselform',
@@ -276,8 +276,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const attnCaseOk = FAMILY.caseOk;
-export const genAttnCase = FAMILY.genCase;
-export const solveAttnFamily = FAMILY.solve;
-export const generateAttnFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

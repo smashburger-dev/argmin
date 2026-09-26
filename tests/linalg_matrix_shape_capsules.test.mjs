@@ -1,6 +1,6 @@
 // Familie classify-matrix-shape: Kapsel-Gates (single-choice-adaptiert).
 // Run: node --test tests/linalg_matrix_shape_capsules.test.mjs
-// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// Gemeinsame Gates leben in tests/helpers/kit_suites.mjs — die Kit-Produkte
 // (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
 // foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
 // linalg_generators.mjs. Kit-Konvention: correctText({ dimsA, dimsB }, capsule).
@@ -10,16 +10,16 @@ import {
   MATRIX_SHAPE_CAPSULES,
   matrixShapeOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import {
-  MATRIX_SHAPE_CONTRACT,
-  matrixShapeCapsuleOk,
-  matrixShapeCorrectText,
-  genMatrixShapeCapsule,
-  generateMatrixShapeFamily,
-  solveMatrixShapeFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
-import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
+import { MATRIX_SHAPE_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-matrix-shape');
+const matrixShapeCapsuleOk = spec.kit.capsuleOk;
+const matrixShapeCorrectText = spec.kit.correctText;
+const genMatrixShapeCapsule = spec.kit.genCapsule;
+const generateMatrixShapeFamily = spec.generate;
+const solveMatrixShapeFamily = spec.solve;
+
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit Art-Nachweis und dims-Bereich. Regel: Kapsel
@@ -121,21 +121,3 @@ test('Kapseltabelle: Arten, Bereiche und Fallbindung', () => {
   assert.deepEqual(MATRIX_SHAPE_CAPSULES.stretch, { kind: 'vector', inner: [2, 12], caseId: 'shape-vector-matmul-chain' });
 });
 
-linalgChoiceCapsuleSuite('classify-matrix-shape', {
-  capsules: MATRIX_SHAPE_CAPSULES,
-  contract: MATRIX_SHAPE_CONTRACT,
-  capsuleOk: matrixShapeCapsuleOk,
-  correctText: matrixShapeCorrectText,
-  genCapsule: genMatrixShapeCapsule,
-  generate: generateMatrixShapeFamily,
-  solve: solveMatrixShapeFamily,
-  registry: LINALG_FAMILIES,
-}, CASE_FOR, {
-  difficultyProfiles: ['intro', 'core', 'stretch'],
-  checkParameters: (generated, capsule, label) => {
-    for (const dims of [generated.parameters.dimsA, generated.parameters.dimsB]) {
-      assert.equal(dims.length, 2, `${label}: Tupel`);
-      for (const value of dims) assert.ok(Number.isInteger(value) && value >= 1, `${label}: ganzzahlig`);
-    }
-  },
-});

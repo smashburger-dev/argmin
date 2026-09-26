@@ -28,15 +28,9 @@ export const SILENT_FALLBACK_CONTRACT = {
   competencyIds: ['c-capstone-pipeline'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: SILENT_FALLBACK_CONTRACT,
   capsules: SILENT_FALLBACK_CAPSULES,
   shapeError: 'Silent-Fallback-Parameter verletzen die Kapselform',
 });
 
-export const silentFallbackCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const silentFallbackCorrectText = FAMILY_IMPL.correctText;
-export const genSilentFallbackCapsule = FAMILY_IMPL.genCapsule;
-export const generateSilentFallbackFamily = FAMILY_IMPL.generate;
-export const solveSilentFallbackFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

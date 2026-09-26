@@ -322,7 +322,7 @@ export const PRIM_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: PRIM_CONTRACT,
   cases: PRIM_CASES,
   shapeError: 'Trainings-Primitiv-Parameter verletzen die Kapselform',
@@ -331,8 +331,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const primCaseOk = FAMILY.caseOk;
-export const genPrimCase = FAMILY.genCase;
-export const solvePrimFamily = FAMILY.solve;
-export const generatePrimFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

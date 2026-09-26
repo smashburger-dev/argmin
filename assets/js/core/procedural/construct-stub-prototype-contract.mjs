@@ -226,7 +226,7 @@ export const STUB_CONTRACT = {
   competencyIds: ['c-genai-prototype', 'c-python-functions'],
 };
 
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: STUB_CONTRACT,
   cases: STUB_CASES,
   shapeError: 'Stub-Prototyp-Parameter verletzen die Kapselform',
@@ -237,8 +237,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const stubCaseOk = FAMILY.caseOk;
-export const genStubCase = FAMILY.genCase;
-export const solveStubFamily = FAMILY.solve;
-export const generateStubFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

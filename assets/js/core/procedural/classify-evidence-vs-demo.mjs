@@ -29,16 +29,10 @@ export const EVIDENCE_DEMO_CONTRACT = {
   competencyIds: ['c-capstone-pipeline'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: EVIDENCE_DEMO_CONTRACT,
   capsules: EVIDENCE_DEMO_CAPSULES,
   shapeError: 'Evidenz-Demo-Parameter verletzen die Kapselform',
   keyBy: 'caseId',
 });
 
-export const evidenceDemoCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const evidenceDemoCorrectText = FAMILY_IMPL.correctText;
-export const genEvidenceDemoCapsule = FAMILY_IMPL.genCapsule;
-export const generateEvidenceDemoFamily = FAMILY_IMPL.generate;
-export const solveEvidenceDemoFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

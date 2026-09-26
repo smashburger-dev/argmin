@@ -4,7 +4,7 @@
 // the full contract.
 
 import {
-  makeChoiceCapsuleFamily,
+  makeChoiceFamily,
 } from './generator_draw_kit.mjs';
 import { makeSolvedFamily } from './solved_family_kit.mjs';
 import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
@@ -864,8 +864,6 @@ const COUNT_REMAINING_ROWS = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['count-remaining-rows-cleaning-rule'].solve,
 });
-export const generateCountRemainingRowsFamily = COUNT_REMAINING_ROWS.generate;
-export const solveCountRemainingRows = COUNT_REMAINING_ROWS.solve;
 
 export const FORMULA_RATIO_PERCENT_CONTRACT = {
   familyId: 'formula-ratio-percent-metric',
@@ -890,8 +888,6 @@ const FORMULA_RATIO_PERCENT = makeSolvedFamily({
     : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['formula-ratio-percent-metric'].solve,
 });
-export const generateFormulaRatioPercentMetricFamily = FORMULA_RATIO_PERCENT.generate;
-export const solveFormulaRatioPercentMetric = FORMULA_RATIO_PERCENT.solve;
 
 export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
   familyId: 'optimize-mse-gradient-closed-form',
@@ -916,8 +912,6 @@ const MSE_GRADIENT_CLOSED_FORM = makeSolvedFamily({
     : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].solve,
 });
-export const generateMseGradientClosedFormFamily = MSE_GRADIENT_CLOSED_FORM.generate;
-export const solveMseGradientClosedForm = MSE_GRADIENT_CLOSED_FORM.solve;
 
 export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
   familyId: 'aggregate-majority-rule-count',
@@ -938,8 +932,6 @@ const AGGREGATE_MAJORITY_RULE_COUNT = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['aggregate-majority-rule-count'].solve,
 });
-export const generateAggregateMajorityRuleCountFamily = AGGREGATE_MAJORITY_RULE_COUNT.generate;
-export const solveAggregateMajorityRuleCount = AGGREGATE_MAJORITY_RULE_COUNT.solve;
 
 export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
   familyId: 'formula-quadratic-error-metric',
@@ -960,8 +952,6 @@ const FORMULA_QUADRATIC_ERROR = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['formula-quadratic-error-metric'].solve,
 });
-export const generateFormulaQuadraticErrorMetricFamily = FORMULA_QUADRATIC_ERROR.generate;
-export const solveFormulaQuadraticErrorMetric = FORMULA_QUADRATIC_ERROR.solve;
 
 export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
   familyId: 'aggregate-confusion-metric',
@@ -987,8 +977,6 @@ const AGGREGATE_CONFUSION_METRIC = makeSolvedFamily({
     : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['aggregate-confusion-metric'].solve,
 });
-export const generateAggregateConfusionMetricFamily = AGGREGATE_CONFUSION_METRIC.generate;
-export const solveAggregateConfusionMetric = AGGREGATE_CONFUSION_METRIC.solve;
 
 export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
   familyId: 'formula-metric-spread-range',
@@ -1009,8 +997,6 @@ const FORMULA_METRIC_SPREAD_RANGE = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['formula-metric-spread-range'].solve,
 });
-export const generateFormulaMetricSpreadRangeFamily = FORMULA_METRIC_SPREAD_RANGE.generate;
-export const solveFormulaMetricSpreadRange = FORMULA_METRIC_SPREAD_RANGE.solve;
 
 export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
   familyId: 'formula-count-from-construction',
@@ -1038,8 +1024,6 @@ const FORMULA_COUNT_FROM_CONSTRUCTION = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['formula-count-from-construction'].solve,
 });
-export const generateFormulaCountFromConstructionFamily = FORMULA_COUNT_FROM_CONSTRUCTION.generate;
-export const solveFormulaCountFromConstruction = FORMULA_COUNT_FROM_CONSTRUCTION.solve;
 
 export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
   familyId: 'formula-stat-from-table',
@@ -1061,8 +1045,6 @@ const FORMULA_STAT_FROM_TABLE = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['formula-stat-from-table'].solve,
 });
-export const generateFormulaStatFromTableFamily = FORMULA_STAT_FROM_TABLE.generate;
-export const solveFormulaStatFromTable = FORMULA_STAT_FROM_TABLE.solve;
 
 export const AGGREGATE_TOPK_RELEVANCE_CONTRACT = {
   familyId: 'aggregate-topk-relevance-arithmetic',
@@ -1083,8 +1065,6 @@ const AGGREGATE_TOPK_RELEVANCE = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve,
 });
-export const generateAggregateTopkRelevanceArithmeticFamily = AGGREGATE_TOPK_RELEVANCE.generate;
-export const solveAggregateTopkRelevanceArithmetic = AGGREGATE_TOPK_RELEVANCE.solve;
 
 export const VALIDATE_GOALSHIFT_CONTRACT = {
   familyId: 'validate-goalshift-flag-rules',
@@ -1109,8 +1089,6 @@ const VALIDATE_GOALSHIFT = makeSolvedFamily({
     : toIntegerExpected(drawn)),
   solve: FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve,
 });
-export const generateValidateGoalshiftFlagRulesFamily = VALIDATE_GOALSHIFT.generate;
-export const solveValidateGoalshiftFlagRules = VALIDATE_GOALSHIFT.solve;
 
 export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
   familyId: 'optimize-backprop-path-sum',
@@ -1131,8 +1109,6 @@ const OPTIMIZE_BACKPROP_PATH_SUM = makeSolvedFamily({
   toExpected: toIntegerExpected,
   solve: FAMILY_DEFINITIONS['optimize-backprop-path-sum'].solve,
 });
-export const generateOptimizeBackpropPathSumFamily = OPTIMIZE_BACKPROP_PATH_SUM.generate;
-export const solveOptimizeBackpropPathSum = OPTIMIZE_BACKPROP_PATH_SUM.solve;
 
 // --- classify-sigmoid-regime ----------------------------------------------------
 // Geseedet über genSigmoidCapsule: Logit-/Odds-Zahlenbank plus Rotation, ein
@@ -1157,7 +1133,7 @@ export const SIGMOID_REGIME_CONTRACT = {
   competencyIds: ['c-ml-logistic'],
 };
 
-const SIGMOID = makeChoiceCapsuleFamily({
+const SIGMOID = makeChoiceFamily({
   contract: SIGMOID_REGIME_CONTRACT,
   capsules: SIGMOID_CAPSULES,
   shapeError: 'Parameter verletzen die Kapselform',
@@ -1167,11 +1143,6 @@ const SIGMOID = makeChoiceCapsuleFamily({
   buildPrompt: sigmoidPrompt,
   buildSolution: sigmoidSolution,
 });
-export const sigmoidCapsuleOk = SIGMOID.capsuleOk;
-export const sigmoidCorrectText = SIGMOID.correctText;
-export const genSigmoidCapsule = SIGMOID.genCapsule;
-export const solveSigmoidRegimeFamily = SIGMOID.solve;
-export const generateSigmoidRegimeFamily = SIGMOID.generate;
 
 // --- classify-benchmark-reading -------------------------------------------------
 // Geseedet über genBenchmarkCapsule: zwei Zahlen-Templates plus eine
@@ -1196,7 +1167,7 @@ export const BENCHMARK_READING_CONTRACT = {
   competencyIds: ['c-dl-papers'],
 };
 
-const BENCHMARK = makeChoiceCapsuleFamily({
+const BENCHMARK = makeChoiceFamily({
   contract: BENCHMARK_READING_CONTRACT,
   capsules: BENCHMARK_CAPSULES,
   shapeError: 'Benchmark-Befund verletzt die Kapselform',
@@ -1206,11 +1177,6 @@ const BENCHMARK = makeChoiceCapsuleFamily({
   buildPrompt: benchmarkPrompt,
   buildSolution: benchmarkSolution,
 });
-export const benchmarkCapsuleOk = BENCHMARK.capsuleOk;
-export const benchmarkCorrectText = BENCHMARK.correctText;
-export const genBenchmarkCapsule = BENCHMARK.genCapsule;
-export const solveBenchmarkReadingFamily = BENCHMARK.solve;
-export const generateBenchmarkReadingFamily = BENCHMARK.generate;
 
 // --- classify-lora-tradeoff -----------------------------------------------------
 // Geseedet ueber genLoraCapsule: ein Begriffs-Template plus zwei
@@ -1235,7 +1201,7 @@ export const LORA_TRADEOFF_CONTRACT = {
   competencyIds: ['c-dl-finetuning'],
 };
 
-const LORA = makeChoiceCapsuleFamily({
+const LORA = makeChoiceFamily({
   contract: LORA_TRADEOFF_CONTRACT,
   capsules: LORA_CAPSULES,
   shapeError: 'LoRA-Befund verletzt die Kapselform',
@@ -1245,11 +1211,6 @@ const LORA = makeChoiceCapsuleFamily({
   buildPrompt: loraPrompt,
   buildSolution: loraSolution,
 });
-export const loraCapsuleOk = LORA.capsuleOk;
-export const loraCorrectText = LORA.correctText;
-export const genLoraCapsule = LORA.genCapsule;
-export const solveLoraTradeoffFamily = LORA.solve;
-export const generateLoraTradeoffFamily = LORA.generate;
 
 // --- classify-missingness -------------------------------------------------------
 // Geseedet ueber genMissingnessCapsule: Slot-Bank (Szenarien mit thema/ziel-
@@ -1276,7 +1237,7 @@ export const MISSINGNESS_CONTRACT = {
   competencyIds: ['c-pandas-cleaning'],
 };
 
-const MISSINGNESS = makeChoiceCapsuleFamily({
+const MISSINGNESS = makeChoiceFamily({
   contract: MISSINGNESS_CONTRACT,
   capsules: MISSINGNESS_CAPSULES,
   shapeError: 'Parameter verletzen die Kapselform',
@@ -1286,11 +1247,6 @@ const MISSINGNESS = makeChoiceCapsuleFamily({
   buildPrompt: missingnessPrompt,
   buildSolution: missingnessSolution,
 });
-export const missingnessCapsuleOk = MISSINGNESS.capsuleOk;
-export const missingnessCorrectText = MISSINGNESS.correctText;
-export const genMissingnessCapsule = MISSINGNESS.genCapsule;
-export const solveMissingnessFamily = MISSINGNESS.solve;
-export const generateMissingnessFamily = MISSINGNESS.generate;
 
 // --- classify-confounding -------------------------------------------------------
 // Geseedet über genConfoundingCapsule: Szenario-Bank (confounder-Slot) plus
@@ -1316,7 +1272,7 @@ export const CONFOUNDING_CONTRACT = {
   competencyIds: ['c-eda-viz'],
 };
 
-const CONFOUNDING = makeChoiceCapsuleFamily({
+const CONFOUNDING = makeChoiceFamily({
   contract: CONFOUNDING_CONTRACT,
   capsules: CONFOUNDING_CAPSULES,
   shapeError: 'Parameter verletzen die Kapselform',
@@ -1326,11 +1282,6 @@ const CONFOUNDING = makeChoiceCapsuleFamily({
   buildPrompt: confoundingPrompt,
   buildSolution: confoundingSolution,
 });
-export const confoundingCapsuleOk = CONFOUNDING.capsuleOk;
-export const confoundingCorrectText = CONFOUNDING.correctText;
-export const genConfoundingCapsule = CONFOUNDING.genCapsule;
-export const solveConfoundingFamily = CONFOUNDING.solve;
-export const generateConfoundingFamily = CONFOUNDING.generate;
 
 // --- classify-task-type ---------------------------------------------------------
 // Geseedet über genTaskTypeCapsule: Szenario-Bank (scenario/target-Slots) plus
@@ -1356,7 +1307,7 @@ export const TASK_TYPE_CONTRACT = {
   competencyIds: ['c-ml-baseline'],
 };
 
-const TASK_TYPE = makeChoiceCapsuleFamily({
+const TASK_TYPE = makeChoiceFamily({
   contract: TASK_TYPE_CONTRACT,
   capsules: TASK_TYPE_CAPSULES,
   shapeError: 'Parameter verletzen die Kapselform',
@@ -1366,11 +1317,6 @@ const TASK_TYPE = makeChoiceCapsuleFamily({
   buildPrompt: taskTypePrompt,
   buildSolution: taskTypeSolution,
 });
-export const taskTypeCapsuleOk = TASK_TYPE.capsuleOk;
-export const taskTypeCorrectText = TASK_TYPE.correctText;
-export const genTaskTypeCapsule = TASK_TYPE.genCapsule;
-export const solveTaskTypeFamily = TASK_TYPE.solve;
-export const generateTaskTypeFamily = TASK_TYPE.generate;
 
 // --- classify-error-drift -------------------------------------------------------
 // Geseedet über genErrorDriftCapsule: Szenario-Bank plus Rotation, korrekter
@@ -1399,7 +1345,7 @@ export const ERROR_DRIFT_CONTRACT = {
   competencyIds: ['c-ml-erroranalysis'],
 };
 
-const ERROR_DRIFT = makeChoiceCapsuleFamily({
+const ERROR_DRIFT = makeChoiceFamily({
   contract: ERROR_DRIFT_CONTRACT,
   capsules: ERROR_DRIFT_CAPSULES,
   shapeError: 'Parameter verletzen die Kapselform',
@@ -1409,11 +1355,6 @@ const ERROR_DRIFT = makeChoiceCapsuleFamily({
   buildPrompt: errorDriftPrompt,
   buildSolution: errorDriftSolution,
 });
-export const errorDriftCapsuleOk = ERROR_DRIFT.capsuleOk;
-export const errorDriftCorrectText = ERROR_DRIFT.correctText;
-export const genErrorDriftCapsule = ERROR_DRIFT.genCapsule;
-export const solveErrorDriftFamily = ERROR_DRIFT.solve;
-export const generateErrorDriftFamily = ERROR_DRIFT.generate;
 
 // --- classify-svm-margin ------------------------------------------------------
 // Geseedet über genSvmMarginCapsule: Zahlenbanken mit konsistenten Tupeln
@@ -1440,7 +1381,7 @@ export const SVM_MARGIN_CONTRACT = {
   competencyIds: ['c-ml-svm-pca'],
 };
 
-const SVM_MARGIN = makeChoiceCapsuleFamily({
+const SVM_MARGIN = makeChoiceFamily({
   contract: SVM_MARGIN_CONTRACT,
   capsules: SVM_MARGIN_CAPSULES,
   shapeError: 'SVM-Margin-Befund verletzt die Kapselform',
@@ -1450,31 +1391,26 @@ const SVM_MARGIN = makeChoiceCapsuleFamily({
   buildPrompt: svmMarginPrompt,
   buildSolution: svmMarginSolution,
 });
-export const svmMarginCapsuleOk = SVM_MARGIN.capsuleOk;
-export const svmMarginCorrectText = SVM_MARGIN.correctText;
-export const genSvmMarginCapsule = SVM_MARGIN.genCapsule;
-export const solveSvmMarginFamily = SVM_MARGIN.solve;
-export const generateSvmMarginFamily = SVM_MARGIN.generate;
 
 export const DATA_ML_FAMILY_SPECS = [
-  COUNT_REMAINING_ROWS.spec,
-  FORMULA_RATIO_PERCENT.spec,
-  MSE_GRADIENT_CLOSED_FORM.spec,
-  AGGREGATE_MAJORITY_RULE_COUNT.spec,
-  FORMULA_QUADRATIC_ERROR.spec,
-  AGGREGATE_CONFUSION_METRIC.spec,
-  FORMULA_METRIC_SPREAD_RANGE.spec,
-  FORMULA_COUNT_FROM_CONSTRUCTION.spec,
-  FORMULA_STAT_FROM_TABLE.spec,
-  OPTIMIZE_BACKPROP_PATH_SUM.spec,
-  AGGREGATE_TOPK_RELEVANCE.spec,
-  VALIDATE_GOALSHIFT.spec,
-  SIGMOID.spec,
-  BENCHMARK.spec,
-  LORA.spec,
-  MISSINGNESS.spec,
-  CONFOUNDING.spec,
-  TASK_TYPE.spec,
-  ERROR_DRIFT.spec,
-  SVM_MARGIN.spec,
+  COUNT_REMAINING_ROWS,
+  FORMULA_RATIO_PERCENT,
+  MSE_GRADIENT_CLOSED_FORM,
+  AGGREGATE_MAJORITY_RULE_COUNT,
+  FORMULA_QUADRATIC_ERROR,
+  AGGREGATE_CONFUSION_METRIC,
+  FORMULA_METRIC_SPREAD_RANGE,
+  FORMULA_COUNT_FROM_CONSTRUCTION,
+  FORMULA_STAT_FROM_TABLE,
+  OPTIMIZE_BACKPROP_PATH_SUM,
+  AGGREGATE_TOPK_RELEVANCE,
+  VALIDATE_GOALSHIFT,
+  SIGMOID,
+  BENCHMARK,
+  LORA,
+  MISSINGNESS,
+  CONFOUNDING,
+  TASK_TYPE,
+  ERROR_DRIFT,
+  SVM_MARGIN,
 ];

@@ -35,15 +35,9 @@ export const BACKPROP_PATH_CONTRACT = {
   competencyIds: ['c-dl-autograd'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: BACKPROP_PATH_CONTRACT,
   capsules: BACKPROP_PATH_CAPSULES,
   shapeError: 'Backprop-Pfad-Parameter verletzen die Kapselform',
 });
 
-export const backpropPathCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const backpropPathCorrectText = FAMILY_IMPL.correctText;
-export const genBackpropPathCapsule = FAMILY_IMPL.genCapsule;
-export const generateBackpropPathFamily = FAMILY_IMPL.generate;
-export const solveBackpropPathFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

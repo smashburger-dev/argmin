@@ -8,20 +8,15 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/optimize-sgd-step-pure-update.mjs';
-import {
-  SGD_CASES,
-  SGD_CONTRACT,
-  genSgdCase,
-} from '../assets/js/core/procedural/optimize-sgd-step-pure-update.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { SGD_CASES, SGD_CONTRACT } from '../assets/js/core/procedural/optimize-sgd-step-pure-update.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genSgdCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['pure-train-step', 'sgd-momentum-step'];
 
-codeCapsuleSuite('optimize-sgd-step-pure-update', mod, [
-  { caseId: 'pure-train-step', difficulty: 'challenge' },
-  { caseId: 'sgd-momentum-step', difficulty: 'challenge' },
-], { difficultyProfiles: ['challenge', 'core', 'stretch'] });
 
 test('anchor extras: difficulty profiles stay pinned to the JSON cases', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/optimize-sgd-step-pure-update.json'), 'utf8'));

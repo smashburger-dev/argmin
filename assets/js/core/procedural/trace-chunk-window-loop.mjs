@@ -115,14 +115,9 @@ export const CHUNK_CONTRACT = {
   competencyIds: ['c-genai-rag', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
   contract: CHUNK_CONTRACT,
   cases: CHUNK_CASES,
   shapeError: 'trace-chunk-window-loop: Parameter verletzen die Kapselform',
 });
 
-export const chunkCaseOk = FAMILY.caseOk;
-export const genChunkCase = FAMILY.genCase;
-export const solveChunkFamily = FAMILY.solve;
-export const generateChunkFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

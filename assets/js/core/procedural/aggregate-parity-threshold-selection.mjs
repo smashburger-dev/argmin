@@ -174,7 +174,7 @@ export const PARITY_THRESHOLD_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: PARITY_THRESHOLD_CONTRACT,
   cases: PARITY_THRESHOLD_CASES,
   shapeError: 'Paritaets-Schwellen-Parameter verletzen die Kapselform',
@@ -182,8 +182,3 @@ const FAMILY = makeCaseFamily({
     `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
 });
 
-export const parityThresholdCaseOk = FAMILY.caseOk;
-export const genParityThresholdCase = FAMILY.genCase;
-export const solveParityThresholdFamily = FAMILY.solve;
-export const generateParityThresholdFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

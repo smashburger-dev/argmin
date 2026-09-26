@@ -5,15 +5,14 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  FAMILY_SPEC,
-  RIDGE_LASSO_CASES,
-  RIDGE_LASSO_CONTRACT,
-  genRidgeLassoCase,
-  generateRidgeLassoFamily,
-  solveRidgeLassoFamily,
-  ridgeLassoCaseOk,
-} from '../assets/js/core/procedural/formula-ridge-lasso-closed-form.mjs';
+import { FAMILY_SPEC, RIDGE_LASSO_CASES, RIDGE_LASSO_CONTRACT } from '../assets/js/core/procedural/formula-ridge-lasso-closed-form.mjs';
+
+const spec = FAMILY_SPEC;
+const genRidgeLassoCase = spec.kit.genCase;
+const generateRidgeLassoFamily = spec.generate;
+const solveRidgeLassoFamily = spec.solve;
+const ridgeLassoCaseOk = spec.kit.caseOk;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['ridge-normal-equation', 'lasso-soft-threshold'];

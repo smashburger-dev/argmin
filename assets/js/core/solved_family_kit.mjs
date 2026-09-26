@@ -1,21 +1,10 @@
 // Solved family kit: shared factories for families whose solve() recomputes
-// the answer from parameters — the capsule-based single-choice families and
-// the numeric drawFamilyInstance wrappers that used to be hand-copied across
-// foundations_linalg_families.mjs and data_ml_families.mjs. Mirrors
-// makeChoiceCapsuleFamily (generator_draw_kit.mjs) with the two linalg
-// deviations kept explicit as options: per-capsule choice ids (several kinds
-// carry semantic ids instead of a/b/c/d) and per-case mastery/competency
-// meta merged into the generated instance (the W05 base-case overrides).
-//
-// Choice hooks (same contract as makeChoiceCapsuleFamily):
-//   drawParameters(r, capsule) -> parameters
-//   buildOptions(parameters, capsule) -> [correct, wrong1, wrong2, wrong3]
-//   validate(parameters, capsule) -> boolean  (capsule shape incl. bound)
-//   buildPrompt/buildSolution(parameters, capsule) -> string
-//   choiceIds(capsule) -> choice id list (default ['a','b','c','d'])
-//   caseMeta: { [caseId]: { masteryEligible, competencyIds } } merged into
-//     the generated instance after fullSolution (per-case contract data)
-//   shapeError: string, or (capsule) -> string for kind-dependent messages
+// the answer from parameters — the numeric drawFamilyInstance wrappers that
+// used to be hand-copied across foundations_linalg_families.mjs and
+// data_ml_families.mjs. The single-choice surface moved to the unified
+// makeChoiceFamily in generator_draw_kit.mjs (bank and parameterized mode,
+// choiceIds/caseMeta options included). Both factories return the finished
+// spec (graderId/activityType defaults + contract + generate/solve).
 //
 // Numeric hooks:
 //   draw(subseed, capsule) -> { parameters, expected, prompt, fullSolution }
@@ -28,85 +17,8 @@
 //   those caseIds inside solve (optional — a family without it solves every
 //   parameter set through solveSeeded).
 
-import {
-  rng, variantCaseIndex, buildRotatedChoices, drawFamilyInstance, CHOICE_IDS,
-} from './generator_draw_kit.mjs';
+import { drawFamilyInstance } from './generator_draw_kit.mjs';
 import { staticBodyInstance, staticCaseBody, staticVariantInstance } from '../domain/family_registry.mjs';
-
-/** Parametrized choice-capsule family: the seed draw yields computed
- *  parameters (not a bank key), options/prompt/solution are built from the
- *  parameters and the correct position rotates. The family supplies the
- *  hooks — the kit supplies capsuleOk/correctText/genCapsule/generate/solve.
- *  Capsules are keyed by difficulty; each capsule's caseId binds its case. */
-export function makeLinalgChoiceCapsuleFamily({
-  contract, capsules, shapeError,
-  drawParameters, buildOptions, validate, buildPrompt, buildSolution,
-  choiceIds = () => CHOICE_IDS, caseMeta = {},
-}) {
-  const fail = (capsule) => new Error(typeof shapeError === 'function' ? shapeError(capsule) : shapeError);
-
-  const capsuleOk = (parameters, capsule) => {
-    try {
-      if (!parameters || typeof parameters !== 'object') return false;
-      return validate(parameters, capsule);
-    } catch { return false; }
-  };
-
-  const correctText = (parameters, capsule) => {
-    if (!capsuleOk(parameters, capsule)) throw fail(capsule);
-    return buildOptions(parameters, capsule)[0];
-  };
-
-  const genCapsule = (seed, capsule) => {
-    const r = rng(seed);
-    const parameters = drawParameters(r, capsule);
-    const options = buildOptions(parameters, capsule);
-    const rotation = variantCaseIndex(seed, options.length);
-    const ids = choiceIds(capsule);
-    return {
-      parameters,
-      expected: {},
-      choices: buildRotatedChoices(options, rotation, ids),
-      prompt: buildPrompt(parameters, capsule),
-      fullSolution: buildSolution(parameters, capsule),
-    };
-  };
-
-  const generate = ({ seed, caseId, difficulty }) => {
-    const capsule = capsules[difficulty];
-    if (!capsule || capsule.caseId !== caseId) {
-      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-    }
-    const drawn = drawFamilyInstance((subseed) => genCapsule(subseed, capsule), {
-      seed,
-      caseId,
-      difficulty,
-      wantShape: (instance) => capsuleOk(instance.parameters, capsule),
-      profileAccepts: (parameters) => capsuleOk(parameters, capsule),
-      profiles: contract.difficultyProfiles,
-    });
-    const meta = caseMeta[caseId];
-    return {
-      parameters: { caseId, difficulty, ...drawn.parameters },
-      expected: { ...drawn.expected },
-      choices: drawn.choices,
-      prompt: drawn.prompt,
-      fullSolution: drawn.fullSolution,
-      ...(meta ? { masteryEligible: meta.masteryEligible, competencyIds: [...meta.competencyIds] } : {}),
-    };
-  };
-
-  const solve = (parameters) => {
-    const capsule = Object.values(capsules).find((item) => item.caseId === parameters?.caseId);
-    if (!capsule) throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
-    return { correctText: correctText(parameters, capsule) };
-  };
-
-  return {
-    capsuleOk, correctText, genCapsule, generate, solve,
-    spec: { graderId: 'deterministic', activityType: 'single-choice', ...contract, generate, solve },
-  };
-}
 
 /** Numeric family: static cases dispatch to the registered bodies, the
  *  seeded case draws via drawFamilyInstance and the solver recomputes the
@@ -116,7 +28,7 @@ export function makeLinalgChoiceCapsuleFamily({
  *  single drawn case. Extra capsules may share a profile through the
  *  '<profile>-<suffix>' key convention ('challenge-4x4' resolves on
  *  'challenge'). `caseMeta` merges per-case { masteryEligible,
- *  competencyIds } into the instance, same as makeLinalgChoiceCapsuleFamily. */
+ *  competencyIds } into the instance, same as makeChoiceFamily. */
 export function makeNumericFamily({
   contract,
   staticCaseIds = [],
@@ -174,7 +86,7 @@ export function makeNumericFamily({
     return solveSeeded(parameters);
   };
 
-  return { generate, solve, spec: { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve } };
+  return { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve };
 }
 
 /** Solved family over a per-caseId definition map (the data_ml pattern):
@@ -233,5 +145,5 @@ export function makeSolvedFamily({
     };
   };
 
-  return { generate, solve, spec: { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve } };
+  return { graderId: 'deterministic', activityType: 'numeric', ...contract, generate, solve };
 }

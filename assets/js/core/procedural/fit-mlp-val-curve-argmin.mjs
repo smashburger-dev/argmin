@@ -212,7 +212,7 @@ export const VAL_CURVE_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: VAL_CURVE_CONTRACT,
   cases: VAL_CURVE_CASES,
   shapeError: 'Val-Curve-Parameter verletzen die Kapselform',
@@ -221,8 +221,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const valCurveCaseOk = FAMILY.caseOk;
-export const genValCurveCase = FAMILY.genCase;
-export const solveValCurveFamily = FAMILY.solve;
-export const generateValCurveFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

@@ -277,7 +277,7 @@ export const ATTENTION_MASK_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: ATTENTION_MASK_CONTRACT,
   cases: ATTENTION_MASK_CASES,
   shapeError: 'Attention-Mask-Parameter verletzen die Kapselform',
@@ -286,8 +286,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const attentionMaskCaseOk = FAMILY.caseOk;
-export const genAttentionMaskCase = FAMILY.genCase;
-export const solveAttentionMaskFamily = FAMILY.solve;
-export const generateAttentionMaskFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

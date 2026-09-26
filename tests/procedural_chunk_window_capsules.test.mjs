@@ -6,7 +6,11 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/trace-chunk-window-loop.mjs';
-import { predictCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genChunkCase = spec.kit.genCase;
+const solveChunkFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CHUNK_DEF = mod.CHUNK_CASES['chunk-window-loop'];
@@ -21,9 +25,6 @@ const refParts = (text, size, overlap) => {
   return parts;
 };
 
-predictCapsuleSuite('trace-chunk-window-loop', mod, [
-  { caseId: 'chunk-window-loop', difficulty: 'core' },
-], { familyGroup: 'trace-state', difficultyProfiles: ['core'] });
 
 test('anchor extras: expected form, base solution and oracle self-consistency', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/trace-chunk-window-loop.json'), 'utf8'));
@@ -36,12 +37,12 @@ test('anchor extras: expected form, base solution and oracle self-consistency', 
 
 test('expected output: solver recomputes the prediction deterministically', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genChunkCase(seed, 'chunk-window-loop', CHUNK_DEF);
+    const generated = genChunkCase(seed, 'chunk-window-loop', CHUNK_DEF);
     const parts = refParts(generated.parameters.text, generated.parameters.size, generated.parameters.overlap);
     const want = `${parts.length}\n${parts.at(-1)}`;
     assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
     assert.equal(generated.expected.output, want, `${seed}: expected output`);
-    assert.deepEqual(mod.solveChunkFamily(generated.parameters), { output: want }, `${seed}: solve output`);
+    assert.deepEqual(solveChunkFamily(generated.parameters), { output: want }, `${seed}: solve output`);
     assert.deepEqual(mod.chunkParts(generated.parameters.text, generated.parameters.size, generated.parameters.overlap), parts);
     // the last window is a possibly truncated suffix, count line is an int
     const [countLine, lastLine] = generated.expected.output.split('\n');
@@ -59,7 +60,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genChunkCase(seed, 'chunk-window-loop', CHUNK_DEF);
+    const generated = genChunkCase(seed, 'chunk-window-loop', CHUNK_DEF);
     const { text, size, overlap } = generated.parameters;
     assert.match(text, /^[a-z]{6,12}$/, `text shape: ${text}`);
     for (let i = 1; i < text.length; i += 1) {
@@ -80,7 +81,7 @@ test('family extras: contract fields and broken-parameter error path', () => {
     { caseId: 'chunk-window-loop', propertyTest: false },
   ]);
   assert.throws(
-    () => mod.solveChunkFamily({ caseId: 'chunk-window-loop', text: '!!!!', size: 4, overlap: 2, snippet: 'x' }),
+    () => solveChunkFamily({ caseId: 'chunk-window-loop', text: '!!!!', size: 4, overlap: 2, snippet: 'x' }),
     /Kapselform/,
   );
 });

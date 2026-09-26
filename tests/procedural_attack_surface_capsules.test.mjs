@@ -6,13 +6,9 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/classify-attack-surface.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-choiceCapsuleSuite('classify-attack-surface', mod, [
-  { caseId: 'attack-surface-taxonomy', difficulty: 'intro' },
-], { difficultyProfiles: ['intro'] });
 
 test('Familien-Extras: Bank-Korridor, Archetyp, Kompetenzen, Fallkörper-Größe', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/classify-attack-surface.json'), 'utf8'));

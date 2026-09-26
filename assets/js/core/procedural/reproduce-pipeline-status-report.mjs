@@ -361,7 +361,7 @@ export const PIPELINE_CONTRACT = {
 
 // The renamed reference copy is emitted once at the top of the seeded block;
 // all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: PIPELINE_CONTRACT,
   cases: PIPELINE_CASES,
   shapeError: 'Pipeline-Status-Parameter verletzen die Kapselform',
@@ -372,8 +372,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const pipelineCaseOk = FAMILY.caseOk;
-export const genPipelineCase = FAMILY.genCase;
-export const solvePipelineFamily = FAMILY.solve;
-export const generatePipelineFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

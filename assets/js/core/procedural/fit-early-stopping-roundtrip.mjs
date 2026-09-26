@@ -307,7 +307,7 @@ export const EARLY_STOP_CONTRACT = {
 // every draw is concrete in the test string; early_stop_epoch is compared to
 // the embedded __ref_early_stop copy, the state roundtrip is asserted with
 // inline np.* expressions.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: EARLY_STOP_CONTRACT,
   cases: EARLY_STOP_CASES,
   shapeError: 'Early-Stopping-Parameter verletzen die Kapselform',
@@ -320,8 +320,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const earlyStopCaseOk = FAMILY.caseOk;
-export const genEarlyStopCase = FAMILY.genCase;
-export const solveEarlyStopFamily = FAMILY.solve;
-export const generateEarlyStopFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

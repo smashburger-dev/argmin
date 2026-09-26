@@ -6,16 +6,16 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/classify-hash-semantics.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const generateHashSemanticsFamily = spec.generate;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'hash-semantics-baseline';
 const CAPSULE = mod.HASH_SEMANTICS_CAPSULES.intro;
-const draw = (seed) => mod.generateHashSemanticsFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
+const draw = (seed) => generateHashSemanticsFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
 
-choiceCapsuleSuite('classify-hash-semantics', mod, [
-  { caseId: CASE_ID, difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
 
 test('Familien-Extras: Fallkörper-Größe, Schwierigkeitsprofil, Schlüssel-Id', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/classify-hash-semantics.json'), 'utf8'));

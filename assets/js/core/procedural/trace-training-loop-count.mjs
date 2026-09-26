@@ -295,14 +295,9 @@ export const LOOP_CONTRACT = {
   competencyIds: ['c-dl-training', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
   contract: LOOP_CONTRACT,
   cases: LOOP_CASES,
   shapeError: 'trace-training-loop-count: Parameter verletzen die Kapselform',
 });
 
-export const loopCaseOk = FAMILY.caseOk;
-export const genLoopCase = FAMILY.genCase;
-export const solveLoopFamily = FAMILY.solve;
-export const generateLoopFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

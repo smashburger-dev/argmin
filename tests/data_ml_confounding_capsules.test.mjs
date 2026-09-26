@@ -1,5 +1,5 @@
 // Familie classify-confounding: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_confounding_capsules.test.mjs
 import test from 'node:test';
@@ -10,37 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   CONFOUNDING_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  CONFOUNDING_CONTRACT,
-  genConfoundingCapsule,
-  confoundingCapsuleOk,
-  confoundingCorrectText,
-  generateConfoundingFamily,
-  solveConfoundingFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { CONFOUNDING_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-confounding');
+const genConfoundingCapsule = spec.kit.genCapsule;
+const confoundingCapsuleOk = spec.kit.capsuleOk;
+const confoundingCorrectText = spec.kit.correctText;
+const generateConfoundingFamily = spec.generate;
+const solveConfoundingFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  CONFOUNDING_CAPSULES,
-  confoundingCapsuleOk,
-  confoundingCorrectText,
-  genConfoundingCapsule,
-  CONFOUNDING_CONTRACT,
-  generateConfoundingFamily,
-  solveConfoundingFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-confounding'),
-};
 
-choiceCapsuleSuite('classify-confounding', mod, [
-  { caseId: 'temperature-confounder', difficulty: 'intro' },
-  { caseId: 'confounder-exercise-sleep', difficulty: 'core' },
-  { caseId: 'confounder-ad-spend-season', difficulty: 'stretch' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro', 'core', 'stretch'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schlüsseltext. Regel: Kapsel weiten,

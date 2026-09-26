@@ -29,16 +29,10 @@ export const FAIRNESS_AGG_CONTRACT = {
   competencyIds: ['c-ml-erroranalysis'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: FAIRNESS_AGG_CONTRACT,
   capsules: FAIRNESS_AGG_CAPSULES,
   shapeError: 'Fairness-Aggregations-Parameter verletzen die Kapselform',
   keyBy: 'caseId',
 });
 
-export const fairnessAggCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const fairnessAggCorrectText = FAMILY_IMPL.correctText;
-export const genFairnessAggCapsule = FAMILY_IMPL.genCapsule;
-export const generateFairnessAggFamily = FAMILY_IMPL.generate;
-export const solveFairnessAggFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

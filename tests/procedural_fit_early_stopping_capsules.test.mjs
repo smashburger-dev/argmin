@@ -5,25 +5,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/fit-early-stopping-roundtrip.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genEarlyStopCase = spec.kit.genCase;
+
 
 // The case defs do not carry `packages`; the JSON anchors pin it to ['numpy'],
 // so the suite surface adds it for the verbatim anchor check.
-const suiteMod = {
-  ...mod,
-  EARLY_STOP_CASES: Object.fromEntries(
-    Object.entries(mod.EARLY_STOP_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
-  ),
-};
 
-codeCapsuleSuite('fit-early-stopping-roundtrip', suiteMod, [
-  { caseId: 'early-stopping-roundtrip', difficulty: 'stretch' },
-  { caseId: 'early-stopping-min-delta-roundtrip', difficulty: 'stretch' },
-], { difficultyProfiles: ['stretch', 'core'] });
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const roundtrip = mod.genEarlyStopCase(seed, 'early-stopping-roundtrip', mod.EARLY_STOP_CASES['early-stopping-roundtrip']);
+    const roundtrip = genEarlyStopCase(seed, 'early-stopping-roundtrip', mod.EARLY_STOP_CASES['early-stopping-roundtrip']);
     assert.ok(roundtrip.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(roundtrip.parameters.tests.includes('__ref_early_stop'), `${seed}: ref copy embedded`);
     for (const entry of roundtrip.parameters.seedCases) {
@@ -36,7 +29,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.equal(entry.model.W2.length, entry.model.W1[0].length, 'W2 rows match hidden');
       assert.equal(entry.model.b2.length, 1, 'b2 scalar');
     }
-    const minDelta = mod.genEarlyStopCase(seed, 'early-stopping-min-delta-roundtrip', mod.EARLY_STOP_CASES['early-stopping-min-delta-roundtrip']);
+    const minDelta = genEarlyStopCase(seed, 'early-stopping-min-delta-roundtrip', mod.EARLY_STOP_CASES['early-stopping-min-delta-roundtrip']);
     assert.ok(minDelta.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(minDelta.parameters.tests.includes('__ref_early_stop'), `${seed}: ref copy embedded`);
     for (const entry of minDelta.parameters.seedCases) {

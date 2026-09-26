@@ -109,7 +109,7 @@ export const HASH_CONTRACT = {
 
 // The renamed reference copy is emitted once at the top of the seeded block;
 // all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: HASH_CONTRACT,
   cases: HASH_CASES,
   shapeError: 'Golden-Hash-Parameter verletzen die Kapselform',
@@ -120,8 +120,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const hashCaseOk = FAMILY.caseOk;
-export const genHashCase = FAMILY.genCase;
-export const solveHashFamily = FAMILY.solve;
-export const generateHashFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

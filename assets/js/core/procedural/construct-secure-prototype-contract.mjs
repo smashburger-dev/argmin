@@ -293,7 +293,7 @@ export const SECURE_CONTRACT = {
 };
 
 // Seeded block: renamed reference copy once, then the per-draw check lines.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: SECURE_CONTRACT,
   cases: SECURE_CASES,
   shapeError: 'Secure-Prototyp-Parameter verletzen die Kapselform',
@@ -304,8 +304,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const secureCaseOk = FAMILY.caseOk;
-export const genSecureCase = FAMILY.genCase;
-export const solveSecureFamily = FAMILY.solve;
-export const generateSecureFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

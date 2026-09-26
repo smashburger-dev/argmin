@@ -28,15 +28,9 @@ export const RAG_STAGE_CONTRACT = {
   competencyIds: ['c-genai-rag'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: RAG_STAGE_CONTRACT,
   capsules: RAG_STAGE_CAPSULES,
   shapeError: 'RAG-Stage-Parameter verletzen die Kapselform',
 });
 
-export const ragStageCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const ragStageCorrectText = FAMILY_IMPL.correctText;
-export const genRagStageCapsule = FAMILY_IMPL.genCapsule;
-export const generateRagStageFamily = FAMILY_IMPL.generate;
-export const solveRagStageFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

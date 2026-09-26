@@ -169,7 +169,7 @@ export const SPLIT_CONTRACT = {
 
 // The renamed reference copy (plus helpers) is emitted once at the top of
 // the seeded block; all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: SPLIT_CONTRACT,
   cases: SPLIT_CASES,
   shapeError: 'Split-Parameter verletzen die Kapselform',
@@ -181,8 +181,3 @@ const FAMILY = makeCaseFamily({
   },
 });
 
-export const splitCaseOk = FAMILY.caseOk;
-export const genSplitCase = FAMILY.genCase;
-export const solveSplitFamily = FAMILY.solve;
-export const generateSplitFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

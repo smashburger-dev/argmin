@@ -35,15 +35,9 @@ export const DECODING_STRATEGY_CONTRACT = {
   competencyIds: ['c-dl-inference'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: DECODING_STRATEGY_CONTRACT,
   capsules: DECODING_STRATEGY_CAPSULES,
   shapeError: 'Decoding-Strategie-Parameter verletzen die Kapselform',
 });
 
-export const decodingStrategyCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const decodingStrategyCorrectText = FAMILY_IMPL.correctText;
-export const genDecodingStrategyCapsule = FAMILY_IMPL.genCapsule;
-export const generateDecodingStrategyFamily = FAMILY_IMPL.generate;
-export const solveDecodingStrategyFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

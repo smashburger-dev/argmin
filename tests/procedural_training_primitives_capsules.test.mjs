@@ -8,20 +8,15 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/optimize-training-primitive-contract.mjs';
-import {
-  PRIM_CASES,
-  PRIM_CONTRACT,
-  genPrimCase,
-} from '../assets/js/core/procedural/optimize-training-primitive-contract.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { PRIM_CASES, PRIM_CONTRACT } from '../assets/js/core/procedural/optimize-training-primitive-contract.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genPrimCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['loss-and-batch-primitives', 'dropout-weight-decay-primitives'];
 
-codeCapsuleSuite('optimize-training-primitive-contract', mod, [
-  { caseId: 'loss-and-batch-primitives', difficulty: 'core' },
-  { caseId: 'dropout-weight-decay-primitives', difficulty: 'core' },
-], { difficultyProfiles: ['core'] });
 
 test('anchor extras: difficulty profiles stay pinned to the JSON cases', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/optimize-training-primitive-contract.json'), 'utf8'));

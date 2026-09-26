@@ -200,7 +200,7 @@ export const TOY_PIPELINE_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: TOY_PIPELINE_CONTRACT,
   cases: TOY_PIPELINE_CASES,
   shapeError: 'Toy-Pipeline-Parameter verletzen die Kapselform',
@@ -209,8 +209,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const toyPipelineCaseOk = FAMILY.caseOk;
-export const genToyPipelineCase = FAMILY.genCase;
-export const solveToyPipelineFamily = FAMILY.solve;
-export const generateToyPipelineFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

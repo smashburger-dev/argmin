@@ -190,7 +190,7 @@ export const GROUPED_CONTRACT = {
 
 // The __raised helper plus the renamed reference copy are emitted once at the
 // top of the seeded block; all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: GROUPED_CONTRACT,
   cases: GROUPED_CASES,
   shapeError: 'Gruppen-Kennzahlen-Parameter verletzen die Kapselform',
@@ -198,8 +198,3 @@ const FAMILY = makeCaseFamily({
     `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n')}`,
 });
 
-export const groupedCaseOk = FAMILY.caseOk;
-export const genGroupedCase = FAMILY.genCase;
-export const solveGroupedFamily = FAMILY.solve;
-export const generateGroupedFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

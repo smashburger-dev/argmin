@@ -177,7 +177,7 @@ export const STATS_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: STATS_CONTRACT,
   cases: STATS_CASES,
   shapeError: 'Deskriptive-Stats-Parameter verletzen die Kapselform',
@@ -186,8 +186,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const statsCaseOk = FAMILY.caseOk;
-export const genStatsCase = FAMILY.genCase;
-export const solveStatsFamily = FAMILY.solve;
-export const generateStatsFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

@@ -467,7 +467,7 @@ export const PREDICT_METRICS_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: PREDICT_METRICS_CONTRACT,
   cases: PREDICT_METRICS_CASES,
   shapeError: 'Predict-Metrics-Parameter verletzen die Kapselform',
@@ -476,8 +476,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const predictMetricsCaseOk = FAMILY.caseOk;
-export const genPredictMetricsCase = FAMILY.genCase;
-export const solvePredictMetricsFamily = FAMILY.solve;
-export const generatePredictMetricsFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

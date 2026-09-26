@@ -154,14 +154,9 @@ export const SUBSTRING_CONTRACT = {
   competencyIds: ['c-genai-security', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
   contract: SUBSTRING_CONTRACT,
   cases: SUBSTRING_CASES,
   shapeError: 'trace-substring-flag-sum: Parameter verletzen die Kapselform',
 });
 
-export const substringCaseOk = FAMILY.caseOk;
-export const genSubstringCase = FAMILY.genCase;
-export const solveSubstringFamily = FAMILY.solve;
-export const generateSubstringFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

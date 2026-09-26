@@ -28,15 +28,9 @@ export const ATTACK_SURFACE_CONTRACT = {
   competencyIds: ['c-genai-security'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: ATTACK_SURFACE_CONTRACT,
   capsules: ATTACK_SURFACE_CAPSULES,
   shapeError: 'Angriffsflächen-Parameter verletzen die Kapselform',
 });
 
-export const attackSurfaceCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const attackSurfaceCorrectText = FAMILY_IMPL.correctText;
-export const genAttackSurfaceCapsule = FAMILY_IMPL.genCapsule;
-export const generateAttackSurfaceFamily = FAMILY_IMPL.generate;
-export const solveAttackSurfaceFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

@@ -466,7 +466,7 @@ export const PCA_KMEANS_CONTRACT = {
 
 // Seeded block: the case-level ref helper copy once, then the per-draw check
 // lines behind the '# seeded extra cases' header.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: PCA_KMEANS_CONTRACT,
   cases: PCA_KMEANS_CASES,
   shapeError: 'PCA-k-Means-Parameter verletzen die Kapselform',
@@ -477,8 +477,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const pcaKmeansCaseOk = FAMILY.caseOk;
-export const genPcaKmeansCase = FAMILY.genCase;
-export const solvePcaKmeansFamily = FAMILY.solve;
-export const generatePcaKmeansFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

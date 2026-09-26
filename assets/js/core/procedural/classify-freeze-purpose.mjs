@@ -28,16 +28,10 @@ export const FREEZE_PURPOSE_CONTRACT = {
   competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: FREEZE_PURPOSE_CONTRACT,
   capsules: FREEZE_PURPOSE_CAPSULES,
   shapeError: 'Freeze-Purpose-Parameter verletzen die Kapselform',
   keyBy: 'caseId',
 });
 
-export const freezePurposeCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const freezePurposeCorrectText = FAMILY_IMPL.correctText;
-export const genFreezePurposeCapsule = FAMILY_IMPL.genCapsule;
-export const generateFreezePurposeFamily = FAMILY_IMPL.generate;
-export const solveFreezePurposeFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

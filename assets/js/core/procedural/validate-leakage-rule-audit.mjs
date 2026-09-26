@@ -197,7 +197,7 @@ export const LEAKAGE_AUDIT_CONTRACT = {
 
 // The per-case prelude (renamed reference copy) is emitted once at the top of
 // the seeded block; all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: LEAKAGE_AUDIT_CONTRACT,
   cases: LEAKAGE_AUDIT_CASES,
   shapeError: 'Leakage-Audit-Parameter verletzen die Kapselform',
@@ -208,8 +208,3 @@ const FAMILY = makeCaseFamily({
     ].join('\n\n')}`,
 });
 
-export const leakageAuditCaseOk = FAMILY.caseOk;
-export const genLeakageAuditCase = FAMILY.genCase;
-export const solveLeakageAuditFamily = FAMILY.solve;
-export const generateLeakageAuditFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

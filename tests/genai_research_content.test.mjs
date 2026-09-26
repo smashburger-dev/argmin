@@ -3,18 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  generateAggregateTopkRelevanceArithmeticFamily,
-  generateValidateGoalshiftFlagRulesFamily,
-  generateFormulaStatFromTableFamily,
-  generateAggregateConfusionMetricFamily,
-  generateFormulaRatioPercentMetricFamily,
-  solveAggregateTopkRelevanceArithmetic,
-  solveValidateGoalshiftFlagRules,
-  solveFormulaStatFromTable,
-  solveAggregateConfusionMetric,
-  solveFormulaRatioPercentMetric,
-} from '../assets/js/core/data_ml_families.mjs';
+
 import { genRecallAtK, genF1orPrecision, genInjectionFlagCount, genAllowedActionCount } from '../assets/js/core/genai_research_generators.mjs';
 import { genProtocolShifts, genCardAudit, genSubgroupCost, protocolShiftFlags, countCardDefects, subgroupRatePerMille } from '../assets/js/core/capstone_generators.mjs';
 import { configureExerciseFamilies } from '../assets/js/domain/exercise_registry.mjs';
@@ -22,6 +11,25 @@ import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import { TRACE_ASSIGNMENT_CONTRACT } from '../assets/js/core/foundations_trace_families.mjs';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
+
+
+import { DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'aggregate-topk-relevance-arithmetic');
+const spec1 = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'validate-goalshift-flag-rules');
+const spec2 = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'formula-stat-from-table');
+const spec3 = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'aggregate-confusion-metric');
+const spec4 = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'formula-ratio-percent-metric');
+const generateAggregateTopkRelevanceArithmeticFamily = spec.generate;
+const generateValidateGoalshiftFlagRulesFamily = spec1.generate;
+const generateFormulaStatFromTableFamily = spec2.generate;
+const generateAggregateConfusionMetricFamily = spec3.generate;
+const generateFormulaRatioPercentMetricFamily = spec4.generate;
+const solveAggregateTopkRelevanceArithmetic = spec.solve;
+const solveValidateGoalshiftFlagRules = spec1.solve;
+const solveFormulaStatFromTable = spec2.solve;
+const solveAggregateConfusionMetric = spec3.solve;
+const solveFormulaRatioPercentMetric = spec4.solve;
 const root = join(new URL('..', import.meta.url).pathname);
 const legacy = Object.fromEntries([27, 28, 29, 30, 31, 32, 33].map((week) => [week, legacyOracle.weeks[`w${week}`]]));
 const familyDocs = readdirSync(join(root, 'content/families')).filter((name) => name.endsWith('.json')).map((name) => JSON.parse(readFileSync(join(root, 'content/families', name), 'utf8')));

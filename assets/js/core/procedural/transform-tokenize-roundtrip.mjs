@@ -218,7 +218,7 @@ export const TOKENIZE_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: TOKENIZE_CONTRACT,
   cases: TOKENIZE_CASES,
   shapeError: 'Tokenize-Parameter verletzen die Kapselform',
@@ -226,8 +226,3 @@ const FAMILY = makeCaseFamily({
     `# seeded extra cases\n${seedCases.map((entry, i) => seededChecks(caseId, entry, i + 1)).join('\n')}`,
 });
 
-export const tokenizeCaseOk = FAMILY.caseOk;
-export const genTokenizeCase = FAMILY.genCase;
-export const solveTokenizeFamily = FAMILY.solve;
-export const generateTokenizeFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

@@ -222,7 +222,7 @@ export const LORA_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: LORA_CONTRACT,
   cases: LORA_CASES,
   shapeError: 'LoRA-Parameter verletzen die Kapselform',
@@ -231,8 +231,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const loraCaseOk = FAMILY.caseOk;
-export const genLoraCase = FAMILY.genCase;
-export const solveLoraFamily = FAMILY.solve;
-export const generateLoraFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

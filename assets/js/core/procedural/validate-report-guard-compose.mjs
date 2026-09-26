@@ -185,15 +185,10 @@ export const GUARD_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: GUARD_CONTRACT,
   cases: GUARD_CASES,
   shapeError: 'validate-report-guard-compose: Parameter verletzen die Kapselform',
   seededBlock: (caseDef, _caseId, seedCases) => seededBlock(caseDef, seedCases),
 });
 
-export const guardCaseOk = FAMILY.caseOk;
-export const genGuardCase = FAMILY.genCase;
-export const solveGuardFamily = FAMILY.solve;
-export const generateGuardFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

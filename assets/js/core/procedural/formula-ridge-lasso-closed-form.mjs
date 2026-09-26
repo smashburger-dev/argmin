@@ -248,7 +248,7 @@ export const RIDGE_LASSO_CONTRACT = {
 
 // Seeded section: optional case preamble (the __ref_ridge copy) once, then
 // the per-draw check lines behind the '# seeded extra cases' header.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: RIDGE_LASSO_CONTRACT,
   cases: RIDGE_LASSO_CASES,
   shapeError: 'Ridge-Lasso-Parameter verletzen die Kapselform',
@@ -260,8 +260,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const ridgeLassoCaseOk = FAMILY.caseOk;
-export const genRidgeLassoCase = FAMILY.genCase;
-export const solveRidgeLassoFamily = FAMILY.solve;
-export const generateRidgeLassoFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

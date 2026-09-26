@@ -123,7 +123,7 @@ export const EXPERIMENT_CONTRACT = {
 
 // The __raised helper plus the renamed reference copy are emitted once at the
 // top of the seeded block; all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: EXPERIMENT_CONTRACT,
   cases: EXPERIMENT_CASES,
   shapeError: 'Experiment-Parameter verletzen die Kapselform',
@@ -131,8 +131,3 @@ const FAMILY = makeCaseFamily({
     `# seeded extra cases\n${RAISED_HELPER}\n\n${refCopy(caseDef.referenceSolver, caseDef.refNames)}\n\n${seedCases.map((entry, i) => caseDef.emit(entry, i + 1)).join('\n')}`,
 });
 
-export const experimentCaseOk = FAMILY.caseOk;
-export const genExperimentCase = FAMILY.genCase;
-export const solveExperimentFamily = FAMILY.solve;
-export const generateExperimentFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

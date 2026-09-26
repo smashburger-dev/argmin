@@ -5,19 +5,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/fit-pca-kmeans-pipeline.mjs';
-import {
-  PCA_KMEANS_CASES,
-  PCA_KMEANS_CONTRACT,
-  genPcaKmeansCase,
-} from '../assets/js/core/procedural/fit-pca-kmeans-pipeline.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { PCA_KMEANS_CASES, PCA_KMEANS_CONTRACT } from '../assets/js/core/procedural/fit-pca-kmeans-pipeline.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genPcaKmeansCase = spec.kit.genCase;
+
 
 const CASE_IDS = ['pca-eigh-projection', 'standardize-pca-kmeans'];
 
-codeCapsuleSuite('fit-pca-kmeans-pipeline', mod, [
-  { caseId: 'pca-eigh-projection', difficulty: 'core' },
-  { caseId: 'standardize-pca-kmeans', difficulty: 'stretch' },
-], { difficultyProfiles: ['core', 'stretch'] });
 
 test('capsule extras: seeded block marker, ref copies and packages stay emitted', () => {
   for (const caseId of CASE_IDS) {

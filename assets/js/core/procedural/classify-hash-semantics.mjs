@@ -28,15 +28,9 @@ export const HASH_SEMANTICS_CONTRACT = {
   competencyIds: ['c-research-capstone'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: HASH_SEMANTICS_CONTRACT,
   capsules: HASH_SEMANTICS_CAPSULES,
   shapeError: 'Hash-Semantik-Parameter verletzen die Kapselform',
 });
 
-export const hashSemanticsCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const hashSemanticsCorrectText = FAMILY_IMPL.correctText;
-export const genHashSemanticsCapsule = FAMILY_IMPL.genCapsule;
-export const generateHashSemanticsFamily = FAMILY_IMPL.generate;
-export const solveHashSemanticsFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

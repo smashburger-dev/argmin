@@ -664,7 +664,7 @@ export const DETECTOR_EVAL_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: DETECTOR_EVAL_CONTRACT,
   cases: DETECTOR_EVAL_CASES,
   shapeError: 'Detektor-Eval-Parameter verletzen die Kapselform',
@@ -673,8 +673,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const detectorEvalCaseOk = FAMILY.caseOk;
-export const genDetectorEvalCase = FAMILY.genCase;
-export const solveDetectorEvalFamily = FAMILY.solve;
-export const generateDetectorEvalFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

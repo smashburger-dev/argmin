@@ -34,15 +34,9 @@ export const DROPOUT_REGIME_CONTRACT = {
   competencyIds: ['c-dl-regularization'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: DROPOUT_REGIME_CONTRACT,
   capsules: DROPOUT_REGIME_CAPSULES,
   shapeError: 'Dropout-Regime-Parameter verletzen die Kapselform',
 });
 
-export const dropoutRegimeCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const dropoutRegimeCorrectText = FAMILY_IMPL.correctText;
-export const genDropoutRegimeCapsule = FAMILY_IMPL.genCapsule;
-export const generateDropoutRegimeFamily = FAMILY_IMPL.generate;
-export const solveDropoutRegimeFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

@@ -127,31 +127,13 @@ export function staticFamilySpec(doc) {
       caseId: item.caseId,
       propertyTest: Array.isArray(item.variants) && item.variants.length > 0,
     })),
-    generate: ({ seed, caseId, difficulty }) => {
-      const body = staticCaseBody(doc.familyId, caseId);
-      if (body.difficultyProfile !== difficulty) {
-        throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
-      }
-      const { body: chosen, index } = variantOf(body, seed ?? 0);
-      const {
-        caseId: _caseId,
-        difficultyProfile: _difficultyProfile,
-        masteryEligible: _masteryEligible,
-        sourceLineage: _sourceLineage,
-        variants: _variants,
-        ...generated
-      } = chosen;
-      return withSeededChoiceOrder({
-        ...generated,
-        masteryEligible: isMasteryEligible(body),
-        parameters: {
-          caseId,
-          difficulty,
-          variant: index,
-          ...(chosen.parameters || {}),
-        },
-      }, seed);
-    },
+    generate: ({ seed, caseId, difficulty }) => staticVariantInstance(
+      doc.familyId,
+      caseId,
+      seed,
+      difficulty,
+      { checkProfile: true, pinVariant: true },
+    ),
     solve: (parameters) => {
       const { body } = variantOf(staticCaseBody(doc.familyId, parameters.caseId), parameters.variant ?? 0);
       const correct = (body.choices || []).find((choice) => choice.correct);
@@ -169,9 +151,15 @@ export const staticBodyInstance = (familyId, caseId, difficulty) => {
 
 /** Static case with seed-driven variant resolution: the variant index lands
  *  in parameters when the case body carries variants; masteryEligible is the
- *  case body's flag, suppressed for manual-rubric graders. */
-export function staticVariantInstance(familyId, caseId, seed, difficulty) {
+ *  case body's flag, suppressed for manual-rubric graders. `checkProfile`
+ *  rejects a case whose body profile differs from the requested difficulty
+ *  (the staticFamilySpec guard), `pinVariant` always writes the resolved
+ *  index into parameters instead of only when variants exist. */
+export function staticVariantInstance(familyId, caseId, seed, difficulty, { checkProfile = false, pinVariant = false } = {}) {
   const body = staticCaseBody(familyId, caseId);
+  if (checkProfile && body.difficultyProfile !== difficulty) {
+    throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+  }
   const { body: chosen, index } = variantOf(body, seed ?? 0);
   const {
     caseId: _caseId,
@@ -187,7 +175,7 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty) {
     parameters: {
       caseId,
       difficulty,
-      ...(Array.isArray(body.variants) && body.variants.length ? { variant: index } : {}),
+      ...(pinVariant || (Array.isArray(body.variants) && body.variants.length) ? { variant: index } : {}),
       ...(chosen.parameters || {}),
     },
   }, seed);

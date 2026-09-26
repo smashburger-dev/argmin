@@ -233,7 +233,7 @@ export const TREE_CONTRACT = {
 
 // Assembles the seeded block: the shared prelude (reference copies) followed
 // by the per-draw literal checks.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: TREE_CONTRACT,
   cases: TREE_CASES,
   shapeError: 'Tree-Split-Parameter verletzen die Kapselform',
@@ -244,8 +244,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const treeCaseOk = FAMILY.caseOk;
-export const genTreeCase = FAMILY.genCase;
-export const solveTreeFamily = FAMILY.solve;
-export const generateTreeFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

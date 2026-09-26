@@ -6,22 +6,18 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/fit-weight-decay-ablation.mjs';
-import {
-  WEIGHT_DECAY_CASES,
-  WEIGHT_DECAY_CONTRACT,
-  genWeightDecayCase,
-  weightDecayCaseOk,
-} from '../assets/js/core/procedural/fit-weight-decay-ablation.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { WEIGHT_DECAY_CASES, WEIGHT_DECAY_CONTRACT } from '../assets/js/core/procedural/fit-weight-decay-ablation.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genWeightDecayCase = spec.kit.genCase;
+const weightDecayCaseOk = spec.kit.caseOk;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'weight-decay-ablation';
 const CASE_DEF = WEIGHT_DECAY_CASES[CASE_ID];
 const draw = (seed) => genWeightDecayCase(seed, CASE_ID, CASE_DEF);
 
-codeCapsuleSuite('fit-weight-decay-ablation', mod, [
-  { caseId: 'weight-decay-ablation', difficulty: 'challenge' },
-], { familyGroup: 'fit-model', difficultyProfiles: ['challenge'] });
 
 test('anchor extras: difficulty profile stays pinned to the JSON case', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/fit-weight-decay-ablation.json'), 'utf8'));

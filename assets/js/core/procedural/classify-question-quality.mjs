@@ -27,15 +27,9 @@ export const QUESTION_QUALITY_CONTRACT = {
   competencyIds: ['c-research-question'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: QUESTION_QUALITY_CONTRACT,
   capsules: QUESTION_QUALITY_CAPSULES,
   shapeError: 'Frage-Qualitäts-Parameter verletzen die Kapselform',
 });
 
-export const questionQualityCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const questionQualityCorrectText = FAMILY_IMPL.correctText;
-export const genQuestionQualityCapsule = FAMILY_IMPL.genCapsule;
-export const generateQuestionQualityFamily = FAMILY_IMPL.generate;
-export const solveQuestionQualityFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

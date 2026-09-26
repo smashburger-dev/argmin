@@ -27,7 +27,7 @@ export const familyMaxHints = (instance) => baseFamilyMaxHints({
   summary: instance?.summary ?? EXERCISE_FAMILIES.get(instance?.familyId)?.summary,
 });
 
-const jsFamilySpecs = [
+export const JS_FAMILY_SPECS = [
   {
     ...GIT_OPERATION_CONTRACT,
     generate: generateGitOperationFamily,
@@ -47,11 +47,11 @@ const jsFamilySpecs = [
   ...PROCEDURAL_FAMILY_SPECS,
 ];
 
-export let EXERCISE_FAMILIES = createFamilyRegistry(jsFamilySpecs);
+export let EXERCISE_FAMILIES = createFamilyRegistry(JS_FAMILY_SPECS);
 
 export function configureExerciseFamilies(staticDocs = []) {
   EXERCISE_FAMILIES = createFamilyRegistry([
-    ...jsFamilySpecs,
+    ...JS_FAMILY_SPECS,
     ...staticDocs.filter((doc) => doc?.contract).map(staticFamilySpec),
   ]);
   return EXERCISE_FAMILIES;

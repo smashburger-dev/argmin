@@ -526,7 +526,7 @@ export const FORWARD_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: FORWARD_CONTRACT,
   cases: FORWARD_CASES,
   shapeError: 'Forward-Chain-Parameter verletzen die Kapselform',
@@ -535,8 +535,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const forwardCaseOk = FAMILY.caseOk;
-export const genForwardCase = FAMILY.genCase;
-export const solveForwardFamily = FAMILY.solve;
-export const generateForwardFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

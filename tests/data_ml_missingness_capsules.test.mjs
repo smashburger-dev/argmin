@@ -1,5 +1,5 @@
 // Familie classify-missingness: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_missingness_capsules.test.mjs
 import test from 'node:test';
@@ -10,37 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   MISSINGNESS_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  MISSINGNESS_CONTRACT,
-  genMissingnessCapsule,
-  missingnessCapsuleOk,
-  missingnessCorrectText,
-  generateMissingnessFamily,
-  solveMissingnessFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { MISSINGNESS_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-missingness');
+const genMissingnessCapsule = spec.kit.genCapsule;
+const missingnessCapsuleOk = spec.kit.capsuleOk;
+const missingnessCorrectText = spec.kit.correctText;
+const generateMissingnessFamily = spec.generate;
+const solveMissingnessFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  MISSINGNESS_CAPSULES,
-  missingnessCapsuleOk,
-  missingnessCorrectText,
-  genMissingnessCapsule,
-  MISSINGNESS_CONTRACT,
-  generateMissingnessFamily,
-  solveMissingnessFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-missingness'),
-};
 
-choiceCapsuleSuite('classify-missingness', mod, [
-  { caseId: 'target-dependent-missingness', difficulty: 'intro' },
-  { caseId: 'missingness-device-censoring', difficulty: 'core' },
-  { caseId: 'missingness-income-survey', difficulty: 'stretch' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro', 'core', 'stretch'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schlüsseltext. Regel: Kapsel weiten,

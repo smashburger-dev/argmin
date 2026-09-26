@@ -28,15 +28,9 @@ export const TOOL_POLICY_CONTRACT = {
   competencyIds: ['c-genai-prototype'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: TOOL_POLICY_CONTRACT,
   capsules: TOOL_POLICY_CAPSULES,
   shapeError: 'Tool-Policy-Parameter verletzen die Kapselform',
 });
 
-export const toolPolicyCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const toolPolicyCorrectText = FAMILY_IMPL.correctText;
-export const genToolPolicyCapsule = FAMILY_IMPL.genCapsule;
-export const generateToolPolicyFamily = FAMILY_IMPL.generate;
-export const solveToolPolicyFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

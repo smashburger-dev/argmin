@@ -193,7 +193,7 @@ export const TEXT_MATCH_CONTRACT = {
 
 // The renamed reference copy plus the __raised helper are emitted once at
 // the top of the seeded block; all per-draw checks call into them.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: TEXT_MATCH_CONTRACT,
   cases: TEXT_MATCH_CASES,
   shapeError: 'Text-Normalisierungs-Parameter verletzen die Kapselform',
@@ -204,8 +204,3 @@ const FAMILY = makeCaseFamily({
   },
 });
 
-export const textMatchCaseOk = FAMILY.caseOk;
-export const genTextMatchCase = FAMILY.genCase;
-export const solveTextMatchFamily = FAMILY.solve;
-export const generateTextMatchFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

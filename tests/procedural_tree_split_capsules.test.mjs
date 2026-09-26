@@ -8,20 +8,15 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/optimize-tree-best-split.mjs';
-import {
-  TREE_CASES,
-  TREE_CONTRACT,
-  genTreeCase,
-} from '../assets/js/core/procedural/optimize-tree-best-split.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { TREE_CASES, TREE_CONTRACT } from '../assets/js/core/procedural/optimize-tree-best-split.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genTreeCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['gini-best-binary-split', 'gini-three-class-candidates'];
 
-codeCapsuleSuite('optimize-tree-best-split', mod, [
-  { caseId: 'gini-best-binary-split', difficulty: 'core' },
-  { caseId: 'gini-three-class-candidates', difficulty: 'stretch' },
-], { difficultyProfiles: ['core', 'stretch'] });
 
 test('anchor extras: difficulty profiles stay pinned to the JSON cases', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/optimize-tree-best-split.json'), 'utf8'));

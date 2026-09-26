@@ -28,16 +28,10 @@ export const CV_LEAKAGE_CONTRACT = {
   competencyIds: ['c-ml-cv', 'c-ml-regularization'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: CV_LEAKAGE_CONTRACT,
   capsules: CV_LEAKAGE_CAPSULES,
   shapeError: 'CV-Leakage-Parameter verletzen die Kapselform',
   keyBy: 'caseId',
 });
 
-export const cvLeakageCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const cvLeakageCorrectText = FAMILY_IMPL.correctText;
-export const genCvLeakageCapsule = FAMILY_IMPL.genCapsule;
-export const generateCvLeakageFamily = FAMILY_IMPL.generate;
-export const solveCvLeakageFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

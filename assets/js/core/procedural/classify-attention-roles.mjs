@@ -35,15 +35,9 @@ export const ATTENTION_ROLES_CONTRACT = {
   competencyIds: ['c-dl-attention'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: ATTENTION_ROLES_CONTRACT,
   capsules: ATTENTION_ROLES_CAPSULES,
   shapeError: 'Attention-Rollen-Parameter verletzen die Kapselform',
 });
 
-export const attentionRolesCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const attentionRolesCorrectText = FAMILY_IMPL.correctText;
-export const genAttentionRolesCapsule = FAMILY_IMPL.genCapsule;
-export const generateAttentionRolesFamily = FAMILY_IMPL.generate;
-export const solveAttentionRolesFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

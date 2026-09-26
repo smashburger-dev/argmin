@@ -31,15 +31,9 @@ export const LINALG_SYNTH_CONTRACT = {
   competencyIds: ['c-numpy-basics', 'c-linalg-gauss'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: LINALG_SYNTH_CONTRACT,
   capsules: LINALG_SYNTH_CAPSULES,
   shapeError: 'Linalg-Synthese-Parameter verletzen die Kapselform',
 });
 
-export const linalgSynthCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const linalgSynthCorrectText = FAMILY_IMPL.correctText;
-export const genLinalgSynthCapsule = FAMILY_IMPL.genCapsule;
-export const generateLinalgSynthFamily = FAMILY_IMPL.generate;
-export const solveLinalgSynthFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

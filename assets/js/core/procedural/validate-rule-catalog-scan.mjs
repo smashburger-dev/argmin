@@ -239,15 +239,10 @@ export const CATALOG_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: CATALOG_CONTRACT,
   cases: CATALOG_CASES,
   shapeError: 'validate-rule-catalog-scan: Parameter verletzen die Kapselform',
   seededBlock: (caseDef, _caseId, seedCases) => seededBlock(caseDef, seedCases),
 });
 
-export const catalogCaseOk = FAMILY.caseOk;
-export const genCatalogCase = FAMILY.genCase;
-export const solveCatalogFamily = FAMILY.solve;
-export const generateCatalogFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

@@ -289,7 +289,7 @@ export const DATA_QUALITY_CONTRACT = {
 // The per-case prelude (raised helper plus renamed reference copy / contract
 // literal) is emitted once at the top of the seeded block; all per-draw
 // checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: DATA_QUALITY_CONTRACT,
   cases: DATA_QUALITY_CASES,
   shapeError: 'Datenqualitäts-Parameter verletzen die Kapselform',
@@ -300,8 +300,3 @@ const FAMILY = makeCaseFamily({
     ].join('\n\n')}`,
 });
 
-export const dataQualityCaseOk = FAMILY.caseOk;
-export const genDataQualityCase = FAMILY.genCase;
-export const solveDataQualityFamily = FAMILY.solve;
-export const generateDataQualityFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

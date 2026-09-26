@@ -336,14 +336,9 @@ export const LIBRARY_API_CONTRACT = {
   competencyIds: ['c-pandas-cleaning', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
   contract: LIBRARY_API_CONTRACT,
   cases: LIBRARY_API_CASES,
   shapeError: 'trace-library-api-output: Parameter verletzen die Kapselform',
 });
 
-export const libraryApiCaseOk = FAMILY.caseOk;
-export const genLibraryApiCase = FAMILY.genCase;
-export const solveLibraryApiFamily = FAMILY.solve;
-export const generateLibraryApiFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

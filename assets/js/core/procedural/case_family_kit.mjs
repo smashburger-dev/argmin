@@ -1,7 +1,9 @@
 // Shared tail for the python-code procedural families: given the family's
 // seededBlock builder the kit produces the capsule-shape predicate, the
-// seeded case generator, the solve dispatch and the FAMILY_SPEC wiring that
-// used to be hand-copied at the bottom of every module.
+// seeded case generator, the solve dispatch and the finished FAMILY_SPEC
+// that used to be hand-copied at the bottom of every module. Each factory
+// returns the spec (graderId/activityType defaults + contract +
+// generate/solve); suite internals hang on `spec.kit`.
 //
 // Contract per family:
 //   cases: { [caseId]: { difficulty, packages, starterCode, baseTests,
@@ -10,6 +12,17 @@
 //   seededBlock(caseDef, caseId, seedCases) -> string appended to baseTests
 //   shapeError: message thrown when solve sees foreign parameters
 import { rng } from '../generator_draw_kit.mjs';
+
+// The generate guard both kits share: integer seed, registered case,
+// matching profile — then the seeded case draw.
+const seededCaseGenerate = (cases, genCase) => ({ seed, caseId, difficulty }) => {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const caseDef = cases[caseId];
+  if (!caseDef || caseDef.difficulty !== difficulty) {
+    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
+  }
+  return genCase(seed, caseId, caseDef);
+};
 
 export function makeCaseFamily({ contract, cases, shapeError, seededBlock, defaultPackages }) {
   const testsFor = (caseDef, caseId, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseDef, caseId, seedCases)}`;
@@ -47,16 +60,16 @@ export function makeCaseFamily({ contract, cases, shapeError, seededBlock, defau
     return { referenceCode: entry[1].referenceSolver };
   };
 
-  const generate = ({ seed, caseId, difficulty }) => {
-    if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-    const caseDef = cases[caseId];
-    if (!caseDef || caseDef.difficulty !== difficulty) {
-      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-    }
-    return genCase(seed, caseId, caseDef);
-  };
+  const generate = seededCaseGenerate(cases, genCase);
 
-  return { caseOk, genCase, solve, generate, spec: { graderId: 'pyodide', activityType: 'python-code', ...contract, generate, solve } };
+  return {
+    graderId: 'pyodide',
+    activityType: 'python-code',
+    ...contract,
+    generate,
+    solve,
+    kit: { type: 'code', cases, caseOk, genCase },
+  };
 }
 
 // Predict-output analogue: parameters carry {caseId, difficulty, ...drawn,
@@ -106,14 +119,14 @@ export function makePredictFamily({ contract, cases, shapeError }) {
     return { output: caseDef.buildOutput(parameters) };
   };
 
-  const generate = ({ seed, caseId, difficulty }) => {
-    if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-    const caseDef = cases[caseId];
-    if (!caseDef || caseDef.difficulty !== difficulty) {
-      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-    }
-    return genCase(seed, caseId, caseDef);
-  };
+  const generate = seededCaseGenerate(cases, genCase);
 
-  return { caseOk, genCase, solve, generate, spec: { graderId: 'deterministic', activityType: 'predict-output', ...contract, generate, solve } };
+  return {
+    graderId: 'deterministic',
+    activityType: 'predict-output',
+    ...contract,
+    generate,
+    solve,
+    kit: { type: 'predict', cases, caseOk, genCase },
+  };
 }

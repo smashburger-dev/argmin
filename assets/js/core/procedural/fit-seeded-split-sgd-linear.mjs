@@ -256,7 +256,7 @@ export const SEEDED_SGD_CONTRACT = {
 
 // Seeded block: the renamed reference helper once, then the per-draw check
 // lines behind the '# seeded extra cases' header.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: SEEDED_SGD_CONTRACT,
   cases: SEEDED_SGD_CASES,
   shapeError: 'Seeded-SGD-Parameter verletzen die Kapselform',
@@ -267,8 +267,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const seededSgdCaseOk = FAMILY.caseOk;
-export const genSeededSgdCase = FAMILY.genCase;
-export const solveSeededSgdFamily = FAMILY.solve;
-export const generateSeededSgdFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

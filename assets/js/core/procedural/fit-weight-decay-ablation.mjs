@@ -114,7 +114,7 @@ export const WEIGHT_DECAY_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: WEIGHT_DECAY_CONTRACT,
   cases: WEIGHT_DECAY_CASES,
   shapeError: 'Weight-Decay-Parameter verletzen die Kapselform',
@@ -123,8 +123,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const weightDecayCaseOk = FAMILY.caseOk;
-export const genWeightDecayCase = FAMILY.genCase;
-export const solveWeightDecayFamily = FAMILY.solve;
-export const generateWeightDecayFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

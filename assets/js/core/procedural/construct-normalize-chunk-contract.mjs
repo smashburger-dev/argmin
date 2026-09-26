@@ -190,7 +190,7 @@ export const CHUNK_CONTRACT = {
   competencyIds: ['c-genai-rag', 'c-python-functions'],
 };
 
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: CHUNK_CONTRACT,
   cases: CHUNK_CASES,
   shapeError: 'Normalize-Chunk-Parameter verletzen die Kapselform',
@@ -201,8 +201,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const chunkCaseOk = FAMILY.caseOk;
-export const genChunkCase = FAMILY.genCase;
-export const solveChunkFamily = FAMILY.solve;
-export const generateChunkFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

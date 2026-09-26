@@ -6,16 +6,12 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/classify-question-quality.mjs';
-import {
-  QUESTION_QUALITY_CAPSULES,
-  QUESTION_QUALITY_CONTRACT,
-  generateQuestionQualityFamily,
-} from '../assets/js/core/procedural/classify-question-quality.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { QUESTION_QUALITY_CAPSULES, QUESTION_QUALITY_CONTRACT } from '../assets/js/core/procedural/classify-question-quality.mjs';
 
-choiceCapsuleSuite('classify-question-quality', mod, [
-  { caseId: 'question-quality-check', difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
+const spec = mod.FAMILY_SPEC;
+const generateQuestionQualityFamily = spec.generate;
+
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'question-quality-check';

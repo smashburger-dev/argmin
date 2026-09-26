@@ -4,12 +4,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { genRankCapsule, RANK_CAPSULES, rank } from '../assets/js/core/linalg_generators.mjs';
 import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
-import {
-  RANK_CONTRACT,
-  generateRankFamily,
-  solveRankFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
+import { RANK_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
 import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'transform-rank-dependence-rowops');
+const generateRankFamily = spec.generate;
+const solveRankFamily = spec.solve;
+
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit Zielrang und v2-Bound (7/5/20). Regel: Kapsel

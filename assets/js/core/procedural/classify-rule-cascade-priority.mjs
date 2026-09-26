@@ -159,7 +159,7 @@ export const CASCADE_CONTRACT = {
 
 // The __raised helper plus the renamed reference copy are emitted once at the
 // top of the seeded block; all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: CASCADE_CONTRACT,
   cases: CASCADE_CASES,
   shapeError: 'Regel-Kaskaden-Parameter verletzen die Kapselform',
@@ -169,8 +169,3 @@ const FAMILY = makeCaseFamily({
   },
 });
 
-export const cascadeCaseOk = FAMILY.caseOk;
-export const genCascadeCase = FAMILY.genCase;
-export const solveCascadeFamily = FAMILY.solve;
-export const generateCascadeFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

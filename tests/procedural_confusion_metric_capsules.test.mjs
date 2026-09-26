@@ -10,10 +10,13 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import './helpers/register_static_cases.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
-import {
-  generateAggregateConfusionMetricFamily as generate,
-  solveAggregateConfusionMetric as solve,
-} from '../assets/js/core/data_ml_families.mjs';
+import { DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'aggregate-confusion-metric');
+const generate = spec.generate;
+const solve = spec.solve;
+
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const doc = JSON.parse(readFileSync(join(root, 'content/families/aggregate-confusion-metric.json'), 'utf8'));

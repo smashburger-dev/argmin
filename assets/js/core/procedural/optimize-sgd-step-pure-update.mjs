@@ -246,7 +246,7 @@ export const SGD_CONTRACT = {
 
 // Assembles the seeded block: optional per-case prelude (reference copies)
 // followed by the per-draw literal checks.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: SGD_CONTRACT,
   cases: SGD_CASES,
   shapeError: 'SGD-Step-Parameter verletzen die Kapselform',
@@ -257,8 +257,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const sgdCaseOk = FAMILY.caseOk;
-export const genSgdCase = FAMILY.genCase;
-export const solveSgdFamily = FAMILY.solve;
-export const generateSgdFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

@@ -2,10 +2,10 @@
 // Ein geseedeter Fall und statische Falltypen teilen den kanonischen
 // Lösungsweg; Code-Ausgabe und Begründung bleiben getrennte Familienfälle.
 //
-// Alle elf Familien laufen über die Kit-Factories in solved_family_kit.mjs:
-// makeNumericFamily liefert generate/solve/spec für die fünf numerischen
-// Wrapper (statische Fälle + Seed-Ziehung), makeLinalgChoiceCapsuleFamily
-// liefert capsuleOk/correctText/genCapsule/generate/solve/spec für die sechs
+// Alle elf Familien laufen über die Kit-Factories: makeNumericFamily aus
+// solved_family_kit.mjs liefert den Spec für die fünf numerischen Wrapper
+// (statische Fälle + Seed-Ziehung), makeChoiceFamily aus
+// generator_draw_kit.mjs den für die sechs parametrisierten
 // Choice-Kapsel-Familien. Die fachliche Domäne (Kapseln, Banken, Templates,
 // Validatoren, Reference-Solver) bleibt in linalg_generators.mjs.
 
@@ -46,8 +46,8 @@ function ensureLinalgDocs() {
 }
 
 const linalgCaseBody = (familyId, caseId) => { ensureLinalgDocs(); return staticCaseBody(familyId, caseId); };
-import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './solved_family_kit.mjs';
-import { rng, randInt, nonzeroInt, until, shuffle, drawFamilyInstance } from './generator_draw_kit.mjs';
+import { makeNumericFamily } from './solved_family_kit.mjs';
+import { rng, randInt, nonzeroInt, until, shuffle, drawFamilyInstance, makeChoiceFamily } from './generator_draw_kit.mjs';
 
 export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -341,14 +341,14 @@ export function generateScalarProductFamily({ seed, caseId, difficulty }) {
   const def = SCALAR_GENERATORS[caseId];
   if (def) return genScalarSeededCase({ seed, caseId, difficulty }, def);
   ensureLinalgDocs();
-  return scalarProductKit.generate({ seed, caseId, difficulty });
+  return scalarProductSpec.generate({ seed, caseId, difficulty });
 }
 
 export function solveScalarProduct(parameters) {
   if (parameters?.caseId && SCALAR_GENERATORS[parameters.caseId]) {
     return solveScalarSeeded(parameters);
   }
-  return scalarProductKit.solve(parameters);
+  return scalarProductSpec.solve(parameters);
 }
 
 export const SCALAR_PRODUCT_CONTRACT = {
@@ -372,7 +372,7 @@ export const SCALAR_PRODUCT_CONTRACT = {
   competencyIds: ['c-linalg-matrices'],
 };
 
-const scalarProductKit = makeNumericFamily({
+const scalarProductSpec = makeNumericFamily({
   contract: SCALAR_PRODUCT_CONTRACT,
   staticCaseIds: SCALAR_STATIC_CASES,
   staticVariants: true,
@@ -409,7 +409,7 @@ export const MATRIX_SHAPE_CONTRACT = {
   competencyIds: ['c-linalg-matrices'],
 };
 
-const matrixShapeKit = makeLinalgChoiceCapsuleFamily({
+const matrixShapeSpec = makeChoiceFamily({
   contract: MATRIX_SHAPE_CONTRACT,
   capsules: MATRIX_SHAPE_CAPSULES,
   shapeError: 'Dims verletzen die Kapselform',
@@ -419,11 +419,6 @@ const matrixShapeKit = makeLinalgChoiceCapsuleFamily({
   buildPrompt: (parameters, capsule) => matrixShapePrompt(parameters.dimsA, parameters.dimsB, capsule),
   buildSolution: (parameters, capsule) => matrixShapeSolution(parameters.dimsA, parameters.dimsB, capsule),
 });
-export const matrixShapeCapsuleOk = matrixShapeKit.capsuleOk;
-export const matrixShapeCorrectText = matrixShapeKit.correctText;
-export const genMatrixShapeCapsule = matrixShapeKit.genCapsule;
-export const generateMatrixShapeFamily = matrixShapeKit.generate;
-export const solveMatrixShapeFamily = matrixShapeKit.solve;
 
 // --- formula-det2-independence -------------------------------------------------
 // Geseedet über genDet2 (Determinante als Unabhängigkeitsbeleg).
@@ -449,7 +444,7 @@ export const DET2_CONTRACT = {
   competencyIds: ['c-linalg-independence'],
 };
 
-const det2Kit = makeNumericFamily({
+const det2Spec = makeNumericFamily({
   contract: DET2_CONTRACT,
   seededCaseId: 'det2-seeded-columns',
   // Die Spaltenziehung (nonzeroInt ×4 plus det≠0-Rejection) bleibt im
@@ -477,8 +472,6 @@ const det2Kit = makeNumericFamily({
   }),
   solveSeeded: (parameters) => ({ value: det2(parameters.A) }),
 });
-export const generateDet2Family = det2Kit.generate;
-export const solveDet2Family = det2Kit.solve;
 
 // --- transform-system-2x2-elimination ------------------------------------------
 // Geseedet über genLinear2Fresh plus zwei statische w05-Fälle (Vektorpaar).
@@ -509,7 +502,7 @@ export const SYSTEM_2X2_CONTRACT = {
   activityType: 'vector',
 };
 
-const system2x2Kit = makeNumericFamily({
+const system2x2Spec = makeNumericFamily({
   contract: SYSTEM_2X2_CONTRACT,
   staticCaseIds: ['system-w05-e11', 'system-w05-e6'],
   seededCaseId: 'system-seeded-2x2',
@@ -524,9 +517,7 @@ const system2x2Kit = makeNumericFamily({
   },
 });
 
-export const generateSystem2x2Family = (args) => { ensureLinalgDocs(); return system2x2Kit.generate(args); };
-export const solveSystem2x2 = system2x2Kit.solve;
-const system2x2Spec = system2x2Kit.spec;
+export const generateSystem2x2Family = (args) => { ensureLinalgDocs(); return system2x2Spec.generate(args); };
 
 // --- validate-shape-contract ---------------------------------------------------
 // Geseedet über genShapePredict plus statischen w18-e3 (drei Printzeilen).
@@ -554,7 +545,7 @@ export const SHAPE_CONTRACT = {
   activityType: 'predict-output',
 };
 
-const shapeContractKit = makeNumericFamily({
+const shapeContractSpec = makeNumericFamily({
   contract: SHAPE_CONTRACT,
   staticCaseIds: ['shapes-w18-broadcast-axes'],
   seededCaseId: 'shapes-seeded-predict',
@@ -564,8 +555,7 @@ const shapeContractKit = makeNumericFamily({
   solveStatic: (parameters) => ({ output: linalgCaseBody('validate-shape-contract', parameters.caseId).expected.output }),
   solveSeeded: (parameters) => ({ output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
 });
-export const generateShapeContractFamily = (args) => { ensureLinalgDocs(); return shapeContractKit.generate(args); };
-export const solveShapeContract = shapeContractKit.solve;
+export const generateShapeContractFamily = (args) => { ensureLinalgDocs(); return shapeContractSpec.generate(args); };
 
 // --- W05-Restfälle in bestehenden Familien (S4D7) --------------------------------
 // w05-e16 (numpy-Schleife) als statischer Predict-Fall: gleiche
@@ -600,7 +590,7 @@ export const RANK_CONTRACT = {
 // The challenge profile hosts two cases: the extra bank capsule carries the
 // profile as a '<profile>-<suffix>' key prefix ('challenge-4x4' →
 // 'challenge'); the kit resolves it through its caseId fallback.
-const rankKit = makeNumericFamily({
+const rankSpec = makeNumericFamily({
   contract: RANK_CONTRACT,
   capsules: RANK_CAPSULES,
   draw: (subseed, capsule) => genRankCapsule(subseed, capsule),
@@ -612,9 +602,6 @@ const rankKit = makeNumericFamily({
   solveSeeded: (parameters) => ({ value: rank(parameters.A) }),
 });
 
-export const generateRankFamily = rankKit.generate;
-export const solveRankFamily = rankKit.solve;
-const rankSpec = rankKit.spec;
 
 // --- classify-independence-multiple ----------------------------------------------
 // Geseedet über genIndependenceCapsule: Vektor-Zahlenbank plus Rotation, ein
@@ -638,7 +625,7 @@ export const INDEPENDENCE_CONTRACT = {
   competencyIds: ['c-linalg-independence'],
 };
 
-const independenceKit = makeLinalgChoiceCapsuleFamily({
+const independenceSpec = makeChoiceFamily({
   contract: INDEPENDENCE_CONTRACT,
   capsules: INDEPENDENCE_CAPSULES,
   shapeError: 'Vektoren verletzen die Kapselform',
@@ -648,11 +635,6 @@ const independenceKit = makeLinalgChoiceCapsuleFamily({
   buildPrompt: (parameters, capsule) => independencePrompt(parameters.vectors, capsule),
   buildSolution: (parameters, capsule) => independenceSolution(parameters.vectors, capsule),
 });
-export const independenceCapsuleOk = independenceKit.capsuleOk;
-export const independenceCorrectText = independenceKit.correctText;
-export const genIndependenceCapsule = independenceKit.genCapsule;
-export const generateIndependenceFamily = independenceKit.generate;
-export const solveIndependenceFamily = independenceKit.solve;
 
 // --- classify-column-combination ------------------------------------------------
 // Geseedet über genColumnCombinationCapsule: 2×2-Zahlenbank plus 2×2-Solver
@@ -685,7 +667,7 @@ export const COLUMN_COMBINATION_CONTRACT = {
   competencyIds: ['c-linalg-matrices', 'c-linalg-systems', 'c-numpy-basics'],
 };
 
-const columnCombinationKit = makeLinalgChoiceCapsuleFamily({
+const columnCombinationSpec = makeChoiceFamily({
   contract: COLUMN_COMBINATION_CONTRACT,
   capsules: COLUMN_COMBINATION_CAPSULES,
   shapeError: (capsule) => (capsule.kind === 'shape-debug'
@@ -699,11 +681,6 @@ const columnCombinationKit = makeLinalgChoiceCapsuleFamily({
   choiceIds: (capsule) => COLUMN_IDS[capsule.kind],
   caseMeta: COLUMN_COMBINATION_META,
 });
-export const columnCombinationCapsuleOk = columnCombinationKit.capsuleOk;
-export const columnCombinationCorrectText = columnCombinationKit.correctText;
-export const genColumnCombinationCapsule = columnCombinationKit.genCapsule;
-export const generateColumnCombinationFamily = columnCombinationKit.generate;
-export const solveColumnCombinationFamily = columnCombinationKit.solve;
 
 // --- classify-shape-contract --------------------------------------------------
 // Geseedet über genClassifyShapeCapsule: Shape-Zahlenbank plus Rotation, ein
@@ -728,7 +705,7 @@ export const CLASSIFY_SHAPE_CONTRACT = {
   competencyIds: ['c-dl-tensors'],
 };
 
-const classifyShapeKit = makeLinalgChoiceCapsuleFamily({
+const classifyShapeSpec = makeChoiceFamily({
   contract: CLASSIFY_SHAPE_CONTRACT,
   capsules: CLASSIFY_SHAPE_CAPSULES,
   shapeError: 'Shape-Parametern verletzen die Kapselform',
@@ -739,11 +716,6 @@ const classifyShapeKit = makeLinalgChoiceCapsuleFamily({
   buildSolution: (parameters, capsule) => classifyShapeSolution(classifyShapeSystem(parameters, capsule), capsule),
   choiceIds: () => SHAPE_CONTRACT_IDS,
 });
-export const classifyShapeCapsuleOk = classifyShapeKit.capsuleOk;
-export const classifyShapeCorrectText = classifyShapeKit.correctText;
-export const genClassifyShapeCapsule = classifyShapeKit.genCapsule;
-export const generateClassifyShapeFamily = classifyShapeKit.generate;
-export const solveClassifyShapeFamily = classifyShapeKit.solve;
 
 // --- classify-row-operation-validity ------------------------------------------------
 // Geseedet über genRowOperationCapsule: 2×2-Zahlenbank mit getragener
@@ -774,7 +746,7 @@ export const ROW_OPERATION_CONTRACT = {
   competencyIds: ['c-linalg-gauss'],
 };
 
-const rowOperationKit = makeLinalgChoiceCapsuleFamily({
+const rowOperationSpec = makeChoiceFamily({
   contract: ROW_OPERATION_CONTRACT,
   capsules: ROW_OPERATION_CAPSULES,
   shapeError: 'Zeilenoperation verletzt die Kapselform',
@@ -786,11 +758,6 @@ const rowOperationKit = makeLinalgChoiceCapsuleFamily({
   choiceIds: (capsule) => ROW_OPERATION_IDS[capsule.kind],
   caseMeta: ROW_OPERATION_META,
 });
-export const rowOperationCapsuleOk = rowOperationKit.capsuleOk;
-export const rowOperationCorrectText = rowOperationKit.correctText;
-export const genRowOperationCapsule = rowOperationKit.genCapsule;
-export const generateRowOperationFamily = rowOperationKit.generate;
-export const solveRowOperationFamily = rowOperationKit.solve;
 
 // --- classify-rank-solution-case --------------------------------------------------
 // Geseedet über genRankSolutionCapsule: Echelon-Zahlenbank mit Rotation,
@@ -822,7 +789,7 @@ export const RANK_SOLUTION_CONTRACT = {
   competencyIds: ['c-linalg-gauss', 'c-linalg-systems', 'c-linalg-independence'],
 };
 
-const rankSolutionKit = makeLinalgChoiceCapsuleFamily({
+const rankSolutionSpec = makeChoiceFamily({
   contract: RANK_SOLUTION_CONTRACT,
   capsules: RANK_SOLUTION_CAPSULES,
   shapeError: 'Rangfall verletzt die Kapselform',
@@ -834,11 +801,6 @@ const rankSolutionKit = makeLinalgChoiceCapsuleFamily({
   choiceIds: (capsule) => RANK_SOLUTION_IDS[capsule.kind],
   caseMeta: RANK_SOLUTION_META,
 });
-export const rankSolutionCapsuleOk = rankSolutionKit.capsuleOk;
-export const rankSolutionCorrectText = rankSolutionKit.correctText;
-export const genRankSolutionCapsule = rankSolutionKit.genCapsule;
-export const generateRankSolutionFamily = rankSolutionKit.generate;
-export const solveRankSolutionFamily = rankSolutionKit.solve;
 
 // --- multiple-choice-linalg-independence -------------------------------------
 // Geseedete Vektormengen: der Seed zieht pro Optionsslot eine Trap-Klasse
@@ -1120,17 +1082,17 @@ export const LINALG_FAMILY_SPECS = [
   // scalar-loop-output und column-vector-authored werden per Dispatch
   // generiert — das Spec trägt die gewrappten Funktionen, nicht die
   // Kit-Closures (die für die beiden caseIds 'Unbekannter Fall' wuerfen).
-  { ...scalarProductKit.spec, generate: generateScalarProductFamily, solve: solveScalarProduct },
-  det2Kit.spec,
+  { ...scalarProductSpec, generate: generateScalarProductFamily, solve: solveScalarProduct },
+  det2Spec,
   system2x2Spec,
-  shapeContractKit.spec,
+  shapeContractSpec,
   rankSpec,
-  independenceKit.spec,
-  matrixShapeKit.spec,
-  columnCombinationKit.spec,
-  rowOperationKit.spec,
-  classifyShapeKit.spec,
-  rankSolutionKit.spec,
+  independenceSpec,
+  matrixShapeSpec,
+  columnCombinationSpec,
+  rowOperationSpec,
+  classifyShapeSpec,
+  rankSolutionSpec,
   {
     ...MC_INDEPENDENCE_CONTRACT,
     generate: generateMcIndependenceFamily,

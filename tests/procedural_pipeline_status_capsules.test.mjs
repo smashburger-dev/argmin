@@ -3,21 +3,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/reproduce-pipeline-status-report.mjs';
-import {
-  PIPELINE_CASES,
-  PIPELINE_CONTRACT,
-  genPipelineCase,
-} from '../assets/js/core/procedural/reproduce-pipeline-status-report.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { PIPELINE_CASES, PIPELINE_CONTRACT } from '../assets/js/core/procedural/reproduce-pipeline-status-report.mjs';
 
-codeCapsuleSuite('reproduce-pipeline-status-report', mod, [
-  { caseId: 'pipeline-status-report', difficulty: 'challenge' },
-  { caseId: 'call-with-timeout', difficulty: 'core' },
-  { caseId: 'run-stage-budget', difficulty: 'stretch' },
-  { caseId: 'start-pipeline-integration', difficulty: 'challenge' },
-  { caseId: 'verdict-rules', difficulty: 'challenge' },
-  { caseId: 'acceptance-all-contracts', difficulty: 'challenge' },
-], { difficultyProfiles: ['core', 'stretch', 'challenge'] });
+const spec = mod.FAMILY_SPEC;
+const genPipelineCase = spec.kit.genCase;
+
+
 
 const STAGE_NAMES = ['laden', 'pruefen', 'rechnen', 'speichern', 'berichten', 'exportieren'];
 const TOOL_POOL = ['suche', 'lese', 'export', 'mail', 'hook', 'schreibe'];

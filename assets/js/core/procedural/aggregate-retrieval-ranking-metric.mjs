@@ -152,7 +152,7 @@ export const RANKING_CONTRACT = {
 
 // The __raised helper plus the renamed reference copy are emitted once at the
 // top of the seeded block; all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: RANKING_CONTRACT,
   cases: RANKING_CASES,
   shapeError: 'Retrieval-Ranking-Parameter verletzen die Kapselform',
@@ -162,8 +162,3 @@ const FAMILY = makeCaseFamily({
   },
 });
 
-export const rankingCaseOk = FAMILY.caseOk;
-export const genRankingCase = FAMILY.genCase;
-export const solveRankingFamily = FAMILY.solve;
-export const generateRankingFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

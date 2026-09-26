@@ -2,12 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  generateFormulaRatioPercentMetricFamily,
-  generateFormulaStatFromTableFamily,
-  solveFormulaRatioPercentMetric,
-  solveFormulaStatFromTable,
-} from '../assets/js/core/data_ml_families.mjs';
+
 import {
   genBaselineLedger,
   genPipelineStages,
@@ -22,6 +17,16 @@ import { registerStaticCases } from '../assets/js/domain/family_registry.mjs';
 import './helpers/register_static_cases.mjs';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
+
+
+import { DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'formula-ratio-percent-metric');
+const spec1 = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'formula-stat-from-table');
+const generateFormulaRatioPercentMetricFamily = spec.generate;
+const generateFormulaStatFromTableFamily = spec1.generate;
+const solveFormulaRatioPercentMetric = spec.solve;
+const solveFormulaStatFromTable = spec1.solve;
 const root = join(new URL('..', import.meta.url).pathname);
 const legacy = Object.fromEntries([34, 35, 37].map((week) => [week, legacyOracle.weeks[`w${week}`]]));
 const familyDocs = [

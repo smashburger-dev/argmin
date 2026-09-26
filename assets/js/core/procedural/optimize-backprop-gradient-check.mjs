@@ -388,7 +388,7 @@ export const BACKPROP_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
   contract: BACKPROP_CONTRACT,
   cases: BACKPROP_CASES,
   shapeError: 'Backprop-Parameter verletzen die Kapselform',
@@ -396,8 +396,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const backpropCaseOk = FAMILY.caseOk;
-export const genBackpropCase = FAMILY.genCase;
-export const solveBackpropFamily = FAMILY.solve;
-export const generateBackpropFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

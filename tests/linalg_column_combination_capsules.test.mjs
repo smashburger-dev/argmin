@@ -3,7 +3,7 @@
 // Anker-Korrektur (bewusst, gegen Strip-Prinzip): Base-Params aller 3 Fälle
 // aufgefüllt (war {}), Contract-caseTypes 1→3, challenge-Profil verlustfrei
 // gestrichen (keine challenge-differenzierten Varianten im Bestand).
-// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// Gemeinsame Gates leben in tests/helpers/kit_suites.mjs — die Kit-Produkte
 // (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
 // foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
 // linalg_generators.mjs.
@@ -14,16 +14,16 @@ import {
   columnInstanceOk,
   solveColumnSystem,
 } from '../assets/js/core/linalg_generators.mjs';
-import {
-  COLUMN_COMBINATION_CONTRACT,
-  columnCombinationCapsuleOk,
-  columnCombinationCorrectText,
-  genColumnCombinationCapsule,
-  generateColumnCombinationFamily,
-  solveColumnCombinationFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
-import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
+import { COLUMN_COMBINATION_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-column-combination');
+const columnCombinationCapsuleOk = spec.kit.capsuleOk;
+const columnCombinationCorrectText = spec.kit.correctText;
+const genColumnCombinationCapsule = spec.kit.genCapsule;
+const generateColumnCombinationFamily = spec.generate;
+const solveColumnCombinationFamily = spec.solve;
+
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Lösung und Bound (12/12/2-7).
@@ -139,20 +139,3 @@ test('Kapseltabelle: Arten, Bounds und Fallbindung', () => {
   assert.deepEqual(COLUMN_COMBINATION_CAPSULES.stretch, { kind: 'shape-debug', rows: [2, 7], cols: [2, 7], caseId: 'shape-debug-authored' });
 });
 
-linalgChoiceCapsuleSuite('classify-column-combination', {
-  capsules: COLUMN_COMBINATION_CAPSULES,
-  contract: COLUMN_COMBINATION_CONTRACT,
-  capsuleOk: columnCombinationCapsuleOk,
-  correctText: columnCombinationCorrectText,
-  genCapsule: genColumnCombinationCapsule,
-  generate: generateColumnCombinationFamily,
-  solve: solveColumnCombinationFamily,
-  registry: LINALG_FAMILIES,
-}, CASE_FOR, {
-  difficultyProfiles: ['intro', 'core', 'stretch'],
-  meta: {
-    core: { masteryEligible: true, competencyIds: ['c-linalg-matrices'] },
-    intro: { masteryEligible: false, competencyIds: ['c-linalg-systems'] },
-    stretch: { masteryEligible: true, competencyIds: ['c-linalg-matrices', 'c-numpy-basics'] },
-  },
-});

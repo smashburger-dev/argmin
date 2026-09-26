@@ -28,16 +28,10 @@ export const EVAL_HAZARD_CONTRACT = {
   competencyIds: ['c-genai-eval'],
 };
 
-const FAMILY_IMPL = makeChoiceFamily({
+export const FAMILY_SPEC = makeChoiceFamily({
   contract: EVAL_HAZARD_CONTRACT,
   capsules: EVAL_HAZARD_CAPSULES,
   shapeError: 'Eval-Hazard-Parameter verletzen die Kapselform',
   keyBy: 'caseId',
 });
 
-export const evalHazardCapsuleOk = FAMILY_IMPL.capsuleOk;
-export const evalHazardCorrectText = FAMILY_IMPL.correctText;
-export const genEvalHazardCapsule = FAMILY_IMPL.genCapsule;
-export const generateEvalHazardFamily = FAMILY_IMPL.generate;
-export const solveEvalHazardFamily = FAMILY_IMPL.solve;
-export const FAMILY_SPEC = FAMILY_IMPL.spec;

@@ -202,14 +202,9 @@ export const STUB_DOC_CONTRACT = {
   competencyIds: ['c-genai-prototype', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
   contract: STUB_DOC_CONTRACT,
   cases: STUB_DOC_CASES,
   shapeError: 'trace-stub-doc-sentence-select: Parameter verletzen die Kapselform',
 });
 
-export const stubDocCaseOk = FAMILY.caseOk;
-export const genStubDocCase = FAMILY.genCase;
-export const solveStubDocFamily = FAMILY.solve;
-export const generateStubDocFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

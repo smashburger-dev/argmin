@@ -182,13 +182,8 @@ export const TOPO_CONTRACT = {
   competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
   contract: TOPO_CONTRACT,
   cases: TOPO_CASES,
 });
 
-export const topoCaseOk = FAMILY.caseOk;
-export const genTopoCase = FAMILY.genCase;
-export const solveTopoFamily = FAMILY.solve;
-export const generateTopoFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;
