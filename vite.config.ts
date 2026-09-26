@@ -7,6 +7,7 @@ const projectRoot = import.meta.dirname;
 export default defineConfig({
     base: './',
     publicDir: false,
+    server: { port: 4173 },
     plugins: [
       preact({ exclude: [/node_modules/, /\/vendor\//] }),
     ],

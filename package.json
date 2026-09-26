@@ -15,7 +15,7 @@
     "pretypecheck": "npm run content:compile && npm run coverage:check",
     "typecheck": "tsc --noEmit",
     "predev:next": "npm run content:compile && npm run coverage:check",
-    "dev:next": "vite --host 127.0.0.1 --port 4173",
+    "dev:next": "vite --host 127.0.0.1",
     "prebuild:next": "npm run content:compile && npm run coverage:check",
     "build:next": "vite build && node tools/build_public.mjs --out build-next --next-dir .next-ui && node tools/validate_content.mjs --dir build-next && node tools/validate_next_build.mjs build-next",
     "build:release": "npm run build:next",
