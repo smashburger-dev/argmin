@@ -140,6 +140,17 @@
       "estimatedMinutes": 6,
       "lessonId": "l-foundations-testing-debugging",
       "masteryEligible": false
+    },
+    {
+      "placementId": "p-foundations-testing-debugging-seeded-error-pattern-cases",
+      "role": "curated",
+      "familyId": "classify-error-hypothesis",
+      "caseId": "seeded-error-pattern-cases",
+      "seed": 11,
+      "difficulty": "core",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-testing-debugging",
+      "masteryEligible": true
     }
   ],
   "projectIds": [
