@@ -39,6 +39,16 @@ Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die U
 - Historische Metadaten-Reste (`parameters.seedGenerator`, `expected.{generator,defaultSeed,defaultExpected,defaultChoice}`, `tolerancePolicy`) wurden entfernt — inerte Provenienz ohne Runtime-Funktion. `feedbackRules[].if` muss einen Schlüssel tragen, den der Grader des Falls auswertet (`value === N`, `choice ===/!== 'id'`, `order-length-mismatch`, `value:<var>(+value:<var>)*`, `element-count-mismatch`, `[!]selected.includes('id')`, `missing-diagnosis`/`invalid-input`, `gap-<i>(-<aspekt>)`) — unerreichbare Schlüssel scheitern an `assertFamilyActivityContracts`.
 - Hinweise/Lösung beschreiben den Lösungsweg generisch (zahlenunabhängig), nie die konkrete Instanz.
 
+### Auswahlfamilie aus einer Szenario-Bank
+
+Single-Choice-Familien, deren Fälle aus einer Szenario-Bank gezogen werden, brauchen kein eigenes JS-Modul:
+
+- Die Bank lebt in `content/banks/<familyId>.json` (Schema `schemas/capsule-bank.schema.json`) und trägt neben `capsules` die Top-Level-Felder `contract` (der volle Familienvertrag) und `shapeError` (Fehlertext bei ungültigen Generator-Parametern); `keyBy` ist nur nötig, wenn die Kapsel über `caseId` statt `difficulty` aufgelöst wird.
+- Jede Kapsel hält `caseId`, das Profil (`difficulty` oder `keyBy: 'caseId'`) und `bank`: 12–16 Einträge mit `key`, `prompt`, `correct`, `wrong[]` (drei verschiedene Distraktoren) und `solution`; genau ein Eintrag trägt den Schlüssel aus dem Base-Case (`key: 'base'`).
+- Der Base-Eintrag in `content/families/<familyId>.json` bleibt der wörtliche Anker: Prompt, Optionen und Lösung dort sind die Bank-Zeile `base` — die Tests vergleichen beide wörtlich.
+- Registrierung ist ein JSON-Import plus Listeneintrag in `assets/js/core/choice_bank_families.mjs`; `makeChoiceFamily` baut daraus den Familien-Spec (Bank-Modus, ein `pick` pro Seed).
+- Automatisch abgedeckt: `tests/kit_choice_families.test.mjs` (Bank-Orakel, Kapselform, Statistik, Registry-Grade) und der Golden-Korpus; familienspezifische Extras bleiben als eigene Testdatei möglich.
+
 ## 4. Graderwahl
 
 | Typ | Grader | Warum |

@@ -9,6 +9,7 @@ import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mj
 import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
 import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
 import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
+import { CHOICE_BANK_FAMILY_SPECS } from '../core/choice_bank_families.mjs';
 import { PROCEDURAL_FAMILY_SPECS } from './procedural_registry.mjs';
 
 export { createFamilyRegistry, familyHint, familyIdTokens };
@@ -43,6 +44,8 @@ export const JS_FAMILY_SPECS = [
   ...LINALG_FAMILY_SPECS,
   // S4D8: zwanzig Daten-/ML-Familien.
   ...DATA_ML_FAMILY_SPECS,
+  // Auswahlfamilien, deren Vertrag + Bank komplett in content/banks liegt.
+  ...CHOICE_BANK_FAMILY_SPECS,
   // Prozedurale Einzel-Module (pro Familie eine Datei in core/procedural/).
   ...PROCEDURAL_FAMILY_SPECS,
 ];

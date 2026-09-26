@@ -279,5 +279,33 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-fairness-aggregation",
+    "familyGroup": "classify-concept",
+    "summary": "Erkennt, warum Gesamtmetriken Fehler kleiner Teilgruppen verdecken können.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "overall-accuracy-hides-subgroups",
+        "propertyTest": false
+      },
+      {
+        "caseId": "fairness-aggregation",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-ml-erroranalysis"
+    ]
+  },
+  "shapeError": "Fairness-Aggregations-Parameter verletzen die Kapselform",
+  "keyBy": "caseId"
 }

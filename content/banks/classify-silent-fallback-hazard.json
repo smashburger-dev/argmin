@@ -148,5 +148,28 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-silent-fallback-hazard",
+    "familyGroup": "classify-concept",
+    "summary": "Erkennt stille Fallbacks als Gefahr für die Aussagekraft eines reproduzierbaren Stage-Runners.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "silent-fallback-hazard",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline"
+    ]
+  },
+  "shapeError": "Silent-Fallback-Parameter verletzen die Kapselform"
 }

@@ -52,6 +52,7 @@ const ALLOWED_FILES = [
   'assets/js/core/viz_checkpoint_grader.mjs',
   'assets/js/core/data_ml_generators.mjs',
   'assets/js/core/data_ml_families.mjs',
+  'assets/js/core/choice_bank_families.mjs',
   'assets/js/domain/activity_route.mjs',
   'assets/js/domain/expression_eval.mjs',
   'assets/js/domain/competency_graph.mjs',

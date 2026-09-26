@@ -464,5 +464,38 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-attention-roles",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Tensorrollen den Aufmerksamkeitsrollen zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "attention-role-values",
+        "propertyTest": false
+      },
+      {
+        "caseId": "attention-role-batch",
+        "propertyTest": false
+      },
+      {
+        "caseId": "attention-role-padding",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-attention"
+    ]
+  },
+  "shapeError": "Attention-Rollen-Parameter verletzen die Kapselform"
 }

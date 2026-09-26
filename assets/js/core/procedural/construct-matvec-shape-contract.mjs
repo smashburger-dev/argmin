@@ -12,7 +12,7 @@
 //     (rank, pivot-columns) tuple) and an invertible 2x2 system.
 // parameters carry only the drawn values plus the rebuilt artefacts
 // (fragments/initialOrder or tests) — nothing answer-relevant leaks.
-// Blueprints: reproduce-seeded-split.mjs, classify-eval-hazard.mjs.
+// Blueprints: reproduce-seeded-split.mjs, choice_bank_families.mjs.
 
 
 import { randInt, nonzeroInt, rng, shuffle, until } from '../generator_draw_kit.mjs';

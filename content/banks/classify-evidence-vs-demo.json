@@ -283,5 +283,33 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-evidence-vs-demo",
+    "familyGroup": "classify-concept",
+    "summary": "Unterscheidet Evidenz für eine reproduzierbare Pipeline von einer bloßen Demo.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "evidence-vs-demo",
+        "propertyTest": false
+      },
+      {
+        "caseId": "demo-vs-evidence",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline"
+    ]
+  },
+  "shapeError": "Evidenz-Demo-Parameter verletzen die Kapselform",
+  "keyBy": "caseId"
 }

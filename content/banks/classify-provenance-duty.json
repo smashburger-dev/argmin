@@ -148,5 +148,28 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-provenance-duty",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Verwendung der passenden Provenance-Pflichtklasse zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "provenance-duty",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-research-cards"
+    ]
+  },
+  "shapeError": "Provenienz-Pflicht-Parameter verletzen die Kapselform"
 }

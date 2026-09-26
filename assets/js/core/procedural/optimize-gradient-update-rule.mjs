@@ -6,7 +6,7 @@
 //   - fit-linear-gradient-loop / head-only-finetune / lora-fit-toy
 //     (stretch/challenge, pyodide): base tests verbatim plus a seeded block
 //     of extra probes compared against a renamed reference copy.
-// Blueprints: classify-eval-hazard.mjs (choice arm), reproduce-seeded-split.mjs
+// Blueprints: choice_bank_families.mjs (choice arm), reproduce-seeded-split.mjs
 // (code arm).
 
 import { refCopy } from './py_test_kit.mjs';

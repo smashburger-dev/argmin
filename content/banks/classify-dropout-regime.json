@@ -464,5 +464,38 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-dropout-regime",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet ein Dropout-Verhalten dem korrekten Regime (Training vs. Eval) zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "dropout-regime",
+        "propertyTest": false
+      },
+      {
+        "caseId": "dropout-inverted-scale",
+        "propertyTest": false
+      },
+      {
+        "caseId": "dropout-eval-mode",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-regularization"
+    ]
+  },
+  "shapeError": "Dropout-Regime-Parameter verletzen die Kapselform"
 }

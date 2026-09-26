@@ -5,17 +5,17 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as mod from '../assets/js/core/procedural/classify-question-quality.mjs';
-import { QUESTION_QUALITY_CAPSULES, QUESTION_QUALITY_CONTRACT } from '../assets/js/core/procedural/classify-question-quality.mjs';
+import bank from '../content/banks/classify-question-quality.json' with { type: 'json' };
+import { JS_FAMILY_SPECS } from '../assets/js/domain/exercise_registry.mjs';
 
-const spec = mod.FAMILY_SPEC;
+const spec = JS_FAMILY_SPECS.find((item) => item.familyId === 'classify-question-quality');
 const generateQuestionQualityFamily = spec.generate;
 
 
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'question-quality-check';
-const CAPSULE = QUESTION_QUALITY_CAPSULES.intro;
+const CAPSULE = bank.capsules.intro;
 const draw = (seed) => generateQuestionQualityFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
 
 test('anchor extras: pinned profile and key position of the oracle case', () => {
@@ -48,5 +48,5 @@ test('capsule extras: parameter keys stay minimal, texts come from the bank row'
 });
 
 test('contract extras: competencies the suite does not pin', () => {
-  assert.deepEqual(QUESTION_QUALITY_CONTRACT.competencyIds, ['c-research-question']);
+  assert.deepEqual(bank.contract.competencyIds, ['c-research-question']);
 });

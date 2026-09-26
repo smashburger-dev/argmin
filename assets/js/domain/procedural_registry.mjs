@@ -8,31 +8,11 @@ import { FAMILY_SPEC as AGGREGATE_EVIDENCE_RULE_AUDIT } from '../core/procedural
 import { FAMILY_SPEC as AGGREGATE_GROUPED_METRICS_REPORT } from '../core/procedural/aggregate-grouped-metrics-report.mjs';
 import { FAMILY_SPEC as AGGREGATE_PARITY_THRESHOLD_SELECTION } from '../core/procedural/aggregate-parity-threshold-selection.mjs';
 import { FAMILY_SPEC as AGGREGATE_RETRIEVAL_RANKING_METRIC } from '../core/procedural/aggregate-retrieval-ranking-metric.mjs';
-import { FAMILY_SPEC as CLASSIFY_ATTACK_SURFACE } from '../core/procedural/classify-attack-surface.mjs';
-import { FAMILY_SPEC as CLASSIFY_ATTENTION_ROLES } from '../core/procedural/classify-attention-roles.mjs';
-import { FAMILY_SPEC as CLASSIFY_BACKPROP_PATH_RULE } from '../core/procedural/classify-backprop-path-rule.mjs';
-import { FAMILY_SPEC as CLASSIFY_CV_LEAKAGE } from '../core/procedural/classify-cv-leakage.mjs';
-import { FAMILY_SPEC as CLASSIFY_DECODING_STRATEGY } from '../core/procedural/classify-decoding-strategy.mjs';
-import { FAMILY_SPEC as CLASSIFY_DROPOUT_REGIME } from '../core/procedural/classify-dropout-regime.mjs';
-import { FAMILY_SPEC as CLASSIFY_EVAL_HAZARD } from '../core/procedural/classify-eval-hazard.mjs';
-import { FAMILY_SPEC as CLASSIFY_EVIDENCE_VS_DEMO } from '../core/procedural/classify-evidence-vs-demo.mjs';
-import { FAMILY_SPEC as CLASSIFY_FAIRNESS_AGGREGATION } from '../core/procedural/classify-fairness-aggregation.mjs';
-import { FAMILY_SPEC as CLASSIFY_FREEZE_PURPOSE } from '../core/procedural/classify-freeze-purpose.mjs';
-import { FAMILY_SPEC as CLASSIFY_FREEZE_SCOPE } from '../core/procedural/classify-freeze-scope.mjs';
-import { FAMILY_SPEC as CLASSIFY_HASH_SEMANTICS } from '../core/procedural/classify-hash-semantics.mjs';
-import { FAMILY_SPEC as CLASSIFY_PROVENANCE_DUTY } from '../core/procedural/classify-provenance-duty.mjs';
 import { FAMILY_SPEC as CLASSIFY_RULE_CASCADE_PRIORITY } from '../core/procedural/classify-rule-cascade-priority.mjs';
-import { FAMILY_SPEC as CLASSIFY_SILENT_FALLBACK_HAZARD } from '../core/procedural/classify-silent-fallback-hazard.mjs';
-import { FAMILY_SPEC as CLASSIFY_SUBWORD_PRINCIPLE } from '../core/procedural/classify-subword-principle.mjs';
-import { FAMILY_SPEC as CLASSIFY_TOOL_POLICY } from '../core/procedural/classify-tool-policy.mjs';
-import { FAMILY_SPEC as CLASSIFY_TRAINING_CURVE } from '../core/procedural/classify-training-curve.mjs';
-import { FAMILY_SPEC as CLASSIFY_QUESTION_QUALITY } from '../core/procedural/classify-question-quality.mjs';
-import { FAMILY_SPEC as CLASSIFY_RAG_STAGE } from '../core/procedural/classify-rag-stage.mjs';
 import { FAMILY_SPEC as COMPOSE_TOY_INFERENCE_PIPELINE } from '../core/procedural/compose-toy-inference-pipeline.mjs';
 import { FAMILY_SPEC as CONSTRUCT_ATTENTION_MASK } from '../core/procedural/construct-attention-mask.mjs';
 import { FAMILY_SPEC as CONSTRUCT_ENSEMBLE_PREDICTOR_COMPARISON } from '../core/procedural/construct-ensemble-predictor-comparison.mjs';
 import { FAMILY_SPEC as CONSTRUCT_FREEZE_ASSERT_GUARD } from '../core/procedural/construct-freeze-assert-guard.mjs';
-import { FAMILY_SPEC as CONSTRUCT_LINALG_CONTRACT_SYNTHESIS } from '../core/procedural/construct-linalg-contract-synthesis.mjs';
 import { FAMILY_SPEC as CONSTRUCT_MATVEC_SHAPE_CONTRACT } from '../core/procedural/construct-matvec-shape-contract.mjs';
 import { FAMILY_SPEC as CONSTRUCT_NORMALIZE_CHUNK_CONTRACT } from '../core/procedural/construct-normalize-chunk-contract.mjs';
 import { FAMILY_SPEC as CONSTRUCT_SECURE_PROTOTYPE_CONTRACT } from '../core/procedural/construct-secure-prototype-contract.mjs';
@@ -84,31 +64,11 @@ export const PROCEDURAL_FAMILY_SPECS = [
   AGGREGATE_GROUPED_METRICS_REPORT,
   AGGREGATE_PARITY_THRESHOLD_SELECTION,
   AGGREGATE_RETRIEVAL_RANKING_METRIC,
-  CLASSIFY_ATTACK_SURFACE,
-  CLASSIFY_ATTENTION_ROLES,
-  CLASSIFY_BACKPROP_PATH_RULE,
-  CLASSIFY_CV_LEAKAGE,
-  CLASSIFY_DECODING_STRATEGY,
-  CLASSIFY_DROPOUT_REGIME,
-  CLASSIFY_EVAL_HAZARD,
-  CLASSIFY_EVIDENCE_VS_DEMO,
-  CLASSIFY_FAIRNESS_AGGREGATION,
-  CLASSIFY_FREEZE_PURPOSE,
-  CLASSIFY_FREEZE_SCOPE,
-  CLASSIFY_HASH_SEMANTICS,
-  CLASSIFY_PROVENANCE_DUTY,
   CLASSIFY_RULE_CASCADE_PRIORITY,
-  CLASSIFY_SILENT_FALLBACK_HAZARD,
-  CLASSIFY_SUBWORD_PRINCIPLE,
-  CLASSIFY_TOOL_POLICY,
-  CLASSIFY_TRAINING_CURVE,
-  CLASSIFY_QUESTION_QUALITY,
-  CLASSIFY_RAG_STAGE,
   COMPOSE_TOY_INFERENCE_PIPELINE,
   CONSTRUCT_ATTENTION_MASK,
   CONSTRUCT_ENSEMBLE_PREDICTOR_COMPARISON,
   CONSTRUCT_FREEZE_ASSERT_GUARD,
-  CONSTRUCT_LINALG_CONTRACT_SYNTHESIS,
   CONSTRUCT_MATVEC_SHAPE_CONTRACT,
   CONSTRUCT_NORMALIZE_CHUNK_CONTRACT,
   CONSTRUCT_SECURE_PROTOTYPE_CONTRACT,

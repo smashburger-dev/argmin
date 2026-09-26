@@ -151,5 +151,28 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-freeze-scope",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Artefakte und Regeln dem Capstone-Scope-Freeze zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "freeze-scope",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline"
+    ]
+  },
+  "shapeError": "Freeze-Scope-Parameter verletzen die Kapselform"
 }
