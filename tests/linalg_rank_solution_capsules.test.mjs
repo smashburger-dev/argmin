@@ -10,8 +10,7 @@ import {
   RANK_SOLUTION_CAPSULES,
   rankSolutionInstanceOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import { RANK_SOLUTION_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
 
 const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-rank-solution-case');
 const rankSolutionCapsuleOk = spec.kit.capsuleOk;
@@ -19,7 +18,6 @@ const rankSolutionCorrectText = spec.kit.correctText;
 const genRankSolutionCapsule = spec.kit.genCapsule;
 const generateRankSolutionFamily = spec.generate;
 const solveRankSolutionFamily = spec.solve;
-
 
 // --- 18 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Beide Fälle teilen dieselben 9 Koeffizienten-Vierer (Stufenform

@@ -5,12 +5,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/validate-text-normalize-match.mjs';
-import { TEXT_MATCH_CASES } from '../assets/js/core/procedural/validate-text-normalize-match.mjs';
-
 const spec = mod.FAMILY_SPEC;
 const genTextMatchCase = spec.kit.genCase;
-
-
+const TEXT_MATCH_CASES = spec.kit.cases;
 
 test('seeded draws stay inside the declared domains', () => {
   const def = TEXT_MATCH_CASES['text-normalize-match'];

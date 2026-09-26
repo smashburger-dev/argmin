@@ -9,27 +9,12 @@
 // Mirrors trace-chunk-window-loop.mjs and transform-bpe-merge-apply.mjs.
 
 import { randInt, rng } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/optimize-decode-greedy-loop.json' with { type: 'json' };
 
+const anchor = (caseId) => doc.cases.find((entry) => entry.caseId === caseId);
 // --- case greedy-loop-trace (predict-output, deterministic) ----------------
 
-const TRACE_BASE_SNIPPET = `VOCAB = {0: "a", 1: "b", 2: "<eos>"}
-
-def step_fn(ids):
-    table = {(): 0, (0,): 1, (0, 1): 2}
-    return table[tuple(ids)]
-
-def greedy_decode(step_fn, init_ids, max_len, eos):
-    ids = list(init_ids)
-    while len(ids) < max_len:
-        nxt = step_fn(ids)
-        ids.append(nxt)
-        if nxt == eos:
-            break
-    return ids
-
-out = greedy_decode(step_fn, [], 5, 2)
-print(out)
-print("".join(VOCAB[i] for i in out))`;
+const TRACE_BASE_SNIPPET = anchor('greedy-loop-trace').parameters.snippet;
 
 const TRACE_BASE_OUTPUT = '[0, 1, 2]\nab<eos>';
 
@@ -129,43 +114,11 @@ function buildTraceSolution({ vocab, chain, initIds, eos }) {
 
 // --- case greedy-decode-function (python-code, pyodide) --------------------
 
-const CODE_STARTER = `def greedy_decode(step_fn, init_ids, max_len, eos):
-    """Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos."""
-    # copy init_ids first (never mutate the caller's list)
-    # while len(ids) < max_len: nxt = step_fn(...); append; break on eos
-    ...
-`;
+const CODE_STARTER = anchor('greedy-decode-function').parameters.starterCode;
 
-const CODE_BASE_TESTS = `TABLE = {(): 5, (5,): 7, (5, 7): 9}
+const CODE_BASE_TESTS = anchor('greedy-decode-function').parameters.tests;
 
-def table_step(ids):
-    return TABLE[tuple(ids)]
-
-__check('kette bis eos', greedy_decode(table_step, [], 8, 9) == [5, 7, 9])
-
-def always_four(ids):
-    return 4
-
-__check('max_len schneidet ab', greedy_decode(always_four, [], 3, 9) == [4, 4, 4])
-__check('start bereits lang genug', greedy_decode(always_four, [6, 7, 8], 3, 9) == [6, 7, 8])
-__check('eos als erstes token', greedy_decode(always_four, [], 1, 4) == [4])
-init = [1, 2]
-greedy_decode(always_four, init, 6, 9)
-__check('init nicht mutiert', init == [1, 2])
-__check('eos wird mitgezaehlt', len(greedy_decode(table_step, [], 3, 9)) == 3)
-__check('eos stoppt vor max_len', len(greedy_decode(table_step, [], 99, 9)) == 3)
-__check('leerer start erlaubt', greedy_decode(table_step, [], 1, 5) == [5])`;
-
-const CODE_REFERENCE = `def greedy_decode(step_fn, init_ids, max_len, eos):
-    """Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos."""
-    ids = list(init_ids)
-    while len(ids) < max_len:
-        nxt = int(step_fn(list(ids)))
-        ids.append(nxt)
-        if nxt == eos:
-            break
-    return ids
-`;
+const CODE_REFERENCE = anchor('greedy-decode-function').expected.referenceSolver;
 
 const CODE_PROMPT = 'Implementiere <code>greedy_decode(step_fn, init_ids, max_len, eos)</code>. Vertrag: Die Startfolge wird <strong>kopiert</strong> (die Eingabe des Aufrufers darf nicht mutiert werden); solange die Folge kürzer als <code>max_len</code> ist, liefert <code>step_fn(ids)</code> das nächste Token (aufrufen mit einer Kopie der aktuellen Folge); das Token wird angehängt; ist es <code>eos</code>, stoppt die Schleife sofort — das <code>eos</code> bleibt Teil der Folge. Rückgabe: Liste von ints. <strong>Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.</strong> Der Testcode benutzt Fixtur-<code>step_fn</code>s (Tabellen und Konstanten) und prüft Stoppen, Längengrenze, Kopie-Vertrag und Randfälle.';
 

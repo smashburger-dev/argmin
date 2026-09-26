@@ -10,8 +10,7 @@ import {
   CLASSIFY_SHAPE_CAPSULES,
   classifyShapeOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import { CLASSIFY_SHAPE_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
 
 const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-shape-contract');
 const classifyShapeCapsuleOk = spec.kit.capsuleOk;
@@ -19,7 +18,6 @@ const classifyShapeCorrectText = spec.kit.correctText;
 const genClassifyShapeCapsule = spec.kit.genCapsule;
 const generateClassifyShapeFamily = spec.generate;
 const solveClassifyShapeFamily = spec.solve;
-
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Shape-Arithmetik und dims-Bereich.

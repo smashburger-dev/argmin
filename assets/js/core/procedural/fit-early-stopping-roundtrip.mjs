@@ -12,149 +12,9 @@ import { pyNum, pyList } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/fit-early-stopping-roundtrip.json' with { type: 'json' };
 
 const PACKAGES = ['numpy'];
-
-const ROUNDTRIP_STARTER = `import numpy as np
-
-
-def early_stop_epoch(val_losses, patience):
-    """Return the best epoch (0-based int) under the patience rule.
-
-    best stays at the FIRST index of the running minimum (ties keep the
-    earlier epoch); the scan stops once i - best > patience. If that never
-    happens, return the global argmin.
-    """
-    # iterate with index, track best index (strictly smaller updates only)
-    ...
-
-
-def to_state(model):
-    """Return {name: arr.tolist()} so the state is JSON-serializable."""
-    ...
-
-
-def from_state(state):
-    """Return {name: np.asarray(value, dtype=np.float64)} with equal shapes."""
-    ...
-`;
-
-const MIN_DELTA_STARTER = `import numpy as np
-
-
-def early_stop_epoch(val_losses, patience, min_delta):
-    ...
-
-
-def to_state(model):
-    ...
-
-
-def from_state(state):
-    ...
-`;
-
-const ROUNDTRIP_BASE_TESTS = `import json
-__check('Abbruch nach patience=1', early_stop_epoch([1.0, 0.5, 0.6, 0.7, 0.8], 1) == 1)
-__check('patience=0 stoppt sofort', early_stop_epoch([1.0, 2.0, 3.0], 0) == 0)
-__check('monoton fallend: letzte Epoche', early_stop_epoch([3.0, 2.0, 1.0], 2) == 2)
-__check('Gleichstand haelt fruehere Epoche', early_stop_epoch([1.0, 1.0, 1.0], 3) == 0)
-__check('typische Overfitting-Kurve', early_stop_epoch([0.9, 0.6, 0.5, 0.55, 0.6, 0.7, 0.8], 2) == 2)
-__check('Rueckgabe ist int', isinstance(early_stop_epoch([1.0, 0.5], 1), int))
-model = {
-    "W1": np.array([[0.5, -0.25], [1.0, 2.0], [-3.5, 0.0]]),
-    "b1": np.array([0.1, -0.2]),
-    "W2": np.array([[1.0], [-2.0]]),
-    "b2": np.array([0.3]),
-}
-state = to_state(model)
-__check('to_state ist reine Listen', all(isinstance(v, list) for v in state.values()))
-__check('Schluessel bleiben', set(state.keys()) == set(model.keys()))
-__check('JSON-serialisierbar', isinstance(json.dumps(state), str))
-restored = from_state(state)
-__check('Round-Trip exakt', all(np.array_equal(restored[k], model[k]) for k in model))
-__check('Round-Trip Formen', all(restored[k].shape == model[k].shape for k in model))
-__check('Round-Trip dtype float64', all(restored[k].dtype == np.float64 for k in restored))
-restored2 = from_state(to_state(restored))
-__check('Zweiter Round-Trip stabil', all(np.array_equal(restored2[k], restored[k]) for k in restored))`;
-
-const MIN_DELTA_BASE_TESTS = `__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)
-__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)
-__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)
-model = {"w": np.array([[1.0, -2.0]]), "b": np.array([0.5])}
-state = to_state(model)
-__check('Listenstatus', all(isinstance(value, list) for value in state.values()))
-__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))
-__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))
-`;
-
-const ROUNDTRIP_REFERENCE = `import numpy as np
-
-
-def early_stop_epoch(val_losses, patience):
-    best = 0
-    for i, loss in enumerate(val_losses):
-        if loss < val_losses[best]:
-            best = i
-        if i - best > patience:
-            break
-    return int(best)
-
-
-def to_state(model):
-    return {name: np.asarray(arr).tolist() for name, arr in model.items()}
-
-
-def from_state(state):
-    return {name: np.asarray(value, dtype=np.float64) for name, value in state.items()}`;
-
-const MIN_DELTA_REFERENCE = `import numpy as np
-
-def early_stop_epoch(val_losses, patience, min_delta):
-    best_index = 0
-    best_loss = float(val_losses[0])
-    wait = 0
-    for index, loss in enumerate(val_losses):
-        loss = float(loss)
-        if best_loss - loss > min_delta:
-            best_loss = loss
-            best_index = index
-            wait = 0
-        elif index != best_index:
-            wait += 1
-        if wait >= patience:
-            return int(best_index)
-    return int(best_index)
-
-def to_state(model):
-    return {name: np.asarray(value).tolist() for name, value in model.items()}
-
-def from_state(state):
-    return {name: np.asarray(value, dtype=np.float64) for name, value in state.items()}
-`;
-
-const ROUNDTRIP_PROMPT = 'Early Stopping und Save/Load. <code>early_stop_epoch(val_losses, patience)</code> durchläuft die Epochen und merkt sich die beste Epoche (kleinster Verlust bisher; bei Gleichstand bleibt der frühere Index). Sobald mehr als <code>patience</code> Epochen seit der letzten Verbesserung vergangen sind, endet der Scan — zurück kommt die beste Epoche als <code>int</code> (0-basiert). Läuft die Liste nie in den Abbruch, ist es der globale Argmin. <code>to_state(model)</code> wandelt ein Dictionary von NumPy-Arrays in ein JSON-fähiges Dictionary von Listen (<code>arr.tolist()</code>); <code>from_state(state)</code> macht daraus mit <code>np.asarray(value, dtype=np.float64)</code> wieder Arrays. Der Test prüft die Stopp-Regel auf vier Kurven, den Round-Trip (gleiche Schlüssel, Formen und exakt gleiche Werte) und dass <code>json.dumps</code> den Zustand serialisieren kann.';
-
-const MIN_DELTA_PROMPT = 'Erweitere Early Stopping um eine strikte <code>min_delta</code>-Schwelle und halte zusätzlich den JSON-sicheren Array-Round-Trip ein.';
-
-const ROUNDTRIP_SOLUTION = `def early_stop_epoch(val_losses, patience):
-    best = 0
-    for i, loss in enumerate(val_losses):
-        if loss < val_losses[best]:
-            best = i
-        if i - best > patience:
-            break
-    return int(best)
-
-def to_state(model):
-    return {name: np.asarray(arr).tolist() for name, arr in model.items()}
-
-def from_state(state):
-    return {name: np.asarray(value, dtype=np.float64) for name, value in state.items()}
-
-# [1.0, 0.5, 0.6, 0.7, 0.8] mit patience 1 -> beste Epoche 1; Round-Trip ist wertexakt`;
-
-const MIN_DELTA_SOLUTION = 'Ein neuer Bestwert wird nur akzeptiert, wenn der Verlust um mehr als min_delta fällt. Nach patience nicht ausreichenden Epochen wird der bisher beste Index zurückgegeben; to_state und from_state bewahren Schlüssel, Formen und float64-Werte.';
 
 // Renamed copies of the reference solvers' early_stop_epoch bodies — embedded
 // once into the seeded test block so the learner's scan can be compared
@@ -231,11 +91,6 @@ function drawMinDeltaModel(r) {
 export const EARLY_STOP_CASES = {
   'early-stopping-roundtrip': {
     difficulty: 'stretch',
-    starterCode: ROUNDTRIP_STARTER,
-    baseTests: ROUNDTRIP_BASE_TESTS,
-    referenceSolver: ROUNDTRIP_REFERENCE,
-    prompt: ROUNDTRIP_PROMPT,
-    fullSolution: ROUNDTRIP_SOLUTION,
     refHelper: ROUNDTRIP_REF_HELPER,
     hasMinDelta: false,
     draw(r) {
@@ -245,11 +100,6 @@ export const EARLY_STOP_CASES = {
   },
   'early-stopping-min-delta-roundtrip': {
     difficulty: 'stretch',
-    starterCode: MIN_DELTA_STARTER,
-    baseTests: MIN_DELTA_BASE_TESTS,
-    referenceSolver: MIN_DELTA_REFERENCE,
-    prompt: MIN_DELTA_PROMPT,
-    fullSolution: MIN_DELTA_SOLUTION,
     refHelper: MIN_DELTA_REF_HELPER,
     hasMinDelta: true,
     draw(r) {
@@ -308,6 +158,7 @@ export const EARLY_STOP_CONTRACT = {
 // the embedded __ref_early_stop copy, the state roundtrip is asserted with
 // inline np.* expressions.
 export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: EARLY_STOP_CONTRACT,
   cases: EARLY_STOP_CASES,
   shapeError: 'Early-Stopping-Parameter verletzen die Kapselform',

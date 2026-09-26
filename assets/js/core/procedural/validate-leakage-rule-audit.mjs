@@ -10,92 +10,12 @@ import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt } from '../generator_draw_kit.mjs';
 import { pyLit, refCopy } from './py_test_kit.mjs';
+import doc from '../../../../content/families/validate-leakage-rule-audit.json' with { type: 'json' };
 
-const AUDIT_STARTER = `def audit_pipeline(steps):
-    # a step leaks if its lower-cased action matches at least one rule:
-    # 1) 'ziel' AND 'feature'  (target leak)
-    # 2) 'alle zeilen'         (statistic computed before the split)
-    # 3) 'test' AND 'fit'      (fitted on the test set)
-    # return the sorted list of 0-based indices of leaking steps
-    ...
-`;
+const anchor = (caseId) => doc.cases.find((entry) => entry.caseId === caseId);
+const AUDIT_REFERENCE = anchor('pipeline-leakage-audit').expected.referenceSolver;
 
-const SPLIT_STARTER = `def audit_pipeline(steps):
-    # return sorted indices matching the three leakage rules
-    ...
-`;
-
-const AUDIT_BASE_TESTS = `clean = [
-    {'step': 'split',  'action': 'Deterministischer Train/Test-Split mit Seed'},
-    {'step': 'impute', 'action': 'Mittelwert der Train-Spalten als Fill-Wert'},
-    {'step': 'fit',    'action': 'Modell auf Train gefittet'},
-    {'step': 'report', 'action': 'Bewertung auf Test'},
-]
-__check('saubere Pipeline: keine Leaks', audit_pipeline(clean) == [])
-target_leak = [
-    {'step': 'features', 'action': 'Ziel-Spalte als Feature uebernommen'},
-    {'step': 'split',    'action': 'Deterministischer Train/Test-Split'},
-    {'step': 'fit',      'action': 'Modell auf Train gefittet'},
-]
-__check('Ziel-Leak an Position 0', audit_pipeline(target_leak) == [0])
-scaler_leak = [
-    {'step': 'scale', 'action': 'Standardisierung ueber alle Zeilen'},
-    {'step': 'split', 'action': 'Deterministischer Train/Test-Split'},
-    {'step': 'fit',   'action': 'Modell auf Train gefittet'},
-]
-__check('Skalier-Leak vor Split an Position 0', audit_pipeline(scaler_leak) == [0])
-multi_leak = [
-    {'step': 'engineer', 'action': 'Ziel-Mittelwert als Feature eingefuegt'},
-    {'step': 'scale',    'action': 'Standardisierung ueber alle Zeilen'},
-    {'step': 'split',    'action': 'Deterministischer Train/Test-Split'},
-    {'step': 'refit',    'action': 'Transformation auf Test neu gefittet'},
-]
-__check('drei Leaks: Indizes [0, 1, 3] sortiert', audit_pipeline(multi_leak) == [0, 1, 3])
-__check('leere Pipeline: leere Liste', audit_pipeline([]) == [])
-hidden_case = [
-    {'step': 'build', 'action': 'Feature aus Ziel-Transformation abgeleitet'},
-    {'step': 'valid', 'action': 'Cross-Validation ueber fuenf Folds'},
-]
-__check('unbekannte Pipeline: nur Regel 1 schlaegt zu', audit_pipeline(hidden_case) == [0])
-`;
-
-const SPLIT_BASE_TESTS = `steps = ["split train and test", "fit scaler on train rows", "fit model on train features", "score on test rows"]
-__check("clean", audit_pipeline(steps) == [])
-leaky = ["Mittelwert über alle Zeilen berechnen", "fit scaler on train", "fit model on test features"]
-__check("all-rows and test-fit", audit_pipeline(leaky) == [0, 2])
-__check("case-insensitive", audit_pipeline(["ZIEL als FEATURE verwenden"]) == [0])`;
-
-const AUDIT_REFERENCE = `def audit_pipeline(steps):
-    '''Return sorted indices of leaking steps by three keyword rules.'''
-    leaks = []
-    for idx, step in enumerate(steps):
-        action = str(step.get('action', '')).lower()
-        is_leak = False
-        if 'ziel' in action and 'feature' in action:
-            is_leak = True
-        if 'alle zeilen' in action:
-            is_leak = True
-        if 'test' in action and 'fit' in action:
-            is_leak = True
-        if is_leak:
-            leaks.append(idx)
-    return leaks
-`;
-
-const SPLIT_REFERENCE = `def audit_pipeline(steps):
-    out = []
-    for i, step in enumerate(steps):
-        text = str(step).lower()
-        if ("ziel" in text and "feature" in text) or "alle zeilen" in text or ("test" in text and "fit" in text):
-            out.append(i)
-    return out`;
-
-const AUDIT_PROMPT = 'Final Boss: Leakage-Auditor für beschriebene Pipelines. `audit_pipeline(steps)` bekommt eine Liste von Schritten, jeder Schritt ist `{\'step\': name, \'action\': beschreibung}`. Rückgabe: aufsteigend sortierte Liste der 0-basierten Indizes aller Schritte, die leaken. Ein Schritt leakt, wenn seine kleingeschriebene Aktion mindestens eine Regel trifft: (1) Ziel-Leak: enthält \'ziel\' UND \'feature\'; (2) Statistik vor dem Split: enthält \'alle zeilen\'; (3) Fit auf Test: enthält \'test\' UND \'fit\'. Beispiel: \'Standardisierung über alle Zeilen\' → Regel 2; \'Modell auf Train gefittet\' → keine Regel (kein \'test\').';
-
-const SPLIT_PROMPT = 'Implementiere den Audit-Vertrag: melde die sortierten 0-basierten Indizes von Schritten, die Ziel-Leakage, Vorab-Statistiken über alle Zeilen oder Fitting auf Testdaten enthalten.';
-
-const AUDIT_SOLUTION = AUDIT_REFERENCE;
-const SPLIT_SOLUTION = SPLIT_REFERENCE;
+const SPLIT_REFERENCE = anchor('pipeline-clean-split').expected.referenceSolver;
 
 // Draw banks: clean strings contain at most one marker of each AND-rule and
 // never 'alle zeilen'; leak strings each trigger at least one rule. The
@@ -138,12 +58,6 @@ const drawActions = (r, len) => Array.from(
 export const LEAKAGE_AUDIT_CASES = {
   'pipeline-leakage-audit': {
     difficulty: 'stretch',
-    packages: ['numpy'],
-    starterCode: AUDIT_STARTER,
-    baseTests: AUDIT_BASE_TESTS,
-    referenceSolver: AUDIT_REFERENCE,
-    prompt: AUDIT_PROMPT,
-    fullSolution: AUDIT_SOLUTION,
     prelude: refCopy(AUDIT_REFERENCE, ['audit_pipeline']),
     draw(r) {
       const len = randInt(r, 3, 6);
@@ -160,12 +74,6 @@ export const LEAKAGE_AUDIT_CASES = {
   },
   'pipeline-clean-split': {
     difficulty: 'challenge',
-    packages: [],
-    starterCode: SPLIT_STARTER,
-    baseTests: SPLIT_BASE_TESTS,
-    referenceSolver: SPLIT_REFERENCE,
-    prompt: SPLIT_PROMPT,
-    fullSolution: SPLIT_SOLUTION,
     prelude: refCopy(SPLIT_REFERENCE, ['audit_pipeline']),
     draw(r) {
       return { steps: drawActions(r, randInt(r, 3, 6)) };
@@ -198,6 +106,7 @@ export const LEAKAGE_AUDIT_CONTRACT = {
 // The per-case prelude (renamed reference copy) is emitted once at the top of
 // the seeded block; all per-draw checks call into it.
 export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: LEAKAGE_AUDIT_CONTRACT,
   cases: LEAKAGE_AUDIT_CASES,
   shapeError: 'Leakage-Audit-Parameter verletzen die Kapselform',

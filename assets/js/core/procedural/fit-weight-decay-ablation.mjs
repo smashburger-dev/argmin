@@ -12,19 +12,9 @@ import { pyNum } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/fit-weight-decay-ablation.json' with { type: 'json' };
 
 const PACKAGES = ['numpy'];
-
-const WEIGHT_DECAY_STARTER = "import numpy as np\n\n\ndef train_decay(X, y, lam, lr, epochs, seed):\n    \"\"\"Full-batch SGD on the plain MSE for y_hat = X @ w, with weight decay.\n\n    The decay term enters only through the gradient:\n    grad = (2/n) * X.T @ (X @ w - y) + lam * w  (equivalent to an L2\n    penalty of (lam/2) * ||w||**2 added to the MSE).\n    init w from np.random.default_rng(seed).normal(size=(d, 1)) * 0.1.\n    Return {'w': final weights, 'loss_history': [plain MSE at epoch start]}.\n    \"\"\"\n    # init from seed, loop: record plain MSE (without the penalty term!),\n    # then compute the gradient WITH lam * w and update\n    ...\n\n\ndef compare_decay(X, y, lam, lr, epochs, seed):\n    \"\"\"Fair ablation: same seed and data, lam vs 0.\n\n    Return {'norm_plain', 'norm_decay', 'final_loss_plain', 'final_loss_decay'}\n    as floats; norms are np.linalg.norm(w) of the final weights and\n    final_loss_* is the last recorded loss_history entry (the plain MSE at\n    the start of the last epoch).\n    \"\"\"\n    ...\n";
-
-const WEIGHT_DECAY_BASE_TESTS = "import numpy as np\nrng = np.random.default_rng(2106)\nn = 100\nX = rng.normal(size=(n, 3))\nw_true = np.array([[1.2], [-0.6], [0.4]])\ny = X @ w_true + 0.05 * rng.normal(size=(n, 1))\nrun1 = train_decay(X, y, 0.05, 0.05, 400, 42)\nrun2 = train_decay(X, y, 0.05, 0.05, 400, 42)\n__check('Determinismus', np.array_equal(run1[\"w\"], run2[\"w\"]) and run1[\"loss_history\"] == run2[\"loss_history\"])\n__check('Schluessel train', set(run1.keys()) == {\"w\", \"loss_history\"})\n__check('Verlaufslaenge', len(run1[\"loss_history\"]) == 400)\n__check('Verlust faellt', run1[\"loss_history\"][-1] < run1[\"loss_history\"][0])\n__check('w-Form', run1[\"w\"].shape == (3, 1))\nplain = train_decay(X, y, 0.0, 0.05, 400, 42)\ncmp = compare_decay(X, y, 0.05, 0.05, 400, 42)\n__check('Ablation-Schluessel', set(cmp.keys()) == {\"norm_plain\", \"norm_decay\", \"final_loss_plain\", \"final_loss_decay\"})\n__check('Werte sind floats', all(isinstance(v, float) for v in cmp.values()))\n__check('lam=0 ist der Plain-Lauf', abs(cmp[\"norm_plain\"] - float(np.linalg.norm(plain[\"w\"]))) < 1e-12 and abs(cmp[\"final_loss_plain\"] - plain[\"loss_history\"][-1]) < 1e-12)\n__check('Ablation deterministisch', compare_decay(X, y, 0.05, 0.05, 400, 42) == cmp)\n__check('Decay schrumpft Gewichte', cmp[\"norm_decay\"] < cmp[\"norm_plain\"])\n__check('Norm-Werte plausibel', cmp[\"norm_decay\"] > 0.0 and cmp[\"norm_plain\"] > cmp[\"norm_decay\"])\ncmp_small = compare_decay(X, y, 0.001, 0.05, 400, 43)\n__check('Kleines lambda schrumpft weniger', cmp_small[\"norm_decay\"] > cmp[\"norm_decay\"] or abs(cmp_small[\"norm_decay\"] - cmp[\"norm_decay\"]) < 1e-3)";
-
-const WEIGHT_DECAY_REFERENCE = "import numpy as np\n\n\ndef train_decay(X, y, lam, lr, epochs, seed):\n    X = np.asarray(X, dtype=float)\n    y = np.asarray(y, dtype=float)\n    n, d = X.shape\n    rng = np.random.default_rng(seed)\n    w = rng.normal(size=(d, 1)) * 0.1\n    loss_history = []\n    for _ in range(int(epochs)):\n        pred = X @ w\n        loss_history.append(float(np.mean((pred - y) ** 2)))\n        grad = (2.0 / n) * (X.T @ (pred - y)) + lam * w\n        w = w - lr * grad\n    return {\"w\": w, \"loss_history\": loss_history}\n\n\ndef compare_decay(X, y, lam, lr, epochs, seed):\n    decayed = train_decay(X, y, lam, lr, epochs, seed)\n    plain = train_decay(X, y, 0.0, lr, epochs, seed)\n    return {\n        \"norm_plain\": float(np.linalg.norm(plain[\"w\"])),\n        \"norm_decay\": float(np.linalg.norm(decayed[\"w\"])),\n        \"final_loss_plain\": float(plain[\"loss_history\"][-1]),\n        \"final_loss_decay\": float(decayed[\"loss_history\"][-1]),\n    }";
-
-const WEIGHT_DECAY_PROMPT = "Final Boss faire Ablation: misst Weight Decay wirklich etwas — oder nur der Zufall? <code>train_decay(X, y, lam, lr, epochs, seed)</code> trainiert ein lineares Modell $\\hat{y} = Xw$ mit Full-Batch-SGD auf den MSE; der Decay-Term wirkt nur über den Gradienten $\\frac{2}{n} X^\\top (Xw - y) + \\lambda w$ (äquivalent zum Strafterm $(\\lambda/2)\\lVert w\\rVert^2$), Update $w \\leftarrow w - \\mathrm{lr} \\cdot \\mathrm{grad}$, Start $w = $ <code>rng.normal(size=(d, 1)) * 0.1</code> aus <code>np.random.default_rng(seed)</code>. Rückgabe: <code>{\"w\": finales w, \"loss_history\": [MSE zu Epochenbeginn]}</code>. <code>compare_decay(X, y, lam, lr, epochs, seed)</code> fährt die <em>faire</em> Ablation: zweimal <code>train_decay</code> mit demselben Seed — einmal mit $\\lambda$ und einmal mit $\\lambda = 0$ — und gibt <code>{\"norm_plain\": float, \"norm_decay\": float, \"final_loss_plain\": float, \"final_loss_decay\": float}</code> zurück (Norm: $\\lVert w \\rVert_2$ als float; <code>final_loss_*</code> ist der letzte <code>loss_history</code>-Eintrag, also der MSE zu Beginn der letzten Epoche). Der Test prüft Determinismus, dass $\\lambda = 0$ zum identischen Plain-Lauf führt, dass die Gewichte mit Decay kleiner bleiben und dass beide Verläufe fallen.";
-
-const WEIGHT_DECAY_SOLUTION = "def train_decay(X, y, lam, lr, epochs, seed):\n    rng = np.random.default_rng(seed)\n    w = rng.normal(size=(X.shape[1], 1)) * 0.1\n    loss_history = []\n    for _ in range(int(epochs)):\n        pred = X @ w\n        loss_history.append(float(np.mean((pred - y) ** 2)))\n        grad = (2.0 / X.shape[0]) * (X.T @ (pred - y)) + lam * w\n        w = w - lr * grad\n    return {\"w\": w, \"loss_history\": loss_history}\n\ndef compare_decay(X, y, lam, lr, epochs, seed):\n    decayed = train_decay(X, y, lam, lr, epochs, seed)\n    plain = train_decay(X, y, 0.0, lr, epochs, seed)\n    return {\n        \"norm_plain\": float(np.linalg.norm(plain[\"w\"])),\n        \"norm_decay\": float(np.linalg.norm(decayed[\"w\"])),\n        \"final_loss_plain\": float(plain[\"loss_history\"][-1]),\n        \"final_loss_decay\": float(decayed[\"loss_history\"][-1]),\n    }\n\n# Gleicher Seed: nur lambda unterscheidet die Laeufe; Decay haelt die Gewichtsnorm kleiner";
-
 
 const W_TRUE_POOL = [-1.5, -1, -0.5, 0.5, 1, 1.5, 2];
 const LAM_CHOICES = [0.04, 0.06, 0.08, 0.1];
@@ -40,11 +30,6 @@ const LR_CHOICES = [0.01, 0.02, 0.05];
 export const WEIGHT_DECAY_CASES = {
   'weight-decay-ablation': {
     difficulty: 'challenge',
-    starterCode: WEIGHT_DECAY_STARTER,
-    baseTests: WEIGHT_DECAY_BASE_TESTS,
-    referenceSolver: WEIGHT_DECAY_REFERENCE,
-    prompt: WEIGHT_DECAY_PROMPT,
-    fullSolution: WEIGHT_DECAY_SOLUTION,
     draw(r) {
       const trainSeed = randInt(r, 1, 9999);
       const d = randInt(r, 2, 5);
@@ -115,6 +100,7 @@ export const WEIGHT_DECAY_CONTRACT = {
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
 export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: WEIGHT_DECAY_CONTRACT,
   cases: WEIGHT_DECAY_CASES,
   shapeError: 'Weight-Decay-Parameter verletzen die Kapselform',

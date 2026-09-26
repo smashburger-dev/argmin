@@ -12,7 +12,7 @@ import {
   generateErrorJournalOrderFamily,
   solveErrorJournalOrder,
 } from '../assets/js/core/foundations_construct_families.mjs';
-import { FOUNDATIONS_CONSTRUCT_FAMILIES } from '../assets/js/domain/foundations_construct_registry.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -126,7 +126,7 @@ test('seed variance: many distinct start orders over seeds', () => {
 });
 
 test('registry instantiate: mastery, authored hints and feedback reach the instance', () => {
-  const instance = FOUNDATIONS_CONSTRUCT_FAMILIES.instantiate('construct-error-journal-order', 0, 'core', CASE_ID);
+  const instance = EXERCISE_FAMILIES.instantiate('construct-error-journal-order', 0, 'core', CASE_ID);
   assert.equal(instance.masteryEligible, true);
   assert.equal(instance.activityType, 'parsons');
   assert.equal(instance.graderId, 'deterministic');
@@ -136,7 +136,7 @@ test('registry instantiate: mastery, authored hints and feedback reach the insta
   assert.deepEqual(instance.expectedAnswer.solutionOrder, body.expected.solutionOrder);
   assert.ok(isPermutation(instance.parameters.initialOrder));
   assert.throws(
-    () => FOUNDATIONS_CONSTRUCT_FAMILIES.instantiate('construct-error-journal-order', 0, 'stretch', CASE_ID),
+    () => EXERCISE_FAMILIES.instantiate('construct-error-journal-order', 0, 'stretch', CASE_ID),
     /Unbekanntes Profil/,
   );
 });

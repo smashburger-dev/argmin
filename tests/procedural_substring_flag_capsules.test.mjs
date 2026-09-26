@@ -7,12 +7,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { EXAMPLE_BANK, FAMILY_SPEC, RULE_BANK, SUBSTRING_CASES, SUBSTRING_CONTRACT, containsInjection, substringFlagOutput } from '../assets/js/core/procedural/trace-substring-flag-sum.mjs';
+import { EXAMPLE_BANK, FAMILY_SPEC, RULE_BANK, SUBSTRING_CONTRACT, containsInjection, substringFlagOutput } from '../assets/js/core/procedural/trace-substring-flag-sum.mjs';
 
 const spec = FAMILY_SPEC;
 const genSubstringCase = spec.kit.genCase;
 const solveSubstringFamily = spec.solve;
-
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['substring-flag-sum'];
@@ -33,7 +32,7 @@ test('anchor extras: expected form, solution pin and detector mirror on the base
   for (const caseId of CASE_IDS) {
     const body = doc.cases.find((item) => item.caseId === caseId);
     assert.ok(body, `${caseId}: anchor missing`);
-    const def = SUBSTRING_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     assert.deepEqual(body.expected, { kind: 'output-lines', output: def.baseOutput }, `${caseId}: expected form`);
     assert.equal(body.fullSolution, def.baseSolution, `${caseId}: solution verbatim`);
     assert.deepEqual(body.competencyIds, def.competencyIds, `${caseId}: competencies verbatim`);
@@ -50,7 +49,7 @@ test('anchor extras: expected form, solution pin and detector mirror on the base
 
 test('snippet extras: expected kind pinned, snippet carries the drawn literals', () => {
   for (const caseId of CASE_IDS) {
-    const def = SUBSTRING_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genSubstringCase(seed, caseId, def);
       assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
@@ -67,7 +66,7 @@ test('snippet extras: expected kind pinned, snippet carries the drawn literals',
 
 test('expected output: solver recomputes the prediction deterministically', () => {
   for (const caseId of CASE_IDS) {
-    const def = SUBSTRING_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     let sawTrue = 0;
     let sawFalse = 0;
     for (let seed = 0; seed < 200; seed += 1) {
@@ -89,7 +88,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
 });
 
 test('seeded draws stay inside the declared domains', () => {
-  const def = SUBSTRING_CASES['substring-flag-sum'];
+  const def = spec.kit.cases['substring-flag-sum'];
   for (let seed = 0; seed < 200; seed += 1) {
     const { rules, beispiele, probeIndex, probeRule } = genSubstringCase(seed, 'substring-flag-sum', def).parameters;
     assert.equal(rules.length, 3, 'three rules drawn');
@@ -117,6 +116,6 @@ test('family extras: contract pins and solve rejects a tampered snippet', () => 
   assert.deepEqual(SUBSTRING_CONTRACT.caseTypes, [
     { caseId: 'substring-flag-sum', propertyTest: false },
   ]);
-  const good = genSubstringCase(0, 'substring-flag-sum', SUBSTRING_CASES['substring-flag-sum']).parameters;
+  const good = genSubstringCase(0, 'substring-flag-sum', spec.kit.cases['substring-flag-sum']).parameters;
   assert.throws(() => solveSubstringFamily({ ...good, snippet: 'x' }), /Kapselform/);
 });

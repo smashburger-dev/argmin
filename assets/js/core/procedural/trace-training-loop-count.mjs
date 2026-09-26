@@ -13,6 +13,7 @@
 
 import { randInt, until } from '../generator_draw_kit.mjs';
 import { makePredictFamily } from './case_family_kit.mjs';
+import doc from '../../../../content/families/trace-training-loop-count.json' with { type: 'json' };
 
 const DRAW_SCOPE = 'trace-training-loop-count';
 
@@ -20,18 +21,6 @@ const DRAW_SCOPE = 'trace-training-loop-count';
 const pyFloat = (value) => (Number.isInteger(value) ? `${value}.0` : String(value));
 
 // --- case 1: training-loop-count ----------------------------------------------
-
-const COUNT_BASE_SNIPPET = `n, B, epochs = 90, 40, 3
-steps = 0
-for _ in range(epochs):
-    steps += -(-n // B)
-print(steps)
-w = 10.0
-for g in [4.0, 4.0, 4.0]:
-    w = w - 0.5 * g
-print(w)`;
-
-const COUNT_BASE_OUTPUT = '9\n4.0';
 
 const GRAD_BANK = [2.0, 4.0, 6.0, 8.0];
 
@@ -72,14 +61,6 @@ function countSolution({ n, B, epochs, grads }) {
 
 // --- case 2: training-loop-drop-last -------------------------------------------
 
-const DROP_BASE_SNIPPET = `n, bs, epochs = 10, 4, 2
-starts = list(range(0, n, bs))
-steps = sum(1 for _ in range(epochs) for start in starts if start + bs <= n)
-print(starts)
-print(steps)`;
-
-const DROP_BASE_OUTPUT = '[0, 4, 8]\n4';
-
 function drawDropCase(r) {
   return until(r, () => ({
     n: randInt(r, 8, 16),
@@ -112,26 +93,6 @@ function dropSolution({ n, bs, epochs }) {
 }
 
 // --- case 3: training-loop-early-stop-counter ----------------------------------
-
-const EARLY_BASE_SNIPPET = `losses = [0.80, 0.60, 0.60, 0.595, 0.594]
-min_delta = 0.01
-patience = 2
-best = float('inf')
-wait = 0
-stopped = None
-for epoch, loss in enumerate(losses, 1):
-    if best - loss > min_delta:
-        best = loss
-        wait = 0
-    else:
-        wait += 1
-    if wait >= patience:
-        stopped = epoch
-        break
-print(stopped)
-print(best)`;
-
-const EARLY_BASE_OUTPUT = '4\n0.6';
 
 // Draw losses in integer thousandths so every comparison is exact and
 // 3-decimal values (like the base case 0.595) stay expressible. Shape like
@@ -217,10 +178,7 @@ export const LOOP_CASES = {
   'training-loop-count': {
     caseId: 'training-loop-count',
     difficulty: 'core',
-    baseSnippet: COUNT_BASE_SNIPPET,
-    baseOutput: COUNT_BASE_OUTPUT,
     baseParams: { n: 90, B: 40, epochs: 3, grads: [4.0, 4.0, 4.0] },
-    prompt: 'Trainingsschleife lesen: Was gibt dieses Programm aus? Sage die Ausgaben der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis: <code>-(-n // B)</code> ist Aufrunden in Ganzzahlarithmetik; <code>w</code> startet als float.',
     competencyIds: ['c-dl-training', 'c-python-reading'],
     draw: drawCountCase,
     toParams: (d) => ({ n: d.n, B: d.B, epochs: d.epochs, grads: d.grads }),
@@ -237,10 +195,7 @@ export const LOOP_CASES = {
   'training-loop-drop-last': {
     caseId: 'training-loop-drop-last',
     difficulty: 'core',
-    baseSnippet: DROP_BASE_SNIPPET,
-    baseOutput: DROP_BASE_OUTPUT,
     baseParams: { n: 10, bs: 4, epochs: 2 },
-    prompt: 'Lies die Batchschleife: Welche Starts erzeugt <code>range(0, n, bs)</code>, und welche davon bleiben bei einer Drop-last-Prüfung vollständig?',
     competencyIds: ['c-dl-training', 'c-python-reading'],
     draw: drawDropCase,
     toParams: (d) => ({ n: d.n, bs: d.bs, epochs: d.epochs }),
@@ -257,10 +212,7 @@ export const LOOP_CASES = {
   'training-loop-early-stop-counter': {
     caseId: 'training-loop-early-stop-counter',
     difficulty: 'stretch',
-    baseSnippet: EARLY_BASE_SNIPPET,
-    baseOutput: EARLY_BASE_OUTPUT,
     baseParams: { losses: [800, 600, 600, 595, 594], minDelta: 10, patience: 2 },
-    prompt: 'Ein Early-Stopping-Zähler verwendet <code>min_delta=0,01</code> und <code>patience=2</code>. Welche zwei Werte werden ausgegeben?',
     buildPrompt: (p) => `Ein Early-Stopping-Zähler verwendet <code>min_delta=${litLoss(p.minDelta).replace('.', ',')}</code> und <code>patience=${p.patience}</code>. Welche zwei Werte werden ausgegeben?`,
     competencyIds: ['c-dl-training', 'c-python-reading'],
     draw: drawEarlyCase,
@@ -296,6 +248,7 @@ export const LOOP_CONTRACT = {
 };
 
 export const FAMILY_SPEC = makePredictFamily({
+  doc,
   contract: LOOP_CONTRACT,
   cases: LOOP_CASES,
   shapeError: 'trace-training-loop-count: Parameter verletzen die Kapselform',

@@ -1,13 +1,9 @@
 import { createFamilyRegistry, familyHint, familyMaxHints as baseFamilyMaxHints, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
-import {
-  GIT_OPERATION_CONTRACT,
-  generateGitOperationFamily,
-  solveGitOperation,
-} from '../core/foundations_fresh_generators.mjs';
+import { GIT_OPERATION_SPEC } from '../core/foundations_fresh_generators.mjs';
 import { FOUNDATIONS_CHOICE_FAMILY_SPECS } from '../core/foundations_choice_families.mjs';
-import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mjs';
-import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
-import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
+import { FOUNDATIONS_CONSTRUCT_SPECS } from '../core/foundations_construct_families.mjs';
+import { TRACE_FAMILY_SPECS } from '../core/foundations_trace_families.mjs';
+import { LINALG_FAMILY_SPECS } from '../core/foundations_linalg_families.mjs';
 import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
 import { CHOICE_BANK_FAMILY_SPECS } from '../core/choice_bank_families.mjs';
 import { PROCEDURAL_FAMILY_SPECS } from './procedural_registry.mjs';
@@ -29,14 +25,10 @@ export const familyMaxHints = (instance) => baseFamilyMaxHints({
 });
 
 export const JS_FAMILY_SPECS = [
-  {
-    ...GIT_OPERATION_CONTRACT,
-    generate: generateGitOperationFamily,
-    solve: solveGitOperation,
-  },
+  GIT_OPERATION_SPEC,
   // S4D1: sieben statische choice-diagnose-Familien (Foundations).
-  ...FOUNDATIONS_CHOICE_FAMILY_SPECS.map(({ contract, generate, solve }) => ({ ...contract, generate, solve })),
-  // S4D1: zehn Konstruktions- und Prüf-Familien (Foundations).
+  ...FOUNDATIONS_CHOICE_FAMILY_SPECS,
+  // S4D1: elf Konstruktions- und Prüf-Familien (Foundations).
   ...FOUNDATIONS_CONSTRUCT_SPECS,
   // S4D1: sechs Trace-Familien (Foundations).
   ...TRACE_FAMILY_SPECS,

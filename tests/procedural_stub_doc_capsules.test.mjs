@@ -7,12 +7,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DOC_BANK, FAMILY_SPEC, MISS_QUERIES, STUB_DOC_CASES, STUB_DOC_CONTRACT, missCandidates, runStub } from '../assets/js/core/procedural/trace-stub-doc-sentence-select.mjs';
+import { DOC_BANK, FAMILY_SPEC, MISS_QUERIES, STUB_DOC_CONTRACT, missCandidates, runStub } from '../assets/js/core/procedural/trace-stub-doc-sentence-select.mjs';
 
 const spec = FAMILY_SPEC;
 const genStubDocCase = spec.kit.genCase;
 const solveStubDocFamily = spec.solve;
-
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['stub-doc-sentence-select'];
@@ -41,7 +40,7 @@ test('anchor extras: expected form, solution pin and stub mirror on the bank bas
   for (const caseId of CASE_IDS) {
     const body = doc.cases.find((item) => item.caseId === caseId);
     assert.ok(body, `${caseId}: anchor missing`);
-    const def = STUB_DOC_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     assert.deepEqual(body.expected, { kind: 'output-lines', output: def.baseOutput }, `${caseId}: expected form`);
     assert.equal(body.fullSolution, def.baseSolution, `${caseId}: solution verbatim`);
     assert.deepEqual(body.competencyIds, def.competencyIds, `${caseId}: competencies verbatim`);
@@ -54,7 +53,7 @@ test('anchor extras: expected form, solution pin and stub mirror on the bank bas
 
 test('snippet extras: expected kind pinned, snippet carries the drawn literals', () => {
   for (const caseId of CASE_IDS) {
-    const def = STUB_DOC_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genStubDocCase(seed, caseId, def);
       assert.equal(generated.expected.kind, 'output-lines', 'expected form like base case');
@@ -69,7 +68,7 @@ test('snippet extras: expected kind pinned, snippet carries the drawn literals',
 
 test('expected output: solver recomputes the prediction deterministically', () => {
   for (const caseId of CASE_IDS) {
-    const def = STUB_DOC_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genStubDocCase(seed, caseId, def);
       const { docs, queryHit, queryMiss } = generated.parameters;
@@ -88,7 +87,7 @@ test('expected output: solver recomputes the prediction deterministically', () =
 });
 
 test('seeded draws stay inside the declared domains', () => {
-  const def = STUB_DOC_CASES['stub-doc-sentence-select'];
+  const def = spec.kit.cases['stub-doc-sentence-select'];
   const seenDocs = new Set();
   const seenHits = new Set();
   const seenMisses = new Set();
@@ -123,6 +122,6 @@ test('family extras: contract pins and solve rejects a tampered snippet', () => 
   assert.deepEqual(STUB_DOC_CONTRACT.caseTypes, [
     { caseId: 'stub-doc-sentence-select', propertyTest: false },
   ]);
-  const good = genStubDocCase(0, 'stub-doc-sentence-select', STUB_DOC_CASES['stub-doc-sentence-select']).parameters;
+  const good = genStubDocCase(0, 'stub-doc-sentence-select', spec.kit.cases['stub-doc-sentence-select']).parameters;
   assert.throws(() => solveStubDocFamily({ ...good, snippet: 'x' }), /Kapselform/);
 });

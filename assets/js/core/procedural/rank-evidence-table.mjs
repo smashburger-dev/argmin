@@ -10,94 +10,7 @@ import { pyNum } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
-
-const EVIDENCE_PACKAGES = ["numpy"];
-const EVIDENCE_STARTER = `def evidence_table(papers):
-    """Rows per paper: absolute delta, relative percent (rounded), direction-aware
-    verdict; sorted by relative gain desc, ties by paperId ascending."""
-    # per paper: absolute = system - baseline
-    # relative_pct = int(round(100 * absolute / baseline)) or 0 if baseline == 0
-    # verdict follows paper["direction"]: "improved" if system > baseline and
-    #   direction == "higher", or system < baseline and direction == "lower";
-    #   "flat" if system == baseline; else "regressed"
-    # sort by (-relative_pct, paperId) -- numeric, direction only in verdict
-    ...
-`;
-const EVIDENCE_BASE_TESTS = `PAPERS = [
-    {"paperId": "attn-2017", "metric": "BLEU EN-DE", "direction": "higher", "baseline": 26.4, "system": 28.4},
-    {"paperId": "bert-2018", "metric": "GLUE", "direction": "higher", "baseline": 72.8, "system": 80.5},
-    {"paperId": "lora-2021", "metric": "trainierbare Parameter (Mio.)", "direction": "lower", "baseline": 175000.0, "system": 17.5},
-    {"paperId": "gpt3-2020", "metric": "F1 Demo", "direction": "higher", "baseline": 60.0, "system": 60.0},
-]
-table = evidence_table(PAPERS)
-__check('vier Zeilen', len(table) == 4)
-__check('Sortierung nach relativ absteigend', [r["paperId"] for r in table] == ["bert-2018", "attn-2017", "gpt3-2020", "lora-2021"])
-__check('bert absolut', abs(table[0]["absolute"] - 7.7) < 1e-9)
-__check('bert relativ 11', table[0]["relative_pct"] == 11)
-__check('attn absolut 2', abs(table[1]["absolute"] - 2.0) < 1e-9)
-__check('attn gerundet 8', table[1]["relative_pct"] == 8)
-__check('flat verdict', table[2]["verdict"] == "flat")
-__check('Parameter gesunken bei direction lower', table[3]["verdict"] == "improved")
-__check('lora relativ negativ gerundet', table[3]["relative_pct"] == -100)
-TIE = [
-    {"paperId": "b-paper", "metric": "m", "direction": "higher", "baseline": 40.0, "system": 50.0},
-    {"paperId": "a-paper", "metric": "m", "direction": "higher", "baseline": 80.0, "system": 100.0},
-]
-__check('Tie-Break nach paperId', [r["paperId"] for r in evidence_table(TIE)] == ["a-paper", "b-paper"])
-__check('leere Liste', evidence_table([]) == [])
-FEHLER = [{"paperId": "f-1", "metric": "Fehlerrate", "direction": "lower", "baseline": 10.0, "system": 8.0}]
-row = evidence_table(FEHLER)[0]
-__check('Fehlerrate gesunken ist improved', row["absolute"] == -2.0 and row["verdict"] == "improved")
-FEHLER_UP = [{"paperId": "f-2", "metric": "Fehlerrate", "direction": "lower", "baseline": 10.0, "system": 12.0}]
-row_up = evidence_table(FEHLER_UP)[0]
-__check('Fehlerrate gestiegen ist regressed', row_up["relative_pct"] == 20 and row_up["verdict"] == "regressed")
-ACC = [{"paperId": "a-1", "metric": "Accuracy", "direction": "higher", "baseline": 90.0, "system": 85.0}]
-__check('Accuracy gesunken ist regressed', evidence_table(ACC)[0]["verdict"] == "regressed")
-__check('Zeilenstruktur', set(row.keys()) == {"paperId", "metric", "absolute", "relative_pct", "verdict"})`;
-const EVIDENCE_REFERENCE = `def evidence_table(papers):
-    """Rows per paper: absolute delta, relative percent (rounded), direction-aware
-    verdict; sorted by relative gain desc, ties by paperId ascending."""
-    rows = []
-    for paper in papers:
-        baseline = float(paper["baseline"])
-        system = float(paper["system"])
-        absolute = system - baseline
-        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))
-        if system == baseline:
-            verdict = "flat"
-        elif (system > baseline and paper["direction"] == "higher") or (system < baseline and paper["direction"] == "lower"):
-            verdict = "improved"
-        else:
-            verdict = "regressed"
-        rows.append({"paperId": paper["paperId"], "metric": paper["metric"],
-                     "absolute": absolute, "relative_pct": relative, "verdict": verdict})
-    rows.sort(key=lambda r: (-r["relative_pct"], r["paperId"]))
-    return rows
-`;
-const EVIDENCE_PROMPT = `Final Boss Evidenztabelle: Implementiere <code>evidence_table(papers)</code>. Eingabe: Liste von Dictionaries <code>{"paperId": str, "metric": str, "direction": "higher"|"lower", "baseline": Zahl, "system": Zahl}</code> — <code>direction</code> sagt, ob bei dieser Metrik höhere Werte besser sind. Rückgabe: je Paper eine Zeile <code>{"paperId", "metric", "absolute", "relative_pct", "verdict"}</code> mit <code>absolute = system − baseline</code> und <code>relative_pct = int(round(100·absolute/baseline))</code> (0, falls <code>baseline</code> gleich 0); beide Felder bleiben Zahlensache. Das <code>verdict</code> dagegen folgt der Metrikrichtung: <code>"improved"</code>, wenn <code>system &gt; baseline</code> bei <code>direction == "higher"</code> oder <code>system &lt; baseline</code> bei <code>direction == "lower"</code>; <code>"flat"</code> bei Gleichheit; sonst <code>"regressed"</code>. Sortiert wird nach <code>relative_pct</code> absteigend, bei Gleichstand nach <code>paperId</code> aufsteigend — die Sortierung bleibt numerisch, nur das Urteil kennt die Richtung: eine gesunkene Fehlerrate (<code>direction "lower"</code>) gilt als <code>"improved"</code>, auch wenn ihr <code>relative_pct</code> negativ ist und die Zeile weit unten steht. Der Testcode umfasst Paper-artige Zahlenpaare (BLEU- und GLUE-artig, LoRA-Parameterzahlen, Fehlerrate), Tie-Break, Grenzfälle und die Zeilenstruktur.`;
-const EVIDENCE_SOLUTION = `def evidence_table(papers):
-    """Rows per paper: absolute delta, relative percent (rounded), direction-aware
-    verdict; sorted by relative gain desc, ties by paperId ascending."""
-    rows = []
-    for paper in papers:
-        baseline = float(paper["baseline"])
-        system = float(paper["system"])
-        absolute = system - baseline
-        relative = 0 if baseline == 0 else int(round(100.0 * absolute / baseline))
-        if system == baseline:
-            verdict = "flat"
-        elif (system > baseline and paper["direction"] == "higher") or (system < baseline and paper["direction"] == "lower"):
-            verdict = "improved"
-        else:
-            verdict = "regressed"
-        rows.append({"paperId": paper["paperId"], "metric": paper["metric"],
-                     "absolute": absolute, "relative_pct": relative, "verdict": verdict})
-    rows.sort(key=lambda r: (-r["relative_pct"], r["paperId"]))
-    return rows
-
-# evidence_table(PAPERS) sortiert zunaechst bert-2018 (+7.7 Punkte, relativ 11 %),
-# dann attn-2017 (+2.0, relativ 8 %), dann gpt3-2020 (flat), zuletzt lora-2021
-# (Parameter gesunken, direction "lower" -> "improved", obwohl relativ -100 %).`;
+import doc from '../../../../content/families/rank-evidence-table.json' with { type: 'json' };
 
 // --- draw domain -------------------------------------------------------------
 // Paper-like rows: realistic id/metric strings plus numeric baseline/system
@@ -183,12 +96,6 @@ function evidenceSeededChecks(entry, index) {
 export const EVIDENCE_TABLE_CASES = {
   'evidence-table-ranking': {
     difficulty: 'challenge',
-    packages: EVIDENCE_PACKAGES,
-    starterCode: EVIDENCE_STARTER,
-    baseTests: EVIDENCE_BASE_TESTS,
-    referenceSolver: EVIDENCE_REFERENCE,
-    prompt: EVIDENCE_PROMPT,
-    fullSolution: EVIDENCE_SOLUTION,
     draw: drawPaperEntry,
     seededChecks: evidenceSeededChecks,
     extraCount: 3,
@@ -212,6 +119,7 @@ export const EVIDENCE_TABLE_CONTRACT = {
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
 export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: EVIDENCE_TABLE_CONTRACT,
   cases: EVIDENCE_TABLE_CASES,
   shapeError: 'Evidenztabelle-Parameter verletzen die Kapselform',

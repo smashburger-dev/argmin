@@ -11,7 +11,9 @@
 
 import { randInt, pick, rng } from '../generator_draw_kit.mjs';
 import { refCopy, pyLit } from './py_test_kit.mjs';
+import doc from '../../../../content/families/aggregate-evidence-rule-audit.json' with { type: 'json' };
 
+const anchor = (caseId) => doc.cases.find((entry) => entry.caseId === caseId);
 const iso = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 
 // --- case evidence-rule-count (numeric, deterministic) ---------------------
@@ -102,58 +104,11 @@ const buildTraceSolution = (p) => {
 
 // --- case final-diagnosis-rules (python-code, pyodide) ---------------------
 
-const RULES_STARTER = `from datetime import date
+const RULES_STARTER = anchor('final-diagnosis-rules').parameters.starterCode;
 
+const RULES_BASE_TESTS = anchor('final-diagnosis-rules').parameters.tests;
 
-def final_diagnosis(ereignisse):
-    """Evidenzregeln: 2 Treffer, 2 Definitionen, 14 Tage, Loesungsanzeige sperrt Instanzen."""
-    ...
-
-`;
-
-const RULES_BASE_TESTS = `from datetime import date
-
-E_OK = [
-    {"tag": "2026-05-04", "instanz": "w35-e6", "art": "definition"},
-    {"tag": "2026-05-05", "instanz": "w37-e4", "art": "definition"},
-    {"tag": "2026-05-05", "instanz": "w36-e4", "art": "hit"},
-    {"tag": "2026-05-20", "instanz": "w38-e6", "art": "hit"},
-]
-r = final_diagnosis(E_OK)
-__check('erfuellt', r["status"] == "erfuellt")
-__check('zaehlungen', (r["treffer"], r["definitionen"], r["abstand_tage"]) == (2, 2, 15))
-__check('keine gesperrten', r["disqualifizierte"] == [])
-E_ZU_KURZ = [
-    {"tag": "2026-05-01", "instanz": "w35-e6", "art": "definition"},
-    {"tag": "2026-05-02", "instanz": "w37-e4", "art": "definition"},
-    {"tag": "2026-05-05", "instanz": "w36-e4", "art": "hit"},
-    {"tag": "2026-05-13", "instanz": "w38-e6", "art": "hit"},
-]
-r = final_diagnosis(E_ZU_KURZ)
-__check('abstand zu klein', r["status"] == "nicht_erfuellt" and r["abstand_tage"] == 8)
-E_GESPERRT = E_OK + [
-    {"tag": "2026-05-21", "instanz": "w38-e6", "art": "loesungsanzeige"},
-]
-r = final_diagnosis(E_GESPERRT)
-__check('instanz gesperrt', r["disqualifizierte"] == ["w38-e6"] and r["treffer"] == 1)
-__check('doppelte hits eine instanz', final_diagnosis(E_OK + [{"tag": "2026-05-06", "instanz": "w36-e4", "art": "hit"}])["treffer"] == 2)
-__check('leere liste', final_diagnosis([])["status"] == "nicht_erfuellt")`;
-
-const RULES_REFERENCE = `from datetime import date
-
-
-def final_diagnosis(ereignisse):
-    gesperrt = {e["instanz"] for e in ereignisse if e["art"] == "loesungsanzeige"}
-    treffer_daten = {e["instanz"]: date.fromisoformat(e["tag"]) for e in ereignisse if e["art"] == "hit" and e["instanz"] not in gesperrt}
-    definitionen = {e["instanz"] for e in ereignisse if e["art"] == "definition" and e["instanz"] not in gesperrt}
-    if len(treffer_daten) > 1:
-        abstand = (max(treffer_daten.values()) - min(treffer_daten.values())).days
-    else:
-        abstand = 0
-    status = "erfuellt" if len(treffer_daten) >= 2 and len(definitionen) >= 2 and abstand >= 14 else "nicht_erfuellt"
-    return {"status": status, "treffer": len(treffer_daten), "definitionen": len(definitionen), "abstand_tage": abstand, "disqualifizierte": sorted(gesperrt)}
-
-# E_OK -> (2, 2, 15) erfuellt; Loesungsanzeige auf w38-e6 -> treffer faellt auf 1`;
+const RULES_REFERENCE = anchor('final-diagnosis-rules').expected.referenceSolver;
 
 const RULES_PROMPT = 'Evidenzregeln implementieren: <code>final_diagnosis(ereignisse)</code> erhält <code>{"tag": "JJJJ-MM-TT", "instanz": str, "art": "hit"|"definition"|"loesungsanzeige"}</code>. Rückgabe <code>{"status", "treffer", "definitionen", "abstand_tage", "disqualifizierte"}</code>: Treffer = verschiedene Instanzen mit art „hit“, deren Instanz NICHT eine Lösungsanzeige hat; definitionen = verschiedene Instanzen mit art „definition“ ohne Lösungsanzeige; abstand_tage = Tage zwischen frühestem und spätem Treffer-Datum (0 bei weniger als zwei Treffern). status „erfuellt“ nur wenn treffer ≥ 2 UND definitionen ≥ 2 UND abstand_tage ≥ 14, sonst „nicht_erfuellt“. disqualifizierte = sortierte Liste der gesperrten Instanzen. Nutze datetime.date.fromisoformat.';
 

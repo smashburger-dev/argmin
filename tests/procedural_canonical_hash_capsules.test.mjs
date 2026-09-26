@@ -7,7 +7,6 @@ import * as mod from '../assets/js/core/procedural/reproduce-canonical-hash-veri
 const spec = mod.FAMILY_SPEC;
 const genHashCase = spec.kit.genCase;
 
-
 const ANSWER_POOL = [
   'Die Lieferzeit betraegt 3 Werktage.',
   'Die Frist endet nach 30 Tagen.',
@@ -20,9 +19,8 @@ const ANSWER_POOL = [
 ];
 const SOURCE_POOL = ['faq-3', 'vertrag-1', 'vertrag-2', 'agb-7', 'handbuch-2'];
 
-
 test('seeded draws stay inside the declared domains', () => {
-  const def = mod.HASH_CASES['canonical-hash-verify'];
+  const def = spec.kit.cases['canonical-hash-verify'];
   for (let seed = 0; seed < 200; seed += 1) {
     const generated = genHashCase(seed, 'canonical-hash-verify', def);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);

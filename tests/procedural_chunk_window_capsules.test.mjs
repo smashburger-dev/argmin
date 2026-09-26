@@ -11,9 +11,8 @@ const spec = mod.FAMILY_SPEC;
 const genChunkCase = spec.kit.genCase;
 const solveChunkFamily = spec.solve;
 
-
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const CHUNK_DEF = mod.CHUNK_CASES['chunk-window-loop'];
+const CHUNK_DEF = spec.kit.cases['chunk-window-loop'];
 
 // Independent JS mirror of the Python while-loop: the solver and the expected
 // output must both agree with this recomputation for every drawn instance.
@@ -24,7 +23,6 @@ const refParts = (text, size, overlap) => {
   }
   return parts;
 };
-
 
 test('anchor extras: expected form, base solution and oracle self-consistency', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/trace-chunk-window-loop.json'), 'utf8'));

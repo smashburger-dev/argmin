@@ -16,8 +16,7 @@ import {
   pairIndependent,
   maxAbsVectors,
 } from '../assets/js/core/linalg_generators.mjs';
-import { INDEPENDENCE_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
 
 const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-independence-multiple');
 const independenceCapsuleOk = spec.kit.capsuleOk;
@@ -25,7 +24,6 @@ const independenceCorrectText = spec.kit.correctText;
 const genIndependenceCapsule = spec.kit.genCapsule;
 const generateIndependenceFamily = spec.generate;
 const solveIndependenceFamily = spec.solve;
-
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit Art-Nachweis und Bound (12/5/5). Regel: Kapsel

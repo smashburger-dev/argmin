@@ -39,8 +39,6 @@ const CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
  *  serialisiert die Inhalte von genMetaErrorClassify(3401) (Fall off-by-one)
  *  in kanonischer Ordnung: korrekte Wahl an Position a, Distraktoren in
  *  rotierter Bank-Reihenfolge. */
-export const FROZEN_META_ERROR_SEED = 3401;
-
 // Eigenregistrierung der öffentlichen Fallkörper (idempotent — die
 // Registry übernimmt beim späteren Bundle-Load keine Fremdkörper).
 // Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
@@ -111,21 +109,21 @@ function solveStaticChoice(familyId, parameters) {
 
 // --- classify-string-immutability (Shard-Fall, Quelle w02-e3) ---------------
 
-export function generateStringImmutabilityFamily({ seed, caseId, difficulty }) {
+function generateStringImmutabilityFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-string-immutability', { seed, caseId, difficulty });
 }
 
-export function solveStringImmutability(parameters) {
+function solveStringImmutability(parameters) {
   return solveStaticChoice('classify-string-immutability', parameters);
 }
 
 // --- classify-set-operation-semantics (Shard-Fall, Quelle w03-e2) -----------
 
-export function generateSetOperationFamily({ seed, caseId, difficulty }) {
+function generateSetOperationFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-set-operation-semantics', { seed, caseId, difficulty });
 }
 
-export function solveSetOperation(parameters) {
+function solveSetOperation(parameters) {
   return solveStaticChoice('classify-set-operation-semantics', parameters);
 }
 
@@ -238,12 +236,12 @@ function genPowerLawErrorCase({ seed, difficulty }) {
   };
 }
 
-export function generateErrorHypothesisFamily({ seed, caseId, difficulty }) {
+function generateErrorHypothesisFamily({ seed, caseId, difficulty }) {
   if (caseId === 'base-vs-exponent-confusion') return genPowerLawErrorCase({ seed, difficulty });
   return generateStaticChoice('classify-error-hypothesis', { seed, caseId, difficulty });
 }
 
-export function solveErrorHypothesis(parameters) {
+function solveErrorHypothesis(parameters) {
   if (parameters?.kind && parameters?.caseId === 'base-vs-exponent-confusion') {
     return { correctText: powerLawCorrectText(parameters) };
   }
@@ -252,31 +250,31 @@ export function solveErrorHypothesis(parameters) {
 
 // --- classify-test-attitude (Shard-Fall, Quelle f-testing-choice-01) --------
 
-export function generateTestAttitudeFamily({ seed, caseId, difficulty }) {
+function generateTestAttitudeFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-test-attitude', { seed, caseId, difficulty });
 }
 
-export function solveTestAttitude(parameters) {
+function solveTestAttitude(parameters) {
   return solveStaticChoice('classify-test-attitude', parameters);
 }
 
 // --- classify-control-construct (Shard-Fall, Quelle f-control-choice-01) ----
 
-export function generateControlConstructFamily({ seed, caseId, difficulty }) {
+function generateControlConstructFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-control-construct', { seed, caseId, difficulty });
 }
 
-export function solveControlConstruct(parameters) {
+function solveControlConstruct(parameters) {
   return solveStaticChoice('classify-control-construct', parameters);
 }
 
 // --- classify-python-collection-choice (Shard-Fall, f-collections-choice-01) -
 
-export function generatePythonCollectionFamily({ seed, caseId, difficulty }) {
+function generatePythonCollectionFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-python-collection-choice', { seed, caseId, difficulty });
 }
 
-export function solvePythonCollection(parameters) {
+function solvePythonCollection(parameters) {
   return solveStaticChoice('classify-python-collection-choice', parameters);
 }
 
@@ -286,7 +284,7 @@ export function generateExceptionPlacementFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-exception-placement', { seed, caseId, difficulty });
 }
 
-export function solveExceptionPlacement(parameters) {
+function solveExceptionPlacement(parameters) {
   return solveStaticChoice('classify-exception-placement', parameters);
 }
 
@@ -296,7 +294,7 @@ export function solveExceptionPlacement(parameters) {
 
 const DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
-export const FOUNDATIONS_CHOICE_CONTRACTS = [
+const FOUNDATIONS_CHOICE_CONTRACTS = [
   {
     familyId: 'classify-string-immutability',
     familyGroup: 'classify-concept',
@@ -394,14 +392,13 @@ export const FOUNDATIONS_CHOICE_CONTRACTS = [
   },
 ];
 
-/** Vertrag + Runtime-Funktionen je Familie. Die Registry-Datei paart daraus
- *  `{...contract, generate, solve}` im S4C-Stil. */
+// Flat specs for the central registry: contract spread + runtime per family.
 export const FOUNDATIONS_CHOICE_FAMILY_SPECS = [
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[0], generate: generateStringImmutabilityFamily, solve: solveStringImmutability },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[1], generate: generateSetOperationFamily, solve: solveSetOperation },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[2], generate: generateErrorHypothesisFamily, solve: solveErrorHypothesis },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[3], generate: generateTestAttitudeFamily, solve: solveTestAttitude },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[4], generate: generateControlConstructFamily, solve: solveControlConstruct },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[5], generate: generatePythonCollectionFamily, solve: solvePythonCollection },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[6], generate: generateExceptionPlacementFamily, solve: solveExceptionPlacement },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[0], generate: generateStringImmutabilityFamily, solve: solveStringImmutability },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[1], generate: generateSetOperationFamily, solve: solveSetOperation },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[2], generate: generateErrorHypothesisFamily, solve: solveErrorHypothesis },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[3], generate: generateTestAttitudeFamily, solve: solveTestAttitude },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[4], generate: generateControlConstructFamily, solve: solveControlConstruct },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[5], generate: generatePythonCollectionFamily, solve: solvePythonCollection },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[6], generate: generateExceptionPlacementFamily, solve: solveExceptionPlacement },
 ];

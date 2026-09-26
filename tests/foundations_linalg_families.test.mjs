@@ -1,11 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { generateScalarProductFamily } from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import './helpers/register_static_cases.mjs';
-
-
 
 test('seeded profiles hold their numeric bounds', () => {
   const peak = (parameters) => Math.max(

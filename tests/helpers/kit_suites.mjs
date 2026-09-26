@@ -223,22 +223,22 @@ export function predictKitSuite(spec, { distinctFloor = 40 } = {}) {
   const doc = loadDoc(familyId);
   const cases = defCases(spec);
 
-  test('anchor: contract null, cases fully preserved as oracle', () => {
+  test('anchor: contract null, anchor exists and stays self-consistent', () => {
     assert.equal(doc.contract, null);
     assert.equal(doc.cases.length, cases.length);
     for (const item of cases) {
       const body = doc.cases.find((entry) => entry.caseId === item.caseId);
       assert.ok(body, `${item.caseId}: anchor missing`);
-      const def = item.def;
-      assert.equal(body.parameters.snippet, def.baseSnippet, `${item.caseId}: base snippet verbatim`);
-      assert.equal(body.expected.output, def.baseOutput, `${item.caseId}: base output verbatim`);
-      assert.equal(body.prompt, def.prompt, `${item.caseId}: prompt verbatim`);
+      // prompt/snippet/output verbatim-ties are now by construction — the kit
+      // fills them from the anchor. What still needs pinning: the anchor's
+      // own shape plus the def fields the anchor does not own.
       assert.ok(typeof body.fullSolution === 'string' && body.fullSolution.length > 40, `${item.caseId}: solution preserved`);
       if ('competencyIds' in body) {
-        assert.deepEqual(body.competencyIds, def.competencyIds, `${item.caseId}: competencies verbatim`);
+        assert.deepEqual(body.competencyIds, item.def.competencyIds, `${item.caseId}: competencies verbatim`);
       }
       // base oracle self-consistency: the builders reproduce the pinned
       // snippet AND output from the pinned base parameter set
+      const def = item.def;
       assert.ok(def.baseParams, `${item.caseId}: baseParams missing`);
       assert.equal(def.buildSnippet(def.baseParams), def.baseSnippet, `${item.caseId}: builder reproduces base snippet`);
       assert.equal(def.buildOutput(def.baseParams), def.baseOutput, `${item.caseId}: builder reproduces base output`);
@@ -302,10 +302,10 @@ export function predictKitSuite(spec, { distinctFloor = 40 } = {}) {
   });
 }
 
-// strictSolutionAnchor: almost every code family pins its def.fullSolution
-// verbatim in the JSON anchor. formula-descriptive-stats-numpy is the one
-// exception — its anchors pin curated walkthroughs while generated instances
-// carry the module's own reference text (the generated-side check stays).
+// strictSolutionAnchor: almost every code family resolves def.fullSolution
+// from the anchor, so the tie is by construction. formula-descriptive-stats-
+// numpy is the one exception — its def overrides with module text while the
+// anchor pins a curated walkthrough (we then assert the anchor stays full).
 export function codeKitSuite(spec, { distinctFloor = 40, strictSolutionAnchor = true } = {}) {
   const familyId = spec.familyId;
   const { caseOk, genCase } = spec.kit;
@@ -313,28 +313,23 @@ export function codeKitSuite(spec, { distinctFloor = 40, strictSolutionAnchor = 
   const doc = loadDoc(familyId);
   const cases = defCases(spec);
 
-  test('anchor: contract null, cases fully preserved as oracle', () => {
+  test('anchor: contract null, anchor exists and keeps its shape', () => {
     assert.equal(doc.contract, null);
     assert.equal(doc.cases.length, cases.length);
     for (const item of cases) {
       const body = doc.cases.find((entry) => entry.caseId === item.caseId);
       assert.ok(body, `${item.caseId}: anchor missing`);
+      // starterCode/baseTests/referenceSolver/prompt/packages verbatim-ties
+      // are now by construction — the kit fills them from the anchor. What
+      // still needs pinning: the anchor's own shape.
       assert.ok(body.parameters.tests.includes('__check'), `${item.caseId}: base tests preserved`);
       assert.equal(body.expected.kind, 'reference-solver');
       assert.ok(body.expected.referenceSolver.length > 50, `${item.caseId}: reference solver preserved`);
-      const def = item.def;
-      assert.equal(body.parameters.tests, def.baseTests, `${item.caseId}: base tests verbatim`);
-      assert.equal(body.parameters.starterCode, def.starterCode, `${item.caseId}: starter verbatim`);
-      // packages may live on the def or on a family-level default — compare
-      // the anchor against what the generator actually emits.
-      assert.deepEqual(body.parameters.packages, genCase(0, item.caseId, def).parameters.packages, `${item.caseId}: packages verbatim`);
-      assert.equal(body.prompt, def.prompt, `${item.caseId}: prompt verbatim`);
-      if (strictSolutionAnchor) {
-        assert.equal(body.fullSolution, def.fullSolution, `${item.caseId}: fullSolution verbatim`);
-      } else {
+      if (!strictSolutionAnchor) {
+        // explicit override family: the anchor pins a curated walkthrough
+        // while the def carries the module's own reference text.
         assert.ok(body.fullSolution.length > 40, `${item.caseId}: curated fullSolution`);
       }
-      assert.equal(body.expected.referenceSolver, def.referenceSolver, `${item.caseId}: solver verbatim`);
     }
   });
 

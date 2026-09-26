@@ -14,8 +14,7 @@ import {
   columnInstanceOk,
   solveColumnSystem,
 } from '../assets/js/core/linalg_generators.mjs';
-import { COLUMN_COMBINATION_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
 
 const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-column-combination');
 const columnCombinationCapsuleOk = spec.kit.capsuleOk;
@@ -23,7 +22,6 @@ const columnCombinationCorrectText = spec.kit.correctText;
 const genColumnCombinationCapsule = spec.kit.genCapsule;
 const generateColumnCombinationFamily = spec.generate;
 const solveColumnCombinationFamily = spec.solve;
-
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Lösung und Bound (12/12/2-7).

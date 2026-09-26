@@ -5,9 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { graders } from '../assets/js/core/graders.js';
 import {
-  TRACE_ASSIGNMENT_CONTRACT,
   TRACE_CALL_COMPOSITION_CONTRACT,
-  TRACE_DICT_CONTRACT,
   TRACE_EXCEPTION_CONTRACT,
   TRACE_FAMILY_CONTRACTS,
   TRACE_FAMILY_RUNTIME,
@@ -17,7 +15,7 @@ import {
   generateTraceAssignmentFamily,
   gradeTraceTable,
 } from '../assets/js/core/foundations_trace_families.mjs';
-import { TRACE_FAMILIES } from '../assets/js/domain/foundations_trace_registry.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -89,10 +87,10 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
     assert.ok(cases.length >= 2 || contract.caseTypes.length >= 2, 'mindestens zwei Falltypen');
     const first = cases[0].caseId;
     const second = (cases[1] || contract.caseTypes[1]).caseId;
-    const base = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first);
-    const otherCase = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'intro', second);
-    const otherSeed = TRACE_FAMILIES.instantiate(contract.familyId, 8, 'intro', first);
-    const core = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'core', first);
+    const base = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first);
+    const otherCase = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'intro', second);
+    const otherSeed = EXERCISE_FAMILIES.instantiate(contract.familyId, 8, 'intro', first);
+    const core = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'core', first);
     assert.equal(base.caseId, first);
     assert.equal(otherCase.caseId, second);
     assert.notDeepEqual(
@@ -105,18 +103,18 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
     assert.equal(base.instanceId, `${contract.familyId}:${first}:intro:7`);
     assert.equal(base.masteryEligible, true);
     assert.deepEqual(base.competencyIds, contract.competencyIds);
-    assert.deepEqual(base, TRACE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first));
-    const randomCase = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'core');
+    assert.deepEqual(base, EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first));
+    const randomCase = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'core');
     assert.ok(cases.some((item) => item.caseId === randomCase.caseId), 'Zufallsfall ist property-testfähig');
   });
 
   test(`${contract.familyId}: independent solver matches; counterexample fails`, async () => {
     for (const { caseId } of contract.caseTypes) {
       for (const difficulty of contract.difficultyProfiles) {
-        const instance = TRACE_FAMILIES.instantiate(contract.familyId, 21, difficulty, caseId);
+        const instance = EXERCISE_FAMILIES.instantiate(contract.familyId, 21, difficulty, caseId);
         assert.deepEqual(solvedValue(contract, instance), expectedValue(contract, instance), `${caseId} ${difficulty}: Solver`);
-        const right = await TRACE_FAMILIES.grade(instance, correctAnswer(instance));
-        const wrong = await TRACE_FAMILIES.grade(instance, counterexample(instance));
+        const right = await EXERCISE_FAMILIES.grade(instance, correctAnswer(instance));
+        const wrong = await EXERCISE_FAMILIES.grade(instance, counterexample(instance));
         assert.equal(right.correct, true, `${caseId} ${difficulty}: Sollantwort`);
         assert.equal(wrong.correct, false, `${caseId} ${difficulty}: Gegenbeispiel`);
       }
@@ -127,13 +125,13 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
     for (const { caseId } of propertyCases(contract)) {
       for (const difficulty of contract.difficultyProfiles) {
         for (let seed = 0; seed < 32; seed += 1) {
-          const instance = TRACE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId);
-          assert.deepEqual(instance, TRACE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId));
+          const instance = EXERCISE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId);
+          assert.deepEqual(instance, EXERCISE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId));
           assert.equal(instance.caseId, caseId);
           assert.equal(instance.difficulty, difficulty);
           assert.deepEqual(solvedValue(contract, instance), expectedValue(contract, instance));
-          assert.equal((await TRACE_FAMILIES.grade(instance, correctAnswer(instance))).correct, true);
-          assert.equal((await TRACE_FAMILIES.grade(instance, counterexample(instance))).correct, false);
+          assert.equal((await EXERCISE_FAMILIES.grade(instance, correctAnswer(instance))).correct, true);
+          assert.equal((await EXERCISE_FAMILIES.grade(instance, counterexample(instance))).correct, false);
           assert.equal(
             (await graders.deterministic.grade(instance, correctAnswer(instance))).correct,
             true,
@@ -149,7 +147,7 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
 // Dev-Probe über Seeds 0..127 ohne einen einzigen Fallback bestätigt).
 test('profile intro/stretch/challenge hold their documented numeric bounds', () => {
   const pick = (familyId, caseId, difficulty, seed) => (
-    TRACE_FAMILIES.instantiate(familyId, seed, difficulty, caseId).parameters
+    EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId).parameters
   );
   for (let seed = 0; seed < 64; seed += 1) {
     const reassign = pick('trace-assignment-state', 'reassign-two-variables-print', 'intro', seed);
@@ -183,8 +181,8 @@ test('trace-exception-path asks two options on intro and four above; position ro
     const introPositions = new Set();
     const corePositions = new Set();
     for (let seed = 0; seed < 64; seed += 1) {
-      const intro = TRACE_FAMILIES.instantiate('trace-exception-path', seed, 'intro', caseId);
-      const core = TRACE_FAMILIES.instantiate('trace-exception-path', seed, 'core', caseId);
+      const intro = EXERCISE_FAMILIES.instantiate('trace-exception-path', seed, 'intro', caseId);
+      const core = EXERCISE_FAMILIES.instantiate('trace-exception-path', seed, 'core', caseId);
       assert.equal(intro.choices.length, 2, `${caseId}: intro fragt zwei Optionen`);
       assert.equal(core.choices.length, 4, `${caseId}: core fragt vier Optionen`);
       introPositions.add(intro.choices.find((choice) => choice.correct).id);
@@ -395,7 +393,6 @@ test('trace contracts follow the shard word-for-word (solution, reference, error
     assert.deepEqual(shardFamily.membershipEvidence.errorHypotheses, entry.errorHypotheses);
   }
 });
-
 
 test('trace table states reproduce the snippet lines and the expected output', () => {
   const cases = ['reassign-two-variables-print', 'chain3-overwrite-print', 'accumulate-reassign-print'];

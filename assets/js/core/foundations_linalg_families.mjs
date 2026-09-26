@@ -49,8 +49,6 @@ const linalgCaseBody = (familyId, caseId) => { ensureLinalgDocs(); return static
 import { makeNumericFamily } from './solved_family_kit.mjs';
 import { rng, randInt, nonzeroInt, until, shuffle, drawFamilyInstance, makeChoiceFamily } from './generator_draw_kit.mjs';
 
-export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
-
 // Public-first-Fallkörper: prompt/fullSolution liegen als {name}-Templates in
 // content/families/*.json; generate() rendert sie mit den geseedeten Werten.
 // Fehlende Platzhalter schlagen fehl statt unersetzt in den Lerntext zu laufen.
@@ -385,7 +383,6 @@ const scalarProductSpec = makeNumericFamily({
   solveSeeded: solveScalarSeeded,
 });
 
-
 // --- classify-matrix-shape ---------------------------------------------------
 // Geseedet über genMatrixShapeCapsule: dims-Bank plus Rotation, ein Template
 // je Shape-Art, drei Kapseln 1:1 auf den Bestandsfällen (intro/core/stretch
@@ -432,7 +429,7 @@ function det2ProfileAccepts(difficulty) {
   return (parameters) => Math.max(...parameters.A.flat().map((value) => Math.abs(value))) >= 5;
 }
 
-export const DET2_CONTRACT = {
+const DET2_CONTRACT = {
   familyId: 'formula-det2-independence',
   familyGroup: 'formula-apply',
   summary: 'Prüft lineare Unabhängigkeit zweier Spalten über die 2×2-Determinante als geschlossene Formel mit Schluss von det ungleich 0 auf Unabhängigkeit.',
@@ -485,7 +482,7 @@ function linear2ProfileAccepts(difficulty) {
   return (parameters) => Math.max(...parameters.A.flat().map((value) => Math.abs(value))) >= 4;
 }
 
-export const SYSTEM_2X2_CONTRACT = {
+const SYSTEM_2X2_CONTRACT = {
   familyId: 'transform-system-2x2-elimination',
   familyGroup: 'transform-terms',
   summary: 'Löst ein 2×2-Gleichungssystem über Eliminationsstrategie mit Rückeinsetzen zu einem Lösungspaar.',
@@ -517,8 +514,6 @@ const system2x2Spec = makeNumericFamily({
   },
 });
 
-export const generateSystem2x2Family = (args) => { ensureLinalgDocs(); return system2x2Spec.generate(args); };
-
 // --- validate-shape-contract ---------------------------------------------------
 // Geseedet über genShapePredict plus statischen w18-e3 (drei Printzeilen).
 
@@ -529,7 +524,7 @@ function shapeProfileAccepts(difficulty) {
   return (parameters) => parameters.n >= 20;
 }
 
-export const SHAPE_CONTRACT = {
+const SHAPE_CONTRACT = {
   familyId: 'validate-shape-contract',
   familyGroup: 'validate-contract',
   summary: 'Prüft Shape- und Broadcast-Verträge von Tensoren und Matrizen.',
@@ -555,8 +550,6 @@ const shapeContractSpec = makeNumericFamily({
   solveStatic: (parameters) => ({ output: linalgCaseBody('validate-shape-contract', parameters.caseId).expected.output }),
   solveSeeded: (parameters) => ({ output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
 });
-export const generateShapeContractFamily = (args) => { ensureLinalgDocs(); return shapeContractSpec.generate(args); };
-
 // --- W05-Restfälle in bestehenden Familien (S4D7) --------------------------------
 // w05-e16 (numpy-Schleife) als statischer Predict-Fall: gleiche
 // komponentenweise Produkte wie der Rest der Familie.
@@ -601,7 +594,6 @@ const rankSpec = makeNumericFamily({
   toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
   solveSeeded: (parameters) => ({ value: rank(parameters.A) }),
 });
-
 
 // --- classify-independence-multiple ----------------------------------------------
 // Geseedet über genIndependenceCapsule: Vektor-Zahlenbank plus Rotation, ein
@@ -1078,10 +1070,18 @@ export function solveMcIndependence(parameters) {
   throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
 }
 
+// scalar-loop-output und column-vector-authored werden per Dispatch
+// generiert — das scalarProduct-Spec trägt die gewrappten Funktionen, nicht
+// die Kit-Closures (die für die beiden caseIds 'Unbekannter Fall' wuerfen).
+// Alle Einträge sichern lazy die statischen Fallkörper nach — vorher nur
+// das scalarProduct-Wrapper-Paar tat das explizit.
+const withLinalgDocs = (spec) => ({
+  ...spec,
+  generate: (args) => { ensureLinalgDocs(); return spec.generate(args); },
+  solve: (parameters) => { ensureLinalgDocs(); return spec.solve(parameters); },
+});
+
 export const LINALG_FAMILY_SPECS = [
-  // scalar-loop-output und column-vector-authored werden per Dispatch
-  // generiert — das Spec trägt die gewrappten Funktionen, nicht die
-  // Kit-Closures (die für die beiden caseIds 'Unbekannter Fall' wuerfen).
   { ...scalarProductSpec, generate: generateScalarProductFamily, solve: solveScalarProduct },
   det2Spec,
   system2x2Spec,
@@ -1098,4 +1098,4 @@ export const LINALG_FAMILY_SPECS = [
     generate: generateMcIndependenceFamily,
     solve: solveMcIndependence,
   },
-];
+].map(withLinalgDocs);

@@ -13,6 +13,7 @@
 
 import { randInt } from '../generator_draw_kit.mjs';
 import { makePredictFamily } from './case_family_kit.mjs';
+import doc from '../../../../content/families/trace-stub-doc-sentence-select.json' with { type: 'json' };
 
 const STUB_DEF = `def antwort(anfrage, docs):
     def terme(s):
@@ -27,19 +28,6 @@ const STUB_DEF = `def antwort(anfrage, docs):
         if q & terme(satz):
             return satz.strip()
     return saetze[0].strip()`;
-
-const BASE_SNIPPET = `${STUB_DEF}
-
-DOCS = [
-    "Die Lieferzeit betraegt drei Werktage. Der Versand erfolgt mit DHL.",
-    "Die Garantie deckt Herstellungsfehler. Sturzschäden sind ausgenommen.",
-]
-print(antwort("Wie erfolgt der Versand?", DOCS))
-print(antwort("Gibt es einen Parkplatz?", DOCS))`;
-
-const BASE_OUTPUT = 'Der Versand erfolgt mit DHL\nkein treffer';
-
-const PROMPT = 'Stub-Generator lesen und vorhersagen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Der Stub wählt das Dokument mit den meisten gemeinsamen Begriffen (Länge ≥ 4) und daraus den ersten Satz mit Anfragetreffer.';
 
 const BASE_SOLUTION = 'Dokument 0 punktet mit {erfolgt, versand}; der erste Satz trifft nicht, der zweite („Der Versand erfolgt mit DHL“) schon → <code>Der Versand erfolgt mit DHL</code>. Zweite Anfrage: kein gemeinsamer Begriff → <code>kein treffer</code>. Der Stub formuliert nichts neu — er kopiert belegt.';
 
@@ -156,14 +144,11 @@ export const STUB_DOC_CASES = {
   'stub-doc-sentence-select': {
     caseId: 'stub-doc-sentence-select',
     difficulty: 'core',
-    baseSnippet: BASE_SNIPPET,
-    baseOutput: BASE_OUTPUT,
     baseParams: {
       docs: DOC_BANK[0].docs,
       queryHit: 'Wie erfolgt der Versand?',
       queryMiss: 'Gibt es einen Parkplatz?',
     },
-    prompt: PROMPT,
     baseSolution: BASE_SOLUTION,
     competencyIds: ['c-genai-prototype', 'c-python-reading'],
     draw: drawStubScenario,
@@ -203,6 +188,7 @@ export const STUB_DOC_CONTRACT = {
 };
 
 export const FAMILY_SPEC = makePredictFamily({
+  doc,
   contract: STUB_DOC_CONTRACT,
   cases: STUB_DOC_CASES,
   shapeError: 'trace-stub-doc-sentence-select: Parameter verletzen die Kapselform',

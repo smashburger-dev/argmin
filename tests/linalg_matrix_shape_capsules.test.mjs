@@ -10,8 +10,7 @@ import {
   MATRIX_SHAPE_CAPSULES,
   matrixShapeOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import { MATRIX_SHAPE_CONTRACT } from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILY_SPECS } from '../assets/js/domain/foundations_linalg_registry.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
 
 const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-matrix-shape');
 const matrixShapeCapsuleOk = spec.kit.capsuleOk;
@@ -19,7 +18,6 @@ const matrixShapeCorrectText = spec.kit.correctText;
 const genMatrixShapeCapsule = spec.kit.genCapsule;
 const generateMatrixShapeFamily = spec.generate;
 const solveMatrixShapeFamily = spec.solve;
-
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit Art-Nachweis und dims-Bereich. Regel: Kapsel

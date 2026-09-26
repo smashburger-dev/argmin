@@ -9,112 +9,12 @@ import { refCopy, pyLit as py } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/construct-stub-prototype-contract.json' with { type: 'json' };
 
 const PACKAGES = [];
 
-const STUB_STARTER = `import re
-
-NO_HIT = "kein treffer"
-
-
-def _norm(text):
-    """Kleinbuchstaben, Umlaute bleiben, Satzzeichen raus, Whitespace zusammenziehen."""
-    ...
-
-def _terms(text):
-    """Inhaltsbegriffe: normierte Woerter mit Laenge >= 4, keine Ziffern."""
-    ...
-
-def _rank_docs(query, docs):
-    """(order, scores): Score = Anzahl gemeinsamer Begriffe; Gleichstand -> kleiner Index."""
-    ...
-
-def build_prototype(config):
-    """{'answer': funktion, 'metrics': funktion} Stub-Generator plus Fixtur-Metrik."""
-    ...
-
-`;
-
-const STUB_BASE_TESTS = `CONFIG4 = {
-    "docs": [
-        "Die Lieferzeit beträgt drei Werktage. Der Versand erfolgt mit DHL.",
-        "Das Widerrufsrecht endet nach vierzehn Tagen. Danach ist keine Rückgabe mehr möglich.",
-        "Rabattcodes gelten nur im Sommer. Eine Kombination mit anderen Aktionen ist ausgeschlossen.",
-        "Die Garantie deckt Herstellungsfehler. Sturzschäden sind ausgenommen.",
-    ],
-    "queries": [
-        {"query": "Wie lange beträgt die Lieferzeit?", "relevant": [0]},
-        {"query": "Was deckt die Garantie?", "relevant": [3]},
-        {"query": "Wann endet das Widerrufsrecht?", "relevant": [1]},
-        {"query": "Bis wann läuft der Rabatt?", "relevant": [2]},
-    ],
-    "k": 1,
-}
-proto4 = build_prototype(CONFIG4)
-__check('stub-antwort lieferzeit', proto4["answer"]("Wie lange beträgt die Lieferzeit?") == "Die Lieferzeit beträgt drei Werktage")
-__check('stub-antwort garantie', proto4["answer"]("Was deckt die Garantie?") == "Die Garantie deckt Herstellungsfehler")
-__check('stub-antwort zweiter satz', proto4["answer"]("Wie erfolgt der Versand?") == "Der Versand erfolgt mit DHL")
-__check('kein treffer ehrlich', proto4["answer"]("Bis wann läuft der Rabatt?") == NO_HIT)
-__check('kein treffer bei wirrwarr', proto4["answer"]("xyzzy plugh") == NO_HIT)
-m4 = proto4["metrics"]()
-__check('recall_at_k wert', abs(m4["recall_at_k"] - 0.75) < 1e-12)
-__check('answered zaehlung', m4["answered"] == 3)
-__check('antwort deterministisch', proto4["answer"]("Wie lange beträgt die Lieferzeit?") == proto4["answer"]("Wie lange beträgt die Lieferzeit?"))`;
-
-const STUB_REFERENCE = `import re
-
-NO_HIT = "kein treffer"
-
-def _norm(text):
-    stripped = re.sub(r"[!\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_\`{|}~„“”‚‘’]", " ", text.lower())
-    return " ".join(stripped.split())
-
-def _terms(text):
-    return {w for w in _norm(text).split() if len(w) >= 4 and not w.isdigit()}
-
-def _rank_docs(query, docs):
-    q_terms = _terms(query)
-    scores = [len(q_terms & _terms(doc)) for doc in docs]
-    order = sorted(range(len(docs)), key=lambda i: (-scores[i], i))
-    return order, scores
-
-def build_prototype(config):
-    docs = config["docs"]
-    k = config["k"]
-    queries = config["queries"]
-
-    def answer(query):
-        order, scores = _rank_docs(query, docs)
-        if not order or scores[order[0]] == 0:
-            return NO_HIT
-        best = order[0]
-        sentences = [s.strip() for s in docs[best].split(".") if s.strip()]
-        q_terms = _terms(query)
-        for sentence in sentences:
-            if q_terms & _terms(sentence):
-                return sentence
-        return sentences[0]
-
-    def metrics():
-        recalls = []
-        answered = 0
-        for item in queries:
-            order, scores = _rank_docs(item["query"], docs)
-            if order and scores[order[0]] > 0:
-                answered += 1
-            relevant = set(item["relevant"])
-            recalls.append(len(set(order[:k]) & relevant) / len(relevant))
-        return {"recall_at_k": sum(recalls) / len(recalls), "answered": answered}
-
-    return {"answer": answer, "metrics": metrics}
-
-# metrics() -> {'recall_at_k': 0.75, 'answered': 3}; 'Bis wann läuft der Rabatt?' -> kein treffer (Rabatt vs. Rabattcodes)`;
-
-const STUB_PROMPT = 'Baue den Prototyp-Kern: <code>build_prototype(config)</code> liefert <code>{"answer": f, "metrics": f}</code>. config: <code>docs</code> (Liste deutscher Sätze), <code>queries</code> (Liste <code>{"query", "relevant"}</code>), <code>k</code>. Retrieval-Vertrag: Begriffe = kleingeschriebene Wörter mit Länge ≥ 4 ohne Ziffern (Satzzeichen entfernt, Umlaute bleiben); Score = Anzahl gemeinsamer Begriffe, Gleichstand → kleinerer Index. <code>answer(query)</code> (Stub-Generator, kein LLM): bestes Dokument, daraus der erste Satz (Punkt-getrennt, ohne Satzzeichen), der einen Anfragebegriff enthält; kein Treffer → der konstante String <code>"kein treffer"</code>. <code>metrics()</code>: <code>{"recall_at_k": mittelwert über queries, "answered": anzahl mit Treffer}</code>, recall = |top-k ∩ relevant| / |relevant|. Alles deterministisch. Der Testcode bringt die Fixtur-Config mit.';
-
 // fullSolution equals the reference solver byte-for-byte (the JSON case
 // carries the same string in both fields, trailing comments included).
-const STUB_SOLUTION = STUB_REFERENCE;
 
 // Serializes drawn data as Python literals (the pools stay quote- and
 // backslash-free, so the generated test block has no escaping hazards).
@@ -198,12 +98,7 @@ function seededChecks(entry, index) {
 export const STUB_CASES = {
   'stub-prototype-contract': {
     difficulty: 'core',
-    starterCode: STUB_STARTER,
-    baseTests: STUB_BASE_TESTS,
-    referenceSolver: STUB_REFERENCE,
     refNames: ['build_prototype', '_norm', '_terms', '_rank_docs', 'NO_HIT'],
-    prompt: STUB_PROMPT,
-    fullSolution: STUB_SOLUTION,
     extraCount: 3,
     // Seed entries keep their { config } wrapper shape.
     draw(r) {
@@ -227,6 +122,7 @@ export const STUB_CONTRACT = {
 };
 
 export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: STUB_CONTRACT,
   cases: STUB_CASES,
   shapeError: 'Stub-Prototyp-Parameter verletzen die Kapselform',

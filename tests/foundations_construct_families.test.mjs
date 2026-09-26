@@ -8,11 +8,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { graders } from '../assets/js/core/graders.js';
 import {
   CONSTRUCT_PROFILES,
   FAMILY_NOTES,
@@ -38,8 +36,6 @@ import {
   solveValidateCount,
   generateValidateCountFamily,
   REGRESSION_SUITE_CONTRACT,
-  PALINDROM_REFERENZ,
-  PALINDROM_SUITE_REFERENZ,
   PALINDROM_TESTS,
   PALINDROM_TESTS_EXTENDED,
   PALINDROM_MUTANT_NAIVE,
@@ -62,19 +58,12 @@ import {
   solveTestDesignCoverage,
   generateTestDesignCoverageFamily,
 } from '../assets/js/core/foundations_construct_families.mjs';
-import {
-  GIT_OPERATION_CONTRACT,
-  generateGitOperationFamily,
-  solveGitOperation,
-} from '../assets/js/core/foundations_fresh_generators.mjs';
 import { countBranchCoverageLeaves } from '../assets/js/core/foundations_fresh_generators.mjs';
 import {
   createFamilyRegistry,
   familyIdTokens,
-  familyEventInput,
 } from '../assets/js/domain/exercise_registry.mjs';
-import { FOUNDATIONS_CONSTRUCT_FAMILIES } from '../assets/js/domain/foundations_construct_registry.mjs';
-import { validateSourceDocument } from '../tools/compile_content.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -96,9 +85,9 @@ const FAMILIES = [
 
 const byId = new Map(FAMILIES.map((f) => [f.contract.familyId, f]));
 const instantiate = (familyId, seed, difficulty, caseId) => (
-  FOUNDATIONS_CONSTRUCT_FAMILIES.instantiate(familyId, seed, difficulty, caseId)
+  EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId)
 );
-const grade = (instance, answer) => FOUNDATIONS_CONSTRUCT_FAMILIES.grade(instance, answer);
+const grade = (instance, answer) => EXERCISE_FAMILIES.grade(instance, answer);
 const propertyCases = (family) => family.contract.caseTypes.filter((c) => c.propertyTest !== false);
 
 function solvedOf(family, generated) {
@@ -114,12 +103,6 @@ function assertSolverMatchesExpected(family, generated) {
   else if (expected.kind === 'reference-solver') assert.ok(solved.referenceCode.includes('def '));
   else assert.fail(`unbekannte expected-Art ${expected.kind}`);
 }
-
-
-
-
-
-
 
 test('registry rejects duplicates, token aliases and empty case lists', () => {
   const entry = (family) => ({ ...family.contract, generate: family.generate, solve: family.solve });
@@ -143,11 +126,6 @@ test('registry rejects duplicates, token aliases and empty case lists', () => {
     assert.ok(family.contract.caseTypes.length >= 1, `${family.contract.familyId}: Schema-Minimum`);
   }
 });
-
-
-
-
-
 
 // Test-eigene Orakel, aus den Aufgabentexten (w03-e3/w04-e3) abgeschrieben.
 function specZaehleSummary(lines) {

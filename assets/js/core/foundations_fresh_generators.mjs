@@ -21,7 +21,6 @@ import { rng, randInt, nonzeroInt, variantCaseIndex, variantEpoch, buildRotatedC
 import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
 import gitOperationDoc from '../../../content/families/classify-git-operation.json' with { type: 'json' };
 
-
 /** Python repr for the values our generators produce. Sets are rendered
  *  in sorted order — the grader compares set literals order-insensitively
  *  because Python's set iteration order is not observable knowledge. */
@@ -759,4 +758,11 @@ export const FOUNDATIONS_FRESH_GENERATORS = {
   genExceptionBoundary,
   genBranchCoverageCount,
   genGitNextAction,
+};
+
+// Flat spec for the central registry.
+export const GIT_OPERATION_SPEC = {
+  ...GIT_OPERATION_CONTRACT,
+  generate: generateGitOperationFamily,
+  solve: solveGitOperation,
 };

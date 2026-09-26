@@ -4,9 +4,8 @@
 // Jede Familie liefert CONTRACT (Schema schemas/exercise-family.schema.json),
 // generate({ seed, caseId, difficulty }) -> { parameters, expected, prompt,
 // fullSolution, choices? } und solve(parameters) als unabhängige
-// Referenz. Die Registry steht in
-// assets/js/domain/foundations_construct_registry.mjs und wird hier NICHT
-// gebaut (nur createFamilyRegistry([...]) dort).
+// Referenz. FOUNDATIONS_CONSTRUCT_SPECS am Dateiende liefert die flachen
+// Specs für die zentrale exercise_registry.
 //
 // Leitplanken:
 // - Kein LLM irgendwo; Autoritäten sind exakte Solver (Algebra),
@@ -107,7 +106,6 @@ const constructCaseBody = (familyId, caseId) => {
   ensureConstructDocs();
   return staticCaseBody(familyId, caseId);
 };
-
 
 // --- Familie 1: transform-linear-equation-isolate (numeric-exact) ---------
 // Shard-Fälle: two-step-fixed-instance (statisch, w01-e1), two-step-seeded-
@@ -608,7 +606,7 @@ check([], {"gueltig": 0, "ungueltig": 0, "summe": 0}, "leere Liste")
 check([" ki : 7 ", "ohne:doppelpunkt:zwei", "  :9", "minus:-1"], {"gueltig": 2, "ungueltig": 2, "summe": 6}, "Trimmen und Struktur")
 check(["ki:12", "lern:+4"], {"gueltig": 1, "ungueltig": 1, "summe": 12}, "Plus-Vorzeichen ist ungueltig")`;
 
-export const ZAEHLE_STARTER = `def zaehle_zeilen(zeilen):
+const ZAEHLE_STARTER = `def zaehle_zeilen(zeilen):
     """Zaehlt gueltige/ungueltige 'name:zahl'-Zeilen und summiert die gueltigen Zahlen."""
     ...
 `;
@@ -715,7 +713,7 @@ const INSPECT_IDS = ['a', 'b', 'c', 'd', 'e', 'f'];
 /** JS-Orakel für zaehle_zeilen, aus der Spezifikation (w03-e3-Prompt)
  *  nachgebaut: genau ein Doppelpunkt, Name nach Trimmen nicht leer, Zahl
  *  nach Trimmen optional-minus-ganzzahlig ("+4" ist ungültig). */
-export function zaehleRowOutcome(line) {
+function zaehleRowOutcome(line) {
   const teile = line.split(':');
   if (teile.length !== 2) return { valid: false, add: 0 };
   const name = teile[0].trim();
@@ -725,7 +723,7 @@ export function zaehleRowOutcome(line) {
   return { valid: true, add: Number.parseInt(zahl, 10) };
 }
 
-export function zaehleSummary(lines) {
+function zaehleSummary(lines) {
   let gueltig = 0;
   let ungueltig = 0;
   let summe = 0;
@@ -744,14 +742,14 @@ export function zaehleSummary(lines) {
 /** JS-Orakel für inspect_rows (sicheres Alphabet: Dezimalziffern mit
  *  optionalem Minus vorne; Python-int-Quirks wie "_"/"+" bleiben den
  *  kuratierten Fällen vorbehalten und kommen in Seed-Zeilen nicht vor). */
-export function inspectRowOutcome(id, age, seen) {
+function inspectRowOutcome(id, age, seen) {
   const out = [];
   if (!/^-?\d+$/.test(age) || age === '-' || age === '') out.push(['invalid-age', id]);
   if (seen.has(id)) out.push(['duplicate-id', id]);
   return out;
 }
 
-export function inspectSummary(rows) {
+function inspectSummary(rows) {
   const issues = [];
   const seen = new Set();
   for (const row of rows) {
@@ -1037,7 +1035,7 @@ export const PALINDROM_SUITE_REFERENZ = `def teste_palindrom():
     return pruefungen`;
 
 /** Erweiterte Referenzsuite (Geschwisterfall): acht Prüfungen. */
-export const PALINDROM_SUITE_EXTENDED_REFERENZ = `${PALINDROM_SUITE_REFERENZ.split('\n    return pruefungen')[0]}
+const PALINDROM_SUITE_EXTENDED_REFERENZ = `${PALINDROM_SUITE_REFERENZ.split('\n    return pruefungen')[0]}
     assert ist_palindrom("A\\tb\\ta") is True
     pruefungen += 1
     assert ist_palindrom("Ab\\nc\\nb\\na") is True
@@ -1090,7 +1088,7 @@ const PALINDROM_WORDS = ['anna', 'lager', 'relief', 'pfeiler', 'otto', 'rentner'
 
 /** JS-Orakel für ist_palindrom (w04-e3-Spezifikation): Kleinbuchstaben,
  *  Leerzeichen (alle Whitespace) entfernt, Vergleich mit der Umkehrung. */
-export function palindromOutcome(s) {
+function palindromOutcome(s) {
   const normalisiert = s.toLowerCase().replace(/\s+/g, '');
   return normalisiert === [...normalisiert].reverse().join('');
 }
@@ -1708,3 +1706,18 @@ export function generateErrorJournalOrderFamily({ seed, caseId, difficulty }) {
     fullSolution: body.fullSolution,
   });
 }
+
+// Flat specs for the central registry: contract + generate + solve per family.
+export const FOUNDATIONS_CONSTRUCT_SPECS = [
+  { ...LINEAR_ISOLATE_CONTRACT, generate: generateLinearIsolateFamily, solve: solveLinearIsolate },
+  { ...POWER_LOG_CONTRACT, generate: generatePowerLogFamily, solve: solvePowerLogExponent },
+  { ...EXPRESSION_CANONICAL_CONTRACT, generate: generateExpressionCanonicalFamily, solve: solveExpressionCanonical },
+  { ...VALIDATE_COUNT_CONTRACT, generate: generateValidateCountFamily, solve: solveValidateCount },
+  { ...REGRESSION_SUITE_CONTRACT, generate: generateRegressionSuiteFamily, solve: solveRegressionSuite },
+  { ...TEST_STRUCTURE_CONTRACT, generate: generateTestStructureFamily, solve: solveTestStructure },
+  { ...GUARDED_LOOP_CONTRACT, generate: generateGuardedLoopFamily, solve: solveGuardedLoop },
+  { ...REQUIRED_FIELD_CONTRACT, generate: generateRequiredFieldFamily, solve: solveRequiredField },
+  { ...BUGFIX_WORKFLOW_CONTRACT, generate: generateBugfixWorkflowFamily, solve: solveBugfixWorkflow },
+  { ...TEST_DESIGN_COVERAGE_CONTRACT, generate: generateTestDesignCoverageFamily, solve: solveTestDesignCoverage },
+  { ...ERROR_JOURNAL_ORDER_CONTRACT, generate: generateErrorJournalOrderFamily, solve: solveErrorJournalOrder },
+];

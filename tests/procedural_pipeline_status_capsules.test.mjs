@@ -3,12 +3,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/reproduce-pipeline-status-report.mjs';
-import { PIPELINE_CASES, PIPELINE_CONTRACT } from '../assets/js/core/procedural/reproduce-pipeline-status-report.mjs';
+import { PIPELINE_CONTRACT } from '../assets/js/core/procedural/reproduce-pipeline-status-report.mjs';
 
 const spec = mod.FAMILY_SPEC;
 const genPipelineCase = spec.kit.genCase;
-
-
 
 const STAGE_NAMES = ['laden', 'pruefen', 'rechnen', 'speichern', 'berichten', 'exportieren'];
 const TOOL_POOL = ['suche', 'lese', 'export', 'mail', 'hook', 'schreibe'];
@@ -38,7 +36,7 @@ const acceptanceOf = (pruefungen) => {
 
 test('capsule extras: seeded block and inline oracle stay emitted', () => {
   for (const caseId of ['pipeline-status-report', 'call-with-timeout', 'run-stage-budget', 'start-pipeline-integration', 'verdict-rules', 'acceptance-all-contracts']) {
-    const def = PIPELINE_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genPipelineCase(seed, caseId, def);
       assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${caseId}:${seed}: seeded block`);
@@ -49,7 +47,7 @@ test('capsule extras: seeded block and inline oracle stay emitted', () => {
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const abl = genPipelineCase(seed, 'pipeline-status-report', PIPELINE_CASES['pipeline-status-report']);
+    const abl = genPipelineCase(seed, 'pipeline-status-report', spec.kit.cases['pipeline-status-report']);
     for (const entry of abl.parameters.seedCases) {
       const { config } = entry;
       assert.ok(config.docs.length >= 4 && config.docs.length <= 6, 'docs 4-6');
@@ -76,7 +74,7 @@ test('seeded draws stay inside the declared domains', () => {
       }
     }
 
-    const call = genPipelineCase(seed, 'call-with-timeout', PIPELINE_CASES['call-with-timeout']);
+    const call = genPipelineCase(seed, 'call-with-timeout', spec.kit.cases['call-with-timeout']);
     assert.equal(call.parameters.seedCases.length, 2, 'two draws');
     call.parameters.seedCases.forEach((entry, i) => {
       assert.ok(entry.budget >= 40 && entry.budget <= 160, 'budget 40-160');
@@ -85,7 +83,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(entry.value >= -50 && entry.value <= 99, 'value domain');
     });
 
-    const stage = genPipelineCase(seed, 'run-stage-budget', PIPELINE_CASES['run-stage-budget']);
+    const stage = genPipelineCase(seed, 'run-stage-budget', spec.kit.cases['run-stage-budget']);
     assert.deepEqual(stage.parameters.seedCases.map((s) => s.kind), ['ok', 'timeout', 'fehler'], 'all three kinds per capsule');
     for (const entry of stage.parameters.seedCases) {
       assert.ok(STAGE_NAMES.includes(entry.name), 'stage name domain');
@@ -94,7 +92,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(FAIL_MSGS.includes(entry.msg), 'msg domain');
     }
 
-    const pipe = genPipelineCase(seed, 'start-pipeline-integration', PIPELINE_CASES['start-pipeline-integration']);
+    const pipe = genPipelineCase(seed, 'start-pipeline-integration', spec.kit.cases['start-pipeline-integration']);
     for (const entry of pipe.parameters.seedCases) {
       assert.ok(entry.stages.length >= 2 && entry.stages.length <= 3, 'stages 2-3');
       assert.equal(new Set(entry.stages.map((s) => s.name)).size, entry.stages.length, 'stage names unique');
@@ -110,7 +108,7 @@ test('seeded draws stay inside the declared domains', () => {
       });
     }
 
-    const verdict = genPipelineCase(seed, 'verdict-rules', PIPELINE_CASES['verdict-rules']);
+    const verdict = genPipelineCase(seed, 'verdict-rules', spec.kit.cases['verdict-rules']);
     for (const entry of verdict.parameters.seedCases) {
       assert.ok([0.5, 0.6, 0.7].includes(entry.schwellen.recall_min), 'recall_min pool');
       assert.ok([0.4, 0.5, 0.6].includes(entry.schwellen.subgruppe_min), 'subgruppe_min pool');
@@ -121,7 +119,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(entry.lauf.fixtures_gesamt >= 5 && entry.lauf.fixtures_gesamt <= 9, 'gesamt 5-9');
     }
 
-    const acc = genPipelineCase(seed, 'acceptance-all-contracts', PIPELINE_CASES['acceptance-all-contracts']);
+    const acc = genPipelineCase(seed, 'acceptance-all-contracts', spec.kit.cases['acceptance-all-contracts']);
     for (const entry of acc.parameters.seedCases) {
       for (const p of entry.pruefungen) {
         assert.ok(CHECK_NAMES.includes(p.name), `check name: ${p.name}`);
@@ -133,21 +131,21 @@ test('seeded draws stay inside the declared domains', () => {
 
 test('oracle verdicts: seeded checks embed the recomputed verdict literal', () => {
   for (let seed = 0; seed < 100; seed += 1) {
-    const verdict = genPipelineCase(seed, 'verdict-rules', PIPELINE_CASES['verdict-rules']);
+    const verdict = genPipelineCase(seed, 'verdict-rules', spec.kit.cases['verdict-rules']);
     verdict.parameters.seedCases.forEach((entry, i) => {
       assert.ok(
         verdict.parameters.tests.includes(`__check('seeded verdict ${i + 1}', __sd${i + 1}_urt["verdict"] == "${verdictOf(entry)}")`),
         `verdict-rules:${seed}:${i}: literal verdict in tests`,
       );
     });
-    const acc = genPipelineCase(seed, 'acceptance-all-contracts', PIPELINE_CASES['acceptance-all-contracts']);
+    const acc = genPipelineCase(seed, 'acceptance-all-contracts', spec.kit.cases['acceptance-all-contracts']);
     acc.parameters.seedCases.forEach((entry, i) => {
       assert.ok(
         acc.parameters.tests.includes(`__sd${i + 1}_res["verdict"] == "${acceptanceOf(entry.pruefungen)}"`),
         `acceptance:${seed}:${i}: literal verdict in tests`,
       );
     });
-    const call = genPipelineCase(seed, 'call-with-timeout', PIPELINE_CASES['call-with-timeout']);
+    const call = genPipelineCase(seed, 'call-with-timeout', spec.kit.cases['call-with-timeout']);
     call.parameters.seedCases.forEach((entry, i) => {
       assert.ok(
         call.parameters.tests.includes(`__sd${i + 1}_got["status"] == "${entry.status}"`),
@@ -158,7 +156,7 @@ test('oracle verdicts: seeded checks embed the recomputed verdict literal', () =
         `call:${seed}:${i}: literal dauer in tests`,
       );
     });
-    const pipe = genPipelineCase(seed, 'start-pipeline-integration', PIPELINE_CASES['start-pipeline-integration']);
+    const pipe = genPipelineCase(seed, 'start-pipeline-integration', spec.kit.cases['start-pipeline-integration']);
     pipe.parameters.seedCases.forEach((entry, i) => {
       const want = entry.stages.some((s) => s.fail) ? 'abgebrochen' : 'ok';
       assert.ok(
@@ -167,7 +165,7 @@ test('oracle verdicts: seeded checks embed the recomputed verdict literal', () =
       );
     });
     // injection doc drawn into the ablation config stays recognizable
-    const abl = genPipelineCase(seed, 'pipeline-status-report', PIPELINE_CASES['pipeline-status-report']);
+    const abl = genPipelineCase(seed, 'pipeline-status-report', spec.kit.cases['pipeline-status-report']);
     for (const entry of abl.parameters.seedCases) {
       if (entry.config.docs.includes(INJECTION_DOC)) {
         assert.ok(abl.parameters.tests.includes('ignoriere vorherige Anweisungen'), `ablation:${seed}: injection doc literal`);
