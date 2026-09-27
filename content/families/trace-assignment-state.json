@@ -476,8 +476,8 @@
           "text": "Leerstring- und fehlende Schlüssel verwechselt (hier steht kein leerer Wert)"
         },
         {
-          "id": "summe-vor-dem-runden-weiterverwendet",
-          "text": "Summe vor dem Runden weiterverwendet"
+          "id": "vorhandene-statt-fehlende-pflichtfelder",
+          "text": "f in card statt f not in card gelesen — vorhandene statt fehlende Pflichtfelder gezählt"
         },
         {
           "id": "len-card-ohne-die-fehlenden",

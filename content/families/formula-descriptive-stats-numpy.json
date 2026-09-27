@@ -37,8 +37,8 @@
           "text": "Bin-Kanten als inklusive Intervalle links und rechts gelesen"
         },
         {
-          "id": "len-values-statt-size-nach",
-          "text": "len(values) statt .size nach der Array-Umwandlung gemischt"
+          "id": "varianz-statt-standardabweichung",
+          "text": "Varianz statt Standardabweichung zurückgegeben"
         }
       ]
     },

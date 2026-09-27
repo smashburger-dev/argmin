@@ -75,8 +75,8 @@
           "text": "absolute Fehlerzahlen statt Raten vergleichen"
         },
         {
-          "id": "gruppen-als-eigene-schleifen-statt",
-          "text": "Gruppen als eigene Schleifen statt Zähler-dict"
+          "id": "fehlerrate-in-prozent-statt-anteil",
+          "text": "Fehlerrate in Prozent statt als Anteil zurückgegeben"
         },
         {
           "id": "laengenpruefung-weglassen",
