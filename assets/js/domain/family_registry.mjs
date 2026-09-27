@@ -244,6 +244,28 @@ export function familyIdTokens(familyId) {
   return String(familyId).split('-').filter(Boolean).sort().join('\0');
 }
 
+// typicalErrors arrive as authored {id, text} entries (content docs and
+// generator literals share the shape). Instances carry the texts unchanged
+// plus the stable id list in the same order — the id namespace feeds
+// feedbackRule.misconception links and external label keying. Fail closed
+// on bare strings, missing fields or repeated ids.
+const typicalErrorFields = (familyId, caseId, items) => {
+  if (!items?.length) return null;
+  const texts = [];
+  const ids = [];
+  for (const item of items) {
+    if (!item || typeof item !== 'object' || typeof item.id !== 'string' || typeof item.text !== 'string') {
+      throw new Error(`${familyId}/${caseId}: typicalErrors-Eintrag ohne {id, text}`);
+    }
+    if (ids.includes(item.id)) {
+      throw new Error(`${familyId}/${caseId}: doppelte typicalError-id ${item.id}`);
+    }
+    ids.push(item.id);
+    texts.push(item.text);
+  }
+  return { typicalErrors: texts, typicalErrorIds: ids };
+};
+
 function requireFamily(byId, familyId) {
   const family = byId.get(familyId);
   if (!family) throw new Error(`Unbekannte Familie ${familyId}`);
@@ -516,7 +538,7 @@ export function createFamilyRegistry(families) {
       // Authored rules are anchor-bound — rebind/drop them per draw.
       ...(feedbackRules ? { feedbackRules } : null),
       ...(generated.hints ?? authored?.hints ? { hints: generated.hints ?? authored?.hints } : null),
-      ...(generated.typicalErrors ?? authored?.typicalErrors ? { typicalErrors: generated.typicalErrors ?? authored?.typicalErrors } : null),
+      ...(typicalErrorFields(familyId, resolvedCase, generated.typicalErrors ?? authored?.typicalErrors)),
       // S4D1: optionale Trace-Tabelle (Interaktionsvariante). Nur gesetzt,
       // wenn der Generator Zustände kennt; sonst undefined.
       ...(generated.traceTable ? { traceTable: generated.traceTable } : null),

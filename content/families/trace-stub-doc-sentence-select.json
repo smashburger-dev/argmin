@@ -28,9 +28,18 @@
         "Beim zweiten Aufruf prüfe den Maximal-Score — was passiert bei 0?"
       ],
       "typicalErrors": [
-        "einen Satz ohne gemeinsamen Anfragebegriff als Antwort gewählt",
-        "leeren TrefferScore als Fehler gelesen statt kein treffer",
-        "strip() beim Satz vergessen"
+        {
+          "id": "einen-satz-ohne-gemeinsamen-anfragebegriff",
+          "text": "einen Satz ohne gemeinsamen Anfragebegriff als Antwort gewählt"
+        },
+        {
+          "id": "leeren-trefferscore-als-fehler-gelesen",
+          "text": "leeren TrefferScore als Fehler gelesen statt kein treffer"
+        },
+        {
+          "id": "strip-beim-satz-vergessen",
+          "text": "strip() beim Satz vergessen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

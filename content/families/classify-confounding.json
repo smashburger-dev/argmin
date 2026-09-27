@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "aus Korrelation direkt Kausalität geschlossen",
-        "Korrelation als Kausalitäts-Widerlegung gelesen",
-        "Confounder nicht gesucht, weil $r$ „fast 1“ ist"
+        {
+          "id": "aus-korrelation-direkt-kausalitaet-geschlossen",
+          "text": "aus Korrelation direkt Kausalität geschlossen"
+        },
+        {
+          "id": "korrelation-als-kausalitaets-widerlegung-gelesen",
+          "text": "Korrelation als Kausalitäts-Widerlegung gelesen"
+        },
+        {
+          "id": "confounder-nicht-gesucht-weil-r",
+          "text": "Confounder nicht gesucht, weil $r$ „fast 1“ ist"
+        }
       ]
     },
     {
@@ -118,9 +127,18 @@
         }
       ],
       "typicalErrors": [
-        "Beobachtete Korrelation zwischen Bewegung und Schlaf als sicheren Kausaleffekt gelesen.",
-        "Eine positive Korrelation fälschlich als Ausschluss jeder Drittvariable behandelt.",
-        "Ohne zeitliche oder experimentelle Evidenz eine umgekehrte Kausalrichtung behauptet."
+        {
+          "id": "beobachtete-korrelation-zwischen-bewegung-und",
+          "text": "Beobachtete Korrelation zwischen Bewegung und Schlaf als sicheren Kausaleffekt gelesen."
+        },
+        {
+          "id": "eine-positive-korrelation-faelschlich-als",
+          "text": "Eine positive Korrelation fälschlich als Ausschluss jeder Drittvariable behandelt."
+        },
+        {
+          "id": "ohne-zeitliche-oder-experimentelle-evidenz",
+          "text": "Ohne zeitliche oder experimentelle Evidenz eine umgekehrte Kausalrichtung behauptet."
+        }
       ]
     },
     {
@@ -178,9 +196,18 @@
         }
       ],
       "typicalErrors": [
-        "Einen gemeinsamen Dezemberanstieg vollständig der Werbung zugeschrieben.",
-        "Eine kalenderbasierte Drittvariable fälschlich nur dann als Confounder zugelassen, wenn sie bereits im Modell steht.",
-        "Hohe Korrelation ohne Kontrolle der umsatzstarken Saison als kausalen Beleg verwendet."
+        {
+          "id": "einen-gemeinsamen-dezemberanstieg-vollstaendig-der",
+          "text": "Einen gemeinsamen Dezemberanstieg vollständig der Werbung zugeschrieben."
+        },
+        {
+          "id": "eine-kalenderbasierte-drittvariable-faelschlich-nur",
+          "text": "Eine kalenderbasierte Drittvariable fälschlich nur dann als Confounder zugelassen, wenn sie bereits im Modell steht."
+        },
+        {
+          "id": "hohe-korrelation-ohne-kontrolle-der",
+          "text": "Hohe Korrelation ohne Kontrolle der umsatzstarken Saison als kausalen Beleg verwendet."
+        }
       ]
     }
   ]

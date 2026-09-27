@@ -35,9 +35,18 @@
         }
       ],
       "typicalErrors": [
-        "MCAR angenommen, ohne zu fragen, warum Werte fehlen",
-        "Verzerrung mit kleiner Stichprobe verwechselt",
-        "Löschen als neutral behandelt, weil „nur Zeilen entfernt“ werden"
+        {
+          "id": "mcar-angenommen-ohne-zu-fragen",
+          "text": "MCAR angenommen, ohne zu fragen, warum Werte fehlen"
+        },
+        {
+          "id": "verzerrung-mit-kleiner-stichprobe-verwechselt",
+          "text": "Verzerrung mit kleiner Stichprobe verwechselt"
+        },
+        {
+          "id": "loeschen-als-neutral-behandelt-weil",
+          "text": "Löschen als neutral behandelt, weil „nur Zeilen entfernt“ werden"
+        }
       ],
       "choices": [
         {
@@ -96,9 +105,18 @@
         }
       ],
       "typicalErrors": [
-        "Wertabhängiges Abschalten eines Sensors fälschlich als vollständig zufälliges Fehlen klassifiziert.",
-        "Den Anteil vorhandener Werte als Beleg für unverzerrtes Löschen verwendet.",
-        "Das Entstehen eines fehlenden Messwerts mit dessen späterer Imputation verwechselt."
+        {
+          "id": "wertabhaengiges-abschalten-eines-sensors-faelschlich",
+          "text": "Wertabhängiges Abschalten eines Sensors fälschlich als vollständig zufälliges Fehlen klassifiziert."
+        },
+        {
+          "id": "den-anteil-vorhandener-werte-als",
+          "text": "Den Anteil vorhandener Werte als Beleg für unverzerrtes Löschen verwendet."
+        },
+        {
+          "id": "das-entstehen-eines-fehlenden-messwerts",
+          "text": "Das Entstehen eines fehlenden Messwerts mit dessen späterer Imputation verwechselt."
+        }
       ],
       "choices": [
         {
@@ -157,9 +175,18 @@
         }
       ],
       "typicalErrors": [
-        "Freiwillige Teilnahme pauschal als MCAR-Annahme für die Einkommenswerte behandelt.",
-        "Systematisch fehlende hohe Einkommen ohne Blick auf die Verzerrungsrichtung zusammengezählt.",
-        "Eine Medianimputation als voraussetzungsfreie Reparatur wertabhängiger Ausfälle angenommen."
+        {
+          "id": "freiwillige-teilnahme-pauschal-als-mcar",
+          "text": "Freiwillige Teilnahme pauschal als MCAR-Annahme für die Einkommenswerte behandelt."
+        },
+        {
+          "id": "systematisch-fehlende-hohe-einkommen-ohne",
+          "text": "Systematisch fehlende hohe Einkommen ohne Blick auf die Verzerrungsrichtung zusammengezählt."
+        },
+        {
+          "id": "eine-medianimputation-als-voraussetzungsfreie-reparatur",
+          "text": "Eine Medianimputation als voraussetzungsfreie Reparatur wertabhängiger Ausfälle angenommen."
+        }
       ],
       "choices": [
         {

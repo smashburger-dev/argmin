@@ -33,9 +33,18 @@
         }
       ],
       "typicalErrors": [
-        "<eos> nicht angehängt oder nicht mitgezählt",
-        "max_len als exklusive Grenze falsch gelesen",
-        "Join-Reihenfolge der Token vertauscht"
+        {
+          "id": "nicht-angehaengt-oder-nicht-mitgezaehlt",
+          "text": "<eos> nicht angehängt oder nicht mitgezählt"
+        },
+        {
+          "id": "max-len-als-exklusive-grenze",
+          "text": "max_len als exklusive Grenze falsch gelesen"
+        },
+        {
+          "id": "join-reihenfolge-der-token-vertauscht",
+          "text": "Join-Reihenfolge der Token vertauscht"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -69,9 +78,18 @@
         "step_fn bekommt eine eigene Kopie der Folge (list(ids)); nach dem Anhängen von eos sofort abbrechen."
       ],
       "typicalErrors": [
-        "Eingabeliste mutiert statt kopiert",
-        "max_len-Grenze um eins verschoben",
-        "eos aus der Rückgabe entfernt"
+        {
+          "id": "eingabeliste-mutiert-statt-kopiert",
+          "text": "Eingabeliste mutiert statt kopiert"
+        },
+        {
+          "id": "max-len-grenze-um-eins",
+          "text": "max_len-Grenze um eins verschoben"
+        },
+        {
+          "id": "eos-aus-der-rueckgabe-entfernt",
+          "text": "eos aus der Rückgabe entfernt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

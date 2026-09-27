@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Inhaltsfehler und Belegfehler vermischt",
-        "das Fehlen eines Kriteriums mit dem Verstoß gegen ein anderes verwechselt",
-        "Labels frei assoziiert statt das definierte Labelset durchzugehen"
+        {
+          "id": "inhaltsfehler-und-belegfehler-vermischt",
+          "text": "Inhaltsfehler und Belegfehler vermischt"
+        },
+        {
+          "id": "das-fehlen-eines-kriteriums-mit",
+          "text": "das Fehlen eines Kriteriums mit dem Verstoß gegen ein anderes verwechselt"
+        },
+        {
+          "id": "labels-frei-assoziiert-statt-das",
+          "text": "Labels frei assoziiert statt das definierte Labelset durchzugehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

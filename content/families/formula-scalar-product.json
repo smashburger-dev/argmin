@@ -66,9 +66,18 @@
         }
       ],
       "typicalErrors": [
-        "Zeilen- und Spaltenindex von $c_{12}$ vertauscht ($c_{21}$ oder $c_{22}$ gerechnet)",
-        "nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen",
-        "Vorzeichen des Eintrags $-1$ in $B$ übersehen"
+        {
+          "id": "zeilen-und-spaltenindex-von-c",
+          "text": "Zeilen- und Spaltenindex von $c_{12}$ vertauscht ($c_{21}$ oder $c_{22}$ gerechnet)"
+        },
+        {
+          "id": "nur-das-erste-teilprodukt-gebildet",
+          "text": "nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen"
+        },
+        {
+          "id": "vorzeichen-des-eintrags-1-in",
+          "text": "Vorzeichen des Eintrags $-1$ in $B$ übersehen"
+        }
       ]
     },
     {
@@ -134,9 +143,18 @@
         }
       ],
       "typicalErrors": [
-        "Minus mal Minus als negativ gewertet ($(−2)\\cdot(−2)$ ist $+4$)",
-        "zweites Teilprodukt $(-4)\\cdot2$ mit falschem Vorzeichen addiert",
-        "Eintragsposition verwechselt ($c_{12}$ oder $c_{21}$ statt $c_{11}$)"
+        {
+          "id": "minus-mal-minus-als-negativ",
+          "text": "Minus mal Minus als negativ gewertet ($(−2)\\cdot(−2)$ ist $+4$)"
+        },
+        {
+          "id": "zweites-teilprodukt-4-cdot2-mit",
+          "text": "zweites Teilprodukt $(-4)\\cdot2$ mit falschem Vorzeichen addiert"
+        },
+        {
+          "id": "eintragsposition-verwechselt-c-12-oder",
+          "text": "Eintragsposition verwechselt ($c_{12}$ oder $c_{21}$ statt $c_{11}$)"
+        }
       ]
     },
     {
@@ -188,9 +206,18 @@
         }
       ],
       "typicalErrors": [
-        "Vorzeichen von $(-4)\\cdot(-5)$ oder $(-3)\\cdot2$ falsch gesetzt",
-        "ein Komponentenprodukt beim Summieren ausgelassen",
-        "Komponenten nicht paarweise, sondern versetzt multipliziert"
+        {
+          "id": "vorzeichen-von-4-cdot-5",
+          "text": "Vorzeichen von $(-4)\\cdot(-5)$ oder $(-3)\\cdot2$ falsch gesetzt"
+        },
+        {
+          "id": "ein-komponentenprodukt-beim-summieren-ausgelassen",
+          "text": "ein Komponentenprodukt beim Summieren ausgelassen"
+        },
+        {
+          "id": "komponenten-nicht-paarweise-sondern-versetzt",
+          "text": "Komponenten nicht paarweise, sondern versetzt multipliziert"
+        }
       ]
     },
     {
@@ -246,9 +273,18 @@
         }
       ],
       "typicalErrors": [
-        "Vorzeichen bei $(-1)\\cdot4$ oder $3\\cdot(-2)$ übersehen",
-        "nur zwei der drei Komponentenprodukte summiert",
-        "Betrag richtig, aber das negative Gesamtvorzeichen verloren"
+        {
+          "id": "vorzeichen-bei-1-cdot4-oder",
+          "text": "Vorzeichen bei $(-1)\\cdot4$ oder $3\\cdot(-2)$ übersehen"
+        },
+        {
+          "id": "nur-zwei-der-drei-komponentenprodukte",
+          "text": "nur zwei der drei Komponentenprodukte summiert"
+        },
+        {
+          "id": "betrag-richtig-aber-das-negative",
+          "text": "Betrag richtig, aber das negative Gesamtvorzeichen verloren"
+        }
       ]
     },
     {
@@ -278,9 +314,18 @@
         }
       ],
       "typicalErrors": [
-        "Spalten statt Zeilen von A mit x multipliziert",
-        "Vorzeichen von x[1] übersehen",
-        "Tupel-Schreibweise statt der Python-Listenausgabe notiert"
+        {
+          "id": "spalten-statt-zeilen-von-a",
+          "text": "Spalten statt Zeilen von A mit x multipliziert"
+        },
+        {
+          "id": "vorzeichen-von-x-1-uebersehen",
+          "text": "Vorzeichen von x[1] übersehen"
+        },
+        {
+          "id": "tupel-schreibweise-statt-der-python",
+          "text": "Tupel-Schreibweise statt der Python-Listenausgabe notiert"
+        }
       ]
     },
     {
@@ -365,9 +410,18 @@
         "Setze dein Paar zur Probe wieder in $A x$ ein."
       ],
       "typicalErrors": [
-        "Koeffizienten vertauschen",
-        "Zeilen und Spalten verwechseln",
-        "Probe auslassen"
+        {
+          "id": "koeffizienten-vertauschen",
+          "text": "Koeffizienten vertauschen"
+        },
+        {
+          "id": "zeilen-und-spalten-verwechseln",
+          "text": "Zeilen und Spalten verwechseln"
+        },
+        {
+          "id": "probe-auslassen",
+          "text": "Probe auslassen"
+        }
       ]
     }
   ]

@@ -60,8 +60,14 @@
         }
       ],
       "typicalErrors": [
-        "Karten als Zierdokument statt Prüfgrundlage verstanden",
-        "Vollständigkeit mit positiver Darstellung verwechselt"
+        {
+          "id": "karten-als-zierdokument-statt-pruefgrundlage",
+          "text": "Karten als Zierdokument statt Prüfgrundlage verstanden"
+        },
+        {
+          "id": "vollstaendigkeit-mit-positiver-darstellung-verwechselt",
+          "text": "Vollständigkeit mit positiver Darstellung verwechselt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

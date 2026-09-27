@@ -33,8 +33,14 @@
         "del entfernt den Schlüssel komplett — notiere den Zustand von lage nach jeder der vier Zeilen."
       ],
       "typicalErrors": [
-        "Überschreiben als Anhängen eines zweiten Eintrags gelesen",
-        "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
+        {
+          "id": "ueberschreiben-als-anhaengen-eines-zweiten",
+          "text": "Überschreiben als Anhängen eines zweiten Eintrags gelesen"
+        },
+        {
+          "id": "del-zeile-ignoriert-oder-auf",
+          "text": "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -69,8 +75,14 @@
         "del entfernt den Schlüssel komplett — notiere den Zustand von lage nach jeder der vier Zeilen."
       ],
       "typicalErrors": [
-        "Überschreiben als Anhängen eines zweiten Eintrags gelesen",
-        "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
+        {
+          "id": "ueberschreiben-als-anhaengen-eines-zweiten",
+          "text": "Überschreiben als Anhängen eines zweiten Eintrags gelesen"
+        },
+        {
+          "id": "del-zeile-ignoriert-oder-auf",
+          "text": "del-Zeile ignoriert oder auf den falschen Schlüssel angewendet"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"

@@ -75,8 +75,14 @@
         "Die neue Zeile muss aus umkehrbaren Operationen auf vollständigen Gleichungen entstehen."
       ],
       "typicalErrors": [
-        "mit null skalieren",
-        "rechte Seite nicht transformieren"
+        {
+          "id": "mit-null-skalieren",
+          "text": "mit null skalieren"
+        },
+        {
+          "id": "rechte-seite-nicht-transformieren",
+          "text": "rechte Seite nicht transformieren"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

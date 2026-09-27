@@ -30,9 +30,18 @@
         "cost_table: token/1_000_000 mal Preis; alle drei Werte einzeln auf 4 Stellen runden, gesamt aus der Summe der ungerundeten Werte."
       ],
       "typicalErrors": [
-        "bestes f1 vor dem Paritätsfilter gewählt",
-        "Gleichstand über Listenposition statt kleinere Schwelle aufgelöst",
-        "Kosten aus gerundeten Einzelwerten summiert"
+        {
+          "id": "bestes-f1-vor-dem-paritaetsfilter",
+          "text": "bestes f1 vor dem Paritätsfilter gewählt"
+        },
+        {
+          "id": "gleichstand-ueber-listenposition-statt-kleinere",
+          "text": "Gleichstand über Listenposition statt kleinere Schwelle aufgelöst"
+        },
+        {
+          "id": "kosten-aus-gerundeten-einzelwerten-summiert",
+          "text": "Kosten aus gerundeten Einzelwerten summiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

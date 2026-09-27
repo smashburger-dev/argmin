@@ -278,9 +278,9 @@ export function genRmseUnitFromMse(seed) {
       ],
       feedbackRules,
       typicalErrors: [
-        'Wurzel beim Übergang MSE → RMSE vergessen',
-        'die Einheiten von MSE (quadriert) und RMSE (Zieleinheit) verwechseln',
-        'glauben, RMSE brauche die Einzelfehler',
+        { id: 'wurzel-beim-uebergang-mse-rmse', text: 'Wurzel beim Übergang MSE → RMSE vergessen' },
+        { id: 'die-einheiten-von-mse-quadriert', text: 'die Einheiten von MSE (quadriert) und RMSE (Zieleinheit) verwechseln' },
+        { id: 'glauben-rmse-brauche-die-einzelfehler', text: 'glauben, RMSE brauche die Einzelfehler' },
       ],
     };
   });
@@ -956,20 +956,21 @@ export function genStageTimeouts(seed) {
     const ok = durations.filter((c) => c.duration <= budget).length;
     const listing = durations.map((c) => `Aufruf ${c.label} startet bei ${c.start} und endet bei ${c.end}`).join('; ');
     const ledger = durations.map((c) => `${c.label} = ${c.duration} ${c.duration <= budget ? '≤' : '>'} ${budget} ${c.duration <= budget ? 'ok' : 'Timeout'}`).join(', ');
+    const body = formulaStatBody('stage-timeout-count');
     const feedbackRules = misconceptionRules(ok, [
       {
         n: durations.filter((c) => c.end <= budget).length,
-        misconception: 'endzeit-statt-dauer',
+        misconception: body.typicalErrors[0].id,
         then: `Das wäre das Ergebnis, wenn man die Endzeitpunkte mit dem Budget ${budget} vergleicht — gefragt ist die Dauer (Ende − Start), nicht der absolute Zeitpunkt.`,
       },
       {
         n: durations.filter((c) => c.duration < budget).length,
-        misconception: 'grenzfall-budget-als-timeout',
+        misconception: body.typicalErrors[1].id,
         then: `Das wertet eine Dauer exakt am Budget ${budget} als Timeout — „höchstens“ heißt: Gleichstand ist noch ok.`,
       },
       {
         n: durations.filter((c) => c.start + c.end <= budget).length,
-        misconception: 'start-plus-ende',
+        misconception: body.typicalErrors[2].id,
         then: `Das kommt heraus, wenn Start- und Endzeit addiert statt subtrahiert werden — die Dauer ist Ende − Start.`,
       },
     ]);
@@ -982,7 +983,7 @@ export function genStageTimeouts(seed) {
         'Dauer = Endzeit minus Startzeit — die absoluten Zeitpunkte sind irrelevant, nur die Differenz zählt.',
         'Exakt im Budget (Dauer = Budget) gilt noch als ok.',
       ],
-      typicalErrors: formulaStatBody('stage-timeout-count').typicalErrors,
+      typicalErrors: body.typicalErrors,
       ...(feedbackRules.length ? { feedbackRules } : {}),
     };
   });
@@ -1039,20 +1040,21 @@ export function genDependencyPins(seed) {
       ? `${markers.slice(0, -1).join(', ')} oder ${markers[markers.length - 1]}`
       : markers[0];
     const starCount = specs.filter((spec) => spec.marker === '*').reduce((sum, spec) => sum + spec.count, 0);
+    const body = formulaStatBody('dependency-pin-count');
     const feedbackRules = misconceptionRules(violations, [
       {
         n: specs.length,
-        misconception: 'spec-arten-statt-eintraege',
+        misconception: body.typicalErrors[0].id,
         then: `Das zählt nur die Spec-Arten — gefragt sind die Einträge; „${specs[0].spec}“ steht z. B. für ${specs[0].count} ${specs[0].count === 1 ? 'Eintrag' : 'Einträge'}.`,
       },
       {
         n: total,
-        misconception: 'exakte-pins-mitgezaehlt',
+        misconception: body.typicalErrors[1].id,
         then: `Das zählt alle ${total} Einträge — exakte Pins ohne Marker sind regelkonform und gehören nicht dazu.`,
       },
       {
         n: violations - starCount,
-        misconception: 'wildcard-harmlos',
+        misconception: body.typicalErrors[2].id,
         then: `Das lässt die ${starCount} Wildcard-Einträge außen vor — „*“ ist keine harmlose Spec.`,
       },
     ]);
@@ -1065,7 +1067,7 @@ export function genDependencyPins(seed) {
         `Gezählt wird jeder Eintrag, der irgendeinen Marker trägt: ${markerList}.`,
         'Zähle Einträge, nicht Marker-Arten — derselbe Marker kann bei mehreren Einträgen auftreten.',
       ],
-      typicalErrors: formulaStatBody('dependency-pin-count').typicalErrors,
+      typicalErrors: body.typicalErrors,
       ...(feedbackRules.length ? { feedbackRules } : {}),
     };
   });

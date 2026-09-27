@@ -32,9 +32,18 @@
         "Der Anfragevektor bekommt dieselbe idf-Gewichtung wie die Dokumente; bei Score-Gleichstand gewinnt der kleinere Index (sortiere mit key=(-score, i))."
       ],
       "typicalErrors": [
-        "Anfrage anders normalisiert als Dokumente",
-        "Kosinus ohne Längennormierung gerechnet",
-        "argsort ohne stabilen Tie-Break verwendet"
+        {
+          "id": "anfrage-anders-normalisiert-als-dokumente",
+          "text": "Anfrage anders normalisiert als Dokumente"
+        },
+        {
+          "id": "kosinus-ohne-laengennormierung-gerechnet",
+          "text": "Kosinus ohne Längennormierung gerechnet"
+        },
+        {
+          "id": "argsort-ohne-stabilen-tie-break",
+          "text": "argsort ohne stabilen Tie-Break verwendet"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -69,9 +78,18 @@
         "Recall@k zählt den Schnitt |top-k ∩ relevant|; MRR bricht nach dem ersten relevanten Dokument ab."
       ],
       "typicalErrors": [
-        "MRR null-basiert gerechnet",
-        "Recall über alle gelisteten statt der top-k",
-        "bei MRR alle relevanten Dokumente summiert"
+        {
+          "id": "mrr-null-basiert-gerechnet",
+          "text": "MRR null-basiert gerechnet"
+        },
+        {
+          "id": "recall-ueber-alle-gelisteten-statt",
+          "text": "Recall über alle gelisteten statt der top-k"
+        },
+        {
+          "id": "bei-mrr-alle-relevanten-dokumente",
+          "text": "bei MRR alle relevanten Dokumente summiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

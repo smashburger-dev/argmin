@@ -30,9 +30,18 @@
         "Der Digest läuft über kanonisch.encode(\"utf-8\"); ids und n kommen aus denselben Daten, nicht aus dem Hash."
       ],
       "typicalErrors": [
-        "Eingabereihenfolge nicht wegkanonisiert",
-        "json.dumps-Parameter vergessen (ensure_ascii, separators)",
-        "über etwas anderes als die Serialisierung gehasht"
+        {
+          "id": "eingabereihenfolge-nicht-wegkanonisiert",
+          "text": "Eingabereihenfolge nicht wegkanonisiert"
+        },
+        {
+          "id": "json-dumps-parameter-vergessen-ensure",
+          "text": "json.dumps-Parameter vergessen (ensure_ascii, separators)"
+        },
+        {
+          "id": "ueber-etwas-anderes-als-die",
+          "text": "über etwas anderes als die Serialisierung gehasht"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

@@ -31,9 +31,18 @@
         "compare_rulesets vergleicht die Accuracies; bei Gleichstand entscheidet 'tie', nicht Reihenfolge."
       ],
       "typicalErrors": [
-        "Accuracy manuell statt über correct/len berechnet",
-        "Labels gezählt, aber correct nicht mit record['label'] abgeglichen",
-        "Gleichstand in compare_rulesets falsch behandelt"
+        {
+          "id": "accuracy-manuell-statt-ueber-correct",
+          "text": "Accuracy manuell statt über correct/len berechnet"
+        },
+        {
+          "id": "labels-gezaehlt-aber-correct-nicht",
+          "text": "Labels gezählt, aber correct nicht mit record['label'] abgeglichen"
+        },
+        {
+          "id": "gleichstand-in-compare-rulesets-falsch",
+          "text": "Gleichstand in compare_rulesets falsch behandelt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
@@ -67,9 +76,18 @@
         "best_by_f1 sortiert nach (-f1, name): der Name ist der Schlüssel, nicht die Zeile."
       ],
       "typicalErrors": [
-        "f1 aus ungerundeten Werten unterschiedlich berechnet",
-        "Gleichstand ohne Namens-Tie-Break entschieden",
-        "flagged nur als tp gezählt"
+        {
+          "id": "f1-aus-ungerundeten-werten-unterschiedlich",
+          "text": "f1 aus ungerundeten Werten unterschiedlich berechnet"
+        },
+        {
+          "id": "gleichstand-ohne-namens-tie-break",
+          "text": "Gleichstand ohne Namens-Tie-Break entschieden"
+        },
+        {
+          "id": "flagged-nur-als-tp-gezaehlt",
+          "text": "flagged nur als tp gezählt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

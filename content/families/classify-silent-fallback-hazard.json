@@ -38,9 +38,18 @@
         }
       ],
       "typicalErrors": [
-        "None als Fehlersignal verwendet",
-        "Ausnahme global geschluckt statt lokal zuzuordnen",
-        "Fehlerzustand als normalen Wert weiterverarbeitet"
+        {
+          "id": "none-als-fehlersignal-verwendet",
+          "text": "None als Fehlersignal verwendet"
+        },
+        {
+          "id": "ausnahme-global-geschluckt-statt-lokal",
+          "text": "Ausnahme global geschluckt statt lokal zuzuordnen"
+        },
+        {
+          "id": "fehlerzustand-als-normalen-wert-weiterverarbeitet",
+          "text": "Fehlerzustand als normalen Wert weiterverarbeitet"
+        }
       ],
       "choices": [
         {

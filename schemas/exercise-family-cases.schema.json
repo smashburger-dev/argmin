@@ -129,7 +129,10 @@
             }
           }
         },
-        "typicalErrors": { "type": "array" },
+        "typicalErrors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/typicalError" }
+        },
         "activityType": {
           "enum": [
             "numeric", "single-choice", "vector", "algebraic-expression",
@@ -164,6 +167,15 @@
         "if": { "type": "string", "minLength": 1 },
         "then": { "type": "string", "minLength": 1 },
         "misconception": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" }
+      }
+    },
+    "typicalError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+        "text": { "type": "string", "minLength": 1 }
       }
     },
     "poolStatement": {

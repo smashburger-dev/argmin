@@ -28,9 +28,18 @@
         "Im letzten print wird nur gegen eine andere, einzelne Regel geprüft."
       ],
       "typicalErrors": [
-        "mehrfache Regel-Treffer pro Beispiel doppelt gezählt",
-        "Groß-/Kleinschreibung beim Substring-Vergleich vergessen",
-        "sum() über Booleans als String gelesen"
+        {
+          "id": "mehrfache-regel-treffer-pro-beispiel",
+          "text": "mehrfache Regel-Treffer pro Beispiel doppelt gezählt"
+        },
+        {
+          "id": "gross-kleinschreibung-beim-substring-vergleich",
+          "text": "Groß-/Kleinschreibung beim Substring-Vergleich vergessen"
+        },
+        {
+          "id": "sum-ueber-booleans-als-string",
+          "text": "sum() über Booleans als String gelesen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

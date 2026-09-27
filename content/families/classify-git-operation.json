@@ -340,8 +340,14 @@
         }
       ],
       "typicalErrors": [
-        "grüne Tests vor dem Merge als Beleg danach behandeln",
-        "Konflikt mechanisch statt fachlich lösen"
+        {
+          "id": "gruene-tests-vor-dem-merge",
+          "text": "grüne Tests vor dem Merge als Beleg danach behandeln"
+        },
+        {
+          "id": "konflikt-mechanisch-statt-fachlich-loesen",
+          "text": "Konflikt mechanisch statt fachlich lösen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

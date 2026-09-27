@@ -35,9 +35,18 @@
         }
       ],
       "typicalErrors": [
-        "Bias-Parameter weglassen und nur $d \\cdot h$ zählen",
-        "nur die versteckte Schicht zählen und die Ausgabeschicht vergessen, die mit $h$ mitwächst",
-        "Differenz der Neuronenzahlen statt der Parameterdifferenz angeben"
+        {
+          "id": "bias-parameter-weglassen-und-nur",
+          "text": "Bias-Parameter weglassen und nur $d \\cdot h$ zählen"
+        },
+        {
+          "id": "nur-die-versteckte-schicht-zaehlen",
+          "text": "nur die versteckte Schicht zählen und die Ausgabeschicht vergessen, die mit $h$ mitwächst"
+        },
+        {
+          "id": "differenz-der-neuronenzahlen-statt-der",
+          "text": "Differenz der Neuronenzahlen statt der Parameterdifferenz angeben"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -74,9 +83,18 @@
         }
       ],
       "typicalErrors": [
-        "abgerundet statt aufgerundet (Restbatch vergessen)",
-        "Schritte pro Epoche mit Schritten insgesamt verwechselt",
-        "glatte Division angenommen, obwohl ein Rest bleibt"
+        {
+          "id": "abgerundet-statt-aufgerundet-restbatch-vergessen",
+          "text": "abgerundet statt aufgerundet (Restbatch vergessen)"
+        },
+        {
+          "id": "schritte-pro-epoche-mit-schritten",
+          "text": "Schritte pro Epoche mit Schritten insgesamt verwechselt"
+        },
+        {
+          "id": "glatte-division-angenommen-obwohl-ein",
+          "text": "glatte Division angenommen, obwohl ein Rest bleibt"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -113,9 +131,18 @@
         }
       ],
       "typicalErrors": [
-        "nur eine Maske gezählt",
-        "Einsen beider Masken addiert statt UND-verknüpft",
-        "Skalierungsfaktor 1/p auf die Anzahl angewendet"
+        {
+          "id": "nur-eine-maske-gezaehlt",
+          "text": "nur eine Maske gezählt"
+        },
+        {
+          "id": "einsen-beider-masken-addiert-statt",
+          "text": "Einsen beider Masken addiert statt UND-verknüpft"
+        },
+        {
+          "id": "skalierungsfaktor-1-p-auf-die",
+          "text": "Skalierungsfaktor 1/p auf die Anzahl angewendet"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -152,9 +179,18 @@
         }
       ],
       "typicalErrors": [
-        "Zeilen- mit Spaltenzahl vertauscht",
-        "Diagonale in die Maskenzählung einbezogen",
-        "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+        {
+          "id": "zeilen-mit-spaltenzahl-vertauscht",
+          "text": "Zeilen- mit Spaltenzahl vertauscht"
+        },
+        {
+          "id": "diagonale-in-die-maskenzaehlung-einbezogen",
+          "text": "Diagonale in die Maskenzählung einbezogen"
+        },
+        {
+          "id": "durch-d-k-statt-sqrt",
+          "text": "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -191,9 +227,18 @@
         }
       ],
       "typicalErrors": [
-        "Sondertokens vergessen",
-        "Merges doppelt gezählt (Symbole und Ausgangspaare)",
-        "bei Zielgrößen die Rückrechnung andersherum aufgestellt"
+        {
+          "id": "sondertokens-vergessen",
+          "text": "Sondertokens vergessen"
+        },
+        {
+          "id": "merges-doppelt-gezaehlt-symbole-und",
+          "text": "Merges doppelt gezählt (Symbole und Ausgangspaare)"
+        },
+        {
+          "id": "bei-zielgroessen-die-rueckrechnung-andersherum",
+          "text": "bei Zielgrößen die Rückrechnung andersherum aufgestellt"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -230,9 +275,18 @@
         }
       ],
       "typicalErrors": [
-        "Rang-Faktor nur auf einen Term angewandt",
-        "Formen von A und B vertauscht",
-        "Ersparnis als Quotient statt Differenz berechnet"
+        {
+          "id": "rang-faktor-nur-auf-einen",
+          "text": "Rang-Faktor nur auf einen Term angewandt"
+        },
+        {
+          "id": "formen-von-a-und-b",
+          "text": "Formen von A und B vertauscht"
+        },
+        {
+          "id": "ersparnis-als-quotient-statt-differenz",
+          "text": "Ersparnis als Quotient statt Differenz berechnet"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

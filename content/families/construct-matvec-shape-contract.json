@@ -131,10 +131,22 @@
         "Trenne Shape-Validierung, Rangalgorithmus und Systemlösung in drei kleine Verträge."
       ],
       "typicalErrors": [
-        "Shape-Prüfung nach statt vor der Operation",
-        "Pivotspalte ohne Zeilentausch überspringen",
-        "nur den Rang statt des Tupels (rang, pivot_spalten) zurückgeben",
-        "nur einen bekannten Testfall hartcodieren"
+        {
+          "id": "shape-pruefung-nach-statt-vor",
+          "text": "Shape-Prüfung nach statt vor der Operation"
+        },
+        {
+          "id": "pivotspalte-ohne-zeilentausch-ueberspringen",
+          "text": "Pivotspalte ohne Zeilentausch überspringen"
+        },
+        {
+          "id": "nur-den-rang-statt-des",
+          "text": "nur den Rang statt des Tupels (rang, pivot_spalten) zurückgeben"
+        },
+        {
+          "id": "nur-einen-bekannten-testfall-hartcodieren",
+          "text": "nur einen bekannten Testfall hartcodieren"
+        }
       ],
       "title": "Dimensions-sichere Matrix-Funktionen mit Pivot-Elimination"
     }

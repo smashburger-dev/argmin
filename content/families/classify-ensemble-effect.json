@@ -86,9 +86,18 @@
         }
       ],
       "typicalErrors": [
-        "Varianzreduktion mit Biasreduktion verwechseln",
-        "Bootstrap als Datensynthese verstehen",
-        "Korrelation der Basis-Modelle ignorieren"
+        {
+          "id": "varianzreduktion-mit-biasreduktion-verwechseln",
+          "text": "Varianzreduktion mit Biasreduktion verwechseln"
+        },
+        {
+          "id": "bootstrap-als-datensynthese-verstehen",
+          "text": "Bootstrap als Datensynthese verstehen"
+        },
+        {
+          "id": "korrelation-der-basis-modelle-ignorieren",
+          "text": "Korrelation der Basis-Modelle ignorieren"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -210,9 +219,18 @@
         }
       ],
       "typicalErrors": [
-        "Random-Forest-Diversität mit identischem Fehlerfokus aller Einzelbäume verwechselt.",
-        "Die Varianzreduktion durch Aggregation als bloßen Nachteil zusätzlicher Modelle missverstanden.",
-        "Bagging-Mechanismus fälschlich mit der Lernrate eines iterativen Optimierers erklärt."
+        {
+          "id": "random-forest-diversitaet-mit-identischem",
+          "text": "Random-Forest-Diversität mit identischem Fehlerfokus aller Einzelbäume verwechselt."
+        },
+        {
+          "id": "die-varianzreduktion-durch-aggregation-als",
+          "text": "Die Varianzreduktion durch Aggregation als bloßen Nachteil zusätzlicher Modelle missverstanden."
+        },
+        {
+          "id": "bagging-mechanismus-faelschlich-mit-der",
+          "text": "Bagging-Mechanismus fälschlich mit der Lernrate eines iterativen Optimierers erklärt."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -334,9 +352,18 @@
         }
       ],
       "typicalErrors": [
-        "Sequentielle Fehlerkorrektur mit zufälliger Auswahl eines Einzelmodells verwechselt.",
-        "Die additive Kombination der bereits trainierten Lerner übersehen.",
-        "Boosting fälschlich als reine Merkmalsvorverarbeitung ohne Residuenfokus beschrieben."
+        {
+          "id": "sequentielle-fehlerkorrektur-mit-zufaelliger-auswahl",
+          "text": "Sequentielle Fehlerkorrektur mit zufälliger Auswahl eines Einzelmodells verwechselt."
+        },
+        {
+          "id": "die-additive-kombination-der-bereits",
+          "text": "Die additive Kombination der bereits trainierten Lerner übersehen."
+        },
+        {
+          "id": "boosting-faelschlich-als-reine-merkmalsvorverarbeitung",
+          "text": "Boosting fälschlich als reine Merkmalsvorverarbeitung ohne Residuenfokus beschrieben."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

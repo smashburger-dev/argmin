@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Upstream-Gradient vergessen und nur den lokalen Gradienten angeben",
-        "Multiplikation mit Addition verwechselt",
-        "das Vorzeichen des Upstream-Gradienten unterschlagen"
+        {
+          "id": "upstream-gradient-vergessen-und-nur",
+          "text": "Upstream-Gradient vergessen und nur den lokalen Gradienten angeben"
+        },
+        {
+          "id": "multiplikation-mit-addition-verwechselt",
+          "text": "Multiplikation mit Addition verwechselt"
+        },
+        {
+          "id": "das-vorzeichen-des-upstream-gradienten",
+          "text": "das Vorzeichen des Upstream-Gradienten unterschlagen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -125,9 +134,18 @@
         }
       ],
       "typicalErrors": [
-        "Kettenregel durch Addition der lokalen Ableitungen ersetzt",
-        "den äußeren Multiplikationsfaktor im Gradientenpfad übersprungen",
-        "die Zwischenvariable h nicht in die Ableitungskette einbezogen"
+        {
+          "id": "kettenregel-durch-addition-der-lokalen",
+          "text": "Kettenregel durch Addition der lokalen Ableitungen ersetzt"
+        },
+        {
+          "id": "den-aeusseren-multiplikationsfaktor-im-gradientenpfad",
+          "text": "den äußeren Multiplikationsfaktor im Gradientenpfad übersprungen"
+        },
+        {
+          "id": "die-zwischenvariable-h-nicht-in",
+          "text": "die Zwischenvariable h nicht in die Ableitungskette einbezogen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -189,9 +207,18 @@
         }
       ],
       "typicalErrors": [
-        "identische Vorwärtswerte mit identischen Gradienten gleichgesetzt",
-        "stop_gradient fälschlich auf beide Summanden ausgedehnt",
-        "die Potenzregel bei x=3 durch den Eingabewert ersetzt"
+        {
+          "id": "identische-vorwaertswerte-mit-identischen-gradienten",
+          "text": "identische Vorwärtswerte mit identischen Gradienten gleichgesetzt"
+        },
+        {
+          "id": "stop-gradient-faelschlich-auf-beide",
+          "text": "stop_gradient fälschlich auf beide Summanden ausgedehnt"
+        },
+        {
+          "id": "die-potenzregel-bei-x-3",
+          "text": "die Potenzregel bei x=3 durch den Eingabewert ersetzt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

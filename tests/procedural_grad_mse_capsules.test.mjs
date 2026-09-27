@@ -159,7 +159,7 @@ test('registry: python-code metadata, expectedAnswer, authored fallback', () => 
   assert.deepEqual(inst.competencyIds, ['c-grad-regression', 'c-numpy-basics']);
   assert.deepEqual(inst.expectedAnswer, { kind: 'reference-solver', referenceSolver: body.expected.referenceSolver });
   assert.deepEqual(inst.hints, body.hints, 'authored hints erreichen die Instanz');
-  assert.deepEqual(inst.typicalErrors, body.typicalErrors);
+  assert.deepEqual(inst.typicalErrors, body.typicalErrors.map((entry) => entry.text));
   assert.equal(inst.parameters.caseId, 'grad-mse-numpy-reference');
   assert.equal(inst.parameters.difficulty, 'core');
   assert.deepEqual(inst.parameters.packages, ['numpy']);

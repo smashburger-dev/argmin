@@ -57,9 +57,18 @@
         }
       ],
       "typicalErrors": [
-        "Durchschnittseffekt kleiner Gruppen unterschätzen",
-        "Gesamtmetrik als Aussage über alle Teilgruppen missdeuten",
-        "Teilgruppenanalyse mit Datenschutz verwechseln"
+        {
+          "id": "durchschnittseffekt-kleiner-gruppen-unterschaetzen",
+          "text": "Durchschnittseffekt kleiner Gruppen unterschätzen"
+        },
+        {
+          "id": "gesamtmetrik-als-aussage-ueber-alle",
+          "text": "Gesamtmetrik als Aussage über alle Teilgruppen missdeuten"
+        },
+        {
+          "id": "teilgruppenanalyse-mit-datenschutz-verwechseln",
+          "text": "Teilgruppenanalyse mit Datenschutz verwechseln"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -121,8 +130,14 @@
         }
       ],
       "typicalErrors": [
-        "Gesamtgenauigkeit als Fairheitsbeweis genommen",
-        "Subgruppenmetriken als optionalen Zusatz statt Pflicht verstanden"
+        {
+          "id": "gesamtgenauigkeit-als-fairheitsbeweis-genommen",
+          "text": "Gesamtgenauigkeit als Fairheitsbeweis genommen"
+        },
+        {
+          "id": "subgruppenmetriken-als-optionalen-zusatz-statt",
+          "text": "Subgruppenmetriken als optionalen Zusatz statt Pflicht verstanden"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

@@ -24,9 +24,18 @@
         "isna() markiert fehlende Werte (None wird in der Zielspalte zu NaN); sum() zählt sie — zähle die None-Einträge in ziel."
       ],
       "typicalErrors": [
-        "drop_duplicates auf eine einzelne Spalte bezogen statt auf alle Spalten",
-        "None nicht als fehlender Wert gezählt",
-        "Zeilen- mit Wertanzahl verwechselt (len gegen sum)"
+        {
+          "id": "drop-duplicates-auf-eine-einzelne",
+          "text": "drop_duplicates auf eine einzelne Spalte bezogen statt auf alle Spalten"
+        },
+        {
+          "id": "none-nicht-als-fehlender-wert",
+          "text": "None nicht als fehlender Wert gezählt"
+        },
+        {
+          "id": "zeilen-mit-wertanzahl-verwechselt-len",
+          "text": "Zeilen- mit Wertanzahl verwechselt (len gegen sum)"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -56,9 +65,18 @@
         "np.histogram bildet aus den drei Kanten zwei Bins [e0, e1) und [e1, e2] — nur der letzte Bin schließt seine rechte Kante ein."
       ],
       "typicalErrors": [
-        "Bin-Kanten links und rechts inklusiv gelesen",
-        "corrcoef-Matrix statt Eintrag [0, 1] weiterverwendet",
-        "Median bei gerader Anzahl als einzelner Wert statt Mittel der mittleren beiden"
+        {
+          "id": "bin-kanten-links-und-rechts",
+          "text": "Bin-Kanten links und rechts inklusiv gelesen"
+        },
+        {
+          "id": "corrcoef-matrix-statt-eintrag-0",
+          "text": "corrcoef-Matrix statt Eintrag [0, 1] weiterverwendet"
+        },
+        {
+          "id": "median-bei-gerader-anzahl-als",
+          "text": "Median bei gerader Anzahl als einzelner Wert statt Mittel der mittleren beiden"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -88,9 +106,18 @@
         "Mit shuffle=False geht der letzte Block in den Test. Die Ausgabe ist Python-Listennotation der ersten Spalte."
       ],
       "typicalErrors": [
-        "Testanteil abrunden statt aufzurunden",
-        "mit shuffle=False den ersten Block als Test annehmen",
-        "vergessen, dass die innere Liste entpackt wird (x[0])"
+        {
+          "id": "testanteil-abrunden-statt-aufzurunden",
+          "text": "Testanteil abrunden statt aufzurunden"
+        },
+        {
+          "id": "mit-shuffle-false-den-ersten",
+          "text": "mit shuffle=False den ersten Block als Test annehmen"
+        },
+        {
+          "id": "vergessen-dass-die-innere-liste",
+          "text": "vergessen, dass die innere Liste entpackt wird (x[0])"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

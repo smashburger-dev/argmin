@@ -40,9 +40,18 @@
         }
       ],
       "typicalErrors": [
-        "Lösungsanzeige ignoriert",
-        "alle Instanzen gestrichen",
-        "Definitionen als Treffer mitgezählt"
+        {
+          "id": "loesungsanzeige-ignoriert",
+          "text": "Lösungsanzeige ignoriert"
+        },
+        {
+          "id": "alle-instanzen-gestrichen",
+          "text": "alle Instanzen gestrichen"
+        },
+        {
+          "id": "definitionen-als-treffer-mitgezaehlt",
+          "text": "Definitionen als Treffer mitgezählt"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -72,9 +81,18 @@
         "In E2 zählen beide Instanzen; der Abstand ergibt sich aus den Tageszahlen der Tagesspalte (02 bis 21)."
       ],
       "typicalErrors": [
-        "disqualifizierte Instanz mitgezählt",
-        "Abstand über alle Ereignisse statt nur der Treffer gerechnet",
-        "Tagesspalte als ganze Zahl statt [-2:] gelesen"
+        {
+          "id": "disqualifizierte-instanz-mitgezaehlt",
+          "text": "disqualifizierte Instanz mitgezählt"
+        },
+        {
+          "id": "abstand-ueber-alle-ereignisse-statt",
+          "text": "Abstand über alle Ereignisse statt nur der Treffer gerechnet"
+        },
+        {
+          "id": "tagesspalte-als-ganze-zahl-statt",
+          "text": "Tagesspalte als ganze Zahl statt [-2:] gelesen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -106,9 +124,18 @@
         "Der Abstand nutzt min/max über die Treffer-DATEN, nicht über alle Ereignisse."
       ],
       "typicalErrors": [
-        "Ereignisse statt Instanzen gezählt",
-        "Lösungsanzeige global gesperrt",
-        "Abstand über alle Ereignisdaten berechnet"
+        {
+          "id": "ereignisse-statt-instanzen-gezaehlt",
+          "text": "Ereignisse statt Instanzen gezählt"
+        },
+        {
+          "id": "loesungsanzeige-global-gesperrt",
+          "text": "Lösungsanzeige global gesperrt"
+        },
+        {
+          "id": "abstand-ueber-alle-ereignisdaten-berechnet",
+          "text": "Abstand über alle Ereignisdaten berechnet"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

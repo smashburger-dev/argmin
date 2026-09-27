@@ -30,9 +30,18 @@
         "subgruppe_nach_freeze zählt nur ergänzte Gruppen in v2; entfernte Gruppen lösen das Flag nicht."
       ],
       "typicalErrors": [
-        "Vergleichsrichtung von primaer_demoted und subgruppe_nach_freeze vertauscht",
-        "entfernte Subgruppen fälschlich als Flag gewertet",
-        "bei fehlenden Feldern abgestürzt statt Default zu verwenden"
+        {
+          "id": "vergleichsrichtung-von-primaer-demoted-und",
+          "text": "Vergleichsrichtung von primaer_demoted und subgruppe_nach_freeze vertauscht"
+        },
+        {
+          "id": "entfernte-subgruppen-faelschlich-als-flag",
+          "text": "entfernte Subgruppen fälschlich als Flag gewertet"
+        },
+        {
+          "id": "bei-fehlenden-feldern-abgestuerzt-statt",
+          "text": "bei fehlenden Feldern abgestürzt statt Default zu verwenden"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

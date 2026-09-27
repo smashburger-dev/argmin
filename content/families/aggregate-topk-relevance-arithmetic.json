@@ -35,9 +35,18 @@
         }
       ],
       "typicalErrors": [
-        "alle relevanten Dokumente statt des Top-k-Schnitts gezählt",
-        "Recall-Formel mit dem falschen Nenner (Top-k statt relevante) gerechnet",
-        "Fenstergröße mit Trefferzahl verwechselt"
+        {
+          "id": "alle-relevanten-dokumente-statt-des",
+          "text": "alle relevanten Dokumente statt des Top-k-Schnitts gezählt"
+        },
+        {
+          "id": "recall-formel-mit-dem-falschen",
+          "text": "Recall-Formel mit dem falschen Nenner (Top-k statt relevante) gerechnet"
+        },
+        {
+          "id": "fenstergroesse-mit-trefferzahl-verwechselt",
+          "text": "Fenstergröße mit Trefferzahl verwechselt"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

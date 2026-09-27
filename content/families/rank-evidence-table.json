@@ -33,10 +33,22 @@
         "Das Verdikt folgt paper[\"direction\"]: bei \"lower\" ist ein gesunkener Wert \"improved\"; Rundung int(round(...)), baseline 0 → relative_pct 0."
       ],
       "typicalErrors": [
-        "aufsteigend statt absteigend sortiert",
-        "Tie-Break übersehen",
-        "Verdikt ohne Richtungsvergleich vergeben",
-        "Sortierung richtungsabhängig gemacht statt numerisch"
+        {
+          "id": "aufsteigend-statt-absteigend-sortiert",
+          "text": "aufsteigend statt absteigend sortiert"
+        },
+        {
+          "id": "tie-break-uebersehen",
+          "text": "Tie-Break übersehen"
+        },
+        {
+          "id": "verdikt-ohne-richtungsvergleich-vergeben",
+          "text": "Verdikt ohne Richtungsvergleich vergeben"
+        },
+        {
+          "id": "sortierung-richtungsabhaengig-gemacht-statt-numerisch",
+          "text": "Sortierung richtungsabhängig gemacht statt numerisch"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

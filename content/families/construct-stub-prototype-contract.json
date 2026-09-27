@@ -30,9 +30,18 @@
         "answer wählt DOKUMENT nach Score, dann SATZ nach Anfragebegriff — zwei getrennte Schritte, beide mit festem Tie-Break."
       ],
       "typicalErrors": [
-        "Stub formuliert frei statt zu kopieren",
-        "Dokument- und Satz-Auswahl in einem Schritt vermischt",
-        "kein treffer durch erfundenen Satz ersetzt"
+        {
+          "id": "stub-formuliert-frei-statt-zu",
+          "text": "Stub formuliert frei statt zu kopieren"
+        },
+        {
+          "id": "dokument-und-satz-auswahl-in",
+          "text": "Dokument- und Satz-Auswahl in einem Schritt vermischt"
+        },
+        {
+          "id": "kein-treffer-durch-erfundenen-satz",
+          "text": "kein treffer durch erfundenen Satz ersetzt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

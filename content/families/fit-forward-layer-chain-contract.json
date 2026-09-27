@@ -32,9 +32,18 @@
         "param_count zählt W.size + b.size als int; die Verträge stellen sicher, dass dabei d·h + h herauskommt."
       ],
       "typicalErrors": [
-        "Verträge erst nach der Berechnung prüfen",
-        "b.ndim == 2 mit Broadcast still akzeptieren",
-        "param_count ohne Bias oder als float zurückgeben"
+        {
+          "id": "vertraege-erst-nach-der-berechnung",
+          "text": "Verträge erst nach der Berechnung prüfen"
+        },
+        {
+          "id": "b-ndim-2-mit-broadcast",
+          "text": "b.ndim == 2 mit Broadcast still akzeptieren"
+        },
+        {
+          "id": "param-count-ohne-bias-oder",
+          "text": "param_count ohne Bias oder als float zurückgeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "mlp_param_count läuft über Paare aufeinanderfolgender Schichtgrößen: zip(sizes[:-1], sizes[1:]) und je d·h + h aufsummieren."
       ],
       "typicalErrors": [
-        "np.max statt np.maximum für ReLU verwendet",
-        "Hidden-Dimension nicht gegen W2 geprüft",
-        "Bias in der Parameterzählung vergessen"
+        {
+          "id": "np-max-statt-np-maximum",
+          "text": "np.max statt np.maximum für ReLU verwendet"
+        },
+        {
+          "id": "hidden-dimension-nicht-gegen-w2",
+          "text": "Hidden-Dimension nicht gegen W2 geprüft"
+        },
+        {
+          "id": "bias-in-der-parameterzaehlung-vergessen",
+          "text": "Bias in der Parameterzählung vergessen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -105,9 +123,18 @@
         "In der Schleife entscheidet der Index: enumerate über die Schichten, ReLU nur wenn i < len(weights) - 1; die Referenz im Test macht genau das."
       ],
       "typicalErrors": [
-        "ReLU auch auf der Ausgabeschicht",
-        "Kettenverträge zwischen benachbarten Matrizen nicht geprüft",
-        "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
+        {
+          "id": "relu-auch-auf-der-ausgabeschicht",
+          "text": "ReLU auch auf der Ausgabeschicht"
+        },
+        {
+          "id": "kettenvertraege-zwischen-benachbarten-matrizen-nicht",
+          "text": "Kettenverträge zwischen benachbarten Matrizen nicht geprüft"
+        },
+        {
+          "id": "strukturfehler-ungleich-lange-listen-erst",
+          "text": "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

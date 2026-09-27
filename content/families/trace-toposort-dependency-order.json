@@ -28,9 +28,18 @@
         "bereit nutzt sortierte Namen — bei mehreren gleichzeitig bereiten Stufen wählt der Algorithmus die alphabetisch kleinste."
       ],
       "typicalErrors": [
-        "Einfügungsreihenfolge statt alphabetischer Tie-Break gelesen",
-        "eine Stufe vor ihren Voraussetzungen eingeplant",
-        "set(stages[n]) & offen als Vergleich mit allen Stufen missverstanden"
+        {
+          "id": "einfuegungsreihenfolge-statt-alphabetischer-tie-break",
+          "text": "Einfügungsreihenfolge statt alphabetischer Tie-Break gelesen"
+        },
+        {
+          "id": "eine-stufe-vor-ihren-voraussetzungen",
+          "text": "eine Stufe vor ihren Voraussetzungen eingeplant"
+        },
+        {
+          "id": "set-stages-n-offen-als",
+          "text": "set(stages[n]) & offen als Vergleich mit allen Stufen missverstanden"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

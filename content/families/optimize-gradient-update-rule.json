@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "Vorzeichen im Update vergessen (Plus statt Minus)",
-        "Lernrate als Ersatz statt Skalierung des Gradienten gelesen",
-        "aktuelles w im Update unterschlagen"
+        {
+          "id": "vorzeichen-im-update-vergessen-plus",
+          "text": "Vorzeichen im Update vergessen (Plus statt Minus)"
+        },
+        {
+          "id": "lernrate-als-ersatz-statt-skalierung",
+          "text": "Lernrate als Ersatz statt Skalierung des Gradienten gelesen"
+        },
+        {
+          "id": "aktuelles-w-im-update-unterschlagen",
+          "text": "aktuelles w im Update unterschlagen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -94,9 +103,18 @@
         "rmse erst nach der Schleife aus dem finalen Modell berechnen: np.sqrt(np.mean((w * x + b - y) ** 2)). Der Test vergleicht mit np.linalg.lstsq als Referenz."
       ],
       "typicalErrors": [
-        "Vorzeichen im Update gedreht (Aufstieg statt Abstieg)",
-        "Faktor 2/n in einem der beiden Gradienten vergessen",
-        "rmse innerhalb der Schleife mit veralteten Parametern berechnet"
+        {
+          "id": "vorzeichen-im-update-gedreht-aufstieg",
+          "text": "Vorzeichen im Update gedreht (Aufstieg statt Abstieg)"
+        },
+        {
+          "id": "faktor-2-n-in-einem",
+          "text": "Faktor 2/n in einem der beiden Gradienten vergessen"
+        },
+        {
+          "id": "rmse-innerhalb-der-schleife-mit",
+          "text": "rmse innerhalb der Schleife mit veralteten Parametern berechnet"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -130,9 +148,18 @@
         "initial_mse vor der ersten, final_mse nach der letzten Aktualisierung aus demselben mse()-Helfer lesen."
       ],
       "typicalErrors": [
-        "Rumpf doch aktualisiert (Freeze verletzt)",
-        "finalen MSE innerhalb der Schleife mit veraltetem W2 berechnet",
-        "Faktor 2/(n·d_out) im Gradienten vergessen"
+        {
+          "id": "rumpf-doch-aktualisiert-freeze-verletzt",
+          "text": "Rumpf doch aktualisiert (Freeze verletzt)"
+        },
+        {
+          "id": "finalen-mse-innerhalb-der-schleife",
+          "text": "finalen MSE innerhalb der Schleife mit veraltetem W2 berechnet"
+        },
+        {
+          "id": "faktor-2-n-d-out",
+          "text": "Faktor 2/(n·d_out) im Gradienten vergessen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -167,9 +194,18 @@
         "Kettenregel: dB = scale * (G @ A.T), dA = scale * (B.T @ G); beide Updates im selben Schritt aus denselben alten A und B."
       ],
       "typicalErrors": [
-        "W trotz „eingefroren“ aktualisiert",
-        "Gradienten sequenziell statt simultan berechnet",
-        "Skalierung α/r in der Kettenregel vergessen"
+        {
+          "id": "w-trotz-eingefroren-aktualisiert",
+          "text": "W trotz „eingefroren“ aktualisiert"
+        },
+        {
+          "id": "gradienten-sequenziell-statt-simultan-berechnet",
+          "text": "Gradienten sequenziell statt simultan berechnet"
+        },
+        {
+          "id": "skalierung-r-in-der-kettenregel",
+          "text": "Skalierung α/r in der Kettenregel vergessen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

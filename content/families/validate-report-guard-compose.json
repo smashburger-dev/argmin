@@ -30,9 +30,18 @@
         "paritaet_ok True heißt echt True (is True) — False oder fehlend verweigern; das Restrisiko wird als sortierte Kopie eingebettet."
       ],
       "typicalErrors": [
-        "Bericht mit Lücken statt Verweigerung erzeugt",
-        "paritaet_ok truthy statt is True geprüft",
-        "übergebene Restrisiken-Liste mutiert statt sortiert zu kopieren"
+        {
+          "id": "bericht-mit-luecken-statt-verweigerung",
+          "text": "Bericht mit Lücken statt Verweigerung erzeugt"
+        },
+        {
+          "id": "paritaet-ok-truthy-statt-is",
+          "text": "paritaet_ok truthy statt is True geprüft"
+        },
+        {
+          "id": "uebergebene-restrisiken-liste-mutiert-statt",
+          "text": "übergebene Restrisiken-Liste mutiert statt sortiert zu kopieren"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
@@ -67,10 +76,22 @@
         "Bei Verweigerung darf das Ergebnis-Dict keinen messwerte-Schlüssel haben; die Zählung der Fehlerarten passiert nur im ok-Fall."
       ],
       "typicalErrors": [
-        "digest übernommen statt sha256 über die werte neu zu rechnen",
-        "Messwerte trotz Verweigerung mitgeliefert",
-        "fehlt-Codes unsortiert",
-        "Fehlerliste ohne getrennte Arten akzeptiert"
+        {
+          "id": "digest-uebernommen-statt-sha256-ueber",
+          "text": "digest übernommen statt sha256 über die werte neu zu rechnen"
+        },
+        {
+          "id": "messwerte-trotz-verweigerung-mitgeliefert",
+          "text": "Messwerte trotz Verweigerung mitgeliefert"
+        },
+        {
+          "id": "fehlt-codes-unsortiert",
+          "text": "fehlt-Codes unsortiert"
+        },
+        {
+          "id": "fehlerliste-ohne-getrennte-arten-akzeptiert",
+          "text": "Fehlerliste ohne getrennte Arten akzeptiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

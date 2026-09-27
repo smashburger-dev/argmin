@@ -38,8 +38,14 @@
         }
       ],
       "typicalErrors": [
-        "Hash als Verschlüsselung oder Schutz vor Änderung missverstanden",
-        "Reihenfolge-Invarianz und Änderungssensitivität für unvereinbar gehalten"
+        {
+          "id": "hash-als-verschluesselung-oder-schutz",
+          "text": "Hash als Verschlüsselung oder Schutz vor Änderung missverstanden"
+        },
+        {
+          "id": "reihenfolge-invarianz-und-aenderungssensitivitaet-fuer",
+          "text": "Reihenfolge-Invarianz und Änderungssensitivität für unvereinbar gehalten"
+        }
       ],
       "choices": [
         {

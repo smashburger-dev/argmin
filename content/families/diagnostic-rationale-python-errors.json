@@ -81,9 +81,18 @@
         }
       ],
       "typicalErrors": [
-        "das Symptom nacherzählt („die Summe ist falsch“) statt die Grenze zu benennen",
-        "den Test oder die Erwartung für fehlerhaft erklärt statt die Schleife",
-        "range-Verhalten verwechselt: den Startwert statt der Grenze verdächtigt"
+        {
+          "id": "das-symptom-nacherzaehlt-die-summe",
+          "text": "das Symptom nacherzählt („die Summe ist falsch“) statt die Grenze zu benennen"
+        },
+        {
+          "id": "den-test-oder-die-erwartung",
+          "text": "den Test oder die Erwartung für fehlerhaft erklärt statt die Schleife"
+        },
+        {
+          "id": "range-verhalten-verwechselt-den-startwert",
+          "text": "range-Verhalten verwechselt: den Startwert statt der Grenze verdächtigt"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
@@ -130,9 +139,18 @@
         }
       ],
       "typicalErrors": [
-        "nur das Symptom benennt („die Summe ist zu klein“)",
-        "die fehlende Fehlermeldung als Beweis für korrekte Daten gewertet",
-        "die nicht geschlossene Datei als Hauptursache genannt — ein echter Mangel, aber nicht die Ursache der falschen Summe"
+        {
+          "id": "nur-das-symptom-benennt-die",
+          "text": "nur das Symptom benennt („die Summe ist zu klein“)"
+        },
+        {
+          "id": "die-fehlende-fehlermeldung-als-beweis",
+          "text": "die fehlende Fehlermeldung als Beweis für korrekte Daten gewertet"
+        },
+        {
+          "id": "die-nicht-geschlossene-datei-als",
+          "text": "die nicht geschlossene Datei als Hauptursache genannt — ein echter Mangel, aber nicht die Ursache der falschen Summe"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
@@ -176,9 +194,18 @@
         }
       ],
       "typicalErrors": [
-        "die TypeError-Meldung abschreiben statt den Typ-Ursprung zu erklären",
-        "CSV-Felder als Zahlen missverstanden",
-        "den `>=`-Operator für das Problem gehalten statt der Feldtypen"
+        {
+          "id": "die-typeerror-meldung-abschreiben-statt",
+          "text": "die TypeError-Meldung abschreiben statt den Typ-Ursprung zu erklären"
+        },
+        {
+          "id": "csv-felder-als-zahlen-missverstanden",
+          "text": "CSV-Felder als Zahlen missverstanden"
+        },
+        {
+          "id": "den-operator-fuer-das-problem",
+          "text": "den `>=`-Operator für das Problem gehalten statt der Feldtypen"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
@@ -225,9 +252,18 @@
         }
       ],
       "typicalErrors": [
-        "das Trennzeichen als Ursache vermutet — `delimiter=\";\"` ist korrekt gesetzt",
-        "den KeyError nur nacherzählt statt die Schreibweise zu benennen",
-        "die Spalte für fehlend oder die Datei für leer erklärt"
+        {
+          "id": "das-trennzeichen-als-ursache-vermutet",
+          "text": "das Trennzeichen als Ursache vermutet — `delimiter=\";\"` ist korrekt gesetzt"
+        },
+        {
+          "id": "den-keyerror-nur-nacherzaehlt-statt",
+          "text": "den KeyError nur nacherzählt statt die Schreibweise zu benennen"
+        },
+        {
+          "id": "die-spalte-fuer-fehlend-oder",
+          "text": "die Spalte für fehlend oder die Datei für leer erklärt"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
@@ -274,9 +310,18 @@
         }
       ],
       "typicalErrors": [
-        "die Funktion `anteil` für die Ursache gehalten",
-        "den NameError nacherzählt statt die fehlende Definition zu benennen",
-        "eine leere oder fehlende Datei als Ursache vermutet"
+        {
+          "id": "die-funktion-anteil-fuer-die",
+          "text": "die Funktion `anteil` für die Ursache gehalten"
+        },
+        {
+          "id": "den-nameerror-nacherzaehlt-statt-die",
+          "text": "den NameError nacherzählt statt die fehlende Definition zu benennen"
+        },
+        {
+          "id": "eine-leere-oder-fehlende-datei",
+          "text": "eine leere oder fehlende Datei als Ursache vermutet"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",

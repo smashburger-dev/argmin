@@ -33,9 +33,18 @@
         "Pro Epoche: beide Verluste des aktuellen Modells notieren (Validierung ohne Update!), dann Backward + Update nur auf Trainingsdaten. best_val_epoch = int(np.argmin(val_loss))."
       ],
       "typicalErrors": [
-        "Updates auch auf Validierungsdaten gerechnet",
-        "zwei rng-Quellen oder andere Reihenfolge als dokumentiert",
-        "argmin 1-basiert oder als np.int64 statt int zurückgegeben"
+        {
+          "id": "updates-auch-auf-validierungsdaten-gerechnet",
+          "text": "Updates auch auf Validierungsdaten gerechnet"
+        },
+        {
+          "id": "zwei-rng-quellen-oder-andere",
+          "text": "zwei rng-Quellen oder andere Reihenfolge als dokumentiert"
+        },
+        {
+          "id": "argmin-1-basiert-oder-als",
+          "text": "argmin 1-basiert oder als np.int64 statt int zurückgegeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

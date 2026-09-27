@@ -28,9 +28,18 @@
         "Achte auf die Reihenfolge: erst Baseline (Mittelwert der Train-Ziele) berechnen, dann die Test-Ziele gegen diesen festen Wert quadrieren und mitteln — nicht den Test-Mittelwert verwenden."
       ],
       "typicalErrors": [
-        "Baseline aus Test-Zieln statt Train-Zieln schätzen (Leakage)",
-        "Score-Varianten vertauschen (Vorzeichen, Wurzel)",
-        "Ergebnisdict nicht deterministisch aufbauen"
+        {
+          "id": "baseline-aus-test-zieln-statt",
+          "text": "Baseline aus Test-Zieln statt Train-Zieln schätzen (Leakage)"
+        },
+        {
+          "id": "score-varianten-vertauschen-vorzeichen-wurzel",
+          "text": "Score-Varianten vertauschen (Vorzeichen, Wurzel)"
+        },
+        {
+          "id": "ergebnisdict-nicht-deterministisch-aufbauen",
+          "text": "Ergebnisdict nicht deterministisch aufbauen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -64,9 +73,18 @@
         "Für r2 brauchst du zwei Summen: quadrierte Residuen und quadrierte Abweichungen vom Zielmittelwert — erst Teilen nach der Summe."
       ],
       "typicalErrors": [
-        "Intercept-Spalte vergessen",
-        "rmse und r2 an Trainings- und Testdaten vertauschen",
-        "r2 ohne Mittelwertberechnung von SS_tot"
+        {
+          "id": "intercept-spalte-vergessen",
+          "text": "Intercept-Spalte vergessen"
+        },
+        {
+          "id": "rmse-und-r2-an-trainings",
+          "text": "rmse und r2 an Trainings- und Testdaten vertauschen"
+        },
+        {
+          "id": "r2-ohne-mittelwertberechnung-von-ss",
+          "text": "r2 ohne Mittelwertberechnung von SS_tot"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -99,9 +117,18 @@
         "residuals_mean bezieht sich auf die TEST-Residuen; das Flag ist ein reiner Vergleich mit 1e-8."
       ],
       "typicalErrors": [
-        "auf den Testdaten neu fitten",
-        "Train- und Test-RMSE vertauschen",
-        "Residuenmittelwert über die falsche Menge berechnen"
+        {
+          "id": "auf-den-testdaten-neu-fitten",
+          "text": "auf den Testdaten neu fitten"
+        },
+        {
+          "id": "train-und-test-rmse-vertauschen",
+          "text": "Train- und Test-RMSE vertauschen"
+        },
+        {
+          "id": "residuenmittelwert-ueber-die-falsche-menge",
+          "text": "Residuenmittelwert über die falsche Menge berechnen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

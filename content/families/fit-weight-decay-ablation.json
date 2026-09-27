@@ -33,9 +33,18 @@
         "compare_decay ruft train_decay zweimal mit demselben Seed auf — Seed und Daten fix, nur λ unterscheidet sich: das ist die ganze Faire-Ablation-Disziplin."
       ],
       "typicalErrors": [
-        "Strafterm in den notierten Verlust eingebaut",
-        "für die Ablation verschiedene Seeds verwendet",
-        "Normen als np.float64 statt float zurückgegeben"
+        {
+          "id": "strafterm-in-den-notierten-verlust",
+          "text": "Strafterm in den notierten Verlust eingebaut"
+        },
+        {
+          "id": "fuer-die-ablation-verschiedene-seeds",
+          "text": "für die Ablation verschiedene Seeds verwendet"
+        },
+        {
+          "id": "normen-als-np-float64-statt",
+          "text": "Normen als np.float64 statt float zurückgegeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

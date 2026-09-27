@@ -33,9 +33,18 @@
         }
       ],
       "typicalErrors": [
-        "ab- statt aufgerundet und den unvollständigen Restbatch unterschlagen",
-        "die float-Endung .0 in der Vorhersage unterschlagen",
-        "Update nur einmal statt dreimal gerechnet"
+        {
+          "id": "ab-statt-aufgerundet-und-den",
+          "text": "ab- statt aufgerundet und den unvollständigen Restbatch unterschlagen"
+        },
+        {
+          "id": "die-float-endung-0-in",
+          "text": "die float-Endung .0 in der Vorhersage unterschlagen"
+        },
+        {
+          "id": "update-nur-einmal-statt-dreimal",
+          "text": "Update nur einmal statt dreimal gerechnet"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -70,9 +79,18 @@
         }
       ],
       "typicalErrors": [
-        "den letzten unvollständigen Batch als vollständig gezählt",
-        "range-Ende mit einem inklusiven n verwechselt",
-        "die Epochenzahl nicht auf die gültigen Batches angewendet"
+        {
+          "id": "den-letzten-unvollstaendigen-batch-als",
+          "text": "den letzten unvollständigen Batch als vollständig gezählt"
+        },
+        {
+          "id": "range-ende-mit-einem-inklusiven",
+          "text": "range-Ende mit einem inklusiven n verwechselt"
+        },
+        {
+          "id": "die-epochenzahl-nicht-auf-die",
+          "text": "die Epochenzahl nicht auf die gültigen Batches angewendet"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -107,9 +125,18 @@
         }
       ],
       "typicalErrors": [
-        "min_delta als inklusive statt als strikte Schwelle behandelt",
-        "patience nach einer echten Verbesserung nicht zurückgesetzt",
-        "den aktuellen Loss statt den bisher besten Loss ausgegeben"
+        {
+          "id": "min-delta-als-inklusive-statt",
+          "text": "min_delta als inklusive statt als strikte Schwelle behandelt"
+        },
+        {
+          "id": "patience-nach-einer-echten-verbesserung",
+          "text": "patience nach einer echten Verbesserung nicht zurückgesetzt"
+        },
+        {
+          "id": "den-aktuellen-loss-statt-den",
+          "text": "den aktuellen Loss statt den bisher besten Loss ausgegeben"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

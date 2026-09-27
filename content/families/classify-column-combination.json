@@ -102,8 +102,14 @@
         "Die Koeffizienten sind Gewichte der Spalten, nicht die Einträge von b."
       ],
       "typicalErrors": [
-        "Zielvektor mit Koeffizienten verwechseln",
-        "nur eine Spalte berücksichtigen"
+        {
+          "id": "zielvektor-mit-koeffizienten-verwechseln",
+          "text": "Zielvektor mit Koeffizienten verwechseln"
+        },
+        {
+          "id": "nur-eine-spalte-beruecksichtigen",
+          "text": "nur eine Spalte berücksichtigen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -133,8 +139,14 @@
         "Ein Vertrag prüft ndim, innere Dimension und Ergebnisbedeutung."
       ],
       "typicalErrors": [
-        "elementweise Multiplikation mit Matrixprodukt verwechseln",
-        "nur Shape statt Werte prüfen"
+        {
+          "id": "elementweise-multiplikation-mit-matrixprodukt-verwechseln",
+          "text": "elementweise Multiplikation mit Matrixprodukt verwechseln"
+        },
+        {
+          "id": "nur-shape-statt-werte-pruefen",
+          "text": "nur Shape statt Werte prüfen"
+        }
       ],
       "choices": [
         {

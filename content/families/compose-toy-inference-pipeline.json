@@ -34,9 +34,18 @@
         "Argmax-Gleichstand geht an die kleinste ID (np.argmax macht das); danach wie in greedy_decode stoppen."
       ],
       "typicalErrors": [
-        "Logits nur aus dem letzten Token berechnet",
-        "Zufallszustand in die Pipeline eingebracht",
-        "Startfolge zur max_len-Grenze falsch gezählt"
+        {
+          "id": "logits-nur-aus-dem-letzten",
+          "text": "Logits nur aus dem letzten Token berechnet"
+        },
+        {
+          "id": "zufallszustand-in-die-pipeline-eingebracht",
+          "text": "Zufallszustand in die Pipeline eingebracht"
+        },
+        {
+          "id": "startfolge-zur-max-len-grenze",
+          "text": "Startfolge zur max_len-Grenze falsch gezählt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

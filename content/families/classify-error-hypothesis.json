@@ -92,9 +92,18 @@
         "Trenne Beobachtung, Ursache und nächsten Test."
       ],
       "typicalErrors": [
-        "pauschales Selbsturteil",
-        "Ursache ohne Gegenprobe",
-        "Musterlösung mit eigenem Abruf verwechseln"
+        {
+          "id": "pauschales-selbsturteil",
+          "text": "pauschales Selbsturteil"
+        },
+        {
+          "id": "ursache-ohne-gegenprobe",
+          "text": "Ursache ohne Gegenprobe"
+        },
+        {
+          "id": "musterloesung-mit-eigenem-abruf-verwechseln",
+          "text": "Musterlösung mit eigenem Abruf verwechseln"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

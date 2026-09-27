@@ -33,9 +33,18 @@
         "Für den numerischen Check: bei lr = 0 ist der zurückgegebene Verlust genau L der übergebenen Parameter — damit kann der Test (L(W2+h) − L(W2−h))/2h bilden und mit deiner Schrittweite vergleichen."
       ],
       "typicalErrors": [
-        "Eingabe-Dictionary in-place verändert",
-        "Verlust nach dem Update statt davor zurückgegeben",
-        "Update in Gradientenrichtung (Plus statt Minus)"
+        {
+          "id": "eingabe-dictionary-in-place-veraendert",
+          "text": "Eingabe-Dictionary in-place verändert"
+        },
+        {
+          "id": "verlust-nach-dem-update-statt",
+          "text": "Verlust nach dem Update statt davor zurückgegeben"
+        },
+        {
+          "id": "update-in-gradientenrichtung-plus-statt",
+          "text": "Update in Gradientenrichtung (Plus statt Minus)"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
@@ -70,9 +79,18 @@
         "Kopiere die Arrays durch die Rechnung; prüfe die Eingaben nach dem Aufruf unverändert."
       ],
       "typicalErrors": [
-        "Momentumterm nicht in die neue Geschwindigkeit aufgenommen",
-        "Gradientenupdate mit Plus statt Minus ausgeführt",
-        "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
+        {
+          "id": "momentumterm-nicht-in-die-neue",
+          "text": "Momentumterm nicht in die neue Geschwindigkeit aufgenommen"
+        },
+        {
+          "id": "gradientenupdate-mit-plus-statt-minus",
+          "text": "Gradientenupdate mit Plus statt Minus ausgeführt"
+        },
+        {
+          "id": "parameter-oder-geschwindigkeitsarrays-in-place",
+          "text": "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

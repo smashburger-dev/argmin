@@ -35,9 +35,18 @@
         }
       ],
       "typicalErrors": [
-        "leere Felder nicht mitgezählt",
-        "nur eine Karte geprüft",
-        "Felder gezählt, die nicht im Pflichtfeldsatz stehen"
+        {
+          "id": "leere-felder-nicht-mitgezaehlt",
+          "text": "leere Felder nicht mitgezählt"
+        },
+        {
+          "id": "nur-eine-karte-geprueft",
+          "text": "nur eine Karte geprüft"
+        },
+        {
+          "id": "felder-gezaehlt-die-nicht-im",
+          "text": "Felder gezählt, die nicht im Pflichtfeldsatz stehen"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -103,9 +112,18 @@
         }
       ],
       "typicalErrors": [
-        "absolute Endzeiten statt Differenzen verglichen",
-        "Grenzfall Dauer = Budget als Timeout gewertet",
-        "Startzeiten addiert statt subtrahiert"
+        {
+          "id": "absolute-endzeiten-statt-differenzen-verglichen",
+          "text": "absolute Endzeiten statt Differenzen verglichen"
+        },
+        {
+          "id": "grenzfall-dauer-budget-als-timeout",
+          "text": "Grenzfall Dauer = Budget als Timeout gewertet"
+        },
+        {
+          "id": "startzeiten-addiert-statt-subtrahiert",
+          "text": "Startzeiten addiert statt subtrahiert"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -163,9 +181,18 @@
         }
       ],
       "typicalErrors": [
-        "Spec-Arten statt Einträge gezählt",
-        "exakte Pins mitgezählt",
-        "Wildcard als harmlos eingestuft"
+        {
+          "id": "spec-arten-statt-eintraege-gezaehlt",
+          "text": "Spec-Arten statt Einträge gezählt"
+        },
+        {
+          "id": "exakte-pins-mitgezaehlt",
+          "text": "exakte Pins mitgezählt"
+        },
+        {
+          "id": "wildcard-als-harmlos-eingestuft",
+          "text": "Wildcard als harmlos eingestuft"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

@@ -30,9 +30,18 @@
         "extract_variables: split(\", desto \") muss genau zwei Teile liefern und der vordere mit \"Je \" beginnen; Wörter ab Index 2 beziehungsweise 1, dann .lower()."
       ],
       "typicalErrors": [
-        "Prüfreihenfolge vertauscht (Metrik vor absoluten Wörtern)",
-        "Groß-/Kleinschreibung nicht normalisiert",
-        "ValueError für ungeeignete Hypothesen vergessen"
+        {
+          "id": "pruefreihenfolge-vertauscht-metrik-vor-absoluten",
+          "text": "Prüfreihenfolge vertauscht (Metrik vor absoluten Wörtern)"
+        },
+        {
+          "id": "gross-kleinschreibung-nicht-normalisiert",
+          "text": "Groß-/Kleinschreibung nicht normalisiert"
+        },
+        {
+          "id": "valueerror-fuer-ungeeignete-hypothesen-vergessen",
+          "text": "ValueError für ungeeignete Hypothesen vergessen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

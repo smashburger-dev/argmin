@@ -89,9 +89,18 @@
         }
       ],
       "typicalErrors": [
-        "Dokumentation (Manifest, README) mit Reproduzierbarkeit verwechseln",
-        "Seed-Setzung als ausreichend ansehen, obwohl der Split frei läuft",
-        "Vorab-Metrik als optional ansehen"
+        {
+          "id": "dokumentation-manifest-readme-mit-reproduzierbarkeit",
+          "text": "Dokumentation (Manifest, README) mit Reproduzierbarkeit verwechseln"
+        },
+        {
+          "id": "seed-setzung-als-ausreichend-ansehen",
+          "text": "Seed-Setzung als ausreichend ansehen, obwohl der Split frei läuft"
+        },
+        {
+          "id": "vorab-metrik-als-optional-ansehen",
+          "text": "Vorab-Metrik als optional ansehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -216,9 +225,18 @@
         }
       ],
       "typicalErrors": [
-        "Zufallsseed fälschlich als vollständige Fixierung der Softwareumgebung betrachtet.",
-        "Reproduzierbarkeit auf Datenablage reduziert und Versionsinformationen ausgeblendet.",
-        "Freitextdokumentation mit einer überprüfbaren, maschinenlesbaren Umgebungsangabe gleichgesetzt."
+        {
+          "id": "zufallsseed-faelschlich-als-vollstaendige-fixierung",
+          "text": "Zufallsseed fälschlich als vollständige Fixierung der Softwareumgebung betrachtet."
+        },
+        {
+          "id": "reproduzierbarkeit-auf-datenablage-reduziert-und",
+          "text": "Reproduzierbarkeit auf Datenablage reduziert und Versionsinformationen ausgeblendet."
+        },
+        {
+          "id": "freitextdokumentation-mit-einer-ueberpruefbaren-maschinenlesbaren",
+          "text": "Freitextdokumentation mit einer überprüfbaren, maschinenlesbaren Umgebungsangabe gleichgesetzt."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -343,9 +361,18 @@
         }
       ],
       "typicalErrors": [
-        "Statistische Gültigkeit eines neuen Splits mit Identität des ursprünglichen Splits verwechselt.",
-        "Dokumentation der Architektur fälschlich als Ersatz für die Datenaufteilung behandelt.",
-        "Metrikdefinition und konkrete Trainings- und Testzeilen nicht auseinandergehalten."
+        {
+          "id": "statistische-gueltigkeit-eines-neuen-splits",
+          "text": "Statistische Gültigkeit eines neuen Splits mit Identität des ursprünglichen Splits verwechselt."
+        },
+        {
+          "id": "dokumentation-der-architektur-faelschlich-als",
+          "text": "Dokumentation der Architektur fälschlich als Ersatz für die Datenaufteilung behandelt."
+        },
+        {
+          "id": "metrikdefinition-und-konkrete-trainings-und",
+          "text": "Metrikdefinition und konkrete Trainings- und Testzeilen nicht auseinandergehalten."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

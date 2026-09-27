@@ -185,9 +185,9 @@ const emitMatmulEntry = ({ A, B, entry }) => {
     ],
     feedbackRules,
     typicalErrors: [
-      'Zeilen- und Spaltenindex vertauscht',
-      'nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen',
-      'Vorzeichen eines Teilprodukts übersehen',
+      { id: 'zeilen-und-spaltenindex-vertauscht', text: 'Zeilen- und Spaltenindex vertauscht' },
+      { id: 'nur-das-erste-teilprodukt-gebildet', text: 'nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen' },
+      { id: 'vorzeichen-eines-teilprodukts-uebersehen', text: 'Vorzeichen eines Teilprodukts übersehen' },
     ],
     activityType: 'numeric',
     graderId: 'deterministic',
@@ -226,9 +226,9 @@ const emitDotProduct = ({ u, v }) => {
     ],
     feedbackRules,
     typicalErrors: [
-      'Vorzeichen eines Komponentenprodukts falsch gesetzt',
-      'ein Komponentenprodukt beim Summieren ausgelassen',
-      'Komponenten versetzt statt paarweise multipliziert',
+      { id: 'vorzeichen-eines-komponentenprodukts-falsch-gesetzt', text: 'Vorzeichen eines Komponentenprodukts falsch gesetzt' },
+      { id: 'ein-komponentenprodukt-beim-summieren-ausgelassen', text: 'ein Komponentenprodukt beim Summieren ausgelassen' },
+      { id: 'komponenten-versetzt-statt-paarweise-multipliziert', text: 'Komponenten versetzt statt paarweise multipliziert' },
     ],
     activityType: 'numeric',
     graderId: 'deterministic',
@@ -1078,14 +1078,14 @@ const MC_SET_HINTS = {
 
 const MC_SET_TYPICAL_ERRORS = {
   2: [
-    'Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen.',
-    'Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.',
-    'Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt.',
+    { id: 'nichtnullvektoren-pauschal-als-unabhaengig-gelesen', text: 'Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen.' },
+    { id: 'mehr-vektoren-als-die-dimension', text: 'Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.' },
+    { id: 'den-nullvektor-als-neutralen-bestandteil', text: 'Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt.' },
   ],
   3: [
-    'Summen-Abhängigkeit ($v_3 = a\\,v_1 + b\\,v_2$) bei nicht parallelen Vektoren übersehen.',
-    'Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.',
-    'Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet.',
+    { id: 'summen-abhaengigkeit-v-3-a', text: 'Summen-Abhängigkeit ($v_3 = a\\,v_1 + b\\,v_2$) bei nicht parallelen Vektoren übersehen.' },
+    { id: 'paarweise-nichtparallelitaet-faelschlich-als-unabhaengigkeitsbeweis', text: 'Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.' },
+    { id: 'vier-vektoren-im-mathbb-r', text: 'Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet.' },
   ],
 };
 

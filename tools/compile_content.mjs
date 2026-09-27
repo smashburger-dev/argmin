@@ -103,8 +103,24 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
   if (schemaName === 'exercise-family-cases') {
     validateChoiceContracts(value);
     validateChallengeContracts(value);
+    validateTypicalErrorIds(value);
   }
   return true;
+}
+
+// typicalError ids are the stable label namespace: duplicates inside one
+// case would silently collide, so fail closed here (schema already pins
+// the {id, text} shape and the kebab pattern).
+function validateTypicalErrorIds(document) {
+  for (const item of document.cases || []) {
+    const seen = new Set();
+    for (const entry of item.typicalErrors || []) {
+      if (seen.has(entry.id)) {
+        throw new Error(`${document.familyId}:${item.caseId}: doppelte typicalError-id ${entry.id}`);
+      }
+      seen.add(entry.id);
+    }
+  }
 }
 
 function validateChoiceContracts(document) {

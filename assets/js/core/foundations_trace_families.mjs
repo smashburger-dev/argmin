@@ -426,9 +426,9 @@ function generateTraceCallCompositionFamily({ seed, caseId, difficulty }) {
         { if: 'element-count-mismatch', then: `Die print-Zeile gibt zwei Werte in einer Zeile aus — durch Leerzeichen getrennt, z. B. \`${output}\`. Rechne beide Aufrufe aus.` },
       ],
       typicalErrors: [
-        'nur einen der beiden Aufrufe berechnet',
-        `Klammer in umfang übersehen: 2 · ${a} + ${b} statt 2 · (${a} + ${b})`,
-        'Werte in der Ausgabe vertauscht (umfang vor flaeche)',
+        { id: 'nur-einen-der-beiden-aufrufe', text: 'nur einen der beiden Aufrufe berechnet' },
+        { id: 'klammer-in-umfang-uebersehen', text: `Klammer in umfang übersehen: 2 · ${a} + ${b} statt 2 · (${a} + ${b})` },
+        { id: 'werte-in-der-ausgabe-vertauscht', text: 'Werte in der Ausgabe vertauscht (umfang vor flaeche)' },
       ],
       traceTable: {
         lines: [`flaeche(${a}, ${b})`, `umfang(${a}, ${b})`],

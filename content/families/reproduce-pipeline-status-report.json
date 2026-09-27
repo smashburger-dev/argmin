@@ -30,9 +30,18 @@
         "Die Recall-Differenz ist beabsichtigt: die blockierte Injektions-Query zählt mit Kontrolle als 0 — genau dieser ehrliche Trade-off gehört in den Bericht."
       ],
       "typicalErrors": [
-        "Ablation und Kontrolle vermischt",
-        "blockierte Queries im ungedämpften Lauf mitgezählt",
-        "abgelehnte Aktionen nach unterschiedlichen Regeln gezählt"
+        {
+          "id": "ablation-und-kontrolle-vermischt",
+          "text": "Ablation und Kontrolle vermischt"
+        },
+        {
+          "id": "blockierte-queries-im-ungedaempften-lauf",
+          "text": "blockierte Queries im ungedämpften Lauf mitgezählt"
+        },
+        {
+          "id": "abgelehnte-aktionen-nach-unterschiedlichen-regeln",
+          "text": "abgelehnte Aktionen nach unterschiedlichen Regeln gezählt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -64,9 +73,18 @@
         "Beim Timeout gibt es keinen brauchbaren Wert — liefere deshalb keinen 'value'-Schlüssel."
       ],
       "typicalErrors": [
-        "sleep oder time.time() statt der übergebenen Uhr",
-        "value auch beim Timeout mitgeliefert",
-        "Grenzfall invertiert"
+        {
+          "id": "sleep-oder-time-time-statt",
+          "text": "sleep oder time.time() statt der übergebenen Uhr"
+        },
+        {
+          "id": "value-auch-beim-timeout-mitgeliefert",
+          "text": "value auch beim Timeout mitgeliefert"
+        },
+        {
+          "id": "grenzfall-invertiert",
+          "text": "Grenzfall invertiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -98,9 +116,18 @@
         "Jede der drei Rückgaben trägt 'stage': Der Bericht muss benennen, WO es passierte."
       ],
       "typicalErrors": [
-        "Ausnahme geschluckt statt als Zustand gemeldet",
-        "grund ohne Ausnahmetyp",
-        "stage-Schlüssel vergessen"
+        {
+          "id": "ausnahme-geschluckt-statt-als-zustand",
+          "text": "Ausnahme geschluckt statt als Zustand gemeldet"
+        },
+        {
+          "id": "grund-ohne-ausnahmetyp",
+          "text": "grund ohne Ausnahmetyp"
+        },
+        {
+          "id": "stage-schluessel-vergessen",
+          "text": "stage-Schlüssel vergessen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -133,9 +160,18 @@
         "Der Bericht der fehlerhaften Stage muss den Sentinel enthalten (status/typ bzw. budget) — sonst ist der Abbruch nicht begründet."
       ],
       "typicalErrors": [
-        "nach Fehler weitergelaufen",
-        "Abbruchbericht ohne Sentinel der Fehler-Stage",
-        "Ergebnisse und Zeiten in einem dict vermischt"
+        {
+          "id": "nach-fehler-weitergelaufen",
+          "text": "nach Fehler weitergelaufen"
+        },
+        {
+          "id": "abbruchbericht-ohne-sentinel-der-fehler",
+          "text": "Abbruchbericht ohne Sentinel der Fehler-Stage"
+        },
+        {
+          "id": "ergebnisse-und-zeiten-in-einem",
+          "text": "Ergebnisse und Zeiten in einem dict vermischt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
@@ -168,9 +204,18 @@
         "Bei leeren subgruppen wäre min() ein Fehler — definierend ist 0.0 als IST-Wert."
       ],
       "typicalErrors": [
-        "abgebrochen wie abgelehnt behandelt",
-        "min über leere Subgruppen crashen lassen",
-        "Rot-Team-Prüfung weggelassen"
+        {
+          "id": "abgebrochen-wie-abgelehnt-behandelt",
+          "text": "abgebrochen wie abgelehnt behandelt"
+        },
+        {
+          "id": "min-ueber-leere-subgruppen-crashen",
+          "text": "min über leere Subgruppen crashen lassen"
+        },
+        {
+          "id": "rot-team-pruefung-weggelassen",
+          "text": "Rot-Team-Prüfung weggelassen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -202,9 +247,18 @@
         "fehlgeschlagen ist immer sortiert — auch im Abbruchfall."
       ],
       "typicalErrors": [
-        "leere Prüfungsliste angenommen",
-        "Freeze-Fehler nur als abgelehnt gewertet",
-        "unsortierte Fehlliste zurückgegeben"
+        {
+          "id": "leere-pruefungsliste-angenommen",
+          "text": "leere Prüfungsliste angenommen"
+        },
+        {
+          "id": "freeze-fehler-nur-als-abgelehnt",
+          "text": "Freeze-Fehler nur als abgelehnt gewertet"
+        },
+        {
+          "id": "unsortierte-fehlliste-zurueckgegeben",
+          "text": "unsortierte Fehlliste zurückgegeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

@@ -35,8 +35,14 @@
         "liste[0] = … überschreibt Position 0, ohne die Liste zu verlängern. Notiere den Zustand nach jeder der vier Zeilen."
       ],
       "typicalErrors": [
-        "extend wie append behandelt (ein Element statt mehrerer angehängt)",
-        "Indexzuweisung als Anhängen statt als Überschreiben gelesen"
+        {
+          "id": "extend-wie-append-behandelt-ein",
+          "text": "extend wie append behandelt (ein Element statt mehrerer angehängt)"
+        },
+        {
+          "id": "indexzuweisung-als-anhaengen-statt-als",
+          "text": "Indexzuweisung als Anhängen statt als Überschreiben gelesen"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -72,7 +78,10 @@
         "Mutationen über y sind in x sofort sichtbar — tracke x deshalb über alle vier Zeilen."
       ],
       "typicalErrors": [
-        "y = x als Kopie gelesen und die append-Mutation in x übersehen"
+        {
+          "id": "y-x-als-kopie-gelesen",
+          "text": "y = x als Kopie gelesen und die append-Mutation in x übersehen"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -109,9 +118,18 @@
         "Tracke die Liste zeilenweise: append über y verlängert die gemeinsame Liste, die Indexzuweisung über x überschreibt Position 0 derselben Liste. Der y-Zustand ist zu jeder Zeile der x-Stand."
       ],
       "typicalErrors": [
-        "y = x als Kopie gelesen und die append-Mutation in x übersehen",
-        "nur x getrackt und die geteilte Sicht auf y ignoriert",
-        "Vorzeichen der negativen Startwerte beim Überschreiben verloren"
+        {
+          "id": "y-x-als-kopie-gelesen",
+          "text": "y = x als Kopie gelesen und die append-Mutation in x übersehen"
+        },
+        {
+          "id": "nur-x-getrackt-und-die",
+          "text": "nur x getrackt und die geteilte Sicht auf y ignoriert"
+        },
+        {
+          "id": "vorzeichen-der-negativen-startwerte-beim",
+          "text": "Vorzeichen der negativen Startwerte beim Überschreiben verloren"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic",
@@ -148,8 +166,14 @@
         "Erst die letzte Zeile verändert x; y am Ende enthält das angehängte Element."
       ],
       "typicalErrors": [
-        "append auf y fälschlich in x eingetragen",
-        "y_ende vergessen oder mit dem x-Endstand verwechselt"
+        {
+          "id": "append-auf-y-faelschlich-in",
+          "text": "append auf y fälschlich in x eingetragen"
+        },
+        {
+          "id": "y-ende-vergessen-oder-mit",
+          "text": "y_ende vergessen oder mit dem x-Endstand verwechselt"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -185,8 +209,14 @@
         "Am Ende zeigt y auf dieselbe Liste wie x — der Zustand nach y = x ist daher der x-Stand."
       ],
       "typicalErrors": [
-        "+ und += vertauscht (Neue Liste vs. in-place-Erweiterung)",
-        "den Alias-Effekt der letzten Zeile y = x übersehen"
+        {
+          "id": "und-vertauscht-neue-liste-vs",
+          "text": "+ und += vertauscht (Neue Liste vs. in-place-Erweiterung)"
+        },
+        {
+          "id": "den-alias-effekt-der-letzten",
+          "text": "den Alias-Effekt der letzten Zeile y = x übersehen"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -221,8 +251,14 @@
         "discard entfernt zuverlässig; die Reihenfolge der Elemente ist für die Bewertung nicht relevant."
       ],
       "typicalErrors": [
-        "Duplikate im Set-Zustand notiert",
-        "discard fälschlich als Fehler statt als Entfernen gewertet"
+        {
+          "id": "duplikate-im-set-zustand-notiert",
+          "text": "Duplikate im Set-Zustand notiert"
+        },
+        {
+          "id": "discard-faelschlich-als-fehler-statt",
+          "text": "discard fälschlich als Fehler statt als Entfernen gewertet"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"

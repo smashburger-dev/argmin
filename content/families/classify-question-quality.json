@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)",
-        "falsifizierbar mit interessant verwechselt",
-        "Metrik und Vergleich für denselben Begriff gehalten"
+        {
+          "id": "thema-statt-pruefbarkeit-bewertet-die",
+          "text": "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)"
+        },
+        {
+          "id": "falsifizierbar-mit-interessant-verwechselt",
+          "text": "falsifizierbar mit interessant verwechselt"
+        },
+        {
+          "id": "metrik-und-vergleich-fuer-denselben",
+          "text": "Metrik und Vergleich für denselben Begriff gehalten"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

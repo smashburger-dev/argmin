@@ -32,9 +32,18 @@
         "decode: Wörter in einer Liste sammeln, aktueller Wortpuffer endet bei </w>; bei <eos> abbrechen; Restpuffer am Ende nicht vergessen."
       ],
       "typicalErrors": [
-        "<eos> pro Wort statt einmal am Ende",
-        "Marker als Leerzeichen am Satzende",
-        "unbekannte IDs stillschweigend überlesen"
+        {
+          "id": "pro-wort-statt-einmal-am",
+          "text": "<eos> pro Wort statt einmal am Ende"
+        },
+        {
+          "id": "marker-als-leerzeichen-am-satzende",
+          "text": "Marker als Leerzeichen am Satzende"
+        },
+        {
+          "id": "unbekannte-ids-stillschweigend-ueberlesen",
+          "text": "unbekannte IDs stillschweigend überlesen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -66,9 +75,18 @@
         "Das inverse Vokabular wird aus ID zu Token aufgebaut; IDs nicht in der Eingabeliste gehen nicht verloren."
       ],
       "typicalErrors": [
-        "unbekannte Tokens mit KeyError statt UNK behandelt",
-        "UNK beim Decoding durch ein normales Wort ersetzt",
-        "Pad- und UNK-IDs vertauscht"
+        {
+          "id": "unbekannte-tokens-mit-keyerror-statt",
+          "text": "unbekannte Tokens mit KeyError statt UNK behandelt"
+        },
+        {
+          "id": "unk-beim-decoding-durch-ein",
+          "text": "UNK beim Decoding durch ein normales Wort ersetzt"
+        },
+        {
+          "id": "pad-und-unk-ids-vertauscht",
+          "text": "Pad- und UNK-IDs vertauscht"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

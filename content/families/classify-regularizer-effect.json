@@ -86,9 +86,18 @@
         }
       ],
       "typicalErrors": [
-        "L1- und L2-Strafe verwechseln",
-        "Sparsity als Nebeneffekt von kleinem lambda erklären",
-        "Regularisierung mit Normalisierung der Eingaben verwechseln"
+        {
+          "id": "l1-und-l2-strafe-verwechseln",
+          "text": "L1- und L2-Strafe verwechseln"
+        },
+        {
+          "id": "sparsity-als-nebeneffekt-von-kleinem",
+          "text": "Sparsity als Nebeneffekt von kleinem lambda erklären"
+        },
+        {
+          "id": "regularisierung-mit-normalisierung-der-eingaben",
+          "text": "Regularisierung mit Normalisierung der Eingaben verwechseln"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -210,9 +219,18 @@
         }
       ],
       "typicalErrors": [
-        "Eine kombinierte L1/L2-Strafe mit einer unregularisierten Zielfunktion gleichgesetzt.",
-        "Sparsity als Gleichsetzen sämtlicher Koeffizienten missverstanden.",
-        "Regularisierungstechnik fälschlich auf die Baumfamilie beschränkt."
+        {
+          "id": "eine-kombinierte-l1-l2-strafe",
+          "text": "Eine kombinierte L1/L2-Strafe mit einer unregularisierten Zielfunktion gleichgesetzt."
+        },
+        {
+          "id": "sparsity-als-gleichsetzen-saemtlicher-koeffizienten",
+          "text": "Sparsity als Gleichsetzen sämtlicher Koeffizienten missverstanden."
+        },
+        {
+          "id": "regularisierungstechnik-faelschlich-auf-die-baumfamilie",
+          "text": "Regularisierungstechnik fälschlich auf die Baumfamilie beschränkt."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -334,9 +352,18 @@
         }
       ],
       "typicalErrors": [
-        "Regularisierungsstärke mit einem aus den Trainingsdaten geschätzten Modellkoeffizienten verwechselt.",
-        "Optimierungsziel und Auswahlverfahren für Hyperparameter nicht getrennt.",
-        "Validierung fälschlich als datenlosen Schritt ohne Vergleich von Kandidaten verstanden."
+        {
+          "id": "regularisierungsstaerke-mit-einem-aus-den",
+          "text": "Regularisierungsstärke mit einem aus den Trainingsdaten geschätzten Modellkoeffizienten verwechselt."
+        },
+        {
+          "id": "optimierungsziel-und-auswahlverfahren-fuer-hyperparameter",
+          "text": "Optimierungsziel und Auswahlverfahren für Hyperparameter nicht getrennt."
+        },
+        {
+          "id": "validierung-faelschlich-als-datenlosen-schritt",
+          "text": "Validierung fälschlich als datenlosen Schritt ohne Vergleich von Kandidaten verstanden."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

@@ -184,7 +184,7 @@ test('registry: python-code metadata, expectedAnswer, authored fallback', () => 
   assert.deepEqual(inst.competencyIds, ['c-research-question', 'c-python-functions']);
   assert.deepEqual(inst.expectedAnswer, { kind: 'reference-solver', referenceSolver: body.expected.referenceSolver });
   assert.deepEqual(inst.hints, body.hints, 'authored hints erreichen die Instanz');
-  assert.deepEqual(inst.typicalErrors, body.typicalErrors);
+  assert.deepEqual(inst.typicalErrors, body.typicalErrors.map((entry) => entry.text));
   assert.equal(inst.parameters.caseId, 'detect-goal-shift');
   assert.equal(inst.parameters.difficulty, 'challenge');
   assert.deepEqual(inst.parameters.packages, []);

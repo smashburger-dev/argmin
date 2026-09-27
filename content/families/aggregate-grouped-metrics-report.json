@@ -28,9 +28,18 @@
         "Die verdict-Zeilen werden aus den ungerundeten Kennzahlen abgeleitet (Vorzeichen von r, Vergleich der Mediane) — gerundet wird nur für die Rückgabewerte."
       ],
       "typicalErrors": [
-        "Kausalaussagen im verdict statt Richtungsbeschreibung",
-        "Median über alle Zeilen statt gruppenweise berechnet",
-        "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+        {
+          "id": "kausalaussagen-im-verdict-statt-richtungsbeschreibung",
+          "text": "Kausalaussagen im verdict statt Richtungsbeschreibung"
+        },
+        {
+          "id": "median-ueber-alle-zeilen-statt",
+          "text": "Median über alle Zeilen statt gruppenweise berechnet"
+        },
+        {
+          "id": "vor-der-rundung-verglichen-und",
+          "text": "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+        }
       ]
     },
     {
@@ -61,9 +70,18 @@
         "Die Rate bildet sich erst am Ende: Fehlerzähler durch Anzahlzähler je Gruppe teilen — largest_gap ist dann max minus min über die Werte."
       ],
       "typicalErrors": [
-        "absolute Fehlerzahlen statt Raten vergleichen",
-        "Gruppen als eigene Schleifen statt Zähler-dict",
-        "Längenprüfung weglassen"
+        {
+          "id": "absolute-fehlerzahlen-statt-raten-vergleichen",
+          "text": "absolute Fehlerzahlen statt Raten vergleichen"
+        },
+        {
+          "id": "gruppen-als-eigene-schleifen-statt",
+          "text": "Gruppen als eigene Schleifen statt Zähler-dict"
+        },
+        {
+          "id": "laengenpruefung-weglassen",
+          "text": "Längenprüfung weglassen"
+        }
       ]
     },
     {
@@ -94,9 +112,18 @@
         "In der Modellkarte ist weniger mehr: min über die Metrikwerte liefert die schwächste Gruppe, und der Limitationstext muss den Gruppennamen enthalten."
       ],
       "typicalErrors": [
-        "Anteile auf kind statt Gruppe beziehen",
-        "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen",
-        "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
+        {
+          "id": "anteile-auf-kind-statt-gruppe",
+          "text": "Anteile auf kind statt Gruppe beziehen"
+        },
+        {
+          "id": "hoechste-statt-niedrigste-metrik-als",
+          "text": "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen"
+        },
+        {
+          "id": "eingabevalidierung-schluessel-leere-liste-vergessen",
+          "text": "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
+        }
       ]
     },
     {
@@ -126,9 +153,18 @@
         "sorted(werte.items()) sortiert das Endergebnis direkt nach Label."
       ],
       "typicalErrors": [
-        "über alle Datensätze gemittelt statt je Gruppe",
-        "fehlendes Label crashen lassen",
-        "unsortierte Labels zurückgegeben"
+        {
+          "id": "ueber-alle-datensaetze-gemittelt-statt",
+          "text": "über alle Datensätze gemittelt statt je Gruppe"
+        },
+        {
+          "id": "fehlendes-label-crashen-lassen",
+          "text": "fehlendes Label crashen lassen"
+        },
+        {
+          "id": "unsortierte-labels-zurueckgegeben",
+          "text": "unsortierte Labels zurückgegeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

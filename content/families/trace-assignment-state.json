@@ -19,9 +19,18 @@
         "Nach dem ersten Durchlauf sind die NEUEN w- und b-Werte der Start des zweiten Durchlaufs — nicht die ursprünglichen."
       ],
       "typicalErrors": [
-        "nur einen Schleifendurchlauf gerechnet",
-        "negatives Gradienten-Update als Subtraktion gelesen",
-        "w- und b-Updates vermischt"
+        {
+          "id": "nur-einen-schleifendurchlauf-gerechnet",
+          "text": "nur einen Schleifendurchlauf gerechnet"
+        },
+        {
+          "id": "negatives-gradienten-update-als-subtraktion",
+          "text": "negatives Gradienten-Update als Subtraktion gelesen"
+        },
+        {
+          "id": "w-und-b-updates-vermischt",
+          "text": "w- und b-Updates vermischt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -52,9 +61,18 @@
         }
       ],
       "typicalErrors": [
-        "innere Fragen des falschen Astes auswerten",
-        "pred als 1 lesen, weil irgendein Modell 1 liefert",
-        "die Mehrheitsschwelle als strikt größer 2 lesen"
+        {
+          "id": "innere-fragen-des-falschen-astes",
+          "text": "innere Fragen des falschen Astes auswerten"
+        },
+        {
+          "id": "pred-als-1-lesen-weil",
+          "text": "pred als 1 lesen, weil irgendein Modell 1 liefert"
+        },
+        {
+          "id": "die-mehrheitsschwelle-als-strikt-groesser",
+          "text": "die Mehrheitsschwelle als strikt größer 2 lesen"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -84,9 +102,18 @@
         "Im selben rng läuft die Folge weiter: b ist die zweite Ziehung. Die Zahlen (Seed 7, Bereich 0–10) sind a = [9, 6, 6], b = [8, 5, 7]."
       ],
       "typicalErrors": [
-        "Fortsetzung im selben Generator wie Neustart behandeln",
-        "Indizes 0 mit 1 verwechseln",
-        "den dritten Generator als Fortsetzung lesen"
+        {
+          "id": "fortsetzung-im-selben-generator-wie",
+          "text": "Fortsetzung im selben Generator wie Neustart behandeln"
+        },
+        {
+          "id": "indizes-0-mit-1-verwechseln",
+          "text": "Indizes 0 mit 1 verwechseln"
+        },
+        {
+          "id": "den-dritten-generator-als-fortsetzung",
+          "text": "den dritten Generator als Fortsetzung lesen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic",
@@ -218,9 +245,18 @@
         }
       ],
       "typicalErrors": [
-        "Vorzeichen im Update gedreht (Abstieg statt Aufstieg)",
-        "den lokalen Gradienten ohne Upstream verwendet",
-        "Bias-Gradient als 0 statt Upstream · 1 gelesen"
+        {
+          "id": "vorzeichen-im-update-gedreht-abstieg",
+          "text": "Vorzeichen im Update gedreht (Abstieg statt Aufstieg)"
+        },
+        {
+          "id": "den-lokalen-gradienten-ohne-upstream",
+          "text": "den lokalen Gradienten ohne Upstream verwendet"
+        },
+        {
+          "id": "bias-gradient-als-0-statt",
+          "text": "Bias-Gradient als 0 statt Upstream · 1 gelesen"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -247,9 +283,18 @@
         }
       ],
       "typicalErrors": [
-        "Summe der Indizes statt der Werte gerechnet",
-        "gedroppte statt behaltene Werte summiert",
-        "Anzahl der behaltenen Werte mit ihrer Summe verwechselt"
+        {
+          "id": "summe-der-indizes-statt-der",
+          "text": "Summe der Indizes statt der Werte gerechnet"
+        },
+        {
+          "id": "gedroppte-statt-behaltene-werte-summiert",
+          "text": "gedroppte statt behaltene Werte summiert"
+        },
+        {
+          "id": "anzahl-der-behaltenen-werte-mit",
+          "text": "Anzahl der behaltenen Werte mit ihrer Summe verwechselt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -276,9 +321,18 @@
         }
       ],
       "typicalErrors": [
-        "Maximum nicht abgezogen (Scores direkt exponentiiert)",
-        "über die falsche Achse normalisiert",
-        "gerundete Werte in falscher Reihenfolge notiert"
+        {
+          "id": "maximum-nicht-abgezogen-scores-direkt",
+          "text": "Maximum nicht abgezogen (Scores direkt exponentiiert)"
+        },
+        {
+          "id": "ueber-die-falsche-achse-normalisiert",
+          "text": "über die falsche Achse normalisiert"
+        },
+        {
+          "id": "gerundete-werte-in-falscher-reihenfolge",
+          "text": "gerundete Werte in falscher Reihenfolge notiert"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -305,9 +359,18 @@
         }
       ],
       "typicalErrors": [
-        "Zeichenreihenfolge beim Ablesen vertauscht",
-        "Marker-IDs vergessen",
-        "set-Vergleich als False eingeschätzt"
+        {
+          "id": "zeichenreihenfolge-beim-ablesen-vertauscht",
+          "text": "Zeichenreihenfolge beim Ablesen vertauscht"
+        },
+        {
+          "id": "marker-ids-vergessen",
+          "text": "Marker-IDs vergessen"
+        },
+        {
+          "id": "set-vergleich-als-false-eingeschaetzt",
+          "text": "set-Vergleich als False eingeschätzt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -334,9 +397,18 @@
         }
       ],
       "typicalErrors": [
-        "Präfix-Logik invertiert",
-        "sortierte Reihenfolge von Strings unterschätzt",
-        "Anzahl statt Index verwechselt"
+        {
+          "id": "praefix-logik-invertiert",
+          "text": "Präfix-Logik invertiert"
+        },
+        {
+          "id": "sortierte-reihenfolge-von-strings-unterschaetzt",
+          "text": "sortierte Reihenfolge von Strings unterschätzt"
+        },
+        {
+          "id": "anzahl-statt-index-verwechselt",
+          "text": "Anzahl statt Index verwechselt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -367,9 +439,18 @@
         }
       ],
       "typicalErrors": [
-        "absolut und relativ vertauscht",
-        "round()-Verhalten bei ,5-Werten missverstanden",
-        "relative Basis (alt statt neu) verwechselt"
+        {
+          "id": "absolut-und-relativ-vertauscht",
+          "text": "absolut und relativ vertauscht"
+        },
+        {
+          "id": "round-verhalten-bei-5-werten",
+          "text": "round()-Verhalten bei ,5-Werten missverstanden"
+        },
+        {
+          "id": "relative-basis-alt-statt-neu",
+          "text": "relative Basis (alt statt neu) verwechselt"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -390,9 +471,18 @@
         "summe aggregiert nur die Schlüssel mit split_-Präfix; promille ist die Summe in Tausendsteln als ganze Zahl."
       ],
       "typicalErrors": [
-        "Leerstring- und fehlende Schlüssel verwechselt (hier steht kein leerer Wert)",
-        "Summe vor dem Runden weiterverwendet",
-        "len(card) ohne die fehlenden Felder gerechnet"
+        {
+          "id": "leerstring-und-fehlende-schluessel-verwechselt",
+          "text": "Leerstring- und fehlende Schlüssel verwechselt (hier steht kein leerer Wert)"
+        },
+        {
+          "id": "summe-vor-dem-runden-weiterverwendet",
+          "text": "Summe vor dem Runden weiterverwendet"
+        },
+        {
+          "id": "len-card-ohne-die-fehlenden",
+          "text": "len(card) ohne die fehlenden Felder gerechnet"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -413,8 +503,14 @@
         "hoechste vergleicht die drei PRODUKTE, nicht die Eingabezahlen."
       ],
       "typicalErrors": [
-        "Produkte in falscher Reihenfolge zugeteilt",
-        "max auf die Eingabewerte statt die RPN-Werte angewandt"
+        {
+          "id": "produkte-in-falscher-reihenfolge-zugeteilt",
+          "text": "Produkte in falscher Reihenfolge zugeteilt"
+        },
+        {
+          "id": "max-auf-die-eingabewerte-statt",
+          "text": "max auf die Eingabewerte statt die RPN-Werte angewandt"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -435,9 +531,18 @@
         "hinterer.split()[1:] lässt das erste Wort nach „desto“ (die Richtung) weg; alles wird kleingeschrieben."
       ],
       "typicalErrors": [
-        "Richtungsadjektiv mit in die Variable aufgenommen",
-        "Groß-/Kleinschreibung nicht mitgerechnet",
-        "den Punkt am Satzende mit in die DV übernommen"
+        {
+          "id": "richtungsadjektiv-mit-in-die-variable",
+          "text": "Richtungsadjektiv mit in die Variable aufgenommen"
+        },
+        {
+          "id": "gross-kleinschreibung-nicht-mitgerechnet",
+          "text": "Groß-/Kleinschreibung nicht mitgerechnet"
+        },
+        {
+          "id": "den-punkt-am-satzende-mit",
+          "text": "den Punkt am Satzende mit in die DV übernommen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -458,9 +563,18 @@
         "Nur Stufen mit Status ok tragen einen wert-Schlüssel — get(\"wert\", 0) zählt die übrigen als 0."
       ],
       "typicalErrors": [
-        "den gedachten Endpunkt für die Exception mitgezählt (Uhr wird nur einmal gelesen)",
-        "timeout-Eintrag mit wert angenommen",
-        "Dauer von 100 auf die falschen Messpunkte gerechnet"
+        {
+          "id": "den-gedachten-endpunkt-fuer-die",
+          "text": "den gedachten Endpunkt für die Exception mitgezählt (Uhr wird nur einmal gelesen)"
+        },
+        {
+          "id": "timeout-eintrag-mit-wert-angenommen",
+          "text": "timeout-Eintrag mit wert angenommen"
+        },
+        {
+          "id": "dauer-von-100-auf-die",
+          "text": "Dauer von 100 auf die falschen Messpunkte gerechnet"
+        }
       ],
       "activityType": "code-trace",
       "graderId": "deterministic"
@@ -481,9 +595,18 @@
         "sorted() ordnet die Funde alphabetisch; die zweite Zeile ist die ANZAHL der Treffer, keine Liste."
       ],
       "typicalErrors": [
-        "Groß-/Kleinschreibung beim Vergleich ignoriert",
-        "Fundreihenfolge statt alphabetisch ausgegeben",
-        "leere Liste als None gelesen"
+        {
+          "id": "gross-kleinschreibung-beim-vergleich-ignoriert",
+          "text": "Groß-/Kleinschreibung beim Vergleich ignoriert"
+        },
+        {
+          "id": "fundreihenfolge-statt-alphabetisch-ausgegeben",
+          "text": "Fundreihenfolge statt alphabetisch ausgegeben"
+        },
+        {
+          "id": "leere-liste-als-none-gelesen",
+          "text": "leere Liste als None gelesen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

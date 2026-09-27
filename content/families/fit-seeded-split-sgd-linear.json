@@ -32,9 +32,18 @@
         "Training: pro Epoche erst Verlust notieren (Epochenbeginn!), dann Residuen r = Xw + b − y und beide Updates mit Faktor 2/n. Gleicher Seed ⇒ gleicher Start ⇒ identische Historie."
       ],
       "typicalErrors": [
-        "Verlust nach dem Update statt zu Epochenbeginn notiert",
-        "Faktor 2/n in einem Update vergessen",
-        "Split ohne Seed oder unsortiert zurückgegeben"
+        {
+          "id": "verlust-nach-dem-update-statt",
+          "text": "Verlust nach dem Update statt zu Epochenbeginn notiert"
+        },
+        {
+          "id": "faktor-2-n-in-einem",
+          "text": "Faktor 2/n in einem Update vergessen"
+        },
+        {
+          "id": "split-ohne-seed-oder-unsortiert",
+          "text": "Split ohne Seed oder unsortiert zurückgegeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

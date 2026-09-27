@@ -32,9 +32,18 @@
         "Pro Merge ein linker nach rechter Durchlauf mit Positionsindex: bei Treffer beide Symbole zum verschmolzenen String zusammenfassen und Index um 2 weiterschalten."
       ],
       "typicalErrors": [
-        "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)",
-        "überlappende Vorkommen doppelt verschmolzen",
-        "End-of-Word-Marker unterschlagen"
+        {
+          "id": "mergetabelle-umsortiert-haeufigkeit-statt-reihenfolge",
+          "text": "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)"
+        },
+        {
+          "id": "ueberlappende-vorkommen-doppelt-verschmolzen",
+          "text": "überlappende Vorkommen doppelt verschmolzen"
+        },
+        {
+          "id": "end-of-word-marker-unterschlagen",
+          "text": "End-of-Word-Marker unterschlagen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -66,9 +75,18 @@
         "Nach einem Treffer zwei Eingabesymbole verbrauchen; so wird aa a nicht zu einem überlappenden Dreifach-Merge."
       ],
       "typicalErrors": [
-        "Mergetabelle nach eigener Häufigkeitsannahme sortiert",
-        "überlappende Symbole mehrfach im selben Durchlauf verbraucht",
-        "neu entstandenes Paar nicht in der nächsten Mergerunde berücksichtigt"
+        {
+          "id": "mergetabelle-nach-eigener-haeufigkeitsannahme-sortiert",
+          "text": "Mergetabelle nach eigener Häufigkeitsannahme sortiert"
+        },
+        {
+          "id": "ueberlappende-symbole-mehrfach-im-selben",
+          "text": "überlappende Symbole mehrfach im selben Durchlauf verbraucht"
+        },
+        {
+          "id": "neu-entstandenes-paar-nicht-in",
+          "text": "neu entstandenes Paar nicht in der nächsten Mergerunde berücksichtigt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

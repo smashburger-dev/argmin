@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "OOV mit Subwords für unvermeidlich gehalten",
-        "dynamische Vokabularerweiterung zur Laufzeit angenommen",
-        "Round-Trip-Eigenschaft missachtet"
+        {
+          "id": "oov-mit-subwords-fuer-unvermeidlich",
+          "text": "OOV mit Subwords für unvermeidlich gehalten"
+        },
+        {
+          "id": "dynamische-vokabularerweiterung-zur-laufzeit-angenommen",
+          "text": "dynamische Vokabularerweiterung zur Laufzeit angenommen"
+        },
+        {
+          "id": "round-trip-eigenschaft-missachtet",
+          "text": "Round-Trip-Eigenschaft missachtet"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -127,9 +136,18 @@
         }
       ],
       "typicalErrors": [
-        "Subword-Zerlegung mit dynamischer Vokabularerweiterung verwechselt",
-        "OOV-Robustheit fälschlich als konstante Sequenzlänge verstanden",
-        "Teiltoken als vollständige Wortsemantik interpretiert"
+        {
+          "id": "subword-zerlegung-mit-dynamischer-vokabularerweiterung",
+          "text": "Subword-Zerlegung mit dynamischer Vokabularerweiterung verwechselt"
+        },
+        {
+          "id": "oov-robustheit-faelschlich-als-konstante",
+          "text": "OOV-Robustheit fälschlich als konstante Sequenzlänge verstanden"
+        },
+        {
+          "id": "teiltoken-als-vollstaendige-wortsemantik-interpretiert",
+          "text": "Teiltoken als vollständige Wortsemantik interpretiert"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -195,9 +213,18 @@
         }
       ],
       "typicalErrors": [
-        "Subword-Tokenisierung mit Ein-Wort-ein-Token gleichgesetzt",
-        "gemeinsame Stücke als Verlust statt als geteilte Repräsentation gelesen",
-        "OOV-Lösung fälschlich als vollständige Embedding-Neuerzeugung beschrieben"
+        {
+          "id": "subword-tokenisierung-mit-ein-wort",
+          "text": "Subword-Tokenisierung mit Ein-Wort-ein-Token gleichgesetzt"
+        },
+        {
+          "id": "gemeinsame-stuecke-als-verlust-statt",
+          "text": "gemeinsame Stücke als Verlust statt als geteilte Repräsentation gelesen"
+        },
+        {
+          "id": "oov-loesung-faelschlich-als-vollstaendige",
+          "text": "OOV-Lösung fälschlich als vollständige Embedding-Neuerzeugung beschrieben"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

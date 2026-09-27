@@ -28,9 +28,18 @@
         "Abstände bekommst du ohne Schleife: `np.linalg.norm(X[:, None, :] - centroids[None, :, :], axis=2)` gibt eine (n, k)-Distanzmatrix; `np.argmin(..., axis=1)` wählt (bei Gleichstand den kleinsten Index)."
       ],
       "typicalErrors": [
-        "eigh-Ausgabe nicht absteigend sortieren",
-        "Eigenvektoren als Zeilen statt Spalten lesen",
-        "k-Means-Initialisierung ohne Generator-Objekt"
+        {
+          "id": "eigh-ausgabe-nicht-absteigend-sortieren",
+          "text": "eigh-Ausgabe nicht absteigend sortieren"
+        },
+        {
+          "id": "eigenvektoren-als-zeilen-statt-spalten",
+          "text": "Eigenvektoren als Zeilen statt Spalten lesen"
+        },
+        {
+          "id": "k-means-initialisierung-ohne-generator",
+          "text": "k-Means-Initialisierung ohne Generator-Objekt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -60,9 +69,18 @@
         "Alles läuft auf den skalierten Daten: PCA und k-Means sehen dieselbe Matrix. Bei zwei Aufrufen muss derselbe Seed dasselbe Ergebnis liefern — nutze einen frischen default_rng(seed) pro kmeans-Aufruf."
       ],
       "typicalErrors": [
-        "durch Standardabweichung 0 teilen (NaN statt ValueError)",
-        "PCA auf unskalierten Daten",
-        "rng-Objekt außerhalb der Funktion wiederverwenden"
+        {
+          "id": "durch-standardabweichung-0-teilen-nan",
+          "text": "durch Standardabweichung 0 teilen (NaN statt ValueError)"
+        },
+        {
+          "id": "pca-auf-unskalierten-daten",
+          "text": "PCA auf unskalierten Daten"
+        },
+        {
+          "id": "rng-objekt-ausserhalb-der-funktion",
+          "text": "rng-Objekt außerhalb der Funktion wiederverwenden"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

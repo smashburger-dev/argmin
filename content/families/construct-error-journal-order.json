@@ -84,9 +84,18 @@
         }
       ],
       "typicalErrors": [
-        "globales Selbsturteil als Ursachenhypothese aufnehmen",
-        "den geplanten Test vor die Hypothese setzen",
-        "den Abruf vor den Test legen oder weglassen"
+        {
+          "id": "globales-selbsturteil-als-ursachenhypothese-aufnehmen",
+          "text": "globales Selbsturteil als Ursachenhypothese aufnehmen"
+        },
+        {
+          "id": "den-geplanten-test-vor-die",
+          "text": "den geplanten Test vor die Hypothese setzen"
+        },
+        {
+          "id": "den-abruf-vor-den-test",
+          "text": "den Abruf vor den Test legen oder weglassen"
+        }
       ]
     }
   ]

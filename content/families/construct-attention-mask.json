@@ -32,9 +32,18 @@
         "masked_softmax: Formprüfung, dann komplett verdeckte Zeilen erkennen ((mask.sum(axis=1) == 0).any()), Scores via np.where auf −∞, Zeilenmaximum abziehen, normalisieren."
       ],
       "typicalErrors": [
-        "teilweise maskierte Zeilen fälschlich abgelehnt",
-        "Maskenform ungeprüft angewendet",
-        "Overflow bei großen Scores ohne Maximum-Subtraktion"
+        {
+          "id": "teilweise-maskierte-zeilen-faelschlich-abgelehnt",
+          "text": "teilweise maskierte Zeilen fälschlich abgelehnt"
+        },
+        {
+          "id": "maskenform-ungeprueft-angewendet",
+          "text": "Maskenform ungeprüft angewendet"
+        },
+        {
+          "id": "overflow-bei-grossen-scores-ohne",
+          "text": "Overflow bei großen Scores ohne Maximum-Subtraktion"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "Nach dem Maskieren Maximum abziehen; eine Zeile ohne True darf nicht normalisiert werden."
       ],
       "typicalErrors": [
-        "Paddingpositionen als sichtbar markiert",
-        "Softmax vor statt nach der Maskierung normalisiert",
-        "leere sichtbare Zeile durch Nullsumme geteilt"
+        {
+          "id": "paddingpositionen-als-sichtbar-markiert",
+          "text": "Paddingpositionen als sichtbar markiert"
+        },
+        {
+          "id": "softmax-vor-statt-nach-der",
+          "text": "Softmax vor statt nach der Maskierung normalisiert"
+        },
+        {
+          "id": "leere-sichtbare-zeile-durch-nullsumme",
+          "text": "leere sichtbare Zeile durch Nullsumme geteilt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

@@ -28,9 +28,18 @@
         "Zähle fehlende und Sentinel-Werte in einem Durchlauf; für duplicate_ids sammle id-Häufigkeiten in einem Dictionary und zähle danach alle ids mit Häufigkeit > 1."
       ],
       "typicalErrors": [
-        "Schema-Prüfung nach dem Zählen ausgeführt oder weggelassen",
-        "bool versehentlich als int akzeptiert",
-        "Sentinel -1 nicht von fehlendem None unterschieden"
+        {
+          "id": "schema-pruefung-nach-dem-zaehlen",
+          "text": "Schema-Prüfung nach dem Zählen ausgeführt oder weggelassen"
+        },
+        {
+          "id": "bool-versehentlich-als-int-akzeptiert",
+          "text": "bool versehentlich als int akzeptiert"
+        },
+        {
+          "id": "sentinel-1-nicht-von-fehlendem",
+          "text": "Sentinel -1 nicht von fehlendem None unterschieden"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -60,9 +69,18 @@
         "None ist nur in nullable erlaubt und ergibt sonst einen type-Fehler; bool ist eine Unterklasse von int und muss für \"int\"/\"number\" explizit ausgeschlossen werden."
       ],
       "typicalErrors": [
-        "bool als int akzeptiert, weil isinstance(True, int) gilt",
-        "None in den Bereichs-Vergleich einbezogen und gegen min/max geprüft",
-        "Duplikate während des Zeilendurchlaufs gemeldet statt in einem zweiten Durchlauf"
+        {
+          "id": "bool-als-int-akzeptiert-weil",
+          "text": "bool als int akzeptiert, weil isinstance(True, int) gilt"
+        },
+        {
+          "id": "none-in-den-bereichs-vergleich",
+          "text": "None in den Bereichs-Vergleich einbezogen und gegen min/max geprüft"
+        },
+        {
+          "id": "duplikate-waehrend-des-zeilendurchlaufs-gemeldet",
+          "text": "Duplikate während des Zeilendurchlaufs gemeldet statt in einem zweiten Durchlauf"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

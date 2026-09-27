@@ -32,9 +32,18 @@
         "Alle Verträge vor der Rechnung prüfen: Rang, Dimensionen, Formgleichheit mit W."
       ],
       "typicalErrors": [
-        "BA gegen AB vertauscht",
-        "Skalierung α/r vergessen",
-        "Rang-/Formverträge ungeprüft"
+        {
+          "id": "ba-gegen-ab-vertauscht",
+          "text": "BA gegen AB vertauscht"
+        },
+        {
+          "id": "skalierung-r-vergessen",
+          "text": "Skalierung α/r vergessen"
+        },
+        {
+          "id": "rang-formvertraege-ungeprueft",
+          "text": "Rang-/Formverträge ungeprüft"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "Erzeuge neue Arrays statt W oder velocity-artige Eingaben in-place zu verändern."
       ],
       "typicalErrors": [
-        "BA und AB trotz inkompatibler Innenformen vertauscht",
-        "den Faktor alpha/r beim Delta ausgelassen",
-        "W-Form erst nach einer unzulässigen Addition geprüft"
+        {
+          "id": "ba-und-ab-trotz-inkompatibler",
+          "text": "BA und AB trotz inkompatibler Innenformen vertauscht"
+        },
+        {
+          "id": "den-faktor-alpha-r-beim",
+          "text": "den Faktor alpha/r beim Delta ausgelassen"
+        },
+        {
+          "id": "w-form-erst-nach-einer",
+          "text": "W-Form erst nach einer unzulässigen Addition geprüft"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

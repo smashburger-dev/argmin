@@ -59,9 +59,18 @@
         }
       ],
       "typicalErrors": [
-        "Zeitlichen Einbruch als Zufall deuten",
-        "Drift mit Label-Noise verwechseln",
-        "ohne Hinweis auf Gruppen einen Subgruppenfehler annehmen"
+        {
+          "id": "zeitlichen-einbruch-als-zufall-deuten",
+          "text": "Zeitlichen Einbruch als Zufall deuten"
+        },
+        {
+          "id": "drift-mit-label-noise-verwechseln",
+          "text": "Drift mit Label-Noise verwechseln"
+        },
+        {
+          "id": "ohne-hinweis-auf-gruppen-einen",
+          "text": "ohne Hinweis auf Gruppen einen Subgruppenfehler annehmen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -120,9 +129,18 @@
         }
       ],
       "typicalErrors": [
-        "Eine unveränderte Eingabeverteilung trotz geänderter Zieldefinition als Input-Drift bezeichnet.",
-        "Systematische Labeländerung mit zufälligem, unabhängigen Rauschen gleichgesetzt.",
-        "Eine semantische Änderung des positiven Labels auf numerische Rundungsfehler reduziert."
+        {
+          "id": "eine-unveraenderte-eingabeverteilung-trotz-geaenderter",
+          "text": "Eine unveränderte Eingabeverteilung trotz geänderter Zieldefinition als Input-Drift bezeichnet."
+        },
+        {
+          "id": "systematische-labelaenderung-mit-zufaelligem-unabhaengigen",
+          "text": "Systematische Labeländerung mit zufälligem, unabhängigen Rauschen gleichgesetzt."
+        },
+        {
+          "id": "eine-semantische-aenderung-des-positiven",
+          "text": "Eine semantische Änderung des positiven Labels auf numerische Rundungsfehler reduziert."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -182,9 +200,18 @@
         }
       ],
       "typicalErrors": [
-        "Ein zeitlich stabiles Gruppenmuster fälschlich als zeitlichen Daten-Drift diagnostiziert.",
-        "Systematische gruppenspezifische Fehler als ungerichtetes Label-Rauschen verbucht.",
-        "Aggregierte Genauigkeit als ausreichenden Gegenbeweis gegen Subgruppenrisiken verwendet."
+        {
+          "id": "ein-zeitlich-stabiles-gruppenmuster-faelschlich",
+          "text": "Ein zeitlich stabiles Gruppenmuster fälschlich als zeitlichen Daten-Drift diagnostiziert."
+        },
+        {
+          "id": "systematische-gruppenspezifische-fehler-als-ungerichtetes",
+          "text": "Systematische gruppenspezifische Fehler als ungerichtetes Label-Rauschen verbucht."
+        },
+        {
+          "id": "aggregierte-genauigkeit-als-ausreichenden-gegenbeweis",
+          "text": "Aggregierte Genauigkeit als ausreichenden Gegenbeweis gegen Subgruppenrisiken verwendet."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

@@ -35,9 +35,18 @@
         }
       ],
       "typicalErrors": [
-        "nur einen Zweig beitragen lassen",
-        "die Zweigprodukte miteinander multipliziert statt addiert",
-        "Vorzeichen eines lokalen Gradienten verloren"
+        {
+          "id": "nur-einen-zweig-beitragen-lassen",
+          "text": "nur einen Zweig beitragen lassen"
+        },
+        {
+          "id": "die-zweigprodukte-miteinander-multipliziert-statt",
+          "text": "die Zweigprodukte miteinander multipliziert statt addiert"
+        },
+        {
+          "id": "vorzeichen-eines-lokalen-gradienten-verloren",
+          "text": "Vorzeichen eines lokalen Gradienten verloren"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -87,9 +96,18 @@
         }
       ],
       "typicalErrors": [
-        "nur einen Pfad differenziert",
-        "die Pfadbeiträge multipliziert statt addiert",
-        "g' = 2aw nicht ausgewertet und stattdessen den Koeffizienten a verwendet"
+        {
+          "id": "nur-einen-pfad-differenziert",
+          "text": "nur einen Pfad differenziert"
+        },
+        {
+          "id": "die-pfadbeitraege-multipliziert-statt-addiert",
+          "text": "die Pfadbeiträge multipliziert statt addiert"
+        },
+        {
+          "id": "g-2aw-nicht-ausgewertet-und",
+          "text": "g' = 2aw nicht ausgewertet und stattdessen den Koeffizienten a verwendet"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic",

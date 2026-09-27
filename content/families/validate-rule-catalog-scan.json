@@ -30,9 +30,18 @@
         "check_consistency vergleicht mit .get(): Fehlt ein Feld auf beiden Seiten, ist None == None keine Abweichung."
       ],
       "typicalErrors": [
-        "Nicht-String-Werte nicht übersprungen (TypeError)",
-        "Großschreibung nicht berücksichtigt",
-        "fehlende Felder als Abweichung gewertet"
+        {
+          "id": "nicht-string-werte-nicht-uebersprungen",
+          "text": "Nicht-String-Werte nicht übersprungen (TypeError)"
+        },
+        {
+          "id": "grossschreibung-nicht-beruecksichtigt",
+          "text": "Großschreibung nicht berücksichtigt"
+        },
+        {
+          "id": "fehlende-felder-als-abweichung-gewertet",
+          "text": "fehlende Felder als Abweichung gewertet"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -65,9 +74,18 @@
         "Die fehlt-Codes laufen über die drei Pflichtlisten mit kartenpräfix; Rückgabe sortiert und ohne Duplikate (sorted(set(...)))."
       ],
       "typicalErrors": [
-        "nur paarweise verglichen statt aller Werte zugleich",
-        "fehlende Pflichtfelder nicht als eigenen Code geführt",
-        "Duplikate in der Ergebnisliste"
+        {
+          "id": "nur-paarweise-verglichen-statt-aller",
+          "text": "nur paarweise verglichen statt aller Werte zugleich"
+        },
+        {
+          "id": "fehlende-pflichtfelder-nicht-als-eigenen",
+          "text": "fehlende Pflichtfelder nicht als eigenen Code geführt"
+        },
+        {
+          "id": "duplikate-in-der-ergebnisliste",
+          "text": "Duplikate in der Ergebnisliste"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
@@ -100,9 +118,18 @@
         "hashlib.sha256(inhalt.encode('utf-8')).hexdigest() liefert den Hex-String zum Vergleich mit dem Pin."
       ],
       "typicalErrors": [
-        "über dateien statt pins iteriert",
-        "fehlende Datei gehasht statt abgefangen",
-        "None-Pins wie Hash-Pins behandelt"
+        {
+          "id": "ueber-dateien-statt-pins-iteriert",
+          "text": "über dateien statt pins iteriert"
+        },
+        {
+          "id": "fehlende-datei-gehasht-statt-abgefangen",
+          "text": "fehlende Datei gehasht statt abgefangen"
+        },
+        {
+          "id": "none-pins-wie-hash-pins",
+          "text": "None-Pins wie Hash-Pins behandelt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -134,9 +161,18 @@
         "Sortiert wird die fertige „name: spec“-Liste — nicht nur die Namen."
       ],
       "typicalErrors": [
-        "nur >= als Marker geprüft",
-        "unsortierte Verstöße zurückgegeben",
-        "exakte Specs fälschlich geflaggt"
+        {
+          "id": "nur-als-marker-geprueft",
+          "text": "nur >= als Marker geprüft"
+        },
+        {
+          "id": "unsortierte-verstoesse-zurueckgegeben",
+          "text": "unsortierte Verstöße zurückgegeben"
+        },
+        {
+          "id": "exakte-specs-faelschlich-geflaggt",
+          "text": "exakte Specs fälschlich geflaggt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

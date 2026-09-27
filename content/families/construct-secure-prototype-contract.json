@@ -30,9 +30,18 @@
         "metrics und answer nutzen denselben audit — die Dämpfung der Metrik ist die beabsichtigte Verweigerung, kein Bug."
       ],
       "typicalErrors": [
-        "nur die Anfrage, nicht das Top-Dokument geprüft",
-        "blockierte Query trotzdem beantwortet",
-        "Policy-Entscheidungsreihenfolge verletzt"
+        {
+          "id": "nur-die-anfrage-nicht-das",
+          "text": "nur die Anfrage, nicht das Top-Dokument geprüft"
+        },
+        {
+          "id": "blockierte-query-trotzdem-beantwortet",
+          "text": "blockierte Query trotzdem beantwortet"
+        },
+        {
+          "id": "policy-entscheidungsreihenfolge-verletzt",
+          "text": "Policy-Entscheidungsreihenfolge verletzt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

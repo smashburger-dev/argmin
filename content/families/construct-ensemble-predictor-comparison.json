@@ -28,10 +28,22 @@
         "tree_predict endet bei 'leaf' im Knoten; compare_models nutzt dieselbe RMSE-Hilfsfunktion für alle drei Modelle."
       ],
       "typicalErrors": [
-        "Mehrheit über Zeilen statt Spalten",
-        "Gleichstand bei gerader Modellzahl als 0 statt als 1 werten",
-        "lineare Baseline mit Intercept fitten",
-        "RMSE ohne Wurzel zurückgeben"
+        {
+          "id": "mehrheit-ueber-zeilen-statt-spalten",
+          "text": "Mehrheit über Zeilen statt Spalten"
+        },
+        {
+          "id": "gleichstand-bei-gerader-modellzahl-als",
+          "text": "Gleichstand bei gerader Modellzahl als 0 statt als 1 werten"
+        },
+        {
+          "id": "lineare-baseline-mit-intercept-fitten",
+          "text": "lineare Baseline mit Intercept fitten"
+        },
+        {
+          "id": "rmse-ohne-wurzel-zurueckgeben",
+          "text": "RMSE ohne Wurzel zurückgeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -62,9 +74,18 @@
         "Bei `x[i] == threshold` geht der Baum links; RMSE enthält die Quadratwurzel."
       ],
       "typicalErrors": [
-        "über Beispiele statt Modelle abstimmen",
-        "Grenzfall falsch zuordnen",
-        "MSE statt RMSE zurückgeben"
+        {
+          "id": "ueber-beispiele-statt-modelle-abstimmen",
+          "text": "über Beispiele statt Modelle abstimmen"
+        },
+        {
+          "id": "grenzfall-falsch-zuordnen",
+          "text": "Grenzfall falsch zuordnen"
+        },
+        {
+          "id": "mse-statt-rmse-zurueckgeben",
+          "text": "MSE statt RMSE zurückgeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
