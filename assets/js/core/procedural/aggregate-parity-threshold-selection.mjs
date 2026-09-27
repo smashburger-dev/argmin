@@ -10,71 +10,9 @@
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { randInt, shuffle } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/aggregate-parity-threshold-selection.json' with { type: 'json' };
 
 // --- parity-threshold-selection (stretch) ---
-const PARITY_PACKAGES = [];
-const PARITY_STARTER = `def threshold_sweep(kandidaten, band):
-    ""'Paritaetsband zuerst, dann bestes f1, Gleichstand -> kleinere schwelle'; None ohne Kandidat im Band."""
-    ...
-
-def cost_table(token_in, token_out, preis_in_mio, preis_out_mio):
-    """Kosten in EUR je 1.000.000 Token-Skala, auf 4 Dezimalstellen gerundet."""
-    ...
-
-`;
-const PARITY_BASE_TESTS = `KAND = [
-    {"schwelle": 0.4, "selrate": {"a": 0.9, "b": 0.5}, "f1": 0.84},
-    {"schwelle": 0.5, "selrate": {"a": 0.8, "b": 0.6}, "f1": 0.81},
-    {"schwelle": 0.6, "selrate": {"a": 0.7, "b": 0.65}, "f1": 0.78},
-    {"schwelle": 0.7, "selrate": {"a": 0.66, "b": 0.64}, "f1": 0.78},
-]
-__check('weites band waehlt bestes f1', threshold_sweep(KAND, 0.2) == {"schwelle": 0.6, "f1": 0.78, "paritaet_ok": True})
-__check('enges band mit gleichstand -> kleinere schwelle', threshold_sweep(KAND, 0.05) == {"schwelle": 0.6, "f1": 0.78, "paritaet_ok": True})
-__check('sehr enges band -> nur ein kandidat', threshold_sweep(KAND, 0.03) == {"schwelle": 0.7, "f1": 0.78, "paritaet_ok": True})
-__check('kein kandidat im band -> None', threshold_sweep(KAND, 0.02) is None)
-__check('paritaet schlaegt besseres f1', threshold_sweep([
-    {"schwelle": 0.5, "selrate": {"a": 0.8, "b": 0.6}, "f1": 0.81},
-    {"schwelle": 0.6, "selrate": {"a": 0.7, "b": 0.65}, "f1": 0.78},
-], 0.06) == {"schwelle": 0.6, "f1": 0.78, "paritaet_ok": True})
-k = cost_table(120000, 30000, 0.5, 2.0)
-__check('input-kosten', k["input_eur"] == 0.06)
-__check('output-kosten', k["output_eur"] == 0.06)
-__check('gesamt-kosten', k["gesamt_eur"] == 0.12)
-__check('halbe last', cost_table(60000, 15000, 0.5, 2.0) == {"input_eur": 0.03, "output_eur": 0.03, "gesamt_eur": 0.06})
-print("ok w33-e5")`;
-const PARITY_REFERENCE = `def threshold_sweep(kandidaten, band):
-    im_band = [k for k in kandidaten if abs(k["selrate"]["a"] - k["selrate"]["b"]) <= band]
-    if not im_band:
-        return None
-    best = im_band[0]
-    for k in im_band:
-        if k["f1"] > best["f1"] or (k["f1"] == best["f1"] and k["schwelle"] < best["schwelle"]):
-            best = k
-    return {"schwelle": best["schwelle"], "f1": best["f1"], "paritaet_ok": True}
-
-
-def cost_table(token_in, token_out, preis_in_mio, preis_out_mio):
-    input_eur = token_in / 1_000_000 * preis_in_mio
-    output_eur = token_out / 1_000_000 * preis_out_mio
-    return {"input_eur": round(input_eur, 4), "output_eur": round(output_eur, 4), "gesamt_eur": round(input_eur + output_eur, 4)}`;
-const PARITY_PROMPT = `Implementiere Schwellenwahl und Kostenrechnung. <code>threshold_sweep(kandidaten, band)</code>: kandidaten ist eine Liste von <code>{"schwelle": .., "selrate": {"a": .., "b": ..}, "f1": ..}</code>. Zuerst alle Kandidaten behalten, deren Auswahlraten-Differenz höchstens das Band ist; gibt es keine, <code>None</code>. Unter diesen den mit dem besten f1 wählen; bei Gleichstand den mit der kleineren schwelle. Rückgabe <code>{"schwelle": .., "f1": .., "paritaet_ok": True}</code>. <code>cost_table(token_in, token_out, preis_in_mio, preis_out_mio)</code>: Kosten in EUR für token_in Input- und token_out Output-Token zu preis_in_mio beziehungsweise preis_out_mio EUR je 1.000.000 Token; Rückgabe <code>{"input_eur": .., "output_eur": .., "gesamt_eur": ..}</code>, jeweils auf 4 Dezimalstellen gerundet. Der Testcode bringt Kandidatenlisten und Preisbeispiele mit.`;
-const PARITY_SOLUTION = `def threshold_sweep(kandidaten, band):
-    im_band = [k for k in kandidaten if abs(k["selrate"]["a"] - k["selrate"]["b"]) <= band]
-    if not im_band:
-        return None
-    best = im_band[0]
-    for k in im_band:
-        if k["f1"] > best["f1"] or (k["f1"] == best["f1"] and k["schwelle"] < best["schwelle"]):
-            best = k
-    return {"schwelle": best["schwelle"], "f1": best["f1"], "paritaet_ok": True}
-
-
-def cost_table(token_in, token_out, preis_in_mio, preis_out_mio):
-    input_eur = token_in / 1_000_000 * preis_in_mio
-    output_eur = token_out / 1_000_000 * preis_out_mio
-    return {"input_eur": round(input_eur, 4), "output_eur": round(output_eur, 4), "gesamt_eur": round(input_eur + output_eur, 4)}
-
-# 120000/30000 Token zu 0.5/2.0 EUR je Mio -> 0.06 + 0.06 = 0.12 EUR (lokal python3-verifiziert)`;
 
 // --- JS mirror of threshold_sweep -------------------------------------------
 // Band filter first (|a-b| <= band on the drawn literals), then best f1 with
@@ -146,12 +84,6 @@ function paritySeededChecks(entry, index) {
 export const PARITY_THRESHOLD_CASES = {
   'parity-threshold-selection': {
     difficulty: 'stretch',
-    packages: PARITY_PACKAGES,
-    starterCode: PARITY_STARTER,
-    baseTests: PARITY_BASE_TESTS,
-    referenceSolver: PARITY_REFERENCE,
-    prompt: PARITY_PROMPT,
-    fullSolution: PARITY_SOLUTION,
     draw: drawParityEntry,
     seededChecks: paritySeededChecks,
     extraCount: 3,
@@ -174,7 +106,8 @@ export const PARITY_THRESHOLD_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: PARITY_THRESHOLD_CONTRACT,
   cases: PARITY_THRESHOLD_CASES,
   shapeError: 'Paritaets-Schwellen-Parameter verletzen die Kapselform',
@@ -182,8 +115,3 @@ const FAMILY = makeCaseFamily({
     `# seeded extra cases\n${seedCases.map((entry, i) => caseDef.seededChecks(entry, i + 1)).join('\n')}`,
 });
 
-export const parityThresholdCaseOk = FAMILY.caseOk;
-export const genParityThresholdCase = FAMILY.genCase;
-export const solveParityThresholdFamily = FAMILY.solve;
-export const generateParityThresholdFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

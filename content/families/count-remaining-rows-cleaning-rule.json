@@ -35,9 +35,18 @@
         }
       ],
       "typicalErrors": [
-        "Prozentsatz nicht in eine Zeilenzahl umgerechnet",
-        "gelöschte statt verbleibende Zeilen angegeben",
-        "fehlende Werte in Nebenspalten mit fehlenden Zielwerten verwechselt"
+        {
+          "id": "prozentsatz-nicht-in-eine-zeilenzahl",
+          "text": "Prozentsatz nicht in eine Zeilenzahl umgerechnet"
+        },
+        {
+          "id": "geloeschte-statt-verbleibende-zeilen-angegeben",
+          "text": "gelöschte statt verbleibende Zeilen angegeben"
+        },
+        {
+          "id": "fehlende-werte-in-nebenspalten-mit",
+          "text": "fehlende Werte in Nebenspalten mit fehlenden Zielwerten verwechselt"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -74,9 +83,18 @@
         }
       ],
       "typicalErrors": [
-        "Schlüssel-Duplikate wie exakte Duplikate behandelt",
-        "Konfliktzeilen gemittelt statt erhalten",
-        "Anzahl der Duplikate statt der verbleibenden Zeilen angegeben"
+        {
+          "id": "schluessel-duplikate-wie-exakte-duplikate",
+          "text": "Schlüssel-Duplikate wie exakte Duplikate behandelt"
+        },
+        {
+          "id": "konfliktzeilen-gemittelt-statt-erhalten",
+          "text": "Konfliktzeilen gemittelt statt erhalten"
+        },
+        {
+          "id": "anzahl-der-duplikate-statt-der",
+          "text": "Anzahl der Duplikate statt der verbleibenden Zeilen angegeben"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

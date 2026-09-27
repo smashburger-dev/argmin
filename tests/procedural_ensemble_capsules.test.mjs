@@ -5,21 +5,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/construct-ensemble-predictor-comparison.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genEnsembleCase = spec.kit.genCase;
 
 // The case defs do not carry `packages`; the JSON anchors pin it to ['numpy'],
 // so the suite surface adds it for the verbatim anchor check.
-const suiteMod = {
-  ...mod,
-  ENSEMBLE_CASES: Object.fromEntries(
-    Object.entries(mod.ENSEMBLE_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
-  ),
-};
-
-codeCapsuleSuite('construct-ensemble-predictor-comparison', suiteMod, [
-  { caseId: 'voting-tree-linear-rmse', difficulty: 'stretch' },
-  { caseId: 'voting-tie-and-tree', difficulty: 'challenge' },
-], { familyGroup: 'construct-program', difficultyProfiles: ['stretch', 'challenge'] });
 
 // Structural invariants of a drawn dict tree: internal nodes split on
 // feature 0 with a half-integer threshold, leaves hold an int in [0, 2].
@@ -62,7 +53,7 @@ function assertCompareData(entry, scope) {
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const trio = mod.genEnsembleCase(seed, 'voting-tree-linear-rmse', mod.ENSEMBLE_CASES['voting-tree-linear-rmse']);
+    const trio = genEnsembleCase(seed, 'voting-tree-linear-rmse', spec.kit.cases['voting-tree-linear-rmse']);
     assert.ok(trio.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(trio.parameters.tests.includes('seeded vote 1'), `${seed}: seeded checks`);
     assert.equal(trio.parameters.seedCases.length, 2, 'trio extraCount');
@@ -74,7 +65,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(trio.parameters.tests.includes('majority_vote(__p'), 'trio: vote literal baked');
       assert.ok(trio.parameters.tests.includes('seeded linear rmse'), 'trio: linear rmse check baked');
     }
-    const challenge = mod.genEnsembleCase(seed, 'voting-tie-and-tree', mod.ENSEMBLE_CASES['voting-tie-and-tree']);
+    const challenge = genEnsembleCase(seed, 'voting-tie-and-tree', spec.kit.cases['voting-tie-and-tree']);
     assert.ok(challenge.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(challenge.parameters.tests.includes('seeded vote 1'), `${seed}: seeded checks`);
     assert.equal(challenge.parameters.seedCases.length, 2, 'challenge extraCount');
@@ -103,8 +94,8 @@ test('seeded draws stay inside the declared domains', () => {
 });
 
 test('challenge case: trio substance, tie rule only in prompt and tests', () => {
-  const trio = mod.ENSEMBLE_CASES['voting-tree-linear-rmse'];
-  const challenge = mod.ENSEMBLE_CASES['voting-tie-and-tree'];
+  const trio = spec.kit.cases['voting-tree-linear-rmse'];
+  const challenge = spec.kit.cases['voting-tie-and-tree'];
   assert.ok(!challenge.starterCode.includes('tie'), 'starter leaves the tie rule unstated');
   assert.ok(challenge.prompt.includes('Gleichstand'), 'prompt carries the tie rule');
   assert.ok(

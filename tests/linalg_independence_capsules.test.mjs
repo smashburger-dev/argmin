@@ -3,7 +3,7 @@
 // Anker-Korrektur (bewusst, gegen Strip-Prinzip): Base-Params der Fälle
 // independent-pair-negative und dependent-triple-span an den Prompt angeglichen;
 // Bestand war ein Copy-Paste-Fehler.
-// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// Gemeinsame Gates leben in tests/helpers/kit_suites.mjs — die Kit-Produkte
 // (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
 // foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
 // linalg_generators.mjs.
@@ -16,16 +16,14 @@ import {
   pairIndependent,
   maxAbsVectors,
 } from '../assets/js/core/linalg_generators.mjs';
-import {
-  INDEPENDENCE_CONTRACT,
-  independenceCapsuleOk,
-  independenceCorrectText,
-  genIndependenceCapsule,
-  generateIndependenceFamily,
-  solveIndependenceFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
-import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-independence-multiple');
+const independenceCapsuleOk = spec.kit.capsuleOk;
+const independenceCorrectText = spec.kit.correctText;
+const genIndependenceCapsule = spec.kit.genCapsule;
+const generateIndependenceFamily = spec.generate;
+const solveIndependenceFamily = spec.solve;
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit Art-Nachweis und Bound (12/5/5). Regel: Kapsel
@@ -102,16 +100,3 @@ test('Kapseltabelle: Arten und Bounds 12/5/5 mit Fallbindung', () => {
   assert.deepEqual(INDEPENDENCE_CAPSULES.stretch, { kind: 'dependent-triple', bound: 5, caseId: 'dependent-triple-span' });
 });
 
-linalgChoiceCapsuleSuite('classify-independence-multiple', {
-  capsules: INDEPENDENCE_CAPSULES,
-  contract: INDEPENDENCE_CONTRACT,
-  capsuleOk: independenceCapsuleOk,
-  correctText: independenceCorrectText,
-  genCapsule: genIndependenceCapsule,
-  generate: generateIndependenceFamily,
-  solve: solveIndependenceFamily,
-  registry: LINALG_FAMILIES,
-}, CASE_FOR, {
-  difficultyProfiles: ['intro', 'core', 'stretch'],
-  complies: (parameters, capsule) => maxAbsVectors(parameters.vectors) <= capsule.bound,
-});

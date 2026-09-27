@@ -94,9 +94,18 @@
         }
       ],
       "typicalErrors": [
-        "Bibliotheksausnahme mit einer verständlichen, vorgelagerten Vertragsdiagnose gleichgesetzt.",
-        "Quadratische Form fälschlich als Beweis für Invertierbarkeit verwendet.",
-        "Bei singulären Eingaben eine beliebige Antwort statt einer eindeutigen Lösbarkeitsprüfung akzeptiert."
+        {
+          "id": "bibliotheksausnahme-mit-einer-verstaendlichen-vorgelagerten",
+          "text": "Bibliotheksausnahme mit einer verständlichen, vorgelagerten Vertragsdiagnose gleichgesetzt."
+        },
+        {
+          "id": "quadratische-form-faelschlich-als-beweis",
+          "text": "Quadratische Form fälschlich als Beweis für Invertierbarkeit verwendet."
+        },
+        {
+          "id": "bei-singulaeren-eingaben-eine-beliebige",
+          "text": "Bei singulären Eingaben eine beliebige Antwort statt einer eindeutigen Lösbarkeitsprüfung akzeptiert."
+        }
       ]
     },
     {
@@ -151,9 +160,18 @@
         }
       ],
       "typicalErrors": [
-        "Null-Pivot und vollständig verschwindende Zeile als denselben Zustand behandelt.",
-        "Eine Division durch den Null-Pivot als zulässigen Eliminationsschritt angenommen.",
-        "Eine strukturelle Änderung durch Transponieren mit dem erlaubten Zeilentausch verwechselt."
+        {
+          "id": "null-pivot-und-vollstaendig-verschwindende",
+          "text": "Null-Pivot und vollständig verschwindende Zeile als denselben Zustand behandelt."
+        },
+        {
+          "id": "eine-division-durch-den-null",
+          "text": "Eine Division durch den Null-Pivot als zulässigen Eliminationsschritt angenommen."
+        },
+        {
+          "id": "eine-strukturelle-aenderung-durch-transponieren",
+          "text": "Eine strukturelle Änderung durch Transponieren mit dem erlaubten Zeilentausch verwechselt."
+        }
       ]
     }
   ]

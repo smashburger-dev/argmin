@@ -32,9 +32,18 @@
         "Stabiles Softmax: scores -= scores.max(axis=1, keepdims=True), dann np.exp und Normalisierung je Zeile; am Ende weights @ V."
       ],
       "typicalErrors": [
-        "Maske nach dem Softmax oder als 0 statt −∞ eingetragen",
-        "Zeilenmaximum nicht abgezogen (Overflow bei großen Scores)",
-        "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+        {
+          "id": "maske-nach-dem-softmax-oder",
+          "text": "Maske nach dem Softmax oder als 0 statt −∞ eingetragen"
+        },
+        {
+          "id": "zeilenmaximum-nicht-abgezogen-overflow-bei",
+          "text": "Zeilenmaximum nicht abgezogen (Overflow bei großen Scores)"
+        },
+        {
+          "id": "durch-d-k-statt-sqrt",
+          "text": "durch $d_k$ statt $\\sqrt{d_k}$ dividiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "Logits: ctx.mean(axis=0) @ Wout — ein Vektor mit einem Wert je Vokabulareintrag."
       ],
       "typicalErrors": [
-        "kausale Maske vergessen",
-        "Mittelung über die falsche Achse",
-        "Skalierung durch sqrt(d) unterschlagen"
+        {
+          "id": "kausale-maske-vergessen",
+          "text": "kausale Maske vergessen"
+        },
+        {
+          "id": "mittelung-ueber-die-falsche-achse",
+          "text": "Mittelung über die falsche Achse"
+        },
+        {
+          "id": "skalierung-durch-sqrt-d-unterschlagen",
+          "text": "Skalierung durch sqrt(d) unterschlagen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

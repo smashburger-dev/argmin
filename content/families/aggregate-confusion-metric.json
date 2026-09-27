@@ -53,9 +53,18 @@
         }
       ],
       "typicalErrors": [
-        "Kostenverhältnis nicht in die Schwellenwert-Richtung übersetzen",
-        "0,5 als kostenunabhängiges Optimum behandeln",
-        "Accuracy als Kostenmaß verwenden"
+        {
+          "id": "kostenverhaeltnis-nicht-in-die-schwellenwert",
+          "text": "Kostenverhältnis nicht in die Schwellenwert-Richtung übersetzen"
+        },
+        {
+          "id": "n-0-5-als-kostenunabhaengiges-optimum",
+          "text": "0,5 als kostenunabhängiges Optimum behandeln"
+        },
+        {
+          "id": "accuracy-als-kostenmass-verwenden",
+          "text": "Accuracy als Kostenmaß verwenden"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -88,9 +97,18 @@
         "precision = tp/(tp+fp), recall = tp/(tp+fn), f1 ist das harmonische Mittel — sichere die Nenner mit Abfragen gegen 0 ab."
       ],
       "typicalErrors": [
-        "Grenzfall p = threshold falsch behandeln",
-        "precision und recall vertauschen",
-        "Division durch 0 bei leeren Raten nicht abgesichert"
+        {
+          "id": "grenzfall-p-threshold-falsch-behandeln",
+          "text": "Grenzfall p = threshold falsch behandeln"
+        },
+        {
+          "id": "precision-und-recall-vertauschen",
+          "text": "precision und recall vertauschen"
+        },
+        {
+          "id": "division-durch-0-bei-leeren",
+          "text": "Division durch 0 bei leeren Raten nicht abgesichert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -123,9 +141,18 @@
         "Die Suchrichtung folgt den Kosten: FP teuer verschiebt das Optimum nach oben, FN teuer nach unten — dein Sweep findet das automatisch, wenn er alle neun Werte prüft."
       ],
       "typicalErrors": [
-        "Gleichstandsregel falsch (letztes statt kleinstes t)",
-        "Kostenfunktion mit Accuracy verwechseln",
-        "nur 0.5 prüfen statt aller Schwellenwerte"
+        {
+          "id": "gleichstandsregel-falsch-letztes-statt-kleinstes",
+          "text": "Gleichstandsregel falsch (letztes statt kleinstes t)"
+        },
+        {
+          "id": "kostenfunktion-mit-accuracy-verwechseln",
+          "text": "Kostenfunktion mit Accuracy verwechseln"
+        },
+        {
+          "id": "nur-0-5-pruefen-statt",
+          "text": "nur 0.5 prüfen statt aller Schwellenwerte"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -155,9 +182,18 @@
         "p = common/Länge der Antwort, r = common/Länge der Gold-Antwort; F1 = 2pr/(p+r), auf 2 Stellen gerundet."
       ],
       "typicalErrors": [
-        "common über die Vereinigung statt der Schnittmenge gezählt",
-        "nur die Ausgabequote p (2/3) statt F1 angegeben",
-        "bei common = 0 eine Division durch null vorhergesagt"
+        {
+          "id": "common-ueber-die-vereinigung-statt",
+          "text": "common über die Vereinigung statt der Schnittmenge gezählt"
+        },
+        {
+          "id": "nur-die-ausgabequote-p-2",
+          "text": "nur die Ausgabequote p (2/3) statt F1 angegeben"
+        },
+        {
+          "id": "bei-common-0-eine-division",
+          "text": "bei common = 0 eine Division durch null vorhergesagt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -174,7 +210,7 @@
           "numpy"
         ],
         "starterCode": "from collections import Counter\n\n\ndef confusion(rows):\n    \"\"\"rows: Liste (predicted, actual) mit Labels 'pos'/'neg' -> (tp, fp, fn, tn).\"\"\"\n    ...\n\ndef prf(tp, fp, fn):\n    \"\"\"{'precision': .., 'recall': .., 'f1': ..}; Division durch null -> 0.0.\"\"\"\n    ...\n\ndef exact_match_rate(answers, golds):\n    \"\"\"Anteil exakter (strip-gleich) Antworten; ungleiche Laengen -> ValueError.\"\"\"\n    ...\n\ndef token_f1(answer, gold):\n    \"\"\"F1 ueber Kleinbuchstaben-Token-Multimengen; leere Eingabe -> 0.0.\"\"\"\n    ...\n\n",
-        "tests": "import re\ndef _words(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return stripped.split()\n\nROWS = [(\"pos\", \"pos\"), (\"pos\", \"neg\"), (\"neg\", \"pos\"), (\"neg\", \"neg\"), (\"pos\", \"pos\")]\n__check('konfusionszaehlung', confusion(ROWS) == (2, 1, 1, 1))\nm = prf(2, 1, 1)\n__check('prf werte', abs(m[\"precision\"] - 2 / 3) < 1e-12 and abs(m[\"recall\"] - 2 / 3) < 1e-12 and abs(m[\"f1\"] - 2 / 3) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\n__check('exact match rate', exact_match_rate([\"Ja \", \"Nein\", \"Jein\"], [\"Ja\", \"Nein\", \"Nein\"]) == 2 / 3)\n__check('token f1 wert', abs(token_f1(\"drei Katzen sitzen\", \"zwei Katzen sitzen hier\") - 4 / 7) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)"
+        "tests": "import re\ndef _words(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return stripped.split()\n\nROWS = [(\"pos\", \"pos\"), (\"pos\", \"neg\"), (\"neg\", \"pos\"), (\"neg\", \"neg\"), (\"pos\", \"pos\")]\n__check('konfusionszaehlung', confusion(ROWS) == (2, 1, 1, 1))\nm = prf(2, 1, 1)\n__check('prf werte', abs(m[\"precision\"] - 2 / 3) < 1e-12 and abs(m[\"recall\"] - 2 / 3) < 1e-12 and abs(m[\"f1\"] - 2 / 3) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\n__check('exact match rate', exact_match_rate([\"Ja \", \"Nein\", \"Jein\"], [\"Ja\", \"Nein\", \"Nein\"]) == 2 / 3)\n__check('token f1 wert', abs(token_f1(\"drei Katzen sitzen\", \"zwei Katzen sitzen hier\") - 4 / 7) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nm2 = prf(4, 1, 2)\n__check('prf nenner getrennt', abs(m2[\"precision\"] - 4 / 5) < 1e-12 and abs(m2[\"recall\"] - 2 / 3) < 1e-12)\n__check('token f1 zaehlt mehrfache worte', abs(token_f1(\"eine katze und eine katze\", \"eine katze und eine maus\") - 0.8) < 1e-12)"
       },
       "competencyIds": [
         "c-genai-eval",
@@ -191,9 +227,18 @@
         "token_f1 über Multimengen: min(Anzahl in Antwort, Anzahl in Gold) je gemeinsamem Wort — nicht set-intersection."
       ],
       "typicalErrors": [
-        "Precision/Recall-Nenner verwechselt",
-        "Token-F1 über Mengen statt Multimengen",
-        "Längenprüfung bei exact_match_rate vergessen"
+        {
+          "id": "precision-recall-nenner-verwechselt",
+          "text": "Precision/Recall-Nenner verwechselt"
+        },
+        {
+          "id": "token-f1-ueber-mengen-statt",
+          "text": "Token-F1 über Mengen statt Multimengen"
+        },
+        {
+          "id": "laengenpruefung-bei-exact-match-rate",
+          "text": "Längenprüfung bei exact_match_rate vergessen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -225,9 +270,18 @@
         "Die vier Konfusionsfälle ergeben sich aus label × flagged — zähle sie in einem Durchlauf."
       ],
       "typicalErrors": [
-        "Text nicht kleingeschrieben und Regeln verfehlt",
-        "fp und fn vertauscht",
-        "Metriken ungerundet geliefert"
+        {
+          "id": "text-nicht-kleingeschrieben-und-regeln",
+          "text": "Text nicht kleingeschrieben und Regeln verfehlt"
+        },
+        {
+          "id": "fp-und-fn-vertauscht",
+          "text": "fp und fn vertauscht"
+        },
+        {
+          "id": "metriken-ungerundet-geliefert",
+          "text": "Metriken ungerundet geliefert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -259,9 +313,18 @@
         "abs() macht die Differenz unabhängig von der Gruppenreihenfolge; die Rückgabe ist ein Dict mit den vier Schlüsseln."
       ],
       "typicalErrors": [
-        "ungerundet weitergerechnet",
-        "FPR-Nenner mit dem der Auswahlrate verwechselt",
-        "Differenz ohne Betrag"
+        {
+          "id": "ungerundet-weitergerechnet",
+          "text": "ungerundet weitergerechnet"
+        },
+        {
+          "id": "fpr-nenner-mit-dem-der",
+          "text": "FPR-Nenner mit dem der Auswahlrate verwechselt"
+        },
+        {
+          "id": "differenz-ohne-betrag",
+          "text": "Differenz ohne Betrag"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

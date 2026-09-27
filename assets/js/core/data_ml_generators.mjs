@@ -278,9 +278,9 @@ export function genRmseUnitFromMse(seed) {
       ],
       feedbackRules,
       typicalErrors: [
-        'Wurzel beim Übergang MSE → RMSE vergessen',
-        'die Einheiten von MSE (quadriert) und RMSE (Zieleinheit) verwechseln',
-        'glauben, RMSE brauche die Einzelfehler',
+        { id: 'wurzel-beim-uebergang-mse-rmse', text: 'Wurzel beim Übergang MSE → RMSE vergessen' },
+        { id: 'die-einheiten-von-mse-quadriert', text: 'die Einheiten von MSE (quadriert) und RMSE (Zieleinheit) verwechseln' },
+        { id: 'glauben-rmse-brauche-die-einzelfehler', text: 'glauben, RMSE brauche die Einzelfehler' },
       ],
     };
   });
@@ -366,6 +366,35 @@ const confusionBody = (caseId) => { ensureShardDocs(); return staticCaseBody('ag
 const ratioBody = (caseId) => { ensureShardDocs(); return staticCaseBody('formula-ratio-percent-metric', caseId); };
 const mseGradientBody = (caseId) => { ensureShardDocs(); return staticCaseBody('optimize-mse-gradient-closed-form', caseId); };
 const goalShiftBody = (caseId) => { ensureShardDocs(); return staticCaseBody('validate-goalshift-flag-rules', caseId); };
+const formulaStatBody = (caseId) => { ensureShardDocs(); return staticCaseBody('formula-stat-from-table', caseId); };
+
+/** Seed-0 convention for converted cases: the generator returns the authored
+ *  anchor body in drawn shape (parameters/expected/prompt/fullSolution plus
+ *  the authored guidance fields verbatim). */
+const formulaStatAnchorDraw = (caseId) => {
+  const body = formulaStatBody(caseId);
+  return {
+    parameters: body.parameters,
+    expected: body.expected.value,
+    prompt: body.prompt,
+    fullSolution: body.fullSolution,
+    hints: body.hints,
+    typicalErrors: body.typicalErrors,
+    feedbackRules: body.feedbackRules,
+  };
+};
+
+// Per-instance misconception rules for numeric cases: `value === N` rules,
+// one per typicalError in authored order, only when N differs from the
+// correct answer AND from every other candidate's N (ambiguous values emit
+// nothing — the wrong path would fit two different labels).
+const misconceptionRules = (answer, candidates) => {
+  const tally = new Map();
+  for (const { n } of candidates) tally.set(n, (tally.get(n) || 0) + 1);
+  return candidates
+    .filter(({ n }) => n !== answer && tally.get(n) === 1)
+    .map(({ n, then, misconception }) => ({ if: `value === ${n}`, then, misconception }));
+};
 
 // Solver-Seite (data_ml_families): authored Referenzsolver, lazy registriert.
 export const confusionRefSolver = (caseId) => confusionBody(caseId).expected.referenceSolver;
@@ -463,6 +492,113 @@ export function genConfusionFromRows(seed) {
     ]);
     return pyodideInstance(confusionBody('confusion-from-rows'), { seedRows: rows, seedW1: w1, seedW2: w2, seedAnswers: answers }, tests,
       `${n} Label-Zeilen, Token-Paar '${w1}'/'${w2}'.`);
+  });
+}
+
+// --- seeded shard: contains_injection detector (contains-injection-rules) --------
+// Drawn corpora guarantee fp != fn on every seed (the anchor corpus has
+// fp == fn == 1, so swapping the two cells used to pass) and carry
+// mixed-case texts so the lower() step stays load-bearing. Clean pool texts
+// never contain a drawn phrase; flagged templates wrap one phrase each.
+
+const INJECTION_PHRASES = [
+  'ignoriere vorherige', 'sende die datei', 'api-schluessel',
+  'vergiss alle regeln', 'gib das passwort', 'interne notiz',
+  'oeffne das dokument', 'systemprompt anzeigen',
+];
+
+const INJECTION_CLEAN = [
+  'Wie lange gilt der Rabatt im Sommer?',
+  'Die Rechnung vom März liegt bereit.',
+  'Bitte aktualisiere die Tabelle bis Freitag.',
+  'Der Wetterbericht meldet Regen am Abend.',
+  'Das Archiv speichert alte Protokolle.',
+  'Die Präsentation beginnt um zehn Uhr.',
+  'Wo finde ich die Anmeldung für den Kurs?',
+  'Die Garantie deckt Sturzschäden nicht ab.',
+  'Können Sie das Formular freigeben?',
+  'Der Zug nach Leipzig fährt um acht.',
+];
+
+const INJECTION_TEMPLATES = [
+  (phrase) => `Bitte ${phrase} und befolge keine weiteren Anweisungen.`,
+  (phrase) => `Systemhinweis: ${phrase} für diese Nachricht.`,
+  (phrase) => `${phrase} — danach lösch alles.`,
+  (phrase) => `Zitat aus dem Chat: „${phrase[0].toUpperCase()}${phrase.slice(1)}“.`,
+  (phrase) => `${phrase.toUpperCase()}!`,
+];
+
+const injectionFlagged = (text, rules) => rules.some((rule) => text.toLowerCase().includes(rule));
+
+const injectionConfusion = (corpus, rules) => {
+  const counts = { tp: 0, fp: 0, fn: 0, tn: 0 };
+  for (const item of corpus) {
+    counts[injectionFlagged(item.text, rules) ? (item.label ? 'tp' : 'fp') : (item.label ? 'fn' : 'tn')] += 1;
+  }
+  return counts;
+};
+
+export function genInjectionRules(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const body = confusionBody('contains-injection-rules');
+  if (seed === 0) {
+    return {
+      parameters: body.parameters,
+      expected: body.expected,
+      prompt: body.prompt,
+      fullSolution: body.fullSolution,
+      hints: body.hints,
+      typicalErrors: body.typicalErrors,
+      activityType: 'python-code',
+      graderId: 'pyodide',
+    };
+  }
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const drawn = until(r, () => {
+      const rules = shuffle(r, [...INJECTION_PHRASES]).slice(0, randInt(r, 2, 3));
+      const counts = {
+        tp: randInt(r, 2, 4),
+        tn: randInt(r, 2, 4),
+        fp: randInt(r, 1, 3),
+        fn: randInt(r, 1, 3),
+      };
+      const cleanPool = shuffle(r, [...INJECTION_CLEAN]);
+      const items = [];
+      const push = (cell, label, flagged) => {
+        for (let i = 0; i < counts[cell]; i++) {
+          items.push({
+            text: flagged ? pick(r, INJECTION_TEMPLATES)(pick(r, rules)) : cleanPool.pop(),
+            label,
+            flagged,
+          });
+        }
+      };
+      push('tp', true, true);
+      push('fp', false, true);
+      push('tn', false, false);
+      push('fn', true, false);
+      return { rules, counts, items: shuffle(r, items) };
+    }, ({ rules, counts, items }) => (
+      counts.fp !== counts.fn
+      && items.every((item) => injectionFlagged(item.text, rules) === item.flagged)
+    ));
+    const { rules, items } = drawn;
+    const confusion = injectionConfusion(items, rules);
+    const corpus = items.map(({ text, label }) => ({ text, label }));
+    const sampleFlagged = items.find((item) => item.flagged).text;
+    const sampleClean = items.find((item) => !item.flagged).text;
+    const tests = seededPyBlock(body, ['contains_injection', 'evaluate_detector'], [
+      `SEEDED_RULES = ${pyLit(rules)}`,
+      `SEEDED_CORPUS = ${pyLit(corpus)}`,
+      `__check('seeded treffer', contains_injection(${pyLit(sampleFlagged)}, SEEDED_RULES) is True)`,
+      `__check('seeded clean', contains_injection(${pyLit(sampleClean)}, SEEDED_RULES) is False)`,
+      `__check('seeded ref', evaluate_detector(SEEDED_CORPUS, SEEDED_RULES) == __ref_evaluate_detector(SEEDED_CORPUS, SEEDED_RULES))`,
+      `__check('seeded fp', evaluate_detector(SEEDED_CORPUS, SEEDED_RULES)['fp'] == ${confusion.fp})`,
+      `__check('seeded fn', evaluate_detector(SEEDED_CORPUS, SEEDED_RULES)['fn'] == ${confusion.fn})`,
+    ]);
+    return pyodideInstance(body, { seedRules: rules, seedCorpus: corpus }, tests,
+      `${corpus.length} Texte, ${rules.length} Regeln, fp = ${confusion.fp} / fn = ${confusion.fn}.`);
   });
 }
 
@@ -774,6 +910,165 @@ export function genSeedSpread(seed) {
         ? `Dasselbe Modell wird mit ${runs} verschiedenen Seeds trainiert und liefert die Test-Accuracy-Werte ${renderedScores}. Wie groß ist die Seed-Spannweite (bester minus schlechtester Lauf) in Prozentpunkten?`
         : `Dasselbe Modell wird mit ${runs} verschiedenen Seeds trainiert und liefert die Test-Accuracy-Werte ${renderedScores} (als Anteile). Wie groß ist die Seed-Spannweite in Prozentpunkten?`,
       fullSolution: `Maximum = ${maximum} %, Minimum = ${minimum} %. Spannweite = ${spread} Prozentpunkte (Seed-Sensitivität; ein reproduzierbarer Lauf mit festem Seed hätte Spannweite 0).${conversion}`,
+    };
+  });
+}
+
+// --- W36/W38: stat-from-table seeded shards ----------------------------------------
+
+const TIMEOUT_CALL_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+const TIMEOUT_COUNT_WORDS = { 4: 'Vier', 5: 'Fünf', 6: 'Sechs' };
+const TIMEOUT_BUDGETS = [30, 40, 50, 60, 80, 100];
+
+/**
+ * genStageTimeouts: draws 4-6 virtual-clock calls (start/end ms) under one
+ * budget; the answer counts calls whose DURATION stays within the budget.
+ * Invariants: >= 1 ok and >= 1 timeout; starts are non-decreasing; roughly
+ * half the seeds place at least one duration exactly on the budget (the
+ * boundary the 'höchstens' wording tests). Prompt shape is mutator-pinned
+ * (/startet bei (\d+) und endet bei (\d+)/g, /Budget jeweils (\d+)/).
+ */
+export function genStageTimeouts(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  if (seed === 0) return formulaStatAnchorDraw('stage-timeout-count');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const draw = (rr) => {
+      const budget = pick(rr, TIMEOUT_BUDGETS);
+      const count = randInt(rr, 4, 6);
+      let start = rr() < 0.4 ? 0 : randInt(rr, 5, 60);
+      const calls = TIMEOUT_CALL_LABELS.slice(0, count).map((label) => {
+        const outcome = rr();
+        const duration = outcome < 0.35
+          ? randInt(rr, 5, budget - 5)
+          : outcome < 0.5 ? budget : budget + randInt(rr, 5, 40);
+        const call = { label, start, end: start + duration };
+        start += randInt(rr, 0, 220);
+        return call;
+      });
+      return { budget, calls };
+    };
+    const { budget, calls } = until(r, draw, ({ budget: b, calls: list }) => {
+      const ok = list.filter((c) => c.end - c.start <= b).length;
+      return ok >= 1 && ok < list.length;
+    });
+    const durations = calls.map((c) => ({ ...c, duration: c.end - c.start }));
+    const ok = durations.filter((c) => c.duration <= budget).length;
+    const listing = durations.map((c) => `Aufruf ${c.label} startet bei ${c.start} und endet bei ${c.end}`).join('; ');
+    const ledger = durations.map((c) => `${c.label} = ${c.duration} ${c.duration <= budget ? '≤' : '>'} ${budget} ${c.duration <= budget ? 'ok' : 'Timeout'}`).join(', ');
+    const body = formulaStatBody('stage-timeout-count');
+    const feedbackRules = misconceptionRules(ok, [
+      {
+        n: durations.filter((c) => c.end <= budget).length,
+        misconception: body.typicalErrors[0].id,
+        then: `Das wäre das Ergebnis, wenn man die Endzeitpunkte mit dem Budget ${budget} vergleicht — gefragt ist die Dauer (Ende − Start), nicht der absolute Zeitpunkt.`,
+      },
+      {
+        n: durations.filter((c) => c.duration < budget).length,
+        misconception: body.typicalErrors[1].id,
+        then: `Das wertet eine Dauer exakt am Budget ${budget} als Timeout — „höchstens“ heißt: Gleichstand ist noch ok.`,
+      },
+      {
+        n: durations.filter((c) => c.start + c.end <= budget).length,
+        misconception: body.typicalErrors[2].id,
+        then: `Das kommt heraus, wenn Start- und Endzeit addiert statt subtrahiert werden — die Dauer ist Ende − Start.`,
+      },
+    ]);
+    return {
+      parameters: { budget, calls },
+      expected: ok,
+      prompt: `${TIMEOUT_COUNT_WORDS[calls.length]} Stage-Aufrufe werden mit einer virtuellen Uhr gemessen (Zeitpunkte in Millisekunden, Budget jeweils ${budget}): ${listing}. Wie viele Aufrufe liefern den Status „ok“ (Dauer höchstens Budget)?`,
+      fullSolution: `Dauern: ${ledger} → ${ok} Aufrufe mit Status ok. Die virtuelle Uhr macht die Zeit austauschbar und testbar: kein sleep, keine echte Uhr.`,
+      hints: [
+        'Dauer = Endzeit minus Startzeit — die absoluten Zeitpunkte sind irrelevant, nur die Differenz zählt.',
+        'Exakt im Budget (Dauer = Budget) gilt noch als ok.',
+      ],
+      typicalErrors: body.typicalErrors,
+      ...(feedbackRules.length ? { feedbackRules } : {}),
+    };
+  });
+}
+
+const PIN_COUNT_WORDS = { 1: 'einer', 2: 'zwei', 3: 'drei' };
+const PIN_WEITERE_WORDS = { 1: 'ein weiterer', 2: 'zwei weitere', 3: 'drei weitere' };
+const PIN_SPEC_KINDS = [
+  { marker: '>=', render: (r) => `>=${randInt(r, 1, 3)}.${randInt(r, 0, 9)}` },
+  { marker: '~=', render: (r) => `~=${randInt(r, 1, 2)}.${randInt(r, 0, 9)}` },
+  { marker: '*', render: () => '*' },
+  { marker: '<', render: (r) => `<${randInt(r, 2, 4)}` },
+  { marker: '<=', render: (r) => `<=${randInt(r, 1, 3)}.${randInt(r, 0, 9)}` },
+];
+
+/**
+ * genDependencyPins: draws 2-3 violating spec kinds with entry counts; the
+ * answer is the number of violating ENTRIES, not spec kinds. Invariants:
+ * total sits between violations+2 and 14; at least one count >= 2 in most
+ * seeds; '*' appears in about half. Prompt keeps the mutator-pinned shape
+ * (/hat (\d+) Eintr[aä]g/, count words before each „paket<spec>“ quote).
+ */
+export function genDependencyPins(seed) {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  if (seed === 0) return formulaStatAnchorDraw('dependency-pin-count');
+  const random = rng(seed);
+  return clean(random, (r) => {
+    const draw = (rr) => {
+      const kindCount = pick(rr, [2, 3]);
+      const wantsWildcard = rr() < 0.5;
+      const kinds = shuffle(rr, PIN_SPEC_KINDS).slice(0, kindCount);
+      const counts = kinds.map(() => randInt(rr, 1, 3));
+      const allowAllOnes = rr() < 0.15;
+      return { kinds, counts, wantsWildcard, allowAllOnes };
+    };
+    const drawn = until(r, draw, (d) => (
+      (d.kinds.some((k) => k.marker === '*') === d.wantsWildcard)
+      && (d.allowAllOnes || d.counts.some((count) => count >= 2))
+    ));
+    const specs = drawn.kinds.map((kind, index) => ({ spec: kind.render(r), marker: kind.marker, count: drawn.counts[index] }));
+    const violations = specs.reduce((sum, spec) => sum + spec.count, 0);
+    const total = randInt(r, violations + 2, 14);
+    const capWord = (count) => PIN_COUNT_WORDS[count][0].toUpperCase() + PIN_COUNT_WORDS[count].slice(1);
+    const clauses = specs.map((spec, index) => {
+      if (index === 0) return `${capWord(spec.count)} davon ${spec.count === 1 ? 'ist' : 'sind'} als „paket${spec.spec}“ gepinnt`;
+      if (index === specs.length - 1) return `und ${PIN_WEITERE_WORDS[spec.count]} als „paket${spec.spec}“`;
+      return `${PIN_COUNT_WORDS[spec.count]} als „paket${spec.spec}“`;
+    });
+    const clauseText = specs.length === 2
+      ? `${clauses[0]} und ${PIN_COUNT_WORDS[specs[1].count]} als „paket${specs[1].spec}“`
+      : clauses.join(', ');
+    const markers = specs.map((spec) => spec.marker);
+    const markerList = markers.length > 1
+      ? `${markers.slice(0, -1).join(', ')} oder ${markers[markers.length - 1]}`
+      : markers[0];
+    const starCount = specs.filter((spec) => spec.marker === '*').reduce((sum, spec) => sum + spec.count, 0);
+    const body = formulaStatBody('dependency-pin-count');
+    const feedbackRules = misconceptionRules(violations, [
+      {
+        n: specs.length,
+        misconception: body.typicalErrors[0].id,
+        then: `Das zählt nur die Spec-Arten — gefragt sind die Einträge; „${specs[0].spec}“ steht z. B. für ${specs[0].count} ${specs[0].count === 1 ? 'Eintrag' : 'Einträge'}.`,
+      },
+      {
+        n: total,
+        misconception: body.typicalErrors[1].id,
+        then: `Das zählt alle ${total} Einträge — exakte Pins ohne Marker sind regelkonform und gehören nicht dazu.`,
+      },
+      {
+        n: violations - starCount,
+        misconception: body.typicalErrors[2].id,
+        then: `Das lässt die ${starCount} Wildcard-Einträge außen vor — „*“ ist keine harmlose Spec.`,
+      },
+    ]);
+    return {
+      parameters: { total, specs: specs.map(({ spec, count }) => ({ spec, count })) },
+      expected: violations,
+      prompt: `Eine Abhängigkeitsliste hat ${total} Einträge. ${clauseText}. Wie viele Einträge verletzen die Pin-Regel (keine Bereichs- oder Wildcard-Specs)?`,
+      fullSolution: `Verletzt: ${specs.map((spec) => `${spec.count} × „${spec.marker}“`).join(', ')} → ${violations} Einträge. Exakte Pins ohne Marker sind regelkonform; Bereichs- und Wildcard-Specs machen Reproduktion zu einer Wette.`,
+      hints: [
+        `Gezählt wird jeder Eintrag, der irgendeinen Marker trägt: ${markerList}.`,
+        'Zähle Einträge, nicht Marker-Arten — derselbe Marker kann bei mehreren Einträgen auftreten.',
+      ],
+      typicalErrors: body.typicalErrors,
+      ...(feedbackRules.length ? { feedbackRules } : {}),
     };
   });
 }

@@ -13,7 +13,7 @@
       "parameters": {
         "packages": [],
         "starterCode": "def threshold_sweep(kandidaten, band):\n    \"\"'Paritaetsband zuerst, dann bestes f1, Gleichstand -> kleinere schwelle'; None ohne Kandidat im Band.\"\"\"\n    ...\n\ndef cost_table(token_in, token_out, preis_in_mio, preis_out_mio):\n    \"\"\"Kosten in EUR je 1.000.000 Token-Skala, auf 4 Dezimalstellen gerundet.\"\"\"\n    ...\n\n",
-        "tests": "KAND = [\n    {\"schwelle\": 0.4, \"selrate\": {\"a\": 0.9, \"b\": 0.5}, \"f1\": 0.84},\n    {\"schwelle\": 0.5, \"selrate\": {\"a\": 0.8, \"b\": 0.6}, \"f1\": 0.81},\n    {\"schwelle\": 0.6, \"selrate\": {\"a\": 0.7, \"b\": 0.65}, \"f1\": 0.78},\n    {\"schwelle\": 0.7, \"selrate\": {\"a\": 0.66, \"b\": 0.64}, \"f1\": 0.78},\n]\n__check('weites band waehlt bestes f1', threshold_sweep(KAND, 0.2) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('enges band mit gleichstand -> kleinere schwelle', threshold_sweep(KAND, 0.05) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('sehr enges band -> nur ein kandidat', threshold_sweep(KAND, 0.03) == {\"schwelle\": 0.7, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('kein kandidat im band -> None', threshold_sweep(KAND, 0.02) is None)\n__check('paritaet schlaegt besseres f1', threshold_sweep([\n    {\"schwelle\": 0.5, \"selrate\": {\"a\": 0.8, \"b\": 0.6}, \"f1\": 0.81},\n    {\"schwelle\": 0.6, \"selrate\": {\"a\": 0.7, \"b\": 0.65}, \"f1\": 0.78},\n], 0.06) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\nk = cost_table(120000, 30000, 0.5, 2.0)\n__check('input-kosten', k[\"input_eur\"] == 0.06)\n__check('output-kosten', k[\"output_eur\"] == 0.06)\n__check('gesamt-kosten', k[\"gesamt_eur\"] == 0.12)\n__check('halbe last', cost_table(60000, 15000, 0.5, 2.0) == {\"input_eur\": 0.03, \"output_eur\": 0.03, \"gesamt_eur\": 0.06})\nprint(\"ok w33-e5\")"
+        "tests": "KAND = [\n    {\"schwelle\": 0.4, \"selrate\": {\"a\": 0.9, \"b\": 0.5}, \"f1\": 0.84},\n    {\"schwelle\": 0.5, \"selrate\": {\"a\": 0.8, \"b\": 0.6}, \"f1\": 0.81},\n    {\"schwelle\": 0.6, \"selrate\": {\"a\": 0.7, \"b\": 0.65}, \"f1\": 0.78},\n    {\"schwelle\": 0.7, \"selrate\": {\"a\": 0.66, \"b\": 0.64}, \"f1\": 0.78},\n]\n__check('weites band waehlt bestes f1', threshold_sweep(KAND, 0.2) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('enges band mit gleichstand -> kleinere schwelle', threshold_sweep(KAND, 0.05) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('sehr enges band -> nur ein kandidat', threshold_sweep(KAND, 0.03) == {\"schwelle\": 0.7, \"f1\": 0.78, \"paritaet_ok\": True})\n__check('kein kandidat im band -> None', threshold_sweep(KAND, 0.02) is None)\n__check('paritaet schlaegt besseres f1', threshold_sweep([\n    {\"schwelle\": 0.5, \"selrate\": {\"a\": 0.8, \"b\": 0.6}, \"f1\": 0.81},\n    {\"schwelle\": 0.6, \"selrate\": {\"a\": 0.7, \"b\": 0.65}, \"f1\": 0.78},\n], 0.06) == {\"schwelle\": 0.6, \"f1\": 0.78, \"paritaet_ok\": True})\nk = cost_table(120000, 30000, 0.5, 2.0)\n__check('input-kosten', k[\"input_eur\"] == 0.06)\n__check('output-kosten', k[\"output_eur\"] == 0.06)\n__check('gesamt-kosten', k[\"gesamt_eur\"] == 0.12)\n__check('halbe last', cost_table(60000, 15000, 0.5, 2.0) == {\"input_eur\": 0.03, \"output_eur\": 0.03, \"gesamt_eur\": 0.06})\n__check('gesamt aus rohsumme', cost_table(12340, 12340, 0.5, 0.5)[\"gesamt_eur\"] == 0.0123)\nprint(\"ok w33-e5\")"
       },
       "competencyIds": [
         "c-research-responsible",
@@ -30,9 +30,18 @@
         "cost_table: token/1_000_000 mal Preis; alle drei Werte einzeln auf 4 Stellen runden, gesamt aus der Summe der ungerundeten Werte."
       ],
       "typicalErrors": [
-        "bestes f1 vor dem Paritätsfilter gewählt",
-        "Gleichstand über Listenposition statt kleinere Schwelle aufgelöst",
-        "Kosten aus gerundeten Einzelwerten summiert"
+        {
+          "id": "bestes-f1-vor-dem-paritaetsfilter",
+          "text": "bestes f1 vor dem Paritätsfilter gewählt"
+        },
+        {
+          "id": "gleichstand-ueber-listenposition-statt-kleinere",
+          "text": "Gleichstand über Listenposition statt kleinere Schwelle aufgelöst"
+        },
+        {
+          "id": "kosten-aus-gerundeten-einzelwerten-summiert",
+          "text": "Kosten aus gerundeten Einzelwerten summiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

@@ -38,9 +38,18 @@
         }
       ],
       "typicalErrors": [
-        "Daten und Konfiguration vom Freeze ausgenommen",
-        "Manifest als reine Dokumentation statt als Hash-Prüfung verstanden",
-        "Freeze erst nach der Demo aufgestellt"
+        {
+          "id": "daten-und-konfiguration-vom-freeze",
+          "text": "Daten und Konfiguration vom Freeze ausgenommen"
+        },
+        {
+          "id": "manifest-als-reine-dokumentation-statt",
+          "text": "Manifest als reine Dokumentation statt als Hash-Prüfung verstanden"
+        },
+        {
+          "id": "freeze-erst-nach-der-demo",
+          "text": "Freeze erst nach der Demo aufgestellt"
+        }
       ],
       "choices": [
         {

@@ -81,7 +81,7 @@ const renderState = (value) => {
 
 test('all fresh families expose their registered generator ids', () => {
   const ids = Object.keys(FAMILIES);
-  assert.equal(ids.length, 13);
+  assert.equal(ids.length, 14);
   for (const id of ids) assert.equal(typeof FAMILIES[id], 'function', `${id} is not callable`);
 });
 

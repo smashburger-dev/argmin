@@ -36,9 +36,18 @@
         }
       ],
       "typicalErrors": [
-        "nur einen der beiden Aufrufe berechnet",
-        "Klammer in umfang übersehen: 2 · 3 + 4 statt 2 · (3 + 4)",
-        "Werte in der Ausgabe vertauscht (umfang vor flaeche)"
+        {
+          "id": "nur-einen-der-beiden-aufrufe",
+          "text": "nur einen der beiden Aufrufe berechnet"
+        },
+        {
+          "id": "klammer-in-umfang-uebersehen-2",
+          "text": "Klammer in umfang übersehen: 2 · 3 + 4 statt 2 · (3 + 4)"
+        },
+        {
+          "id": "werte-in-der-ausgabe-vertauscht",
+          "text": "Werte in der Ausgabe vertauscht (umfang vor flaeche)"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic",
@@ -91,9 +100,18 @@
         "f(g(v)) und g(f(v)) sind im Allgemeinen verschieden: das negative ga kippt das Vorzeichen in beiden Bahnen unterschiedlich — die Funktionen nicht als vertauschbar annehmen."
       ],
       "typicalErrors": [
-        "Kommutativität angenommen und beide Bahnen gleichgesetzt",
-        "Vorzeichen von ga in einer Bahn verloren",
-        "äußere Funktion auf v statt auf das Zwischenergebnis angewendet"
+        {
+          "id": "kommutativitaet-angenommen-und-beide-bahnen",
+          "text": "Kommutativität angenommen und beide Bahnen gleichgesetzt"
+        },
+        {
+          "id": "vorzeichen-von-ga-in-einer",
+          "text": "Vorzeichen von ga in einer Bahn verloren"
+        },
+        {
+          "id": "aeussere-funktion-auf-v-statt",
+          "text": "äußere Funktion auf v statt auf das Zwischenergebnis angewendet"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic",

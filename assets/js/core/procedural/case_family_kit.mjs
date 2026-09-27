@@ -1,17 +1,57 @@
 // Shared tail for the python-code procedural families: given the family's
 // seededBlock builder the kit produces the capsule-shape predicate, the
-// seeded case generator, the solve dispatch and the FAMILY_SPEC wiring that
-// used to be hand-copied at the bottom of every module.
+// seeded case generator, the solve dispatch and the finished FAMILY_SPEC
+// that used to be hand-copied at the bottom of every module. Each factory
+// returns the spec (graderId/activityType defaults + contract +
+// generate/solve); suite internals hang on `spec.kit`.
 //
 // Contract per family:
-//   cases: { [caseId]: { difficulty, packages, starterCode, baseTests,
-//     referenceSolver, prompt, fullSolution, extraCount, competencyIds?,
+//   doc: the family's content/families/<id>.json anchor — its cases carry the
+//     authored texts verbatim, so the kit fills starterCode, baseTests,
+//     referenceSolver, prompt, fullSolution and packages from the anchor
+//     instead of duplicating them in the module. Explicit def fields win.
+//   cases: { [caseId]: { difficulty, packages?, starterCode?, baseTests?,
+//     referenceSolver?, prompt?, fullSolution?, extraCount, competencyIds?,
 //     validEntry?, draw(r, i), ... } }
 //   seededBlock(caseDef, caseId, seedCases) -> string appended to baseTests
 //   shapeError: message thrown when solve sees foreign parameters
 import { rng } from '../generator_draw_kit.mjs';
 
-export function makeCaseFamily({ contract, cases, shapeError, seededBlock, defaultPackages }) {
+// The generate guard both kits share: integer seed, registered case,
+// matching profile — then the seeded case draw.
+const seededCaseGenerate = (cases, genCase) => ({ seed, caseId, difficulty }) => {
+  if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
+  const caseDef = cases[caseId];
+  if (!caseDef || caseDef.difficulty !== difficulty) {
+    throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
+  }
+  return genCase(seed, caseId, caseDef);
+};
+
+// Resolve every def against its doc anchor (fail-closed at module load) and
+// merge: anchor defaults first, explicit def fields win.
+const resolveCases = (doc, cases, fill, familyId) => Object.fromEntries(
+  Object.entries(cases).map(([caseId, caseDef]) => {
+    const anchor = doc.cases.find((entry) => entry.caseId === caseId);
+    if (!anchor) throw new Error(`${familyId}: kein Anker für Fall ${caseId}`);
+    const merged = fill(anchor);
+    for (const [key, value] of Object.entries(caseDef)) {
+      if (value !== undefined) merged[key] = value;
+    }
+    return [caseId, merged];
+  }),
+);
+
+export function makeCaseFamily({
+  doc, contract, cases, shapeError, seededBlock, defaultPackages }) {
+  cases = resolveCases(doc, cases, (anchor) => ({
+    starterCode: anchor.parameters.starterCode,
+    baseTests: anchor.parameters.tests,
+    referenceSolver: anchor.expected.referenceSolver,
+    prompt: anchor.prompt,
+    fullSolution: anchor.fullSolution,
+    packages: anchor.parameters.packages,
+  }), contract.familyId);
   const testsFor = (caseDef, caseId, seedCases) => `${caseDef.baseTests}\n\n${seededBlock(caseDef, caseId, seedCases)}`;
 
   const caseOk = (parameters, caseId, caseDef) => {
@@ -47,29 +87,43 @@ export function makeCaseFamily({ contract, cases, shapeError, seededBlock, defau
     return { referenceCode: entry[1].referenceSolver };
   };
 
-  const generate = ({ seed, caseId, difficulty }) => {
-    if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-    const caseDef = cases[caseId];
-    if (!caseDef || caseDef.difficulty !== difficulty) {
-      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-    }
-    return genCase(seed, caseId, caseDef);
-  };
+  const generate = seededCaseGenerate(cases, genCase);
 
-  return { caseOk, genCase, solve, generate, spec: { graderId: 'pyodide', activityType: 'python-code', ...contract, generate, solve } };
+  return {
+    graderId: 'pyodide',
+    activityType: 'python-code',
+    ...contract,
+    generate,
+    solve,
+    kit: { type: 'code', cases, caseOk, genCase },
+  };
 }
 
 // Predict-output analogue: parameters carry {caseId, difficulty, ...drawn,
 // snippet}; expected is {output}. The case defs own the builders — the kit
-// only wires draw -> params -> snippet/expected/prompt/solution.
+// only wires draw -> params -> snippet/expected/prompt/solution. Like the
+// code kit it resolves prompt/baseSnippet/baseOutput from the doc anchor;
+// baseParams is filled from the anchor parameters minus `snippet` when the
+// def leaves it out.
 //
 // Contract per family:
-//   cases: { [caseId]: { caseId, difficulty, baseSnippet, baseOutput,
-//     baseParams, prompt, baseSolution?, competencyIds?, expectedKind?,
+//   doc: the family's content/families/<id>.json anchor
+//   cases: { [caseId]: { caseId, difficulty, baseSnippet?, baseOutput?,
+//     baseParams?, prompt?, baseSolution?, competencyIds?, expectedKind?,
 //     draw(r), toParams?(drawn), buildSnippet(params), buildOutput(params),
 //     buildPrompt?(params), buildSolution?(params), checkParams(params) } }
-export function makePredictFamily({ contract, cases, shapeError }) {
+export function makePredictFamily({ contract, doc, cases, shapeError }) {
   const error = shapeError ?? `${contract.familyId}: Parameter verletzen die Kapselform`;
+
+  cases = resolveCases(doc, cases, (anchor) => {
+    const { snippet, ...rest } = anchor.parameters;
+    return {
+      prompt: anchor.prompt,
+      baseSnippet: snippet,
+      baseOutput: anchor.expected.output,
+      baseParams: rest,
+    };
+  }, contract.familyId);
 
   const caseOk = (parameters, caseId, caseDef) => {
     try {
@@ -106,14 +160,14 @@ export function makePredictFamily({ contract, cases, shapeError }) {
     return { output: caseDef.buildOutput(parameters) };
   };
 
-  const generate = ({ seed, caseId, difficulty }) => {
-    if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
-    const caseDef = cases[caseId];
-    if (!caseDef || caseDef.difficulty !== difficulty) {
-      throw new Error(`Unbekannter Fall ${caseId} für Profil ${difficulty}`);
-    }
-    return genCase(seed, caseId, caseDef);
-  };
+  const generate = seededCaseGenerate(cases, genCase);
 
-  return { caseOk, genCase, solve, generate, spec: { graderId: 'deterministic', activityType: 'predict-output', ...contract, generate, solve } };
+  return {
+    graderId: 'deterministic',
+    activityType: 'predict-output',
+    ...contract,
+    generate,
+    solve,
+    kit: { type: 'predict', cases, caseOk, genCase },
+  };
 }

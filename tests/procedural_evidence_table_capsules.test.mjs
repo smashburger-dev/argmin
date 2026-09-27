@@ -5,16 +5,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/rank-evidence-table.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
 
-codeCapsuleSuite('rank-evidence-table', mod, [
-  { caseId: 'evidence-table-ranking', difficulty: 'challenge' },
-], { familyGroup: 'aggregate-count', difficultyProfiles: ['challenge'] });
+const spec = mod.FAMILY_SPEC;
+const genEvidenceTableCase = spec.kit.genCase;
+
+
 
 test('seeded draws stay inside the declared domains', () => {
   const def = mod.EVIDENCE_TABLE_CASES['evidence-table-ranking'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genEvidenceTableCase(seed, 'evidence-table-ranking', def);
+    const generated = genEvidenceTableCase(seed, 'evidence-table-ranking', def);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(generated.parameters.tests.includes('seeded tabelle 1'), `${seed}: seeded checks`);
     for (const entry of generated.parameters.seedCases) {

@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Datenabfluss-Kanal und Einbruchsmethode verwechselt",
-        "Vertrauensgrenzen (Retrieval → Modell → Tool) nicht getrennt",
-        "Vorfall dem Nutzer statt dem Dokument zugeordnet"
+        {
+          "id": "datenabfluss-kanal-und-einbruchsmethode-verwechselt",
+          "text": "Datenabfluss-Kanal und Einbruchsmethode verwechselt"
+        },
+        {
+          "id": "vertrauensgrenzen-retrieval-modell-tool-nicht",
+          "text": "Vertrauensgrenzen (Retrieval → Modell → Tool) nicht getrennt"
+        },
+        {
+          "id": "vorfall-dem-nutzer-statt-dem",
+          "text": "Vorfall dem Nutzer statt dem Dokument zugeordnet"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

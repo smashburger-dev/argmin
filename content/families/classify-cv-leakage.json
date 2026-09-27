@@ -31,9 +31,18 @@
         }
       ],
       "typicalErrors": [
-        "Leakage nur bei Ziel-in-Features vermuten",
-        "Determinismus mit Unbedenklichkeit verwechseln",
-        "die Reihenfolge Füllen → Split nicht als Problem erkennen"
+        {
+          "id": "leakage-nur-bei-ziel-in",
+          "text": "Leakage nur bei Ziel-in-Features vermuten"
+        },
+        {
+          "id": "determinismus-mit-unbedenklichkeit-verwechseln",
+          "text": "Determinismus mit Unbedenklichkeit verwechseln"
+        },
+        {
+          "id": "die-reihenfolge-fuellen-split-nicht",
+          "text": "die Reihenfolge Füllen → Split nicht als Problem erkennen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -110,9 +119,18 @@
         }
       ],
       "typicalErrors": [
-        "Skalierungsstatistiken aus dem vollen Datensatz nehmen",
-        "kategoriale Ausprägungen durchnummerieren",
-        "ziel-abgeleitete Spalten als Features behalten"
+        {
+          "id": "skalierungsstatistiken-aus-dem-vollen-datensatz",
+          "text": "Skalierungsstatistiken aus dem vollen Datensatz nehmen"
+        },
+        {
+          "id": "kategoriale-auspraegungen-durchnummerieren",
+          "text": "kategoriale Ausprägungen durchnummerieren"
+        },
+        {
+          "id": "ziel-abgeleitete-spalten-als-features",
+          "text": "ziel-abgeleitete Spalten als Features behalten"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

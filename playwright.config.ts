@@ -1,7 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const builtPreview = process.env.PLAYWRIGHT_PREVIEW === '1';
-const port = builtPreview ? 4174 : 4173;
+// E2E_PORT lets parallel worktrees run side by side. A running server is
+// reused only on explicit opt-in (E2E_REUSE_SERVER=1): a dev server from a
+// different checkout on the same port would otherwise serve foreign code.
+const port = Number(process.env.E2E_PORT) || (builtPreview ? 4174 : 4173);
 
 // Firefox/Webkit laufen nur in CI oder explizit (PLAYWRIGHT_ALL_BROWSERS=1) —
 // lokal duplizieren sie denselben Chromium-Lauf und brauchen zusaetzliche
@@ -25,9 +28,11 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: builtPreview ? 'npm run preview:next -- --port 4174' : 'npm run dev:next',
+    command: builtPreview
+      ? `npm run preview:next -- --port ${port} --strictPort`
+      : `npm run dev:next -- --port ${port} --strictPort`,
     url: `http://127.0.0.1:${port}/`,
-    reuseExistingServer: !process.env.CI && !builtPreview,
+    reuseExistingServer: process.env.E2E_REUSE_SERVER === '1',
     timeout: 120000,
   },
   projects: [

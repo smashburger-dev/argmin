@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "absolut (Punkte) mit relativ (%) verwechselt",
-        "Baseline aus Klammer statt Differenz gelesen",
-        "Einheit der Metrik ignoriert"
+        {
+          "id": "absolut-punkte-mit-relativ-verwechselt",
+          "text": "absolut (Punkte) mit relativ (%) verwechselt"
+        },
+        {
+          "id": "baseline-aus-klammer-statt-differenz",
+          "text": "Baseline aus Klammer statt Differenz gelesen"
+        },
+        {
+          "id": "einheit-der-metrik-ignoriert",
+          "text": "Einheit der Metrik ignoriert"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -123,9 +132,18 @@
         }
       ],
       "typicalErrors": [
-        "Prozentpunkte und relative Prozente sprachlich gleichgesetzt",
-        "den alten Benchmarkwert als 1 statt als Bezugsgröße 0,62 verwendet",
-        "eine positive Differenz wegen der Normierung auf 1 verworfen"
+        {
+          "id": "prozentpunkte-und-relative-prozente-sprachlich",
+          "text": "Prozentpunkte und relative Prozente sprachlich gleichgesetzt"
+        },
+        {
+          "id": "den-alten-benchmarkwert-als-1",
+          "text": "den alten Benchmarkwert als 1 statt als Bezugsgröße 0,62 verwendet"
+        },
+        {
+          "id": "eine-positive-differenz-wegen-der",
+          "text": "eine positive Differenz wegen der Normierung auf 1 verworfen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -189,9 +207,18 @@
         }
       ],
       "typicalErrors": [
-        "Mehrheits-Baseline mit ausgewogener Klassenleistung verwechselt",
-        "positive Trefferquote aus der Gesamt-Accuracy abgeleitet",
-        "Klassenimbalance als Verbot statt als Interpretationsrisiko behandelt"
+        {
+          "id": "mehrheits-baseline-mit-ausgewogener-klassenleistung",
+          "text": "Mehrheits-Baseline mit ausgewogener Klassenleistung verwechselt"
+        },
+        {
+          "id": "positive-trefferquote-aus-der-gesamt",
+          "text": "positive Trefferquote aus der Gesamt-Accuracy abgeleitet"
+        },
+        {
+          "id": "klassenimbalance-als-verbot-statt-als",
+          "text": "Klassenimbalance als Verbot statt als Interpretationsrisiko behandelt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

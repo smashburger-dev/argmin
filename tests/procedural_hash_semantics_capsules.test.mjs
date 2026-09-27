@@ -5,17 +5,18 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as mod from '../assets/js/core/procedural/classify-hash-semantics.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import bank from '../content/banks/classify-hash-semantics.json' with { type: 'json' };
+import { JS_FAMILY_SPECS } from '../assets/js/domain/exercise_registry.mjs';
+
+const spec = JS_FAMILY_SPECS.find((item) => item.familyId === 'classify-hash-semantics');
+const generateHashSemanticsFamily = spec.generate;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'hash-semantics-baseline';
-const CAPSULE = mod.HASH_SEMANTICS_CAPSULES.intro;
-const draw = (seed) => mod.generateHashSemanticsFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
+const CAPSULE = bank.capsules.intro;
+const draw = (seed) => generateHashSemanticsFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
 
-choiceCapsuleSuite('classify-hash-semantics', mod, [
-  { caseId: CASE_ID, difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
 
 test('Familien-Extras: Fallkörper-Größe, Schwierigkeitsprofil, Schlüssel-Id', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/classify-hash-semantics.json'), 'utf8'));
@@ -23,7 +24,7 @@ test('Familien-Extras: Fallkörper-Größe, Schwierigkeitsprofil, Schlüssel-Id'
   const body = doc.cases.find((item) => item.caseId === CASE_ID);
   assert.equal(body.difficultyProfile, 'intro');
   assert.equal(body.choices.find((choice) => choice.correct).id, 'd');
-  assert.deepEqual(mod.HASH_SEMANTICS_CONTRACT.competencyIds, ['c-research-capstone']);
+  assert.deepEqual(bank.contract.competencyIds, ['c-research-capstone']);
 });
 
 test('bank: 12-16 scenarios, unique keys, four distinct option texts each', () => {

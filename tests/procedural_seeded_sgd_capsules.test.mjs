@@ -5,12 +5,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/fit-seeded-split-sgd-linear.mjs';
-import {
-  SEEDED_SGD_CASES,
-  SEEDED_SGD_CONTRACT,
-  genSeededSgdCase,
-} from '../assets/js/core/procedural/fit-seeded-split-sgd-linear.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { SEEDED_SGD_CASES, SEEDED_SGD_CONTRACT } from '../assets/js/core/procedural/fit-seeded-split-sgd-linear.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genSeededSgdCase = spec.kit.genCase;
+
 
 const CASE_IDS = ['seeded-split-sgd-linear'];
 
@@ -21,9 +20,6 @@ const NOISE_LEVELS = [0.02, 0.05, 0.1];
 const LEARNING_RATES = [0.02, 0.03, 0.05, 0.08];
 const EPOCH_BANK = [200, 250, 300, 400];
 
-codeCapsuleSuite('fit-seeded-split-sgd-linear', mod, [
-  { caseId: 'seeded-split-sgd-linear', difficulty: 'stretch' },
-], { difficultyProfiles: ['stretch'] });
 
 test('capsule extras: seeded block marker, ref copy and packages stay emitted', () => {
   const def = SEEDED_SGD_CASES['seeded-split-sgd-linear'];

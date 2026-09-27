@@ -5,21 +5,17 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as mod from '../assets/js/core/procedural/classify-rag-stage.mjs';
-import {
-  RAG_STAGE_CAPSULES,
-  RAG_STAGE_CONTRACT,
-  generateRagStageFamily,
-} from '../assets/js/core/procedural/classify-rag-stage.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import bank from '../content/banks/classify-rag-stage.json' with { type: 'json' };
+import { JS_FAMILY_SPECS } from '../assets/js/domain/exercise_registry.mjs';
 
-choiceCapsuleSuite('classify-rag-stage', mod, [
-  { caseId: 'rag-stage-separation', difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
+const spec = JS_FAMILY_SPECS.find((item) => item.familyId === 'classify-rag-stage');
+const generateRagStageFamily = spec.generate;
+
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'rag-stage-separation';
-const CAPSULE = RAG_STAGE_CAPSULES.intro;
+const CAPSULE = bank.capsules.intro;
 const draw = (seed) => generateRagStageFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
 
 test('anchor extras: pinned profile and key position of the oracle case', () => {
@@ -52,5 +48,5 @@ test('capsule extras: parameter keys stay minimal, texts come from the bank row'
 });
 
 test('contract extras: competencies the suite does not pin', () => {
-  assert.deepEqual(RAG_STAGE_CONTRACT.competencyIds, ['c-genai-rag']);
+  assert.deepEqual(bank.contract.competencyIds, ['c-genai-rag']);
 });

@@ -32,9 +32,18 @@
         "to_state nutzt arr.tolist() (verschachtelte Listen), from_state np.asarray(value, dtype=np.float64) — gleiche Schlüssel, gleiche Reihenfolge der Konvertierung."
       ],
       "typicalErrors": [
-        "Gleichstand zählt als Verbesserung und verschiebt die beste Epoche nach hinten",
-        "patience-Grenze um eins daneben (>= statt >)",
-        "Arrays ohne tolist in den Zustand gelegt"
+        {
+          "id": "gleichstand-zaehlt-als-verbesserung-und",
+          "text": "Gleichstand zählt als Verbesserung und verschiebt die beste Epoche nach hinten"
+        },
+        {
+          "id": "patience-grenze-um-eins-daneben",
+          "text": "patience-Grenze um eins daneben (>= statt >)"
+        },
+        {
+          "id": "arrays-ohne-tolist-in-den",
+          "text": "Arrays ohne tolist in den Zustand gelegt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -55,7 +64,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\n\ndef early_stop_epoch(val_losses, patience, min_delta):\n    ...\n\n\ndef to_state(model):\n    ...\n\n\ndef from_state(state):\n    ...\n",
-        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('wait erst seit letzter verbesserung', early_stop_epoch([0.9, 0.5, 0.51, 0.52, 0.48, 0.55, 0.45, 0.6], 3, 0.01) == 6)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
       },
       "expected": {
         "kind": "reference-solver",
@@ -68,9 +77,18 @@
         "Für den Zustand zuerst arr.tolist(), beim Laden np.asarray(..., dtype=np.float64) verwenden."
       ],
       "typicalErrors": [
-        "min_delta als mindestens statt als strikt größer interpretiert",
-        "wait trotz echter Verbesserung nicht zurückgesetzt",
-        "NumPy-Arrays unverändert in den JSON-Zustand gelegt"
+        {
+          "id": "min-delta-als-mindestens-statt",
+          "text": "min_delta als mindestens statt als strikt größer interpretiert"
+        },
+        {
+          "id": "wait-trotz-echter-verbesserung-nicht",
+          "text": "wait trotz echter Verbesserung nicht zurückgesetzt"
+        },
+        {
+          "id": "numpy-arrays-unveraendert-in-den",
+          "text": "NumPy-Arrays unverändert in den JSON-Zustand gelegt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

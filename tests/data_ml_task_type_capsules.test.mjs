@@ -1,5 +1,5 @@
 // Familie classify-task-type: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_task_type_capsules.test.mjs
 import test from 'node:test';
@@ -10,37 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   TASK_TYPE_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  TASK_TYPE_CONTRACT,
-  genTaskTypeCapsule,
-  taskTypeCapsuleOk,
-  taskTypeCorrectText,
-  generateTaskTypeFamily,
-  solveTaskTypeFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { TASK_TYPE_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-task-type');
+const genTaskTypeCapsule = spec.kit.genCapsule;
+const taskTypeCapsuleOk = spec.kit.capsuleOk;
+const taskTypeCorrectText = spec.kit.correctText;
+const generateTaskTypeFamily = spec.generate;
+const solveTaskTypeFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  TASK_TYPE_CAPSULES,
-  taskTypeCapsuleOk,
-  taskTypeCorrectText,
-  genTaskTypeCapsule,
-  TASK_TYPE_CONTRACT,
-  generateTaskTypeFamily,
-  solveTaskTypeFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-task-type'),
-};
 
-choiceCapsuleSuite('classify-task-type', mod, [
-  { caseId: 'failure-next-cycle-supervised', difficulty: 'intro' },
-  { caseId: 'task-house-price', difficulty: 'core' },
-  { caseId: 'task-customer-segments', difficulty: 'stretch' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro', 'core', 'stretch'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schlüsseltext. Regel: Kapsel weiten,

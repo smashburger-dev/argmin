@@ -10,78 +10,9 @@ import { refCopy, pyLit as py } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/construct-normalize-chunk-contract.json' with { type: 'json' };
 
 const PACKAGES = [];
-
-const CHUNK_STARTER = `def normalize(text):
-    """Kleinbuchstaben, Umlaute bleiben, Satzzeichen weg, Whitespace zusammen."""
-    PUNCT = "!\\"$%&'()*+,-./:;<=>?@[\\\\]^_\`{|}~„“”‚‘’"
-    out = []
-    for ch in text.lower():
-        if ch in PUNCT:
-            continue
-        out.append(ch)
-    return " ".join("".join(out).split())
-
-
-def chunk(text, size, overlap):
-    """Fenster text[start:start+size], start += size - overlap, solange start < len(text)."""
-    ...
-
-`;
-
-const CHUNK_BASE_TESTS = `__check('normalize kleinbuchstaben', normalize("Der Bäcker sagte: „Halt!“") == "der bäcker sagte halt")
-__check('normalize umlaute bleiben', normalize("Größenmaßstäbe") == "größenmaßstäbe")
-__check('normalize zahlen bleiben', normalize("Artikel 12, Absatz 3!") == "artikel 12 absatz 3")
-__check('chunk fensterfolge', chunk("abcdefghij", 4, 2) == ["abcd", "cdef", "efgh", "ghij", "ij"])
-__check('chunk startreihe', chunk("abcdef", 4, 1) == ["abcd", "def"])
-__check('chunk kurzer text', chunk("ab", 5, 2) == ["ab"])
-__check('chunk ohne overlap', chunk("abcdefgh", 4, 0) == ["abcd", "efgh"])
-__check('chunk fensterlaenge', all(len(p) <= 4 for p in chunk("abcdefghij", 4, 2)))
-try:
-    chunk("abc", 0, 0)
-    __check('size 0 -> ValueError', False, 'kein ValueError')
-except ValueError:
-    __check('size 0 -> ValueError', True)
-try:
-    chunk("abc", 4, 4)
-    __check('overlap >= size -> ValueError', False, 'kein ValueError')
-except ValueError:
-    __check('overlap >= size -> ValueError', True)`;
-
-const CHUNK_REFERENCE = `def normalize(text):
-    PUNCT = "!\\"$%&'()*+,-./:;<=>?@[\\\\]^_\`{|}~„“”‚‘’"
-    out = []
-    for ch in text.lower():
-        if ch in PUNCT:
-            continue
-        out.append(ch)
-    return " ".join("".join(out).split())
-
-def chunk(text, size, overlap):
-    if not isinstance(size, int) or not isinstance(overlap, int):
-        raise ValueError("size und overlap muessen ganze Zahlen sein")
-    if size <= 0:
-        raise ValueError("size muss positiv sein")
-    if overlap < 0 or overlap >= size:
-        raise ValueError("overlap muss zwischen 0 und size-1 liegen")
-    step = size - overlap
-    parts = []
-    start = 0
-    while start < len(text):
-        parts.append(text[start:start + size])
-        start += step
-    return parts
-
-# chunk("abcdefghij", 4, 2) -> ["abcd", "cdef", "efgh", "ghij", "ij"]
-# normalize("Der Bäcker sagte: „Halt!“") -> "der bäcker sagte halt"`;
-
-const CHUNK_PROMPT = 'Implementiere <code>normalize(text)</code> und <code>chunk(text, size, overlap)</code> exakt nach dem gepinnten Vertrag. normalize: Kleinbuchstaben, Umlaute bleiben erhalten, Satzzeichen entfernen, Whitespace zusammenziehen (Ergebnis ein String mit je einem Leerzeichen zwischen Wörtern). chunk: Fenster <code>text[start:start+size]</code>, Start bei 0, dann um <code>size − overlap</code> weiter, solange <code>start &lt; len(text)</code>; Rückgabe Liste von Strings. Ungültige Parameter (size ≤ 0, overlap &lt; 0, overlap ≥ size oder nicht-ganzzahlig) werfen <code>ValueError</code>. Der Testcode prüft Normalisierung und Fensterfolgen getrennt von deinem Code.';
-
-const CHUNK_SOLUTION = `${CHUNK_REFERENCE}
-
-# alle __check-Tests bestanden (lokal python3-verifiziert)`;
-
 
 // Serializes drawn data as Python literals (the pools stay quote- and
 // backslash-free, so the generated test block has no escaping hazards).
@@ -154,12 +85,7 @@ function seededChecks(entry, index) {
 export const CHUNK_CASES = {
   'normalize-chunk-contract': {
     difficulty: 'core',
-    starterCode: CHUNK_STARTER,
-    baseTests: CHUNK_BASE_TESTS,
-    referenceSolver: CHUNK_REFERENCE,
     refNames: ['normalize', 'chunk'],
-    prompt: CHUNK_PROMPT,
-    fullSolution: CHUNK_SOLUTION,
     extraCount: 3,
     draw(r) {
       const size = randInt(r, 1, 8);
@@ -190,7 +116,8 @@ export const CHUNK_CONTRACT = {
   competencyIds: ['c-genai-rag', 'c-python-functions'],
 };
 
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: CHUNK_CONTRACT,
   cases: CHUNK_CASES,
   shapeError: 'Normalize-Chunk-Parameter verletzen die Kapselform',
@@ -201,8 +128,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const chunkCaseOk = FAMILY.caseOk;
-export const genChunkCase = FAMILY.genCase;
-export const solveChunkFamily = FAMILY.solve;
-export const generateChunkFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

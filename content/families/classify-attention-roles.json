@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "Rollen von Q/K/V verwechselt",
-        "Value mit Maske verwechselt",
-        "Skalierung der Values zugeschrieben"
+        {
+          "id": "rollen-von-q-k-v",
+          "text": "Rollen von Q/K/V verwechselt"
+        },
+        {
+          "id": "value-mit-maske-verwechselt",
+          "text": "Value mit Maske verwechselt"
+        },
+        {
+          "id": "skalierung-der-values-zugeschrieben",
+          "text": "Skalierung der Values zugeschrieben"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -126,9 +135,18 @@
         }
       ],
       "typicalErrors": [
-        "Die Scorematrix mit der Value-Ausgabe verwechselt",
-        "die fünf Value-Kanäle fälschlich auf drei Query-Kanäle reduziert",
-        "die Query-Rolle an V statt an Q gebunden"
+        {
+          "id": "die-scorematrix-mit-der-value",
+          "text": "Die Scorematrix mit der Value-Ausgabe verwechselt"
+        },
+        {
+          "id": "die-fuenf-value-kanaele-faelschlich",
+          "text": "die fünf Value-Kanäle fälschlich auf drei Query-Kanäle reduziert"
+        },
+        {
+          "id": "die-query-rolle-an-v",
+          "text": "die Query-Rolle an V statt an Q gebunden"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -194,9 +212,18 @@
         }
       ],
       "typicalErrors": [
-        "Padding als Änderung der Value-Vektoren statt der Scores behandelt",
-        "die maximale Länge fünf mit der Anzahl der Value-Kanäle verwechselt",
-        "Maskenfunktion und Inhaltsmatrix im Attention-Ablauf vertauscht"
+        {
+          "id": "padding-als-aenderung-der-value",
+          "text": "Padding als Änderung der Value-Vektoren statt der Scores behandelt"
+        },
+        {
+          "id": "die-maximale-laenge-fuenf-mit",
+          "text": "die maximale Länge fünf mit der Anzahl der Value-Kanäle verwechselt"
+        },
+        {
+          "id": "maskenfunktion-und-inhaltsmatrix-im-attention",
+          "text": "Maskenfunktion und Inhaltsmatrix im Attention-Ablauf vertauscht"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

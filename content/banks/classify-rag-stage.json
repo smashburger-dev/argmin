@@ -159,5 +159,28 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-rag-stage",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Verarbeitungsschritt der passenden RAG-Stage zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "rag-stage-separation",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-genai-rag"
+    ]
+  },
+  "shapeError": "RAG-Stage-Parameter verletzen die Kapselform"
 }

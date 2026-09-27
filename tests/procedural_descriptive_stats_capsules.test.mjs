@@ -7,7 +7,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/formula-descriptive-stats-numpy.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genStatsCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const doc = JSON.parse(readFileSync(join(root, 'content/families/formula-descriptive-stats-numpy.json'), 'utf8'));
@@ -16,25 +19,11 @@ const doc = JSON.parse(readFileSync(join(root, 'content/families/formula-descrip
 // own reference walkthrough (generated instances carry it verbatim), while the
 // JSON anchors pin their own curated fullSolution text — so the suite surface
 // aligns both fields with the anchor bodies.
-const suiteMod = {
-  ...mod,
-  STATS_CASES: Object.fromEntries(
-    Object.entries(mod.STATS_CASES).map(([id, def]) => [id, {
-      ...def,
-      packages: ['numpy'],
-      fullSolution: doc.cases.find((entry) => entry.caseId === id).fullSolution,
-    }]),
-  ),
-};
 
-codeCapsuleSuite('formula-descriptive-stats-numpy', suiteMod, [
-  { caseId: 'describe-and-bins', difficulty: 'core' },
-  { caseId: 'describe-outlier-bins', difficulty: 'challenge' },
-], { difficultyProfiles: ['core', 'challenge'] });
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const core = mod.genStatsCase(seed, 'describe-and-bins', mod.STATS_CASES['describe-and-bins']);
+    const core = genStatsCase(seed, 'describe-and-bins', mod.STATS_CASES['describe-and-bins']);
     assert.ok(core.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     for (const entry of core.parameters.seedCases) {
       assert.ok(entry.sample.length >= 5 && entry.sample.length <= 10, 'core sample length');
@@ -42,7 +31,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(entry.edges.length >= 2 && entry.edges.length <= 4, 'core edge count');
       assert.ok(entry.edges.every((e, i) => i === 0 || entry.edges[i - 1] < e), 'edges sorted unique');
     }
-    const challenge = mod.genStatsCase(seed, 'describe-outlier-bins', mod.STATS_CASES['describe-outlier-bins']);
+    const challenge = genStatsCase(seed, 'describe-outlier-bins', mod.STATS_CASES['describe-outlier-bins']);
     assert.ok(challenge.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     for (const entry of challenge.parameters.seedCases) {
       assert.ok(entry.sample.length >= 5 && entry.sample.length <= 8, 'challenge sample length');
@@ -55,7 +44,7 @@ test('seeded draws stay inside the declared domains', () => {
 
 test('module extras: generated instances carry the module fullSolution', () => {
   for (const [caseId, def] of Object.entries(mod.STATS_CASES)) {
-    const generated = mod.genStatsCase(0, caseId, def);
+    const generated = genStatsCase(0, caseId, def);
     assert.equal(generated.fullSolution, def.fullSolution, `${def.caseId ?? 'case'}: module fullSolution`);
     assert.ok(generated.fullSolution.length > 40, 'fullSolution is a real walkthrough');
   }

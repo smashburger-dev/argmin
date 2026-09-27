@@ -133,6 +133,76 @@ test('multiple-choice: malformed expected fails closed', async () => {
   assert.equal((await det.grade(mcExercise({ scoring: 'weighted' }), ['a'])).errorType, 'grader-error');
 });
 
+// --- misconception labels on grade results ------------------------------------
+
+const scExercise = (feedbackRules = []) => ({
+  activityType: 'single-choice',
+  parameters: {},
+  choices: [
+    { id: 'a', text: 'Alpha', correct: true },
+    { id: 'b', text: 'Beta' },
+    { id: 'c', text: 'Gamma' },
+  ],
+  expectedAnswer: { kind: 'choice', correctId: 'a' },
+  feedbackRules,
+});
+
+test('single-choice: a matched rule exposes its misconception label', async () => {
+  const e = scExercise([{ if: "choice === 'b'", then: 'Beta stimmt nicht.', misconception: 'beta-fehlkonzept' }]);
+  const r = await det.grade(e, 'b');
+  assert.equal(r.correct, false);
+  assert.equal(r.diagnosis, 'Beta stimmt nicht.');
+  assert.equal(r.misconception, 'beta-fehlkonzept');
+});
+
+test('single-choice: rules without misconception leave the result byte-identical', async () => {
+  const catchAll = scExercise([{ if: "choice !== 'a'", then: 'Nur Alpha stimmt.' }]);
+  const r = await det.grade(catchAll, 'b');
+  assert.equal(r.diagnosis, 'Nur Alpha stimmt.');
+  assert.equal('misconception' in r, false);
+  const correct = await det.grade(scExercise([{ if: "choice === 'b'", then: 'x', misconception: 'm-b' }]), 'a');
+  assert.equal(correct.correct, true);
+  assert.equal('misconception' in correct, false);
+});
+
+test('numeric: a matched value rule exposes its misconception label', async () => {
+  const e = {
+    activityType: 'numeric',
+    parameters: {},
+    expectedAnswer: { kind: 'integer', value: 3 },
+    feedbackRules: [
+      { if: 'value === 1', then: 'Endzeiten statt Dauern verglichen.', misconception: 'endzeit-statt-dauer' },
+      { if: 'value === 4', then: 'Alles ok gewertet.' },
+    ],
+  };
+  const labelled = await det.grade(e, 1);
+  assert.equal(labelled.diagnosis, 'Endzeiten statt Dauern verglichen.');
+  assert.equal(labelled.misconception, 'endzeit-statt-dauer');
+  const plain = await det.grade(e, 4);
+  assert.equal(plain.diagnosis, 'Alles ok gewertet.');
+  assert.equal('misconception' in plain, false);
+  const right = await det.grade(e, 3);
+  assert.equal('misconception' in right, false);
+});
+
+test('multiple-choice: matched misconception rules collect deduplicated ids in rule order', async () => {
+  const e = mcExercise();
+  e.feedbackRules = [
+    { if: "selected.includes('b')", then: 'B greift.', misconception: 'mc-beta' },
+    { if: "selected.includes('d')", then: 'D greift ohne Label.' },
+    { if: "!selected.includes('a')", then: 'A fehlt.', misconception: 'mc-alpha-fehlt' },
+    { if: "selected.includes('b')", then: 'B nochmal.', misconception: 'mc-beta' },
+  ];
+  const r = await det.grade(e, ['b', 'd']);
+  assert.match(r.diagnosis, /B greift/);
+  assert.deepEqual(r.misconceptions, ['mc-beta', 'mc-alpha-fehlt']);
+  const clean = await det.grade(mcExercise(), ['b']);
+  assert.equal('misconceptions' in clean, false);
+  const correct = await det.grade(e, ['a', 'c']);
+  assert.equal(correct.correct, true);
+  assert.equal('misconceptions' in correct, false);
+});
+
 // --- diagnostic-rationale -----------------------------------------------------
 
 const GOOD_DIAGNOSIS = 'Der Code nutzt ein nullbasiert Index-Modell und zählt die Kopfzeile mit.';

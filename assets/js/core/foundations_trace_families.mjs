@@ -48,7 +48,7 @@ function ensureTraceDocs() {
 
 const traceCaseBody = (familyId, caseId) => { ensureTraceDocs(); return staticCaseBody(familyId, caseId); };
 
-export const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
+const TRACE_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
 // Ziehlogik aus generator_draw_kit (eine Stelle, keine Duplikate).
 // traceSubseed bleibt als Alias erhalten.
@@ -206,7 +206,7 @@ const TRACE_ASSIGNMENT_SOLVERS = {
  *  liefert den Variablenzustands-Contract — die Werte stehen dort
  *  vertragsgemäß in parameters.variables; ihre Korrektheit pinnt die
  *  Äquivalenz-Fixture gegen die früher authored Bank. */
-export function solveTraceAssignment(parameters) {
+function solveTraceAssignment(parameters) {
   const generator = TRACE_GENERATORS[parameters.caseId];
   if (generator) return generator.expected(parameters);
   const staticKey = TRACE_ASSIGNMENT_STATIC_KEYS[parameters.caseId];
@@ -382,7 +382,7 @@ function callCompositionProfileAccepts(caseId, difficulty) {
 }
 
 /** Unabhängiger Solver: beide Kompositionsreihenfolgen aus den Fallparametern. */
-export function solveTraceCallComposition(parameters) {
+function solveTraceCallComposition(parameters) {
   if (parameters.form === 'area-perimeter') {
     return { output: `${parameters.a * parameters.b} ${2 * (parameters.a + parameters.b)}` };
   }
@@ -403,7 +403,7 @@ const drawAreaPerimeterArgs = (seed) => {
   return { a: randInt(random, 2, 9), b: randInt(random, 2, 9) };
 };
 
-export function generateTraceCallCompositionFamily({ seed, caseId, difficulty }) {
+function generateTraceCallCompositionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (caseId === 'two-functions-one-print') {
     const { a, b } = drawAreaPerimeterArgs(seed);
@@ -426,9 +426,9 @@ export function generateTraceCallCompositionFamily({ seed, caseId, difficulty })
         { if: 'element-count-mismatch', then: `Die print-Zeile gibt zwei Werte in einer Zeile aus — durch Leerzeichen getrennt, z. B. \`${output}\`. Rechne beide Aufrufe aus.` },
       ],
       typicalErrors: [
-        'nur einen der beiden Aufrufe berechnet',
-        `Klammer in umfang übersehen: 2 · ${a} + ${b} statt 2 · (${a} + ${b})`,
-        'Werte in der Ausgabe vertauscht (umfang vor flaeche)',
+        { id: 'nur-einen-der-beiden-aufrufe', text: 'nur einen der beiden Aufrufe berechnet' },
+        { id: 'klammer-in-umfang-uebersehen', text: `Klammer in umfang übersehen: 2 · ${a} + ${b} statt 2 · (${a} + ${b})` },
+        { id: 'werte-in-der-ausgabe-vertauscht', text: 'Werte in der Ausgabe vertauscht (umfang vor flaeche)' },
       ],
       traceTable: {
         lines: [`flaeche(${a}, ${b})`, `umfang(${a}, ${b})`],
@@ -512,7 +512,7 @@ function accumulatorProfileAccepts(caseId, difficulty) {
 }
 
 /** Unabhängiger Solver: Zweig-, Schleifen- und Filterauswertung aus den Fallparametern. */
-export function solveAccumulatorCount(parameters) {
+function solveAccumulatorCount(parameters) {
   const { shape } = parameters;
   if (shape === 'elif') {
     let branch;
@@ -573,7 +573,7 @@ function accumulatorScope(parameters, output) {
   throw new Error(`aggregate-accumulator-count: unbekannte Form ${parameters.shape}`);
 }
 
-export function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
+function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
   const shape = ACCUMULATOR_SHAPES[caseId];
   if (!shape) throw new Error(`Unbekannter Fall ${caseId}`);
   const drawn = drawTraceInstance(genControlFlowOutput, {
@@ -596,7 +596,7 @@ export function generateAccumulatorCountFamily({ seed, caseId, difficulty }) {
   };
 }
 
-export const ACCUMULATOR_COUNT_CONTRACT = {
+const ACCUMULATOR_COUNT_CONTRACT = {
   familyId: 'aggregate-accumulator-count',
   familyGroup: 'aggregate-count',
   summary: 'Zählt durch Akkumulation über eine Folge von Elementen oder Schritten.',
@@ -739,7 +739,7 @@ function simulateDictTrace(codes) {
 
 /** Unabhängiger Solver für beide Trace-Familien: resimuliert die Spur aus
  *  den Snippetzeilen und vergleicht gegen parameters.variables (Test). */
-export function solveCollectionTrace(parameters) {
+function solveCollectionTrace(parameters) {
   const codes = traceCodeLines(parameters.snippet);
   const shape = parameters.family;
   const simulated = shape === 'set-steps'
@@ -750,6 +750,7 @@ export function solveCollectionTrace(parameters) {
     value: simulated.render(state),
   }));
   if (simulated.yEnd) variables.push({ name: 'y_ende', value: renderListState(simulated.yEnd) });
+  variables.push(...extraTraceVars(parameters.caseId, simulated).map(({ name, value }) => ({ name, value })));
   return { variables };
 }
 
@@ -762,6 +763,21 @@ function simulateDictTraceShim(shape, codes) {
 function traceSnippetNumbers(snippet) {
   return intsOf(traceCodeLines(snippet).join('\n'));
 }
+
+// Zusätzlich getrackte Referenzen: die Alias-Fälle binden y mitten im
+// Snippet, und nur deklarierte y-Zustände machen den Alias-Effekt für den
+// Lernenden (und den Grader) beobachtbar. list-alias-negative trackt y ab
+// seiner Bindung in Zeile 2, list-rebind-steps am Ende nach Zeile 4.
+const EXTRA_TRACE_VARS = {
+  'list-alias-negative': (simulated) => [2, 3, 4].map((line) => ({
+    name: `y_nach_${line}`, type: 'repr', value: simulated.render(simulated.states[line - 1]),
+  })),
+  'list-rebind-steps': (simulated) => [
+    { name: 'y_nach_4', type: 'repr', value: simulated.render(simulated.states[3]) },
+  ],
+};
+
+const extraTraceVars = (caseId, simulated) => EXTRA_TRACE_VARS[caseId]?.(simulated) ?? [];
 
 function collectionProfileAccepts(difficulty, caseId) {
   // Case identity wins over the profile axis: the alias case always requires
@@ -797,7 +813,7 @@ function stepTraceScope(simulated, codes) {
   return scope;
 }
 
-export function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
+function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
   const shape = COLLECTION_SHAPES[caseId];
   if (!shape) throw new Error(`Unbekannter Fall ${caseId}`);
   const drawn = drawTraceInstance(genCollectionStepTrace, {
@@ -811,17 +827,21 @@ export function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
   const codes = traceCodeLines(drawn.parameters.snippet);
   const simulated = shape === 'set-steps' ? simulateSetTrace(codes) : simulateListTrace(shape, codes);
   const scope = stepTraceScope(simulated, codes);
+  const extraVars = extraTraceVars(caseId, simulated);
   return {
     ...authoredCaseExtras(body),
     masteryEligible: body.masteryEligible,
-    parameters: { caseId, difficulty, ...drawn.parameters, family: body.parameters.family },
+    parameters: {
+      caseId, difficulty, ...drawn.parameters, family: body.parameters.family,
+      ...(extraVars.length ? { variables: [...drawn.parameters.variables, ...extraVars] } : {}),
+    },
     expected: { ...body.expected },
     prompt: renderCaseTemplate(body.prompt, scope, 'trace-collection-state'),
     fullSolution: renderCaseTemplate(body.fullSolution, scope, 'trace-collection-state'),
   };
 }
 
-export const TRACE_COLLECTION_CONTRACT = {
+const TRACE_COLLECTION_CONTRACT = {
   familyId: 'trace-collection-state',
   familyGroup: 'trace-state',
   summary: 'Tracet Zustandsänderungen einer Collection durch Operationen und Zuweisungen.',
@@ -853,7 +873,7 @@ function dictVocabulary(parameters) {
   return k1;
 }
 
-export function generateTraceDictFamily({ seed, caseId, difficulty }) {
+function generateTraceDictFamily({ seed, caseId, difficulty }) {
   if (caseId !== 'dict-start-key-steps' && caseId !== 'dict-ziel-pfad-key-steps') {
     throw new Error(`Unbekannter Fall ${caseId}`);
   }
@@ -880,7 +900,7 @@ export function generateTraceDictFamily({ seed, caseId, difficulty }) {
 }
 
 /** Dict-Solver: dieselbe Resimulation, eigener Einstieg für den Vertragscheck. */
-export function solveTraceDict(parameters) {
+function solveTraceDict(parameters) {
   if (parameters.family !== 'dict-steps') throw new Error(`trace-dict-state-update: unerwartete Form ${parameters.family}`);
   return solveCollectionTrace(parameters);
 }
@@ -950,7 +970,7 @@ function exceptionCorrectText(body, code) {
   return renderCaseTemplate(template, scope, 'trace-exception-path');
 }
 
-export function solveTraceException(parameters) {
+function solveTraceException(parameters) {
   if (!EXCEPTION_CASE_IDS.includes(parameters.caseId)) {
     throw new Error(`trace-exception-path: unbekannter Fall ${parameters.caseId}`);
   }
@@ -958,7 +978,7 @@ export function solveTraceException(parameters) {
   return { correctText: exceptionCorrectText(body, parameters.code) };
 }
 
-export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
+function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
   requireTraceProfile(difficulty);
   if (!EXCEPTION_CASE_IDS.includes(caseId)) throw new Error(`Unbekannter Fall ${caseId}`);
   const body = traceCaseBody('trace-exception-path', caseId);
@@ -1184,3 +1204,10 @@ export const TRACE_FAMILY_RUNTIME = {
   'trace-dict-state-update': { generate: generateTraceDictFamily, solve: solveTraceDict },
   'trace-exception-path': { generate: generateTraceExceptionFamily, solve: solveTraceException },
 };
+
+// Flat specs for the central registry: contract + runtime per family.
+export const TRACE_FAMILY_SPECS = TRACE_FAMILY_CONTRACTS.map((contract) => ({
+  ...contract,
+  generate: TRACE_FAMILY_RUNTIME[contract.familyId].generate,
+  solve: TRACE_FAMILY_RUNTIME[contract.familyId].solve,
+}));

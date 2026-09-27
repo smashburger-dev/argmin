@@ -65,17 +65,19 @@ function gradeNumeric(exercise, raw) {
   const expected = expectedNumeric(exercise);
   if (expected === null) return { correct: false, verdictText: 'Interner Fehler: Unbekannte Aufgabe.', errorType: 'grader-error' };
   const correct = p.value === expected;
+  const matched = correct ? null : matchNumericRule(exercise, p.value);
   return {
     correct,
     verdictText: correct ? 'Richtig.' : 'Nicht richtig.',
     errorType: correct ? null : 'wrong-value',
-    diagnosis: correct ? null : diagnoseNumeric(exercise, p.value),
+    diagnosis: matched?.then ?? null,
+    ...(matched?.misconception ? { misconception: matched.misconception } : {}),
   };
 }
 
-function diagnoseNumeric(exercise, value) {
+function matchNumericRule(exercise, value) {
   for (const rule of exercise.feedbackRules || []) {
-    if (rule.if === `value === ${value}`) return rule.then;
+    if (rule.if === `value === ${value}`) return rule;
   }
   return null;
 }
@@ -86,15 +88,16 @@ function gradeChoice(exercise, choiceId) {
   if (!choice) return { correct: false, verdictText: 'Bitte eine Auswahl treffen.', errorType: 'invalid-input' };
   if (!choices.some((c) => c.correct)) return { correct: false, verdictText: 'Interner Fehler: keine korrekte Option konfiguriert.', errorType: 'grader-error' };
   const correct = Boolean(choice.correct);
-  const diagnosis = (exercise.feedbackRules || []).reduce((result, rule) => {
+  const matched = (exercise.feedbackRules || []).reduce((result, rule) => {
     const equals = String(rule.if).match(/^choice === '([^']+)'$/); const differs = String(rule.if).match(/^choice !== '([^']+)'$/);
-    return !correct && ((equals && choiceId === equals[1]) || (differs && choiceId !== differs[1])) ? rule.then : result;
+    return !correct && ((equals && choiceId === equals[1]) || (differs && choiceId !== differs[1])) ? rule : result;
   }, null);
   return {
     correct,
     verdictText: correct ? 'Richtig begründet.' : 'Nicht richtig.',
     errorType: correct ? null : 'wrong-choice',
-    diagnosis,
+    diagnosis: matched?.then ?? null,
+    ...(matched?.misconception ? { misconception: matched.misconception } : {}),
   };
 }
 
@@ -425,13 +428,18 @@ function gradePredictOutput(exercise, raw) {
 /** All matching feedbackRules join into one diagnosis. Supported `if` forms
  *  (used by authored multiple-choice cases): selected.includes('id') and
  *  !selected.includes('id'). Anything else is ignored, not evaluated. */
-function multipleChoiceDiagnosis(exercise, chosen) {
-  const parts = [];
+function multipleChoiceMatchedRules(exercise, chosen) {
+  const matched = [];
   for (const rule of exercise.feedbackRules || []) {
     const match = String(rule.if).match(/^(!?)selected\.includes\('([^']+)'\)$/);
     if (!match) continue;
-    if ((match[1] === '!') !== chosen.has(match[2])) parts.push(rule.then);
+    if ((match[1] === '!') !== chosen.has(match[2])) matched.push(rule);
   }
+  return matched;
+}
+
+function multipleChoiceDiagnosis(exercise, chosen) {
+  const parts = multipleChoiceMatchedRules(exercise, chosen).map((rule) => rule.then);
   return parts.length ? parts.join(' ') : null;
 }
 
@@ -464,6 +472,9 @@ function gradeMultipleChoice(exercise, selected) {
   const correct = missing === 0 && extra === 0;
   const score = correct ? 1 : scoring === 'per-correct' ? Math.max(0, (hits - extra) / target.size) : 0;
   const errorType = correct ? null : missing > 0 && extra > 0 ? 'wrong-choice' : missing > 0 ? 'missing-choice' : 'extra-choice';
+  const misconceptions = correct ? [] : [...new Set(
+    multipleChoiceMatchedRules(exercise, chosen).map((rule) => rule.misconception).filter(Boolean),
+  )];
   return {
     correct,
     score,
@@ -476,6 +487,7 @@ function gradeMultipleChoice(exercise, selected) {
       : missing > 0
         ? 'Es fehlen zutreffende Optionen — prüfe, ob weitere Aussagen stimmen.'
         : 'Mindestens eine gewählte Option trifft nicht zu.'),
+    ...(misconceptions.length ? { misconceptions } : {}),
   };
 }
 
@@ -725,8 +737,36 @@ const CANONICAL_DIAGNOSTIC_PATTERNS = [
 export const isCanonicalDiagnosticCode = (code) => typeof code === 'string'
   && (CANONICAL_DIAGNOSTIC_CODES.has(code) || CANONICAL_DIAGNOSTIC_PATTERNS.some((pattern) => pattern.test(code)));
 
+function assertStatementPoolContract(label, item) {
+  const fail = (message) => { throw new Error(`${label}: ${message}`); };
+  const pool = item.statementPool;
+  if (!Number.isInteger(pool.count) || pool.count < 2 || pool.count > 6) {
+    fail('statementPool.count muss eine ganze Zahl zwischen 2 und 6 sein');
+  }
+  const [minTrue, maxTrue] = pool.correctRange;
+  if (!Number.isInteger(minTrue) || !Number.isInteger(maxTrue) || minTrue < 1 || minTrue > maxTrue) {
+    fail(`statementPool.correctRange [${minTrue}, ${maxTrue}] ist kein gültiger Bereich`);
+  }
+  const trueCount = pool.statements.filter((statement) => statement.correct === true).length;
+  const falseCount = pool.statements.length - trueCount;
+  if (Math.min(maxTrue, trueCount) < Math.max(minTrue, pool.count - falseCount)) {
+    fail(`statementPool: correctRange [${minTrue}, ${maxTrue}] ist mit ${trueCount} wahren und ${falseCount} falschen Aussagen nicht füllbar`);
+  }
+  const texts = pool.statements.map((statement) => statement.text);
+  if (new Set(texts).size !== texts.length) fail('statementPool: Aussagentexte müssen eindeutig sein');
+  if (pool.statements.length < pool.count) {
+    fail(`statementPool: ${pool.statements.length} Aussagen für count ${pool.count} zu wenig`);
+  }
+  for (const statement of pool.statements) {
+    if (typeof statement.feedback !== 'string' || !statement.feedback.trim()) {
+      fail('statementPool: jede Aussage braucht nicht-leeres feedback');
+    }
+  }
+}
+
 function assertMultipleChoiceContract(label, item) {
   const fail = (message) => { throw new Error(`${label}: ${message}`); };
+  if (item.statementPool) assertStatementPoolContract(label, item);
   const expected = item.expected;
   if (expected?.kind !== 'choice-indices' || !Array.isArray(expected.correctIds) || !expected.correctIds.length) {
     fail("multiple-choice braucht expected {kind:'choice-indices', correctIds:[...]}");

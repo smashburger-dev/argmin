@@ -73,9 +73,18 @@
         "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
       ],
       "typicalErrors": [
-        "Beim 3×3-Fall den Pivot in der dritten Spalte nach dem Zeilenschritt übersehen",
-        "Die drei Pivotzeilen dieses Beispiels nicht von drei bloßen Matrixspalten unterschieden",
-        "Die Zwischenzeile mit Eintrag 13 nach der Elimination als Nullzeile fehlgedeutet"
+        {
+          "id": "beim-3-3-fall-den",
+          "text": "Beim 3×3-Fall den Pivot in der dritten Spalte nach dem Zeilenschritt übersehen"
+        },
+        {
+          "id": "die-drei-pivotzeilen-dieses-beispiels",
+          "text": "Die drei Pivotzeilen dieses Beispiels nicht von drei bloßen Matrixspalten unterschieden"
+        },
+        {
+          "id": "die-zwischenzeile-mit-eintrag-13",
+          "text": "Die Zwischenzeile mit Eintrag 13 nach der Elimination als Nullzeile fehlgedeutet"
+        }
       ]
     },
     {
@@ -121,9 +130,18 @@
         "Abhängige Zeilen erzeugen Nullzeilen; zähle nur die unabhängigen Pivotzeilen."
       ],
       "typicalErrors": [
-        "Die beiden Vielfachen der ersten Zeile in diesem 3×4-Beispiel nicht als abhängig erkannt",
-        "Den Rang 1 fälschlich an der vier Spalten statt an den Pivotzeilen festgemacht",
-        "Die beiden nach der Elimination entstehenden Nullzeilen als zusätzliche Pivots gezählt"
+        {
+          "id": "die-beiden-vielfachen-der-ersten",
+          "text": "Die beiden Vielfachen der ersten Zeile in diesem 3×4-Beispiel nicht als abhängig erkannt"
+        },
+        {
+          "id": "den-rang-1-faelschlich-an",
+          "text": "Den Rang 1 fälschlich an der vier Spalten statt an den Pivotzeilen festgemacht"
+        },
+        {
+          "id": "die-beiden-nach-der-elimination",
+          "text": "Die beiden nach der Elimination entstehenden Nullzeilen als zusätzliche Pivots gezählt"
+        }
       ],
       "title": "Rang einer 3×4-Matrix"
     },
@@ -174,9 +192,18 @@
         "Nach der Elimination zählen nur die Pivotzeilen; die zwei entstehenden Nullzeilen erhöhen den Rang nicht."
       ],
       "typicalErrors": [
-        "Die negierten Kopien von Zeile I und II nicht als Abhängigkeiten erkannt",
-        "Vier Zeilen mit vier Spalten verwechselt und Rang 4 angenommen",
-        "Bei der 4×4-Elimination die Pivotspur verloren und Nullzeilen mitgezählt"
+        {
+          "id": "die-negierten-kopien-von-zeile",
+          "text": "Die negierten Kopien von Zeile I und II nicht als Abhängigkeiten erkannt"
+        },
+        {
+          "id": "vier-zeilen-mit-vier-spalten",
+          "text": "Vier Zeilen mit vier Spalten verwechselt und Rang 4 angenommen"
+        },
+        {
+          "id": "bei-der-4-4-elimination",
+          "text": "Bei der 4×4-Elimination die Pivotspur verloren und Nullzeilen mitgezählt"
+        }
       ],
       "title": "Rang einer 4×4-Matrix (zwei Abhängigkeiten)"
     }

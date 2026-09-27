@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Generierung und Retrieval als eine ununterscheidbare Blackbox behandelt",
-        "geglaubt, Antworten müssten aus Retrieval kopiert werden",
-        "Messbarkeit nur auf einer Seite der Pipeline gesehen"
+        {
+          "id": "generierung-und-retrieval-als-eine",
+          "text": "Generierung und Retrieval als eine ununterscheidbare Blackbox behandelt"
+        },
+        {
+          "id": "geglaubt-antworten-muessten-aus-retrieval",
+          "text": "geglaubt, Antworten müssten aus Retrieval kopiert werden"
+        },
+        {
+          "id": "messbarkeit-nur-auf-einer-seite",
+          "text": "Messbarkeit nur auf einer Seite der Pipeline gesehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

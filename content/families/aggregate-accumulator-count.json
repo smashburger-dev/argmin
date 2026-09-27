@@ -33,8 +33,14 @@
         "Nur genau einer der drei Zweige läuft: Ist x > t1, gilt Zweig A; ist das falsch, entscheidet x < t2 zwischen B und C. Rechne den Zweigwert aus und schreibe Buchstabe und Wert in eine Zeile."
       ],
       "typicalErrors": [
-        "beide Zweige ausgewertet statt nur des ersten wahren",
-        "Buchstabe oder Wert in der Ausgabe vergessen"
+        {
+          "id": "beide-zweige-ausgewertet-statt-nur",
+          "text": "beide Zweige ausgewertet statt nur des ersten wahren"
+        },
+        {
+          "id": "buchstabe-oder-wert-in-der",
+          "text": "Buchstabe oder Wert in der Ausgabe vergessen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -69,8 +75,14 @@
         "Die Schleife läuft, solange n > stop gilt — auch den letzten Durchlauf und den Abbruchwert von n beachten. Die Ausgabe ist summe gefolgt vom Endwert von n."
       ],
       "typicalErrors": [
-        "Schleife einen Durchlauf zu früh oder zu spät beendet",
-        "Endwert von n mit der Summe in der Ausgabe verwechselt"
+        {
+          "id": "schleife-einen-durchlauf-zu-frueh",
+          "text": "Schleife einen Durchlauf zu früh oder zu spät beendet"
+        },
+        {
+          "id": "endwert-von-n-mit-der",
+          "text": "Endwert von n mit der Summe in der Ausgabe verwechselt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -106,9 +118,18 @@
         "Die Iterationsgrenze ist n > stop: nach dem letzten Durchlauf steht in n ein Wert ≤ stop. Die Ausgabe ist summe gefolgt von diesem Endwert — nicht der letzte addierte n-Wert."
       ],
       "typicalErrors": [
-        "nur die Summe notiert und den Endwert von n vergessen",
-        "Schleife einen Durchlauf zu früh oder zu spät beendet",
-        "Endwert von n und die letzte Summe in der Ausgabe vertauscht"
+        {
+          "id": "nur-die-summe-notiert-und",
+          "text": "nur die Summe notiert und den Endwert von n vergessen"
+        },
+        {
+          "id": "schleife-einen-durchlauf-zu-frueh",
+          "text": "Schleife einen Durchlauf zu früh oder zu spät beendet"
+        },
+        {
+          "id": "endwert-von-n-und-die",
+          "text": "Endwert von n und die letzte Summe in der Ausgabe vertauscht"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic",
@@ -142,8 +163,14 @@
         "Jedes Ergebnis ist w * factor für die geraden w — die Ausgabe ist eine Python-Liste, z. B. [1, 2]."
       ],
       "typicalErrors": [
-        "ungerade Werte mit in die Ausgabe genommen",
-        "Liste ohne eckige Klammern oder mit falschen Vorzeichen notiert"
+        {
+          "id": "ungerade-werte-mit-in-die",
+          "text": "ungerade Werte mit in die Ausgabe genommen"
+        },
+        {
+          "id": "liste-ohne-eckige-klammern-oder",
+          "text": "Liste ohne eckige Klammern oder mit falschen Vorzeichen notiert"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

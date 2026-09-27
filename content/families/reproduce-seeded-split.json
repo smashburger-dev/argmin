@@ -32,9 +32,18 @@
         "Für die Majority-Baseline zählst du Vorkommen pro Label in einem Dictionary und ersetzt das beste Label nur bei echt größerer Anzahl — so gewinnt bei Gleichstand das zuerst gesehene Label."
       ],
       "typicalErrors": [
-        "globalen Zufallszustand statt default_rng(seed) verwenden",
-        "Indizes vor der Rückgabe sortieren",
-        "Gleichstand bei majority_baseline nicht deterministisch regeln"
+        {
+          "id": "globalen-zufallszustand-statt-default-rng",
+          "text": "globalen Zufallszustand statt default_rng(seed) verwenden"
+        },
+        {
+          "id": "indizes-vor-der-rueckgabe-sortieren",
+          "text": "Indizes vor der Rückgabe sortieren"
+        },
+        {
+          "id": "gleichstand-bei-majority-baseline-nicht",
+          "text": "Gleichstand bei majority_baseline nicht deterministisch regeln"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -64,9 +73,18 @@
         "Für cv_scores läuft eine Schleife über die Fold-Positionen: Test = folds[i], Train = alle Indizes der anderen Folds — nicht nur der nächste Fold."
       ],
       "typicalErrors": [
-        "Rest-Verteilung der Folds am Ende statt am Anfang",
-        "Train nur aus einem Fold bilden",
-        "k-Validierung vergessen (k > n)"
+        {
+          "id": "rest-verteilung-der-folds-am",
+          "text": "Rest-Verteilung der Folds am Ende statt am Anfang"
+        },
+        {
+          "id": "train-nur-aus-einem-fold",
+          "text": "Train nur aus einem Fold bilden"
+        },
+        {
+          "id": "k-validierung-vergessen-k-n",
+          "text": "k-Validierung vergessen (k > n)"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

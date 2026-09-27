@@ -6,20 +6,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/optimize-softmax-attention-mask.mjs';
-import {
-  ATTN_CASES,
-  genAttnCase,
-} from '../assets/js/core/procedural/optimize-softmax-attention-mask.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { ATTN_CASES } from '../assets/js/core/procedural/optimize-softmax-attention-mask.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genAttnCase = spec.kit.genCase;
+
 
 const CASE_IDS = ['scaled-dot-product-attention', 'toy-forward-pass'];
 
 const intMat = (m, lo, hi) => m.every((row) => row.every((v) => Number.isInteger(v) && v >= lo && v <= hi));
 
-codeCapsuleSuite('optimize-softmax-attention-mask', mod, [
-  { caseId: 'scaled-dot-product-attention', difficulty: 'core' },
-  { caseId: 'toy-forward-pass', difficulty: 'stretch' },
-], { familyGroup: 'optimize-update', difficultyProfiles: ['core', 'stretch'] });
 
 test('capsule extras: seeded block marker stays emitted', () => {
   for (const caseId of CASE_IDS) {

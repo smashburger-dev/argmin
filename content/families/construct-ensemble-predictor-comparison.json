@@ -28,10 +28,22 @@
         "tree_predict endet bei 'leaf' im Knoten; compare_models nutzt dieselbe RMSE-Hilfsfunktion für alle drei Modelle."
       ],
       "typicalErrors": [
-        "Mehrheit über Zeilen statt Spalten",
-        "Gleichstand bei gerader Modellzahl als 0 statt als 1 werten",
-        "lineare Baseline mit Intercept fitten",
-        "RMSE ohne Wurzel zurückgeben"
+        {
+          "id": "mehrheit-ueber-zeilen-statt-spalten",
+          "text": "Mehrheit über Zeilen statt Spalten"
+        },
+        {
+          "id": "gleichstand-bei-gerader-modellzahl-als",
+          "text": "Gleichstand bei gerader Modellzahl als 0 statt als 1 werten"
+        },
+        {
+          "id": "lineare-baseline-mit-intercept-fitten",
+          "text": "lineare Baseline mit Intercept fitten"
+        },
+        {
+          "id": "rmse-ohne-wurzel-zurueckgeben",
+          "text": "RMSE ohne Wurzel zurückgeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -49,7 +61,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\ndef majority_vote(preds):\n    \"\"\"Return the per-example majority (0/1) across all models in preds.\"\"\"\n    ...\n\ndef tree_predict(node, x):\n    \"\"\"Return the leaf value of the nested dict tree for input x.\"\"\"\n    ...\n\ndef compare_models(x, y, node, model_preds):\n    \"\"\"Return {'tree': rmse, 'voting': rmse, 'linear': rmse} on identical data.\"\"\"\n    xa = np.asarray(x, dtype=float)\n    ya = np.asarray(y, dtype=float)\n    # 1) Baum-Vorhersagen je x, 2) Mehrheit, 3) lineare Baseline w*x\n    ...\n",
-        "tests": "__check(\"tie counts as one\", majority_vote([[1, 0], [0, 0]]) == [1, 0])\nimport numpy as np\n\n__check('Mehrheit dreier Modelle', majority_vote([[1, 0, 1], [1, 0, 0], [0, 0, 1]]) == [1, 0, 1])\n__check('Einstimmigkeit', majority_vote([[0, 1], [0, 1], [0, 1]]) == [0, 1])\n__node = {'feature': 0, 'threshold': 3.5,\n          'left': {'feature': 0, 'threshold': 1.5, 'left': {'leaf': 0}, 'right': {'leaf': 1}},\n          'right': {'feature': 0, 'threshold': 5.5, 'left': {'leaf': 1}, 'right': {'leaf': 0}}}\n__check('Baum: Blatt ganz links', tree_predict(__node, [1.0]) == 0)\n__check('Baum: Mittelzone', tree_predict(__node, [2.0]) == 1 and tree_predict(__node, [4.0]) == 1)\n__check('Baum: Blatt ganz rechts', tree_predict(__node, [6.0]) == 0)\n__x = [1, 2, 3, 4, 5, 6]\n__y = [0, 1, 1, 1, 1, 0]\n__models = [[0, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1], [0, 0, 0, 1, 1, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - 0.554700196225229) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE positiv', __res['voting'] > 0.0, str(__res))"
+        "tests": "__check(\"tie counts as one\", majority_vote([[1, 0], [0, 0]]) == [1, 0])\n__node_t = {'feature': 0, 'threshold': 1.5, 'left': {'leaf': 0}, 'right': {'leaf': 1}}\n__check('Baum: Schwellwert geht links', tree_predict(__node_t, [1.5]) == 0)\nimport numpy as np\n\n__check('Mehrheit dreier Modelle', majority_vote([[1, 0, 1], [1, 0, 0], [0, 0, 1]]) == [1, 0, 1])\n__check('Einstimmigkeit', majority_vote([[0, 1], [0, 1], [0, 1]]) == [0, 1])\n__node = {'feature': 0, 'threshold': 3.5,\n          'left': {'feature': 0, 'threshold': 1.5, 'left': {'leaf': 0}, 'right': {'leaf': 1}},\n          'right': {'feature': 0, 'threshold': 5.5, 'left': {'leaf': 1}, 'right': {'leaf': 0}}}\n__check('Baum: Blatt ganz links', tree_predict(__node, [1.0]) == 0)\n__check('Baum: Mittelzone', tree_predict(__node, [2.0]) == 1 and tree_predict(__node, [4.0]) == 1)\n__check('Baum: Blatt ganz rechts', tree_predict(__node, [6.0]) == 0)\n__x = [1, 2, 3, 4, 5, 6]\n__y = [0, 1, 1, 1, 1, 0]\n__models = [[0, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1], [0, 0, 0, 1, 1, 1]]\n__res = compare_models(__x, __y, __node, __models)\n__check('drei RMSE-Schluessel', sorted(__res.keys()) == ['linear', 'tree', 'voting'])\n__check('Baum schlaegt lineare Baseline', __res['tree'] <= __res['linear'] + 1e-12, str(__res))\n__check('Baum perfekt auf dem Datensatz', abs(__res['tree']) < 1e-12, str(__res))\n__check('lineare Baseline: 1D-KQ durch null', abs(__res['linear'] - 0.554700196225229) < 1e-9, str(__res['linear']))\n__check('Voting-RMSE positiv', __res['voting'] > 0.0, str(__res))"
       },
       "expected": {
         "kind": "reference-solver",
@@ -62,9 +74,18 @@
         "Bei `x[i] == threshold` geht der Baum links; RMSE enthält die Quadratwurzel."
       ],
       "typicalErrors": [
-        "über Beispiele statt Modelle abstimmen",
-        "Grenzfall falsch zuordnen",
-        "MSE statt RMSE zurückgeben"
+        {
+          "id": "ueber-beispiele-statt-modelle-abstimmen",
+          "text": "über Beispiele statt Modelle abstimmen"
+        },
+        {
+          "id": "grenzfall-falsch-zuordnen",
+          "text": "Grenzfall falsch zuordnen"
+        },
+        {
+          "id": "mse-statt-rmse-zurueckgeben",
+          "text": "MSE statt RMSE zurückgeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

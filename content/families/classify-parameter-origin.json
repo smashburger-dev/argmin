@@ -66,9 +66,18 @@
         }
       ],
       "typicalErrors": [
-        "Hyperparameter und Parameter vertauschen",
-        "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln",
-        "glauben, einfache Modelle hätten keine Hyperparameter"
+        {
+          "id": "hyperparameter-und-parameter-vertauschen",
+          "text": "Hyperparameter und Parameter vertauschen"
+        },
+        {
+          "id": "hyperparameter-validierung-mit-parameter-schaetzung",
+          "text": "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln"
+        },
+        {
+          "id": "glauben-einfache-modelle-haetten-keine",
+          "text": "glauben, einfache Modelle hätten keine Hyperparameter"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -402,9 +411,18 @@
         }
       ],
       "typicalErrors": [
-        "Eine vorab getestete Baumtiefe als lokal gelerntes Knotengewicht bezeichnet.",
-        "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt.",
-        "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
+        {
+          "id": "eine-vorab-getestete-baumtiefe-als",
+          "text": "Eine vorab getestete Baumtiefe als lokal gelerntes Knotengewicht bezeichnet."
+        },
+        {
+          "id": "die-auswahl-eines-hyperparameters-mit",
+          "text": "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt."
+        },
+        {
+          "id": "kapazitaetssteuerung-des-baums-faelschlich-als",
+          "text": "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -531,9 +549,18 @@
         }
       ],
       "typicalErrors": [
-        "Modellparameter allein wegen ihres Zahlenformats als Hyperparameter bezeichnet.",
-        "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet.",
-        "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
+        {
+          "id": "modellparameter-allein-wegen-ihres-zahlenformats",
+          "text": "Modellparameter allein wegen ihres Zahlenformats als Hyperparameter bezeichnet."
+        },
+        {
+          "id": "jedes-lernen-aus-trainingsdaten-pauschal",
+          "text": "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet."
+        },
+        {
+          "id": "die-koeffizienten-nicht-als-bestandteile",
+          "text": "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

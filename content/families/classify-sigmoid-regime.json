@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Ausgabebereich (0, 1) mit {0, 1} verwechseln",
-        "Symmetrie σ(−z) = 1 − σ(z) nicht kennen",
-        "den Schwellenwert-Schritt mit der Sigmoid-Ausgabe gleichsetzen"
+        {
+          "id": "ausgabebereich-0-1-mit-0",
+          "text": "Ausgabebereich (0, 1) mit {0, 1} verwechseln"
+        },
+        {
+          "id": "symmetrie-z-1-z-nicht",
+          "text": "Symmetrie σ(−z) = 1 − σ(z) nicht kennen"
+        },
+        {
+          "id": "den-schwellenwert-schritt-mit-der",
+          "text": "den Schwellenwert-Schritt mit der Sigmoid-Ausgabe gleichsetzen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -124,9 +133,18 @@
         }
       ],
       "typicalErrors": [
-        "Logitwert und Sigmoidwahrscheinlichkeit direkt gleichgesetzt.",
-        "Den Nullpunkt der Sigmoidkurve fälschlich als negative Wahrscheinlichkeit interpretiert.",
-        "Kontinuierliche Modellwahrscheinlichkeit und nachgelagerte Klassenschwelle vermischt."
+        {
+          "id": "logitwert-und-sigmoidwahrscheinlichkeit-direkt-gleichgesetzt",
+          "text": "Logitwert und Sigmoidwahrscheinlichkeit direkt gleichgesetzt."
+        },
+        {
+          "id": "den-nullpunkt-der-sigmoidkurve-faelschlich",
+          "text": "Den Nullpunkt der Sigmoidkurve fälschlich als negative Wahrscheinlichkeit interpretiert."
+        },
+        {
+          "id": "kontinuierliche-modellwahrscheinlichkeit-und-nachgelagerte-klassenschwelle",
+          "text": "Kontinuierliche Modellwahrscheinlichkeit und nachgelagerte Klassenschwelle vermischt."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -188,9 +206,18 @@
         }
       ],
       "typicalErrors": [
-        "Logarithmische Logit-Skala und Wahrscheinlichkeitsintervall verwechselt.",
-        "Odds und inverse Odds bei der Rückrechnung von 0,75 vertauscht.",
-        "Das Vorzeichen des Logits fälschlich als Umkehrung der Wahrscheinlichkeit interpretiert."
+        {
+          "id": "logarithmische-logit-skala-und-wahrscheinlichkeitsintervall",
+          "text": "Logarithmische Logit-Skala und Wahrscheinlichkeitsintervall verwechselt."
+        },
+        {
+          "id": "odds-und-inverse-odds-bei",
+          "text": "Odds und inverse Odds bei der Rückrechnung von 0,75 vertauscht."
+        },
+        {
+          "id": "das-vorzeichen-des-logits-faelschlich",
+          "text": "Das Vorzeichen des Logits fälschlich als Umkehrung der Wahrscheinlichkeit interpretiert."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

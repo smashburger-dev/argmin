@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "Greedy mit Sampling verwechselt",
-        "Determinismus von Argmax missverstanden",
-        "Greedy mit Beam Search verwechselt"
+        {
+          "id": "greedy-mit-sampling-verwechselt",
+          "text": "Greedy mit Sampling verwechselt"
+        },
+        {
+          "id": "determinismus-von-argmax-missverstanden",
+          "text": "Determinismus von Argmax missverstanden"
+        },
+        {
+          "id": "greedy-mit-beam-search-verwechselt",
+          "text": "Greedy mit Beam Search verwechselt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -122,9 +131,18 @@
         }
       ],
       "typicalErrors": [
-        "Temperatur als Zufallsseed statt als Logit-Skalierung behandelt",
-        "kleines T mit flacher statt spitzer Softmax verbunden",
-        "Decoding-Verteilung und Tokenreihenfolge verwechselt"
+        {
+          "id": "temperatur-als-zufallsseed-statt-als",
+          "text": "Temperatur als Zufallsseed statt als Logit-Skalierung behandelt"
+        },
+        {
+          "id": "kleines-t-mit-flacher-statt",
+          "text": "kleines T mit flacher statt spitzer Softmax verbunden"
+        },
+        {
+          "id": "decoding-verteilung-und-tokenreihenfolge-verwechselt",
+          "text": "Decoding-Verteilung und Tokenreihenfolge verwechselt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -186,9 +204,18 @@
         }
       ],
       "typicalErrors": [
-        "Top-k mit Top-1 beziehungsweise Greedy verwechselt",
-        "Renormalisierung als Gleichverteilung missverstanden",
-        "Kandidatenfilterung fälschlich als reine Temperaturanpassung gelesen"
+        {
+          "id": "top-k-mit-top-1",
+          "text": "Top-k mit Top-1 beziehungsweise Greedy verwechselt"
+        },
+        {
+          "id": "renormalisierung-als-gleichverteilung-missverstanden",
+          "text": "Renormalisierung als Gleichverteilung missverstanden"
+        },
+        {
+          "id": "kandidatenfilterung-faelschlich-als-reine-temperaturanpassung",
+          "text": "Kandidatenfilterung fälschlich als reine Temperaturanpassung gelesen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

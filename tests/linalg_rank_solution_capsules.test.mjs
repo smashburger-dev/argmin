@@ -1,6 +1,6 @@
 // Familie classify-rank-solution-case: Kapsel-Gates (single-choice-adaptiert).
 // Run: node --test tests/linalg_rank_solution_capsules.test.mjs
-// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// Gemeinsame Gates leben in tests/helpers/kit_suites.mjs — die Kit-Produkte
 // (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
 // foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
 // linalg_generators.mjs.
@@ -10,16 +10,14 @@ import {
   RANK_SOLUTION_CAPSULES,
   rankSolutionInstanceOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import {
-  RANK_SOLUTION_CONTRACT,
-  rankSolutionCapsuleOk,
-  rankSolutionCorrectText,
-  genRankSolutionCapsule,
-  generateRankSolutionFamily,
-  solveRankSolutionFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
-import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-rank-solution-case');
+const rankSolutionCapsuleOk = spec.kit.capsuleOk;
+const rankSolutionCorrectText = spec.kit.correctText;
+const genRankSolutionCapsule = spec.kit.genCapsule;
+const generateRankSolutionFamily = spec.generate;
+const solveRankSolutionFamily = spec.solve;
 
 // --- 18 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Beide Fälle teilen dieselben 9 Koeffizienten-Vierer (Stufenform
@@ -92,19 +90,3 @@ test('Kapseltabelle: Arten, Bounds und Fallbindung', () => {
   assert.deepEqual(RANK_SOLUTION_CAPSULES.stretch, { kind: 'echelon-symbolic', bound: 7, caseId: 'rank-system-authored' });
 });
 
-linalgChoiceCapsuleSuite('classify-rank-solution-case', {
-  capsules: RANK_SOLUTION_CAPSULES,
-  contract: RANK_SOLUTION_CONTRACT,
-  capsuleOk: rankSolutionCapsuleOk,
-  correctText: rankSolutionCorrectText,
-  genCapsule: genRankSolutionCapsule,
-  generate: generateRankSolutionFamily,
-  solve: solveRankSolutionFamily,
-  registry: LINALG_FAMILIES,
-}, CASE_FOR, {
-  difficultyProfiles: ['core', 'stretch'],
-  meta: {
-    core: { masteryEligible: true, competencyIds: ['c-linalg-gauss'] },
-    stretch: { masteryEligible: true, competencyIds: ['c-linalg-systems', 'c-linalg-gauss', 'c-linalg-independence'] },
-  },
-});

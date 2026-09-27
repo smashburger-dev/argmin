@@ -32,9 +32,18 @@
         }
       ],
       "typicalErrors": [
-        "Mittelwert statt Spannweite berechnen",
-        "Minimum vergessen",
-        "Prozent und Prozentpunkte verwechseln"
+        {
+          "id": "mittelwert-statt-spannweite-berechnen",
+          "text": "Mittelwert statt Spannweite berechnen"
+        },
+        {
+          "id": "minimum-vergessen",
+          "text": "Minimum vergessen"
+        },
+        {
+          "id": "prozent-und-prozentpunkte-verwechseln",
+          "text": "Prozent und Prozentpunkte verwechseln"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -72,9 +81,18 @@
         }
       ],
       "typicalErrors": [
-        "Mittelwert statt Spannweite berechnen",
-        "Maximum oder Minimum statt der Differenz angeben",
-        "Prozent und Prozentpunkte verwechseln"
+        {
+          "id": "mittelwert-statt-spannweite-berechnen",
+          "text": "Mittelwert statt Spannweite berechnen"
+        },
+        {
+          "id": "maximum-oder-minimum-statt-der",
+          "text": "Maximum oder Minimum statt der Differenz angeben"
+        },
+        {
+          "id": "prozent-und-prozentpunkte-verwechseln",
+          "text": "Prozent und Prozentpunkte verwechseln"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

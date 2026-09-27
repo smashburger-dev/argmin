@@ -1,5 +1,5 @@
 // Familie classify-svm-margin: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_svm_margin_capsules.test.mjs
 import test from 'node:test';
@@ -10,37 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   SVM_MARGIN_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  SVM_MARGIN_CONTRACT,
-  genSvmMarginCapsule,
-  svmMarginCapsuleOk,
-  svmMarginCorrectText,
-  generateSvmMarginFamily,
-  solveSvmMarginFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { SVM_MARGIN_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-svm-margin');
+const genSvmMarginCapsule = spec.kit.genCapsule;
+const svmMarginCapsuleOk = spec.kit.capsuleOk;
+const svmMarginCorrectText = spec.kit.correctText;
+const generateSvmMarginFamily = spec.generate;
+const solveSvmMarginFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  SVM_MARGIN_CAPSULES,
-  svmMarginCapsuleOk,
-  svmMarginCorrectText,
-  genSvmMarginCapsule,
-  SVM_MARGIN_CONTRACT,
-  generateSvmMarginFamily,
-  solveSvmMarginFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-svm-margin'),
-};
 
-choiceCapsuleSuite('classify-svm-margin', mod, [
-  { caseId: 'hard-margin-width', difficulty: 'intro' },
-  { caseId: 'svm-soft-margin-slack', difficulty: 'core' },
-  { caseId: 'svm-support-boundary', difficulty: 'stretch' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro', 'core', 'stretch'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schlüsseltext. Regel: Kapsel weiten,

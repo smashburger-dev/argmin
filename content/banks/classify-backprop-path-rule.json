@@ -453,5 +453,38 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-backprop-path-rule",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet eine Kettenregel-Situation der richtigen Verknüpfungsregel auf Pfaden und über parallele Zweige zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "backprop-path-rule",
+        "propertyTest": false
+      },
+      {
+        "caseId": "backprop-chain-rule",
+        "propertyTest": false
+      },
+      {
+        "caseId": "backprop-detached-branch",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-autograd"
+    ]
+  },
+  "shapeError": "Backprop-Pfad-Parameter verletzen die Kapselform"
 }

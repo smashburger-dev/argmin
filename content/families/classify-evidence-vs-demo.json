@@ -38,9 +38,18 @@
         }
       ],
       "typicalErrors": [
-        "Demo als Mastery-Nachweis gewertet",
-        "Retrospektive als Ersatz für Teiltests gehalten",
-        "Work Evidence als wertlos abgetan"
+        {
+          "id": "demo-als-mastery-nachweis-gewertet",
+          "text": "Demo als Mastery-Nachweis gewertet"
+        },
+        {
+          "id": "retrospektive-als-ersatz-fuer-teiltests",
+          "text": "Retrospektive als Ersatz für Teiltests gehalten"
+        },
+        {
+          "id": "work-evidence-als-wertlos-abgetan",
+          "text": "Work Evidence als wertlos abgetan"
+        }
       ],
       "choices": [
         {
@@ -101,9 +110,18 @@
         }
       ],
       "typicalErrors": [
-        "Allgemeinsicherheit aus Fixtur-Tests abgeleitet",
-        "ehrliche Grenzdokumentation als Schwäche vermieden",
-        "absolute Behauptungen statt bezogener Aussagen"
+        {
+          "id": "allgemeinsicherheit-aus-fixtur-tests-abgeleitet",
+          "text": "Allgemeinsicherheit aus Fixtur-Tests abgeleitet"
+        },
+        {
+          "id": "ehrliche-grenzdokumentation-als-schwaeche-vermieden",
+          "text": "ehrliche Grenzdokumentation als Schwäche vermieden"
+        },
+        {
+          "id": "absolute-behauptungen-statt-bezogener-aussagen",
+          "text": "absolute Behauptungen statt bezogener Aussagen"
+        }
       ],
       "fullSolution": "„Sicher gegen Prompt-Injection“ ist der Overclaim: Belegt ist nur, dass der Regel-Detektor die gelieferten Fixtures blockiert — Angriffe außerhalb der Regeln bleiben möglich. Die anderen Aussagen benennen ihren Rahmen. Genau solche Phrasen fängt der Overclaim-Detektor („produktionsreif“, „sicher gegen“, „halluziniert nie“, „getestet gegen alle“). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "choices": [

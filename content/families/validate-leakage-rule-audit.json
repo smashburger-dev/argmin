@@ -28,9 +28,18 @@
         "Die Indizes entstehen in Schleifenreihenfolge automatisch aufsteigend; collecte sie nur für zutreffende Schritte."
       ],
       "typicalErrors": [
-        "Groß-/Kleinschreibung nicht normalisieren",
-        "UND-Regeln als ODER-Regeln implementieren",
-        "Indizes unsortiert sammeln"
+        {
+          "id": "gross-kleinschreibung-nicht-normalisieren",
+          "text": "Groß-/Kleinschreibung nicht normalisieren"
+        },
+        {
+          "id": "und-regeln-als-oder-regeln",
+          "text": "UND-Regeln als ODER-Regeln implementieren"
+        },
+        {
+          "id": "indizes-unsortiert-sammeln",
+          "text": "Indizes unsortiert sammeln"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",
@@ -61,9 +70,18 @@
         "Groß-/Kleinschreibung darf die Erkennung nicht beeinflussen."
       ],
       "typicalErrors": [
-        "nur die erste Regel geprüft",
-        "Indexpositionen nicht beibehalten",
-        "Großschreibung übersehen"
+        {
+          "id": "nur-die-erste-regel-geprueft",
+          "text": "nur die erste Regel geprüft"
+        },
+        {
+          "id": "indexpositionen-nicht-beibehalten",
+          "text": "Indexpositionen nicht beibehalten"
+        },
+        {
+          "id": "grossschreibung-uebersehen",
+          "text": "Großschreibung übersehen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

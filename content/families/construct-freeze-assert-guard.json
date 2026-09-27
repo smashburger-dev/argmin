@@ -100,9 +100,18 @@
         "Die beiden Rückgabe-Zeilen sind der stille Fallback — genau den verbietet der Freeze-Vertrag."
       ],
       "typicalErrors": [
-        "raise in die Schleife gezogen (nur erster Verstoß sichtbar)",
-        "Fehler-Objekt statt Assertion zurückgegeben",
-        "hash-Prüfung vor der Anwesenheitsprüfung"
+        {
+          "id": "raise-in-die-schleife-gezogen",
+          "text": "raise in die Schleife gezogen (nur erster Verstoß sichtbar)"
+        },
+        {
+          "id": "fehler-objekt-statt-assertion-zurueckgegeben",
+          "text": "Fehler-Objekt statt Assertion zurückgegeben"
+        },
+        {
+          "id": "hash-pruefung-vor-der-anwesenheitspruefung",
+          "text": "hash-Prüfung vor der Anwesenheitsprüfung"
+        }
       ],
       "activityType": "parsons",
       "graderId": "deterministic"
@@ -134,9 +143,18 @@
         "Zurückgegeben wird der EINGEFRORENE Bericht, nicht die frische Kopie."
       ],
       "typicalErrors": [
-        "frische Werte statt der eingefrorenen zurückgegeben",
-        "Abweichung still geschluckt",
-        "Eingaben verändert"
+        {
+          "id": "frische-werte-statt-der-eingefrorenen",
+          "text": "frische Werte statt der eingefrorenen zurückgegeben"
+        },
+        {
+          "id": "abweichung-still-geschluckt",
+          "text": "Abweichung still geschluckt"
+        },
+        {
+          "id": "eingaben-veraendert",
+          "text": "Eingaben verändert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -263,10 +281,22 @@
         "Der einzige raise steht ganz am Ende auf Funktionsebene. Vier Zeilen brechen den Sammel-Vertrag: break (früher Ausstieg), return (stille Rückgabe), das eingerückte raise (wirft sofort), if not verstoesse (umgekehrte Bedingung)."
       ],
       "typicalErrors": [
-        "raise in die innere Schleife gezogen — nur der erste Verstoß wird sichtbar",
-        "break statt Sammeln — früher Ausstieg lässt den Rest der Bereiche ungeprüft",
-        "Verstoß-Liste still zurückgegeben statt AssertionError zu werfen",
-        "if not verstoesse — umgekehrte Bedingung scheitert genau im sauberen Fall"
+        {
+          "id": "raise-in-die-innere-schleife",
+          "text": "raise in die innere Schleife gezogen — nur der erste Verstoß wird sichtbar"
+        },
+        {
+          "id": "break-statt-sammeln-frueher-ausstieg",
+          "text": "break statt Sammeln — früher Ausstieg lässt den Rest der Bereiche ungeprüft"
+        },
+        {
+          "id": "verstoss-liste-still-zurueckgegeben-statt",
+          "text": "Verstoß-Liste still zurückgegeben statt AssertionError zu werfen"
+        },
+        {
+          "id": "if-not-verstoesse-umgekehrte-bedingung",
+          "text": "if not verstoesse — umgekehrte Bedingung scheitert genau im sauberen Fall"
+        }
       ],
       "activityType": "parsons",
       "graderId": "deterministic",

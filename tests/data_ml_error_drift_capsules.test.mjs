@@ -1,5 +1,5 @@
 // Familie classify-error-drift: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_error_drift_capsules.test.mjs
 import test from 'node:test';
@@ -10,37 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   ERROR_DRIFT_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  ERROR_DRIFT_CONTRACT,
-  genErrorDriftCapsule,
-  errorDriftCapsuleOk,
-  errorDriftCorrectText,
-  generateErrorDriftFamily,
-  solveErrorDriftFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { ERROR_DRIFT_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-error-drift');
+const genErrorDriftCapsule = spec.kit.genCapsule;
+const errorDriftCapsuleOk = spec.kit.capsuleOk;
+const errorDriftCorrectText = spec.kit.correctText;
+const generateErrorDriftFamily = spec.generate;
+const solveErrorDriftFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  ERROR_DRIFT_CAPSULES,
-  errorDriftCapsuleOk,
-  errorDriftCorrectText,
-  genErrorDriftCapsule,
-  ERROR_DRIFT_CONTRACT,
-  generateErrorDriftFamily,
-  solveErrorDriftFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-error-drift'),
-};
 
-choiceCapsuleSuite('classify-error-drift', mod, [
-  { caseId: 'accuracy-drop-without-code-change', difficulty: 'core' },
-  { caseId: 'error-label-definition-shift', difficulty: 'stretch' },
-  { caseId: 'error-stable-subgroup', difficulty: 'challenge' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['core', 'stretch', 'challenge'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schlüsseltext. Regel: Kapsel weiten,

@@ -32,9 +32,18 @@
         "Beim Verschmelzen wieder der linke, nicht überlappende Durchlauf; Abbruch, wenn max(counts) < 2 oder keine Paare mehr übrig sind."
       ],
       "typicalErrors": [
-        "Tie-Break dem Zufall oder der Fundreihenfolge überlassen",
-        "Paare mit Häufigkeit 1 trotzdem gelernt",
-        "alle Merges vor dem Zählen angewandt"
+        {
+          "id": "tie-break-dem-zufall-oder",
+          "text": "Tie-Break dem Zufall oder der Fundreihenfolge überlassen"
+        },
+        {
+          "id": "paare-mit-haeufigkeit-1-trotzdem",
+          "text": "Paare mit Häufigkeit 1 trotzdem gelernt"
+        },
+        {
+          "id": "alle-merges-vor-dem-zaehlen",
+          "text": "alle Merges vor dem Zählen angewandt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

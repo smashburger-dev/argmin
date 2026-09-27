@@ -17,10 +17,9 @@
 // validated fail-closed by the family runtime; code-trace
 // variables may carry `type: 'repr'` (canonical Python literals).
 
-import { rng, randInt, nonzeroInt, variantCaseIndex, variantEpoch, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
+import { rng, randInt, nonzeroInt, pick, variantCaseIndex, variantEpoch, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
 import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
 import gitOperationDoc from '../../../content/families/classify-git-operation.json' with { type: 'json' };
-
 
 /** Python repr for the values our generators produce. Sets are rendered
  *  in sorted order — the grader compares set literals order-insensitively
@@ -502,17 +501,62 @@ export function metaErrorCaseCount() {
   return META_CASES.length;
 }
 
+/** Solver-side lookup for drawn instances: the correct option text of the
+ *  meta case that `caseIndex`/`metaCaseId` selected in the draw. */
+export function metaErrorCorrectText(parameters) {
+  const metaCase = META_CASES[parameters?.caseIndex];
+  if (!metaCase || metaCase.caseId !== parameters?.metaCaseId) {
+    throw new Error(`Unbekannter Fehlertyp ${parameters?.metaCaseId}`);
+  }
+  return metaCase.correct;
+}
+
 // --- c-python-files-errors: exception boundary bank (B) ------------------------
 
+const EXCEPTION_WORDS = ['ki', 'haus', 'weg', 'auto', 'baum', 'licht'];
+const EXCEPTION_MISSING_FILES = ['notizen_nicht_da.txt', 'protokoll_fehlt.log', 'daten_weg.csv', 'bericht_offen.txt'];
+
 const EXCEPTION_CASES = [
-  { caseId: 'valueerror', expr: (r) => `int("3,${randInt(r, 1, 9)}")`, answer: 'ValueError', why: 'Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' },
-  { caseId: 'typeerror-concat', expr: () => '"ki" + 5', answer: 'TypeError', why: 'Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' },
+  {
+    caseId: 'valueerror',
+    expr: (r) => pick(r, [
+      () => `int("${randInt(r, 1, 99)},${randInt(r, 1, 9)}")`,
+      () => `int("-${randInt(r, 1, 9)},${randInt(r, 1, 9)}")`,
+      () => `int("${randInt(r, 1, 9)},${randInt(r, 1, 9)},${randInt(r, 1, 9)}")`,
+    ])(),
+    answer: 'ValueError',
+    why: 'Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.',
+  },
+  {
+    caseId: 'typeerror-concat',
+    expr: (r) => pick(r, [
+      () => `"${pick(r, EXCEPTION_WORDS)}" + ${randInt(r, 1, 99)}`,
+      () => `${randInt(r, 1, 99)} + "${pick(r, EXCEPTION_WORDS)}"`,
+      () => `"${pick(r, EXCEPTION_WORDS)}" + -${randInt(r, 1, 9)}`,
+    ])(),
+    answer: 'TypeError',
+    why: 'Die +-Operation zwischen str und int ist nicht definiert; Python verkettet keine Typen automatisch.',
+  },
   { caseId: 'keyerror', expr: (r) => `alter = {"anna": ${randInt(r, 18, 30)}}\nalter["${['berta', 'caro', 'dilan'][randInt(r, 0, 2)]}"]`, answer: 'KeyError', why: 'Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' },
-  { caseId: 'filenotfound', expr: () => 'open("notizen_nicht_da.txt")', answer: 'FileNotFoundError', why: 'Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' },
+  {
+    caseId: 'filenotfound',
+    expr: (r) => `open("${pick(r, EXCEPTION_MISSING_FILES)}")`,
+    answer: 'FileNotFoundError',
+    why: 'Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.',
+  },
   { caseId: 'indexerror', expr: (r) => `werte = [${randInt(r, 1, 9)}, ${randInt(r, 1, 9)}]\nwerte[${randInt(r, 5, 9)}]`, answer: 'IndexError', why: 'Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' },
-  { caseId: 'typeerror-len', expr: () => 'len(5)', answer: 'TypeError', why: 'len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' },
+  {
+    caseId: 'typeerror-len',
+    expr: (r) => pick(r, [
+      () => `len(${randInt(r, 2, 99)})`,
+      () => `len(-${randInt(r, 1, 9)})`,
+      () => `len(${randInt(r, 1, 9)} + ${randInt(r, 1, 9)})`,
+    ])(),
+    answer: 'TypeError',
+    why: 'len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.',
+  },
   { caseId: 'no-error-int', expr: (r) => `int("${randInt(r, 10, 99)}")`, answer: 'KEIN_FEHLER_INT' },
-  { caseId: 'no-error-mul', expr: (r) => `"${randInt(r, 2, 4)}" * ${randInt(r, 2, 3)}`, answer: 'KEIN_FEHLER_STR' },
+  { caseId: 'no-error-mul', expr: (r) => `"${randInt(r, 2, 99)}" * ${randInt(r, 2, 4)}`, answer: 'KEIN_FEHLER_STR' },
 ];
 
 /** Semantic variant bank (B): which exception (if any) does the expression
@@ -759,4 +803,11 @@ export const FOUNDATIONS_FRESH_GENERATORS = {
   genExceptionBoundary,
   genBranchCoverageCount,
   genGitNextAction,
+};
+
+// Flat spec for the central registry.
+export const GIT_OPERATION_SPEC = {
+  ...GIT_OPERATION_CONTRACT,
+  generate: generateGitOperationFamily,
+  solve: solveGitOperation,
 };

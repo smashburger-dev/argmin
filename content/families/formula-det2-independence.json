@@ -34,8 +34,14 @@
         "det(A) ≠ 0 beweist die Unabhängigkeit der Spalten; achte auf das Vorzeichen der Nebendiagonale."
       ],
       "typicalErrors": [
-        "Vorzeichen der Nebendiagonale falsch behandelt",
-        "Determinante berechnet, aber den Unabhängigkeitsschluss nicht gezogen"
+        {
+          "id": "vorzeichen-der-nebendiagonale-falsch-behandelt",
+          "text": "Vorzeichen der Nebendiagonale falsch behandelt"
+        },
+        {
+          "id": "determinante-berechnet-aber-den-unabhaengigkeitsschluss",
+          "text": "Determinante berechnet, aber den Unabhängigkeitsschluss nicht gezogen"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

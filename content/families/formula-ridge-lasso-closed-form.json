@@ -28,9 +28,18 @@
         "Soft-Thresholding braucht keine Schleife: `np.sign(c) * max(abs(c) - lam, 0.0)` in einer Zeile; die lam-Prüfung steht davor."
       ],
       "typicalErrors": [
-        "λ an XᵀX addieren, bevor es multipliziert wurde (Klammerung)",
-        "Vorzeichenfehler bei lasso_1d für negatives c",
-        "Prüfung von lam nach der Berechnung statt davor"
+        {
+          "id": "an-x-x-addieren-bevor",
+          "text": "λ an XᵀX addieren, bevor es multipliziert wurde (Klammerung)"
+        },
+        {
+          "id": "vorzeichenfehler-bei-lasso-1d-fuer",
+          "text": "Vorzeichenfehler bei lasso_1d für negatives c"
+        },
+        {
+          "id": "pruefung-von-lam-nach-der",
+          "text": "Prüfung von lam nach der Berechnung statt davor"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -60,9 +69,18 @@
         "Monotonie entsteht von selbst aus der Formel: größeres λ schrumpft w stärker; OLS (λ=0) minimiert den Trainingsfehler, deshalb steigt der Trainings-RMSE mit λ."
       ],
       "typicalErrors": [
-        "RMSE auf den Koeffizienten statt auf den Vorhersagen berechnen",
-        "λ sortiert zurückgeben statt in Eingabereihenfolge",
-        "w als 2D-Array zurückgeben"
+        {
+          "id": "rmse-auf-den-koeffizienten-statt",
+          "text": "RMSE auf den Koeffizienten statt auf den Vorhersagen berechnen"
+        },
+        {
+          "id": "sortiert-zurueckgeben-statt-in-eingabereihenfolge",
+          "text": "λ sortiert zurückgeben statt in Eingabereihenfolge"
+        },
+        {
+          "id": "w-als-2d-array-zurueckgeben",
+          "text": "w als 2D-Array zurückgeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

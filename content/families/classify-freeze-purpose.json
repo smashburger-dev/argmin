@@ -39,9 +39,18 @@
         }
       ],
       "typicalErrors": [
-        "Golden Set nachträglich an die Pipeline angepasst",
-        "Hash-Prüfung als Lizenz- oder Geheimhaltungsmaßnahme missverstanden",
-        "Vergleichbarkeit alter und neuer Läufe still vorausgesetzt"
+        {
+          "id": "golden-set-nachtraeglich-an-die",
+          "text": "Golden Set nachträglich an die Pipeline angepasst"
+        },
+        {
+          "id": "hash-pruefung-als-lizenz-oder",
+          "text": "Hash-Prüfung als Lizenz- oder Geheimhaltungsmaßnahme missverstanden"
+        },
+        {
+          "id": "vergleichbarkeit-alter-und-neuer-laeufe",
+          "text": "Vergleichbarkeit alter und neuer Läufe still vorausgesetzt"
+        }
       ],
       "choices": [
         {

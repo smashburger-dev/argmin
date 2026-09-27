@@ -5,20 +5,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/reproduce-seeded-split.mjs';
-import {
-  SPLIT_CASES,
-  genSplitCase,
-} from '../assets/js/core/procedural/reproduce-seeded-split.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
 
-codeCapsuleSuite('reproduce-seeded-split', mod, [
-  { caseId: 'deterministic-split-numpy', difficulty: 'core', competencyIds: ['c-ml-baseline', 'c-numpy-basics'] },
-  { caseId: 'kfold-indices-numpy', difficulty: 'core', competencyIds: ['c-ml-cv', 'c-numpy-basics'] },
-], { familyGroup: 'reproduce-hash', difficultyProfiles: ['core'] });
+const spec = mod.FAMILY_SPEC;
+const genSplitCase = spec.kit.genCase;
 
 test('capsule extras: seeded block marker stays emitted', () => {
   for (const caseId of ['deterministic-split-numpy', 'kfold-indices-numpy']) {
-    const def = SPLIT_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genSplitCase(seed, caseId, def);
       assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${caseId}:${seed}: seeded block`);
@@ -27,7 +20,7 @@ test('capsule extras: seeded block marker stays emitted', () => {
 });
 
 test('seeded split draws stay inside the declared domains', () => {
-  const def = SPLIT_CASES['deterministic-split-numpy'];
+  const def = spec.kit.cases['deterministic-split-numpy'];
   let tieSeen = 0;
   for (let seed = 0; seed < 200; seed += 1) {
     const generated = genSplitCase(seed, 'deterministic-split-numpy', def);
@@ -48,7 +41,7 @@ test('seeded split draws stay inside the declared domains', () => {
 });
 
 test('seeded fold draws stay inside the declared domains', () => {
-  const def = SPLIT_CASES['kfold-indices-numpy'];
+  const def = spec.kit.cases['kfold-indices-numpy'];
   for (let seed = 0; seed < 200; seed += 1) {
     const generated = genSplitCase(seed, 'kfold-indices-numpy', def);
     for (const entry of generated.parameters.seedCases) {

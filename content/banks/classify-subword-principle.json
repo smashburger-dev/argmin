@@ -411,5 +411,38 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-subword-principle",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet ein Tokenisierungsverhalten dem passenden Subword-Prinzip zu.",
+    "taskArchetype": "single-choice",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "subword-oov-robustness",
+        "propertyTest": false
+      },
+      {
+        "caseId": "subword-unknown-piece",
+        "propertyTest": false
+      },
+      {
+        "caseId": "subword-boundary-sharing",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-tokenizer"
+    ]
+  },
+  "shapeError": "Subword-Parameter verletzen die Kapselform"
 }

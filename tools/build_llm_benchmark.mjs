@@ -340,10 +340,13 @@ const uncoveredStaticGaps = (snapshot, staticIds, root) => {
 };
 
 export function fixtureDigest(fixture) {
-  // contentCommit ist Metadaten, kein Inhalt — auch in items[].provenance:
-  // der Checkout-Commit weicht in CI (Merge-Ref) vom Pin-Commit ab und darf
-  // den Digest nicht kippen.
-  const stripped = JSON.stringify(fixture, (key, value) => (key === 'contentCommit' ? null : value));
+  // contentCommit und contentHash sind Metadaten, kein Inhalt — auch in
+  // items[].provenance: der Checkout-Commit weicht in CI (Merge-Ref) vom
+  // Pin-Commit ab, und der Quelltext-Hash ändert sich bei jedem Refactor —
+  // beides darf den Verhaltens-Digest nicht kippen.
+  const stripped = JSON.stringify(fixture, (key, value) => (
+    key === 'contentCommit' || key === 'contentHash' ? null : value
+  ));
   return createHash('sha256').update(stripped).digest('hex');
 }
 
@@ -387,7 +390,6 @@ export function fixturePin(fixture) {
   return {
     schemaVersion: fixture.schemaVersion,
     builderVersion: fixture.builderVersion,
-    contentHash: fixture.contentHash,
     digest: fixtureDigest(fixture),
     items: fixture.items.length,
     mutants: fixture.items.reduce((sum, item) => sum + item.mutants.length, 0),

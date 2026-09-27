@@ -453,5 +453,38 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-training-curve",
+    "familyGroup": "classify-concept",
+    "summary": "Diagnostiziert Lernkurven: Overfitting-Lücke, Underfitting-Plateau, Oszillation und gesunde Konvergenz.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "training-curve-diagnosis",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-curve-overfit",
+        "propertyTest": false
+      },
+      {
+        "caseId": "training-curve-underfit",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-dl-training"
+    ]
+  },
+  "shapeError": "Training-Curve-Parameter verletzen die Kapselform"
 }

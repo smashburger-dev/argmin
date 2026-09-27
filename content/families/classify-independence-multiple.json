@@ -111,9 +111,18 @@
         }
       ],
       "typicalErrors": [
-        "Gemeinsamen Vektorraum und lineare Unabhängigkeit als dieselbe Aussage behandelt.",
-        "Einen unpassenden gemeinsamen Faktor für $(1,2)$ und $(2,3)$ verwendet.",
-        "Das kleine Vektorpaar mit einem nicht benötigten Determinantenverfahren für $3\\times3$-Matrizen geprüft."
+        {
+          "id": "gemeinsamen-vektorraum-und-lineare-unabhaengigkeit",
+          "text": "Gemeinsamen Vektorraum und lineare Unabhängigkeit als dieselbe Aussage behandelt."
+        },
+        {
+          "id": "einen-unpassenden-gemeinsamen-faktor-fuer",
+          "text": "Einen unpassenden gemeinsamen Faktor für $(1,2)$ und $(2,3)$ verwendet."
+        },
+        {
+          "id": "das-kleine-vektorpaar-mit-einem",
+          "text": "Das kleine Vektorpaar mit einem nicht benötigten Determinantenverfahren für $3\\times3$-Matrizen geprüft."
+        }
       ]
     },
     {
@@ -186,9 +195,18 @@
         }
       ],
       "typicalErrors": [
-        "Jeden einzelnen Nichtnullvektor fälschlich als Beleg für Unabhängigkeit der ganzen Menge gelesen.",
-        "Die mögliche Abhängigkeit von drei Vektoren in $\\mathbb{R}^3$ durch die Dimensionszahl ausgeschlossen.",
-        "Paarweise Nichtparallelität mit Unabhängigkeit einer gesamten Vektormenge verwechselt."
+        {
+          "id": "jeden-einzelnen-nichtnullvektor-faelschlich-als",
+          "text": "Jeden einzelnen Nichtnullvektor fälschlich als Beleg für Unabhängigkeit der ganzen Menge gelesen."
+        },
+        {
+          "id": "die-moegliche-abhaengigkeit-von-drei",
+          "text": "Die mögliche Abhängigkeit von drei Vektoren in $\\mathbb{R}^3$ durch die Dimensionszahl ausgeschlossen."
+        },
+        {
+          "id": "paarweise-nichtparallelitaet-mit-unabhaengigkeit-einer",
+          "text": "Paarweise Nichtparallelität mit Unabhängigkeit einer gesamten Vektormenge verwechselt."
+        }
       ]
     }
   ]

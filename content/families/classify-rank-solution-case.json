@@ -78,9 +78,18 @@
         "Eine Zeile $0=0$ ist kein Widerspruch; vergleiche Pivotzahl und Variablenzahl."
       ],
       "typicalErrors": [
-        "Nullzeile als Widerspruch lesen",
-        "Rang mit Zeilenzahl verwechseln",
-        "freie Variable übersehen"
+        {
+          "id": "nullzeile-als-widerspruch-lesen",
+          "text": "Nullzeile als Widerspruch lesen"
+        },
+        {
+          "id": "rang-mit-zeilenzahl-verwechseln",
+          "text": "Rang mit Zeilenzahl verwechseln"
+        },
+        {
+          "id": "freie-variable-uebersehen",
+          "text": "freie Variable übersehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

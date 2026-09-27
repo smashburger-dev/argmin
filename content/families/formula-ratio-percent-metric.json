@@ -32,9 +32,18 @@
         "relative_percent nur bei baseline > 0 berechnen und auf int runden — sonst 0."
       ],
       "typicalErrors": [
-        "relative Verbesserung nicht gerundet bzw. als float",
-        "Division durch null bei Baseline 0",
-        "Zeilenform ungeprüft"
+        {
+          "id": "relative-verbesserung-nicht-gerundet-bzw",
+          "text": "relative Verbesserung nicht gerundet bzw. als float"
+        },
+        {
+          "id": "division-durch-null-bei-baseline",
+          "text": "Division durch null bei Baseline 0"
+        },
+        {
+          "id": "zeilenform-ungeprueft",
+          "text": "Zeilenform ungeprüft"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -64,9 +73,18 @@
         "Zweite Zeile ist die bereinigte Quote (korrekt/treffer), dritte die naive (korrekt/alle) — jeweils auf 3 Stellen gerundet."
       ],
       "typicalErrors": [
-        "Retrieval-Fehlerfälle in die bereinigte Quote genommen",
-        "naive und bereinigte Zeile vertauscht",
-        "Rundung auf 3 Stellen vergessen"
+        {
+          "id": "retrieval-fehlerfaelle-in-die-bereinigte",
+          "text": "Retrieval-Fehlerfälle in die bereinigte Quote genommen"
+        },
+        {
+          "id": "naive-und-bereinigte-zeile-vertauscht",
+          "text": "naive und bereinigte Zeile vertauscht"
+        },
+        {
+          "id": "rundung-auf-3-stellen-vergessen",
+          "text": "Rundung auf 3 Stellen vergessen"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"
@@ -96,9 +114,18 @@
         "Der Mittelwert der vier Subgruppen-Werte ist nicht der Gesamt-Recall — hier ist er zufällig gleich, weil alle Gruppen gleich groß sind."
       ],
       "typicalErrors": [
-        "Mittelwert der Anzahlen statt der Quotienten gebildet",
-        "round auf ganze Stellen angewendet",
-        "leere Gruppe mit 0.5 statt 0.0 belegt"
+        {
+          "id": "mittelwert-der-anzahlen-statt-der",
+          "text": "Mittelwert der Anzahlen statt der Quotienten gebildet"
+        },
+        {
+          "id": "round-auf-ganze-stellen-angewendet",
+          "text": "round auf ganze Stellen angewendet"
+        },
+        {
+          "id": "leere-gruppe-mit-0-5",
+          "text": "leere Gruppe mit 0.5 statt 0.0 belegt"
+        }
       ],
       "activityType": "predict-output",
       "graderId": "deterministic"

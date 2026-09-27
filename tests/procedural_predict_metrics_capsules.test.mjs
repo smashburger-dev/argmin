@@ -5,12 +5,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/fit-predict-metrics.mjs';
-import {
-  PREDICT_METRICS_CASES,
-  PREDICT_METRICS_CONTRACT,
-  genPredictMetricsCase,
-} from '../assets/js/core/procedural/fit-predict-metrics.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { PREDICT_METRICS_CASES, PREDICT_METRICS_CONTRACT } from '../assets/js/core/procedural/fit-predict-metrics.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genPredictMetricsCase = spec.kit.genCase;
+
 
 const CASE_IDS = ['baseline-experiment-report', 'linear-fit-lstsq', 'regression-report'];
 
@@ -18,11 +17,6 @@ const isIntList = (v) => Array.isArray(v) && v.length > 0 && v.every(Number.isIn
 const inRange = (v, lo, hi) => v.every((x) => x >= lo && x <= hi);
 const nonConstant = (v) => new Set(v).size >= 2;
 
-codeCapsuleSuite('fit-predict-metrics', mod, [
-  { caseId: 'baseline-experiment-report', difficulty: 'stretch' },
-  { caseId: 'linear-fit-lstsq', difficulty: 'core', competencyIds: ['c-ml-linear', 'c-numpy-basics'] },
-  { caseId: 'regression-report', difficulty: 'stretch', competencyIds: ['c-ml-linear'] },
-], { difficultyProfiles: ['core', 'stretch'] });
 
 test('capsule extras: seeded block marker and packages stay emitted', () => {
   for (const caseId of CASE_IDS) {

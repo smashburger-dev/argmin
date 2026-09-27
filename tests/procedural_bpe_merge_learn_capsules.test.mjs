@@ -8,13 +8,13 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/optimize-bpe-merge-learn.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genLearnCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-codeCapsuleSuite('optimize-bpe-merge-learn', mod, [
-  { caseId: 'bpe-merge-learn', difficulty: 'challenge' },
-], { difficultyProfiles: ['challenge'] });
 
 test('anchor extras: difficulty profile, contract competencies and case types', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/optimize-bpe-merge-learn.json'), 'utf8'));
@@ -27,7 +27,7 @@ test('anchor extras: difficulty profile, contract competencies and case types', 
 test('seeded draws stay inside the declared domains', () => {
   const def = mod.LEARN_CASES['bpe-merge-learn'];
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genLearnCase(seed, 'bpe-merge-learn', def);
+    const generated = genLearnCase(seed, 'bpe-merge-learn', def);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(generated.parameters.tests.includes('def __ref_learn('), `${seed}: ref preamble`);
     assert.equal(generated.parameters.seedCases.length, 3, 'extraCount');

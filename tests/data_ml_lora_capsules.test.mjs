@@ -1,5 +1,5 @@
 // Familie classify-lora-tradeoff: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_lora_capsules.test.mjs
 import test from 'node:test';
@@ -10,46 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   LORA_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  LORA_TRADEOFF_CONTRACT,
-  genLoraCapsule,
-  loraCapsuleOk,
-  loraCorrectText,
-  generateLoraTradeoffFamily,
-  solveLoraTradeoffFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { LORA_TRADEOFF_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-lora-tradeoff');
+const genLoraCapsule = spec.kit.genCapsule;
+const loraCapsuleOk = spec.kit.capsuleOk;
+const loraCorrectText = spec.kit.correctText;
+const generateLoraTradeoffFamily = spec.generate;
+const solveLoraTradeoffFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  LORA_CAPSULES,
-  loraCapsuleOk,
-  loraCorrectText,
-  genLoraCapsule,
-  LORA_TRADEOFF_CONTRACT,
-  generateLoraTradeoffFamily,
-  solveLoraTradeoffFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-lora-tradeoff'),
-};
 
-choiceCapsuleSuite('classify-lora-tradeoff', mod, [
-  { caseId: 'lora-tradeoff', difficulty: 'intro' },
-  { caseId: 'lora-parameter-count', difficulty: 'core' },
-  { caseId: 'lora-alpha-rank', difficulty: 'stretch' },
-], {
-  familyGroup: 'classify-concept',
-  difficultyProfiles: ['intro', 'core', 'stretch'],
-  // alpha-rank trägt nackte Zahlen als Schlüsseltext — die Ziffer darf als
-  // Substring in $\alpha=24$ vorkommen, aber nie als eigenständige Zahl.
-  leakCheck: (prompt, text, generated) => generated.parameters.caseId === 'lora-alpha-rank'
-    ? standaloneNumberPresent(prompt, text)
-    : prompt.includes(text),
-});
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratiertem Schluesseltext. Regel: Kapsel weiten,

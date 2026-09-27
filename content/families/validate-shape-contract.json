@@ -11,6 +11,9 @@
         "w18-e3"
       ],
       "parameters": {
+        "n": 4,
+        "d": 3,
+        "k": 5,
         "snippet": "import numpy as np\nX = np.zeros((4, 3))\nW = np.zeros((3, 5))\nH = X @ W\nprint(H.shape)\nb = np.arange(5.0)\nprint((H + b).shape)\nprint(H.ndim, W.ndim, b.ndim)"
       },
       "expected": {

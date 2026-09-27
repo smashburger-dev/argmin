@@ -50,8 +50,14 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1: Division durch a übersprungen — der Mittelwert m statt x eingetragen",
-        "Lücke 1: Vorzeichen verwechselt, obwohl ax und x dasselbe Vorzeichen haben"
+        {
+          "id": "luecke-1-division-durch-a",
+          "text": "Lücke 1: Division durch a übersprungen — der Mittelwert m statt x eingetragen"
+        },
+        {
+          "id": "luecke-1-vorzeichen-verwechselt-obwohl",
+          "text": "Lücke 1: Vorzeichen verwechselt, obwohl ax und x dasselbe Vorzeichen haben"
+        }
       ]
     },
     {
@@ -109,9 +115,18 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1: Differenz statt Summe gebildet — b mit falschem Vorzeichen auf die rechte Seite gebracht",
-        "Lücke 2: Schritt übersprungen — die Mittelzeile nochmal statt x eingetragen",
-        "Lücke 2: falscher Faktor — durch b statt durch a geteilt"
+        {
+          "id": "luecke-1-differenz-statt-summe",
+          "text": "Lücke 1: Differenz statt Summe gebildet — b mit falschem Vorzeichen auf die rechte Seite gebracht"
+        },
+        {
+          "id": "luecke-2-schritt-uebersprungen-die",
+          "text": "Lücke 2: Schritt übersprungen — die Mittelzeile nochmal statt x eingetragen"
+        },
+        {
+          "id": "luecke-2-falscher-faktor-durch",
+          "text": "Lücke 2: falscher Faktor — durch b statt durch a geteilt"
+        }
       ]
     },
     {
@@ -177,10 +192,22 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1: Vorzeichen der Operation doppelt eingetragen — nur der Betrag gehört in die Lücke",
-        "Lücke 1: statt |b| das Ergebnis x eingetragen (Schrittfolge vertauscht)",
-        "Lücke 2: Konstante nur einseitig verrechnet — m falsch",
-        "Lücke 3: Komma-Ergebnis falsch gerundet oder als Bruchrest stehen gelassen"
+        {
+          "id": "luecke-1-vorzeichen-der-operation",
+          "text": "Lücke 1: Vorzeichen der Operation doppelt eingetragen — nur der Betrag gehört in die Lücke"
+        },
+        {
+          "id": "luecke-1-statt-b-das",
+          "text": "Lücke 1: statt |b| das Ergebnis x eingetragen (Schrittfolge vertauscht)"
+        },
+        {
+          "id": "luecke-2-konstante-nur-einseitig",
+          "text": "Lücke 2: Konstante nur einseitig verrechnet — m falsch"
+        },
+        {
+          "id": "luecke-3-komma-ergebnis-falsch",
+          "text": "Lücke 3: Komma-Ergebnis falsch gerundet oder als Bruchrest stehen gelassen"
+        }
       ]
     },
     {
@@ -273,10 +300,22 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1: rechtes x-Glied ohne Vorzeichenwechsel übertragen (+c statt −c)",
-        "Lücke 2/4: a + c statt a − c als zusammengefasster Koeffizient",
-        "Lücke 5: d statt d − b eingetragen — die Konstante wurde nur einseitig verrechnet",
-        "Lücke 6: durch a statt durch a − c geteilt"
+        {
+          "id": "luecke-1-rechtes-x-glied",
+          "text": "Lücke 1: rechtes x-Glied ohne Vorzeichenwechsel übertragen (+c statt −c)"
+        },
+        {
+          "id": "luecke-2-4-a-c",
+          "text": "Lücke 2/4: a + c statt a − c als zusammengefasster Koeffizient"
+        },
+        {
+          "id": "luecke-5-d-statt-d",
+          "text": "Lücke 5: d statt d − b eingetragen — die Konstante wurde nur einseitig verrechnet"
+        },
+        {
+          "id": "luecke-6-durch-a-statt",
+          "text": "Lücke 6: durch a statt durch a − c geteilt"
+        }
       ],
       "title": "Beidseitige Gleichung komplett umformen"
     }

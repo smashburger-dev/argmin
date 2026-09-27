@@ -1,5 +1,5 @@
 // Familie classify-benchmark-reading: Kapsel-Gates (single-choice-adaptiert).
-// Geteilte Gates laufen über choiceCapsuleSuite; dieses File hält die Orakel,
+// Geteilte Gates laufen über choiceKitSuite; dieses File hält die Orakel,
 // die Anker-Pins und die familienspezifischen Bank-Invarianten.
 // Run: node --test tests/data_ml_benchmark_capsules.test.mjs
 import test from 'node:test';
@@ -10,37 +10,21 @@ import { fileURLToPath } from 'node:url';
 import {
   BENCHMARK_CAPSULES,
 } from '../assets/js/core/data_ml_generators.mjs';
-import {
-  BENCHMARK_READING_CONTRACT,
-  genBenchmarkCapsule,
-  benchmarkCapsuleOk,
-  benchmarkCorrectText,
-  generateBenchmarkReadingFamily,
-  solveBenchmarkReadingFamily,
-  DATA_ML_FAMILY_SPECS,
-} from '../assets/js/core/data_ml_families.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { BENCHMARK_READING_CONTRACT, DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-benchmark-reading');
+const genBenchmarkCapsule = spec.kit.genCapsule;
+const benchmarkCapsuleOk = spec.kit.capsuleOk;
+const benchmarkCorrectText = spec.kit.correctText;
+const generateBenchmarkReadingFamily = spec.generate;
+const solveBenchmarkReadingFamily = spec.solve;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Gezielte Imports statt Modul-Spread: die Suite pickt ihre Oberfläche per
 // Namens-Regex, deshalb bleibt mod absichtlich flach und eindeutig.
-const mod = {
-  BENCHMARK_CAPSULES,
-  benchmarkCapsuleOk,
-  benchmarkCorrectText,
-  genBenchmarkCapsule,
-  BENCHMARK_READING_CONTRACT,
-  generateBenchmarkReadingFamily,
-  solveBenchmarkReadingFamily,
-  FAMILY_SPEC: DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-benchmark-reading'),
-};
 
-choiceCapsuleSuite('classify-benchmark-reading', mod, [
-  { caseId: 'benchmark-absolute-gain', difficulty: 'intro' },
-  { caseId: 'benchmark-absolute-relative', difficulty: 'core' },
-  { caseId: 'benchmark-imbalanced-accuracy', difficulty: 'stretch' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro', 'core', 'stretch'] });
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit nachgerechneter Kennzahl und kuratiertem

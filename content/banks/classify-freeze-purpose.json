@@ -149,5 +149,30 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-freeze-purpose",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet den Zweck eines eingefrorenen Prüfstands in einer deterministischen Auswertung ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "freeze-purpose",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-capstone-pipeline",
+      "c-genai-security"
+    ]
+  },
+  "shapeError": "Freeze-Purpose-Parameter verletzen die Kapselform",
+  "keyBy": "caseId"
 }

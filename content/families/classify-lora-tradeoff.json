@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "LoRA mit Full Fine-Tuning bei kleiner Lernrate verwechselt",
-        "LoRA mit Pruning verwechselt",
-        "eingefrorene Basis übersehen"
+        {
+          "id": "lora-mit-full-fine-tuning",
+          "text": "LoRA mit Full Fine-Tuning bei kleiner Lernrate verwechselt"
+        },
+        {
+          "id": "lora-mit-pruning-verwechselt",
+          "text": "LoRA mit Pruning verwechselt"
+        },
+        {
+          "id": "eingefrorene-basis-uebersehen",
+          "text": "eingefrorene Basis übersehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -124,9 +133,18 @@
         }
       ],
       "typicalErrors": [
-        "volle Matrixgröße als LoRA-Budget ausgegeben",
-        "den B-Faktor mit d_out beim Zählen ausgelassen",
-        "LoRA-Rang mit einer quadratischen Parameterzahl verwechselt"
+        {
+          "id": "volle-matrixgroesse-als-lora-budget",
+          "text": "volle Matrixgröße als LoRA-Budget ausgegeben"
+        },
+        {
+          "id": "den-b-faktor-mit-d",
+          "text": "den B-Faktor mit d_out beim Zählen ausgelassen"
+        },
+        {
+          "id": "lora-rang-mit-einer-quadratischen",
+          "text": "LoRA-Rang mit einer quadratischen Parameterzahl verwechselt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -189,9 +207,18 @@
         }
       ],
       "typicalErrors": [
-        "LoRA-Skalierung als Differenz von alpha und Rang berechnet",
-        "alpha und Rang addiert statt dividiert",
-        "den Rang in den Zähler verschoben"
+        {
+          "id": "lora-skalierung-als-differenz-von",
+          "text": "LoRA-Skalierung als Differenz von alpha und Rang berechnet"
+        },
+        {
+          "id": "alpha-und-rang-addiert-statt",
+          "text": "alpha und Rang addiert statt dividiert"
+        },
+        {
+          "id": "den-rang-in-den-zaehler",
+          "text": "den Rang in den Zähler verschoben"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

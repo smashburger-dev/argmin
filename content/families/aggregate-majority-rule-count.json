@@ -31,9 +31,18 @@
         }
       ],
       "typicalErrors": [
-        "Anzahl der richtigen Vorhersagen statt der Fehler angegeben",
-        "Klassenanzahl statt Klassenhäufigkeit verglichen",
-        "bei drei Klassen nur die zweitgrößte Klasse abziehen"
+        {
+          "id": "anzahl-der-richtigen-vorhersagen-statt",
+          "text": "Anzahl der richtigen Vorhersagen statt der Fehler angegeben"
+        },
+        {
+          "id": "klassenanzahl-statt-klassenhaeufigkeit-verglichen",
+          "text": "Klassenanzahl statt Klassenhäufigkeit verglichen"
+        },
+        {
+          "id": "bei-drei-klassen-nur-die",
+          "text": "bei drei Klassen nur die zweitgrößte Klasse abziehen"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"
@@ -62,9 +71,18 @@
         }
       ],
       "typicalErrors": [
-        "Zeilenweise statt spaltenweise zählen",
-        "Spalten mit genau einer Eins mitzählen",
-        "Anzahl der Einsen insgesamt statt der Mehrheits-Spalten angeben"
+        {
+          "id": "zeilenweise-statt-spaltenweise-zaehlen",
+          "text": "Zeilenweise statt spaltenweise zählen"
+        },
+        {
+          "id": "spalten-mit-genau-einer-eins",
+          "text": "Spalten mit genau einer Eins mitzählen"
+        },
+        {
+          "id": "anzahl-der-einsen-insgesamt-statt",
+          "text": "Anzahl der Einsen insgesamt statt der Mehrheits-Spalten angeben"
+        }
       ],
       "activityType": "numeric",
       "graderId": "deterministic"

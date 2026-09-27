@@ -51,9 +51,18 @@
         }
       ],
       "typicalErrors": [
-        "Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen.",
-        "Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.",
-        "Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt."
+        {
+          "id": "nichtnullvektoren-pauschal-als-unabhaengig-gelesen",
+          "text": "Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen."
+        },
+        {
+          "id": "mehr-vektoren-als-die-dimension",
+          "text": "Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet."
+        },
+        {
+          "id": "den-nullvektor-als-neutralen-bestandteil",
+          "text": "Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",
@@ -129,9 +138,18 @@
         }
       ],
       "typicalErrors": [
-        "Lineare Abhängigkeit nur mit dem Nullvektor in Verbindung gebracht statt mit Kollinearität und Kombinationen.",
-        "Paarweise Nichtparallelität mit Unabhängigkeit der Gesamtmenge verwechselt.",
-        "Die Schranke $n$ für unabhängige Mengen im $\\mathbb{R}^n$ nicht angewendet."
+        {
+          "id": "lineare-abhaengigkeit-nur-mit-dem",
+          "text": "Lineare Abhängigkeit nur mit dem Nullvektor in Verbindung gebracht statt mit Kollinearität und Kombinationen."
+        },
+        {
+          "id": "paarweise-nichtparallelitaet-mit-unabhaengigkeit-der",
+          "text": "Paarweise Nichtparallelität mit Unabhängigkeit der Gesamtmenge verwechselt."
+        },
+        {
+          "id": "die-schranke-n-fuer-unabhaengige",
+          "text": "Die Schranke $n$ für unabhängige Mengen im $\\mathbb{R}^n$ nicht angewendet."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",
@@ -248,9 +266,18 @@
         }
       ],
       "typicalErrors": [
-        "Summen-Abhängigkeit ($v_3 = v_1 + v_2$) bei nicht parallelen Vektoren übersehen.",
-        "Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.",
-        "Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet."
+        {
+          "id": "summen-abhaengigkeit-v-3-v",
+          "text": "Summen-Abhängigkeit ($v_3 = v_1 + v_2$) bei nicht parallelen Vektoren übersehen."
+        },
+        {
+          "id": "paarweise-nichtparallelitaet-faelschlich-als-unabhaengigkeitsbeweis",
+          "text": "Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen."
+        },
+        {
+          "id": "vier-vektoren-im-mathbb-r",
+          "text": "Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",
@@ -333,9 +360,18 @@
         }
       ],
       "typicalErrors": [
-        "Nullität aus der Zeilenzahl statt aus Spalten minus Rang abgeleitet.",
-        "Drei Zeilen pauschal als unabhängig gelesen — die Zeilenzahl sagt nichts über den Rang aus.",
-        "Lösbarkeit von $Ax = b$ für ein $b$ mit Lösbarkeit für jedes $b$ verwechselt."
+        {
+          "id": "nullitaet-aus-der-zeilenzahl-statt",
+          "text": "Nullität aus der Zeilenzahl statt aus Spalten minus Rang abgeleitet."
+        },
+        {
+          "id": "drei-zeilen-pauschal-als-unabhaengig",
+          "text": "Drei Zeilen pauschal als unabhängig gelesen — die Zeilenzahl sagt nichts über den Rang aus."
+        },
+        {
+          "id": "loesbarkeit-von-ax-b-fuer",
+          "text": "Lösbarkeit von $Ax = b$ für ein $b$ mit Lösbarkeit für jedes $b$ verwechselt."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",

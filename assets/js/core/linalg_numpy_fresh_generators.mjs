@@ -6,7 +6,7 @@
 // and shape families are new procedural generators with their own
 // independent reference solvers.
 
-import { rng, randInt, nonzeroInt } from './generator_draw_kit.mjs';
+import { rng, randInt, nonzeroInt, shuffle } from './generator_draw_kit.mjs';
 import { genMatmulEntry, genLinear2 } from './linalg_generators.mjs';
 
 
@@ -134,9 +134,30 @@ export function genShapePredict(seed) {
   };
 }
 
+// --- c-numpy-basics: broadcast axes (w18 seeded shard) ---------------------------
+
+/** predict-output: X(n,d) @ W(d,k) plus a (k,) row broadcast. Draws three
+ *  distinct axis sizes in [2,9]; the answer is always the three lines
+ *  '(n, k) / (n, k) / 2 2 1'. Parameters carry {n, d, k, snippet} so solve()
+ *  can recompute the output without executing NumPy. */
+export function genBroadcastAxes(seed) {
+  const r = rng(seed);
+  const axes = shuffle(r, [2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 3);
+  const [n, d, k] = axes;
+  const snippet = `import numpy as np\nX = np.zeros((${n}, ${d}))\nW = np.zeros((${d}, ${k}))\nH = X @ W\nprint(H.shape)\nb = np.arange(${k}.0)\nprint((H + b).shape)\nprint(H.ndim, W.ndim, b.ndim)`;
+  const output = `(${n}, ${k})\n(${n}, ${k})\n2 2 1`;
+  return {
+    parameters: { n, d, k, snippet },
+    expected: { output },
+    prompt: `Formen lesen: Was gibt dieses NumPy-Programm aus? Sage die Ausgaben der drei <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis: <code>b</code> hat die Form <code>(${k},)</code> und broadcastet zeilenweise.`,
+    fullSolution: `$(${n},${d}) @ (${d},${k})$ spannt die ${d} auf: <code>H.shape</code> ist <code>(${n}, ${k})</code>. <code>H + b</code> broadcastet <code>(${k},)</code> als <code>(1, ${k})</code> auf alle ${n} Zeilen, Form bleibt <code>(${n}, ${k})</code>. Die Achsenzahlen: <code>H.ndim = 2</code>, <code>W.ndim = 2</code>, <code>b.ndim = 1</code>. Ausgabe: <code>(${n}, ${k})</code>, <code>(${n}, ${k})</code>, <code>2 2 1</code>.`,
+  };
+}
+
 export const LINALG_NUMPY_FRESH_GENERATORS = {
   genMatmulEntryFresh,
   genLinear2Fresh,
   genDet2,
   genShapePredict,
+  genBroadcastAxes,
 };

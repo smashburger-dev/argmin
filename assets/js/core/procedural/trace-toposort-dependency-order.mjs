@@ -10,32 +10,11 @@
 
 import { randInt, shuffle, until } from '../generator_draw_kit.mjs';
 import { makePredictFamily } from './case_family_kit.mjs';
+import doc from '../../../../content/families/trace-toposort-dependency-order.json' with { type: 'json' };
 
 const DRAW_SCOPE = 'trace-toposort-dependency-order';
 
-const TOPO_BASE_SNIPPET = `def topo(stages):
-    offen = set(stages)
-    erledigt = []
-    while offen:
-        bereit = sorted(n for n in offen if not (set(stages[n]) & offen))
-        naechster = bereit[0]
-        erledigt.append(naechster)
-        offen.discard(naechster)
-    return erledigt
-
-stages = {
-    "gold": [],
-    "regel": ["gold"],
-    "punkte": ["gold"],
-    "bericht": ["regel", "punkte"],
-}
-print(topo(stages))`;
-
-const TOPO_BASE_OUTPUT = "['gold', 'punkte', 'regel', 'bericht']";
-
 const TOPO_BASE_SOLUTION = 'Start: nur gold (keine Abhängigkeiten). Danach sind punkte und regel gleichzeitig bereit → alphabetisch punkte zuerst, dann regel. bericht braucht beide → kommt zuletzt: <code>[\'gold\', \'punkte\', \'regel\', \'bericht\']</code>. Der Zyklentest steckt in bereit: wäre die Liste leer, gäbe es einen Kreis.';
-
-const TOPO_PROMPT = 'Topologisches Sortieren von Hand ausführen: Was gibt dieses Programm aus? Sage die <code>print</code>-Zeile vorher, ohne den Code auszuführen. Bei mehreren bereiten Stufen wählt der Algorithmus alphabetisch den kleinsten Namen.';
 
 // Curated German stage names — short, lowercase, pipeline-flavoured.
 const STAGE_POOL = ['audit', 'bericht', 'daten', 'export', 'gold', 'index', 'metrik', 'modell', 'punkte', 'regel', 'schema', 'split'];
@@ -141,11 +120,8 @@ export const TOPO_CASES = {
   'toposort-dependency-order': {
     caseId: 'toposort-dependency-order',
     difficulty: 'core',
-    baseSnippet: TOPO_BASE_SNIPPET,
-    baseOutput: TOPO_BASE_OUTPUT,
     baseSolution: TOPO_BASE_SOLUTION,
     baseParams: { stages: { gold: [], regel: ['gold'], punkte: ['gold'], bericht: ['regel', 'punkte'] } },
-    prompt: TOPO_PROMPT,
     competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
     draw: drawStages,
     toParams: (stages) => ({ stages }),
@@ -182,13 +158,9 @@ export const TOPO_CONTRACT = {
   competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
+  doc,
   contract: TOPO_CONTRACT,
   cases: TOPO_CASES,
 });
 
-export const topoCaseOk = FAMILY.caseOk;
-export const genTopoCase = FAMILY.genCase;
-export const solveTopoFamily = FAMILY.solve;
-export const generateTopoFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

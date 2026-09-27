@@ -8,22 +8,16 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/optimize-multi-head-attention.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genMhaCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 // The case defs do not carry `packages`; the JSON anchors pin it to ['numpy'],
 // so the suite surface adds it for the verbatim anchor check.
-const suiteMod = {
-  ...mod,
-  MHA_CASES: Object.fromEntries(
-    Object.entries(mod.MHA_CASES).map(([id, def]) => [id, { ...def, packages: ['numpy'] }]),
-  ),
-};
 
-codeCapsuleSuite('optimize-multi-head-attention', suiteMod, [
-  { caseId: 'multi-head-attention', difficulty: 'challenge' },
-], { difficultyProfiles: ['challenge'] });
 
 test('anchor extras: difficulty profile, contract competencies and case types', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/optimize-multi-head-attention.json'), 'utf8'));
@@ -37,7 +31,7 @@ test('anchor extras: difficulty profile, contract competencies and case types', 
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const generated = mod.genMhaCase(seed, 'multi-head-attention', mod.MHA_CASES['multi-head-attention']);
+    const generated = genMhaCase(seed, 'multi-head-attention', mod.MHA_CASES['multi-head-attention']);
     assert.ok(generated.parameters.tests.includes('# seeded extra cases'), `${seed}: seeded block`);
     assert.ok(generated.parameters.tests.includes('seeded mha 1'), `${seed}: seeded check emitted`);
     assert.equal(generated.parameters.seedCases.length, 2, 'extraCount');

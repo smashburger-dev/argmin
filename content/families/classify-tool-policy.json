@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Policy durch Prompt-Bitten ersetzt",
-        "Kanäle offen gelassen und auf Filter vertraut",
-        "unbekannte Werkzeuge automatisch mit Rechten versehen"
+        {
+          "id": "policy-durch-prompt-bitten-ersetzt",
+          "text": "Policy durch Prompt-Bitten ersetzt"
+        },
+        {
+          "id": "kanaele-offen-gelassen-und-auf",
+          "text": "Kanäle offen gelassen und auf Filter vertraut"
+        },
+        {
+          "id": "unbekannte-werkzeuge-automatisch-mit-rechten",
+          "text": "unbekannte Werkzeuge automatisch mit Rechten versehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

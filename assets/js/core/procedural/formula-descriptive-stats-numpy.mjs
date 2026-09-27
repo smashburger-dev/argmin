@@ -9,75 +9,14 @@
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { randInt } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/formula-descriptive-stats-numpy.json' with { type: 'json' };
 
+const anchor = (caseId) => doc.cases.find((entry) => entry.caseId === caseId);
 const PACKAGES = ['numpy'];
 
-const CORE_STARTER = `import numpy as np
+const CORE_REFERENCE = anchor('describe-and-bins').expected.referenceSolver;
 
-
-def describe(values):
-    """Return {'n', 'mean', 'median', 'std'} with population std (ddof=0)."""
-    ...
-
-
-def bin_counts(values, edges):
-    """Return counts per bin with np.histogram edge rules (last edge inclusive)."""
-    ...
-`;
-
-const CHALLENGE_STARTER = `import numpy as np
-
-def describe(values):
-    ...
-
-def bin_counts(values, edges):
-    ...
-`;
-
-const CORE_BASE_TESTS = `d = describe([2, 4, 4, 4, 5, 5, 7, 9])
-__check('n', d["n"] == 8)
-__check('mean', abs(d["mean"] - 5.0) < 1e-9)
-__check('median', abs(d["median"] - 4.5) < 1e-9)
-__check('std ddof=0', abs(d["std"] - float(np.std([2, 4, 4, 4, 5, 5, 7, 9]))) < 1e-12)
-__check('histogramm bins', np.array_equal(bin_counts([2, 4, 4, 4, 5, 5, 7, 9], [0, 4, 9]), np.array([1, 7])))
-__check('letzte Kante inklusiv', np.array_equal(bin_counts([5.0, 9.0, 9.0], [0, 5, 9]), np.array([0, 3])))
-__check('leerer Bin', np.array_equal(bin_counts([1.0, 8.0], [0, 2, 4, 9]), np.array([1, 0, 1])))`;
-
-const CHALLENGE_BASE_TESTS = `d = describe([1, 2, 2, 4, 8])
-__check("n", d["n"] == 5)
-__check("mean", abs(d["mean"] - 3.4) < 1e-9)
-__check("median", abs(d["median"] - 2.0) < 1e-9)
-__check("std", abs(d["std"] - float(np.std([1, 2, 2, 4, 8]))) < 1e-12)
-__check("bins", np.array_equal(bin_counts([1, 2, 2, 4, 8], [0, 2, 4, 8]), np.array([1, 2, 2])))
-__check("last edge", np.array_equal(bin_counts([4.0, 8.0], [0, 4, 8]), np.array([0, 2])))`;
-
-const CORE_REFERENCE = `import numpy as np
-
-def describe(values):
-    values = np.asarray(values, dtype=float)
-    return {
-        "n": int(values.size),
-        "mean": float(np.mean(values)),
-        "median": float(np.median(values)),
-        "std": float(np.std(values)),
-    }
-
-
-def bin_counts(values, edges):
-    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]`;
-
-const CHALLENGE_REFERENCE = `import numpy as np
-
-def describe(values):
-    values = np.asarray(values, dtype=float)
-    return {"n": int(values.size), "mean": float(np.mean(values)), "median": float(np.median(values)), "std": float(np.std(values))}
-
-def bin_counts(values, edges):
-    return np.histogram(np.asarray(values), bins=np.asarray(edges, dtype=float))[0]`;
-
-const CORE_PROMPT = 'Implementiere zwei Zusammenfassungs-Funktionen mit NumPy. <code>describe(values)</code> bekommt eine Liste oder ein Array von Zahlen und gibt ein Dictionary mit <code>"n"</code> (Anzahl der Werte, int), <code>"mean"</code>, <code>"median"</code> und <code>"std"</code> zurück (floats; Standardabweichung als Bevölkerungswert, also <code>ddof=0</code> wie im NumPy-Standard). <code>bin_counts(values, edges)</code> bekommt Werte und Bin-Kanten und gibt die Anzahlen pro Bin zurück — mit den Kantenregeln von <code>np.histogram</code>: halboffene Bins $[e_k, e_{k+1})$, nur der letzte Bin schließt die rechte Kante ein. Der Testcode prüft beide Funktionen getrennt von deiner Eingabe.';
-
-const CHALLENGE_PROMPT = 'Implementiere `describe(values)` und `bin_counts(values, edges)` wie im bestehenden Vertrag, aber prüfe deine Lösung an einer asymmetrischen kleinen Stichprobe mit einem Ausreißer und drei Histogramm-Bins.';
+const CHALLENGE_REFERENCE = anchor('describe-outlier-bins').expected.referenceSolver;
 
 const CORE_SOLUTION = `${CORE_REFERENCE}
 
@@ -91,10 +30,6 @@ const CORE_SOLUTION = `${CORE_REFERENCE}
 export const STATS_CASES = {
   'describe-and-bins': {
     difficulty: 'core',
-    starterCode: CORE_STARTER,
-    baseTests: CORE_BASE_TESTS,
-    referenceSolver: CORE_REFERENCE,
-    prompt: CORE_PROMPT,
     fullSolution: CORE_SOLUTION,
     drawSample(r) {
       const len = randInt(r, 5, 10);
@@ -114,10 +49,6 @@ export const STATS_CASES = {
   },
   'describe-outlier-bins': {
     difficulty: 'challenge',
-    starterCode: CHALLENGE_STARTER,
-    baseTests: CHALLENGE_BASE_TESTS,
-    referenceSolver: CHALLENGE_REFERENCE,
-    prompt: CHALLENGE_PROMPT,
     fullSolution: CHALLENGE_REFERENCE,
     drawSample(r) {
       const len = randInt(r, 4, 7);
@@ -177,7 +108,8 @@ export const STATS_CONTRACT = {
 
 // Capsule shape: parameters carry starterCode/tests/seedCases; tests must be
 // the verbatim base block plus the seeded extras derived from seedCases.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: STATS_CONTRACT,
   cases: STATS_CASES,
   shapeError: 'Deskriptive-Stats-Parameter verletzen die Kapselform',
@@ -186,8 +118,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const statsCaseOk = FAMILY.caseOk;
-export const genStatsCase = FAMILY.genCase;
-export const solveStatsFamily = FAMILY.solve;
-export const generateStatsFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

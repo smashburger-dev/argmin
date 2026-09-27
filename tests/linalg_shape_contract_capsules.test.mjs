@@ -1,6 +1,6 @@
 // Familie classify-shape-contract: Kapsel-Gates (single-choice-adaptiert).
 // Run: node --test tests/linalg_shape_contract_capsules.test.mjs
-// Gemeinsame Gates leben in tests/linalg_capsule_suites.mjs — die Kit-Produkte
+// Gemeinsame Gates leben in tests/helpers/kit_suites.mjs — die Kit-Produkte
 // (capsuleOk/correctText/genCapsule/generate/solve) kommen aus
 // foundations_linalg_families.mjs, Kapseln und Fachhelfer aus
 // linalg_generators.mjs.
@@ -10,16 +10,14 @@ import {
   CLASSIFY_SHAPE_CAPSULES,
   classifyShapeOk,
 } from '../assets/js/core/linalg_generators.mjs';
-import {
-  CLASSIFY_SHAPE_CONTRACT,
-  classifyShapeCapsuleOk,
-  classifyShapeCorrectText,
-  genClassifyShapeCapsule,
-  generateClassifyShapeFamily,
-  solveClassifyShapeFamily,
-} from '../assets/js/core/foundations_linalg_families.mjs';
-import { LINALG_FAMILIES } from '../assets/js/domain/foundations_linalg_registry.mjs';
-import { linalgChoiceCapsuleSuite } from './linalg_capsule_suites.mjs';
+import { LINALG_FAMILY_SPECS } from '../assets/js/core/foundations_linalg_families.mjs';
+
+const spec = LINALG_FAMILY_SPECS.find((spec) => spec.familyId === 'classify-shape-contract');
+const classifyShapeCapsuleOk = spec.kit.capsuleOk;
+const classifyShapeCorrectText = spec.kit.correctText;
+const genClassifyShapeCapsule = spec.kit.genCapsule;
+const generateClassifyShapeFamily = spec.generate;
+const solveClassifyShapeFamily = spec.solve;
 
 // --- 27 statische Orakel aus dem Content-Stand vor dem Strip -----------------
 // Je Fall 9 Varianten mit kuratierter Shape-Arithmetik und dims-Bereich.
@@ -139,15 +137,3 @@ test('Kapseltabelle: Arten, Bereiche und Fallbindung', () => {
   assert.deepEqual(CLASSIFY_SHAPE_CAPSULES.stretch, { kind: 'token-embedding', batch: [1, 8], seqLen: [3, 12], embedDim: [6, 32], caseId: 'shape-token-batch-flatten' });
 });
 
-linalgChoiceCapsuleSuite('classify-shape-contract', {
-  capsules: CLASSIFY_SHAPE_CAPSULES,
-  contract: CLASSIFY_SHAPE_CONTRACT,
-  capsuleOk: classifyShapeCapsuleOk,
-  correctText: classifyShapeCorrectText,
-  genCapsule: genClassifyShapeCapsule,
-  generate: generateClassifyShapeFamily,
-  solve: solveClassifyShapeFamily,
-  registry: LINALG_FAMILIES,
-}, CASE_FOR, {
-  difficultyProfiles: ['intro', 'core', 'stretch'],
-});

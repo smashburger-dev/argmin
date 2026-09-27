@@ -400,5 +400,39 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "construct-linalg-contract-synthesis",
+    "familyGroup": "construct-program",
+    "summary": "Wählt die Implementierung, die den Vertrag für lineare Algebra (Shape-Guards, Rang mit Zeilentausch, solve mit Singularitäts-Guard) wirklich erfüllt.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": true,
+    "caseTypes": [
+      {
+        "caseId": "synthesis-three-contracts",
+        "propertyTest": false
+      },
+      {
+        "caseId": "synthesis-singular-guard",
+        "propertyTest": false
+      },
+      {
+        "caseId": "synthesis-row-swap",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "challenge",
+      "core",
+      "stretch"
+    ],
+    "competencyIds": [
+      "c-numpy-basics",
+      "c-linalg-gauss"
+    ]
+  },
+  "shapeError": "Linalg-Synthese-Parameter verletzen die Kapselform"
 }

@@ -111,9 +111,18 @@
         "Setze die gefundene Variable in eine der beiden Gleichungen zurück und prüfe das Paar anschließend in beiden."
       ],
       "typicalErrors": [
-        "Vorzeichenfehler beim Addieren der eliminierten Terme",
-        "x und y im Lösungspaar vertauscht",
-        "Probe nur in einer der beiden Gleichungen gemacht"
+        {
+          "id": "vorzeichenfehler-beim-addieren-der-eliminierten",
+          "text": "Vorzeichenfehler beim Addieren der eliminierten Terme"
+        },
+        {
+          "id": "x-und-y-im-loesungspaar",
+          "text": "x und y im Lösungspaar vertauscht"
+        },
+        {
+          "id": "probe-nur-in-einer-der",
+          "text": "Probe nur in einer der beiden Gleichungen gemacht"
+        }
       ],
       "title": "2×2-System mit großen Koeffizienten"
     }

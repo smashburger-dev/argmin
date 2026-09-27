@@ -5,15 +5,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import {
-  FAMILY_SPEC,
-  RIDGE_LASSO_CASES,
-  RIDGE_LASSO_CONTRACT,
-  genRidgeLassoCase,
-  generateRidgeLassoFamily,
-  solveRidgeLassoFamily,
-  ridgeLassoCaseOk,
-} from '../assets/js/core/procedural/formula-ridge-lasso-closed-form.mjs';
+import { FAMILY_SPEC, RIDGE_LASSO_CONTRACT } from '../assets/js/core/procedural/formula-ridge-lasso-closed-form.mjs';
+
+const spec = FAMILY_SPEC;
+const genRidgeLassoCase = spec.kit.genCase;
+const generateRidgeLassoFamily = spec.generate;
+const solveRidgeLassoFamily = spec.solve;
+const ridgeLassoCaseOk = spec.kit.caseOk;
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_IDS = ['ridge-normal-equation', 'lasso-soft-threshold'];
@@ -32,7 +30,7 @@ test('anchor: contract null, cases fully preserved as oracle', () => {
   // base test blocks and prompts must equal the module constants verbatim
   for (const caseId of CASE_IDS) {
     const body = doc.cases.find((item) => item.caseId === caseId);
-    const def = RIDGE_LASSO_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     assert.equal(body.parameters.tests, def.baseTests, `${caseId}: base tests verbatim`);
     assert.equal(body.parameters.starterCode, def.starterCode, `${caseId}: starter verbatim`);
     assert.equal(body.prompt, def.prompt, `${caseId}: prompt verbatim`);
@@ -42,7 +40,7 @@ test('anchor: contract null, cases fully preserved as oracle', () => {
 
 test('capsule shape: generated parameters satisfy ridgeLassoCaseOk over 200 seeds', () => {
   for (const caseId of CASE_IDS) {
-    const def = RIDGE_LASSO_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 200; seed += 1) {
       const generated = genRidgeLassoCase(seed, caseId, def);
       assert.ok(ridgeLassoCaseOk(generated.parameters, caseId, def), `${caseId}:${seed}: shape`);
@@ -56,7 +54,7 @@ test('capsule shape: generated parameters satisfy ridgeLassoCaseOk over 200 seed
 
 test('seeded draws stay inside the declared domains', () => {
   for (let seed = 0; seed < 200; seed += 1) {
-    const core = genRidgeLassoCase(seed, 'ridge-normal-equation', RIDGE_LASSO_CASES['ridge-normal-equation']);
+    const core = genRidgeLassoCase(seed, 'ridge-normal-equation', spec.kit.cases['ridge-normal-equation']);
     for (const entry of core.parameters.seedCases) {
       assert.ok(entry.X.length >= 3 && entry.X.length <= 4, 'core n range');
       assert.ok(entry.X[0].length >= 1 && entry.X[0].length <= 2, 'core d range');
@@ -65,7 +63,7 @@ test('seeded draws stay inside the declared domains', () => {
       assert.ok(entry.clam > 0, 'core lasso lam positive');
       assert.ok(entry.X.flat().every((v) => v >= -2 && v <= 3), 'core X range');
     }
-    const stretch = genRidgeLassoCase(seed, 'lasso-soft-threshold', RIDGE_LASSO_CASES['lasso-soft-threshold']);
+    const stretch = genRidgeLassoCase(seed, 'lasso-soft-threshold', spec.kit.cases['lasso-soft-threshold']);
     for (const entry of stretch.parameters.seedCases) {
       assert.ok(entry.X.length >= 3 && entry.X.length <= 5, 'stretch n range');
       assert.equal(entry.y.length, entry.X.length, 'stretch y matches n');
@@ -77,7 +75,7 @@ test('seeded draws stay inside the declared domains', () => {
 
 test('distinct floor: at least 40 distinct parameter sets per case over 200 seeds', () => {
   for (const caseId of CASE_IDS) {
-    const def = RIDGE_LASSO_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     const seen = new Set();
     for (let seed = 0; seed < 200; seed += 1) {
       seen.add(JSON.stringify(generateRidgeLassoFamily({ seed, caseId, difficulty: def.difficulty }).parameters));
@@ -88,7 +86,7 @@ test('distinct floor: at least 40 distinct parameter sets per case over 200 seed
 
 test('determinism: same seed reproduces identical output, negative seeds valid', () => {
   for (const caseId of CASE_IDS) {
-    const def = RIDGE_LASSO_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = -20; seed < 20; seed += 1) {
       assert.deepEqual(genRidgeLassoCase(seed, caseId, def), genRidgeLassoCase(seed, caseId, def), `${caseId}:${seed}`);
     }
@@ -97,7 +95,7 @@ test('determinism: same seed reproduces identical output, negative seeds valid',
 
 test('solver consistency: solve returns the case reference solver', () => {
   for (const caseId of CASE_IDS) {
-    const def = RIDGE_LASSO_CASES[caseId];
+    const def = spec.kit.cases[caseId];
     for (let seed = 0; seed < 50; seed += 1) {
       const generated = generateRidgeLassoFamily({ seed, caseId, difficulty: def.difficulty });
       assert.deepEqual(solveRidgeLassoFamily(generated.parameters), { referenceCode: def.referenceSolver });

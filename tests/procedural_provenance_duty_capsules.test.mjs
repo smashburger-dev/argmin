@@ -5,21 +5,17 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as mod from '../assets/js/core/procedural/classify-provenance-duty.mjs';
-import {
-  PROVENANCE_DUTY_CAPSULES,
-  PROVENANCE_DUTY_CONTRACT,
-  generateProvenanceDutyFamily,
-} from '../assets/js/core/procedural/classify-provenance-duty.mjs';
-import { choiceCapsuleSuite } from './procedural_capsule_suites.mjs';
+import bank from '../content/banks/classify-provenance-duty.json' with { type: 'json' };
+import { JS_FAMILY_SPECS } from '../assets/js/domain/exercise_registry.mjs';
 
-choiceCapsuleSuite('classify-provenance-duty', mod, [
-  { caseId: 'provenance-duty', difficulty: 'intro' },
-], { familyGroup: 'classify-concept', difficultyProfiles: ['intro'] });
+const spec = JS_FAMILY_SPECS.find((item) => item.familyId === 'classify-provenance-duty');
+const generateProvenanceDutyFamily = spec.generate;
+
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'provenance-duty';
-const CAPSULE = PROVENANCE_DUTY_CAPSULES.intro;
+const CAPSULE = bank.capsules.intro;
 const draw = (seed) => generateProvenanceDutyFamily({ seed, caseId: CASE_ID, difficulty: 'intro' });
 
 test('anchor extras: pinned profile and key position of the oracle case', () => {
@@ -52,5 +48,5 @@ test('capsule extras: parameter keys stay minimal, texts come from the bank row'
 });
 
 test('contract extras: competencies the suite does not pin', () => {
-  assert.deepEqual(PROVENANCE_DUTY_CONTRACT.competencyIds, ['c-research-cards']);
+  assert.deepEqual(bank.contract.competencyIds, ['c-research-cards']);
 });

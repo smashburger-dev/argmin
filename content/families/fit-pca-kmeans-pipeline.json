@@ -15,7 +15,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\ndef pca(X, k):\n    \"\"\"Return {'components': (k, d) ndarray, 'variance_share': shares}; eig sorted descending.\"\"\"\n    X = np.asarray(X, dtype=float)\n    # 1) zentrieren, 2) Kovarianz, 3) eigh + absteigend sortieren\n    ...\n\ndef kmeans(X, k, seed, iters=10):\n    \"\"\"Return (labels, centroids) after iters Lloyd steps; init via default_rng(seed).\"\"\"\n    X = np.asarray(X, dtype=float)\n    rng = np.random.default_rng(seed)\n    # Init mit rng.choice, dann Zuordnen und Updaten\n    ...\n",
-        "tests": "import numpy as np\n\n__X1 = [[1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]\n__p1 = pca(__X1, 2)\n__check('Diagonale: PC1 erklaert 100 %', np.allclose(__p1['variance_share'][0], 1.0) and abs(np.sum(__p1['variance_share']) - 1.0) < 1e-9)\n__check('PC1-Richtung vorzeichenfrei', np.allclose(np.abs(np.asarray(__p1['components'])[0]), np.array([np.sqrt(0.5), np.sqrt(0.5)])))\n__check('components-Shape (k, d)', np.asarray(__p1['components']).shape == (2, 2))\n__X2 = [[0.0, 0.0], [8.0, 0.0], [4.0, 2.0], [4.0, -2.0]]\n__p2 = pca(__X2, 2)\n__check('Varianzanteile 0.8/0.2', np.allclose(__p2['variance_share'], np.array([0.8, 0.2]), atol=1e-9))\n__check('PC1 entlang der x-Achse', np.allclose(np.abs(np.asarray(__p2['components'])[0]), np.array([1.0, 0.0]), atol=1e-9))\n__X3 = [[0.0, 0.0], [1.0, 0.0], [10.0, 10.0], [11.0, 10.0]]\n__l1, __c1 = kmeans(__X3, 2, 0)\n__l1b, __c1b = kmeans(__X3, 2, 0)\n__check('deterministisch pro Seed', np.array_equal(np.asarray(__l1), np.asarray(__l1b)) and np.allclose(np.asarray(__c1), np.asarray(__c1b)))\n__check('Gruppierung stabil', (__l1[0] == __l1[1]) and (__l1[2] == __l1[3]) and (__l1[0] != __l1[2]), str(list(__l1)))\n__check('Zentroiden (0.5,0) und (10.5,10)', np.allclose(sorted(np.asarray(__c1).tolist()), [[0.5, 0.0], [10.5, 10.0]], atol=1e-9))\n__l2, __c2 = kmeans(__X3, 2, 42)\n__check('anderer Seed, gleiche Partition', (__l2[0] == __l2[1]) and (__l2[2] == __l2[3]) and (__l2[0] != __l2[2]))\nfor __bad in (0, 99):\n    try:\n        pca(__X3, __bad)\n        __check('pca k=' + str(__bad) + ' abgelehnt', False, 'kein ValueError')\n    except ValueError:\n        __check('pca k=' + str(__bad) + ' abgelehnt', True)\n    except Exception as e:\n        __check('pca k=' + str(__bad) + ' abgelehnt', False, type(e).__name__)\n    try:\n        kmeans(__X3, __bad, 0)\n        __check('kmeans k=' + str(__bad) + ' abgelehnt', False, 'kein ValueError')\n    except ValueError:\n        __check('kmeans k=' + str(__bad) + ' abgelehnt', True)\n    except Exception as e:\n        __check('kmeans k=' + str(__bad) + ' abgelehnt', False, type(e).__name__)"
+        "tests": "import numpy as np\n\n__X1 = [[1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]\n__p1 = pca(__X1, 2)\n__check('Diagonale: PC1 erklaert 100 %', np.allclose(__p1['variance_share'][0], 1.0) and abs(np.sum(__p1['variance_share']) - 1.0) < 1e-9)\n__check('PC1-Richtung vorzeichenfrei', np.allclose(np.abs(np.asarray(__p1['components'])[0]), np.array([np.sqrt(0.5), np.sqrt(0.5)])))\n__check('components-Shape (k, d)', np.asarray(__p1['components']).shape == (2, 2))\n__X2 = [[0.0, 0.0], [8.0, 0.0], [4.0, 2.0], [4.0, -2.0]]\n__p2 = pca(__X2, 2)\n__check('Varianzanteile 0.8/0.2', np.allclose(__p2['variance_share'], np.array([0.8, 0.2]), atol=1e-9))\n__check('PC1 entlang der x-Achse', np.allclose(np.abs(np.asarray(__p2['components'])[0]), np.array([1.0, 0.0]), atol=1e-9))\n__X3 = [[0.0, 0.0], [1.0, 0.0], [10.0, 10.0], [11.0, 10.0]]\n__l1, __c1 = kmeans(__X3, 2, 0)\n__l1b, __c1b = kmeans(__X3, 2, 0)\n__check('deterministisch pro Seed', np.array_equal(np.asarray(__l1), np.asarray(__l1b)) and np.allclose(np.asarray(__c1), np.asarray(__c1b)))\n__check('Gruppierung stabil', (__l1[0] == __l1[1]) and (__l1[2] == __l1[3]) and (__l1[0] != __l1[2]), str(list(__l1)))\n__check('Zentroiden (0.5,0) und (10.5,10)', np.allclose(sorted(np.asarray(__c1).tolist()), [[0.5, 0.0], [10.5, 10.0]], atol=1e-9))\n__l2, __c2 = kmeans(__X3, 2, 42)\n__check('anderer Seed, gleiche Partition', (__l2[0] == __l2[1]) and (__l2[2] == __l2[3]) and (__l2[0] != __l2[2]))\nfor __bad in (0, 99):\n    try:\n        pca(__X3, __bad)\n        __check('pca k=' + str(__bad) + ' abgelehnt', False, 'kein ValueError')\n    except ValueError:\n        __check('pca k=' + str(__bad) + ' abgelehnt', True)\n    except Exception as e:\n        __check('pca k=' + str(__bad) + ' abgelehnt', False, type(e).__name__)\n    try:\n        kmeans(__X3, __bad, 0)\n        __check('kmeans k=' + str(__bad) + ' abgelehnt', False, 'kein ValueError')\n    except ValueError:\n        __check('kmeans k=' + str(__bad) + ' abgelehnt', True)\n    except Exception as e:\n        __check('kmeans k=' + str(__bad) + ' abgelehnt', False, type(e).__name__)\n__X4 = [[1.0, 0.0, 0.0], [0.0, 2.0, 1.0], [3.0, 1.0, 0.0], [2.0, 3.0, 1.0], [4.0, 0.0, 2.0], [1.0, 2.0, 3.0]]\n__p4 = pca(__X4, 2)\n__check('komponenten als zeilen', np.allclose(np.abs(np.asarray(__p4[\"components\"])), np.array([[0.827574, 0.548135, 0.121113], [0.364079, 0.35988, 0.85903]]), atol=1e-6))"
       },
       "expected": {
         "kind": "reference-solver",
@@ -28,9 +28,18 @@
         "Abstände bekommst du ohne Schleife: `np.linalg.norm(X[:, None, :] - centroids[None, :, :], axis=2)` gibt eine (n, k)-Distanzmatrix; `np.argmin(..., axis=1)` wählt (bei Gleichstand den kleinsten Index)."
       ],
       "typicalErrors": [
-        "eigh-Ausgabe nicht absteigend sortieren",
-        "Eigenvektoren als Zeilen statt Spalten lesen",
-        "k-Means-Initialisierung ohne Generator-Objekt"
+        {
+          "id": "eigh-ausgabe-nicht-absteigend-sortieren",
+          "text": "eigh-Ausgabe nicht absteigend sortieren"
+        },
+        {
+          "id": "eigenvektoren-als-zeilen-statt-spalten",
+          "text": "Eigenvektoren als Zeilen statt Spalten lesen"
+        },
+        {
+          "id": "k-means-initialisierung-ohne-generator",
+          "text": "k-Means-Initialisierung ohne Generator-Objekt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -60,9 +69,18 @@
         "Alles läuft auf den skalierten Daten: PCA und k-Means sehen dieselbe Matrix. Bei zwei Aufrufen muss derselbe Seed dasselbe Ergebnis liefern — nutze einen frischen default_rng(seed) pro kmeans-Aufruf."
       ],
       "typicalErrors": [
-        "durch Standardabweichung 0 teilen (NaN statt ValueError)",
-        "PCA auf unskalierten Daten",
-        "rng-Objekt außerhalb der Funktion wiederverwenden"
+        {
+          "id": "durch-standardabweichung-0-teilen-nan",
+          "text": "durch Standardabweichung 0 teilen (NaN statt ValueError)"
+        },
+        {
+          "id": "pca-auf-unskalierten-daten",
+          "text": "PCA auf unskalierten Daten"
+        },
+        {
+          "id": "rng-objekt-ausserhalb-der-funktion",
+          "text": "rng-Objekt außerhalb der Funktion wiederverwenden"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

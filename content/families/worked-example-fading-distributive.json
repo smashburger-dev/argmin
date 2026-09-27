@@ -50,8 +50,14 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1: Vorzeichen doppelt eingetragen — das Minus vor der Lücke steht bereits",
-        "Lücke 1: Konstanten verwechselt — q statt a·q mit d verrechnet"
+        {
+          "id": "luecke-1-vorzeichen-doppelt-eingetragen",
+          "text": "Lücke 1: Vorzeichen doppelt eingetragen — das Minus vor der Lücke steht bereits"
+        },
+        {
+          "id": "luecke-1-konstanten-verwechselt-q",
+          "text": "Lücke 1: Konstanten verwechselt — q statt a·q mit d verrechnet"
+        }
       ]
     },
     {
@@ -113,10 +119,22 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1: a+p addiert statt a·p multipliziert",
-        "Lücke 2: q statt a·q eingetragen — innerer Faktor ohne äußeren Faktor",
-        "Lücke 2 oder 3: Vorzeichen beim Ausmultiplizieren verwechselt (Minus in der Klammer übersehen)",
-        "Lücke 3: x-Term in die Konstante hineingerechnet"
+        {
+          "id": "luecke-1-a-p-addiert",
+          "text": "Lücke 1: a+p addiert statt a·p multipliziert"
+        },
+        {
+          "id": "luecke-2-q-statt-a",
+          "text": "Lücke 2: q statt a·q eingetragen — innerer Faktor ohne äußeren Faktor"
+        },
+        {
+          "id": "luecke-2-oder-3-vorzeichen",
+          "text": "Lücke 2 oder 3: Vorzeichen beim Ausmultiplizieren verwechselt (Minus in der Klammer übersehen)"
+        },
+        {
+          "id": "luecke-3-x-term-in",
+          "text": "Lücke 3: x-Term in die Konstante hineingerechnet"
+        }
       ]
     },
     {
@@ -194,10 +212,22 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 1/4: a+p addiert statt a·p multipliziert",
-        "Lücke 2: Vorzeichen von a·q verwechselt — das Minus steht bereits vor der Lücke",
-        "Lücke 3: d mit a multipliziert — der äußere Summand bleibt unverändert",
-        "Lücke 5: Schritt übersprungen — Zeile-2-Konstante statt a·q+d eingetragen"
+        {
+          "id": "luecke-1-4-a-p",
+          "text": "Lücke 1/4: a+p addiert statt a·p multipliziert"
+        },
+        {
+          "id": "luecke-2-vorzeichen-von-a",
+          "text": "Lücke 2: Vorzeichen von a·q verwechselt — das Minus steht bereits vor der Lücke"
+        },
+        {
+          "id": "luecke-3-d-mit-a",
+          "text": "Lücke 3: d mit a multipliziert — der äußere Summand bleibt unverändert"
+        },
+        {
+          "id": "luecke-5-schritt-uebersprungen-zeile",
+          "text": "Lücke 5: Schritt übersprungen — Zeile-2-Konstante statt a·q+d eingetragen"
+        }
       ]
     },
     {
@@ -275,9 +305,18 @@
         }
       ],
       "typicalErrors": [
-        "Lücke 3/4: zweite Klammer mit a statt c multipliziert",
-        "Lücke 5: Produkte multipliziert statt Koeffizienten addiert (a·p·c·m)",
-        "Lücke 6: Konstanten einzeln übernommen statt a·q + c·n zusammengefasst"
+        {
+          "id": "luecke-3-4-zweite-klammer",
+          "text": "Lücke 3/4: zweite Klammer mit a statt c multipliziert"
+        },
+        {
+          "id": "luecke-5-produkte-multipliziert-statt",
+          "text": "Lücke 5: Produkte multipliziert statt Koeffizienten addiert (a·p·c·m)"
+        },
+        {
+          "id": "luecke-6-konstanten-einzeln-uebernommen",
+          "text": "Lücke 6: Konstanten einzeln übernommen statt a·q + c·n zusammengefasst"
+        }
       ],
       "title": "Zwei Produkte ausmultiplizieren (Lücken)"
     }

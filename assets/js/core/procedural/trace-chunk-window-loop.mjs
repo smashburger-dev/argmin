@@ -9,24 +9,9 @@
 
 import { randInt } from '../generator_draw_kit.mjs';
 import { makePredictFamily } from './case_family_kit.mjs';
+import doc from '../../../../content/families/trace-chunk-window-loop.json' with { type: 'json' };
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
-
-const BASE_SNIPPET = `def chunk(text, size, overlap):
-    parts = []
-    start = 0
-    while start < len(text):
-        parts.append(text[start:start + size])
-        start += size - overlap
-    return parts
-
-text = "abcdefgh"
-print(len(chunk(text, 4, 2)))
-print(chunk(text, 4, 2)[-1])`;
-
-const BASE_OUTPUT = '4\ngh';
-
-const PROMPT = 'Chunking lesen und vorhersagen: Was gibt dieses Programm aus? Sage beide <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Das Fenster startet bei 0 und wandert um <code>size - overlap</code> weiter, solange <code>start &lt; len(text)</code>.';
 
 const BASE_SOLUTION = 'Starts: 0, 2, 4, 6 (jeweils &lt; 8), also 4 Fenster: abcd, cdef, efgh, gh. Ausgabe: <code>4</code> und <code>gh</code>. Die Fensterzahl ist ⌈8/2⌉ = 4.';
 
@@ -36,10 +21,7 @@ export const CHUNK_CASES = {
   'chunk-window-loop': {
     caseId: 'chunk-window-loop',
     difficulty: 'core',
-    baseSnippet: BASE_SNIPPET,
-    baseOutput: BASE_OUTPUT,
     baseParams: { text: 'abcdefgh', size: 4, overlap: 2 },
-    prompt: PROMPT,
     baseSolution: BASE_SOLUTION,
     competencyIds: ['c-genai-rag', 'c-python-reading'],
     draw: drawChunk,
@@ -115,14 +97,10 @@ export const CHUNK_CONTRACT = {
   competencyIds: ['c-genai-rag', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
+  doc,
   contract: CHUNK_CONTRACT,
   cases: CHUNK_CASES,
   shapeError: 'trace-chunk-window-loop: Parameter verletzen die Kapselform',
 });
 
-export const chunkCaseOk = FAMILY.caseOk;
-export const genChunkCase = FAMILY.genCase;
-export const solveChunkFamily = FAMILY.solve;
-export const generateChunkFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

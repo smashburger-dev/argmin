@@ -148,5 +148,28 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-tool-policy",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet einen Tool-Einsatz der passenden Policy-Klasse zu.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "tool-policy-least-privilege",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-genai-prototype"
+    ]
+  },
+  "shapeError": "Tool-Policy-Parameter verletzen die Kapselform"
 }

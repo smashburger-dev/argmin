@@ -32,9 +32,18 @@
         "num_grad ist die zentrale Differenz (f(x+h) − f(x−h)) / (2h); im Test wird MSE als Funktion nur von w (b fest) bzw. nur von b übergeben."
       ],
       "typicalErrors": [
-        "den Faktor 2/n vergessen oder nur 2 genommen",
-        "in dw den x-Faktor unterschlagen",
-        "einseitige statt zentrale Differenz im Gradientencheck"
+        {
+          "id": "den-faktor-2-n-vergessen",
+          "text": "den Faktor 2/n vergessen oder nur 2 genommen"
+        },
+        {
+          "id": "in-dw-den-x-faktor",
+          "text": "in dw den x-Faktor unterschlagen"
+        },
+        {
+          "id": "einseitige-statt-zentrale-differenz-im",
+          "text": "einseitige statt zentrale Differenz im Gradientencheck"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

@@ -56,9 +56,18 @@
         }
       ],
       "typicalErrors": [
-        "Hyperparameter (k) mit Labels verwechseln",
-        "Skalierungsbedarf nur bei einem Verfahren vermuten",
-        "PCA wegen „Komponenten“ als überwacht einstufen"
+        {
+          "id": "hyperparameter-k-mit-labels-verwechseln",
+          "text": "Hyperparameter (k) mit Labels verwechseln"
+        },
+        {
+          "id": "skalierungsbedarf-nur-bei-einem-verfahren",
+          "text": "Skalierungsbedarf nur bei einem Verfahren vermuten"
+        },
+        {
+          "id": "pca-wegen-komponenten-als-ueberwacht",
+          "text": "PCA wegen „Komponenten“ als überwacht einstufen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -172,9 +181,18 @@
         }
       ],
       "typicalErrors": [
-        "Eine Varianzzerlegung ohne Zielvariable fälschlich als überwachte Vorhersageaufgabe eingeordnet.",
-        "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert.",
-        "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
+        {
+          "id": "eine-varianzzerlegung-ohne-zielvariable-faelschlich",
+          "text": "Eine Varianzzerlegung ohne Zielvariable fälschlich als überwachte Vorhersageaufgabe eingeordnet."
+        },
+        {
+          "id": "die-einheitenabhaengigkeit-der-varianz-bei",
+          "text": "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert."
+        },
+        {
+          "id": "pca-irrtuemlich-mit-einem-verfahren",
+          "text": "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -288,9 +306,18 @@
         }
       ],
       "typicalErrors": [
-        "Vorverarbeitung mit der Erzeugung von Zielmarkierungen verwechselt.",
-        "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt.",
-        "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
+        {
+          "id": "vorverarbeitung-mit-der-erzeugung-von",
+          "text": "Vorverarbeitung mit der Erzeugung von Zielmarkierungen verwechselt."
+        },
+        {
+          "id": "die-reellwertige-rbf-distanz-faelschlich",
+          "text": "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt."
+        },
+        {
+          "id": "eine-skalierungsentscheidung-faelschlich-als-wechsel",
+          "text": "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

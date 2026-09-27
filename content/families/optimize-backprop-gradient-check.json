@@ -32,9 +32,18 @@
         "Kontrolliere über die Formen: dW muss (d, k) und db muss (k,) haben. Welcher Eingang muss transponiert werden, damit X.T @ … die Form (d, k) liefert — und über welche Achse summiert der Bias-Gradient?"
       ],
       "typicalErrors": [
-        "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt",
-        "db als Skalar statt Vektor summiert",
-        "Residuen mit umgekehrtem Vorzeichen"
+        {
+          "id": "faktor-2-n-k-durch",
+          "text": "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt"
+        },
+        {
+          "id": "db-als-skalar-statt-vektor",
+          "text": "db als Skalar statt Vektor summiert"
+        },
+        {
+          "id": "residuen-mit-umgekehrtem-vorzeichen",
+          "text": "Residuen mit umgekehrtem Vorzeichen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "Durch ReLU zurück: Der lokale Gradient ist 1, wo die Aktivierung positiv war, sonst 0 — als Maske (H > 0) multiplizierbar. Wie delta1 weiter zu dW1 und db1 führt, folgt aus demselben Transpositions-/Summenvertrag wie in der vorherigen Lektion."
       ],
       "typicalErrors": [
-        "ReLU-Ableitung als H statt (H > 0)",
-        "Faktor 2/m vergessen oder nur auf eine Achse bezogen",
-        "transponierte Verträge (H.T @ delta2, W2.T) vertauscht"
+        {
+          "id": "relu-ableitung-als-h-statt",
+          "text": "ReLU-Ableitung als H statt (H > 0)"
+        },
+        {
+          "id": "faktor-2-m-vergessen-oder",
+          "text": "Faktor 2/m vergessen oder nur auf eine Achse bezogen"
+        },
+        {
+          "id": "transponierte-vertraege-h-t-delta2",
+          "text": "transponierte Verträge (H.T @ delta2, W2.T) vertauscht"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

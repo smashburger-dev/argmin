@@ -5,15 +5,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/aggregate-parity-threshold-selection.mjs';
-import {
-  PARITY_THRESHOLD_CASES,
-  genParityThresholdCase,
-} from '../assets/js/core/procedural/aggregate-parity-threshold-selection.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { PARITY_THRESHOLD_CASES } from '../assets/js/core/procedural/aggregate-parity-threshold-selection.mjs';
 
-codeCapsuleSuite('aggregate-parity-threshold-selection', mod, [
-  { caseId: 'parity-threshold-selection', difficulty: 'stretch' },
-], { familyGroup: 'aggregate-count', difficultyProfiles: ['stretch'] });
+const spec = mod.FAMILY_SPEC;
+const genParityThresholdCase = spec.kit.genCase;
+
+
 
 test('seeded draws stay inside the declared domains', () => {
   const def = PARITY_THRESHOLD_CASES['parity-threshold-selection'];

@@ -2,18 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import {
-  DATA_ML_FAMILY_SPECS,
-  generateFormulaCountFromConstructionFamily,
-  generateFormulaStatFromTableFamily,
-  solveFormulaCountFromConstruction,
-  solveFormulaStatFromTable,
-} from '../assets/js/core/data_ml_families.mjs';
+import { DATA_ML_FAMILY_SPECS } from '../assets/js/core/data_ml_families.mjs';
 import { genAttentionShape, genGreedyToken, genLoraParamCount, genRelativeGain, genVocabAfterMerges } from '../assets/js/core/transformer_generators.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import { createFamilyRegistry, registerStaticCases, staticFamilySpec } from '../assets/js/domain/family_registry.mjs';
 import { legacyOracle } from './helpers/legacy_oracle.mjs';
 
+
+
+
+const spec = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'formula-count-from-construction');
+const spec1 = DATA_ML_FAMILY_SPECS.find((spec) => spec.familyId === 'formula-stat-from-table');
+const generateFormulaCountFromConstructionFamily = spec.generate;
+const generateFormulaStatFromTableFamily = spec1.generate;
+const solveFormulaCountFromConstruction = spec.solve;
+const solveFormulaStatFromTable = spec1.solve;
 const root = join(process.cwd(), 'content');
 const legacy = {};
 for (const week of [22, 23, 24, 25, 26]) {

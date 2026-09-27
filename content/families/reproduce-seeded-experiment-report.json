@@ -32,9 +32,18 @@
         "check_manifest: Liste der fehlenden Schlüssel mit einer Abfrage `[k for k in required if k not in manifest]` sammeln und bei Nicht-Leere ValueError werfen."
       ],
       "typicalErrors": [
-        "Zufallsreihenfolge in rng vertauschen",
-        "fehlerhafte Keys stillschweigend akzeptieren",
-        "Test- und Trainingsindizes vertauschen"
+        {
+          "id": "zufallsreihenfolge-in-rng-vertauschen",
+          "text": "Zufallsreihenfolge in rng vertauschen"
+        },
+        {
+          "id": "fehlerhafte-keys-stillschweigend-akzeptieren",
+          "text": "fehlerhafte Keys stillschweigend akzeptieren"
+        },
+        {
+          "id": "test-und-trainingsindizes-vertauschen",
+          "text": "Test- und Trainingsindizes vertauschen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "check_table validiert Struktur und Inhalt getrennt: erst Zeilenform (score/identical_rerun vorhanden, Typen stimmen), dann identical_rerun is True."
       ],
       "typicalErrors": [
-        "nur einmal laufen lassen und identical_rerun auf True setzen",
-        "Score als int oder String zurückgeben",
-        "check_table ohne Typ-Prüfung"
+        {
+          "id": "nur-einmal-laufen-lassen-und",
+          "text": "nur einmal laufen lassen und identical_rerun auf True setzen"
+        },
+        {
+          "id": "score-als-int-oder-string",
+          "text": "Score als int oder String zurückgeben"
+        },
+        {
+          "id": "check-table-ohne-typ-pruefung",
+          "text": "check_table ohne Typ-Prüfung"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

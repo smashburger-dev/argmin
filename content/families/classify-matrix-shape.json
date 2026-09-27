@@ -107,9 +107,18 @@
         }
       ],
       "typicalErrors": [
-        "Bei elementweiser Addition die Zeilen- und Spaltenzahl vertauscht.",
-        "Broadcasting als pauschale Erlaubnis für jede beliebige Matrixform verstanden.",
-        "Die quadratische Voraussetzung der Matrixmultiplikation fälschlich auf Addition übertragen."
+        {
+          "id": "bei-elementweiser-addition-die-zeilen",
+          "text": "Bei elementweiser Addition die Zeilen- und Spaltenzahl vertauscht."
+        },
+        {
+          "id": "broadcasting-als-pauschale-erlaubnis-fuer",
+          "text": "Broadcasting als pauschale Erlaubnis für jede beliebige Matrixform verstanden."
+        },
+        {
+          "id": "die-quadratische-voraussetzung-der-matrixmultiplikation",
+          "text": "Die quadratische Voraussetzung der Matrixmultiplikation fälschlich auf Addition übertragen."
+        }
       ]
     },
     {
@@ -173,9 +182,18 @@
         }
       ],
       "typicalErrors": [
-        "Bei $AB$ die äußeren Dimensionen nicht als Ergebnisform verwendet.",
-        "Die Gültigkeit eines Produkts nur für eine Faktor-Reihenfolge geprüft.",
-        "Eine einzelne Operanden-Dimension fälschlich als Form beider Produkte übernommen."
+        {
+          "id": "bei-ab-die-aeusseren-dimensionen",
+          "text": "Bei $AB$ die äußeren Dimensionen nicht als Ergebnisform verwendet."
+        },
+        {
+          "id": "die-gueltigkeit-eines-produkts-nur",
+          "text": "Die Gültigkeit eines Produkts nur für eine Faktor-Reihenfolge geprüft."
+        },
+        {
+          "id": "eine-einzelne-operanden-dimension-faelschlich",
+          "text": "Eine einzelne Operanden-Dimension fälschlich als Form beider Produkte übernommen."
+        }
       ]
     }
   ]

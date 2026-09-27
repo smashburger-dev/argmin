@@ -33,9 +33,18 @@
         }
       ],
       "typicalErrors": [
-        "Margin mit Punktabstand oder Klassengenauigkeit verwechseln",
-        "Zusammenhang kleines ||w|| und großer Margin umkehren",
-        "Stützvektoren als alle Trainingspunkte verstehen"
+        {
+          "id": "margin-mit-punktabstand-oder-klassengenauigkeit",
+          "text": "Margin mit Punktabstand oder Klassengenauigkeit verwechseln"
+        },
+        {
+          "id": "zusammenhang-kleines-w-und-grosser",
+          "text": "Zusammenhang kleines ||w|| und großer Margin umkehren"
+        },
+        {
+          "id": "stuetzvektoren-als-alle-trainingspunkte-verstehen",
+          "text": "Stützvektoren als alle Trainingspunkte verstehen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -92,9 +101,18 @@
         }
       ],
       "typicalErrors": [
-        "Slack-Variablen mit dem Entfernen problematischer Trainingspunkte verwechselt.",
-        "Die Kostenstrafe für Margin-Verletzungen aus der Soft-Margin-Idee entfernt.",
-        "Eine überwachte Trennaufgabe wegen ihrer Robustheitskomponente als Clustering eingeordnet."
+        {
+          "id": "slack-variablen-mit-dem-entfernen",
+          "text": "Slack-Variablen mit dem Entfernen problematischer Trainingspunkte verwechselt."
+        },
+        {
+          "id": "die-kostenstrafe-fuer-margin-verletzungen",
+          "text": "Die Kostenstrafe für Margin-Verletzungen aus der Soft-Margin-Idee entfernt."
+        },
+        {
+          "id": "eine-ueberwachte-trennaufgabe-wegen-ihrer",
+          "text": "Eine überwachte Trennaufgabe wegen ihrer Robustheitskomponente als Clustering eingeordnet."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -151,9 +169,18 @@
         }
       ],
       "typicalErrors": [
-        "Geometrisch bestimmende Trainingspunkte mit zufällig gezogenen Validierungspunkten verwechselt.",
-        "Nur Punkte weit innerhalb der korrekten Seite als randbestimmend betrachtet.",
-        "Support-Vektor-Begriff fälschlich auf Testfehler und nicht auf die Trainingslösung bezogen."
+        {
+          "id": "geometrisch-bestimmende-trainingspunkte-mit-zufaellig",
+          "text": "Geometrisch bestimmende Trainingspunkte mit zufällig gezogenen Validierungspunkten verwechselt."
+        },
+        {
+          "id": "nur-punkte-weit-innerhalb-der",
+          "text": "Nur Punkte weit innerhalb der korrekten Seite als randbestimmend betrachtet."
+        },
+        {
+          "id": "support-vektor-begriff-faelschlich-auf",
+          "text": "Support-Vektor-Begriff fälschlich auf Testfehler und nicht auf die Trainingslösung bezogen."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

@@ -3,18 +3,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as mod from '../assets/js/core/procedural/transform-tokenize-roundtrip.mjs';
-import {
-  TOKENIZE_CASES,
-  genTokenizeCase,
-} from '../assets/js/core/procedural/transform-tokenize-roundtrip.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { TOKENIZE_CASES } from '../assets/js/core/procedural/transform-tokenize-roundtrip.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genTokenizeCase = spec.kit.genCase;
+
 
 const CASE_IDS = ['char-encode-roundtrip', 'subword-unk-roundtrip'];
 
-codeCapsuleSuite('transform-tokenize-roundtrip', mod, [
-  { caseId: 'char-encode-roundtrip', difficulty: 'core' },
-  { caseId: 'subword-unk-roundtrip', difficulty: 'stretch' },
-], { difficultyProfiles: ['core', 'stretch'] });
 
 test('capsule extras: seeded block marker stays emitted', () => {
   for (const caseId of CASE_IDS) {

@@ -58,9 +58,18 @@
         }
       ],
       "typicalErrors": [
-        "Zielart nach Datentyp statt nach Bedeutung der Variable entscheiden",
-        "überwachtes und unüberwachtes Lernen verwechseln",
-        "Kategorien als stetiges Ziel behandeln, weil sie als Zahlen kodiert sind"
+        {
+          "id": "zielart-nach-datentyp-statt-nach",
+          "text": "Zielart nach Datentyp statt nach Bedeutung der Variable entscheiden"
+        },
+        {
+          "id": "ueberwachtes-und-unueberwachtes-lernen-verwechseln",
+          "text": "überwachtes und unüberwachtes Lernen verwechseln"
+        },
+        {
+          "id": "kategorien-als-stetiges-ziel-behandeln",
+          "text": "Kategorien als stetiges Ziel behandeln, weil sie als Zahlen kodiert sind"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -120,9 +129,18 @@
         }
       ],
       "typicalErrors": [
-        "Die Zahl der Eingangsmerkmale mit dem Fehlen von Zielwerten verwechselt.",
-        "Einen stetigen Hauspreis ohne Begründung in zwei Klassen eingeteilt.",
-        "Eine Preisvorhersage fälschlich als Folge von Entscheidungen mit Belohnungen modelliert."
+        {
+          "id": "die-zahl-der-eingangsmerkmale-mit",
+          "text": "Die Zahl der Eingangsmerkmale mit dem Fehlen von Zielwerten verwechselt."
+        },
+        {
+          "id": "einen-stetigen-hauspreis-ohne-begruendung",
+          "text": "Einen stetigen Hauspreis ohne Begründung in zwei Klassen eingeteilt."
+        },
+        {
+          "id": "eine-preisvorhersage-faelschlich-als-folge",
+          "text": "Eine Preisvorhersage fälschlich als Folge von Entscheidungen mit Belohnungen modelliert."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -182,9 +200,18 @@
         }
       ],
       "typicalErrors": [
-        "Die fehlende Zielvariable des Händlerdatensatzes übersehen.",
-        "Die Ausgabe von Cluster-IDs mit vorgegebenen Klassenzielen verwechselt.",
-        "Numerische Eingabespalten fälschlich als kontinuierliches Vorhersageziel interpretiert."
+        {
+          "id": "die-fehlende-zielvariable-des-haendlerdatensatzes",
+          "text": "Die fehlende Zielvariable des Händlerdatensatzes übersehen."
+        },
+        {
+          "id": "die-ausgabe-von-cluster-ids",
+          "text": "Die Ausgabe von Cluster-IDs mit vorgegebenen Klassenzielen verwechselt."
+        },
+        {
+          "id": "numerische-eingabespalten-faelschlich-als-kontinuierliches",
+          "text": "Numerische Eingabespalten fälschlich als kontinuierliches Vorhersageziel interpretiert."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

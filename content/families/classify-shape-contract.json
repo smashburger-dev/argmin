@@ -60,9 +60,18 @@
         }
       ],
       "typicalErrors": [
-        "Form der Gewichtsmatrix statt des Ergebnisses angegeben",
-        "Bias als formgebend statt nur broadcastet gelesen",
-        "passende innere Dimensionen fälschlich für unzulässig gehalten"
+        {
+          "id": "form-der-gewichtsmatrix-statt-des",
+          "text": "Form der Gewichtsmatrix statt des Ergebnisses angegeben"
+        },
+        {
+          "id": "bias-als-formgebend-statt-nur",
+          "text": "Bias als formgebend statt nur broadcastet gelesen"
+        },
+        {
+          "id": "passende-innere-dimensionen-faelschlich-fuer",
+          "text": "passende innere Dimensionen fälschlich für unzulässig gehalten"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -132,9 +141,18 @@
         }
       ],
       "typicalErrors": [
-        "Kontraktionsachse mit der Sequenzachse vertauscht",
-        "Batchdimension beim Matrixprodukt entfernt",
-        "Gewichtsmatrixform als Aktivierungsform ausgegeben"
+        {
+          "id": "kontraktionsachse-mit-der-sequenzachse-vertauscht",
+          "text": "Kontraktionsachse mit der Sequenzachse vertauscht"
+        },
+        {
+          "id": "batchdimension-beim-matrixprodukt-entfernt",
+          "text": "Batchdimension beim Matrixprodukt entfernt"
+        },
+        {
+          "id": "gewichtsmatrixform-als-aktivierungsform-ausgegeben",
+          "text": "Gewichtsmatrixform als Aktivierungsform ausgegeben"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -198,9 +216,18 @@
         }
       ],
       "typicalErrors": [
-        "Embeddingbreite an die falsche Achsenposition gesetzt",
-        "Batchachse beim Einbetten weggelassen",
-        "Vorher-Shape der Token-IDs als Ergebnis beibehalten"
+        {
+          "id": "embeddingbreite-an-die-falsche-achsenposition",
+          "text": "Embeddingbreite an die falsche Achsenposition gesetzt"
+        },
+        {
+          "id": "batchachse-beim-einbetten-weggelassen",
+          "text": "Batchachse beim Einbetten weggelassen"
+        },
+        {
+          "id": "vorher-shape-der-token-ids",
+          "text": "Vorher-Shape der Token-IDs als Ergebnis beibehalten"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

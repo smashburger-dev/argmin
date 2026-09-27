@@ -36,7 +36,10 @@
         "Ein Komma im String ist kein gültiges Zahlenliteral — welche Ausnahme wirft int() dann?"
       ],
       "typicalErrors": [
-        "das Komma-Literal als gültige Zahl gelesen"
+        {
+          "id": "das-komma-literal-als-gueltige",
+          "text": "das Komma-Literal als gültige Zahl gelesen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -58,7 +61,7 @@
         }
       },
       "expected": {
-        "correctText": "TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch."
+        "correctText": "TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verkettet keine Typen automatisch."
       },
       "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",
@@ -74,7 +77,10 @@
         "Welche Ausnahme wirft Python bei einer für diese Typen undefinierten Operation?"
       ],
       "typicalErrors": [
-        "implizite Typumwandlung von int zu str angenommen"
+        {
+          "id": "implizite-typumwandlung-von-int-zu",
+          "text": "implizite Typumwandlung von int zu str angenommen"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -112,7 +118,10 @@
         "Der Zugriff über eckige Klammern auf einen fehlenden Schlüssel wirft welche Ausnahme?"
       ],
       "typicalErrors": [
-        "angenommen, der Schlüssel existiere oder ein Standardwert werde geliefert"
+        {
+          "id": "angenommen-der-schluessel-existiere-oder",
+          "text": "angenommen, der Schlüssel existiere oder ein Standardwert werde geliefert"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -150,7 +159,10 @@
         "Welche Ausnahme signalisiert eine fehlende Datei?"
       ],
       "typicalErrors": [
-        "fehlende Datei mit einer anderen Ausnahmeart verwechselt"
+        {
+          "id": "fehlende-datei-mit-einer-anderen",
+          "text": "fehlende Datei mit einer anderen Ausnahmeart verwechselt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -188,7 +200,10 @@
         "Ein Index hinter dem Listenende wirft welche Ausnahme?"
       ],
       "typicalErrors": [
-        "Index um eins verzählt"
+        {
+          "id": "index-um-eins-verzaehlt",
+          "text": "Index um eins verzählt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -226,7 +241,10 @@
         "Welche Ausnahme wirft len() auf einem int?"
       ],
       "typicalErrors": [
-        "len(5) als 1 gewertet"
+        {
+          "id": "len-5-als-1-gewertet",
+          "text": "len(5) als 1 gewertet"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -264,7 +282,10 @@
         "Ein gültiges Ziffernliteral läuft fehlerfrei — welches Ergebnis liefert der Ausdruck?"
       ],
       "typicalErrors": [
-        "gültiges Ziffernliteral für einen Fehlerfall gehalten"
+        {
+          "id": "gueltiges-ziffernliteral-fuer-einen-fehlerfall",
+          "text": "gültiges Ziffernliteral für einen Fehlerfall gehalten"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"
@@ -302,7 +323,10 @@
         "Welches Ergebnis liefert die String-Wiederholung konkret?"
       ],
       "typicalErrors": [
-        "String-Multiplikation fälschlich als TypeError eingeschätzt"
+        {
+          "id": "string-multiplikation-faelschlich-als-typeerror",
+          "text": "String-Multiplikation fälschlich als TypeError eingeschätzt"
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic"

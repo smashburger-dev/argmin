@@ -148,5 +148,28 @@
         }
       ]
     }
-  }
+  },
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "classify-hash-semantics",
+    "familyGroup": "classify-concept",
+    "summary": "Ordnet Hash-Fixierung als Integritäts- und Vergleichbarkeitsregel einer Capstone-Baseline ein.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [
+      {
+        "caseId": "hash-semantics-baseline",
+        "propertyTest": false
+      }
+    ],
+    "difficultyProfiles": [
+      "intro"
+    ],
+    "competencyIds": [
+      "c-research-capstone"
+    ]
+  },
+  "shapeError": "Hash-Semantik-Parameter verletzen die Kapselform"
 }

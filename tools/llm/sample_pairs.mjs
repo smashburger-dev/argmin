@@ -10,9 +10,9 @@ import { fileURLToPath } from 'node:url';
 import { EXERCISE_FAMILIES } from '../../assets/js/domain/exercise_registry.mjs';
 import { GIT_OPERATION_CONTRACT } from '../../assets/js/core/foundations_fresh_generators.mjs';
 import { FOUNDATIONS_CHOICE_FAMILY_SPECS } from '../../assets/js/core/foundations_choice_families.mjs';
-import { FOUNDATIONS_CONSTRUCT_SPECS } from '../../assets/js/domain/foundations_construct_registry.mjs';
-import { TRACE_FAMILY_SPECS } from '../../assets/js/domain/foundations_trace_registry.mjs';
-import { LINALG_FAMILY_SPECS } from '../../assets/js/domain/foundations_linalg_registry.mjs';
+import { FOUNDATIONS_CONSTRUCT_SPECS } from '../../assets/js/core/foundations_construct_families.mjs';
+import { TRACE_FAMILY_SPECS } from '../../assets/js/core/foundations_trace_families.mjs';
+import { LINALG_FAMILY_SPECS } from '../../assets/js/core/foundations_linalg_families.mjs';
 import { DATA_ML_FAMILY_SPECS } from '../../assets/js/core/data_ml_families.mjs';
 import { FAMILY_SPEC as WORKED_FADING_DISTRIBUTIVE } from '../../assets/js/core/procedural/worked-example-fading-distributive.mjs';
 import { FAMILY_SPEC as WORKED_FADING_LINEAR_EQUATIONS } from '../../assets/js/core/procedural/worked-example-fading-linear-equations.mjs';
@@ -42,7 +42,7 @@ export function promptVersion(name) {
 export function jsFamilyIds() {
   return [
     GIT_OPERATION_CONTRACT.familyId,
-    ...FOUNDATIONS_CHOICE_FAMILY_SPECS.map((spec) => spec.contract.familyId),
+    ...FOUNDATIONS_CHOICE_FAMILY_SPECS.map((spec) => spec.familyId),
     ...FOUNDATIONS_CONSTRUCT_SPECS.map((spec) => spec.familyId),
     ...TRACE_FAMILY_SPECS.map((spec) => spec.familyId),
     ...LINALG_FAMILY_SPECS.map((spec) => spec.familyId),

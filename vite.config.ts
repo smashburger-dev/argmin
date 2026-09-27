@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
@@ -7,6 +8,7 @@ const projectRoot = import.meta.dirname;
 export default defineConfig({
     base: './',
     publicDir: false,
+    server: { port: 4173 },
     plugins: [
       preact({ exclude: [/node_modules/, /\/vendor\//] }),
     ],
@@ -53,6 +55,21 @@ export default defineConfig({
                 name: (id) => {
                   const match = /content\/banks\/([a-z]+)-/.exec(id);
                   return match ? `procedural-${match[1]}` : 'content-banks';
+                },
+              },
+              {
+                // Familien-Anker folgen ihrer Familie: existiert ein
+                // gleichnamiges procedural-Modul, gehoert die Doc in
+                // dessen Lazy-Chunk, sonst zu den family-core-Importeuren.
+                test: /content\/families\//,
+                name: (id) => {
+                  const stem = /content\/families\/([\w-]+)\.json$/.exec(id)?.[1];
+                  if (!stem) return 'family-core';
+                  if (existsSync(resolve(projectRoot, `assets/js/core/procedural/${stem}.mjs`))) {
+                    const prefix = /^([a-z]+)-/.exec(stem)?.[1];
+                    return prefix ? `procedural-${prefix}` : 'family-core';
+                  }
+                  return 'family-core';
                 },
               },
               {

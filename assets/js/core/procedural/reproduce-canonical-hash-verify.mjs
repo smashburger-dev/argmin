@@ -10,18 +10,14 @@ import { refCopy } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
 import { pick, randInt, shuffle } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/reproduce-canonical-hash-verify.json' with { type: 'json' };
 
 const PACKAGES = [];
 
 // Verbatim case payloads extracted from content/families/reproduce-canonical-hash-verify.json.
 const CASE_PAYLOADS = {
   'canonical-hash-verify': {
-    starterCode: "import hashlib\nimport json\n\n\ndef build_golden(items):\n    \"\"\"{'n': .., 'ids': .., 'sha256': ..} mit kanonischer Serialisierung und sha256 darueber.\"\"\"\n    ...\n\n",
-    baseTests: "GOLDEN = [\n    {\"id\": \"faq-03\", \"antwort\": \"Die Lieferzeit betraegt 3 Werktage.\", \"quellen\": [\"faq-3\"]},\n    {\"id\": \"faq-11\", \"antwort\": \"Die Frist endet nach 30 Tagen.\", \"quellen\": [\"vertrag-1\"]},\n    {\"id\": \"vertrag-02\", \"antwort\": \"Der Vertrag laeuft 12 Monate.\", \"quellen\": [\"vertrag-1\"]},\n]\na = build_golden(GOLDEN)\nb = build_golden(list(reversed(GOLDEN)))\n__check('anzahl und ids', a[\"n\"] == 3 and a[\"ids\"] == [\"faq-03\", \"faq-11\", \"vertrag-02\"])\n__check('reihenfolge-invarianz', a == b)\nveraendert = [dict(GOLDEN[0]), dict(GOLDEN[1]), dict(GOLDEN[2])]\nveraendert[1] = dict(GOLDEN[1])\nveraendert[1][\"antwort\"] = \"Die Frist endet nach 14 Tagen.\"\n__check('aenderungssensitiv', build_golden(veraendert)[\"sha256\"] != a[\"sha256\"])\n__check('exakter hash', a[\"sha256\"] == \"ef6c223d1f4463f5f34a57685240c39a6bf79a9957cd2bf9b05734ad19eaa312\")\n__check('leeres set', build_golden([]) == {\"n\": 0, \"ids\": [], \"sha256\": hashlib.sha256(\"[]\".encode(\"utf-8\")).hexdigest()})\nprint(\"ok w34-e4\")",
-    referenceSolver: "import hashlib\nimport json\n\n\ndef build_golden(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}",
-    prompt: "Implementiere das gehashte Golden Set. <code>build_golden(items)</code> erhält eine Liste von Einträgen mit <code>id</code> und weiteren Feldern (z. B. antwort, quellen). Kanonische Serialisierung: <code>json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))</code>; der sha256-Hash wird über die UTF-8-Bytes dieser Serialisierung gebildet. Rückgabe: <code>{\"n\": anzahl, \"ids\": sortierte ids, \"sha256\": hexdigest}</code>. Der Testcode bringt ein Golden Set mit und prüft Reihenfolge-Invarianz, Änderungssensitivität und den exakten Hash.",
-    fullSolution: "import hashlib\nimport json\n\n\ndef build_golden(items):\n    kanonisch = json.dumps(sorted(items, key=lambda e: e[\"id\"]), sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n    return {\"n\": len(items), \"ids\": sorted(e[\"id\"] for e in items), \"sha256\": hashlib.sha256(kanonisch.encode(\"utf-8\")).hexdigest()}\n\n# exakter Fixture-Hash ef6c223d…eaa312; reversed() aendert ihn nicht, eine andere Gold-Antwort schon (lokal python3-verifiziert)",
-  },
+    },
 };
 
 // Serializes drawn data as Python literals (the pools stay quote-free ASCII,
@@ -109,7 +105,8 @@ export const HASH_CONTRACT = {
 
 // The renamed reference copy is emitted once at the top of the seeded block;
 // all per-draw checks call into it.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: HASH_CONTRACT,
   cases: HASH_CASES,
   shapeError: 'Golden-Hash-Parameter verletzen die Kapselform',
@@ -120,8 +117,3 @@ const FAMILY = makeCaseFamily({
   defaultPackages: PACKAGES,
 });
 
-export const hashCaseOk = FAMILY.caseOk;
-export const genHashCase = FAMILY.genCase;
-export const solveHashFamily = FAMILY.solve;
-export const generateHashFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

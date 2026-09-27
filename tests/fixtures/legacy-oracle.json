@@ -3370,9 +3370,9 @@
             "kind": "seeded-integer",
             "generator": "genCardAudit",
             "defaultSeed": 3211,
-            "defaultExpected": 6
+            "defaultExpected": 1
           },
-          "prompt": "Ein Karten-Audit prüft zwei Karten gegen die Pflichtfeldsätze. Modellkarte „karte-a“ mit dem Pflichtfeldsatz name, zweck, version, trainingsdaten, metrik, schwellenwert, bekannte_grenzen, kontakt — erfasst sind zweck: „“, version: „1.2.0“, trainingsdaten: „faq-korpus“, metrik: „recall@5“, schwellenwert: „0,75“, kontakt: „team-support“. Datenkarte „karte-b“ mit dem Pflichtfeldsatz name, zweck, herkunft, zeitraum, lizenz, n_beispiele, split_train, split_dev, bekannte_luecken, kontakt — erfasst sind name: „“, herkunft: „forum-export“, zeitraum: „jahreswechsel“, lizenz: „cc-by-vier“, n_beispiele: „1200“, split_train: „80 %“, split_dev: „10 %“, bekannte_luecken: „umlaute fehlen“, kontakt: „“. Wie viele Pflichtfelder fehlen insgesamt (nicht erfasst oder leer)?",
+          "prompt": "Ein Karten-Audit prüft eine Karte gegen die Pflichtfeldsätze. Modellkarte „karte-a“ mit dem Pflichtfeldsatz name, zweck, version, trainingsdaten, metrik, schwellenwert, bekannte_grenzen, kontakt — erfasst sind name: „rag-stub“, zweck: „antwortvorschlag“, version: „1.2.0“, trainingsdaten: „faq-korpus“, metrik: „recall@5“, schwellenwert: „“, bekannte_grenzen: „formulierung nicht neu“, kontakt: „team-support“. Wie viele Pflichtfelder fehlen insgesamt (nicht erfasst oder leer)?",
           "fullSolution": "Vergleiche pro Karte die Erfassungsliste mit dem Pflichtfeldsatz: Nicht aufgeführte Felder und Felder mit leerem Wert „“ zählen beide als fehlend; die Summe über alle Karten ist die Antwort. Mit „Neue Zahlen“ erscheint ein neues Karten-Set mit demselben Lösungsweg.",
           "difficulty": 2,
           "masteryEligible": true,

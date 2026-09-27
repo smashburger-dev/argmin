@@ -78,6 +78,7 @@ export interface ExerciseSummary {
   workedExample: Record<string, unknown> | null;
   rubric: Array<Record<string, unknown>> | null;
   typicalErrors: unknown[] | null;
+  typicalErrorIds?: string[];
   testedSeedCount: number;
   starterCode?: string;
   packages?: string[];

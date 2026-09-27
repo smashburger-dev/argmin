@@ -32,9 +32,18 @@
         "Aufrunden in Ganzzahlen: -(-n // batch_size) oder math.ceil — Rückgabe als int. Die Verträge werfen vor der Rechnung."
       ],
       "typicalErrors": [
-        "BCE ohne Clipping und damit log(0)",
-        "Wertebereich von p nicht geprüft",
-        "Batches abgerundet und den kleinen Restbatch verloren"
+        {
+          "id": "bce-ohne-clipping-und-damit",
+          "text": "BCE ohne Clipping und damit log(0)"
+        },
+        {
+          "id": "wertebereich-von-p-nicht-geprueft",
+          "text": "Wertebereich von p nicht geprüft"
+        },
+        {
+          "id": "batches-abgerundet-und-den-kleinen",
+          "text": "Batches abgerundet und den kleinen Restbatch verloren"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -68,9 +77,18 @@
         "weight_decay_update ist eine Zeile Mathematik: w − lr·(g + λ·w). Für skalare Eingaben float zurückgeben."
       ],
       "typicalErrors": [
-        "mit p statt 1/p skaliert",
-        "Decay-Term außerhalb des Lernraten-Faktors",
-        "Verträge erst nach der Berechnung geprüft"
+        {
+          "id": "mit-p-statt-1-p",
+          "text": "mit p statt 1/p skaliert"
+        },
+        {
+          "id": "decay-term-ausserhalb-des-lernraten",
+          "text": "Decay-Term außerhalb des Lernraten-Faktors"
+        },
+        {
+          "id": "vertraege-erst-nach-der-berechnung",
+          "text": "Verträge erst nach der Berechnung geprüft"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

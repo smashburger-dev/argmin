@@ -41,6 +41,8 @@ node tools/validate_content.mjs --dir build-next
 - Match checks to the changed area. Content changes require content validation. Public-build changes require the build and leak test.
 - Run the app with `npm run dev:next` or serve `build-next/` after `npm run build:release`. TypeScript sources will not run through `python3 -m http.server`.
 - Browser behavior, IndexedDB migrations, review scheduling, and pilot flows require Playwright (`npm run test:e2e` / `npm run test:e2e:build`) or a manual browser check.
+- Playwright starts its own server and fails if the port is taken. Use `E2E_PORT=<n>` for parallel worktrees; `E2E_REUSE_SERVER=1` reuses a running server from this checkout.
+- `tests/family_golden_corpus.test.mjs` pins every instance field, the solver output, and the contract of every family. Rewrite the fixture (`--write-family-golden`) only for an intended behavior change.
 
 ## Engineering
 

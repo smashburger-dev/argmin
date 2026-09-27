@@ -21,8 +21,9 @@
 // Kein UI, kein Ledger, kein Content-Edit. Die Generatoren stehen bewusst
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
-import { rng, randInt, variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
-import { registerStaticCases, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { rng, randInt, variantCaseIndex, familySubseed, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
+import { registerStaticCases, rebindChoiceRules, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { genMetaErrorClassify, metaErrorCorrectText } from './foundations_fresh_generators.mjs';
 import stringImmutabilityDoc from '../../../content/families/classify-string-immutability.json' with { type: 'json' };
 import setOperationDoc from '../../../content/families/classify-set-operation-semantics.json' with { type: 'json' };
 import errorHypothesisDoc from '../../../content/families/classify-error-hypothesis.json' with { type: 'json' };
@@ -39,8 +40,6 @@ const CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
  *  serialisiert die Inhalte von genMetaErrorClassify(3401) (Fall off-by-one)
  *  in kanonischer Ordnung: korrekte Wahl an Position a, Distraktoren in
  *  rotierter Bank-Reihenfolge. */
-export const FROZEN_META_ERROR_SEED = 3401;
-
 // Eigenregistrierung der öffentlichen Fallkörper (idempotent — die
 // Registry übernimmt beim späteren Bundle-Load keine Fremdkörper).
 // Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
@@ -80,6 +79,10 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
   const options = [correct, ...distractors.slice(0, choiceCount - 1)];
   const rotation = variantCaseIndex(seed, options.length);
   const ids = CHOICE_IDS.slice(0, options.length);
+  const choices = buildRotatedChoices(options, rotation, ids);
+  // buildRotatedChoices assigns ids by rotated position — authored rules
+  // must rebind through option texts or they would point at wrong options.
+  const feedbackRules = rebindChoiceRules(chosen.feedbackRules, chosen.choices, choices);
   return {
     parameters: {
       caseId,
@@ -88,11 +91,11 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
       ...(chosen.parameters || {}),
     },
     expected: {},
-    choices: buildRotatedChoices(options, rotation, ids),
+    choices,
     prompt: chosen.prompt,
     fullSolution: chosen.fullSolution,
     ...(chosen.hints ? { hints: chosen.hints } : {}),
-    ...(chosen.feedbackRules ? { feedbackRules: chosen.feedbackRules } : {}),
+    ...(feedbackRules ? { feedbackRules } : {}),
     ...(chosen.typicalErrors ? { typicalErrors: chosen.typicalErrors } : {}),
     ...(chosen.competencyIds ? { competencyIds: chosen.competencyIds } : {}),
     ...(chosen.masteryEligible !== undefined ? { masteryEligible: chosen.masteryEligible } : {}),
@@ -111,21 +114,21 @@ function solveStaticChoice(familyId, parameters) {
 
 // --- classify-string-immutability (Shard-Fall, Quelle w02-e3) ---------------
 
-export function generateStringImmutabilityFamily({ seed, caseId, difficulty }) {
+function generateStringImmutabilityFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-string-immutability', { seed, caseId, difficulty });
 }
 
-export function solveStringImmutability(parameters) {
+function solveStringImmutability(parameters) {
   return solveStaticChoice('classify-string-immutability', parameters);
 }
 
 // --- classify-set-operation-semantics (Shard-Fall, Quelle w03-e2) -----------
 
-export function generateSetOperationFamily({ seed, caseId, difficulty }) {
+function generateSetOperationFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-set-operation-semantics', { seed, caseId, difficulty });
 }
 
-export function solveSetOperation(parameters) {
+function solveSetOperation(parameters) {
   return solveStaticChoice('classify-set-operation-semantics', parameters);
 }
 
@@ -238,45 +241,68 @@ function genPowerLawErrorCase({ seed, difficulty }) {
   };
 }
 
-export function generateErrorHypothesisFamily({ seed, caseId, difficulty }) {
+function generateErrorHypothesisFamily({ seed, caseId, difficulty }) {
   if (caseId === 'base-vs-exponent-confusion') return genPowerLawErrorCase({ seed, difficulty });
+  if (caseId === 'seeded-error-pattern-cases') {
+    // Seed 0 stays the authored anchor (genMetaErrorClassify(3401) frozen
+    // into the case body); other seeds draw a fresh meta-error case.
+    ensureChoiceDocs();
+    const meta = staticCaseBody('classify-error-hypothesis', caseId);
+    if (meta.difficultyProfile !== difficulty) {
+      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+    }
+    if (seed === 0) return generateStaticChoice('classify-error-hypothesis', { seed, caseId, difficulty });
+    const drawn = genMetaErrorClassify(familySubseed(seed, caseId, difficulty));
+    return {
+      ...drawn,
+      parameters: {
+        caseId,
+        difficulty,
+        metaCaseId: drawn.parameters.caseId,
+        caseIndex: drawn.parameters.caseIndex,
+      },
+    };
+  }
   return generateStaticChoice('classify-error-hypothesis', { seed, caseId, difficulty });
 }
 
-export function solveErrorHypothesis(parameters) {
+function solveErrorHypothesis(parameters) {
   if (parameters?.kind && parameters?.caseId === 'base-vs-exponent-confusion') {
     return { correctText: powerLawCorrectText(parameters) };
+  }
+  if (parameters?.caseId === 'seeded-error-pattern-cases' && parameters?.metaCaseId) {
+    return { correctText: metaErrorCorrectText(parameters) };
   }
   return solveStaticChoice('classify-error-hypothesis', parameters);
 }
 
 // --- classify-test-attitude (Shard-Fall, Quelle f-testing-choice-01) --------
 
-export function generateTestAttitudeFamily({ seed, caseId, difficulty }) {
+function generateTestAttitudeFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-test-attitude', { seed, caseId, difficulty });
 }
 
-export function solveTestAttitude(parameters) {
+function solveTestAttitude(parameters) {
   return solveStaticChoice('classify-test-attitude', parameters);
 }
 
 // --- classify-control-construct (Shard-Fall, Quelle f-control-choice-01) ----
 
-export function generateControlConstructFamily({ seed, caseId, difficulty }) {
+function generateControlConstructFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-control-construct', { seed, caseId, difficulty });
 }
 
-export function solveControlConstruct(parameters) {
+function solveControlConstruct(parameters) {
   return solveStaticChoice('classify-control-construct', parameters);
 }
 
 // --- classify-python-collection-choice (Shard-Fall, f-collections-choice-01) -
 
-export function generatePythonCollectionFamily({ seed, caseId, difficulty }) {
+function generatePythonCollectionFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-python-collection-choice', { seed, caseId, difficulty });
 }
 
-export function solvePythonCollection(parameters) {
+function solvePythonCollection(parameters) {
   return solveStaticChoice('classify-python-collection-choice', parameters);
 }
 
@@ -286,7 +312,7 @@ export function generateExceptionPlacementFamily({ seed, caseId, difficulty }) {
   return generateStaticChoice('classify-exception-placement', { seed, caseId, difficulty });
 }
 
-export function solveExceptionPlacement(parameters) {
+function solveExceptionPlacement(parameters) {
   return solveStaticChoice('classify-exception-placement', parameters);
 }
 
@@ -296,7 +322,7 @@ export function solveExceptionPlacement(parameters) {
 
 const DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
-export const FOUNDATIONS_CHOICE_CONTRACTS = [
+const FOUNDATIONS_CHOICE_CONTRACTS = [
   {
     familyId: 'classify-string-immutability',
     familyGroup: 'classify-concept',
@@ -332,7 +358,7 @@ export const FOUNDATIONS_CHOICE_CONTRACTS = [
     masteryEligible: true,
     caseTypes: [
       { caseId: 'base-vs-exponent-confusion' },
-      { caseId: 'seeded-error-pattern-cases', propertyTest: false },
+      { caseId: 'seeded-error-pattern-cases' },
       { caseId: 'error-journal-next-test', propertyTest: false },
     ],
     difficultyProfiles: [...DIFFICULTY_PROFILES],
@@ -394,14 +420,13 @@ export const FOUNDATIONS_CHOICE_CONTRACTS = [
   },
 ];
 
-/** Vertrag + Runtime-Funktionen je Familie. Die Registry-Datei paart daraus
- *  `{...contract, generate, solve}` im S4C-Stil. */
+// Flat specs for the central registry: contract spread + runtime per family.
 export const FOUNDATIONS_CHOICE_FAMILY_SPECS = [
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[0], generate: generateStringImmutabilityFamily, solve: solveStringImmutability },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[1], generate: generateSetOperationFamily, solve: solveSetOperation },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[2], generate: generateErrorHypothesisFamily, solve: solveErrorHypothesis },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[3], generate: generateTestAttitudeFamily, solve: solveTestAttitude },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[4], generate: generateControlConstructFamily, solve: solveControlConstruct },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[5], generate: generatePythonCollectionFamily, solve: solvePythonCollection },
-  { contract: FOUNDATIONS_CHOICE_CONTRACTS[6], generate: generateExceptionPlacementFamily, solve: solveExceptionPlacement },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[0], generate: generateStringImmutabilityFamily, solve: solveStringImmutability },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[1], generate: generateSetOperationFamily, solve: solveSetOperation },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[2], generate: generateErrorHypothesisFamily, solve: solveErrorHypothesis },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[3], generate: generateTestAttitudeFamily, solve: solveTestAttitude },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[4], generate: generateControlConstructFamily, solve: solveControlConstruct },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[5], generate: generatePythonCollectionFamily, solve: solvePythonCollection },
+  { ...FOUNDATIONS_CHOICE_CONTRACTS[6], generate: generateExceptionPlacementFamily, solve: solveExceptionPlacement },
 ];

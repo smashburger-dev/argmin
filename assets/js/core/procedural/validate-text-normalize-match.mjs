@@ -11,21 +11,15 @@
 import { pyLit, RAISED_HELPER, refCopy } from './py_test_kit.mjs';
 import { makeCaseFamily } from './case_family_kit.mjs';
 
-import { pick, randInt } from '../generator_draw_kit.mjs';
+import { pick } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/validate-text-normalize-match.json' with { type: 'json' };
 
 // Verbatim case payloads extracted from content/families/validate-text-normalize-match.json.
 const CASE_PAYLOADS = {
   "text-normalize-match": {
     difficulty: "core",
-    packages: [],
-    starterCode: "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    \"\"\"True iff Metrik und Vergleich als Teilstring enthalten sind und kein absolutes Wort vorkommt.\"\"\"\n    ...\n\ndef extract_variables(hypothese):\n    \"\"\"{'uv': .., 'dv': ..} aus einer Je-desto-Form; sonst ValueError('keine Je-desto-Form').\"\"\"\n    ...\n\n",
-    baseTests: "__check('metrik und vergleich -> testable', is_testable(\"Steigt der Anteil korrekt beantworteter Fixtur-Fragen, wenn die Chunkgroesse verdoppelt wird?\") is True)\n__check('ohne metrik nicht testable', is_testable(\"Fuehlt sich die bearbeitung schneller an?\") is False)\n__check('absolute behauptung verworfen', is_testable(\"Ist die neue Version generell besser geeignet?\") is False)\n__check('optimal verworfen trotz metrik', is_testable(\"Warum ist die recall@5-Quote optimal?\") is False)\n__check('dauer und vergleich -> testable', is_testable(\"Ist die dauer der nutzung höher als vorher ohne kennzahl?\") is True)\n__check('grossbuchstaben egal', is_testable(\"Sinkt die Quote der ablehnungen?\") is True)\n__check('metrik allein genuegt nicht', is_testable(\"Wie hoch ist die genauigkeit?\") is False)\n__check('uv und dv zerlegt', extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten\") == {\"uv\": \"die chunkgröße\", \"dv\": \"der anteil korrekter antworten\"})\n__check('richtung wird abgeschnitten', extract_variables(\"Je kleiner das Modell, desto geringer die kosten je lauf\") == {\"uv\": \"das modell\", \"dv\": \"die kosten je lauf\"})\n__check('punkt am ende entfernt', extract_variables(\"Je größer die Chunkgröße, desto höher der Anteil korrekter Antworten.\") == {\"uv\": \"die chunkgröße\", \"dv\": \"der anteil korrekter antworten\"})\ntry:\n    extract_variables(\"Die Chunkgröße beeinflusst die Quote.\")\n    __check('keine je-desto-form -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('keine je-desto-form -> ValueError', True)\nprint(\"ok w31-e4\")",
-    referenceSolver: "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}",
-    prompt: "Implementiere die Prüfbarkeit von Forschungsfragen. <code>is_testable(frage)</code> liefert <code>True</code> genau dann, wenn die Kleinbuchstaben-Fassung der Frage mindestens eine Metrik aus METRIKEN als Teilstring enthält, mindestens ein Vergleichswort aus VERGLEICHE enthält und KEIN absolutes Wort aus ABSOLUTE enthält (Reihenfolge: absolute Wörter verwerfen zuerst, dann Metrik, dann Vergleich). <code>extract_variables(hypothese)</code> zerlegt eine Je-desto-Hypothese: Text strippen und Punkt am Ende entfernen, an <code>&quot;, desto &quot;</code> in genau zwei Teile splitten, der vordere Teil muss mit <code>Je </code> beginnen — sonst <code>ValueError(\"keine Je-desto-Form\")</code>; UV = Wörter des vorderen Teils ab Index 2, DV = Wörter des hinteren Teils ab Index 1, beide kleingeschrieben und mit einfachen Leerzeichen verbunden. Der Testcode bringt eigene Fragen und Hypothesen mit.",
-    fullSolution: "METRIKEN = [\"recall@\", \"anteil\", \"quote\", \"f1\", \"genauigkeit\", \"dauer\", \"kosten\"]\nVERGLEICHE = [\"höher\", \"niedriger\", \"geringer\", \"steigt\", \"sinkt\", \"unterscheidet sich\", \"verschieden\", \"gleich\"]\nABSOLUTE = [\"immer\", \"niemals\", \"optimal\", \"beste\", \"generell\"]\n\n\ndef is_testable(frage):\n    text = frage.lower()\n    if any(wort in text for wort in ABSOLUTE):\n        return False\n    if not any(m in text for m in METRIKEN):\n        return False\n    return any(v in text for v in VERGLEICHE)\n\n\ndef extract_variables(hypothese):\n    kern = hypothese.strip().rstrip(\".\")\n    teile = kern.split(\", desto \")\n    if len(teile) != 2 or not teile[0].startswith(\"Je \"):\n        raise ValueError(\"keine Je-desto-Form\")\n    uv = \" \".join(teile[0].split()[2:]).lower()\n    dv = \" \".join(teile[1].split()[1:]).lower()\n    return {\"uv\": uv, \"dv\": dv}\n\n# alle Fixtur-Urteile der Tests werden reproduziert (lokal python3-verifiziert)",
-  },
+    },
 };
-
 
 // JS mirror of the is_testable contract on the draw pools: absolute wording
 // vetoes first, then a metric and a comparison substring are required.
@@ -193,7 +187,8 @@ export const TEXT_MATCH_CONTRACT = {
 
 // The renamed reference copy plus the __raised helper are emitted once at
 // the top of the seeded block; all per-draw checks call into them.
-const FAMILY = makeCaseFamily({
+export const FAMILY_SPEC = makeCaseFamily({
+  doc,
   contract: TEXT_MATCH_CONTRACT,
   cases: TEXT_MATCH_CASES,
   shapeError: 'Text-Normalisierungs-Parameter verletzen die Kapselform',
@@ -204,8 +199,3 @@ const FAMILY = makeCaseFamily({
   },
 });
 
-export const textMatchCaseOk = FAMILY.caseOk;
-export const genTextMatchCase = FAMILY.genCase;
-export const solveTextMatchFamily = FAMILY.solve;
-export const generateTextMatchFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

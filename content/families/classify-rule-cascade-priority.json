@@ -30,9 +30,18 @@
         "Iteriere die Regeln in Listenneihung; jede Regel prüft genau ihr kind — die default-Regel schließt die Kaskade ab."
       ],
       "typicalErrors": [
-        "Regelreihenfolge nicht eingehalten",
-        "Zahlen als Wörter statt Ziffern verglichen",
-        "default-Label weggelassen oder vor andere Regeln gezogen"
+        {
+          "id": "regelreihenfolge-nicht-eingehalten",
+          "text": "Regelreihenfolge nicht eingehalten"
+        },
+        {
+          "id": "zahlen-als-woerter-statt-ziffern",
+          "text": "Zahlen als Wörter statt Ziffern verglichen"
+        },
+        {
+          "id": "default-label-weggelassen-oder-vor",
+          "text": "default-Label weggelassen oder vor andere Regeln gezogen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -64,9 +73,18 @@
         "Jeder Eintrag trägt index und tool, erlaubte Aufrufe reason None — nachvollziehbare Fehler brauchen Grundangaben, erlaubte nicht."
       ],
       "typicalErrors": [
-        "unbekannte Werkzeuge stillschweigend erlaubt",
-        "Argument-Allowlist für restricted Tools ignoriert",
-        "Ergebnisreihenfolge sortiert statt eingehalten"
+        {
+          "id": "unbekannte-werkzeuge-stillschweigend-erlaubt",
+          "text": "unbekannte Werkzeuge stillschweigend erlaubt"
+        },
+        {
+          "id": "argument-allowlist-fuer-restricted-tools",
+          "text": "Argument-Allowlist für restricted Tools ignoriert"
+        },
+        {
+          "id": "ergebnisreihenfolge-sortiert-statt-eingehalten",
+          "text": "Ergebnisreihenfolge sortiert statt eingehalten"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

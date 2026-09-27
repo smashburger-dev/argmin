@@ -87,9 +87,18 @@
         }
       ],
       "typicalErrors": [
-        "Geschlossene Form als Näherung und Iteration als exaktes Verfahren verwechselt.",
-        "Vorzeichen- oder Skalierungsrichtung der Lösung in $y$ falsch eingeschätzt.",
-        "Singularität von $X^{T}X$ bei abhängigen Spalten nicht mit der Invertierbarkeitsvoraussetzung verknüpft."
+        {
+          "id": "geschlossene-form-als-naeherung-und",
+          "text": "Geschlossene Form als Näherung und Iteration als exaktes Verfahren verwechselt."
+        },
+        {
+          "id": "vorzeichen-oder-skalierungsrichtung-der-loesung",
+          "text": "Vorzeichen- oder Skalierungsrichtung der Lösung in $y$ falsch eingeschätzt."
+        },
+        {
+          "id": "singularitaet-von-x-t-x",
+          "text": "Singularität von $X^{T}X$ bei abhängigen Spalten nicht mit der Invertierbarkeitsvoraussetzung verknüpft."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",
@@ -208,9 +217,18 @@
         }
       ],
       "typicalErrors": [
-        "Regularisierung als Ersatz für Feature-Scaling gelesen, obwohl die Strafe von der Koeffizienten- und damit Einheitengröße abhängt.",
-        "Vorzeichen des Strafterms vertauscht (abgezogen statt addiert).",
-        "Die Rolle von $\\lambda I$ für die Invertierbarkeit und den Grenzfall $\\lambda \\to 0$ nicht verknüpft."
+        {
+          "id": "regularisierung-als-ersatz-fuer-feature",
+          "text": "Regularisierung als Ersatz für Feature-Scaling gelesen, obwohl die Strafe von der Koeffizienten- und damit Einheitengröße abhängt."
+        },
+        {
+          "id": "vorzeichen-des-strafterms-vertauscht-abgezogen",
+          "text": "Vorzeichen des Strafterms vertauscht (abgezogen statt addiert)."
+        },
+        {
+          "id": "die-rolle-von-lambda-i",
+          "text": "Die Rolle von $\\lambda I$ für die Invertierbarkeit und den Grenzfall $\\lambda \\to 0$ nicht verknüpft."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",
@@ -286,9 +304,18 @@
         }
       ],
       "typicalErrors": [
-        "Einen hohen Train-$R^2$ als Generalisierungsgarantie gelesen statt Test- oder Validierungsevidenz zu verlangen.",
-        "Unterschätzt, dass quadrierte Residuen einzelne Ausreißer im MSE dominieren lassen.",
-        "Formen im Residuenplot (Trichter, Trend) nicht auf konkrete Modellmängel abgebildet."
+        {
+          "id": "einen-hohen-train-r-2",
+          "text": "Einen hohen Train-$R^2$ als Generalisierungsgarantie gelesen statt Test- oder Validierungsevidenz zu verlangen."
+        },
+        {
+          "id": "unterschaetzt-dass-quadrierte-residuen-einzelne",
+          "text": "Unterschätzt, dass quadrierte Residuen einzelne Ausreißer im MSE dominieren lassen."
+        },
+        {
+          "id": "formen-im-residuenplot-trichter-trend",
+          "text": "Formen im Residuenplot (Trichter, Trend) nicht auf konkrete Modellmängel abgebildet."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",
@@ -371,9 +398,18 @@
         }
       ],
       "typicalErrors": [
-        "Ridge-Shrinkage mit Lasso-Sparsity verwechselt — die $L_2$-Strafe setzt keine exakten Nullen.",
-        "Einen geringeren Testfehler mit einem geringeren Trainingsfehler gleichgesetzt.",
-        "Die Einheitenabhängigkeit der Koeffizientenstrafe übersehen und Feature-Skalierung für unnötig gehalten."
+        {
+          "id": "ridge-shrinkage-mit-lasso-sparsity",
+          "text": "Ridge-Shrinkage mit Lasso-Sparsity verwechselt — die $L_2$-Strafe setzt keine exakten Nullen."
+        },
+        {
+          "id": "einen-geringeren-testfehler-mit-einem",
+          "text": "Einen geringeren Testfehler mit einem geringeren Trainingsfehler gleichgesetzt."
+        },
+        {
+          "id": "die-einheitenabhaengigkeit-der-koeffizientenstrafe-uebersehen",
+          "text": "Die Einheitenabhängigkeit der Koeffizientenstrafe übersehen und Feature-Skalierung für unnötig gehalten."
+        }
       ],
       "activityType": "multiple-choice",
       "graderId": "deterministic",

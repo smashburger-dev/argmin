@@ -19,6 +19,7 @@
 
 import { randInt, until } from '../generator_draw_kit.mjs';
 import { makePredictFamily } from './case_family_kit.mjs';
+import doc from '../../../../content/families/trace-library-api-output.json' with { type: 'json' };
 
 const DRAW_SCOPE = 'trace-library-api-output';
 
@@ -46,13 +47,6 @@ function pyRound(value, digits) {
 }
 
 // --- case 1: pandas-dedup-isna-lines -----------------------------------------
-
-const PANDAS_BASE_SNIPPET = `import pandas as pd
-df = pd.DataFrame({"id": [1, 2, 2, 3], "ziel": [10, 20, 20, None]})
-print(len(df.drop_duplicates()))
-print(int(df["ziel"].isna().sum()))`;
-
-const PANDAS_BASE_OUTPUT = '3\n1';
 
 const PANDAS_ZIEL_VALUES = [10, 20, 30, 40];
 
@@ -105,15 +99,6 @@ function pandasSolution(ids, ziels) {
 }
 
 // --- case 2: numpy-median-histogram-corrcoef ---------------------------------
-
-const NUMPY_BASE_SNIPPET = `import numpy as np
-x = np.array([2, 4, 4, 4, 5, 5, 7, 9])
-y = np.array([1, 2, 3, 3, 4, 5, 6, 8])
-print(round(float(np.median(x)), 1))
-print(np.histogram(x, bins=[0, 4, 9])[0])
-print(round(float(np.corrcoef(x, y)[0, 1]), 2))`;
-
-const NUMPY_BASE_OUTPUT = '4.5\n[1 7]\n0.97';
 
 function drawNumpySample(r) {
   return until(r, () => {
@@ -200,14 +185,6 @@ function numpySolution(x, y, bins) {
 
 // --- case 3: sklearn-split-no-shuffle -----------------------------------------
 
-const SKLEARN_BASE_SNIPPET = `from sklearn.model_selection import train_test_split
-X = [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9]]
-X_train, X_test = train_test_split(X, test_size=0.25,
-                                   random_state=0, shuffle=False)
-print([x[0] for x in X_test])`;
-
-const SKLEARN_BASE_OUTPUT = '[7, 8, 9]';
-
 const SKLEARN_TEST_SIZES = [0.25, 0.5, 0.75];
 
 function drawSklearnSplit(r) {
@@ -250,10 +227,7 @@ export const LIBRARY_API_CASES = {
   'pandas-dedup-isna-lines': {
     caseId: 'pandas-dedup-isna-lines',
     difficulty: 'core',
-    baseSnippet: PANDAS_BASE_SNIPPET,
-    baseOutput: PANDAS_BASE_OUTPUT,
     baseParams: { ids: [1, 2, 2, 3], ziels: [10, 20, 20, null] },
-    prompt: 'pandas lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe der beiden <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: pandas läuft im Browser nicht — hier zählt api-reading, die dokumentierten Bedeutungen von <code>drop_duplicates()</code> (erster Vorkommen bleibt) und <code>isna()</code>.',
     competencyIds: ['c-pandas-cleaning', 'c-python-reading'],
     draw: drawPandasRows,
     buildSnippet: (d) => pandasSnippet(d.ids, d.ziels),
@@ -277,10 +251,7 @@ export const LIBRARY_API_CASES = {
   'numpy-median-histogram-corrcoef': {
     caseId: 'numpy-median-histogram-corrcoef',
     difficulty: 'core',
-    baseSnippet: NUMPY_BASE_SNIPPET,
-    baseOutput: NUMPY_BASE_OUTPUT,
     baseParams: { x: [2, 4, 4, 4, 5, 5, 7, 9], y: [1, 2, 3, 3, 4, 5, 6, 8], bins: [0, 4, 9] },
-    prompt: 'NumPy-Zusammenfassungen lesen: Was gibt dieses Programm aus? Sage die Ausgabe der drei <code>print</code>-Zeilen vorher, ohne den Code auszuführen. Achte auf die Kanten-Regel von <code>np.histogram</code> und auf das Runden.',
     competencyIds: ['c-eda-viz', 'c-numpy-basics'],
     draw: drawNumpySample,
     buildSnippet: (d) => numpySnippet(d.x, d.y, d.bins),
@@ -302,10 +273,7 @@ export const LIBRARY_API_CASES = {
   'sklearn-split-no-shuffle': {
     caseId: 'sklearn-split-no-shuffle',
     difficulty: 'core',
-    baseSnippet: SKLEARN_BASE_SNIPPET,
-    baseOutput: SKLEARN_BASE_OUTPUT,
     baseParams: { n: 10, start: 0, testSize: 0.25 },
-    prompt: 'sklearn lesen und vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen. Hinweis zur Laufzeitumgebung: scikit-learn läuft im Browser nicht — hier zählt API-Reading für <code>train_test_split</code>.',
     competencyIds: ['c-ml-baseline', 'c-python-reading'],
     draw: drawSklearnSplit,
     buildSnippet: (d) => sklearnSnippet(d.n, d.start, d.testSize),
@@ -336,14 +304,10 @@ export const LIBRARY_API_CONTRACT = {
   competencyIds: ['c-pandas-cleaning', 'c-python-reading'],
 };
 
-const FAMILY = makePredictFamily({
+export const FAMILY_SPEC = makePredictFamily({
+  doc,
   contract: LIBRARY_API_CONTRACT,
   cases: LIBRARY_API_CASES,
   shapeError: 'trace-library-api-output: Parameter verletzen die Kapselform',
 });
 
-export const libraryApiCaseOk = FAMILY.caseOk;
-export const genLibraryApiCase = FAMILY.genCase;
-export const solveLibraryApiFamily = FAMILY.solve;
-export const generateLibraryApiFamily = FAMILY.generate;
-export const FAMILY_SPEC = FAMILY.spec;

@@ -30,9 +30,18 @@
         "„leer“ plus „kein_treffer“ ist EIN Fehler an der Wurzel (Retrieval), nicht zwei."
       ],
       "typicalErrors": [
-        "dieselbe Query doppelt gezählt",
-        "blockiert der Retrieval-Ebene zugeordnet",
-        "beide Ebenen in einen Topf geworfen"
+        {
+          "id": "dieselbe-query-doppelt-gezaehlt",
+          "text": "dieselbe Query doppelt gezählt"
+        },
+        {
+          "id": "blockiert-der-retrieval-ebene-zugeordnet",
+          "text": "blockiert der Retrieval-Ebene zugeordnet"
+        },
+        {
+          "id": "beide-ebenen-in-einen-topf",
+          "text": "beide Ebenen in einen Topf geworfen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

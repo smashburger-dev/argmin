@@ -30,9 +30,18 @@
         "chunk validiert zuerst die Parameter und sammelt dann die Fenster mit start += size − overlap, bis start die Länge erreicht."
       ],
       "typicalErrors": [
-        "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt",
-        "Fenster mit fester Anzahl statt while-Schleife erzeugt",
-        "overlap ≥ size erlaubt und Endlosschleife riskiert"
+        {
+          "id": "satzzeichen-ueber-eine-ascii-only",
+          "text": "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt"
+        },
+        {
+          "id": "fenster-mit-fester-anzahl-statt",
+          "text": "Fenster mit fester Anzahl statt while-Schleife erzeugt"
+        },
+        {
+          "id": "overlap-size-erlaubt-und-endlosschleife",
+          "text": "overlap ≥ size erlaubt und Endlosschleife riskiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

@@ -39,6 +39,39 @@ Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die U
 - Historische Metadaten-Reste (`parameters.seedGenerator`, `expected.{generator,defaultSeed,defaultExpected,defaultChoice}`, `tolerancePolicy`) wurden entfernt — inerte Provenienz ohne Runtime-Funktion. `feedbackRules[].if` muss einen Schlüssel tragen, den der Grader des Falls auswertet (`value === N`, `choice ===/!== 'id'`, `order-length-mismatch`, `value:<var>(+value:<var>)*`, `element-count-mismatch`, `[!]selected.includes('id')`, `missing-diagnosis`/`invalid-input`, `gap-<i>(-<aspekt>)`) — unerreichbare Schlüssel scheitern an `assertFamilyActivityContracts`.
 - Hinweise/Lösung beschreiben den Lösungsweg generisch (zahlenunabhängig), nie die konkrete Instanz.
 
+### Auswahlfamilie aus einer Szenario-Bank
+
+Single-Choice-Familien, deren Fälle aus einer Szenario-Bank gezogen werden, brauchen kein eigenes JS-Modul:
+
+- Die Bank lebt in `content/banks/<familyId>.json` (Schema `schemas/capsule-bank.schema.json`) und trägt neben `capsules` die Top-Level-Felder `contract` (der volle Familienvertrag) und `shapeError` (Fehlertext bei ungültigen Generator-Parametern); `keyBy` ist nur nötig, wenn die Kapsel über `caseId` statt `difficulty` aufgelöst wird.
+- Jede Kapsel hält `caseId`, das Profil (`difficulty` oder `keyBy: 'caseId'`) und `bank`: 12–16 Einträge mit `key`, `prompt`, `correct`, `wrong[]` (drei verschiedene Distraktoren) und `solution`; genau ein Eintrag trägt den Schlüssel aus dem Base-Case (`key: 'base'`).
+- Der Base-Eintrag in `content/families/<familyId>.json` bleibt der wörtliche Anker: Prompt, Optionen und Lösung dort sind die Bank-Zeile `base` — die Tests vergleichen beide wörtlich.
+- Registrierung ist ein JSON-Import plus Listeneintrag in `assets/js/core/choice_bank_families.mjs`; `makeChoiceFamily` baut daraus den Familien-Spec (Bank-Modus, ein `pick` pro Seed).
+- Automatisch abgedeckt: `tests/kit_choice_families.test.mjs` (Bank-Orakel, Kapselform, Statistik, Registry-Grade) und der Golden-Korpus; familienspezifische Extras bleiben als eigene Testdatei möglich.
+
+### Aussagen, Feedback und Fehlkonzepte
+
+Distraktoren und Optionen können ihr Feedback als **Aussage-Objekt** mittragen statt als Regel im Anker:
+
+- **Szenario-Banken**: `wrong[]` eines Bankeintrags darf `{text, feedback, misconception?}`-Objekte enthalten (Schema `$defs.statement`). Trägt ein gezogener Eintrag mindestens einen Distraktor mit `feedback`, emittiert der Generator `feedbackRules` — je Distraktor eine `choice === '<id>'`-Regel, auf die rotierte ID gebunden. Regel: **das Feedback des Base-Eintrags lebt im Anker** (`content/families/<id>.json`), nicht doppelt in der Bank.
+- **`misconception`**: optionales Fehlkonzept-Label (kebab-case, z. B. `robustheit-mittelwert`) an Regeln und Bank-Aussagen. Jede `misconception`-Angabe muss eine `id` aus `typicalErrors` desselben Falls referenzieren — `typicalErrors`-Einträge tragen dafür `{id, text}`-Objekte. Der Grader reicht das Label im Ergebnis weiter (`misconception` bzw. `misconceptions`), wertet es aber nicht aus. **Ids sind eingefroren, sobald sie vergeben sind: den `text` frei korrigieren, die `id` nie umbenennen.** Ein Label darf über Distraktoren und Szenarien hinweg wiederverwendet werden.
+- **Varianten mit eigenen Optionen**: überschreibt eine Variante `choices`, aber nicht `feedbackRules`, erbt sie **keine** Basisregeln (die zeigten auf die falschen Optionstexte). Eigene Regeln trägt die Variante unter `variants[].feedbackRules`; die Bindung läuft über den Optionstext, Paraphrasen ohne Textmatch verlieren die Regel ehrlich.
+- **`statementPool`** für `multiple-choice`-Fälle: statt neuer Varianten ein Pool von Aussagen, aus dem jeder Seed ≠ 0 neu zieht —
+
+  ```json
+  "statementPool": {
+    "count": 4,
+    "correctRange": [2, 3],
+    "hints": ["Jede Aussage einzeln prüfen."],
+    "statements": [
+      { "text": "…", "correct": true, "feedback": "Warum das stimmt." },
+      { "text": "…", "correct": false, "feedback": "Warum nicht.", "misconception": "kebab-label" }
+    ]
+  }
+  ```
+
+  Seed 0 bleibt der authored Ankerfall; gezogene Instanzen tragen `parameters.statements` (Pool-Indizes in Anzeige-Reihenfolge) und `feedbackRules` in beiden Polarisierungen (`selected.includes` für falsche, `!selected.includes` für übersehene zutreffende Aussagen). `feedback` ist Pflicht — es begründet zugleich die Lösungszeile. Ein Fall trägt nie `variants` und `statementPool` zugleich; der Vertrag prüft Zählbarkeit, Eindeutigkeit der Texte und nicht-leeres Feedback.
+
 ## 4. Graderwahl
 
 | Typ | Grader | Warum |

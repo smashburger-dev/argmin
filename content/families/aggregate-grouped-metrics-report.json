@@ -28,9 +28,18 @@
         "Die verdict-Zeilen werden aus den ungerundeten Kennzahlen abgeleitet (Vorzeichen von r, Vergleich der Mediane) — gerundet wird nur für die Rückgabewerte."
       ],
       "typicalErrors": [
-        "Kausalaussagen im verdict statt Richtungsbeschreibung",
-        "Median über alle Zeilen statt gruppenweise berechnet",
-        "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+        {
+          "id": "kausalaussagen-im-verdict-statt-richtungsbeschreibung",
+          "text": "Kausalaussagen im verdict statt Richtungsbeschreibung"
+        },
+        {
+          "id": "median-ueber-alle-zeilen-statt",
+          "text": "Median über alle Zeilen statt gruppenweise berechnet"
+        },
+        {
+          "id": "vor-der-rundung-verglichen-und",
+          "text": "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+        }
       ]
     },
     {
@@ -61,9 +70,18 @@
         "Die Rate bildet sich erst am Ende: Fehlerzähler durch Anzahlzähler je Gruppe teilen — largest_gap ist dann max minus min über die Werte."
       ],
       "typicalErrors": [
-        "absolute Fehlerzahlen statt Raten vergleichen",
-        "Gruppen als eigene Schleifen statt Zähler-dict",
-        "Längenprüfung weglassen"
+        {
+          "id": "absolute-fehlerzahlen-statt-raten-vergleichen",
+          "text": "absolute Fehlerzahlen statt Raten vergleichen"
+        },
+        {
+          "id": "gruppen-als-eigene-schleifen-statt",
+          "text": "Gruppen als eigene Schleifen statt Zähler-dict"
+        },
+        {
+          "id": "laengenpruefung-weglassen",
+          "text": "Längenprüfung weglassen"
+        }
       ]
     },
     {
@@ -94,9 +112,18 @@
         "In der Modellkarte ist weniger mehr: min über die Metrikwerte liefert die schwächste Gruppe, und der Limitationstext muss den Gruppennamen enthalten."
       ],
       "typicalErrors": [
-        "Anteile auf kind statt Gruppe beziehen",
-        "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen",
-        "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
+        {
+          "id": "anteile-auf-kind-statt-gruppe",
+          "text": "Anteile auf kind statt Gruppe beziehen"
+        },
+        {
+          "id": "hoechste-statt-niedrigste-metrik-als",
+          "text": "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen"
+        },
+        {
+          "id": "eingabevalidierung-schluessel-leere-liste-vergessen",
+          "text": "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
+        }
       ]
     },
     {
@@ -109,7 +136,7 @@
       "parameters": {
         "packages": [],
         "starterCode": "def subgroup_recall(datensaetze):\n    \"\"\"{label: mittelwert_recall} mit sortierten Labels und round(…, 6).\"\"\"\n    ...\n\n",
-        "tests": "D = [\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n]\n__check('vier gruppen', set(subgroup_recall(D)) == {\"versand\", \"recht\", \"rabatt\", \"garantie\"})\n__check('werte exakt', subgroup_recall(D) == {\"versand\": 1.0, \"recht\": 0.5, \"rabatt\": 0.5, \"garantie\": 1.0})\n__check('leere liste', subgroup_recall([]) == {})\n__check('label fehlt -> alle', subgroup_recall([{\"recall\": 0.25}, {\"recall\": 0.75}]) == {\"alle\": 0.5})\n__check('dritte gruppe', subgroup_recall([{\"subgroup\": \"b\", \"recall\": 0.1}, {\"subgroup\": \"b\", \"recall\": 0.2}, {\"subgroup\": \"b\", \"recall\": 0.3}]) == {\"b\": 0.2})"
+        "tests": "D = [\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n]\n__check('vier gruppen', set(subgroup_recall(D)) == {\"versand\", \"recht\", \"rabatt\", \"garantie\"})\n__check('werte exakt', subgroup_recall(D) == {\"versand\": 1.0, \"recht\": 0.5, \"rabatt\": 0.5, \"garantie\": 1.0})\n__check('leere liste', subgroup_recall([]) == {})\n__check('label fehlt -> alle', subgroup_recall([{\"recall\": 0.25}, {\"recall\": 0.75}]) == {\"alle\": 0.5})\n__check('dritte gruppe', subgroup_recall([{\"subgroup\": \"b\", \"recall\": 0.1}, {\"subgroup\": \"b\", \"recall\": 0.2}, {\"subgroup\": \"b\", \"recall\": 0.3}]) == {\"b\": 0.2})\n__check('labels sortiert', list(subgroup_recall(D)) == [\"garantie\", \"rabatt\", \"recht\", \"versand\"])"
       },
       "competencyIds": [
         "c-capstone-pipeline",
@@ -126,9 +153,18 @@
         "sorted(werte.items()) sortiert das Endergebnis direkt nach Label."
       ],
       "typicalErrors": [
-        "über alle Datensätze gemittelt statt je Gruppe",
-        "fehlendes Label crashen lassen",
-        "unsortierte Labels zurückgegeben"
+        {
+          "id": "ueber-alle-datensaetze-gemittelt-statt",
+          "text": "über alle Datensätze gemittelt statt je Gruppe"
+        },
+        {
+          "id": "fehlendes-label-crashen-lassen",
+          "text": "fehlendes Label crashen lassen"
+        },
+        {
+          "id": "unsortierte-labels-zurueckgegeben",
+          "text": "unsortierte Labels zurückgegeben"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

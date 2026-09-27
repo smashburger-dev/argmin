@@ -2,14 +2,14 @@
 // Ein geseedeter Fall und statische Falltypen teilen den kanonischen
 // Lösungsweg; Code-Ausgabe und Begründung bleiben getrennte Familienfälle.
 //
-// Alle elf Familien laufen über die Kit-Factories in solved_family_kit.mjs:
-// makeNumericFamily liefert generate/solve/spec für die fünf numerischen
-// Wrapper (statische Fälle + Seed-Ziehung), makeLinalgChoiceCapsuleFamily
-// liefert capsuleOk/correctText/genCapsule/generate/solve/spec für die sechs
+// Alle elf Familien laufen über die Kit-Factories: makeNumericFamily aus
+// solved_family_kit.mjs liefert den Spec für die fünf numerischen Wrapper
+// (statische Fälle + Seed-Ziehung), makeChoiceFamily aus
+// generator_draw_kit.mjs den für die sechs parametrisierten
 // Choice-Kapsel-Familien. Die fachliche Domäne (Kapseln, Banken, Templates,
 // Validatoren, Reference-Solver) bleibt in linalg_generators.mjs.
 
-import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, solveShape } from './linalg_numpy_fresh_generators.mjs';
+import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, genBroadcastAxes, solveShape } from './linalg_numpy_fresh_generators.mjs';
 import {
   rank, solveLinear2, genRankCapsule, RANK_CAPSULES,
   INDEPENDENCE_CAPSULES, independenceShapeOk, INDEPENDENCE_FACTORS,
@@ -27,6 +27,7 @@ import {
   rankSolutionOptions, rankSolutionPrompt, rankSolutionSolution, drawRankSolutionParameters,
 } from './linalg_generators.mjs';
 import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { solveStatementPool } from '../domain/statement_pool.mjs';
 import scalarProductDoc from '../../../content/families/formula-scalar-product.json' with { type: 'json' };
 import det2Doc from '../../../content/families/formula-det2-independence.json' with { type: 'json' };
 import system2x2Doc from '../../../content/families/transform-system-2x2-elimination.json' with { type: 'json' };
@@ -46,10 +47,8 @@ function ensureLinalgDocs() {
 }
 
 const linalgCaseBody = (familyId, caseId) => { ensureLinalgDocs(); return staticCaseBody(familyId, caseId); };
-import { makeLinalgChoiceCapsuleFamily, makeNumericFamily } from './solved_family_kit.mjs';
-import { rng, randInt, nonzeroInt, until, shuffle, drawFamilyInstance } from './generator_draw_kit.mjs';
-
-export const LINALG_DIFFICULTY_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
+import { makeNumericFamily } from './solved_family_kit.mjs';
+import { rng, randInt, nonzeroInt, until, shuffle, drawFamilyInstance, makeChoiceFamily } from './generator_draw_kit.mjs';
 
 // Public-first-Fallkörper: prompt/fullSolution liegen als {name}-Templates in
 // content/families/*.json; generate() rendert sie mit den geseedeten Werten.
@@ -186,9 +185,9 @@ const emitMatmulEntry = ({ A, B, entry }) => {
     ],
     feedbackRules,
     typicalErrors: [
-      'Zeilen- und Spaltenindex vertauscht',
-      'nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen',
-      'Vorzeichen eines Teilprodukts übersehen',
+      { id: 'zeilen-und-spaltenindex-vertauscht', text: 'Zeilen- und Spaltenindex vertauscht' },
+      { id: 'nur-das-erste-teilprodukt-gebildet', text: 'nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen' },
+      { id: 'vorzeichen-eines-teilprodukts-uebersehen', text: 'Vorzeichen eines Teilprodukts übersehen' },
     ],
     activityType: 'numeric',
     graderId: 'deterministic',
@@ -227,9 +226,9 @@ const emitDotProduct = ({ u, v }) => {
     ],
     feedbackRules,
     typicalErrors: [
-      'Vorzeichen eines Komponentenprodukts falsch gesetzt',
-      'ein Komponentenprodukt beim Summieren ausgelassen',
-      'Komponenten versetzt statt paarweise multipliziert',
+      { id: 'vorzeichen-eines-komponentenprodukts-falsch-gesetzt', text: 'Vorzeichen eines Komponentenprodukts falsch gesetzt' },
+      { id: 'ein-komponentenprodukt-beim-summieren-ausgelassen', text: 'ein Komponentenprodukt beim Summieren ausgelassen' },
+      { id: 'komponenten-versetzt-statt-paarweise-multipliziert', text: 'Komponenten versetzt statt paarweise multipliziert' },
     ],
     activityType: 'numeric',
     graderId: 'deterministic',
@@ -341,14 +340,14 @@ export function generateScalarProductFamily({ seed, caseId, difficulty }) {
   const def = SCALAR_GENERATORS[caseId];
   if (def) return genScalarSeededCase({ seed, caseId, difficulty }, def);
   ensureLinalgDocs();
-  return scalarProductKit.generate({ seed, caseId, difficulty });
+  return scalarProductSpec.generate({ seed, caseId, difficulty });
 }
 
 export function solveScalarProduct(parameters) {
   if (parameters?.caseId && SCALAR_GENERATORS[parameters.caseId]) {
     return solveScalarSeeded(parameters);
   }
-  return scalarProductKit.solve(parameters);
+  return scalarProductSpec.solve(parameters);
 }
 
 export const SCALAR_PRODUCT_CONTRACT = {
@@ -372,7 +371,7 @@ export const SCALAR_PRODUCT_CONTRACT = {
   competencyIds: ['c-linalg-matrices'],
 };
 
-const scalarProductKit = makeNumericFamily({
+const scalarProductSpec = makeNumericFamily({
   contract: SCALAR_PRODUCT_CONTRACT,
   staticCaseIds: SCALAR_STATIC_CASES,
   staticVariants: true,
@@ -384,7 +383,6 @@ const scalarProductKit = makeNumericFamily({
   solveStatic: solveScalarStatic,
   solveSeeded: solveScalarSeeded,
 });
-
 
 // --- classify-matrix-shape ---------------------------------------------------
 // Geseedet über genMatrixShapeCapsule: dims-Bank plus Rotation, ein Template
@@ -409,7 +407,7 @@ export const MATRIX_SHAPE_CONTRACT = {
   competencyIds: ['c-linalg-matrices'],
 };
 
-const matrixShapeKit = makeLinalgChoiceCapsuleFamily({
+const matrixShapeSpec = makeChoiceFamily({
   contract: MATRIX_SHAPE_CONTRACT,
   capsules: MATRIX_SHAPE_CAPSULES,
   shapeError: 'Dims verletzen die Kapselform',
@@ -419,11 +417,6 @@ const matrixShapeKit = makeLinalgChoiceCapsuleFamily({
   buildPrompt: (parameters, capsule) => matrixShapePrompt(parameters.dimsA, parameters.dimsB, capsule),
   buildSolution: (parameters, capsule) => matrixShapeSolution(parameters.dimsA, parameters.dimsB, capsule),
 });
-export const matrixShapeCapsuleOk = matrixShapeKit.capsuleOk;
-export const matrixShapeCorrectText = matrixShapeKit.correctText;
-export const genMatrixShapeCapsule = matrixShapeKit.genCapsule;
-export const generateMatrixShapeFamily = matrixShapeKit.generate;
-export const solveMatrixShapeFamily = matrixShapeKit.solve;
 
 // --- formula-det2-independence -------------------------------------------------
 // Geseedet über genDet2 (Determinante als Unabhängigkeitsbeleg).
@@ -437,7 +430,7 @@ function det2ProfileAccepts(difficulty) {
   return (parameters) => Math.max(...parameters.A.flat().map((value) => Math.abs(value))) >= 5;
 }
 
-export const DET2_CONTRACT = {
+const DET2_CONTRACT = {
   familyId: 'formula-det2-independence',
   familyGroup: 'formula-apply',
   summary: 'Prüft lineare Unabhängigkeit zweier Spalten über die 2×2-Determinante als geschlossene Formel mit Schluss von det ungleich 0 auf Unabhängigkeit.',
@@ -449,7 +442,7 @@ export const DET2_CONTRACT = {
   competencyIds: ['c-linalg-independence'],
 };
 
-const det2Kit = makeNumericFamily({
+const det2Spec = makeNumericFamily({
   contract: DET2_CONTRACT,
   seededCaseId: 'det2-seeded-columns',
   // Die Spaltenziehung (nonzeroInt ×4 plus det≠0-Rejection) bleibt im
@@ -477,11 +470,103 @@ const det2Kit = makeNumericFamily({
   }),
   solveSeeded: (parameters) => ({ value: det2(parameters.A) }),
 });
-export const generateDet2Family = det2Kit.generate;
-export const solveDet2Family = det2Kit.solve;
 
 // --- transform-system-2x2-elimination ------------------------------------------
-// Geseedet über genLinear2Fresh plus zwei statische w05-Fälle (Vektorpaar).
+// Geseedet über genLinear2Fresh; die w05-Fälle ziehen eigene Muster-Systeme
+// (e6: Einsetzen, e11: Addition) und behalten Seed 0 als Anker.
+
+// Anchored equation rendering: `2x + y = 5`, `-x - 3y = -20` — coefficient 1
+// drops the digit, negative terms join with a minus, zero never occurs.
+const linTerm = (coeff, variable, first) => {
+  const body = Math.abs(coeff) === 1 ? variable : `${Math.abs(coeff)}${variable}`;
+  if (first) return coeff < 0 ? `-${body}` : body;
+  return `${coeff < 0 ? '-' : '+'} ${body}`;
+};
+
+const linearExpression = (coeff, constant, variable) => {
+  const mag = Math.abs(coeff) === 1 ? variable : `${Math.abs(coeff)}${variable}`;
+  if (constant === 0) return coeff < 0 ? `-${mag}` : mag;
+  if (constant < 0 && coeff > 0) return `${mag} - ${-constant}`;
+  return `${constant} ${coeff < 0 ? '-' : '+'} ${mag}`;
+};
+
+const systemEquation = (A, b, row) => `${linTerm(A[row][0], 'x', true)} ${linTerm(A[row][1], 'y', false)} = ${b[row]}`;
+
+const systemPrompt = (A, b) => `Löse das Gleichungssystem \\[ ${systemEquation(A, b, 0)}, \\qquad ${systemEquation(A, b, 1)} \\] und gib die Lösung als Paar \`(x, y)\` ein.`;
+
+const systemProbe = (A, b, x, y) => [0, 1]
+  .map((row) => `$${A[row][0] * x}${A[row][1] * y < 0 ? '' : '+'}${A[row][1] * y}=${b[row]}$`)
+  .join(', ');
+
+const ROMAN = ['I', 'II'];
+
+/** Draws a 2x2 system around a drawn integer solution so b stays consistent;
+ *  `force(A)` applies the case's coefficient pattern afterwards. */
+function drawLinearSystem(r, force) {
+  return until(r, () => {
+    const A = [
+      [nonzeroInt(r, -6, 6), nonzeroInt(r, -6, 6)],
+      [nonzeroInt(r, -6, 6), nonzeroInt(r, -6, 6)],
+    ];
+    force(A);
+    const x = nonzeroInt(r, -9, 9);
+    const y = nonzeroInt(r, -9, 9);
+    return { A, b: A.map((row) => row[0] * x + row[1] * y), x, y };
+  }, ({ A }) => det2(A) !== 0);
+}
+
+/** w05-e6 pattern: one coefficient is ±1, so its equation isolates a
+ *  variable and the other equation takes the substitution. */
+function genSystemSubstitution(subseed) {
+  const r = rng(subseed);
+  const row = randInt(r, 0, 1);
+  const v = randInt(r, 0, 1);
+  const { A, b, x, y } = drawLinearSystem(r, (m) => { m[row][v] = r() < 0.5 ? 1 : -1; });
+  const other = 1 - v;
+  const f = 1 - row;
+  const names = ['x', 'y'];
+  // Isolate v in `row`: v = const + coeff·other (division by ±1 is a flip).
+  const iso = { coeff: -A[row][v] * A[row][other], constant: A[row][v] * b[row] };
+  const isoText = linearExpression(iso.coeff, iso.constant, names[other]);
+  const coeffSum = A[f][other] + A[f][v] * iso.coeff;
+  const rhsSum = b[f] - A[f][v] * iso.constant;
+  const substituted = v === 0
+    ? `${A[f][0] < 0 ? '-' : ''}${Math.abs(A[f][0]) === 1 ? '' : Math.abs(A[f][0])}(${isoText}) ${linTerm(A[f][1], 'y', false)} = ${b[f]}`
+    : `${linTerm(A[f][0], 'x', true)} ${A[f][1] < 0 ? '-' : '+'} ${Math.abs(A[f][1]) === 1 ? '' : Math.abs(A[f][1])}(${isoText}) = ${b[f]}`;
+  return {
+    parameters: { A, b },
+    expected: [x, y],
+    prompt: systemPrompt(A, b),
+    fullSolution: `Aus ${ROMAN[row]}: $${names[v]} = ${isoText}$. Einsetzen in ${ROMAN[f]}: $${substituted} \\Rightarrow ${linTerm(coeffSum, names[other], true)} = ${rhsSum} \\Rightarrow ${names[other]} = ${other === 0 ? x : y}$, $${names[v]} = ${v === 0 ? x : y}$. Probe: ${systemProbe(A, b, x, y)}.`,
+  };
+}
+
+/** w05-e11 pattern: one column carries opposite coefficients, so I + II
+ *  eliminates that variable without scaling either equation. */
+function genSystemAddition(subseed) {
+  const r = rng(subseed);
+  const v = randInt(r, 0, 1);
+  const { A, b, x, y } = drawLinearSystem(r, (m) => { m[1][v] = -m[0][v]; });
+  const other = 1 - v;
+  const names = ['x', 'y'];
+  const coeffSum = A[0][other] + A[1][other];
+  const rhsSum = b[0] + b[1];
+  const solOther = other === 0 ? x : y;
+  const solV = v === 0 ? x : y;
+  // Plug the found variable into row II: known product + v-term = rhs.
+  const known = A[1][other] * solOther;
+  const vMag = Math.abs(A[1][v]);
+  const plugged = `${known}${A[1][v] < 0 ? '-' : '+'}${vMag === 1 ? '' : vMag}${names[v]}=${b[1]}`;
+  const elimLine = coeffSum === 1
+    ? `${names[other]} = ${rhsSum}`
+    : `${linTerm(coeffSum, names[other], true)} = ${rhsSum} \\Rightarrow ${names[other]} = ${solOther}`;
+  return {
+    parameters: { A, b },
+    expected: [x, y],
+    prompt: systemPrompt(A, b),
+    fullSolution: `I + II eliminiert $${names[v]}$: $${elimLine}$. Einsetzen in II: $${plugged} \\Rightarrow ${names[v]} = ${solV}$. Probe: ${systemProbe(A, b, x, y)}.`,
+  };
+}
 
 function linear2ProfileAccepts(difficulty) {
   if (difficulty === 'core') return null;
@@ -492,7 +577,7 @@ function linear2ProfileAccepts(difficulty) {
   return (parameters) => Math.max(...parameters.A.flat().map((value) => Math.abs(value))) >= 4;
 }
 
-export const SYSTEM_2X2_CONTRACT = {
+const SYSTEM_2X2_CONTRACT = {
   familyId: 'transform-system-2x2-elimination',
   familyGroup: 'transform-terms',
   summary: 'Löst ein 2×2-Gleichungssystem über Eliminationsstrategie mit Rückeinsetzen zu einem Lösungspaar.',
@@ -501,18 +586,21 @@ export const SYSTEM_2X2_CONTRACT = {
   masteryEligible: true,
   caseTypes: [
     { caseId: 'system-seeded-2x2' },
-    { caseId: 'system-w05-e11', propertyTest: false },
-    { caseId: 'system-w05-e6', propertyTest: false },
+    { caseId: 'system-w05-e11' },
+    { caseId: 'system-w05-e6' },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-gauss'],
   activityType: 'vector',
 };
 
-const system2x2Kit = makeNumericFamily({
+const system2x2Spec = makeNumericFamily({
   contract: SYSTEM_2X2_CONTRACT,
-  staticCaseIds: ['system-w05-e11', 'system-w05-e6'],
   seededCaseId: 'system-seeded-2x2',
+  caseDraws: {
+    'system-w05-e11': { draw: genSystemAddition },
+    'system-w05-e6': { draw: genSystemSubstitution },
+  },
   draw: genLinear2Fresh,
   profileAccepts: linear2ProfileAccepts,
   toExpected: (drawn) => ({ kind: 'integer-pair', solution: [...drawn.expected] }),
@@ -524,10 +612,6 @@ const system2x2Kit = makeNumericFamily({
   },
 });
 
-export const generateSystem2x2Family = (args) => { ensureLinalgDocs(); return system2x2Kit.generate(args); };
-export const solveSystem2x2 = system2x2Kit.solve;
-const system2x2Spec = system2x2Kit.spec;
-
 // --- validate-shape-contract ---------------------------------------------------
 // Geseedet über genShapePredict plus statischen w18-e3 (drei Printzeilen).
 
@@ -538,7 +622,7 @@ function shapeProfileAccepts(difficulty) {
   return (parameters) => parameters.n >= 20;
 }
 
-export const SHAPE_CONTRACT = {
+const SHAPE_CONTRACT = {
   familyId: 'validate-shape-contract',
   familyGroup: 'validate-contract',
   summary: 'Prüft Shape- und Broadcast-Verträge von Tensoren und Matrizen.',
@@ -547,26 +631,26 @@ export const SHAPE_CONTRACT = {
   masteryEligible: true,
   caseTypes: [
     { caseId: 'shapes-seeded-predict' },
-    { caseId: 'shapes-w18-broadcast-axes', propertyTest: false },
+    { caseId: 'shapes-w18-broadcast-axes' },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-numpy-basics', 'c-dl-tensors'],
   activityType: 'predict-output',
 };
 
-const shapeContractKit = makeNumericFamily({
+const shapeContractSpec = makeNumericFamily({
   contract: SHAPE_CONTRACT,
-  staticCaseIds: ['shapes-w18-broadcast-axes'],
   seededCaseId: 'shapes-seeded-predict',
+  caseDraws: {
+    'shapes-w18-broadcast-axes': { draw: genBroadcastAxes },
+  },
   draw: genShapePredict,
   profileAccepts: shapeProfileAccepts,
   toExpected: (drawn) => ({ output: drawn.expected.output }),
-  solveStatic: (parameters) => ({ output: linalgCaseBody('validate-shape-contract', parameters.caseId).expected.output }),
-  solveSeeded: (parameters) => ({ output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
+  solveSeeded: (parameters) => (parameters.caseId === 'shapes-w18-broadcast-axes'
+    ? { output: `(${parameters.n}, ${parameters.k})\n(${parameters.n}, ${parameters.k})\n2 2 1` }
+    : { output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
 });
-export const generateShapeContractFamily = (args) => { ensureLinalgDocs(); return shapeContractKit.generate(args); };
-export const solveShapeContract = shapeContractKit.solve;
-
 // --- W05-Restfälle in bestehenden Familien (S4D7) --------------------------------
 // w05-e16 (numpy-Schleife) als statischer Predict-Fall: gleiche
 // komponentenweise Produkte wie der Rest der Familie.
@@ -600,7 +684,7 @@ export const RANK_CONTRACT = {
 // The challenge profile hosts two cases: the extra bank capsule carries the
 // profile as a '<profile>-<suffix>' key prefix ('challenge-4x4' →
 // 'challenge'); the kit resolves it through its caseId fallback.
-const rankKit = makeNumericFamily({
+const rankSpec = makeNumericFamily({
   contract: RANK_CONTRACT,
   capsules: RANK_CAPSULES,
   draw: (subseed, capsule) => genRankCapsule(subseed, capsule),
@@ -611,10 +695,6 @@ const rankKit = makeNumericFamily({
   toExpected: (drawn) => ({ kind: 'integer', value: drawn.expected }),
   solveSeeded: (parameters) => ({ value: rank(parameters.A) }),
 });
-
-export const generateRankFamily = rankKit.generate;
-export const solveRankFamily = rankKit.solve;
-const rankSpec = rankKit.spec;
 
 // --- classify-independence-multiple ----------------------------------------------
 // Geseedet über genIndependenceCapsule: Vektor-Zahlenbank plus Rotation, ein
@@ -638,7 +718,7 @@ export const INDEPENDENCE_CONTRACT = {
   competencyIds: ['c-linalg-independence'],
 };
 
-const independenceKit = makeLinalgChoiceCapsuleFamily({
+const independenceSpec = makeChoiceFamily({
   contract: INDEPENDENCE_CONTRACT,
   capsules: INDEPENDENCE_CAPSULES,
   shapeError: 'Vektoren verletzen die Kapselform',
@@ -648,11 +728,6 @@ const independenceKit = makeLinalgChoiceCapsuleFamily({
   buildPrompt: (parameters, capsule) => independencePrompt(parameters.vectors, capsule),
   buildSolution: (parameters, capsule) => independenceSolution(parameters.vectors, capsule),
 });
-export const independenceCapsuleOk = independenceKit.capsuleOk;
-export const independenceCorrectText = independenceKit.correctText;
-export const genIndependenceCapsule = independenceKit.genCapsule;
-export const generateIndependenceFamily = independenceKit.generate;
-export const solveIndependenceFamily = independenceKit.solve;
 
 // --- classify-column-combination ------------------------------------------------
 // Geseedet über genColumnCombinationCapsule: 2×2-Zahlenbank plus 2×2-Solver
@@ -685,7 +760,7 @@ export const COLUMN_COMBINATION_CONTRACT = {
   competencyIds: ['c-linalg-matrices', 'c-linalg-systems', 'c-numpy-basics'],
 };
 
-const columnCombinationKit = makeLinalgChoiceCapsuleFamily({
+const columnCombinationSpec = makeChoiceFamily({
   contract: COLUMN_COMBINATION_CONTRACT,
   capsules: COLUMN_COMBINATION_CAPSULES,
   shapeError: (capsule) => (capsule.kind === 'shape-debug'
@@ -699,11 +774,6 @@ const columnCombinationKit = makeLinalgChoiceCapsuleFamily({
   choiceIds: (capsule) => COLUMN_IDS[capsule.kind],
   caseMeta: COLUMN_COMBINATION_META,
 });
-export const columnCombinationCapsuleOk = columnCombinationKit.capsuleOk;
-export const columnCombinationCorrectText = columnCombinationKit.correctText;
-export const genColumnCombinationCapsule = columnCombinationKit.genCapsule;
-export const generateColumnCombinationFamily = columnCombinationKit.generate;
-export const solveColumnCombinationFamily = columnCombinationKit.solve;
 
 // --- classify-shape-contract --------------------------------------------------
 // Geseedet über genClassifyShapeCapsule: Shape-Zahlenbank plus Rotation, ein
@@ -728,7 +798,7 @@ export const CLASSIFY_SHAPE_CONTRACT = {
   competencyIds: ['c-dl-tensors'],
 };
 
-const classifyShapeKit = makeLinalgChoiceCapsuleFamily({
+const classifyShapeSpec = makeChoiceFamily({
   contract: CLASSIFY_SHAPE_CONTRACT,
   capsules: CLASSIFY_SHAPE_CAPSULES,
   shapeError: 'Shape-Parametern verletzen die Kapselform',
@@ -739,11 +809,6 @@ const classifyShapeKit = makeLinalgChoiceCapsuleFamily({
   buildSolution: (parameters, capsule) => classifyShapeSolution(classifyShapeSystem(parameters, capsule), capsule),
   choiceIds: () => SHAPE_CONTRACT_IDS,
 });
-export const classifyShapeCapsuleOk = classifyShapeKit.capsuleOk;
-export const classifyShapeCorrectText = classifyShapeKit.correctText;
-export const genClassifyShapeCapsule = classifyShapeKit.genCapsule;
-export const generateClassifyShapeFamily = classifyShapeKit.generate;
-export const solveClassifyShapeFamily = classifyShapeKit.solve;
 
 // --- classify-row-operation-validity ------------------------------------------------
 // Geseedet über genRowOperationCapsule: 2×2-Zahlenbank mit getragener
@@ -774,7 +839,7 @@ export const ROW_OPERATION_CONTRACT = {
   competencyIds: ['c-linalg-gauss'],
 };
 
-const rowOperationKit = makeLinalgChoiceCapsuleFamily({
+const rowOperationSpec = makeChoiceFamily({
   contract: ROW_OPERATION_CONTRACT,
   capsules: ROW_OPERATION_CAPSULES,
   shapeError: 'Zeilenoperation verletzt die Kapselform',
@@ -786,11 +851,6 @@ const rowOperationKit = makeLinalgChoiceCapsuleFamily({
   choiceIds: (capsule) => ROW_OPERATION_IDS[capsule.kind],
   caseMeta: ROW_OPERATION_META,
 });
-export const rowOperationCapsuleOk = rowOperationKit.capsuleOk;
-export const rowOperationCorrectText = rowOperationKit.correctText;
-export const genRowOperationCapsule = rowOperationKit.genCapsule;
-export const generateRowOperationFamily = rowOperationKit.generate;
-export const solveRowOperationFamily = rowOperationKit.solve;
 
 // --- classify-rank-solution-case --------------------------------------------------
 // Geseedet über genRankSolutionCapsule: Echelon-Zahlenbank mit Rotation,
@@ -822,7 +882,7 @@ export const RANK_SOLUTION_CONTRACT = {
   competencyIds: ['c-linalg-gauss', 'c-linalg-systems', 'c-linalg-independence'],
 };
 
-const rankSolutionKit = makeLinalgChoiceCapsuleFamily({
+const rankSolutionSpec = makeChoiceFamily({
   contract: RANK_SOLUTION_CONTRACT,
   capsules: RANK_SOLUTION_CAPSULES,
   shapeError: 'Rangfall verletzt die Kapselform',
@@ -834,11 +894,6 @@ const rankSolutionKit = makeLinalgChoiceCapsuleFamily({
   choiceIds: (capsule) => RANK_SOLUTION_IDS[capsule.kind],
   caseMeta: RANK_SOLUTION_META,
 });
-export const rankSolutionCapsuleOk = rankSolutionKit.capsuleOk;
-export const rankSolutionCorrectText = rankSolutionKit.correctText;
-export const genRankSolutionCapsule = rankSolutionKit.genCapsule;
-export const generateRankSolutionFamily = rankSolutionKit.generate;
-export const solveRankSolutionFamily = rankSolutionKit.solve;
 
 // --- multiple-choice-linalg-independence -------------------------------------
 // Geseedete Vektormengen: der Seed zieht pro Optionsslot eine Trap-Klasse
@@ -1023,14 +1078,14 @@ const MC_SET_HINTS = {
 
 const MC_SET_TYPICAL_ERRORS = {
   2: [
-    'Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen.',
-    'Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.',
-    'Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt.',
+    { id: 'nichtnullvektoren-pauschal-als-unabhaengig-gelesen', text: 'Nichtnullvektoren pauschal als unabhängig gelesen und Kollinearität übersehen.' },
+    { id: 'mehr-vektoren-als-die-dimension', text: 'Mehr Vektoren als die Dimension ($3 > 2$ im $\\mathbb{R}^2$) als unabhängig bewertet.' },
+    { id: 'den-nullvektor-als-neutralen-bestandteil', text: 'Den Nullvektor als neutralen Bestandteil statt als Abhängigkeitsbeweis erkannt.' },
   ],
   3: [
-    'Summen-Abhängigkeit ($v_3 = a\\,v_1 + b\\,v_2$) bei nicht parallelen Vektoren übersehen.',
-    'Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.',
-    'Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet.',
+    { id: 'summen-abhaengigkeit-v-3-a', text: 'Summen-Abhängigkeit ($v_3 = a\\,v_1 + b\\,v_2$) bei nicht parallelen Vektoren übersehen.' },
+    { id: 'paarweise-nichtparallelitaet-faelschlich-als-unabhaengigkeitsbeweis', text: 'Paarweise Nichtparallelität fälschlich als Unabhängigkeitsbeweis der Dreiermenge gelesen.' },
+    { id: 'vier-vektoren-im-mathbb-r', text: 'Vier Vektoren im $\\mathbb{R}^3$ wegen individuell unterschiedlicher Richtungen als unabhängig bewertet.' },
   ],
 };
 
@@ -1107,33 +1162,42 @@ export function solveMcIndependence(parameters) {
     };
   }
   if (MC_STATIC_CASES.includes(parameters?.caseId)) {
-    const { body } = variantOf(
-      linalgCaseBody('multiple-choice-linalg-independence', parameters.caseId),
-      parameters.variant ?? 0,
-    );
-    return { correctIds: [...body.expected.correctIds] };
+    const body = linalgCaseBody('multiple-choice-linalg-independence', parameters.caseId);
+    if (body.statementPool && Array.isArray(parameters.statements)) {
+      return solveStatementPool(body, parameters);
+    }
+    const { body: resolved } = variantOf(body, parameters.variant ?? 0);
+    return { correctIds: [...resolved.expected.correctIds] };
   }
   throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
 }
 
+// scalar-loop-output und column-vector-authored werden per Dispatch
+// generiert — das scalarProduct-Spec trägt die gewrappten Funktionen, nicht
+// die Kit-Closures (die für die beiden caseIds 'Unbekannter Fall' wuerfen).
+// Alle Einträge sichern lazy die statischen Fallkörper nach — vorher nur
+// das scalarProduct-Wrapper-Paar tat das explizit.
+const withLinalgDocs = (spec) => ({
+  ...spec,
+  generate: (args) => { ensureLinalgDocs(); return spec.generate(args); },
+  solve: (parameters) => { ensureLinalgDocs(); return spec.solve(parameters); },
+});
+
 export const LINALG_FAMILY_SPECS = [
-  // scalar-loop-output und column-vector-authored werden per Dispatch
-  // generiert — das Spec trägt die gewrappten Funktionen, nicht die
-  // Kit-Closures (die für die beiden caseIds 'Unbekannter Fall' wuerfen).
-  { ...scalarProductKit.spec, generate: generateScalarProductFamily, solve: solveScalarProduct },
-  det2Kit.spec,
+  { ...scalarProductSpec, generate: generateScalarProductFamily, solve: solveScalarProduct },
+  det2Spec,
   system2x2Spec,
-  shapeContractKit.spec,
+  shapeContractSpec,
   rankSpec,
-  independenceKit.spec,
-  matrixShapeKit.spec,
-  columnCombinationKit.spec,
-  rowOperationKit.spec,
-  classifyShapeKit.spec,
-  rankSolutionKit.spec,
+  independenceSpec,
+  matrixShapeSpec,
+  columnCombinationSpec,
+  rowOperationSpec,
+  classifyShapeSpec,
+  rankSolutionSpec,
   {
     ...MC_INDEPENDENCE_CONTRACT,
     generate: generateMcIndependenceFamily,
     solve: solveMcIndependence,
   },
-];
+].map(withLinalgDocs);

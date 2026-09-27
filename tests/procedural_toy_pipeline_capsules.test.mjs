@@ -8,20 +8,16 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as mod from '../assets/js/core/procedural/compose-toy-inference-pipeline.mjs';
-import {
-  TOY_PIPELINE_CASES,
-  TOY_PIPELINE_CONTRACT,
-  genToyPipelineCase,
-} from '../assets/js/core/procedural/compose-toy-inference-pipeline.mjs';
-import { codeCapsuleSuite } from './procedural_capsule_suites.mjs';
+import { TOY_PIPELINE_CASES, TOY_PIPELINE_CONTRACT } from '../assets/js/core/procedural/compose-toy-inference-pipeline.mjs';
+
+const spec = mod.FAMILY_SPEC;
+const genToyPipelineCase = spec.kit.genCase;
+
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CASE_ID = 'toy-inference-pipeline';
 const TOY_LETTERS = new Set(['a', 'b', 'e', 'l', 'o', 's', 't']);
 
-codeCapsuleSuite('compose-toy-inference-pipeline', mod, [
-  { caseId: 'toy-inference-pipeline', difficulty: 'challenge' },
-], { familyGroup: 'construct-program', difficultyProfiles: ['challenge'] });
 
 test('anchor extras: ref oracle copy stays inside the pinned base tests', () => {
   const doc = JSON.parse(readFileSync(join(root, 'content/families/compose-toy-inference-pipeline.json'), 'utf8'));

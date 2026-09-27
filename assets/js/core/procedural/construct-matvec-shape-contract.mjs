@@ -12,13 +12,13 @@
 //     (rank, pivot-columns) tuple) and an invertible 2x2 system.
 // parameters carry only the drawn values plus the rebuilt artefacts
 // (fragments/initialOrder or tests) — nothing answer-relevant leaks.
-// Blueprints: reproduce-seeded-split.mjs, classify-eval-hazard.mjs.
-
+// Blueprints: reproduce-seeded-split.mjs, choice_bank_families.mjs.
 
 import { randInt, nonzeroInt, rng, shuffle, until } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/construct-matvec-shape-contract.json' with { type: 'json' };
 
+const anchor = (caseId) => doc.cases.find((entry) => entry.caseId === caseId);
 const DRAW_SCOPE = 'construct-matvec-shape-contract';
-
 
 const pyList = (rows) => `[${rows.map((row) => (Array.isArray(row) ? pyList(row) : String(row))).join(', ')}]`;
 
@@ -116,7 +116,7 @@ export const MATVEC_CASES = {
     kind: 'code',
     difficulty: 'core',
     packages: ['numpy'],
-    starterCode: "import numpy as np\n\ndef matvec(A, v):\n    \"\"\"Return A @ v after checking shapes.\"\"\"\n    # pruefe Shapes, dann berechne\n    ...\n",
+    starterCode: anchor('matvec-code-reference').parameters.starterCode,
     // Historical w05-e8 oracle block — verbatim anchor for this case.
     baseTests: `
 import json
@@ -149,11 +149,11 @@ __expect_assert('Vertrag A.shape[1] == v.shape[0]: inkompatible Shapes abgelehnt
 __r4 = matvec([[1, 2], [3, 4]], [1, 1])
 __check('Listen als Eingabe akzeptiert (Ergebnis ist ndarray)', isinstance(__r4, np.ndarray) and np.array_equal(__r4, np.array([3, 7])), 'np.asarray vor der Rechnung verwenden')
 `,
-    referenceSolver: "def matvec(A, v):\n    A = np.asarray(A); v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v",
+    referenceSolver: anchor('matvec-code-reference').expected.referenceSolver,
     activityType: 'python-code',
     graderId: 'pyodide',
     prompt: "Implementiere `matvec(A, v)`, das $A\\,v$ mit NumPy berechnet und VOR der Berechnung prüft, dass `A` 2-dimensional, `v` 1-dimensional und `A.shape[1] == v.shape[0]` ist — sonst `AssertionError`. Der Testcode ist von deiner Eingabe getrennt und prüft Wert und Shape-Verhalten.",
-    fullSolution: "import numpy as np\n\ndef matvec(A, v):\n    A = np.asarray(A)\n    v = np.asarray(v)\n    assert A.ndim == 2 and v.ndim == 1 and A.shape[1] == v.shape[0]\n    return A @ v\n\n# matvec([[1,2],[3,4]], [1,1]) -> array([3, 7])",
+    fullSolution: anchor('matvec-code-reference').fullSolution,
     extraCount: 3,
     draw(r) {
       const m = randInt(r, 2, 4);
@@ -170,13 +170,13 @@ __check('Listen als Eingabe akzeptiert (Ergebnis ist ndarray)', isinstance(__r4,
     kind: 'code',
     difficulty: 'challenge',
     packages: ['numpy'],
-    starterCode: "import numpy as np\n\n\ndef shape_safe_matmul(A, B):\n    pass\n\n\ndef rank_with_pivots(A):\n    pass\n\n\ndef solve_system(A, b):\n    pass\n",
-    baseTests: "import numpy as np\n\n__check('2x3 @ 3x2', np.array_equal(shape_safe_matmul([[1,2,3],[4,5,6]], [[1,0],[0,1],[1,1]]), np.array([[4,5],[10,11]])))\n__check('rechteckiges Produkt', np.array_equal(shape_safe_matmul([[2,-1]], [[3],[4]]), np.array([[2]])))\ntry:\n    shape_safe_matmul([[1,2]], [[1,2]])\n    __check('inkompatible Shapes abgelehnt', False, 'kein ValueError')\nexcept ValueError:\n    __check('inkompatible Shapes abgelehnt', True)\nexcept Exception as exc:\n    __check('inkompatible Shapes abgelehnt', False, type(exc).__name__)\n__check('Rang 2 bei abhängiger Zeile', rank_with_pivots([[1,0,1],[0,1,1],[1,1,2]]) == (2, [0, 1]))\n__check('Rang 3 bei Vollrang', rank_with_pivots([[2,1,0],[0,3,1],[1,0,2]]) == (3, [0, 1, 2]))\n__check('Rang 1 bei Vielfachen', rank_with_pivots([[1,2],[2,4],[-3,-6]]) == (1, [0]))\n__check('Rang 2 trotz Nullzeile', rank_with_pivots([[0,0,0],[1,0,1],[0,1,1]]) == (2, [0, 1]))\n__check('kein matrix_rank-shortcut', 'matrix_rank' not in rank_with_pivots.__code__.co_names)\n__s1 = solve_system([[2,1],[1,-3]], [5,-8])\n__check('2x2-System', np.allclose(__s1, np.array([1,3])))\n__s2 = solve_system([[3,1,0],[1,4,1],[0,2,5]], [7,12,17])\n__check('3x3-System', np.allclose(np.asarray([[3,1,0],[1,4,1],[0,2,5]]) @ np.asarray(__s2), np.array([7,12,17])))",
-    referenceSolver: "def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef rank_with_pivots(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    pivot_cols = []\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) > 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        pivot_cols.append(col)\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row, pivot_cols\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)",
+    starterCode: anchor('final-boss-authored').parameters.starterCode,
+    baseTests: anchor('final-boss-authored').parameters.tests,
+    referenceSolver: anchor('final-boss-authored').expected.referenceSolver,
     activityType: 'python-code',
     graderId: 'pyodide',
     prompt: "Implementiere drei Funktionen: `shape_safe_matmul(A, B)` prüft 2D-Shapes und multipliziert Matrizen; `rank_with_pivots(A)` bestimmt per Pivot-Elimination (pro Spalte erste Zeile ab der aktuellen mit |wert| > 1e-10 als Pivot, Zeilentausch, normieren, darunter eliminieren) den Rang und gibt das Tupel `(rang, pivot_spalten)` mit sortierter Liste der Pivot-Spaltenindizes zurück; `solve_system(A, b)` löst ein quadratisches System mit eindeutiger Lösung. Die Tests enthalten rechteckige Matrizen, abhängige Zeilen, Nullzeilen und Fehlerfälle.",
-    fullSolution: "<pre><code>def shape_safe_matmul(A, B):\n    A = np.asarray(A)\n    B = np.asarray(B)\n    if A.ndim != 2 or B.ndim != 2 or A.shape[1] != B.shape[0]:\n        raise ValueError(\"inkompatible Shapes\")\n    return A @ B\n\ndef rank_with_pivots(A):\n    M = np.asarray(A, dtype=float).copy()\n    row = 0\n    pivot_cols = []\n    for col in range(M.shape[1]):\n        pivots = np.flatnonzero(np.abs(M[row:, col]) &gt; 1e-10)\n        if not len(pivots):\n            continue\n        pivot = row + pivots[0]\n        M[[row, pivot]] = M[[pivot, row]]\n        M[row] /= M[row, col]\n        for lower in range(row + 1, M.shape[0]):\n            M[lower] -= M[lower, col] * M[row]\n        pivot_cols.append(col)\n        row += 1\n        if row == M.shape[0]:\n            break\n    return row, pivot_cols\n\ndef solve_system(A, b):\n    A = np.asarray(A, dtype=float)\n    b = np.asarray(b, dtype=float)\n    if A.ndim != 2 or A.shape[0] != A.shape[1] or b.shape != (A.shape[0],):\n        raise ValueError(\"inkompatible Shapes\")\n    return np.linalg.solve(A, b)</code></pre>",
+    fullSolution: anchor('final-boss-authored').fullSolution,
     extraCount: 3,
     draw(r) {
       const m = randInt(r, 1, 3);

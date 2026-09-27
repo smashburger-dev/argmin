@@ -10,7 +10,9 @@
 import { pyLit, RAISED_HELPER } from './py_test_kit.mjs';
 
 import { parsonsInitialOrder, pick, randInt, rng, shuffle } from '../generator_draw_kit.mjs';
+import doc from '../../../../content/families/construct-freeze-assert-guard.json' with { type: 'json' };
 
+const anchor = (caseId) => doc.cases.find((entry) => entry.caseId === caseId);
 const FREEZE_FRAGMENTS = [
   { id: 'p1', text: 'def assert_frozen(dateien, pins):' },
   { id: 'p2', text: '    verstoesse = []' },
@@ -56,32 +58,15 @@ const FREEZE_NESTED_PROMPT = 'Verschachtelter Freeze-Check als Parsons-Problem: 
 
 // Two blocks: the solution order, then why each distractor violates the
 // collect-then-raise contract (the challenge contract asks for >=2 blocks).
-const FREEZE_NESTED_SOLUTION = 'Reihenfolge: Signatur, leere Verstoß-Liste, äußere Schleife über die Bereiche, Datei-Block pro Bereich holen, innere Schleife über die Pins, fehlt-Zweig, hash-Zweig — und erst nach beiden Schleifen ein einziges <code>raise AssertionError</code> mit allen gesammelten Verstößen.\n\nDraußen bleiben vier Zeilen: <code>break</code> (d1) verlässt nur die innere Schleife und stoppt nach dem ersten Verstoß — der Rest wird nie geprüft. <code>return verstoesse</code> (d2) gibt die Fehler still zurück statt laut zu scheitern. Das eingerückte <code>raise</code> (d3) liegt im Schleifenrumpf und wirft bereits beim ersten Durchlauf. <code>if not verstoesse</code> (d4) dreht die Bedingung um — es würde scheitern, wenn alles sauber ist (oder vor der Schleife eine garantiert leere Liste prüfen).';
+const FREEZE_NESTED_SOLUTION = anchor('freeze-assert-parsons-nested').fullSolution;
 
 const FREEZE_PROMPT = 'Freeze-Check als Parsons-Problem: Bringe die Zeilen in die richtige Reihenfolge, sodass <code>assert_frozen(dateien, pins)</code> Verstöße sammelt und bei Abweichungen mit <code>AssertionError</code> scheitert — ohne stillen Fallback. Zwei Zeilen gehören nicht zur Lösung.';
 
 const FREEZE_SOLUTION = 'Reihenfolge: Signatur, Liste anlegen, über pins iterieren, fehlt-Zweig, hash-Zweig, am Ende bei Verstößen raise AssertionError. Die Rückgabe-Zeilen (d1/d2) sind bewusst draußen: Ein Freeze-Assert kehrt entweder still zurück oder scheitert laut — es liefert kein Fehlerobjekt.';
 
-const DEMO_STARTER = `def demo_aus_bericht(bericht, frisch):
-    """Eingefrorene Werte zurueckgeben — oder bei Abweichung laut scheitern."""
-    ...
+const DEMO_STARTER = anchor('demo-from-frozen-report').parameters.starterCode;
 
-`;
-
-const DEMO_BASE_TESTS = `BERICHT = {"recall_at_k": 0.75, "answered": 6}
-__check('identisch ok', demo_aus_bericht(BERICHT, {"answered": 6, "recall_at_k": 0.75}) == {"metriken": BERICHT, "quelle": "eingefroren", "geprueft": True})
-try:
-    demo_aus_bericht(BERICHT, {"recall_at_k": 0.9, "answered": 6})
-    __check('abweichung scheitert laut', False)
-except AssertionError as e:
-    __check('abweichung scheitert laut', "demo-abweichung" in str(e))
-__check('bericht unangetastet', BERICHT == {"recall_at_k": 0.75, "answered": 6})
-__check('verschachtelt geprueft', demo_aus_bericht({"a": {"b": [1, 2]}}, {"a": {"b": [1, 2]}})["geprueft"] is True)
-try:
-    demo_aus_bericht({"a": 1}, {"a": 2})
-    __check('tiefenvergleich', False)
-except AssertionError:
-    __check('tiefenvergleich', True)`;
+const DEMO_BASE_TESTS = anchor('demo-from-frozen-report').parameters.tests;
 
 const DEMO_IMPL = `def demo_aus_bericht(bericht, frisch):
     if bericht != frisch:

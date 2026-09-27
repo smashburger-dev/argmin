@@ -28,9 +28,18 @@
         "Sortiere Paare (x, y) nach x; überspringe gleiche Nachbarwerte; bei nahezu gleichem Gini entscheidet der kleinere Schwellenwert."
       ],
       "typicalErrors": [
-        "Anzahlen statt Anteile in die Gini-Formel",
-        "Schwellen auf Datenpunkten statt auf Mitten testen",
-        "Gleichstand nicht deterministisch auflösen"
+        {
+          "id": "anzahlen-statt-anteile-in-die",
+          "text": "Anzahlen statt Anteile in die Gini-Formel"
+        },
+        {
+          "id": "schwellen-auf-datenpunkten-statt-auf",
+          "text": "Schwellen auf Datenpunkten statt auf Mitten testen"
+        },
+        {
+          "id": "gleichstand-nicht-deterministisch-aufloesen",
+          "text": "Gleichstand nicht deterministisch auflösen"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -60,9 +69,18 @@
         "Sortiere x und y gemeinsam, überspringe gleiche Nachbarn und wähle bei Gleichstand die kleinste Schwelle."
       ],
       "typicalErrors": [
-        "Klassenanzahlen statt Anteile verwendet",
-        "x und y nicht gemeinsam sortiert",
-        "gleiche x-Werte als Schwelle benutzt"
+        {
+          "id": "klassenanzahlen-statt-anteile-verwendet",
+          "text": "Klassenanzahlen statt Anteile verwendet"
+        },
+        {
+          "id": "x-und-y-nicht-gemeinsam",
+          "text": "x und y nicht gemeinsam sortiert"
+        },
+        {
+          "id": "gleiche-x-werte-als-schwelle",
+          "text": "gleiche x-Werte als Schwelle benutzt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"

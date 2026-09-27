@@ -15,7 +15,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\n\ndef build_vectors(docs):\n    \"\"\"TF-IDF-Matrix (n_docs x |vocab|) mit idf = log((n+1)/(df+1)) + 1, tf normiert auf Dokumentlänge.\"\"\"\n    ...\n\ndef rank(query, docs, k):\n    \"\"\"Top-k Indizes nach Kosinus-Aehnlichkeit, Gleichstand -> kleinster Index zuerst.\"\"\"\n    ...\n\ndef recall_at_k(relevant, ranked, k):\n    \"\"\"|top-k ∩ relevant| / |relevant|; leere relevant-Liste -> ValueError.\"\"\"\n    ...\n\n",
-        "tests": "DOCS = [\n    \"Die Lieferzeit beträgt drei Werktage.\",\n    \"Die Lieferzeit im Ausland beträgt zwei Wochen.\",\n    \"Der Vertrag läuft zwölf Monate.\",\n    \"Die Kündigung des Vertrags ist schriftlich möglich.\",\n    \"Rabattcodes gelten im Sommer.\",\n    \"Das Widerrufsrecht endet nach vierzehn Tagen.\",\n]\n__check('lieferzeit top1', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 3)[0] == 0)\n__check('lieferzeit top2 sortierung', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2) == [0, 1])\n__check('vertrag top1', rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) == [2])\n__check('widerruf top1', rank(\"Wann endet das Widerrufsrecht?\", DOCS, 1) == [5])\n__check('recall voll', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([5], rank(\"Wie lange läuft der Vertrag?\", DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere relevante -> ValueError', True)"
+        "tests": "DOCS = [\n    \"Die Lieferzeit beträgt drei Werktage.\",\n    \"Die Lieferzeit im Ausland beträgt zwei Wochen.\",\n    \"Der Vertrag läuft zwölf Monate.\",\n    \"Die Kündigung des Vertrags ist schriftlich möglich.\",\n    \"Rabattcodes gelten im Sommer.\",\n    \"Das Widerrufsrecht endet nach vierzehn Tagen.\",\n]\n__check('lieferzeit top1', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 3)[0] == 0)\n__check('lieferzeit top2 sortierung', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2) == [0, 1])\n__check('vertrag top1', rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) == [2])\n__check('widerruf top1', rank(\"Wann endet das Widerrufsrecht?\", DOCS, 1) == [5])\n__check('recall voll', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([5], rank(\"Wie lange läuft der Vertrag?\", DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere relevante -> ValueError', True)\nDOCS2 = [\"garantie versand filiale oeffnung beratung\", \"versand\", \"versand kundenkarte\"]\n__check('kosinus normiert doklaenge', rank(\"versand garantie\", DOCS2, 2) == [0, 1])"
       },
       "competencyIds": [
         "c-genai-rag",
@@ -32,9 +32,18 @@
         "Der Anfragevektor bekommt dieselbe idf-Gewichtung wie die Dokumente; bei Score-Gleichstand gewinnt der kleinere Index (sortiere mit key=(-score, i))."
       ],
       "typicalErrors": [
-        "Anfrage anders normalisiert als Dokumente",
-        "Kosinus ohne Längennormierung gerechnet",
-        "argsort ohne stabilen Tie-Break verwendet"
+        {
+          "id": "anfrage-anders-normalisiert-als-dokumente",
+          "text": "Anfrage anders normalisiert als Dokumente"
+        },
+        {
+          "id": "kosinus-ohne-laengennormierung-gerechnet",
+          "text": "Kosinus ohne Längennormierung gerechnet"
+        },
+        {
+          "id": "argsort-ohne-stabilen-tie-break",
+          "text": "argsort ohne stabilen Tie-Break verwendet"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide"
@@ -69,9 +78,18 @@
         "Recall@k zählt den Schnitt |top-k ∩ relevant|; MRR bricht nach dem ersten relevanten Dokument ab."
       ],
       "typicalErrors": [
-        "MRR null-basiert gerechnet",
-        "Recall über alle gelisteten statt der top-k",
-        "bei MRR alle relevanten Dokumente summiert"
+        {
+          "id": "mrr-null-basiert-gerechnet",
+          "text": "MRR null-basiert gerechnet"
+        },
+        {
+          "id": "recall-ueber-alle-gelisteten-statt",
+          "text": "Recall über alle gelisteten statt der top-k"
+        },
+        {
+          "id": "bei-mrr-alle-relevanten-dokumente",
+          "text": "bei MRR alle relevanten Dokumente summiert"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

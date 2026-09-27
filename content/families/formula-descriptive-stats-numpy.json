@@ -28,9 +28,18 @@
         "bin_counts muss die Kantenregeln von np.histogram treffen: bins-Argument als Kanten übergeben und die Anzahlen ([0]-Index) zurückgeben."
       ],
       "typicalErrors": [
-        "ddof=1 statt ddof=0 verwendet",
-        "Bin-Kanten als inklusive Intervalle links und rechts gelesen",
-        "len(values) statt .size nach der Array-Umwandlung gemischt"
+        {
+          "id": "ddof-1-statt-ddof-0",
+          "text": "ddof=1 statt ddof=0 verwendet"
+        },
+        {
+          "id": "bin-kanten-als-inklusive-intervalle",
+          "text": "Bin-Kanten als inklusive Intervalle links und rechts gelesen"
+        },
+        {
+          "id": "len-values-statt-size-nach",
+          "text": "len(values) statt .size nach der Array-Umwandlung gemischt"
+        }
       ]
     },
     {
@@ -58,9 +67,18 @@
         "Übergebe die Kanten unverändert an `np.histogram`; nur die letzte rechte Kante ist inklusive."
       ],
       "typicalErrors": [
-        "Mittelwert statt Median verwechselt",
-        "ddof=1 verwendet",
-        "rechte Bin-Kante falsch behandelt"
+        {
+          "id": "mittelwert-statt-median-verwechselt",
+          "text": "Mittelwert statt Median verwechselt"
+        },
+        {
+          "id": "ddof-1-verwendet",
+          "text": "ddof=1 verwendet"
+        },
+        {
+          "id": "rechte-bin-kante-falsch-behandelt",
+          "text": "rechte Bin-Kante falsch behandelt"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

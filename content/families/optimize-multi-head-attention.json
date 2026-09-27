@@ -33,9 +33,18 @@
         "Pro Kopf Divisor np.sqrt(d_head) — nicht sqrt(d_model); am Ende np.concatenate(heads, axis=1) @ Wo."
       ],
       "typicalErrors": [
-        "falscher Skalierungsdivisor pro Kopf",
-        "Köpfe vor statt nach der Projektion gesplittet",
-        "Konkatenation und Ausgabeprojektion in falscher Reihenfolge"
+        {
+          "id": "falscher-skalierungsdivisor-pro-kopf",
+          "text": "falscher Skalierungsdivisor pro Kopf"
+        },
+        {
+          "id": "koepfe-vor-statt-nach-der",
+          "text": "Köpfe vor statt nach der Projektion gesplittet"
+        },
+        {
+          "id": "konkatenation-und-ausgabeprojektion-in-falscher",
+          "text": "Konkatenation und Ausgabeprojektion in falscher Reihenfolge"
+        }
       ],
       "activityType": "python-code",
       "graderId": "pyodide",

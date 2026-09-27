@@ -5,14 +5,69 @@
   "type": "object",
   "required": ["capsules"],
   "additionalProperties": false,
+  "dependentRequired": {
+    "contract": ["shapeError"]
+  },
   "properties": {
     "capsules": {
       "type": "object",
       "minProperties": 1,
       "additionalProperties": { "$ref": "#/$defs/capsule" }
-    }
+    },
+    "contract": { "$ref": "#/$defs/contract" },
+    "shapeError": { "type": "string", "minLength": 1 },
+    "keyBy": { "enum": ["difficulty", "caseId"] }
   },
   "$defs": {
+    "contract": {
+      "type": "object",
+      "required": [
+        "graderId",
+        "activityType",
+        "familyId",
+        "familyGroup",
+        "summary",
+        "taskArchetype",
+        "authorityMode",
+        "masteryEligible",
+        "caseTypes",
+        "difficultyProfiles",
+        "competencyIds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "graderId": { "type": "string", "minLength": 1 },
+        "activityType": { "type": "string", "minLength": 1 },
+        "familyId": { "type": "string", "minLength": 1 },
+        "familyGroup": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "taskArchetype": { "type": "string", "minLength": 1 },
+        "authorityMode": { "type": "string", "minLength": 1 },
+        "masteryEligible": { "type": "boolean" },
+        "caseTypes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["caseId"],
+            "properties": {
+              "caseId": { "type": "string", "minLength": 1 },
+              "propertyTest": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "difficultyProfiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "competencyIds": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
     "capsule": {
       "type": "object",
       "required": ["caseId"],
@@ -20,7 +75,50 @@
         "caseId": { "type": "string", "minLength": 1 },
         "difficulty": { "type": "string" },
         "competencyIds": { "type": "array", "items": { "type": "string" } },
-        "bank": { "type": "array", "minItems": 1 }
+        "bank": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "if": {
+              "type": "object",
+              "properties": { "key": true },
+              "required": ["key"]
+            },
+            "then": { "$ref": "#/$defs/keyedEntry" }
+          }
+        }
+      }
+    },
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "feedback": { "type": "string", "minLength": 1 },
+        "misconception": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" }
+      }
+    },
+    "keyedEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "prompt", "correct", "wrong", "solution"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string", "minLength": 1 },
+        "correct": { "type": "string", "minLength": 1 },
+        "wrong": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "anyOf": [
+              { "type": "string", "minLength": 1 },
+              { "$ref": "#/$defs/statement" }
+            ]
+          }
+        },
+        "solution": { "type": "string", "minLength": 1 }
       }
     }
   }

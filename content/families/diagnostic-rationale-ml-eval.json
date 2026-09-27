@@ -73,9 +73,18 @@
         }
       ],
       "typicalErrors": [
-        "den Split pauschal als undicht bezeichnet, ohne das ziel-abgeleitete Feature zu benennen",
-        "Overfitting als Erklärung — das Modell generalisiert korrekt, das Feature ist der Fehler",
-        "0.99 als Modellgüte gewertet statt als Leakage-Signal"
+        {
+          "id": "den-split-pauschal-als-undicht",
+          "text": "den Split pauschal als undicht bezeichnet, ohne das ziel-abgeleitete Feature zu benennen"
+        },
+        {
+          "id": "overfitting-als-erklaerung-das-modell",
+          "text": "Overfitting als Erklärung — das Modell generalisiert korrekt, das Feature ist der Fehler"
+        },
+        {
+          "id": "n-0-99-als-modellguete-gewertet",
+          "text": "0.99 als Modellgüte gewertet statt als Leakage-Signal"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
@@ -119,9 +128,18 @@
         }
       ],
       "typicalErrors": [
-        "Overfitting als Ursache genannt, ohne den `score`-Aufruf zu prüfen",
-        "`test_size` oder `random_state` für das Problem gehalten",
-        "die hohe Zahl als echten Test-Score gelesen statt als Trainings-Score"
+        {
+          "id": "overfitting-als-ursache-genannt-ohne",
+          "text": "Overfitting als Ursache genannt, ohne den `score`-Aufruf zu prüfen"
+        },
+        {
+          "id": "test-size-oder-random-state",
+          "text": "`test_size` oder `random_state` für das Problem gehalten"
+        },
+        {
+          "id": "die-hohe-zahl-als-echten",
+          "text": "die hohe Zahl als echten Test-Score gelesen statt als Trainings-Score"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
@@ -165,9 +183,18 @@
         }
       ],
       "typicalErrors": [
-        "den ValueError dem Modell statt den Daten zugeschrieben",
-        "die Imputation für fehlerhaft erklärt — sie deckt nur die Features ab, nicht das Ziel",
-        "die KFold-Zufallsauswahl als Ursache vermutet"
+        {
+          "id": "den-valueerror-dem-modell-statt",
+          "text": "den ValueError dem Modell statt den Daten zugeschrieben"
+        },
+        {
+          "id": "die-imputation-fuer-fehlerhaft-erklaert",
+          "text": "die Imputation für fehlerhaft erklärt — sie deckt nur die Features ab, nicht das Ziel"
+        },
+        {
+          "id": "die-kfold-zufallsauswahl-als-ursache",
+          "text": "die KFold-Zufallsauswahl als Ursache vermutet"
+        }
       ],
       "activityType": "diagnostic-rationale",
       "graderId": "deterministic",
