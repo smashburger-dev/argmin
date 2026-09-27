@@ -903,10 +903,8 @@ const rankSolutionSpec = makeChoiceFamily({
 // authored Regeln Anker-IDs binden. independence-statements und
 // rank-nullity-combined werden über staticVariantInstance mit dem authored
 // difficultyProfile-Gate serviert: Seed 0 ist der authored Fall, andere Seeds
-// ziehen aus dem statementPool. rank-nullity-combined bleibt propertyTest:
-// false: die frische Review-Route zieht den Fall ohne Profilfilter, und
-// independence-statements (core) würde auf challenge werfen. Der
-// Content-Contract ist null, der Vertrag lebt hier.
+// ziehen aus dem statementPool. Der Content-Contract ist null, der Vertrag
+// lebt hier.
 
 export const MC_INDEPENDENCE_CONTRACT = {
   familyId: 'multiple-choice-linalg-independence',
@@ -919,7 +917,7 @@ export const MC_INDEPENDENCE_CONTRACT = {
     { caseId: 'independent-sets-r2', propertyTest: false },
     { caseId: 'independence-statements', propertyTest: true },
     { caseId: 'independent-sets-r3', propertyTest: false },
-    { caseId: 'rank-nullity-combined', propertyTest: false },
+    { caseId: 'rank-nullity-combined', propertyTest: true },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-independence'],
