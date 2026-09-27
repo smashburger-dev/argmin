@@ -44,7 +44,7 @@ Kleinhirn-Abgleich (Probe-Merge in `/tmp/argmin-klcheck`, Konflikt nur `tests/fi
 - Die Basisfälle der 7 Foundations- und 6 Git-Fälle haben weiter kein Distraktor-Feedback; nur die neuen Varianten tragen es. Nachziehen hieße Seed 0 ändern (Entscheidung Noa).
 - Behoben auf release/0.8.12: Die frische Review-Route zog den Fall ohne Profilfilter (`classify-error-hypothesis` auf intro warf in 10 von 20 Seeds "Unbekanntes Profil"). Sie behält jetzt caseId, und der Zufallszug ohne caseId nimmt nur Fälle, die das Profil bedienen. Danach ist `rank-nullity-combined` propertyTest: true.
 - Behoben: `classify-git-operation` auf stretch/challenge nannte im Prompt eine Arbeitsdatei (`notizen.py` u. a.), Optionen und Lösung hielten `datei.py`; Generator und Solver lokalisieren jetzt über `localizeGitFileName` nach dem Rebinden.
-- Entscheidung Noa: `transform-linear-equation-isolate/two-step-fixed-instance` ist unerreichbar und doppelt `two-step-seeded` (Retire?).
+- Behoben in 0.8.14: `transform-linear-equation-isolate/two-step-fixed-instance` entfernt (unerreichbar, doppelte `two-step-seeded-retrieval`); der Diagnose-Button „Ersten Algebra-Anker ausführen" zeigt jetzt auf den geseedeten Anker.
 - P3 hat das JS-gzip um ~40 KB erhöht (Anker-JSON im Runtime-Graph).
 - Abschluss-Verifikation fehlt noch: `npm run test:e2e` (Dev), `test:project-runner`, `coverage:check`, E2E-Build nach dem Text-Rework.
 - Hinweise an die Kleinhirn-Session: `dependency-pin-count` Mutator Fehler 2 soll `null` liefern, wenn kein `*` gezogen wurde; `kfold-indices-numpy#1a/#1b` bestehen alle Checks (war schon vorher so).

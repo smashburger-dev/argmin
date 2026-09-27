@@ -16,12 +16,18 @@ const familyDocs = readdirSync(join(root, 'content/families'))
 
 for (const document of familyDocs) registerStaticCases(document.familyId, document.cases);
 const registry = configureExerciseFamilies(familyDocs);
-const registeredFamilyIds = compileContent({ projectRoot: root, profile: 'public' }).families
-  .map((family) => family.familyId)
+// A family without an authored doc still pins behavior — union the
+// content docs with the canonical family list so purely generated
+// families (e.g. transform-linear-equation-isolate) stay in the corpus.
+const registeredFamilyIds = [
+  ...compileContent({ projectRoot: root, profile: 'public' }).families.map((family) => family.familyId),
+  ...JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8')).families
+    .map((family) => family.familyId),
+]
+  .filter((familyId, index, ids) => ids.indexOf(familyId) === index)
   .filter((familyId) => {
     try {
-      registry.get(familyId);
-      return true;
+      return Boolean(registry.get(familyId));
     } catch {
       return false;
     }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.14 — 2026-09-27
+
+Unerreichbarer Algebra-Fall entfernt; der Diagnose-Button öffnet wieder einen echten Anker.
+
+Für Lernende: **Der Button „Ersten Algebra-Anker ausführen" auf der Diagnose-Seite öffnet jetzt die echte erste Algebra-Aufgabe** — bisher zeigte er auf einen Fall, den es im Katalog nicht gab, und landete nur im Lernpfad.
+
+Für Beitragende: `transform-linear-equation-isolate/two-step-fixed-instance` ist aus Vertrag, Generator, Fallkörper, Shard-Fixture und allen Referenzen entfernt: Der Fall hatte keine Platzierung, wurde mit `propertyTest: false` auch nie per Zufallszug gezogen und doppelte `two-step-seeded-retrieval`. Die Familie hat jetzt kein authored Doc mehr (Präzedenz `reflect-error-journal-rationale`); der Golden-Korpus pinnt Familien seither über die Vereinigung aus kompilierten und kanonischen Familien-ids, damit rein generierte Familien weiter gepinnt bleiben. Der Button nutzt `routeForDefinition` (kanonischer Seed wie jeder andere Aufgaben-Einstieg); die mobile-touch-Spec prüft den `#/family/…`-Link.
+
 ## 0.8.13 — 2026-09-27
 
 Fehlvorstellungen prüfbar gemacht, Distraktor-Feedback auf den authored Fällen, ehrlichere Fehlermeldung beim Testabbruch.

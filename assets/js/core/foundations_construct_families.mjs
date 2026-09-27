@@ -110,7 +110,7 @@ const constructCaseBody = (familyId, caseId) => {
 };
 
 // --- Familie 1: transform-linear-equation-isolate (numeric-exact) ---------
-// Shard-Fälle: two-step-fixed-instance (statisch, w01-e1), two-step-seeded-
+// Shard-Fälle: two-step-seeded-
 // retrieval (geseedet, w01-e8), collect-x-terms-both-sides (geseedet,
 // f-algebra-both-sides-01). divide-both-sides-fully bleibt statisch
 // (choice-diagnose, siehe FAMILY_NOTES).
@@ -123,7 +123,6 @@ export const LINEAR_ISOLATE_CONTRACT = {
   authorityMode: 'seeded',
   masteryEligible: true,
   caseTypes: [
-    { caseId: 'two-step-fixed-instance', propertyTest: false },
     { caseId: 'two-step-seeded-retrieval' },
     { caseId: 'collect-x-terms-both-sides' },
   ],
@@ -133,7 +132,6 @@ export const LINEAR_ISOLATE_CONTRACT = {
   activityType: 'numeric',
 };
 
-/** Verankerung w01-e1: fixe Diagnoseinstanz, keine Seed-Variation. */
 /** Unabhängiger Solver: Lösung allein aus den Fallparametern. */
 export function solveLinearIsolate(parameters) {
   if (parameters.shape === 'both-sides') {
@@ -178,11 +176,6 @@ export function generateLinearIsolateFamily({ seed, caseId, difficulty }) {
   assertSeed(seed);
   assertProfile(difficulty);
   const tier = profileTier(difficulty);
-  if (caseId === 'two-step-fixed-instance') {
-    const body = constructCaseBody('transform-linear-equation-isolate', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { ...(body.parameters || {}) } };
-  }
   if (caseId === 'two-step-seeded-retrieval') {
     const p = drawLinearSimple(seed, LINEAR_SIMPLE_TIERS[tier]);
     const value = solveLinearIsolate(p).value;
