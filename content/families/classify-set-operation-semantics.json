@@ -35,6 +35,20 @@
       ],
       "prompt": "Gegeben:\n\n<code>a = {\"ki\", \"lern\", \"ki\"}\nb = {\"lern\", \"plattform\"}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?",
       "fullSolution": "a = {\"ki\", \"lern\"} (Duplikat entfällt), len(a) = 2. a & b = {\"lern\"}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Mengen speichern jedes Element nur einmal — das zweite „ki“ fällt beim Anlegen weg. len(a) ist 2."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "`&` ist der Durchschnitt, nicht die Vereinigung: nur „lern“ liegt in beiden Mengen. Die Vereinigung wäre `a | b`."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "Beides vermischt: Duplikate fallen in Mengen weg (len(a) = 2), und `&` bildet den Durchschnitt ({„lern“}), nicht die Vereinigung."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [

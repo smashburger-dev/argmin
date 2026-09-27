@@ -35,6 +35,20 @@
       ],
       "prompt": "Du willst jeden Wert einer bereits vorhandenen Liste genau einmal prüfen. Welche Schleifenform drückt diese Absicht am direktesten aus?",
       "fullSolution": "`for value in values` iteriert direkt über jedes vorhandene Element. Eine while-Schleife ist passender, wenn die Wiederholung von einer sich ändernden Bedingung statt von einer vorhandenen Collection abhängt.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`while True` ohne Abbruch läuft endlos. Die Liste ist schon da — die direkte Iteration drückt genau das aus."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Eine Rekursion ohne Basisfall endet nie. Für das einmalige Prüfen jedes Elements ist sie unnötig kompliziert."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`if` prüft genau einmal — nicht jedes Element. Für die Wiederholung über alle Werte braucht es eine Schleife."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
