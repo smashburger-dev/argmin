@@ -31,7 +31,7 @@ function sectionError(view: string) {
 import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
 import { buildWeeklyLearningPlan } from '../adapters/learning-plan';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
-import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
+import { freshRouteForDefinition, routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
 import { daySeed } from '../../assets/js/domain/challenge_picker.mjs';
@@ -381,7 +381,7 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               if (!definition) return null; // unreachable after the partition; keeps the type narrowing honest
               const route = routeForDefinition(definition);
               const freshRoute = definition.familyId && definition.seeded
-                ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
+                ? freshRouteForDefinition(definition)
                 : route;
               return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {formatGermanDate(review.nextDueAt)}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}

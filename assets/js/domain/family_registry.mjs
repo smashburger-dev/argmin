@@ -272,15 +272,23 @@ function requireFamily(byId, familyId) {
   return family;
 }
 
-function resolveCaseId(family, seed, caseId) {
+// How generators reject a profile a case does not serve (authored-profile
+// pins, per-profile capsules, draw-kit profile predicates). Any other error
+// is a defect and must not read as "case does not serve this profile".
+const PROFILE_REJECTION = /Unbekanntes Profil |Unbekannter Fall \S+ für Profil /;
+
+// A caseless draw picks among the property-testable cases that serve the
+// requested profile. Without `servesProfile` every case counts (explicit
+// caseIds never reach the filter).
+function resolveCaseId(family, seed, caseId, servesProfile = () => true) {
   if (caseId != null) {
     if (!family.caseTypes.some((item) => item.caseId === caseId)) {
       throw new Error(`Unbekannter Fall ${caseId}`);
     }
     return caseId;
   }
-  const cases = family.caseTypes.filter((item) => item.propertyTest !== false);
-  if (!cases.length) throw new Error(`${family.familyId}: kein property-testfähiger Fall`);
+  const cases = family.caseTypes.filter((item) => item.propertyTest !== false && servesProfile(item.caseId));
+  if (!cases.length) throw new Error(`${family.familyId}: kein property-testfähiger Fall für dieses Profil`);
   return cases[variantCaseIndex(seed, cases.length)].caseId;
 }
 
@@ -490,11 +498,30 @@ export function createFamilyRegistry(families) {
 
   const get = (familyId) => byId.get(familyId) || null;
 
+  // A case serves a profile when its generator accepts it at seed 0 — the
+  // rule the golden corpus uses to enumerate (case, profile) pairs, and it
+  // pins every other seed of such a pair. Memoized per registry.
+  const served = new Map();
+  const servesProfile = (family, difficulty) => (caseId) => {
+    const key = `${family.familyId}\0${caseId}\0${difficulty}`;
+    if (!served.has(key)) {
+      let serves = true;
+      try {
+        family.generate({ seed: 0, caseId, difficulty });
+      } catch (error) {
+        if (!PROFILE_REJECTION.test(error?.message ?? '')) throw error;
+        serves = false;
+      }
+      served.set(key, serves);
+    }
+    return served.get(key);
+  };
+
   function instantiate(familyId, seed, difficulty, caseId) {
     if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
     const family = requireFamily(byId, familyId);
     if (!family.difficultyProfiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
-    const resolvedCase = resolveCaseId(family, seed, caseId);
+    const resolvedCase = resolveCaseId(family, seed, caseId, servesProfile(family, difficulty));
     const generated = family.generate({ seed, caseId: resolvedCase, difficulty });
     // Procedural generators emit the per-seed instance but not the authored
     // case material that lives on the exemplar doc (hints, feedbackRules).
@@ -559,6 +586,7 @@ export function createFamilyRegistry(families) {
       throw new Error(`Unbekanntes Profil ${placement.difficulty}`);
     }
     if (placement.caseId != null) resolveCaseId(family, placement.seed ?? 0, placement.caseId);
+    else if (placement.difficulty) resolveCaseId(family, 0, null, servesProfile(family, placement.difficulty));
   }
 
   return { get, instantiate, grade, assertFamilyPlacement };
