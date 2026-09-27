@@ -12,7 +12,10 @@ const overflowRoutes: Array<{ hash: string; ready: (page: Page) => Promise<void>
   { hash: '/module/lm-linalg-matrices', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
   { hash: '/family/formula-scalar-product/column-vector-authored/0/core', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
   { hash: '/review', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Review' })).toBeVisible(); } },
-  { hash: '/diagnostic', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Diagnose' })).toBeVisible(); } },
+  { hash: '/diagnostic', ready: async (page) => {
+    await expect(page.getByRole('heading', { level: 1, name: 'Diagnose' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Ersten Algebra-Anker ausführen' })).toHaveAttribute('href', /^#\/family\/transform-linear-equation-isolate\/two-step-seeded-retrieval\//);
+  } },
 ];
 
 async function expectNoHorizontalOverflow(page: Page): Promise<void> {
