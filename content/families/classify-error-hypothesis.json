@@ -106,7 +106,95 @@
         }
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "In einer Trace-Aufgabe hast du den Wert nach einer `range`-Schleife um eins zu hoch vorhergesagt. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beobachtung und kleinste Reproduktion notieren, als Ursache vermuten, dass du das Ende von `range` mitgezählt hast, und das an einer frischen Trace-Aufgabe gezielt testen",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nur ‚Schleifen kann ich nicht‘ notieren und das ganze Kapitel noch einmal lesen",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Musterlösung durchlesen und die Aufgabe als verstanden abhaken",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "‚Flüchtigkeitsfehler‘ als Ursache notieren und ohne weiteren Test weitermachen",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Der beste Eintrag trennt Symptom, kleinste Reproduktion, eine konkrete Ursachenhypothese und einen frischen Test. Die Vermutung zum Ende von `range` lässt sich an einer neuen Schleife sofort bestätigen oder widerlegen.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Ein pauschales Urteil nennt keine Ursache und keinen nächsten Test. Das ganze Kapitel zu lesen trifft den konkreten Fehler nur zufällig.",
+              "misconception": "pauschales-selbsturteil"
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die Musterlösung zu verstehen ist kein eigener Abruf. Ob du die Regel anwenden kannst, zeigt erst eine frische Aufgabe ohne Vorlage.",
+              "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "‚Flüchtigkeitsfehler‘ ist eine Ursache ohne Gegenprobe. Ohne Test an einer neuen Aufgabe bleibt offen, ob dahinter eine falsche Regel steckt.",
+              "misconception": "ursache-ohne-gegenprobe"
+            }
+          ]
+        },
+        {
+          "prompt": "Beim Lösen einer Ungleichung hast du durch $-2$ geteilt und das Ungleichheitszeichen nicht umgedreht. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beobachtung und kleinste Reproduktion notieren, die Umkehrregel beim Teilen durch negative Zahlen als Ursachenhypothese benennen und sie an einer frischen Ungleichung gezielt testen",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Lösung aus dem Lösungsblatt übernehmen, weil sie beim Nachlesen einleuchtet",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur ‚Ungleichungen liegen mir nicht‘ notieren und das Thema vorerst meiden",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "‚Zeitdruck‘ als Ursache notieren, ohne sie an einer neuen Aufgabe zu prüfen",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Ein brauchbarer Eintrag nennt das Symptom, die kleinste Reproduktion, die vermutete Regel und einen frischen Test. Eine neue Ungleichung mit negativem Faktor zeigt sofort, ob die Umkehrregel jetzt sitzt.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Nachlesen fühlt sich wie Verstehen an, ist aber kein eigener Abruf. Erst eine frische Ungleichung ohne Vorlage zeigt, ob die Regel sitzt.",
+              "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Das Urteil ist pauschal und benennt weder Ursache noch nächsten Test. Meiden verhindert genau die Übung, die den Fehler behebt.",
+              "misconception": "pauschales-selbsturteil"
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "‚Zeitdruck‘ bleibt ohne Gegenprobe eine Vermutung. Eine neue Aufgabe ohne Zeitdruck würde zeigen, ob der Fehler trotzdem auftritt.",
+              "misconception": "ursache-ohne-gegenprobe"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

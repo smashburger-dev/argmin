@@ -15,6 +15,9 @@ Worktree `/Users/no8/Desktop/life/Lifemaxxing/argmin-streamline`, Branch `shrink
 | `24a383f` | E: `typicalErrors` als `{id, text}` (865 Einträge, Texte byte-identisch), Instanzen tragen `typicalErrorIds`, `misconception` muss auf eine ID zeigen (`tests/typical_error_ids.test.mjs`) |
 | `2c570b8` | F1: Trace/Numeric-Generatoren erzeugen die Grenzfälle aus Kleinhirns `SKIPPED.md` (Zusatzfelder, .5-Rundung, leere Werte, Satzpunkt, y-Alias, Plateau-Reset, dyadische min_delta-Grenze, Ereignisse außerhalb der Treffertage, Fundreihenfolge, Exception-Stufe vorn); Early-Stop-Mismatch JS/CPython behoben |
 | `d36f463` | F2: 19 Python-Checks in 14 Fällen für Fehlvorstellungen, die bisher bestanden; Referenzen unverändert, CPython + Pyodide-Vertragslauf grün |
+| `d73debb` | P4b-2a (release/0.8.12): statementPool für die 6 Multiple-Choice-Fälle, Varianten der beiden Vorrangfälle in den Pool übernommen; `statement_pool.mjs` vergibt IDs a-f (CHOICE_IDS endet bei d) |
+| `685b23e` | P4b-2b: je zwei Varianten mit Distraktor-Feedback für 7 statische Foundations-Choice-Fälle |
+| `878475c` | P4b-2c: Git-Generator mit Varianten-Support (Seed 0 byte-gleich), je zwei Varianten für die 7 Git-Fälle |
 
 Code-LOC (`assets/js`, `src`, `tools`, `tests` ohne Fixtures): 60.650 → 55.418. `assets/js`: 32.114 → 27.189. Prozedurale Module: 76 → 56. 51 Dateien gelöscht, 10 neu.
 
@@ -36,7 +39,11 @@ Kleinhirn-Abgleich (Probe-Merge in `/tmp/argmin-klcheck`, Konflikt nur `tests/fi
 - Kleinhirn-Anpassungen nach dem Rebase: `list-alias-negative` Mutator 0 braucht die neuen `y_nach_*`-Keys (sonst rejected); Inventar-Keying muss eine ID mit mehreren Texten erlauben (`trace-call-composition/two-functions-one-print`, Zahlen im Text); für die F2-Fehler können Python-Mutatoren neu geschrieben werden.
 - Content-Entscheidungen Noa: `hypothesis-report-groups` Fehler 2 widerspricht der Referenz (sie vergleicht ungerundete Mediane); `card-check-variable-trace` Fehler 1 ist ohne Float-Falle nicht beobachtbar; beobachtungsgleiche typicalErrors (Rang 3x3, Softmax ohne Max-Subtraktion, np.float64, len vs size) umformulieren oder streichen.
 - Harness-Frage: Exceptions brechen Python-Testläufe ab, bevor ein Check fehlschlägt (etwa 12 SKIPPED-Einträge); try/except pro Check wäre eine eigene Phase mit Pyodide-E2E.
-- P4b-2 Content: statementPool für die 6 Multiple-Choice-Fälle (zwei davon haben durch den P4a-Bugfix auf Varianten-Seeds kein Feedback mehr); Varianten für 9 Foundations-Single-Choice-Fälle und 7 Git-Fälle (Git-Generator braucht Varianten-Support); diagnostic-rationale-Varianten nur mit gleichem Fehlermechanismus und gleichen typicalErrors.
+- P4b-2 erledigt (Worktree `argmin-p4b2`, Branch `release/0.8.12`, lokal, nicht gepusht). Von den 9 Foundations-Choice-Fällen waren 2 schon prozedural, 7 bekamen Varianten. Verifikation: `node --test tests/` 1543/1543 (+5 skip), compile/validate, typecheck, `build:release`, `E2E_PORT=4290 npm run test:e2e:build` 63 pass / 14 skip.
+- `diagnostic-rationale-python-errors` und `diagnostic-rationale-ml-eval` sind bis nach A4 eingefroren: keine Varianten, keine Text- oder Kriterienänderungen (Kleinhirn-Training A3/A4).
+- Die Basisfälle der 7 Foundations- und 6 Git-Fälle haben weiter kein Distraktor-Feedback; nur die neuen Varianten tragen es. Nachziehen hieße Seed 0 ändern (Entscheidung Noa).
+- Behoben auf release/0.8.12: Die frische Review-Route zog den Fall ohne Profilfilter (`classify-error-hypothesis` auf intro warf in 10 von 20 Seeds "Unbekanntes Profil"). Sie behält jetzt caseId, und der Zufallszug ohne caseId nimmt nur Fälle, die das Profil bedienen. Danach ist `rank-nullity-combined` propertyTest: true.
+- Behoben: `classify-git-operation` auf stretch/challenge nannte im Prompt eine Arbeitsdatei (`notizen.py` u. a.), Optionen und Lösung hielten `datei.py`; Generator und Solver lokalisieren jetzt über `localizeGitFileName` nach dem Rebinden.
 - Entscheidung Noa: `transform-linear-equation-isolate/two-step-fixed-instance` ist unerreichbar und doppelt `two-step-seeded` (Retire?).
 - P3 hat das JS-gzip um ~40 KB erhöht (Anker-JSON im Runtime-Graph).
 - Abschluss-Verifikation fehlt noch: `npm run test:e2e` (Dev), `test:project-runner`, `coverage:check`, E2E-Build nach dem Text-Rework.

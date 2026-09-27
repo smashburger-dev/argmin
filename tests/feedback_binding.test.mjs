@@ -82,8 +82,13 @@ test('feedback binding: every choice rule points at its authored option text', (
             if (!target || /^choice !== /.test(rule.if)) continue;
             const shown = (instance.choices || []).find((choice) => choice.id === target);
             if (!shown) { bad.push(`${label}: Regel "${rule.if}" zeigt auf fehlende Option`); continue; }
-            const authored = sources.get(rule.then);
-            if (authored && !authored.has(shown.text)) {
+            // classify-git-operation renames `datei.py` to the drawn file name;
+            // the invariant compares against the authored text.
+            const fileName = instance.parameters?.fileName;
+            const unlocalize = (text) =>
+              fileName && typeof text === 'string' ? text.replaceAll(fileName, 'datei.py') : text;
+            const authored = sources.get(unlocalize(rule.then));
+            if (authored && !authored.has(unlocalize(shown.text))) {
               bad.push(`${label}: "${rule.if}" -> "${shown.text.slice(0, 40)}…" statt authored Text`);
             } else if (choiceMatch && shown.correct === true) {
               // Generator-emittierte Regeln (then ohne JSON-Quelle) sind per

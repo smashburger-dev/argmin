@@ -1,6 +1,6 @@
 import { CompetencyGraph } from '../../assets/js/domain/competency_graph.mjs';
 import { PlanEngine } from '../../assets/js/domain/plan_engine.mjs';
-import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
+import { freshRouteForDefinition, routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import type { CatalogData } from '../app/types';
 import type { ProgressSnapshot } from './local-progress';
 
@@ -65,7 +65,7 @@ export function buildWeeklyLearningPlan(catalog: CatalogData, progress: Progress
     return {
       ...rest,
       route: dueAt && exercise?.familyId
-        ? `#/family/${exercise.familyId}/${exercise.caseId}/-/${exercise.difficulty ?? 'core'}`
+        ? freshRouteForDefinition(exercise)
         : baseRoute,
       title: lesson?.title || exercise?.title || project?.title || item.activityId,
       ...(dueAt ? { reviewDueAt: dueAt } : {}),

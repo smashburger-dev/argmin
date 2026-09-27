@@ -18,7 +18,7 @@
 // variables may carry `type: 'repr'` (canonical Python literals).
 
 import { rng, randInt, nonzeroInt, pick, variantCaseIndex, variantEpoch, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
-import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
+import { rebindChoiceRules, registerStaticCases, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import gitOperationDoc from '../../../content/families/classify-git-operation.json' with { type: 'json' };
 
 /** Python repr for the values our generators produce. Sets are rendered
@@ -696,7 +696,7 @@ export function genGitNextAction(seed) {
       const usesFile = metaCase.state.includes('datei.py') || metaCase.correct.includes('datei.py') || metaCase.distractors.some((text) => text.includes('datei.py'));
       const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
       const fileName = usesFile ? fileNames[epoch % fileNames.length] : null;
-      const localize = (text) => fileName ? text.replaceAll('datei.py', fileName) : text;
+      const localize = (text) => localizeGitFileName(text, fileName);
       const localizedChoices = fileName ? choices.map((choice) => ({ ...choice, text: localize(choice.text) })) : choices;
       return {
         parameters: { caseId: metaCase.caseId, caseIndex, ...(fileName ? { fileName } : {}) },
@@ -715,12 +715,16 @@ export function gitNextActionCaseCount() {
 
 const GIT_OPERATION_CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
 
-function gitOperationCase(caseId) {
+/** Case meta of the variant body `variant` selects (seed or stored index,
+ *  both resolved modulo the body count; 0 is the authored case). The
+ *  genGitNextAction bank above keeps reading the authored bodies only. */
+function gitOperationCase(caseId, variant = 0) {
   if (!gitOperationDoc.cases.some((item) => item.caseId === caseId)) {
     throw new Error(`Unbekannter Git-Fall ${caseId}`);
   }
   ensureGitDocs();
-  return gitCaseMeta(staticCaseBody(gitOperationDoc.familyId, caseId));
+  const { body, index } = variantOf(staticCaseBody(gitOperationDoc.familyId, caseId), variant);
+  return { ...gitCaseMeta(body), body, variantIndex: index };
 }
 
 function gitOperationOptions(meta, difficulty, choiceCount) {
@@ -730,20 +734,29 @@ function gitOperationOptions(meta, difficulty, choiceCount) {
   return [meta.correct, ...distractors.slice(0, choiceCount - 1)];
 }
 
-/** Independent solver: the correct Git operation is a function of caseId,
- *  not of seed, rotation or difficulty. */
+/** `datei.py` in authored texts is the placeholder for the working file;
+ *  stretch/challenge draws rename it to parameters.fileName. */
+const localizeGitFileName = (text, fileName) =>
+  fileName ? text.replaceAll('datei.py', fileName) : text;
+
+/** Independent solver: the correct Git operation is a function of caseId
+ *  and variant, not of seed, rotation or difficulty. */
 export function solveGitOperation(parameters) {
-  return { correctText: gitOperationCase(parameters.caseId).correct };
+  const correct = gitOperationCase(parameters.caseId, parameters.variant ?? 0).correct;
+  return { correctText: localizeGitFileName(correct, parameters.fileName) };
 }
 
 /** S4C family generator for classify-git-operation. Case type is pinned;
- *  seed rotates the correct position and, on stretch/challenge, localizes a
- *  working-tree file name. intro/core leave that file step empty (vacuous-axis). */
+ *  seed picks the variant body (seed 0 is the authored case), rotates the
+ *  correct position and, on stretch/challenge, localizes a working-tree file
+ *  name. intro/core leave that file step empty (vacuous-axis). Variant
+ *  feedback rules are authored on the variant's ids and rebound through the
+ *  option texts. */
 export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
   const choiceCount = GIT_OPERATION_CHOICE_COUNT[difficulty];
   if (!choiceCount) throw new Error(`Unbekanntes Profil ${difficulty}`);
-  const meta = gitOperationCase(caseId);
+  const meta = gitOperationCase(caseId, seed);
   const varyFile = (difficulty === 'stretch' || difficulty === 'challenge') && !meta.staticFlow;
   const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
   const fileName = varyFile ? fileNames[randInt(rng(seed), 0, fileNames.length - 1)] : null;
@@ -751,16 +764,30 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   const rotation = variantCaseIndex(seed, options.length);
   const ids = ['a', 'b', 'c', 'd'].slice(0, options.length);
   const choices = buildRotatedChoices(options, rotation, ids);
+  const feedbackRules = rebindChoiceRules(meta.body.feedbackRules, meta.body.choices, choices);
+  // Localize after rebinding: rules match authored option texts, ids survive.
+  const localizedChoices = fileName
+    ? choices.map((choice) => ({ ...choice, text: localizeGitFileName(choice.text, fileName) }))
+    : choices;
+  const localizedRules = fileName && feedbackRules
+    ? feedbackRules.map((rule) => ({ ...rule, then: localizeGitFileName(rule.then, fileName) }))
+    : feedbackRules;
   const fileNote = fileName ? ` Die Arbeitsdatei heißt ${fileName}.` : '';
   const question = meta.staticFlow
     ? 'Welcher Ablauf liefert den belastbarsten Abschluss?'
     : 'Welche Git-Operation passt jetzt?';
   return {
-    parameters: { caseId, difficulty, ...(fileName ? { fileName } : {}) },
+    parameters: {
+      caseId,
+      difficulty,
+      ...(meta.variantIndex ? { variant: meta.variantIndex } : {}),
+      ...(fileName ? { fileName } : {}),
+    },
     expected: {},
-    choices,
+    choices: localizedChoices,
     prompt: `Situation: ${meta.state}${fileNote}\n\n${question}`,
-    fullSolution: `Richtig: ${meta.correct}. ${meta.insight}`,
+    fullSolution: localizeGitFileName(`Richtig: ${meta.correct}. ${meta.insight}`, fileName),
+    ...(localizedRules ? { feedbackRules: localizedRules } : {}),
   };
 }
 

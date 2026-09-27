@@ -4,7 +4,10 @@
 // and emits a fresh option set with per-statement feedback rules bound to
 // the freshly assigned ids. Pure functions, no DOM.
 
-import { CHOICE_IDS, familySubseed, randInt, rng, shuffle } from '../core/generator_draw_kit.mjs';
+import { familySubseed, randInt, rng, shuffle } from '../core/generator_draw_kit.mjs';
+
+// One id per slot up to the contract maximum count 6; CHOICE_IDS stops at d.
+const POOL_IDS = ['a', 'b', 'c', 'd', 'e', 'f'];
 
 /** Seed ≠ 0 instance for a case body carrying `statementPool`. The draw is
  *  deterministic per (seed, caseId, difficulty): kTrue = randInt(min, max)
@@ -24,7 +27,7 @@ export const drawStatementCase = (body, { seed, caseId, difficulty }) => {
   const drawnTrue = shuffle(r, trueIdx).slice(0, kTrue);
   const drawnFalse = shuffle(r, falseIdx).slice(0, pool.count - kTrue);
   const order = shuffle(r, [...drawnTrue, ...drawnFalse]);
-  const ids = CHOICE_IDS.slice(0, order.length);
+  const ids = POOL_IDS.slice(0, order.length);
   const statement = (i) => pool.statements[order[i]];
   const choices = order.map((poolIndex, i) => ({ id: ids[i], text: pool.statements[poolIndex].text }));
   const correctIds = order
@@ -54,7 +57,7 @@ export const drawStatementCase = (body, { seed, caseId, difficulty }) => {
  *  indices recorded in parameters.statements. */
 export const solveStatementPool = (body, parameters) => ({
   correctIds: (parameters?.statements || [])
-    .map((poolIndex, i) => (body.statementPool.statements[poolIndex]?.correct ? CHOICE_IDS[i] : null))
+    .map((poolIndex, i) => (body.statementPool.statements[poolIndex]?.correct ? POOL_IDS[i] : null))
     .filter(Boolean)
     .sort(),
 });

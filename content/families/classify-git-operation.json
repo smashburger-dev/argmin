@@ -52,7 +52,107 @@
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "Du hast in einer Datei eine Funktion umgebaut und noch nichts mit git add vorgemerkt. Du willst Zeile für Zeile sehen, was sich gegenüber dem letzten Commit geändert hat.",
+            "insight": "git diff vergleicht die Arbeitskopie mit dem Staging-Bereich; solange nichts gestaged ist, zeigt es alle Änderungen seit dem letzten Commit. git log listet nur Commits, keine offenen Änderungen.",
+            "challengeDistractors": [
+              "git diff --staged",
+              "git status",
+              "git show"
+            ]
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git diff",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git diff --staged",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git log",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git commit -a",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du hast in einer Datei eine Funktion umgebaut und noch nichts mit git add vorgemerkt. Du willst Zeile für Zeile sehen, was sich gegenüber dem letzten Commit geändert hat.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git diff. git diff vergleicht die Arbeitskopie mit dem Staging-Bereich; solange nichts gestaged ist, zeigt es alle Änderungen seit dem letzten Commit. git log listet nur Commits, keine offenen Änderungen.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "git diff --staged zeigt nur vorgemerkte Änderungen. Hier ist nichts gestaged, die Ausgabe bliebe leer."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "git log listet bestehende Commits. Offene Änderungen in der Arbeitskopie zeigt es nicht."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "git commit -a schreibt die Änderungen sofort in einen Commit. Du wolltest sie vorher nur ansehen."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "git status meldet zwei geänderte Dateien unter „Changes not staged for commit“. Du willst die konkreten Textänderungen lesen, bevor du etwas vormerkst.",
+            "insight": "„Changes not staged“ heißt, die Änderungen liegen nur in der Arbeitskopie. git diff zeigt genau diese; git diff --staged bliebe leer, weil nichts vorgemerkt ist.",
+            "challengeDistractors": [
+              "git diff --staged",
+              "git status",
+              "git show HEAD"
+            ]
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git diff",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git diff --staged",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git add .",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git stash",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: git status meldet zwei geänderte Dateien unter „Changes not staged for commit“. Du willst die konkreten Textänderungen lesen, bevor du etwas vormerkst.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git diff. „Changes not staged“ heißt, die Änderungen liegen nur in der Arbeitskopie. git diff zeigt genau diese; git diff --staged bliebe leer, weil nichts vorgemerkt ist.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Vorgemerkt ist noch nichts. git diff --staged vergleicht den leeren Staging-Stand mit dem letzten Commit und zeigt nichts."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "git add . merkt alles vor, statt es anzuzeigen. Du wolltest die Änderungen vor dem Vormerken lesen."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "git stash räumt die Änderungen aus der Arbeitskopie weg. Du wolltest sie lesen, nicht beiseitelegen."
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "diff-staged",
@@ -103,7 +203,107 @@
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "Du hast mit git add nur einen Teil deiner Änderungen vorgemerkt. Vor dem Commit willst du prüfen, was genau im Commit landen wird.",
+            "insight": "Im Commit landet der Inhalt des Staging-Bereichs. git diff --staged zeigt ihn gegenüber dem letzten Commit; git diff zeigt nur die Reste, die noch nicht vorgemerkt sind.",
+            "challengeDistractors": [
+              "git diff",
+              "git show",
+              "git add -p"
+            ]
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git diff --staged",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git diff",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git status",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git commit",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du hast mit git add nur einen Teil deiner Änderungen vorgemerkt. Vor dem Commit willst du prüfen, was genau im Commit landen wird.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git diff --staged. Im Commit landet der Inhalt des Staging-Bereichs. git diff --staged zeigt ihn gegenüber dem letzten Commit; git diff zeigt nur die Reste, die noch nicht vorgemerkt sind.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "git diff zeigt die Änderungen, die noch nicht vorgemerkt sind. Das ist gerade der Teil, der nicht im Commit landet."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "git status nennt nur die betroffenen Dateien. Welche Zeilen im Commit landen, zeigt es nicht."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "git commit schreibt den Stand sofort fest. Die Prüfung sollte vorher stattfinden."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "Du hast versehentlich mehr Dateien gestaged als geplant. Bevor du etwas zurücknimmst, willst du die vorgemerkten Änderungen im Detail sehen.",
+            "insight": "git diff --staged zeigt, was vorgemerkt ist, ohne etwas zu verändern. git restore --staged . würde die Vormerkung sofort aufheben, bevor du sie geprüft hast.",
+            "challengeDistractors": [
+              "git diff",
+              "git restore --staged .",
+              "git show"
+            ]
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git diff --staged",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git diff",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git restore --staged .",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git log -p",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du hast versehentlich mehr Dateien gestaged als geplant. Bevor du etwas zurücknimmst, willst du die vorgemerkten Änderungen im Detail sehen.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git diff --staged. git diff --staged zeigt, was vorgemerkt ist, ohne etwas zu verändern. git restore --staged . würde die Vormerkung sofort aufheben, bevor du sie geprüft hast.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "git diff zeigt nur, was noch nicht vorgemerkt ist. Die versehentlich gestagten Dateien tauchen dort nicht auf."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Das hebt die ganze Vormerkung sofort auf. Ansehen wolltest du sie vorher."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "git log -p zeigt die Änderungen bestehender Commits. Der Staging-Bereich ist noch nicht committet."
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "push",
@@ -149,7 +349,97 @@
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "Du hast auf dem Branch feature zwei Commits erstellt. Dein Team soll sie im Remote-Repository (origin) sehen können.",
+            "insight": "push überträgt die lokalen Commits von feature nach origin. fetch lädt nur herunter, amend verändert den letzten lokalen Commit."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git push origin feature",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git fetch origin",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git commit --amend",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git merge origin/feature",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du hast auf dem Branch feature zwei Commits erstellt. Dein Team soll sie im Remote-Repository (origin) sehen können.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git push origin feature. push überträgt die lokalen Commits von feature nach origin. fetch lädt nur herunter, amend verändert den letzten lokalen Commit.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "fetch lädt den Stand von origin herunter. Deine lokalen Commits bleiben dabei lokal."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "amend ersetzt den letzten lokalen Commit. Ins Remote kommt dadurch nichts."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Das holt den Remote-Stand in deinen lokalen Branch. Die Richtung ist umgekehrt, origin bekommt deine Commits nicht."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "git status meldet „Your branch is ahead of 'origin/main' by 1 commit.“ Der Arbeitsbereich ist sauber.",
+            "insight": "„ahead by 1 commit“ heißt, ein lokaler Commit fehlt im Remote. push überträgt ihn; reset --hard origin/main würde ihn lokal verwerfen."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git push",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git pull",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git reset --hard origin/main",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git add .",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: git status meldet „Your branch is ahead of 'origin/main' by 1 commit.“ Der Arbeitsbereich ist sauber.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git push. „ahead by 1 commit“ heißt, ein lokaler Commit fehlt im Remote. push überträgt ihn; reset --hard origin/main würde ihn lokal verwerfen.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "pull holt Remote-Commits ab. Der Branch liegt aber vor origin, nicht dahinter."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Das setzt den Branch auf origin/main zurück und verwirft deinen lokalen Commit."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Der Arbeitsbereich ist sauber, es gibt nichts vorzumerken. Der Commit existiert schon und fehlt nur im Remote."
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "merge-main",
@@ -195,7 +485,97 @@
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "Du bist auf dem Branch bugfix. Auf main ist ein Fix gelandet, den du für deine Arbeit brauchst. Du willst ihn in bugfix übernehmen und dabei auf bugfix bleiben.",
+            "insight": "merge main holt die neuen main-Commits in den aktuellen Branch bugfix. checkout main würde nur den Branch wechseln, branch -d main würde den lokalen main-Zeiger löschen."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git merge main",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git checkout main",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git push origin main",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git branch -d main",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du bist auf dem Branch bugfix. Auf main ist ein Fix gelandet, den du für deine Arbeit brauchst. Du willst ihn in bugfix übernehmen und dabei auf bugfix bleiben.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git merge main. merge main holt die neuen main-Commits in den aktuellen Branch bugfix. checkout main würde nur den Branch wechseln, branch -d main würde den lokalen main-Zeiger löschen.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "checkout main wechselt den Branch. In bugfix kommt dadurch kein Commit von main."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "push überträgt lokale main-Commits ins Remote. bugfix bleibt dabei unverändert."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Das löscht den lokalen Branch main. Der Fix landet so nicht in bugfix."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "Dein Branch experiment ist hinter main zurückgefallen. Du bist auf experiment und willst die main-Commits integrieren, ohne bestehende Commits umzuschreiben.",
+            "insight": "merge main erzeugt einen Merge-Commit und lässt die bestehenden Commits von experiment unverändert. rebase main würde sie neu schreiben, reset --hard main würde sie verwerfen."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git merge main",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git rebase main",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git switch main",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git reset --hard main",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Dein Branch experiment ist hinter main zurückgefallen. Du bist auf experiment und willst die main-Commits integrieren, ohne bestehende Commits umzuschreiben.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git merge main. merge main erzeugt einen Merge-Commit und lässt die bestehenden Commits von experiment unverändert. rebase main würde sie neu schreiben, reset --hard main würde sie verwerfen.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "rebase integriert main auch, schreibt dabei aber jeden Commit von experiment neu. Genau das sollte vermieden werden."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "switch main wechselt nur den Branch. experiment bekommt die main-Commits nicht."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Das setzt experiment auf den Stand von main und verwirft die eigenen Commits von experiment."
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "conflict-resolved",
@@ -241,7 +621,97 @@
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "git merge feature hat in zwei Dateien Konflikte gemeldet. Du hast beide Dateien bereinigt, die Konfliktmarker sind weg, und die Tests laufen grün. Der Merge ist noch nicht abgeschlossen.",
+            "insight": "git add markiert jede bereinigte Datei als gelöst, git commit erzeugt den ausstehenden Merge-Commit. git merge --abort würde die Auflösung verwerfen und zum Stand vor dem Merge zurückkehren."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git add beider Dateien, dann git commit",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git merge --abort",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git commit --amend auf den letzten Commit",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git push sofort ausführen",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: git merge feature hat in zwei Dateien Konflikte gemeldet. Du hast beide Dateien bereinigt, die Konfliktmarker sind weg, und die Tests laufen grün. Der Merge ist noch nicht abgeschlossen.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git add beider Dateien, dann git commit. git add markiert jede bereinigte Datei als gelöst, git commit erzeugt den ausstehenden Merge-Commit. git merge --abort würde die Auflösung verwerfen und zum Stand vor dem Merge zurückkehren.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "abort bricht den Merge ab und stellt den Stand davor wieder her. Deine Auflösung ginge verloren."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "amend verändert den letzten Commit vor dem Merge. Der ausstehende Merge-Commit entsteht dadurch nicht."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Der Merge ist noch nicht committet. push überträgt nur bestehende Commits, der gelöste Stand bliebe lokal und offen."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "Beim git pull kam es zu einem Konflikt in config.yaml. Du hast die Datei bereinigt und gespeichert. git status zeigt sie noch unter „Unmerged paths“.",
+            "insight": "„Unmerged paths“ heißt, Git wartet auf die Markierung als gelöst. git add config.yaml setzt sie, git commit schließt den Merge des Pulls ab."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git add config.yaml, dann git commit",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git restore config.yaml",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git pull noch einmal ausführen",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git stash",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Beim git pull kam es zu einem Konflikt in config.yaml. Du hast die Datei bereinigt und gespeichert. git status zeigt sie noch unter „Unmerged paths“.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git add config.yaml, dann git commit. „Unmerged paths“ heißt, Git wartet auf die Markierung als gelöst. git add config.yaml setzt sie, git commit schließt den Merge des Pulls ab.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Bei einem ungelösten Pfad verweigert git restore die Arbeit mit „path is unmerged“. Die Datei gilt danach weiter als ungelöst."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Mit ungelösten Dateien bricht git pull sofort ab. Erst git add markiert die Datei als gelöst."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "git stash scheitert, solange config.yaml ungelöst ist. Der Merge bleibt offen."
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "restore-file",
@@ -287,7 +757,97 @@
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "Du hast in einer Datei Debug-Ausgaben eingefügt und nichts gestaged. Die Änderungen sollen komplett weg, die Datei soll wieder dem letzten Commit entsprechen.",
+            "insight": "restore setzt die Datei in der Arbeitskopie auf den Stand des Staging-Bereichs zurück, der hier dem letzten Commit entspricht. rm würde die Datei entfernen, reset --soft HEAD~1 verschiebt nur den Branch-Zeiger."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git restore datei.py",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git rm datei.py",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git add datei.py",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git reset --soft HEAD~1",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du hast in einer Datei Debug-Ausgaben eingefügt und nichts gestaged. Die Änderungen sollen komplett weg, die Datei soll wieder dem letzten Commit entsprechen.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git restore datei.py. restore setzt die Datei in der Arbeitskopie auf den Stand des Staging-Bereichs zurück, der hier dem letzten Commit entspricht. rm würde die Datei entfernen, reset --soft HEAD~1 verschiebt nur den Branch-Zeiger.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "rm löscht die Datei aus Arbeitskopie und Projekt. Du wolltest nur die Änderungen verwerfen."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "add merkt die Debug-Ausgaben für den nächsten Commit vor. Verworfen wird dadurch nichts."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "reset --soft HEAD~1 nimmt den letzten Commit zurück und lässt die Arbeitskopie unverändert. Die Debug-Ausgaben bleiben."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "Du hast eine Datei probeweise umformatiert, nichts gestaged, und willst nur diese Datei auf den letzten Commit zurücksetzen. Andere geänderte Dateien sollen bleiben, wie sie sind.",
+            "insight": "git restore datei.py wirkt nur auf diese eine Datei. reset --hard und stash erfassen alle geänderten Dateien auf einmal."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "git restore datei.py",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "git reset --hard",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "git stash",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "git checkout main",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Du hast eine Datei probeweise umformatiert, nichts gestaged, und willst nur diese Datei auf den letzten Commit zurücksetzen. Andere geänderte Dateien sollen bleiben, wie sie sind.\n\nWelche Git-Operation passt jetzt?",
+          "fullSolution": "Richtig: git restore datei.py. git restore datei.py wirkt nur auf diese eine Datei. reset --hard und stash erfassen alle geänderten Dateien auf einmal.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "reset --hard verwirft die Änderungen in allen Dateien. Die anderen geänderten Dateien sollten bleiben."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "stash räumt alle geänderten Dateien weg, nicht nur die umformatierte."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Ein Branchwechsel setzt keine Datei zurück. Unstagede Änderungen bleiben dabei in der Arbeitskopie, oder Git verweigert den Wechsel."
+            }
+          ]
+        }
+      ]
     },
     {
       "caseId": "merge-conflict-test-flow",
@@ -350,7 +910,101 @@
         }
       ],
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "parameters": {
+            "state": "Beim Merge von main in deinen Branch meldet Git einen Konflikt in `preise.py`: main rundet Preise jetzt kaufmännisch, dein Branch hat die Mehrwertsteuer-Berechnung geändert.",
+            "insight": "Beide Änderungen sind fachlich gewollt, also muss die aufgelöste Funktion beide enthalten. Tests und Diff prüfen danach die neue Kombination, erst dann wird der Merge-Commit geschrieben."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide Änderungen lesen, die Funktion mit Rundung und neuer Steuerberechnung zusammenführen, Tests ausführen, `git diff` prüfen, dann den Merge committen",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Immer die Version von main übernehmen (`--theirs`), weil main der stabilere Branch ist",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Den Konflikt auflösen und sofort committen; beide Branches waren vorher grün",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Den Merge abbrechen und die eigenen Änderungen per Copy-and-paste auf main nachbauen",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Beim Merge von main in deinen Branch meldet Git einen Konflikt in `preise.py`: main rundet Preise jetzt kaufmännisch, dein Branch hat die Mehrwertsteuer-Berechnung geändert.\n\nWelcher Ablauf liefert den belastbarsten Abschluss?",
+          "fullSolution": "Richtig: Beide Änderungen lesen, die Funktion mit Rundung und neuer Steuerberechnung zusammenführen, Tests ausführen, `git diff` prüfen, dann den Merge committen. Beide Änderungen sind fachlich gewollt, also muss die aufgelöste Funktion beide enthalten. Tests und Diff prüfen danach die neue Kombination, erst dann wird der Merge-Commit geschrieben.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Mit `--theirs` verschwindet die neue Steuerberechnung. Welche Seite gewinnt, entscheidet der Inhalt, nicht der Branchname.",
+              "misconception": "konflikt-mechanisch-statt-fachlich-loesen"
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die grünen Tests galten für jeden Branch allein. Die zusammengeführte Funktion hat noch kein Test gesehen.",
+              "misconception": "gruene-tests-vor-dem-merge"
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Das umgeht den Konflikt nur. Die fachliche Frage, wie Rundung und Steuer zusammenspielen, bleibt ungeprüft, und die Historie verliert den Zusammenhang."
+            }
+          ]
+        },
+        {
+          "parameters": {
+            "state": "Ein Merge meldet Konflikte in `parser.py` und `test_parser.py`. Beide Branches hatten vor dem Merge eine grüne CI.",
+            "insight": "Jeder Konflikt wird nach der Absicht beider Seiten aufgelöst, auch im Testcode. Erst der Testlauf auf dem zusammengeführten Stand zeigt, ob die Kombination funktioniert."
+          },
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beide Seiten jedes Konflikts fachlich zusammenführen, die Tests auf dem zusammengeführten Stand ausführen, `git diff` prüfen, dann den Merge committen",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die grünen CI-Läufe beider Branches als Beleg nehmen und den Merge direkt committen",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Jeden Konfliktblock per Skript zugunsten der längeren Variante auflösen",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Konfliktmarker in `test_parser.py` stehen lassen, weil Tests nicht ausgeliefert werden",
+              "correct": false
+            }
+          ],
+          "prompt": "Situation: Ein Merge meldet Konflikte in `parser.py` und `test_parser.py`. Beide Branches hatten vor dem Merge eine grüne CI.\n\nWelcher Ablauf liefert den belastbarsten Abschluss?",
+          "fullSolution": "Richtig: Beide Seiten jedes Konflikts fachlich zusammenführen, die Tests auf dem zusammengeführten Stand ausführen, `git diff` prüfen, dann den Merge committen. Jeder Konflikt wird nach der Absicht beider Seiten aufgelöst, auch im Testcode. Erst der Testlauf auf dem zusammengeführten Stand zeigt, ob die Kombination funktioniert.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Die CI-Läufe prüften jeden Branch allein. Ob Parser und Tests nach dem Merge zusammenpassen, zeigt erst ein neuer Lauf.",
+              "misconception": "gruene-tests-vor-dem-merge"
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die längere Variante ist nicht automatisch die richtige. Ein Konflikt wird nach der Absicht beider Seiten gelöst, nicht nach Zeilenzahl.",
+              "misconception": "konflikt-mechanisch-statt-fachlich-loesen"
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Konfliktmarker sind kein gültiges Python. Die Testdatei lässt sich dann nicht einmal importieren, und kein Test läuft."
+            }
+          ]
+        }
+      ]
     }
   ]
 }

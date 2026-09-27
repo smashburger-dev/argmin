@@ -36,7 +36,89 @@
       "prompt": "`parse_age` wirft bei ungültigem Text `ValueError`. Wo sollte der CLI-Datenprüfer diesen erwarteten Fehler behandeln?",
       "fullSolution": "Der Aufrufer kennt Zeilennummer und Spalte und kann den ValueError dort in einen präzisen Issue-Eintrag übersetzen.",
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "`read_config(path)` wirft `FileNotFoundError`, wenn die Datei fehlt. Das Kommandozeilenprogramm soll dann eine verständliche Meldung mit dem Pfad ausgeben und mit Exit-Code 1 enden. Wo sollte dieser erwartete Fehler behandelt werden?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "In der CLI-Funktion, die `read_config` aufruft und Meldung und Exit-Code festlegen kann.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "In `read_config` mit `except Exception: return {}`, damit das Programm mit leerer Konfiguration weiterläuft.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Gar nicht; der Traceback ist Meldung genug.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "In einem eigenen `try` um jede einzelne Zeile von `read_config`.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Die CLI-Funktion kennt den Pfad und entscheidet über Meldung und Exit-Code. Dort wird `FileNotFoundError` in eine verständliche Ausgabe übersetzt. `read_config` selbst kann nicht wissen, wie das Programm reagieren soll.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Eine leere Konfiguration verschleiert den Fehler. Das Programm läuft mit falschen Einstellungen weiter, und `except Exception` fängt dabei auch Programmierfehler ab."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Ein Traceback zeigt Programminterna statt einer verständlichen Meldung. Die Anforderung verlangt eine Ausgabe mit dem Pfad."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Behandelt wird dort, wo eine Entscheidung möglich ist. `read_config` kennt weder die gewünschte Meldung noch den Exit-Code, egal wie fein die `try`-Blöcke sind."
+            }
+          ]
+        },
+        {
+          "prompt": "`parse_price` wirft bei Text wie `\"12,5x\"` einen `ValueError`. Der Import soll fehlerhafte Zeilen überspringen und am Ende mit Zeilennummer auflisten. Wo sollte dieser erwartete Fehler behandelt werden?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "In der Importschleife, die Zeilennummer und Rohtext kennt und die Zeile in die Fehlerliste schreiben kann.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "In `parse_price` mit `except ValueError: return 0`, damit jede Zeile einen Preis bekommt.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Gar nicht; die erste fehlerhafte Zeile soll den ganzen Import beenden.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Einmal außen um das ganze Programm mit `except Exception: pass`.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Nur die Importschleife kennt Zeilennummer und Rohtext. Dort wird der `ValueError` gefangen, die Zeile übersprungen und in die Fehlerliste geschrieben. `parse_price` meldet den Fehler nur und entscheidet nichts.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Ein Preis von 0 sieht aus wie ein gültiger Wert. Die fehlerhafte Zeile landet still im Import statt in der Fehlerliste."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die Anforderung verlangt, fehlerhafte Zeilen zu überspringen. Ein Abbruch bei der ersten kaputten Zeile verliert alle folgenden gültigen Zeilen."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Der Fehler bricht den Import dann bei der ersten kaputten Zeile ab, und `pass` verschluckt ihn. Es gibt weder die übrigen Zeilen noch eine Fehlerliste."
+            }
+          ]
+        }
+      ]
     }
   ]
 }

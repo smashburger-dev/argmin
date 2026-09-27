@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { GIT_OPERATION_CONTRACT } from '../assets/js/core/foundations_fresh_generators.mjs';
+import { GIT_OPERATION_CONTRACT, solveGitOperation } from '../assets/js/core/foundations_fresh_generators.mjs';
 import {
   createFamilyRegistry,
   familyEventInput,
@@ -156,6 +156,48 @@ test('vacuous-axis steps are declared, not silent', () => {
   const stretch = instantiate('classify-git-operation', 4, 'stretch', 'diff-unstaged');
   assert.equal(intro.parameters.fileName, undefined);
   assert.equal(typeof stretch.parameters.fileName, 'string');
+});
+
+test('git operation variants: seed picks the body, solver and feedback follow it', () => {
+  const variantOf = (instance) => instance.parameters.variant ?? 0;
+  const anchor = instantiate('classify-git-operation', 0, 'core', 'push');
+  assert.equal('variant' in anchor.parameters, false, 'Seed 0 bleibt der authored Fall ohne variant-Feld');
+  const prompts = new Set();
+  for (let seed = 0; seed < 12; seed += 1) {
+    const instance = instantiate('classify-git-operation', seed, 'core', 'push');
+    assert.equal(variantOf(instance), seed % 3);
+    prompts.add(instance.prompt);
+    const correct = instance.choices.find((choice) => choice.correct);
+    assert.equal(solveGitOperation(instance.parameters).correctText, correct.text, `${seed}: Solver folgt parameters.variant`);
+    const rules = instance.feedbackRules || [];
+    if (variantOf(instance) > 0) assert.equal(rules.length, 3, `${seed}: jede Variante trägt Distraktor-Feedback`);
+    for (const rule of rules) {
+      const id = /^choice === '([a-d])'$/.exec(rule.if)?.[1];
+      assert.ok(id && id !== correct.id, `${seed}: Regel ${rule.if} zeigt auf einen Distraktor`);
+    }
+  }
+  assert.equal(prompts.size, 3);
+});
+
+test('git operation file localization: option, solution and feedback texts follow the drawn file name', () => {
+  for (const { caseId } of GIT_OPERATION_CONTRACT.caseTypes) {
+    for (const difficulty of ['stretch', 'challenge']) {
+      for (let seed = 0; seed <= 40; seed += 1) {
+        const instance = instantiate('classify-git-operation', seed, difficulty, caseId);
+        if (!instance.parameters.fileName) continue;
+        const texts = [
+          instance.fullSolution,
+          ...instance.choices.map((choice) => choice.text),
+          ...(instance.feedbackRules || []).map((rule) => rule.then),
+        ];
+        for (const text of texts) {
+          assert.ok(!text.includes('datei.py'), `${caseId}/${difficulty}/${seed}: ${text}`);
+        }
+        const correct = instance.choices.find((choice) => choice.correct);
+        assert.equal(solveGitOperation(instance.parameters).correctText, correct.text, `${caseId}/${difficulty}/${seed}`);
+      }
+    }
+  }
 });
 
 test('mergeInto names the home family and does not rewrite the instance identity', () => {

@@ -36,7 +36,89 @@
       "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>name = \"Ada\"\nname[0] = \"M\"\nprint(name)</code>",
       "fullSolution": "name[0] = \"M\" wirft TypeError: 'str' object does not support item assignment. Strings sind unveränderlich; jede Änderung erzeugt einen neuen String. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "activityType": "single-choice",
-      "graderId": "deterministic"
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>wort = \"Haus\"\nwort[-1] = \"t\"\nprint(wort)</code>",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Programm bricht mit einem TypeError ab: auch über einen negativen Index lässt sich kein Zeichen eines Strings ersetzen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es gibt \"Haut\" aus, weil das letzte Zeichen ersetzt wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es bricht mit einem IndexError ab, weil negative Indizes bei Strings nicht erlaubt sind.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt \"Haus\" aus, weil Zuweisungen an Strings still ignoriert werden.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "wort[-1] = \"t\" wirft TypeError: 'str' object does not support item assignment. Negative Indizes sind zum Lesen erlaubt, aber Strings sind unveränderlich. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Strings sind unveränderlich. Die Zuweisung an wort[-1] scheitert mit TypeError, bevor print erreicht wird."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Negative Indizes sind erlaubt: wort[-1] liest \"s\". Der Fehler entsteht erst bei der Zuweisung, und er ist ein TypeError."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Python ignoriert die Zuweisung nicht still. Sie wirft einen TypeError, und print wird nie ausgeführt."
+            }
+          ]
+        },
+        {
+          "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>titel = \"python\"\ntitel[0] = titel[0].upper()\nprint(titel)</code>",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Das Programm bricht mit einem TypeError ab: die Zuweisung an titel[0] scheitert, weil Strings unveränderlich sind.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Es gibt \"Python\" aus, weil das erste Zeichen durch \"P\" ersetzt wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Es bricht mit einem AttributeError ab, weil ein einzelnes Zeichen keine Methode upper hat.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Es gibt \"python\" aus, weil upper() einen neuen String liefert und titel unverändert bleibt.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "titel[0].upper() liefert zwar \"P\", aber titel[0] = ... wirft TypeError: 'str' object does not support item assignment. Einen neuen String bekommt man mit titel = titel[0].upper() + titel[1:]. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Strings sind unveränderlich. Die Zuweisung an titel[0] wirft TypeError, bevor print erreicht wird."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Ein einzelnes Zeichen ist selbst ein String und hat upper(): titel[0].upper() liefert \"P\". Der Fehler entsteht erst bei der Zuweisung."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Dass upper() einen neuen String liefert, stimmt. Die Zuweisung an titel[0] wirft trotzdem einen TypeError, und print wird nie ausgeführt."
+            }
+          ]
+        }
+      ]
     }
   ]
 }
