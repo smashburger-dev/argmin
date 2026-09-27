@@ -5,6 +5,8 @@ import { expect, test } from '@playwright/test';
 // active and the page reloaded once (no clients.claim → first load is not
 // controlled) the app must boot with the network fully cut.
 
+test.use({ serviceWorkers: 'allow' });
+
 test('app boots offline after the service worker cached the build', async ({ page, context }) => {
   test.skip(process.env.PLAYWRIGHT_PREVIEW !== '1', 'Der Offline-Cache existiert nur im Release-Build.');
 

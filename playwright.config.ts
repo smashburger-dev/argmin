@@ -16,8 +16,8 @@ export default defineConfig({
   fullyParallel: true,
   workers: process.env.CI ? 4 : '50%',
   forbidOnly: true,
-  // CI only: a browser that dies before the test body (see chromium project)
-  // gets one retry in a fresh worker and shows up as "flaky", not red.
+  // CI only: one retry in a fresh worker; a pass on retry is reported as
+  // "flaky" instead of failing the run.
   retries: process.env.CI ? 1 : 0,
   // Kalter vite-dev-Transform des lazy Familien-/Modul-Chunks kann in CI
   // unter 4 Workern >5s dauern — Assertions auf echten Inhalt brauchen Puffer.
@@ -26,6 +26,13 @@ export default defineConfig({
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     trace: 'retain-on-failure',
+    // The release build registers the offline service worker on every load,
+    // and each fresh test context then precaches the whole build. On CI that
+    // made chrome-headless-shell segfault (SEGV_MAPERR 0x1b0) during
+    // browser.newContext in about every second build-stage run; blocking the
+    // worker removed it (0 of 6 probe runs vs. 3 of 6). Only offline.spec
+    // tests the worker and opts back in.
+    serviceWorkers: 'block',
   },
   webServer: {
     command: builtPreview
@@ -36,16 +43,7 @@ export default defineConfig({
     timeout: 120000,
   },
   projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        // GitHub runners have no GPU; chrome-headless-shell intermittently
-        // segfaults (SEGV_MAPERR 0x1b0) while starting its SwiftShader GPU
-        // process during browser.newContext. The app uses no WebGL.
-        ...(process.env.CI ? { launchOptions: { args: ['--disable-gpu'] } } : {}),
-      },
-    },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     ...(extraBrowsers
       ? [
           { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
