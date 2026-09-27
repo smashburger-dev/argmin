@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.10 — 2026-09-26
+
+Fehlplatzierter Debug-Fall aus dem Algebra-Modul verlegt; Modul-weites Platzierungs-Audit.
+
+Für Lernende: **Im Modul „Algebra-Grundlagen sicher prüfen" tauchte als elfte Aufgabe eine Konzeptfrage zum Schleifen-Debugging auf** (Off-by-one: „bei fünf Durchläufen fehlt das letzte Element"). Der Fall gehört thematisch in „Ein Fehler, ein reproduzierbarer Test" (Testing/Debugging) und ist dorthin verlegt — er bleibt erreichbar und behält seine Fall-Definition, geht also kein Fortschritt verloren. Das Algebra-Modul enthält jetzt ausschließlich Algebra-Aufgaben.
+
+Für Beitragende: Audit über alle 49 Module — 293 kuratierte Platzierungen instanziiert und inhaltlich gegen das Modulthema geprüft, plus alle Practice-Space-Wildcards auf ihren ziehbaren Fallraum. Ergebnis: exakt diese eine Fehlplatzierung (`classify-error-hypothesis/seeded-error-pattern-cases` in `lm-foundations-algebra`); kein Regressions-Befund, die Platzierung war Altbestand. Platzierung als `p-foundations-testing-debugging-seeded-error-pattern-cases` nach `lm-foundations-testing-debugging` verlegt.
+
 ## 0.8.9 — 2026-09-24
 
 Vierzehn Trace-Aufgaben prozedural, tote Variantengerüste entfernt.

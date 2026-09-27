@@ -13,7 +13,9 @@ export default defineConfig({
   fullyParallel: true,
   workers: process.env.CI ? 4 : '50%',
   forbidOnly: true,
-  retries: 0,
+  // CI only: a browser that dies before the test body (see chromium project)
+  // gets one retry in a fresh worker and shows up as "flaky", not red.
+  retries: process.env.CI ? 1 : 0,
   // Kalter vite-dev-Transform des lazy Familien-/Modul-Chunks kann in CI
   // unter 4 Workern >5s dauern — Assertions auf echten Inhalt brauchen Puffer.
   expect: { timeout: 15000 },
@@ -29,7 +31,16 @@ export default defineConfig({
     timeout: 120000,
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        // GitHub runners have no GPU; chrome-headless-shell intermittently
+        // segfaults (SEGV_MAPERR 0x1b0) while starting its SwiftShader GPU
+        // process during browser.newContext. The app uses no WebGL.
+        ...(process.env.CI ? { launchOptions: { args: ['--disable-gpu'] } } : {}),
+      },
+    },
     ...(extraBrowsers
       ? [
           { name: 'firefox', use: { ...devices['Desktop Firefox'] } },

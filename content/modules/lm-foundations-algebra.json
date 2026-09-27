@@ -167,17 +167,6 @@
       "masteryEligible": true
     },
     {
-      "placementId": "p-foundations-algebra-seeded-error-pattern-cases",
-      "role": "curated",
-      "familyId": "classify-error-hypothesis",
-      "caseId": "seeded-error-pattern-cases",
-      "seed": 11,
-      "difficulty": "core",
-      "estimatedMinutes": 8,
-      "lessonId": "l-foundations-algebra",
-      "masteryEligible": true
-    },
-    {
       "placementId": "p-foundations-algebra-classify-error-hypothesis-practice",
       "role": "practice-space",
       "familyId": "classify-error-hypothesis",
