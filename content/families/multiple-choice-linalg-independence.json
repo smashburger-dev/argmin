@@ -175,48 +175,102 @@
           "text": "Enthält eine Menge den Nullvektor, so ist sie linear abhängig."
         }
       ],
-      "variants": [
-        {
-          "parameters": {},
-          "expected": {
-            "kind": "choice-indices",
-            "correctIds": [
-              "a",
-              "c",
-              "e"
-            ],
-            "scoring": "all-or-nothing"
+      "statementPool": {
+        "count": 5,
+        "correctRange": [
+          2,
+          3
+        ],
+        "hints": [
+          "Übersetze jede Aussage in die Definition zurück: Unabhängigkeit heißt, nur die triviale Nullkombination existiert.",
+          "Suche bei den allgemeinen Aussagen jeweils ein konkretes Gegenbeispiel mit zwei oder drei kleinen Vektoren."
+        ],
+        "statements": [
+          {
+            "text": "Ist ein Vektor der Menge die Summe zweier anderer, so ist die Menge linear abhängig.",
+            "correct": true,
+            "feedback": "Die Aussage stimmt: eine Darstellung eines Vektors als Kombination anderer lässt sich immer in eine nichttriviale Nullkombination umstellen — die Menge ist abhängig."
           },
-          "prompt": "Welche der folgenden Aussagen über lineare Unabhängigkeit stimmen? Wähle alle zutreffenden Optionen aus.",
-          "fullSolution": "(a) stimmt: $v_3 = 2v_1 - v_2$ ergibt $2v_1 - v_2 - v_3 = 0$, eine nichttriviale Nullkombination. (b) stimmt nicht: $(1,1)$ und $(-2,-2)$ sind ohne Nullvektor abhängig, weil sie kollinear sind. (c) stimmt: fünf Vektoren im $\\mathbb{R}^4$ überschreiten die Dimension und sind daher immer abhängig. (d) stimmt nicht: paarweise Nichtkollinearität verbietet keine Kombination aus mehreren Vektoren — $(1,1,0) = (1,0,0) + (0,1,0)$ zeigt eine abhängige Menge ohne kollineares Paar. (e) stimmt: jede Menge mit dem Nullvektor besitzt die nichttriviale Nullkombination mit Koeffizient $1$ vor ihm.",
-          "hints": [
-            "Eine Linearkombination, die einen Vektor der Menge erzeugt, lässt sich immer in eine nichttriviale Nullkombination umstellen.",
-            "Teste allgemeine Aussagen mit kleinen Vektoren im $\\mathbb{R}^2$ oder $\\mathbb{R}^3$ als Gegenbeispiel."
-          ],
-          "choices": [
-            {
-              "id": "a",
-              "text": "Gilt $v_3 = 2v_1 - v_2$, so ist $\\{v_1, v_2, v_3\\}$ linear abhängig."
-            },
-            {
-              "id": "b",
-              "text": "Zwei Vektoren im $\\mathbb{R}^2$ sind genau dann linear abhängig, wenn einer der Nullvektor ist."
-            },
-            {
-              "id": "c",
-              "text": "Im $\\mathbb{R}^4$ ist jede Menge aus fünf Vektoren linear abhängig."
-            },
-            {
-              "id": "d",
-              "text": "Sind die Vektoren einer Menge paarweise nicht kollinear, so ist die Menge linear unabhängig."
-            },
-            {
-              "id": "e",
-              "text": "Der Nullvektor kann zu keiner linear unabhängigen Menge gehören."
-            }
-          ]
-        }
-      ]
+          {
+            "text": "Zwei Vektoren sind genau dann linear abhängig, wenn einer von ihnen der Nullvektor ist.",
+            "correct": false,
+            "feedback": "Abhängigkeit beginnt schon bei Kollinearität: $(1,2)$ und $(2,4)$ sind beide vom Nullvektor verschieden und trotzdem abhängig — der Nullvektor ist nur der Extremfall $\\lambda = 0$.",
+            "misconception": "lineare-abhaengigkeit-nur-mit-dem"
+          },
+          {
+            "text": "Jede Menge mit mehr als $n$ Vektoren im $\\mathbb{R}^n$ ist linear abhängig.",
+            "correct": true,
+            "feedback": "Mehr als $n$ Vektoren im $\\mathbb{R}^n$ erzeugen ein homogenes System mit mehr Unbekannten als Gleichungen — das hat immer eine nichttriviale Lösung, die Menge ist also abhängig.",
+            "misconception": "die-schranke-n-fuer-unabhaengige"
+          },
+          {
+            "text": "Sind die Vektoren einer Menge paarweise nicht parallel, so ist die Menge linear unabhängig.",
+            "correct": false,
+            "feedback": "Paarweise Nichtparallelität reicht nicht: $\\{(1,0),(0,1),(1,1)\\}$ hat kein paralleles Paar, aber $(1,1) = (1,0)+(0,1)$ — Unabhängigkeit verlangt, dass keine Kombination der anderen einen Vektor erzeugt.",
+            "misconception": "paarweise-nichtparallelitaet-mit-unabhaengigkeit-der"
+          },
+          {
+            "text": "Enthält eine Menge den Nullvektor, so ist sie linear abhängig.",
+            "correct": true,
+            "feedback": "Der Nullvektor erlaubt den Koeffizienten $1$ in der Nullkombination, ohne dass ein anderer Koeffizient ungleich null sein müsste — die Menge ist damit nie unabhängig."
+          },
+          {
+            "text": "Gilt $v_3 = 2v_1 - v_2$, so ist $\\{v_1, v_2, v_3\\}$ linear abhängig.",
+            "correct": true,
+            "feedback": "$v_3 = 2v_1 - v_2$ lässt sich zu $2v_1 - v_2 - v_3 = 0$ umstellen. Das ist eine nichttriviale Nullkombination mit dem Koeffizienten $-1$ vor $v_3$."
+          },
+          {
+            "text": "Im $\\mathbb{R}^4$ ist jede Menge aus fünf Vektoren linear abhängig.",
+            "correct": true,
+            "feedback": "Fünf Vektoren im $\\mathbb{R}^4$ führen auf ein homogenes System mit vier Gleichungen und fünf Unbekannten. Es hat immer eine nichttriviale Lösung.",
+            "misconception": "die-schranke-n-fuer-unabhaengige"
+          },
+          {
+            "text": "Sind die Vektoren einer Menge paarweise nicht kollinear, so ist die Menge linear unabhängig.",
+            "correct": false,
+            "feedback": "$\\{(1,0,0),(0,1,0),(1,1,0)\\}$ hat kein kollineares Paar, aber $(1,1,0) = (1,0,0) + (0,1,0)$. Die Menge ist abhängig.",
+            "misconception": "paarweise-nichtparallelitaet-mit-unabhaengigkeit-der"
+          },
+          {
+            "text": "Der Nullvektor kann zu keiner linear unabhängigen Menge gehören.",
+            "correct": true,
+            "feedback": "Mit dem Koeffizienten $1$ vor dem Nullvektor und $0$ vor allen anderen Vektoren entsteht eine nichttriviale Nullkombination."
+          },
+          {
+            "text": "Jede Teilmenge einer linear unabhängigen Menge ist linear unabhängig.",
+            "correct": true,
+            "feedback": "Eine nichttriviale Nullkombination der Teilmenge wäre, mit Nullen für die übrigen Vektoren ergänzt, auch eine der ganzen Menge. Die gibt es nicht."
+          },
+          {
+            "text": "Zwei vom Nullvektor verschiedene Vektoren sind genau dann linear abhängig, wenn einer ein Vielfaches des anderen ist.",
+            "correct": true,
+            "feedback": "Aus $\\alpha u + \\beta v = 0$ mit $\\beta \\neq 0$ folgt $v = -\\tfrac{\\alpha}{\\beta} u$. Umgekehrt liefert $v = \\lambda u$ die Nullkombination $\\lambda u - v = 0$.",
+            "misconception": "lineare-abhaengigkeit-nur-mit-dem"
+          },
+          {
+            "text": "Im $\\mathbb{R}^3$ kann es eine linear unabhängige Menge aus vier Vektoren geben.",
+            "correct": false,
+            "feedback": "Vier Vektoren im $\\mathbb{R}^3$ führen auf ein homogenes System mit drei Gleichungen und vier Unbekannten. Es hat immer eine nichttriviale Lösung.",
+            "misconception": "die-schranke-n-fuer-unabhaengige"
+          },
+          {
+            "text": "Jede Menge aus $n$ Vektoren im $\\mathbb{R}^n$ ist linear unabhängig.",
+            "correct": false,
+            "feedback": "Die Schranke $n$ ist eine Obergrenze, keine Garantie. $(1,2)$ und $(2,4)$ sind zwei Vektoren im $\\mathbb{R}^2$ und trotzdem abhängig."
+          },
+          {
+            "text": "Fügt man einer linear abhängigen Menge einen weiteren Vektor hinzu, kann sie linear unabhängig werden.",
+            "correct": false,
+            "feedback": "Die alte nichttriviale Nullkombination bleibt mit dem Koeffizienten $0$ vor dem neuen Vektor bestehen. Die größere Menge ist weiter abhängig."
+          },
+          {
+            "text": "Eine Menge, die den Nullvektor nicht enthält, ist linear unabhängig.",
+            "correct": false,
+            "feedback": "$\\{(1,2),(2,4)\\}$ enthält den Nullvektor nicht und ist abhängig, denn $(2,4) = 2\\cdot(1,2)$.",
+            "misconception": "lineare-abhaengigkeit-nur-mit-dem"
+          }
+        ]
+      }
     },
     {
       "caseId": "independent-sets-r3",
@@ -400,7 +454,109 @@
           "id": "f",
           "text": "$Ax = b$ ist für jedes $b \\in \\mathbb{R}^3$ lösbar."
         }
-      ]
+      ],
+      "statementPool": {
+        "count": 6,
+        "correctRange": [
+          2,
+          4
+        ],
+        "hints": [
+          "Bestimme zuerst den Rang: Prüfe, ob die dritte Zeile eine Kombination der ersten beiden ist — daraus folgen Zeilenrang, Dimension des Spaltenraums und per Rangsatz die Nullität.",
+          "Lösbarkeit von $Ax = b$ für jedes $b \\in \\mathbb{R}^3$ verlangt Rang $3$ — suche einen Vektor $y$ mit $y^{T}A = 0$, um ein unlösbares $b$ zu finden."
+        ],
+        "statements": [
+          {
+            "text": "$A$ hat Rang $2$.",
+            "correct": true,
+            "feedback": "$\\text{Zeile 3} = 2\\cdot\\text{Zeile 1} + \\text{Zeile 2}$ zieht den Rang auf $2$; Zeilen 1 und 2 sind nicht proportional — $\\operatorname{Rang}(A) = 2$ stimmt.",
+            "misconception": "drei-zeilen-pauschal-als-unabhaengig"
+          },
+          {
+            "text": "Die Nullität von $A$ ist $3$.",
+            "correct": false,
+            "feedback": "Die Nullität ist die Dimension des Kerns: Spalten minus Rang $= 4 - 2 = 2$, nicht $3$ — die Zeilenzahl $3$ ist hier die Verwechslungsfalle.",
+            "misconception": "nullitaet-aus-der-zeilenzahl-statt"
+          },
+          {
+            "text": "Die Zeilen von $A$ sind linear abhängig.",
+            "correct": true,
+            "feedback": "$2\\cdot\\text{Zeile 1} + \\text{Zeile 2} = (4,5,1,7) = \\text{Zeile 3}$ — eine explizite Kombination, die die Zeilenabhängigkeit beweist.",
+            "misconception": "drei-zeilen-pauschal-als-unabhaengig"
+          },
+          {
+            "text": "Der Spaltenraum von $A$ hat Dimension $3$.",
+            "correct": false,
+            "feedback": "Die Dimension des Spaltenraums ist der Spaltenrang, und Spaltenrang $=$ Zeilenrang $= 2$ — die Matrix hat drei Zeilen, aber nur zwei davon sind unabhängig.",
+            "misconception": "drei-zeilen-pauschal-als-unabhaengig"
+          },
+          {
+            "text": "Die Spalten von $A$ sind linear abhängig.",
+            "correct": true,
+            "feedback": "Vier Spalten in einem zweidimensionalen Spaltenraum sind immer abhängig; konkret gilt $c_1 + c_2 - 2c_3 = c_4$."
+          },
+          {
+            "text": "$Ax = b$ ist für jedes $b \\in \\mathbb{R}^3$ lösbar.",
+            "correct": false,
+            "feedback": "Rang $2 < 3$ heißt: der Spaltenraum ist eine echte Ebene im $\\mathbb{R}^3$. Für $b = (0,0,1)$ ist $Ax = b$ unlösbar, denn $(-2,-1,1)^{T}A = 0$, aber $(-2,-1,1) \\cdot b = 1 \\neq 0$.",
+            "misconception": "loesbarkeit-von-ax-b-fuer"
+          },
+          {
+            "text": "$A$ hat Rang $3$.",
+            "correct": false,
+            "feedback": "$\\text{Zeile 3} = 2\\cdot\\text{Zeile 1} + \\text{Zeile 2}$, also sind nur zwei Zeilen unabhängig. Der Rang ist $2$.",
+            "misconception": "drei-zeilen-pauschal-als-unabhaengig"
+          },
+          {
+            "text": "Die Nullität von $A$ ist $2$.",
+            "correct": true,
+            "feedback": "Rangsatz: Nullität $=$ Spaltenzahl $-$ Rang $= 4 - 2 = 2$.",
+            "misconception": "nullitaet-aus-der-zeilenzahl-statt"
+          },
+          {
+            "text": "Die Nullität von $A$ ist $1$.",
+            "correct": false,
+            "feedback": "Der Rangsatz rechnet mit den Spalten: $4 - 2 = 2$. Die $1$ entsteht aus Zeilenzahl minus Rang, $3 - 2$, und die Zeilenzahl gehört nicht in die Formel.",
+            "misconception": "nullitaet-aus-der-zeilenzahl-statt"
+          },
+          {
+            "text": "Der Spaltenraum von $A$ hat Dimension $2$.",
+            "correct": true,
+            "feedback": "Spaltenrang $=$ Zeilenrang $= 2$. Der Spaltenraum ist eine Ebene im $\\mathbb{R}^3$."
+          },
+          {
+            "text": "Es gibt ein $b \\in \\mathbb{R}^3$, für das $Ax = b$ keine Lösung hat.",
+            "correct": true,
+            "feedback": "Für $b = (0,0,1)$ gilt $(-2,-1,1) \\cdot b = 1 \\neq 0$, obwohl $(-2,-1,1)^{T}A = 0$. Dieses $b$ liegt nicht im Spaltenraum.",
+            "misconception": "loesbarkeit-von-ax-b-fuer"
+          },
+          {
+            "text": "Das homogene System $Ax = 0$ hat unendlich viele Lösungen.",
+            "correct": true,
+            "feedback": "Der Kern hat Dimension $2$ und enthält außer $x = 0$ unendlich viele Vektoren, etwa $(1,1,-2,-1)$."
+          },
+          {
+            "text": "Das homogene System $Ax = 0$ hat nur die triviale Lösung $x = 0$.",
+            "correct": false,
+            "feedback": "Vier Unbekannte bei Rang $2$ lassen zwei freie Variablen. Zum Beispiel gilt $A\\,(1,1,-2,-1)^{T} = 0$."
+          },
+          {
+            "text": "Ist $Ax = b$ für ein $b$ lösbar, so hat es unendlich viele Lösungen.",
+            "correct": true,
+            "feedback": "Zu einer Lösung $x_0$ ist jedes $x_0 + z$ mit $z$ im zweidimensionalen Kern ebenfalls eine Lösung."
+          },
+          {
+            "text": "Ist $Ax = b$ für ein $b$ lösbar, so ist die Lösung eindeutig.",
+            "correct": false,
+            "feedback": "Der Kern ist zweidimensional. Zu jeder Lösung $x_0$ gehört die ganze Schar $x_0 + z$ mit $z \\in \\ker A$."
+          },
+          {
+            "text": "Die ersten beiden Spalten von $A$ sind linear abhängig.",
+            "correct": false,
+            "feedback": "$(1,2,4)$ und $(2,1,5)$ sind nicht proportional, also unabhängig. Abhängig ist erst die Menge aller vier Spalten."
+          }
+        ]
+      }
     }
   ]
 }

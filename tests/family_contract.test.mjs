@@ -264,7 +264,7 @@ test('static families expose only their authored profile and placements are vali
       role: 'practice-space',
       difficulty: doc.cases[0].difficultyProfile,
     };
-    if (doc.cases.some((item) => item.variants?.length)) {
+    if (doc.cases.some((item) => item.variants?.length || item.statementPool)) {
       assert.doesNotThrow(() => registry.assertFamilyPlacement(placement));
     } else {
       assert.throws(

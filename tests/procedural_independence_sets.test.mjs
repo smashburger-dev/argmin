@@ -2,8 +2,9 @@
 // seeded five-option vector sets with stable ids a-e. Each instance draws a
 // trap class per wrong option (collinear, combo a·v1+b·v2, >n rule, zero-vector
 // set) and at least two genuinely independent sets; rank() is the authority.
-// The authored members independence-statements and rank-nullity-combined stay
-// static via staticVariantInstance. Run: node --test tests/procedural_independence_sets.test.mjs
+// The authored members independence-statements and rank-nullity-combined keep
+// seed 0 as the authored case and draw other seeds from their statementPool.
+// Run: node --test tests/procedural_independence_sets.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -175,28 +176,31 @@ test('registry end-to-end: instantiate, grade exact set equality and per-correct
   }
 });
 
-test('authored static members keep serving (seed-shuffled authored options, authored correctIds)', () => {
+test('authored static members: seed 0 serves the authored case, other seeds draw from the statement pool', () => {
   for (const [caseId, profile] of Object.entries(STATIC_CASES)) {
     const authored = doc.cases.find((entry) => entry.caseId === caseId);
-    for (let seed = 0; seed < 4; seed += 1) {
+    const pool = authored.statementPool.statements;
+    const anchor = generateMcIndependenceFamily({ seed: 0, caseId, difficulty: profile });
+    assert.deepEqual(
+      [...anchor.choices].map((choice) => choice.text).sort(),
+      [...authored.choices].map((choice) => choice.text).sort(),
+      `${caseId}:0: authored Optionstexte`,
+    );
+    assert.deepEqual(anchor.expected.correctIds, authored.expected.correctIds, `${caseId}:0: authored correctIds`);
+    const drawn = new Set();
+    for (let seed = 1; seed < 16; seed += 1) {
       const g = generateMcIndependenceFamily({ seed, caseId, difficulty: profile });
-      // parameters.variant = Index in [body, ...variants]; 0 = Basisfall.
-      const authoredBody = g.parameters.variant ? authored.variants[g.parameters.variant - 1] : authored;
-      assert.deepEqual(
-        [...g.choices].map((choice) => choice.text).sort(),
-        [...authoredBody.choices].map((choice) => choice.text).sort(),
-        `${caseId}:${seed}: authored Optionstexte (Shuffle ist Id-gebunden)`,
-      );
-      assert.deepEqual(g.expected.correctIds, authoredBody.expected.correctIds, `${caseId}:${seed}: authored correctIds`);
+      assert.equal(g.choices.length, authored.statementPool.count, `${caseId}:${seed}: count`);
+      const truth = g.choices.map((choice) => pool.find((statement) => statement.text === choice.text)?.correct);
+      assert.ok(truth.every((value) => typeof value === 'boolean'), `${caseId}:${seed}: Option stammt aus dem Pool`);
+      const expectedIds = g.choices.filter((_, i) => truth[i]).map((choice) => choice.id).sort();
+      assert.deepEqual(g.expected.correctIds, expectedIds, `${caseId}:${seed}: correctIds aus dem Pool`);
       assert.deepEqual(solveMcIndependence(g.parameters).correctIds, g.expected.correctIds, `${caseId}:${seed}: statischer Solver`);
+      assert.equal(g.feedbackRules.length, g.choices.length, `${caseId}:${seed}: jede Aussage trägt Feedback`);
+      drawn.add(JSON.stringify(g.choices.map((choice) => choice.text)));
     }
+    assert.ok(drawn.size > 10, `${caseId}: Pool-Ziehungen variieren`);
   }
-  // Varianten der statements-Familie bleiben über den Seed erreichbar.
-  const seen = new Set();
-  for (let seed = 0; seed < 4; seed += 1) {
-    seen.add(generateMcIndependenceFamily({ seed, caseId: 'independence-statements', difficulty: 'core' }).parameters.variant);
-  }
-  assert.deepEqual([...seen].sort(), [0, 1], 'Variantenauflösung läuft nicht mehr über staticVariantInstance');
   assert.throws(() => generateMcIndependenceFamily({ seed: 0, caseId: 'independence-statements', difficulty: 'intro' }), /Unbekanntes Profil/);
 });
 
