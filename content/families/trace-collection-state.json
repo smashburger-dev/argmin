@@ -202,7 +202,7 @@
       "expected": {
         "kind": "variable-values"
       },
-      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile — und welche Liste steht am Ende hinter y? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
       "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: x = x + [ … ] baut eine NEUE Liste und bindet sie an x; x += [ … ] erweitert dagegen die vorhandene Liste direkt (in-place). Am Ende zeigt y auf dieselbe Liste.",
       "hints": [
         "x = x + [ … ] baut eine neue Liste und bindet sie an x; x += [ … ] verändert die vorhandene Liste in-place.",

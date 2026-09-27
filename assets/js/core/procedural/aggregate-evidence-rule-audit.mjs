@@ -63,15 +63,26 @@ const TRACE_HEAD = `def diagnose(ereignisse):
 function drawTrace(r) {
   const year = pick(r, [2026, 2027]);
   const month = randInt(r, 1, 12);
-  const diff = randInt(r, 11, 21);
+  // ~55 % of draws keep the hit span below 14 and move the definition event
+  // outside the hit days, so a reader who measures the distance over ALL
+  // events (instead of hits only) gets a span that clears the threshold.
+  const probe = r() < 0.55;
+  const diff = probe ? randInt(r, 11, 13) : randInt(r, 11, 21);
   const dayA = randInt(r, 1, 28 - diff); // same month; the snippet reads tag[-2:]
   const gesperrt = r() < 0.55;
-  return { year, month, dayA, diff, gesperrt };
+  let dayC = dayA;
+  if (probe) {
+    const lower = Array.from({ length: Math.max(0, dayA + diff - 14) }, (_, i) => i + 1);
+    const upper = Array.from({ length: Math.max(0, 15 - dayA) }, (_, i) => dayA + 14 + i);
+    dayC = pick(r, [...lower, ...upper]);
+  }
+  return { year, month, dayA, diff, gesperrt, dayC };
 }
 
 function buildTraceSnippet(p) {
   const tagA = iso(p.year, p.month, p.dayA);
   const tagB = iso(p.year, p.month, p.dayA + p.diff);
+  const tagC = iso(p.year, p.month, p.dayC);
   const lock = p.gesperrt
     ? `    {"tag": "${tagB}", "instanz": "b", "art": "loesungsanzeige"},\n`
     : '';
@@ -79,7 +90,7 @@ function buildTraceSnippet(p) {
 E = [
     {"tag": "${tagA}", "instanz": "a", "art": "hit"},
     {"tag": "${tagB}", "instanz": "b", "art": "hit"},
-${lock}    {"tag": "${tagA}", "instanz": "c", "art": "definition"},
+${lock}    {"tag": "${tagC}", "instanz": "c", "art": "definition"},
 ]
 print(diagnose(E))
 E2 = [e for e in E if e["art"] != "loesungsanzeige"] + [
@@ -99,7 +110,10 @@ const buildTraceSolution = (p) => {
   const line1 = p.gesperrt
     ? 'E: b ist gesperrt, daher bleibt nur a und es fehlen zwei Treffer → nicht_erfuellt.'
     : `E: a und b zählen und der Abstand ${p.diff} wird geprüft → ${traceLine1(p)}.`;
-  return `${line1} E2 zählt a und b; der Tagesabstand ist ${p.diff} → ${traceLine2(p)}.`;
+  const dayNote = p.dayC !== p.dayA
+    ? ` Die Definition am ${iso(p.year, p.month, p.dayC)} liegt außerhalb der Treffertage — der Abstand zählt nur über Treffer.`
+    : '';
+  return `${line1} E2 zählt a und b; der Tagesabstand ist ${p.diff} → ${traceLine2(p)}.${dayNote}`;
 };
 
 // --- case final-diagnosis-rules (python-code, pyodide) ---------------------
@@ -196,10 +210,11 @@ export function evidenceCaseOk(parameters, caseDef) {
       return countOk(parameters);
     }
     if (caseDef.kind === 'predict-output') {
-      const { year, month, dayA, diff, gesperrt } = parameters;
+      const { year, month, dayA, diff, gesperrt, dayC } = parameters;
       if (![2026, 2027].includes(year) || !Number.isInteger(month) || month < 1 || month > 12) return false;
       if (!Number.isInteger(diff) || diff < 11 || diff > 21) return false;
       if (!Number.isInteger(dayA) || dayA < 1 || dayA + diff > 28) return false;
+      if (!Number.isInteger(dayC) || dayC < 1 || dayC > 28) return false;
       if (typeof gesperrt !== 'boolean') return false;
       return parameters.snippet === buildTraceSnippet(parameters);
     }

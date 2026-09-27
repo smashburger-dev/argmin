@@ -11,7 +11,7 @@
 // Base fields pin the curated oracle cases verbatim (anchor tests compare
 // them against the JSON); draw domains are documented here.
 
-import { randInt, until } from '../generator_draw_kit.mjs';
+import { pick, randInt, until } from '../generator_draw_kit.mjs';
 import { makePredictFamily } from './case_family_kit.mjs';
 import doc from '../../../../content/families/trace-training-loop-count.json' with { type: 'json' };
 
@@ -95,20 +95,46 @@ function dropSolution({ n, bs, epochs }) {
 // --- case 3: training-loop-early-stop-counter ----------------------------------
 
 // Draw losses in integer thousandths so every comparison is exact and
-// 3-decimal values (like the base case 0.595) stay expressible. Shape like
-// the base case: l0, one real improvement l1 = l0 - d, then stagnant draws
-// that never clear min_delta so wait reaches patience inside the list.
+// 3-decimal values (like the base case 0.595) stay expressible.
+// ~55 % of draws stay on the eighths grid (losses and min_delta in multiples
+// of 125 = 0.125): dyadic values subtract exactly in JS and CPython floats,
+// so a step of exactly min_delta is unambiguous — the strict '>' keeps wait
+// counting while an inclusive '>=' reader resets. min_delta 250 draws add a
+// strict-only improvement (gap - 125): it resets the strict wait but stays
+// below the inclusive reader's best, so both misconceptions stay apart.
+// The remaining draws keep the thousandths shape: l0, one real improvement
+// l1, then stagnant draws — ~80 % insert a second real improvement after one
+// stagnant epoch so a reader who never resets patience stops earlier.
+// Stagnant draws never sit exactly on the min_delta boundary (there the
+// float comparison could differ between JS and CPython).
 function drawEarlyCase(r) {
   return until(r, () => {
-    const l0 = randInt(r, 700, 950);
-    const d = randInt(r, 50, 200);
-    const l1 = l0 - d;
-    const minDelta = randInt(r, 5, 30);
     const patience = randInt(r, 2, 3);
+    if (r() < 0.7) {
+      const minDelta = pick(r, [125, 250]);
+      const l0 = pick(r, minDelta === 125 ? [625, 750, 875, 1000, 1125] : [875, 1000, 1125]);
+      const l1 = l0 - (minDelta === 125 ? pick(r, [250, 375]) : 375);
+      const gap = l1 - minDelta; // exactly on the threshold: no strict reset
+      if (minDelta === 250) {
+        const strictOnly = gap - 125; // improves strict best, not the inclusive one
+        const tail = Array.from({ length: patience }, () => strictOnly + randInt(r, 0, 3) * 125);
+        return { losses: [l0, l1, gap, strictOnly, ...tail], minDelta, patience };
+      }
+      const tail = Array.from({ length: patience + 1 }, () => gap + randInt(r, 0, Math.floor((l0 - gap) / 125)) * 125);
+      return { losses: [l0, l1, gap, ...tail], minDelta, patience };
+    }
+    const l0 = randInt(r, 700, 950);
+    const l1 = l0 - randInt(r, 50, 200);
+    const minDelta = randInt(r, 5, 30);
+    if (r() < 0.8) {
+      const gap = l1 + randInt(r, -minDelta + 1, 20); // never clears min_delta
+      const l2 = l1 - randInt(r, minDelta + 1, 60); // real improvement: wait resets
+      const tail = Array.from({ length: patience }, () => l2 + randInt(r, -minDelta + 1, 20));
+      return { losses: [l0, l1, gap, l2, ...tail], minDelta, patience };
+    }
     const tail = patience + randInt(r, 0, 1);
-    const stagnant = Array.from({ length: tail }, () => l1 + randInt(r, -minDelta, 20));
-    const losses = [l0, l1, ...stagnant];
-    return { losses, minDelta, patience };
+    const stagnant = Array.from({ length: tail }, () => l1 + randInt(r, -minDelta + 1, 20));
+    return { losses: [l0, l1, ...stagnant], minDelta, patience };
   }, ({ losses, minDelta, patience }) => {
     const { stopped } = earlyStopSim(losses, minDelta, patience);
     return stopped !== null;
@@ -168,8 +194,15 @@ print(best)`;
 
 function earlySolution({ losses, minDelta, patience }) {
   const { stopped, best } = earlyStopSim(losses, minDelta, patience);
-  const shown = losses.map((m) => litLoss(m).replace('.', ',')).join(', ');
-  return `${litLoss(losses[0]).replace('.', ',')} verbessert sich auf ${litLoss(losses[1]).replace('.', ',')}. Die folgenden Verluste (${shown}) verbessern den Bestwert nicht um mehr als ${litLoss(minDelta).replace('.', ',')}; bei ${stopped === null ? 'keinem Durchlauf' : `Durchlauf ${stopped}`} erreicht wait daher ${patience}. Der Abbruch erfolgt ${stopped === null ? 'nicht' : `in Epoche ${stopped}`}, der beste Verlust bleibt ${pyLoss(best)}.`;
+  const improves = [];
+  let bestSoFar = Infinity;
+  losses.forEach((m, index) => {
+    if (bestSoFar - m > minDelta) {
+      improves.push(`Epoche ${index + 1} auf ${litLoss(m).replace('.', ',')}`);
+      bestSoFar = m;
+    }
+  });
+  return `Verbesserungen um mehr als ${litLoss(minDelta).replace('.', ',')}: ${improves.join('; ')} — jede setzt wait auf 0. Danach steigt wait; bei ${stopped === null ? 'keinem Durchlauf' : `Durchlauf ${stopped}`} erreicht er ${patience}. Der Abbruch erfolgt ${stopped === null ? 'nicht' : `in Epoche ${stopped}`}, der beste Verlust bleibt ${pyLoss(best)}.`;
 }
 
 // --- case definitions ----------------------------------------------------------
@@ -222,8 +255,9 @@ export const LOOP_CASES = {
     buildSolution: (p) => earlySolution(p),
     checkParams(p) {
       if (!Array.isArray(p.losses) || p.losses.length < 4 || p.losses.length > 7) return false;
-      if (!p.losses.every((v) => Number.isInteger(v) && v >= 200 && v <= 1200)) return false;
-      if (!Number.isInteger(p.minDelta) || p.minDelta < 5 || p.minDelta > 30) return false;
+      if (!p.losses.every((v) => Number.isInteger(v) && v >= 100 && v <= 1200)) return false;
+      const dyadic = p.minDelta === 125 || p.minDelta === 250;
+      if (!Number.isInteger(p.minDelta) || !(dyadic || (p.minDelta >= 5 && p.minDelta <= 30))) return false;
       if (!Number.isInteger(p.patience) || p.patience < 2 || p.patience > 3) return false;
       const { stopped } = earlyStopSim(p.losses, p.minDelta, p.patience);
       return stopped !== null;

@@ -182,8 +182,11 @@ const manualBackward = {
   expected: () => ({ kind: 'variable-values' }),
 };
 
-const GAINS_PAIRS_0 = [[72, 78], [100, 110], [10, 20], [80, 80], [25, 50], [90, 99], [5, 6], [150, 180], [1, 2], [60, 66]];
-const GAINS_PAIRS_1 = [[250, 262], [50, 60], [200, 220], [40, 50], [25, 20], [12, 15], [8, 10], [70, 77], [2, 4], [33, 33]];
+// Several pairs land exactly on an even .5 percentage in binary floating
+// point (dyadic fractions like 1/8, 5/8, 9/8), where CPython round-half-even
+// and a half-up reader disagree.
+const GAINS_PAIRS_0 = [[72, 78], [100, 110], [8, 9], [80, 80], [16, 26], [90, 99], [40, 45], [150, 180], [8, 21], [60, 66]];
+const GAINS_PAIRS_1 = [[250, 262], [48, 54], [200, 220], [40, 50], [24, 39], [12, 15], [200, 225], [70, 77], [16, 34], [33, 33]];
 
 const gains = (p) => p.pairs.map(([base, new_]) => {
   const a = new_ - base;
@@ -211,15 +214,19 @@ const absoluteGain = {
   expected: () => ({ kind: 'variable-values' }),
 };
 
+// Most cards carry an empty-string value on a likely-pflicht field (zweck or
+// name); the membership test must not count a present empty value as missing.
+// The split_ sums stay off every rounding boundary — round(sum, 3) and the raw
+// sum land on the same per-mille value.
 const CARD_POOL = [
-  { name: 'faq-korpus', zweck: 'support', split_train: 0.8, split_dev: 0.1, split_test: 0.1 },
-  { name: 'x', split_train: 0.5, split_dev: 0.5 },
-  { name: 'k', zweck: 't', herkunft: 'h', lizenz: 'mit', n_beispiele: 3, split_train: 1.0 },
-  { name: 'm', herkunft: 'web', lizenz: 'mit', n_beispiele: 9 },
-  { name: 'n', zweck: 'z', split_train: 0.7, split_dev: 0.2, split_test: 0.1 },
-  { name: 'p', zweck: 'train', herkunft: 'lab', lizenz: 'intern', n_beispiele: 1, split_train: 0.6, split_dev: 0.2, split_test: 0.2 },
-  { split_train: 0.2, split_dev: 0.3, split_test: 0.5 },
-  { zweck: 'eval', split_train: 0.0, split_dev: 0.0, split_test: 1.0 },
+  { name: 'faq-korpus', zweck: '', split_train: 0.8, split_dev: 0.1, split_test: 0.1 },
+  { name: 'x', zweck: '', split_train: 0.5, split_dev: 0.5 },
+  { name: 'k', zweck: '', herkunft: 'h', lizenz: 'mit', n_beispiele: 3, split_train: 1.0 },
+  { name: 'm', zweck: '', herkunft: 'web', lizenz: 'mit', n_beispiele: 9 },
+  { name: 'n', zweck: '', split_train: 0.7, split_dev: 0.2, split_test: 0.1 },
+  { name: 'p', zweck: '', herkunft: 'lab', lizenz: 'intern', n_beispiele: 1, split_train: 0.6, split_dev: 0.2, split_test: 0.2 },
+  { name: '', zweck: 'eval', split_train: 0.0, split_dev: 0.0, split_test: 1.0 },
+  { name: '', zweck: '', split_train: 0.2, split_dev: 0.3, split_test: 0.5 },
   { a: 1, split_x: 0.4, split_y: 0.6 },
   { name: 'faq', lizenz: 'cc', split_train: 0.9, split_test: 0.1 },
 ];
@@ -269,6 +276,35 @@ const STAGE_TICKS = [0, 1, 7, 9, 10, 40, 51, 80, 100, 200];
 
 const stageRunner = {
   draw: (r) => {
+    // ~60 % of draws put the exception stage first and craft the tick gaps
+    // after it, so the flat double-read pairing (imagined second clock read
+    // for the exception) classifies the next stage differently from both the
+    // real pairing and a one-tick shift.
+    if (r() < 0.6) {
+      const b1 = pick(r, STAGE_BUDGETS);
+      const b2 = pick(r, STAGE_BUDGETS);
+      const stages = [
+        [STAGE_NAMES[0], 'kaputt_fn', pick(r, STAGE_BUDGETS)],
+        [STAGE_NAMES[1], pick(r, ['ok_fn', 'langsam_fn']), b1],
+        [STAGE_NAMES[2], pick(r, ['ok_fn', 'langsam_fn']), b2],
+      ];
+      const small = STAGE_TICKS.filter((t) => t <= b1);
+      const big = STAGE_TICKS.filter((t) => t > b1);
+      const t0 = pick(r, STAGE_TICKS);
+      const s = pick(r, STAGE_TICKS);
+      const dOk = pick(r, small);
+      const dBig = pick(r, big);
+      // Stage 1 consumes (s, c2); the imagined pairing reads (c2, c3) and a
+      // one-tick shift reads (c3, c4) — flipOk picks which side times out.
+      const flipOk = r() < 0.5;
+      const c2 = flipOk ? s + dOk : s + dBig;
+      const c3 = flipOk ? c2 + dBig : c2 + dOk;
+      const c4 = flipOk ? c3 + pick(r, small) : c3 + pick(r, big);
+      return {
+        ok: pick(r, STAGE_OK), langsam: pick(r, STAGE_LANGSAM), msg: pick(r, STAGE_MSG),
+        stages, clock: [t0, s, c2, c3, c4],
+      };
+    }
     const stages = STAGE_NAMES.map((name) => [name, pick(r, STAGE_FNS), pick(r, STAGE_BUDGETS)]);
     // Clock entries are consumed per stage: one tick for `start`, plus a second
     // tick for `dauer` unless the stage raised immediately.
@@ -318,27 +354,62 @@ const stageRunner = {
   expected: () => ({ kind: 'variable-values' }),
 };
 
-const OVERCLAIM_PHRASEN = [
-  ['produktionsreif', 'sicher gegen', 'halluziniert nie'],
-  ['bereit', 'perfekt'], ['produktionsreif'], ['sicher gegen', 'nie'],
-  ['gold', 'perfekt'], ['demo', 'stub'], ['sota', 'unfehlbar'],
-  ['halluziniert nie'], ['produktionsreif', 'bereit'],
+// Phrasen-Mengen sind absteigend sortiert abgelegt, sodass jede Teilmenge mit
+// mindestens zwei Treffern in Fundreihenfolge (Position in PHRASEN) von der
+// Sortierung abweicht. Die Draw-Paare kombinieren deterministisch alle
+// Phrasen-Mengen mit den Texten, die davon mindestens zwei Phrasen treffen —
+// plus ein paar Kontrollpaare ohne Treffer.
+const OVERCLAIM_PHRASE_SETS = [
+  ['sicher gegen', 'produktionsreif', 'halluziniert nie'],
+  ['unfehlbar', 'sota', 'sicher gegen'],
+  ['zertifiziert', 'robust', 'gold'],
+  ['stub', 'perfekt', 'demo'],
+  ['skalierbar', 'produktionsreif', 'bereit'],
+  ['unfehlbar', 'halluziniert nie', 'experimentell'],
+  ['sota', 'perfekt', 'bereit'],
+  ['stub', 'robust', 'demo'],
+  ['zertifiziert', 'sicher gegen', 'gold'],
+  ['unfehlbar', 'skalierbar', 'halluziniert nie'],
+  ['sota', 'produktionsreif', 'experimentell'],
+  ['stub', 'sicher gegen', 'bereit'],
+  ['zertifiziert', 'unfehlbar', 'demo'],
+  ['robust', 'halluziniert nie', 'gold'],
+  ['skalierbar', 'perfekt', 'bereit'],
 ];
 const OVERCLAIM_TEXTS = [
-  'Unser Prototyp ist produktionsreif und halluziniert nie bei Versandanfragen.',
-  'Das System ist bereit und perfekt.', 'noch experimentell',
-  'sicher gegen injection, halluziniert nie', 'kein gold standard',
-  'nichts davon', 'Der Demo-Stub reicht.', 'Halluziniert nie bei FAQ.',
+  'Unser Prototyp ist produktionsreif, sicher gegen Injection und halluziniert nie — unfehlbar wirkt er fast.',
+  'sicher gegen injection, halluziniert nie, robust und skalierbar im Betrieb',
+  'Das System ist bereit, perfekt und unfehlbar — sota im FAQ.',
+  'produktionsreif, zertifiziert und gold im Vergleich — aber nicht perfekt',
+  'Der Demo-Stub ist experimentell, robust und skalierbar.',
+  'sota, bereit und sicher gegen alles — halluziniert nie',
+  'stub, demo und zertifiziert — die Plattform gilt als robust',
+  'unfehlbar, experimentell und sicher gegen prompt-injection',
+  'skalierbar, sota und produktionsreif seit letztem Sprint',
+  'bereit, gold und sicher gegen injection — halluziniert nie',
 ];
+const OVERCLAIM_CONTROL_TEXTS = [
+  'nichts davon', 'noch experimentell', 'Halluziniert nie bei FAQ.', 'kein gold standard',
+];
+const OVERCLAIM_ALL_TEXTS = [...OVERCLAIM_TEXTS, ...OVERCLAIM_CONTROL_TEXTS];
 const OVERCLAIM_PROBES = [
   'Der Stub kopiert nur Saetze.', 'Nur ein Stub.', 'produktionsreif morgen',
   'ok', 'perfekt nicht', 'auch nicht', 'Produktion', 'sota', 'manchmal', '',
+  'halluziniert nie gestern', 'bereit vielleicht', 'robust im Test',
+  'sota bestaetigt', 'unfehlbar kaum', 'zertifiziert fraglich', 'skalierbar spaeter',
+  'experimentell noch', 'demo laeuft', 'gold fehlt', 'sicher gegen nichts',
 ];
 
 const overclaim = {
-  draw: (r) => ({
-    phrasen: pick(r, OVERCLAIM_PHRASEN), text: pick(r, OVERCLAIM_TEXTS), probe: pick(r, OVERCLAIM_PROBES),
-  }),
+  draw: (r) => {
+    // Phrasen uniform, dann der Text: auf ~65 % ein Text, der mindestens zwei
+    // der Phrasen trifft (Fundreihenfolge ≠ Sortierung), sonst frei.
+    const phrasen = pick(r, OVERCLAIM_PHRASE_SETS);
+    const hitTexts = OVERCLAIM_TEXTS.filter((t) =>
+      phrasen.filter((ph) => t.toLowerCase().includes(ph)).length >= 2);
+    const text = pick(r, r() < 0.65 && hitTexts.length ? hitTexts : OVERCLAIM_ALL_TEXTS);
+    return { phrasen, text, probe: pick(r, OVERCLAIM_PROBES) };
+  },
   build(p) {
     const scan = (text) => p.phrasen.filter((ph) => text.toLowerCase().includes(ph)).sort();
     const found = scan(p.text);
@@ -418,6 +489,22 @@ const HYP_BANK = [
   'Je kuerzer die Antwort, desto geringer die Latenz',
   'Je schmaler der Hidden, desto kleiner die Parameterzahl',
   'Je weniger Rauschen, desto hoeher die Praezision',
+  // Sentence-final periods: most hypotheses arrive as prose sentences, and a
+  // reader who copies the tail verbatim carries the '.' into the metric name.
+  'Je groesser der Kontext, desto langsamer die Inferenz.',
+  'Je mehr Trainingsdaten, desto stabiler der Validierungsverlust.',
+  'Je hoeher die Lernrate, desto volatiler der Verlust.',
+  'Je kuerzer der Prompt, desto billiger der Aufruf.',
+  'Je schmaler das Batch, desto noisiger der Gradient.',
+  'Je laenger die Session, desto groesser der Speicher.',
+  'Je mehr Features, desto hoeher der Rechenaufwand.',
+  'Je tiefer die Pipeline, desto mehr Fehlerstellen.',
+  'Je groesser der Cache, desto seltener der Nachladevorgang.',
+  'Je enger das Budget, desto haeufiger der Timeout.',
+  'Je kleiner der Schwellenwert, desto mehr Treffer.',
+  'Je breiter das Fenster, desto hoeher der Kontextpreis.',
+  'Je oefter die Epoche, desto niedriger der Trainingsverlust.',
+  'Je komplexer das Modell, desto hoeher der Energiebedarf.',
 ];
 
 const metricName = {

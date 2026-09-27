@@ -165,6 +165,16 @@ export function genCardAudit(seed) {
   const random = rng(seed);
   return clean(random, (r) => {
     const draw = (rr) => {
+      // Most audits name only a subset of the declared fields as mandatory,
+      // so recorded fields outside the pflicht set are visible extras.
+      const pflichtfelder = Object.fromEntries(CARD_KINDS.map((art) => {
+        if (rr() < 0.8) {
+          const k = randInt(rr, Math.min(5, art.felder.length - 2), art.felder.length - 2);
+          const picked = new Set(shuffle(rr, art.felder).slice(0, k));
+          return [art.id, art.felder.filter((f) => picked.has(f))];
+        }
+        return [art.id, art.felder];
+      }));
       const karten = shuffle(rr, CARD_KINDS).slice(0, randInt(rr, 1, 2)).map((art) => {
         const werte = {};
         for (let i = 0; i < art.felder.length; i += 1) {
@@ -176,7 +186,6 @@ export function genCardAudit(seed) {
         }
         return { art: art.id, werte };
       });
-      const pflichtfelder = { datacard: CARD_KINDS[0].felder, modelcard: CARD_KINDS[1].felder };
       const mangel = countCardDefects(karten, pflichtfelder);
       return { karten, pflichtfelder, mangel };
     };
@@ -186,7 +195,7 @@ export function genCardAudit(seed) {
       const art = CARD_KINDS.find((c) => c.id === k.art);
       const vorhandene = art.felder.filter((f) => k.werte[f] !== undefined);
       const paare = vorhandene.map((f) => `${f}: ${k.werte[f] === '' ? '„“' : `„${k.werte[f]}“`}`);
-      return `${titelVon[k.art]} „karte-${idx === 0 ? 'a' : 'b'}“ mit dem Pflichtfeldsatz ${art.felder.join(', ')} — erfasst sind ${paare.join(', ')}`;
+      return `${titelVon[k.art]} „karte-${idx === 0 ? 'a' : 'b'}“ mit dem Pflichtfeldsatz ${pflichtfelder[k.art].join(', ')} — erfasst sind ${paare.join(', ')}`;
     }).join('. ') + '.';
     return {
       parameters: { karten, pflichtfelder },

@@ -750,6 +750,7 @@ function solveCollectionTrace(parameters) {
     value: simulated.render(state),
   }));
   if (simulated.yEnd) variables.push({ name: 'y_ende', value: renderListState(simulated.yEnd) });
+  variables.push(...extraTraceVars(parameters.caseId, simulated).map(({ name, value }) => ({ name, value })));
   return { variables };
 }
 
@@ -762,6 +763,21 @@ function simulateDictTraceShim(shape, codes) {
 function traceSnippetNumbers(snippet) {
   return intsOf(traceCodeLines(snippet).join('\n'));
 }
+
+// Zusätzlich getrackte Referenzen: die Alias-Fälle binden y mitten im
+// Snippet, und nur deklarierte y-Zustände machen den Alias-Effekt für den
+// Lernenden (und den Grader) beobachtbar. list-alias-negative trackt y ab
+// seiner Bindung in Zeile 2, list-rebind-steps am Ende nach Zeile 4.
+const EXTRA_TRACE_VARS = {
+  'list-alias-negative': (simulated) => [2, 3, 4].map((line) => ({
+    name: `y_nach_${line}`, type: 'repr', value: simulated.render(simulated.states[line - 1]),
+  })),
+  'list-rebind-steps': (simulated) => [
+    { name: 'y_nach_4', type: 'repr', value: simulated.render(simulated.states[3]) },
+  ],
+};
+
+const extraTraceVars = (caseId, simulated) => EXTRA_TRACE_VARS[caseId]?.(simulated) ?? [];
 
 function collectionProfileAccepts(difficulty, caseId) {
   // Case identity wins over the profile axis: the alias case always requires
@@ -811,10 +827,14 @@ function generateTraceCollectionFamily({ seed, caseId, difficulty }) {
   const codes = traceCodeLines(drawn.parameters.snippet);
   const simulated = shape === 'set-steps' ? simulateSetTrace(codes) : simulateListTrace(shape, codes);
   const scope = stepTraceScope(simulated, codes);
+  const extraVars = extraTraceVars(caseId, simulated);
   return {
     ...authoredCaseExtras(body),
     masteryEligible: body.masteryEligible,
-    parameters: { caseId, difficulty, ...drawn.parameters, family: body.parameters.family },
+    parameters: {
+      caseId, difficulty, ...drawn.parameters, family: body.parameters.family,
+      ...(extraVars.length ? { variables: [...drawn.parameters.variables, ...extraVars] } : {}),
+    },
     expected: { ...body.expected },
     prompt: renderCaseTemplate(body.prompt, scope, 'trace-collection-state'),
     fullSolution: renderCaseTemplate(body.fullSolution, scope, 'trace-collection-state'),
