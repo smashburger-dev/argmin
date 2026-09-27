@@ -35,6 +35,20 @@
       ],
       "prompt": "`parse_age` wirft bei ungültigem Text `ValueError`. Wo sollte der CLI-Datenprüfer diesen erwarteten Fehler behandeln?",
       "fullSolution": "Der Aufrufer kennt Zeilennummer und Spalte und kann den ValueError dort in einen präzisen Issue-Eintrag übersetzen.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`except Exception: pass` verschluckt den Fehler komplett. Ungültige Zeilen gingen still durch — genau das soll der Issue-Eintrag verhindern."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Dann beendet die erste schlechte Zelle den ganzen Lauf. Ein erwarteter Fehler gehört in einen Eintrag, nicht in einen Abbruch."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "Ohne Zeilennummer und Spalte kann die Stelle keinen präzisen Eintrag formulieren. Der Aufrufer kennt beides — deshalb gehört die Behandlung dorthin."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [

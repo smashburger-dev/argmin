@@ -91,6 +91,22 @@
         "Eine Hypothese muss durch einen nächsten Versuch widerlegbar sein.",
         "Trenne Beobachtung, Ursache und nächsten Test."
       ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Ein pauschales Urteil nennt weder Ursache noch nächsten Test. Die ganze Lektion zu lesen trifft den konkreten Fehler nur zufällig.",
+                  "misconception": "pauschales-selbsturteil"
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Abschreiben behebt dieses eine Mal, aber nicht das Verständnis. Beim nächsten Vorzeichenproblem stehst du wieder da.",
+                  "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "Der Status beschreibt, was du kannst — er erzeugt keinen Lernerfolg. Ein Nachweis kommt aus überprüfter Arbeit, nicht aus einem Häkchen."
+        }
+      ],
       "typicalErrors": [
         {
           "id": "pauschales-selbsturteil",

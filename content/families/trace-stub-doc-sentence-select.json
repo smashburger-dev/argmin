@@ -37,8 +37,8 @@
           "text": "leeren TrefferScore als Fehler gelesen statt kein treffer"
         },
         {
-          "id": "strip-beim-satz-vergessen",
-          "text": "strip() beim Satz vergessen"
+          "id": "ersten-satz-bei-leerem-score",
+          "text": "bei leerem Treffer-Score trotzdem den ersten Satz des Dokuments zurückgegeben"
         }
       ],
       "activityType": "predict-output",

@@ -35,6 +35,20 @@
       ],
       "prompt": "Du verarbeitest IDs in Reihenfolge und willst bei jeder ID schnell prüfen, ob sie bereits vorkam. Welche zusätzliche Struktur passt am besten?",
       "fullSolution": "Ein Set speichert eindeutige IDs. `id in seen` prüft, ob die ID bereits verarbeitet wurde.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Eine Zahl sagt nur, wie viele Zeilen es gab — nicht, welche ID schon kam. `id in seen` braucht die gespeicherten IDs selbst."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Im String prüfst du auf Teilstrings: Eine ID, die zufällig in einer anderen steckt, erzeugt falsche Treffer — und der Scan ist langsam."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "Die zuletzt gelesene ID sagt nichts über die davor. Eine ID, die fünf Zeilen früher kam, erkennst du so nicht wieder."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [

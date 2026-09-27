@@ -42,8 +42,8 @@
           "text": "für die Ablation verschiedene Seeds verwendet"
         },
         {
-          "id": "normen-als-np-float64-statt",
-          "text": "Normen als np.float64 statt float zurückgegeben"
+          "id": "verlust-nach-dem-update-gemessen",
+          "text": "notierten Verlust nach dem Update statt zu Epochenbeginn gemessen"
         }
       ],
       "activityType": "python-code",

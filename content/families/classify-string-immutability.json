@@ -35,6 +35,20 @@
       ],
       "prompt": "Was passiert beim Ausführen dieses Programms?\n\n<code>name = \"Ada\"\nname[0] = \"M\"\nprint(name)</code>",
       "fullSolution": "name[0] = \"M\" wirft TypeError: 'str' object does not support item assignment. Strings sind unveränderlich; jede Änderung erzeugt einen neuen String. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Strings sind unveränderlich: `name[0] = \"M\"` ersetzt nichts — die Zeile wirft sofort einen TypeError, die Ausgabe kommt nie zustande."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Auch ein Einfügen ist eine Zuweisung an ein Zeichen. Strings erlauben keine Item-Zuweisung: TypeError statt „MAda“."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "Python ignoriert fehlerhafte Zuweisungen nicht still. `name[0] = \"M\"` wirft einen TypeError und bricht ab."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [

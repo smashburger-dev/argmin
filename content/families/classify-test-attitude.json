@@ -35,6 +35,20 @@
       ],
       "prompt": "Ein Test erwartet für die zweite Datenzeile CSV-Zeilennummer 3, dein Code meldet 2. Was ist der beste nächste Diagnoseschritt?",
       "fullSolution": "Die Differenz um eins spricht für Header- oder Indexumrechnung. Der kleine reproduzierbare Fall kann diese Hypothese bestätigen oder verwerfen.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Dann passt der Test zur Zeile statt andersherum — der Off-by-one bleibt und wird zum neuen Soll. Erst prüfen, ob Header oder nullbasierter Index die Differenz erzeugen."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Ohne Tests gibt es kein Signal mehr. Der Fehler verschwindet damit nur aus der Anzeige, nicht aus dem Code."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`except Exception` unterdrückt die Meldung, nicht die falsche Zeilennummer. Danach ist die falsche Zahl unsichtbar, aber weiter falsch."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [

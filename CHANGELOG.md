@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.8.13 — 2026-09-27
+
+Fehlvorstellungen prüfbar gemacht, Distraktor-Feedback auf den authored Fällen, ehrlichere Fehlermeldung beim Testabbruch.
+
+Für Lernende: **Sieben Fehlvorstellungen, die bisher nicht von der richtigen Antwort unterscheidbar waren, sind durch realistische ersetzt** — etwa „Rang und Determinante verwechselt" oder „Varianz statt Standardabweichung". Vier weitere Fehlvorstellungen werden jetzt von einem echten Check erkannt, darunter Softmax ohne Zeilenmaximum bei großen Scores und ein vergessener Doppel-Lauf-Assert. Die dreizehn authored Basis-Aufgaben der Foundations-Choice- und Git-Fälle (Seed 0) erklären jetzt bei jeder Fehloption, warum sie nicht passt — bisher hatten nur die Varianten dieses Feedback. Bricht ein Python-Test mit einer Ausnahme ab, bleiben die bereits bestandenen Checks sichtbar und der letzte Eintrag heißt „Test abgebrochen" statt die Liste zu verlieren.
+
+Für Beitragende: Die ersetzten `typicalErrors` erhielten neue kebab-case-ids; Index-Reihenfolge unverändert (Classifier keyt per `errorIndex`). `hypothesis-report-groups` trug einen Eintrag, der die Referenz-Semantik selbst als Fehler bezeichnete (Vergleich vor der Rundung) — ersetzt durch „share mit umgekehrtem Vergleich". Der Freeze-Test pinnt Pin und Bericht-Digest als Konstanten, statt ein eigenes `kanon` zu definieren — er überdeckt die Serialisierung des Lernenden nicht mehr. Der Assert-Check patcht `hashlib.sha256` alternierend inklusive `from`-Import-Aliase; der Rerun-Check ersetzt `run_experiment` durch eine gezählte, schwankende Version. Alle neuen Checks in CPython gegen Referenz und Fehlvariante verifiziert. `package-lock.json` trägt jetzt dieselbe Version wie `package.json`.
+
+## 0.8.12 — 2026-09-27
+
+Aussagen-Pools für Multiple Choice, Varianten für Foundations- und Git-Fälle; zwei Korrekturen an Review-Route und Git-Dateinamen.
+
+Für Lernende: **Sechs Multiple-Choice-Fälle ziehen ihre Aussagen jetzt pro Seed aus einem Pool** — jede Aussage trägt eigenes Feedback; sieben Foundations-Choice-Fälle und die sieben Git-Fälle bekommen je zwei Varianten mit Feedback pro Fehloption. Seed 0 bleibt überall die authored Aufgabe. Dazu zwei Fehler behoben: Die frische Review-Route zeigte bisher einen beliebigen Fall statt den fälligen (und ließ den Review-Eintrag liegen) — sie behält jetzt den Fall und würfelt nur den Seed. Und Git-Aufgaben auf stretch/challenge nannten im Prompt eine Arbeitsdatei, in den Optionen aber eine andere — Optionen, Feedback, Lösung und Solver nutzen jetzt einheitlich den gezogenen Namen.
+
+Für Beitragende: `statementPool` mit `{text, feedback, misconception}` pro Aussage; Varianten tragen eigene `feedbackRules`, gebunden über den Optionstext. #91: Die E2E-Tests blockieren den Offline-Service-Worker des Release-Builds, der in `chrome-headless-shell` den CI-Lauf abstürzen ließ (`SEGV_MAPERR`); nur `offline.spec` schaltet ihn wieder frei.
+
+## 0.8.11 — 2026-09-27
+
+Backend-Konsolidierung: Familien als reine Daten, Fehlkonzept-Labels, rund dreißig bisher unsichtbare Fehlvorstellungen werden erkannt.
+
+Für Lernende: **Falsche Optionen in Auswahlaufgaben erklären jetzt, was dahinter für eine Denkweise steckt** — Distraktoren und Aussagen tragen gebundenes Feedback mit Fehlkonzept-Label. Rund dreißig Denkfehler, die bisher als richtige Antwort durchgingen — etwa vertauschte Precision/Recall-Nenner, Banker-Rundung oder ein nicht zurückgesetzter Early-Stopping-Zähler — fallen jetzt durch. Acht bisher identische Fälle ziehen pro Seed neue Instanzen; Seed 0 bleibt die authored Aufgabe.
+
+Für Beitragende: 20 Bank-Familien liegen als reine JSON-Daten in `content/banks/`, drei Wrapper-Registries sind entfernt; Kits lesen authored Texte statt Kopien. `wrong[]` darf `{text, feedback, misconception}` tragen, `statementPool` versorgt Multiple-Choice, der Grader meldet `misconception(s)` im Ergebnis. `typicalErrors` stehen als `{id, text}` mit stabilen IDs im Content; Instanzen tragen `typicalErrorIds`. Der Golden-Korpus pinnt alle Instanzfelder, die Solver-Ausgabe und den Familienvertrag. Bugfixes: Varianten mit eigenen Optionen erbten fremdes Feedback; Playwright startet immer einen eigenen Server (`E2E_PORT`), sonst liefen Dev-Läufe gegen fremde Worktrees. Code ohne Fixtures: 60.650 → 55.418 Zeilen.
+
 ## 0.8.10 — 2026-09-26
 
 Fehlplatzierter Debug-Fall aus dem Algebra-Modul verlegt; Modul-weites Platzierungs-Audit.

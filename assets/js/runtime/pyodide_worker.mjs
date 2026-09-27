@@ -12,7 +12,9 @@
 //   phase,              // 'code' | 'tests' | 'load'
 //   stdout, stderr,     // captured streams (learner phase, each capped at 64 KiB)
 //   stdoutTruncated, stderrTruncated,
-//   testResults,        // [{name, passed, detail}]
+//   testResults,        // [{name, passed, detail}] — on a tests-phase abort the
+//                       // recorded checks survive; the last entry is the failed
+//                       // 'Test abgebrochen' marker
 //   errorType,          // SyntaxError | <ExceptionName> | 'Timeout' | null
 //   errorMessage,
 //   durationMs,
@@ -209,8 +211,23 @@ sys.stdout, sys.stderr = __out, __err
         pyodide.runPython(tests, { globals });
         result.testResults = pythonValueToJs(pyodide.runPython('__results', { globals }));
       } catch (e) {
-        Object.assign(result, classifyError(e));
-        result.ok = false;
+        const classified = classifyError(e);
+        Object.assign(result, classified, { ok: false });
+        // Checks recorded before the abort survive; the abort itself is
+        // appended as a failed entry so the learner sees where it stopped.
+        const recorded = pythonValueToJs(pyodide.runPython('__results', { globals }));
+        // Pyodide's PythonError carries the exception class in `type`; the
+        // JS message can be a bare 'PythonError' without the traceback.
+        const pyType = typeof e?.type === 'string' && e.type ? e.type : classified.errorType;
+        const lastLine = classified.errorMessage.split('\n').filter(Boolean).pop() || '';
+        const informative = lastLine !== 'PythonError' ? lastLine : '';
+        const detail = !informative ? pyType
+          : informative.startsWith(pyType) ? informative
+          : `${pyType}: ${informative}`;
+        result.testResults = [
+          ...(Array.isArray(recorded) ? recorded : []),
+          { name: 'Test abgebrochen', passed: false, detail },
+        ];
       }
     }
   } finally {

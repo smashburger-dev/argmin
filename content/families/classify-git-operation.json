@@ -51,6 +51,20 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`git diff --staged` vergleicht den Staging-Bereich mit dem letzten Commit. Da noch nichts gestaged ist, zeigt dir das nichts."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "`git status` listet nur, welche Dateien geändert sind — nicht die Textänderungen selbst."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`git push` lädt Commits ins Remote hoch. Die lokalen Änderungen der Arbeitskopie siehst du damit nicht."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -202,6 +216,20 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`git diff` ohne Flag zeigt nur Änderungen, die noch nicht gestaged sind. Die vorgemerkten Inhalte siehst du damit nicht."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "`git log` zeigt vergangene Commits, nicht die Änderungen, die du gerade vorgemerkt hast."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`git clone` legt eine frische Kopie eines Repositorys an — mit deinem Staging-Bereich hat das nichts zu tun."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -348,6 +376,20 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`git pull` holt Remote-Commits in deinen lokalen Branch. Deine lokalen Commits kommen damit nicht ins Remote."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "`git fetch` lädt den Remote-Stand nur herunter. Übertragen wird dabei nichts."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`git commit --amend` verändert deinen letzten lokalen Commit. Ins Remote kommt dadurch nichts."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -483,6 +525,20 @@
       "hints": [
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`git checkout main` wechselt den Branch, statt main in feature zu integrieren. Danach arbeitest du auf main, nicht auf deinem Branch."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "`git push origin feature` lädt deinen Branch ins Remote hoch. Die neuen main-Commits bekommt feature dadurch nicht."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`git branch main` legt nur einen neuen Branch an — und scheitert, weil main schon existiert. Integriert wird nichts."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",
@@ -620,6 +676,20 @@
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
       ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Der Merge ist noch offen — erst `git add` als gelöst markieren und committen. push vor dem Merge-Commit lädt einen unfertigen Stand hoch."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Damit verwirfst du deine Konfliktlösung und fängst neu an. Die bereinigte Datei ist schon fertig — es fehlen nur `git add` und `git commit`."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`git commit --amend` schreibt den letzten Commit um, statt den laufenden Merge-Commit abzuschließen. Der Merge bliebe offen."
+        }
+      ],
       "activityType": "single-choice",
       "graderId": "deterministic",
       "variants": [
@@ -755,6 +825,20 @@
       "hints": [
         "Erst klären, wo der beschriebene Zustand liegt: Arbeitskopie, Staging-Bereich, lokaler Commit oder Remote.",
         "Lese- und Schreiboperationen unterscheiden: Was verändert den Zustand, und was zeigt ihn nur an?"
+      ],
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`git rm` entfernt die Datei aus dem Projekt. Du willst sie behalten — nur ihre Änderungen sollen weg."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Ein Commit sichert die Änderungen dauerhaft — das Gegenteil von verwerfen."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`git stash apply` holt zuvor gestashte Änderungen zurück in die Arbeitskopie. Es verwirft nichts, es stellt weitere Änderungen wieder her."
+        }
       ],
       "activityType": "single-choice",
       "graderId": "deterministic",

@@ -37,8 +37,8 @@
           "text": "Median über alle Zeilen statt gruppenweise berechnet"
         },
         {
-          "id": "vor-der-rundung-verglichen-und",
-          "text": "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
+          "id": "share-mit-umgekehrtem-vergleich",
+          "text": "den Anteil a > b mit umgekehrtem Vergleich (a < b) berechnet"
         }
       ]
     },
@@ -75,8 +75,8 @@
           "text": "absolute Fehlerzahlen statt Raten vergleichen"
         },
         {
-          "id": "gruppen-als-eigene-schleifen-statt",
-          "text": "Gruppen als eigene Schleifen statt Zähler-dict"
+          "id": "fehlerrate-in-prozent-statt-anteil",
+          "text": "Fehlerrate in Prozent statt als Anteil zurückgegeben"
         },
         {
           "id": "laengenpruefung-weglassen",
