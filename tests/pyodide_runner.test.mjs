@@ -108,6 +108,33 @@ test('worker errors resolve active runs and reset the worker', async () => {
   }
 });
 
+test('a tests-phase abort grades as wrong with the abort verdict', async () => {
+  const { pyodideRunner } = await import('../assets/js/runtime/pyodide_runner.js');
+  const { graders } = await import('../assets/js/core/graders.js');
+  const original = pyodideRunner.run;
+  pyodideRunner.run = async () => ({
+    ok: false, phase: 'tests', stdout: '', stderr: '',
+    stdoutTruncated: false, stderrTruncated: false,
+    testResults: [
+      { name: 'erster check', passed: true, detail: '' },
+      { name: 'Test abgebrochen', passed: false, detail: 'ValueError: kaputt' },
+    ],
+    errorType: 'ValueError', errorMessage: 'ValueError: kaputt', durationMs: 1,
+  });
+  try {
+    const verdict = await graders.pyodide.grade(
+      { activityType: 'python-code', parameters: { tests: '__check("x", True)' } },
+      'pass',
+    );
+    assert.equal(verdict.correct, false);
+    assert.equal(verdict.verdictText, 'Tests abgebrochen — dein Code hat während eines Tests eine Ausnahme ausgelöst.');
+    assert.equal(verdict.result.testResults.at(-1).name, 'Test abgebrochen');
+    assert.equal(verdict.result.testResults.length, 2);
+  } finally {
+    pyodideRunner.run = original;
+  }
+});
+
 test('timeouts resolve the current run and restart the worker', async () => {
   const OriginalWorker = globalThis.Worker;
   globalThis.Worker = FakeWorker;

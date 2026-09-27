@@ -151,7 +151,9 @@ async function gradePython(exercise, code, ctx) {
     correct,
     result,
     verdictText: result.phase === 'timeout' ? 'Zeitlimit überschritten — der Lauf wurde abgebrochen.'
-      : result.ok ? (correct ? 'Alle Tests bestanden.' : 'Tests fehlgeschlagen.') : 'Der Code lief nicht fehlerfrei.',
+      : result.ok ? (correct ? 'Alle Tests bestanden.' : 'Tests fehlgeschlagen.')
+      : result.phase === 'tests' ? 'Tests abgebrochen — dein Code hat während eines Tests eine Ausnahme ausgelöst.'
+      : 'Der Code lief nicht fehlerfrei.',
     errorType: result.errorType,
   };
 }

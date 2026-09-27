@@ -15,13 +15,14 @@ interface RunResult {
   stdout: string;
   stderr?: string;
   stdoutTruncated?: boolean;
-  testResults: Array<{ name: string; passed: boolean }>;
+  testResults: Array<{ name: string; passed: boolean; detail?: string }>;
 }
 
 interface ProbeResults {
   numpyRun: RunResult;
   correct: RunResult;
   wrong: RunResult;
+  aborted: RunResult;
   timeout: RunResult;
   afterRestart: RunResult;
   leaky: RunResult;
@@ -64,6 +65,12 @@ test('pyodide worker passes grading, restart and isolation contracts in every br
       packages: ['numpy'],
     });
 
+    const aborted = await run({
+      code: 'def mean(xs):\n    return sum(xs) / len(xs)',
+      tests: "__check('erster check', True)\nraise ValueError('Test bricht ab')",
+      packages: [],
+    });
+
     const timeout = await run({
       code: 'while True:\n    pass',
       tests: '',
@@ -94,7 +101,7 @@ test('pyodide worker passes grading, restart and isolation contracts in every br
       entrypoint: 'main.py',
     });
 
-    return { numpyRun, correct, wrong, timeout, afterRestart, leaky, leakCheck, truncation, unsafeWorkdir, unsafeFile, firstMulti, secondMulti };
+    return { numpyRun, correct, wrong, aborted, timeout, afterRestart, leaky, leakCheck, truncation, unsafeWorkdir, unsafeFile, firstMulti, secondMulti };
   }, TESTS);
 
   expect(probes.numpyRun.ok, `numpy run: ${probes.numpyRun.errorType} ${probes.numpyRun.errorMessage}`).toBe(true);
@@ -108,6 +115,14 @@ test('pyodide worker passes grading, restart and isolation contracts in every br
   const wrongRejected = !probes.wrong.ok || wrongPassed.length < probes.wrong.testResults.length;
   expect(wrongRejected, `wrong solution not rejected: ${JSON.stringify(probes.wrong)}`).toBe(true);
   expect(probes.wrong.testResults.some((t) => t.name === 'mean_ok' && !t.passed)).toBe(true);
+
+  const aborted = probes.aborted;
+  expect(aborted.ok, `aborted run: ${JSON.stringify(aborted)}`).toBe(false);
+  expect(aborted.phase).toBe('tests');
+  expect(aborted.testResults.length).toBe(2);
+  expect(aborted.testResults[0]).toMatchObject({ name: 'erster check', passed: true });
+  expect(aborted.testResults[1]).toMatchObject({ name: 'Test abgebrochen', passed: false });
+  expect(aborted.testResults[1]?.detail).toContain('ValueError');
 
   expect(probes.timeout.phase, `timeout probe: ${JSON.stringify(probes.timeout)}`).toBe('timeout');
   expect(probes.timeout.errorType).toBe('Timeout');
