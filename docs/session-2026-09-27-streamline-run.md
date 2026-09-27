@@ -43,7 +43,7 @@ Kleinhirn-Abgleich (Probe-Merge in `/tmp/argmin-klcheck`, Konflikt nur `tests/fi
 - `diagnostic-rationale-python-errors` und `diagnostic-rationale-ml-eval` sind bis nach A4 eingefroren: keine Varianten, keine Text- oder Kriterienänderungen (Kleinhirn-Training A3/A4).
 - Die Basisfälle der 7 Foundations- und 6 Git-Fälle haben weiter kein Distraktor-Feedback; nur die neuen Varianten tragen es. Nachziehen hieße Seed 0 ändern (Entscheidung Noa).
 - Behoben auf release/0.8.12: Die frische Review-Route zog den Fall ohne Profilfilter (`classify-error-hypothesis` auf intro warf in 10 von 20 Seeds "Unbekanntes Profil"). Sie behält jetzt caseId, und der Zufallszug ohne caseId nimmt nur Fälle, die das Profil bedienen. Danach ist `rank-nullity-combined` propertyTest: true.
-- `classify-git-operation/restore-file` auf stretch/challenge: der Prompt nennt eine Arbeitsdatei (`notizen.py` u. a.), die Optionen sagen `datei.py` (schon im authored Fall so).
+- Behoben: `classify-git-operation` auf stretch/challenge nannte im Prompt eine Arbeitsdatei (`notizen.py` u. a.), Optionen und Lösung hielten `datei.py`; Generator und Solver lokalisieren jetzt über `localizeGitFileName` nach dem Rebinden.
 - Entscheidung Noa: `transform-linear-equation-isolate/two-step-fixed-instance` ist unerreichbar und doppelt `two-step-seeded` (Retire?).
 - P3 hat das JS-gzip um ~40 KB erhöht (Anker-JSON im Runtime-Graph).
 - Abschluss-Verifikation fehlt noch: `npm run test:e2e` (Dev), `test:project-runner`, `coverage:check`, E2E-Build nach dem Text-Rework.

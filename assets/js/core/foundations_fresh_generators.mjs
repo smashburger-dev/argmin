@@ -696,7 +696,7 @@ export function genGitNextAction(seed) {
       const usesFile = metaCase.state.includes('datei.py') || metaCase.correct.includes('datei.py') || metaCase.distractors.some((text) => text.includes('datei.py'));
       const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
       const fileName = usesFile ? fileNames[epoch % fileNames.length] : null;
-      const localize = (text) => fileName ? text.replaceAll('datei.py', fileName) : text;
+      const localize = (text) => localizeGitFileName(text, fileName);
       const localizedChoices = fileName ? choices.map((choice) => ({ ...choice, text: localize(choice.text) })) : choices;
       return {
         parameters: { caseId: metaCase.caseId, caseIndex, ...(fileName ? { fileName } : {}) },
@@ -734,10 +734,16 @@ function gitOperationOptions(meta, difficulty, choiceCount) {
   return [meta.correct, ...distractors.slice(0, choiceCount - 1)];
 }
 
+/** `datei.py` in authored texts is the placeholder for the working file;
+ *  stretch/challenge draws rename it to parameters.fileName. */
+const localizeGitFileName = (text, fileName) =>
+  fileName ? text.replaceAll('datei.py', fileName) : text;
+
 /** Independent solver: the correct Git operation is a function of caseId
  *  and variant, not of seed, rotation or difficulty. */
 export function solveGitOperation(parameters) {
-  return { correctText: gitOperationCase(parameters.caseId, parameters.variant ?? 0).correct };
+  const correct = gitOperationCase(parameters.caseId, parameters.variant ?? 0).correct;
+  return { correctText: localizeGitFileName(correct, parameters.fileName) };
 }
 
 /** S4C family generator for classify-git-operation. Case type is pinned;
@@ -759,6 +765,13 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   const ids = ['a', 'b', 'c', 'd'].slice(0, options.length);
   const choices = buildRotatedChoices(options, rotation, ids);
   const feedbackRules = rebindChoiceRules(meta.body.feedbackRules, meta.body.choices, choices);
+  // Localize after rebinding: rules match authored option texts, ids survive.
+  const localizedChoices = fileName
+    ? choices.map((choice) => ({ ...choice, text: localizeGitFileName(choice.text, fileName) }))
+    : choices;
+  const localizedRules = fileName && feedbackRules
+    ? feedbackRules.map((rule) => ({ ...rule, then: localizeGitFileName(rule.then, fileName) }))
+    : feedbackRules;
   const fileNote = fileName ? ` Die Arbeitsdatei heißt ${fileName}.` : '';
   const question = meta.staticFlow
     ? 'Welcher Ablauf liefert den belastbarsten Abschluss?'
@@ -771,10 +784,10 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
       ...(fileName ? { fileName } : {}),
     },
     expected: {},
-    choices,
+    choices: localizedChoices,
     prompt: `Situation: ${meta.state}${fileNote}\n\n${question}`,
-    fullSolution: `Richtig: ${meta.correct}. ${meta.insight}`,
-    ...(feedbackRules ? { feedbackRules } : {}),
+    fullSolution: localizeGitFileName(`Richtig: ${meta.correct}. ${meta.insight}`, fileName),
+    ...(localizedRules ? { feedbackRules: localizedRules } : {}),
   };
 }
 

@@ -179,6 +179,27 @@ test('git operation variants: seed picks the body, solver and feedback follow it
   assert.equal(prompts.size, 3);
 });
 
+test('git operation file localization: option, solution and feedback texts follow the drawn file name', () => {
+  for (const { caseId } of GIT_OPERATION_CONTRACT.caseTypes) {
+    for (const difficulty of ['stretch', 'challenge']) {
+      for (let seed = 0; seed <= 40; seed += 1) {
+        const instance = instantiate('classify-git-operation', seed, difficulty, caseId);
+        if (!instance.parameters.fileName) continue;
+        const texts = [
+          instance.fullSolution,
+          ...instance.choices.map((choice) => choice.text),
+          ...(instance.feedbackRules || []).map((rule) => rule.then),
+        ];
+        for (const text of texts) {
+          assert.ok(!text.includes('datei.py'), `${caseId}/${difficulty}/${seed}: ${text}`);
+        }
+        const correct = instance.choices.find((choice) => choice.correct);
+        assert.equal(solveGitOperation(instance.parameters).correctText, correct.text, `${caseId}/${difficulty}/${seed}`);
+      }
+    }
+  }
+});
+
 test('mergeInto names the home family and does not rewrite the instance identity', () => {
   const stub = {
     familyId: 'classify-orphan-merge-source',
