@@ -65,17 +65,19 @@ function gradeNumeric(exercise, raw) {
   const expected = expectedNumeric(exercise);
   if (expected === null) return { correct: false, verdictText: 'Interner Fehler: Unbekannte Aufgabe.', errorType: 'grader-error' };
   const correct = p.value === expected;
+  const matched = correct ? null : matchNumericRule(exercise, p.value);
   return {
     correct,
     verdictText: correct ? 'Richtig.' : 'Nicht richtig.',
     errorType: correct ? null : 'wrong-value',
-    diagnosis: correct ? null : diagnoseNumeric(exercise, p.value),
+    diagnosis: matched?.then ?? null,
+    ...(matched?.misconception ? { misconception: matched.misconception } : {}),
   };
 }
 
-function diagnoseNumeric(exercise, value) {
+function matchNumericRule(exercise, value) {
   for (const rule of exercise.feedbackRules || []) {
-    if (rule.if === `value === ${value}`) return rule.then;
+    if (rule.if === `value === ${value}`) return rule;
   }
   return null;
 }

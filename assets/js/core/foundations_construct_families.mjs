@@ -40,7 +40,7 @@ import {
   countBranchCoverageLeaves,
   genBranchCoverageCount,
 } from './foundations_fresh_generators.mjs';
-import { parsonsInitialOrder as kitParsonsInitialOrder, shuffle, until } from './generator_draw_kit.mjs';
+import { parsonsInitialOrder as kitParsonsInitialOrder, familySubseed, pick, shuffle, until } from './generator_draw_kit.mjs';
 import { refCopy, pyLit } from './procedural/py_test_kit.mjs';
 import { logTerm, signed } from './foundations_generators.mjs';
 import { registerStaticCases, staticCaseBody } from '../domain/family_registry.mjs';
@@ -54,6 +54,7 @@ import powerLogDoc from '../../../content/families/transform-power-log-exponent.
 import requiredFieldDoc from '../../../content/families/validate-required-field-raise.json' with { type: 'json' };
 import validateCountDoc from '../../../content/families/aggregate-validate-and-count-records.json' with { type: 'json' };
 import errorJournalOrderDoc from '../../../content/families/construct-error-journal-order.json' with { type: 'json' };
+import testDesignDoc from '../../../content/families/validate-test-design-coverage.json' with { type: 'json' };
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
@@ -97,6 +98,7 @@ function ensureConstructDocs() {
     requiredFieldDoc,
     validateCountDoc,
     errorJournalOrderDoc,
+    testDesignDoc,
   ]) {
     registerStaticCases(doc.familyId, doc.cases);
   }
@@ -1591,7 +1593,7 @@ export function generateBugfixWorkflowFamily({ seed, caseId, difficulty }) {
 }
 
 // --- Familie 10: validate-test-design-coverage (numeric-exact) ----------------
-// Shard-Fälle: elif-chain-five-outcomes (statisch, w04-e2, fünf Ausgänge),
+// Shard-Fälle: elif-chain-five-outcomes (geseedete elif-Kette, w04-e2),
 // nested-if-decision-tree (geseedet, f-branch-coverage-01). Der geseedete Fall
 // wiederverwendet genBranchCoverageCount als Generator und
 // countBranchCoverageLeaves als Solver; das Profil wählt die Blattzahl-
@@ -1605,7 +1607,7 @@ export const TEST_DESIGN_COVERAGE_CONTRACT = {
   authorityMode: 'seeded',
   masteryEligible: true,
   caseTypes: [
-    { caseId: 'elif-chain-five-outcomes', propertyTest: false },
+    { caseId: 'elif-chain-five-outcomes' },
     { caseId: 'nested-if-decision-tree' },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
@@ -1617,12 +1619,51 @@ export const TEST_DESIGN_COVERAGE_CONTRACT = {
 /** Blattzahl-Stufen je Profil (Teilmengen der 2–5-Antworträume). */
 export const COVERAGE_LEAF_TIERS = [[2, 3], [3, 4], [4, 4], [4, 5]];
 
-/** Unabhängiger Solver: statisch 5, sonst Blattzahl des Entscheidungsbaums. */
+/** Unabhängiger Solver: Ausgangszahl der elif-Kette aus den gezogenen
+ *  Labels, sonst Blattzahl des Entscheidungsbaums. */
 export function solveTestDesignCoverage(parameters) {
   if (parameters.caseId === 'elif-chain-five-outcomes') {
-    return { value: constructCaseBody('validate-test-design-coverage', parameters.caseId).expected.value };
+    return { value: parameters.labels.length };
   }
   return { value: countBranchCoverageLeaves(parameters.branchShape) };
+}
+
+const ELIF_NAME_POOL = [
+  ['note', 'punkte'], ['stufe', 'punkte'], ['klasse', 'temperatur'],
+  ['tarif', 'alter'], ['preis', 'menge'], ['rang', 'wartezeit'],
+  ['stufe', 'geschwindigkeit'], ['rabatt', 'menge'],
+];
+const ELIF_COUNT_WORDS = { 3: 'drei', 4: 'vier', 5: 'fünf', 6: 'sechs', 7: 'sieben' };
+const ELIF_LETTERS = 'abcdefgh';
+
+/** Draws an if/elif/…/else chain with 3–7 outcomes: distinct descending
+ *  thresholds from the ten-step pool (gap >= 10 so example inputs hit one
+ *  branch each), German function/variable names, letter outcomes.
+ *  Answer = outcome count. */
+function genElifChain(subseed) {
+  const r = rng(subseed);
+  const outcomes = randInt(r, 3, 7);
+  const [fnName, varName] = pick(r, ELIF_NAME_POOL);
+  const thresholds = shuffle(r, [10, 20, 30, 40, 50, 60, 70, 80, 90])
+    .slice(0, outcomes - 1)
+    .sort((a, b) => b - a);
+  const labels = [...ELIF_LETTERS.slice(0, outcomes)];
+  const examples = [
+    ...thresholds.map((t) => t + 5),
+    Math.max(0, thresholds[thresholds.length - 1] - randInt(r, 15, 40)),
+  ];
+  const word = ELIF_COUNT_WORDS[outcomes];
+  const chain = [
+    `if ${varName} >= ${thresholds[0]}: return "${labels[0]}"`,
+    ...thresholds.slice(1).map((t, i) => `elif ${varName} >= ${t}: return "${labels[i + 1]}"`),
+    `else: return "${labels[outcomes - 1]}"`,
+  ].join('\n');
+  return {
+    parameters: { shape: 'elif-chain', fnName, varName, thresholds, labels },
+    expected: { kind: 'integer', value: outcomes },
+    prompt: `Eine Funktion <code>${fnName}(${varName})</code> ist so definiert:\n\n<code>${chain}</code>\n\nWie viele Testfälle braucht man mindestens, damit jede Verzweigung (jeder Rückgabewert) mindestens einmal erreicht wird?`,
+    fullSolution: `${word[0].toUpperCase()}${word.slice(1)} Rückgabewerte (${labels.join(', ')}) brauchen ${word} verschiedene Eingaben, z. B. ${examples.join(', ')} — Minimum ${word} Testfälle.`,
+  };
 }
 
 export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
@@ -1630,8 +1671,20 @@ export function generateTestDesignCoverageFamily({ seed, caseId, difficulty }) {
   assertProfile(difficulty);
   if (caseId === 'elif-chain-five-outcomes') {
     const body = constructCaseBody('validate-test-design-coverage', caseId);
-    const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
-    return { ...generated, parameters: { ...(body.parameters || {}) } };
+    if (body.difficultyProfile !== difficulty) {
+      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+    }
+    if (seed === 0) {
+      const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+      return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+    }
+    const drawn = genElifChain(familySubseed(seed, caseId, difficulty));
+    return {
+      parameters: { caseId, difficulty, ...drawn.parameters },
+      expected: drawn.expected,
+      prompt: drawn.prompt,
+      fullSolution: drawn.fullSolution,
+    };
   }
   if (caseId === 'nested-if-decision-tree') {
     const [lo, hi] = COVERAGE_LEAF_TIERS[profileTier(difficulty)];

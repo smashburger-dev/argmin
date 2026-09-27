@@ -58,7 +58,7 @@
         }
       },
       "expected": {
-        "correctText": "TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch."
+        "correctText": "TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verkettet keine Typen automatisch."
       },
       "prompt": "Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n{code}",
       "fullSolution": "Richtig: {correctText} Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.",

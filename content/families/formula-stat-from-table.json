@@ -49,7 +49,31 @@
       "sourceLineage": [
         "w36-e2"
       ],
-      "parameters": {},
+      "parameters": {
+        "budget": 50,
+        "calls": [
+          {
+            "label": "A",
+            "start": 0,
+            "end": 45
+          },
+          {
+            "label": "B",
+            "start": 0,
+            "end": 55
+          },
+          {
+            "label": "C",
+            "start": 200,
+            "end": 240
+          },
+          {
+            "label": "D",
+            "start": 300,
+            "end": 310
+          }
+        ]
+      },
       "competencyIds": [
         "c-capstone-pipeline",
         "c-python-functions"
@@ -93,7 +117,23 @@
       "sourceLineage": [
         "w38-e2"
       ],
-      "parameters": {},
+      "parameters": {
+        "total": 9,
+        "specs": [
+          {
+            "spec": ">=2.0",
+            "count": 2
+          },
+          {
+            "spec": "~=1.9",
+            "count": 1
+          },
+          {
+            "spec": "*",
+            "count": 1
+          }
+        ]
+      },
       "competencyIds": [
         "c-capstone-pipeline",
         "c-ml-repro"

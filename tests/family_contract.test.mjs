@@ -290,6 +290,15 @@ test('foundations choice cases keep their compact parameter contract', () => {
           assert.ok(instance.parameters.difficulty === difficulty);
           continue;
         }
+        if (caseType.caseId === 'seeded-error-pattern-cases') {
+          // Anchored-but-seeded case: the draw adds the meta-case
+          // coordinates the solver reads (metaCaseId + caseIndex).
+          assert.deepEqual(
+            Object.keys(instance.parameters).sort(),
+            ['caseId', 'caseIndex', 'difficulty', 'metaCaseId'],
+          );
+          continue;
+        }
         const expected = body.variants?.length
           ? ['caseId', 'difficulty', 'variant']
           : ['caseId', 'difficulty'];
@@ -333,18 +342,22 @@ test('foundations choice solvers match rotated choices over 32 seeds', () => {
             solved.correctText,
             `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Solver weicht von choices ab`,
           );
-          const expectedIndex = Math.abs(seed) % instance.choices.length;
-          assert.equal(
-            instance.choices[expectedIndex].id,
-            correct[0].id,
-            `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Rotation nicht deterministisch`,
-          );
+          if (caseType.caseId !== 'seeded-error-pattern-cases') {
+            // Static/variant-driven cases pin the correct option to
+            // |seed| % n; the meta-case bank rotates by caseIndex + epoch.
+            const expectedIndex = Math.abs(seed) % instance.choices.length;
+            assert.equal(
+              instance.choices[expectedIndex].id,
+              correct[0].id,
+              `${familyId}:${caseType.caseId}:${difficulty}:${seed}: Rotation nicht deterministisch`,
+            );
+          }
           const caseBody = staticBody(familyId, caseType.caseId);
           const hasVariants = Boolean(caseBody?.variants?.length);
-          if (!caseBody) {
-            // Fully seeded case: content varies per seed by design; the
-            // determinism, option count and solver-parity asserts above
-            // already hold it.
+          if (!caseBody || (caseType.caseId === 'seeded-error-pattern-cases' && seed !== 0)) {
+            // Fully or anchor-seeded case: content varies per seed by
+            // design; the determinism, option count and solver-parity
+            // asserts above already hold it.
           } else if (hasVariants) {
             const authoredPrompts = new Set(
               [staticBody(familyId, caseType.caseId), ...staticBody(familyId, caseType.caseId).variants]
@@ -368,8 +381,14 @@ test('foundations choice solvers match rotated choices over 32 seeds', () => {
           }
         }
         if (caseType.caseId === 'seeded-error-pattern-cases') {
-          const frozen = registry.instantiate(familyId, 3401, difficulty, caseType.caseId);
-          assert.equal(reference.prompt, frozen.prompt, `${familyId}:${difficulty}: Default weicht von Seed 3401 ab`);
+          // Seed 0 keeps the authored anchor body (the frozen
+          // f-meta-error-classify-01 default); other seeds draw fresh
+          // meta cases via genMetaErrorClassify.
+          assert.equal(
+            reference.prompt,
+            staticBody(familyId, caseType.caseId).prompt,
+            `${familyId}:${difficulty}: Seed 0 weicht vom Anker ab`,
+          );
         }
       }
     }

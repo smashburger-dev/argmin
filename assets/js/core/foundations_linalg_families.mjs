@@ -9,7 +9,7 @@
 // Choice-Kapsel-Familien. Die fachliche Domäne (Kapseln, Banken, Templates,
 // Validatoren, Reference-Solver) bleibt in linalg_generators.mjs.
 
-import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, solveShape } from './linalg_numpy_fresh_generators.mjs';
+import { det2, genDet2, genLinear2Fresh, genMatmulEntryFresh, genShapePredict, genBroadcastAxes, solveShape } from './linalg_numpy_fresh_generators.mjs';
 import {
   rank, solveLinear2, genRankCapsule, RANK_CAPSULES,
   INDEPENDENCE_CAPSULES, independenceShapeOk, INDEPENDENCE_FACTORS,
@@ -472,7 +472,101 @@ const det2Spec = makeNumericFamily({
 });
 
 // --- transform-system-2x2-elimination ------------------------------------------
-// Geseedet über genLinear2Fresh plus zwei statische w05-Fälle (Vektorpaar).
+// Geseedet über genLinear2Fresh; die w05-Fälle ziehen eigene Muster-Systeme
+// (e6: Einsetzen, e11: Addition) und behalten Seed 0 als Anker.
+
+// Anchored equation rendering: `2x + y = 5`, `-x - 3y = -20` — coefficient 1
+// drops the digit, negative terms join with a minus, zero never occurs.
+const linTerm = (coeff, variable, first) => {
+  const body = Math.abs(coeff) === 1 ? variable : `${Math.abs(coeff)}${variable}`;
+  if (first) return coeff < 0 ? `-${body}` : body;
+  return `${coeff < 0 ? '-' : '+'} ${body}`;
+};
+
+const linearExpression = (coeff, constant, variable) => {
+  const mag = Math.abs(coeff) === 1 ? variable : `${Math.abs(coeff)}${variable}`;
+  if (constant === 0) return coeff < 0 ? `-${mag}` : mag;
+  if (constant < 0 && coeff > 0) return `${mag} - ${-constant}`;
+  return `${constant} ${coeff < 0 ? '-' : '+'} ${mag}`;
+};
+
+const systemEquation = (A, b, row) => `${linTerm(A[row][0], 'x', true)} ${linTerm(A[row][1], 'y', false)} = ${b[row]}`;
+
+const systemPrompt = (A, b) => `Löse das Gleichungssystem \\[ ${systemEquation(A, b, 0)}, \\qquad ${systemEquation(A, b, 1)} \\] und gib die Lösung als Paar \`(x, y)\` ein.`;
+
+const systemProbe = (A, b, x, y) => [0, 1]
+  .map((row) => `$${A[row][0] * x}${A[row][1] * y < 0 ? '' : '+'}${A[row][1] * y}=${b[row]}$`)
+  .join(', ');
+
+const ROMAN = ['I', 'II'];
+
+/** Draws a 2x2 system around a drawn integer solution so b stays consistent;
+ *  `force(A)` applies the case's coefficient pattern afterwards. */
+function drawLinearSystem(r, force) {
+  return until(r, () => {
+    const A = [
+      [nonzeroInt(r, -6, 6), nonzeroInt(r, -6, 6)],
+      [nonzeroInt(r, -6, 6), nonzeroInt(r, -6, 6)],
+    ];
+    force(A);
+    const x = nonzeroInt(r, -9, 9);
+    const y = nonzeroInt(r, -9, 9);
+    return { A, b: A.map((row) => row[0] * x + row[1] * y), x, y };
+  }, ({ A }) => det2(A) !== 0);
+}
+
+/** w05-e6 pattern: one coefficient is ±1, so its equation isolates a
+ *  variable and the other equation takes the substitution. */
+function genSystemSubstitution(subseed) {
+  const r = rng(subseed);
+  const row = randInt(r, 0, 1);
+  const v = randInt(r, 0, 1);
+  const { A, b, x, y } = drawLinearSystem(r, (m) => { m[row][v] = r() < 0.5 ? 1 : -1; });
+  const other = 1 - v;
+  const f = 1 - row;
+  const names = ['x', 'y'];
+  // Isolate v in `row`: v = const + coeff·other (division by ±1 is a flip).
+  const iso = { coeff: -A[row][v] * A[row][other], constant: A[row][v] * b[row] };
+  const isoText = linearExpression(iso.coeff, iso.constant, names[other]);
+  const coeffSum = A[f][other] + A[f][v] * iso.coeff;
+  const rhsSum = b[f] - A[f][v] * iso.constant;
+  const substituted = v === 0
+    ? `${A[f][0] < 0 ? '-' : ''}${Math.abs(A[f][0]) === 1 ? '' : Math.abs(A[f][0])}(${isoText}) ${linTerm(A[f][1], 'y', false)} = ${b[f]}`
+    : `${linTerm(A[f][0], 'x', true)} ${A[f][1] < 0 ? '-' : '+'} ${Math.abs(A[f][1]) === 1 ? '' : Math.abs(A[f][1])}(${isoText}) = ${b[f]}`;
+  return {
+    parameters: { A, b },
+    expected: [x, y],
+    prompt: systemPrompt(A, b),
+    fullSolution: `Aus ${ROMAN[row]}: $${names[v]} = ${isoText}$. Einsetzen in ${ROMAN[f]}: $${substituted} \\Rightarrow ${linTerm(coeffSum, names[other], true)} = ${rhsSum} \\Rightarrow ${names[other]} = ${other === 0 ? x : y}$, $${names[v]} = ${v === 0 ? x : y}$. Probe: ${systemProbe(A, b, x, y)}.`,
+  };
+}
+
+/** w05-e11 pattern: one column carries opposite coefficients, so I + II
+ *  eliminates that variable without scaling either equation. */
+function genSystemAddition(subseed) {
+  const r = rng(subseed);
+  const v = randInt(r, 0, 1);
+  const { A, b, x, y } = drawLinearSystem(r, (m) => { m[1][v] = -m[0][v]; });
+  const other = 1 - v;
+  const names = ['x', 'y'];
+  const coeffSum = A[0][other] + A[1][other];
+  const rhsSum = b[0] + b[1];
+  const solOther = other === 0 ? x : y;
+  const solV = v === 0 ? x : y;
+  // Plug the found variable into row II: known product + v-term = rhs.
+  const known = A[1][other] * solOther;
+  const vMag = Math.abs(A[1][v]);
+  const plugged = `${known}${A[1][v] < 0 ? '-' : '+'}${vMag === 1 ? '' : vMag}${names[v]}=${b[1]}`;
+  const elimLine = coeffSum === 1
+    ? `${names[other]} = ${rhsSum}`
+    : `${linTerm(coeffSum, names[other], true)} = ${rhsSum} \\Rightarrow ${names[other]} = ${solOther}`;
+  return {
+    parameters: { A, b },
+    expected: [x, y],
+    prompt: systemPrompt(A, b),
+    fullSolution: `I + II eliminiert $${names[v]}$: $${elimLine}$. Einsetzen in II: $${plugged} \\Rightarrow ${names[v]} = ${solV}$. Probe: ${systemProbe(A, b, x, y)}.`,
+  };
+}
 
 function linear2ProfileAccepts(difficulty) {
   if (difficulty === 'core') return null;
@@ -492,8 +586,8 @@ const SYSTEM_2X2_CONTRACT = {
   masteryEligible: true,
   caseTypes: [
     { caseId: 'system-seeded-2x2' },
-    { caseId: 'system-w05-e11', propertyTest: false },
-    { caseId: 'system-w05-e6', propertyTest: false },
+    { caseId: 'system-w05-e11' },
+    { caseId: 'system-w05-e6' },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-linalg-gauss'],
@@ -502,8 +596,11 @@ const SYSTEM_2X2_CONTRACT = {
 
 const system2x2Spec = makeNumericFamily({
   contract: SYSTEM_2X2_CONTRACT,
-  staticCaseIds: ['system-w05-e11', 'system-w05-e6'],
   seededCaseId: 'system-seeded-2x2',
+  caseDraws: {
+    'system-w05-e11': { draw: genSystemAddition },
+    'system-w05-e6': { draw: genSystemSubstitution },
+  },
   draw: genLinear2Fresh,
   profileAccepts: linear2ProfileAccepts,
   toExpected: (drawn) => ({ kind: 'integer-pair', solution: [...drawn.expected] }),
@@ -534,7 +631,7 @@ const SHAPE_CONTRACT = {
   masteryEligible: true,
   caseTypes: [
     { caseId: 'shapes-seeded-predict' },
-    { caseId: 'shapes-w18-broadcast-axes', propertyTest: false },
+    { caseId: 'shapes-w18-broadcast-axes' },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
   competencyIds: ['c-numpy-basics', 'c-dl-tensors'],
@@ -543,13 +640,16 @@ const SHAPE_CONTRACT = {
 
 const shapeContractSpec = makeNumericFamily({
   contract: SHAPE_CONTRACT,
-  staticCaseIds: ['shapes-w18-broadcast-axes'],
   seededCaseId: 'shapes-seeded-predict',
+  caseDraws: {
+    'shapes-w18-broadcast-axes': { draw: genBroadcastAxes },
+  },
   draw: genShapePredict,
   profileAccepts: shapeProfileAccepts,
   toExpected: (drawn) => ({ output: drawn.expected.output }),
-  solveStatic: (parameters) => ({ output: linalgCaseBody('validate-shape-contract', parameters.caseId).expected.output }),
-  solveSeeded: (parameters) => ({ output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
+  solveSeeded: (parameters) => (parameters.caseId === 'shapes-w18-broadcast-axes'
+    ? { output: `(${parameters.n}, ${parameters.k})\n(${parameters.n}, ${parameters.k})\n2 2 1` }
+    : { output: `(${solveShape(parameters.shape, parameters).join(', ')})` }),
 });
 // --- W05-Restfälle in bestehenden Familien (S4D7) --------------------------------
 // w05-e16 (numpy-Schleife) als statischer Predict-Fall: gleiche

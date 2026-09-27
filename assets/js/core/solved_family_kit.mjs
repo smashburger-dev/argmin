@@ -16,6 +16,12 @@
 //   draw; staticVariants selects variant resolution; solveStatic handles
 //   those caseIds inside solve (optional — a family without it solves every
 //   parameter set through solveSeeded).
+//   caseDraws { [caseId]: { draw, toExpected?, wantShape?,
+//   profileAccepts? } } marks a case that keeps its authored anchor body:
+//   seed 0 returns the static instance, other seeds draw through the
+//   case's hook, and solve still runs through solveSeeded. The family's
+//   wantShape/profileAccepts describe the seeded case only — a caseDraw
+//   falls back to accepting every draw.
 
 import { drawFamilyInstance } from './generator_draw_kit.mjs';
 import { staticBodyInstance, staticCaseBody, staticVariantInstance } from '../domain/family_registry.mjs';
@@ -35,6 +41,7 @@ export function makeNumericFamily({
   staticVariants = false,
   seededCaseId = null,
   capsules = null,
+  caseDraws = {},
   draw,
   wantShape = () => true,
   profileAccepts = () => null,
@@ -49,6 +56,35 @@ export function makeNumericFamily({
     : staticBodyInstance(contract.familyId, caseId, difficulty));
 
   const generate = ({ seed, caseId, difficulty }) => {
+    const caseDraw = caseDraws[caseId];
+    if (caseDraw) {
+      // Seeded case anchored on a static body: seed 0 returns the authored
+      // instance, every other seed draws through the case's own draw hook.
+      const body = staticCaseBody(contract.familyId, caseId);
+      if (body.difficultyProfile !== difficulty) {
+        throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+      }
+      if (seed === 0) return staticInstance(caseId, seed, difficulty);
+      const drawn = drawFamilyInstance((subseed) => caseDraw.draw(subseed), {
+        seed,
+        caseId,
+        difficulty,
+        wantShape: caseDraw.wantShape ?? (() => true),
+        profileAccepts: caseDraw.profileAccepts?.(difficulty) ?? null,
+        profiles: contract.difficultyProfiles,
+      });
+      const meta = caseMeta[caseId];
+      return {
+        parameters: { caseId, difficulty, ...drawn.parameters },
+        expected: (caseDraw.toExpected ?? toExpected)(drawn),
+        prompt: drawn.prompt,
+        fullSolution: drawn.fullSolution,
+        ...(drawn.hints ? { hints: drawn.hints } : {}),
+        ...(drawn.feedbackRules ? { feedbackRules: drawn.feedbackRules } : {}),
+        ...(drawn.typicalErrors ? { typicalErrors: drawn.typicalErrors } : {}),
+        ...(meta ? { masteryEligible: meta.masteryEligible, competencyIds: [...meta.competencyIds] } : {}),
+      };
+    }
     if (staticCaseIds.includes(caseId)) return staticInstance(caseId, seed, difficulty);
     let capsule = null;
     if (capsules) {

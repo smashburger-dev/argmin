@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "builderVersion": "1.0.0",
-  "digest": "0a1744a517c2f6e88241e9c1d57e22c041243821985af027454b13b122eaf29f",
-  "items": 4672,
-  "mutants": 4672,
+  "digest": "b06e02e4c9c531bf5c09bba21cf4682070f57ddc64ccc704619c2ddcccc45667",
+  "items": 4819,
+  "mutants": 4819,
   "uncovered": 180,
   "mutantRejectionRate": 1,
   "heldSeedRange": {

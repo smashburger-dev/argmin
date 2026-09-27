@@ -165,6 +165,26 @@ test('single-choice: rules without misconception leave the result byte-identical
   assert.equal('misconception' in correct, false);
 });
 
+test('numeric: a matched value rule exposes its misconception label', async () => {
+  const e = {
+    activityType: 'numeric',
+    parameters: {},
+    expectedAnswer: { kind: 'integer', value: 3 },
+    feedbackRules: [
+      { if: 'value === 1', then: 'Endzeiten statt Dauern verglichen.', misconception: 'endzeit-statt-dauer' },
+      { if: 'value === 4', then: 'Alles ok gewertet.' },
+    ],
+  };
+  const labelled = await det.grade(e, 1);
+  assert.equal(labelled.diagnosis, 'Endzeiten statt Dauern verglichen.');
+  assert.equal(labelled.misconception, 'endzeit-statt-dauer');
+  const plain = await det.grade(e, 4);
+  assert.equal(plain.diagnosis, 'Alles ok gewertet.');
+  assert.equal('misconception' in plain, false);
+  const right = await det.grade(e, 3);
+  assert.equal('misconception' in right, false);
+});
+
 test('multiple-choice: matched misconception rules collect deduplicated ids in rule order', async () => {
   const e = mcExercise();
   e.feedbackRules = [

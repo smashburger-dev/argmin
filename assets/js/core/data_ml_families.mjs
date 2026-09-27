@@ -46,6 +46,9 @@ import {
   rmseCorrectOptionText,
   genMseGradient,
   genR2Share,
+  genStageTimeouts,
+  genDependencyPins,
+  genInjectionRules,
   genPcaVariancePercent,
   drawSigmoidParameters,
   sigmoidOptions,
@@ -346,13 +349,19 @@ const solveFormulaStatFallback = (parameters) => {
   return { value: parameters.newer - parameters.base };
 };
 const solveFormulaStatStatic = (parameters) => staticExpected('formula-stat-from-table', parameters);
+const solveStageTimeouts = (parameters) => ({
+  value: parameters.calls.filter((call) => call.end - call.start <= parameters.budget).length,
+});
+const solveDependencyPins = (parameters) => ({
+  value: parameters.specs.reduce((sum, spec) => sum + spec.count, 0),
+});
 const FORMULA_STAT_SOLVERS = {
   'greedy-step-stat': solveFormulaStatGreedy,
   'card-audit-missing-count': solveFormulaStatCardAudit,
   'pipeline-stage-audit': solveFormulaStatPipeline,
   'eval-batch-rates': solveFormulaStatEvalBatch,
-  'stage-timeout-count': solveFormulaStatStatic,
-  'dependency-pin-count': solveFormulaStatStatic,
+  'stage-timeout-count': solveStageTimeouts,
+  'dependency-pin-count': solveDependencyPins,
 };
 const solveConfusionMarginal = (parameters) => ({
   value: parameters.metric === 'actual-neg'
@@ -387,6 +396,7 @@ const AGGREGATE_CONFUSION_SOLVERS = {
   'sigmoid-predict-numpy': confusionPyRef('sigmoid-predict-numpy'),
   'confusion-cost-report': confusionPyRef('confusion-cost-report'),
   'confusion-from-rows': confusionPyRef('confusion-from-rows'),
+  'contains-injection-rules': confusionPyRef('contains-injection-rules'),
   'fairness-metric-compare': confusionPyRef('fairness-metric-compare'),
 };
 
@@ -561,7 +571,10 @@ const FAMILY_DEFINITIONS = {
         difficulty: 'stretch',
         competencyIds: ['c-genai-eval'],
       },
-      'contains-injection-rules': {},
+      'contains-injection-rules': {
+        generator: genInjectionRules,
+        competencyIds: ['c-genai-security', 'c-python-functions'],
+      },
       'fairness-metric-compare': {
         generator: genFairnessMetricCompare,
         competencyIds: ['c-research-responsible'],
@@ -652,8 +665,16 @@ const FAMILY_DEFINITIONS = {
         generator: genPipelineStages,
         competencyIds: ['c-capstone-pipeline', 'c-ml-repro'],
       },
-      'stage-timeout-count': {},
-      'dependency-pin-count': {},
+      'stage-timeout-count': {
+        generator: genStageTimeouts,
+        difficulty: 'core',
+        competencyIds: ['c-capstone-pipeline', 'c-python-functions'],
+      },
+      'dependency-pin-count': {
+        generator: genDependencyPins,
+        difficulty: 'core',
+        competencyIds: ['c-capstone-pipeline', 'c-ml-repro'],
+      },
       'eval-batch-rates': {
         generator: genEvalRates,
         competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
@@ -800,7 +821,7 @@ const AGGREGATE_CONFUSION_METRIC_CASE_TYPES = [
   { caseId: 'subgroup-rate-gap-permille', sourceLineage: ['w33-e2'], competencyIds: ['c-research-responsible'] },
   { caseId: 'metric-code-output-trace', propertyTest: false },
   { caseId: 'confusion-from-rows', propertyTest: false },
-  { caseId: 'contains-injection-rules', propertyTest: false },
+  { caseId: 'contains-injection-rules' },
   { caseId: 'fairness-metric-compare', propertyTest: false },
 ];
 
@@ -826,8 +847,8 @@ const FORMULA_STAT_FROM_TABLE_CASE_TYPES = [
   { caseId: 'paper-gain-from-counts', sourceLineage: ['w26-e2'], competencyIds: ['c-dl-papers'] },
   { caseId: 'card-audit-missing-count', sourceLineage: ['w32-e2'], competencyIds: ['c-research-cards'] },
   { caseId: 'pipeline-stage-audit', sourceLineage: ['w35-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
-  { caseId: 'stage-timeout-count', propertyTest: false, sourceLineage: ['w36-e2'], competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
-  { caseId: 'dependency-pin-count', propertyTest: false, sourceLineage: ['w38-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
+  { caseId: 'stage-timeout-count', sourceLineage: ['w36-e2'], competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
+  { caseId: 'dependency-pin-count', sourceLineage: ['w38-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
   { caseId: 'eval-batch-rates', sourceLineage: ['w37-e2'], competencyIds: ['c-capstone-pipeline', 'c-genai-security'] },
 ];
 

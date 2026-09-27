@@ -21,8 +21,9 @@
 // Kein UI, kein Ledger, kein Content-Edit. Die Generatoren stehen bewusst
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
-import { rng, randInt, variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
+import { rng, randInt, variantCaseIndex, familySubseed, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
 import { registerStaticCases, rebindChoiceRules, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { genMetaErrorClassify, metaErrorCorrectText } from './foundations_fresh_generators.mjs';
 import stringImmutabilityDoc from '../../../content/families/classify-string-immutability.json' with { type: 'json' };
 import setOperationDoc from '../../../content/families/classify-set-operation-semantics.json' with { type: 'json' };
 import errorHypothesisDoc from '../../../content/families/classify-error-hypothesis.json' with { type: 'json' };
@@ -242,12 +243,35 @@ function genPowerLawErrorCase({ seed, difficulty }) {
 
 function generateErrorHypothesisFamily({ seed, caseId, difficulty }) {
   if (caseId === 'base-vs-exponent-confusion') return genPowerLawErrorCase({ seed, difficulty });
+  if (caseId === 'seeded-error-pattern-cases') {
+    // Seed 0 stays the authored anchor (genMetaErrorClassify(3401) frozen
+    // into the case body); other seeds draw a fresh meta-error case.
+    ensureChoiceDocs();
+    const meta = staticCaseBody('classify-error-hypothesis', caseId);
+    if (meta.difficultyProfile !== difficulty) {
+      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+    }
+    if (seed === 0) return generateStaticChoice('classify-error-hypothesis', { seed, caseId, difficulty });
+    const drawn = genMetaErrorClassify(familySubseed(seed, caseId, difficulty));
+    return {
+      ...drawn,
+      parameters: {
+        caseId,
+        difficulty,
+        metaCaseId: drawn.parameters.caseId,
+        caseIndex: drawn.parameters.caseIndex,
+      },
+    };
+  }
   return generateStaticChoice('classify-error-hypothesis', { seed, caseId, difficulty });
 }
 
 function solveErrorHypothesis(parameters) {
   if (parameters?.kind && parameters?.caseId === 'base-vs-exponent-confusion') {
     return { correctText: powerLawCorrectText(parameters) };
+  }
+  if (parameters?.caseId === 'seeded-error-pattern-cases' && parameters?.metaCaseId) {
+    return { correctText: metaErrorCorrectText(parameters) };
   }
   return solveStaticChoice('classify-error-hypothesis', parameters);
 }
@@ -334,7 +358,7 @@ const FOUNDATIONS_CHOICE_CONTRACTS = [
     masteryEligible: true,
     caseTypes: [
       { caseId: 'base-vs-exponent-confusion' },
-      { caseId: 'seeded-error-pattern-cases', propertyTest: false },
+      { caseId: 'seeded-error-pattern-cases' },
       { caseId: 'error-journal-next-test', propertyTest: false },
     ],
     difficultyProfiles: [...DIFFICULTY_PROFILES],
