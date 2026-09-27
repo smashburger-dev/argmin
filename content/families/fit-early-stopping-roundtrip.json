@@ -64,7 +64,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\n\ndef early_stop_epoch(val_losses, patience, min_delta):\n    ...\n\n\ndef to_state(model):\n    ...\n\n\ndef from_state(state):\n    ...\n",
-        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('wait erst seit letzter verbesserung', early_stop_epoch([0.9, 0.5, 0.51, 0.52, 0.48, 0.55, 0.45, 0.6], 3, 0.01) == 6)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
       },
       "expected": {
         "kind": "reference-solver",
