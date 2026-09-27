@@ -1,5 +1,6 @@
 import { graders } from '../core/graders.js';
 import { rng, shuffle, variantCaseIndex } from '../core/generator_draw_kit.mjs';
+import { drawStatementCase, solveStatementPool } from './statement_pool.mjs';
 
 // S4D1: zentrale Familien-Runtime (eine Semantik, keine Duplikate).
 // Hierher ausgelagert, damit exercise_registry.mjs und die dünnen
@@ -34,6 +35,7 @@ const withSeededChoiceOrder = (generated, seed) => (
 );
 
 const CHOICE_ID_RULE = /^choice (===|!==) '([^']+)'$/;
+const SELECTED_ID_RULE = /^(!?)selected\.includes\('([^']+)'\)$/;
 const VALUE_LITERAL_RULE = /^value === /;
 
 const deepEqual = (a, b) => {
@@ -51,16 +53,35 @@ const deepEqual = (a, b) => {
 // option set itself.
 const bindChoiceRule = (rule, authoredChoices, drawnChoices) => {
   const match = typeof rule?.if === 'string' ? CHOICE_ID_RULE.exec(rule.if) : null;
-  if (!match) return rule;
-  const authoredChoice = authoredChoices.find((choice) => choice.id === match[2]);
+  const selectedMatch = !match && typeof rule?.if === 'string' ? SELECTED_ID_RULE.exec(rule.if) : null;
+  const targetId = match?.[2] ?? selectedMatch?.[2];
+  if (!targetId) return rule;
+  const authoredChoice = authoredChoices.find((choice) => choice.id === targetId);
   if (authoredChoice) {
     const drawn = drawnChoices.find((choice) => choice.text === authoredChoice.text);
-    return drawn ? { ...rule, if: `choice ${match[1]} '${drawn.id}'` } : null;
+    if (!drawn) return null;
+    const rebound = match
+      ? `choice ${match[1]} '${drawn.id}'`
+      : `${selectedMatch[1]}selected.includes('${drawn.id}')`;
+    return { ...rule, if: rebound };
   }
   const authoredTexts = new Set(authoredChoices.map((choice) => choice.text));
   const sameOptionTexts = drawnChoices.length === authoredChoices.length
     && drawnChoices.every((choice) => authoredTexts.has(choice.text));
   return sameOptionTexts ? rule : null;
+};
+
+/** Rebind `choice ===/!== 'id'` and `[!]selected.includes('id')` rules onto a
+ *  drawn option set through option texts — unresolvable rules drop, all other
+ *  rule forms pass through unchanged. Returns undefined when no rule survives. */
+export const rebindChoiceRules = (rules, authoredChoices, drawnChoices) => {
+  if (!Array.isArray(rules) || !rules.length) return undefined;
+  const bound = [];
+  for (const rule of rules) {
+    const rebound = bindChoiceRule(rule, authoredChoices || [], drawnChoices || []);
+    if (rebound) bound.push(rebound);
+  }
+  return bound.length ? bound : undefined;
 };
 
 // Authored feedbackRules describe the anchor instance: `value ===` literals
@@ -72,17 +93,11 @@ const bindChoiceRule = (rule, authoredChoices, drawnChoices) => {
 const rebindAuthoredFeedback = (authored, generated) => {
   const rules = authored?.feedbackRules;
   if (!Array.isArray(rules) || !rules.length) return undefined;
-  const authoredChoices = authored.choices || [];
-  const drawnChoices = generated.choices || [];
   const isAnchor = deepEqual(generated.parameters, authored.parameters);
-  const bound = [];
-  for (const rule of rules) {
-    const rebound = typeof rule?.if === 'string' && VALUE_LITERAL_RULE.test(rule.if)
-      ? (isAnchor ? rule : null)
-      : bindChoiceRule(rule, authoredChoices, drawnChoices);
-    if (rebound) bound.push(rebound);
-  }
-  return bound.length ? bound : undefined;
+  const kept = rules.filter((rule) => (
+    typeof rule?.if !== 'string' || !VALUE_LITERAL_RULE.test(rule.if) || isAnchor
+  ));
+  return rebindChoiceRules(kept, authored.choices, generated.choices);
 };
 
 export function registerStaticCases(familyId, cases) {
@@ -125,7 +140,7 @@ export function staticFamilySpec(doc) {
     difficultyProfiles,
     caseTypes: cases.map((item) => ({
       caseId: item.caseId,
-      propertyTest: Array.isArray(item.variants) && item.variants.length > 0,
+      propertyTest: (Array.isArray(item.variants) && item.variants.length > 0) || Boolean(item.statementPool),
     })),
     generate: ({ seed, caseId, difficulty }) => staticVariantInstance(
       doc.familyId,
@@ -135,8 +150,12 @@ export function staticFamilySpec(doc) {
       { checkProfile: true, pinVariant: true },
     ),
     solve: (parameters) => {
-      const { body } = variantOf(staticCaseBody(doc.familyId, parameters.caseId), parameters.variant ?? 0);
-      const correct = (body.choices || []).find((choice) => choice.correct);
+      const body = staticCaseBody(doc.familyId, parameters.caseId);
+      if (body.statementPool && Array.isArray(parameters.statements)) {
+        return solveStatementPool(body, parameters);
+      }
+      const { body: resolved } = variantOf(body, parameters.variant ?? 0);
+      const correct = (resolved.choices || []).find((choice) => choice.correct);
       return correct ? { correctText: correct.text } : {};
     },
   };
@@ -160,6 +179,38 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty, { chec
   if (checkProfile && body.difficultyProfile !== difficulty) {
     throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
   }
+  if (body.statementPool && (seed ?? 0) !== 0) {
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      variants: _variants,
+      statementPool: _statementPool,
+      choices: _choices,
+      expected: _expected,
+      feedbackRules: _feedbackRules,
+      fullSolution: _fullSolution,
+      hints: _hints,
+      prompt: _prompt,
+      parameters: _parameters,
+      ...generated
+    } = body;
+    const drawn = drawStatementCase(body, { seed, caseId, difficulty });
+    // The pool draw already shuffles display order — an extra seeded
+    // shuffle would desync parameters.statements from the option layout.
+    return {
+      ...generated,
+      ...drawn,
+      masteryEligible: body.graderId !== 'manual-rubric' && body.masteryEligible === true,
+      parameters: {
+        caseId,
+        difficulty,
+        ...(pinVariant ? { variant: 0 } : {}),
+        statements: drawn.parameters.statements,
+      },
+    };
+  }
   const { body: chosen, index } = variantOf(body, seed ?? 0);
   const {
     caseId: _caseId,
@@ -172,6 +223,14 @@ export function staticVariantInstance(familyId, caseId, seed, difficulty, { chec
   return withSeededChoiceOrder({
     ...generated,
     masteryEligible: chosen.graderId !== 'manual-rubric' && body.masteryEligible === true,
+    // A variant that overrides `choices` but not `feedbackRules` must not
+    // inherit the base rules verbatim — they were authored for the base
+    // option ids. Dropping them here lets instantiate's
+    // rebindAuthoredFeedback rebind through the variant's option texts
+    // (paraphrased options honestly lose the rule).
+    ...(index > 0 && body.variants?.[index - 1]?.choices && !body.variants[index - 1].feedbackRules
+      ? { feedbackRules: undefined }
+      : {}),
     parameters: {
       caseId,
       difficulty,

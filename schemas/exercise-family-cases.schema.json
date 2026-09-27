@@ -97,11 +97,38 @@
               "choices": { "type": "array" },
               "prompt": { "type": "string" },
               "fullSolution": { "type": "string" },
-              "hints": { "type": "array" }
+              "hints": { "type": "array" },
+              "feedbackRules": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/feedbackRule" }
+              }
             }
           }
         },
-        "feedbackRules": { "type": "array" },
+        "feedbackRules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/feedbackRule" }
+        },
+        "statementPool": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "correctRange", "statements"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 2, "maximum": 6 },
+            "correctRange": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": { "type": "integer", "minimum": 1 }
+            },
+            "hints": { "type": "array" },
+            "statements": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "$ref": "#/$defs/poolStatement" }
+            }
+          }
+        },
         "typicalErrors": { "type": "array" },
         "activityType": {
           "enum": [
@@ -123,6 +150,31 @@
         "distractors": { "type": "array" },
         "snippet": { "type": "string" },
         "output": { "type": "string" }
+      },
+      "not": {
+        "properties": { "variants": true, "statementPool": true },
+        "required": ["variants", "statementPool"]
+      }
+    },
+    "feedbackRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["if", "then"],
+      "properties": {
+        "if": { "type": "string", "minLength": 1 },
+        "then": { "type": "string", "minLength": 1 },
+        "misconception": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" }
+      }
+    },
+    "poolStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "correct", "feedback"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "correct": { "type": "boolean" },
+        "feedback": { "type": "string", "minLength": 1 },
+        "misconception": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" }
       }
     }
   }

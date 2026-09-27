@@ -22,6 +22,10 @@ const keyedBank = (capsule) => Array.isArray(capsule?.bank)
   && capsule.bank.every((entry) => typeof entry?.key === 'string'
     && typeof entry?.correct === 'string' && Array.isArray(entry?.wrong));
 
+// Bank-Distraktoren duerfen Aussage-Objekte { text, feedback?, … } tragen —
+// fuer Vergleiche zaehlt nur der Optionstext.
+const textOf = (item) => (typeof item === 'string' ? item : item?.text);
+
 // cases in contract order: [{ caseId, difficulty, capsule, competencyIds }]
 const choiceCases = (spec) => {
   const { capsules, keyBy, caseMeta } = spec.kit;
@@ -74,7 +78,7 @@ export function choiceKitSuite(spec, {
       assert.ok(base, `${item.caseId}: Base-Orakel fehlt`);
       assert.equal(base.prompt, body.prompt, `${item.caseId}: Prompt`);
       assert.equal(base.correct, body.choices.find((choice) => choice.correct).text, `${item.caseId}: Schlüsseltext`);
-      assert.deepEqual(base.wrong, body.choices.filter((choice) => !choice.correct).map((choice) => choice.text), `${item.caseId}: Distraktoren`);
+      assert.deepEqual(base.wrong.map(textOf), body.choices.filter((choice) => !choice.correct).map((choice) => choice.text), `${item.caseId}: Distraktoren`);
       assert.equal(base.solution, body.fullSolution, `${item.caseId}: Lösung`);
     }
   });
@@ -97,7 +101,7 @@ export function choiceKitSuite(spec, {
       assert.equal(new Set(capsule.bank.map((entry) => entry.key)).size, capsule.bank.length, `${item.caseId}: Keys eindeutig`);
       for (const entry of capsule.bank) {
         assert.equal(entry.wrong.length, 3, `${item.caseId}:${entry.key}: drei Distraktoren`);
-        assert.equal(new Set([entry.correct, ...entry.wrong]).size, 4, `${item.caseId}:${entry.key}: Optionen eindeutig`);
+        assert.equal(new Set([entry.correct, ...entry.wrong.map(textOf)]).size, 4, `${item.caseId}:${entry.key}: Optionen eindeutig`);
         assert.ok(entry.prompt.length > 20 && entry.solution.length > 20, `${item.caseId}:${entry.key}: Texte`);
       }
     }

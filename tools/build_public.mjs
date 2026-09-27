@@ -63,6 +63,7 @@ const ALLOWED_FILES = [
   'assets/js/domain/plan_engine.mjs',
   'assets/js/domain/exercise_registry.mjs',
   'assets/js/domain/family_registry.mjs',
+  'assets/js/domain/statement_pool.mjs',
   'assets/js/domain/procedural_registry.mjs',
   'assets/js/domain/project_report.mjs',
   'assets/js/runtime/pyodide_runner.js',

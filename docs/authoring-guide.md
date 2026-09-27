@@ -49,6 +49,29 @@ Single-Choice-Familien, deren Fälle aus einer Szenario-Bank gezogen werden, bra
 - Registrierung ist ein JSON-Import plus Listeneintrag in `assets/js/core/choice_bank_families.mjs`; `makeChoiceFamily` baut daraus den Familien-Spec (Bank-Modus, ein `pick` pro Seed).
 - Automatisch abgedeckt: `tests/kit_choice_families.test.mjs` (Bank-Orakel, Kapselform, Statistik, Registry-Grade) und der Golden-Korpus; familienspezifische Extras bleiben als eigene Testdatei möglich.
 
+### Aussagen, Feedback und Fehlkonzepte
+
+Distraktoren und Optionen können ihr Feedback als **Aussage-Objekt** mittragen statt als Regel im Anker:
+
+- **Szenario-Banken**: `wrong[]` eines Bankeintrags darf `{text, feedback, misconception?}`-Objekte enthalten (Schema `$defs.statement`). Trägt ein gezogener Eintrag mindestens einen Distraktor mit `feedback`, emittiert der Generator `feedbackRules` — je Distraktor eine `choice === '<id>'`-Regel, auf die rotierte ID gebunden. Regel: **das Feedback des Base-Eintrags lebt im Anker** (`content/families/<id>.json`), nicht doppelt in der Bank.
+- **`misconception`**: optionales Fehlkonzept-Label (kebab-case, z. B. `robustheit-mittelwert`) an Regeln und Bank-Aussagen. Der Grader reicht es im Ergebnis weiter (`misconception` bzw. `misconceptions`), wertet es aber nicht aus — ein Label darf über Distraktoren und Szenarien hinweg wiederverwendet werden.
+- **Varianten mit eigenen Optionen**: überschreibt eine Variante `choices`, aber nicht `feedbackRules`, erbt sie **keine** Basisregeln (die zeigten auf die falschen Optionstexte). Eigene Regeln trägt die Variante unter `variants[].feedbackRules`; die Bindung läuft über den Optionstext, Paraphrasen ohne Textmatch verlieren die Regel ehrlich.
+- **`statementPool`** für `multiple-choice`-Fälle: statt neuer Varianten ein Pool von Aussagen, aus dem jeder Seed ≠ 0 neu zieht —
+
+  ```json
+  "statementPool": {
+    "count": 4,
+    "correctRange": [2, 3],
+    "hints": ["Jede Aussage einzeln prüfen."],
+    "statements": [
+      { "text": "…", "correct": true, "feedback": "Warum das stimmt." },
+      { "text": "…", "correct": false, "feedback": "Warum nicht.", "misconception": "kebab-label" }
+    ]
+  }
+  ```
+
+  Seed 0 bleibt der authored Ankerfall; gezogene Instanzen tragen `parameters.statements` (Pool-Indizes in Anzeige-Reihenfolge) und `feedbackRules` in beiden Polarisierungen (`selected.includes` für falsche, `!selected.includes` für übersehene zutreffende Aussagen). `feedback` ist Pflicht — es begründet zugleich die Lösungszeile. Ein Fall trägt nie `variants` und `statementPool` zugleich; der Vertrag prüft Zählbarkeit, Eindeutigkeit der Texte und nicht-leeres Feedback.
+
 ## 4. Graderwahl
 
 | Typ | Grader | Warum |

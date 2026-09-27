@@ -27,6 +27,7 @@ import {
   rankSolutionOptions, rankSolutionPrompt, rankSolutionSolution, drawRankSolutionParameters,
 } from './linalg_generators.mjs';
 import { registerStaticCases, staticCaseBody, staticVariantInstance, variantOf } from '../domain/family_registry.mjs';
+import { solveStatementPool } from '../domain/statement_pool.mjs';
 import scalarProductDoc from '../../../content/families/formula-scalar-product.json' with { type: 'json' };
 import det2Doc from '../../../content/families/formula-det2-independence.json' with { type: 'json' };
 import system2x2Doc from '../../../content/families/transform-system-2x2-elimination.json' with { type: 'json' };
@@ -1061,11 +1062,12 @@ export function solveMcIndependence(parameters) {
     };
   }
   if (MC_STATIC_CASES.includes(parameters?.caseId)) {
-    const { body } = variantOf(
-      linalgCaseBody('multiple-choice-linalg-independence', parameters.caseId),
-      parameters.variant ?? 0,
-    );
-    return { correctIds: [...body.expected.correctIds] };
+    const body = linalgCaseBody('multiple-choice-linalg-independence', parameters.caseId);
+    if (body.statementPool && Array.isArray(parameters.statements)) {
+      return solveStatementPool(body, parameters);
+    }
+    const { body: resolved } = variantOf(body, parameters.variant ?? 0);
+    return { correctIds: [...resolved.expected.correctIds] };
   }
   throw new Error(`Unbekannter Fall ${parameters?.caseId}`);
 }

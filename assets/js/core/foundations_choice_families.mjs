@@ -22,7 +22,7 @@
 // NICHT in SEED_GENERATORS (Familien-Generatoren haben Falltyp und Profil,
 // nicht nur einen Seed — S4C-Präzedenz generateGitOperationFamily).
 import { rng, randInt, variantCaseIndex, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
-import { registerStaticCases, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import { registerStaticCases, rebindChoiceRules, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import stringImmutabilityDoc from '../../../content/families/classify-string-immutability.json' with { type: 'json' };
 import setOperationDoc from '../../../content/families/classify-set-operation-semantics.json' with { type: 'json' };
 import errorHypothesisDoc from '../../../content/families/classify-error-hypothesis.json' with { type: 'json' };
@@ -78,6 +78,10 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
   const options = [correct, ...distractors.slice(0, choiceCount - 1)];
   const rotation = variantCaseIndex(seed, options.length);
   const ids = CHOICE_IDS.slice(0, options.length);
+  const choices = buildRotatedChoices(options, rotation, ids);
+  // buildRotatedChoices assigns ids by rotated position — authored rules
+  // must rebind through option texts or they would point at wrong options.
+  const feedbackRules = rebindChoiceRules(chosen.feedbackRules, chosen.choices, choices);
   return {
     parameters: {
       caseId,
@@ -86,11 +90,11 @@ function generateStaticChoice(familyId, { seed, caseId, difficulty }) {
       ...(chosen.parameters || {}),
     },
     expected: {},
-    choices: buildRotatedChoices(options, rotation, ids),
+    choices,
     prompt: chosen.prompt,
     fullSolution: chosen.fullSolution,
     ...(chosen.hints ? { hints: chosen.hints } : {}),
-    ...(chosen.feedbackRules ? { feedbackRules: chosen.feedbackRules } : {}),
+    ...(feedbackRules ? { feedbackRules } : {}),
     ...(chosen.typicalErrors ? { typicalErrors: chosen.typicalErrors } : {}),
     ...(chosen.competencyIds ? { competencyIds: chosen.competencyIds } : {}),
     ...(chosen.masteryEligible !== undefined ? { masteryEligible: chosen.masteryEligible } : {}),

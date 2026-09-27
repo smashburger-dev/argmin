@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "familyId": "fixture-statement-pool",
+  "contract": {
+    "familyId": "fixture-statement-pool",
+    "familyGroup": "classify-concept",
+    "summary": "Fixture-Familie mit Aussagen-Pool für Multiple-Choice.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": true,
+    "caseTypes": [{ "caseId": "pool-demo" }],
+    "difficultyProfiles": ["core"],
+    "competencyIds": ["c-fixture"],
+    "graderId": "deterministic",
+    "activityType": "multiple-choice"
+  },
+  "cases": [
+    {
+      "caseId": "pool-demo",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": ["fixture"],
+      "graderId": "deterministic",
+      "activityType": "multiple-choice",
+      "prompt": "Welche Aussagen zur Kovarianz treffen zu?",
+      "parameters": {},
+      "expected": { "kind": "choice-indices", "correctIds": ["a", "d"], "scoring": "per-correct" },
+      "choices": [
+        { "id": "a", "text": "Die Kovarianz misst die gemeinsame lineare Streuung zweier Merkmale." },
+        { "id": "b", "text": "Die Kovarianz ist immer auf [-1, 1] normiert." },
+        { "id": "c", "text": "Eine Kovarianz von null beweist stochastische Unabhängigkeit." },
+        { "id": "d", "text": "Die Kovarianz kann negatives Vorzeichen tragen." },
+        { "id": "e", "text": "Die Kovarianz hängt nicht von der Einheit der Merkmale ab." }
+      ],
+      "fullSolution": "a) und d) sind zutreffend: die Kovarianz ist vorzeichenbehaftet und einheitenabhängig.",
+      "statementPool": {
+        "count": 4,
+        "correctRange": [2, 3],
+        "hints": ["Überlege zuerst jede Aussage einzeln für sich."],
+        "statements": [
+          { "text": "Kovarianz ist symmetrisch: cov(X, Y) = cov(Y, X).", "correct": true, "feedback": "Die Definition E[(X−μX)(Y−μY)] ist symmetrisch in X und Y." },
+          { "text": "Kovarianz kann nur Werte in [-1, 1] annehmen.", "correct": false, "feedback": "Unnormiert — erst die Korrelation wird durch Division mit den Standardabweichungen auf [-1, 1] begrenzt.", "misconception": "kovarianz-normiert" },
+          { "text": "cov(X, X) ist die Varianz von X.", "correct": true, "feedback": "Einsetzen in die Definition liefert E[(X−μ)²] = var(X)." },
+          { "text": "Unabhängige Merkmale haben immer Kovarianz null.", "correct": true, "feedback": "Unabhängigkeit faktorisiert den Erwartungswert des Produkts.", "misconception": "unabhaengigkeit-umkehr" },
+          { "text": "Kovarianz null bedeutet, die Merkmale sind unabhängig.", "correct": false, "feedback": "Nur die Umkehrung gilt allgemein — unkorreliert heißt nicht unabhängig (z. B. Y = X² auf [-1, 1]).", "misconception": "unkorreliert-unabhaengig" },
+          { "text": "Die Kovarianz verändert sich, wenn man ein Merkmal um einen festen Wert verschiebt.", "correct": false, "feedback": "Verschiebungen heben sich in den Zentrierungen weg — cov(X+a, Y) = cov(X, Y)." },
+          { "text": "Die Kovarianz skaliert quadratisch mit der Einheit.", "correct": true, "feedback": "cov(aX, bY) = a·b·cov(X, Y) — die Einheit geht bilinear ein." }
+        ]
+      }
+    }
+  ]
+}

@@ -167,9 +167,30 @@ export function makeChoiceFamily({
   const bankEntry = (parameters, capsule) => (
     capsule.bank.find((item) => item.key === parameters.scenario)
   );
+  // Bank-Distraktoren sind Strings oder Aussage-Objekte { text, feedback?,
+  // misconception? } — nur der Text wird zur Option.
+  const textOf = (item) => (typeof item === 'string' ? item : item?.text);
   const bankOptions = (parameters, capsule) => {
     const entry = bankEntry(parameters, capsule);
-    return [entry.correct, ...entry.wrong];
+    return [entry.correct, ...entry.wrong.map(textOf)];
+  };
+  // Distraktor-Feedback aus der Bank: nur Aussagen mit `feedback` erzeugen
+  // eine Regel — an die rotierte id ihres Optionstexts gebunden, in
+  // Distraktor-Reihenfolge. Ohne Feedback bleibt das Feld weg und der
+  // Anchor-Rebind greift wie bisher.
+  const bankFeedbackRules = (entry, choices) => {
+    const rules = (entry?.wrong || [])
+      .filter((item) => item && typeof item === 'object' && typeof item.feedback === 'string')
+      .map((item) => {
+        const id = choices.find((choice) => choice.text === item.text)?.id;
+        return id ? {
+          if: `choice === '${id}'`,
+          then: item.feedback,
+          ...(item.misconception ? { misconception: item.misconception } : {}),
+        } : null;
+      })
+      .filter(Boolean);
+    return rules.length ? rules : undefined;
   };
   const draw = drawParameters ?? ((random, capsule) => ({ scenario: pick(random, capsule.bank).key }));
   const optionsOf = buildOptions ?? bankOptions;
@@ -197,12 +218,16 @@ export function makeChoiceFamily({
     const parameters = draw(r, capsule);
     const options = optionsOf(parameters, capsule);
     const rotation = variantCaseIndex(seed, options.length);
+    const choices = buildRotatedChoices(options, rotation, choiceIds(capsule));
+    const entry = capsule.bank ? bankEntry(parameters, capsule) : null;
+    const feedbackRules = entry ? bankFeedbackRules(entry, choices) : undefined;
     return {
       parameters,
       expected: {},
-      choices: buildRotatedChoices(options, rotation, choiceIds(capsule)),
+      choices,
       prompt: promptOf(parameters, capsule),
       fullSolution: solutionOf(parameters, capsule),
+      ...(feedbackRules ? { feedbackRules } : {}),
     };
   };
 
@@ -232,6 +257,7 @@ export function makeChoiceFamily({
       choices: drawn.choices,
       prompt: drawn.prompt,
       fullSolution: drawn.fullSolution,
+      ...(drawn.feedbackRules ? { feedbackRules: drawn.feedbackRules } : {}),
       ...(capsule.competencyIds ? { competencyIds: capsule.competencyIds } : {}),
       ...(meta ? { masteryEligible: meta.masteryEligible, competencyIds: [...meta.competencyIds] } : {}),
     };
