@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.16 — 2026-09-28
+
+Modulkarten im Lernpfad zählen die Aufgaben des Moduls.
+
+Für Lernende: **Die Modulkarten im Lernpfad zählen jetzt die Aufgaben des Moduls statt aller Aufgaben derselben Kompetenz.** „Python-Zustand lesen" zeigte zum Beispiel „3 von 12 Aufgaben", obwohl das Modul drei Aufgaben hat.
+
+Für Beitragende: `LearnView` zählte `catalog.exercises` per Kompetenz-Überschneidung. Jetzt zählt `curatedProgress` aus `exercise-context.ts` die kuratierten Placements über `routeForPlacement` und rechnet gelöste Fälle über `creditKeyForPlacement` an (`familyId:caseId`, den auch `familyEventInput` für Versuche schreibt, unabhängig von Seed und Schwierigkeit). `ModuleView` nutzt denselben Schlüssel für die Versuchsanzeige. Neuer E2E-Check in `learn-sections.spec.ts`.
+
 ## 0.8.15 — 2026-09-28
 
 Passende Aufgaben auf Lektionsseiten zeigen wieder die Aufgaben der Lektion.

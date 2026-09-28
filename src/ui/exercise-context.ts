@@ -81,6 +81,25 @@ export function routeForPlacement(catalog: CatalogData, placement: ExercisePlace
   return `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`;
 }
 
+// Progress is per case: attempts write `familyId:caseId` (familyEventInput),
+// independent of seed and difficulty.
+export function creditKeyForPlacement(placement: ExercisePlacement) {
+  return placement.definitionId ?? (placement.caseId ? `${placement.familyId}:${placement.caseId}` : null);
+}
+
+export function curatedProgress(catalog: CatalogData, module: LearningModule, creditedKeys: Iterable<string>) {
+  const credited = new Set(creditedKeys);
+  let total = 0;
+  let done = 0;
+  for (const placement of module.placements || []) {
+    if (placement.role !== 'curated' || routeForPlacement(catalog, placement) === null) continue;
+    total += 1;
+    const key = creditKeyForPlacement(placement);
+    if (key && credited.has(key)) done += 1;
+  }
+  return { total, credited: done };
+}
+
 function exerciseFor(catalog: CatalogData, familyId: string, caseId?: string): ExerciseSummary | undefined {
   return catalog.exercises.find((exercise) => exercise.familyId === familyId && exercise.caseId === caseId);
 }
