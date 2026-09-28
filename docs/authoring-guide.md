@@ -33,6 +33,9 @@ einer Lektion desselben Moduls gehören muss: Die Lektionsseite zeigt unter
 Modulreihenfolge (erstes Placement = „Jetzt prüfen"-Button, bis zu vier
 weitere als Karten) — es gibt keinen Kompetenz-Fallback. Der Validator
 schlägt fehl, wenn eine Modullektion kein kuratiertes Placement hat.
+Übungsraum-Placements (`role: "practice-space"`, ohne `caseId`) ziehen im
+Modul nur aus den Fällen, die dasselbe Modul in dieser Familie kuratiert;
+ohne solche Fälle bleibt der Zug über die ganze Familie.
 
 Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die UI verlinkt diese Originalquelle in einem neuen Tab; lokale Lesepfade und private Volltextkopien gehören nicht zum Public-Profil.
 

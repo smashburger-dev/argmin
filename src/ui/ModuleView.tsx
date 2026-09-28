@@ -5,7 +5,7 @@ import { useEffect } from 'preact/hooks';
 import { Button } from './Button';
 import { Breadcrumbs } from './Breadcrumbs';
 import { MathMarkup } from './MathMarkup';
-import { activityLabel, creditKeyForPlacement, difficultyLabelFor, exerciseForPlacement, routeForPlacement } from './exercise-context';
+import { activityLabel, creditKeyForPlacement, difficultyLabelFor, exerciseForPlacement, practiceRouteForPlacement, routeForPlacement } from './exercise-context';
 
 export function ModuleView({ catalog, moduleId, progress }: { catalog: CatalogData; moduleId: string; progress: ProgressSnapshot }) {
   const opened = new Set(progress.openedLessons);
@@ -86,7 +86,7 @@ export function ModuleView({ catalog, moduleId, progress }: { catalog: CatalogDa
                     </div>
                     <div class="actions vertical">
                       {href ? <Button variant="primary" href={href}>Aufgabe öffnen</Button> : <span class="muted">Bald verfügbar</span>}
-                      {practicePlacement && <Button variant="ghost" href={`#/family/${practicePlacement.familyId}/-/-/${practicePlacement.difficulty}`}>Neue Variante</Button>}
+                      {practicePlacement && <Button variant="ghost" href={practiceRouteForPlacement(module, practicePlacement) ?? undefined}>Neue Variante</Button>}
                     </div>
                   </article>
                 );
@@ -102,7 +102,7 @@ export function ModuleView({ catalog, moduleId, progress }: { catalog: CatalogDa
                       <p>Jede Öffnung erzeugt eine neue Variante.</p>
                     </div>
                     {placement.familyId
-                      ? <Button variant="primary" href={`#/family/${placement.familyId}/-/-/${placement.difficulty}`}>Üben</Button>
+                      ? <Button variant="primary" href={practiceRouteForPlacement(module, placement) ?? undefined}>Üben</Button>
                       : <span class="muted">Bald verfügbar</span>}
                   </article>
                 );

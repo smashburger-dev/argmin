@@ -279,15 +279,27 @@ const PROFILE_REJECTION = /Unbekanntes Profil |Unbekannter Fall \S+ für Profil 
 
 // A caseless draw picks among the property-testable cases that serve the
 // requested profile. Without `servesProfile` every case counts (explicit
-// caseIds never reach the filter).
-function resolveCaseId(family, seed, caseId, servesProfile = () => true) {
+// caseIds never reach the filter). An optional `caseIds` pool scopes the
+// draw — module practice spaces pass the cases their own curated
+// placements pin. When the pool and the profile filter intersect to
+// nothing, the pool wins over the profile rather than throwing.
+function resolveCaseId(family, seed, caseId, servesProfile = () => true, caseIds = null) {
   if (caseId != null) {
     if (!family.caseTypes.some((item) => item.caseId === caseId)) {
       throw new Error(`Unbekannter Fall ${caseId}`);
     }
     return caseId;
   }
-  const cases = family.caseTypes.filter((item) => item.propertyTest !== false && servesProfile(item.caseId));
+  const testable = family.caseTypes.filter((item) => item.propertyTest !== false);
+  let cases = testable.filter((item) => servesProfile(item.caseId));
+  if (Array.isArray(caseIds) && caseIds.length) {
+    const pool = new Set(caseIds);
+    const scoped = testable.filter((item) => pool.has(item.caseId));
+    if (scoped.length) {
+      const serving = scoped.filter((item) => servesProfile(item.caseId));
+      cases = serving.length ? serving : scoped;
+    }
+  }
   if (!cases.length) throw new Error(`${family.familyId}: kein property-testfähiger Fall für dieses Profil`);
   return cases[variantCaseIndex(seed, cases.length)].caseId;
 }
@@ -517,11 +529,11 @@ export function createFamilyRegistry(families) {
     return served.get(key);
   };
 
-  function instantiate(familyId, seed, difficulty, caseId) {
+  function instantiate(familyId, seed, difficulty, caseId, caseIds) {
     if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
     const family = requireFamily(byId, familyId);
     if (!family.difficultyProfiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
-    const resolvedCase = resolveCaseId(family, seed, caseId, servesProfile(family, difficulty));
+    const resolvedCase = resolveCaseId(family, seed, caseId, servesProfile(family, difficulty), caseIds);
     const generated = family.generate({ seed, caseId: resolvedCase, difficulty });
     // Procedural generators emit the per-seed instance but not the authored
     // case material that lives on the exemplar doc (hints, feedbackRules).

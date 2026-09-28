@@ -37,6 +37,7 @@ export interface ExerciseContext {
   title: string;
   /** Specific case title for breadcrumbs/nav — the h1 stays generic. */
   detail?: string;
+  caseId?: string;
   summary: string;
   difficultyLabel: string;
   lessonHref?: string;
@@ -128,6 +129,22 @@ function nextPlacement(catalog: CatalogData, module: LearningModule | undefined,
   return module.placements.slice(start + 1).find((placement) => placement.role === 'curated');
 }
 
+// Module practice space: the pool is the module's own curated cases of that
+// family, so "Üben"/"Neue Variante" never draws a foreign-domain case. An
+// empty pool (standalone practice space) falls back to the whole family.
+export function practiceCasePool(module: LearningModule | undefined, familyId: string): string[] | undefined {
+  const caseIds = (module?.placements || [])
+    .filter((placement) => placement.role === 'curated' && placement.familyId === familyId && placement.caseId)
+    .map((placement) => placement.caseId as string);
+  return caseIds.length ? [...new Set(caseIds)] : undefined;
+}
+
+export function practiceRouteForPlacement(module: LearningModule | undefined, placement: ExercisePlacement) {
+  if (!placement.familyId) return null;
+  const base = `#/family/${placement.familyId}/-/-/${placement.difficulty}`;
+  return module ? `${base}?module=${module.moduleId}` : base;
+}
+
 export function randomVariantSeed(): number {
   return Math.floor(Math.random() * 2 ** 31);
 }
@@ -146,6 +163,7 @@ export function getExerciseContext(catalog: CatalogData, instance: ExerciseInsta
     lesson,
     title: activityLabel(instance.activityType),
     detail: exercise?.title,
+    caseId: instance.caseId,
     summary: family?.summary ?? summary ?? '',
     difficultyLabel: difficultyLabelFor(instance.difficulty),
     lessonHref: lesson ? `#/lesson/${lesson.lessonId}` : undefined,
