@@ -18,6 +18,7 @@ import { OnboardingOverlay } from './OnboardingOverlay';
 import { TourOverlay } from './TourOverlay';
 import { TOUR_STEPS } from './tour-steps';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
+import { applyUpdate, onUpdateReady } from '../app/sw-update';
 import type { ExerciseSummary } from '../app/types';
 import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { initPageEase } from './page-ease';
@@ -154,6 +155,8 @@ export function App() {
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const [navCollapsed, setNavCollapsed] = useState(() => typeof localStorage !== 'undefined' && localStorage.getItem(NAV_KEY) === 'rail');
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+  const [updateReady, setUpdateReady] = useState(false);
+  const [updateDismissed, setUpdateDismissed] = useState(false);
   const progressRequest = useRef(0);
   const refreshProgress = useCallback(async () => {
     const request = ++progressRequest.current;
@@ -172,6 +175,8 @@ export function App() {
   }, []);
 
   useEffect(() => initPageEase(), []);
+
+  useEffect(() => onUpdateReady(() => setUpdateReady(true)), []);
 
   useEffect(() => {
     const refresh = () => { void refreshProgress().catch(() => setProgressReady(true)); };
@@ -375,6 +380,13 @@ export function App() {
         </nav>
         <main id="main-content" ref={mainRef} tabIndex={-1}>{view}</main>
       </div>
+      {updateReady && !updateDismissed ? (
+        <div class="update-banner" role="status">
+          <span>Neue Version verfügbar.</span>
+          <Button variant="primary" size="sm" onClick={() => applyUpdate()}>Neu laden</Button>
+          <Button variant="ghost" size="sm" onClick={() => setUpdateDismissed(true)}>Später</Button>
+        </div>
+      ) : null}
       {navDrawerOpen ? (
         <div class="nav-drawer" role="dialog" aria-modal="true" aria-label="Navigation">
           <button type="button" class="nav-drawer-backdrop" aria-label="Navigation schließen" onClick={() => setNavDrawerOpen(false)} />

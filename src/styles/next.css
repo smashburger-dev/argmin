@@ -658,3 +658,12 @@ main:focus { outline: none; }
 @media (prefers-reduced-motion: reduce) {
   .tour-card { animation: none; }
 }
+
+/* Update notice: non-modal status bar pinned above the mobile context strip. */
+.update-banner { position: fixed; z-index: 30; right: var(--s4); bottom: var(--s4); display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s4); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-md); font-size: 14px; }
+@media (max-width: 920px) {
+  .update-banner { right: var(--s3); bottom: calc(var(--s3) + 76px); }
+}
+@media (max-width: 460px) {
+  .update-banner { left: var(--s3); justify-content: space-between; flex-wrap: wrap; }
+}

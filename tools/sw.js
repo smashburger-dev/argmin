@@ -18,9 +18,15 @@ self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(
     PRECACHE.map((path) => new Request(path, { cache: 'no-cache' })),
   )));
-  // No skipWaiting(): open old-version tabs may still lazy-import chunks that
-  // only exist in the old cache. The new worker activates once the last
-  // controlled tab is gone, keeping every tab consistent with its cache.
+  // No automatic skipWaiting(): open old-version tabs may still lazy-import
+  // chunks that only exist in the old cache, so the worker waits until the
+  // user confirms via the update banner and sends SKIP_WAITING. The banner
+  // reloads right after activation, so no tab keeps running against a
+  // deleted cache.
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -51,7 +57,10 @@ self.addEventListener('fetch', (event) => {
     // On failure serve the precached shell first: it always matches the
     // precached chunks, while a put-stored entry could hold a newer document
     // against an older chunk set.
-    event.respondWith(fetch(request).then(writeThrough)
+    // no-cache bypasses Pages' max-age=600 HTTP cache and revalidates via
+    // ETag: a fresh deploy must never serve the previous index.html (which
+    // pins the old chunk hashes).
+    event.respondWith(fetch(request, { cache: 'no-cache' }).then(writeThrough)
       .catch(() => caches.match('index.html').then((hit) => hit || caches.match(request))));
     return;
   }

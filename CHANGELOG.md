@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.17 — 2026-09-28
+
+Nach einem Deploy zeigt argmin einen Update-Hinweis statt still die alte Version weiterzulaufen.
+
+Für Lernende: **Nach einem Update zeigt argmin einen Hinweis „Neue Version verfügbar" mit Button zum Neuladen.** Bisher konnte die alte Version bis zu zehn Minuten oder bis zum Schließen aller Tabs weiterlaufen, sodass neue Aufgaben und Korrekturen erst nach einem harten Neuladen ankamen.
+
+Für Beitragende: Zwei Ursachen behoben. Der Service Worker (`tools/sw.js`) lädt Navigation jetzt mit `cache: 'no-cache'`, sodass GitHub Pages' `max-age=600` kein veraltetes `index.html` mit alten Chunk-Hashes liefert. Und der neue Worker wartet nicht mehr unsichtbar: `src/app/sw-update.ts` registriert den Worker, meldet einen wartenden Worker (`registration.waiting`, `updatefound`/`statechange`, `update()` bei `visibilitychange`, gedrosselt auf 30 Minuten) und die App rendert einen nicht-modalen Banner mit „Neu laden" und „Später". Der Button sendet `SKIP_WAITING` an den wartenden Worker, der per `message`-Handler aktiviert; jeder Tab, der das Update gesehen hat, lädt nach `controllerchange` einmal neu, weil die Aktivierung den alten Cache löscht. Node-Test in `tests/offline_sw.test.mjs`, E2E-Nachweis in `tests/e2e/offline.spec.ts`.
+
 ## 0.8.16 — 2026-09-28
 
 Modulkarten im Lernpfad zählen die Aufgaben des Moduls.
