@@ -4,9 +4,9 @@
 
 Passende Aufgaben auf Lektionsseiten zeigen wieder die Aufgaben der Lektion.
 
-Für Lernende: **Unter „Passende Aufgaben" standen seit der Umstellung auf Familien fremde Aufgaben derselben Kompetenz** (z. B. Slice- und split/join-Aufgaben auf „Python-Zustand statt Code-Raten"). Jetzt erscheinen genau die kuratierten Aufgaben der Lektion.
+Für Lernende: **Unter „Passende Aufgaben" standen seit der Umstellung auf Familien fremde Aufgaben derselben Kompetenz** (z. B. Slice- und split/join-Aufgaben auf „Python-Zustand statt Code-Raten"). Jetzt erscheinen genau die kuratierten Aufgaben der Lektion. Die Modulkarten im Lernpfad zählen jetzt die Aufgaben des Moduls statt aller Aufgaben derselben Kompetenz.
 
-Für Beitragende: LessonView suchte Placements über `definitionId`, das seit der Familien-Umstellung kein Modul mehr trägt, und fiel immer auf einen Kompetenz-Treffer über den ganzen Katalog zurück. Auflösung jetzt über `lessonId` mit den geteilten Helfern `exerciseForPlacement`/`routeForPlacement` aus `exercise-context.ts`; kein Fallback. `assertModuleBindings` bricht ab, wenn ein Placement auf eine Lektion außerhalb des Moduls zeigt oder eine Modullektion kein kuratiertes Placement hat. Golden-Korpus und Benchmark-Pin unverändert.
+Für Beitragende: LessonView suchte Placements über `definitionId`, das seit der Familien-Umstellung kein Modul mehr trägt, und fiel immer auf einen Kompetenz-Treffer über den ganzen Katalog zurück. Auflösung jetzt über `lessonId` mit den geteilten Helfern `exerciseForPlacement`/`routeForPlacement` aus `exercise-context.ts`; kein Fallback. `assertModuleBindings` bricht ab, wenn ein Placement auf eine Lektion außerhalb des Moduls zeigt oder eine Modullektion kein kuratiertes Placement hat. Golden-Korpus und Benchmark-Pin unverändert. Die Modulkarten nutzen `curatedProgress` aus `exercise-context.ts`, das kuratierte Placements über `routeForPlacement` zählt und Versuche per Fall-Schlüssel `familyId:caseId` (`creditKeyForPlacement`) anrechnet.
 
 ## 0.8.14 — 2026-09-27
 

@@ -36,6 +36,7 @@ import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mj
 import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
 import { daySeed } from '../../assets/js/domain/challenge_picker.mjs';
 import { countLabel, learnerExerciseLabel, minutesLabel, reasonCodeLabel } from './learner-labels';
+import { curatedProgress } from './exercise-context';
 import { moduleState } from './ProgressView';
 
 const stateLabels = {
@@ -93,21 +94,13 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
     });
     return track ? orderModulesForTrack(matching, track) : matching;
   }, [catalog.learningModules, query, track]);
-  const exerciseCounts = useMemo(() => {
-    const counts = new Map<string, number>();
+  const moduleTaskCounts = useMemo(() => {
+    const counts = new Map<string, { total: number; credited: number }>();
     for (const module of catalog.learningModules || []) {
-      counts.set(module.moduleId, catalog.exercises.filter((exercise) => exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
+      counts.set(module.moduleId, curatedProgress(catalog, module, progress.creditedDefinitions));
     }
     return counts;
-  }, [catalog.exercises, catalog.learningModules]);
-  const creditedCounts = useMemo(() => {
-    const credited = new Set(progress.creditedDefinitions);
-    const counts = new Map<string, number>();
-    for (const module of catalog.learningModules || []) {
-      counts.set(module.moduleId, catalog.exercises.filter((exercise) => credited.has(exercise.definitionId) && exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
-    }
-    return counts;
-  }, [catalog.exercises, catalog.learningModules, progress.creditedDefinitions]);
+  }, [catalog, progress.creditedDefinitions]);
   const trackFacts = useMemo(() => {
     const inTrack = (catalog.learningModules || []).filter((module) => track && module.trackIds.includes(track.trackId));
     const minutes = inTrack.reduce((total, module) => total + module.estimatedMinutes, 0);
@@ -161,7 +154,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           <h2 class="visually-hidden" id="learn-module-title">Module in diesem Pfad</h2>
           <Carousel label="Module in diesem Pfad" arrows fades prevLabel="Vorherige Module" nextLabel="Weitere Module">
             {modules.map((module, index) => (
-              <ModuleCard module={module} step={index + 1} total={exerciseCounts.get(module.moduleId) ?? 0} credited={creditedCounts.get(module.moduleId) ?? 0} states={progress.evidenceStates} key={module.moduleId} />
+              <ModuleCard module={module} step={index + 1} total={moduleTaskCounts.get(module.moduleId)?.total ?? 0} credited={moduleTaskCounts.get(module.moduleId)?.credited ?? 0} states={progress.evidenceStates} key={module.moduleId} />
             ))}
           </Carousel>
           </>
@@ -210,7 +203,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
         </div>
         <Carousel label="Module der restlichen Lernpfade" arrows fades prevLabel="Vorherige Module" nextLabel="Weitere Module">
           {restModules.map(({ module, track: restTrack, step }) => (
-            <ModuleCard module={module} step={step} total={exerciseCounts.get(module.moduleId) ?? 0} credited={creditedCounts.get(module.moduleId) ?? 0} states={progress.evidenceStates} trackTitle={restFilter ? undefined : restTrack.title} key={`${restTrack.trackId}:${module.moduleId}`} />
+            <ModuleCard module={module} step={step} total={moduleTaskCounts.get(module.moduleId)?.total ?? 0} credited={moduleTaskCounts.get(module.moduleId)?.credited ?? 0} states={progress.evidenceStates} trackTitle={restFilter ? undefined : restTrack.title} key={`${restTrack.trackId}:${module.moduleId}`} />
           ))}
         </Carousel>
         <div class="track-below">

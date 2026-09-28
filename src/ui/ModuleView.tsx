@@ -5,7 +5,7 @@ import { useEffect } from 'preact/hooks';
 import { Button } from './Button';
 import { Breadcrumbs } from './Breadcrumbs';
 import { MathMarkup } from './MathMarkup';
-import { activityLabel, difficultyLabelFor, exerciseForPlacement, routeForPlacement } from './exercise-context';
+import { activityLabel, creditKeyForPlacement, difficultyLabelFor, exerciseForPlacement, routeForPlacement } from './exercise-context';
 
 export function ModuleView({ catalog, moduleId, progress }: { catalog: CatalogData; moduleId: string; progress: ProgressSnapshot }) {
   const opened = new Set(progress.openedLessons);
@@ -77,7 +77,7 @@ export function ModuleView({ catalog, moduleId, progress }: { catalog: CatalogDa
                   : undefined;
                 if (practicePlacement && placement.familyId) assignedPracticeFamilies.add(placement.familyId);
                 const href = routeForPlacement(catalog, placement);
-                const tries = attemptsFor(exercise?.definitionId);
+                const tries = attemptsFor(exercise?.definitionId ?? creditKeyForPlacement(placement) ?? undefined);
                 return (
                   <article class={tries > 0 ? 'activity-card has-progress' : 'activity-card'} key={placement.placementId}>
                     <div>
