@@ -23,7 +23,9 @@ Alle Komponenten permissiv: MIT (KaTeX), MIT/LGPL dual — MIT gewählt (JSXGrap
 ## Offline-Fähigkeit
 Vollständig: alle Runtimes unter `vendor/`, kein CDN zur Laufzeit (Rebuild der Numbas-Runtime mit `--mathjax-4-url ../mathjax4`, da der Default-Build MathJax von jsdelivr lädt). Ausnahme dokumentiert: keine.
 
-**Nachtrag 2026-09-21:** Der hier zurückgestellte Service Worker ist jetzt gesetzt (`tools/sw.js` → generiertes `sw.js` im Public-Build). Versionierter Precache für den kompletten Build inkl. Lazy-Chunks, separater `argmin-runtime-<pyodideVersion>`-Cache für `vendor/pyodide/` (übersteht App-Deploys, wird bei einem Vendor-Bump ausrangiert), Navigation netz-zuerst mit Fallback auf den geprecachten Shell — kein `skipWaiting`, damit offene Tabs ihre Chunk-Version behalten. e2e-Nachweis: `tests/e2e/offline.spec.ts`.
+**Nachtrag 2026-09-21:** Der hier zurückgestellte Service Worker ist jetzt gesetzt (`tools/sw.js` → generiertes `sw.js` im Public-Build). Versionierter Precache für den kompletten Build inkl. Lazy-Chunks, separater `argmin-runtime-<pyodideVersion>`-Cache für `vendor/pyodide/` (übersteht App-Deploys, wird bei einem Vendor-Bump ausrangiert), Navigation netz-zuerst mit `cache: 'no-cache'` (Pages sendet `max-age=600`, sonst bliebe `index.html` zehn Minuten alt) und Fallback auf den geprecachten Shell. e2e-Nachweis: `tests/e2e/offline.spec.ts`.
+
+**Nachtrag 2026-09-28:** Deploy-Updates waren unsichtbar, weil der neue Worker ohne `skipWaiting` bis zum Schließen aller Tabs wartete. Jetzt wartet er weiterhin standardmäßig, aber `src/app/sw-update.ts` meldet einen wartenden Worker (`registration.waiting` bei vorhandenem Controller, `updatefound`/`statechange`, `update()` bei `visibilitychange`) und die App zeigt den Banner „Neue Version verfügbar"; der Button sendet `SKIP_WAITING` per `message` und lädt nach `controllerchange` neu.
 
 ## Bundle- und Ladeauswirkung
 Initial lädt nur Shell + KaTeX (~1,3 MB). Numbas (~3 MB numbas.js + MathJax ~2 MB), JSXGraph (~1 MB), Pyodide (core 6,4 MB + Wheels on demand) nur bei Bedarf. Messwerte der Spikes: Pyodide-Init 1,3 s lokal; NumPy-Run 0,6 s nach Wheel-Load; SymPy-Run 2,4 s.
