@@ -39,6 +39,26 @@ test('competency and lesson routes expose family activities', async ({ page }) =
   await expect(page.getByRole('heading', { level: 1, name: 'Algebra als überprüfbare Umformung' })).toBeVisible();
 });
 
+test('lesson tasks link only the curated placements of that lesson', async ({ page }) => {
+  await page.goto('/index.html#/lesson/l-foundations-python-state');
+  await expect(page.getByRole('heading', { level: 1, name: 'Python-Zustand statt Code-Raten' })).toBeVisible();
+  const tasks = page.locator('.lesson-tasks');
+  await expect(tasks.locator('.lesson-cta')).toHaveAttribute('href', '#/family/trace-assignment-state/reassign-two-variables-print/7/intro');
+  const cardLinks = tasks.locator('.side-card a');
+  await expect(cardLinks).toHaveCount(2);
+  await expect(cardLinks.nth(0)).toHaveAttribute('href', '#/family/trace-assignment-state/accumulate-reassign-print/11/core');
+  await expect(cardLinks.nth(1)).toHaveAttribute('href', '#/family/trace-assignment-state/chain3-overwrite-print/17/stretch');
+  const hrefs = await tasks.locator('a[href^="#/family/"]').evaluateAll((links) => links.map((link) => link.getAttribute('href') ?? ''));
+  expect(hrefs.every((href) => href.startsWith('#/family/trace-assignment-state/'))).toBe(true);
+  expect(hrefs.some((href) => /slice|split/.test(href))).toBe(false);
+});
+
+test('algebra transformations lesson shows its own curated task', async ({ page }) => {
+  await page.goto('/index.html#/lesson/l-foundations-algebra-transformations');
+  await expect(page.getByRole('heading', { level: 1, name: 'Terme strukturiert umformen' })).toBeVisible();
+  await expect(page.locator('.lesson-tasks .lesson-cta')).toHaveAttribute('href', /^#\/family\/transform-expression-simplify-canonical\//);
+});
+
 test('public sources and modern module route render', async ({ page }) => {
   await page.goto('/index.html#/sources');
   await expect(page.getByRole('heading', { level: 1, name: 'Lektüren' })).toBeVisible();

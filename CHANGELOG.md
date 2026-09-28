@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.15 — 2026-09-28
+
+Passende Aufgaben auf Lektionsseiten zeigen wieder die Aufgaben der Lektion.
+
+Für Lernende: **Unter „Passende Aufgaben" standen seit der Umstellung auf Familien fremde Aufgaben derselben Kompetenz** (z. B. Slice- und split/join-Aufgaben auf „Python-Zustand statt Code-Raten"). Jetzt erscheinen genau die kuratierten Aufgaben der Lektion.
+
+Für Beitragende: LessonView suchte Placements über `definitionId`, das seit der Familien-Umstellung kein Modul mehr trägt, und fiel immer auf einen Kompetenz-Treffer über den ganzen Katalog zurück. Auflösung jetzt über `lessonId` mit den geteilten Helfern `exerciseForPlacement`/`routeForPlacement` aus `exercise-context.ts`; kein Fallback. `assertModuleBindings` bricht ab, wenn ein Placement auf eine Lektion außerhalb des Moduls zeigt oder eine Modullektion kein kuratiertes Placement hat. Golden-Korpus und Benchmark-Pin unverändert.
+
 ## 0.8.14 — 2026-09-27
 
 Unerreichbarer Algebra-Fall entfernt; der Diagnose-Button öffnet wieder einen echten Anker.

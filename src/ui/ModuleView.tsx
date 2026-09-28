@@ -2,24 +2,10 @@ import type { CatalogData } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
 import { recordModuleOpened } from '../adapters/local-progress';
 import { useEffect } from 'preact/hooks';
-import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Breadcrumbs } from './Breadcrumbs';
 import { MathMarkup } from './MathMarkup';
-import { activityLabel, difficultyLabelFor } from './exercise-context';
-
-function exerciseForPlacement(catalog: CatalogData, placement: CatalogData['learningModules'][number]['placements'][number]) {
-  return placement.definitionId
-    ? catalog.exercises.find((item) => item.definitionId === placement.definitionId)
-    : catalog.exercises.find((item) => item.familyId === placement.familyId && item.caseId === placement.caseId);
-}
-
-function routeForPlacement(catalog: CatalogData, placement: CatalogData['learningModules'][number]['placements'][number]) {
-  const exercise = exerciseForPlacement(catalog, placement);
-  if (exercise) return routeForDefinition(exercise);
-  if (!placement.familyId) return null;
-  return `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`;
-}
+import { activityLabel, difficultyLabelFor, exerciseForPlacement, routeForPlacement } from './exercise-context';
 
 export function ModuleView({ catalog, moduleId, progress }: { catalog: CatalogData; moduleId: string; progress: ProgressSnapshot }) {
   const opened = new Set(progress.openedLessons);
