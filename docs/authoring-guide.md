@@ -27,7 +27,12 @@ Stand: 2026-08-25 (erweitert um LM-R2/LM-R4/LM-R5-Felder). Gilt für alle Aufgab
 Jedes LearningModule trägt Placements mit Family-ID, Case-ID, Seed,
 Schwierigkeitsprofil und den dafür freigegebenen Kompetenzen. Quellen bleiben
 am Placement bzw. an der Lektion referenziert; lokale Pfade werden im
-Public-Build entfernt.
+Public-Build entfernt. Kuratierte Placements tragen ein `lessonId`, das zu
+einer Lektion desselben Moduls gehören muss: Die Lektionsseite zeigt unter
+„Passende Aufgaben" genau die kuratierten Placements ihrer Lektion in
+Modulreihenfolge (erstes Placement = „Jetzt prüfen"-Button, bis zu vier
+weitere als Karten) — es gibt keinen Kompetenz-Fallback. Der Validator
+schlägt fehl, wenn eine Modullektion kein kuratiertes Placement hat.
 
 Dazu in `content/sources.json` je Quelle eine öffentliche `canonicalUrl`. Die UI verlinkt diese Originalquelle in einem neuen Tab; lokale Lesepfade und private Volltextkopien gehören nicht zum Public-Profil.
 

@@ -4,10 +4,9 @@ import { getLesson, loadSources } from '../adapters/content-repository';
 import { recordLessonOpened, recordModuleOpened } from '../adapters/local-progress';
 import { MathMarkup } from './MathMarkup';
 import { VisualizationBlock } from './VisualizationBlock';
-import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Breadcrumbs } from './Breadcrumbs';
 import { Button } from './Button';
-import { activityLabel, difficultyLabelFor } from './exercise-context';
+import { activityLabel, difficultyLabelFor, exerciseForPlacement, routeForPlacement } from './exercise-context';
 
 type LessonSegment = { heading: string | null; anchor: string | null; html: string };
 
@@ -75,13 +74,20 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
   }, [lessonId, summary, catalog]);
   if (!summary) return <section class="view"><h1 tabIndex={-1}>Lektion nicht gefunden</h1></section>;
   const homeModule = catalog.learningModules.find((module) => module.lessonIds.includes(lessonId));
-  const placed = (homeModule?.placements || [])
-    .filter((placement) => placement.role === 'curated' && placement.definitionId)
-    .map((placement) => catalog.exercises.find((exercise) => exercise.definitionId === placement.definitionId))
-    .filter((exercise): exercise is NonNullable<typeof exercise> => Boolean(exercise));
-  const relatedExercises = placed.length
-    ? placed
-    : catalog.exercises.filter((exercise) => exercise.competencyIds.some((id) => summary.competencyIds.includes(id)));
+  const relatedTasks = (homeModule?.placements || [])
+    .filter((placement) => placement.role === 'curated' && placement.lessonId === lessonId)
+    .flatMap((placement) => {
+      const href = routeForPlacement(catalog, placement);
+      if (!href) return [];
+      const exercise = exerciseForPlacement(catalog, placement);
+      return [{
+        placement,
+        href,
+        title: exercise?.title || `${activityLabel(exercise?.activityType)} · ${difficultyLabelFor(placement.difficulty)}`,
+        masteryEligible: exercise?.masteryEligible ?? placement.masteryEligible,
+        minutes: exercise?.estimatedMinutes ?? placement.estimatedMinutes,
+      }];
+    });
   const sourceLinks = summary.sourceRefs.map((reference) => ({ reference, source: (sources || []).find((source) => source.sourceId === reference.sourceId) })).filter((item) => item.source);
   // Didaktische Reihenfolge sitzt im Modul (S4B): Vor/Zurück folgt der
   // Modulreihenfolge, wenn die Lektion ein Zuhause hat, sonst den Nachbarn.
@@ -194,12 +200,12 @@ export function LessonView({ catalog, lessonId }: { catalog: CatalogData; lesson
       <section class="lesson-tasks" aria-labelledby="practice-title" data-tour="lesson-tasks">
         <p class="card-kicker">Direkt prüfen</p>
         <h2 id="practice-title">Passende Aufgaben</h2>
-        {relatedExercises.length > 0
+        {relatedTasks.length > 0
           ? <>
               <div data-tour="lesson-cta">
-                <Button variant="primary" class="lesson-cta" href={routeForDefinition(relatedExercises[0]!)}><span>Jetzt prüfen:&nbsp;</span><MathMarkup inline html={relatedExercises[0]!.title || activityLabel(relatedExercises[0]!.activityType)} /></Button>
+                <Button variant="primary" class="lesson-cta" href={relatedTasks[0]!.href}><span>Jetzt prüfen:&nbsp;</span><MathMarkup inline html={relatedTasks[0]!.title} /></Button>
               </div>
-              <div class="side-cards">{relatedExercises.slice(1, 5).map((exercise) => <article class="side-card" key={exercise.definitionId}><p class="card-kicker">{difficultyLabelFor(exercise.difficulty)}{exercise.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong><MathMarkup inline html={exercise.title || activityLabel(exercise.activityType)} /></strong><span>{exercise.estimatedMinutes} Min.</span><Button size="sm" href={routeForDefinition(exercise)}>Öffnen</Button></article>)}</div>
+              <div class="side-cards">{relatedTasks.slice(1, 5).map((task) => <article class="side-card" key={task.placement.placementId}><p class="card-kicker">{difficultyLabelFor(task.placement.difficulty)}{task.masteryEligible ? ' · Kompetenzbeleg' : ''}</p><strong><MathMarkup inline html={task.title} /></strong><span>{task.minutes} Min.</span><Button size="sm" href={task.href}>Öffnen</Button></article>)}</div>
             </>
           : <p>Zu dieser Lektion gibt es noch keine Aufgaben. Sie kommen bald, lies in Ruhe weiter.</p>}
         {homeModule && <a class="text-link" href={`#/module/${homeModule.moduleId}`}>Alle Aufgaben im Modul →</a>}

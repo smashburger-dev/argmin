@@ -98,5 +98,19 @@ export function assertModuleBindings(module, ids) {
   for (const lessonId of module.lessonIds || []) assertKnown(ids.lessons, lessonId, label, 'Lektion');
   for (const explanationId of module.explanationIds || []) assertKnown(ids.explanations, explanationId, label, 'Erklärung');
   for (const projectId of module.projectIds || []) assertKnown(ids.projects, projectId, label, 'Projekt');
-  for (const placement of module.placements || []) assertPlacement(label, placement, ids);
+  const moduleLessons = new Set(module.lessonIds || []);
+  for (const placement of module.placements || []) {
+    assertPlacement(label, placement, ids);
+    if (placement.lessonId && !moduleLessons.has(placement.lessonId)) {
+      throw new Error(`${label}: Placement ${placement.placementId} verweist auf Lektion ${placement.lessonId} außerhalb des Moduls`);
+    }
+  }
+  const curatedLessons = new Set((module.placements || [])
+    .filter((placement) => placement.role === 'curated')
+    .map((placement) => placement.lessonId));
+  for (const lessonId of module.lessonIds || []) {
+    if (!curatedLessons.has(lessonId)) {
+      throw new Error(`${label}: Lektion ${lessonId} hat kein kuratiertes Placement`);
+    }
+  }
 }
