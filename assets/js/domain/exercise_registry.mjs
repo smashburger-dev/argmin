@@ -52,8 +52,8 @@ export function configureExerciseFamilies(staticDocs = []) {
   return EXERCISE_FAMILIES;
 }
 
-export const instantiate = (familyId, seed, difficulty, caseId) => (
-  EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId)
+export const instantiate = (familyId, seed, difficulty, caseId, caseIds) => (
+  EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId, caseIds)
 );
 
 // S4D0: Familieninstanz -> S3-Schreibpfad. definitionId ist stabil je Fall

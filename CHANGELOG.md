@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.18 — 2026-09-28
+
+Übungsräume bleiben im Modul, und Trace-Aufgaben zeigen den Code nur noch einmal.
+
+Für Lernende: **„Neue Variante" und „Üben" in einem Modul ziehen nur noch Aufgaben dieses Moduls.** Bisher konnte der Übungsraum Fälle aus fremden Themen servieren (z. B. eine Backward-Step-Aufgabe im Python-Grundlagen-Modul). Außerdem stand bei Trace-Aufgaben mit Endwerte- oder Tabellen-Antwort der Code zweimal auf der Seite; er steht jetzt nur noch bei der Eingabe.
+
+Für Beitragende: Modul-Übungslinks tragen `?module=<moduleId>` (gebaut über `practiceRouteForPlacement` in `exercise-context.ts`); `FamilyExerciseView` reicht den Fallpool (`practiceCasePool`: kuratierte `caseId`s des Moduls in dieser Familie) an `instantiate` weiter, wo `resolveCaseId` den Zufallszug auf den Pool begrenzt. Leerer Pool oder unbekanntes Modul behalten den Ganzfamilien-Zug; leere Schnittmenge von Pool und Profil fällt auf den Pool zurück statt zu werfen. Explizite `caseId`s umgehen den Pool unverändert. Der doppelte Codeblock entfiel dadurch, dass `predict-output`- und `code-trace`-Antwortflächen sowie die Trace-Tabelle das Snippet selbst rendern; der Prompt-Slot bekommt es dann nicht mehr.
+
 ## 0.8.17 — 2026-09-28
 
 Nach einem Deploy zeigt argmin einen Update-Hinweis statt still die alte Version weiterzulaufen.

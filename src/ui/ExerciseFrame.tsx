@@ -49,7 +49,7 @@ export function ExerciseFrame({
     hadFeedback.current = present;
   });
   return (
-    <section class="view exercise-view" aria-labelledby="exercise-title">
+    <section class="view exercise-view" aria-labelledby="exercise-title" data-case-id={ctx.caseId}>
       <Breadcrumbs items={[
         { href: '#/learn', label: 'Lernen' },
         ...(ctx.module ? [{ href: ctx.moduleHref, label: ctx.module.title }] : []),

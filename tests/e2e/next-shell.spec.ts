@@ -59,6 +59,23 @@ test('algebra transformations lesson shows its own curated task', async ({ page 
   await expect(page.locator('.lesson-tasks .lesson-cta')).toHaveAttribute('href', /^#\/family\/transform-expression-simplify-canonical\//);
 });
 
+test('module practice space draws only the module curated cases', async ({ page }) => {
+  await page.goto('/index.html#/module/lm-foundations-python-state');
+  await expect(page.getByRole('heading', { level: 1, name: 'Python-Zustand lesen' })).toBeVisible();
+  const variant = page.getByRole('link', { name: 'Neue Variante' });
+  await expect(variant).toHaveAttribute('href', '#/family/trace-assignment-state/-/-/core?module=lm-foundations-python-state');
+  const pool = new Set(['reassign-two-variables-print', 'accumulate-reassign-print', 'chain3-overwrite-print']);
+  // Fixed seeds: same seed + same pool give the same case; none may be a
+  // foreign-domain case like manual-backward-step-trace.
+  for (const seed of [0, 1, 2, 3, 5, 8, 13, 21, 42]) {
+    await page.goto(`/index.html#/family/trace-assignment-state/-/${seed}/core?module=lm-foundations-python-state`);
+    const view = page.locator('.exercise-view');
+    await expect(view).toBeVisible();
+    const caseId = await view.getAttribute('data-case-id');
+    expect(pool.has(caseId ?? ''), `seed ${seed} zog fremden Fall ${caseId}`).toBe(true);
+  }
+});
+
 test('public sources and modern module route render', async ({ page }) => {
   await page.goto('/index.html#/sources');
   await expect(page.getByRole('heading', { level: 1, name: 'Lektüren' })).toBeVisible();

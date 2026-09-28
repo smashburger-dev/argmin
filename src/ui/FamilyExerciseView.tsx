@@ -14,7 +14,7 @@ import { Button } from './Button';
 import { TraceTableView } from './TraceTableView';
 import { ExerciseFrame } from './ExerciseFrame';
 import { formatGermanDate } from './format';
-import { getExerciseContext, randomVariantSeed } from './exercise-context';
+import { getExerciseContext, practiceCasePool, randomVariantSeed } from './exercise-context';
 import type { CatalogData } from '../app/types';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
@@ -28,6 +28,7 @@ function parseFamilyRef(ref: string): {
   seed: number;
   difficulty: string;
   from?: string;
+  module?: string;
 } {
   // Query suffix rides inside the hash route (#/family/.../challenge?from=challenge)
   // — split it off before the segment parse so 'from' stays a flag, not a
@@ -42,8 +43,10 @@ function parseFamilyRef(ref: string): {
     : /^\d+$/.test(seedPart)
       ? Number(seedPart) >>> 0
       : (() => { throw new Error(`Startwert ungültig: ${seedPart}`); })();
-  const from = new URLSearchParams(query).get('from') ?? undefined;
-  return { familyId, caseId, seed, difficulty, from };
+  const params = new URLSearchParams(query);
+  const from = params.get('from') ?? undefined;
+  const module = params.get('module') ?? undefined;
+  return { familyId, caseId, seed, difficulty, from, module };
 }
 
 // CodeMirror rides in its own lazy chunk: it only ships when a python-code
@@ -109,7 +112,14 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       try {
         const body = await loadFamilyCases(parsed.familyId);
         if (body) registerStaticCases(parsed.familyId, body.cases);
-        const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
+        // ?module= scopes a caseless practice draw to the module's own
+        // curated cases of this family; unknown module or empty pool keeps
+        // the whole-family draw.
+        const pool = practiceCasePool(
+          parsed.module ? catalog.learningModules.find((item) => item.moduleId === parsed.module) : undefined,
+          parsed.familyId,
+        );
+        const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId, pool);
         if (!active) return;
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
         setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
@@ -345,7 +355,9 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       prompt={isFading
         ? <FadingPrompt key={instance.instanceId} exercise={instance} onAnswer={setAnswer} />
         : <MathMarkup html={instance.prompt} />}
-      snippet={!isCode && !isFading && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
+      // predict-output/code-trace answer controls embed parameters.snippet
+      // themselves — passing it to the frame would show the same code twice.
+      snippet={!isCode && !isFading && instance.activityType !== 'predict-output' && instance.activityType !== 'code-trace' && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
       answer={isCode
         ? <Suspense fallback={<p class="editor-loading">Editor wird geladen …</p>}><CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} /></Suspense>
         : isFading ? null : <AnswerControls exercise={instance} onAnswer={setAnswer} />}

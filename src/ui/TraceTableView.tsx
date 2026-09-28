@@ -223,7 +223,8 @@ export function TraceTableView({ catalog, instance, summary, nextSeed, from }: {
       ctx={ctx}
       eyebrow={`${ctx.difficultyLabel} · Variante ${instance.seed}`}
       prompt={<MathMarkup html={instance.prompt} />}
-      snippet={typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
+      // No snippet slot: the answer table's row headers carry the same code
+      // lines, so a prompt-side <pre> would duplicate them verbatim.
       answer={answer}
       actions={
         <>

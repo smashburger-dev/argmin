@@ -105,3 +105,51 @@ test('Zug ohne caseId verschluckt keine echten Generatorfehler', () => {
   })]);
   assert.throws(() => broken.instantiate('probe-family', 1, 'intro'), /Division durch null/);
 });
+
+test('Übungsraum-Pool begrenzt den Zufallszug auf die kuratierten Fälle des Moduls', () => {
+  // lm-foundations-python-state: practice-space trace-assignment-state mit
+  // genau diesen drei kuratierten Fällen im selben Modul.
+  const pool = ['reassign-two-variables-print', 'accumulate-reassign-print', 'chain3-overwrite-print'];
+  const poolSet = new Set(pool);
+  for (const seed of SEEDS) {
+    const instance = registry.instantiate('trace-assignment-state', seed, 'core', undefined, pool);
+    assert.ok(poolSet.has(instance.caseId), `seed ${seed}: ${instance.caseId}`);
+  }
+  // Deterministisch: gleicher Seed und gleicher Pool geben denselben Fall.
+  assert.equal(
+    registry.instantiate('trace-assignment-state', SEEDS[0], 'core', undefined, pool).caseId,
+    registry.instantiate('trace-assignment-state', SEEDS[0], 'core', undefined, pool).caseId,
+  );
+  // Expliziter caseId umgeht den Pool wie bisher.
+  assert.equal(
+    registry.instantiate('trace-assignment-state', 3, 'intro', 'manual-backward-step-trace', pool).caseId,
+    'manual-backward-step-trace',
+  );
+  // Leerer oder fremder Pool fällt auf den Ganzfamilien-Zug zurück.
+  const unscoped = registry.instantiate('trace-assignment-state', 5, 'core', undefined, ['kein-bekannter-fall']);
+  assert.ok(typeof unscoped.caseId === 'string' && unscoped.caseId.length > 0);
+});
+
+test('Übungsraum-Pool schlägt das Profil, wenn die Schnittmenge leer ist', () => {
+  const family = {
+    familyId: 'probe-pool-family',
+    difficultyProfiles: ['intro', 'core'],
+    caseTypes: [{ caseId: 'seed-zero-shy' }, { caseId: 'any-profile' }],
+    competencyIds: [],
+    // Lehnt 'intro' nur an Seed 0 ab: die servesProfile-Sonde meldet den Fall
+    // als nicht bedienbar, höhere Seeds erzeugen ihn aber problemlos.
+    generate: ({ seed, caseId, difficulty }) => {
+      if (caseId === 'seed-zero-shy' && difficulty === 'intro' && seed === 0) {
+        throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+      }
+      return { parameters: { caseId, difficulty }, prompt: caseId };
+    },
+    solve: () => ({}),
+  };
+  const scoped = createFamilyRegistry([family]);
+  // Pool x Profil ist leer: der Zug fällt auf den Pool zurück statt zu
+  // werfen oder die ganze Familie zu ziehen.
+  for (let seed = 1; seed < 16; seed += 1) {
+    assert.equal(scoped.instantiate('probe-pool-family', seed, 'intro', undefined, ['seed-zero-shy']).caseId, 'seed-zero-shy');
+  }
+});
