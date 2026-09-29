@@ -41,7 +41,7 @@
     "@types/node": "26.2.0",
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
-    "markdown-it": "15.0.0",
+    "markdown-it": "15.0.1",
     "typescript": "7.0.2",
     "vite": "8.2.2"
   }
