@@ -55,7 +55,7 @@
       "feedbackRules": [
         {
           "if": "element-count-mismatch",
-          "then": "Die Tokenliste hat drei Einträge — das <eos>-Token wird mitgezählt."
+          "then": "Die Tokenliste hat drei Einträge — das &lt;eos&gt;-Token wird mitgezählt."
         },
         {
           "if": "output-lines-mismatch",
@@ -63,7 +63,7 @@
         }
       ],
       "typicalErrors": [
-        "<eos> nicht angehängt oder nicht mitgezählt",
+        "&lt;eos&gt; nicht angehängt oder nicht mitgezählt",
         "max_len als exklusive Grenze falsch gelesen",
         "Join-Reihenfolge der Token vertauscht"
       ],
@@ -96,7 +96,7 @@
         "referenceSolver": "def greedy_decode(step_fn, init_ids, max_len, eos):\n    \"\"\"Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos.\"\"\"\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = int(step_fn(list(ids)))\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n"
       },
       "prompt": "Implementiere <code>greedy_decode(step_fn, init_ids, max_len, eos)</code>. Vertrag: Die Startfolge wird <strong>kopiert</strong> (die Eingabe des Aufrufers darf nicht mutiert werden); solange die Folge kürzer als <code>max_len</code> ist, liefert <code>step_fn(ids)</code> das nächste Token (aufrufen mit einer Kopie der aktuellen Folge); das Token wird angehängt; ist es <code>eos</code>, stoppt die Schleife sofort — das <code>eos</code> bleibt Teil der Folge. Rückgabe: Liste von ints. <strong>Dies ist eine Toy-Pipeline mit gestellten Gewichten — sie demonstriert Mechanik, keine Sprachfähigkeit; echte LLM-Inferenz bleibt lokales Projekt.</strong> Der Testcode benutzt Fixtur-<code>step_fn</code>s (Tabellen und Konstanten) und prüft Stoppen, Längengrenze, Kopie-Vertrag und Randfälle.",
-      "fullSolution": "def greedy_decode(step_fn, init_ids, max_len, eos):\n    \"\"\"Greedy loop: copy init, append step_fn(ids) while len < max_len, stop after eos.\"\"\"\n    ids = list(init_ids)\n    while len(ids) < max_len:\n        nxt = int(step_fn(list(ids)))\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n# greedy_decode(table_step, [], 8, 9) -> [5, 7, 9] (eos mitgezählt)\n# greedy_decode(always_four, [], 3, 9) -> [4, 4, 4] (max_len schneidet ab).",
+      "fullSolution": "<pre><code>def greedy_decode(step_fn, init_ids, max_len, eos):\n    \"\"\"Greedy loop: copy init, append step_fn(ids) while len &lt; max_len, stop after eos.\"\"\"\n    ids = list(init_ids)\n    while len(ids) &lt; max_len:\n        nxt = int(step_fn(list(ids)))\n        ids.append(nxt)\n        if nxt == eos:\n            break\n    return ids\n# greedy_decode(table_step, [], 8, 9) -&gt; [5, 7, 9] (eos mitgezählt)\n# greedy_decode(always_four, [], 3, 9) -&gt; [4, 4, 4] (max_len schneidet ab).</code></pre>",
       "hints": [
         "ids = list(init_ids) kopiert; die Schleifenbedingung ist len(ids) < max_len.",
         "step_fn bekommt eine eigene Kopie der Folge (list(ids)); nach dem Anhängen von eos sofort abbrechen."

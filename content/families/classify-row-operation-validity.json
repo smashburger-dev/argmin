@@ -82,17 +82,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $-3x-5y=-18$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $-3x-5y=-18$.",
               "correct": true
             },
             {
               "id": "b",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt -8.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt -8.",
               "correct": false
             },
             {
@@ -125,17 +125,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "b",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $1x-5y=-1$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $1x-5y=-1$.",
               "correct": true
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt 7.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt 7.",
               "correct": false
             },
             {
@@ -168,17 +168,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "b",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt 1.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt 1.",
               "correct": false
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $-4x+6y=-11$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $-4x+6y=-11$.",
               "correct": true
             },
             {
@@ -211,12 +211,12 @@
           "choices": [
             {
               "id": "a",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "b",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt 9.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt 9.",
               "correct": false
             },
             {
@@ -226,7 +226,7 @@
             },
             {
               "id": "d",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $-5x-4y=19$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $-5x-4y=19$.",
               "correct": true
             }
           ],
@@ -254,17 +254,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $-7x-4y=-13$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $-7x-4y=-13$.",
               "correct": true
             },
             {
               "id": "b",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt 3.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt 3.",
               "correct": false
             },
             {
@@ -297,17 +297,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "b",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $0x+9y=-18$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $0x+9y=-18$.",
               "correct": true
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt -4.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt -4.",
               "correct": false
             },
             {
@@ -340,17 +340,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "b",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt 6.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt 6.",
               "correct": false
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $-8x-3y=4$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $-8x-3y=4$.",
               "correct": true
             },
             {
@@ -383,12 +383,12 @@
           "choices": [
             {
               "id": "a",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "b",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt -2.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt -2.",
               "correct": false
             },
             {
@@ -398,7 +398,7 @@
             },
             {
               "id": "d",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $0x+7y=-10$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $0x+7y=-10$.",
               "correct": true
             }
           ],
@@ -426,17 +426,17 @@
           "choices": [
             {
               "id": "a",
-              "text": "II \\leftarrow II - 2\\cdot I, rechte Seite mitgeführt: $-11x+1y=14$.",
+              "text": "$II \\leftarrow II - 2\\cdot I$, rechte Seite mitgeführt: $-11x+1y=14$.",
               "correct": true
             },
             {
               "id": "b",
-              "text": "I \\leftarrow 0\\cdot I, danach ist das System einfacher.",
+              "text": "$I \\leftarrow 0\\cdot I$, danach ist das System einfacher.",
               "correct": false
             },
             {
               "id": "c",
-              "text": "II \\leftarrow II - 2\\cdot('linke Seite von I'), rechte Seite bleibt 8.",
+              "text": "$II \\leftarrow II - 2\\cdot$('linke Seite von I'), rechte Seite bleibt 8.",
               "correct": false
             },
             {

@@ -44,6 +44,17 @@ import { staticCaseBody } from '../domain/family_registry.mjs';
 
 export const CONSTRUCT_PROFILES = ['intro', 'core', 'stretch', 'challenge'];
 
+/** Escapes &, <, > so embedded reference code survives the SafeMarkup
+ *  DOMParser round-trip intact. */
+const htmlEscape = (text) => String(text)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
+
+/** Reference code inside a fullSolution is learner-visible: it must sit in
+ *  <pre><code> because raw newlines collapse in the render path. */
+const codeBlock = (code) => `<pre><code>${htmlEscape(code)}</code></pre>`;
+
 function assertSeed(seed) {
   if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
 }
@@ -786,7 +797,7 @@ export function generateValidateCountFamily({ seed, caseId, difficulty }) {
       },
       expected: { kind: 'reference-solver', referenceSolver: ZAEHLE_REFERENZ },
       prompt: `Implementiere eine robuste Zeilenstatistik. \`zaehle_zeilen(zeilen)\` erhält eine Liste von Zeilen im Format \`"name:zahl"\`. Eine Zeile ist gültig, wenn sie genau einen Doppelpunkt enthält, der Name nicht leer ist (nach Trimmen) und die Zahl (nach Trimmen) eine ganze Zahl mit optionalem Minus ist. Rückgabe: \`{"gueltig": g, "ungueltig": u, "summe": s}\` mit s = Summe der Zahlen aller gültigen Zeilen. Ungültige Zeilen werden übersprungen, nicht abgebrochen — aber jede Entscheidung muss aus dem Code lesbar sein (kein blankes except). Der Testcode bringt eigene Zeilenlisten mit.`,
-      fullSolution: `${ZAEHLE_REFERENZ}\n\nErst Struktur prüfen (genau ein Doppelpunkt), dann Inhalt (Name, Zahl).`,
+      fullSolution: `${codeBlock(ZAEHLE_REFERENZ)}<p>Erst Struktur prüfen (genau ein Doppelpunkt), dann Inhalt (Name, Zahl).</p>`,
     };
   }
   if (caseId === 'seen-scope-and-narrow-except') {
@@ -805,7 +816,7 @@ export function generateValidateCountFamily({ seed, caseId, difficulty }) {
       },
       expected: { kind: 'reference-solver', referenceSolver: INSPECT_REFERENZ },
       prompt: `Repariere \`inspect_rows(rows)\`. Für ungültige Alterswerte soll ein Issue \`('invalid-age', id)\` entstehen, für jede wiederholte ID ein Issue \`('duplicate-id', id)\`. \`seen\` muss über mehrere Schleifendurchläufe bestehen bleiben; fange nur \`ValueError\` ab und erzeuge im Handler den konkreten Issue-Eintrag. Der Testcode prüft Typ-, Duplikat- und Reihenfolgeverhalten.`,
-      fullSolution: `${INSPECT_REFERENZ}\n\nseen gehört vor die Schleife; nur ValueError fangen und dort den Issue anhängen.`,
+      fullSolution: `${codeBlock(INSPECT_REFERENZ)}<p>seen gehört vor die Schleife; nur ValueError fangen und dort den Issue anhängen.</p>`,
     };
   }
   throw new Error(`Unbekannter Fall ${caseId}`);
@@ -978,7 +989,7 @@ export function generateRegressionSuiteFamily({ seed, caseId, difficulty }) {
     },
     expected: { kind: 'reference-solver', referenceSolver: referenceCode },
     prompt: `Implementiere \`ist_palindrom(s)\` (True, wenn der Text nach Normalisierung vorwärts wie rückwärts gleich ist; Normalisierung: Kleinbuchstaben, Leerzeichen entfernt) und dazu \`teste_palindrom()\` — eine Regressionstest-Funktion mit mindestens ${minCount} assert-Prüfungen, die auch die bekannten Fehlerfälle (Groß-/Kleinschreibung, Leerzeichen, leerer Text) festhält. \`teste_palindrom()\` gibt bei Erfolg die Anzahl der ausgeführten Prüfungen zurück. Der Testcode prüft beide Funktionen.`,
-    fullSolution: `${referenceCode}\n\nNormalisierung zuerst: s.lower() und Leerzeichen entfernen (join mit split()).`,
+    fullSolution: `${codeBlock(referenceCode)}<p>Normalisierung zuerst: s.lower() und Leerzeichen entfernen (join mit split()).</p>`,
   };
 }
 

@@ -726,10 +726,6 @@ const EXCEPTION_CASE_IDS = [
 
 const EXCEPTION_INTRO_CHOICES = 2;
 
-function exceptionCodeOf(prompt) {
-  return String(prompt).split('\n\n').at(-1);
-}
-
 /** Unabhängiger Solver: korrekter Antworttext aus Fall und Code. */
 const solveExceptionValueError = () => ({ correctText: 'ValueError — Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' });
 const solveExceptionTypeConcat = () => ({ correctText: 'TypeError — Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' });
@@ -781,7 +777,7 @@ export function generateTraceExceptionFamily({ seed, caseId, difficulty }) {
     caseId,
     difficulty,
     caseIndex: drawn.parameters.caseIndex,
-    code: exceptionCodeOf(drawn.prompt),
+    code: drawn.parameters.code,
   };
   if (difficulty !== 'intro') {
     return {

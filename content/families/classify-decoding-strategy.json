@@ -71,7 +71,7 @@
         }
       ],
       "prompt": "Was zeichnet Greedy Decoding als Dekodierstrategie aus?",
-      "fullSolution": "Greedy Decoding hängt pro Schritt das Token mit der höchsten Logit-Punktzahl an (argmax, Gleichstand geht an die kleinste ID) und stoppt bei <eos> oder max_len — vollständig deterministisch. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Greedy Decoding hängt pro Schritt das Token mit der höchsten Logit-Punktzahl an (argmax, Gleichstand geht an die kleinste ID) und stoppt bei &lt;eos&gt; oder max_len — vollständig deterministisch. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "„Greedy“ heißt gierig nach dem Maximum: Was passiert in jedem einzelnen Schritt mit den Kandidaten?",
         "Kein Zufall, kein Sampling, kein Zurücknehmen — nur argmax, angewandt bis eos oder max_len."

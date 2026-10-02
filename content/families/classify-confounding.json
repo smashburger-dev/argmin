@@ -71,7 +71,7 @@
         "correctChoice": "a"
       },
       "prompt": "Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?",
-      "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (**Confounder**). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "fullSolution": "Eisverkäufe und Badeunfälle steigen beide mit der Sommertemperatur (<strong>Confounder</strong>). Das $r \\approx 0{,}9$ beschreibt nur den linearen Zusammenhang; die kausale Erklärung ist die Drittvariable. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
         "Suche eine Größe, die beide Variablen gemeinsam erklärt — was passiert gleichzeitig im Sommer?",
         "$r$ misst nur die Stärke des linearen Zusammenhangs; über Ursache sagt er nichts."
@@ -130,7 +130,7 @@
             }
           ],
           "prompt": "Cafébesuche und Schirmverkäufe korrelieren über das Jahr mit $r \\approx 0{,}85$. Was ist die sauberste Schlussfolgerung?",
-          "fullSolution": "Regen treibt Cafébesuche in Innenräumen und Schirmverkäufe zugleich (**Confounder**). $r$ beschreibt nur den linearen Zusammenhang, keine Ursache."
+          "fullSolution": "Regen treibt Cafébesuche in Innenräumen und Schirmverkäufe zugleich (<strong>Confounder</strong>). $r$ beschreibt nur den linearen Zusammenhang, keine Ursache."
         },
         {
           "parameters": {

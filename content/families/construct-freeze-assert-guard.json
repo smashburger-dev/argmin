@@ -168,7 +168,7 @@
         "referenceSolver": "def demo_aus_bericht(bericht, frisch):\n    if bericht != frisch:\n        raise AssertionError(\"demo-abweichung\")\n    return {\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}\n\n# Gleicher Inhalt -> eingefrorene Werte; Abweichung -> AssertionError, kein Ersatzwert"
       },
       "prompt": "Demo-Disziplin: <code>demo_aus_bericht(bericht, frisch)</code> erhält die eingefrorenen Messwerte (dict) und eine frisch berechnete Kopie. Stimmen beide überein (==), liefert die Funktion <code>{\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}</code>. Weichen sie ab, wirft sie <code>AssertionError(\"demo-abweichung\")</code> — kein stiller Fallback auf alte Werte. Die Funktion verändert weder bericht noch frisch.",
-      "fullSolution": "def demo_aus_bericht(bericht, frisch):\n    if bericht != frisch:\n        raise AssertionError(\"demo-abweichung\")\n    return {\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}\n\n# Ein Vergleich, ein Fehlerweg, ein Rückgabewert — die Demo lügt nicht.",
+      "fullSolution": "<pre><code>def demo_aus_bericht(bericht, frisch):\n    if bericht != frisch:\n        raise AssertionError(\"demo-abweichung\")\n    return {\"metriken\": bericht, \"quelle\": \"eingefroren\", \"geprueft\": True}\n\n# Ein Vergleich, ein Fehlerweg, ein Rückgabewert — die Demo lügt nicht.</code></pre>",
       "hints": [
         "Ein einziger !=-Vergleich prüft dicts tief — Python vergleicht verschachtelt.",
         "Zurückgegeben wird der EINGEFRORENE Bericht, nicht die frische Kopie."

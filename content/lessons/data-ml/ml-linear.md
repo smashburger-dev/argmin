@@ -67,4 +67,4 @@ Ein Zahlenwert allein zeigt nicht, *wo* das Modell systematisch scheitert. Trage
 
 ## Direkter Check
 
-Berechne in einer Einstiegsaufgabe einen MSE aus Residuen und in einer weiteren Einstiegsaufgabe ein $R^2$ in Prozent. Die volle Kette fit—rmse—r2 implementierst du in der [Kernaufgabe](#/family/fit-predict-metrics/linear-fit-lstsq/0/core), und die [Vertiefungsaufgabe](#/family/fit-predict-metrics/regression-report/0/stretch) verlangt einen Regressionsbericht mit Train/Test-Vergleich und Residuenmittel.
+Berechne in einer Einstiegsaufgabe einen MSE aus Residuen und in einer weiteren Einstiegsaufgabe ein $R^2$ in Prozent. Die volle Kette fit—rmse—r2 implementierst du in der [Kernaufgabe: fit-rmse-r2-Kette](#/family/fit-predict-metrics/linear-fit-lstsq/0/core), und die [Vertiefungsaufgabe: Regressionsbericht](#/family/fit-predict-metrics/regression-report/0/stretch) verlangt einen Regressionsbericht mit Train/Test-Vergleich und Residuenmittel.

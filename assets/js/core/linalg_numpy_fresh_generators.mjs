@@ -12,6 +12,17 @@ import { genMatmulEntry, genLinear2 } from './linalg_generators.mjs';
 
 const matrixText = (m) => m.map((row) => `[${row.map((v) => String(v).padStart(3)).join('  ')}]`).join('\n');
 
+/** Escapes &, <, > so learner-visible text survives the SafeMarkup DOMParser
+ *  round-trip intact (raw angle brackets would be unwrapped or dropped). */
+const htmlEscape = (text) => String(text)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
+
+/** Multi-line code/data blocks in learner text must sit inside <pre><code>;
+ *  raw newlines outside it collapse in the SafeMarkup render path. */
+const codeBlock = (code) => `<pre><code>${htmlEscape(code)}</code></pre>`;
+
 // --- c-linalg-matrices: seeded matmul entry (wraps genMatmulEntry) -----------
 
 /** numeric: one entry c_ij of a generated 2x2 matrix product. Parameters
@@ -26,7 +37,7 @@ export function genMatmulEntryFresh(seed) {
   const expanded = row.map((v, k) => `${v}·${col[k]}`).join(' + ');
   return {
     ...base,
-    prompt: `Gegeben sind die Matrizen\n\nA =\n${matrixText(A)}\n\nB =\n${matrixText(B)}\n\nBerechne den Eintrag c_${i}${j} des Produkts C = A·B und gib ihn als ganze Zahl ein.`,
+    prompt: `<p>Gegeben sind die Matrizen:</p>${codeBlock(`A =\n${matrixText(A)}\n\nB =\n${matrixText(B)}`)}<p>Berechne den Eintrag c_${i}${j} des Produkts C = A·B und gib ihn als ganze Zahl ein.</p>`,
     fullSolution: `c_${i}${j} ist das Skalarprodukt der ${i}. Zeile von A mit der ${j}. Spalte von B: ${expanded} = ${base.expected}.`,
   };
 }
@@ -42,7 +53,7 @@ export function genLinear2Fresh(seed) {
   const [x, y] = base.expected;
   return {
     ...base,
-    prompt: `Löse das lineare Gleichungssystem\n\n  ${A[0][0]}x + ${A[0][1]}y = ${b[0]}\n  ${A[1][0]}x + ${A[1][1]}y = ${b[1]}\n\nmit dem Gauß-Verfahren und gib die Lösung als Paar (x, y) an — in der Schreibweise (x, y).`,
+    prompt: `<p>Löse das lineare Gleichungssystem</p>${codeBlock(`  ${A[0][0]}x + ${A[0][1]}y = ${b[0]}\n  ${A[1][0]}x + ${A[1][1]}y = ${b[1]}`)}<p>mit dem Gauß-Verfahren und gib die Lösung als Paar (x, y) an — in der Schreibweise (x, y).</p>`,
     fullSolution: `Elimination: eine Gleichung mit passendem Faktor von der anderen abziehen, bis eine Gleichung nur noch y enthält; dann zurückeinsetzen. Die Lösung ist x = ${x}, y = ${y} (Probe in beiden Gleichungen einsetzen).`,
   };
 }
@@ -79,7 +90,7 @@ export function genDet2(seed) {
   return {
     parameters,
     expected: d,
-    prompt: `Die Spalten der Matrix\n\nA =\n${matrixText(m)}\n\nsollen auf lineare Unabhängigkeit geprüft werden. Berechne die Determinante det(A) als ganze Zahl — det(A) ≠ 0 beweist die Unabhängigkeit der Spalten.`,
+    prompt: `<p>Die Spalten der Matrix</p>${codeBlock(`A =\n${matrixText(m)}`)}<p>sollen auf lineare Unabhängigkeit geprüft werden. Berechne die Determinante det(A) als ganze Zahl — det(A) ≠ 0 beweist die Unabhängigkeit der Spalten.</p>`,
     fullSolution: `det(A) = a·d − b·c = ${m[0][0]}·${m[1][1]} − ${m[0][1]}·${m[1][0]} = ${m[0][0] * m[1][1]} − ${m[0][1] * m[1][0]} = ${d}. Da det(A) ≠ 0, sind die Spalten linear unabhängig.`,
   };
 }

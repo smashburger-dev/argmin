@@ -6,6 +6,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   compileContent,
+  stripPromptMarkup,
+  validateLearnerTextMarkup,
   validateLessonExerciseLinks,
   validateCompetencyGraph,
   validateCompiledContent,
@@ -252,4 +254,167 @@ test('a new exercise is a family placement without catalog, UI, ledger or build-
   } finally {
     rmSync(placeRoot, { recursive: true, force: true });
   }
+});
+
+test('family activity titles drop an unclosed math span instead of tearing it', () => {
+  // Regression: an 80-char cut inside \[…\] or $…$ left a dangling delimiter
+  // that rendered raw on cards. The gate in validateCompiledContent fails
+  // closed on any unbalanced title, so a compiled bundle proves balance.
+  const bundle = compileContent({ projectRoot: root, profile: 'public' });
+  assert.doesNotThrow(() => validateCompiledContent(bundle));
+  const titles = new Map(bundle.familyActivities.map((activity) => [activity.definitionId, activity.title]));
+  assert.equal(titles.get('transform-rank-dependence-rowops:rank-3x3-staircase'), 'Bestimme den Rang der Matrix …');
+  assert.equal(titles.get('transform-system-2x2-elimination:system-w05-e11'), 'Übung zur Gauß-Elimination mit anderen Zahlen als w05-e6: Löse …');
+  assert.equal(titles.get('classify-confounding:temperature-confounder'), 'Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit …');
+});
+
+test('stripPromptMarkup cuts before an unclosed math span and keeps balanced spans', () => {
+  assert.equal(
+    stripPromptMarkup('Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}2&1&1\\\\1&2&0\\\\3&3&1\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.'),
+    'Bestimme den Rang der Matrix …',
+  );
+  assert.equal(
+    stripPromptMarkup('Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?'),
+    'Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit …',
+  );
+  assert.equal(
+    stripPromptMarkup('Übung zur Gauß-Elimination: Löse \\[ 2x + y = 5, \\qquad x - 3y = -8 \\] und gib die Lösung als Paar ein.'),
+    'Übung zur Gauß-Elimination: Löse \\[ 2x + y = 5, \\qquad x - 3y = -8 \\] und gib …',
+  );
+  assert.equal(stripPromptMarkup('Berechne $u^\\top v$ für gegebene Vektoren.'), 'Berechne $u^\\top v$ für gegebene Vektoren.');
+});
+
+test('compiled content rejects a family activity title with unbalanced math delimiters', () => {
+  const bundle = compileContent({ projectRoot: root, profile: 'public' });
+  const activity = bundle.familyActivities.find((item) => item.definitionId === 'classify-confounding:temperature-confounder');
+  activity.title = 'Eisverkäufe korrelieren mit $r \\approx 0{,}9';
+  assert.throws(
+    () => validateCompiledContent(bundle),
+    /classify-confounding:temperature-confounder: Titel mit unbalancierten Math-Delimitern/,
+  );
+});
+
+// --- learner-text markup gate (validateLearnerTextMarkup) ---------------------
+// Every learner-visible prose string in the compiled bundle renders through
+// MathMarkup -> SafeMarkup. The gate fails closed on markup that would render
+// broken; code/parameters/expected values stay out of scope. Each rule gets a
+// red case (throws, names the id/path) and a green case.
+
+const learnerBundle = (caseFields, extra = {}) => ({
+  families: [{
+    familyId: 'fam-gate',
+    contract: { summary: 'Güte-Familie' },
+    cases: [{ caseId: 'case-1', ...caseFields }],
+  }],
+  ...extra,
+});
+
+test('learner-text gate: unbalanced math delimiters throw with id/path, balanced spans pass', () => {
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ prompt: 'Der Term $x + 2 ist gegeben.' })),
+    /families\[0\]\(fam-gate\)\.cases\[0\]\(case-1\)\.prompt: unbalancierte Math-Delimiter/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ prompt: 'Abschluss \\[ ohne Anfang' })),
+    /\(case-1\)\.prompt: unbalancierte Math-Delimiter/,
+  );
+  assert.equal(validateLearnerTextMarkup(learnerBundle({
+    prompt: 'Der Term $x + 2$ und \\[y = x^2\\] sind gegeben.',
+    fullSolution: 'Auch \\(z = 3\\) und `code $nicht$ math` sind erlaubt.',
+  })), true);
+});
+
+test('learner-text gate: markdown bold pairs throw, python exponentiation passes', () => {
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ fullSolution: 'Der Schritt ist **wichtig** hier.' })),
+    /\(case-1\)\.fullSolution: Markdown-Fettdruck-Artefakt/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ hints: ['Erst lesen.', 'Dann **Test** schreiben.'] })),
+    /\(case-1\)\.hints\[1\]: Markdown-Fettdruck-Artefakt/,
+  );
+  assert.equal(validateLearnerTextMarkup(learnerBundle({
+    prompt: 'Python-Operator: base ** m potenziert; verkettet geht a ** b ** c oder a**b**c.',
+    fullSolution: 'Der Ausdruck `x ** 2` in Backticks ist Code und bleibt erlaubt.',
+  })), true);
+});
+
+test('learner-text gate: non-allowlisted tags throw, allowlist and escaped tokens pass', () => {
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ prompt: 'Das Modell gibt das <eos>-Token aus.' })),
+    /\(case-1\)\.prompt: nicht freigegebenes HTML-Tag <eos>/,
+  );
+  assert.equal(validateLearnerTextMarkup(learnerBundle({
+    prompt: '<p>Absatz mit <code>Code</code>, <strong>Betonung</strong> und &lt;pad&gt;-Token.</p>',
+    choices: [{ id: 'a', text: '<em>Kursiv</em> via Liste <ul><li>eins</li></ul>', correct: true }],
+  })), true);
+});
+
+test('learner-text gate: raw newlines throw outside pre/code, allowed inside', () => {
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ prompt: 'Erste Zeile\nZweite Zeile' })),
+    /\(case-1\)\.prompt: Zeilenumbruch außerhalb von <pre><code>/,
+  );
+  assert.equal(validateLearnerTextMarkup(learnerBundle({
+    prompt: '<p>Frage?</p><pre><code>werte = [1, 2]\nwerte[5]</code></pre>',
+    fullSolution: '<p>Erklärung</p><pre><code>def f(x):\n    return x</code></pre>',
+  })), true);
+});
+
+test('learner-text gate: naked TeX commands throw outside math spans', () => {
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ prompt: 'Der Wert \\alpha liegt vor.' })),
+    /\(case-1\)\.prompt: nackter TeX-Befehl \\alpha/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({ typicalErrors: ['\\frac verwechselt'] })),
+    /\(case-1\)\.typicalErrors\[0\]: nackter TeX-Befehl \\frac/,
+  );
+  assert.equal(validateLearnerTextMarkup(learnerBundle({
+    prompt: 'Der Wert $\\alpha$ liegt vor, plus \\[\\frac{a}{b}\\] und \\(x\\cdot y\\).',
+    choices: [{ id: 'a', text: 'Kommando `\\alpha` als Code ist erlaubt.', correct: true }],
+    fullSolution: '<pre><code># \\sum ist hier Programmcode\nx = 1</code></pre>',
+  })), true);
+});
+
+test('learner-text gate: all enumerated learner fields are covered', () => {
+  assert.throws(
+    () => validateLearnerTextMarkup({
+      familyActivities: [{ definitionId: 'act-1', title: 'Titel mit <x>-Tag' }],
+    }),
+    /familyActivities\[0\]\(act-1\)\.title: nicht freigegebenes HTML-Tag <x>/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup({ lessons: [{ lessonId: 'les-1', objectives: ['gut', 'schlecht <mark>markiert</mark>'] }] }),
+    /lessons\[0\]\(les-1\)\.objectives\[1\]: nicht freigegebenes HTML-Tag <mark>/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup({ learningModules: [{ moduleId: 'mod-1', description: 'Zeile\nUmbruch' }] }),
+    /learningModules\[0\]\(mod-1\)\.description: Zeilenumbruch/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({
+      feedbackRules: [{ if: 'choice !== "a"', then: 'Hinweis mit <eos>' }],
+    })),
+    /\(case-1\)\.feedbackRules\[0\]\.then: nicht freigegebenes HTML-Tag/,
+  );
+  assert.throws(
+    () => validateLearnerTextMarkup(learnerBundle({
+      variants: [{ caseId: 'v-1', prompt: 'Variante mit <unk>' }],
+    })),
+    /\(case-1\)\.variants\[0\]\(v-1\)\.prompt: nicht freigegebenes HTML-Tag <unk>/,
+  );
+});
+
+test('learner-text gate: code, parameters, expected and source fields stay out of scope', () => {
+  assert.equal(validateLearnerTextMarkup(learnerBundle({
+    prompt: 'Sauberer Text mit $x$ und <code>ok()</code>.',
+    parameters: { snippet: 'for x in [1]:\n    print(x < 2)', raw: 'Zeile\n**nicht** \\alpha' },
+    expected: { referenceSolver: 'def f():\n    return "<eos>"', value: 1 },
+    starterCode: 'x = "unfertig"\nprint("**x**")',
+    tests: 'assert a < b\nassert "<img>" == "<img>"',
+    referenceSolver: 'code mit \\frac und \n und <tag>',
+  }, {
+    tools: [{ toolId: 't-1', manifest: 'Zeile\n**nicht** \\alpha und <x>' }],
+  })), true);
 });

@@ -413,6 +413,167 @@ function validateLearningModules(bundle, ids) {
   }
 }
 
+// Card titles must not carry half a math span: a dangling \[ or $ renders
+// raw on family cards. Fails closed on the id, like checkReferences.
+function validateFamilyActivityTitles(activities) {
+  for (const activity of activities) {
+    if (mathDelimiterErrorIndex(activity.title || '') >= 0) {
+      throw new Error(`${activity.definitionId}: Titel mit unbalancierten Math-Delimitern`);
+    }
+  }
+}
+
+// --- learner-text markup gate -------------------------------------------------
+// Learner-visible prose renders through MathMarkup -> SafeMarkup: KaTeX
+// delimiters, the HTML allowlist, `inline` code spans and <pre><code>
+// blocks. Anything else renders broken at runtime — unwrapped tags, literal
+// ** pairs, collapsed newlines, raw TeX. The gate fails the compile closed
+// instead of shipping malformed learner text to the public bundle.
+
+// Tags SafeMarkup keeps; every other tag is unwrapped or dropped at runtime.
+const LEARNER_TEXT_ALLOWED_TAGS = new Set([
+  'p', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'pre', 'code', 'strong', 'em', 'a',
+  'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'hr', 'br',
+]);
+
+// String keys that carry learner-visible prose. Plural forms cover arrays
+// (hints[], objectives[], typicalErrors[]); `must` is the rubric item key
+// that AnswerControls renders through MathMarkup.
+const LEARNER_TEXT_KEYS = new Set([
+  'prompt', 'text', 'hint', 'hints', 'fullSolution', 'typicalError',
+  'typicalErrors', 'then', 'objective', 'objectives', 'title', 'subtitle',
+  'description', 'summary', 'label', 'must',
+]);
+
+// Non-prose subtrees: code, expected answers, parameters and structural
+// metadata are never rendered through SafeMarkup.
+const LEARNER_TEXT_SKIP_KEYS = new Set([
+  'referenceSolver', 'starterCode', 'tests', 'snippet', 'parameters', 'code',
+  'script', 'url', 'href', 'id', 'difficulty', 'role',
+]);
+const LEARNER_TEXT_SKIP_PREFIXES = ['expected', 'source'];
+
+// Protected regions: multi-line code blocks and inline code spans. The
+// renderer honours newlines there and never interprets their content as
+// markup, so every rule masks them before checking.
+const LEARNER_PRE_CODE_PATTERN = /<pre><code>[\s\S]*?<\/code><\/pre>/g;
+const LEARNER_INLINE_CODE_PATTERN = /`[^`]*`/g;
+
+// A Markdown bold pair **wort** (no whitespace right inside the markers).
+// The lookaround guards keep Python exponentiation (a ** b, a**b**c) clean:
+// a spaced ** never opens a pair, and a pair glued to word characters is
+// treated as code, not markup.
+const LEARNER_MARKDOWN_BOLD_PATTERN = /(?<![\w)\]])\*\*(?!\s)[^\s*](?:[^*\n]{0,198}?[^\s*])?\*\*(?![\w(\[])/;
+
+// Naked TeX commands are only meaningful inside a math span; outside they
+// render as literal backslash words. Denylist of the common commands that
+// actually appear in math markup across the corpus.
+const LEARNER_NAKED_TEX_PATTERN = /\\(?:alpha|beta|gamma|delta|epsilon|varepsilon|zeta|eta|theta|vartheta|iota|kappa|lambda|mu|nu|xi|pi|rho|sigma|tau|upsilon|phi|varphi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Xi|Pi|Sigma|Upsilon|Phi|Psi|Omega|frac|dfrac|tfrac|sqrt|sum|prod|int|oint|lim|infty|partial|nabla|cdot|times|div|pm|mp|ast|circ|bullet|leq|le|geq|ge|neq|ne|approx|equiv|sim|simeq|cong|propto|leftarrow|gets|rightarrow|to|Leftarrow|Rightarrow|leftrightarrow|Leftrightarrow|mapsto|forall|exists|nexists|in|notin|subset|subseteq|supset|supseteq|cup|cap|setminus|emptyset|varnothing|mathbb|mathcal|mathrm|mathbf|mathit|mathsf|mathtt|text|textbf|textit|emph|textrm|texttt|operatorname|begin|end|binom|overline|underline|widehat|widetilde|overbrace|underbrace|overset|underset|hat|tilde|bar|vec|dot|ddot|log|ln|lg|exp|sin|cos|tan|sec|csc|cot|arcsin|arccos|arctan|sinh|cosh|tanh|min|max|sup|inf|arg|det|dim|ker|gcd|mod|bmod|pmod|lfloor|rfloor|lceil|rceil|langle|rangle|lVert|rVert|lvert|rvert|ll|gg|top|bot|perp|parallel|mid|land|lor|lnot|oplus|otimes|odot|bigcup|bigcap|bigvee|bigwedge|ldots|cdots|vdots|ddots|quad|qquad|left|right|big|Big|bigg|Bigg|displaystyle|limits|hline)\b/;
+
+// Replaces the inside of <pre><code>…</code></pre> blocks and `inline`
+// spans so protected content cannot trip the prose rules.
+function maskLearnerProtectedRegions(text) {
+  return String(text)
+    .replace(LEARNER_PRE_CODE_PATTERN, ' ')
+    .replace(LEARNER_INLINE_CODE_PATTERN, ' ');
+}
+
+// Blanks out balanced math spans ($…$, $$…$$, \[…\], \(…\)) so the naked-TeX
+// check only ever sees prose. Mirrors mathDelimiterErrorIndex: escaped \$
+// stays literal, an unmatched closer/opener simply is not masked here —
+// the delimiter-balance check reports it separately.
+function stripLearnerMathSpans(text) {
+  const stack = [];
+  let out = '';
+  let i = 0;
+  while (i < text.length) {
+    const open = stack[stack.length - 1];
+    if (open) {
+      const closer = MATH_SPAN_CLOSERS[open.kind];
+      if (text.startsWith(closer, i)) { stack.pop(); out += ' '.repeat(closer.length); i += closer.length; continue; }
+      out += ' ';
+      i += text[i] === '\\' ? 2 : 1;
+      continue;
+    }
+    if (text.startsWith('$$', i)) { stack.push({ kind: '$$' }); out += '  '; i += 2; continue; }
+    const char = text[i];
+    if (char === '$') { stack.push({ kind: '$' }); out += ' '; i += 1; continue; }
+    if (char === '\\') {
+      const next = text[i + 1];
+      if (next === '[' || next === '(') { stack.push({ kind: `\\${next}` }); out += '  '; i += 2; continue; }
+      if (next === ']' || next === ')' || next === '\\' || next === '$') { out += '  '; i += 2; continue; }
+      out += char;
+      i += 1;
+      continue;
+    }
+    out += char;
+    i += 1;
+  }
+  return out;
+}
+
+// Checks one learner-visible string; returns every violation found in it.
+// Tags are checked on the raw string: an unescaped <tag> inside a code
+// block is still parsed as an element by DOMParser, so protected regions
+// cannot hide it.
+function learnerTextViolations(value) {
+  const violations = [];
+  const masked = maskLearnerProtectedRegions(value);
+  if (mathDelimiterErrorIndex(masked) >= 0) violations.push('unbalancierte Math-Delimiter');
+  if (/\n/.test(masked)) violations.push('Zeilenumbruch außerhalb von <pre><code>');
+  for (const match of String(value).matchAll(/<\/?([a-zA-Z][a-zA-Z0-9-]*)[^>]*>/g)) {
+    if (!LEARNER_TEXT_ALLOWED_TAGS.has(match[1].toLowerCase())) {
+      violations.push(`nicht freigegebenes HTML-Tag ${match[0].slice(0, 40)}`);
+    }
+  }
+  if (LEARNER_MARKDOWN_BOLD_PATTERN.test(masked)) violations.push('Markdown-Fettdruck-Artefakt (**…**)');
+  const prose = stripLearnerMathSpans(masked);
+  const nakedTex = prose.match(LEARNER_NAKED_TEX_PATTERN);
+  if (nakedTex) violations.push(`nackter TeX-Befehl ${nakedTex[0]}`);
+  return violations;
+}
+
+// Readable path for diagnostics: id-bearing objects get their id appended,
+// e.g. families[3](trace-foo).cases[0](case-x).prompt.
+function learnerTextWalk(value, path, inLearnerText, report) {
+  if (typeof value === 'string') {
+    if (inLearnerText) report(path, value);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      const item = value[index];
+      let label = `${path}[${index}]`;
+      if (item && typeof item === 'object' && !Array.isArray(item)) {
+        const idKey = Object.keys(item).find((key) => /(^id$|Id$)/.test(key) && typeof item[key] === 'string');
+        if (idKey) label = `${label}(${item[idKey]})`;
+      }
+      learnerTextWalk(item, label, inLearnerText, report);
+    }
+    return;
+  }
+  if (!value || typeof value !== 'object') return;
+  for (const [key, entry] of Object.entries(value)) {
+    if (LEARNER_TEXT_SKIP_KEYS.has(key) || LEARNER_TEXT_SKIP_PREFIXES.some((prefix) => key.startsWith(prefix))) continue;
+    learnerTextWalk(entry, path ? `${path}.${key}` : key, inLearnerText || LEARNER_TEXT_KEYS.has(key), report);
+  }
+}
+
+/** Fails closed on malformed learner-visible markup in the compiled bundle.
+ *  Every prose string (prompts, choices, hints, titles, solutions, …) must
+ *  satisfy the SafeMarkup render contract; code/parameters/expected values
+ *  are excluded. Throws with the offending id/path like checkReferences. */
+export function validateLearnerTextMarkup(bundle) {
+  const problems = [];
+  learnerTextWalk(bundle, '', false, (path, value) => {
+    for (const violation of learnerTextViolations(value)) {
+      problems.push(`${path}: ${violation}`);
+    }
+  });
+  if (problems.length) throw new Error(problems[0]);
+  return true;
+}
+
 export function validateCompiledContent(bundle) {
   if (bundle.profile !== 'public') throw new Error(`Unbekanntes Buildprofil ${bundle.profile}`);
   for (const family of bundle.families || []) registerStaticCases(family.familyId, family.cases || []);
@@ -432,6 +593,8 @@ export function validateCompiledContent(bundle) {
   validateToolsExplanationsProjects(bundle, ids);
   validateLessons(bundle, ids);
   validateLearningModules(bundle, ids);
+  validateFamilyActivityTitles(bundle.familyActivities || []);
+  validateLearnerTextMarkup(bundle);
   validateSourceRights(bundle);
   validateSources(bundle.sources);
   if (bundle.profile === 'public' && privateMarkers.test(JSON.stringify(bundle))) {
@@ -642,18 +805,42 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
 // Lesson and family bodies stay out of the initial index and are loaded by id.
 
 const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
-// List views show a short prompt snippet; the full prompt stays in the
-// per-exercise body chunk. Without this, the index (and with it the initial
-// chunk) grows linearly with prompt text.
-function promptSnippet(prompt, maxLength = 110) {
-  const text = String(prompt || '').replace(/\s+/g, ' ').trim();
-  if (text.length <= maxLength) return text;
-  const cut = text.slice(0, maxLength);
-  const boundary = Math.max(cut.lastIndexOf(' '), cut.lastIndexOf('$'));
-  return `${cut.slice(0, boundary > 40 ? boundary : maxLength)} …`;
+
+// Index of the first math delimiter that breaks balance: a closer without
+// an opener, or the opener left unclosed at end of text (-1 = balanced).
+// $$ is scanned before $, \[ \] and \( \) pair up, an escaped \$ is literal.
+const MATH_SPAN_CLOSERS = { '$$': '$$', '$': '$', '\\[': '\\]', '\\(': '\\)' };
+function mathDelimiterErrorIndex(text) {
+  const stack = [];
+  let i = 0;
+  while (i < text.length) {
+    const open = stack[stack.length - 1];
+    if (open) {
+      const closer = MATH_SPAN_CLOSERS[open.kind];
+      if (text.startsWith(closer, i)) { stack.pop(); i += closer.length; continue; }
+      i += text[i] === '\\' ? 2 : 1;
+      continue;
+    }
+    if (text.startsWith('$$', i)) { stack.push({ kind: '$$', index: i }); i += 2; continue; }
+    const char = text[i];
+    if (char === '$') { stack.push({ kind: '$', index: i }); i += 1; continue; }
+    if (char === '\\') {
+      const next = text[i + 1];
+      if (next === '[' || next === '(') { stack.push({ kind: `\\${next}`, index: i }); i += 2; continue; }
+      if (next === ']' || next === ')') return i;
+      i += next === '\\' || next === '$' ? 2 : 1;
+      continue;
+    }
+    i += 1;
+  }
+  return stack.length ? stack[0].index : -1;
 }
 
-function stripPromptMarkup(prompt, maxLength = 80) {
+// Card titles double as the list-view snippet and stay short so the index
+// chunk does not grow linearly with prompt text. A cut inside a math span
+// leaves a dangling \[ or $ rendering raw on cards, so an unclosed span
+// tail is dropped instead of torn apart.
+export function stripPromptMarkup(prompt, maxLength = 80) {
   const text = String(prompt || '')
     .replace(/<[^>]*>/g, '')
     .replace(/\s+/g, ' ')
@@ -661,7 +848,10 @@ function stripPromptMarkup(prompt, maxLength = 80) {
   if (text.length <= maxLength) return text;
   const cut = text.slice(0, maxLength);
   const boundary = cut.lastIndexOf(' ');
-  return `${cut.slice(0, boundary > 30 ? boundary : maxLength)} …`;
+  let title = cut.slice(0, boundary > 30 ? boundary : maxLength);
+  const brokenAt = mathDelimiterErrorIndex(title);
+  if (brokenAt >= 0) title = title.slice(0, brokenAt).trimEnd();
+  return title ? `${title} …` : '';
 }
 
 function buildFamilyActivities(learningModules, families) {

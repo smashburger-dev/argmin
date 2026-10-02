@@ -119,7 +119,7 @@
         "kind": "output-lines",
         "output": "26"
       },
-      "prompt": "Zufallsströme vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(a[0] + b[0] + c[0])</code> vorher, ohne den Code auszuführen. Beachte, dass <code>c</code> von einem <b>neuen</b> Generator mit demselben Seed gezogen wird und <code>b</code> vom bereits benutzten <code>rng</code>.",
+      "prompt": "Zufallsströme vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(a[0] + b[0] + c[0])</code> vorher, ohne den Code auszuführen. Beachte, dass <code>c</code> von einem <strong>neuen</strong> Generator mit demselben Seed gezogen wird und <code>b</code> vom bereits benutzten <code>rng</code>.",
       "fullSolution": "default_rng(7) beginnt mit [9, 6, 6]: a = [9, 6, 6]. Der nächste Aufruf im selben Generator setzt die Folge fort: b = [8, 5, 7]. Ein neuer Generator mit Seed 7 startet von vorn: c = [9, 6, 6]. Ausgabe: 9 + 8 + 9 = <code>26</code>.",
       "hints": [
         "Ein neuer default_rng(7) startet die Folge von vorn — welche Beziehung gilt deshalb zwischen a und c?",

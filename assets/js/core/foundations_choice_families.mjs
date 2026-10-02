@@ -77,7 +77,7 @@ export const STRING_IMMUTABILITY_CASES = [
   {
     caseId: 'string-item-assignment-typeerror',
     sourceId: 'w02-e3',
-    prompt: 'Was passiert beim Ausführen dieses Programms?\n\n<code>name = "Ada"\nname[0] = "M"\nprint(name)</code>',
+    prompt: '<p>Was passiert beim Ausführen dieses Programms?</p><pre><code>name = "Ada"\nname[0] = "M"\nprint(name)</code></pre>',
     correct: 'Das Programm bricht mit einem TypeError ab: Strings unterstützen keine Zuweisung an einzelne Zeichen.',
     distractors: [
       'Es gibt "Mda" aus, weil das erste Zeichen ersetzt wird.',
@@ -102,7 +102,7 @@ export const SET_OPERATION_CASES = [
   {
     caseId: 'dedup-and-intersection',
     sourceId: 'w03-e2',
-    prompt: 'Gegeben:\n\n<code>a = {"ki", "lern", "ki"}\nb = {"lern", "plattform"}</code>\n\nWelche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?',
+    prompt: '<p>Gegeben:</p><pre><code>a = {"ki", "lern", "ki"}\nb = {"lern", "plattform"}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?</p>',
     correct: 'len(a) ist 2 und a & b ist {"lern"} — Mengen speichern jedes Element nur einmal, & bildet den Durchschnitt.',
     distractors: [
       'len(a) ist 3 und a & b ist {"lern"} — das doppelte "ki" bleibt erhalten.',

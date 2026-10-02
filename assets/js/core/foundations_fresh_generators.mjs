@@ -20,6 +20,19 @@
 import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
 
 
+/** Escapes &, <, > so learner-visible text survives the SafeMarkup DOMParser
+ *  round-trip intact (raw angle brackets would be unwrapped or dropped). */
+const htmlEscape = (text) => String(text)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
+
+/** Multi-line code in prompt/fullSolution must live inside <pre><code>;
+ *  raw newlines elsewhere collapse in the SafeMarkup render path. The
+ *  leading newline keeps the prompt's first line seed-invariant — the
+ *  variant-bank signature test keys on `prompt.split('\n')[0]`. */
+const codeBlock = (code) => `<pre><code>\n${htmlEscape(code)}\n</code></pre>`;
+
 /** Python repr for the values our generators produce. Sets are rendered
  *  in sorted order — the grader compares set literals order-insensitively
  *  because Python's set iteration order is not observable knowledge. */
@@ -490,8 +503,8 @@ export function genMetaErrorClassify(seed) {
       parameters: { caseId: metaCase.caseId, caseIndex },
       expected: { correctChoice: correctChoiceId },
       choices,
-      prompt: `Beobachtung: ${metaCase.symptom}\n\nWelcher n\u00e4chste Schritt des Debug-Prozesses (Beobachtung \u2192 Reproduktion \u2192 Hypothese \u2192 frischer Test) passt am besten zu dieser Beobachtung?`,
-      fullSolution: `Richtig ist: ${correctText}\nDie Beobachtung passt zum Fehlerbild \u201e${metaCase.caseId}\u201c. Ein guter Debug-Schritt benennt die Hypothese explizit und pr\u00fcft sie an einem frischen, gezielten Testfall \u2014 statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.`,
+      prompt: `<p>Beobachtung: ${metaCase.symptom}</p><p>Welcher n\u00e4chste Schritt des Debug-Prozesses (Beobachtung \u2192 Reproduktion \u2192 Hypothese \u2192 frischer Test) passt am besten zu dieser Beobachtung?</p>`,
+      fullSolution: `<p>Richtig ist: ${correctText}</p><p>Die Beobachtung passt zum Fehlerbild \u201e${metaCase.caseId}\u201c. Ein guter Debug-Schritt benennt die Hypothese explizit und pr\u00fcft sie an einem frischen, gezielten Testfall \u2014 statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.</p>`,
     }),
   });
 }
@@ -554,10 +567,10 @@ export function genExceptionBoundary(seed) {
   const ids = ['a', 'b', 'c', 'd'];
   const choices = rotated.map((text, i) => ({ id: ids[i], text, correct: i === rotation }));
   return {
-    parameters: { caseId: metaCase.caseId, caseIndex },
+    parameters: { caseId: metaCase.caseId, caseIndex, code },
     expected: { correctChoice: ids[rotation] },
     choices,
-    prompt: `Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n${code}`,
+    prompt: `<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p>${codeBlock(code)}`,
     fullSolution: `Richtig: ${correctText}${noError ? '' : ` Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.`}`,
   };
 }
@@ -600,7 +613,7 @@ export function genBranchCoverageCount(seed) {
   return {
     parameters: { shape },
     expected: answer,
-    prompt: `Wie viele Testfälle sind mindestens nötig, um jede Verzweigung dieses Codegerüsts in jede Richtung mindestens einmal wirklich zu durchlaufen (vollständige Zweigabdeckung)? Erst die erreichbaren Wege durch den Entscheidungsbaum zählen — dann als ganze Zahl angeben.\n\n${numbered(BRANCH_SHAPES[shape])}`,
+    prompt: `<p>Wie viele Testfälle sind mindestens nötig, um jede Verzweigung dieses Codegerüsts in jede Richtung mindestens einmal wirklich zu durchlaufen (vollständige Zweigabdeckung)? Erst die erreichbaren Wege durch den Entscheidungsbaum zählen — dann als ganze Zahl angeben.</p>${codeBlock(numbered(BRANCH_SHAPES[shape]))}`,
     fullSolution: `Der Entscheidungsbaum dieses Gerüsts hat ${answer} erreichbare Blätter (jede Kombination von Bedingungsausgängen, die zu einem unterscheidbaren Programmweg führt). Zweigabdeckung verlangt für jedes Blatt mindestens einen Testfall mit Werten, die genau auf diesem Weg landen — also mindestens ${answer} Testfälle.`,
   };
 }
@@ -671,7 +684,7 @@ export function genGitNextAction(seed) {
         parameters: { caseId: metaCase.caseId, caseIndex, ...(fileName ? { fileName } : {}) },
         expected: { correctChoice: correctChoiceId },
         choices: localizedChoices,
-        prompt: `Situation: ${localize(metaCase.state)}\n\nWelcher Schritt passt jetzt am besten?`,
+        prompt: `<p>Situation: ${localize(metaCase.state)}</p><p>Welcher Schritt passt jetzt am besten?</p>`,
         fullSolution: `Richtig: ${localize(options[0])}. ${localize(metaCase.insight)}`,
       };
     },
@@ -753,7 +766,7 @@ export function generateGitOperationFamily({ seed, caseId, difficulty }) {
     parameters: { caseId, difficulty, ...(fileName ? { fileName } : {}) },
     expected: { correctChoice: ids[rotation] },
     choices,
-    prompt: `Situation: ${meta.state}${fileNote}\n\n${question}`,
+    prompt: `<p>Situation: ${meta.state}${fileNote}</p><p>${question}</p>`,
     fullSolution: `Richtig: ${meta.correct}. ${meta.insight}`,
   };
 }
