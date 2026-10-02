@@ -3,22 +3,29 @@ import { Fragment } from 'preact';
 import type { JSX } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { loadCatalog } from '../adapters/content-repository';
-import { loadOnboardingDone, loadProgressSnapshot, saveLearningPreferences, saveOnboardingDone, type ProgressSnapshot } from '../adapters/local-progress';
+import { loadOnboardingDone, loadProgressSnapshot, loadTourDone, PROGRESS_CHANNEL_NAME, saveLearningPreferences, saveOnboardingDone, saveTourDone, type ProgressSnapshot } from '../adapters/local-progress';
 import { CompetencyView, DiagnosticView, LearnView, PlaceholderView, ReviewView, SettingsView, SourcesView, ToolsView } from './views';
 import { ProjectView } from './ProjectView';
 import { LessonView } from './LessonView';
 import { VisualizationView } from './VisualizationView';
 import { ProgressView } from './ProgressView';
 import { TodayView } from './TodayView';
+import { SearchView } from './SearchView';
 import { Button } from './Button';
 import { BrandWordmark } from './Brand';
 import { SponsorSlots } from './Sponsor';
 import { OnboardingOverlay } from './OnboardingOverlay';
+import { TourOverlay } from './TourOverlay';
+import { TOUR_STEPS } from './tour-steps';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
+import { applyUpdate, onUpdateReady } from '../app/sw-update';
+import type { ExerciseSummary } from '../app/types';
+import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { initPageEase } from './page-ease';
 
 const ModuleView = lazy(() => import('./ModuleView').then((module) => ({ default: module.ModuleView })));
 const FamilyExerciseView = lazy(() => import('./FamilyExerciseView').then((module) => ({ default: module.FamilyExerciseView })));
+const ChallengeView = lazy(() => import('./ChallengeView').then((module) => ({ default: module.ChallengeView })));
 
 const iconProps = {
   width: 16,
@@ -61,6 +68,16 @@ const navigation: NavigationItem[] = [
     ),
   },
   {
+    route: 'search', label: 'Suche', secondary: true, icon: (
+      <svg {...iconProps}><circle cx="7" cy="7" r="4.2" /><path d="M10.4 10.4 14 14" /></svg>
+    ),
+  },
+  {
+    route: 'challenge', label: 'Challenge', secondary: true, icon: (
+      <svg {...iconProps}><path d="M9 1.8 4.3 8.7h3.1L6.4 14.2l5.3-7.7H8.6z" /></svg>
+    ),
+  },
+  {
     route: 'sources', label: 'Lektüren', secondary: true, icon: (
       <svg {...iconProps}><path d="M4 2.5h5.5L13 6v7.5H4zM9.5 2.5V6H13M6.5 8.5h4M6.5 11h4" /></svg>
     ),
@@ -94,11 +111,13 @@ const routeTitles: Record<string, string> = {
   today: 'Heute',
   learn: 'Lernen',
   review: 'Review',
+  challenge: 'Challenge',
   progress: 'Fortschritt',
   settings: 'Einstellungen',
   diagnostic: 'Diagnose',
   sources: 'Lektüren',
   tools: 'Werkzeuge',
+  search: 'Suche',
   visualization: 'Visualisierung',
   module: 'Modul',
   family: 'Aufgabe',
@@ -132,8 +151,12 @@ export function App() {
   });
   const [progressReady, setProgressReady] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState<boolean | null>(null);
+  const [tourStep, setTourStep] = useState<number | null>(null);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const [navCollapsed, setNavCollapsed] = useState(() => typeof localStorage !== 'undefined' && localStorage.getItem(NAV_KEY) === 'rail');
+  const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+  const [updateReady, setUpdateReady] = useState(false);
+  const [updateDismissed, setUpdateDismissed] = useState(false);
   const progressRequest = useRef(0);
   const refreshProgress = useCallback(async () => {
     const request = ++progressRequest.current;
@@ -153,21 +176,38 @@ export function App() {
 
   useEffect(() => initPageEase(), []);
 
+  useEffect(() => onUpdateReady(() => setUpdateReady(true)), []);
+
   useEffect(() => {
     const refresh = () => { void refreshProgress().catch(() => setProgressReady(true)); };
     refresh();
     addEventListener('learning-progress-changed', refresh);
+    // Cross-tab: a second open tab receives the ping and reloads its snapshot
+    // instead of staying stale until reload. Refresh is read-only and guarded
+    // by progressRequest, so a bounced message cannot loop.
+    const channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(PROGRESS_CHANNEL_NAME) : null;
+    if (channel) channel.onmessage = refresh;
     return () => {
       progressRequest.current += 1;
       removeEventListener('learning-progress-changed', refresh);
+      channel?.close();
     };
   }, [refreshProgress]);
 
   useEffect(() => {
     let live = true;
-    const forced = new URLSearchParams(location.search).has('fresh');
-    void loadOnboardingDone()
-      .then((done) => { if (live) setShowOnboarding((forced || !navigator.webdriver) && !done); })
+    const params = new URLSearchParams(location.search);
+    const forced = params.has('fresh');
+    const wantsTour = params.has('tour');
+    void Promise.all([loadOnboardingDone(), loadTourDone()])
+      .then(([done, tourDone]) => {
+        if (!live) return;
+        setShowOnboarding((forced || !navigator.webdriver) && !done);
+        // The explicit ?tour param wins even under webdriver; otherwise offer
+        // the tour once to users whose onboarding is already done.
+        if (wantsTour) setTourStep(0);
+        else if (!forced && done && !tourDone && !navigator.webdriver) setTourStep(0);
+      })
       .catch(() => { if (live) setShowOnboarding(false); });
     return () => { live = false; };
   }, []);
@@ -176,21 +216,75 @@ export function App() {
   useEffect(() => {
     const section = route.split('/')[0] || 'today';
     document.title = `${routeTitles[section] ?? 'argmin'} – argmin`;
+    setNavDrawerOpen(false);
     window.scrollTo(0, 0);
     mainRef.current?.focus({ preventScroll: true });
     requestAnimationFrame(() => document.querySelector<HTMLElement>('main h1')?.focus());
   }, [route]);
 
   const [section = 'today', routeId = ''] = route.split('/');
+  const famParts = route.split('/');
+  // Recent attempted exercises per module, deduped and recency-sorted by the
+  // history timeline (id = 'familyId:caseId').
+  const recentExerciseByModule = (moduleId: string) => progress.history
+    .filter((entry) => entry.kind === 'attempt')
+    .map((entry) => catalog.exercises.find((exercise) => exercise.definitionId === entry.id))
+    .filter((exercise): exercise is ExerciseSummary => Boolean(exercise && exercise.moduleId === moduleId))
+    .slice(0, 2);
   const recentEntries = progress.recentModules.slice(0, 2).flatMap((moduleId) => {
     const entryModule = catalog.learningModules.find((item) => item.moduleId === moduleId);
     if (!entryModule) return [];
     const lessonId = progress.recentLessons.find((id) => entryModule.lessonIds.includes(id));
     const entryLesson = lessonId ? catalog.lessons.find((item) => item.lessonId === lessonId) : undefined;
-    return [{ module: entryModule, lesson: entryLesson }];
+    return [{ module: entryModule, lesson: entryLesson, exercises: recentExerciseByModule(moduleId) }];
   });
-  const familyRef = section === 'family' ? route.split('/').slice(1).join('/') : '';
+  const currentExercise = section === 'family' && famParts.length >= 3
+    ? catalog.exercises.find((exercise) => exercise.familyId === famParts[1] && exercise.caseId === famParts[2])
+    : undefined;
+  // A family route outside the two recents still gets its module branch so the
+  // accent marker always has a home in the rail.
+  if (currentExercise?.moduleId) {
+    const existing = recentEntries.find((entry) => entry.module.moduleId === currentExercise.moduleId);
+    if (existing) {
+      if (!existing.exercises.some((exercise) => exercise.definitionId === currentExercise.definitionId)) {
+        existing.exercises.unshift(currentExercise);
+      }
+    } else {
+      const entryModule = catalog.learningModules.find((item) => item.moduleId === currentExercise.moduleId);
+      if (entryModule) recentEntries.unshift({ module: entryModule, lesson: undefined, exercises: [currentExercise] });
+    }
+  }
+  const familyRef = section === 'family' ? famParts.slice(1).join('/') : '';
   const activeNavigation = learnSections.includes(section) ? 'learn' : section;
+
+  useEffect(() => {
+    if (!navDrawerOpen) return;
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setNavDrawerOpen(false); };
+    addEventListener('keydown', onKey);
+    return () => removeEventListener('keydown', onKey);
+  }, [navDrawerOpen]);
+
+  const navLinks = (showRecent: boolean) => navigation.map((item) => (
+    <Fragment key={item.route}>
+      <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined}>
+        {item.icon}
+        <span>{item.label}</span>
+      </a>
+      {item.route === 'learn' && showRecent && recentEntries.length > 0 && (
+        <div class="nav-recent" role="group" aria-label="Zuletzt geöffnet">
+          {recentEntries.map(({ module, lesson, exercises }) => (
+            <Fragment key={module.moduleId}>
+              <a class="nav-recent-module" href={`#/module/${module.moduleId}`} aria-current={section === 'module' && routeId === module.moduleId ? 'page' : undefined} title={module.title}><span>{module.title}</span></a>
+              {lesson ? <a class="nav-recent-lesson" href={`#/lesson/${lesson.lessonId}`} aria-current={section === 'lesson' && routeId === lesson.lessonId ? 'page' : undefined} title={lesson.title}><span>{lesson.title}</span></a> : null}
+              {exercises.map((exercise) => (
+                <a key={exercise.definitionId} class="nav-recent-exercise" href={routeForDefinition(exercise)} aria-current={currentExercise?.definitionId === exercise.definitionId ? 'page' : undefined} title={exercise.title}><span>{exercise.title}</span></a>
+              ))}
+            </Fragment>
+          ))}
+        </div>
+      )}
+    </Fragment>
+  ));
 
   const savePreferences = async (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => {
     const safeMinutes = Math.min(2400, Math.max(30, Math.round(weeklyMinutes / 15) * 15));
@@ -206,12 +300,26 @@ export function App() {
     await savePreferences(weeklyMinutes, trackId, progress.reviewSlotsWeeks);
     await saveOnboardingDone();
     setShowOnboarding(false);
+    if (!navigator.webdriver) setTourStep(0);
   }, [progress.reviewSlotsWeeks, savePreferences]);
 
   const skipOnboarding = useCallback(async () => {
     await saveOnboardingDone();
     setShowOnboarding(false);
+    if (!navigator.webdriver) setTourStep(0);
   }, []);
+
+  const closeTour = useCallback(async () => {
+    await saveTourDone();
+    setTourStep(null);
+  }, []);
+
+  const goToStep = useCallback((next: number) => {
+    const nextStep = TOUR_STEPS[next];
+    if (!nextStep) { void closeTour(); return; }
+    if (nextStep.route && currentRoute() !== nextStep.route) location.hash = `#/${nextStep.route}`;
+    setTourStep(next);
+  }, [closeTour]);
 
   const toggleTheme = () => {
     const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -229,16 +337,18 @@ export function App() {
   const view = section === 'today' ? <TodayView catalog={catalog} progress={progress} />
     : section === 'learn' ? <LearnView catalog={catalog} progress={progress} />
       : section === 'review' ? <ReviewView catalog={catalog} progress={progress} />
+      : section === 'challenge' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Challenge wird geladen</h1></section>}><ChallengeView catalog={catalog} progress={progress} /></Suspense>
         : section === 'progress' ? <ProgressView catalog={catalog} progress={progress} />
           : section === 'settings' ? progressReady
-            ? <SettingsView catalog={catalog} progress={progress} onSave={savePreferences} />
+            ? <SettingsView catalog={catalog} progress={progress} onSave={savePreferences} onRestartTour={() => setTourStep(0)} />
             : <section class="view" aria-labelledby="settings-title" aria-busy="true"><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p role="status">Lokale Einstellungen werden geladen.</p></section>
             : section === 'diagnostic' ? <DiagnosticView catalog={catalog} progress={progress} />
               : section === 'sources' ? <SourcesView catalog={catalog} />
                 : section === 'tools' ? <ToolsView catalog={catalog} />
+                  : section === 'search' ? <SearchView catalog={catalog} />
                   : section === 'visualization' ? <VisualizationView visualizationId={routeId} />
-                : section === 'module' ? <Suspense fallback={<section class="view"><p role="status">Modul wird geladen.</p></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} progress={progress} /></Suspense>
-                : section === 'family' ? <Suspense fallback={<section class="view"><p role="status">Variante wird geladen.</p></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>
+                : section === 'module' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Modul wird geladen</h1></section>}><ModuleView key={routeId} catalog={catalog} moduleId={routeId} progress={progress} /></Suspense>
+                : section === 'family' ? <Suspense fallback={<section class="view"><h1 tabIndex={-1}>Variante wird geladen</h1></section>}><FamilyExerciseView key={familyRef} catalog={catalog} familyRef={familyRef} /></Suspense>
                 : section === 'lesson' ? <LessonView catalog={catalog} lessonId={routeId} />
                     : section === 'project' ? <ProjectView catalog={catalog} projectId={routeId} />
                     : section === 'competency' ? <CompetencyView catalog={catalog} progress={progress} competencyId={routeId} />
@@ -248,6 +358,9 @@ export function App() {
     <div class="app-shell">
       <header class="topbar">
         <div class="topbar-left">
+          <Button variant="ghost" size="sm" class="nav-drawer-toggle" aria-label="Navigation öffnen" aria-expanded={navDrawerOpen} onClick={() => setNavDrawerOpen(true)}>
+            {navToggleIcon(true)}
+          </Button>
           <span class="local-status"><span aria-hidden="true" />Lokal</span>
         </div>
         <SponsorSlots />
@@ -261,33 +374,38 @@ export function App() {
         <nav class="main-nav" aria-label="Hauptnavigation" data-tour="nav-main">
           <div class="nav-main">
             <Button variant="ghost" size="sm" class="nav-toggle" aria-label={navCollapsed ? 'Navigation ausklappen' : 'Navigation einklappen'} aria-expanded={!navCollapsed} onClick={toggleNav}>{navToggleIcon(navCollapsed)}</Button>
-            {navigation.map((item) => (
-              <Fragment key={item.route}>
-                <a href={`#/${item.route}`} aria-current={activeNavigation === item.route ? 'page' : undefined} class={item.secondary ? 'nav-secondary' : undefined}>
-                  {item.icon}
-                  <span>{item.label}</span>
-                </a>
-                {item.route === 'learn' && !navCollapsed && recentEntries.length > 0 && (
-                  <div class="nav-recent" role="group" aria-label="Zuletzt geöffnet">
-                    {recentEntries.map(({ module, lesson }) => (
-                      <Fragment key={module.moduleId}>
-                        <a class="nav-recent-module" href={`#/module/${module.moduleId}`} aria-current={section === 'module' && routeId === module.moduleId ? 'page' : undefined} title={module.title}><span>{module.title}</span></a>
-                        {lesson ? <a class="nav-recent-lesson" href={`#/lesson/${lesson.lessonId}`} aria-current={section === 'lesson' && routeId === lesson.lessonId ? 'page' : undefined} title={lesson.title}><span>{lesson.title}</span></a> : null}
-                      </Fragment>
-                    ))}
-                  </div>
-                )}
-              </Fragment>
-            ))}
+            {navLinks(!navCollapsed)}
           </div>
           <div class="nav-footer">Katalog {catalog.version}</div>
         </nav>
         <main id="main-content" ref={mainRef} tabIndex={-1}>{view}</main>
       </div>
+      {updateReady && !updateDismissed ? (
+        <div class="update-banner" role="status">
+          <span>Neue Version verfügbar.</span>
+          <Button variant="primary" size="sm" onClick={() => applyUpdate()}>Neu laden</Button>
+          <Button variant="ghost" size="sm" onClick={() => setUpdateDismissed(true)}>Später</Button>
+        </div>
+      ) : null}
+      {navDrawerOpen ? (
+        <div class="nav-drawer" role="dialog" aria-modal="true" aria-label="Navigation">
+          <button type="button" class="nav-drawer-backdrop" aria-label="Navigation schließen" onClick={() => setNavDrawerOpen(false)} />
+          <div class="nav-drawer-panel" onClick={(event) => { if ((event.target as HTMLElement).closest('a')) setNavDrawerOpen(false); }}>
+            <div class="nav-drawer-head">
+              <span>Navigation</span>
+              <Button variant="ghost" size="sm" aria-label="Navigation schließen" onClick={() => setNavDrawerOpen(false)}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+              </Button>
+            </div>
+            {navLinks(true)}
+            <div class="nav-footer">Katalog {catalog.version}</div>
+          </div>
+        </div>
+      ) : null}
       <footer class="mobile-context" aria-label="Lokaler Status">
         <span>Local-first</span>
         <span>{catalog.competencies.length} Kompetenzen</span>
-        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more"><a href="#/sources">Lektüren</a><a href="#/tools">Werkzeuge</a></nav>
+        <nav class="mobile-more" aria-label="Mehr" data-tour="nav-more">{navigation.filter((item) => item.secondary).map((item) => <a key={item.route} href={`#/${item.route}`}>{item.label}</a>)}</nav>
       </footer>
       {showOnboarding ? (
         <OnboardingOverlay
@@ -295,6 +413,14 @@ export function App() {
           initialTrackId={progress.trackId}
           onDone={(trackId, weeklyMinutes) => void finishOnboarding(trackId, weeklyMinutes)}
           onSkip={() => void skipOnboarding()}
+        />
+      ) : null}
+      {tourStep !== null && !showOnboarding ? (
+        <TourOverlay
+          step={tourStep}
+          onNext={() => (tourStep >= TOUR_STEPS.length - 1 ? void closeTour() : goToStep(tourStep + 1))}
+          onPrev={() => goToStep(Math.max(0, tourStep - 1))}
+          onClose={() => void closeTour()}
         />
       ) : null}
     </div>

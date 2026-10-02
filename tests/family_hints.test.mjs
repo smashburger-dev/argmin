@@ -29,8 +29,11 @@ test('level 2 points numeric answers up or down after a wrong attempt', () => {
   const base = { summary: 'x', activityType: 'numeric', expectedAnswer: instance.expectedAnswer };
   assert.equal(familyHint(base, { level: 2, answer: String(want - 3), correct: false }), 'Gesucht ist eine größere Zahl.');
   assert.equal(familyHint(base, { level: 2, answer: String(want + 3), correct: false }), 'Gesucht ist eine kleinere Zahl.');
-  assert.equal(familyHint(base, { level: 2, answer: 'keine-zahl', correct: false }), null);
-  assert.equal(familyHint(base, { level: 2, answer: String(want), correct: true }), null);
+  // Unparseable input gets an honest pointer instead of a dead level, and
+  // a context the refined fallback cannot serve falls back to the neutral
+  // hint familyMaxHints counted — no dead clicks.
+  assert.equal(familyHint(base, { level: 2, answer: 'keine-zahl', correct: false }), 'Die Eingabe wird noch nicht als Zahl gelesen — Dezimalpunkt statt Komma?');
+  assert.equal(familyHint(base, { level: 2, answer: String(want), correct: true }), 'Schätze das Ergebnis zuerst grob — ein plausibler Überschlag macht Rechenfehler sofort sichtbar.');
 });
 
 test('level 2 names the first parsons line after a wrong attempt', () => {

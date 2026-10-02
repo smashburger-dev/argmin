@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-attention-roles",
-  "contract": {
-    "familyId": "classify-attention-roles",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet Tensorrollen den Aufmerksamkeitsrollen zu.",
-    "taskArchetype": "single-choice",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "attention-role-values",
-        "propertyTest": false
-      },
-      {
-        "caseId": "attention-role-batch",
-        "propertyTest": false
-      },
-      {
-        "caseId": "attention-role-padding",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-attention"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "attention-role-values",
@@ -45,9 +14,7 @@
       "competencyIds": [
         "c-dl-attention"
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -91,13 +58,19 @@
         }
       ],
       "typicalErrors": [
-        "Rollen von Q/K/V verwechselt",
-        "Value mit Maske verwechselt",
-        "Skalierung der Values zugeschrieben"
+        {
+          "id": "rollen-von-q-k-v",
+          "text": "Rollen von Q/K/V verwechselt"
+        },
+        {
+          "id": "value-mit-maske-verwechselt",
+          "text": "Value mit Maske verwechselt"
+        },
+        {
+          "id": "skalierung-der-values-zugeschrieben",
+          "text": "Skalierung der Values zugeschrieben"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -118,9 +91,7 @@
       "competencyIds": [
         "c-dl-attention"
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -164,13 +135,19 @@
         }
       ],
       "typicalErrors": [
-        "Die Scorematrix mit der Value-Ausgabe verwechselt",
-        "die fünf Value-Kanäle fälschlich auf drei Query-Kanäle reduziert",
-        "die Query-Rolle an V statt an Q gebunden"
+        {
+          "id": "die-scorematrix-mit-der-value",
+          "text": "Die Scorematrix mit der Value-Ausgabe verwechselt"
+        },
+        {
+          "id": "die-fuenf-value-kanaele-faelschlich",
+          "text": "die fünf Value-Kanäle fälschlich auf drei Query-Kanäle reduziert"
+        },
+        {
+          "id": "die-query-rolle-an-v",
+          "text": "die Query-Rolle an V statt an Q gebunden"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -191,9 +168,7 @@
       "competencyIds": [
         "c-dl-attention"
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -237,13 +212,19 @@
         }
       ],
       "typicalErrors": [
-        "Padding als Änderung der Value-Vektoren statt der Scores behandelt",
-        "die maximale Länge fünf mit der Anzahl der Value-Kanäle verwechselt",
-        "Maskenfunktion und Inhaltsmatrix im Attention-Ablauf vertauscht"
+        {
+          "id": "padding-als-aenderung-der-value",
+          "text": "Padding als Änderung der Value-Vektoren statt der Scores behandelt"
+        },
+        {
+          "id": "die-maximale-laenge-fuenf-mit",
+          "text": "die maximale Länge fünf mit der Anzahl der Value-Kanäle verwechselt"
+        },
+        {
+          "id": "maskenfunktion-und-inhaltsmatrix-im-attention",
+          "text": "Maskenfunktion und Inhaltsmatrix im Attention-Ablauf vertauscht"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

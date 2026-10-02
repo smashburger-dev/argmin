@@ -38,5 +38,5 @@ export function MathInput({ value, onChange }: { value: string; onChange: (value
     'aria-label': 'Mathematischer Term',
     'virtual-keyboard-mode': 'onfocus',
     onInput: handleInput,
-  })}<small>SymPy prüft algebraische Äquivalenz, nicht die Schreibweise.</small></label>;
+  })}<small>Die Prüfung wertet den Term numerisch an 13 Stützstellen aus, nicht die Schreibweise.</small></label>;
 }

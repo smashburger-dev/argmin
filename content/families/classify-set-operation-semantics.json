@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-set-operation-semantics",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "dedup-and-intersection",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w03-e2"
+      ],
+      "expected": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "len(a) ist 2 und a & b ist {\"lern\"} — Mengen speichern jedes Element nur einmal, & bildet den Durchschnitt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "len(a) ist 3 und a & b ist {\"lern\"} — das doppelte \"ki\" bleibt erhalten.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "len(a) ist 2 und a & b ist {\"ki\", \"lern\", \"plattform\"} — & verbindet beide Mengen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "len(a) ist 3 und a & b ist {\"ki\", \"lern\", \"plattform\"} — & verbindet und erhält Duplikate.",
+          "correct": false
+        }
+      ],
+      "prompt": "<p>Gegeben:</p><pre><code>a = {\"ki\", \"lern\", \"ki\"}\nb = {\"lern\", \"plattform\"}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a &amp; b</code> ist korrekt?</p>",
+      "fullSolution": "a = {\"ki\", \"lern\"} (Duplikat entfällt), len(a) = 2. a & b = {\"lern\"}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Mengen speichern jedes Element nur einmal — das zweite „ki“ fällt beim Anlegen weg. len(a) ist 2."
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "`&` ist der Durchschnitt, nicht die Vereinigung: nur „lern“ liegt in beiden Mengen. Die Vereinigung wäre `a | b`."
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Beides vermischt: Duplikate fallen in Mengen weg (len(a) = 2), und `&` bildet den Durchschnitt ({„lern“}), nicht die Vereinigung."
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "<p>Gegeben:</p><pre><code>a = {1, 2, 2, 3}\nb = {2, 3, 4}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a | b</code> ist korrekt?</p>",
+          "choices": [
+            {
+              "id": "a",
+              "text": "len(a) ist 3 und a | b ist {1, 2, 3, 4}. Mengen speichern jedes Element nur einmal, | bildet die Vereinigung.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "len(a) ist 4 und a | b ist {1, 2, 3, 4}. Die doppelte 2 bleibt in a erhalten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "len(a) ist 3 und a | b ist {2, 3}. | bildet den Durchschnitt.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "len(a) ist 4 und a | b ist {1, 2, 2, 3, 2, 3, 4}. | hängt beide Mengen aneinander.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "a = {1, 2, 3} (Duplikat entfällt), len(a) = 3. a | b = {1, 2, 3, 4}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Beim Anlegen der Menge fällt die doppelte 2 weg. a enthält 1, 2 und 3, also ist len(a) 3."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "| ist die Vereinigung und enthält alles, was in a oder b liegt. Den Durchschnitt {2, 3} liefert &."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Mengen enthalten kein Element doppelt, auch nicht nach |. Das Ergebnis ist {1, 2, 3, 4}, und len(a) ist 3."
+            }
+          ]
+        },
+        {
+          "prompt": "<p>Gegeben:</p><pre><code>a = {\"rot\", \"grün\", \"rot\", \"blau\"}\nb = {\"blau\", \"gelb\"}</code></pre><p>Welche Aussage über <code>len(a)</code> und <code>a - b</code> ist korrekt?</p>",
+          "choices": [
+            {
+              "id": "a",
+              "text": "len(a) ist 3 und a - b ist {\"rot\", \"grün\"}. Das doppelte \"rot\" zählt einmal, - entfernt alles, was auch in b liegt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "len(a) ist 4 und a - b ist {\"rot\", \"grün\", \"rot\"}. Das doppelte \"rot\" bleibt erhalten.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "len(a) ist 3 und a - b ist {\"rot\", \"grün\", \"gelb\"}. - nimmt die Elemente aus b hinzu, die in a fehlen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "len(a) ist 3 und a - b ist {\"blau\"}. - behält die gemeinsamen Elemente.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "a = {\"rot\", \"grün\", \"blau\"} (Duplikat entfällt), len(a) = 3. a - b = {\"rot\", \"grün\"}. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Beim Anlegen der Menge fällt das doppelte \"rot\" weg. a hat drei Elemente, und auch a - b enthält \"rot\" nur einmal."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "{\"rot\", \"grün\", \"gelb\"} ist die symmetrische Differenz a ^ b. a - b behält nur die Elemente aus a, die nicht in b liegen."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Die gemeinsamen Elemente liefert der Durchschnitt a & b. a - b entfernt sie gerade."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

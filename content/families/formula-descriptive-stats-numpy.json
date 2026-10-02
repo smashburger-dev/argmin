@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "formula-descriptive-stats-numpy",
-  "contract": {
-    "familyId": "formula-descriptive-stats-numpy",
-    "familyGroup": "formula-apply",
-    "summary": "Implementiert deskriptive Kennzahlen und Histogramm-Bins mit NumPy.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "describe-and-bins",
-        "propertyTest": false
-      },
-      {
-        "caseId": "describe-outlier-bins",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-eda-viz",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "describe-and-bins",
@@ -54,28 +27,20 @@
         "Erst mit np.asarray(values, dtype=float) normalisieren, dann die Aggregationen — .size liefert n, np.std nutzt standardmäßig ddof=0.",
         "bin_counts muss die Kantenregeln von np.histogram treffen: bins-Argument als Kanten übergeben und die Anzahlen ([0]-Index) zurückgeben."
       ],
-      "feedbackRules": [
-        {
-          "if": "std-ddof-wrong",
-          "then": "Sample-Standardabweichung mit ddof=1 ist hier falsch — gefragt ist der Bevölkerungswert ddof=0."
-        },
-        {
-          "if": "bin-edges-inclusive",
-          "then": "Nur der letzte Bin schließt die rechte Kante ein: [0, 4) und [4, 9] — die 4 zählt in den zweiten Bin."
-        },
-        {
-          "if": "n-type-wrong",
-          "then": "\"n\" muss ein Python-int sein (int(...)), kein NumPy-Skalar, falls der Test auf == 8 mit Typ prüft."
-        }
-      ],
       "typicalErrors": [
-        "ddof=1 statt ddof=0 verwendet",
-        "Bin-Kanten als inklusive Intervalle links und rechts gelesen",
-        "len(values) statt .size nach der Array-Umwandlung gemischt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      }
+        {
+          "id": "ddof-1-statt-ddof-0",
+          "text": "ddof=1 statt ddof=0 verwendet"
+        },
+        {
+          "id": "bin-kanten-als-inklusive-intervalle",
+          "text": "Bin-Kanten als inklusive Intervalle links und rechts gelesen"
+        },
+        {
+          "id": "varianz-statt-standardabweichung",
+          "text": "Varianz statt Standardabweichung zurückgegeben"
+        }
+      ]
     },
     {
       "caseId": "describe-outlier-bins",
@@ -101,30 +66,23 @@
         "Normalisiere zuerst in ein Float-Array; `np.std` nutzt bereits `ddof=0`.",
         "Übergebe die Kanten unverändert an `np.histogram`; nur die letzte rechte Kante ist inklusive."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "wrong-summary",
-          "then": "Die vier Kennzahlen müssen aus demselben normalisierten Array berechnet werden."
+          "id": "mittelwert-statt-median-verwechselt",
+          "text": "Mittelwert statt Median verwechselt"
         },
         {
-          "if": "wrong-ddof",
-          "then": "Der Vertrag verlangt die Populations-Standardabweichung mit ddof=0."
+          "id": "ddof-1-verwendet",
+          "text": "ddof=1 verwendet"
         },
         {
-          "if": "wrong-bins",
-          "then": "Die Bin-Grenzen folgen den Regeln von np.histogram."
+          "id": "rechte-bin-kante-falsch-behandelt",
+          "text": "rechte Bin-Kante falsch behandelt"
         }
       ],
-      "typicalErrors": [
-        "Mittelwert statt Median verwechselt",
-        "ddof=1 verwendet",
-        "rechte Bin-Kante falsch behandelt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Statistik: describe und Binning"
     }
   ]
 }

@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "transform-bpe-merge-apply",
-  "contract": {
-    "familyId": "transform-bpe-merge-apply",
-    "familyGroup": "transform-terms",
-    "summary": "Wendet eine BPE-Mergetabelle in Tabellenreihenfolge mit links-nach-rechts nicht überlappenden Merges auf eine Symbolfolge an.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "bpe-merge-apply",
-        "propertyTest": false
-      },
-      {
-        "caseId": "bpe-merge-tie-order",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-tokenizer",
-      "c-python-collections"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "bpe-merge-apply",
@@ -58,28 +31,20 @@
         "Symbole als Liste von Strings führen; der Marker ist das letzte Startsymbol.",
         "Pro Merge ein linker nach rechter Durchlauf mit Positionsindex: bei Treffer beide Symbole zum verschmolzenen String zusammenfassen und Index um 2 weiterschalten."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "table-reordered",
-          "then": "Die Tabellenreihenfolge ist Priorität — nicht nach Häufigkeit oder Länge sortieren."
+          "id": "mergetabelle-umsortiert-haeufigkeit-statt-reihenfolge",
+          "text": "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)"
         },
         {
-          "if": "overlapping-merged",
-          "then": "Überlappende Vorkommen werden nicht doppelt gezählt: nach einem Merge springt der Index um 2."
+          "id": "ueberlappende-vorkommen-doppelt-verschmolzen",
+          "text": "überlappende Vorkommen doppelt verschmolzen"
         },
         {
-          "if": "marker-missing",
-          "then": "Der End-of-Word-Marker gehört zur Startfolge und bleibt das letzte Symbol."
+          "id": "end-of-word-marker-unterschlagen",
+          "text": "End-of-Word-Marker unterschlagen"
         }
       ],
-      "typicalErrors": [
-        "Mergetabelle umsortiert (Häufigkeit statt Reihenfolge)",
-        "überlappende Vorkommen doppelt verschmolzen",
-        "End-of-Word-Marker unterschlagen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -109,28 +74,20 @@
         "Arbeite mit einer neuen Ausgabeliste pro Mergerunde.",
         "Nach einem Treffer zwei Eingabesymbole verbrauchen; so wird aa a nicht zu einem überlappenden Dreifach-Merge."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "table-reordered",
-          "then": "Bei [a,b,c] und den zwei Kandidaten wird zuerst (a,b) nach Tabellenreihenfolge verarbeitet, nicht der zweite Pair-Kandidat."
+          "id": "mergetabelle-nach-eigener-haeufigkeitsannahme-sortiert",
+          "text": "Mergetabelle nach eigener Häufigkeitsannahme sortiert"
         },
         {
-          "if": "overlapping-merged",
-          "then": "Die Folge [a,a,a] ergibt mit (a,a) genau [aa,a], weil das erste Paar die nächste Position überspringt."
+          "id": "ueberlappende-symbole-mehrfach-im-selben",
+          "text": "überlappende Symbole mehrfach im selben Durchlauf verbraucht"
         },
         {
-          "if": "new-pair-skipped",
-          "then": "Nach (a,b) entsteht ab; der folgende Merge (ab,c) darf dieses neue Symbol in der nächsten Runde verwenden."
+          "id": "neu-entstandenes-paar-nicht-in",
+          "text": "neu entstandenes Paar nicht in der nächsten Mergerunde berücksichtigt"
         }
       ],
-      "typicalErrors": [
-        "Mergetabelle nach eigener Häufigkeitsannahme sortiert",
-        "überlappende Symbole mehrfach im selben Durchlauf verbraucht",
-        "neu entstandenes Paar nicht in der nächsten Mergerunde berücksichtigt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

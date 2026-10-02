@@ -42,9 +42,7 @@
         "w16-e3"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "prompt": "Zuordnung Skalen und Aufsicht: Du hast SVM (Klassifikation mit Labels), PCA (Richtungen größter Varianz) und k-Means (Clustering). Welche Aussage über die drei Verfahren ist korrekt?",
       "fullSolution": "SVM ist überwacht (Labels), PCA und k-Means unüberwacht. Alle drei reagieren auf Merkmals-Skalen: SVM und k-Means über Distanzen, PCA über Varianzen — deshalb vorher standardisieren (Statistiken nur aus dem Trainingsteil).",
       "hints": [
@@ -53,26 +51,24 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'a'",
-          "then": "„Lernen aus Daten“ macht ein Verfahren nicht überwacht — ohne Zielvariable ist es unüberwacht (PCA, k-Means)."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "k vorzugeben ist Hyperparameter-Wahl wie λ bei Ridge — k-Means nutzt während des Laufens keine Labels."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Genau umgekehrt: SVM braucht Labels; und Abstandsbasierte wie SVM und k-Means brauchen Skalen am dringendsten."
+          "if": "choice !== 'none'",
+          "then": "„Lernen aus Daten“ macht ein Verfahren nicht überwacht — überwacht heißt Zielvariable, und die hat nur die SVM. k ist ein Hyperparameter wie λ bei Ridge, kein Label pro Punkt. Und skalenempfindlich sind alle drei: SVM und k-Means über Distanzen, PCA über Varianzen — deshalb vorher standardisieren (Statistiken nur aus Train)."
         }
       ],
       "typicalErrors": [
-        "Hyperparameter (k) mit Labels verwechseln",
-        "Skalierungsbedarf nur bei einem Verfahren vermuten",
-        "PCA wegen „Komponenten“ als überwacht einstufen"
+        {
+          "id": "hyperparameter-k-mit-labels-verwechseln",
+          "text": "Hyperparameter (k) mit Labels verwechseln"
+        },
+        {
+          "id": "skalierungsbedarf-nur-bei-einem-verfahren",
+          "text": "Skalierungsbedarf nur bei einem Verfahren vermuten"
+        },
+        {
+          "id": "pca-wegen-komponenten-als-ueberwacht",
+          "text": "PCA wegen „Komponenten“ als überwacht einstufen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -102,31 +98,6 @@
           "parameters": {
             "setting": "Labels vs Distanz"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "Du vergleichst eine SVM mit Labels, PCA ohne Ziel und k-Means ohne Ziel. Welche Aussage zu Aufsicht und Skalen ist korrekt?",
           "fullSolution": "Nur SVM nutzt Labels. Alle drei reagieren auf Merkmals-Skalen (Distanz oder Varianz) — Statistiken nur aus Train."
         },
@@ -134,31 +105,6 @@
           "parameters": {
             "setting": "nicht alle überwacht"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "Reicht „lernt aus Daten“, um SVM, PCA und k-Means alle als überwacht zu bezeichnen?",
           "fullSolution": "Nein. Überwacht heißt: es gibt eine Zielvariable. PCA und k-Means haben keine."
         },
@@ -166,31 +112,6 @@
           "parameters": {
             "setting": "k ist kein Label"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            }
-          ],
           "prompt": "Macht die Vorgabe von Clusterzahl k den k-Means überwacht?",
           "fullSolution": "Nein. k ist ein Hyperparameter wie $\\lambda$, kein Label pro Punkt."
         },
@@ -198,31 +119,6 @@
           "parameters": {
             "setting": "PCA ohne y"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "Braucht PCA Klassenziele, während SVM und k-Means ohne Labels auskommen?",
           "fullSolution": "Umgekehrt: SVM braucht Labels; PCA und k-Means nicht. Skalierung betrifft alle drei wegen Varianz bzw. Distanz."
         },
@@ -230,31 +126,6 @@
           "parameters": {
             "setting": "Einheiten"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "Merkmale liegen in cm, kg und Euro. SVM, PCA und k-Means sollen darauf laufen. Was gilt für Aufsicht und Skalen?",
           "fullSolution": "SVM überwacht, die anderen nicht. Trotzdem alle drei skalenempfindlich — standardisieren mit Train-Statistiken."
         },
@@ -262,31 +133,6 @@
           "parameters": {
             "setting": "Pipeline-Reihenfolge"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "Du standardisierst vor SVM, PCA und k-Means. Welche Zuordnung von Aufsicht bleibt trotzdem richtig?",
           "fullSolution": "Skalieren ändert den Aufgabentyp nicht. SVM bleibt überwacht, PCA und k-Means unüberwacht."
         },
@@ -294,31 +140,6 @@
           "parameters": {
             "setting": "RBF-SVM vs k-Means"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            }
-          ],
           "prompt": "RBF-SVM und k-Means nutzen beide Abstände. Macht das beide überwacht — oder beide unüberwacht?",
           "fullSolution": "Weder noch pauschal: SVM hat Labels, k-Means nicht. Abstand erklärt den Skalierungsbedarf, nicht die Aufsicht."
         },
@@ -326,31 +147,6 @@
           "parameters": {
             "setting": "Varianz PCA"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "PCA maximiert Varianz, SVM trennt Klassen, k-Means minimiert Streuung in Clustern. Welche Aussage verbindet Aufsicht und Skalen?",
           "fullSolution": "Nur SVM ist überwacht. Varianz und Distanz hängen an Einheiten, deshalb alle drei vorher standardisieren."
         },
@@ -358,31 +154,6 @@
           "parameters": {
             "setting": "Kurzfrage Drei"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle drei sind überwacht, weil alle Parameter aus Daten lernen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA und k-Means sind unüberwacht, SVM ist überwacht; alle drei hängen an Skalen beziehungsweise Abständen, deshalb vorher standardisieren.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "k-Means ist überwacht, weil man die Anzahl Cluster k vorgibt.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA braucht Labels, SVM und k-Means nicht; skalieren ist nur bei PCA nötig.",
-              "correct": false
-            }
-          ],
           "prompt": "Zuordnung Skalen und Aufsicht: SVM (Klassifikation mit Labels), PCA (größte Varianz), k-Means (Clustering). Welche Aussage ist korrekt?",
           "fullSolution": "SVM überwacht, PCA und k-Means nicht. k ist kein Label. Alle drei skalenempfindlich."
         }
@@ -396,9 +167,7 @@
         "c1-authored"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Welche Aussage verbindet PCA und Skalierung korrekt?",
       "fullSolution": "PCA ist unüberwacht und maximiert Varianzrichtungen. Unterschiedliche Einheiten können Varianzen dominieren, daher ist Standardisierung oft sinnvoll und muss aus dem Trainingsteil bestimmt werden.",
       "hints": [
@@ -407,26 +176,24 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'a'",
-          "then": "PCA sucht Varianzrichtungen in den Eingabemerkmalen und benötigt im beschriebenen Fall keine Zielwerte; Überwachung ist hier nicht die Begründung."
-        },
-        {
-          "if": "choice === 'b'",
-          "then": "Varianz hängt von der Einheit ab: Ein Merkmal in großen Einheiten kann PCA dominieren, weshalb die Aussage die Skalierungsfrage verneint."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "PCA und k-Means sind beide ohne Labels möglich; die Aussage schreibt PCA fälschlich eine Zielvariable zu."
+          "if": "choice !== 'none'",
+          "then": "PCA sucht Varianzrichtungen in den Merkmalen — keine Zielvariable, also unüberwacht, und Hauptkomponenten sagen kein Ziel vorher. Varianz ist einheitenabhängig (Var(cX) = c²·Var(X)): große Einheiten dominieren sonst die Komponenten, deshalb Standardisieren aus Train-Statistiken. Labels braucht PCA nie — k-Means ebenso wenig."
         }
       ],
       "typicalErrors": [
-        "Eine Varianzzerlegung ohne Zielvariable fälschlich als überwachte Vorhersageaufgabe eingeordnet.",
-        "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert.",
-        "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
+        {
+          "id": "eine-varianzzerlegung-ohne-zielvariable-faelschlich",
+          "text": "Eine Varianzzerlegung ohne Zielvariable fälschlich als überwachte Vorhersageaufgabe eingeordnet."
+        },
+        {
+          "id": "die-einheitenabhaengigkeit-der-varianz-bei",
+          "text": "Die Einheitenabhängigkeit der Varianz bei Hauptkomponenten ignoriert."
+        },
+        {
+          "id": "pca-irrtuemlich-mit-einem-verfahren",
+          "text": "PCA irrtümlich mit einem Verfahren gleichgesetzt, das zwingend Klassenlabels verwendet."
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -456,31 +223,6 @@
           "parameters": {
             "setting": "keine Ziele"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "PCA läuft nur auf den Merkmalsspalten, ohne y. Warum kann Standardisieren trotzdem nötig sein?",
           "fullSolution": "Ohne Labels bleibt es unüberwacht. Varianz in Euro dominiert Varianz in Metern, wenn du nicht skalierst."
         },
@@ -488,31 +230,6 @@
           "parameters": {
             "setting": "nicht Vorhersage"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "Sagen Hauptkomponenten ein Ziel vorher — und ist PCA deshalb überwacht?",
           "fullSolution": "Nein. Komponenten sind Varianzrichtungen in X, keine Überwachung durch y."
         },
@@ -520,31 +237,6 @@
           "parameters": {
             "setting": "Einheiten"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "Ist Varianz einheitenlos, sodass PCA nie skaliert werden muss?",
           "fullSolution": "Nein. $\\mathrm{Var}(cX)=c^2\\mathrm{Var}(X)$. Große Einheiten dominieren die erste Komponente."
         },
@@ -552,31 +244,6 @@
           "parameters": {
             "setting": "nicht immer Labels"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            }
-          ],
           "prompt": "Braucht PCA im Gegensatz zu k-Means immer Klassenlabels?",
           "fullSolution": "Nein. Beide können ohne y laufen. Der Skalierungspunkt bei PCA ist die einheitenabhängige Varianz."
         },
@@ -584,31 +251,6 @@
           "parameters": {
             "setting": "Train-Statistik"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "Du standardisierst vor PCA. Ändert das PCA in ein überwachtes Verfahren?",
           "fullSolution": "Nein. Skalen kommen aus X (idealerweise nur Train), nicht aus y. PCA bleibt unüberwacht."
         },
@@ -616,31 +258,6 @@
           "parameters": {
             "setting": "cm vs kg"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "Größe in mm und Gewicht in Tonnen liegen roh in PCA. Was ist die saubere Einordnung?",
           "fullSolution": "Unüberwacht, aber die mm-Varianz kann dominieren. Standardisieren, sonst verzerrte Komponenten."
         },
@@ -648,31 +265,6 @@
           "parameters": {
             "setting": "whitening vs Labels"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "Macht Whitening nach PCA das Verfahren überwacht?",
           "fullSolution": "Nein. Whitening reskaliert Komponenten, fügt keine Labels hinzu."
         },
@@ -680,31 +272,6 @@
           "parameters": {
             "setting": "Supervised PCA Verwechslung"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            }
-          ],
           "prompt": "Jemand speichert PCA-Komponenten und trainiert danach eine SVM. War die PCA deshalb überwacht?",
           "fullSolution": "Die PCA-Stufe selbst bleibt unüberwacht. Die SVM danach ist überwacht. Skalenfrage gilt trotzdem für PCA."
         },
@@ -712,31 +279,6 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PCA ist unüberwacht; Skalierung kann wegen einheitenabhängiger Varianzen wichtig sein.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "PCA ist überwacht, weil die Hauptkomponenten Zielwerte vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PCA braucht keine Skalierung, weil Varianz einheitenunabhängig ist.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "PCA nutzt immer Labels, k-Means dagegen nicht.",
-              "correct": false
-            }
-          ],
           "prompt": "Welche Aussage verbindet PCA, Labels und Merkmals-Skalierung korrekt?",
           "fullSolution": "Kein y nötig; Varianz hängt an der Einheit; deshalb oft standardisieren (Train-only)."
         }
@@ -750,9 +292,7 @@
         "c1-authored"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Warum sollte eine SVM mit RBF-Kernel Merkmale typischerweise standardisieren?",
       "fullSolution": "Distanzen und damit Kernelwerte hängen an den Merkmalskalen. Ein Merkmal mit großer Einheit kann die Geometrie dominieren; die Skalierungsparameter werden nur aus dem Training gelernt.",
       "hints": [
@@ -761,26 +301,24 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'b'",
-          "then": "Standardisierung erzeugt keine Labels; sie verändert nur die Skalen der Merkmale, auf denen die RBF-Distanzen berechnet werden."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "Ein RBF-Kernel verarbeitet reelle Merkmale und verlangt keine Ganzzahlen; der relevante Punkt ist die vergleichbare Distanzskala."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Eine SVM bleibt überwacht, weil sie Trainingslabels nutzt; fehlende Standardisierung ändert nicht den Aufgabentyp."
+          "if": "choice !== 'none'",
+          "then": "Standardisierung erzeugt keine Labels — sie verändert nur die Skalen, auf denen die RBF-Distanzen rechnen. Der Kernel arbeitet auf reellen Vektoren und verlangt keine Ganzzahlen. Und ohne Skalierung bleibt die SVM überwacht — nur die Distanzgeometrie wird von großen Einheiten dominiert (Skalen nur aus Train)."
         }
       ],
       "typicalErrors": [
-        "Vorverarbeitung mit der Erzeugung von Zielmarkierungen verwechselt.",
-        "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt.",
-        "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
+        {
+          "id": "vorverarbeitung-mit-der-erzeugung-von",
+          "text": "Vorverarbeitung mit der Erzeugung von Zielmarkierungen verwechselt."
+        },
+        {
+          "id": "die-reellwertige-rbf-distanz-faelschlich",
+          "text": "Die reellwertige RBF-Distanz fälschlich als Ganzzahloperation eingeschränkt."
+        },
+        {
+          "id": "eine-skalierungsentscheidung-faelschlich-als-wechsel",
+          "text": "Eine Skalierungsentscheidung fälschlich als Wechsel von überwachtem zu unüberwachtem Lernen verstanden."
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -810,31 +348,6 @@
           "parameters": {
             "setting": "RBF-Distanz"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Ein RBF-Kernel nutzt $\\|x-x'\\|^2$. Warum vorher standardisieren?",
           "fullSolution": "Ohne Skala gewinnt das Merkmal mit der größten Einheit den Abstand. Labels entstehen dadurch nicht, der Typ bleibt überwacht."
         },
@@ -842,31 +355,6 @@
           "parameters": {
             "setting": "keine Labels aus z"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Erzeugt Standardisieren die Klassenziele einer SVM?",
           "fullSolution": "Nein. Es ändert nur Merkmals-Skalen. y kommt aus den Beispielen."
         },
@@ -874,31 +362,6 @@
           "parameters": {
             "setting": "reell"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            }
-          ],
           "prompt": "Muss ein RBF-Kernel ganzzahlige Features bekommen?",
           "fullSolution": "Nein. Er arbeitet auf reellen Vektoren. Das Problem sind unvergleichbare Skalen, nicht der Datentyp Integer."
         },
@@ -906,31 +369,6 @@
           "parameters": {
             "setting": "bleibt überwacht"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Wird eine SVM unüberwacht, wenn du nicht skalierst?",
           "fullSolution": "Nein. Ohne y ist sie keine SVM-Klassifikation. Fehlende Skalen verderben Abstände, nicht den Aufgabentyp."
         },
@@ -938,31 +376,6 @@
           "parameters": {
             "setting": "linear SVM"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Auch eine lineare SVM mit Regularisierung C profitiert oft von Skalen. Warum analog zum RBF-Fall?",
           "fullSolution": "Merkmale mit großer Streuung dominieren die Geometrie bzw. die Strafe. Train-only standardisieren."
         },
@@ -970,31 +383,6 @@
           "parameters": {
             "setting": "Euro vs Stück"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Umsatz in Cent und Stückzahl liegen roh in einer RBF-SVM. Was ist das Risiko?",
           "fullSolution": "Cent-Abstände überschatten Stückzahlen. Deshalb standardisieren, nicht weil der Kernel Integer verlangt."
         },
@@ -1002,31 +390,6 @@
           "parameters": {
             "setting": "Train-only"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            }
-          ],
           "prompt": "Warum dürfen Mittelwert und Streuung der SVM-Skalierung nur aus Train kommen?",
           "fullSolution": "Sonst Leakage in die Distanzgeometrie. Der fachliche Grund zu skalieren bleibt: Einheiten dürfen den Kernel nicht dominieren."
         },
@@ -1034,31 +397,6 @@
           "parameters": {
             "setting": "C vs Skala"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Ersetzt ein gut gewähltes C die Standardisierung bei RBF?",
           "fullSolution": "C skaliert die Strafe, nicht die Merkmals-Einheiten gegeneinander. Distanzdominanz bleibt ein Skalenproblem."
         },
@@ -1066,31 +404,6 @@
           "parameters": {
             "setting": "Kurzfrage"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Weil Standardisierung die Labels automatisch erzeugt.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Weil die Distanzgeometrie sonst von großen Einheiten dominiert werden kann.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Weil der RBF-Kernel nur ganzzahlige Merkmale akzeptiert.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Weil SVMs ohne Skalierung immer unüberwacht werden.",
-              "correct": false
-            }
-          ],
           "prompt": "Warum standardisiert man Merkmale vor einer RBF-SVM typischerweise — und was ändert das nicht?",
           "fullSolution": "Kernelabstände hängen an den Skalen. Große Einheiten dominieren sonst. Skalen nur aus Train, Typ bleibt überwacht."
         }

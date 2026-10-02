@@ -1,33 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "validate-leakage-rule-audit",
-  "contract": {
-    "familyId": "validate-leakage-rule-audit",
-    "familyGroup": "validate-contract",
-    "summary": "Prüft Pipelines auf Ziel-, Statistik- und Test-Leakage.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "pipeline-leakage-audit",
-        "propertyTest": false
-      },
-      {
-        "caseId": "pipeline-clean-split",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-ml-cv"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "pipeline-leakage-audit",
@@ -53,28 +27,20 @@
         "Kleinbuchstaben normalisieren (action.lower()) und dann drei unabhängige Marker-Prüfungen mit 'in' verknüpfen — eine reicht zum Flaggen.",
         "Die Indizes entstehen in Schleifenreihenfolge automatisch aufsteigend; collecte sie nur für zutreffende Schritte."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "case-sensitive-match",
-          "then": "Die Regeln gelten für die kleingeschriebene Fassung der Aktion — ohne .lower() verpasst du Großschreibungen am Satzanfang."
+          "id": "gross-kleinschreibung-nicht-normalisieren",
+          "text": "Groß-/Kleinschreibung nicht normalisieren"
         },
         {
-          "if": "or-instead-of-and",
-          "then": "Regel 1 und Regel 3 verlangen BEIDE Marker im selben Schritt ('ziel' UND 'feature' bzw. 'test' UND 'fit') — einzeln reicht nicht."
+          "id": "und-regeln-als-oder-regeln",
+          "text": "UND-Regeln als ODER-Regeln implementieren"
         },
         {
-          "if": "unsorted-result",
-          "then": "Die Ergebnisliste muss aufsteigend sortiert sein — Index 3 gehört nach Index 1."
+          "id": "indizes-unsortiert-sammeln",
+          "text": "Indizes unsortiert sammeln"
         }
       ],
-      "typicalErrors": [
-        "Groß-/Kleinschreibung nicht normalisieren",
-        "UND-Regeln als ODER-Regeln implementieren",
-        "Indizes unsortiert sammeln"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "competencyIds": [
@@ -103,28 +69,20 @@
         "Suche alle drei Regeln pro Schritt und gib die Indizes bereits sortiert zurück.",
         "Groß-/Kleinschreibung darf die Erkennung nicht beeinflussen."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "wrong-target",
-          "then": "Ziel und Feature im selben Schritt markieren Ziel-Leakage."
+          "id": "nur-die-erste-regel-geprueft",
+          "text": "nur die erste Regel geprüft"
         },
         {
-          "if": "wrong-stat",
-          "then": "Statistiken über alle Zeilen vor dem Split leaken Testinformation."
+          "id": "indexpositionen-nicht-beibehalten",
+          "text": "Indexpositionen nicht beibehalten"
         },
         {
-          "if": "wrong-test-fit",
-          "then": "Ein Fit auf Testdaten ist ebenfalls Leakage."
+          "id": "grossschreibung-uebersehen",
+          "text": "Großschreibung übersehen"
         }
       ],
-      "typicalErrors": [
-        "nur die erste Regel geprüft",
-        "Indexpositionen nicht beibehalten",
-        "Großschreibung übersehen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide",
       "competencyIds": [

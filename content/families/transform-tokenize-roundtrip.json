@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "transform-tokenize-roundtrip",
-  "contract": {
-    "familyId": "transform-tokenize-roundtrip",
-    "familyGroup": "transform-terms",
-    "summary": "Baut Zeichen-Tokenisierung mit Wort-Marker und Satz-Eos auf und stellt die decode-Umkehrung samt Fehlervertrag bereit.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "char-encode-roundtrip",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subword-unk-roundtrip",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-tokenizer",
-      "c-python-collections"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "char-encode-roundtrip",
@@ -58,28 +31,20 @@
         "encode: text.split(\" \"), je Wort zeichenweise IDs + &lt;/w&gt;-ID, am Schluss einmal &lt;eos&gt;; unbekannte Zeichen und leere Wörter vorher abfangen.",
         "decode: Wörter in einer Liste sammeln, aktueller Wortpuffer endet bei &lt;/w&gt;; bei &lt;eos&gt; abbrechen; Restpuffer am Ende nicht vergessen."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "eos-per-word",
-          "then": "&lt;eos&gt; steht genau einmal am Ende der ganzen Folge — nicht pro Wort."
+          "id": "pro-wort-statt-einmal-am",
+          "text": "&lt;eos&gt; pro Wort statt einmal am Ende"
         },
         {
-          "if": "trailing-space",
-          "then": "Der Marker trennt Wörter; er erzeugt kein zusätzliches Leerzeichen am Ende."
+          "id": "marker-als-leerzeichen-am-satzende",
+          "text": "Marker als Leerzeichen am Satzende"
         },
         {
-          "if": "special-token-accepted",
-          "then": "&lt;pad&gt; und &lt;unk&gt; sind keine Inhalts-Tokens; im Datenstrom werfen sie ValueError."
+          "id": "unbekannte-ids-stillschweigend-ueberlesen",
+          "text": "unbekannte IDs stillschweigend überlesen"
         }
       ],
-      "typicalErrors": [
-        "&lt;eos&gt; pro Wort statt einmal am Ende",
-        "Marker als Leerzeichen am Satzende",
-        "unbekannte IDs stillschweigend überlesen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -109,28 +74,20 @@
         "Nutze vocab.get mit der bekannten UNK-ID.",
         "Das inverse Vokabular wird aus ID zu Token aufgebaut; IDs nicht in der Eingabeliste gehen nicht verloren."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "unknown-crash",
-          "then": "Das Token new fehlt im konkreten Vokabular und muss auf ID 1 statt auf einen Absturz abgebildet werden."
+          "id": "unbekannte-tokens-mit-keyerror-statt",
+          "text": "unbekannte Tokens mit KeyError statt UNK behandelt"
         },
         {
-          "if": "roundtrip-loses-unk",
-          "then": "Die Rückgabe für ID 1 muss <code>&lt;unk&gt;</code> enthalten, damit die unbekannte Stelle erkennbar bleibt."
+          "id": "unk-beim-decoding-durch-ein",
+          "text": "UNK beim Decoding durch ein normales Wort ersetzt"
         },
         {
-          "if": "pad-remapped",
-          "then": "Die feste ID 0 gehört im Test zu <code>&lt;pad&gt;</code> und darf nicht mit der UNK-ID vertauscht werden."
+          "id": "pad-und-unk-ids-vertauscht",
+          "text": "Pad- und UNK-IDs vertauscht"
         }
       ],
-      "typicalErrors": [
-        "unbekannte Tokens mit KeyError statt UNK behandelt",
-        "UNK beim Decoding durch ein normales Wort ersetzt",
-        "Pad- und UNK-IDs vertauscht"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

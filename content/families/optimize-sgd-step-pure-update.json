@@ -1,40 +1,13 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-sgd-step-pure-update",
-  "contract": {
-    "familyId": "optimize-sgd-step-pure-update",
-    "familyGroup": "optimize-update",
-    "summary": "Implementiert einen vollständigen SGD-Trainingsschritt als reine Funktion: Verlust vor dem Update, Update in neue Parameter, Eingabe unverändert.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "pure-train-step",
-        "propertyTest": false
-      },
-      {
-        "caseId": "sgd-momentum-step",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-autograd",
-      "c-grad-regression"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "pure-train-step",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w19-e6"
       ],
@@ -59,30 +32,23 @@
         "Alles in einer Funktion: forward für loss, dieselben Zwischengrößen für die Gradienten, dann ein frisches Dictionary mit p − lr · grad — die Eingabe bleibt unangetastet.",
         "Für den numerischen Check: bei lr = 0 ist der zurückgegebene Verlust genau L der übergebenen Parameter — damit kann der Test (L(W2+h) − L(W2−h))/2h bilden und mit deiner Schrittweite vergleichen."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "mutates-input",
-          "then": "new_params muss ein neues Dictionary mit neuen Arrays sein; In-place-Updates zerstören den lr=0-Test."
+          "id": "eingabe-dictionary-in-place-veraendert",
+          "text": "Eingabe-Dictionary in-place verändert"
         },
         {
-          "if": "loss-after-update",
-          "then": "loss beschreibt das Modell VOR dem Update — sonst stimmt die numerische Vergleichsrechnung nicht."
+          "id": "verlust-nach-dem-update-statt",
+          "text": "Verlust nach dem Update statt davor zurückgegeben"
         },
         {
-          "if": "update-sign-flipped",
-          "then": "Abstieg: p ← p − lr · grad. Mit Plus steigt der Verlust und der 40-Schritte-Test fällt durch."
+          "id": "update-in-gradientenrichtung-plus-statt",
+          "text": "Update in Gradientenrichtung (Plus statt Minus)"
         }
       ],
-      "typicalErrors": [
-        "Eingabe-Dictionary in-place verändert",
-        "Verlust nach dem Update statt davor zurückgegeben",
-        "Update in Gradientenrichtung (Plus statt Minus)"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Autograd-Trainingsschritt"
     },
     {
       "caseId": "sgd-momentum-step",
@@ -112,30 +78,23 @@
         "Berechne v neu und verwende genau dieses v für das Minus-Update.",
         "Kopiere die Arrays durch die Rechnung; prüfe die Eingaben nach dem Aufruf unverändert."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "momentum-omitted",
-          "then": "Für w gilt 0,9·[0,5,1]+[2,-4]=[2,45,-3,1]; der alte Geschwindigkeitswert ist nicht optional."
+          "id": "momentumterm-nicht-in-die-neue",
+          "text": "Momentumterm nicht in die neue Geschwindigkeit aufgenommen"
         },
         {
-          "if": "plus-update",
-          "then": "Mit lr=0,1 wird [1,-2] minus 0,1·[2,45,-3,1] zu [0,755,-1,69]."
+          "id": "gradientenupdate-mit-plus-statt-minus",
+          "text": "Gradientenupdate mit Plus statt Minus ausgeführt"
         },
         {
-          "if": "input-mutated",
-          "then": "Der Test vergleicht params und velocity nach dem Aufruf mit ihren ursprünglichen Arrays; In-place-Schreiben wäre hier falsch."
+          "id": "parameter-oder-geschwindigkeitsarrays-in-place",
+          "text": "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
         }
       ],
-      "typicalErrors": [
-        "Momentumterm nicht in die neue Geschwindigkeit aufgenommen",
-        "Gradientenupdate mit Plus statt Minus ausgeführt",
-        "Parameter- oder Geschwindigkeitsarrays in-place überschrieben"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Momentum-SGD-Schritt"
     }
   ]
 }

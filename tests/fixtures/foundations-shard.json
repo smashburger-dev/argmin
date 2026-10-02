@@ -29,16 +29,16 @@
         "archetypeId": "numeric-exact"
       },
       "caseTemplate": {
-        "caseId": "two-step-fixed-instance",
+        "caseId": "two-step-seeded-retrieval",
         "graderAdapter": "deterministic",
-        "authorityMode": "static"
+        "authorityMode": "seeded"
       },
       "difficultyProfile": "basic-recall",
       "placement": {
         "lessonIds": [
           "l-foundations-algebra"
         ],
-        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': zweistufige lineare Gleichung als fixe Diagnoseinstanz",
+        "moduleHint": "Lektion 'Algebra-Grundlagen sicher prüfen': zweistufige lineare Gleichung als geseedeter Diagnoseanker",
         "reviewEligible": true
       },
       "persistence": {
@@ -1427,7 +1427,7 @@
       "caseTemplate": {
         "caseId": "base-vs-exponent-confusion",
         "graderAdapter": "deterministic",
-        "authorityMode": "static"
+        "authorityMode": "seeded"
       },
       "difficultyProfile": "core-application",
       "placement": {

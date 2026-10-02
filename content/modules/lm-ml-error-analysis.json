@@ -74,6 +74,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-ml-error-analysis-score-on-train-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-ml-eval",
+      "caseId": "score-on-train",
+      "seed": 1,
+      "difficulty": "intro",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-error-analysis",
+      "masteryEligible": false
+    },
+    {
       "placementId": "p-ml-error-analysis-practice-space",
       "role": "practice-space",
       "familyId": "formula-ratio-percent-metric",

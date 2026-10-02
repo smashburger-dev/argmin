@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-silent-fallback-hazard",
-  "contract": {
-    "familyId": "classify-silent-fallback-hazard",
-    "familyGroup": "classify-concept",
-    "summary": "Erkennt stille Fallbacks als Gefahr für die Aussagekraft eines reproduzierbaren Stage-Runners.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "silent-fallback-hazard",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "silent-fallback-hazard",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-capstone-pipeline"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Eine Stage der Pipeline läuft in ein Timeout. Die Hauptfunktion fängt das ab, setzt das Ergebnis auf None und läuft munter weiter. Was ist das strukturelle Problem?",
       "fullSolution": "Richtig ist der Sentinel-Status: Die Stage antwortet immer mit einem klar benannten Zustand ({'status': 'timeout'} bzw. 'fehler'), und die Hauptfunktion bricht den Lauf sichtbar ab (Status 'abgebrochen' mit fehlerhafter Stage). None verschleiert den Ausfall, weil es auch ein legaler Zwischenwert sein könnte — das ist der stille Fallback. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -61,13 +38,19 @@
         }
       ],
       "typicalErrors": [
-        "None als Fehlersignal verwendet",
-        "Ausnahme global geschluckt statt lokal zuzuordnen",
-        "Fehlerzustand als normalen Wert weiterverarbeitet"
+        {
+          "id": "none-als-fehlersignal-verwendet",
+          "text": "None als Fehlersignal verwendet"
+        },
+        {
+          "id": "ausnahme-global-geschluckt-statt-lokal",
+          "text": "Ausnahme global geschluckt statt lokal zuzuordnen"
+        },
+        {
+          "id": "fehlerzustand-als-normalen-wert-weiterverarbeitet",
+          "text": "Fehlerzustand als normalen Wert weiterverarbeitet"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",

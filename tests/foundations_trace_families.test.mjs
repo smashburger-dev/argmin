@@ -1,14 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { graders } from '../assets/js/core/graders.js';
 import {
-  TRACE_ASSIGNMENT_CONTRACT,
   TRACE_CALL_COMPOSITION_CONTRACT,
-  TRACE_DICT_CONTRACT,
   TRACE_EXCEPTION_CONTRACT,
   TRACE_FAMILY_CONTRACTS,
   TRACE_FAMILY_RUNTIME,
@@ -18,19 +15,10 @@ import {
   generateTraceAssignmentFamily,
   gradeTraceTable,
 } from '../assets/js/core/foundations_trace_families.mjs';
-import {
-  createFamilyRegistry,
-  familyEventInput,
-  familyIdTokens,
-} from '../assets/js/domain/exercise_registry.mjs';
-import { TRACE_FAMILIES } from '../assets/js/domain/foundations_trace_registry.mjs';
-import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
-import { buildLearningEvent } from '../assets/js/domain/learning_event.mjs';
-import { validateSourceDocument } from '../tools/compile_content.mjs';
+import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 import './helpers/register_static_cases.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
 const CONTENT_TYPE_ARCHETYPE = {
   'predict-output': 'output-predict-lines',
   'code-trace': 'state-trace-vars',
@@ -65,7 +53,7 @@ function counterexample(instance) {
 }
 
 function correctAnswer(instance) {
-  if (instance.activityType === 'single-choice') return instance.expectedAnswer.correctChoice;
+  if (instance.activityType === 'single-choice') return (instance.choices || []).find((choice) => choice.correct)?.id;
   if (instance.activityType === 'code-trace') {
     const answers = {};
     for (const variable of instance.parameters.variables) answers[variable.name] = String(variable.value);
@@ -87,19 +75,11 @@ function solvedValue(contract, instance) {
 
 function expectedValue(contract, instance) {
   if (contract.activityType === 'predict-output') return instance.expectedAnswer.output;
-  if (contract.activityType === 'single-choice') return instance.expectedAnswer.correctChoice;
+  if (contract.activityType === 'single-choice') return (instance.choices || []).find((choice) => choice.correct)?.id;
   return instance.parameters.variables
     .map(({ name, value }) => ({ name, value }))
     .sort((a, b) => a.name.localeCompare(b.name));
 }
-
-
-
-
-
-
-
-
 
 for (const contract of TRACE_FAMILY_CONTRACTS) {
   test(`${contract.familyId}: case type, seed and profile instantiate distinct variants`, () => {
@@ -107,10 +87,10 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
     assert.ok(cases.length >= 2 || contract.caseTypes.length >= 2, 'mindestens zwei Falltypen');
     const first = cases[0].caseId;
     const second = (cases[1] || contract.caseTypes[1]).caseId;
-    const base = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first);
-    const otherCase = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'intro', second);
-    const otherSeed = TRACE_FAMILIES.instantiate(contract.familyId, 8, 'intro', first);
-    const core = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'core', first);
+    const base = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first);
+    const otherCase = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'intro', second);
+    const otherSeed = EXERCISE_FAMILIES.instantiate(contract.familyId, 8, 'intro', first);
+    const core = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'core', first);
     assert.equal(base.caseId, first);
     assert.equal(otherCase.caseId, second);
     assert.notDeepEqual(
@@ -123,18 +103,18 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
     assert.equal(base.instanceId, `${contract.familyId}:${first}:intro:7`);
     assert.equal(base.masteryEligible, true);
     assert.deepEqual(base.competencyIds, contract.competencyIds);
-    assert.deepEqual(base, TRACE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first));
-    const randomCase = TRACE_FAMILIES.instantiate(contract.familyId, 7, 'core');
+    assert.deepEqual(base, EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'intro', first));
+    const randomCase = EXERCISE_FAMILIES.instantiate(contract.familyId, 7, 'core');
     assert.ok(cases.some((item) => item.caseId === randomCase.caseId), 'Zufallsfall ist property-testfähig');
   });
 
   test(`${contract.familyId}: independent solver matches; counterexample fails`, async () => {
     for (const { caseId } of contract.caseTypes) {
       for (const difficulty of contract.difficultyProfiles) {
-        const instance = TRACE_FAMILIES.instantiate(contract.familyId, 21, difficulty, caseId);
+        const instance = EXERCISE_FAMILIES.instantiate(contract.familyId, 21, difficulty, caseId);
         assert.deepEqual(solvedValue(contract, instance), expectedValue(contract, instance), `${caseId} ${difficulty}: Solver`);
-        const right = await TRACE_FAMILIES.grade(instance, correctAnswer(instance));
-        const wrong = await TRACE_FAMILIES.grade(instance, counterexample(instance));
+        const right = await EXERCISE_FAMILIES.grade(instance, correctAnswer(instance));
+        const wrong = await EXERCISE_FAMILIES.grade(instance, counterexample(instance));
         assert.equal(right.correct, true, `${caseId} ${difficulty}: Sollantwort`);
         assert.equal(wrong.correct, false, `${caseId} ${difficulty}: Gegenbeispiel`);
       }
@@ -145,13 +125,13 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
     for (const { caseId } of propertyCases(contract)) {
       for (const difficulty of contract.difficultyProfiles) {
         for (let seed = 0; seed < 32; seed += 1) {
-          const instance = TRACE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId);
-          assert.deepEqual(instance, TRACE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId));
+          const instance = EXERCISE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId);
+          assert.deepEqual(instance, EXERCISE_FAMILIES.instantiate(contract.familyId, seed, difficulty, caseId));
           assert.equal(instance.caseId, caseId);
           assert.equal(instance.difficulty, difficulty);
           assert.deepEqual(solvedValue(contract, instance), expectedValue(contract, instance));
-          assert.equal((await TRACE_FAMILIES.grade(instance, correctAnswer(instance))).correct, true);
-          assert.equal((await TRACE_FAMILIES.grade(instance, counterexample(instance))).correct, false);
+          assert.equal((await EXERCISE_FAMILIES.grade(instance, correctAnswer(instance))).correct, true);
+          assert.equal((await EXERCISE_FAMILIES.grade(instance, counterexample(instance))).correct, false);
           assert.equal(
             (await graders.deterministic.grade(instance, correctAnswer(instance))).correct,
             true,
@@ -167,7 +147,7 @@ for (const contract of TRACE_FAMILY_CONTRACTS) {
 // Dev-Probe über Seeds 0..127 ohne einen einzigen Fallback bestätigt).
 test('profile intro/stretch/challenge hold their documented numeric bounds', () => {
   const pick = (familyId, caseId, difficulty, seed) => (
-    TRACE_FAMILIES.instantiate(familyId, seed, difficulty, caseId).parameters
+    EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId).parameters
   );
   for (let seed = 0; seed < 64; seed += 1) {
     const reassign = pick('trace-assignment-state', 'reassign-two-variables-print', 'intro', seed);
@@ -179,6 +159,20 @@ test('profile intro/stretch/challenge hold their documented numeric bounds', () 
     assert.ok(Math.max(Math.abs(linear.fb), Math.abs(linear.gb), Math.abs(linear.v)) <= 3);
     const elif = pick('aggregate-accumulator-count', 'elif-branch-value', 'challenge', seed);
     assert.ok(Math.abs(elif.x) >= 8);
+    // Challenge-flagged trace cases carry a case-keyed predicate: the strict
+    // shape holds at every profile, so a dead gate would surface here.
+    for (const difficulty of ['intro', 'challenge']) {
+      const two = pick('aggregate-accumulator-count', 'while-two-accumulators', difficulty, seed);
+      assert.ok(two.iterations >= 4 && two.n0 >= 12, `while-two-accumulators@${difficulty}: ${JSON.stringify(two)}`);
+      const alias = pick('trace-collection-state', 'list-alias-negative', difficulty, seed);
+      const lines = alias.snippet.trim().split('\n').map((line) => line.trim());
+      const numbers = lines.join(' ').match(/-?\d+/g).map(Number);
+      assert.ok(lines[0].match(/-?\d+/g).map(Number).some((v) => v < 0), `list-alias-negative@${difficulty}: ${lines[0]}`);
+      assert.ok(numbers.length >= 4 && Math.max(...numbers.map(Math.abs)) >= 7);
+      const chain = pick('trace-call-composition', 'both-orders-negative-chain', difficulty, seed);
+      assert.ok(chain.ga < 0);
+      assert.ok(Math.max(Math.abs(chain.fb), Math.abs(chain.gb), Math.abs(chain.v)) >= 4);
+    }
   }
 });
 
@@ -187,23 +181,22 @@ test('trace-exception-path asks two options on intro and four above; position ro
     const introPositions = new Set();
     const corePositions = new Set();
     for (let seed = 0; seed < 64; seed += 1) {
-      const intro = TRACE_FAMILIES.instantiate('trace-exception-path', seed, 'intro', caseId);
-      const core = TRACE_FAMILIES.instantiate('trace-exception-path', seed, 'core', caseId);
+      const intro = EXERCISE_FAMILIES.instantiate('trace-exception-path', seed, 'intro', caseId);
+      const core = EXERCISE_FAMILIES.instantiate('trace-exception-path', seed, 'core', caseId);
       assert.equal(intro.choices.length, 2, `${caseId}: intro fragt zwei Optionen`);
       assert.equal(core.choices.length, 4, `${caseId}: core fragt vier Optionen`);
-      introPositions.add(intro.expectedAnswer.correctChoice);
-      corePositions.add(core.expectedAnswer.correctChoice);
+      introPositions.add(intro.choices.find((choice) => choice.correct).id);
+      corePositions.add(core.choices.find((choice) => choice.correct).id);
     }
     assert.ok(introPositions.size > 1, `${caseId}: intro rotiert die korrekte Position`);
     assert.ok(corePositions.size > 1, `${caseId}: core rotiert die korrekte Position`);
   }
 });
 
-
-
-
-
-
+const SHARD = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-shard.json'), 'utf8'));
+const shardCasesFor = (familyId) => SHARD.entries
+  .filter((item) => item.cognitiveFamily.familyId === familyId)
+  .map((item) => item.caseTemplate.caseId);
 
 // Taxonomie-Kreuzcheck: Shard-Mitglieder (foundations.json, Foundations-Umfang)
 // je Familie. runtime = geseedeter Laufzeitfall, static-content = fixer Content
@@ -216,28 +209,28 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Zuweisungen in Ordnung auswerten, wobei die rechte Seite den alten Zustand liest, und Zustand sowie Ausgabe fortschreiben.',
     referenceModel: 'Umgebungstabelle plus stdout-Puffer; ein Mini-Interpreter wertet Zuweisungen in Ordnung aus (RHS liest alten Zustand).',
     errorHypotheses: ['reads-new-value', 'overwrite-forgotten', 'print-order', 'state-object-confusion'],
-    shardCases: ['reassign-two-variables-print', 'three-variable-overwrite-chain', 'temp-variable-with-distractors', 'chain3-overwrite-print', 'method-chain-transform'],
+    shardCases: shardCasesFor('trace-assignment-state'),
     runtimeArchetype: 'output-predict-lines',
     refinements: {
       'accumulate-reassign-print': 'dritte Zuweisungsform von genPythonStateTrace (n/m-Akkumulation), dieselbe Schablone, kein Shard-Falltyp',
       'slice-predict-output': 'genCodeReadingOutput-Einmalzuweisung (Umgebungstabelle plus stdout); Überschreibungsschritt läuft vakant',
       'join-split-predict': 'genCodeReadingOutput-Einmalzuweisung (split/join); Überschreibungsschritt läuft vakant',
       'comprehension-predict': 'genCodeReadingOutput-Einmalzuweisung (Filter/Abbildung); Überschreibungsschritt läuft vakant',
-      'gradient-loop-two-updates': 'statischer W08-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
-      'tree-majority-vote-trace': 'statischer W15-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
+      'gradient-loop-two-updates': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'tree-majority-vote-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
       'rng-stream-reseed-trace': 'statischer W17-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'card-check-variable-trace': 'statischer W32-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'rpn-priority-trace': 'statischer W33-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'stage-runner-error-states': 'statischer W36-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'overclaim-scanner-trace': 'statischer W38-Fall mit Ausgabevorhersage und eigenem Kompetenz-Override',
-      'manual-backward-step-trace': 'statischer W19-Fall mit derselben Zustandsverfolgung und eigenem Kompetenz-Override',
-      'fixed-dropout-mask-trace': 'statischer W21-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'stable-softmax-rows-trace': 'statischer W22-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'char-encode-roundtrip-trace': 'statischer W23-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'freeze-param-filter-trace': 'statischer W25-Fall mit stdout-Ausgabe und eigenem Kompetenz-Override',
-      'absolute-vs-relative-gain-trace': 'statischer W26-Fall mit Variablenzustand und eigenem Kompetenz-Override',
-      'metric-name-normalize-trace': 'statischer W31-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
-      'column-picture-trace': 'statischer W05-Fall mit derselben Ausgabevorhersage und eigenem Kompetenz-Override',
+      'card-check-variable-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'rpn-priority-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'stage-runner-error-states': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'overclaim-scanner-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'manual-backward-step-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'fixed-dropout-mask-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'stable-softmax-rows-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'char-encode-roundtrip-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'freeze-param-filter-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'absolute-vs-relative-gain-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'metric-name-normalize-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
+      'column-picture-trace': 'geseedeter Literal-Shard-Generator (TRACE_GENERATORS): Snippet, Erwartung und Variablenzustand aus derselben Ziehung; authored Didaktik bleibt im Fallkörper',
     },
     staticContent: [
       { sourceId: 'w01-e3', contentType: 'predict-output', caseId: 'reassign-two-variables-print' },
@@ -253,9 +246,11 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Aufrufkomposition von innen nach außen auswerten und das Endergebnis bestimmen.',
     referenceModel: 'Deterministische Auswertungssemantik der Aufrufkomposition.',
     errorHypotheses: ['Falsche Auswertungsreihenfolge der Aufrufe', 'Argumentzuordnung vertauscht'],
-    shardCases: ['nested-call-value-chain', 'two-functions-one-print', 'both-orders-linear-functions'],
+    shardCases: shardCasesFor('trace-call-composition'),
     runtimeArchetype: 'output-predict-lines',
-    refinements: {},
+    refinements: {
+      'both-orders-negative-chain': 'zweiter genFunctionCompose-Falltyp auf derselben Schablone; challenge-Profil (ga < 0, größere Beträge) trägt die Kommutativitäts-Falle',
+    },
     staticContent: [
       { sourceId: 'w01-e5', contentType: 'code-trace', caseId: 'nested-call-value-chain' },
       { sourceId: 'w01-e6', contentType: 'predict-output', caseId: 'two-functions-one-print' },
@@ -269,12 +264,13 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Collection-Operation Schritt für Schritt anwenden und den resultierenden Collection-Zustand angeben.',
     referenceModel: 'Collection-Zustand mit deterministischer Update-Semantik (Mutation statt Kopie).',
     errorHypotheses: ['Mutation und Kopie verwechselt', 'Index- oder Slice-Grenzen falsch gezogen'],
-    shardCases: ['half-open-slices-with-join', 'list-copy-alias-steps'],
+    shardCases: shardCasesFor('trace-collection-state'),
     splitCoverage: { 'list-copy-alias-steps': ['list-alias-steps', 'list-copy-steps'] },
     runtimeArchetype: 'state-trace-vars',
     refinements: {
       'list-mutate-steps': 'genCollectionStepTrace-Form ohne Shard-Falltyp, dieselbe Mutationsschablone',
       'list-alias-steps': 'eine Hälfte von list-copy-alias-steps (Aliasing ohne Kopie)',
+      'list-alias-negative': 'list-alias-Schablone als challenge-Fall: negative Startwerte, beide Referenzen x und y getrackt',
       'list-copy-steps': 'eine Hälfte von list-copy-alias-steps (Kopie ohne Aliasing)',
       'list-rebind-steps': 'genCollectionStepTrace-Form ohne Shard-Falltyp (Rebinding vs. In-place)',
       'set-add-discard-steps': 'genCollectionStepTrace-Form ohne Shard-Falltyp (Set-Semantik, Profillage vakant: Wortschatz fix)',
@@ -291,10 +287,11 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Akkumulator initialisieren, über die Folge iterieren und den Zählerstand fortschreiben.',
     referenceModel: 'Akkumulatorzustand über einer endlichen Folge.',
     errorHypotheses: ['Startwert oder Update des Akkumulators falsch', 'Elemente doppelt oder gar nicht gezählt'],
-    shardCases: ['stepped-range-prepend-accumulator', 'while-counter-with-stop-state', 'for-if-else-accumulator'],
+    shardCases: shardCasesFor('aggregate-accumulator-count'),
     runtimeArchetype: 'output-predict-lines',
     refinements: {
       'elif-branch-value': 'genControlFlowOutput-Form ohne Shard-Falltyp (Zweigwert statt Zähler)',
+      'while-two-accumulators': 'zweiter while-Falltyp als challenge-Fall: zwei Zählerstände (summe und End-n) unter strengerer Profilschranke',
       'for-filter-accumulator': 'genControlFlowOutput-Form ohne Shard-Falltyp (Filter-Akkumulator)',
     },
     staticContent: [
@@ -309,7 +306,7 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Dictionary-Operationen (Inkrement, del, setdefault, get-Standard) Zeile für Zeile anwenden und den Endzustand von Werten und Schlüsselmenge ablesen.',
     referenceModel: 'Dict-Zustand mit deterministischer Update-Semantik (Überschreiben, Löschen, Einfügen nur bei Fehlen, get-Standard); ein Mini-Interpreter wertet die Operationen in Ordnung aus.',
     errorHypotheses: ['Dict-Update-Semantik falsch angewendet (Überschreiben, del, setdefault, get-Standard)', 'Aggregation über das falsche Dict-Objekt (Werte statt Schlüssel)'],
-    shardCases: ['del-setdefault-increment', 'get-default-counting'],
+    shardCases: shardCasesFor('trace-dict-state-update'),
     runtimeArchetype: 'state-trace-vars',
     refinements: {
       'dict-start-key-steps': 'dict-steps-Schablone, partitioniert nach start-Schlüsselvokabular; Lösungsweg und Referenzmodell identisch',
@@ -327,7 +324,7 @@ const TRACE_TAXONOMY = [
     solutionPath: 'Ausführungspfad verfolgen und bestimmen, welche Ausnahme wo ausgelöst oder abgefangen wird.',
     referenceModel: 'Programm mit deterministischem Ausnahme- und Fehlerfluss.',
     errorHypotheses: ['Falscher Zweig gewählt', 'Reihenfolge der Ausnahmebehandlung missverstanden'],
-    shardCases: ['assert-raise-and-catch', 'seeded-operation-type-cases'],
+    shardCases: shardCasesFor('trace-exception-path'),
     splitCoverage: {
       'seeded-operation-type-cases': ['valueerror', 'typeerror-concat', 'keyerror', 'filenotfound', 'indexerror', 'typeerror-len', 'no-error-int', 'no-error-mul'],
     },
@@ -382,9 +379,8 @@ test('taxonomy crosscheck covers every shard case and documents every refinement
 });
 
 test('trace contracts follow the shard word-for-word (solution, reference, errors)', () => {
-  const shard = JSON.parse(readFileSync(join(root, 'tests/fixtures/foundations-shard.json'), 'utf8'));
   const byFamily = new Map();
-  for (const candidate of shard.entries) {
+  for (const candidate of SHARD.entries) {
     const familyId = candidate.cognitiveFamily.familyId;
     if (!byFamily.has(familyId)) byFamily.set(familyId, candidate.cognitiveFamily);
   }
@@ -395,14 +391,8 @@ test('trace contracts follow the shard word-for-word (solution, reference, error
     assert.equal(shardFamily.membershipEvidence.solutionPath, entry.solutionPath);
     assert.equal(shardFamily.membershipEvidence.referenceModel, entry.referenceModel);
     assert.deepEqual(shardFamily.membershipEvidence.errorHypotheses, entry.errorHypotheses);
-    const shardCaseIds = new Set(
-      shard.entries.filter((item) => item.cognitiveFamily.familyId === entry.familyId)
-        .map((item) => item.caseTemplate.caseId),
-    );
-    assert.deepEqual([...shardCaseIds].sort(), [...entry.shardCases].sort(), `${entry.familyId}: Shard-Fälle`);
   }
 });
-
 
 test('trace table states reproduce the snippet lines and the expected output', () => {
   const cases = ['reassign-two-variables-print', 'chain3-overwrite-print', 'accumulate-reassign-print'];
@@ -497,4 +487,70 @@ test('call composition tables compute inner before outer in both lanes', () => {
     assert.equal(gradeTraceTable(traceTable, traceTable.expectedStates).correct, true);
   }
   assert.equal(callCompositionTraceTable({ parameters: { form: 'unbekannt' } }), null);
+});
+
+// Literal-shard generators: the removed authored variant banks serve as the
+// equivalence fixture — build(extractedLiterals) must reproduce every formerly
+// authored instance byte-identically (expected payload + variable values).
+const TRACE_LITERAL_FIXTURE = JSON.parse(
+  readFileSync(join(root, 'tests/fixtures/trace-assignment-literals.json'), 'utf8'),
+);
+
+test('literal-shard generators reproduce all formerly authored instances', async () => {
+  const { TRACE_GENERATORS } = await import('../assets/js/core/trace_assignment_generators.mjs');
+  let checked = 0;
+  for (const [caseId, rows] of Object.entries(TRACE_LITERAL_FIXTURE)) {
+    const spec = TRACE_GENERATORS[caseId];
+    assert.ok(spec, `${caseId}: Generator fehlt`);
+    for (const row of rows) {
+      const params = { ...row.params };
+      if (caseId === 'manual-backward-step-trace') {
+        params.lr = params.lr_w;
+        delete params.lr_w;
+        delete params.lr_b;
+      }
+      const built = spec.build(params);
+      if (row.expected?.output !== undefined) {
+        assert.equal(built.expected.output, row.expected.output, `${caseId}: Ausgabe weicht ab`);
+      } else {
+        assert.equal(built.expected.output, undefined, `${caseId}: unerwartete Ausgabe`);
+      }
+      if (row.variables) {
+        assert.deepEqual(built.variables, row.variables, `${caseId}: Variablenwerte weichen ab`);
+      }
+      checked += 1;
+    }
+  }
+  assert.equal(checked, 140);
+});
+
+test('literal-shard generators produce diverse instances and solver parity', () => {
+  for (const caseId of Object.keys(TRACE_LITERAL_FIXTURE)) {
+    const prompts = new Set();
+    const snippets = new Set();
+    for (const seed of [0, 1, 2, 3, 4, 5, 6, 7]) {
+      const inst = generateTraceAssignmentFamily({ seed, caseId, difficulty: 'core' });
+      prompts.add(inst.prompt);
+      snippets.add(inst.parameters.snippet);
+      const solved = TRACE_FAMILY_RUNTIME['trace-assignment-state'].solve(inst.parameters);
+      if (inst.expected.output !== undefined) {
+        assert.equal(solved.output, inst.expected.output, `${caseId}: Solver-Parität verletzt (seed ${seed})`);
+      } else {
+        assert.deepEqual(solved, inst.expected, `${caseId}: Solver-Parität verletzt (seed ${seed})`);
+      }
+    }
+    assert.ok(snippets.size >= 4, `${caseId}: nur ${snippets.size} unterschiedliche Snippets über 8 Seeds`);
+    assert.ok(prompts.size >= 4, `${caseId}: nur ${prompts.size} unterschiedliche Prompts über 8 Seeds`);
+  }
+});
+
+test('manual-backward draws always produce integer trace values (grader contract)', () => {
+  // Regression: local=0.5 with odd grad_out yielded fractional grad_w values,
+  // which the code-trace grader rejects as invalid input — unwinnable instance.
+  for (let seed = 0; seed < 200; seed += 1) {
+    const inst = generateTraceAssignmentFamily({ seed, caseId: 'manual-backward-step-trace', difficulty: 'core' });
+    for (const { name, value } of inst.parameters.variables) {
+      assert.ok(Number.isInteger(value), `${name}=${value} nicht ganzzahlig (seed ${seed})`);
+    }
+  }
 });

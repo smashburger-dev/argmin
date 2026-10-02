@@ -36,7 +36,7 @@ interface CompiledIndex {
     familyId: string;
     summary?: string;
     contract: (Record<string, unknown> & { activityType?: string }) | null;
-    cases: Array<{ caseId: string; difficultyProfile: string; masteryEligible: boolean }>;
+    cases: Array<{ caseId: string; difficultyProfile: string; masteryEligible: boolean; challengeEligible?: boolean; title?: string; activityType?: string }>;
   }>;
 }
 
@@ -91,7 +91,6 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
     parameters: {},
     choices: [],
     expectedAnswer: {},
-    tolerancePolicy: {},
     hints: [],
     feedbackRules: [],
     fullSolution: '',
@@ -105,6 +104,7 @@ function toFamilySummary(activity: CompiledIndex['familyActivities'][number]): E
     caseId: activity.caseId,
     seed: activity.seed,
     seeded: activity.seeded,
+    moduleId: activity.moduleId,
   };
 }
 

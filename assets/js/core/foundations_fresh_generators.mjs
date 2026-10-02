@@ -17,21 +17,9 @@
 // validated fail-closed by the family runtime; code-trace
 // variables may carry `type: 'repr'` (canonical Python literals).
 
-import { rng, randInt, nonzeroInt } from './foundations_generators.mjs';
-
-
-/** Escapes &, <, > so learner-visible text survives the SafeMarkup DOMParser
- *  round-trip intact (raw angle brackets would be unwrapped or dropped). */
-const htmlEscape = (text) => String(text)
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;');
-
-/** Multi-line code in prompt/fullSolution must live inside <pre><code>;
- *  raw newlines elsewhere collapse in the SafeMarkup render path. The
- *  leading newline keeps the prompt's first line seed-invariant — the
- *  variant-bank signature test keys on `prompt.split('\n')[0]`. */
-const codeBlock = (code) => `<pre><code>\n${htmlEscape(code)}\n</code></pre>`;
+import { rng, randInt, nonzeroInt, pick, variantCaseIndex, variantEpoch, buildRotatedChoices, CHOICE_IDS } from './generator_draw_kit.mjs';
+import { rebindChoiceRules, registerStaticCases, staticCaseBody, variantOf } from '../domain/family_registry.mjs';
+import gitOperationDoc from '../../../content/families/classify-git-operation.json' with { type: 'json' };
 
 /** Python repr for the values our generators produce. Sets are rendered
  *  in sorted order — the grader compares set literals order-insensitively
@@ -462,49 +450,49 @@ const META_CASES = [
   },
 ];
 
-/** Rotate `options` so that index `rotation` becomes the correct position.
- *  rotation 0 keeps the input order (slice(-0) would be a no-rotation trap). */
-const rotateOptions = (options, rotation) => {
-  if (rotation <= 0) return [...options];
-  return [...options.slice(-rotation), ...options.slice(0, options.length - rotation)];
-};
-
 /** Shared variant-bank scaffolding (ADR-0015 mechanism B): the seed picks
- *  the case (`seed % cases.length`), the correct position rotates with the
- *  case AND the seed epoch, and every option text passes through `localize`
- *  (the git family rewrites its file name per epoch). `finish` receives the
- *  resolved bank state and builds the generator return value. */
-const caseBank = (cases, seed, { localize = (text) => text, finish }) => {
-  const caseIndex = seed % cases.length;
+ *  the case (`variantCaseIndex`), the correct position rotates with the
+ *  case AND the seed epoch (`variantEpoch`), and every option text passes
+ *  through `localize` (the git family rewrites its file name per epoch).
+ *  Cases with seed-dependent distractors pass `buildOptions(metaCase, seed)`
+ *  returning `{ correctText, distractors }` plus extra fields for `finish`
+ *  (the exception bank returns `code` and `noError` this way). `finish`
+ *  receives the resolved bank state and builds the generator return value. */
+const caseBank = (cases, seed, { localize = (text) => text, buildOptions = null, finish }) => {
+  const caseIndex = variantCaseIndex(seed, cases.length);
   const metaCase = cases[caseIndex];
-  const options = [metaCase.correct, ...metaCase.distractors].map(localize);
-  const rotation = (caseIndex + Math.floor(seed / cases.length)) % options.length;
-  const rotated = rotateOptions(options, rotation);
-  const ids = ['a', 'b', 'c', 'd'];
-  const choices = rotated.map((text, i) => ({ id: ids[i], text, correct: i === rotation }));
+  const epoch = variantEpoch(seed, cases.length);
+  const detail = buildOptions ? buildOptions(metaCase, seed) : null;
+  const correct = detail ? detail.correctText : metaCase.correct;
+  const distractors = detail ? detail.distractors : metaCase.distractors;
+  const options = [correct, ...distractors].map(localize);
+  const rotation = (caseIndex + epoch) % options.length;
+  const choices = buildRotatedChoices(options, rotation, CHOICE_IDS);
   return finish({
     metaCase,
     caseIndex,
-    epoch: Math.floor(seed / cases.length),
+    epoch,
     correctText: options[0],
     options,
     choices,
-    correctChoiceId: ids[rotation],
+    correctChoiceId: CHOICE_IDS[rotation],
+    detail,
   });
 };
 
 /** Semantic variant bank (B): which debugging step fits the observed error
  *  class. The seed picks one of five professionally distinct cases; the
  *  correct choice rotates position with the case. Delayed reviews can avoid
- *  the immediately previous case because `caseIdOf` is exported. */
+ *  the immediately previous case because every instance exposes
+ *  `parameters.caseId`/`caseIndex`. */
 export function genMetaErrorClassify(seed) {
   return caseBank(META_CASES, seed, {
     finish: ({ metaCase, caseIndex, choices, correctChoiceId, correctText }) => ({
       parameters: { caseId: metaCase.caseId, caseIndex },
-      expected: { correctChoice: correctChoiceId },
+      expected: {},
       choices,
-      prompt: `<p>Beobachtung: ${metaCase.symptom}</p><p>Welcher n\u00e4chste Schritt des Debug-Prozesses (Beobachtung \u2192 Reproduktion \u2192 Hypothese \u2192 frischer Test) passt am besten zu dieser Beobachtung?</p>`,
-      fullSolution: `<p>Richtig ist: ${correctText}</p><p>Die Beobachtung passt zum Fehlerbild \u201e${metaCase.caseId}\u201c. Ein guter Debug-Schritt benennt die Hypothese explizit und pr\u00fcft sie an einem frischen, gezielten Testfall \u2014 statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.</p>`,
+      prompt: `Beobachtung: ${metaCase.symptom}\n\nWelcher n\u00e4chste Schritt des Debug-Prozesses (Beobachtung \u2192 Reproduktion \u2192 Hypothese \u2192 frischer Test) passt am besten zu dieser Beobachtung?`,
+      fullSolution: `Richtig ist: ${correctText}\nDie Beobachtung passt zum Fehlerbild \u201e${metaCase.caseId}\u201c. Ein guter Debug-Schritt benennt die Hypothese explizit und pr\u00fcft sie an einem frischen, gezielten Testfall \u2014 statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.`,
     }),
   });
 }
@@ -513,17 +501,62 @@ export function metaErrorCaseCount() {
   return META_CASES.length;
 }
 
+/** Solver-side lookup for drawn instances: the correct option text of the
+ *  meta case that `caseIndex`/`metaCaseId` selected in the draw. */
+export function metaErrorCorrectText(parameters) {
+  const metaCase = META_CASES[parameters?.caseIndex];
+  if (!metaCase || metaCase.caseId !== parameters?.metaCaseId) {
+    throw new Error(`Unbekannter Fehlertyp ${parameters?.metaCaseId}`);
+  }
+  return metaCase.correct;
+}
+
 // --- c-python-files-errors: exception boundary bank (B) ------------------------
 
+const EXCEPTION_WORDS = ['ki', 'haus', 'weg', 'auto', 'baum', 'licht'];
+const EXCEPTION_MISSING_FILES = ['notizen_nicht_da.txt', 'protokoll_fehlt.log', 'daten_weg.csv', 'bericht_offen.txt'];
+
 const EXCEPTION_CASES = [
-  { caseId: 'valueerror', expr: (r) => `int("3,${randInt(r, 1, 9)}")`, answer: 'ValueError', why: 'Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.' },
-  { caseId: 'typeerror-concat', expr: () => '"ki" + 5', answer: 'TypeError', why: 'Die +-Operation zwischen str und int ist nicht definiert; Python verketten keine Typen automatisch.' },
+  {
+    caseId: 'valueerror',
+    expr: (r) => pick(r, [
+      () => `int("${randInt(r, 1, 99)},${randInt(r, 1, 9)}")`,
+      () => `int("-${randInt(r, 1, 9)},${randInt(r, 1, 9)}")`,
+      () => `int("${randInt(r, 1, 9)},${randInt(r, 1, 9)},${randInt(r, 1, 9)}")`,
+    ])(),
+    answer: 'ValueError',
+    why: 'Der String enthält ein Komma und ist daher keine gültige Ganzzahl — int() mit ungültigem Literal wirft ValueError.',
+  },
+  {
+    caseId: 'typeerror-concat',
+    expr: (r) => pick(r, [
+      () => `"${pick(r, EXCEPTION_WORDS)}" + ${randInt(r, 1, 99)}`,
+      () => `${randInt(r, 1, 99)} + "${pick(r, EXCEPTION_WORDS)}"`,
+      () => `"${pick(r, EXCEPTION_WORDS)}" + -${randInt(r, 1, 9)}`,
+    ])(),
+    answer: 'TypeError',
+    why: 'Die +-Operation zwischen str und int ist nicht definiert; Python verkettet keine Typen automatisch.',
+  },
   { caseId: 'keyerror', expr: (r) => `alter = {"anna": ${randInt(r, 18, 30)}}\nalter["${['berta', 'caro', 'dilan'][randInt(r, 0, 2)]}"]`, answer: 'KeyError', why: 'Der Schlüssel existiert im Dictionary nicht; der Zugriff über eckige Klammern wirft KeyError.' },
-  { caseId: 'filenotfound', expr: () => 'open("notizen_nicht_da.txt")', answer: 'FileNotFoundError', why: 'Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.' },
+  {
+    caseId: 'filenotfound',
+    expr: (r) => `open("${pick(r, EXCEPTION_MISSING_FILES)}")`,
+    answer: 'FileNotFoundError',
+    why: 'Die Datei existiert nicht; open() im Lesemodus scheitert daher mit FileNotFoundError.',
+  },
   { caseId: 'indexerror', expr: (r) => `werte = [${randInt(r, 1, 9)}, ${randInt(r, 1, 9)}]\nwerte[${randInt(r, 5, 9)}]`, answer: 'IndexError', why: 'Der Index liegt hinter dem Listenende; der Zugriff wirft IndexError.' },
-  { caseId: 'typeerror-len', expr: () => 'len(5)', answer: 'TypeError', why: 'len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.' },
+  {
+    caseId: 'typeerror-len',
+    expr: (r) => pick(r, [
+      () => `len(${randInt(r, 2, 99)})`,
+      () => `len(-${randInt(r, 1, 9)})`,
+      () => `len(${randInt(r, 1, 9)} + ${randInt(r, 1, 9)})`,
+    ])(),
+    answer: 'TypeError',
+    why: 'len() braucht ein Objekt mit Länge; eine ganze Zahl hat keine.',
+  },
   { caseId: 'no-error-int', expr: (r) => `int("${randInt(r, 10, 99)}")`, answer: 'KEIN_FEHLER_INT' },
-  { caseId: 'no-error-mul', expr: (r) => `"${randInt(r, 2, 4)}" * ${randInt(r, 2, 3)}`, answer: 'KEIN_FEHLER_STR' },
+  { caseId: 'no-error-mul', expr: (r) => `"${randInt(r, 2, 99)}" * ${randInt(r, 2, 4)}`, answer: 'KEIN_FEHLER_STR' },
 ];
 
 /** Semantic variant bank (B): which exception (if any) does the expression
@@ -531,48 +564,47 @@ const EXCEPTION_CASES = [
  *  Correct position rotates with the case. */
 export function genExceptionBoundary(seed) {
   const r = rng(seed);
-  const caseIndex = seed % EXCEPTION_CASES.length;
-  const metaCase = EXCEPTION_CASES[caseIndex];
-  const code = metaCase.expr(r);
-  const noError = metaCase.answer.startsWith('KEIN_FEHLER');
-  let correctText;
-  if (!noError) {
-    correctText = `${metaCase.answer} — ${metaCase.why}`;
-  } else if (metaCase.answer === 'KEIN_FEHLER_INT') {
-    const value = code.match(/"(\d+)"/)[1];
-    correctText = `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.`;
-  } else {
-    const digits = code.match(/"(\d+)"/)[1];
-    const times = Number(code.split('*')[1].trim());
-    correctText = `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".`;
-  }
-  const answerName = noError ? 'KEIN_FEHLER' : metaCase.answer;
-  const wrongPool = [
-    'ValueError — das Literal passt nicht zum erwarteten Typ.',
-    'TypeError — die Operation ist für diese Typen nicht definiert.',
-    'KeyError — der Schlüssel fehlt im Mapping.',
-    'FileNotFoundError — die Datei existiert nicht.',
-    'IndexError — der Index liegt außerhalb der Sequenz.',
-    'Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis.',
-  ].filter((text) => (noError ? !text.startsWith('Kein Fehler') : !text.startsWith(`${answerName} —`)));
-  const distractors = [];
-  const er = rng(seed ^ 0x5f2c);
-  while (distractors.length < 3) {
-    const candidate = wrongPool[Math.floor(er() * wrongPool.length)];
-    if (!distractors.includes(candidate)) distractors.push(candidate);
-  }
-  const options = [correctText, ...distractors];
-  const rotation = (caseIndex + Math.floor(seed / EXCEPTION_CASES.length)) % options.length;
-  const rotated = rotateOptions(options, rotation);
-  const ids = ['a', 'b', 'c', 'd'];
-  const choices = rotated.map((text, i) => ({ id: ids[i], text, correct: i === rotation }));
-  return {
-    parameters: { caseId: metaCase.caseId, caseIndex, code },
-    expected: { correctChoice: ids[rotation] },
-    choices,
-    prompt: `<p>Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?</p>${codeBlock(code)}`,
-    fullSolution: `Richtig: ${correctText}${noError ? '' : ` Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.`}`,
-  };
+  return caseBank(EXCEPTION_CASES, seed, {
+    buildOptions: (metaCase) => {
+      const code = metaCase.expr(r);
+      const noError = metaCase.answer.startsWith('KEIN_FEHLER');
+      let correctText;
+      if (!noError) {
+        correctText = `${metaCase.answer} — ${metaCase.why}`;
+      } else if (metaCase.answer === 'KEIN_FEHLER_INT') {
+        const value = code.match(/"(\d+)"/)[1];
+        correctText = `Kein Fehler — der Ausdruck liefert problemlos die ganze Zahl ${value}.`;
+      } else {
+        const digits = code.match(/"(\d+)"/)[1];
+        const times = Number(code.split('*')[1].trim());
+        correctText = `Kein Fehler — der Ausdruck liefert problemlos den String "${digits.repeat(times)}".`;
+      }
+      const answerName = noError ? 'KEIN_FEHLER' : metaCase.answer;
+      const wrongPool = [
+        'ValueError — das Literal passt nicht zum erwarteten Typ.',
+        'TypeError — die Operation ist für diese Typen nicht definiert.',
+        'KeyError — der Schlüssel fehlt im Mapping.',
+        'FileNotFoundError — die Datei existiert nicht.',
+        'IndexError — der Index liegt außerhalb der Sequenz.',
+        'Kein Fehler — der Ausdruck läuft fehlerfrei durch und liefert ein Ergebnis.',
+      ].filter((text) => (noError ? !text.startsWith('Kein Fehler') : !text.startsWith(`${answerName} —`)));
+      const distractors = [];
+      // ponytail: historische Seed-Ableitung eingefroren, neue Fälle via familySubseed.
+      const er = rng(seed ^ 0x5f2c);
+      while (distractors.length < 3) {
+        const candidate = wrongPool[Math.floor(er() * wrongPool.length)];
+        if (!distractors.includes(candidate)) distractors.push(candidate);
+      }
+      return { code, noError, correctText, distractors };
+    },
+    finish: ({ metaCase, caseIndex, choices, correctChoiceId, correctText, detail }) => ({
+      parameters: { caseId: metaCase.caseId, caseIndex },
+      expected: {},
+      choices,
+      prompt: `Was passiert bei der Ausführung dieses Ausdrucks — welche Ausnahme wird ausgelöst, oder läuft er fehlerfrei durch?\n\n${detail.code}`,
+      fullSolution: `Richtig: ${correctText}${detail.noError ? '' : ` Typische Grenzverwechslung: die andere „häufige“ Ausnahme würde bei leicht anderen Typen/Argumenten entstehen — hier entscheidet die konkrete Operation.`}`,
+    }),
+  });
 }
 
 export function exceptionBoundaryCaseCount() {
@@ -613,63 +645,49 @@ export function genBranchCoverageCount(seed) {
   return {
     parameters: { shape },
     expected: answer,
-    prompt: `<p>Wie viele Testfälle sind mindestens nötig, um jede Verzweigung dieses Codegerüsts in jede Richtung mindestens einmal wirklich zu durchlaufen (vollständige Zweigabdeckung)? Erst die erreichbaren Wege durch den Entscheidungsbaum zählen — dann als ganze Zahl angeben.</p>${codeBlock(numbered(BRANCH_SHAPES[shape]))}`,
+    prompt: `Wie viele Testfälle sind mindestens nötig, um jede Verzweigung dieses Codegerüsts in jede Richtung mindestens einmal wirklich zu durchlaufen (vollständige Zweigabdeckung)? Erst die erreichbaren Wege durch den Entscheidungsbaum zählen — dann als ganze Zahl angeben.\n\n${numbered(BRANCH_SHAPES[shape])}`,
     fullSolution: `Der Entscheidungsbaum dieses Gerüsts hat ${answer} erreichbare Blätter (jede Kombination von Bedingungsausgängen, die zu einem unterscheidbaren Programmweg führt). Zweigabdeckung verlangt für jedes Blatt mindestens einen Testfall mit Werten, die genau auf diesem Weg landen — also mindestens ${answer} Testfälle.`,
   };
 }
 
 // --- c-git-basics: git state variant bank (B) -----------------------------------
+// Public-first: the authored case bodies (bank states, the pinned merge
+// flow and the challenge distractor sets) live in
+// content/families/classify-git-operation.json. Registration at import time
+// keeps direct generator use (tests, tools) working without a bundle load;
+// the seed mechanics below stay in JavaScript.
 
-const GIT_CASES = [
-  {
-    caseId: 'diff-unstaged',
-    state: 'Du hast an mehreren Dateien gearbeitet. Nichts ist gestaged. Bevor du entscheidest, was in den Commit soll, willst du sehen, welche Textänderungen die Arbeitskopie gegenüber dem letzten Commit enthält.',
-    correct: 'git diff',
-    distractors: ['git diff --staged', 'git status', 'git push'],
-    insight: 'git diff zeigt unstagede Textänderungen der Arbeitskopie; --staged würde nichts zeigen, weil noch nichts gestaged ist.',
-  },
-  {
-    caseId: 'diff-staged',
-    state: 'Du hast Dateien mit git add vorgemerkt. Nun willst du genau die vorgemerkten Änderungen prüfen, bevor du committest.',
-    correct: 'git diff --staged',
-    distractors: ['git diff', 'git log', 'git clone'],
-    insight: 'git diff --staged vergleicht den Staging-Bereich mit dem letzten Commit; git diff (ohne Flag) zeigt dagegen nur unstagede Änderungen.',
-  },
-  {
-    caseId: 'push',
-    state: 'Du hast einen Commit erstellt. Dein lokaler Branch liegt damit vor dem Branch im Remote-Repository (origin).',
-    correct: 'git push',
-    distractors: ['git pull', 'git fetch', 'git commit --amend'],
-    insight: 'push überträgt lokale Commits ins Remote; pull/fetch holen stattdessen Remote-Stand ab.',
-  },
-  {
-    caseId: 'merge-main',
-    state: 'Du arbeitest auf dem Branch feature. main hat seit deinem Abzweig neue Commits bekommen. Du willst deinen Branch auf den aktuellen main-Stand bringen — ohne deinen Branch zu wechseln.',
-    correct: 'git merge main',
-    distractors: ['git checkout main', 'git push origin feature', 'git branch main'],
-    insight: 'merge main integriert main in den aktuellen Branch (feature). checkout main würde den Branch wechseln, statt zu integrieren.',
-  },
-  {
-    caseId: 'conflict-resolved',
-    state: 'Während eines Merges gab es einen Konflikt in einer Datei. Du hast die Konfliktmarkierungen bereinigt und die Datei gespeichert. Der Merge läuft noch.',
-    correct: 'git add der Datei, dann git commit abschließen',
-    distractors: ['git push sofort ausführen', 'git restore --staged . und neu beginnen', 'git commit --amend auf den letzten Commit'],
-    insight: 'Nach dem Bereinigen markiert git add die Datei als gelöst; der ausstehende Merge-Commit wird danach abgeschlossen.',
-  },
-  {
-    caseId: 'restore-file',
-    state: 'Du hast lokale Änderungen in einer Datei, die noch nicht gestaged sind. Du entscheidest: diese Änderungen willst du verwerfen und die Datei auf den Stand des letzten Commits zurücksetzen.',
-    correct: 'git restore datei.py',
-    distractors: ['git rm datei.py', 'git commit -m "verwerfen"', 'git stash apply'],
-    insight: 'restore setzt unstaged Änderungen der Arbeitskopie zurück; rm würde die Datei aus dem Projekt entfernen.',
-  },
-];
+/** Authored case meta from the public body: the correct option sits first
+ *  in `choices` (canonical order, rotation happens per seed), `state`,
+ *  `insight`, `staticFlow` and `challengeDistractors` live in `parameters`. */
+const gitCaseMeta = (body) => ({
+  caseId: body.caseId,
+  state: body.parameters.state,
+  correct: body.choices.find((choice) => choice.correct).text,
+  distractors: body.choices.filter((choice) => !choice.correct).map((choice) => choice.text),
+  insight: body.parameters.insight,
+  challengeDistractors: body.parameters.challengeDistractors ?? null,
+  staticFlow: body.parameters.staticFlow === true,
+});
+
+// Lazy beim ersten Zugriff: auf Modulebene gelesene Import-Bindings
+// können in gebündelten Chunk-Graphen noch uninitialisiert sein.
+let gitCases = null;
+function ensureGitDocs() {
+  if (!gitCases) {
+    registerStaticCases(gitOperationDoc.familyId, gitOperationDoc.cases);
+    gitCases = gitOperationDoc.cases
+      .filter((body) => body.parameters?.staticFlow !== true)
+      .map(gitCaseMeta);
+  }
+  return gitCases;
+}
 
 /** Semantic variant bank (B): a described repository state, asked for the
  *  fitting next action. Six professionally distinct states; correct
  *  position rotates with the case. */
 export function genGitNextAction(seed) {
-  return caseBank(GIT_CASES, seed, {
+  return caseBank(ensureGitDocs(), seed, {
     // File-name localization happens inside finish (it needs the epoch and
     // the case's usesFile check); caseBank itself only resolves case and
     // rotation. The epoch varies the file name (seed % N picks the case, so
@@ -678,13 +696,13 @@ export function genGitNextAction(seed) {
       const usesFile = metaCase.state.includes('datei.py') || metaCase.correct.includes('datei.py') || metaCase.distractors.some((text) => text.includes('datei.py'));
       const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
       const fileName = usesFile ? fileNames[epoch % fileNames.length] : null;
-      const localize = (text) => fileName ? text.replaceAll('datei.py', fileName) : text;
+      const localize = (text) => localizeGitFileName(text, fileName);
       const localizedChoices = fileName ? choices.map((choice) => ({ ...choice, text: localize(choice.text) })) : choices;
       return {
         parameters: { caseId: metaCase.caseId, caseIndex, ...(fileName ? { fileName } : {}) },
-        expected: { correctChoice: correctChoiceId },
+        expected: {},
         choices: localizedChoices,
-        prompt: `<p>Situation: ${localize(metaCase.state)}</p><p>Welcher Schritt passt jetzt am besten?</p>`,
+        prompt: `Situation: ${localize(metaCase.state)}\n\nWelcher Schritt passt jetzt am besten?`,
         fullSolution: `Richtig: ${localize(options[0])}. ${localize(metaCase.insight)}`,
       };
     },
@@ -692,82 +710,84 @@ export function genGitNextAction(seed) {
 }
 
 export function gitNextActionCaseCount() {
-  return GIT_CASES.length;
+  return ensureGitDocs().length;
 }
 
 const GIT_OPERATION_CHOICE_COUNT = { intro: 2, core: 4, stretch: 4, challenge: 4 };
-const GIT_OPERATION_CHALLENGE_DISTRACTORS = {
-  'diff-unstaged': ['git diff --staged', 'git status', 'git add -p'],
-  'diff-staged': ['git diff', 'git status', 'git add -p'],
-};
 
-function gitOperationCase(caseId) {
-  const meta = GIT_CASES.find((item) => item.caseId === caseId)
-    || GIT_OPERATION_STATIC[caseId];
-  if (!meta) throw new Error(`Unbekannter Git-Fall ${caseId}`);
-  return meta;
+/** Case meta of the variant body `variant` selects (seed or stored index,
+ *  both resolved modulo the body count; 0 is the authored case). The
+ *  genGitNextAction bank above keeps reading the authored bodies only. */
+function gitOperationCase(caseId, variant = 0) {
+  if (!gitOperationDoc.cases.some((item) => item.caseId === caseId)) {
+    throw new Error(`Unbekannter Git-Fall ${caseId}`);
+  }
+  ensureGitDocs();
+  const { body, index } = variantOf(staticCaseBody(gitOperationDoc.familyId, caseId), variant);
+  return { ...gitCaseMeta(body), body, variantIndex: index };
 }
 
 function gitOperationOptions(meta, difficulty, choiceCount) {
   const distractors = difficulty === 'challenge'
-    ? (GIT_OPERATION_CHALLENGE_DISTRACTORS[meta.caseId] || meta.distractors)
+    ? (meta.challengeDistractors || meta.distractors)
     : meta.distractors;
   return [meta.correct, ...distractors.slice(0, choiceCount - 1)];
 }
 
-/** Independent solver: the correct Git operation is a function of caseId,
- *  not of seed, rotation or difficulty. */
+/** `datei.py` in authored texts is the placeholder for the working file;
+ *  stretch/challenge draws rename it to parameters.fileName. */
+const localizeGitFileName = (text, fileName) =>
+  fileName ? text.replaceAll('datei.py', fileName) : text;
+
+/** Independent solver: the correct Git operation is a function of caseId
+ *  and variant, not of seed, rotation or difficulty. */
 export function solveGitOperation(parameters) {
-  return { correctText: gitOperationCase(parameters.caseId).correct };
+  const correct = gitOperationCase(parameters.caseId, parameters.variant ?? 0).correct;
+  return { correctText: localizeGitFileName(correct, parameters.fileName) };
 }
 
-// Gepinnte statische Quelle für den Merge-Fall
-// Unabhängiger Lookup neben GIT_CASES, damit die Seed-Generator-Baseline
-// (genGitNextAction) unangetastet bleibt.
-const GIT_OPERATION_STATIC = {
-  'merge-conflict-test-flow': {
-    caseId: 'merge-conflict-test-flow',
-    state: 'Beim Merge eines Feature-Branches entsteht ein Konflikt in `checker.py`. Beide Branches hatten vor dem Merge grüne Tests.',
-    correct: 'Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen',
-    distractors: [
-      'Immer `--ours` wählen, weil der aktuelle Branch Vorrang hat',
-      'Konfliktmarker unverändert committen; die frühere grüne Suite reicht als Beleg',
-      'Die Historie neu schreiben, damit kein Konflikt mehr sichtbar ist',
-    ],
-    insight: 'Lies zuerst beide Varianten und löse die fachliche Absicht. Danach prüfst du die neu entstandene Kombination mit Tests und Diff. Erst dieser Zustand wird als Merge-Commit gespeichert.',
-  },
-};
-
 /** S4C family generator for classify-git-operation. Case type is pinned;
- *  seed rotates the correct position and, on stretch/challenge, localizes a
- *  working-tree file name. intro/core leave that file step empty (vacuous-axis). */
+ *  seed picks the variant body (seed 0 is the authored case), rotates the
+ *  correct position and, on stretch/challenge, localizes a working-tree file
+ *  name. intro/core leave that file step empty (vacuous-axis). Variant
+ *  feedback rules are authored on the variant's ids and rebound through the
+ *  option texts. */
 export function generateGitOperationFamily({ seed, caseId, difficulty }) {
   if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
   const choiceCount = GIT_OPERATION_CHOICE_COUNT[difficulty];
   if (!choiceCount) throw new Error(`Unbekanntes Profil ${difficulty}`);
-  const meta = gitOperationCase(caseId);
-  const varyFile = (difficulty === 'stretch' || difficulty === 'challenge') && !GIT_OPERATION_STATIC[caseId];
+  const meta = gitOperationCase(caseId, seed);
+  const varyFile = (difficulty === 'stretch' || difficulty === 'challenge') && !meta.staticFlow;
   const fileNames = ['notizen.py', 'auswertung.py', 'trainingsplan.md'];
   const fileName = varyFile ? fileNames[randInt(rng(seed), 0, fileNames.length - 1)] : null;
   const options = gitOperationOptions(meta, difficulty, choiceCount);
-  const rotation = Math.abs(seed) % options.length;
-  const rotated = rotateOptions(options, rotation);
+  const rotation = variantCaseIndex(seed, options.length);
   const ids = ['a', 'b', 'c', 'd'].slice(0, options.length);
-  const choices = rotated.map((text, index) => ({
-    id: ids[index],
-    text,
-    correct: index === rotation,
-  }));
+  const choices = buildRotatedChoices(options, rotation, ids);
+  const feedbackRules = rebindChoiceRules(meta.body.feedbackRules, meta.body.choices, choices);
+  // Localize after rebinding: rules match authored option texts, ids survive.
+  const localizedChoices = fileName
+    ? choices.map((choice) => ({ ...choice, text: localizeGitFileName(choice.text, fileName) }))
+    : choices;
+  const localizedRules = fileName && feedbackRules
+    ? feedbackRules.map((rule) => ({ ...rule, then: localizeGitFileName(rule.then, fileName) }))
+    : feedbackRules;
   const fileNote = fileName ? ` Die Arbeitsdatei heißt ${fileName}.` : '';
-  const question = GIT_OPERATION_STATIC[caseId]
+  const question = meta.staticFlow
     ? 'Welcher Ablauf liefert den belastbarsten Abschluss?'
     : 'Welche Git-Operation passt jetzt?';
   return {
-    parameters: { caseId, difficulty, ...(fileName ? { fileName } : {}) },
-    expected: { correctChoice: ids[rotation] },
-    choices,
-    prompt: `<p>Situation: ${meta.state}${fileNote}</p><p>${question}</p>`,
-    fullSolution: `Richtig: ${meta.correct}. ${meta.insight}`,
+    parameters: {
+      caseId,
+      difficulty,
+      ...(meta.variantIndex ? { variant: meta.variantIndex } : {}),
+      ...(fileName ? { fileName } : {}),
+    },
+    expected: {},
+    choices: localizedChoices,
+    prompt: `Situation: ${meta.state}${fileNote}\n\n${question}`,
+    fullSolution: localizeGitFileName(`Richtig: ${meta.correct}. ${meta.insight}`, fileName),
+    ...(localizedRules ? { feedbackRules: localizedRules } : {}),
   };
 }
 
@@ -788,6 +808,10 @@ export const GIT_OPERATION_CONTRACT = {
   caseTypes: [
     { caseId: 'diff-unstaged' },
     { caseId: 'diff-staged' },
+    { caseId: 'push' },
+    { caseId: 'merge-main' },
+    { caseId: 'conflict-resolved' },
+    { caseId: 'restore-file' },
     { caseId: 'merge-conflict-test-flow', propertyTest: false },
   ],
   difficultyProfiles: ['intro', 'core', 'stretch', 'challenge'],
@@ -806,4 +830,11 @@ export const FOUNDATIONS_FRESH_GENERATORS = {
   genExceptionBoundary,
   genBranchCoverageCount,
   genGitNextAction,
+};
+
+// Flat spec for the central registry.
+export const GIT_OPERATION_SPEC = {
+  ...GIT_OPERATION_CONTRACT,
+  generate: generateGitOperationFamily,
+  solve: solveGitOperation,
 };

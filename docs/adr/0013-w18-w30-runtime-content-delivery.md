@@ -91,11 +91,12 @@ Prompt ≈ +25 KiB gzip → Entry ~116 KiB, weiterhin unter Budget [INFERENCE].
 
 - torch, TensorFlow, JAX sind weder im gepinnten Lock 314.0.5 noch im
   aktuellen Stable-Lock 314.0.6 (jsDelivr, 2026-08-31) verfügbar
-  [VERIFIED]. Whitelist bleibt `numpy, sympy, mpmath`.
+  [VERIFIED]. Whitelist war `numpy, sympy, mpmath`; seit 2026-09-11 nur
+  noch `numpy` (ADR-0002 Nachtrag).
 - Grader-Contract: Tests als Python-String nach Lernendencode im selben
   Namensraum, `__check`, Host-Timeout 60 s mit Terminate/Restart [VERIFIED].
-- Mastery nur über `deterministic`/`pyodide`/`pyodide-sympy`;
-  Manual-Rubrics nie bindend [VERIFIED].
+- Mastery nur über `deterministic`/`pyodide` (bis 2026-09-11 zusätzlich
+  `pyodide-sympy`); Manual-Rubrics nie bindend [VERIFIED].
 
 ### Entscheidung: NumPy-first-Hybrid fortsetzen (OPTION A)
 

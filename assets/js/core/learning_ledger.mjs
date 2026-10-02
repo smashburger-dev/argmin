@@ -6,6 +6,7 @@ import { buildLearningEvent, isJournalWorthy } from '../domain/learning_event.mj
 import { EvidenceEngine } from '../domain/evidence_engine.mjs';
 import { buildReviewQueueEntries, resolveReviewParams } from './review_scheduler.js';
 import { progress } from './progress_store.js';
+import { notifyProgressChanged } from './progress_notify.mjs';
 
 export function evaluateLearningState(events, catalog, settings = {}, nowMs = Date.now()) {
   const params = resolveReviewParams(settings.reviewParams);
@@ -47,7 +48,7 @@ export function createBrowserLearningLedger(store = progress) {
     appendEvent: (event) => store.addAttempt(event),
     addJournalEntry: (entry) => store.addJournalEntry(entry),
     getOrCreateCycle: (activityId) => store.getOrCreateCycle(activityId),
-    afterCommit: () => { dispatchEvent(new CustomEvent('learning-progress-changed')); },
+    afterCommit: () => { notifyProgressChanged(); },
   });
 }
 

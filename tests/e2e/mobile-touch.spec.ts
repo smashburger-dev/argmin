@@ -12,7 +12,10 @@ const overflowRoutes: Array<{ hash: string; ready: (page: Page) => Promise<void>
   { hash: '/module/lm-linalg-matrices', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
   { hash: '/family/formula-scalar-product/column-vector-authored/0/core', ready: async (page) => { await expect(page.getByRole('heading', { level: 1 })).toBeVisible(); } },
   { hash: '/review', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Review' })).toBeVisible(); } },
-  { hash: '/diagnostic', ready: async (page) => { await expect(page.getByRole('heading', { level: 1, name: 'Diagnose' })).toBeVisible(); } },
+  { hash: '/diagnostic', ready: async (page) => {
+    await expect(page.getByRole('heading', { level: 1, name: 'Diagnose' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Ersten Algebra-Anker ausführen' })).toHaveAttribute('href', /^#\/family\/transform-linear-equation-isolate\/two-step-seeded-retrieval\//);
+  } },
 ];
 
 async function expectNoHorizontalOverflow(page: Page): Promise<void> {
@@ -43,14 +46,17 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
 }
 
 async function tapNavigation(page: Page): Promise<void> {
+  const openDrawer = async () => {
+    await page.getByRole('button', { name: 'Navigation öffnen' }).tap();
+    return page.getByRole('dialog', { name: 'Navigation' });
+  };
   await page.goto('/index.html#/today');
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
-  const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
-  await nav.getByRole('link', { name: 'Lernen' }).tap();
+  await (await openDrawer()).getByRole('link', { name: 'Lernen' }).tap();
   await expect(page.getByRole('heading', { level: 1, name: /Dein Lernpfad:/ })).toBeVisible();
-  await nav.getByRole('link', { name: 'Einstellungen' }).tap();
+  await (await openDrawer()).getByRole('link', { name: 'Einstellungen' }).tap();
   await expect(page.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeVisible();
-  await nav.getByRole('link', { name: 'Heute', exact: true }).tap();
+  await (await openDrawer()).getByRole('link', { name: 'Heute', exact: true }).tap();
   await expect(page.getByRole('heading', { level: 1, name: 'Heute' })).toBeVisible();
 }
 
@@ -63,7 +69,8 @@ async function progressImport(page: Page): Promise<void> {
     mimeType: 'application/json',
     buffer: Buffer.from('{'),
   });
-  await expect(page.getByRole('status')).toHaveText('Die Datei enthält kein gültiges JSON.');
+  const status = page.locator('form[data-tour="settings-form"]').getByRole('status');
+  await expect(status).toHaveText('Die Datei enthält kein gültiges JSON.');
   const downloadPromise = page.waitForEvent('download');
   await page.getByRole('button', { name: 'JSON exportieren' }).click();
   const path = await (await downloadPromise).path();
@@ -71,7 +78,7 @@ async function progressImport(page: Page): Promise<void> {
   page.once('dialog', (dialog) => void dialog.accept());
   const buffer = await (await import('node:fs/promises')).readFile(path as string);
   await page.locator('#progress-import').setInputFiles({ name: 'fortschritt.json', mimeType: 'application/json', buffer });
-  await expect(page.getByRole('status')).toHaveText('Import abgeschlossen.');
+  await expect(status).toHaveText('Import abgeschlossen.');
 }
 
 const { defaultBrowserType: _androidBrowser, ...android } = devices['Galaxy S5'];

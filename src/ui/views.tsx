@@ -5,10 +5,9 @@ import { loadSources, loadTools } from '../adapters/content-repository';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
 import { MathMarkup } from './MathMarkup';
+import { formatGermanDate } from './format';
 import { readThemePreference, saveThemePreference, type ThemePreference } from '../app/theme';
 
-/** Loads a route-scoped content section once per session. null while the
- *  sidecar chunk is in flight — views render an honest loading state. */
 /** Loads a route-scoped section once per session. Returns the section, or
  *  null while loading, or 'failed' when the chunk could not be fetched — a
  *  failed dynamic import poisons the module map, so the honest recovery is a
@@ -30,11 +29,14 @@ function sectionError(view: string) {
   return <p role="alert" class="content-error">{view} konnten nicht geladen werden. Bitte lade die Seite neu (Abschnittsdatei fehlt oder Verbindung unterbrochen).</p>;
 }
 import { buildFoundationsDiagnosis } from '../adapters/diagnosis';
+import { buildWeeklyLearningPlan } from '../adapters/learning-plan';
 import { exportProgressJson, importProgressJson } from '../adapters/progress-admin';
-import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
+import { freshRouteForDefinition, routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { partitionReviewQueue } from '../../assets/js/domain/review_partition.mjs';
 import { orderModulesForTrack } from '../../assets/js/domain/module_order.mjs';
+import { daySeed } from '../../assets/js/domain/challenge_picker.mjs';
 import { countLabel, learnerExerciseLabel, minutesLabel, reasonCodeLabel } from './learner-labels';
+import { curatedProgress } from './exercise-context';
 import { moduleState } from './ProgressView';
 
 const stateLabels = {
@@ -92,21 +94,13 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
     });
     return track ? orderModulesForTrack(matching, track) : matching;
   }, [catalog.learningModules, query, track]);
-  const exerciseCounts = useMemo(() => {
-    const counts = new Map<string, number>();
+  const moduleTaskCounts = useMemo(() => {
+    const counts = new Map<string, { total: number; credited: number }>();
     for (const module of catalog.learningModules || []) {
-      counts.set(module.moduleId, catalog.exercises.filter((exercise) => exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
+      counts.set(module.moduleId, curatedProgress(catalog, module, progress.creditedDefinitions));
     }
     return counts;
-  }, [catalog.exercises, catalog.learningModules]);
-  const creditedCounts = useMemo(() => {
-    const credited = new Set(progress.creditedDefinitions);
-    const counts = new Map<string, number>();
-    for (const module of catalog.learningModules || []) {
-      counts.set(module.moduleId, catalog.exercises.filter((exercise) => credited.has(exercise.definitionId) && exercise.competencyIds.some((id) => module.competencyIds.includes(id))).length);
-    }
-    return counts;
-  }, [catalog.exercises, catalog.learningModules, progress.creditedDefinitions]);
+  }, [catalog, progress.creditedDefinitions]);
   const trackFacts = useMemo(() => {
     const inTrack = (catalog.learningModules || []).filter((module) => track && module.trackIds.includes(track.trackId));
     const minutes = inTrack.reduce((total, module) => total + module.estimatedMinutes, 0);
@@ -154,13 +148,13 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
           />
         </label>
       </header>
-      <section class="activity-section learn-rail" aria-labelledby="learn-module-title">
+      <section class="activity-section learn-rail" aria-labelledby="learn-module-title" data-tour="learn-rail">
         {modules.length > 0 ? (
           <>
           <h2 class="visually-hidden" id="learn-module-title">Module in diesem Pfad</h2>
           <Carousel label="Module in diesem Pfad" arrows fades prevLabel="Vorherige Module" nextLabel="Weitere Module">
             {modules.map((module, index) => (
-              <ModuleCard module={module} step={index + 1} total={exerciseCounts.get(module.moduleId) ?? 0} credited={creditedCounts.get(module.moduleId) ?? 0} states={progress.evidenceStates} key={module.moduleId} />
+              <ModuleCard module={module} step={index + 1} total={moduleTaskCounts.get(module.moduleId)?.total ?? 0} credited={moduleTaskCounts.get(module.moduleId)?.credited ?? 0} states={progress.evidenceStates} key={module.moduleId} />
             ))}
           </Carousel>
           </>
@@ -209,7 +203,7 @@ export function LearnView({ catalog, progress }: { catalog: CatalogData; progres
         </div>
         <Carousel label="Module der restlichen Lernpfade" arrows fades prevLabel="Vorherige Module" nextLabel="Weitere Module">
           {restModules.map(({ module, track: restTrack, step }) => (
-            <ModuleCard module={module} step={step} total={exerciseCounts.get(module.moduleId) ?? 0} credited={creditedCounts.get(module.moduleId) ?? 0} states={progress.evidenceStates} trackTitle={restFilter ? undefined : restTrack.title} key={`${restTrack.trackId}:${module.moduleId}`} />
+            <ModuleCard module={module} step={step} total={moduleTaskCounts.get(module.moduleId)?.total ?? 0} credited={moduleTaskCounts.get(module.moduleId)?.credited ?? 0} states={progress.evidenceStates} trackTitle={restFilter ? undefined : restTrack.title} key={`${restTrack.trackId}:${module.moduleId}`} />
           ))}
         </Carousel>
         <div class="track-below">
@@ -240,7 +234,7 @@ export function CompetencyView({ catalog, progress, competencyId }: {
         <p class="lede">{competency.description}</p>
       </header>
       <div class="competency-detail-grid">
-        <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${new Date(String(progress.evidenceDueAt[competencyId])).toLocaleDateString('de-DE')}.` : ''}</p></article>
+        <article class="status-card"><p class="card-kicker">Aktueller Zustand</p><h2>{stateLabels[state]}</h2><p>Dieser Zustand wird aus unabhängigen Versuchen, Hilfen und Aktualität abgeleitet.{progress.evidenceDueAt[competencyId] ? ` Kompetenz-Frische ${state === 'review_due' ? 'abgelaufen seit' : 'gültig bis'} ${formatGermanDate(String(progress.evidenceDueAt[competencyId]))}.` : ''}</p></article>
         <article class="status-card"><p class="card-kicker">Evidence-Policy</p><h2>{competency.evidencePolicy.minimumIndependentHits} Treffer</h2><p>{competency.evidencePolicy.minimumDistinctDefinitions} verschiedene Aufgabenfamilien{competency.evidencePolicy.delayedHitRequired ? ', davon ein verzögerter Abruf' : ''}. Fällige Aufgaben-Reviews dieser Kompetenz erscheinen in der Review-Ansicht. Kompetenz-Frische und Aufgaben-Review sind zwei getrennte Zeitachsen.</p></article>
       </div>
       {competency.requires.length > 0 && <aside class="prerequisite-panel"><h2>Voraussetzungen</h2><ul>{competency.requires.map((id) => <li key={id}><a href={`#/competency/${id}`}>{byId.get(id)?.title ?? id}</a><span>{stateLabels[progress.evidenceStates[id] ?? 'unassessed']}</span></li>)}</ul></aside>}
@@ -319,7 +313,7 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
   const recommendations = buildFoundationsDiagnosis(catalog, progress).slice(0, 4);
   const labels = new Map(catalog.competencies.map((item) => [item.competencyId, item]));
   const typeLabels = { review: 'Kompetenz-Frische fällig', lesson: 'Kompetenz stärken', diagnostic: 'Evidence fehlt' };
-  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'transform-linear-equation-isolate:two-step-fixed-instance');
+  const firstAnchor = catalog.exercises.find((exercise) => exercise.definitionId === 'transform-linear-equation-isolate:two-step-seeded-retrieval');
   return (
     <section class="view" aria-labelledby="diagnostic-title">
       <header class="view-header"><p class="eyebrow">Standortbestimmung</p><h1 id="diagnostic-title" tabIndex={-1}>Diagnose</h1><p class="lede">Die Priorität folgt deinem lokalen Kompetenzzustand. Alle {catalog.competencies.length} Kompetenzen bleiben frei zugänglich.</p></header>
@@ -331,11 +325,33 @@ export function DiagnosticView({ catalog, progress }: { catalog: CatalogData; pr
   );
 }
 
+// FNV-1a over UTF-16 code units — same hash parameters as challenge_picker's
+// rank hash. Local copy: the picker keeps its own private fnv1a so the seed
+// format stays free to differ.
+const fnv1a = (text: string): number => {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < text.length; i += 1) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return hash >>> 0;
+};
+
 export function ReviewView({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
   const byId = new Map(catalog.exercises.map((exercise) => [exercise.definitionId, exercise]));
   const { executable, archived } = partitionReviewQueue(progress.dueReviews, byId.keys());
+  const plan = useMemo(() => buildWeeklyLearningPlan(catalog, progress), [catalog, progress]);
+  // Deterministic per-day interleave: rank by a day-seeded hash so the queue
+  // mixes competencies instead of sorting strictly by nextDueAt — the order
+  // is identical for every render and tab on the same local day, and rotates
+  // tomorrow. Archived entries keep their input order (no action attached).
+  const interleaveSeed = daySeed(new Date(), 'review-interleave/v1');
+  const queued = executable
+    .map((review, index) => ({ review, rank: fnv1a(`${interleaveSeed}:${review.exerciseId}`), index }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index)
+    .map((entry) => entry.review);
   return (
-    <section class="view" aria-labelledby="review-title">
+    <section class="view" aria-labelledby="review-title" data-tour="review-view">
       <header class="view-header"><p class="eyebrow">Abruf statt Wiederlesen</p><h1 id="review-title" tabIndex={-1}>Review</h1><p class="lede">Fällige Abrufe aus allen Kompetenzen an einem Ort.</p></header>
       {progress.dueReviews.length === 0
         ? <div class="empty-state"><h2>Keine Aufgaben-Reviews fällig</h2><p>Nach einem Treffer plant die Plattform den nächsten Abruf.</p><Button href="#/learn">Inhalte erkunden</Button></div>
@@ -349,15 +365,18 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
               <span>archiviert</span>
             </>}
           </div>
+          {plan.reviewOverflowCount > 0
+            ? <p class="plan-note">+{plan.reviewOverflowCount} {plan.reviewOverflowCount === 1 ? 'Review liegt' : 'Reviews liegen'} über dem wöchentlichen Review-Budget — alles Fällige bleibt hier gelistet.</p>
+            : null}
           <div class="review-list" data-tour="review-queue">
-            {executable.map((review) => {
+            {queued.map((review) => {
               const definition = byId.get(review.exerciseId);
               if (!definition) return null; // unreachable after the partition; keeps the type narrowing honest
               const route = routeForDefinition(definition);
               const freshRoute = definition.familyId && definition.seeded
-                ? `#/family/${definition.familyId}/-/-/${definition.difficulty ?? 'core'}`
+                ? freshRouteForDefinition(definition)
                 : route;
-              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {new Date(review.nextDueAt).toLocaleDateString('de-DE')}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
+              return <article class="review-card" key={review.exerciseId}><div><h2>{learnerExerciseLabel(definition)}</h2><p>fällig seit {formatGermanDate(review.nextDueAt)}{freshRoute !== route ? ' · öffnet eine frische Instanz' : ''}</p></div><Button variant="primary" href={freshRoute}>Wiederholen</Button></article>;
             })}
             {archived.map((review) => (
               <article class="review-card" key={review.exerciseId}>
@@ -373,10 +392,11 @@ export function ReviewView({ catalog, progress }: { catalog: CatalogData; progre
   );
 }
 
-export function SettingsView({ catalog, progress, onSave }: {
+export function SettingsView({ catalog, progress, onSave, onRestartTour }: {
   catalog: CatalogData;
   progress: ProgressSnapshot;
   onSave: (weeklyMinutes: number, trackId: string, reviewSlotsWeeks: number[]) => Promise<void>;
+  onRestartTour: () => void;
 }) {
   const [status, setStatus] = useState('');
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
@@ -404,6 +424,107 @@ export function SettingsView({ catalog, progress, onSave }: {
     setThemePreference(preference);
     saveThemePreference(preference);
   };
+  const [offlineStatus, setOfflineStatus] = useState('');
+  const [offlineBusy, setOfflineBusy] = useState(false);
+  const [storageInfo, setStorageInfo] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    const storage = navigator.storage;
+    if (!storage?.persisted || !storage?.estimate) return;
+    void Promise.all([storage.persisted(), storage.estimate()])
+      .then(([persisted, estimate]) => {
+        if (!live) return;
+        const mb = typeof estimate?.usage === 'number' ? Math.max(1, Math.round(estimate.usage / 1048576)) : null;
+        setStorageInfo(`Speicher dauerhaft gesichert: ${persisted ? 'ja' : 'nein'}${mb === null ? '' : ` · belegt ~${mb} MB`}`);
+      })
+      .catch(() => {});
+    return () => { live = false; };
+  }, []);
+  const prefetchOffline = async () => {
+    // Writes straight into the Cache API — no active service worker needed,
+    // so the button already works on the very first visit (the worker does
+    // not clients.claim, so controller is null until a reload).
+    if (!('caches' in window)) {
+      setOfflineStatus('Cache-Speicher ist in diesem Browser nicht verfügbar.');
+      return;
+    }
+    setOfflineBusy(true);
+    let cancelled = false;
+    try {
+      // Cache-busted query: a stale service worker matches cache-first by URL,
+      // so an unversioned request could return last deploy's manifest and fill
+      // a cache that activate() deletes on the next reload.
+      const manifestResponse = await fetch(`offline-manifest.json?v=${Date.now()}`);
+      if (!manifestResponse.ok) throw new Error(`Manifest ${manifestResponse.status}`);
+      const manifest = await manifestResponse.json() as { buildId?: string; pyodideVersion?: string; files?: string[] };
+      const files = Array.isArray(manifest.files) ? manifest.files : [];
+      if (!files.length) throw new Error('Manifest ohne Dateiliste');
+      // The cache names come from the manifest (this build's service worker
+      // derives the same names); an already-open cache is the fallback for
+      // manifests without the fields.
+      const existingKeys = await caches.keys();
+      const precacheName = typeof manifest.buildId === 'string' && manifest.buildId
+        ? `argmin-${manifest.buildId}`
+        : existingKeys.find((key) => key.startsWith('argmin-') && !key.startsWith('argmin-runtime'));
+      if (!precacheName) throw new Error('Cache-Name nicht ableitbar — bitte einmal neu laden.');
+      const runtimeName = typeof manifest.pyodideVersion === 'string' && manifest.pyodideVersion
+        ? `argmin-runtime-${manifest.pyodideVersion}`
+        : existingKeys.find((key) => key.startsWith('argmin-runtime'));
+      if (!runtimeName) throw new Error('Runtime-Cache nicht ableitbar — bitte einmal neu laden.');
+      const precache = await caches.open(precacheName);
+      const runtimeCache = await caches.open(runtimeName);
+      const targetFor = (file: string) => (file.startsWith('vendor/pyodide/') ? runtimeCache : precache);
+      // Same-origin GETs pass through the SW cache-first handler — a stale
+      // worker could serve last deploy's bytes for un-hashed files, so every
+      // fetch carries the manifest's build id as a cache buster. The cache
+      // key stays the clean URL.
+      const version = typeof manifest.buildId === 'string' && manifest.buildId ? manifest.buildId : String(Date.now());
+      let done = 0;
+      const queue = [...files];
+      const pull = async () => {
+        for (let file = queue.shift(); file !== undefined && !cancelled; file = queue.shift()) {
+          const cache = targetFor(file);
+          if (!(await cache.match(file))) {
+            const response = await fetch(`${file}?v=${version}`);
+            if (!response.ok) throw new Error(`${file}: HTTP ${response.status}`);
+            await cache.put(file, response);
+          }
+          done += 1;
+          if (done % 25 === 0) setOfflineStatus(`Lade … ${done} von ${files.length}`);
+        }
+      };
+      await Promise.all(Array.from({ length: 12 }, () => pull()));
+      setOfflineStatus(`Offline-Paket vollständig: ${files.length} Dateien gecacht (inkl. Python-Laufzeit).`);
+    } catch (error) {
+      cancelled = true;
+      setOfflineStatus(`Download abgebrochen: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setOfflineBusy(false);
+    }
+  };
+  const removeOffline = async () => {
+    if (!('caches' in window)) {
+      setOfflineStatus('Cache-Speicher ist in diesem Browser nicht verfügbar.');
+      return;
+    }
+    try {
+      const before = (await navigator.storage?.estimate?.())?.usage;
+      const keys = (await caches.keys()).filter((key) => key.startsWith('argmin-'));
+      if (keys.length === 0) {
+        setOfflineStatus('Es war kein Offline-Paket gespeichert.');
+        return;
+      }
+      await Promise.all(keys.map((key) => caches.delete(key)));
+      const after = (await navigator.storage?.estimate?.())?.usage;
+      const freed = typeof before === 'number' && typeof after === 'number' ? Math.max(0, before - after) : null;
+      const suffix = ' Die App lädt neue Inhalte jetzt wieder aus dem Netz; die Python-Laufzeit wird beim nächsten Einsatz erneut geladen.';
+      setOfflineStatus(freed !== null && freed > 0
+        ? `Offline-Paket entfernt — rund ${Math.max(1, Math.round(freed / 1048576))} MB freigegeben.${suffix}`
+        : `Offline-Paket entfernt.${suffix}`);
+    } catch (error) {
+      setOfflineStatus(`Entfernen fehlgeschlagen: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  };
   return (
     <section class="view" aria-labelledby="settings-title">
       <header class="view-header"><p class="eyebrow">Lokal</p><h1 id="settings-title" tabIndex={-1}>Einstellungen</h1><p class="lede">Pfad, Zeitbudget und Darstellung bleiben unter deiner Kontrolle.</p></header>
@@ -415,7 +536,7 @@ export function SettingsView({ catalog, progress, onSave }: {
           ))}
         </div>
       </section>
-      <form class="settings-panel" onSubmit={async (event) => {
+      <form class="settings-panel" data-tour="settings-form" onSubmit={async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const slots = String(data.get('reviewSlots')).split(/[;,\s]+/).filter(Boolean).map(Number);
@@ -430,6 +551,11 @@ export function SettingsView({ catalog, progress, onSave }: {
         <Button variant="primary" type="submit">Lokal speichern</Button>
         <p class="save-status" role="status">{status}</p>
       </form>
+      <section class="settings-panel" aria-labelledby="tour-settings-title">
+        <div><p class="card-kicker">Orientierung</p><h2 id="tour-settings-title">Rundgang</h2><p>Die kurze Tour zeigt, wo was liegt.</p></div>
+        <div class="actions"><Button variant="secondary" type="button" onClick={onRestartTour}>Rundgang erneut starten</Button></div>
+      </section>
+      <section class="settings-panel" aria-labelledby="offline-title"><div><p class="card-kicker">Offline</p><h2 id="offline-title">Offline-Paket</h2><p>Die App funktioniert nach dem ersten Laden offline. Wer auch die Python-Laufzeit (~16 MB) vorab sichern will — etwa vor einer Reise — lädt sie hier komplett in den Browser-Cache. „Entfernen“ gibt den Speicher wieder frei.</p>{storageInfo ? <p class="privacy-note">{storageInfo}</p> : null}</div><div class="actions"><Button variant="secondary" type="button" disabled={offlineBusy} onClick={() => void prefetchOffline()}>Offline-Paket laden</Button><Button variant="secondary" type="button" disabled={offlineBusy} onClick={() => void removeOffline()}>Paket entfernen</Button><p class="save-status" role="status">{offlineStatus}</p></div></section>
       <section class="settings-panel" aria-labelledby="transfer-title"><div><p class="card-kicker">Portable lokale Daten</p><h2 id="transfer-title">Fortschritt exportieren oder importieren</h2><p>Der Export enthält das versionierte Schema. Ein Import wird vor jeder Schreibtransaktion vollständig validiert und ersetzt Daten erst nach deiner Bestätigung.</p></div><div class="actions"><Button variant="secondary" type="button" onClick={() => void downloadProgress()}>JSON exportieren</Button><Button variant="secondary" type="button" onClick={() => importInput.current?.click()}>JSON importieren</Button><input ref={importInput} id="progress-import" type="file" aria-label="JSON importieren" accept="application/json,.json" onChange={(event) => { void importProgress(event.currentTarget.files?.[0]); event.currentTarget.value = ''; }} /></div></section>
     </section>
   );

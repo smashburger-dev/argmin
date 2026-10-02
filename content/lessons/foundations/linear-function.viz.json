@@ -13,5 +13,16 @@
     { "kind": "point", "at": ["-b/m", 0], "label": "x₀", "color": "#b72f2a" },
     { "kind": "point", "at": [0, "b"], "label": "b", "color": "#16713a" },
     { "kind": "text", "at": [-5.5, -4.5], "text": "x₀ = {-b/m}", "color": "#b72f2a" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze m = 2 und b = −1. Welchen Wert hat f(3)?",
+    "input": "numeric",
+    "expected": 5,
+    "tolerance": 1e-6,
+    "hints": ["Setze in f(x) = m·x + b ein: f(3) = 2·3 + (−1)."],
+    "typicalErrors": [
+      { "match": 6, "feedback": "Das ist nur m·x = 2·3. Der Achsenabschnitt b = −1 gehört noch dazu." },
+      { "match": 0.5, "feedback": "Das ist die Nullstelle x₀ = −b/m. Gefragt ist der Funktionswert f(3)." }
+    ]
+  }
 }

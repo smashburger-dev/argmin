@@ -59,7 +59,7 @@
       "caseId": "text-normalize-match",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
+      "estimatedMinutes": 25,
       "lessonId": "l-research-question",
       "masteryEligible": true
     },
@@ -70,7 +70,7 @@
       "caseId": "protocol-validator",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 26,
+      "estimatedMinutes": 30,
       "lessonId": "l-research-question",
       "masteryEligible": true
     },
@@ -81,7 +81,7 @@
       "caseId": "detect-goal-shift",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 40,
+      "estimatedMinutes": 45,
       "lessonId": "l-research-question",
       "masteryEligible": true
     },

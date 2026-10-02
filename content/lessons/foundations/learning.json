@@ -7,7 +7,7 @@
   "objectives": ["Symptom und Ursache trennen", "einen Fehler mit einem prüfbaren nächsten Schritt dokumentieren", "Review nach Fälligkeit statt Streak planen"],
   "competencyIds": ["c-meta-learning"],
   "requires": [],
-  "estimatedMinutes": 25,
+  "estimatedMinutes": 15,
   "blocks": [{ "blockId": "learning-core", "type": "reflection", "contentRef": "lessons/foundations/learning.md" }],
   "sourceRefs": [
     { "sourceId": "murray-spacing-math-2025", "role": "reference", "locator": "Meta-Analyse zu verteilter Mathematikpraxis; keine optimalen Intervalle ableitbar" },

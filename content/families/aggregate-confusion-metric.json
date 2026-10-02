@@ -17,9 +17,7 @@
         "fpCost": 50,
         "fnCost": 0.05
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -50,26 +48,24 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'a'",
-          "then": "Tiefer Schwellenwert erzeugt viele FP — jede fälschlich aussortierte Mail kostet 50 €. Genau das ist hier der teure Fehler."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "0,5 ist nur bei symmetrischen Kosten eine vernünftige Standardwahl — bei Kosten 50 € vs. 0,05 € verschiebt sich das Optimum deutlich."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Der Schwellenwert bestimmt das Verhältnis von FP und FN — genau das geht in die Kosten ein. Accuracy gewichtet beide Fehler gleich."
+          "if": "choice !== 'none'",
+          "then": "Rechne das Kostenverhältnis: Ein FP kostet hier rund das Tausendfache eines FN. Die Schwelle senken erzeugt genau diese teuren FP; 0,5 ist nur bei symmetrischen Kosten eine sinnvolle Standardwahl; und die Schwelle steuert gerade das FP/FN-Verhältnis, das in die Kosten eingeht — Accuracy gewichtet beide Fehler gleich und ignoriert die Asymmetrie."
         }
       ],
       "typicalErrors": [
-        "Kostenverhältnis nicht in die Schwellenwert-Richtung übersetzen",
-        "0,5 als kostenunabhängiges Optimum behandeln",
-        "Accuracy als Kostenmaß verwenden"
+        {
+          "id": "kostenverhaeltnis-nicht-in-die-schwellenwert",
+          "text": "Kostenverhältnis nicht in die Schwellenwert-Richtung übersetzen"
+        },
+        {
+          "id": "n-0-5-als-kostenunabhaengiges-optimum",
+          "text": "0,5 als kostenunabhängiges Optimum behandeln"
+        },
+        {
+          "id": "accuracy-als-kostenmass-verwenden",
+          "text": "Accuracy als Kostenmaß verwenden"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -100,28 +96,20 @@
         "Zähle in einer Schleife über Paare (Wahrheit, Wahrscheinlichkeit): Die vier Felder ergeben sich aus den Kombinationen tatsächlich 0/1 und vorhergesagt 0/1.",
         "precision = tp/(tp+fp), recall = tp/(tp+fn), f1 ist das harmonische Mittel — sichere die Nenner mit Abfragen gegen 0 ab."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "threshold-strict",
-          "then": "Die Regel ist p ≥ threshold (größer ODER gleich) — bei striktem > scheitert der Grenzfall p = t."
+          "id": "grenzfall-p-threshold-falsch-behandeln",
+          "text": "Grenzfall p = threshold falsch behandeln"
         },
         {
-          "if": "precision-recall-swapped",
-          "then": "precision hat tp+fp im Nenner (Vorhersageseite), recall tp+fn (Tatseite) — vertausche die Nenner nicht."
+          "id": "precision-und-recall-vertauschen",
+          "text": "precision und recall vertauschen"
         },
         {
-          "if": "tuple-vs-list",
-          "then": "precision_recall_f1 gibt ein Tupel (precision, recall, f1) zurück, nicht drei Einzelwerte und keine Liste."
+          "id": "division-durch-0-bei-leeren",
+          "text": "Division durch 0 bei leeren Raten nicht abgesichert"
         }
       ],
-      "typicalErrors": [
-        "Grenzfall p = threshold falsch behandeln",
-        "precision und recall vertauschen",
-        "Division durch 0 bei leeren Raten nicht abgesichert"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -146,34 +134,26 @@
         "kind": "reference-solver",
         "referenceSolver": "import numpy as np\n\ndef total_cost(cm, fp_cost, fn_cost):\n    '''Expected cost = fp * fp_cost + fn * fn_cost; ValueError on missing keys.'''\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('confusion dict needs the keys tp, fp, fn, tn')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\n\ndef best_threshold(y_prob, y_true, fp_cost, fn_cost):\n    '''Sweep t = 0.1 .. 0.9 (rule p >= t); minimal cost wins, ties -> smallest t.'''\n    best_t = None\n    best_cost = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) >= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = total_cost(cm, fp_cost, fn_cost)\n        if best_cost is None or c < best_cost:\n            best_t, best_cost = t, c\n    return float(best_t)\n"
       },
-      "prompt": "Final Boss: Kostengetriebene Schwellenwertsuche. `total_cost(cm, fp_cost, fn_cost)` berechnet `fp · fp_cost + fn · fn_cost` als float; fehlt im Konfusions-dict einer der Schlüssel 'tp', 'fp', 'fn', 'tn', wirf `ValueError`. `best_threshold(y_prob, y_true, fp_cost, fn_cost)` durchsucht die Schwellenwerte t = 0.1, 0.2, …, 0.9: Für jedes t werden mit der Regel p ≥ t Labels bestimmt (gleiche Regel wie w11-e4), die Konfusionsmatrix gezählt und die Kosten berechnet. Rückgabe: das t mit minimalen Kosten als float; bei Gleichstand gewinnt das kleinste t. Kontrolle Szenario 1: y_prob = [0.95, 0.9, 0.75, 0.45, 0.3, 0.1, 0.55, 0.65], y_true = [1, 1, 1, 0, 0, 0, 1, 0], fp_cost = 10, fn_cost = 5 → Optimum t = 0.7 mit Kosten 5.",
+      "prompt": "Final Boss: Kostengetriebene Schwellenwertsuche. `total_cost(cm, fp_cost, fn_cost)` berechnet `fp * fp_cost + fn * fn_cost` als float; fehlt im Konfusions-dict einer der Schlüssel 'tp', 'fp', 'fn', 'tn', wirf `ValueError`. `best_threshold(y_prob, y_true, fp_cost, fn_cost)` durchsucht die Schwellenwerte t = 0.1, 0.2, …, 0.9: Für jedes t werden mit der Regel p ≥ t Labels bestimmt (gleiche Regel wie w11-e4), die Konfusionsmatrix gezählt und die Kosten berechnet. Rückgabe: das t mit minimalen Kosten als float; bei Gleichstand gewinnt das kleinste t. Kontrolle Szenario 1: y_prob = [0.95, 0.9, 0.75, 0.45, 0.3, 0.1, 0.55, 0.65], y_true = [1, 1, 1, 0, 0, 0, 1, 0], fp_cost = 10, fn_cost = 5 → Optimum t = 0.7 mit Kosten 5.",
       "fullSolution": "<pre><code>import numpy as np\n\ndef total_cost(cm, fp_cost, fn_cost):\n    '''Expected cost = fp * fp_cost + fn * fn_cost; ValueError on missing keys.'''\n    for key in ('tp', 'fp', 'fn', 'tn'):\n        if key not in cm:\n            raise ValueError('confusion dict needs the keys tp, fp, fn, tn')\n    return float(cm['fp'] * fp_cost + cm['fn'] * fn_cost)\n\ndef best_threshold(y_prob, y_true, fp_cost, fn_cost):\n    '''Sweep t = 0.1 .. 0.9 (rule p &gt;= t); minimal cost wins, ties -&gt; smallest t.'''\n    best_t = None\n    best_cost = None\n    for i in range(1, 10):\n        t = i / 10.0\n        cm = {'tp': 0, 'fp': 0, 'fn': 0, 'tn': 0}\n        for p, actual in zip(y_prob, y_true):\n            pred = 1 if float(p) &gt;= t else 0\n            if int(actual) == 1 and pred == 1:\n                cm['tp'] += 1\n            elif int(actual) == 0 and pred == 1:\n                cm['fp'] += 1\n            elif int(actual) == 1 and pred == 0:\n                cm['fn'] += 1\n            else:\n                cm['tn'] += 1\n        c = total_cost(cm, fp_cost, fn_cost)\n        if best_cost is None or c &lt; best_cost:\n            best_t, best_cost = t, c\n    return float(best_t)\n</code></pre>",
       "hints": [
         "Baue eine Schleife über i = 1..9 mit t = i/10 und berechne für jedes t die Konfusionsmatrix mit der Regel p ≥ t — vergleiche die Kosten strikt kleiner, dann gewinnt bei Gleichstand automatisch das kleinste t.",
         "Die Suchrichtung folgt den Kosten: FP teuer verschiebt das Optimum nach oben, FN teuer nach unten — dein Sweep findet das automatisch, wenn er alle neun Werte prüft."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "ties-keep-last",
-          "then": "Bei gleichen Kosten muss das kleinste t gewinnen — nur bei strikt kleineren Kosten ersetzen (<= wäre falsch)."
+          "id": "gleichstandsregel-falsch-letztes-statt-kleinstes",
+          "text": "Gleichstandsregel falsch (letztes statt kleinstes t)"
         },
         {
-          "if": "accuracy-instead-of-cost",
-          "then": "Optimiert wird die Kostenfunktion FP·fp_cost + FN·fn_cost, nicht die Accuracy."
+          "id": "kostenfunktion-mit-accuracy-verwechseln",
+          "text": "Kostenfunktion mit Accuracy verwechseln"
         },
         {
-          "if": "missing-key-check",
-          "then": "total_cost muss vor der Berechnung alle vier Schlüssel prüfen und sonst ValueError werfen."
+          "id": "nur-0-5-pruefen-statt",
+          "text": "nur 0.5 prüfen statt aller Schwellenwerte"
         }
       ],
-      "typicalErrors": [
-        "Gleichstandsregel falsch (letztes statt kleinstes t)",
-        "Kostenfunktion mit Accuracy verwechseln",
-        "nur 0.5 prüfen statt aller Schwellenwerte"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -201,24 +181,20 @@
         "Bestimme die gemeinsamen Wörter beider Sätze und ihre minimalen Häufigkeiten — das ist common.",
         "p = common/Länge der Antwort, r = common/Länge der Gold-Antwort; F1 = 2pr/(p+r), auf 2 Stellen gerundet."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "first-line-wrong",
-          "then": "common = 2 (katzen, sitzen). p = 2/3, r = 2/4 → F1 = 4/7 ≈ 0.5714 → gerundet 0.57."
+          "id": "common-ueber-die-vereinigung-statt",
+          "text": "common über die Vereinigung statt der Schnittmenge gezählt"
         },
         {
-          "if": "second-line-wrong",
-          "then": "Kein gemeinsames Wort → common = 0 → der Zweig gibt 0.0 zurück (und dividiert nie durch null)."
+          "id": "nur-die-ausgabequote-p-2",
+          "text": "nur die Ausgabequote p (2/3) statt F1 angegeben"
+        },
+        {
+          "id": "bei-common-0-eine-division",
+          "text": "bei common = 0 eine Division durch null vorhergesagt"
         }
       ],
-      "typicalErrors": [
-        "common über die Vereinigung statt der Schnittmenge gezählt",
-        "nur die Ausgabequote p (2/3) statt F1 angegeben",
-        "bei common = 0 eine Division durch null vorhergesagt"
-      ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic"
     },
@@ -234,7 +210,7 @@
           "numpy"
         ],
         "starterCode": "from collections import Counter\n\n\ndef confusion(rows):\n    \"\"\"rows: Liste (predicted, actual) mit Labels 'pos'/'neg' -> (tp, fp, fn, tn).\"\"\"\n    ...\n\ndef prf(tp, fp, fn):\n    \"\"\"{'precision': .., 'recall': .., 'f1': ..}; Division durch null -> 0.0.\"\"\"\n    ...\n\ndef exact_match_rate(answers, golds):\n    \"\"\"Anteil exakter (strip-gleich) Antworten; ungleiche Laengen -> ValueError.\"\"\"\n    ...\n\ndef token_f1(answer, gold):\n    \"\"\"F1 ueber Kleinbuchstaben-Token-Multimengen; leere Eingabe -> 0.0.\"\"\"\n    ...\n\n",
-        "tests": "import re\ndef _words(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return stripped.split()\n\nROWS = [(\"pos\", \"pos\"), (\"pos\", \"neg\"), (\"neg\", \"pos\"), (\"neg\", \"neg\"), (\"pos\", \"pos\")]\n__check('konfusionszaehlung', confusion(ROWS) == (2, 1, 1, 1))\nm = prf(2, 1, 1)\n__check('prf werte', abs(m[\"precision\"] - 2 / 3) < 1e-12 and abs(m[\"recall\"] - 2 / 3) < 1e-12 and abs(m[\"f1\"] - 2 / 3) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\n__check('exact match rate', exact_match_rate([\"Ja \", \"Nein\", \"Jein\"], [\"Ja\", \"Nein\", \"Nein\"]) == 2 / 3)\n__check('token f1 wert', abs(token_f1(\"drei Katzen sitzen\", \"zwei Katzen sitzen hier\") - 4 / 7) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)"
+        "tests": "import re\ndef _words(text):\n    stripped = re.sub(r\"[!\\\"$%&'()*+,\\-./:;<=>?@\\[\\\\\\]^_`{|}~„“”‚‘’]\", \" \", text.lower())\n    return stripped.split()\n\nROWS = [(\"pos\", \"pos\"), (\"pos\", \"neg\"), (\"neg\", \"pos\"), (\"neg\", \"neg\"), (\"pos\", \"pos\")]\n__check('konfusionszaehlung', confusion(ROWS) == (2, 1, 1, 1))\nm = prf(2, 1, 1)\n__check('prf werte', abs(m[\"precision\"] - 2 / 3) < 1e-12 and abs(m[\"recall\"] - 2 / 3) < 1e-12 and abs(m[\"f1\"] - 2 / 3) < 1e-12)\n__check('prf ohne positive', prf(0, 0, 5) == {\"precision\": 0.0, \"recall\": 0.0, \"f1\": 0.0})\n__check('prf nur treffer', prf(4, 0, 0) == {\"precision\": 1.0, \"recall\": 1.0, \"f1\": 1.0})\n__check('exact match rate', exact_match_rate([\"Ja \", \"Nein\", \"Jein\"], [\"Ja\", \"Nein\", \"Nein\"]) == 2 / 3)\n__check('token f1 wert', abs(token_f1(\"drei Katzen sitzen\", \"zwei Katzen sitzen hier\") - 4 / 7) < 1e-12)\n__check('token f1 identisch', token_f1(\"a b c\", \"a b c\") == 1.0)\n__check('token f1 leer', token_f1(\"\", \"a b\") == 0.0)\ntry:\n    exact_match_rate([\"a\"], [\"a\", \"b\"])\n    __check('laengenfehler -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('laengenfehler -> ValueError', True)\nm2 = prf(4, 1, 2)\n__check('prf nenner getrennt', abs(m2[\"precision\"] - 4 / 5) < 1e-12 and abs(m2[\"recall\"] - 2 / 3) < 1e-12)\n__check('token f1 zaehlt mehrfache worte', abs(token_f1(\"eine katze und eine katze\", \"eine katze und eine maus\") - 0.8) < 1e-12)"
       },
       "competencyIds": [
         "c-genai-eval",
@@ -250,28 +226,20 @@
         "confusion zählt vier Fälle in einem Durchlauf: vorhergesagt pos/neg gegen tatsächlich pos/neg.",
         "token_f1 über Multimengen: min(Anzahl in Antwort, Anzahl in Gold) je gemeinsamem Wort — nicht set-intersection."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "zero-division",
-          "then": "prf muss tp+fp bzw. tp+fn == 0 abfangen und 0.0 liefern, nicht abstürzen."
+          "id": "precision-recall-nenner-verwechselt",
+          "text": "Precision/Recall-Nenner verwechselt"
         },
         {
-          "if": "set-not-multiset",
-          "then": "Set-Intersektion übersieht wiederholte Wörter — Token-F1 nutzt Mindesthäufigkeiten."
+          "id": "token-f1-ueber-mengen-statt",
+          "text": "Token-F1 über Mengen statt Multimengen"
         },
         {
-          "if": "exact-match-no-strip",
-          "then": "Exact Match vergleicht nach strip() — führende/folgende Leerzeichen sind kein Fehler."
+          "id": "laengenpruefung-bei-exact-match-rate",
+          "text": "Längenprüfung bei exact_match_rate vergessen"
         }
       ],
-      "typicalErrors": [
-        "Precision/Recall-Nenner verwechselt",
-        "Token-F1 über Mengen statt Multimengen",
-        "Längenprüfung bei exact_match_rate vergessen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -301,28 +269,20 @@
         "contains_injection lowercastet den Text einmal und prüft dann alle Regeln mit any().",
         "Die vier Konfusionsfälle ergeben sich aus label × flagged — zähle sie in einem Durchlauf."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "rules-not-lowered",
-          "then": "Die Regeln sind klein geschrieben vorgegeben; wenn du zusätzlich den Text nicht lowercastest, fliegen Großschreibung-Treffer wie „IGNORIERE“ durch."
+          "id": "text-nicht-kleingeschrieben-und-regeln",
+          "text": "Text nicht kleingeschrieben und Regeln verfehlt"
         },
         {
-          "if": "confusion-swapped",
-          "then": "fp sind harmlose Treffer (label False, geflaggt), fn sind verpasste Injektionen (label True, nicht geflaggt) — nicht umgekehrt."
+          "id": "fp-und-fn-vertauscht",
+          "text": "fp und fn vertauscht"
         },
         {
-          "if": "rounding-missing",
-          "then": "precision/recall sind auf 4 Stellen zu runden, damit die Tests versionsstabil vergleichen."
+          "id": "metriken-ungerundet-geliefert",
+          "text": "Metriken ungerundet geliefert"
         }
       ],
-      "typicalErrors": [
-        "Text nicht kleingeschrieben und Regeln verfehlt",
-        "fp und fn vertauscht",
-        "Metriken ungerundet geliefert"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -352,28 +312,20 @@
         "Bilde je Gruppe zuerst fpr und selrate und runde jede Rate auf 3 Stellen — die Differenz entsteht aus den gerundeten Werten.",
         "abs() macht die Differenz unabhängig von der Gruppenreihenfolge; die Rückgabe ist ein Dict mit den vier Schlüsseln."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "rounding-order",
-          "then": "Erst runden, dann differenzieren: 0.438 − 0.369 = 0.069 — ungerundete Raten würden 0.0692… liefern und die Exaktvergleiche brechen."
+          "id": "ungerundet-weitergerechnet",
+          "text": "ungerundet weitergerechnet"
         },
         {
-          "if": "wrong-denominator",
-          "then": "fpr teilt durch fp + tn (nur harmlose Fälle), selrate durch alle vier Summanden — die Nenner sind nicht vertauschbar."
+          "id": "fpr-nenner-mit-dem-der",
+          "text": "FPR-Nenner mit dem der Auswahlrate verwechselt"
         },
         {
-          "if": "sign-diffs",
-          "then": "Die Differenzen sind Beträge (abs) — negative Differenzen je nach Gruppenreihenfolge sind ein Zeichen für das fehlende abs."
+          "id": "differenz-ohne-betrag",
+          "text": "Differenz ohne Betrag"
         }
       ],
-      "typicalErrors": [
-        "ungerundet weitergerechnet",
-        "FPR-Nenner mit dem der Auswahlrate verwechselt",
-        "Differenz ohne Betrag"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

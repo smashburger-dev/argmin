@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-backprop-gradient-check",
-  "contract": {
-    "familyId": "optimize-backprop-gradient-check",
-    "familyGroup": "optimize-update",
-    "summary": "Leitet die Gradienten eines Layers bzw. MLP mit MSE im Rückwärtslauf her und validiert sie gegen die zentrale numerische Differenz.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "linear-mse-gradients",
-        "propertyTest": false
-      },
-      {
-        "caseId": "mlp-backprop-relu-mse",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-autograd",
-      "c-dl-tensors"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "linear-mse-gradients",
@@ -58,28 +31,20 @@
         "Schreibe zuerst die Residuenmatrix r = X @ W + b − y mit Form (n, k). Die Kettenregel auf den quadrierten Mittelwert liefert einen skalaren Faktor — leite ihn her, statt ihn zu raten.",
         "Kontrolliere über die Formen: dW muss (d, k) und db muss (k,) haben. Welcher Eingang muss transponiert werden, damit X.T @ … die Form (d, k) liefert — und über welche Achse summiert der Bias-Gradient?"
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "factor-2n-wrong",
-          "then": "Gemittelt wird über alle n·k Einträge: der Faktor ist 2/(n·k), nicht 2/n und nicht 1/n."
+          "id": "faktor-2-n-k-durch",
+          "text": "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt"
         },
         {
-          "if": "db-as-scalar",
-          "then": "db ist ein Vektor der Form (k,): Summation nur über axis=0, nicht über alles."
+          "id": "db-als-skalar-statt-vektor",
+          "text": "db als Skalar statt Vektor summiert"
         },
         {
-          "if": "residual-sign-flipped",
-          "then": "r = Vorhersage − Ziel; mit y − Vorhersage dreht sich das Vorzeichen beider Gradienten."
+          "id": "residuen-mit-umgekehrtem-vorzeichen",
+          "text": "Residuen mit umgekehrtem Vorzeichen"
         }
       ],
-      "typicalErrors": [
-        "Faktor 2/(n·k) durch 2/n oder 1/n ersetzt",
-        "db als Skalar statt Vektor summiert",
-        "Residuen mit umgekehrtem Vorzeichen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -111,28 +76,20 @@
         "Erst forward: H und ŷ brauchst du für die Rückwärtsrechnung wieder. Der Ausgabefehler startet als delta2 aus dem quadrierten Mittelwert über die m Ausgabeeinträge — Faktor selbst herleiten.",
         "Durch ReLU zurück: Der lokale Gradient ist 1, wo die Aktivierung positiv war, sonst 0 — als Maske (H > 0) multiplizierbar. Wie delta1 weiter zu dW1 und db1 führt, folgt aus demselben Transpositions-/Summenvertrag wie in der vorherigen Lektion."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "relu-mask-wrong",
-          "then": "Die ReLU-Ableitung ist die Maske (H > 0), nicht H selbst und nicht 1 überall."
+          "id": "relu-ableitung-als-h-statt",
+          "text": "ReLU-Ableitung als H statt (H > 0)"
         },
         {
-          "if": "factor-2m-wrong",
-          "then": "Der Faktor 2/m bezieht sich auf alle Ausgabeeinträge (n·k) — genau wie in der linearen Variante."
+          "id": "faktor-2-m-vergessen-oder",
+          "text": "Faktor 2/m vergessen oder nur auf eine Achse bezogen"
         },
         {
-          "if": "transpose-missing",
-          "then": "dW2 = H.T @ delta2 und delta1 = delta2 @ W2.T — die Transponierte gehört zum jeweiligen Forward-Vertrag."
+          "id": "transponierte-vertraege-h-t-delta2",
+          "text": "transponierte Verträge (H.T @ delta2, W2.T) vertauscht"
         }
       ],
-      "typicalErrors": [
-        "ReLU-Ableitung als H statt (H > 0)",
-        "Faktor 2/m vergessen oder nur auf eine Achse bezogen",
-        "transponierte Verträge (H.T @ delta2, W2.T) vertauscht"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

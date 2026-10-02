@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-evidence-vs-demo",
-  "contract": {
-    "familyId": "classify-evidence-vs-demo",
-    "familyGroup": "classify-concept",
-    "summary": "Unterscheidet Evidenz für eine reproduzierbare Pipeline von einer bloßen Demo.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "evidence-vs-demo",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "evidence-vs-demo",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-capstone-pipeline"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Abschluss der Capstone: Die Demo und die Retrospektive sind fertig und sehen stark aus. Was belegen sie in dieser Plattform?",
       "fullSolution": "Demo und Retrospektive sind Work Evidence: Sie dokumentieren geleistete Arbeit und Grenzen, aber Mastery entsteht ausschließlich aus den deterministisch geprüften Teiltests (mindestens zwei unabhängige Treffer, zwei Definitionen, 14 Tage Abstand, keine disqualifizierte Instanz). Genau deshalb meldet der Projekt-Report integrity: self-reported. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -61,13 +38,19 @@
         }
       ],
       "typicalErrors": [
-        "Demo als Mastery-Nachweis gewertet",
-        "Retrospektive als Ersatz für Teiltests gehalten",
-        "Work Evidence als wertlos abgetan"
+        {
+          "id": "demo-als-mastery-nachweis-gewertet",
+          "text": "Demo als Mastery-Nachweis gewertet"
+        },
+        {
+          "id": "retrospektive-als-ersatz-fuer-teiltests",
+          "text": "Retrospektive als Ersatz für Teiltests gehalten"
+        },
+        {
+          "id": "work-evidence-als-wertlos-abgetan",
+          "text": "Work Evidence als wertlos abgetan"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",
@@ -127,13 +110,19 @@
         }
       ],
       "typicalErrors": [
-        "Allgemeinsicherheit aus Fixtur-Tests abgeleitet",
-        "ehrliche Grenzdokumentation als Schwäche vermieden",
-        "absolute Behauptungen statt bezogener Aussagen"
+        {
+          "id": "allgemeinsicherheit-aus-fixtur-tests-abgeleitet",
+          "text": "Allgemeinsicherheit aus Fixtur-Tests abgeleitet"
+        },
+        {
+          "id": "ehrliche-grenzdokumentation-als-schwaeche-vermieden",
+          "text": "ehrliche Grenzdokumentation als Schwäche vermieden"
+        },
+        {
+          "id": "absolute-behauptungen-statt-bezogener-aussagen",
+          "text": "absolute Behauptungen statt bezogener Aussagen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "fullSolution": "„Sicher gegen Prompt-Injection“ ist der Overclaim: Belegt ist nur, dass der Regel-Detektor die gelieferten Fixtures blockiert — Angriffe außerhalb der Regeln bleiben möglich. Die anderen Aussagen benennen ihren Rahmen. Genau solche Phrasen fängt der Overclaim-Detektor („produktionsreif“, „sicher gegen“, „halluziniert nie“, „getestet gegen alle“). Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "choices": [
         {
@@ -157,9 +146,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

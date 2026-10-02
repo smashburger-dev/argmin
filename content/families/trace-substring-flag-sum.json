@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "trace-substring-flag-sum",
-  "contract": {
-    "familyId": "trace-substring-flag-sum",
-    "familyGroup": "trace-state",
-    "summary": "Verfolgt eine regelbasierte Substring-Detektion über Beispiele hinweg und sagt die Summe der Trefferflags sowie eine Einzelregelprüfung voraus.",
-    "taskArchetype": "output-predict-lines",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "substring-flag-sum",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-security",
-      "c-python-reading"
-    ],
-    "graderId": "deterministic",
-    "activityType": "predict-output"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "substring-flag-sum",
@@ -49,24 +27,20 @@
         "Prüfe jedes Beispiel gegen alle drei Regeln — ein Treffer genügt; sum() zählt True als 1.",
         "Im letzten print wird nur gegen eine andere, einzelne Regel geprüft."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "first-line-wrong",
-          "then": "Beispiel 1 matcht zwei Regeln, zählt aber einfach; Beispiel 2 matcht keine; Beispiel 3 matcht geheimschluessel → Summe 2."
+          "id": "mehrfache-regel-treffer-pro-beispiel",
+          "text": "mehrfache Regel-Treffer pro Beispiel doppelt gezählt"
         },
         {
-          "if": "second-line-wrong",
-          "then": "„Der Systemprompt …“ enthält nach dem Lowercasting die Regel systemprompt → True."
+          "id": "gross-kleinschreibung-beim-substring-vergleich",
+          "text": "Groß-/Kleinschreibung beim Substring-Vergleich vergessen"
+        },
+        {
+          "id": "sum-ueber-booleans-als-string",
+          "text": "sum() über Booleans als String gelesen"
         }
       ],
-      "typicalErrors": [
-        "mehrfache Regel-Treffer pro Beispiel doppelt gezählt",
-        "Groß-/Kleinschreibung beim Substring-Vergleich vergessen",
-        "sum() über Booleans als String gelesen"
-      ],
-      "tolerancePolicy": {
-        "mode": "whitespace-normalized"
-      },
       "activityType": "predict-output",
       "graderId": "deterministic"
     }

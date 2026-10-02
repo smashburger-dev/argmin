@@ -17,7 +17,7 @@
     "research-evaluation"
   ],
   "lessonIds": [
-    "l-capstone-pipeline"
+    "l-capstone-regression"
   ],
   "placements": [
     {
@@ -28,7 +28,7 @@
       "seed": 0,
       "difficulty": "intro",
       "estimatedMinutes": 6,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-regression",
       "masteryEligible": false
     },
     {
@@ -39,7 +39,7 @@
       "seed": 3711,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-regression",
       "masteryEligible": true
     },
     {
@@ -50,7 +50,7 @@
       "seed": 0,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-regression",
       "masteryEligible": true
     },
     {
@@ -60,8 +60,8 @@
       "caseId": "subgroup-recall-report",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
-      "lessonId": "l-capstone-pipeline",
+      "estimatedMinutes": 25,
+      "lessonId": "l-capstone-regression",
       "masteryEligible": true
     },
     {
@@ -71,8 +71,8 @@
       "caseId": "separate-error-kinds",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 28,
-      "lessonId": "l-capstone-pipeline",
+      "estimatedMinutes": 32,
+      "lessonId": "l-capstone-regression",
       "masteryEligible": true
     },
     {
@@ -82,8 +82,8 @@
       "caseId": "verdict-rules",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 42,
-      "lessonId": "l-capstone-pipeline",
+      "estimatedMinutes": 45,
+      "lessonId": "l-capstone-regression",
       "masteryEligible": true
     },
     {
@@ -94,7 +94,7 @@
       "seed": 3711,
       "difficulty": "core",
       "estimatedMinutes": 0,
-      "lessonId": "l-capstone-pipeline"
+      "lessonId": "l-capstone-regression"
     }
   ],
   "projectIds": [],

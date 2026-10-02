@@ -80,8 +80,9 @@ export function reviewStateFromAttempts(attempts, nowMs = Date.now(), params = D
   return { qualified: true, qualifiedHitCount: count, lastQualifiedAtMs: last.t, lastQualifiedAt: new Date(last.t).toISOString(), validUntilMs, nextDueMs: validUntilMs, consolidated: false, locked };
 }
 
-/** One reviewQueue record (or null when the exercise has nothing to
- *  schedule: never qualified, locked by solution reveal, consolidated). */
+/** One reviewQueue record (or null when the exercise was never qualified or
+ *  is locked by a solution reveal; consolidated exercises still return a
+ *  record with nextDueAt: null). */
 export function buildReviewQueueEntry(exerciseId, attempts, nowMs = Date.now(), params = DEFAULT_REVIEW_PARAMS) {
   const st = reviewStateFromAttempts(attempts, nowMs, params);
   if (!st.qualified || st.locked) return null;

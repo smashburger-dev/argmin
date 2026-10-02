@@ -60,7 +60,7 @@
       "caseId": "stub-prototype-contract",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
+      "estimatedMinutes": 25,
       "lessonId": "l-genai-prototype",
       "masteryEligible": true
     },
@@ -71,7 +71,7 @@
       "caseId": "secure-prototype-contract",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 28,
+      "estimatedMinutes": 30,
       "lessonId": "l-genai-prototype",
       "masteryEligible": true
     },
@@ -82,7 +82,7 @@
       "caseId": "pipeline-status-report",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 42,
+      "estimatedMinutes": 45,
       "lessonId": "l-genai-prototype",
       "masteryEligible": true
     },
@@ -97,7 +97,9 @@
       "lessonId": "l-genai-prototype"
     }
   ],
-  "projectIds": [],
+  "projectIds": [
+    "p-rag-secure-prototype"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

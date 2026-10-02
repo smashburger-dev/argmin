@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-attention-mask",
-  "contract": {
-    "familyId": "construct-attention-mask",
-    "familyGroup": "construct-program",
-    "summary": "Konstruiert Attention-Masken als boolesche Matrizen nach Sichtbarkeitsregeln und führt das vertragsgeprüfte, stabile maskierte Softmax aus.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "construct-causal-padding-mask",
-        "propertyTest": false
-      },
-      {
-        "caseId": "construct-padding-mask-softmax",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-attention",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "construct-causal-padding-mask",
@@ -58,28 +31,20 @@
         "causal_mask ist untere Dreiecksmatrix inklusive Diagonale — np.tril hilft; padding_mask prüft die Längen, bevor sie baut.",
         "masked_softmax: Formprüfung, dann komplett verdeckte Zeilen erkennen ((mask.sum(axis=1) == 0).any()), Scores via np.where auf −∞, Zeilenmaximum abziehen, normalisieren."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "partial-row-rejected",
-          "then": "Nur Zeilen ohne eine einzige sichtbare Zelle sind illegal — teilweise maskierte Zeilen sind der Normalfall."
+          "id": "teilweise-maskierte-zeilen-faelschlich-abgelehnt",
+          "text": "teilweise maskierte Zeilen fälschlich abgelehnt"
         },
         {
-          "if": "mask-shape-unchecked",
-          "then": "Die Maskenform muss vor der Anwendung gegen S geprüft werden."
+          "id": "maskenform-ungeprueft-angewendet",
+          "text": "Maskenform ungeprüft angewendet"
         },
         {
-          "if": "overflow",
-          "then": "Ohne Abziehen des Zeilenmaximums liefert exp(1000) inf — Stabilität ist Teil des Vertrags."
+          "id": "overflow-bei-grossen-scores-ohne",
+          "text": "Overflow bei großen Scores ohne Maximum-Subtraktion"
         }
       ],
-      "typicalErrors": [
-        "teilweise maskierte Zeilen fälschlich abgelehnt",
-        "Maskenform ungeprüft angewendet",
-        "Overflow bei großen Scores ohne Maximum-Subtraktion"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -111,28 +76,20 @@
         "Prüfe jede Länge vor dem Erzeugen der Bool-Matrix.",
         "Nach dem Maskieren Maximum abziehen; eine Zeile ohne True darf nicht normalisiert werden."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "bad-padding",
-          "then": "Bei length=1 wird nur Position 0 sichtbar; Positionen 1 und 2 bleiben im konkreten Test False."
+          "id": "paddingpositionen-als-sichtbar-markiert",
+          "text": "Paddingpositionen als sichtbar markiert"
         },
         {
-          "if": "unstable-softmax",
-          "then": "Scores 1000 und 999 benötigen die Maximum-Subtraktion, damit keine Inf-Werte entstehen."
+          "id": "softmax-vor-statt-nach-der",
+          "text": "Softmax vor statt nach der Maskierung normalisiert"
         },
         {
-          "if": "empty-row-accepted",
-          "then": "Eine vollständig maskierte Zeile besitzt keine Normalisierungsmasse und muss ValueError auslösen."
+          "id": "leere-sichtbare-zeile-durch-nullsumme",
+          "text": "leere sichtbare Zeile durch Nullsumme geteilt"
         }
       ],
-      "typicalErrors": [
-        "Paddingpositionen als sichtbar markiert",
-        "Softmax vor statt nach der Maskierung normalisiert",
-        "leere sichtbare Zeile durch Nullsumme geteilt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

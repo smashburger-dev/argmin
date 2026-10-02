@@ -1,538 +1,417 @@
-## Status (09.09.2026, Branch ui/redesign-neo-minimal)
+# Challenge-Sektion — Plan v3
 
-Fassung v2 nach Review. Fassung v1 war nicht umsetzbar: drei tragende Löcher
-(No-Repeat gegen Poolgröße, erfundene Schema-Felder, unterbestimmter Seed/Count/Verlauf).
-Alle drei sind unten im Review-Protokoll belegt und in dieser Fassung repariert.
+## Status (13.09.2026, Fassung v3 — IMPLEMENTIERT)
 
-Erledigt in dieser Session: Research (10 freie Pools, 8 Wettbewerbs-Lizenzen),
-Generator-Stufenplan, Foundation (Schema-Feld `challengeEligible`, Validator-Regel
-`E_CHALLENGE_CONTRACT`, Bundle-Übernahme, Tests). Offen für die Umsetzungs-Session:
-Rest von Phase 1 (Coverage-Check), Phase 2 bis 5. Handoff steht am Ende dieser Datei.
+**Implementierungswelle abgeschlossen.** Gebaut und verifiziert:
+
+- `assets/js/domain/challenge_picker.mjs` — reine Domain-Engine (Tages-Seed
+  FNV-1a, Pool, No-Repeat-Fenster, Shortfall, Streak). Bewusst autark: kein
+  Import aus `generator_draw_kit.mjs` — die Kante zog den family-core-Chunk
+  in den Challenge-Pfad und crashte den gebauten Bundle über den
+  family-core ↔ FamilyExerciseView-Chunk-Zyklus (mid-init
+  `createFamilyRegistry`). Item-Seeds benutzen dasselbe
+  `fnv1a(seed|caseId|difficulty|attempt)`-Byteformat wie `familySubseed`.
+- `src/adapters/challenge.ts` — `loadChallengeSet(progress, catalog, nowMs)`
+  liest attempts/moduleTouch/lessonOpens/recentModules aus dem Store.
+- `context: 'challenge'` additiv am Lernereignis (`familyEventInput` →
+  `buildLearningEvent`); Streak zählt nur Challenge-Kontext-Attempts.
+- `#/challenge`-Route + `ChallengeView` (lazy chunk, zieht family-core
+  nicht) + `ChallengeTeaser` im oberen Grid der Heute-Seite; beide
+  unterscheiden die drei Leerzustände (kein Content / kein aktives Modul /
+  Fenster erschöpft). `?from=challenge` hält den Übungs-Flow in der Sektion.
+- Schwere-Vertrag `E_CHALLENGE_CONTRACT` gehärtet: ≥2 hints, strukturierte
+  fullSolution, Typ-Minima (Code ≥2 requiredFunctions oder ≥8 `__check`,
+  Fading ≥4 gaps, MC ≥2 distinct correctIds, sonst ≥2 competencyIds) +
+  `instantiate`-Smoke-Check für `contract:null`-Docs.
+- **24 Cases geflaggt** (`challengeEligible: true`), darunter der neue
+  Fading-Challenge-Fall `distribute-double-gap` (a(px+q)+c(mx+n), 6 Lücken,
+  zwei Reasoning-Stufen, challenge-only per Gate).
+- `docs/challenge-rubric.md` (Autoren-Rubrik) + `docs/challenge-pilot-audit.md`
+  (Pool-Audit: 26 FLAG-READY / 5 NEEDS-WORK / 1 ungeeignet).
+- `familyHint`-Leiter liefert authored `hints[0..n]` (waren vorher tot ab
+  Index 1) — Voraussetzung für „≥2 authored hints" als ehrliches Kriterium.
+- Tests: `tests/challenge_picker.test.mjs` (26), `tests/e2e/challenge.spec.ts`
+  (6), `tests/procedural_worked_fading_capsules.test.mjs` (5).
+- Verifikation: `node --test` 1349/0 · `e2e:build` 55/0 · typecheck ·
+  coverage · `validate_content` + `--dir build-next` · Release-Build 847
+  Dateien / 33,5 MB.
+
+**Offen / Phase-6-Kandidaten:** `parts[]`-Teilpunkte-Modell (bewusst kein
+Pilot-Baustein), No-Repeat-Erschöpfung bei sehr kleinen Pools live
+durchspielen, weitere Challenge-Fälle aus NEEDS-WORK-Liste nachziehen.
+
+---
+
+## Stand-Prüfung (12.09.2026, Fassung v3)
+
+Fassung v3 nach Stand-Prüfung mit drei Research-Agents (Content-Substrat,
+Backend-Machbarkeit, UI-Integration) gegen den aktuellen Code (post-#78/79/80,
+Cleanup-Branch `p2/deferred-cleanup`).
+
+**Was sich seit v2 (09.09.) geändert hat — v2-Fakten korrigiert:**
+
+- Katalog ist gewachsen: 139 Familien, 50 Lektionen, 283 Aktivitäten,
+  49 Module (vorher 107/46/253).
+- `challengeEligible` ist weiterhin nur Foundation: Schema-Feld,
+  Validator-Regel `E_CHALLENGE_CONTRACT`, Bundle-Übernahme und
+  `tests/challenge_contract.test.mjs` existieren — aber **kein einziger Case
+  trägt das Flag**. Pool ist leer.
+- **Korrektur zu v2 Zeile 57:** Attempts tragen `seed` bereits
+  (`learning_event.mjs:50`, gesetzt aus `familyEventInput`). Die geplante
+  Seed-Migration in IndexedDB **entfällt** — höchstens ein neuer Index
+  bräuchte einen Schema-Bump (Store ist schemaless, `progress_store.js:12`).
+- **Modul-Auflösung ist einfacher als geplant:** `moduleTouch`-
+  Setting `{moduleId: ms}` und `lessonOpens` existieren bereits
+  (`local-progress.ts:92-103`); `module.placements[].familyId` bildet
+  Familie→Modul direkt ab (inkl. practice-space).
+- **32 Cases mit `difficultyProfile: 'challenge'` existieren bereits**
+  (25 Familien, davon 26× python-code, 3× single-choice, 2× numeric,
+  1× algebraic-expression) plus 23 `difficulty:'challenge'`-Definitionen in
+  16 prozeduralen `.mjs`-Specs. Das Flaggen bestehender Cases deckt einen
+  Großteil des Pilot-Pools — v2 ging von „alles neu autorisieren" aus.
+- Neue Aufgabentypen seit v2: `multiple-choice` (mit `per-correct`-Scoring),
+  `diagnostic-rationale`, `worked-example-fading` (Multi-Gap = einziges
+  mehrteiliges Antwort-Substrat).
+- Entfernt seit v2: `expected.correctChoice` (Wahrheit ist
+  `choices[].correct`), Case-Level `tolerancePolicy`, unerreichbare
+  `variants[]` in 71 Exemplar-Docs. Verweise in v2 darauf sind hinfällig.
+- `difficultyLabelFor('challenge')` → „Herausforderung" existiert bereits in
+  `exercise-context.ts:27`.
 
 ## Goal
 
-Neue Sektion „Challenge": Täglich 3 bis 5 schwere, teils langkettige Probleme
-(Mathematik zuerst, Coding später), lokal per Tages-Seed zugeteilt, gefiltert nach
-angefangenen und abgeschlossenen Modulen, mit unendlichen Varianten je Problem.
-Die Sektion hebt sich von normalen Übungen durch klar höhere Anforderungen ab.
+Neue Sektion „Challenge": Täglich 3 bis 5 schwere oder langkettige Probleme,
+lokal per Tages-Seed zugeteilt, gefiltert nach angefangenen und
+abgeschlossenen Modulen, mit unendlichen Varianten je Problem. Die Sektion
+soll Fertigkeiten schärfen: Aufgaben, an denen man lange arbeitet — mehrere
+Reasoning-Stufen, echte Zwischenergebnisse — nicht nur „härtere Zahlen".
 
 ## Success Criteria
 
 - Route `#/challenge` mit Tages-Set (3 bis 5 Probleme), deterministisch pro
   Kalendertag (UTC, Namespace `challenge/v1`), ohne Account und ohne Netz.
 - Nur Module im Pool, die der Nutzer angefangen oder abgeschlossen hat; leere
-  Zustände erklärt, kein stilles Auffüllen mit Wiederholungen.
-- Jedes Challenge-Problem hat unendliche geseedete Varianten, deterministisches
-  Grading, Hinweise und Musterlösung.
-- Keine Wiederholung derselben Problemform innerhalb des effektiven Fensters W.
-  W ist das Minimum aus 30 und Poolgröße geteilt durch Tages-Count und wird in
-  der UI angezeigt (zum Beispiel „Fenster 4 von 30 Tagen bei kleinem Pool").
-- Pilot: 16 Challenge-Cases (2 Module mal 8) beweisen ehrlich 4 frische Tage bei
-  4 pro Tag; danach Ausbauwellen.
-- Validator, Content-Build, Node-Tests, Typecheck, E2E und Release-Build grün.
-
-## Context And Current Facts
-
-- 49 Modul-Dateien, 107 Familien-Dateien unter `content/` (gezählt 09.09.2026,
-  Katalog `content/catalog.json`, gebaut per `tools/compile_content.mjs`).
-  Kompiliertes Public-Bundle: 46 Kompetenzen, 46 Lektionen, 253 Aktivitäten.
-- Familien liefern per `EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty,
-  caseId)` unendliche Varianten; Grading ist deterministisch
-  (`assets/js/domain/family_registry.mjs`, `docs/authoring-guide.md` §3 bis §4).
-- Cases kennen bereits ein `variants[]`-Feld für statische Instanzen; geseedete
-  Generatoren brauchen zusätzlich Property-Tests mit mindestens 200 Seeds
-  (`docs/authoring-guide.md` §3).
-- Schwere auf Case-Ebene heißt `difficultyProfile` mit Enum `intro, core, stretch,
-  challenge` (`schemas/exercise-family-cases.schema.json`). Die Stufen 1 bis 5 mit
-  Final Boss aus `docs/authoring-guide.md` §1 gelten auf Exercise-Ebene, nicht am Case.
-- Teilnahme am Challenge-Pool heißt `challengeEligible` (Boolean, optional,
-  Default false) auf Case-Ebene, eingeführt als Foundation dieser Planung.
-- Quellenregel bindend: Aufgaben eigenständig entwickeln, keine wörtlichen
-  Übernahmen, Standard CC BY 4.0 (`docs/authoring-guide.md` §2).
-- Mastery-Policy: höchstens 1 Hinweis, Lösung disqualifiziert die Instanz,
-  Review-Slots Woche+2/+5/+11 (`docs/authoring-guide.md` §5, ADR-0008).
-  Challenge verschärft das vorerst nicht.
-- Fortschritt lokal: Attempts mit `definitionId` (`family:case`) und `occurredAt`,
-  `openedLessons`, `evidenceStates` (`src/adapters/local-progress.ts`). Attempts
-  tragen weder Seed noch Modul-ID; beides muss Phase 2 nachrüsten (Seed per
-  Migration, Modul per Auflösung über `competencyIds`).
-- Navigation: 5 primäre Einträge (Mobil-Balken), 2 sekundäre (nur Desktop-Sidebar)
-  (`src/ui/App.tsx`).
+  Zustände erklärt (unterschieden: „Katalog hat keine Challenges" vs.
+  „kein Modul aktiv"), kein stilles Auffüllen mit Wiederholungen.
+- Jedes Challenge-Problem hat unendliche geseedete Varianten,
+  deterministisches Grading, Hinweise und Musterlösung.
+- Keine Wiederholung derselben Problemform innerhalb des effektiven Fensters
+  W = min(30, Poolgröße / Tages-Count); W wird in der UI angezeigt.
+- **Schwere ist messbar**: `E_CHALLENGE_CONTRACT` erzwingt neben den
+  bisherigen Pflichtfeldern mindestens ein Struktur-Minimum pro Typ
+  (siehe „Schwere-Vertrag"). Kein Case kommt ins Tages-Set, dessen
+  Instanziierung nicht per Smoke-Check verifiziert ist.
+- Pilot: Pool aus geflaggten Bestands-Cases plus wenigen neuen
+  Mathe-Archetypen; danach Ausbauwellen.
+- Validator, Content-Build, Node-Tests, Typecheck, E2E und Release-Build
+  grün.
 
 ## Constraints And Non-goals
 
-- Lokal-first: Tages-Seed aus UTC-Datum plus Namespace, keine Telemetrie, keine
-  Accounts. Tageswechsel um Mitternacht UTC, nicht lokale Mitternacht.
-- Deterministische Grader bleiben maßgeblich; ein LLM ist nie Grader (Repo-Gesetz).
-  Ein LLM darf nur offline als Autor-Beschleuniger Rohlinge liefern, die danach
-  durch denselben deterministischen Verifier fallen oder bestehen.
-- Keine wörtlichen Wettbewerbsaufgaben, auch nicht aus MIT-Quellen: Stil
-  kalibrieren, Instanzen selbst schreiben. Jede Kalibrierung braucht eine
-  `sourceLineage`-Konvention (`abgeleitet von` gegen `inspiriert von`), sonst
-  fällt der fail-closed Public-Build.
-- Nur Antworttypen mit eindeutiger Maschinenprüfung: `numeric`, `single-choice`,
-  `vector`, `algebraic-expression` mit vendored SymPy-Äquivalenz. Freitext und
-  `manual-rubric` sind nie Challenge-Antwort. Langkettige Aufgaben werden als
-  Kette einzeln prüfbarer Teilantworten modelliert, nicht als ein Freitextbeweis.
-- Coding-Challenges sind Phase 2, nicht Teil des Pilots (Pyodide-Grader mit
-  Zeitlimit und Seeds existiert bereits, `docs/authoring-guide.md` §4).
-- Keine sozialen Features (Bestenlisten, Vergleiche): nur lokale Streak-Anzeige.
-- Mobil: Challenge startet als sekundärer Nav-Eintrag (Desktop-Sidebar), der
-  5er-Balken bleibt unverändert. Streak-Logik muss ohne Mobil-Zugang konsistent
-  bleiben.
+- Lokal-first: Tages-Seed aus UTC-Datum plus Namespace, keine Telemetrie.
+  Tageswechsel um Mitternacht UTC, nicht lokale Mitternacht.
+- Deterministische Grader bleiben maßgeblich; ein LLM ist nie Grader.
+  LLM nur offline als Autor-Beschleuniger mit anschließendem
+  deterministischem Verifier.
+- Keine wörtlichen Wettbewerbsaufgaben: Stil kalibrieren, Instanzen selbst
+  schreiben, `sourceLineage`-Konvention (`abgeleitet von` vs.
+  `inspiriert von`).
+- Nur Antworttypen mit eindeutiger Maschinenprüfung. Langkettige Aufgaben
+  als Kette einzeln prüfbarer Teilantworten (Code-Checks, Fading-Gaps,
+  Mehrfach-Funktionen), nicht als Freitextbeweis.
+- **Kein neues Scoring-Modell im Pilot:** `correct` bleibt all-or-nothing.
+  Teilpunkte/`parts[]`-Composite-Answer ist explizit eine spätere Welle,
+  kein Pilot-Baustein (siehe Entscheidung 8).
+- Keine sozialen Features (Bestenlisten): nur lokale Streak-Anzeige.
+- Mobil: sekundärer Nav-Eintrag; Mobil-Zugang über `mobile-more`-Link
+  (App.tsx:313-317). 5er-Balken bleibt unverändert.
 
 ## Key Decisions
 
-1. Challenge ist ein Case-Flag, kein neues Content-System. Cases bekommen
-   `challengeEligible: true` plus Teilnahme am Tages-Pool. Alles andere
-   (Generator, Grader, Hints, Lösung, Validator, Kompilierung) wird
-   wiederverwendet. Alternative eigenes Format verworfen: doppelte Pipeline
-   ohne Mehrwert.
-2. Schwere und Pool-Teilnahme sind getrennt. `difficultyProfile: challenge`
-   heißt schwer, `challengeEligible: true` heißt im Tages-Pool. Validator-Regel:
-   `challengeEligible` verlangt `difficultyProfile` challenge, `masteryEligible`
-   true, vollständige Hints und Lösung, gesetzte `sourceLineage`.
-3. Tages-Set ist eine reine, deterministische Funktion aus (Tages-Seed, Pool,
-   Verlauf). Kein Server, kein Zufall pro Aufruf, testbar per gemockter Uhr.
-   Seed aus UTC-Datum plus Namespace `challenge/v1`, Count deterministisch
-   `3 + (seed mod 3)`, bei Pool kleiner 3 so viele wie vorhanden.
-4. Pool ist aktive Module. Aktiv heißt: mindestens eine Lektion geöffnet oder
-   ein Versuch im Modul; abgeschlossen heißt: alle Lektionen geöffnet. Die
-   Abbildung Versuch zu Modul läuft über `competencyIds`, nicht aus Attempts.
-5. No-Repeat läuft über das effektive Fenster W (Minimum aus 30 und Poolgröße
-   durch Tages-Count), gemessen auf Case-Ebene per `definitionId`. Seeds
-   rotieren frei. Bei Pool kleiner als Tages-Count zeigt die UI nur vorhandene
-   Karten plus expliziten Leerzustand mit Aufforderung, ein weiteres Modul zu
-   beginnen.
-6. Schwerer heißt messbar schwerer. Challenge-Kriterien: mindestens 3
-   Lösungsschritte, mindestens 2 Kompetenzen, `difficultyProfile` challenge,
-   `estimatedMinutes` mindestens 15 auf Exercise-Ebene wo vorhanden, Mastery
-   nach Standard-Policy (höchstens 1 Hinweis), Lösung disqualifiziert wie gehabt.
-7. Versuche zählen. Challenge-Versuche landen im selben Ledger (`definitionId`,
-   Seed, Zeitstempel), erscheinen in Reviews und Fortschritt. Kein
-   Schatten-System. Das Seed-Feld braucht eine getestete IndexedDB-Migration.
-8. Pilot klein, Wellen danach. 16 Cases in 2 Modulen beweisen Pipeline,
-   Zuweisung und UI; Ausbau pro Track danach.
+1. Challenge ist ein Case-Flag, kein neues Content-System. Unverändert.
+2. Schwere (`difficultyProfile: challenge`) und Pool-Teilnahme
+   (`challengeEligible`) bleiben getrennt; Contract verschärft (s.u.).
+3. Tages-Set = reine Funktion aus (Tages-Seed, Pool, Verlauf). Skizzen
+   unten; `rng`/`pick`/`shuffle`/`familySubseed` aus
+   `generator_draw_kit.mjs` sind die kanonischen Bausteine (FNV-1a +
+   mulberry32, byte-gepinnt — nicht neu erfinden).
+4. Pool = aktive Module. Aktiv = `moduleTouch`-Eintrag oder Lesson-Open
+   oder Attempt auf Familie des Moduls; abgeschlossen = alle
+   `lessonIds` in `lessonOpens`. Auflösung über `placements[].familyId`
+   (direkt), `competencyIds`-Schnittmenge nur als Fallback.
+5. No-Repeat über effektives Fenster W auf Case-Ebene per `definitionId`.
+   Seeds rotieren frei. Shortfall → Leerzustand, nie Auffüllung.
+6. **Schwerer = strukturell mehr, nicht nur größere Zahlen** — siehe
+   Schwere-Vertrag unten. Konvention „lange Arbeit": ≥2 inhaltlich
+   getrennte Reasoning-Stufen mit echten Zwischenergebnissen.
+7. Versuche zählen im selben Ledger. `definitionId` + `seed` +
+   `occurredAt` reichen — Seed-Feld existiert bereits. **Beschlossen
+   (12.09., Noa):** optionales `context: 'challenge'` am Event, additiv —
+   macht Streak und „heute n/m gelöst" trennbar, ohne Modul-Attempts zu
+   verlieren.
+8. **Kein Multi-Part-Scoring im Pilot.** Vorhandene Substrate tragen
+   „lange" Arbeit schon: Python-Cases mit vielen `__check`s und
+   `requiredFunctions` (mehrere Funktionen, ein Verdict), Fading mit
+   5–8 Gaps. Ein generisches `parts[]`-Contract mit Teilpunkten ist
+   Phase-6-Kandidat, nicht Pilot — es würde Grader-Interface, UI und
+   Event-Schema gleichzeitig ändern.
+9. **Pool-Smoke-Check im Validator.** Lücke gefunden: bei
+   `contract:null`-Docs (prozedurale Familien) wird das JSON-seitige
+   `challengeEligible` nicht gegen die JS-Spec-Fälle gegengeprüft — ein
+   geflaggter Case kann bei `instantiate` mit „Unbekannter Fall"
+   scheitern. Validator führt für geflaggte Cases einen
+   `EXERCISE_FAMILIES.instantiate`-Smoke-Test aus (fail-closed).
+10. Pilot hybrid: bestehende Challenge-Profil-Cases flaggen wo der
+    verschärfte Contract passt + wenige neue Mathe-Archetypen. Nicht mehr
+    „16 neue Cases" als Startpunkt — ~55 Challenge-Profil-Cases existieren.
 
-## Recommended Approach
+## Schwere-Vertrag (Neu in v3)
 
-Drei Schichten, alle auf Bestehendem:
+`E_CHALLENGE_CONTRACT` prüft heute nur Metadaten. v3 erweitert um
+**strukturelle Mindestanforderungen pro Aktivitätstyp** — messbar am
+Case-Doc bzw. an einer Probe-Instanz:
 
-- Content: Neue Challenge-Cases als normale Familien-Cases mit
-  `challengeEligible`-Flag schreiben. Mathe-Archetypen mit
-  Parametrisierungspotenzial: Ungleichungen mit Parametern, Zählprobleme mit `n`,
-  lineare Algebra mit Dimensionen, Zahlentheorie mit Moduln, Analysis mit
-  Funktionenfamilien. Jeder Case: Generator mit dokumentierten Invarianten,
-  Referenzsolver, generische Hints, volle Lösung, Property-Tests.
-- Engine: Reine Funktion `pickDailyChallenges({ daySeed, pool, history, count })`
-  in `assets/js/domain/challenge_picker.mjs`. Pool aus aktiven Modulen bauen,
-  Verlauf per `definitionId` plus Seed filtern (Fenster W), deterministisch
-  mischen (geseedeter PRNG mit Tages-Seed), Count nach Regel aus Entscheidung 3.
-  Beginn der Funktion steht als Skizze im Review-Protokoll.
-- UI: Neue `ChallengeView` plus `challenge`-Route und sekundärer Nav-Eintrag.
-  Tages-Karten öffnen den bestehenden Attempt-Flow (`FamilyExerciseView`)
-  unverändert. Dazu Streak-Zähler (lokal, aus Attempt-Daten pro Tag),
-  Leerzustände (kein aktives Modul, Pool kleiner als Count) und Filteranzeige
-  inklusive Fenster W.
+| Typ | Struktur-Minimum (Vorschlag, feintunen) |
+|---|---|
+| `python-code`/`code-tests` | `requiredFunctions ≥ 2` ODER `__check(`-Zählschwelle ≥ 8 in `parameters.tests` |
+| `worked-example-fading` | `gaps.length ≥ 4` |
+| `multiple-choice` | `correctIds ≥ 2` (existiert) UND `hints ≥ 2` |
+| `numeric`/`algebraic-expression`/`vector` | `competencyIds ≥ 2` (Synthese-Charakter) UND `hints ≥ 2` |
+| alle | `fullSolution` nicht-leer UND ≥ 2 Absätze/Schrittmarken; `sourceLineage` gesetzt; `masteryEligible: true`; `difficultyProfile: 'challenge'`; `instantiate`-Smoke-Check bestanden |
 
-## Work Plan
+**Nicht formal prüfbar, bleibt Review-Gate (Zwei-Augen):**
+- „Lang" = ≥2 getrennte Reasoning-Stufen mit Zwischenergebnissen, nicht
+  Textlänge.
+- Hints staffeln Strategie → Zwischenschritt, verraten nicht die Lösung
+  (Mastery erlaubt ≤1 Hint — Hint-Design ist bei Challenges kritisch).
+- Keine Challenge-Single-Choice, deren Prompt Mehrfachkonzepte behauptet,
+  aber nur eine Auswahl graded.
+- `estimatedMinutes` am Placement kalibrieren (Challenge-Placements liegen
+  bereits bei 40–45 min — realistisch halten).
 
-### Phase 0: Research-Spike (erledigt 09.09.2026)
+**Substrat-Befund (Agent 1):** Stärkstes „lange Arbeit"-Substrat sind
+Code-Test-Cases (`makeCaseFamily`, `case_family_kit.mjs`): Referenzsolver
+15–45 Zeilen, 8–15 Checks, teils `requiredFunctions` mit mehreren
+Pflichtfunktionen (`final-boss-authored`: 3 Funktionen, 9 Asserts,
+5 Kompetenzen). Fading ist das einzige mathematische Mehrteile-Substrat —
+ein Challenge-Profil-Fall fehlt dort noch komplett (max. 5 Gaps bisher).
 
-- MATH-Stufen 4 bis 5 und 9 weitere freie Pools gesichtet, 8
-  Wettbewerbs-Lizenzen geklärt, siehe Ressourcen unten.
-- Offen: Challenge-Rubrik mit 3 exemplarischen Case-Spezifikationen (Algebra,
-  Kombinatorik, lineare Algebra) in `docs/` zur Review. Ohne Abnahme kein Content.
+## Backend: Tages-Engine
 
-### Phase 1: Content-Vertrag (Foundation erledigt, Rest 1 bis 2 Tage)
+`assets/js/domain/challenge_picker.mjs` — rein, alle Inputs injiziert
+(Konvention wie `review_scheduler.js`: kein I/O, kein `Date.now()`-Default).
 
-- Erledigt: `challengeEligible` im Case-Schema, Validator-Regel
-  `E_CHALLENGE_CONTRACT`, Übernahme ins Bundle, Tests
-  (`tests/challenge_contract.test.mjs`).
-- Offen: Coverage-Check kennt Challenge-Cases.
-- Validierung: `node tools/validate_content.mjs`, `node tools/compile_content.mjs`,
-  `node --test tests/`.
+```js
+daySeedUTC(dateIso /* injiziert */, namespace = 'challenge/v1')   // FNV-1a uint32
+dailyCount(daySeed, poolSize)          // poolSize<3 → poolSize; sonst 3+(seed%3)
+effectiveWindow(poolSize, count, maxWindow = 30)
+activeModuleIds({ modules, moduleTouchMs, openedLessonIds, attemptFamilyIds })
+challengePool(familyIndex, modules, activeIds)
+//   → [{familyId, caseId, difficulty:'challenge', moduleIds, competencyIds}]
+//   moduleIds über placements[].familyId; competencyIds aus Index-Contract
+pickDailyChallenges({ daySeed, pool, history, nowMs })
+//   → { items: [{familyId, caseId, difficulty, seed}], count, windowDays, shortfall }
+//   history: [{definitionId, seed, occurredAt}]; Exclude im Fenster W;
+//   Rang per FNV-1a(daySeed|definitionId); Item-Seed =
+//   familySubseed(daySeed, caseId, 'challenge', rank)
+```
 
-### Phase 2: Tages-Engine (3 bis 4 Tage)
+Adapter `src/adapters/challenge.ts` (Muster `learning-plan.ts:29-75`):
+Pool-Inputs aus `loadFamilyIndex()` + `catalog.learningModules`;
+Aktivitäts-Inputs aus `progress.getSetting('moduleTouch'|'lessonOpens'|
+'recentModules')` + `progress.allOf('attempts')`. Achtung:
+`loadProgressSnapshot` exponiert **keine** rohen Attempts — der Adapter
+liest den Store direkt oder der Snapshot wird um `activeDays` erweitert
+(für Streak).
 
-- `assets/js/domain/challenge_picker.mjs`: `activeModuleIds(progress)`,
-  `daySeedUTC(date, namespace)`, `dailyCount(daySeed, poolSize)`,
-  `effectiveWindow(poolSize, count)`, `pickDailyChallenges(...)`.
-- Verlauf um Seed-Feld erweitern (Adapter plus getestete Migration),
-  Modulfilter über `competencyIds` auflösen, Namespace bei
-  Content-Versionwechsel erhöhen (`challenge/v2`).
-- Node-Tests: Determinismus (gleicher Tag, gleiches Set), Count-Regel,
-  Verteilung (jedes Pool-Modul kommt vor), No-Repeat innerhalb W, Grenzfälle
-  (leerer Pool, Pool kleiner als Count mit Shortfall-Meldung statt
-  Auffüllung).
-- Validierung: `node --test tests/` mit neuem `tests/challenge_picker.test.mjs`.
+**Zu schließende Adapter-Lücken:**
+- `CompiledIndex.families[].cases` um `challengeEligible?: boolean`
+  erweitern (`content-repository.ts:39`) — Feld liegt schon im Bundle.
+- `ProgressSnapshot` um Streak-Feld (`activeDays` aus `occurredAt`,
+  gefiltert `eventType==='attempt'`) oder direkten Store-Zugriff.
+- Migration: **keine** für Seed nötig. Nur falls ein `seed`-Index auf
+  `attempts` gewünscht wird: `SCHEMA_VERSION` 3→4 + idempotentes
+  `createIndex` (Muster `progress_store.js:15-41`).
 
-### Phase 3: UI (3 bis 5 Tage)
+## UI: Sektion & Integration
 
-- `src/ui/ChallengeView.tsx`, Route in `src/ui/App.tsx`, sekundärer Nav-Eintrag
-  mit Icon.
-- Tages-Karten mit Schwierigkeits- und Modul-Label, Fenster-Anzeige W,
-  Streak aus lokalen Attempt-Daten, Leerzustände.
-- Attempt-Flow wiederverwenden, keine Duplikate von Grading- oder Review-Logik.
-- Validierung: `npm run typecheck`, neue E2E-Specs (Tages-Set rendert,
-  deterministisch per gemockter Uhr, Klick führt in bestehenden Flow),
-  Screenshots Desktop und Mobil.
+Minimales File-Set (Konventionen verifiziert):
 
-### Phase 4: Pilot-Content (1 bis 2 Wochen)
+| Datei | Änderung |
+|---|---|
+| `src/ui/ChallengeView.tsx` | NEU, lazy geladen. Props `{catalog, progress}`; Pool aus `loadFamilyIndex()`; Tages-Set via `pickDailyChallenges`; Karten à la `.activity-card` mit `.card-kicker` (Modul-Label + `difficultyLabelFor`), Buttons → `#/family/{f}/{c}/{seed}/challenge` mit **aus daySeed abgeleitetem Seed** (nicht `-`, sonst ändert sich die Instanz pro Klick); Streak; Fenster-W-Anzeige; zwei Leerzustände |
+| `src/ui/App.tsx` | `routeTitles.challenge`, Ternary-Zweig, Nav-Eintrag `{secondary: true}` + Icon (16×16-Stroke-SVG), `mobile-more`-Link, optional Tour-Step |
+| `src/ui/TodayView.tsx` | `ChallengeTeaser` als **Quadrant im oberen Grid** (`.today-grid`, Muster `MilestoneCard`) — beschlossen 12.09.; nur rendern wenn Pool > 0; zeigt Tages-Fortschritt „n/m gelöst" und Streak |
+| `src/adapters/local-progress.ts` | `ProgressSnapshot` um `activeDays`/Streak erweitern |
+| `src/adapters/content-repository.ts` | Typ-Erweiterung `challengeEligible` |
+| `src/styles/next.css` | `.challenge-*`-Klassen bzw. Shared-Selector-Liste (Zeile 153) |
+| `tests/challenge_picker.test.mjs`, `tests/e2e/challenge.spec.ts` | NEU (Vorbilder `exercise-family.spec.ts`, `today-resume.spec.ts`) |
 
-- 16 Challenge-Cases in 2 Kern-Modulen nach Rubrik, je mit Generator,
-  Referenzsolver, Hints, Lösung, Property-Tests (mindestens 200 Seeds) und
-  fixierten Regressions-Seeds. `expected` immer vom exportierten Referenzsolver
-  berechnen, nie hardcoden.
-- Review-Gate: Zwei-Augen-Prinzip (Text-Eindeutigkeit, Hand-Lösungsweg an zwei
-  Seeds, generische Hints). Freigabe nur wenn Validator, Compiler,
-  Property-Tests und Grader-Gegenprobe grün sind.
-- Validierung: `node tools/validate_content.mjs`, `node --test tests/`,
-  Grader-Gegenprobe Solver gegen Generator.
+**Fallstricke (verifiziert):**
+- **Lazy-Chunk:** `ChallengeView` darf `exercise_registry.mjs`/
+  `family_registry.mjs` **nicht** importieren — das ganze
+  Familien-Subsystem hängt hinter dem lazy `FamilyExerciseView`
+  (vite.config.ts:27-60). Pool nur aus `loadFamilyIndex()` bauen; die
+  View selbst lazy.
+- **Rückkehr-Kontext (beschlossen 12.09., Noa):** Man bleibt im
+  Challenge-Fenster — `?from=challenge` am Attempt-Link, Back-Button
+  führt zu `#/challenge`, und nach Abschluss zeigt der Result-State
+  eine „Nächste Challenge"-CTA auf das nächste Tages-Item.
+- **Leerer Pool bis Pilot-Content:** Nav-Eintrag und Teaser hinter
+  „Pool > 0" konditionieren oder Leerzustand „Challenges kommen mit dem
+  nächsten Kapitel" — sonst tote Route im Release.
+- **Streak ohne Mobil:** Streak-Logik muss aus Attempts ableitbar sein,
+  nicht aus „Challenge-View besucht" — Konsistenz ohne Mobil-Zugang.
 
-### Phase 5: Release und Wellenplan (laufend)
+## Work Plan (aktualisiert)
 
-- `npm run build:release`, Leak-Test, E2E gegen Build (`npm run test:e2e:build`).
-- Ausbauwellen pro Track; Zählung siehe Bedarfsrechnung unten.
-- Danach Phase 2 (Coding): gleiche Engine und UI, neue Task-Familien für den
-  vorhandenen Pyodide-Grader.
+### Phase 0: Research-Spike — erledigt (09.09.2026)
 
-## Bedarfsrechnung
+Ressourcen/Lizenzen unten. Rubrik-Abnahme steht noch aus (3 exemplarische
+Case-Spezifikationen in `docs/`).
 
-Formel: Cmin = F mal N. F ist das No-Repeat-Fenster in Tagen, N der
-Tages-Count, Cmin die Mindest-Cases im persönlichen Pool. Bei M aktiven
-Modulen und k Cases je Modul gilt M mal k größer gleich Cmin, also k größer
-gleich Cmin geteilt durch M.
+### Phase 1: Vertrag & Validator (1–2 Tage)
 
-Bei F gleich 30: 3 pro Tag braucht 90 Cases, 4 pro Tag 120, 5 pro Tag 150.
+- `E_CHALLENGE_CONTRACT` um Struktur-Minima pro Typ erweitern (Tabelle
+  oben), `instantiate`-Smoke-Check für geflaggte Cases (deckt die
+  `contract:null`-Lücke), `CompiledIndex`-Typ, Coverage-Check.
+- Rubrik `docs/challenge-rubric.md` mit 3 Case-Spezifikationen →
+  Noa-Abnahme.
+- Validierung: `validate_content`, `compile_content`, `node --test`.
 
-| Module aktiv | Cases bei 8/Modul | Tage frisch bei 4/Tag | Effektives W |
+### Phase 2: Tages-Engine (2–3 Tage, vereinfacht)
+
+- `challenge_picker.mjs` + `src/adapters/challenge.ts` nach Vertrag oben.
+- `ProgressSnapshot.activeDays` für Streak; optionales `context`-Feld
+  am Event (Entscheidung 7).
+- Tests: Determinismus, Count-Regel, Verteilung, No-Repeat in W,
+  Grenzfälle (leerer Pool, Shortfall).
+- **Entfällt gegenüber v2:** IndexedDB-Seed-Migration.
+
+### Phase 3: UI (3–4 Tage)
+
+- File-Set oben; E2E: Tages-Determinismus via Playwright-Clock,
+  No-Repeat, Modulfilter, Fenster-W-Anzeige, beide Leerzustände,
+  Mobil (mobile-more), Screenshots.
+- `from=`-Entscheidung umsetzen.
+
+### Phase 4: Pilot-Content (kürzer als v2)
+
+- Audit der ~55 Challenge-Profil-Cases gegen den verschärften Contract;
+  passende flaggen (Script: Liste erzeugen, Review je Familie).
+- Lücken mit Mathe-Archetypen schließen (Ungleichungen mit Parametern,
+  Zählprobleme mit n, Linalg mit Dimensionen, Analysis mit
+  Funktionenfamilien, Fading-Challenge-Fall mit 5–8 Gaps) — Ziel:
+  ≥2 aktivierbare Kernmodule, ehrliches Fenster.
+- Review-Gate unverändert (Zwei-Augen, Hand-Lösung an 2 Seeds,
+  Solver-Gegenprobe ≥200 Seeds, Regressions-Seeds).
+
+### Phase 5: Release und Wellen (laufend)
+
+- `build:release`, Leak-Test, `test:e2e:build`.
+- Ausbau pro Track; Coding-Challenges erst nach Pilot (Phasentor).
+- Kandidat Phase 6: `parts[]`-Composite-Answer mit Teilpunkten —
+  nur wenn Pilot zeigt, dass all-or-nothing bei langen Ketten frustriert.
+
+## Bedarfsrechnung (aktualisiert)
+
+Cmin = F × N bleibt. Neu: der Pool startet nicht bei 0 — ~55
+Challenge-Profil-Cases existieren (32 JSON + 23 prozedural), verteilt
+über ~30 Familien/Module. Flaggen ohne Neubau bringt den Pilot-Pool
+deutlich über die 16 von v2.
+
+| Aktive Module | Pool (8 flagged/Modul) | Tage frisch bei 4/Tag | W |
 |---|---|---|---|
 | 2 | 16 | 4 | 4 |
 | 4 | 32 | 8 | 8 |
 | 8 | 64 | 16 | 16 |
-| alle 49 | ~400 | ~100 | 30 |
+| 49 | ~400 | ~100 | 30 |
 
-Der Pilot mit 16 Cases beweist ehrlich 4 Tage, kein 30-Tage-Fenster. Für echte
-30 Tage bei 2 aktiven Modulen wären 45 bis 75 Cases je Modul nötig, nicht 8
-bis 12. Vollausbau (~400 Cases) trägt rund 100 Tage, aber nur für Nutzer mit
-allen 49 Modulen aktiv. Empfehlung: Pilot mit 16 Cases starten, dann
-wellenweise auf 8 je Kern-Modul, Rest nach Nutzung. Autorenaufwand pro Case
-grob 0,5 bis 1 Tag (Generator, Solver, Hints, Lösung, Tests).
+Realistischer Pilot: 2–4 aktive Module → W=4–8 ehrliche Tage. Für W=30
+bei 2 Modulen weiterhin 45–75 Cases/Modul nötig — Wellenplan bleibt.
 
 ## Ressourcen: frei nutzbare Aufgabenpools
 
-Hausregel für alle Quellen: keine wörtlichen Übernahmen, eigene deutsche
-Formulierungen, Content unter CC BY 4.0. Stand September 2026, alle Lizenzen
-mit Beleg geprüft.
+Hausregel: keine wörtlichen Übernahmen, eigene deutsche Formulierungen,
+Content CC BY 4.0. Stand September 2026, Lizenzen mit Beleg geprüft.
 
-- MATH: 12.500 englische Wettbewerbsaufgaben in 7 Gebieten, Stufen 1 bis 5,
-  mit schrittweisen Lösungen, JSON. MIT, Beleg
-  https://raw.githubusercontent.com/hendrycks/math/main/LICENSE.
-  Repos: https://github.com/hendrycks/math und
-  https://huggingface.co/datasets/hendrycks/competition_math.
-  Erste Wahl zur Stil- und Schwierigkeitskalibrierung des Pilots (Stufen 4
-  bis 5 sind Challenge-Niveau), Instanzen neu schreiben.
-- GSM8K: 8.500 englische Grundschul-Textaufgaben (7.473 Train, 1.319 Test),
-  JSONL mit Lösungsweg. MIT, Beleg LICENSE im Repo und Lizenzfeld auf
-  Hugging Face. https://github.com/openai/grade-school-math und
-  https://huggingface.co/datasets/openai/gsm8k. Stilvorbild für Textaufgaben
-  und Lösungsweg-Format, für Challenge-Niveau zu leicht.
-- SVAMP: 1.000 englische Textaufgaben als systematische Variationen bekannter
-  Typen, JSON. MIT, Beleg
-  https://raw.githubusercontent.com/arkilpatel/SVAMP/main/LICENSE.
-  https://github.com/arkilpatel/SVAMP. Methodisch wertvoll: das
-  Variationsprinzip entspricht dem geseedeten Generatorprinzip.
-- MathQA: 37.200 englische Multiple-Choice-Aufgaben auf GRE- und GMAT-Niveau
-  mit annotierten Operationsprogrammen, JSON. Apache-2.0, Beleg Lizenzfeld
-  auf Hugging Face. https://github.com/math-qa/math-QA und
-  https://huggingface.co/datasets/allenai/math_qa. Interessant als Vorlage,
-  weil Operationsprogramme dem Referenzsolver-Konzept entsprechen.
-- miniF2F: 488 englische Olympiade-Probleme aus IMO, AIME und AMC, formal in
-  Lean, Metamath und Isabelle plus informelle Fassungen. MIT für Metamath,
-  Apache für Lean, Beleg README und Paper arXiv 2109.00110.
-  https://github.com/openai/miniF2F. Beste Kalibrierung für die oberste
-  Stufe, erfordert Übersetzung vom formalen ins schulnahe Format.
-- Orca-Math: circa 200.000 synthetische englische Grundschul-Textaufgaben,
-  Parquet. MIT, Beleg Lizenzfeld auf Hugging Face.
-  https://huggingface.co/datasets/microsoft/orca-math-word-problems-200k.
-  Volumenquelle für leichte Varianten, für schwere ungeeignet.
-- MetaMathQA: 395.000 englische Aufgaben (240.000 aus GSM8K plus 155.000 aus
-  MATH augmentiert), JSON. MIT, Beleg Lizenzfeld auf Hugging Face.
-  https://github.com/meta-math/MetaMath und
-  https://huggingface.co/datasets/meta-math/MetaMathQA. Methodenvorbild, wie
-  man aus wenigen Stammaufgaben viele Varianten erzeugt.
-- OpenMathInstruct-2: 14 Millionen Paare bei circa 600.000 eindeutigen Fragen
-  aus GSM8K- und MATH-Trainingsdaten, Parquet. CC-BY-4.0, Beleg Lizenzfeld
-  und Paper arXiv 2410.01560.
-  https://huggingface.co/datasets/nvidia/OpenMathInstruct-2. Größte
-  CC-BY-kompatible Quelle, direkt passend zur Hausregel, idealer
-  Ideensteinbruch für Ausbauwellen. (Version 1 steht unter eigener
-  NVIDIA-Lizenz, nur Version 2 nutzen.)
-- DeepMind Mathematics: Generator-Code für Schulmathematik plus 2 Millionen
-  Frage-Antwort-Paare pro Modul in leicht, mittel und schwer, generativ per
-  Python. Apache-2.0, Beleg LICENSE im Repo.
-  https://github.com/google-deepmind/mathematics_dataset. Bestes
-  Architekturvorbild für unendliche geseedete Varianten mit dokumentierten
-  Invarianten.
-- Lila: über 100.000 Aufgaben aus 20 Quelldatensätzen in 23 Tasks, jede mit
-  Programm, Lösungsweg, Antwort und Kategorie-Tags, JSON. CC-BY-4.0, Beleg
-  LICENSE.txt im Repo und Lizenzfeld.
-  https://github.com/allenai/Lila und
-  https://huggingface.co/datasets/allenai/lila. Ausgezeichnetes
-  Formatvorbild: Aufgabe plus Programm plus Lösungsweg entspricht dem
-  Challenge-Case-Vertrag.
+- MATH: 12.500 englische Wettbewerbsaufgaben, Stufen 1–5, MIT,
+  https://github.com/hendrycks/math — Stufen 4–5 = Kalibrierung.
+- GSM8K: 8.500 Textaufgaben, MIT — zu leicht, Stilvorbild.
+- SVAMP: 1.000 Variationen, MIT — Variationsprinzip = Generatorprinzip.
+- MathQA: 37.200 MC mit Operationsprogrammen, Apache-2.0 —
+  Programm ≈ Referenzsolver.
+- miniF2F: 488 Olympiade-Probleme formal + informell, MIT/Apache —
+  oberste Stufe.
+- Orca-Math: ~200k Textaufgaben, MIT — Volumen, zu leicht.
+- MetaMathQA: 395k, MIT — Augmentations-Methodenvorbild.
+- OpenMathInstruct-2: 14M Paare, CC-BY-4.0 — Ideensteinbruch (nur v2!).
+- DeepMind Mathematics: Generator-Code + 2M Paare, Apache-2.0 —
+  Architekturvorbild geseedete Varianten.
+- Lila: 100k+ Aufgaben mit Programm+Lösungsweg, CC-BY-4.0 —
+  Formatvorbild Case-Vertrag.
+- Project Euler: CC BY-NC-SA — **nicht** CC-BY-kompatibel, nur
+  Stilvorbild; bester Referenzstil für spätere Coding-Challenges.
 
-Ausgeschlossen: ASDiv (CC BY-NC 4.0, Klausel verletzt die Vorgabe,
-https://github.com/chaochun/nlu-asdiv-dataset) und NumGLUE (ODC-By 1.0,
-https://github.com/allenai/numglue). Beide höchstens als Stilreferenz lesen,
-nie als Materialbasis.
-
-Empfehlung für den Piloten: MATH Stufen 4 bis 5 zur Kalibrierung, DeepMind
-Mathematics als Generator-Vorbild, OpenMathInstruct-2 als CC-BY-Volumenquelle,
-Lila als Formatvorbild, miniF2F als Referenz für die oberste Stufe.
-
-## Ressourcen: Lizenzlage Wettbewerbsaufgaben
-
-Keine Rechtsberatung. Repo-Regel bleibt maßgeblich: eigenständig entwickeln,
-keine wörtlichen Übernahmen, Content CC BY 4.0.
-
-- Mathematik-Olympiade Deutschland: VERBOTEN für Fork, GRAUZONE für
-  Varianten. Jedes Blatt © Aufgabenausschuss, keine offene Lizenz,
-  Veranstalter müssen Aufgaben nach Runde 1 löschen. Nur freie
-  Nachschöpfung: Idee aufgreifen, Text, Zahlen, Figuren und Lösungsweg
-  vollständig neu. Keine enge Anlehnung an aktuelle Jahrgänge.
-- Bundeswettbewerb Mathematik: VERBOTEN für Fork, GRAUZONE für Varianten.
-  Keine offene Lizenz, kommerzielle Verwertung (Springer-Buch mit allen 404
-  Aufgaben seit 1970), implizit alle Rechte vorbehalten. Besonders riskant
-  wegen Verlag, nur Stil und Niveau zur Kalibrierung.
-- Känguru (DE und international): VERBOTEN für Fork, ERLAUBT für eigene
-  Multiple-Choice-Formen im eigenen Wortlaut. Keine offene Lizenz, aber das
-  Format (5 Optionen, Punkte-Staffel) ist nicht schutzfähig. Für Challenge
-  ohnehin zu leicht.
-- IMO und IMO Shortlist: VERBOTEN für wörtliche Übernahme, GRAUZONE für
-  Varianten. Copyright IMO, Shortlist bis nach der folgenden IMO vertraulich,
-  keine offene Lizenz. Neue Shortlists gar nicht anfassen, alte nur als
-  Niveau-Vorbild, Idee abstrahieren, keine Jahrgangsangabe als Quelle.
-- UKMT (britisch): EINZELDISKUSSION ERLAUBT, SYSTEMATISCHER NACHBAU
-  VERBOTEN. Offizielles Dokument Use of UKMT Material (April 2024): Diskussion
-  einer einzelnen Frage samt Lösung nach Fair-use-Grundsätzen erlaubt,
-  systematische Analyse mehrerer Fragen ohne Erlaubnis verboten. Klarste und
-  großzügigste Regelung im Feld.
-- AMC und AIME (MAA): VERBOTEN ohne Erlaubnis, eng begrenzte
-  Bildungsausnahme (nur Papierkopien einzelner Aufgaben nach der
-  Wettbewerbsperiode). Keine tragfähige Ausnahme für eine öffentliche
-  Lernplattform. Nur eigene Varianten im AMC-Stil.
-- AoPS-Community: VERBOTEN für Fork. Inhalte nur zu Informationszwecken,
-  Nutzerinhalte bleiben Autor-Eigentum, nachgewiesene DMCA-Praxis (Fall
-  hendrycks/competition_math). Nur Recherche-Ort für Themen.
-- Project Euler: ERLAUBT unter CC BY-NC-SA 4.0, aber NICHT kompatibel mit
-  CC BY 4.0 (NonCommercial und ShareAlike). Einzige Quelle mit echter
-  offener Lizenz und ausdrücklicher Adaptions-Erlaubnis für
-  nicht-kommerzielle Zwecke. Wegen Inkompatibilität nur Stilvorbild und
-  Ideengeber, nichts wörtlich übernehmen. Wertvollster Referenzstil für
-  spätere Coding-Challenges.
-
-Empfehlung als Vorbild für eigene Varianten: erstens Project Euler (einzige
-Adaptions-Erlaubnis, parametrisierbare Probleme), zweitens UKMT (klarste
-Regel, gut neu fassbar), drittens alte IMO Shortlists (Niveau-Anker 4 bis
-5). Größtes Risiko: Bundeswettbewerb (Verlag), MAA (aggressive
-Rechtewahrung), AoPS (DMCA-Praxis).
-
-## Generator-Stufenplan (minimal)
-
-Template-plus-Parameter ist der einzige produktive Pfad: Autor schreibt einen
-parametrisierten Generator `genX(seed)` für Parameters, Expected und Prompt,
-plus getrennten Referenzsolver `solveX(parameters)`. Aufwand circa 0,5 bis 1
-Tag pro Case. LLM-Entwurf nur als offline Einmalhilfe vor dem Review, nie zur
-Laufzeit, nie als Grader.
-
-Korrektheitsschließung mit wenig Code:
-
-1. Falsche Musterlösung (hardcodetes Expected, gemeinsamer Fehler
-   Solver-plus-Generator): Expected immer vom exportierten Referenzsolver
-   berechnen, nie hardcoden. Kreuzprobe Generator gegen unabhängig
-   implementierten Solver über mindestens 200 Seeds. Fixierte
-   Regressions-Seeds für jeden gefundenen Fehler.
-2. Mehrdeutige oder unlösbare Aufgabe (entartete Parameter, mehrere gültige
-   Antworten): jeder Generator dokumentiert Invarianten im Docstring,
-   Property-Test erzwingt sie über alle Seeds (zum Beispiel Determinante
-   ungleich 0, Lösung ganzzahlig in [-9,9], Log-Argument echte Potenz der
-   Basis). Nur Antworttypen aus der Whitelist in den Constraints.
-3. Grader-Lücken (Stringvergleich statt Äquivalenz, falsche Toleranz,
-   Seed-Drift): Typ-Whitelist im Validator, Algebra nur über exakte
-   Äquivalenz, Numerik ganzzahlig oder mit dokumentierter `tolerancePolicy`
-   und gerundetem Solver-Wert, Eingabeparser als Feedback-Stufe 1 ohne
-   Exceptions im Grader. Seed-Drift-Test: JSON-Prompt muss identisch zur
-   Generator-Ausgabe beim Default-Seed sein. Negativtests mit vertauschten
-   Paaren, Vorzeichenfehlern, leeren und unsinnigen Eingaben.
-
-Review-Gate: Zwei Augen vor Aufnahme (Text-Eindeutigkeit, Hand-Lösungsweg an
-zwei Seeds, generische Hints). Freigabe nur wenn Validator, Compiler,
-Property-Tests und Grader-Gegenprobe grün sind. Danach einzelne fehlerhafte
-Cases per `releaseStatus` aus dem Pool nehmen, ohne Rollback des Systems.
-
-## Review-Protokoll (Fassung v1, 09.09.2026)
-
-Der Reviewer prüfte gegen AGENTS.md, beide Family-Schemas,
-`family_registry.mjs` und `local-progress.ts`. Ergebnis: v1 nicht umsetzbar.
-Alle Fakten wurden in dieser Session am Code verifiziert (Schema-Zeilen,
-Registry, Bundle-Pfad, Attempt-Felder).
-
-Loch 1, No-Repeat gegen Poolgröße: Kriterium 30 Tage No-Repeat auf Case-Ebene
-ist mit 16 Pilot-Cases und Modulfilter mathematisch unerfüllbar. Die
-Auffüllregel (älteste Wiederholung zuerst) wäre ab Tag 5 Normalfall und bricht
-Kriterium 4 direkt. v1 listet das als Risiko und erklärt das Kriterium zugleich
-für erfüllt. Das war ein Widerspruch, kein Risiko.
-Repariert in v2: effektives Fenster W, ehrlicher Pilot mit 4 Tagen,
-Shortfall statt stiller Auffüllung. Skizze:
-
-```js
-export function effectiveWindow(poolSize, count, maxWindow = 30) {
-  if (poolSize <= 0 || count <= 0) return 0;
-  return Math.min(maxWindow, Math.floor(poolSize / count));
-}
-```
-
-Loch 2, erfundene Schema-Felder: v1 spricht von `difficulty` 1 bis 5,
-`estimatedMinutes` mindestens 15, `challenge`-Boolean am Case und
-`content-bundle.json` mit 49 Modulen und 107 Familien. Real: Case-Schema
-verlangt `caseId`, `difficultyProfile` (Enum), `masteryEligible`,
-`sourceLineage`; `difficultyProfile: challenge` existiert bereits als
-Schweregrad; `content/bundle.json` gibt es nicht; `estimatedMinutes` und
-die 0-Hinweis-Mastery haben keine Entsprechung im Schema und in ADR-0008.
-Repariert in v2: `challengeEligible` statt `challenge`-Boolean, Trennung von
-Schwere und Pool-Teilnahme, Mastery bleibt Standard, Zahlen aus
-`content/catalog.json` plus Verzeichniszählung. Schema-Ausschnitt:
-
-```json
-"challengeEligible": { "type": "boolean", "default": false }
-```
-
-Loch 3, Seed, Count und Verlauf unterbestimmt: v1 leitet den Seed aus lokalem
-Datum ohne Zeitzonen-Regel ab, lässt Count 3 bis 5 ungeregelt, behauptet einen
-Ledger aus `definitionId` plus Seed (Attempts haben kein Seed-Feld) und einen
-Modulfilter aus Attempts (Attempts tragen keine Modul-ID). Versionierung fehlt.
-Repariert in v2: UTC-Seed mit Namespace, deterministischer Count, Seed-Feld
-per Migration, Modulauflösung über `competencyIds`, Namespace-Erhöhung bei
-Content-Wechsel. Skizze:
-
-```js
-export function daySeedUTC(date = new Date(), namespace = 'challenge/v1') {
-  const day = date.toISOString().slice(0, 10);
-  let h = 2166136261;
-  const s = `${namespace}:${day}`;
-  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
-export function dailyCount(daySeed, poolSize) {
-  if (poolSize < 3) return poolSize;
-  return 3 + (daySeed % 3);
-}
-```
-
-Zusatzbefunde, in v2 eingearbeitet: `sourceLineage`-Konvention
-(abgeleitet/inspiriert) für den fail-closed Public-Build, Mobil-Nutzer ohne
-Challenge-Zugang brauchen konsistente Streak-Logik, `docs/`-Exemplare in den
-Leak-Test einplanen.
+Ausgeschlossen: ASDiv (CC BY-NC), NumGLUE (ODC-By). Wettbewerbe ohne
+offene Lizenz (Mathematik-Olympiade, Bundeswettbewerb, Känguru, IMO,
+AMC/AIME, AoPS): nie Materialbasis, nur Niveau/Stil — Details siehe
+Fassung v2 / Git-Historie.
 
 ## Validation Plan
 
-- Pro Phase die oben genannten Kommandos; zusätzlich immer `npm run typecheck`.
-- E2E: Tages-Determinismus (Playwright-Clock auf zwei Daten setzen, Sets
-  vergleichen), No-Repeat über gemockte Historie, Modulfilter (nur aktive
-  Module), Fenster-Anzeige W bei kleinem Pool.
-- Manuell: Tageswechsel um Mitternacht UTC (Set wechselt, Streak zählt),
-  Leerzustände, Mobil-Layout.
-- Höchstrisiko-Check: Grader-Gegenprobe bei Pilot-Cases (Solver gegen
-  Generator über 200+ Seeds). Falsche Erwartungswerte würden echte Nutzer
-  blockieren.
+- Pro Phase die genannten Kommandos; immer `npm run typecheck`.
+- E2E: Tages-Determinismus (Playwright-Clock zwei Daten), No-Repeat über
+  gemockte Historie, Modulfilter, Fenster-W, Leerzustände, Mobil-Link.
+- Manuell: Tageswechsel um Mitternacht UTC, Streak.
+- Höchstrisiko: Solver-Gegenprobe bei geflaggten/neuen Cases über
+  ≥200 Seeds — falsche Erwartungswerte blockieren echte Nutzer.
 
 ## Risks / Rollback
 
-- Autoren-Tempo bei harten Problemen: Gegenmaßnahme Pilot klein,
-  Archetyp-Schablonen, Wellenplan.
-- Falsche Grader-Erwartung bei komplexen Cases: Gegenmaßnahme Kreuzprobe
-  Solver/Generator plus fixierte Regressions-Seeds; Rollback einzelne Cases
-  per `releaseStatus` aus dem Pool nehmen.
-- Pool zu klein bei wenigen aktiven Modulen: Gegenmaßnahme expliziter
-  Leerzustand plus Aufforderung, weiteres Modul zu beginnen. Keine stille
-  Auffüllung.
-- Scope-Kriech in Richtung Coding: Phasentor, erst nach Pilot-Release.
-- Kompatibilität: additives Schema (`challengeEligible` optional, Default
-  false), alte Snapshots lesbar. Einzige Migration: Seed-Feld in Attempts
-  (Phase 2, getestet).
-- Lizenz-Drift bei Kalibrierung: `sourceLineage`-Konvention plus
-  Quellen-Check im Content-Build lassen private Marker scheitern.
+- Contract zu scharf → Pilot-Pool kollabiert: Minima sind Vorschläge,
+  an Audit-Ergebnis aus Phase 4 anpassen; Flag pro Case zurücknehmbar
+  (`releaseStatus`).
+- Falsche Grader-Erwartung: Kreuzprobe + Regressions-Seeds; Rollback per
+  Case-Entflaggung.
+- Pool zu klein: expliziter Leerzustand, keine Auffüllung.
+- Lazy-Chunk-Regression: Bundle-Größe im Release-Check beobachten;
+  `ChallengeView` muss lazy bleiben.
+- Scope-Kriech Richtung `parts[]`/Coding: Phasentore.
 
-## Open Questions
+## Open Questions (v3)
 
-Keine offenen Fragen, die den Start blockieren. Annahmen (alle reversibel):
-Mathe-Pilot zuerst, Coding danach; Fenster-Maximum 30; Mastery nach
-Standard-Policy; sekundärer Nav-Eintrag (Mobil vorerst ohne Challenge);
-UTC-Mitternacht als Tagesgrenze.
+1. ~~`context: 'challenge'` am Event~~ — **beschlossen: ja, additiv.**
+2. ~~`from=`-Rückkehr~~ — **beschlossen: ja, inkl. „Nächste
+   Challenge"-CTA nach Abschluss; man bleibt im Challenge-Fenster.**
+3. Schwere-Minima final: Werte in der Tabelle sind Vorschläge — nach
+   dem Phase-4-Audit der Bestands-Cases festziehen.
+4. Fading-Challenge-Fall (5–8 Gaps): **beschlossen: Profil-Prädikat im
+   Generator** (`difficulty === 'challenge'` zieht mehr Gaps auf
+   derselben caseId — analog intro/core/stretch), keine neue
+   Case-Definition. Betrifft beide Fading-Familien.
+5. ~~Attempt-Status „heute n/m gelöst"~~ — **beschlossen: ja**, im
+   Teaser und im Challenge-Header; Ableitung über `context`-Tag +
+   definitionId-Abgleich gegen das Tages-Set.
 
-## Handoff an die Umsetzungs-Session
+## Handoff
 
-Stand: Planung v2 fertig und reviewt, Foundation liegt (Schema,
-Validator-Regel, Bundle-Feld, Tests). Die UI-Session (Noa, selber Branch)
-macht parallel UI-Work; Abstimmung bei `src/ui/App.tsx` (Nav-Eintrag) und
-`content/` nötig, um Konflikte zu vermeiden.
-
-Kopierbarer Prompt für die andere Session:
-
-```text
-Du übernimmst die Challenge-Sektion im Repo argmin, Branch
-ui/redesign-neo-minimal. Lies zuerst AGENTS.md und den Plan
-.agents/plans/2026-09-09-challenge.md (Fassung v2, inklusive
-Review-Protokoll und Handoff).
-
-Stand: Phase 0 Research ist erledigt (Ressourcen im Plan), die Foundation
-aus Phase 1 liegt: `challengeEligible` im Case-Schema
-(schemas/exercise-family-cases.schema.json), Validator-Regel
-E_CHALLENGE_CONTRACT in tools/compile_content.mjs, Feld-Übernahme ins
-Bundle (buildSplitArtifacts), Tests in tests/challenge_contract.test.mjs.
-
-Dein Auftrag in dieser Reihenfolge:
-1. Phase 0 Rest: Challenge-Rubrik mit 3 exemplarischen Case-Spezifikationen
-   (Algebra, Kombinatorik, lineare Algebra) in docs/ schreiben und von Noa
-   abnehmen lassen. Ohne Abnahme kein Content.
-2. Phase 1 Rest: Coverage-Check kennt Challenge-Cases. Validierung:
-   node tools/validate_content.mjs, node tools/compile_content.mjs,
-   node --test tests/, npm run typecheck.
-3. Phase 2: Tages-Engine nach Plan (challenge_picker.mjs, Seed-Migration mit
-   Test, Modulauflösung über competencyIds). Erst danach Phase 3 und 4.
-   Halte dich an die Code-Skizzen im Review-Protokoll und an
-   shrink-complexity: kein neues Content-System, kein neuer Grader, kein
-   Laufzeit-LLM.
-
-Original-Anweisung von Noa als Kontext: „arbeite den plan weiter aus,
-sammel mehr ressourcen, auch mit oder cc die man nutzen kann und daraus
-forken kann und mehr material generieren kann. Einen Plan ausdenken wie du
-die Wettbewerbsaufgaben generieren kannst, natürlich alles richtig ist, wie
-man die risiken umgehen kann, vielleicht einen reviewer der den jetzigen
-plan kritisch entgegengeht und dir vorschläge gibt, versuche diesen plan
-komplett auseinanderzunehmen. geh davon aus, dass zum beispiel du das alles
-in so wenig code wie möglich generieren musst. shrink complexity verstehst
-du sowieso."
-
-Bei jeder Abweichung vom Plan: erst Noa fragen. Commits nur auf
-ausdrückliche Anweisung.
-```
+Foundation liegt (Schema, Validator-Basis, Test). Plan v3 ist gegen
+Code-Stand post-#80 verifiziert. Reihenfolge: Phase 1 (Vertrag+Rubrik,
+Abnahme durch Noa) → Phase 2 (Engine) → Phase 3 (UI) → Phase 4
+(Pilot-Flagging + Lücken) → Phase 5 (Release). Bei Abweichung vom Plan:
+erst fragen. Commits nur auf Anweisung.
 
 ## Sources
 
-- https://raw.githubusercontent.com/hendrycks/math/main/LICENSE
-- https://arxiv.org/abs/2103.03874
-- https://raw.githubusercontent.com/hendrycks/math/main/README.md
-- https://github.com/openai/grade-school-math
-- https://github.com/arkilpatel/SVAMP
-- https://github.com/math-qa/math-QA
-- https://github.com/openai/miniF2F
-- https://huggingface.co/datasets/microsoft/orca-math-word-problems-200k
-- https://huggingface.co/datasets/meta-math/MetaMathQA
-- https://huggingface.co/datasets/nvidia/OpenMathInstruct-2
-- https://github.com/google-deepmind/mathematics_dataset
-- https://github.com/allenai/Lila
-- https://www.mathematikolympiaden.de
-- https://projecteuler.net/copyright
+- https://github.com/hendrycks/math (MIT)
+- https://github.com/openai/grade-school-math (MIT)
+- https://github.com/arkilpatel/SVAMP (MIT)
+- https://github.com/math-qa/math-QA (Apache-2.0)
+- https://github.com/openai/miniF2F (MIT/Apache)
+- https://huggingface.co/datasets/microsoft/orca-math-word-problems-200k (MIT)
+- https://huggingface.co/datasets/meta-math/MetaMathQA (MIT)
+- https://huggingface.co/datasets/nvidia/OpenMathInstruct-2 (CC-BY-4.0)
+- https://github.com/google-deepmind/mathematics_dataset (Apache-2.0)
+- https://github.com/allenai/Lila (CC-BY-4.0)
+- https://projecteuler.net/copyright (CC BY-NC-SA)

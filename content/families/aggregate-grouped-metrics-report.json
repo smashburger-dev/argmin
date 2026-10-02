@@ -1,43 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-grouped-metrics-report",
-  "contract": {
-    "familyId": "aggregate-grouped-metrics-report",
-    "familyGroup": "aggregate-count",
-    "summary": "Berechnet gruppenweise Kennzahlen und Anteile und füllt daraus einen strukturierten Bericht ohne Kausaldeutung.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "hypothesis-report-groups",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subgroup-error-rates-numpy",
-        "propertyTest": false
-      },
-      {
-        "caseId": "categorize-errors-report",
-        "propertyTest": false
-      },
-      {
-        "caseId": "subgroup-recall-report",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-genai-security",
-      "c-ml-erroranalysis"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "hypothesis-report-groups",
@@ -63,28 +27,20 @@
         "Erst normalisieren und validieren (Längen, genau zwei Gruppen), dann Kennzahlen berechnen: r über np.corrcoef, Gruppenmediane über Masken wie np.asarray(labels) == label, Anteil über np.mean(a > b).",
         "Die verdict-Zeilen werden aus den ungerundeten Kennzahlen abgeleitet (Vorzeichen von r, Vergleich der Mediane) — gerundet wird nur für die Rückgabewerte."
       ],
-      "feedbackRules": [
-        {
-          "if": "valueerror-missing",
-          "then": "Die Längenprüfung und die Zwei-Gruppen-Prüfung müssen vor jeder Berechnung stehen und ValueError werfen."
-        },
-        {
-          "if": "groups-not-sorted",
-          "then": "Bei Mediangleichheit entscheidet die alphabetisch erste Gruppe — distinct vorher sortieren."
-        },
-        {
-          "if": "causal-language",
-          "then": "Das verdict beschreibt Richtungen (positiv/negativ, stärkerer Median), nie Ursachen."
-        }
-      ],
       "typicalErrors": [
-        "Kausalaussagen im verdict statt Richtungsbeschreibung",
-        "Median über alle Zeilen statt gruppenweise berechnet",
-        "vor der Rundung verglichen und dadurch Vorzeichen/Gruppenvergleiche verfälscht"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      }
+        {
+          "id": "kausalaussagen-im-verdict-statt-richtungsbeschreibung",
+          "text": "Kausalaussagen im verdict statt Richtungsbeschreibung"
+        },
+        {
+          "id": "median-ueber-alle-zeilen-statt",
+          "text": "Median über alle Zeilen statt gruppenweise berechnet"
+        },
+        {
+          "id": "share-mit-umgekehrtem-vergleich",
+          "text": "den Anteil a > b mit umgekehrtem Vergleich (a < b) berechnet"
+        }
+      ]
     },
     {
       "caseId": "subgroup-error-rates-numpy",
@@ -113,28 +69,20 @@
         "Sammle pro Gruppe zwei Zähler in einem Dictionary: Anzahl der Beispiele und Anzahl der Fehler (t != p).",
         "Die Rate bildet sich erst am Ende: Fehlerzähler durch Anzahlzähler je Gruppe teilen — largest_gap ist dann max minus min über die Werte."
       ],
-      "feedbackRules": [
-        {
-          "if": "counts-instead-of-rates",
-          "then": "Zurückgegeben werden Raten (Fehler / Anzahl), nicht die rohen Fehlerzahlen — die Gruppengröße muss eingehen."
-        },
-        {
-          "if": "gap-absolute-only",
-          "then": "largest_gap vergleicht höchste und niedrigste Rate der gegebenen Gruppen — nicht den Abstand zu einer vorgegebenen Gruppe."
-        },
-        {
-          "if": "length-check-missing",
-          "then": "Die Längenprüfung der drei Eingänge muss ValueError werfen, bevor gezählt wird."
-        }
-      ],
       "typicalErrors": [
-        "absolute Fehlerzahlen statt Raten vergleichen",
-        "Gruppen als eigene Schleifen statt Zähler-dict",
-        "Längenprüfung weglassen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      }
+        {
+          "id": "absolute-fehlerzahlen-statt-raten-vergleichen",
+          "text": "absolute Fehlerzahlen statt Raten vergleichen"
+        },
+        {
+          "id": "fehlerrate-in-prozent-statt-anteil",
+          "text": "Fehlerrate in Prozent statt als Anteil zurückgegeben"
+        },
+        {
+          "id": "laengenpruefung-weglassen",
+          "text": "Längenprüfung weglassen"
+        }
+      ]
     },
     {
       "caseId": "categorize-errors-report",
@@ -163,28 +111,20 @@
         "Zwei Zähler-dicts in einem Durchlauf füllen (kind und group), daraus die Anteile als count / len(errors) ableiten — max und min über die Anteile bestimmen die extreme Gruppen.",
         "In der Modellkarte ist weniger mehr: min über die Metrikwerte liefert die schwächste Gruppe, und der Limitationstext muss den Gruppennamen enthalten."
       ],
-      "feedbackRules": [
-        {
-          "if": "share-of-kind",
-          "then": "share_by_group bezieht sich auf GRUPPEN-Anteile an allen Fehlern — die Anteile je kind stehen nicht im Rückgabe-dict."
-        },
-        {
-          "if": "worst-is-max",
-          "then": "In metrics_by_group ist höher besser: worst_group ist der MINIMALE Metrikwert, nicht der maximale."
-        },
-        {
-          "if": "missing-key-validation",
-          "then": "Fehlt 'kind' oder 'group' in einem Fehler-dict, muss ValueError geworfen werden — auch für die leere Liste."
-        }
-      ],
       "typicalErrors": [
-        "Anteile auf kind statt Gruppe beziehen",
-        "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen",
-        "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      }
+        {
+          "id": "anteile-auf-kind-statt-gruppe",
+          "text": "Anteile auf kind statt Gruppe beziehen"
+        },
+        {
+          "id": "hoechste-statt-niedrigste-metrik-als",
+          "text": "höchste statt niedrigste Metrik als schlechteste Gruppe nehmen"
+        },
+        {
+          "id": "eingabevalidierung-schluessel-leere-liste-vergessen",
+          "text": "Eingabevalidierung (Schlüssel, leere Liste) vergessen"
+        }
+      ]
     },
     {
       "caseId": "subgroup-recall-report",
@@ -196,7 +136,7 @@
       "parameters": {
         "packages": [],
         "starterCode": "def subgroup_recall(datensaetze):\n    \"\"\"{label: mittelwert_recall} mit sortierten Labels und round(…, 6).\"\"\"\n    ...\n\n",
-        "tests": "D = [\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n]\n__check('vier gruppen', set(subgroup_recall(D)) == {\"versand\", \"recht\", \"rabatt\", \"garantie\"})\n__check('werte exakt', subgroup_recall(D) == {\"versand\": 1.0, \"recht\": 0.5, \"rabatt\": 0.5, \"garantie\": 1.0})\n__check('leere liste', subgroup_recall([]) == {})\n__check('label fehlt -> alle', subgroup_recall([{\"recall\": 0.25}, {\"recall\": 0.75}]) == {\"alle\": 0.5})\n__check('dritte gruppe', subgroup_recall([{\"subgroup\": \"b\", \"recall\": 0.1}, {\"subgroup\": \"b\", \"recall\": 0.2}, {\"subgroup\": \"b\", \"recall\": 0.3}]) == {\"b\": 0.2})"
+        "tests": "D = [\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"versand\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 1.0},\n    {\"subgroup\": \"recht\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 0.0},\n    {\"subgroup\": \"rabatt\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n    {\"subgroup\": \"garantie\", \"recall\": 1.0},\n]\n__check('vier gruppen', set(subgroup_recall(D)) == {\"versand\", \"recht\", \"rabatt\", \"garantie\"})\n__check('werte exakt', subgroup_recall(D) == {\"versand\": 1.0, \"recht\": 0.5, \"rabatt\": 0.5, \"garantie\": 1.0})\n__check('leere liste', subgroup_recall([]) == {})\n__check('label fehlt -> alle', subgroup_recall([{\"recall\": 0.25}, {\"recall\": 0.75}]) == {\"alle\": 0.5})\n__check('dritte gruppe', subgroup_recall([{\"subgroup\": \"b\", \"recall\": 0.1}, {\"subgroup\": \"b\", \"recall\": 0.2}, {\"subgroup\": \"b\", \"recall\": 0.3}]) == {\"b\": 0.2})\n__check('labels sortiert', list(subgroup_recall(D)) == [\"garantie\", \"rabatt\", \"recht\", \"versand\"])"
       },
       "competencyIds": [
         "c-capstone-pipeline",
@@ -212,28 +152,20 @@
         "Sammle je Label erst eine Liste von Recall-Werten, bilde dann Mittelwert und round(x, 6).",
         "sorted(werte.items()) sortiert das Endergebnis direkt nach Label."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "mean-over-all",
-          "then": "Der Gesamt-Mittelwert versteckt Gruppen-Zusammenbrüche — genau die soll die Subgruppen-Tabelle sichtbar machen."
+          "id": "ueber-alle-datensaetze-gemittelt-statt",
+          "text": "über alle Datensätze gemittelt statt je Gruppe"
         },
         {
-          "if": "division-single",
-          "then": "Mittelwert heißt Summe geteilt durch die Anzahl der Einträge DER GRUPPE, nicht durch die Gesamtzahl."
+          "id": "fehlendes-label-crashen-lassen",
+          "text": "fehlendes Label crashen lassen"
         },
         {
-          "if": "missing-label-crash",
-          "then": "datensatz.get('subgroup', 'alle') fängt fehlende Labels ab, ohne zu crashen."
+          "id": "unsortierte-labels-zurueckgegeben",
+          "text": "unsortierte Labels zurückgegeben"
         }
       ],
-      "typicalErrors": [
-        "über alle Datensätze gemittelt statt je Gruppe",
-        "fehlendes Label crashen lassen",
-        "unsortierte Labels zurückgegeben"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

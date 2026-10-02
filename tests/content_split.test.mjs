@@ -6,20 +6,28 @@ import { fileURLToPath } from 'node:url';
 import { buildSplitArtifacts } from '../tools/compile_content.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const bundleMissing = !existsSync(join(root, '.content-build/public/content-bundle.json'))
+  ? '.content-build fehlt — zuerst node tools/compile_content.mjs'
+  : false;
 const loadCompiledProfile = (profile) => JSON.parse(readFileSync(join(root, `.content-build/${profile}/content-bundle.json`), 'utf8'));
 
-test('split index keeps summaries but never lesson or family bodies', () => {
+test('split index keeps summaries but never lesson or family bodies', { skip: bundleMissing }, () => {
   const bundle = loadCompiledProfile('public');
   const { index } = buildSplitArtifacts(bundle);
   assert.equal(index.lessons.length, bundle.lessons.length);
   assert.deepEqual(index.familyActivities, bundle.familyActivities);
   for (const lesson of index.lessons) assert.deepEqual(lesson.blocks, []);
+  const allowedCaseKeys = new Set(['caseId', 'challengeEligible', 'difficultyProfile', 'masteryEligible', 'title', 'activityType']);
   for (const family of index.families) {
-    for (const item of family.cases) assert.deepEqual(Object.keys(item).sort(), ['caseId', 'difficultyProfile', 'masteryEligible'].sort());
+    for (const item of family.cases) {
+      const keys = Object.keys(item);
+      for (const required of ['caseId', 'difficultyProfile', 'masteryEligible']) assert.ok(keys.includes(required), `Index-Key fehlt: ${required}`);
+      for (const key of keys) assert.ok(allowedCaseKeys.has(key), `unerlaubter Index-Key: ${key}`);
+    }
   }
 });
 
-test('index stays structurally body-free', () => {
+test('index stays structurally body-free', { skip: bundleMissing }, () => {
   const bundle = loadCompiledProfile('public');
   const { index } = buildSplitArtifacts(bundle);
   const serialized = JSON.stringify({ lessons: index.lessons, families: index.families });
@@ -34,7 +42,7 @@ test('index stays structurally body-free', () => {
   assert.ok(JSON.stringify(index.familyActivities).length / bundle.familyActivities.length < 1000);
 });
 
-test('split bodies together with the index rebuild every lesson and family', () => {
+test('split bodies together with the index rebuild every lesson and family', { skip: bundleMissing }, () => {
   const bundle = loadCompiledProfile('public');
   const { index, lessonBodies, familyBodies } = buildSplitArtifacts(bundle);
   for (const lesson of bundle.lessons) {
@@ -51,7 +59,7 @@ test('split bodies together with the index rebuild every lesson and family', () 
   }
 });
 
-test('chunks module registers exactly the shipped bodies with safe file names', () => {
+test('chunks module registers exactly the shipped bodies with safe file names', { skip: bundleMissing }, () => {
   const bundle = loadCompiledProfile('public');
   const { chunks, lessonBodies, familyBodies } = buildSplitArtifacts(bundle);
   for (const { id } of lessonBodies) assert.match(chunks, new RegExp(`"${id}": \\(\\) => import\\('./lessons/${id}\\.json'\\)`));
@@ -59,7 +67,7 @@ test('chunks module registers exactly the shipped bodies with safe file names', 
   assert.doesNotMatch(chunks, /\.\.\//);
 });
 
-test('written split artifacts on disk match the compiled bundle', () => {
+test('written split artifacts on disk match the compiled bundle', { skip: bundleMissing }, () => {
   const bundle = loadCompiledProfile('public');
   const splitDir = join(root, '.content-build/public/split');
   const index = JSON.parse(readFileSync(join(splitDir, 'index.json'), 'utf8'));
@@ -76,7 +84,7 @@ test('written split artifacts on disk match the compiled bundle', () => {
   }
 });
 
-test('public split never contains private bodies or markers', () => {
+test('public split never contains private bodies or markers', { skip: bundleMissing }, () => {
   const bundle = loadCompiledProfile('public');
   const { index } = buildSplitArtifacts(bundle);
   assert.doesNotMatch(JSON.stringify(index), /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i);

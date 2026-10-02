@@ -16,12 +16,18 @@ const familyDocs = readdirSync(join(root, 'content/families'))
 
 for (const document of familyDocs) registerStaticCases(document.familyId, document.cases);
 const registry = configureExerciseFamilies(familyDocs);
-const registeredFamilyIds = compileContent({ projectRoot: root, profile: 'public' }).families
-  .map((family) => family.familyId)
+// A family without an authored doc still pins behavior — union the
+// content docs with the canonical family list so purely generated
+// families (e.g. transform-linear-equation-isolate) stay in the corpus.
+const registeredFamilyIds = [
+  ...compileContent({ projectRoot: root, profile: 'public' }).families.map((family) => family.familyId),
+  ...JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8')).families
+    .map((family) => family.familyId),
+]
+  .filter((familyId, index, ids) => ids.indexOf(familyId) === index)
   .filter((familyId) => {
     try {
-      registry.get(familyId);
-      return true;
+      return Boolean(registry.get(familyId));
     } catch {
       return false;
     }
@@ -29,9 +35,20 @@ const registeredFamilyIds = compileContent({ projectRoot: root, profile: 'public
   .sort();
 
 const canonical = (value) => JSON.parse(JSON.stringify(value));
+const sortedKeys = (value) => {
+  if (Array.isArray(value)) return value.map(sortedKeys);
+  if (!value || typeof value !== 'object') return value;
+  return Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortedKeys(value[key])]));
+};
+// Seeds 0..63 plus edge seeds (negative, beyond 32 bit, max safe integer).
+const SEEDS = [...Array.from({ length: 64 }, (_, seed) => seed), -1, -1000, 2 ** 31, Number.MAX_SAFE_INTEGER];
+// The whole contract (minus functions and the kit handle) and every instance
+// field plus the solver output are pinned: a refactor that changes a
+// solution text, hint, feedback rule, grader or mastery flag fails here.
 const digestFamily = (familyId) => {
   const family = registry.get(familyId);
-  const records = [];
+  const { kit: _kit, ...contract } = family;
+  const records = [{ contract: sortedKeys(canonical(contract)) }];
   for (const caseType of family.caseTypes) {
     const profiles = family.difficultyProfiles.filter((difficulty) => {
       try {
@@ -42,22 +59,14 @@ const digestFamily = (familyId) => {
       }
     });
     for (const difficulty of profiles) {
-      for (let seed = 0; seed < 64; seed += 1) {
+      for (const seed of SEEDS) {
         let instance;
         try {
           instance = registry.instantiate(familyId, seed, difficulty, caseType.caseId);
         } catch (error) {
-          throw new Error(`${familyId}:${caseType.caseId}:${difficulty}: ${error.message}`);
+          throw new Error(`${familyId}:${caseType.caseId}:${difficulty}:${seed}: ${error.message}`);
         }
-        records.push({
-          caseId: caseType.caseId,
-          difficulty,
-          seed,
-          prompt: canonical(instance.prompt),
-          parameters: canonical(instance.parameters),
-          expectedAnswer: canonical(instance.expectedAnswer),
-          choices: canonical(instance.choices || null),
-        });
+        records.push({ instance: canonical(instance), solved: canonical(family.solve(instance.parameters)) });
       }
     }
   }
@@ -72,7 +81,7 @@ export function familyDigests() {
 if (process.argv.includes('--write-family-golden')) {
   writeFileSync(
     join(root, 'tests/fixtures/family-golden-corpus.json'),
-    `${JSON.stringify({ schemaVersion: 1, generatedFrom: '3af6534', families: familyDigests() }, null, 2)}\n`,
+    `${JSON.stringify({ schemaVersion: 2, families: familyDigests() }, null, 2)}\n`,
   );
 }
 
@@ -82,4 +91,21 @@ test('family golden corpus has no behavioural differences', () => {
   const changed = Object.keys({ ...fixture.families, ...current })
     .filter((familyId) => fixture.families[familyId] !== current[familyId]);
   assert.deepEqual(changed, [], `families with changed golden digest: ${changed.join(', ')}`);
+});
+
+test('golden corpus coverage delta against canonical families is explicit', () => {
+  // Die Differenz golden ↔ canonical ist bekannt und hier explizit gepinnt;
+  // jede stille Drift scheitert (fehlende/überschüssige Familien).
+  const canonicalIds = JSON.parse(
+    readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'),
+  ).families.map((family) => family.familyId).sort();
+  const goldenIds = Object.keys(
+    JSON.parse(readFileSync(join(root, 'tests/fixtures/family-golden-corpus.json'), 'utf8')).families,
+  ).sort();
+  const missing = canonicalIds.filter((familyId) => !goldenIds.includes(familyId));
+  const extra = goldenIds.filter((familyId) => !canonicalIds.includes(familyId));
+  assert.deepEqual(missing, [
+    'reflect-error-journal-rationale',
+  ], `stille Drift im Golden-Korpus, fehlend: ${missing.join(', ')}`);
+  assert.deepEqual(extra, ['classify-shape-contract', 'construct-error-journal-order'], `stille Drift im Golden-Korpus, extra: ${extra.join(', ')}`);
 });

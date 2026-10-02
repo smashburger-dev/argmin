@@ -24,7 +24,7 @@ Hyperparameter dürfen nicht auf dem finalen Testset gewählt werden — sonst m
 
 **Leakage** heißt: Information aus dem Testfall fließt in das Training. Die Bewertung wird danach wertlos, auch wenn die Zahlen schön aussehen.
 
-1. **Ziel in den Features**: Eine Spalte, die aus der Zielvariable abgeleitet ist (oder sie fast reproduziert), macht das „Modell" zum Spiegel. Erkennungszeichen: verdächtig perfekte Scores.
+1. **Ziel in den Features**: Eine Spalte, die aus der Zielvariable abgeleitet ist (oder sie fast reproduziert), macht das „Modell“ zum Spiegel. Erkennungszeichen: verdächtig perfekte Scores.
 2. **Skalieren oder Füllen vor dem Split**: Mittelwert, Standardabweichung oder Füllwert werden über *alle* Zeilen berechnet — Testzeilen stecken in diesen Statistiken. Alles, was aus Daten *gelernt* wird, gehört nur auf Train berechnet und von dort auf Test angewendet.
 3. **Zielstatistik im Fill-Wert**: Fehlende Werte werden mit dem Mittelwert der *Zielvariable* der jeweiligen Gruppe gefüllt — die Zielinformation sickert in die Features.
 
@@ -37,7 +37,7 @@ Die Regel, die alle drei Quellen deckt: **fit nur auf Train-Folds**. Ein Schritt
 - Nur den Fold-Mittelwert berichten und die Streuung unterschlagen — eine Spannweite von 30 Prozentpunkten ist kein stabiles Modell.
 - $k$ nach Laune wählen: sehr große $k$ machen das Training teuer und die Folds ähnlich, sehr kleine $k$ machen die Schätzung grob.
 - Skalieren oder Imputen über alle Zeilen — die häufigste Leakage-Form in Tutorenbeispielen.
-- Hyperparameter auf dem finalen Testset optimieren und es trotzdem „Test" nennen.
+- Hyperparameter auf dem finalen Testset optimieren und es trotzdem „Test“ nennen.
 - Mehrere Modelle auf demselben Testset vergleichen und das beste als erwartete Leistung ausgeben.
 
 ## Direkter Check

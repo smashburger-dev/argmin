@@ -12,7 +12,9 @@
 //   phase,              // 'code' | 'tests' | 'load'
 //   stdout, stderr,     // captured streams (learner phase, each capped at 64 KiB)
 //   stdoutTruncated, stderrTruncated,
-//   testResults,        // [{name, passed, detail}]
+//   testResults,        // [{name, passed, detail}] — on a tests-phase abort the
+//                       // recorded checks survive; the last entry is the failed
+//                       // 'Test abgebrochen' marker
 //   errorType,          // SyntaxError | <ExceptionName> | 'Timeout' | null
 //   errorMessage,
 //   durationMs,
@@ -28,7 +30,7 @@ import { normalizeWorkspacePayload } from './workspace_protocol.mjs';
 const PYODIDE_BASE = ['..', '..', '..', 'vendor', 'pyodide', ''].join('/');
 const INDEX_URL = new URL(PYODIDE_BASE, import.meta.url).href;
 // Packages the platform may load; anything else is refused.
-const PACKAGE_WHITELIST = new Set(['numpy', 'sympy', 'mpmath']);
+const PACKAGE_WHITELIST = new Set(['numpy']);
 const MAX_OUTPUT_CHARS = 64 * 1024;
 const WORKDIR_RE = /^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/;
 
@@ -152,13 +154,13 @@ except ImportError:
 import os, shutil
 for __module_name, __module in list(sys.modules.items()):
     __module_file = getattr(__module, '__file__', '') or ''
-    if str(__module_file).startswith('/home/pydide/'):
+    if str(__module_file).startswith('/home/argmin/'):
         del sys.modules[__module_name]
-__wd = '/home/pydide/${workdir}'
+__wd = '/home/argmin/${workdir}'
 shutil.rmtree(__wd, ignore_errors=True)
 os.makedirs(__wd, exist_ok=True)
 os.chdir(__wd)
-sys.path[:] = [__path for __path in sys.path if not str(__path).startswith('/home/pydide/')]
+sys.path[:] = [__path for __path in sys.path if not str(__path).startswith('/home/argmin/')]
 sys.path.insert(0, __wd)
 for __workspace_file in json.loads(__workspace_files):
     __target = os.path.join(__wd, __workspace_file['path'])
@@ -209,8 +211,23 @@ sys.stdout, sys.stderr = __out, __err
         pyodide.runPython(tests, { globals });
         result.testResults = pythonValueToJs(pyodide.runPython('__results', { globals }));
       } catch (e) {
-        Object.assign(result, classifyError(e));
-        result.ok = false;
+        const classified = classifyError(e);
+        Object.assign(result, classified, { ok: false });
+        // Checks recorded before the abort survive; the abort itself is
+        // appended as a failed entry so the learner sees where it stopped.
+        const recorded = pythonValueToJs(pyodide.runPython('__results', { globals }));
+        // Pyodide's PythonError carries the exception class in `type`; the
+        // JS message can be a bare 'PythonError' without the traceback.
+        const pyType = typeof e?.type === 'string' && e.type ? e.type : classified.errorType;
+        const lastLine = classified.errorMessage.split('\n').filter(Boolean).pop() || '';
+        const informative = lastLine !== 'PythonError' ? lastLine : '';
+        const detail = !informative ? pyType
+          : informative.startsWith(pyType) ? informative
+          : `${pyType}: ${informative}`;
+        result.testResults = [
+          ...(Array.isArray(recorded) ? recorded : []),
+          { name: 'Test abgebrochen', passed: false, detail },
+        ];
       }
     }
   } finally {

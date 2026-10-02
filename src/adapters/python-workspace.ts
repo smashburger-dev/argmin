@@ -1,5 +1,4 @@
 import { pyodideRunner } from '../../assets/js/runtime/pyodide_runner.js';
-import type { ExerciseSummary } from '../app/types';
 
 export interface WorkspaceTestResult {
   name: string;
@@ -22,11 +21,28 @@ export interface WorkspaceResult {
   verdictText?: string;
 }
 
-export async function runPython(exercise: ExerciseSummary, code: string): Promise<WorkspaceResult> {
+// Minimal shape the runner needs. Family instances carry packages and the
+// deterministic seed under parameters/deterministicSeed — the ExerciseSummary
+// catalog row (toFamilySummary) never does, so it must not be the input here.
+export interface RunnableExercise {
+  parameters?: Record<string, unknown> | null;
+  deterministicSeed?: number;
+}
+
+/** Fire-and-forget worker warmup; failures stay silent because the submit
+ *  path surfaces runtime errors on its own. */
+export function warmPythonRuntime(): void {
+  try {
+    void pyodideRunner.ensureWorker().catch(() => {});
+  } catch { /* worker construction unsupported — submit reports it */ }
+}
+
+export async function runPython(exercise: RunnableExercise, code: string): Promise<WorkspaceResult> {
+  const packages = exercise.parameters?.packages;
   return pyodideRunner.run({
     code,
     tests: '',
-    packages: exercise.packages || [],
+    packages: Array.isArray(packages) ? packages : [],
     seed: exercise.deterministicSeed,
     timeoutMs: 60000,
   });

@@ -1,4 +1,5 @@
 import { progress } from '../../assets/js/core/progress_store.js';
+import { notifyProgressChanged } from './local-progress';
 
 export async function exportProgressJson(): Promise<string> {
   if (!progress) throw new Error('Lokaler Fortschrittsspeicher ist nicht verfügbar.');
@@ -14,5 +15,5 @@ export async function importProgressJson(text: string): Promise<void> {
     throw new Error('Die Datei enthält kein gültiges JSON.');
   }
   await progress.importAll(payload);
-  dispatchEvent(new CustomEvent('learning-progress-changed'));
+  notifyProgressChanged();
 }

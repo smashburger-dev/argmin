@@ -55,7 +55,7 @@ Warum trotzdem kein echtes Modell? Ein reales LLM hat Milliarden trainierter Gew
 - `max_len` als exklusive Grenze falsch interpretiert (`<` vs `<=`): Off-by-one verschiebt die Stoppposition.
 - `<eos>` angehängt, aber Schleife läuft weiter — die Folge wächst über das Ende hinaus.
 - Argmax über die falsche Achse (Zeilen statt Spalten der Logits).
-- Globale Zufallszustände im Forward: der Doppelaufruf-Test fällt durch, obwohl „der Code stimmt".
+- Globale Zufallszustände im Forward: der Doppelaufruf-Test fällt durch, obwohl „der Code stimmt“.
 
 ## Direkter Check
 

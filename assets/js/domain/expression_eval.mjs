@@ -1,4 +1,5 @@
-// Tiny arithmetic expression compiler for visualization specs (no eval/Function).
+// Tiny arithmetic expression compiler for visualization specs and deterministic
+// expression grading (no eval/Function).
 // Grammar: sum := product (('+'|'-') product)*; product := unary (('*'|'/') unary)*;
 // unary := '-' unary | power; power := atom ('^' unary)?; atom := number | name | name '(' args ')' | '(' sum ')'.
 const FUNCTIONS = {
@@ -103,7 +104,7 @@ export function compileTemplate(text, names) {
   return (scope) => parts.map((part, index) => (index % 2 ? formatNumber(compiled[index](scope)) : part)).join('');
 }
 
-export function formatNumber(value) {
+function formatNumber(value) {
   if (!Number.isFinite(value)) return '–';
   return (Math.round(value * 100) / 100).toString().replace('.', ',');
 }

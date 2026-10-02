@@ -1,0 +1,83 @@
+{
+  "contract": {
+    "graderId": "deterministic",
+    "activityType": "single-choice",
+    "familyId": "fixture-statement-bank",
+    "familyGroup": "classify-concept",
+    "summary": "Fixture-Bank mit Aussage-Objekten als Distraktoren.",
+    "taskArchetype": "choice-diagnose",
+    "authorityMode": "seeded",
+    "masteryEligible": false,
+    "caseTypes": [{ "caseId": "fixture-statements" }],
+    "difficultyProfiles": ["core"],
+    "competencyIds": ["c-fixture"]
+  },
+  "shapeError": "Parameter verletzen die Kapselform",
+  "capsules": {
+    "core": {
+      "caseId": "fixture-statements",
+      "difficulty": "core",
+      "bank": [
+        {
+          "key": "base",
+          "prompt": "Welche Aussage zur Varianz stimmt?",
+          "correct": "Die Varianz misst die mittlere quadratische Abweichung vom Erwartungswert.",
+          "wrong": [
+            "Die Varianz ist die Wurzel der Standardabweichung.",
+            "Die Varianz ist immer nicht-negativ und hat die Einheit der Messgröße selbst.",
+            "Eine Varianz von null bedeutet, alle Werte sind gleich dem Median."
+          ],
+          "solution": "Varianz = E[(X−μ)²]: quadrierte Einheit, kein Bezug zum Median nötig."
+        },
+        {
+          "key": "feedback-eintrag",
+          "prompt": "Welche Aussage zum Mittelwert stimmt?",
+          "correct": "Der arithmetische Mittelwert minimiert die Summe der quadratischen Abweichungen.",
+          "wrong": [
+            {
+              "text": "Der Mittelwert ist robuster gegen Ausreißer als der Median.",
+              "feedback": "Falsch — der Median ignoriert Beträge; ein einzelner Ausreißer kann den Mittelwert beliebig verschieben.",
+              "misconception": "robustheit-mittelwert"
+            },
+            {
+              "text": "Der Mittelwert liegt immer innerhalb des Wertebereichs der Daten.",
+              "feedback": "Der Mittelwert kann außerhalb liegen, etwa bei zwei Punktmassen weit auseinander.",
+              "misconception": "wertebereich-mittelwert"
+            },
+            {
+              "text": "Der Median ist stets kleiner als der Mittelwert.",
+              "feedback": "Nur bei rechtssteilen Verteilungen; bei symmetrischen Daten sind beide gleich."
+            }
+          ],
+          "solution": "Der Mittelwert ist der Schwerpunkt der Daten — er minimiert die quadratischen Abweichungen."
+        },
+        {
+          "key": "nur-text",
+          "prompt": "Welche Aussage zur Stichprobe stimmt?",
+          "correct": "Eine Stichprobe ist eine Teilmenge der Grundgesamtheit.",
+          "wrong": [
+            "Eine Stichprobe muss mindestens die Hälfte der Grundgesamtheit umfassen.",
+            "Eine Stichprobe ist immer zufällig gezogen.",
+            "Die Grundgesamtheit ist eine Teilmenge der Stichprobe."
+          ],
+          "solution": "Stichprobe = Teilmenge; Zufälligkeit ist keine definitorische Bedingung."
+        },
+        {
+          "key": "szenario-vier",
+          "prompt": "Welche Aussage zum Median stimmt?",
+          "correct": "Der Median halbiert die geordneten Daten.",
+          "wrong": [
+            {
+              "text": "Der Median ändert sich, wenn ein Ausreißer verdoppelt wird.",
+              "feedback": "Der Median hängt nur an der mittleren Position — Ausreißer-Beträge spielen keine Rolle.",
+              "misconception": "ausreisser-median"
+            },
+            "Der Median ist dasselbe wie das arithmetische Mittel.",
+            "Den Median gibt es nur bei ungerader Anzahl."
+          ],
+          "solution": "Median = mittlerer Wert der sortierten Daten (bei gerader Anzahl das Mittel der beiden mittleren)."
+        }
+      ]
+    }
+  }
+}

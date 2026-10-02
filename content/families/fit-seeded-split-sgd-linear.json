@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-seeded-split-sgd-linear",
-  "contract": {
-    "familyId": "fit-seeded-split-sgd-linear",
-    "familyGroup": "fit-model",
-    "summary": "Implementiert geseedetes Training einer linearen Regression: Seed-Permutation-Split, Full-Batch-SGD mit Faktor 2/n, Verlusthistorie zu Epochenbeginn.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "seeded-split-sgd-linear",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-training",
-      "c-grad-regression"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "seeded-split-sgd-linear",
@@ -53,28 +31,20 @@
         "Split: k = round(n · f) mit Guard 1 ≤ k ≤ n−1, Permutation aus default_rng(seed), die ERSTEN k Indizes sind Validierung — beide Teile sortieren.",
         "Training: pro Epoche erst Verlust notieren (Epochenbeginn!), dann Residuen r = Xw + b − y und beide Updates mit Faktor 2/n. Gleicher Seed ⇒ gleicher Start ⇒ identische Historie."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "loss-recorded-after-update",
-          "then": "loss_history[i] beschreibt den Stand zu Epochenbeginn — sonst ist die Historie um einen Schritt verschoben."
+          "id": "verlust-nach-dem-update-statt",
+          "text": "Verlust nach dem Update statt zu Epochenbeginn notiert"
         },
         {
-          "if": "factor-2n-missing",
-          "then": "Beide Updates tragen 2/n (Kettenregel 2r und Mittelung 1/n) — ohne den Faktor konvergiert die Schleife anders als spezifiziert."
+          "id": "faktor-2-n-in-einem",
+          "text": "Faktor 2/n in einem Update vergessen"
         },
         {
-          "if": "unseeded-init",
-          "then": "Initialisierung ohne default_rng(seed) macht den Lauf nicht reproduzierbar — der Determinismustest fällt dann durch."
+          "id": "split-ohne-seed-oder-unsortiert",
+          "text": "Split ohne Seed oder unsortiert zurückgegeben"
         }
       ],
-      "typicalErrors": [
-        "Verlust nach dem Update statt zu Epochenbeginn notiert",
-        "Faktor 2/n in einem Update vergessen",
-        "Split ohne Seed oder unsortiert zurückgegeben"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

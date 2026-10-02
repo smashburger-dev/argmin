@@ -25,7 +25,7 @@ Frage vor jedem `dropna`: **Warum** fehlt der Wert — zufällig oder abhängig 
 
 ## Sentinel-Werte
 
-Ein **Sentinel** ist ein Wert, der „fehlend" kodiert, aber wie ein Messwert aussieht: `-1` als Alter, `999` als Preis, leerer String als Name. Sentinel-Werte müssen vor jeder Statistik als fehlend erkannt werden — sonst verfälschen sie Median, Mittelwert und Korrelation. Der Vertrag legt fest, welche Sentinels in welcher Spalte als fehlend gelten.
+Ein **Sentinel** ist ein Wert, der „fehlend“ kodiert, aber wie ein Messwert aussieht: `-1` als Alter, `999` als Preis, leerer String als Name. Sentinel-Werte müssen vor jeder Statistik als fehlend erkannt werden — sonst verfälschen sie Median, Mittelwert und Korrelation. Der Vertrag legt fest, welche Sentinels in welcher Spalte als fehlend gelten.
 
 ## Duplikate: exakt vs. Schlüssel
 
@@ -61,7 +61,7 @@ Jeder Schritt ändert die Zeilenzahl nachvollziehbar; nichts wird still interpol
 - Sentinel-Werte wie `-1` als echte Messwerte in Mittelwert und Median einrechnen.
 - MCAR annehmen, obwohl das Fehlen vom Zielwert abhängt — Löschen verzerrt dann systematisch.
 - Schlüsselduplikate wie exakte Duplikate löschen und damit Konflikte verschweigen.
-- Schema-Verstöße still „reparieren" (z. B. `-5` durch den Mittelwert ersetzen), statt sie zu dokumentieren.
+- Schema-Verstöße still „reparieren“ (z. B. `-5` durch den Mittelwert ersetzen), statt sie zu dokumentieren.
 - Zeilen mit fehlendem Wert in einer beliebigen Nebenspalte löschen, obwohl nur die Zielspalte den Wert braucht — zu viele Zeilen geopfert.
 
 ## Direkter Check

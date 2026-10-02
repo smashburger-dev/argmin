@@ -10,6 +10,10 @@
       "sourceLineage": [
         "w01-e6"
       ],
+      "competencyIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
       "parameters": {
         "form": "area-perimeter",
         "a": 3,
@@ -21,6 +25,32 @@
       },
       "prompt": "Funktionsausgabe vorhersagen: Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(...)</code> vorher, ohne den Code auszuführen.",
       "fullSolution": "flaeche(3, 4) = 3 · 4 = 12; umfang(3, 4) = 2 · (3 + 4) = 14. Ausgabe: <code>12 14</code>.",
+      "hints": [
+        "Welchen Wert liefert jeder Aufruf einzeln? Rechne zuerst flaeche(3, 4) aus, dann umfang(3, 4) — jede Funktion setzt für ihre Parameter die übergebenen Zahlen ein.",
+        "flaeche(3, 4) = 3 · 4 = 12. Für umfang(3, 4) gilt die Klammer: 2 · (3 + 4). Die Ausgabe enthält beide Ergebnisse durch Leerzeichen getrennt."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die print-Zeile gibt zwei Werte in einer Zeile aus — durch Leerzeichen getrennt, z. B. `12 14`. Rechne beide Aufrufe aus."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "nur-einen-der-beiden-aufrufe",
+          "text": "nur einen der beiden Aufrufe berechnet"
+        },
+        {
+          "id": "klammer-in-umfang-uebersehen-2",
+          "text": "Klammer in umfang übersehen: 2 · 3 + 4 statt 2 · (3 + 4)"
+        },
+        {
+          "id": "werte-in-der-ausgabe-vertauscht",
+          "text": "Werte in der Ausgabe vertauscht (umfang vor flaeche)"
+        }
+      ],
+      "activityType": "predict-output",
+      "graderId": "deterministic",
       "traceTable": {
         "lines": [
           "flaeche(3, 4)",
@@ -35,6 +65,74 @@
           },
           {
             "ergebnis": "14"
+          }
+        ]
+      }
+    },
+    {
+      "caseId": "both-orders-negative-chain",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-python-functions",
+        "c-python-reading"
+      ],
+      "parameters": {
+        "form": "linear-both-orders",
+        "fa": 2,
+        "fb": -5,
+        "ga": -2,
+        "gb": -6,
+        "v": -3,
+        "snippet": "def f(x):\n    return 2 * x + (-5)\n\ndef g(x):\n    return -2 * x + (-6)\n\nprint(f(g(-3)), g(f(-3)))"
+      },
+      "expected": {
+        "output": "-5 16"
+      },
+      "prompt": "Was gibt dieses Programm aus? Beide Aufrufe genau in der gedruckten Reihenfolge berechnen — die Reihenfolge der Anwendung ist Teil der Aufgabe. Zwei Zahlen in einer Zeile, durch Leerzeichen getrennt.",
+      "fullSolution": "g(-3) = -2 · -3 + -6 = 0; f(0) = 2 · 0 + -5 = -5. Andersherum: f(-3) = -11; g(-11) = -2 · -11 + -6 = 16. Ausgabe: -5 16. Die beiden Bahnen unterscheiden sich, weil die Funktionen nicht vertauschbar sind.",
+      "hints": [
+        "Jede Bahn von innen nach außen rechnen: erst g(v) bestimmen, dann f auf dieses Zwischenergebnis anwenden — danach die Gegenrichtung f(v), dann g.",
+        "f(g(v)) und g(f(v)) sind im Allgemeinen verschieden: das negative ga kippt das Vorzeichen in beiden Bahnen unterschiedlich — die Funktionen nicht als vertauschbar annehmen."
+      ],
+      "typicalErrors": [
+        {
+          "id": "kommutativitaet-angenommen-und-beide-bahnen",
+          "text": "Kommutativität angenommen und beide Bahnen gleichgesetzt"
+        },
+        {
+          "id": "vorzeichen-von-ga-in-einer",
+          "text": "Vorzeichen von ga in einer Bahn verloren"
+        },
+        {
+          "id": "aeussere-funktion-auf-v-statt",
+          "text": "äußere Funktion auf v statt auf das Zwischenergebnis angewendet"
+        }
+      ],
+      "activityType": "predict-output",
+      "graderId": "deterministic",
+      "title": "Komposition in beiden Richtungen",
+      "traceTable": {
+        "lines": [
+          "f(g(-3))",
+          "g(f(-3))"
+        ],
+        "stateVars": [
+          "innen",
+          "außen"
+        ],
+        "expectedStates": [
+          {
+            "innen": "0",
+            "außen": "-5"
+          },
+          {
+            "innen": "-11",
+            "außen": "16"
           }
         ]
       }

@@ -38,11 +38,12 @@ Messwerte aus diesem Repository [VERIFIED, eigene Messung]:
   9.597.831 B, `python_stdlib.zip` 2.545.564 B).
 - `build-public/` gesamt 24 MB, davon Pyodide-Anteil 20 MB (Allowlist in
   `tools/build_public.mjs`).
-- Vendorte Wheels: `numpy-2.4.6` (2.918.760 B), `sympy-1.14.0` (4.185.567 B),
-  `mpmath-1.4.1` (430.985 B). Lokaler numpy-SHA-256 stimmt mit dem Eintrag in
-  `vendor/pyodide/pyodide-lock.json` überein.
-- Paket-Whitelist im Worker: `numpy`, `sympy`, `mpmath`
-  (`assets/js/runtime/pyodide_worker.mjs`).
+- Vendorte Wheels (Stand der Messung): `numpy-2.4.6` (2.918.760 B),
+  `sympy-1.14.0` (4.185.567 B), `mpmath-1.4.1` (430.985 B). Lokaler
+  numpy-SHA-256 stimmt mit dem Eintrag in `vendor/pyodide/pyodide-lock.json`
+  überein. sympy/mpmath sind seit 2026-09-11 nicht mehr vendort.
+- Paket-Whitelist im Worker: `numpy` (`assets/js/runtime/pyodide_worker.mjs`;
+  zuvor `numpy`, `sympy`, `mpmath`).
 - Init-Zeit lokal gemessen (ADR-0001/0003, Spike 2026-08-24): 1,3 s Core,
   +0,6 s NumPy-Lauf. RAM: nicht dokumentiert [UNKNOWN].
 

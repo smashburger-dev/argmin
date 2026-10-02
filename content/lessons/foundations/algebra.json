@@ -7,7 +7,7 @@
   "objectives": ["Lineare Gleichungen schrittweise äquivalent umformen", "Potenz- und Logarithmusaufgaben über Definitionen prüfen", "Vorzeichen- und Operationsfehler lokalisieren"],
   "competencyIds": ["c-algebra-basics"],
   "requires": [],
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 20,
   "blocks": [
     { "blockId": "algebra-core", "type": "worked-example", "contentRef": "lessons/foundations/algebra.md" },
     { "blockId": "algebra-viz", "type": "visualization", "contentRef": "lessons/foundations/linear-function.viz.json" }

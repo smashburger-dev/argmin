@@ -1,0 +1,26 @@
+{
+  "capsules": {
+    "core": {
+      "kind": "coefficients",
+      "bound": 12,
+      "caseId": "column-coefficients-double"
+    },
+    "intro": {
+      "kind": "choice",
+      "bound": 12,
+      "caseId": "column-choice-authored"
+    },
+    "stretch": {
+      "kind": "shape-debug",
+      "rows": [
+        2,
+        7
+      ],
+      "cols": [
+        2,
+        7
+      ],
+      "caseId": "shape-debug-authored"
+    }
+  }
+}

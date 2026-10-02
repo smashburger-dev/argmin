@@ -232,8 +232,7 @@
             "lesson",
             "guided-practice",
             "evidence-families",
-            "delayed-review",
-            "project-step"
+            "delayed-review"
           ]
         }
       ],
@@ -591,7 +590,11 @@
         "l-research-cards",
         "l-responsible-ai",
         "l-capstone-baseline",
-        "l-capstone-pipeline"
+        "l-capstone-freeze",
+        "l-capstone-runner",
+        "l-capstone-regression",
+        "l-capstone-repro",
+        "l-capstone-acceptance"
       ],
       "projectIds": [
         "p-rag-capstone"

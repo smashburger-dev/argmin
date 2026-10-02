@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-test-attitude",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "csv-off-by-one-reproduce-smallest",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-testing-choice-01"
+      ],
+      "expected": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Den kleinsten Fall reproduzieren und prüfen, ob Header und nullbasierter Index in der Umrechnung fehlen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Die Erwartung ohne weitere Prüfung auf 2 ändern.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Alle Tests vorübergehend löschen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Den Fehler mit `except Exception` unterdrücken.",
+          "correct": false
+        }
+      ],
+      "prompt": "Ein Test erwartet für die zweite Datenzeile CSV-Zeilennummer 3, dein Code meldet 2. Was ist der beste nächste Diagnoseschritt?",
+      "fullSolution": "Die Differenz um eins spricht für Header- oder Indexumrechnung. Der kleine reproduzierbare Fall kann diese Hypothese bestätigen oder verwerfen.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Dann passt der Test zur Zeile statt andersherum — der Off-by-one bleibt und wird zum neuen Soll. Erst prüfen, ob Header oder nullbasierter Index die Differenz erzeugen."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Ohne Tests gibt es kein Signal mehr. Der Fehler verschwindet damit nur aus der Anzeige, nicht aus dem Code."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`except Exception` unterdrückt die Meldung, nicht die falsche Zeilennummer. Danach ist die falsche Zahl unsichtbar, aber weiter falsch."
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "Ein Test erwartet, dass `mittelwert([])` einen `ValueError` wirft. Dein Code bricht stattdessen mit `ZeroDivisionError` ab. Was ist der beste nächste Diagnoseschritt?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "`mittelwert([])` isoliert ausführen und prüfen, ob die Funktion leere Eingaben vor der Division abfängt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Im Test `ValueError` durch `ZeroDivisionError` ersetzen, damit er grün wird.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Den Test mit `@pytest.mark.skip` überspringen.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Die Division in `try` mit `except Exception: pass` einpacken.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Der kleinste Fall ist genau die leere Liste. Er zeigt, ob die Prüfung auf leere Eingaben vor der Division fehlt. Die Erwartung umzuschreiben würde den vereinbarten Vertrag stillschweigend ändern.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Der Test beschreibt den Vertrag: leere Eingabe liefert `ValueError`. Die Erwartung an den Code anzupassen ändert den Vertrag, ohne die Ursache zu prüfen."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Ein übersprungener Test prüft nichts mehr. Der Fehler bei leerer Eingabe bleibt im Code."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "`pass` verschluckt den Fehler, und die Funktion gibt dann `None` zurück. Der Test erwartet weiterhin einen `ValueError` und bleibt rot."
+            }
+          ]
+        },
+        {
+          "prompt": "Ein Test erwartet für `zaehle_woerter(\"a  b\")` mit zwei Leerzeichen das Ergebnis 2. Dein Code liefert 3. Was ist der beste nächste Diagnoseschritt?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Den Aufruf mit dem doppelten Leerzeichen isoliert ausführen und prüfen, ob `split(\" \")` einen leeren Teilstring mitzählt.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Erwartung im Test ohne weitere Prüfung auf 3 ändern.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Das Ergebnis im Code pauschal um 1 verringern.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Den Test löschen, weil doppelte Leerzeichen selten vorkommen.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Der kleinste Fall ist genau diese Eingabe. `\"a  b\".split(\" \")` ergibt `['a', '', 'b']`, also drei Teile. `split()` ohne Argument fasst Leerzeichen zusammen und liefert zwei Wörter.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Zwei Wörter bleiben zwei Wörter. Die Erwartung auf 3 zu ändern verschiebt den Fehler in den Test."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Minus 1 stimmt nur bei genau einem doppelten Leerzeichen. Für \"a b\" liefert der Code dann 1, bei drei Leerzeichen in Folge immer noch 3."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Der Test zeigt einen echten Fehler bei realistischen Eingaben. Gelöscht prüft er nichts mehr, und der Fehler bleibt im Code."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

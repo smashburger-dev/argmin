@@ -7,7 +7,7 @@ Bevor irgendein Modell trainiert wird, stehen drei Entscheidungen: Was soll vorh
 Die Art der Zielvariable entscheidet über den Problemtyp:
 
 - **Regression**: Das Ziel ist eine stetige Zahl, zum Beispiel Reparaturkosten in Euro oder eine Zeitdauer in Minuten.
-- **Klassifikation**: Das Ziel ist eine Kategorie, zum Beispiel „Defekt", „Verschleiß" oder „in Ordnung".
+- **Klassifikation**: Das Ziel ist eine Kategorie, zum Beispiel „Defekt“, „Verschleiß“ oder „in Ordnung“.
 
 Vorsicht bei Zahlen: Eine Kundenummer ist eine Zahl, aber kein stetiges Ziel — sie bleibt eine Kategorie. Entscheidend ist die Bedeutung, nicht der Datentyp.
 
@@ -18,7 +18,7 @@ Eine **Baseline** ist die billigste sinnvolle Vorhersage. Sie legt den Boden fes
 - **Majority-Baseline** (Klassifikation): Sage immer die häufigste Klasse vorher.
 - **Mean-Baseline** (Regression): Sage immer den Mittelwert des Trainingsziels vorher.
 
-Durchgerechnetes Beispiel: Ein Datensatz hat 60 Beispiele „Defekt", 90 „Verschleiß" und 30 „in Ordnung", insgesamt 180. Die häufigste Klasse ist „Verschleiß" mit 90 Treffern. Die Majority-Baseline liegt damit bei
+Durchgerechnetes Beispiel: Ein Datensatz hat 60 Beispiele „Defekt“, 90 „Verschleiß“ und 30 „in Ordnung“, insgesamt 180. Die häufigste Klasse ist „Verschleiß“ mit 90 Treffern. Die Majority-Baseline liegt damit bei
 
 $$
 \frac{90}{180} = 0{,}5
@@ -47,7 +47,7 @@ scikit-learn bietet `train_test_split` mit `random_state` und `shuffle=False` f�
 
 ## Typische Fehler
 
-- Die Zielvariable unpräzise definieren („irgendwas mit Qualität") und später Metrik und Daten nicht zusammenpassen.
+- Die Zielvariable unpräzise definieren („irgendwas mit Qualität“) und später Metrik und Daten nicht zusammenpassen.
 - Eine Zahlenspalte automatisch als Regressionsziel behandeln, obwohl sie Kategorien kodiert.
 - Die Baseline überspringen und ein Modell feiern, das unter dem Majority-Niveau bleibt.
 - Mit dem globalen `np.random.seed` arbeiten und Reproduzierbarkeit vom Aufrufkontext abhängig machen.

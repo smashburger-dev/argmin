@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-dropout-regime",
-  "contract": {
-    "familyId": "classify-dropout-regime",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Dropout-Konfiguration ihrem Wirkungsregime zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "dropout-regime",
-        "propertyTest": false
-      },
-      {
-        "caseId": "dropout-inverted-scale",
-        "propertyTest": false
-      },
-      {
-        "caseId": "dropout-eval-mode",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-regularization"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "dropout-regime",
@@ -47,9 +16,7 @@
       "parameters": {
         "thema": "Dropout in Training vs. Inference"
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -93,13 +60,19 @@
         }
       ],
       "typicalErrors": [
-        "Maske auch zur Vorhersage angewendet",
-        "Skalierung zur falschen Zeit (Inference mit p statt Training mit 1/p)",
-        "Maske als dauerhafte Löschung gelesen"
+        {
+          "id": "maske-auch-zur-vorhersage-angewendet",
+          "text": "Maske auch zur Vorhersage angewendet"
+        },
+        {
+          "id": "skalierung-zur-falschen-zeit-inference",
+          "text": "Skalierung zur falschen Zeit (Inference mit p statt Training mit 1/p)"
+        },
+        {
+          "id": "maske-als-dauerhafte-loeschung-gelesen",
+          "text": "Maske als dauerhafte Löschung gelesen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -116,9 +89,7 @@
       "parameters": {
         "dropoutRate": 0.2
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -162,13 +133,19 @@
         }
       ],
       "typicalErrors": [
-        "Dropout-Rate mit Keep-Probability verwechselt",
-        "Keep-Probability statt ihres Kehrwerts als Trainingsfaktor eingesetzt",
-        "den Kehrwert der Dropout-Rate gebildet"
+        {
+          "id": "dropout-rate-mit-keep-probability",
+          "text": "Dropout-Rate mit Keep-Probability verwechselt"
+        },
+        {
+          "id": "keep-probability-statt-ihres-kehrwerts",
+          "text": "Keep-Probability statt ihres Kehrwerts als Trainingsfaktor eingesetzt"
+        },
+        {
+          "id": "den-kehrwert-der-dropout-rate",
+          "text": "den Kehrwert der Dropout-Rate gebildet"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -185,9 +162,7 @@
       "parameters": {
         "dropoutRate": 0.5
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -231,13 +206,19 @@
         }
       ],
       "typicalErrors": [
-        "Trainingsmaske im Eval-Modus beibehalten",
-        "Inverted-Skalierung zweimal angewendet",
-        "Regularisierungseffekt mit Labeltransformation verwechselt"
+        {
+          "id": "trainingsmaske-im-eval-modus-beibehalten",
+          "text": "Trainingsmaske im Eval-Modus beibehalten"
+        },
+        {
+          "id": "inverted-skalierung-zweimal-angewendet",
+          "text": "Inverted-Skalierung zweimal angewendet"
+        },
+        {
+          "id": "regularisierungseffekt-mit-labeltransformation-verwechselt",
+          "text": "Regularisierungseffekt mit Labeltransformation verwechselt"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

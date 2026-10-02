@@ -1,47 +1,59 @@
-import { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
-import {
-  GIT_OPERATION_CONTRACT,
-  generateGitOperationFamily,
-  solveGitOperation,
-} from '../core/foundations_fresh_generators.mjs';
+import { createFamilyRegistry, familyHint, familyMaxHints as baseFamilyMaxHints, familyIdTokens, staticFamilySpec } from './family_registry.mjs';
+import { GIT_OPERATION_SPEC } from '../core/foundations_fresh_generators.mjs';
 import { FOUNDATIONS_CHOICE_FAMILY_SPECS } from '../core/foundations_choice_families.mjs';
-import { FOUNDATIONS_CONSTRUCT_SPECS } from './foundations_construct_registry.mjs';
-import { TRACE_FAMILY_SPECS } from './foundations_trace_registry.mjs';
-import { LINALG_FAMILY_SPECS } from './foundations_linalg_registry.mjs';
+import { FOUNDATIONS_CONSTRUCT_SPECS } from '../core/foundations_construct_families.mjs';
+import { TRACE_FAMILY_SPECS } from '../core/foundations_trace_families.mjs';
+import { LINALG_FAMILY_SPECS } from '../core/foundations_linalg_families.mjs';
 import { DATA_ML_FAMILY_SPECS } from '../core/data_ml_families.mjs';
+import { CHOICE_BANK_FAMILY_SPECS } from '../core/choice_bank_families.mjs';
+import { PROCEDURAL_FAMILY_SPECS } from './procedural_registry.mjs';
 
-export { createFamilyRegistry, familyHint, familyIdTokens, staticFamilySpec };
+export { createFamilyRegistry, familyHint, familyIdTokens };
 
-const jsFamilySpecs = [
-  {
-    ...GIT_OPERATION_CONTRACT,
-    generate: generateGitOperationFamily,
-    solve: solveGitOperation,
-  },
+// The instantiated exercise does not carry `summary` — the level-1 hint is
+// the family contract's summary, which views resolve separately (same as
+// they do for familyHint). familyMaxHints(instance) therefore resolves it
+// from the registry by familyId so callers can pass the raw instance; an
+// explicit instance.summary wins. Semantics: number of sequential hint
+// levels familyHint actually serves under a neutral (pre-attempt) context
+// — 1 + authored hints + level-2 activity fallback coverage, 0 when even
+// level 1 is dead. Context-refined hints (e.g. numeric up/down after a
+// wrong answer) are not counted: a floor, not a ceiling.
+export const familyMaxHints = (instance) => baseFamilyMaxHints({
+  ...instance,
+  summary: instance?.summary ?? EXERCISE_FAMILIES.get(instance?.familyId)?.summary,
+});
+
+export const JS_FAMILY_SPECS = [
+  GIT_OPERATION_SPEC,
   // S4D1: sieben statische choice-diagnose-Familien (Foundations).
-  ...FOUNDATIONS_CHOICE_FAMILY_SPECS.map(({ contract, generate, solve }) => ({ ...contract, generate, solve })),
-  // S4D1: zehn Konstruktions- und Prüf-Familien (Foundations).
+  ...FOUNDATIONS_CHOICE_FAMILY_SPECS,
+  // S4D1: elf Konstruktions- und Prüf-Familien (Foundations).
   ...FOUNDATIONS_CONSTRUCT_SPECS,
   // S4D1: sechs Trace-Familien (Foundations).
   ...TRACE_FAMILY_SPECS,
-  // S4D5: Skalarprodukt-Familie (linalg).
+  // S4D5: elf Linalg-Familien.
   ...LINALG_FAMILY_SPECS,
-  // S4D8: Datenbereinigung.
+  // S4D8: zwanzig Daten-/ML-Familien.
   ...DATA_ML_FAMILY_SPECS,
+  // Auswahlfamilien, deren Vertrag + Bank komplett in content/banks liegt.
+  ...CHOICE_BANK_FAMILY_SPECS,
+  // Prozedurale Einzel-Module (pro Familie eine Datei in core/procedural/).
+  ...PROCEDURAL_FAMILY_SPECS,
 ];
 
-export let EXERCISE_FAMILIES = createFamilyRegistry(jsFamilySpecs);
+export let EXERCISE_FAMILIES = createFamilyRegistry(JS_FAMILY_SPECS);
 
 export function configureExerciseFamilies(staticDocs = []) {
   EXERCISE_FAMILIES = createFamilyRegistry([
-    ...jsFamilySpecs,
+    ...JS_FAMILY_SPECS,
     ...staticDocs.filter((doc) => doc?.contract).map(staticFamilySpec),
   ]);
   return EXERCISE_FAMILIES;
 }
 
-export const instantiate = (familyId, seed, difficulty, caseId) => (
-  EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId)
+export const instantiate = (familyId, seed, difficulty, caseId, caseIds) => (
+  EXERCISE_FAMILIES.instantiate(familyId, seed, difficulty, caseId, caseIds)
 );
 
 // S4D0: Familieninstanz -> S3-Schreibpfad. definitionId ist stabil je Fall
@@ -49,7 +61,7 @@ export const instantiate = (familyId, seed, difficulty, caseId) => (
 // Ein Fall teilt sich die Review-Gruppe über Profile hinweg: ein Reveal
 // disqualifiziert den Fall in allen Profilen (beabsichtigt, gleiche
 // Fallfrage). Hinweise/Offenlegung für Varianten kommen je Domäne (S4D1+).
-export function familyEventInput(instance) {
+export function familyEventInput(instance, extra = {}) {
   if (!instance || typeof instance.familyId !== 'string' || typeof instance.caseId !== 'string') {
     throw new Error('Familieninstanz braucht familyId und caseId');
   }
@@ -61,6 +73,7 @@ export function familyEventInput(instance) {
     competencyIds: [...(instance.competencyIds || [])],
     seed: instance.seed ?? 0,
     masteryEligible: instance.masteryEligible === true,
+    ...(extra.context ? { context: String(extra.context) } : {}),
   };
 }
 export const grade = (instance, answer) => EXERCISE_FAMILIES.grade(instance, answer);

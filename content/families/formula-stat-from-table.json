@@ -10,18 +10,10 @@
       "sourceLineage": [
         "w32-e2"
       ],
-      "parameters": {
-        "seedGenerator": "genCardAudit"
-      },
+      "parameters": {},
       "competencyIds": [
         "c-research-cards"
       ],
-      "expected": {
-        "kind": "seeded-integer",
-        "generator": "genCardAudit",
-        "defaultSeed": 3211,
-        "defaultExpected": 6
-      },
       "prompt": "Ein Karten-Audit prüft zwei Karten gegen die Pflichtfeldsätze. Modellkarte „karte-a“ mit dem Pflichtfeldsatz name, zweck, version, trainingsdaten, metrik, schwellenwert, bekannte_grenzen, kontakt — erfasst sind zweck: „“, version: „1.2.0“, trainingsdaten: „faq-korpus“, metrik: „recall@5“, schwellenwert: „0,75“, kontakt: „team-support“. Datenkarte „karte-b“ mit dem Pflichtfeldsatz name, zweck, herkunft, zeitraum, lizenz, n_beispiele, split_train, split_dev, bekannte_luecken, kontakt — erfasst sind name: „“, herkunft: „forum-export“, zeitraum: „jahreswechsel“, lizenz: „cc-by-vier“, n_beispiele: „1200“, split_train: „80 %“, split_dev: „10 %“, bekannte_luecken: „umlaute fehlen“, kontakt: „“. Wie viele Pflichtfelder fehlen insgesamt (nicht erfasst oder leer)?",
       "fullSolution": "Vergleiche pro Karte die Erfassungsliste mit dem Pflichtfeldsatz: Nicht aufgeführte Felder und Felder mit leerem Wert „“ zählen beide als fehlend; die Summe über alle Karten ist die Antwort. Mit „Neue Zahlen“ erscheint ein neues Karten-Set mit demselben Lösungsweg.",
       "hints": [
@@ -43,13 +35,19 @@
         }
       ],
       "typicalErrors": [
-        "leere Felder nicht mitgezählt",
-        "nur eine Karte geprüft",
-        "Felder gezählt, die nicht im Pflichtfeldsatz stehen"
+        {
+          "id": "leere-felder-nicht-mitgezaehlt",
+          "text": "leere Felder nicht mitgezählt"
+        },
+        {
+          "id": "nur-eine-karte-geprueft",
+          "text": "nur eine Karte geprüft"
+        },
+        {
+          "id": "felder-gezaehlt-die-nicht-im",
+          "text": "Felder gezählt, die nicht im Pflichtfeldsatz stehen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -60,7 +58,31 @@
       "sourceLineage": [
         "w36-e2"
       ],
-      "parameters": {},
+      "parameters": {
+        "budget": 50,
+        "calls": [
+          {
+            "label": "A",
+            "start": 0,
+            "end": 45
+          },
+          {
+            "label": "B",
+            "start": 0,
+            "end": 55
+          },
+          {
+            "label": "C",
+            "start": 200,
+            "end": 240
+          },
+          {
+            "label": "D",
+            "start": 300,
+            "end": 310
+          }
+        ]
+      },
       "competencyIds": [
         "c-capstone-pipeline",
         "c-python-functions"
@@ -90,13 +112,19 @@
         }
       ],
       "typicalErrors": [
-        "absolute Endzeiten statt Differenzen verglichen",
-        "Grenzfall Dauer = Budget als Timeout gewertet",
-        "Startzeiten addiert statt subtrahiert"
+        {
+          "id": "absolute-endzeiten-statt-differenzen-verglichen",
+          "text": "absolute Endzeiten statt Differenzen verglichen"
+        },
+        {
+          "id": "grenzfall-dauer-budget-als-timeout",
+          "text": "Grenzfall Dauer = Budget als Timeout gewertet"
+        },
+        {
+          "id": "startzeiten-addiert-statt-subtrahiert",
+          "text": "Startzeiten addiert statt subtrahiert"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     },
@@ -107,7 +135,23 @@
       "sourceLineage": [
         "w38-e2"
       ],
-      "parameters": {},
+      "parameters": {
+        "total": 9,
+        "specs": [
+          {
+            "spec": ">=2.0",
+            "count": 2
+          },
+          {
+            "spec": "~=1.9",
+            "count": 1
+          },
+          {
+            "spec": "*",
+            "count": 1
+          }
+        ]
+      },
       "competencyIds": [
         "c-capstone-pipeline",
         "c-ml-repro"
@@ -137,13 +181,19 @@
         }
       ],
       "typicalErrors": [
-        "Spec-Arten statt Einträge gezählt",
-        "exakte Pins mitgezählt",
-        "Wildcard als harmlos eingestuft"
+        {
+          "id": "spec-arten-statt-eintraege-gezaehlt",
+          "text": "Spec-Arten statt Einträge gezählt"
+        },
+        {
+          "id": "exakte-pins-mitgezaehlt",
+          "text": "exakte Pins mitgezählt"
+        },
+        {
+          "id": "wildcard-als-harmlos-eingestuft",
+          "text": "Wildcard als harmlos eingestuft"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "exact-integer"
-      },
       "activityType": "numeric",
       "graderId": "deterministic"
     }

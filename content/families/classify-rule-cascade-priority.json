@@ -1,36 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-rule-cascade-priority",
-  "contract": {
-    "familyId": "classify-rule-cascade-priority",
-    "familyGroup": "classify-concept",
-    "summary": "Wendet eine geordnete Regel- oder Policy-Kaskade an, in der die erste passende Regel gewinnt und der Default- beziehungsweise Unbekannt-Fall konservativ am Ende greift.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "error-taxonomy-classify",
-        "propertyTest": false
-      },
-      {
-        "caseId": "permission-policy-check",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-genai-eval",
-      "c-python-functions",
-      "c-genai-security",
-      "c-testing-debugging"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "error-taxonomy-classify",
@@ -58,28 +29,20 @@
         "Baue zwei Hilfsmengen: Inhaltsbegriffe (len ≥ 4, keine Ziffern) und Zahlmengen (re.findall über Ziffern) für Antwort und Gold.",
         "Iteriere die Regeln in Listenneihung; jede Regel prüft genau ihr kind — die default-Regel schließt die Kaskade ab."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "order-wrong",
-          "then": "Die Reihenfolge des Regelwerks ist Teil des Vertrags — leere Antwort schlägt z. B. quellos, egal was sonst fehlt."
+          "id": "regelreihenfolge-nicht-eingehalten",
+          "text": "Regelreihenfolge nicht eingehalten"
         },
         {
-          "if": "content-words-too-short",
-          "then": "Nur Wörter mit Länge ≥ 4 zählen als Inhaltsbegriffe — kurze Füllwörter wie „die“ dürfen off-topic nicht verhindern."
+          "id": "zahlen-als-woerter-statt-ziffern",
+          "text": "Zahlen als Wörter statt Ziffern verglichen"
         },
         {
-          "if": "default-unreachable",
-          "then": "Die default-Regel darf nur am Ende stehen und immer greifen — ein Regelsystem kann Vollständigkeit nicht beweisen, der Default bleibt konservativ unvollständig."
+          "id": "default-label-weggelassen-oder-vor",
+          "text": "default-Label weggelassen oder vor andere Regeln gezogen"
         }
       ],
-      "typicalErrors": [
-        "Regelreihenfolge nicht eingehalten",
-        "Zahlen als Wörter statt Ziffern verglichen",
-        "default-Label weggelassen oder vor andere Regeln gezogen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -109,28 +72,20 @@
         "Prüfe in der Reihenfolge forbidden → restricted → allowed → unbekannt; nur so bleibt die Entscheidung bei überlappenden Policies eindeutig.",
         "Jeder Eintrag trägt index und tool, erlaubte Aufrufe reason None — nachvollziehbare Fehler brauchen Grundangaben, erlaubte nicht."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "unknown-allowed",
-          "then": "Nicht in der Policy genannte Werkzeuge müssen abgelehnt werden (tool-unknown) — Allowlist heißt: unbekannt ist verboten."
+          "id": "unbekannte-werkzeuge-stillschweigend-erlaubt",
+          "text": "unbekannte Werkzeuge stillschweigend erlaubt"
         },
         {
-          "if": "restricted-arg-ignored",
-          "then": "Ein eingeschränktes Werkzeug ist nur mit Argument aus seiner Allowlist erlaubt — sonst arg-not-allowed."
+          "id": "argument-allowlist-fuer-restricted-tools",
+          "text": "Argument-Allowlist für restricted Tools ignoriert"
         },
         {
-          "if": "order-lost",
-          "then": "Die Ergebnisliste folgt der Aufrufreihenfolge; index muss der Position im Eingabeliste entsprechen."
+          "id": "ergebnisreihenfolge-sortiert-statt-eingehalten",
+          "text": "Ergebnisreihenfolge sortiert statt eingehalten"
         }
       ],
-      "typicalErrors": [
-        "unbekannte Werkzeuge stillschweigend erlaubt",
-        "Argument-Allowlist für restricted Tools ignoriert",
-        "Ergebnisreihenfolge sortiert statt eingehalten"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

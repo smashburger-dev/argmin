@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-control-construct",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "for-over-existing-collection",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-control-choice-01"
+      ],
+      "expected": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "`for value in values:`",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "`while True:` ohne expliziten Abbruch",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Eine rekursive Funktion ohne Basisfall",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein einzelnes `if`, das nur das erste Element prüft",
+          "correct": false
+        }
+      ],
+      "prompt": "Du willst jeden Wert einer bereits vorhandenen Liste genau einmal prüfen. Welche Schleifenform drückt diese Absicht am direktesten aus?",
+      "fullSolution": "`for value in values` iteriert direkt über jedes vorhandene Element. Eine while-Schleife ist passender, wenn die Wiederholung von einer sich ändernden Bedingung statt von einer vorhandenen Collection abhängt.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "`while True` ohne Abbruch läuft endlos. Die Liste ist schon da — die direkte Iteration drückt genau das aus."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Eine Rekursion ohne Basisfall endet nie. Für das einmalige Prüfen jedes Elements ist sie unnötig kompliziert."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "`if` prüft genau einmal — nicht jedes Element. Für die Wiederholung über alle Werte braucht es eine Schleife."
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "Du willst für jedes Wort der vorhandenen Liste `woerter` genau einmal die Länge ausgeben. Welche Schleifenform drückt das am direktesten aus?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "`for wort in woerter:`",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "`for i in range(len(woerter) - 1):` mit `woerter[i]`",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "`while len(woerter) > 0:`, ohne ein Wort zu entfernen",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Ein einzelnes `print(len(woerter[0]))`",
+              "correct": false
+            }
+          ],
+          "fullSolution": "`for wort in woerter` besucht jedes vorhandene Wort genau einmal. `range(len(woerter) - 1)` lässt das letzte Wort aus, und eine while-Bedingung, die sich im Rumpf nie ändert, läuft endlos.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "`range(len(woerter) - 1)` endet vor dem letzten Index. Das letzte Wort wird nie ausgegeben."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die Bedingung `len(woerter) > 0` ändert sich im Rumpf nie. Die Schleife läuft endlos, statt jedes Wort einmal zu besuchen."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Das gibt nur die Länge des ersten Worts aus. Für jedes Wort braucht es eine Schleife über die Liste."
+            }
+          ]
+        },
+        {
+          "prompt": "Das Dictionary `preise` ordnet Produktnamen ihren Preis zu. Du willst jedes Paar aus Name und Preis genau einmal ausgeben. Welche Schleifenform passt am direktesten?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "`for name, preis in preise.items():`",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "`for i in range(len(preise)):` mit `preise[i]`",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "`while preise:`, ohne `preise` im Rumpf zu verändern",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Eine rekursive Funktion über `preise` ohne Basisfall",
+              "correct": false
+            }
+          ],
+          "fullSolution": "`preise.items()` liefert jedes Paar aus Schlüssel und Wert genau einmal, und `for` entpackt es direkt in `name` und `preis`. `preise[i]` mit einer Zahl `i` wirft `KeyError`, weil die Schlüssel Produktnamen sind.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "`range(len(preise))` liefert die Zahlen 0, 1, 2 und so weiter. `preise[0]` sucht den Schlüssel `0` und wirft `KeyError`, weil die Schlüssel Produktnamen sind."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Ein nichtleeres Dictionary ist immer wahr. Ohne Änderung im Rumpf läuft `while preise:` endlos."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Ohne Basisfall ruft sich die Funktion immer weiter selbst auf und endet mit `RecursionError`."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

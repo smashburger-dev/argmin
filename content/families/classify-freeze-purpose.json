@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-freeze-purpose",
-  "contract": {
-    "familyId": "classify-freeze-purpose",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet den Zweck eines eingefrorenen Prüfstands in einer deterministischen Auswertung ein.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "freeze-purpose",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline",
-      "c-genai-security"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "freeze-purpose",
@@ -39,9 +17,7 @@
         "c-capstone-pipeline",
         "c-genai-security"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Warum wird das Golden Set einer Capstone-Pipeline per Hash eingefroren, bevor Optimierung beginnt?",
       "fullSolution": "Der Hash hält die Prüfmenge stabil: Nach jeder Optimierung greift exakt dieselbe Evaluation, und Werte bleiben über Zeit vergleichbar. Wird das Golden Set trotzdem geändert, scheitert die Freeze-Prüfung sichtbar — so wird aus einer stillen Zielverschiebung eine dokumentierte Entscheidung. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -63,13 +39,19 @@
         }
       ],
       "typicalErrors": [
-        "Golden Set nachträglich an die Pipeline angepasst",
-        "Hash-Prüfung als Lizenz- oder Geheimhaltungsmaßnahme missverstanden",
-        "Vergleichbarkeit alter und neuer Läufe still vorausgesetzt"
+        {
+          "id": "golden-set-nachtraeglich-an-die",
+          "text": "Golden Set nachträglich an die Pipeline angepasst"
+        },
+        {
+          "id": "hash-pruefung-als-lizenz-oder",
+          "text": "Hash-Prüfung als Lizenz- oder Geheimhaltungsmaßnahme missverstanden"
+        },
+        {
+          "id": "vergleichbarkeit-alter-und-neuer-laeufe",
+          "text": "Vergleichbarkeit alter und neuer Läufe still vorausgesetzt"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",

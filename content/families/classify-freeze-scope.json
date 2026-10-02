@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-freeze-scope",
-  "contract": {
-    "familyId": "classify-freeze-scope",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen eingefrorenen Evaluationsstand dem geschützten Umfang einer reproduzierbaren Pipeline zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "freeze-scope",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-capstone-pipeline"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "freeze-scope",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-capstone-pipeline"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Capstone-Start: Was gehört in den Scope-Freeze, BEVOR die Implementierung der Pipeline beginnt?",
       "fullSolution": "In den Freeze gehören Golden Set, Angriffs-Fixtures, Experimentkonfiguration, Testdateien und der gepinnte Kern des GenAI-Prototyps — jeweils mit sha256 im Manifest. Änderungen sind möglich, aber sie brauchen eine neue Version und ein neues Manifest; assert_frozen() macht Abweichungen hörbar. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -61,13 +38,19 @@
         }
       ],
       "typicalErrors": [
-        "Daten und Konfiguration vom Freeze ausgenommen",
-        "Manifest als reine Dokumentation statt als Hash-Prüfung verstanden",
-        "Freeze erst nach der Demo aufgestellt"
+        {
+          "id": "daten-und-konfiguration-vom-freeze",
+          "text": "Daten und Konfiguration vom Freeze ausgenommen"
+        },
+        {
+          "id": "manifest-als-reine-dokumentation-statt",
+          "text": "Manifest als reine Dokumentation statt als Hash-Prüfung verstanden"
+        },
+        {
+          "id": "freeze-erst-nach-der-demo",
+          "text": "Freeze erst nach der Demo aufgestellt"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",

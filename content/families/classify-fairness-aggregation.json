@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-fairness-aggregation",
-  "contract": {
-    "familyId": "classify-fairness-aggregation",
-    "familyGroup": "classify-concept",
-    "summary": "Erkennt, warum Gesamtmetriken Fehler kleiner Teilgruppen verdecken können.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "overall-accuracy-hides-subgroups",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-ml-erroranalysis"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "overall-accuracy-hides-subgroups",
@@ -56,9 +35,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Ein Defekt-Klassifikator erreicht 94 % Accuracy insgesamt. Warum reicht diese einzelne Gesamtmetrik für die Fehleranalyse nicht aus?",
       "fullSolution": "Ein gewichteter Durchschnitt lässt eine kleine Gruppe fast verschwinden: 94 % insgesamt können bedeuten, dass eine kleine Teilgruppe zu 60 % falsch eingestuft wird. Deshalb werden Metriken je Teilgruppe berichtet und die größte Lücke explizit benannt.",
       "hints": [
@@ -80,13 +57,19 @@
         }
       ],
       "typicalErrors": [
-        "Durchschnittseffekt kleiner Gruppen unterschätzen",
-        "Gesamtmetrik als Aussage über alle Teilgruppen missdeuten",
-        "Teilgruppenanalyse mit Datenschutz verwechseln"
+        {
+          "id": "durchschnittseffekt-kleiner-gruppen-unterschaetzen",
+          "text": "Durchschnittseffekt kleiner Gruppen unterschätzen"
+        },
+        {
+          "id": "gesamtmetrik-als-aussage-ueber-alle",
+          "text": "Gesamtmetrik als Aussage über alle Teilgruppen missdeuten"
+        },
+        {
+          "id": "teilgruppenanalyse-mit-datenschutz-verwechseln",
+          "text": "Teilgruppenanalyse mit Datenschutz verwechseln"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -103,9 +86,7 @@
       "competencyIds": [
         "c-research-responsible"
       ],
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -149,12 +130,15 @@
         }
       ],
       "typicalErrors": [
-        "Gesamtgenauigkeit als Fairheitsbeweis genommen",
-        "Subgruppenmetriken als optionalen Zusatz statt Pflicht verstanden"
+        {
+          "id": "gesamtgenauigkeit-als-fairheitsbeweis-genommen",
+          "text": "Gesamtgenauigkeit als Fairheitsbeweis genommen"
+        },
+        {
+          "id": "subgruppenmetriken-als-optionalen-zusatz-statt",
+          "text": "Subgruppenmetriken als optionalen Zusatz statt Pflicht verstanden"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

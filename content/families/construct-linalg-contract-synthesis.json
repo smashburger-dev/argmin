@@ -1,49 +1,17 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-linalg-contract-synthesis",
-  "contract": {
-    "familyId": "construct-linalg-contract-synthesis",
-    "familyGroup": "construct-program",
-    "summary": "Implementiert Shape-Vertrag, Pivot-Rang und Systemlöser als drei getrennte Funktionverträge in einer Synthese mit rechteckigen und abhängigen Fällen.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "synthesis-three-contracts",
-        "propertyTest": false
-      },
-      {
-        "caseId": "synthesis-singular-guard",
-        "propertyTest": false
-      },
-      {
-        "caseId": "synthesis-row-swap",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-numpy-basics",
-      "c-linalg-gauss"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "synthesis-three-contracts",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
-      "sourceLineage": [],
+      "sourceLineage": [
+        "c1-authored"
+      ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -67,7 +35,12 @@
         }
       ],
       "prompt": "Drei Verträge in einer Synthese: Shape prüfen und `matvec` rechnen, Rang per Elimination mit Zeilentausch, System per `solve` mit Shape-Prüfung. Welche Implementierung erfüllt alle drei?",
-      "fullSolution": "Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System. Prüfen vor Rechnen, keine hartkodierten Fälle."
+      "fullSolution": "<p>Verträge trennen: Shape-Validierung plus `matmul`, Pivot-Elimination mit Zeilentausch für den Rang, Shape-Validierung plus `solve` für das System.</p><p>Prüfen vor Rechnen, keine hartkodierten Fälle.</p>",
+      "hints": [
+        "Behandle die drei Verträge als getrennte Prüfungen: Für jede Option muss erkennbar sein, was vor dem Rechnen abgesichert wird — erst validieren, dann operieren.",
+        "Die Rang-Pflicht entscheidet sich am Null-Pivot: Eine Null an der Pivotposition verlangt einen Zeilentausch mit anschließender Elimination; die Spalte zu überspringen oder durch null zu teilen bricht den Vertrag."
+      ],
+      "title": "Drei Linalg-Verträge erfüllen"
     },
     {
       "caseId": "synthesis-singular-guard",
@@ -77,9 +50,7 @@
         "c1-authored"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -123,13 +94,19 @@
         }
       ],
       "typicalErrors": [
-        "Bibliotheksausnahme mit einer verständlichen, vorgelagerten Vertragsdiagnose gleichgesetzt.",
-        "Quadratische Form fälschlich als Beweis für Invertierbarkeit verwendet.",
-        "Bei singulären Eingaben eine beliebige Antwort statt einer eindeutigen Lösbarkeitsprüfung akzeptiert."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+        {
+          "id": "bibliotheksausnahme-mit-einer-verstaendlichen-vorgelagerten",
+          "text": "Bibliotheksausnahme mit einer verständlichen, vorgelagerten Vertragsdiagnose gleichgesetzt."
+        },
+        {
+          "id": "quadratische-form-faelschlich-als-beweis",
+          "text": "Quadratische Form fälschlich als Beweis für Invertierbarkeit verwendet."
+        },
+        {
+          "id": "bei-singulaeren-eingaben-eine-beliebige",
+          "text": "Bei singulären Eingaben eine beliebige Antwort statt einer eindeutigen Lösbarkeitsprüfung akzeptiert."
+        }
+      ]
     },
     {
       "caseId": "synthesis-row-swap",
@@ -139,9 +116,7 @@
         "c1-authored"
       ],
       "parameters": {},
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -185,13 +160,19 @@
         }
       ],
       "typicalErrors": [
-        "Null-Pivot und vollständig verschwindende Zeile als denselben Zustand behandelt.",
-        "Eine Division durch den Null-Pivot als zulässigen Eliminationsschritt angenommen.",
-        "Eine strukturelle Änderung durch Transponieren mit dem erlaubten Zeilentausch verwechselt."
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      }
+        {
+          "id": "null-pivot-und-vollstaendig-verschwindende",
+          "text": "Null-Pivot und vollständig verschwindende Zeile als denselben Zustand behandelt."
+        },
+        {
+          "id": "eine-division-durch-den-null",
+          "text": "Eine Division durch den Null-Pivot als zulässigen Eliminationsschritt angenommen."
+        },
+        {
+          "id": "eine-strukturelle-aenderung-durch-transponieren",
+          "text": "Eine strukturelle Änderung durch Transponieren mit dem erlaubten Zeilentausch verwechselt."
+        }
+      ]
     }
   ]
 }

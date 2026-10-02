@@ -1,6 +1,6 @@
 # Evaluation generativer Antworten
 
-Ein Generierungssystem zu bewerten beginnt nicht mit einer Metrik, sondern mit einem **festen Fragenkatalog**: Evaluationsfragen mit Gold-Antworten und den Quellen, die als Beleg zählen. Dieser Katalog wird eingefroren, bevor irgendetwas optimiert wird — dieselbe Disziplin wie beim Train/Test-Split, nur dass das "Testset" hier von Menschen formulierte Soll-Antworten sind.
+Ein Generierungssystem zu bewerten beginnt nicht mit einer Metrik, sondern mit einem **festen Fragenkatalog**: Evaluationsfragen mit Gold-Antworten und den Quellen, die als Beleg zählen. Dieser Katalog wird eingefroren, bevor irgendetwas optimiert wird — dieselbe Disziplin wie beim Train/Test-Split, nur dass das „Testset“ hier von Menschen formulierte Soll-Antworten sind.
 
 ## Gold-Antworten und Quellenbelege
 
@@ -17,7 +17,7 @@ Freitext-Kritik ist nicht auswertbar. Diese Plattform pinnt sechs Labels, vergeb
 5. **falsch-faktisch** — Zahl in der Antwort, die nicht zu den Gold-Zahlen passt,
 6. **unvollständig** — Gold-Zahl fehlt; und als ehrlicher Default: kein Regelwerk kann Vollständigkeit *beweisen*.
 
-Der Default ist wichtig: Regelwerke weisen Fehler nach, sie bescheinigen keine Korrektheit. Eine Antwort ohne erkannten Fehler bleibt "unvollständig" markiert — konservativ und reproduzierbar.
+Der Default ist wichtig: Regelwerke weisen Fehler nach, sie bescheinigen keine Korrektheit. Eine Antwort ohne erkannten Fehler bleibt „unvollständig“ markiert — konservativ und reproduzierbar.
 
 ## Retrieval- und Antwortfehler trennen
 
@@ -44,12 +44,12 @@ Werkzeuge wie RAGAS nutzen Sprachmodelle als Bewerter. Das ist nützliche Lektü
 
 ## Typische Fehler
 
-- Fragenkatalog nach dem ersten Messlauf "verbessert" — die Zahlen sind danach wertlos.
+- Fragenkatalog nach dem ersten Messlauf „verbessert“ — die Zahlen sind danach wertlos.
 - Retrieval- und Antwortfehler in einer Quote vermengt.
 - Labels frei formuliert statt aus geschlossenem Set — nicht aggregierbar.
 - Token-F1 über Rohtexte mit Groß/Kleinbuchstaben- und Satzzeichenrauschen.
 - Precision ohne Recall berichtet (oder umgekehrt).
-- LLM-Judge-Ergebnisse als "Ground Truth" exportiert.
+- LLM-Judge-Ergebnisse als „Ground Truth“ exportiert.
 
 ## Direkter Check
 

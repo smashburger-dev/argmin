@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-eval-hazard",
-  "contract": {
-    "familyId": "classify-eval-hazard",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Evaluationssituation dem passenden Eval-Hazard zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "eval-hazard-taxonomy",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-genai-eval"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "eval-hazard-taxonomy",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-genai-eval"
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -83,13 +60,19 @@
         }
       ],
       "typicalErrors": [
-        "Inhaltsfehler und Belegfehler vermischt",
-        "das Fehlen eines Kriteriums mit dem Verstoß gegen ein anderes verwechselt",
-        "Labels frei assoziiert statt das definierte Labelset durchzugehen"
+        {
+          "id": "inhaltsfehler-und-belegfehler-vermischt",
+          "text": "Inhaltsfehler und Belegfehler vermischt"
+        },
+        {
+          "id": "das-fehlen-eines-kriteriums-mit",
+          "text": "das Fehlen eines Kriteriums mit dem Verstoß gegen ein anderes verwechselt"
+        },
+        {
+          "id": "labels-frei-assoziiert-statt-das",
+          "text": "Labels frei assoziiert statt das definierte Labelset durchzugehen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

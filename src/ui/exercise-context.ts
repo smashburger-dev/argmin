@@ -11,6 +11,9 @@ export const activityTypeLabels = {
   'python-code': 'Programmieraufgabe',
   parsons: 'Code ordnen',
   'short-rationale': 'Begründung',
+  'multiple-choice': 'Mehrfachauswahl',
+  'diagnostic-rationale': 'Fehlerdiagnose',
+  'worked-example-fading': 'Lückentext',
 } as const;
 
 export function activityLabel(activityType: string | undefined) {
@@ -32,6 +35,9 @@ export interface ExerciseContext {
   module?: LearningModule;
   lesson?: Lesson;
   title: string;
+  /** Specific case title for breadcrumbs/nav — the h1 stays generic. */
+  detail?: string;
+  caseId?: string;
   summary: string;
   difficultyLabel: string;
   lessonHref?: string;
@@ -76,6 +82,25 @@ export function routeForPlacement(catalog: CatalogData, placement: ExercisePlace
   return `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`;
 }
 
+// Progress is per case: attempts write `familyId:caseId` (familyEventInput),
+// independent of seed and difficulty.
+export function creditKeyForPlacement(placement: ExercisePlacement) {
+  return placement.definitionId ?? (placement.caseId ? `${placement.familyId}:${placement.caseId}` : null);
+}
+
+export function curatedProgress(catalog: CatalogData, module: LearningModule, creditedKeys: Iterable<string>) {
+  const credited = new Set(creditedKeys);
+  let total = 0;
+  let done = 0;
+  for (const placement of module.placements || []) {
+    if (placement.role !== 'curated' || routeForPlacement(catalog, placement) === null) continue;
+    total += 1;
+    const key = creditKeyForPlacement(placement);
+    if (key && credited.has(key)) done += 1;
+  }
+  return { total, credited: done };
+}
+
 function exerciseFor(catalog: CatalogData, familyId: string, caseId?: string): ExerciseSummary | undefined {
   return catalog.exercises.find((exercise) => exercise.familyId === familyId && exercise.caseId === caseId);
 }
@@ -89,7 +114,7 @@ function placementRoute(catalog: CatalogData, placement: ExercisePlacement | und
   const exercise = placement.definitionId
     ? catalog.exercises.find((item) => item.definitionId === placement.definitionId)
     : exerciseFor(catalog, placement.familyId, placement.caseId);
-  if (exercise) return { href: routeForDefinition(exercise), title: activityLabel(exercise.activityType) };
+  if (exercise) return { href: routeForDefinition(exercise), title: exercise.title || activityLabel(exercise.activityType) };
   if (!placement.caseId) return null;
   const family = familyFor(catalog, placement.familyId);
   return {
@@ -104,6 +129,22 @@ function nextPlacement(catalog: CatalogData, module: LearningModule | undefined,
   return module.placements.slice(start + 1).find((placement) => placement.role === 'curated');
 }
 
+// Module practice space: the pool is the module's own curated cases of that
+// family, so "Üben"/"Neue Variante" never draws a foreign-domain case. An
+// empty pool (standalone practice space) falls back to the whole family.
+export function practiceCasePool(module: LearningModule | undefined, familyId: string): string[] | undefined {
+  const caseIds = (module?.placements || [])
+    .filter((placement) => placement.role === 'curated' && placement.familyId === familyId && placement.caseId)
+    .map((placement) => placement.caseId as string);
+  return caseIds.length ? [...new Set(caseIds)] : undefined;
+}
+
+export function practiceRouteForPlacement(module: LearningModule | undefined, placement: ExercisePlacement) {
+  if (!placement.familyId) return null;
+  const base = `#/family/${placement.familyId}/-/-/${placement.difficulty}`;
+  return module ? `${base}?module=${module.moduleId}` : base;
+}
+
 export function randomVariantSeed(): number {
   return Math.floor(Math.random() * 2 ** 31);
 }
@@ -116,10 +157,13 @@ export function getExerciseContext(catalog: CatalogData, instance: ExerciseInsta
   const lesson = lessonId ? catalog.lessons.find((item) => item.lessonId === lessonId) : undefined;
   const next = placementRoute(catalog, nextPlacement(catalog, module, placement));
   const family = familyFor(catalog, instance.familyId);
+  const exercise = exerciseFor(catalog, instance.familyId, instance.caseId);
   return {
     module,
     lesson,
     title: activityLabel(instance.activityType),
+    detail: exercise?.title,
+    caseId: instance.caseId,
     summary: family?.summary ?? summary ?? '',
     difficultyLabel: difficultyLabelFor(instance.difficulty),
     lessonHref: lesson ? `#/lesson/${lesson.lessonId}` : undefined,

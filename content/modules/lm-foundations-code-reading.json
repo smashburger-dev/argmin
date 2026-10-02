@@ -41,6 +41,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-foundations-code-reading-join-split-predict",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "join-split-predict",
+      "seed": 17,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-code-reading",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-foundations-code-reading-trace-assignment-state-practice",
       "role": "practice-space",
       "familyId": "trace-assignment-state",
@@ -67,6 +78,9 @@
     }
   ],
   "projectIds": [],
+  "explanationIds": [
+    "x-collection-state"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

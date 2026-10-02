@@ -16,6 +16,10 @@ type Props = {
   hints: string[];
   solution?: ComponentChildren;
   done: boolean;
+  /** Context override for the sidebar back button (e.g. the stay-in-challenge
+   *  flow points it at #/challenge instead of lesson/module/learn). */
+  backHref?: string;
+  backLabel?: string;
 };
 
 export function ExerciseFrame({
@@ -29,9 +33,11 @@ export function ExerciseFrame({
   hints,
   solution,
   done,
+  backHref: backHrefProp,
+  backLabel: backLabelProp,
 }: Props) {
-  const backLabel = ctx.lessonHref ? 'Zurück zur Lektion' : ctx.moduleHref ? 'Zum Modul' : 'Zum Lernen';
-  const backHref = ctx.lessonHref || ctx.moduleHref || '#/learn';
+  const backLabel = backLabelProp ?? (ctx.lessonHref ? 'Zurück zur Lektion' : ctx.moduleHref ? 'Zum Modul' : 'Zum Lernen');
+  const backHref = backHrefProp ?? (ctx.lessonHref || ctx.moduleHref || '#/learn');
   const feedbackBox = useRef<HTMLDivElement>(null);
   const hadFeedback = useRef(false);
   useEffect(() => {
@@ -43,14 +49,14 @@ export function ExerciseFrame({
     hadFeedback.current = present;
   });
   return (
-    <section class="view exercise-view" aria-labelledby="exercise-title">
+    <section class="view exercise-view" aria-labelledby="exercise-title" data-case-id={ctx.caseId}>
       <Breadcrumbs items={[
         { href: '#/learn', label: 'Lernen' },
         ...(ctx.module ? [{ href: ctx.moduleHref, label: ctx.module.title }] : []),
         ...(ctx.lesson && ctx.lesson.title !== ctx.module?.title
           ? [{ href: ctx.lessonHref, label: ctx.lesson.title }]
           : []),
-        { label: ctx.title },
+        { label: ctx.detail || ctx.title },
       ]} />
       <header class="view-header">
         <p class="eyebrow">{eyebrow}</p>
@@ -63,12 +69,12 @@ export function ExerciseFrame({
             <div class="prompt-content">{prompt}</div>
             {snippet ? <pre><code>{snippet}</code></pre> : null}
           </article>
-          <div class="exercise-answer" data-tour="exercise-answer">{answer}</div>
+          {answer ? <div class="exercise-answer" data-tour="exercise-answer">{answer}</div> : null}
           <div class="actions" data-tour="exercise-check">{actions}</div>
           {feedback ? <div class="exercise-feedback" data-tour="exercise-feedback" role="status" tabIndex={-1} ref={feedbackBox}>{feedback}</div> : null}
           {hints.length > 0 && (
             <div class="hint-stack">
-              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> <MathMarkup inline html={hint} /></p>)}
+              {hints.map((hint) => <p key={hint}><strong>Hinweis</strong> <MathMarkup html={hint} inline /></p>)}
             </div>
           )}
           {solution}

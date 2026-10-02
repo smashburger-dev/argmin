@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "construct-normalize-chunk-contract",
-  "contract": {
-    "familyId": "construct-normalize-chunk-contract",
-    "familyGroup": "construct-program",
-    "summary": "Implementiert den RAG-Vorverarbeitungs-Vertrag aus Textnormalisierung mit Umlautschutz und bewachter Fenster-Schleife inklusive ValueError-Parametervalidierung.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "normalize-chunk-contract",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-genai-rag",
-      "c-python-functions"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "normalize-chunk-contract",
@@ -51,28 +29,20 @@
         "Für normalize: erst alles auf Kleinbuchstaben, dann Zeichen für Zeichen prüfen — Satzzeichen überspringen, alles andere (inklusive ä ö ü ß und Ziffern) bleibt.",
         "chunk validiert zuerst die Parameter und sammelt dann die Fenster mit start += size − overlap, bis start die Länge erreicht."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "punct-not-stripped",
-          "then": "Satzzeichen wie „ oder ! müssen verschwinden — prüfe dein Zeichenfilter-Set gegen die Testfälle."
+          "id": "satzzeichen-ueber-eine-ascii-only",
+          "text": "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt"
         },
         {
-          "if": "valueerror-missing",
-          "then": "Die ValueError-Prüfung steht vor dem ersten Fenster — size ≤ 0 und overlap ≥ size sind vertragswidrig."
+          "id": "fenster-mit-fester-anzahl-statt",
+          "text": "Fenster mit fester Anzahl statt while-Schleife erzeugt"
         },
         {
-          "if": "off-by-one-start",
-          "then": "Die Schleifenbedingung ist start < len(text): der letzte Start liegt unter der Länge, das Fenster darf kürzer als size sein."
+          "id": "overlap-size-erlaubt-und-endlosschleife",
+          "text": "overlap ≥ size erlaubt und Endlosschleife riskiert"
         }
       ],
-      "typicalErrors": [
-        "Satzzeichen über eine ASCII-only-Annahme entfernt und Umlaute beschädigt",
-        "Fenster mit fester Anzahl statt while-Schleife erzeugt",
-        "overlap ≥ size erlaubt und Endlosschleife riskiert"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

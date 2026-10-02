@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import type { CatalogData } from '../app/types';
 import type { ProgressSnapshot } from '../adapters/local-progress';
@@ -7,6 +8,11 @@ import { routeForDefinition } from '../../assets/js/domain/activity_route.mjs';
 import { Button } from './Button';
 import { Carousel } from './Carousel';
 import { learnerExerciseLabel, minutesLabel } from './learner-labels';
+
+// Lazy boundary: ChallengeTeaser lives in ChallengeView.tsx behind the
+// same lazy chunk as the challenge route — a static import here would pull
+// the challenge adapter chain into the eager bundle.
+const ChallengeTeaser = lazy(() => import('./ChallengeView').then((module) => ({ default: module.ChallengeTeaser })));
 
 const TODAY_BOOSTS = [
   'geht die Rechnung auf.',
@@ -80,18 +86,26 @@ function PlanDay({ day, exerciseById, competencyById }: {
 }
 
 function MilestoneCard({ catalog, progress }: { catalog: CatalogData; progress: ProgressSnapshot }) {
-  const foundation = catalog.milestones.find((item) => item.milestoneId === 'ms-foundations');
-  const competencyIds = foundation?.competencyIds ?? [];
-  const evidenceCount = competencyIds.filter((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')).length;
-  const percent = competencyIds.length ? Math.round(evidenceCount / competencyIds.length * 100) : 0;
+  const covered = (item: CatalogData['milestones'][number]) =>
+    item.competencyIds.filter((id) => ['demonstrated', 'retained'].includes(progress.evidenceStates[id] ?? '')).length;
+  // Aktueller Milestone = erster nicht vollständig nachgewiesener in
+  // Katalog-Reihenfolge; sind alle erfüllt, steht der letzte als erreicht da.
+  const current = catalog.milestones.find((item) => covered(item) < item.competencyIds.length)
+    ?? catalog.milestones[catalog.milestones.length - 1];
+  if (!current) return null;
+  const evidenceCount = covered(current);
+  const total = current.competencyIds.length;
+  const reached = evidenceCount >= total;
+  const percent = total ? Math.round(evidenceCount / total * 100) : 0;
   return (
     <article class="status-card milestone-card">
-      <p class="card-kicker">Aktueller Milestone</p>
-      <p class="milestone-sub">{foundation?.description}</p>
-      <div class="meter meter-lg" aria-label={`${evidenceCount} von ${competencyIds.length} Kompetenzen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
+      <p class="card-kicker">{reached ? 'Milestone erreicht' : 'Aktueller Milestone'}</p>
+      <h2>{current.title}</h2>
+      <p class="milestone-sub">{current.description}</p>
+      <div class="meter meter-lg" aria-label={`${evidenceCount} von ${total} Kompetenzen`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={percent} role="meter">
         <span style={{ width: `${percent}%` }} />
       </div>
-      <p class="meter-label">{evidenceCount} von {competencyIds.length} Kompetenzen.</p>
+      <p class="meter-label">{evidenceCount} von {total} Kompetenzen{reached ? ' — erreicht.' : '.'}</p>
       <a class="text-link" href="#/learn">Im Lernpfad weiter →</a>
     </article>
   );
@@ -207,6 +221,7 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           {resume ? <a class="text-link resume-link" href={resume.href}>{resume.label}</a> : null}
         </article>
         <MilestoneCard catalog={catalog} progress={progress} />
+        <Suspense fallback={null}><ChallengeTeaser catalog={catalog} /></Suspense>
         <FollowUpCard executableReviews={executableReviews} nextNonReview={nextNonReview} exerciseById={exerciseById} competencyById={competencyById} />
       </div>
       <section class="weekly-plan" aria-labelledby="weekly-plan-title" data-tour="today-plan">
@@ -216,6 +231,9 @@ export function TodayView({ catalog, progress }: { catalog: CatalogData; progres
           </div>
           <span>{plan.totalMinutes} von {plan.availableMinutes} Min. · <a href="#/settings">Budget anpassen</a></span>
         </div>
+        {plan.reviewOverflowCount > 0 ? (
+          <p class="plan-note">+{plan.reviewOverflowCount} {plan.reviewOverflowCount === 1 ? 'fälliger Review' : 'fällige Reviews'} über dem Wochenbudget — der Plan zeigt nur, was ins Budget passt; der Rest bleibt unter <a href="#/review">Review</a> fällig.</p>
+        ) : null}
         {progress.attemptsCount === 0 ? <p class="plan-note">Vorläufiger Plan. Kurze Aufgaben liefern belastbarere Hinweise als Selbsteinschätzung allein. Nach der Diagnose fällt Nachgewiesenes heraus.</p> : null}
         {plan.days.some((day) => day.items.length) ? (
           <Carousel label="Wochenplan-Tage">

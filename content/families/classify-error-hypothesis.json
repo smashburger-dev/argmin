@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-error-hypothesis",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "base-vs-exponent-confusion",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-algebra-debug-01"
+      ],
+      "competencyIds": [
+        "c-algebra"
+      ],
+      "title": "Potenzgesetz-Fehlerdiagnose",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "seeded-error-pattern-cases",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-meta-error-classify-01"
+      ],
+      "expected": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Das Journal umschreiben, damit der Fehler nicht mehr als offen erscheint.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Datenstruktur komplett austauschen, weil sie sich inkonsistent verhält.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Ein größenordnungsgrößerer Testfall laufen lassen — wenn der passt, ist es kein echtes Problem.",
+          "correct": false
+        }
+      ],
+      "prompt": "<p>Beobachtung: Bei genau fünf Durchläufen fehlt dir am Ende immer das letzte Element; bei vier Durchläufen passt alles.</p><p>Welcher nächste Schritt des Debug-Prozesses (Beobachtung → Reproduktion → Hypothese → frischer Test) passt am besten zu dieser Beobachtung?</p>",
+      "fullSolution": "<p>Richtig ist: Die Schleifengrenze an der Grenze zwischen vier und fünf Durchläufen prüfen (Typ: Off-by-one) und die Grenze gezielt testen. Die Beobachtung passt zum Fehlerbild „off-by-one“. Ein guter Debug-Schritt benennt die Hypothese explizit und prüft sie an einem frischen, gezielten Testfall — statt umzubauen, umzudeklarieren oder nur die Vorlage zu wiederholen.</p>",
+      "activityType": "single-choice",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "error-journal-next-test",
+      "difficultyProfile": "stretch",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-meta-error-log-01"
+      ],
+      "competencyIds": [
+        "c-meta-learning"
+      ],
+      "expected": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Beobachtung und kleinste Reproduktion notieren, die Vorzeichenregel als Ursachenhypothese benennen und dieselbe Regel an einer frischen Instanz gezielt testen",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Nur ‚Algebra schlecht‘ notieren und die gesamte Lektion erneut lesen",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Die Musterlösung abschreiben und den Fehler als erledigt markieren",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Den Kompetenzstatus manuell auf nachgewiesen setzen",
+          "correct": false
+        }
+      ],
+      "prompt": "Eine generierte Gleichungsaufgabe wurde mit falschem Vorzeichen gelöst. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?",
+      "fullSolution": "Der vollständige Eintrag enthält beobachtbares Symptom, kleinste Reproduktion, eine konkrete Ursachenhypothese und einen frischen Test. So entsteht eine überprüfbare Handlung statt eines pauschalen Urteils.",
+      "hints": [
+        "Eine Hypothese muss durch einen nächsten Versuch widerlegbar sein.",
+        "Trenne Beobachtung, Ursache und nächsten Test."
+      ],
+      "feedbackRules": [
+        {
+          "if": "choice === 'b'",
+          "then": "Ein pauschales Urteil nennt weder Ursache noch nächsten Test. Die ganze Lektion zu lesen trifft den konkreten Fehler nur zufällig.",
+          "misconception": "pauschales-selbsturteil"
+        },
+        {
+          "if": "choice === 'c'",
+          "then": "Abschreiben behebt dieses eine Mal, aber nicht das Verständnis. Beim nächsten Vorzeichenproblem stehst du wieder da.",
+          "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+        },
+        {
+          "if": "choice === 'd'",
+          "then": "Der Status beschreibt, was du kannst — er erzeugt keinen Lernerfolg. Ein Nachweis kommt aus überprüfter Arbeit, nicht aus einem Häkchen."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "pauschales-selbsturteil",
+          "text": "pauschales Selbsturteil"
+        },
+        {
+          "id": "ursache-ohne-gegenprobe",
+          "text": "Ursache ohne Gegenprobe"
+        },
+        {
+          "id": "musterloesung-mit-eigenem-abruf-verwechseln",
+          "text": "Musterlösung mit eigenem Abruf verwechseln"
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "In einer Trace-Aufgabe hast du den Wert nach einer `range`-Schleife um eins zu hoch vorhergesagt. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beobachtung und kleinste Reproduktion notieren, als Ursache vermuten, dass du das Ende von `range` mitgezählt hast, und das an einer frischen Trace-Aufgabe gezielt testen",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nur ‚Schleifen kann ich nicht‘ notieren und das ganze Kapitel noch einmal lesen",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Die Musterlösung durchlesen und die Aufgabe als verstanden abhaken",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "‚Flüchtigkeitsfehler‘ als Ursache notieren und ohne weiteren Test weitermachen",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Der beste Eintrag trennt Symptom, kleinste Reproduktion, eine konkrete Ursachenhypothese und einen frischen Test. Die Vermutung zum Ende von `range` lässt sich an einer neuen Schleife sofort bestätigen oder widerlegen.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Ein pauschales Urteil nennt keine Ursache und keinen nächsten Test. Das ganze Kapitel zu lesen trifft den konkreten Fehler nur zufällig.",
+              "misconception": "pauschales-selbsturteil"
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die Musterlösung zu verstehen ist kein eigener Abruf. Ob du die Regel anwenden kannst, zeigt erst eine frische Aufgabe ohne Vorlage.",
+              "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "‚Flüchtigkeitsfehler‘ ist eine Ursache ohne Gegenprobe. Ohne Test an einer neuen Aufgabe bleibt offen, ob dahinter eine falsche Regel steckt.",
+              "misconception": "ursache-ohne-gegenprobe"
+            }
+          ]
+        },
+        {
+          "prompt": "Beim Lösen einer Ungleichung hast du durch $-2$ geteilt und das Ungleichheitszeichen nicht umgedreht. Welcher Journaleintrag erzeugt den besten nächsten Lernschritt?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Beobachtung und kleinste Reproduktion notieren, die Umkehrregel beim Teilen durch negative Zahlen als Ursachenhypothese benennen und sie an einer frischen Ungleichung gezielt testen",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Die Lösung aus dem Lösungsblatt übernehmen, weil sie beim Nachlesen einleuchtet",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Nur ‚Ungleichungen liegen mir nicht‘ notieren und das Thema vorerst meiden",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "‚Zeitdruck‘ als Ursache notieren, ohne sie an einer neuen Aufgabe zu prüfen",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Ein brauchbarer Eintrag nennt das Symptom, die kleinste Reproduktion, die vermutete Regel und einen frischen Test. Eine neue Ungleichung mit negativem Faktor zeigt sofort, ob die Umkehrregel jetzt sitzt.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Nachlesen fühlt sich wie Verstehen an, ist aber kein eigener Abruf. Erst eine frische Ungleichung ohne Vorlage zeigt, ob die Regel sitzt.",
+              "misconception": "musterloesung-mit-eigenem-abruf-verwechseln"
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Das Urteil ist pauschal und benennt weder Ursache noch nächsten Test. Meiden verhindert genau die Übung, die den Fehler behebt.",
+              "misconception": "pauschales-selbsturteil"
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "‚Zeitdruck‘ bleibt ohne Gegenprobe eine Vermutung. Eine neue Aufgabe ohne Zeitdruck würde zeigen, ob der Fehler trotzdem auftritt.",
+              "misconception": "ursache-ohne-gegenprobe"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

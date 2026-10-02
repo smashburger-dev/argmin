@@ -5,7 +5,7 @@
   "locale": "de",
   "title": "Testbeleg und Git-Artefakt getrennt prüfen",
   "competencyIds": ["c-git-basics", "c-testing-debugging"],
-  "diagnosticCodes": ["wrong-order", "unsafe-workflow"],
+  "diagnosticCodes": ["missing-before-hash", "wrong-order"],
   "helpLevel": 2,
   "body": "Ordne den Arbeitsfluss nach Wissensgewinn: erst reproduzieren, dann ändern, prüfen und zuletzt speichern.",
   "steps": ["Zeige den roten Test.", "Schreibe den kleinsten Fix.", "Führe Einzeltest und Suite aus.", "Lies status und diff.", "Erzeuge erst dann den Commit."],

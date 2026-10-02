@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-tree-best-split",
-  "contract": {
-    "familyId": "optimize-tree-best-split",
-    "familyGroup": "optimize-update",
-    "summary": "Bestimmt den besten Binär-Split über die Gini-Impurity mit Kandidatenschwellen auf Mitten und deterministischer Gleichstandsregel.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "gini-best-binary-split",
-        "propertyTest": false
-      },
-      {
-        "caseId": "gini-three-class-candidates",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-ml-ensembles",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "gini-best-binary-split",
@@ -54,28 +27,20 @@
         "Ein Knoten mit n Punkten und n_k Punkten der Klasse k hat die Anteile p_k = n_k/n — gewichte beim Split mit len(left)/n und len(right)/n.",
         "Sortiere Paare (x, y) nach x; überspringe gleiche Nachbarwerte; bei nahezu gleichem Gini entscheidet der kleinere Schwellenwert."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "wrong-gini",
-          "then": "Gini nutzt Anteile (n_k/n), nicht die Anzahlen n_k selbst."
+          "id": "anzahlen-statt-anteile-in-die",
+          "text": "Anzahlen statt Anteile in die Gini-Formel"
         },
         {
-          "if": "wrong-threshold",
-          "then": "Kandidaten sind Mitten benachbarter x-Werte — z. B. für x = 1, 2, 3, 4 die Werte 1.5, 2.5, 3.5."
+          "id": "schwellen-auf-datenpunkten-statt-auf",
+          "text": "Schwellen auf Datenpunkten statt auf Mitten testen"
         },
         {
-          "if": "tie-break-failed",
-          "then": "Bei Gleichstand (Gini fast identisch) muss der kleinste Schwellenwert bleiben — vergleiche mit Toleranz, nicht exakt."
+          "id": "gleichstand-nicht-deterministisch-aufloesen",
+          "text": "Gleichstand nicht deterministisch auflösen"
         }
       ],
-      "typicalErrors": [
-        "Anzahlen statt Anteile in die Gini-Formel",
-        "Schwellen auf Datenpunkten statt auf Mitten testen",
-        "Gleichstand nicht deterministisch auflösen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -103,28 +68,20 @@
         "Gini summiert quadrierte Klassenanteile, nicht Klassenanzahlen.",
         "Sortiere x und y gemeinsam, überspringe gleiche Nachbarn und wähle bei Gleichstand die kleinste Schwelle."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "wrong-gini",
-          "then": "Gini verwendet Klassenanteile p_k und quadriert diese."
+          "id": "klassenanzahlen-statt-anteile-verwendet",
+          "text": "Klassenanzahlen statt Anteile verwendet"
         },
         {
-          "if": "wrong-candidates",
-          "then": "Schwellen liegen in den Mitten verschiedener benachbarter x-Werte."
+          "id": "x-und-y-nicht-gemeinsam",
+          "text": "x und y nicht gemeinsam sortiert"
         },
         {
-          "if": "wrong-tie",
-          "then": "Der Vertrag verlangt bei numerischem Gleichstand die kleinste Schwelle."
+          "id": "gleiche-x-werte-als-schwelle",
+          "text": "gleiche x-Werte als Schwelle benutzt"
         }
       ],
-      "typicalErrors": [
-        "Klassenanzahlen statt Anteile verwendet",
-        "x und y nicht gemeinsam sortiert",
-        "gleiche x-Werte als Schwelle benutzt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

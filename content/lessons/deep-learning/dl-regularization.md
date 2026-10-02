@@ -43,7 +43,7 @@ Zurückgeladen ergeben sich gleiche Formen und exakt gleiche Werte (`np.array_eq
 - dropout ohne Skalierung oder mit Skalierung zur falschen Zeit (Inferenz).
 - Weight Decay auf den Bias anwenden.
 - Early Stopping auf dem Trainingsverlust statt auf Validierung.
-- Zustände speichern, aber Seeds vergessen — dann ist "geladen" nicht "reproduziert".
+- Zustände speichern, aber Seeds vergessen — dann ist „geladen“ nicht „reproduziert“.
 
 ## Direkter Check
 

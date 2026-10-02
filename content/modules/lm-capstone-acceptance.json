@@ -17,7 +17,7 @@
     "research-evaluation"
   ],
   "lessonIds": [
-    "l-capstone-pipeline"
+    "l-capstone-acceptance"
   ],
   "placements": [
     {
@@ -28,7 +28,7 @@
       "seed": 0,
       "difficulty": "intro",
       "estimatedMinutes": 6,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-acceptance",
       "masteryEligible": false
     },
     {
@@ -39,7 +39,7 @@
       "seed": 0,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-acceptance",
       "masteryEligible": true
     },
     {
@@ -50,7 +50,7 @@
       "seed": 0,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-capstone-pipeline",
+      "lessonId": "l-capstone-acceptance",
       "masteryEligible": true
     },
     {
@@ -60,8 +60,8 @@
       "caseId": "demo-from-frozen-report",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
-      "lessonId": "l-capstone-pipeline",
+      "estimatedMinutes": 25,
+      "lessonId": "l-capstone-acceptance",
       "masteryEligible": true
     },
     {
@@ -71,8 +71,8 @@
       "caseId": "final-diagnosis-rules",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 28,
-      "lessonId": "l-capstone-pipeline",
+      "estimatedMinutes": 32,
+      "lessonId": "l-capstone-acceptance",
       "masteryEligible": true
     },
     {
@@ -82,12 +82,14 @@
       "caseId": "acceptance-all-contracts",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 42,
-      "lessonId": "l-capstone-pipeline",
+      "estimatedMinutes": 45,
+      "lessonId": "l-capstone-acceptance",
       "masteryEligible": true
     }
   ],
-  "projectIds": [],
+  "projectIds": [
+    "p-rag-capstone"
+  ],
   "rightsId": "ki-lernplattform-original",
   "releaseStatus": "draft"
 }

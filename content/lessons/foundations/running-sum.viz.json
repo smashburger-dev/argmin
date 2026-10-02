@@ -9,5 +9,16 @@
     { "kind": "curve", "points": [[1, 3], [2, 4], [3, 8], [4, 9], [5, 14]], "color": "#294bd6" },
     { "kind": "point", "at": ["k", "3*min(1,k)+1*max(0,min(1,k-1))+4*max(0,min(1,k-2))+1*max(0,min(1,k-3))+5*max(0,min(1,k-4))"], "label": "Summe", "color": "#b72f2a" },
     { "kind": "text", "at": [0, -1], "text": "Nach Schritt {k}: kumulative Summe = {3*min(1,k)+1*max(0,min(1,k-1))+4*max(0,min(1,k-2))+1*max(0,min(1,k-3))+5*max(0,min(1,k-4))}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze k = 4. Welche kumulative Summe zeigt der rote Punkt?",
+    "input": "numeric",
+    "expected": 9,
+    "tolerance": 1e-6,
+    "hints": ["Addiere die ersten vier Werte: 3 + 1 + 4 + 1."],
+    "typicalErrors": [
+      { "match": 14, "feedback": "Das ist die Summe aller fünf Werte (k = 5). Bei k = 4 zählt nur bis zum vierten Wert." },
+      { "match": 1, "feedback": "Das ist der Einzelwert an Position 4, nicht die laufende Summe." }
+    ]
+  }
 }

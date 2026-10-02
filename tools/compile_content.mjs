@@ -34,6 +34,7 @@ const defaultProjectRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const schemaNames = [
   'catalog', 'competency', 'track', 'milestone', 'lesson', 'learning-module',
   'exercise-family', 'exercise-family-cases', 'explanation-card', 'project', 'tool-card', 'source-rights', 'visualization',
+  'capsule-bank',
 ];
 const privateMarkers = /library-private|private-extracts|locatorPath|localPath|\/Users\/|\bMML\b|mml-book|murphy-pml|cs50p-psets-harvard/i;
 const CATALOG_ROOTS = { competencies: ['competencies', 'competency'], tracks: ['tracks', 'track'], milestones: ['milestones', 'milestone'], tools: ['tools', 'tool-card'] };
@@ -66,7 +67,7 @@ function resolveContentPath(contentRoot, path, allowedExtensions = ['.json']) {
   return absolute;
 }
 
-const schemaCache = new Map(); // keyed by schema-content hash: in-process schema edits invalidate
+const schemaCache = new Map(); // keyed by projectRoot; the schema-content hash lands in contractVersion metadata
 
 function schemaContracts(projectRoot) {
   if (schemaCache.has(projectRoot)) return schemaCache.get(projectRoot);
@@ -102,8 +103,24 @@ export function validateSourceDocument(schemaName, value, projectRoot = defaultP
   if (schemaName === 'exercise-family-cases') {
     validateChoiceContracts(value);
     validateChallengeContracts(value);
+    validateTypicalErrorIds(value);
   }
   return true;
+}
+
+// typicalError ids are the stable label namespace: duplicates inside one
+// case would silently collide, so fail closed here (schema already pins
+// the {id, text} shape and the kebab pattern).
+function validateTypicalErrorIds(document) {
+  for (const item of document.cases || []) {
+    const seen = new Set();
+    for (const entry of item.typicalErrors || []) {
+      if (seen.has(entry.id)) {
+        throw new Error(`${document.familyId}:${item.caseId}: doppelte typicalError-id ${entry.id}`);
+      }
+      seen.add(entry.id);
+    }
+  }
 }
 
 function validateChoiceContracts(document) {
@@ -116,8 +133,22 @@ function validateChoiceContracts(document) {
 }
 
 function validateChallengeContracts(document) {
-  for (const item of document.cases || []) {
-    if (item.challengeEligible !== true) continue;
+  const flagged = (document.cases || []).filter((item) => item.challengeEligible === true);
+  if (flagged.length === 0) return;
+  // The instantiate smoke-check needs the family wired into the exercise
+  // registry. In the compile flow validateSourceDocument runs before
+  // registerStaticCases/configureExerciseFamilies, so flagged docs register
+  // themselves here (idempotent: case bodies merge, the spec is rebuilt).
+  registerStaticCases(document.familyId, document.cases);
+  // A bare `get()` hit is not enough: another validated document can rebuild
+  // the registry (configureExerciseFamilies replaces it wholesale), leaving a
+  // stale spec whose profiles/cases do not match this document. Re-register
+  // whenever the flagged cases' profiles are not covered.
+  const registered = EXERCISE_FAMILIES.get(document.familyId);
+  if (!registered || flagged.some((item) => !registered.difficultyProfiles.includes(item.difficultyProfile))) {
+    configureExerciseFamilies([document]);
+  }
+  for (const item of flagged) {
     const label = `${document.familyId}:${item.caseId}`;
     if (item.difficultyProfile !== 'challenge') {
       throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt difficultyProfile challenge`);
@@ -134,20 +165,80 @@ function validateChallengeContracts(document) {
     if (!Array.isArray(item.sourceLineage) || item.sourceLineage.length === 0) {
       throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt gesetzte sourceLineage`);
     }
+    // Fail-closed smoke-check: a flagged case must instantiate on the
+    // challenge profile. For contract:null docs (procedural families) this
+    // also proves the JS spec actually carries the case and the profile.
+    let instance = null;
+    try {
+      instance = EXERCISE_FAMILIES.instantiate(document.familyId, 0, 'challenge', item.caseId);
+    } catch (error) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT instantiate-Smoke-Check fehlgeschlagen: ${error.message}`);
+    }
+    // contract:null docs mirror a JS spec — the instantiated case is the
+    // authoritative structure; authored docs are checked on the JSON body.
+    const authored = document.contract != null;
+    const expected = authored ? item.expected : instance.expectedAnswer;
+    const parameters = authored ? item.parameters : instance.parameters;
+    const hints = (authored ? item.hints : instance.hints) ?? item.hints;
+    const competencyIds = authored
+      ? item.competencyIds ?? document.contract?.competencyIds
+      : instance.competencyIds ?? item.competencyIds;
+    const fullSolution = (authored ? item.fullSolution : instance.fullSolution) ?? item.fullSolution;
+    const activityType = item.activityType
+      ?? instance.activityType
+      ?? document.contract?.activityType
+      ?? EXERCISE_FAMILIES.get(document.familyId)?.activityType
+      ?? null;
+    // Generic minima for every flagged case.
+    if (!Array.isArray(hints) || hints.length < 2) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 hints`);
+    }
+    const solutionBlocks = String(fullSolution).split(/\n\s*\n/).filter((block) => block.trim().length > 0);
+    if (solutionBlocks.length < 2 && String(fullSolution).trim().length < 80) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt eine substantielle fullSolution (>=2 Absaetze oder >=80 Zeichen)`);
+    }
+    // Structural minimum per activity type, fail-closed.
+    const tests = parameters?.tests;
+    const testsText = Array.isArray(tests) ? tests.join('\n') : (typeof tests === 'string' ? tests : '');
+    const expectedKind = expected?.kind;
+    if (activityType === 'python-code' || activityType === 'code-tests' || tests != null) {
+      const requiredFunctions = Array.isArray(expected?.requiredFunctions) ? expected.requiredFunctions.length : 0;
+      const checkCalls = (testsText.match(/__check\(/g) || []).length;
+      if (requiredFunctions < 2 && checkCalls < 8) {
+        throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 requiredFunctions oder >=8 __check-Aufrufe`);
+      }
+    } else if (activityType === 'worked-example-fading' || expectedKind === 'gaps') {
+      const gapCount = Array.isArray(expected?.gaps) ? expected.gaps.length : 0;
+      if (gapCount < 4) {
+        throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=4 gaps`);
+      }
+    } else if (activityType === 'multiple-choice' || expectedKind === 'choice-indices') {
+      const distinctIds = new Set(Array.isArray(expected?.correctIds) ? expected.correctIds : []);
+      if (distinctIds.size < 2) {
+        throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 verschiedene correctIds`);
+      }
+    } else if (!Array.isArray(competencyIds) || competencyIds.length < 2) {
+      throw new Error(`${label}: E_CHALLENGE_CONTRACT challengeEligible verlangt >=2 competencyIds`);
+    }
   }
 }
 
 function validateChoiceContract(label, item) {
-  const hasChoices = Object.hasOwn(item, 'choices');
-  const correctChoice = item.expected?.correctChoice;
-  const hasCorrectChoice = typeof correctChoice === 'string';
-  if (hasChoices !== hasCorrectChoice) {
-    throw new Error(`${label}: choices und expected.correctChoice müssen gemeinsam vorhanden sein`);
+  if (item.expected?.kind === 'choice-indices') {
+    const correctIds = item.expected.correctIds;
+    const ids = new Set((item.choices ?? []).map((choice) => choice.id));
+    if (!Array.isArray(correctIds) || correctIds.length < 2 || !correctIds.every((id) => ids.has(id))) {
+      throw new Error(`${label}: expected.correctIds braucht >=2 ids aus choices`);
+    }
+    return;
   }
-  if (!hasChoices) return;
+  if (item.expected?.correctChoice !== undefined) {
+    throw new Error(`${label}: expected.correctChoice ist entfernt — die korrekte Wahl steht in choices[].correct`);
+  }
+  if (!Object.hasOwn(item, 'choices')) return;
   const correct = item.choices.filter((choice) => choice.correct === true);
-  if (correct.length !== 1 || correct[0].id !== correctChoice) {
-    throw new Error(`${label}: choices brauchen genau eine korrekte Antwort passend zu expected.correctChoice`);
+  if (correct.length !== 1) {
+    throw new Error(`${label}: choices brauchen genau eine korrekte Antwort`);
   }
 }
 
@@ -413,14 +504,44 @@ function validateLearningModules(bundle, ids) {
   }
 }
 
-// Card titles must not carry half a math span: a dangling \[ or $ renders
-// raw on family cards. Fails closed on the id, like checkReferences.
-function validateFamilyActivityTitles(activities) {
-  for (const activity of activities) {
-    if (mathDelimiterErrorIndex(activity.title || '') >= 0) {
-      throw new Error(`${activity.definitionId}: Titel mit unbalancierten Math-Delimitern`);
+// Index of the first math delimiter that breaks balance: a closer without
+// an opener, or the opener left unclosed at end of text (-1 = balanced).
+// $$ is scanned before $, \[ \] and \( \) pair up, an escaped \$ is literal.
+const MATH_SPAN_CLOSERS = { '$$': '$$', '$': '$', '\\[': '\\]', '\\(': '\\)' };
+function mathDelimiterErrorIndex(text) {
+  const stack = [];
+  let i = 0;
+  while (i < text.length) {
+    const open = stack[stack.length - 1];
+    if (open) {
+      if (text.startsWith('${', i)) {
+        const close = text.indexOf('}', i + 2);
+        if (close > i) { i = close + 1; continue; }
+      }
+      const closer = MATH_SPAN_CLOSERS[open.kind];
+      if (text.startsWith(closer, i)) { stack.pop(); i += closer.length; continue; }
+      i += text[i] === '\\' ? 2 : 1;
+      continue;
     }
+    // ${name} is a case-template placeholder filled before render — opaque.
+    // $$ immediately before { is '$' + '${name}', not a display-math opener.
+    if (text.startsWith('${', i)) {
+      const close = text.indexOf('}', i + 2);
+      if (close > i) { i = close + 1; continue; }
+    }
+    if (text.startsWith('$$', i) && text[i + 2] !== '{') { stack.push({ kind: '$$', index: i }); i += 2; continue; }
+    const char = text[i];
+    if (char === '$') { stack.push({ kind: '$', index: i }); i += 1; continue; }
+    if (char === '\\') {
+      const next = text[i + 1];
+      if (next === '[' || next === '(') { stack.push({ kind: `\\${next}`, index: i }); i += 2; continue; }
+      if (next === ']' || next === ')') return i;
+      i += next === '\\' || next === '$' ? 2 : 1;
+      continue;
+    }
+    i += 1;
   }
+  return stack.length ? stack[0].index : -1;
 }
 
 // --- learner-text markup gate -------------------------------------------------
@@ -489,13 +610,21 @@ function stripLearnerMathSpans(text) {
   while (i < text.length) {
     const open = stack[stack.length - 1];
     if (open) {
+      if (text.startsWith('${', i)) {
+        const close = text.indexOf('}', i + 2);
+        if (close > i) { out += ' '.repeat(close + 1 - i); i = close + 1; continue; }
+      }
       const closer = MATH_SPAN_CLOSERS[open.kind];
       if (text.startsWith(closer, i)) { stack.pop(); out += ' '.repeat(closer.length); i += closer.length; continue; }
       out += ' ';
       i += text[i] === '\\' ? 2 : 1;
       continue;
     }
-    if (text.startsWith('$$', i)) { stack.push({ kind: '$$' }); out += '  '; i += 2; continue; }
+    if (text.startsWith('${', i)) {
+      const close = text.indexOf('}', i + 2);
+      if (close > i) { out += ' '.repeat(close + 1 - i); i = close + 1; continue; }
+    }
+    if (text.startsWith('$$', i) && text[i + 2] !== '{') { stack.push({ kind: '$$' }); out += '  '; i += 2; continue; }
     const char = text[i];
     if (char === '$') { stack.push({ kind: '$' }); out += ' '; i += 1; continue; }
     if (char === '\\') {
@@ -593,7 +722,6 @@ export function validateCompiledContent(bundle) {
   validateToolsExplanationsProjects(bundle, ids);
   validateLessons(bundle, ids);
   validateLearningModules(bundle, ids);
-  validateFamilyActivityTitles(bundle.familyActivities || []);
   validateLearnerTextMarkup(bundle);
   validateSourceRights(bundle);
   validateSources(bundle.sources);
@@ -700,6 +828,14 @@ function loadCatalogEntities(contentRoot, catalog, files, projectRoot) {
   const objects = Object.fromEntries(Object.entries(CATALOG_OBJECTS).map(([key, [, idField, schemaName]]) => [key, loadObjects(contentRoot, files[key], idField, schemaName, projectRoot)]));
   const projects = loadObjects(contentRoot, files.projects, 'projectId', 'project', projectRoot);
   const families = files.families.map((file) => loadFamilyDocument(contentRoot, file, projectRoot));
+  // Capsule-Banken sind Generator-Inputs ausserhalb des Katalogs — jede Datei
+  // muss dem Schema folgen, der Build bleibt damit fail-closed.
+  const banksDir = join(contentRoot, 'banks');
+  if (existsSync(banksDir)) {
+    for (const file of readdirSync(banksDir).filter((name) => name.endsWith('.json')).sort()) {
+      validateSourceDocument('capsule-bank', JSON.parse(readFileSync(join(banksDir, file), 'utf8')), projectRoot);
+    }
+  }
   return {
     sourceRights: sourceRightsDocument.sources,
     sources: sourcesDocument.sources || [],
@@ -805,53 +941,22 @@ function compileCatalogBundle(contentRoot, projectRoot, catalog, contractVersion
 // Lesson and family bodies stay out of the initial index and are loaded by id.
 
 const SAFE_CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,96}$/;
-
-// Index of the first math delimiter that breaks balance: a closer without
-// an opener, or the opener left unclosed at end of text (-1 = balanced).
-// $$ is scanned before $, \[ \] and \( \) pair up, an escaped \$ is literal.
-const MATH_SPAN_CLOSERS = { '$$': '$$', '$': '$', '\\[': '\\]', '\\(': '\\)' };
-function mathDelimiterErrorIndex(text) {
-  const stack = [];
-  let i = 0;
-  while (i < text.length) {
-    const open = stack[stack.length - 1];
-    if (open) {
-      const closer = MATH_SPAN_CLOSERS[open.kind];
-      if (text.startsWith(closer, i)) { stack.pop(); i += closer.length; continue; }
-      i += text[i] === '\\' ? 2 : 1;
-      continue;
-    }
-    if (text.startsWith('$$', i)) { stack.push({ kind: '$$', index: i }); i += 2; continue; }
-    const char = text[i];
-    if (char === '$') { stack.push({ kind: '$', index: i }); i += 1; continue; }
-    if (char === '\\') {
-      const next = text[i + 1];
-      if (next === '[' || next === '(') { stack.push({ kind: `\\${next}`, index: i }); i += 2; continue; }
-      if (next === ']' || next === ')') return i;
-      i += next === '\\' || next === '$' ? 2 : 1;
-      continue;
-    }
-    i += 1;
-  }
-  return stack.length ? stack[0].index : -1;
-}
-
-// Card titles double as the list-view snippet and stay short so the index
-// chunk does not grow linearly with prompt text. A cut inside a math span
-// leaves a dangling \[ or $ rendering raw on cards, so an unclosed span
-// tail is dropped instead of torn apart.
-export function stripPromptMarkup(prompt, maxLength = 80) {
+function stripPromptMarkup(prompt, maxLength = 80) {
   const text = String(prompt || '')
     .replace(/<[^>]*>/g, '')
+    // Any math span ($$..$$, \[..\], \(..\) or inline $..$) ends the readable
+    // title: stripping just the $ chars would leave naked TeX commands behind.
+    .split(/\$\$|\\\[|\\\(|[$]/)[0]
+    .replace(/\\log_\{?(\w+)\}?/g, 'log_$1')
+    .replace(/\^\{([^}]*)\}/g, '^$1')
+    .replace(/\\cdot/g, '·')
+    .replace(/\$/g, '')
     .replace(/\s+/g, ' ')
     .trim();
   if (text.length <= maxLength) return text;
   const cut = text.slice(0, maxLength);
   const boundary = cut.lastIndexOf(' ');
-  let title = cut.slice(0, boundary > 30 ? boundary : maxLength);
-  const brokenAt = mathDelimiterErrorIndex(title);
-  if (brokenAt >= 0) title = title.slice(0, brokenAt).trimEnd();
-  return title ? `${title} …` : '';
+  return `${cut.slice(0, boundary > 30 ? boundary : maxLength)} …`;
 }
 
 function buildFamilyActivities(learningModules, families) {
@@ -876,18 +981,37 @@ function buildFamilyActivity(placement, module, familyDocuments, seen) {
   const instance = EXERCISE_FAMILIES.instantiate(placement.familyId, placement.seed ?? 0, placement.difficulty, placement.caseId);
   const familyDocument = familyDocuments.get(placement.familyId);
   const familyTitle = familyDocument?.contract?.summary || family.summary;
-  const staticCase = familyDocument?.cases?.some((entry) => entry.caseId === placement.caseId);
-  const title = instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
+  const caseTitle = familyDocument?.cases?.find((item) => item.caseId === placement.caseId)?.title;
+  const title = caseTitle || instance.title || stripPromptMarkup(instance.prompt, 80) || familyTitle;
   seen.add(definitionId);
+  // Fresh-instance review routing (same case, random seed) only makes sense
+  // for cases that actually draw new content per seed (propertyTest !==
+  // false). Static members of a seeded family keep their pinned route.
+  const caseType = family.caseTypes?.find((item) => item.caseId === placement.caseId);
+  const seeded = family.authorityMode === 'seeded' && caseType?.propertyTest !== false;
   return {
     definitionId, familyId: placement.familyId, caseId: placement.caseId, seed: placement.seed ?? 0, difficulty: placement.difficulty, title,
     activityType: instance.kind ?? instance.activityType, competencyIds: [...(instance.competencyIds || [])],
     estimatedMinutes: placement.estimatedMinutes ?? 8, masteryEligible: instance.masteryEligible === true,
-    seeded: !staticCase && family.authorityMode === 'seeded', moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
+    seeded, moduleId: module.moduleId, lessonId: placement.lessonId ?? null,
   };
 }
 
-// Route-scoped index sections: four heavy sections ship as sidecar chunks
+// Display title for a challenge-flagged case that has no module placement:
+// instantiate at the challenge profile and reuse the familyActivities
+// derivation. Registration is lazy so projection also works when this runs
+// without the validation pass having populated EXERCISE_FAMILIES first.
+function challengeCaseTitle(family, caseId) {
+  try {
+    if (!EXERCISE_FAMILIES.get(family.familyId)) configureExerciseFamilies([family]);
+    const instance = EXERCISE_FAMILIES.instantiate(family.familyId, 0, 'challenge', caseId);
+    return instance.title || stripPromptMarkup(instance.prompt, 80) || '';
+  } catch {
+    return '';
+  }
+}
+
+// Route-scoped index sections: three heavy sections ship as sidecar chunks
 // loaded through sectionChunks, keeping them out of the initial bundle.
 const SECTION_FIELDS = {
   sources: 'sources',
@@ -906,9 +1030,28 @@ export function buildSplitArtifacts(bundle) {
       familyId: family.familyId,
       summary: family.contract?.summary || '',
       contract: family.contract,
-      cases: family.cases.map(({ caseId, difficultyProfile, masteryEligible, challengeEligible }) => ({
-        caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}),
-      })),
+      cases: family.cases.map((item) => {
+        const { caseId, difficultyProfile, masteryEligible, challengeEligible, title } = item;
+        const projected = { caseId, difficultyProfile, masteryEligible, ...(challengeEligible === true ? { challengeEligible: true } : {}) };
+        // Challenge cards render titles and the activity-type tag before the
+        // family route loads, so derive them here the same way
+        // buildFamilyActivities does. An authored case-level `title`
+        // overrides the generated instance title.
+        if (challengeEligible === true || typeof title === 'string') {
+          const derived = typeof title === 'string' && title ? title : challengeCaseTitle(family, caseId);
+          if (derived) projected.title = derived;
+        }
+        if (challengeEligible === true) {
+          if (!family.contract?.activityType && !EXERCISE_FAMILIES.get(family.familyId)) {
+            configureExerciseFamilies([family]);
+          }
+          const type = item.activityType
+            ?? family.contract?.activityType
+            ?? EXERCISE_FAMILIES.get(family.familyId)?.activityType;
+          if (type) projected.activityType = type;
+        }
+        return projected;
+      }),
     })),
   };
   const lessonBodies = bundle.lessons.map((lesson) => {

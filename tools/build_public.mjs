@@ -33,21 +33,26 @@ const ALLOWED_FILES = [
   'LICENSE-CONTENT.md',
   'assets/js/core/exercise_runtime.js',
   'assets/js/core/learning_ledger.mjs',
+  'assets/js/core/progress_notify.mjs',
   'assets/js/core/graders.js',
   'assets/js/core/progress_store.js',
   'assets/js/core/progress_migration.mjs',
   'assets/js/core/review_scheduler.js',
   'assets/js/core/linalg_generators.mjs',
+  'assets/js/core/solved_family_kit.mjs',
   'assets/js/core/foundations_generators.mjs',
   'assets/js/core/generator_draw_kit.mjs',
   'assets/js/core/foundations_fresh_generators.mjs',
   'assets/js/core/foundations_choice_families.mjs',
   'assets/js/core/foundations_construct_families.mjs',
   'assets/js/core/foundations_trace_families.mjs',
+  'assets/js/core/trace_assignment_generators.mjs',
   'assets/js/core/foundations_linalg_families.mjs',
   'assets/js/core/linalg_numpy_fresh_generators.mjs',
+  'assets/js/core/viz_checkpoint_grader.mjs',
   'assets/js/core/data_ml_generators.mjs',
   'assets/js/core/data_ml_families.mjs',
+  'assets/js/core/choice_bank_families.mjs',
   'assets/js/domain/activity_route.mjs',
   'assets/js/domain/expression_eval.mjs',
   'assets/js/domain/competency_graph.mjs',
@@ -58,10 +63,8 @@ const ALLOWED_FILES = [
   'assets/js/domain/plan_engine.mjs',
   'assets/js/domain/exercise_registry.mjs',
   'assets/js/domain/family_registry.mjs',
-  'assets/js/domain/foundations_choice_registry.mjs',
-  'assets/js/domain/foundations_construct_registry.mjs',
-  'assets/js/domain/foundations_trace_registry.mjs',
-  'assets/js/domain/foundations_linalg_registry.mjs',
+  'assets/js/domain/statement_pool.mjs',
+  'assets/js/domain/procedural_registry.mjs',
   'assets/js/domain/project_report.mjs',
   'assets/js/runtime/pyodide_runner.js',
   'assets/js/runtime/pyodide_worker.mjs',
@@ -169,15 +172,11 @@ const ALLOWED_FILES = [
   'vendor/pyodide/python_stdlib.zip',
   'vendor/pyodide/pyodide-lock.json',
   'vendor/pyodide/numpy-2.4.6-cp314-cp314-pyemscripten_2026_0_wasm32.whl',
-  'vendor/pyodide/sympy-1.14.0-py3-none-any.whl',
-  'vendor/pyodide/mpmath-1.4.1-py3-none-any.whl',
   'vendor/pyodide/package.json',
   'vendor/licenses/THIRD_PARTY_NOTICES.json',
   'vendor/licenses/pyodide-314.0.5-MPL-2.0.txt',
   'vendor/licenses/python-3.14.2-PSF-LICENSE.txt',
   'vendor/licenses/numpy-2.4.6-LICENSES.txt',
-  'vendor/licenses/sympy-1.14.0-LICENSES.txt',
-  'vendor/licenses/mpmath-1.4.1-BSD-3-Clause.txt',
   // MathLive (MIT) — math input
   'vendor/mathlive/mathlive.min.mjs',
   'vendor/mathlive/LICENSE.txt',
@@ -244,10 +243,22 @@ const ALLOWED_FILES = [
   'content/lessons/research/capstone-baseline.json',
   'content/lessons/research/capstone-baseline.md',
   'content/lessons/research/capstone-baseline-checkpoint.md',
-  'content/lessons/research/capstone-pipeline.json',
-  'content/lessons/research/capstone-pipeline.md',
+  'content/lessons/research/capstone-freeze.json',
+  'content/lessons/research/capstone-freeze.md',
+  'content/lessons/research/capstone-freeze-checkpoint.md',
   'content/lessons/research/chunk-overlap.viz.json',
-  'content/lessons/research/capstone-pipeline-checkpoint.md',
+  'content/lessons/research/capstone-runner.json',
+  'content/lessons/research/capstone-runner.md',
+  'content/lessons/research/capstone-runner-checkpoint.md',
+  'content/lessons/research/capstone-regression.json',
+  'content/lessons/research/capstone-regression.md',
+  'content/lessons/research/capstone-regression-checkpoint.md',
+  'content/lessons/research/capstone-repro.json',
+  'content/lessons/research/capstone-repro.md',
+  'content/lessons/research/capstone-repro-checkpoint.md',
+  'content/lessons/research/capstone-acceptance.json',
+  'content/lessons/research/capstone-acceptance.md',
+  'content/lessons/research/capstone-acceptance-checkpoint.md',
 ];
 const ALLOWED_DIRS = [
   // dir, extension filter (fonts only ship as woff2)
@@ -255,6 +266,8 @@ const ALLOWED_DIRS = [
   { dir: 'vendor/mathlive/fonts', ext: '.woff2' },
   { dir: 'content/modules', ext: '.json' },
   { dir: 'content/families', ext: '.json' },
+  { dir: 'content/banks', ext: '.json' },
+  { dir: 'assets/js/core/procedural', ext: '.mjs' },
 ];
 // Source directories scanned for private canaries before copying.
 const SCAN_DIRS = ['assets', 'content'];
@@ -357,6 +370,45 @@ if (nextDirArg) {
     'vendor/licenses/NPM_BUNDLE_NOTICES.md',
     ...npmBundleNotices.components.map((component) => component.licenseFile),
   );
+
+  // Offline service worker: the precache list is the disk walk at this point
+  // (all content + hashed bundles + vendored assets are already copied),
+  // minus what offline boot never requests. Excluded: the generated control
+  // files; vendor/pyodide (runtime-cached on first use instead of ~16 MB
+  // upfront); the raw content trees that ship in the release but are compiled
+  // into JS chunks and never fetched (lessons, families, banks, modules,
+  // explanations, content-bundle.json); and the repo-side assets/js/ sources
+  // that vite bundles — except the two module-worker files, which are fetched
+  // verbatim via new Worker() and its static import. content/catalog.json and
+  // content/projects/** stay precached: progress_store.js and ProjectView
+  // fetch them at runtime. The offline manifest stays complete — the settings
+  // prefetch warms every shipped file.
+  const swRuntimeFetched = new Set([
+    'assets/js/runtime/pyodide_worker.mjs',
+    'assets/js/runtime/workspace_protocol.mjs',
+  ]);
+  const swExcludes = (rel) => rel === 'PUBLIC-BUILD.md' || rel === 'sw.js' || rel === 'offline-manifest.json'
+    || rel.startsWith('vendor/pyodide/')
+    || rel === 'content/content-bundle.json'
+    || /^content\/(lessons|families|banks|modules|explanations)\//.test(rel)
+    || (rel.startsWith('assets/js/') && !swRuntimeFetched.has(rel));
+  const buildFiles = walk(out).map((p) => relative(out, p).replaceAll('\\', '/')).sort();
+  const buildId = createHash('sha256')
+    .update(buildFiles.map((rel) => `${rel}:${createHash('sha256').update(readFileSync(join(out, rel))).digest('hex')}`).join('\n'))
+    .digest('hex').slice(0, 16);
+  // The vendored pyodide version keys the runtime cache so a vendor bump
+  // invalidates the stale runtime instead of serving it cache-first forever.
+  const pyodideVersion = JSON.parse(readFileSync(join(out, 'vendor/pyodide/package.json'), 'utf8')).version;
+  if (typeof pyodideVersion !== 'string' || !pyodideVersion) fail('vendor/pyodide/package.json liefert keine Version');
+  const swSource = readFileSync(join(root, 'tools/sw.js'), 'utf8');
+  const swOutput = swSource
+    .replaceAll('__BUILD_ID__', buildId)
+    .replaceAll('__PYODIDE_VERSION__', pyodideVersion)
+    .replaceAll('__PRECACHE__', JSON.stringify(buildFiles.filter((rel) => !swExcludes(rel))));
+  if (/__[A-Z_]+__/.test(swOutput)) fail('sw.js enthaelt nach der Injektion noch Platzhalter');
+  writeFileSync(join(out, 'sw.js'), swOutput);
+  writeFileSync(join(out, 'offline-manifest.json'), `${JSON.stringify({ buildId, pyodideVersion, files: buildFiles }, null, 2)}\n`);
+  targets.push('sw.js', 'offline-manifest.json');
 }
 
 const noticeManifestPath = join(out, 'vendor/licenses/THIRD_PARTY_NOTICES.json');
@@ -407,9 +459,8 @@ const npmNoticeLine = npmBundleNotices
 
 // Public marker + attribution (CC BY 4.0 for generated content, dependency
 // licenses shipped next to the artifacts). Embeds a build manifest (path +
-// SHA-256 for every produced file except this one) so that
-// tools/validate_content.mjs --dir build-next can enforce that the build
-// contains EXACTLY the files this script produced, byte for byte.
+// SHA-256 for every produced file except this one); the produced-vs-expected
+// file check below enforces that the build contains exactly this set.
 const manifestEntries = walk(out)
   .map((p) => relative(out, p))
   .sort()
@@ -438,7 +489,7 @@ ${manifestJson}
 // --- 4) verify the produced tree: nothing extra, nothing private ---------------
 const produced = walk(out).map((p) => relative(out, p)).sort();
 const expected = [...new Set([...targets, 'content/content-bundle.json', 'vendor/licenses/THIRD_PARTY_NOTICES.md', 'PUBLIC-BUILD.md'])].sort();
-if (produced.length !== expected.length) {
+if (produced.join('\n') !== expected.join('\n')) {
   const extra = produced.filter((p) => !expected.includes(p));
   const missing = expected.filter((p) => !produced.includes(p));
   fail(`Build-Baum weicht ab. Zusätzlich: ${extra.join(', ')} — Fehlend: ${missing.join(', ')}`);

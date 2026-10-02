@@ -6,7 +6,6 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   compileContent,
-  stripPromptMarkup,
   validateLearnerTextMarkup,
   validateLessonExerciseLinks,
   validateCompetencyGraph,
@@ -146,7 +145,7 @@ test('content can grow by one lesson and one exercise without touching counters'
     const extraLesson = { ...seedLesson, lessonId: 'l-growth-extra', title: 'Zusatzlektion', blocks: [{ blockId: 'b1', type: 'worked-example', contentRef: 'lessons/growth/extra.md' }] };
     writeFileSync(join(growRoot, 'content/lessons/growth/extra.json'), JSON.stringify(extraLesson));
 
-    const seedFamily = JSON.parse(readFileSync(join(root, 'content/families/classify-attention-roles.json'), 'utf8'));
+    const seedFamily = JSON.parse(readFileSync(join(root, 'content/families/classify-repro-contract.json'), 'utf8'));
     const extraFamily = {
       ...seedFamily,
       familyId: 'growth-family',
@@ -254,44 +253,6 @@ test('a new exercise is a family placement without catalog, UI, ledger or build-
   } finally {
     rmSync(placeRoot, { recursive: true, force: true });
   }
-});
-
-test('family activity titles drop an unclosed math span instead of tearing it', () => {
-  // Regression: an 80-char cut inside \[…\] or $…$ left a dangling delimiter
-  // that rendered raw on cards. The gate in validateCompiledContent fails
-  // closed on any unbalanced title, so a compiled bundle proves balance.
-  const bundle = compileContent({ projectRoot: root, profile: 'public' });
-  assert.doesNotThrow(() => validateCompiledContent(bundle));
-  const titles = new Map(bundle.familyActivities.map((activity) => [activity.definitionId, activity.title]));
-  assert.equal(titles.get('transform-rank-dependence-rowops:rank-3x3-staircase'), 'Bestimme den Rang der Matrix …');
-  assert.equal(titles.get('transform-system-2x2-elimination:system-w05-e11'), 'Übung zur Gauß-Elimination mit anderen Zahlen als w05-e6: Löse …');
-  assert.equal(titles.get('classify-confounding:temperature-confounder'), 'Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit …');
-});
-
-test('stripPromptMarkup cuts before an unclosed math span and keeps balanced spans', () => {
-  assert.equal(
-    stripPromptMarkup('Bestimme den Rang der Matrix \\[A=\\begin{pmatrix}2&1&1\\\\1&2&0\\\\3&3&1\\end{pmatrix}\\] mit Gauß-Elimination (Zeilenstufenform) und gib ihn als ganze Zahl ein.'),
-    'Bestimme den Rang der Matrix …',
-  );
-  assert.equal(
-    stripPromptMarkup('Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit $r \\approx 0{,}9$. Was ist die sauberste Schlussfolgerung?'),
-    'Eisverkäufe und Badeunfälle korrelieren über das Jahr hinweg mit …',
-  );
-  assert.equal(
-    stripPromptMarkup('Übung zur Gauß-Elimination: Löse \\[ 2x + y = 5, \\qquad x - 3y = -8 \\] und gib die Lösung als Paar ein.'),
-    'Übung zur Gauß-Elimination: Löse \\[ 2x + y = 5, \\qquad x - 3y = -8 \\] und gib …',
-  );
-  assert.equal(stripPromptMarkup('Berechne $u^\\top v$ für gegebene Vektoren.'), 'Berechne $u^\\top v$ für gegebene Vektoren.');
-});
-
-test('compiled content rejects a family activity title with unbalanced math delimiters', () => {
-  const bundle = compileContent({ projectRoot: root, profile: 'public' });
-  const activity = bundle.familyActivities.find((item) => item.definitionId === 'classify-confounding:temperature-confounder');
-  activity.title = 'Eisverkäufe korrelieren mit $r \\approx 0{,}9';
-  assert.throws(
-    () => validateCompiledContent(bundle),
-    /classify-confounding:temperature-confounder: Titel mit unbalancierten Math-Delimitern/,
-  );
 });
 
 // --- learner-text markup gate (validateLearnerTextMarkup) ---------------------
@@ -417,4 +378,31 @@ test('learner-text gate: code, parameters, expected and source fields stay out o
   }, {
     tools: [{ toolId: 't-1', manifest: 'Zeile\n**nicht** \\alpha und <x>' }],
   })), true);
+});
+
+test('tool cards preserve public runtimes, repositories and visualization routes', () => {
+  const publicBundle = compileContent({ projectRoot: root, profile: 'public' });
+  assert.equal(publicBundle.tools.length, 7);
+  // The workspace tool links to the real in-app Python exercise — the old
+  // '#/lab/w05-e8' hash had no router handler and was a dead link.
+  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-browser-python-workspace' && tool.routes.some((route) => route.href === '#/family/construct-matvec-shape-contract/matvec-code-reference/0/core')));
+  assert.equal(JSON.stringify(publicBundle).includes('#/lab/'), false);
+  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-expression-equivalence' && tool.routes.length === 0));
+  assert.ok(publicBundle.tools.some((tool) => tool.toolId === 't-matrix-column-visualization' && tool.routes.some((route) => route.href === '#/visualization/column-picture')));
+  assert.ok(publicBundle.tools.some((tool) => tool.kind === 'repository' && tool.sourceRefs.includes('dlwp-notebooks')));
+  assert.equal(publicBundle.tools.some((tool) => tool.availability === 'local-only'), false);
+});
+
+test('all lesson readings resolve to public source cards', () => {
+  const publicBundle = compileContent({ projectRoot: root, profile: 'public' });
+  const sourceIds = new Set(publicBundle.sources.map((source) => source.sourceId));
+  // Growth-counter rule: the public source count derives from sources.json,
+  // never from a hardcoded number (ADR-0013 inherited-debt C).
+  const allSources = JSON.parse(readFileSync(join(root, 'content/sources.json'), 'utf8')).sources;
+  const expectedPublicSources = allSources.filter((source) => ['open', 'generated', 'link-only'].includes(source.contentClass)).length;
+  assert.equal(publicBundle.sources.length, expectedPublicSources);
+  for (const lesson of publicBundle.lessons) {
+    assert.ok(lesson.sourceRefs.length > 0, `${lesson.lessonId} has no reading`);
+    for (const reference of lesson.sourceRefs) assert.ok(sourceIds.has(reference.sourceId), `${lesson.lessonId} references ${reference.sourceId}`);
+  }
 });

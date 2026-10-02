@@ -74,6 +74,28 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-ml-cv-fold-nan-crash-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-ml-eval",
+      "caseId": "fold-nan-crash",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-ml-cv-leakage-diagnosis",
+      "role": "curated",
+      "familyId": "diagnostic-rationale-ml-eval",
+      "caseId": "shift-minus-one-leakage",
+      "seed": 1,
+      "difficulty": "core",
+      "estimatedMinutes": 6,
+      "lessonId": "l-ml-cv",
+      "masteryEligible": false
+    },
+    {
       "placementId": "p-ml-cv-practice-space",
       "role": "practice-space",
       "familyId": "formula-metric-spread-range",

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import preact from '@preact/preset-vite';
@@ -7,6 +8,7 @@ const projectRoot = import.meta.dirname;
 export default defineConfig({
     base: './',
     publicDir: false,
+    server: { port: 4173 },
     plugins: [
       preact({ exclude: [/node_modules/, /\/vendor\//] }),
     ],
@@ -21,6 +23,67 @@ export default defineConfig({
       emptyOutDir: true,
       rollupOptions: {
         input: resolve(projectRoot, 'index.html'),
+      },
+      rolldownOptions: {
+        output: {
+          // Das Familien-Subsystem haengt komplett hinter der lazy
+          // FamilyExerciseView. Prozedurale Einzel-Module wachsen mit jeder
+          // migrierten Familie; sie bleiben je Familien-Praefix in eigenen
+          // Lazy-Chunks unter dem 250-KiB-gzip-Budget, die grossen
+          // Generator-/Familien-Dateien in family-core.
+          advancedChunks: {
+            includeDependenciesRecursively: false,
+            groups: [
+              {
+                test: /core\/procedural\//,
+                name: (id) => {
+                  // Die geteilten Kits (py_test_kit, case_family_kit) tragen
+                  // keinen Familien-Praefix — sie gehoeren in family-core:
+                  // Familien-Module rufen sie bei der Modul-Initialisierung
+                  // auf, und ein Platz im View-Chunk schliesst den
+                  // Lazy-Chunk-Zyklus ("x is not a function" im Preview).
+                  if (/_kit\.mjs$/.test(id)) return 'family-core';
+                  const match = /core\/procedural\/([a-z]+)-/.exec(id);
+                  return match ? `procedural-${match[1]}` : null;
+                },
+              },
+              {
+                // Bank-JSONs gehoeren zum selben Lazy-Chunk wie ihre
+                // Generator-Familie (familyId-Praefix), sonst zieht die
+                // FamilyExerciseView alle Bänke in ihren eigenen Chunk.
+                test: /content\/banks\//,
+                name: (id) => {
+                  const match = /content\/banks\/([a-z]+)-/.exec(id);
+                  return match ? `procedural-${match[1]}` : 'content-banks';
+                },
+              },
+              {
+                // Familien-Anker folgen ihrer Familie: existiert ein
+                // gleichnamiges procedural-Modul, gehoert die Doc in
+                // dessen Lazy-Chunk, sonst zu den family-core-Importeuren.
+                test: /content\/families\//,
+                name: (id) => {
+                  const stem = /content\/families\/([\w-]+)\.json$/.exec(id)?.[1];
+                  if (!stem) return 'family-core';
+                  if (existsSync(resolve(projectRoot, `assets/js/core/procedural/${stem}.mjs`))) {
+                    const prefix = /^([a-z]+)-/.exec(stem)?.[1];
+                    return prefix ? `procedural-${prefix}` : 'family-core';
+                  }
+                  return 'family-core';
+                },
+              },
+              {
+                // Alles, wovon die Familien-Laufzeit gegenseitig abhaengt,
+                // gehoert in EINEN Chunk: die Zyklen family_registry ->
+                // graders -> linalg_generators und draw_kit <-> generators
+                // duerfen keine Chunk-Grenzen schneiden (TDZ-Absturz:
+                // "x is not a function" im gebauten Preview).
+                name: 'family-core',
+                test: /assets\/js\/(core\/[^/]*(generators|_families|generator_draw_kit|graders)\.m?js|domain\/family_registry\.mjs)$/,
+              },
+            ],
+          },
+        },
       },
     },
 });

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Pyodide contract matrix (ADR-0013 inherited-debt A):
-// inventories every pyodide-graded exercise definition across the authored
-// week packs, groups them into unique worker test contracts, and writes a
+// inventories every pyodide-graded exercise definition across the curated
+// module placements, groups them into unique worker test contracts, and writes a
 // machine-readable matrix. The browser smoke (tests/e2e/pyodide-contracts.spec.ts)
 // turns this matrix into tests/e2e/pyodide-contract-receipt.json; the node test
 // tests/pyodide_contract_matrix.test.mjs refuses untested families.
@@ -10,10 +10,10 @@
 // list, workspace shape (files/entrypoint), and where the test code comes from.
 
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildPythonTests, buildSympyEquivalenceRun } from '../assets/js/core/graders.js';
+import { buildPythonTests } from '../assets/js/core/graders.js';
 import { compileContent } from './compile_content.mjs';
 import { EXERCISE_FAMILIES } from '../assets/js/domain/exercise_registry.mjs';
 
@@ -41,7 +41,7 @@ export function buildPyodideContractMatrix(projectRoot = root) {
       activity.difficulty,
       activity.caseId,
     );
-    if (instance.graderId !== 'pyodide' && instance.graderId !== 'pyodide-sympy') continue;
+    if (instance.graderId !== 'pyodide') continue;
     definitions.push(buildDefinition(activity, instance));
   }
   for (const definition of definitions) {
@@ -62,15 +62,36 @@ export function buildPyodideContractMatrix(projectRoot = root) {
     }
     entry.definitionIds.push(definition.definitionId);
   }
-  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions };
+  return { schemaVersion: 1, generatedFrom: 'content/families/*.json', definitionCount: definitions.length, contractCount: contracts.length, contracts, definitions, runtimeHash: runtimeHash(projectRoot, definitions) };
+}
+
+// Bricht den Browser-Vertrag, wenn sich Definitionen, Worker/Runner-Protokoll
+// oder die vendorte Pyodide-Laufzeit aendern — ein frischer Receipt
+// (tests/e2e/pyodide-contract-receipt.json) macht den teuren Run dann
+// ueberfluessig.
+const RUNTIME_FILES = [
+  'assets/js/runtime/pyodide_runner.js',
+  'assets/js/runtime/pyodide_worker.mjs',
+  'assets/js/runtime/workspace_protocol.mjs',
+];
+
+export function runtimeHash(projectRoot = root, definitions = []) {
+  const hash = createHash('sha256');
+  hash.update(JSON.stringify(definitions));
+  for (const rel of RUNTIME_FILES) {
+    hash.update(rel);
+    hash.update(readFileSync(join(projectRoot, rel)));
+  }
+  const vendorDir = join(projectRoot, 'vendor/pyodide');
+  for (const name of readdirSync(vendorDir).sort()) {
+    hash.update(name);
+    hash.update(readFileSync(join(vendorDir, name)));
+  }
+  return hash.digest('hex');
 }
 
 function buildDefinition(activity, instance) {
   const base = { definitionId: activity.definitionId, competencyIds: activity.competencyIds, contract: contractKey({ ...instance, grader: instance.graderId }) };
-  if (instance.graderId === 'pyodide-sympy') {
-    const run = buildSympyEquivalenceRun(instance.expectedAnswer?.expression ?? '', instance.expectedAnswer?.expression ?? '');
-    return { ...base, packages: run.packages, tests: run.tests, referenceSolver: run.code };
-  }
   return { ...base, packages: instance.parameters?.packages || [], tests: buildPythonTests({ ...instance, grader: instance.graderId }), referenceSolver: instance.expectedAnswer?.referenceSolver || instance.fullSolution || '' };
 }
 

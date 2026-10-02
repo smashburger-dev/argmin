@@ -1,37 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { graders } from '../assets/js/core/graders.js';
-import {
-  GIT_OPERATION_CONTRACT,
-  generateGitOperationFamily,
-  solveGitOperation,
-} from '../assets/js/core/foundations_fresh_generators.mjs';
+import { GIT_OPERATION_CONTRACT, solveGitOperation } from '../assets/js/core/foundations_fresh_generators.mjs';
 import {
   createFamilyRegistry,
   familyEventInput,
-  familyIdTokens,
   instantiate,
-  grade,
-  assertFamilyPlacement,
-  EXERCISE_FAMILIES,
 } from '../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases, staticFamilySpec } from '../assets/js/domain/family_registry.mjs';
 import { buildLearningEvent, isJournalWorthy } from '../assets/js/domain/learning_event.mjs';
-import { instanceKey } from '../assets/js/domain/learning_policy.mjs';
 import { assertModuleBindings } from '../assets/js/domain/learning_module.mjs';
-import { validateSourceDocument } from '../tools/compile_content.mjs';
-
-const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const canonical = JSON.parse(readFileSync(join(root, 'tests/fixtures/canonical-families.json'), 'utf8'));
-const SOLVER_TABLE = {
-  'diff-unstaged': 'git diff',
-  'diff-staged': 'git diff --staged',
-  'merge-conflict-test-flow': 'Konfliktmarker und beide Absichten lesen, fachlich auflösen, Tests ausführen, `git diff` prüfen, dann den Merge committen',
-};
 
 const ids = {
   competencies: new Set(['c-git-basics']),
@@ -55,18 +32,9 @@ const familyModule = {
   placements: [],
 };
 
-function counterexample(instance) {
-  const wrong = instance.choices.find((choice) => choice.correct !== true);
-  assert.ok(wrong, `${instance.caseId}: Gegenbeispiel fehlt`);
-  return wrong.id;
-}
-
 function propertyCases(family) {
   return family.caseTypes.filter((item) => item.propertyTest !== false);
 }
-
-
-
 
 
 
@@ -123,21 +91,21 @@ test('static variants select deterministic cases and stay solver-aligned', () =>
         masteryEligible: true,
         sourceLineage: [],
         parameters: { base: true },
-        expected: { correctChoice: 'a' },
+        expected: {},
         choices: [baseChoice('Basis', true), baseChoice('Distraktor', false)],
         prompt: 'Basis',
         fullSolution: 'Basis',
         variants: [
           {
             parameters: { value: 1 },
-            expected: { correctChoice: 'a' },
+            expected: {},
             choices: [baseChoice('Variante 1', true), baseChoice('Distraktor 1', false)],
             prompt: 'Variante 1',
             fullSolution: 'Variante 1',
           },
           {
             parameters: { value: 2 },
-            expected: { correctChoice: 'a' },
+            expected: {},
             choices: [baseChoice('Variante 2', true), baseChoice('Distraktor 2', false)],
             prompt: 'Variante 2',
             fullSolution: 'Variante 2',
@@ -150,7 +118,7 @@ test('static variants select deterministic cases and stay solver-aligned', () =>
         masteryEligible: true,
         sourceLineage: [],
         parameters: { base: true },
-        expected: { correctChoice: 'a' },
+        expected: {},
         choices: [baseChoice('Nur Basis', true), baseChoice('Distraktor', false)],
         prompt: 'Nur Basis',
         fullSolution: 'Nur Basis',
@@ -190,6 +158,48 @@ test('vacuous-axis steps are declared, not silent', () => {
   assert.equal(typeof stretch.parameters.fileName, 'string');
 });
 
+test('git operation variants: seed picks the body, solver and feedback follow it', () => {
+  const variantOf = (instance) => instance.parameters.variant ?? 0;
+  const anchor = instantiate('classify-git-operation', 0, 'core', 'push');
+  assert.equal('variant' in anchor.parameters, false, 'Seed 0 bleibt der authored Fall ohne variant-Feld');
+  const prompts = new Set();
+  for (let seed = 0; seed < 12; seed += 1) {
+    const instance = instantiate('classify-git-operation', seed, 'core', 'push');
+    assert.equal(variantOf(instance), seed % 3);
+    prompts.add(instance.prompt);
+    const correct = instance.choices.find((choice) => choice.correct);
+    assert.equal(solveGitOperation(instance.parameters).correctText, correct.text, `${seed}: Solver folgt parameters.variant`);
+    const rules = instance.feedbackRules || [];
+    if (variantOf(instance) > 0) assert.equal(rules.length, 3, `${seed}: jede Variante trägt Distraktor-Feedback`);
+    for (const rule of rules) {
+      const id = /^choice === '([a-d])'$/.exec(rule.if)?.[1];
+      assert.ok(id && id !== correct.id, `${seed}: Regel ${rule.if} zeigt auf einen Distraktor`);
+    }
+  }
+  assert.equal(prompts.size, 3);
+});
+
+test('git operation file localization: option, solution and feedback texts follow the drawn file name', () => {
+  for (const { caseId } of GIT_OPERATION_CONTRACT.caseTypes) {
+    for (const difficulty of ['stretch', 'challenge']) {
+      for (let seed = 0; seed <= 40; seed += 1) {
+        const instance = instantiate('classify-git-operation', seed, difficulty, caseId);
+        if (!instance.parameters.fileName) continue;
+        const texts = [
+          instance.fullSolution,
+          ...instance.choices.map((choice) => choice.text),
+          ...(instance.feedbackRules || []).map((rule) => rule.then),
+        ];
+        for (const text of texts) {
+          assert.ok(!text.includes('datei.py'), `${caseId}/${difficulty}/${seed}: ${text}`);
+        }
+        const correct = instance.choices.find((choice) => choice.correct);
+        assert.equal(solveGitOperation(instance.parameters).correctText, correct.text, `${caseId}/${difficulty}/${seed}`);
+      }
+    }
+  }
+});
+
 test('mergeInto names the home family and does not rewrite the instance identity', () => {
   const stub = {
     familyId: 'classify-orphan-merge-source',
@@ -206,7 +216,7 @@ test('mergeInto names the home family and does not rewrite the instance identity
     activityType: 'single-choice',
     generate: ({ caseId, difficulty }) => ({
       parameters: { caseId, difficulty },
-      expected: { correctChoice: 'a' },
+      expected: {},
       choices: [
         { id: 'a', text: 'behalten', correct: true },
         { id: 'b', text: 'umziehen', correct: false },
@@ -253,16 +263,6 @@ test('curated placement without definitionId needs case type, seed and masteryEl
     /keine Einzelaufgabe kopieren/,
   );
 });
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -8,8 +8,9 @@
 // markup — seeded prompts must render without a math pass after re-rolling)
 // and `expected` is computed by a reference solver, never hardcoded.
 
-/** Deterministic small PRNG (mulberry32) — identical implementation to
- *  linalg_generators.mjs so seeds behave identically in browser and Node. */
+/** Deterministic small PRNG (mulberry32) — canonical implementation,
+ *  re-exported to every generator module via generator_draw_kit.mjs so
+ *  seeds behave identically in browser and Node. */
 export function rng(seed) {
   let a = seed >>> 0;
   return function () {
@@ -59,10 +60,10 @@ export function logInt(base, arg) {
 
 // --- prompt formatting helpers ---------------------------------------------------
 
-const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
+export const signed = (n) => (n >= 0 ? `+ ${n}` : `- ${-n}`);
 const coeff = (a) => `${a}x`;
-const SUB = { 2: '\u2082', 3: '\u2083', 5: '\u2085', 10: '\u2081\u2080' };
-const logTerm = (b, arg) => `log${SUB[b] || '_' + b}(${arg})`;
+// LaTeX fragment — callers wrap it in $...$ so KaTeX typesets the subscript.
+export const logTerm = (b, arg) => `\\log_{${b}}(${arg})`;
 
 // --- generators -----------------------------------------------------------------
 
@@ -100,7 +101,7 @@ export function genLinearEquation(seed) {
 /** w01-e9: power laws, two shapes — the ANSWER is always the resulting
  *  exponent (small integer, hand-computable without evaluating the power):
  *  - 'product': b^m · b^n  -> m + n   (m in [2,6], n in [1,4], m+n <= 8)
- *  - 'power':   (b^m)^k    -> m * k   (m in [2,4], k in [2,3], m*k <= 10)
+ *  - 'power':   (b^m)^k    -> m * k   (m in [2,4], k in [2, floor(10/m)], m*k <= 10)
  *  Bases from {2,3,5,10}. */
 export function genPowerExpr(seed) {
   const r = rng(seed);
@@ -111,7 +112,7 @@ export function genPowerExpr(seed) {
     return {
       parameters: { shape: 'product', base, m, n },
       expected: powerLawProduct(m, n),
-      prompt: `Vereinfache ${base}^${m} · ${base}^${n} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).`,
+      prompt: `Vereinfache $${base}^{${m}} \\cdot ${base}^{${n}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).`,
     };
   }
   const m = randInt(r, 2, 4);
@@ -119,7 +120,7 @@ export function genPowerExpr(seed) {
   return {
     parameters: { shape: 'power', base, m, k },
     expected: powerLawPower(m, k),
-    prompt: `Vereinfache (${base}^${m})^${k} mit dem Potenzgesetz und gib den neuen Exponenten der Basis ${base} an (also n aus ${base}^n).`,
+    prompt: `Vereinfache $(${base}^{${m}})^{${k}}$ zu einer einzigen Potenz $${base}^{n}$ und gib nur den neuen Exponenten $n$ als ganze Zahl ein (nicht die Potenz selbst).`,
   };
 }
 
@@ -138,14 +139,14 @@ export function genLogExpr(seed) {
     return {
       parameters: { shape: 'sum', base, m, n },
       expected: logInt(base, base ** m) + logInt(base, base ** n),
-      prompt: `Berechne ${logTerm(base, base ** m)} + ${logTerm(base, base ** n)} und gib das Ergebnis als ganze Zahl ein.`,
+      prompt: `Berechne $${logTerm(base, base ** m)} + ${logTerm(base, base ** n)}$ und gib das Ergebnis als ganze Zahl ein.`,
     };
   }
   const k = randInt(r, 1, kMax);
   return {
     parameters: { shape: 'single', base, k },
     expected: logInt(base, base ** k),
-    prompt: `Berechne ${logTerm(base, base ** k)} und gib das Ergebnis als ganze Zahl ein.`,
+    prompt: `Berechne $${logTerm(base, base ** k)}$ und gib das Ergebnis als ganze Zahl ein.`,
   };
 }
 

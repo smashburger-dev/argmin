@@ -42,7 +42,43 @@
         "value": 1
       },
       "prompt": "Gegeben $A=\\begin{pmatrix}2&1\\\\1&3\\end{pmatrix}$ und $B=\\begin{pmatrix}0&1\\\\2&-1\\end{pmatrix}$. Berechne den Eintrag $c_{12}$ von $C=AB$ (obere Zeile, rechte Spalte).",
-      "fullSolution": "$AB = \\begin{pmatrix}2\\cdot0+1\\cdot2 & 2\\cdot1+1\\cdot(-1)\\\\1\\cdot0+3\\cdot2 & 1\\cdot1+3\\cdot(-1)\\end{pmatrix} = \\begin{pmatrix}2&1\\\\6&-2\\end{pmatrix}$, also $c_{12}=1$."
+      "fullSolution": "$AB = \\begin{pmatrix}2\\cdot0+1\\cdot2 & 2\\cdot1+1\\cdot(-1)\\\\1\\cdot0+3\\cdot2 & 1\\cdot1+3\\cdot(-1)\\end{pmatrix} = \\begin{pmatrix}2&1\\\\6&-2\\end{pmatrix}$, also $c_{12}=1$.",
+      "hints": [
+        "Der Eintrag $c_{12}$ ist das Skalarprodukt der 1. Zeile von $A$ mit der 2. Spalte von $B$.",
+        "Rechne die beiden Teilprodukte einzeln: $2\\cdot1$ und $1\\cdot(-1)$ — erst danach addieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 2",
+          "then": "Das ist $c_{11}$ (Zeile 1 mal Spalte 1) — oder nur das erste Teilprodukt. Für $c_{12}$ gehört die 2. Spalte von $B$ dazu: $2\\cdot1+1\\cdot(-1)$."
+        },
+        {
+          "if": "value === -2",
+          "then": "Das ist $c_{22}$ (Zeile 2 mal Spalte 2). Der Index $_{12}$ liest sich: Zeile 1 von $A$, Spalte 2 von $B$."
+        },
+        {
+          "if": "value === 6",
+          "then": "Das ist $c_{21}$ (Zeile 2 mal Spalte 1). Für $c_{12}$ dürfen Zeilen- und Spaltenindex nicht getauscht werden."
+        },
+        {
+          "if": "value === 3",
+          "then": "Vorzeichen beachten: das zweite Teilprodukt ist $1\\cdot(-1)=-1$, nicht $+1$."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "zeilen-und-spaltenindex-von-c",
+          "text": "Zeilen- und Spaltenindex von $c_{12}$ vertauscht ($c_{21}$ oder $c_{22}$ gerechnet)"
+        },
+        {
+          "id": "nur-das-erste-teilprodukt-gebildet",
+          "text": "nur das erste Teilprodukt gebildet und den zweiten Summanden vergessen"
+        },
+        {
+          "id": "vorzeichen-des-eintrags-1-in",
+          "text": "Vorzeichen des Eintrags $-1$ in $B$ übersehen"
+        }
+      ]
     },
     {
       "caseId": "matmul-entry-w05-e12",
@@ -83,7 +119,43 @@
         "value": -4
       },
       "prompt": "Gegeben $A=\\begin{pmatrix}-2&-4\\\\-2&4\\end{pmatrix}$ und $B=\\begin{pmatrix}-2&1\\\\2&-1\\end{pmatrix}$. Berechne den Eintrag $c_{11}$ von $C=AB$ (obere Zeile, linke Spalte).",
-      "fullSolution": "$c_{11} = (-2)\\cdot(-2) + (-4)\\cdot 2 = 4 - 8 = -4$."
+      "fullSolution": "$c_{11} = (-2)\\cdot(-2) + (-4)\\cdot 2 = 4 - 8 = -4$.",
+      "hints": [
+        "$c_{11}$ ist das Skalarprodukt der 1. Zeile von $A$ mit der 1. Spalte von $B$: $(-2,-4)^\\top(-2,2)$.",
+        "Beide Teilprodukte mit Vorzeichen bilden: $(-2)\\cdot(-2)=+4$ und $(-4)\\cdot2=-8$ — erst danach addieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 12",
+          "then": "Vorzeichenfehler: $(-4)\\cdot2=-8$, nicht $+8$ — Minus mal Plus gibt Minus. Die korrekte Summe lautet $4-8$."
+        },
+        {
+          "if": "value === 4",
+          "then": "Das ist nur das erste Teilprodukt $(-2)\\cdot(-2)$; der zweite Summand $(-4)\\cdot2$ fehlt noch."
+        },
+        {
+          "if": "value === -12",
+          "then": "$(-2)\\cdot(-2)=+4$ — Minus mal Minus gibt Plus. Danach $4+(-8)$ rechnen."
+        },
+        {
+          "if": "value === 2",
+          "then": "Das ist $c_{12}$ (Zeile 1 mal Spalte 2); gefragt ist $c_{11}$ — beide Indizes sind 1."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "minus-mal-minus-als-negativ",
+          "text": "Minus mal Minus als negativ gewertet ($(−2)\\cdot(−2)$ ist $+4$)"
+        },
+        {
+          "id": "zweites-teilprodukt-4-cdot2-mit",
+          "text": "zweites Teilprodukt $(-4)\\cdot2$ mit falschem Vorzeichen addiert"
+        },
+        {
+          "id": "eintragsposition-verwechselt-c-12-oder",
+          "text": "Eintragsposition verwechselt ($c_{12}$ oder $c_{21}$ statt $c_{11}$)"
+        }
+      ]
     },
     {
       "caseId": "dot-product-w05-e13",
@@ -110,7 +182,43 @@
         "value": 22
       },
       "prompt": "Gegeben $u=(-3,-4,2)$ und $v=(2,-5,4)$. Berechne das Skalarprodukt $u^\\top v$.",
-      "fullSolution": "$u^\\top v = (-3)\\cdot 2 + (-4)\\cdot(-5) + 2\\cdot 4 = -6 + 20 + 8 = 22$."
+      "fullSolution": "$u^\\top v = (-3)\\cdot 2 + (-4)\\cdot(-5) + 2\\cdot 4 = -6 + 20 + 8 = 22$.",
+      "hints": [
+        "Multipliziere die Komponenten paarweise: $(-3)\\cdot2$, $(-4)\\cdot(-5)$ und $2\\cdot4$.",
+        "Die Teilprodukte mit Vorzeichen sind $-6$, $+20$ und $+8$ — erst alle drei notieren, dann summieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === -18",
+          "then": "$(-4)\\cdot(-5)=+20$, nicht $-20$: Minus mal Minus gibt Plus."
+        },
+        {
+          "if": "value === 14",
+          "then": "Das dritte Teilprodukt $2\\cdot4=8$ fehlt — das Skalarprodukt summiert alle drei Komponentenprodukte."
+        },
+        {
+          "if": "value === 6",
+          "then": "$2\\cdot4=+8$, nicht $-8$: das letzte Produkt ist positiv. $-6+20+8$ ergibt $22$."
+        },
+        {
+          "if": "value === 34",
+          "then": "$(-3)\\cdot2=-6$: das erste Produkt ist negativ, nicht $+6$."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "vorzeichen-von-4-cdot-5",
+          "text": "Vorzeichen von $(-4)\\cdot(-5)$ oder $(-3)\\cdot2$ falsch gesetzt"
+        },
+        {
+          "id": "ein-komponentenprodukt-beim-summieren-ausgelassen",
+          "text": "ein Komponentenprodukt beim Summieren ausgelassen"
+        },
+        {
+          "id": "komponenten-nicht-paarweise-sondern-versetzt",
+          "text": "Komponenten nicht paarweise, sondern versetzt multipliziert"
+        }
+      ]
     },
     {
       "caseId": "dot-product-w05-e3",
@@ -137,7 +245,47 @@
         "value": -8
       },
       "prompt": "Gegeben $u=(2,-1,3)$ und $v=(1,4,-2)$. Berechne das Skalarprodukt $u^\\top v$.",
-      "fullSolution": "$u^\\top v = 2\\cdot1 + (-1)\\cdot4 + 3\\cdot(-2) = 2 - 4 - 6 = -8$."
+      "fullSolution": "$u^\\top v = 2\\cdot1 + (-1)\\cdot4 + 3\\cdot(-2) = 2 - 4 - 6 = -8$.",
+      "hints": [
+        "Die drei Teilprodukte sind $2\\cdot1$, $(-1)\\cdot4$ und $3\\cdot(-2)$.",
+        "Zwei der drei Produkte sind negativ: erst $2-4-6$ mit allen Vorzeichen aufschreiben, dann summieren."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 0",
+          "then": "$(-1)\\cdot4=-4$, nicht $+4$: das zweite Produkt ist negativ."
+        },
+        {
+          "if": "value === 4",
+          "then": "$3\\cdot(-2)=-6$, nicht $+6$: das dritte Produkt ist negativ."
+        },
+        {
+          "if": "value === 12",
+          "then": "Beide Minus-Produkte wurden positiv gerechnet: $(-1)\\cdot4=-4$ und $3\\cdot(-2)=-6$, also $2-4-6$."
+        },
+        {
+          "if": "value === -2",
+          "then": "Der dritte Summand $3\\cdot(-2)=-6$ fehlt — alle drei Komponenten zählen."
+        },
+        {
+          "if": "value === 8",
+          "then": "Der Betrag stimmt, aber das Ergebnis ist negativ: $2-4-6=-8$."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "vorzeichen-bei-1-cdot4-oder",
+          "text": "Vorzeichen bei $(-1)\\cdot4$ oder $3\\cdot(-2)$ übersehen"
+        },
+        {
+          "id": "nur-zwei-der-drei-komponentenprodukte",
+          "text": "nur zwei der drei Komponentenprodukte summiert"
+        },
+        {
+          "id": "betrag-richtig-aber-das-negative",
+          "text": "Betrag richtig, aber das negative Gesamtvorzeichen verloren"
+        }
+      ]
     },
     {
       "caseId": "scalar-loop-output",
@@ -154,7 +302,31 @@
       },
       "prompt": "Was gibt dieses Programm aus? Sage die Ausgabe von <code>print(zeilen)</code> vorher, ohne den Code auszuführen.",
       "fullSolution": "zeilen[0] = A[0][0]·x[0] + A[0][1]·x[1] = 2·2 + 1·(−1) = 3; zeilen[1] = 1·2 + 3·(−1) = −1. Ausgabe: <code>[3, -1]</code> — Zeile-mal-Spalte wie beim Matrixprodukt.",
-      "activityType": "predict-output"
+      "activityType": "predict-output",
+      "hints": [
+        "Jeder Schleifendurchlauf berechnet das Skalarprodukt einer Zeile von A mit x — zwei Zeilen, zwei Listeneinträge.",
+        "Rechne die Zeilenprodukte einzeln: A[0][0]·x[0] + A[0][1]·x[1] und A[1][0]·x[0] + A[1][1]·x[1]."
+      ],
+      "feedbackRules": [
+        {
+          "if": "element-count-mismatch",
+          "then": "Die Ausgabeliste hat zwei Einträge — einer pro Zeile von A."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "spalten-statt-zeilen-von-a",
+          "text": "Spalten statt Zeilen von A mit x multipliziert"
+        },
+        {
+          "id": "vorzeichen-von-x-1-uebersehen",
+          "text": "Vorzeichen von x[1] übersehen"
+        },
+        {
+          "id": "tupel-schreibweise-statt-der-python",
+          "text": "Tupel-Schreibweise statt der Python-Listenausgabe notiert"
+        }
+      ]
     },
     {
       "caseId": "product-definition-rationale",
@@ -191,7 +363,7 @@
       "expected": {
         "kind": "rubric"
       },
-      "prompt": "Erkläre in 3-5 Sätzen ohne Unterlagen: Warum ist das Produkt $C=AB$ nur definiert, wenn Spaltenzahl($A$) = Zeilenzahl($B$), und wie entsteht der Eintrag $c_{ij}$? Begründe mit dem Spaltenbild ($Ab$ kombiniert Spalten). Schreibe zuerst deinen eigenen Versuch — die Musterantwort erscheint erst danach.",
+      "prompt": "Erkläre in 3-5 Sätzen ohne Unterlagen: Warum ist das Produkt $C=AB$ nur definiert, wenn Spaltenzahl($A$) = Zeilenzahl($B$), und wie entsteht der Eintrag $c_{ij}$? Begründe mit dem Spaltenbild ($Ab$ kombiniert Spalten). Schreibe zuerst deinen eigenen Versuch — die Musterantwort dient danach zum Vergleich.",
       "fullSolution": "Musterantwort: Jeder Eintrag $c_{ij}=\\sum_k a_{ik}b_{kj}$ ist ein Skalarprodukt der $i$-ten Zeile von $A$ mit der $j$-ten Spalte von $B$; ein Skalarprodukt braucht gleich lange Vektoren, also Spaltenzahl($A$)=Zeilenzahl($B$). Im Spaltenbild ist $Ab$ eine gewichtete Summe der Spalten von $A$; $AB$ wendet dies auf alle Spalten von $B$ an. $C$ erbt die Zeilenzahl von $A$ und die Spaltenzahl von $B$. Beispiel: $A\\in\\mathbb{R}^{3\\times2}$, $B\\in\\mathbb{R}^{2\\times4}$ macht $AB\\in\\mathbb{R}^{3\\times4}$, während $BA$ undefiniert bleibt.",
       "activityType": "short-rationale",
       "graderId": "manual-rubric"
@@ -233,23 +405,23 @@
       "fullSolution": "Die Koeffizienten sind $(x_1,x_2)=(7,1)$. Die Probe liefert $7(1,3)^T+1(-1,-4)^T=(6,17)^T$.",
       "activityType": "vector",
       "graderId": "deterministic",
-      "tolerancePolicy": {
-        "mode": "exact-integer-pair"
-      },
       "hints": [
         "Lies aus den beiden Komponenten ein 2×2-Gleichungssystem ab.",
         "Setze dein Paar zur Probe wieder in $A x$ ein."
       ],
-      "feedbackRules": [
-        {
-          "if": "swapped",
-          "then": "Achte auf die Reihenfolge $(x_1,x_2)$."
-        }
-      ],
       "typicalErrors": [
-        "Koeffizienten vertauschen",
-        "Zeilen und Spalten verwechseln",
-        "Probe auslassen"
+        {
+          "id": "koeffizienten-vertauschen",
+          "text": "Koeffizienten vertauschen"
+        },
+        {
+          "id": "zeilen-und-spalten-verwechseln",
+          "text": "Zeilen und Spalten verwechseln"
+        },
+        {
+          "id": "probe-auslassen",
+          "text": "Probe auslassen"
+        }
       ]
     }
   ]

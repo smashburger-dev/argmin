@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-canonical-hash-verify",
-  "contract": {
-    "familyId": "reproduce-canonical-hash-verify",
-    "familyGroup": "reproduce-hash",
-    "summary": "Prüft einen kanonischen Hash als unveränderlichen Referenzpunkt einer Baseline.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "canonical-hash-verify",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-python-functions",
-      "c-research-capstone"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "canonical-hash-verify",
@@ -51,28 +29,20 @@
         "Erst sortieren (nach id), dann json.dumps mit sort_keys=True, ensure_ascii=False und kompakten Trennzeichen — genau diese Parameter machen die Serialisierung kanonisch.",
         "Der Digest läuft über kanonisch.encode(\"utf-8\"); ids und n kommen aus denselben Daten, nicht aus dem Hash."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "order-dependence",
-          "then": "Ohne sorted(items, key=...) ändert die Eingabereihenfolge den Hash — die Tests prüfen genau das mit reversed()."
+          "id": "eingabereihenfolge-nicht-wegkanonisiert",
+          "text": "Eingabereihenfolge nicht wegkanonisiert"
         },
         {
-          "if": "ensure-ascii-default",
-          "then": "ensure_ascii=True (Voreinstellung) würde Umlaute als \\\\uXXXX escapen und damit einen anderen Hash liefern — der Vertrag verlangt ensure_ascii=False."
+          "id": "json-dumps-parameter-vergessen-ensure",
+          "text": "json.dumps-Parameter vergessen (ensure_ascii, separators)"
         },
         {
-          "if": "wrong-digest-input",
-          "then": "Gehasht werden die UTF-8-Bytes der kanonischen Serialisierung — nicht die Liste selbst und nicht nur die ids."
+          "id": "ueber-etwas-anderes-als-die",
+          "text": "über etwas anderes als die Serialisierung gehasht"
         }
       ],
-      "typicalErrors": [
-        "Eingabereihenfolge nicht wegkanonisiert",
-        "json.dumps-Parameter vergessen (ensure_ascii, separators)",
-        "über etwas anderes als die Serialisierung gehasht"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

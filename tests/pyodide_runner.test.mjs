@@ -22,6 +22,57 @@ class FakeWorker {
 
 const delay = (ms, value) => new Promise((resolve) => setTimeout(() => resolve(value), ms));
 
+class SilentWorker {
+  constructor() {
+    this.onmessage = null;
+    this.onerror = null;
+    this.terminated = false;
+  }
+
+  postMessage() {}
+
+  terminate() {
+    this.terminated = true;
+  }
+}
+
+test('a stalled init resolves the run instead of hanging forever', async () => {
+  const OriginalWorker = globalThis.Worker;
+  globalThis.Worker = SilentWorker;
+  try {
+    const runner = new PyodideRunner('fake-worker.mjs', 1000, 30);
+    const result = await runner.run({ code: 'pass', tests: [], packages: [] });
+    assert.equal(result.errorType, 'WorkerInitFailed');
+    assert.match(result.errorMessage, /Zeitlimit/);
+    assert.equal(runner.worker, null);
+    assert.equal(runner.initPosted, false);
+  } finally {
+    globalThis.Worker = OriginalWorker;
+  }
+});
+
+test('init is posted once while waiters queue', async () => {
+  const OriginalWorker = globalThis.Worker;
+  let initCount = 0;
+  globalThis.Worker = class extends SilentWorker {
+    postMessage(message) {
+      if (message.type === 'init') initCount += 1;
+    }
+  };
+  try {
+    const runner = new PyodideRunner('fake-worker.mjs', 1000, 30);
+    const first = runner.run({ code: 'pass' });
+    const second = runner.run({ code: 'pass' });
+    await delay(0);
+    assert.equal(initCount, 1);
+    const [a, b] = await Promise.all([first, second]);
+    assert.equal(a.errorType, 'WorkerInitFailed');
+    assert.equal(b.errorType, 'WorkerInitFailed');
+  } finally {
+    globalThis.Worker = OriginalWorker;
+  }
+});
+
 test('restart resolves an active run instead of leaving it pending', async () => {
   const OriginalWorker = globalThis.Worker;
   globalThis.Worker = FakeWorker;
@@ -54,6 +105,33 @@ test('worker errors resolve active runs and reset the worker', async () => {
     assert.equal(runner.pending.size, 0);
   } finally {
     globalThis.Worker = OriginalWorker;
+  }
+});
+
+test('a tests-phase abort grades as wrong with the abort verdict', async () => {
+  const { pyodideRunner } = await import('../assets/js/runtime/pyodide_runner.js');
+  const { graders } = await import('../assets/js/core/graders.js');
+  const original = pyodideRunner.run;
+  pyodideRunner.run = async () => ({
+    ok: false, phase: 'tests', stdout: '', stderr: '',
+    stdoutTruncated: false, stderrTruncated: false,
+    testResults: [
+      { name: 'erster check', passed: true, detail: '' },
+      { name: 'Test abgebrochen', passed: false, detail: 'ValueError: kaputt' },
+    ],
+    errorType: 'ValueError', errorMessage: 'ValueError: kaputt', durationMs: 1,
+  });
+  try {
+    const verdict = await graders.pyodide.grade(
+      { activityType: 'python-code', parameters: { tests: '__check("x", True)' } },
+      'pass',
+    );
+    assert.equal(verdict.correct, false);
+    assert.equal(verdict.verdictText, 'Tests abgebrochen — dein Code hat während eines Tests eine Ausnahme ausgelöst.');
+    assert.equal(verdict.result.testResults.at(-1).name, 'Test abgebrochen');
+    assert.equal(verdict.result.testResults.length, 2);
+  } finally {
+    pyodideRunner.run = original;
   }
 });
 

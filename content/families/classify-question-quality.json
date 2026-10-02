@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-question-quality",
-  "contract": {
-    "familyId": "classify-question-quality",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Fragestellung ihrer Qualitätsklasse zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "question-quality-check",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-research-question"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "question-quality-check",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-research-question"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -83,13 +60,19 @@
         }
       ],
       "typicalErrors": [
-        "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)",
-        "falsifizierbar mit interessant verwechselt",
-        "Metrik und Vergleich für denselben Begriff gehalten"
+        {
+          "id": "thema-statt-pruefbarkeit-bewertet-die",
+          "text": "Thema statt Prüfbarkeit bewertet (die Frage klingt nach KI, ist aber unprüfbar)"
+        },
+        {
+          "id": "falsifizierbar-mit-interessant-verwechselt",
+          "text": "falsifizierbar mit interessant verwechselt"
+        },
+        {
+          "id": "metrik-und-vergleich-fuer-denselben",
+          "text": "Metrik und Vergleich für denselben Begriff gehalten"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

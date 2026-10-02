@@ -1,37 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-predict-metrics",
-  "contract": {
-    "familyId": "fit-predict-metrics",
-    "familyGroup": "fit-model",
-    "summary": "Fittet ein Modell, sagt auf Testdaten voraus und berechnet die Fehlermetriken.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "baseline-experiment-report",
-        "propertyTest": false
-      },
-      {
-        "caseId": "linear-fit-lstsq",
-        "propertyTest": false
-      },
-      {
-        "caseId": "regression-report",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-ml-baseline"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "baseline-experiment-report",
@@ -57,28 +27,20 @@
         "Setze die Bausteine aus w09-e4 zusammen: Seed-Permutation, Testanteil, dann Baseline auf Train und MSE auf Test.",
         "Achte auf die Reihenfolge: erst Baseline (Mittelwert der Train-Ziele) berechnen, dann die Test-Ziele gegen diesen festen Wert quadrieren und mitteln — nicht den Test-Mittelwert verwenden."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "baseline-on-test",
-          "then": "Die Baseline wird auf den TRAIN-Zielen geschätzt; der Test-Mittelwert wäre Leakage."
+          "id": "baseline-aus-test-zieln-statt",
+          "text": "Baseline aus Test-Zieln statt Train-Zieln schätzen (Leakage)"
         },
         {
-          "if": "unsorted-test-indices",
-          "then": "test_indices muss aufsteigend sortiert sein — sonst schlägt der Stabilitätsvergleich fehl."
+          "id": "score-varianten-vertauschen-vorzeichen-wurzel",
+          "text": "Score-Varianten vertauschen (Vorzeichen, Wurzel)"
         },
         {
-          "if": "metric-mismatch",
-          "then": "metric_name muss exakt 'mse' sein und baseline_score der zugehörige MSE-Wert."
+          "id": "ergebnisdict-nicht-deterministisch-aufbauen",
+          "text": "Ergebnisdict nicht deterministisch aufbauen"
         }
       ],
-      "typicalErrors": [
-        "Baseline aus Test-Zieln statt Train-Zieln schätzen (Leakage)",
-        "Score-Varianten vertauschen (Vorzeichen, Wurzel)",
-        "Ergebnisdict nicht deterministisch aufbauen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -110,28 +72,20 @@
         "Die Design-Matrix baust du mit np.hstack([np.ones((n, 1)), X]); lstsq löst dann das Kleinste-Quadrate-Problem in einem Aufruf.",
         "Für r2 brauchst du zwei Summen: quadrierte Residuen und quadrierte Abweichungen vom Zielmittelwert — erst Teilen nach der Summe."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "no-intercept-column",
-          "then": "Ohne Einsen-Spalte erzwungen die Gerade durch den Ursprung — Intercept und Steigung kommen falsch heraus."
+          "id": "intercept-spalte-vergessen",
+          "text": "Intercept-Spalte vergessen"
         },
         {
-          "if": "mean-inside-rmse",
-          "then": "Im rmse wird quadriert, gemittelt und erst dann die Wurzel gezogen — nicht mitteln und dann quadrieren."
+          "id": "rmse-und-r2-an-trainings",
+          "text": "rmse und r2 an Trainings- und Testdaten vertauschen"
         },
         {
-          "if": "valueerror-missing",
-          "then": "Der Zeilen-Mismatch muss ValueError werfen, bevor lstsq aufgerufen wird."
+          "id": "r2-ohne-mittelwertberechnung-von-ss",
+          "text": "r2 ohne Mittelwertberechnung von SS_tot"
         }
       ],
-      "typicalErrors": [
-        "Intercept-Spalte vergessen",
-        "rmse und r2 an Trainings- und Testdaten vertauschen",
-        "r2 ohne Mittelwertberechnung von SS_tot"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -162,28 +116,20 @@
         "Einmal fitten (nur Train), dann dieselben Koeffizienten auf beide Design-Matrizen anwenden — niemals auf Test neu fitten.",
         "residuals_mean bezieht sich auf die TEST-Residuen; das Flag ist ein reiner Vergleich mit 1e-8."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "refit-on-test",
-          "then": "Für rmse_test werden die Train-Koeffizienten auf die Test-Zeilen angewendet — ein Refit auf Test wäre Leakage."
+          "id": "auf-den-testdaten-neu-fitten",
+          "text": "auf den Testdaten neu fitten"
         },
         {
-          "if": "residuals-mean-on-train",
-          "then": "Hier ist residuals_mean der Mittelwert der TEST-Residuen — bei Train-Residuen käme nahezu immer 0 heraus."
+          "id": "train-und-test-rmse-vertauschen",
+          "text": "Train- und Test-RMSE vertauschen"
         },
         {
-          "if": "flag-not-bool",
-          "then": "residual_mean_near_zero muss ein echter boolescher Wert sein (bool(...)), kein 0/1-Integer."
+          "id": "residuenmittelwert-ueber-die-falsche-menge",
+          "text": "Residuenmittelwert über die falsche Menge berechnen"
         }
       ],
-      "typicalErrors": [
-        "auf den Testdaten neu fitten",
-        "Train- und Test-RMSE vertauschen",
-        "Residuenmittelwert über die falsche Menge berechnen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

@@ -15,5 +15,16 @@
     { "kind": "segment", "from": ["2*x1", "x1"], "to": ["2*x1+x2", "x1+3*x2"], "color": "#5b5a53", "dash": true },
     { "kind": "arrow", "from": [0, 0], "to": ["2*x1+x2", "x1+3*x2"], "label": "b", "color": "#294bd6" },
     { "kind": "text", "at": [-5.5, -3.5], "text": "b = A·x = ({2*x1+x2} ; {x1+3*x2})", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze x₁ = 1 und x₂ = 2. Welchen Vektor b = x₁·a₁ + x₂·a₂ zeigt der blaue Pfeil? Antwort als (b₁, b₂).",
+    "input": "vector",
+    "expected": [4, 7],
+    "tolerance": 1e-6,
+    "hints": ["b = 1·(2, 1) + 2·(1, 3) — rechne die beiden Komponenten getrennt aus."],
+    "typicalErrors": [
+      { "match": [7, 4], "feedback": "Komponenten vertauscht: b₁ = 2x₁ + x₂ und b₂ = x₁ + 3x₂." },
+      { "match": [5, 5], "feedback": "Das ist x₁·a₂ + x₂·a₁ — die Koeffizienten x₁, x₂ gehören zu den Spalten a₁, a₂ in dieser Reihenfolge." }
+    ]
+  }
 }

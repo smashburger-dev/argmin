@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "builderVersion": "1.0.0",
+  "digest": "756734e1bb21bc44851af49dea8a658b2b16e63fd5967144d1e04e84b6ed01fc",
+  "items": 4991,
+  "mutants": 4991,
+  "uncovered": 179,
+  "mutantRejectionRate": 1,
+  "heldSeedRange": {
+    "start": 90000,
+    "end": 90999
+  },
+  "trainSeedRanges": [
+    {
+      "start": 200,
+      "end": 89999
+    }
+  ]
+}

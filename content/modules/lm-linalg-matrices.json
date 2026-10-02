@@ -93,7 +93,7 @@
       "difficulty": "core",
       "estimatedMinutes": 6,
       "lessonId": "l-linalg-matrices",
-      "masteryEligible": true
+      "masteryEligible": false
     },
     {
       "placementId": "p-linalg-matrices-08-column-coefficients-double",
@@ -127,6 +127,28 @@
       "estimatedMinutes": 8,
       "lessonId": "l-linalg-matrices",
       "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-matrices-12-shape-vector-matmul-chain",
+      "role": "curated",
+      "familyId": "classify-matrix-shape",
+      "caseId": "shape-vector-matmul-chain",
+      "seed": 0,
+      "difficulty": "stretch",
+      "estimatedMinutes": 6,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": false
+    },
+    {
+      "placementId": "p-linalg-matrices-13-matmul-entry-seeded",
+      "role": "curated",
+      "familyId": "formula-scalar-product",
+      "caseId": "matmul-entry-seeded",
+      "seed": 11,
+      "difficulty": "challenge",
+      "estimatedMinutes": 8,
+      "lessonId": "l-linalg-matrices",
+      "masteryEligible": true
     },
     {
       "placementId": "p-linalg-matrices-11-formula-scalar-product-practice",

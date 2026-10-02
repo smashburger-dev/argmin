@@ -1,40 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-forward-layer-chain-contract",
-  "contract": {
-    "familyId": "fit-forward-layer-chain-contract",
-    "familyGroup": "fit-model",
-    "summary": "Implementiert den MLP-Forward vertrags zuerst: Struktur- und Kettenverträge vor der Rechnung, ReLU nur auf versteckten Schichten, Parameterzahl inklusive Bias.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "linear-forward-contract",
-        "propertyTest": false
-      },
-      {
-        "caseId": "mlp-forward-relu",
-        "propertyTest": false
-      },
-      {
-        "caseId": "deep-forward-chain",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-tensors",
-      "c-numpy-basics",
-      "c-linalg-matrices"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "linear-forward-contract",
@@ -64,28 +31,20 @@
         "Normalisiere zuerst mit np.asarray(x, dtype=float), prüfe dann ndim und die beiden Form-Gleichungen — ValueError vor der Rechnung, nicht erst danach.",
         "param_count zählt W.size + b.size als int; die Verträge stellen sicher, dass dabei d·h + h herauskommt."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "valueerror-missing",
-          "then": "Jede der fünf Vertragsverletzungen im Test muss ValueError werfen — die Prüfung steht am Anfang der Funktion."
+          "id": "vertraege-erst-nach-der-berechnung",
+          "text": "Verträge erst nach der Berechnung prüfen"
         },
         {
-          "if": "contract-after-compute",
-          "then": "Prüfe die Formen, bevor du X @ W rechnest — sonst wirft erst NumPy selbst einen Fehler und deine eigene Prüfung wird nie erreicht."
+          "id": "b-ndim-2-mit-broadcast",
+          "text": "b.ndim == 2 mit Broadcast still akzeptieren"
         },
         {
-          "if": "bias-count-missing",
-          "then": "param_count muss den Bias mitzählen: W.size + b.size, nicht nur W.size."
+          "id": "param-count-ohne-bias-oder",
+          "text": "param_count ohne Bias oder als float zurückgeben"
         }
       ],
-      "typicalErrors": [
-        "Verträge erst nach der Berechnung prüfen",
-        "b.ndim == 2 mit Broadcast still akzeptieren",
-        "param_count ohne Bias oder als float zurückgeben"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -117,28 +76,20 @@
         "Erst alle Formen prüfen (auch W1.shape[1] gegen W2.shape[0] — die Hidden-Dimension muss durchgereicht werden), dann np.maximum(0.0, ...) für ReLU.",
         "mlp_param_count läuft über Paare aufeinanderfolgender Schichtgrößen: zip(sizes[:-1], sizes[1:]) und je d·h + h aufsummieren."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "relu-wrong",
-          "then": "ReLU ist np.maximum(0.0, z) elementweise — np.max reduziert ein Array auf einen Wert."
+          "id": "np-max-statt-np-maximum",
+          "text": "np.max statt np.maximum für ReLU verwendet"
         },
         {
-          "if": "hidden-contract-missing",
-          "then": "Der Vertrag zwischen H (n, h1) und W2 (h1, h2) ist eine eigene Prüfung: W1.shape[1] == W2.shape[0]."
+          "id": "hidden-dimension-nicht-gegen-w2",
+          "text": "Hidden-Dimension nicht gegen W2 geprüft"
         },
         {
-          "if": "bias-in-param-count-missing",
-          "then": "Jede Schicht trägt ihren Bias: d·h + h pro Paar, nicht d·h."
+          "id": "bias-in-der-parameterzaehlung-vergessen",
+          "text": "Bias in der Parameterzählung vergessen"
         }
       ],
-      "typicalErrors": [
-        "np.max statt np.maximum für ReLU verwendet",
-        "Hidden-Dimension nicht gegen W2 geprüft",
-        "Bias in der Parameterzählung vergessen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -146,6 +97,7 @@
       "caseId": "deep-forward-chain",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w18-e6"
       ],
@@ -170,30 +122,23 @@
         "Prüfe in zwei Phasen: erst Struktur (Länge, ndim), dann die Kette X→W1→b1→W2→… — alles, bevor der erste Matmul läuft.",
         "In der Schleife entscheidet der Index: enumerate über die Schichten, ReLU nur wenn i < len(weights) - 1; die Referenz im Test macht genau das."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "relu-on-last-layer",
-          "then": "Die Ausgabeschicht ist linear — ReLU nur auf versteckten Schichten (i < L − 1)."
+          "id": "relu-auch-auf-der-ausgabeschicht",
+          "text": "ReLU auch auf der Ausgabeschicht"
         },
         {
-          "if": "chain-contract-missing",
-          "then": "Benachbarte Matrizen müssen aneinander passen: Wi.shape[1] == W(i+1).shape[0] — sonst entsteht der Fehler erst mitten in der Schleife."
+          "id": "kettenvertraege-zwischen-benachbarten-matrizen-nicht",
+          "text": "Kettenverträge zwischen benachbarten Matrizen nicht geprüft"
         },
         {
-          "if": "length-mismatch-accepted",
-          "then": "len(weights) != len(biases) ist ein Strukturfehler — ValueError vor der Rechnung, auch bei leeren Listen."
+          "id": "strukturfehler-ungleich-lange-listen-erst",
+          "text": "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
         }
       ],
-      "typicalErrors": [
-        "ReLU auch auf der Ausgabeschicht",
-        "Kettenverträge zwischen benachbarten Matrizen nicht geprüft",
-        "Strukturfehler (ungleich lange Listen) erst in der Schleife entdeckt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Tiefe Forward-Kette mit Verträgen"
     }
   ]
 }

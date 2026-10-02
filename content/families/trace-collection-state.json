@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "familyId": "trace-collection-state",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "list-mutate-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-mutate",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "literalZeile4": "a + 1 (aus a abgeleitet, kein freier Draw)",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: append hängt ein Element an, extend hängt jedes Element der Liste an, liste[0] = … überschreibt vorhandene Position 0.",
+      "hints": [
+        "Wende jede Zeile einzeln auf den aktuellen Listenstand an — append hängt ein Element an, extend jedes Element der übergebenen Liste.",
+        "liste[0] = … überschreibt Position 0, ohne die Liste zu verlängern. Notiere den Zustand nach jeder der vier Zeilen."
+      ],
+      "typicalErrors": [
+        {
+          "id": "extend-wie-append-behandelt-ein",
+          "text": "extend wie append behandelt (ein Element statt mehrerer angehängt)"
+        },
+        {
+          "id": "indexzuweisung-als-anhaengen-statt-als",
+          "text": "Indexzuweisung als Anhängen statt als Überschreiben gelesen"
+        }
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "list-alias-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-alias",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: y = x erzeugt keine Kopie, sondern einen zweiten Namen für dieselbe Liste. Jede Mutation über y ist sofort in x sichtbar — und umgekehrt.",
+      "hints": [
+        "y = x erzeugt keinen zweiten Speicher: beide Namen zeigen auf dieselbe Liste.",
+        "Mutationen über y sind in x sofort sichtbar — tracke x deshalb über alle vier Zeilen."
+      ],
+      "typicalErrors": [
+        {
+          "id": "y-x-als-kopie-gelesen",
+          "text": "y = x als Kopie gelesen und die append-Mutation in x übersehen"
+        }
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "list-alias-negative",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-alias",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "jedes Profil: mindestens eines von a, b < 0 und max. |Snippet-Zahl| ≥ 7"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile — und welche Liste steht jeweils hinter y? Beide Referenzen im Blick behalten, jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2]).",
+      "fullSolution": "<p>Verlauf von {varName}: {verlauf}. Kern: y = x erzeugt keine Kopie, sondern einen zweiten Namen für dieselbe Liste — der x-Zustand ist daher ab Zeile 2 zugleich der y-Zustand.</p><p>Jede Mutation über y (append) ist sofort in x sichtbar, und die Indexzuweisung über x gilt ebenso für y: beide Referenzen zeigen zu jeder Zeile dasselbe Objekt.</p>",
+      "hints": [
+        "y = x erzeugt keinen zweiten Speicher: beide Namen zeigen auf dieselbe Liste — eine Mutation über die eine Referenz verändert beide Sichten.",
+        "Tracke die Liste zeilenweise: append über y verlängert die gemeinsame Liste, die Indexzuweisung über x überschreibt Position 0 derselben Liste. Der y-Zustand ist zu jeder Zeile der x-Stand."
+      ],
+      "typicalErrors": [
+        {
+          "id": "y-x-als-kopie-gelesen",
+          "text": "y = x als Kopie gelesen und die append-Mutation in x übersehen"
+        },
+        {
+          "id": "nur-x-getrackt-und-die",
+          "text": "nur x getrackt und die geteilte Sicht auf y ignoriert"
+        },
+        {
+          "id": "vorzeichen-der-negativen-startwerte-beim",
+          "text": "Vorzeichen der negativen Startwerte beim Überschreiben verloren"
+        }
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic",
+      "title": "Listen-Alias: beide Referenzen verfolgen"
+    },
+    {
+      "caseId": "list-copy-steps",
+      "difficultyProfile": "intro",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-copy",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9], ungleich a",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welche Werte hat x nach jeder Zeile — und welche Liste steht am Ende in y? Jede Zeile einzeln anwenden; Python-Schreibweise verwenden (z. B. [1, 2]).",
+      "fullSolution": "x.copy() legt eine eigenständige Liste an: append über y ändert x nicht. Erst x[0] = {dDistinct} verändert x. x-Verlauf: {verlauf}; y am Ende: {yEnd}.",
+      "hints": [
+        "x.copy() erzeugt eine eigenständige Liste — Änderungen an y wirken nicht auf x.",
+        "Erst die letzte Zeile verändert x; y am Ende enthält das angehängte Element."
+      ],
+      "typicalErrors": [
+        {
+          "id": "append-auf-y-faelschlich-in",
+          "text": "append auf y fälschlich in x eingetragen"
+        },
+        {
+          "id": "y-ende-vergessen-oder-mit",
+          "text": "y_ende vergessen oder mit dem x-Endstand verwechselt"
+        }
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "list-rebind-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "list-rebind",
+        "domain": {
+          "a": "ganze Zahl ungleich 0 in [-9, 9]",
+          "b": "ganze Zahl ungleich 0 in [-9, 9]",
+          "c": "ganze Zahl ungleich 0 in [-9, 9]",
+          "d": "ganze Zahl ungleich 0 in [-9, 9]",
+          "profile": "intro: alle Snippet-Zahlen |·| ≤ 5; core: ungefiltert; stretch: mindestens eine Snippet-Zahl < 0; challenge: eine < 0 und max. |·| ≥ 7"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile — und welche Liste steht am Ende hinter y? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: x = x + [ … ] baut eine NEUE Liste und bindet sie an x; x += [ … ] erweitert dagegen die vorhandene Liste direkt (in-place). Am Ende zeigt y auf dieselbe Liste.",
+      "hints": [
+        "x = x + [ … ] baut eine neue Liste und bindet sie an x; x += [ … ] verändert die vorhandene Liste in-place.",
+        "Am Ende zeigt y auf dieselbe Liste wie x — der Zustand nach y = x ist daher der x-Stand."
+      ],
+      "typicalErrors": [
+        {
+          "id": "und-vertauscht-neue-liste-vs",
+          "text": "+ und += vertauscht (Neue Liste vs. in-place-Erweiterung)"
+        },
+        {
+          "id": "den-alias-effekt-der-letzten",
+          "text": "den Alias-Effekt der letzten Zeile y = x übersehen"
+        }
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "set-add-discard-steps",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collection-step-trace-01"
+      ],
+      "competencyIds": [
+        "c-python-collections",
+        "c-python-control-flow"
+      ],
+      "parameters": {
+        "family": "set-steps",
+        "domain": {
+          "e1": "'ki', 'lern' oder 'code'",
+          "e2": "aus {'ki', 'lern', 'code', 'daten'} ohne e1",
+          "e3": "aus {'ki', 'lern', 'code', 'daten'} ohne e1; unabhängig von e2 gezogen (kann e2 gleichen)",
+          "profile": "ungefiltert — kein Zahlenprofil, alle Profile ziehen denselben Pool"
+        }
+      },
+      "expected": {
+        "kind": "variable-values"
+      },
+      "prompt": "Zustände verfolgen: Welchen Wert hat {varName} nach jeder Zeile? Jede Zeile einzeln anwenden und den vollständigen Zustand in Python-Schreibweise angeben (z. B. [1, 2] oder {'a': 1}). Bei Mengen ist die Reihenfolge der Elemente nicht beobachtbar — sie spielt für die Bewertung keine Rolle.",
+      "fullSolution": "Verlauf von {varName}: {verlauf}. Kern: Ein Set speichert jedes Element nur einmal: add eines vorhandenen Elements ändert den Zustand nicht, discard entfernt zuverlässig.",
+      "hints": [
+        "Ein Set speichert jedes Element nur einmal — add eines vorhandenen Elements ändert den Zustand nicht.",
+        "discard entfernt zuverlässig; die Reihenfolge der Elemente ist für die Bewertung nicht relevant."
+      ],
+      "typicalErrors": [
+        {
+          "id": "duplikate-im-set-zustand-notiert",
+          "text": "Duplikate im Set-Zustand notiert"
+        },
+        {
+          "id": "discard-faelschlich-als-fehler-statt",
+          "text": "discard fälschlich als Fehler statt als Entfernen gewertet"
+        }
+      ],
+      "activityType": "code-trace",
+      "graderId": "deterministic"
+    }
+  ]
+}

@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-hash-semantics",
-  "contract": {
-    "familyId": "classify-hash-semantics",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet Hash-Fixierung als Integritäts- und Vergleichbarkeitsregel einer Capstone-Baseline ein.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "hash-semantics-baseline",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-research-capstone"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "hash-semantics-baseline",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-research-capstone"
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Warum wird das Golden Set der Capstone-Baseline mit einem sha256-Wert über eine kanonische Serialisierung hashfixiert?",
       "fullSolution": "Der Hash macht den Zustand des Sets prüfbar: Dieselben Einträge in anderer Reihenfolge ergeben denselben Wert, jede inhaltliche Änderung (Gold-Antwort, Fall, Feld) einen anderen. Steht in der Lektion „Abschlussphase“ derselbe Wert wie heute, sind die Baseline-Zahlen noch über demselben Set vergleichbar — hat er sich geändert, ist jede Vorher-Nachher-Aussage wertlos. Konzeptfrage: zählt als Bearbeitungsnachweis, nicht als Mastery-Nachweis.",
       "hints": [
@@ -61,12 +38,15 @@
         }
       ],
       "typicalErrors": [
-        "Hash als Verschlüsselung oder Schutz vor Änderung missverstanden",
-        "Reihenfolge-Invarianz und Änderungssensitivität für unvereinbar gehalten"
+        {
+          "id": "hash-als-verschluesselung-oder-schutz",
+          "text": "Hash als Verschlüsselung oder Schutz vor Änderung missverstanden"
+        },
+        {
+          "id": "reihenfolge-invarianz-und-aenderungssensitivitaet-fuer",
+          "text": "Reihenfolge-Invarianz und Änderungssensitivität für unvereinbar gehalten"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "choices": [
         {
           "id": "a",

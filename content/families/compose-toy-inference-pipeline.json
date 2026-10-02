@@ -1,35 +1,13 @@
 {
   "schemaVersion": 1,
   "familyId": "compose-toy-inference-pipeline",
-  "contract": {
-    "familyId": "compose-toy-inference-pipeline",
-    "familyGroup": "construct-program",
-    "summary": "Komponiert Tokenizer, Toy-Forward-Pass und Greedy-Dekodierung zu einer deterministischen Inferenz-Pipeline mit Rückdekodierung.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "toy-inference-pipeline",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-dl-inference",
-      "c-dl-attention",
-      "c-dl-tokenizer"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "toy-inference-pipeline",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w24-e6"
       ],
@@ -55,30 +33,23 @@
         "Die Logits werden in jedem Schritt über die komplette bisherige Folge berechnet — nicht nur über das letzte Token.",
         "Argmax-Gleichstand geht an die kleinste ID (np.argmax macht das); danach wie in greedy_decode stoppen."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "static-context",
-          "then": "Der Kontext wächst mit jedem Token: forward immer mit der vollständigen aktuellen Folge aufrufen."
+          "id": "logits-nur-aus-dem-letzten",
+          "text": "Logits nur aus dem letzten Token berechnet"
         },
         {
-          "if": "seed-used",
-          "then": "Die Pipeline darf keinen Zufall enthalten — Determinismus ist hier Teil des Vertrags (Doppelaufruf-Test)."
+          "id": "zufallszustand-in-die-pipeline-eingebracht",
+          "text": "Zufallszustand in die Pipeline eingebracht"
         },
         {
-          "if": "eos-off-by-one",
-          "then": "max_len begrenzt die Gesamtfolge inklusive Start-Tokens; eos wird mitgezählt."
+          "id": "startfolge-zur-max-len-grenze",
+          "text": "Startfolge zur max_len-Grenze falsch gezählt"
         }
       ],
-      "typicalErrors": [
-        "Logits nur aus dem letzten Token berechnet",
-        "Zufallszustand in die Pipeline eingebracht",
-        "Startfolge zur max_len-Grenze falsch gezählt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Toy-Inferenz-Pipeline implementieren"
     }
   ]
 }

@@ -29,28 +29,20 @@
         "Erst die Retrieval-Ebene entscheiden lassen, dann die Antwort-Ebene — elif ist dein Freund.",
         "„leer“ plus „kein_treffer“ ist EIN Fehler an der Wurzel (Retrieval), nicht zwei."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "double-counted",
-          "then": "Wer leer UND kein_treffer zählt, bestraft dieselbe Query zweimal — die Wurzel ist das Retrieval."
+          "id": "dieselbe-query-doppelt-gezaehlt",
+          "text": "dieselbe Query doppelt gezählt"
         },
         {
-          "if": "blockiert-als-retrieval",
-          "then": "„blockiert“ ist ein Sicherheitsentscheid auf der Antwortebene — das Retrieval lieferte ja etwas."
+          "id": "blockiert-der-retrieval-ebene-zugeordnet",
+          "text": "blockiert der Retrieval-Ebene zugeordnet"
         },
         {
-          "if": "unbekannte-status",
-          "then": "Der Vertrag kennt genau retrieval ok|leer und antwort ok|kein_treffer|blockiert — außerhalb liegt kein definierter Zustand."
+          "id": "beide-ebenen-in-einen-topf",
+          "text": "beide Ebenen in einen Topf geworfen"
         }
       ],
-      "typicalErrors": [
-        "dieselbe Query doppelt gezählt",
-        "blockiert der Retrieval-Ebene zugeordnet",
-        "beide Ebenen in einen Topf geworfen"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

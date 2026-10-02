@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-rag-stage",
-  "contract": {
-    "familyId": "classify-rag-stage",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen Verarbeitungsschritt der passenden RAG-Stage zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "rag-stage-separation",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-genai-rag"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "rag-stage-separation",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-genai-rag"
       ],
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -83,13 +60,19 @@
         }
       ],
       "typicalErrors": [
-        "Generierung und Retrieval als eine ununterscheidbare Blackbox behandelt",
-        "geglaubt, Antworten müssten aus Retrieval kopiert werden",
-        "Messbarkeit nur auf einer Seite der Pipeline gesehen"
+        {
+          "id": "generierung-und-retrieval-als-eine",
+          "text": "Generierung und Retrieval als eine ununterscheidbare Blackbox behandelt"
+        },
+        {
+          "id": "geglaubt-antworten-muessten-aus-retrieval",
+          "text": "geglaubt, Antworten müssten aus Retrieval kopiert werden"
+        },
+        {
+          "id": "messbarkeit-nur-auf-einer-seite",
+          "text": "Messbarkeit nur auf einer Seite der Pipeline gesehen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

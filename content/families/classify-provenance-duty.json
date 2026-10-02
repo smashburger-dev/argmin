@@ -1,28 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-provenance-duty",
-  "contract": {
-    "familyId": "classify-provenance-duty",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet eine Verwendung der passenden Provenance-Pflichtklasse zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": false,
-    "caseTypes": [
-      {
-        "caseId": "provenance-duty",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro"
-    ],
-    "competencyIds": [
-      "c-research-cards"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "provenance-duty",
@@ -37,9 +16,7 @@
       "competencyIds": [
         "c-research-cards"
       ],
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -83,12 +60,15 @@
         }
       ],
       "typicalErrors": [
-        "Karten als Zierdokument statt Prüfgrundlage verstanden",
-        "Vollständigkeit mit positiver Darstellung verwechselt"
+        {
+          "id": "karten-als-zierdokument-statt-pruefgrundlage",
+          "text": "Karten als Zierdokument statt Prüfgrundlage verstanden"
+        },
+        {
+          "id": "vollstaendigkeit-mit-positiver-darstellung-verwechselt",
+          "text": "Vollständigkeit mit positiver Darstellung verwechselt"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

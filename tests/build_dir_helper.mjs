@@ -6,6 +6,12 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(fileURLToPath(new URL('..', import.meta.url)));
 
+// These specs need `npm run build:next` output; on a fresh checkout they
+// skip like verify_content_delivery instead of failing on a missing dir.
+export const buildMissing = !existsSync(join(root, 'build-next'))
+  ? 'build-next fehlt — zuerst npm run build:next'
+  : false;
+
 export function makeBuildDir() {
   const dir = mkdtempSync(join(tmpdir(), 'ki-public-'));
   cpSync(join(root, 'build-next'), dir, { recursive: true });

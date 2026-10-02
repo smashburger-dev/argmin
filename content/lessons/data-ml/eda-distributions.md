@@ -51,7 +51,7 @@ $r = 1$ heißt exakt positive Linearität, $r = -1$ exakt negative, $r \approx 0
 
 ## Korrelation ist nicht Kausalität: Confounder
 
-Eisverkäufe und Badeunfälle korrelieren im Sommer stark positiv. Weder verursacht Eis Unfälle noch umgekehrt — eine gemeinsame **Drittvariable** (der **Confounder** „Sommertemperatur") treibt beide. Bevor du aus $r$ einen kausalen Schluss ziehst, suche nach Drittvariablen, die beide Größen erklären. Ein hohes $r$ rechtfertigt höchstens die Frage nach einem Experiment oder einer begründeten kausalen Annahme.
+Eisverkäufe und Badeunfälle korrelieren im Sommer stark positiv. Weder verursacht Eis Unfälle noch umgekehrt — eine gemeinsame **Drittvariable** (der **Confounder** „Sommertemperatur“) treibt beide. Bevor du aus $r$ einen kausalen Schluss ziehst, suche nach Drittvariablen, die beide Größen erklären. Ein hohes $r$ rechtfertigt höchstens die Frage nach einem Experiment oder einer begründeten kausalen Annahme.
 
 ## Bedingte Wahrscheinlichkeit als Spaltenanteil
 
@@ -64,7 +64,7 @@ $P(B \mid A)$ ist der Anteil der B-Fälle **innerhalb** der A-Fälle — in eine
 
 $$P(B \mid A) = \frac{42}{56} = \frac{3}{4} = 0{,}75, \qquad P(B) = \frac{52}{96} \approx 0{,}54.$$
 
-Der bedingte Anteil und der unbedingte Anteil unterscheiden sich — genau das ist die Aussage „B hängt mit A zusammen". Umgekehrt gilt hier $P(A \mid B) = \frac{42}{52}$, ein anderer Wert: Bedingung und Ereignis dürfen nicht vertauscht werden.
+Der bedingte Anteil und der unbedingte Anteil unterscheiden sich — genau das ist die Aussage „B hängt mit A zusammen“. Umgekehrt gilt hier $P(A \mid B) = \frac{42}{52}$, ein anderer Wert: Bedingung und Ereignis dürfen nicht vertauscht werden.
 
 ## Typische Fehler
 

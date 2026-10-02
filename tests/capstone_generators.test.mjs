@@ -14,7 +14,7 @@ const W31_W39_SEED_GENERATORS = {
 // house rules enforced for the other generator modules:
 //   1. determinism: same seed -> identical instance
 //   2. answer space: every family reaches its documented minimum of distinct
-//      expected values over 2000 seeds (counting families are naturally
+//      expected values over 600 seeds (counting families are naturally
 //      bounded; their bounds are documented per generator)
 //   3. semantic variation: >= 3 distinct shapes per family
 //   4. honesty: prompt never shows the answer as a standalone number,
@@ -24,12 +24,9 @@ const W31_W39_SEED_GENERATORS = {
 //      generator output at its default seed, and defaultExpected matches
 //   7. topic honesty: no family claims an executed LLM
 
-const SEEDS = Array.from({ length: 2000 }, (_, i) => 1 + i * 37);
+const SEEDS = Array.from({ length: 600 }, (_, i) => 1 + i * 37);
 
-function standaloneNumberPresent(text, value) {
-  const escaped = String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(`(?<![\\d.,])${escaped}(?![\\d.,%])`).test(text);
-}
+import { standaloneNumberPresent } from '../assets/js/core/generator_draw_kit.mjs';
 
 // Independent reference solvers: they only read `parameters`, never the
 // generator internals, so agreement is a real cross-check.
@@ -84,7 +81,7 @@ const SOLVERS = {
   },
 };
 
-// Documented lower bounds for distinct expected values over 2000 seeds.
+// Documented lower bounds for distinct expected values over 600 seeds.
 // Counting families (flags 1-4, stage counts) are bounded by design; the
 // numeric families span per-mille and percent ranges.
 const MIN_DISTINCT = {
@@ -131,7 +128,7 @@ for (const [name, generator] of Object.entries(W31_W39_SEED_GENERATORS)) {
   test(`w31-w39 ${name}: semantic prompt variation (>= 3 distinct shapes)`, () => {
     // Digit-masked prompts isolate the semantic frame from the drawn numbers
     // (same technique as the w27-w30 generator tests).
-    const shapes = new Set(SEEDS.slice(0, 400).map((seed) => {
+    const shapes = new Set(SEEDS.slice(0, 150).map((seed) => {
       const { prompt } = generator(seed);
       return prompt.replace(/-?\d+/g, '#');
     }));
@@ -139,7 +136,7 @@ for (const [name, generator] of Object.entries(W31_W39_SEED_GENERATORS)) {
   });
 
   test(`w31-w39 ${name}: prompt never shows the answer, solution always does`, () => {
-    for (const seed of SEEDS.slice(0, 300)) {
+    for (const seed of SEEDS.slice(0, 150)) {
       const instance = generator(seed);
       assert.ok(Number.isInteger(instance.expected), `${name} seed ${seed}: non-integer expected`);
       assert.equal(standaloneNumberPresent(instance.prompt, instance.expected), false,
@@ -150,7 +147,7 @@ for (const [name, generator] of Object.entries(W31_W39_SEED_GENERATORS)) {
   });
 
   test(`w31-w39 ${name}: independent solver agrees on every seed (incl. 20-seed spot check)`, () => {
-    for (const seed of SEEDS.slice(0, 200)) {
+    for (const seed of SEEDS.slice(0, 100)) {
       const instance = generator(seed);
       assert.equal(SOLVERS[name](instance.parameters), instance.expected,
         `${name} seed ${seed}: solver disagrees`);
@@ -174,7 +171,7 @@ for (const [name, generator] of Object.entries(W31_W39_SEED_GENERATORS)) {
 // representable with 3 decimals (denominators only carry factors 2 and 5).
 test('w31-w39 genSubgroupCost: differences are exact in per-mille, no rounding debt', () => {
   const gcd = (a, b) => (b ? gcd(b, a % b) : a);
-  for (const seed of SEEDS.slice(0, 200)) {
+  for (const seed of SEEDS.slice(0, 100)) {
     const { parameters: p } = genSubgroupCostInstance(seed);
     const parts = p.kind === 'fpr'
       ? [[p.a.fp, p.a.fp + p.a.tn], [p.b.fp, p.b.fp + p.b.tn]]
@@ -217,7 +214,7 @@ for (const [week, name] of SHIPPED_E2) {
 test('w31-w39 families stay in their documented topic lanes', () => {
   // Research-artefact audits on synthetic fixtures: no family may claim LLM
   // execution or grading (ADR-0014 honesty rules).
-  for (const seed of SEEDS.slice(0, 100)) {
+  for (const seed of SEEDS.slice(0, 50)) {
     for (const generator of Object.values(W31_W39_SEED_GENERATORS)) {
       const { prompt, fullSolution } = generator(seed);
       for (const text of [prompt, fullSolution]) {

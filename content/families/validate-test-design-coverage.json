@@ -12,7 +12,22 @@
       ],
       "parameters": {
         "shape": "elif-chain-five",
-        "anchor": "w04-e2"
+        "anchor": "w04-e2",
+        "fnName": "note",
+        "varName": "punkte",
+        "thresholds": [
+          90,
+          80,
+          70,
+          60
+        ],
+        "labels": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "f"
+        ]
       },
       "expected": {
         "kind": "integer",

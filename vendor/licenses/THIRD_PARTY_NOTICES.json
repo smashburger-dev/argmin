@@ -92,38 +92,6 @@
       }
     },
     {
-      "id": "sympy",
-      "name": "SymPy Pyodide wheel",
-      "version": "1.14.0",
-      "licenseExpression": "BSD-3-Clause AND MIT",
-      "sourceUrl": "https://cdn.jsdelivr.net/pyodide/v314.0.5/full/sympy-1.14.0-py3-none-any.whl",
-      "artifacts": [
-        "vendor/pyodide/sympy-1.14.0-py3-none-any.whl"
-      ],
-      "licenseFiles": [
-        "vendor/licenses/sympy-1.14.0-LICENSES.txt"
-      ],
-      "licenseFileSha256": {
-        "vendor/licenses/sympy-1.14.0-LICENSES.txt": "89e8865818eb52dcc8b44a2c427b724463cf90e9052f89fa201fa1d3676fc925"
-      }
-    },
-    {
-      "id": "mpmath",
-      "name": "mpmath Pyodide wheel",
-      "version": "1.4.1",
-      "licenseExpression": "BSD-3-Clause",
-      "sourceUrl": "https://cdn.jsdelivr.net/pyodide/v314.0.5/full/mpmath-1.4.1-py3-none-any.whl",
-      "artifacts": [
-        "vendor/pyodide/mpmath-1.4.1-py3-none-any.whl"
-      ],
-      "licenseFiles": [
-        "vendor/licenses/mpmath-1.4.1-BSD-3-Clause.txt"
-      ],
-      "licenseFileSha256": {
-        "vendor/licenses/mpmath-1.4.1-BSD-3-Clause.txt": "a0cfb17ee7b06c191ceac9eed59c92443fe561a59d188bb1795c20fd895c1c39"
-      }
-    },
-    {
       "id": "mathlive",
       "name": "MathLive",
       "version": "0.110.0",

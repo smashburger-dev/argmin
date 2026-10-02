@@ -60,7 +60,7 @@
       "caseId": "contains-injection-rules",
       "seed": 0,
       "difficulty": "core",
-      "estimatedMinutes": 22,
+      "estimatedMinutes": 25,
       "lessonId": "l-genai-security",
       "masteryEligible": true
     },
@@ -71,7 +71,7 @@
       "caseId": "permission-policy-check",
       "seed": 0,
       "difficulty": "stretch",
-      "estimatedMinutes": 28,
+      "estimatedMinutes": 30,
       "lessonId": "l-genai-security",
       "masteryEligible": true
     },
@@ -82,7 +82,7 @@
       "caseId": "detector-table-best-f1",
       "seed": 0,
       "difficulty": "challenge",
-      "estimatedMinutes": 42,
+      "estimatedMinutes": 45,
       "lessonId": "l-genai-security",
       "masteryEligible": true
     },

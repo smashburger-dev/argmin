@@ -13,5 +13,16 @@
     { "kind": "point", "at": ["z", "tanh(z)"], "color": "#9c4b00" },
     { "kind": "point", "at": ["z", "sigmoid(z)"], "color": "#294bd6" },
     { "kind": "text", "at": [-4.5, -1.2], "text": "ReLU={relu(z)}, tanh={tanh(z)}, σ={sigmoid(z)}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze z = −1. Welchen Wert zeigt der blaue Punkt, also σ(−1)?",
+    "input": "numeric",
+    "expected": 0.269,
+    "tolerance": 0.01,
+    "hints": ["σ(z) = 1/(1 + e^(−z)) — setze z = −1 ein."],
+    "typicalErrors": [
+      { "match": 0.731, "feedback": "Das ist σ(+1). Es gilt σ(−z) = 1 − σ(z), also liegt der Wert unter 0,5." },
+      { "match": -0.762, "feedback": "Das ist tanh(−1). Die Sigmoid-Ausgabe bleibt immer zwischen 0 und 1." }
+    ]
+  }
 }

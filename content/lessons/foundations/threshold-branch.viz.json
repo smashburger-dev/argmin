@@ -9,5 +9,16 @@
     { "kind": "functiongraph", "expr": "relu(x-t)", "label": "relu(x−t)", "color": "#294bd6" },
     { "kind": "segment", "from": ["t", 0], "to": ["t", 5], "dash": true, "color": "#b72f2a" },
     { "kind": "text", "at": [-4.5, -1], "text": "if x > t", "color": "#b72f2a" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze t = 0,5. Welchen Wert liefert relu(x − t) bei x = 2?",
+    "input": "numeric",
+    "expected": 1.5,
+    "tolerance": 1e-6,
+    "hints": ["Prüfe zuerst, ob x > t gilt. Im aktiven Zweig gibt relu(x − t) einfach x − t zurück."],
+    "typicalErrors": [
+      { "match": 0, "feedback": "Der Ausgang ist nur für x ≤ t null. Hier gilt x = 2 > t = 0,5, also ist der if-Zweig aktiv." },
+      { "match": 2.5, "feedback": "Das wäre relu(x + t). Die Schwelle wird subtrahiert: relu(2 − 0,5)." }
+    ]
+  }
 }

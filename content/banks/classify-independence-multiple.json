@@ -1,0 +1,19 @@
+{
+  "capsules": {
+    "intro": {
+      "kind": "dependent-pair",
+      "bound": 12,
+      "caseId": "dependent-pair-double"
+    },
+    "core": {
+      "kind": "independent-pair",
+      "bound": 5,
+      "caseId": "independent-pair-negative"
+    },
+    "stretch": {
+      "kind": "dependent-triple",
+      "bound": 5,
+      "caseId": "dependent-triple-span"
+    }
+  }
+}

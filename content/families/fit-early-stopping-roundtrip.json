@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "fit-early-stopping-roundtrip",
-  "contract": {
-    "familyId": "fit-early-stopping-roundtrip",
-    "familyGroup": "fit-model",
-    "summary": "Implementiert die Early-Stopping-Patience-Regel als strikten Scan über Epochenverluste plus wertexakten JSON-Zustandsroundtrip.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "early-stopping-roundtrip",
-        "propertyTest": false
-      },
-      {
-        "caseId": "early-stopping-min-delta-roundtrip",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-regularization",
-      "c-ml-cv"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "early-stopping-roundtrip",
@@ -58,28 +31,20 @@
         "early_stop_epoch: ein Lauf mit best-Index; nur ein strikt kleinerer Verlust setzt best weiter (Gleichstand bleibt früh); nach der Prüfung abbrechen, wenn i − best > patience.",
         "to_state nutzt arr.tolist() (verschachtelte Listen), from_state np.asarray(value, dtype=np.float64) — gleiche Schlüssel, gleiche Reihenfolge der Konvertierung."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "tie-updates-best",
-          "then": "Bei Gleichstand bleibt die frühere Epoche die beste — nur ein strikt kleinerer Verlust aktualisiert den Index."
+          "id": "gleichstand-zaehlt-als-verbesserung-und",
+          "text": "Gleichstand zählt als Verbesserung und verschiebt die beste Epoche nach hinten"
         },
         {
-          "if": "patience-off-by-one",
-          "then": "Abbruch ist i − best > patience: patience = 1 erlaubt genau eine Episode ohne Verbesserung nach dem Bestwert."
+          "id": "patience-grenze-um-eins-daneben",
+          "text": "patience-Grenze um eins daneben (>= statt >)"
         },
         {
-          "if": "tolist-skipped",
-          "then": "Ohne .tolist() bleiben ndarrays im Zustand — json.dumps wirft dann TypeError, genau was der Test fängt."
+          "id": "arrays-ohne-tolist-in-den",
+          "text": "Arrays ohne tolist in den Zustand gelegt"
         }
       ],
-      "typicalErrors": [
-        "Gleichstand zählt als Verbesserung und verschiebt die beste Epoche nach hinten",
-        "patience-Grenze um eins daneben (>= statt >)",
-        "Arrays ohne tolist in den Zustand gelegt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -99,7 +64,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\n\ndef early_stop_epoch(val_losses, patience, min_delta):\n    ...\n\n\ndef to_state(model):\n    ...\n\n\ndef from_state(state):\n    ...\n",
-        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
+        "tests": "__check('bester Index bleibt bei 1', early_stop_epoch([0.9, 0.5, 0.505, 0.51], 2, 0.01) == 1)\n__check('verbesserung setzt zurueck', early_stop_epoch([0.9, 0.5, 0.505, 0.48, 0.49], 2, 0.01) == 3)\n__check('wait erst seit letzter verbesserung', early_stop_epoch([0.9, 0.5, 0.51, 0.52, 0.48, 0.55, 0.45, 0.6], 3, 0.01) == 6)\n__check('Gleichstand frueh', early_stop_epoch([1.0, 1.0, 1.0], 1, 0.0) == 0)\nmodel = {\"w\": np.array([[1.0, -2.0]]), \"b\": np.array([0.5])}\nstate = to_state(model)\n__check('Listenstatus', all(isinstance(value, list) for value in state.values()))\n__check('Round-Trip', all(np.array_equal(from_state(state)[key], model[key]) for key in model))\n__check('float64', all(from_state(state)[key].dtype == np.float64 for key in model))\n"
       },
       "expected": {
         "kind": "reference-solver",
@@ -111,28 +76,20 @@
         "Vergleiche best_loss - loss strikt mit min_delta und setze wait nur nach einer echten Verbesserung zurück.",
         "Für den Zustand zuerst arr.tolist(), beim Laden np.asarray(..., dtype=np.float64) verwenden."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "min-delta-inclusive",
-          "then": "Der Verlust 0,505 verbessert 0,50 nur um 0,005 und überschreitet min_delta=0,01 nicht; wait steigt."
+          "id": "min-delta-als-mindestens-statt",
+          "text": "min_delta als mindestens statt als strikt größer interpretiert"
         },
         {
-          "if": "patience-reset-missed",
-          "then": "Der Wert 0,48 ist mehr als 0,01 besser als 0,50 und setzt wait in Epoche 3 zurück."
+          "id": "wait-trotz-echter-verbesserung-nicht",
+          "text": "wait trotz echter Verbesserung nicht zurückgesetzt"
         },
         {
-          "if": "array-state",
-          "then": "to_state muss verschachtelte Listen liefern, sonst ist der Zustand nicht JSON-serialisierbar."
+          "id": "numpy-arrays-unveraendert-in-den",
+          "text": "NumPy-Arrays unverändert in den JSON-Zustand gelegt"
         }
       ],
-      "typicalErrors": [
-        "min_delta als mindestens statt als strikt größer interpretiert",
-        "wait trotz echter Verbesserung nicht zurückgesetzt",
-        "NumPy-Arrays unverändert in den JSON-Zustand gelegt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

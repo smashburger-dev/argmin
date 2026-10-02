@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "l-capstone-acceptance",
+  "version": 1,
+  "locale": "de",
+  "title": "Capstone-Pipeline: Abschlussdiagnose und Abnahme",
+  "objectives": [
+    "die Abschlussdiagnose aus Evidenzregeln ableiten: zwei unabhängige Treffer, zwei Definitionen, vierzehn Tage Abstand, keine disqualifizierte Instanz",
+    "eine Demo ausschließlich aus eingefrorenen Messwerten erzeugen und mit Assert gegen heimliche Neuberechnung absichern",
+    "alle Verträge der Pipeline deterministisch abnehmen und das Regelwerk-Verdict als Tabelle statt Gefühl lesen"
+  ],
+  "competencyIds": [
+    "c-capstone-pipeline"
+  ],
+  "requires": [
+    "c-research-capstone",
+    "c-ml-repro"
+  ],
+  "estimatedMinutes": 15,
+  "blocks": [
+    {
+      "blockId": "capstone-acceptance-core",
+      "type": "worked-example",
+      "contentRef": "lessons/research/capstone-acceptance.md"
+    },
+    {
+      "blockId": "capstone-acceptance-check",
+      "type": "checkpoint",
+      "contentRef": "lessons/research/capstone-acceptance-checkpoint.md"
+    }
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "wilson-good-enough",
+      "role": "primary",
+      "locator": "Good Enough Practices for Scientific Computing — Setup, Software, Tests und Fehlerbehandlung als Mindestgerüst der Pipeline"
+    },
+    {
+      "sourceId": "sandve-repro-rules",
+      "role": "reference",
+      "locator": "Sandve et al., Ten Simple Rules for Reproducible Computational Research — jede Zahl aus Code und Daten ableitbar halten"
+    },
+    {
+      "sourceId": "acm-artifact-badging",
+      "role": "reference",
+      "locator": "ACM Artefact Badging — Available/Functional/Reproduced als Stufen überprüfbarer Artefakte"
+    },
+    {
+      "sourceId": "rougier-figures",
+      "role": "practice",
+      "locator": "Rougier et al., Ten Simple Rules for Better Figures — Demo-Ansichten aus eingefrorenen Messwerten, nicht aus Gedächtnis"
+    }
+  ],
+  "rightsId": "ki-lernplattform-original",
+  "releaseStatus": "draft"
+}

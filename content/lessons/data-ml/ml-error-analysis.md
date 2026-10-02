@@ -12,7 +12,7 @@ Durchgerechnetes Beispiel: Ein Defekt-Klassifikator wird auf 100 Beispiele ausge
 | B (Spezialwerkzeuge) | 20 | 6 | $30\,\%$ |
 | C (Neue Werkzeuge) | 30 | 3 | $10\,\%$ |
 
-Insgesamt 13 Fehler auf 100 Beispiele — „87 % Accuracy". Die **Subgruppen-Lücke** ist die Differenz zwischen höchster und niedrigster Fehlerrate:
+Insgesamt 13 Fehler auf 100 Beispiele — „87 % Accuracy“. Die **Subgruppen-Lücke** ist die Differenz zwischen höchster und niedrigster Fehlerrate:
 
 $$
 30\,\% - 8\,\% = 22\ \text{Prozentpunkte}.
@@ -36,24 +36,24 @@ Eine **Modellkarte** (Model Cards, Mitchell et al. 2019) dokumentiert ein Modell
 - **Metriken pro Gruppe**: nicht nur der Gesamtwert, sondern die Aufschlüsselung — die 8/30/10-Prozent-Tabelle gehört hierher.
 - **Grenzen (known limitations)**: Die schwächste Teilgruppe wird namentlich genannt, zusammen mit der Bedingung, unter der das Modell nicht eingesetzt werden soll.
 
-Für das Beispiel: „Bekannte Grenze: Spezialwerkzeuge (Fehlerrate 30 %). Einsatz nur nach manueller Prüfung."
+Für das Beispiel: „Bekannte Grenze: Spezialwerkzeuge (Fehlerrate 30 %). Einsatz nur nach manueller Prüfung.“
 
 ## Kommunikation ohne Overclaims
 
 Die Zahl heißt so viel wie ihr Kontext. Ehrliche Formulierungen:
 
-- „87 % Accuracy insgesamt, aber 30 % Fehlerrate bei Spezialwerkzeugen (20 Beispiele)."
-- Statt „Das Modell erkennt Defekte zuverlässig": „Auf den Pilotdaten …, Gültigkeit für andere Werke nicht geprüft."
+- „87 % Accuracy insgesamt, aber 30 % Fehlerrate bei Spezialwerkzeugen (20 Beispiele).“
+- Statt „Das Modell erkennt Defekte zuverlässig“: „Auf den Pilotdaten …, Gültigkeit für andere Werke nicht geprüft.“
 
 Klein n wird genannt, Einsatzgrenzen werden nicht kleingeredet, und die schwächste Gruppe steht im Bericht — nicht in der Fußnote.
 
 ## Typische Fehler
 
 - Nur die Gesamtmetrik berichten und Subgruppen-Lücken unter den Tisch fallen lassen.
-- Drift als Label-Noise fehldeuten („die Daten sind halt schlecht") und Nachqualifizierung statt Neubewertung starten.
+- Drift als Label-Noise fehldeuten („die Daten sind halt schlecht“) und Nachqualifizierung statt Neubewertung starten.
 - Die Modellkarte als Marketingtext schreiben statt als Nutzungsgrenze.
 - Aus einer kleinen Stichprobe (drei Fehler auf fünf Beispiele) weitreichende Aussagen ableiten.
-- Overclaims: „zuverlässig", „robust", „bewiesen" ohne Messkontext.
+- Overclaims: „zuverlässig“, „robust“, „bewiesen“ ohne Messkontext.
 
 ## Direkter Check
 

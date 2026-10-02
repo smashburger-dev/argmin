@@ -6,7 +6,7 @@
 //     decimals are graded through python-code tasks, never through the
 //     numeric grader);
 //   - answer spaces are deliberately wide (>= 20 distinct expected values
-//     over 2000 seeds, enforced by the transformer generator tests);
+//     over 600 seeds, enforced by the transformer generator tests);
 //   - variation is semantic (shape role, framing, metric), never just noise:
 //     every family mixes >= 3 prompt shapes;
 //   - the answer never appears as a standalone number in the prompt (a

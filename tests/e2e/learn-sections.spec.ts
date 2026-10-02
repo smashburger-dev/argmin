@@ -29,6 +29,31 @@ test('rest pill filters the rest modules without touching the track', async ({ p
   await expect(page.locator('.learn-rest .module-card-link')).toHaveCount(before);
 });
 
+test('module card counts curated placements and credits a solved case', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'Progress roundtrip runs in Chromium.');
+  const card = page.locator('.learn-rail a.module-card-link[href="#/module/lm-foundations-python-state"]');
+  await page.goto('/index.html#/learn');
+  await expect(card).toContainText('3 Aufgaben');
+  await page.goto('/index.html#/family/trace-assignment-state/reassign-two-variables-print/7/intro');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Variante wird geladen' })).toHaveCount(0);
+  const table = await page.evaluate(async () => {
+    const { EXERCISE_FAMILIES } = await import('/assets/js/domain/' + 'exercise_registry.mjs') as {
+      EXERCISE_FAMILIES: { instantiate: (familyId: string, seed: number, difficulty: string, caseId: string) => { traceTable: { expectedStates: Array<Record<string, string>> } } };
+    };
+    return EXERCISE_FAMILIES.instantiate('trace-assignment-state', 7, 'intro', 'reassign-two-variables-print').traceTable;
+  });
+  for (const [row, state] of table.expectedStates.entries()) {
+    for (const [name, value] of Object.entries(state)) {
+      if (value !== '') await page.getByLabel(`Zeile ${row + 1}, ${name}`).fill(String(value));
+    }
+  }
+  await page.getByRole('button', { name: 'Tabelle prüfen' }).click();
+  await expect(page.getByText(/Richtig/)).toBeVisible();
+  await page.goto('/index.html#/learn');
+  await expect(card).toContainText('1 von 3 Aufgaben');
+});
+
 test('history collects opened lessons and modules', async ({ page }) => {
   await page.goto('/index.html#/lesson/l-foundations-algebra');
   await expect(page.getByRole('heading', { level: 1, name: 'Algebra als überprüfbare Umformung' })).toBeVisible();

@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-retrieval-ranking-metric",
-  "contract": {
-    "familyId": "aggregate-retrieval-ranking-metric",
-    "familyGroup": "aggregate-count",
-    "summary": "Berechnet TF-IDF- und Kosinusähnlichkeit als Ranking-Metrik, leitet das Ranking ab und evaluiert es mit Recall@k und MRR.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "retrieval-ranking-recall",
-        "propertyTest": false
-      },
-      {
-        "caseId": "retrieval-evaluate-queries",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch",
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-genai-rag",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "retrieval-ranking-recall",
@@ -42,7 +15,7 @@
           "numpy"
         ],
         "starterCode": "import numpy as np\n\n\ndef build_vectors(docs):\n    \"\"\"TF-IDF-Matrix (n_docs x |vocab|) mit idf = log((n+1)/(df+1)) + 1, tf normiert auf Dokumentlänge.\"\"\"\n    ...\n\ndef rank(query, docs, k):\n    \"\"\"Top-k Indizes nach Kosinus-Aehnlichkeit, Gleichstand -> kleinster Index zuerst.\"\"\"\n    ...\n\ndef recall_at_k(relevant, ranked, k):\n    \"\"\"|top-k ∩ relevant| / |relevant|; leere relevant-Liste -> ValueError.\"\"\"\n    ...\n\n",
-        "tests": "DOCS = [\n    \"Die Lieferzeit beträgt drei Werktage.\",\n    \"Die Lieferzeit im Ausland beträgt zwei Wochen.\",\n    \"Der Vertrag läuft zwölf Monate.\",\n    \"Die Kündigung des Vertrags ist schriftlich möglich.\",\n    \"Rabattcodes gelten im Sommer.\",\n    \"Das Widerrufsrecht endet nach vierzehn Tagen.\",\n]\n__check('lieferzeit top1', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 3)[0] == 0)\n__check('lieferzeit top2 sortierung', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2) == [0, 1])\n__check('vertrag top1', rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) == [2])\n__check('widerruf top1', rank(\"Wann endet das Widerrufsrecht?\", DOCS, 1) == [5])\n__check('recall voll', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([5], rank(\"Wie lange läuft der Vertrag?\", DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere relevante -> ValueError', True)"
+        "tests": "DOCS = [\n    \"Die Lieferzeit beträgt drei Werktage.\",\n    \"Die Lieferzeit im Ausland beträgt zwei Wochen.\",\n    \"Der Vertrag läuft zwölf Monate.\",\n    \"Die Kündigung des Vertrags ist schriftlich möglich.\",\n    \"Rabattcodes gelten im Sommer.\",\n    \"Das Widerrufsrecht endet nach vierzehn Tagen.\",\n]\n__check('lieferzeit top1', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 3)[0] == 0)\n__check('lieferzeit top2 sortierung', rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2) == [0, 1])\n__check('vertrag top1', rank(\"Wie lange läuft der Vertrag?\", DOCS, 1) == [2])\n__check('widerruf top1', rank(\"Wann endet das Widerrufsrecht?\", DOCS, 1) == [5])\n__check('recall voll', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 2), 2) - 1.0) < 1e-12)\n__check('recall halb', abs(recall_at_k([0, 1], rank(\"Wie lange beträgt die Lieferzeit?\", DOCS, 1), 1) - 0.5) < 1e-12)\n__check('recall null', recall_at_k([5], rank(\"Wie lange läuft der Vertrag?\", DOCS, 2), 2) == 0.0)\ntry:\n    recall_at_k([], [0, 1], 2)\n    __check('leere relevante -> ValueError', False, 'kein ValueError')\nexcept ValueError:\n    __check('leere relevante -> ValueError', True)\nDOCS2 = [\"garantie versand filiale oeffnung beratung\", \"versand\", \"versand kundenkarte\"]\n__check('kosinus normiert doklaenge', rank(\"versand garantie\", DOCS2, 2) == [0, 1])"
       },
       "competencyIds": [
         "c-genai-rag",
@@ -58,28 +31,20 @@
         "Baue zuerst Dokument-Tokens und das sortierte Vokabular; df zählt Dokumente pro Term, tf wird auf die Dokumentlänge normiert.",
         "Der Anfragevektor bekommt dieselbe idf-Gewichtung wie die Dokumente; bei Score-Gleichstand gewinnt der kleinere Index (sortiere mit key=(-score, i))."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "no-idf",
-          "then": "Ohne idf-Gewichtung gewinnt das Dokument mit den meisten Common Terms — die Tests erwarten die TF-IDF-Variante."
+          "id": "anfrage-anders-normalisiert-als-dokumente",
+          "text": "Anfrage anders normalisiert als Dokumente"
         },
         {
-          "if": "tie-break-wrong",
-          "then": "Gleichstände müssen deterministisch über den kleinsten Index aufgelöst werden, sonst atmet das Ranking zwischen Läufen."
+          "id": "kosinus-ohne-laengennormierung-gerechnet",
+          "text": "Kosinus ohne Längennormierung gerechnet"
         },
         {
-          "if": "query-not-normalized",
-          "then": "Die Anfrage muss exakt wie die Dokumente normalisiert werden, sonst verschwinden ihre Terme aus dem Vokabular."
+          "id": "argsort-ohne-stabilen-tie-break",
+          "text": "argsort ohne stabilen Tie-Break verwendet"
         }
       ],
-      "typicalErrors": [
-        "Anfrage anders normalisiert als Dokumente",
-        "Kosinus ohne Längennormierung gerechnet",
-        "argsort ohne stabilen Tie-Break verwendet"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -87,6 +52,7 @@
       "caseId": "retrieval-evaluate-queries",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w27-e6"
       ],
@@ -111,30 +77,23 @@
         "Ranking und Auswertung trennen: rank_query liefert die komplette Ordnung, evaluate schneidet nur top-k ab und sucht die erste relevante Position (1-basiert).",
         "Recall@k zählt den Schnitt |top-k ∩ relevant|; MRR bricht nach dem ersten relevanten Dokument ab."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "mrr-zero-based",
-          "then": "Die Rangposition ist 1-basiert — das erste Dokument hat rank 1, nicht 0 (sonst wird MRR unendlich groß)."
+          "id": "mrr-null-basiert-gerechnet",
+          "text": "MRR null-basiert gerechnet"
         },
         {
-          "if": "mrr-sums-all",
-          "then": "MRR nutzt nur das ERSTE relevante Dokument pro Anfrage, nicht die Summe über alle."
+          "id": "recall-ueber-alle-gelisteten-statt",
+          "text": "Recall über alle gelisteten statt der top-k"
         },
         {
-          "if": "k-applied-in-rank",
-          "then": "evaluate bekommt das komplette Ranking und schneidet selbst bei k ab — so bleibt die Funktion für jedes k wiederverwendbar."
+          "id": "bei-mrr-alle-relevanten-dokumente",
+          "text": "bei MRR alle relevanten Dokumente summiert"
         }
       ],
-      "typicalErrors": [
-        "MRR null-basiert gerechnet",
-        "Recall über alle gelisteten statt der top-k",
-        "bei MRR alle relevanten Dokumente summiert"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Mini-Suchindex mit Metriken bewerten"
     }
   ]
 }

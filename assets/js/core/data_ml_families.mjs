@@ -1,9 +1,13 @@
-// S4D8 data-cleaning family contracts. The seeded cases reuse the canonical
-// W06 generators; this module only supplies profile filtering and family
-// instance shape.
+// S4D8 data/ML family contracts (twenty families, W06–W39). The seeded
+// cases reuse the canonical W06 generators; this module supplies profile
+// filtering, family instance shape, and — for the classify-* families —
+// the full contract.
 
-import { drawFamilyInstance } from './generator_draw_kit.mjs';
-import { staticCaseBody } from '../domain/family_registry.mjs';
+import {
+  makeChoiceFamily,
+} from './generator_draw_kit.mjs';
+import { makeSolvedFamily } from './solved_family_kit.mjs';
+import { staticCaseBody, variantOf } from '../domain/family_registry.mjs';
 import {
   genCompleteRows,
   genConditionalCount,
@@ -11,17 +15,93 @@ import {
   genBaselineCorrect,
   genEnsembleAccuracy,
   genConfusionCount,
+  genConfusionCostReport,
+  genConfusionFromRows,
+  genFairnessMetricCompare,
+  genMetricCodeOutput,
+  metricTraceExpected,
+  genSigmoidPredictTests,
+  genThresholdCostChoice,
+  thresholdCorrectText,
+  genLedgerRatesOutput,
+  ledgerRatesExpected,
+  genSubgroupRecallOutput,
+  subgroupRecallExpected,
+  genCompareSystemsTests,
+  ensureShardDocs,
+  confusionRefSolver,
+  ratioRefSolver,
+  genGradMseNumpyTests,
+  gradMseRefSolver,
+  gradMseParamsOk,
+  genDetectGoalShiftTests,
+  goalShiftRefSolver,
+  goalShiftParamsOk,
   genCvSpread,
   genSeedSpread,
   genSubgroupGapPp,
   genShrinkagePercent,
   genMseFromResiduals,
+  genRmseUnitFromMse,
+  rmseCorrectOptionText,
   genMseGradient,
   genR2Share,
+  genStageTimeouts,
+  genDependencyPins,
+  genInjectionRules,
   genPcaVariancePercent,
+  drawSigmoidParameters,
+  sigmoidOptions,
+  sigmoidPrompt,
+  sigmoidShapeOk,
+  sigmoidSolution,
+  SIGMOID_CAPSULES,
+  drawBenchmarkParameters,
+  benchmarkOptions,
+  benchmarkPrompt,
+  benchmarkShapeOk,
+  benchmarkSolution,
+  BENCHMARK_CAPSULES,
+  drawLoraParameters,
+  loraOptions,
+  loraPrompt,
+  loraShapeOk,
+  loraSolution,
+  LORA_CAPSULES,
+  drawMissingnessParameters,
+  missingnessOptions,
+  missingnessPrompt,
+  missingnessShapeOk,
+  missingnessSolution,
+  MISSINGNESS_CAPSULES,
+  drawConfoundingParameters,
+  confoundingOptions,
+  confoundingPrompt,
+  confoundingShapeOk,
+  confoundingSolution,
+  CONFOUNDING_CAPSULES,
+  drawTaskTypeParameters,
+  taskTypeOptions,
+  taskTypePrompt,
+  taskTypeShapeOk,
+  taskTypeSolution,
+  TASK_TYPE_CAPSULES,
+  drawErrorDriftParameters,
+  errorDriftOptions,
+  errorDriftPrompt,
+  errorDriftShapeOk,
+  errorDriftSolution,
+  ERROR_DRIFT_CAPSULES,
+  drawSvmMarginParameters,
+  svmMarginOptions,
+  svmMarginPrompt,
+  svmMarginShapeOk,
+  svmMarginSolution,
+  SVM_MARGIN_CAPSULES,
 } from './data_ml_generators.mjs';
 import {
   genBackpropChain,
+  genBackpropTwoPath,
   genDropoutCount,
   genLinearParamCount,
   genSgdSteps,
@@ -82,6 +162,9 @@ const PROFILE_PREDICATES = {
   'sgd-update-count': { intro: (p) => p.variant === 'epochs', stretch: (p) => p.variant === 'until' || p.variant === 'momentum' },
   'dropout-mask-kept-count': { intro: (p) => p.variant === 'kept', stretch: (p) => p.variant === 'both' },
   'chain-rule-path-sum': { intro: (p) => p.variant === 'path', stretch: (p) => p.variant === 'fork' },
+  // challenge: the outer stage must be a real scaling so all three graph
+  // stages (inner branches, product, f) always carry weight.
+  'two-path-chain-sum': { challenge: (p) => p.s !== 1 },
   'attention-tensor-cells': { intro: (p) => p.variant === 'score-cells', stretch: (p) => p.variant === 'mask-cells' || p.variant === 'scale-divisor' },
   'bpe-vocab-size': { intro: (p) => p.variant === 'total', stretch: (p) => p.variant === 'merges-needed' },
   'lora-param-count': { intro: (p) => p.variant === 'lora', stretch: (p) => p.variant === 'saved' },
@@ -94,6 +177,15 @@ const PROFILE_PREDICATES = {
   'recall-at-k-window': { intro: (p) => p.shape === 'hits', stretch: (p) => p.shape === 'percent' || p.shape === 'irrelevant' },
   'protocol-shift-flag-count': { intro: (p) => p.flags?.length === 1, stretch: (p) => p.flags?.length >= 3 },
   'card-audit-missing-count': { intro: (p) => p.karten?.length === 1, stretch: (p) => p.karten?.length === 2 },
+  'rmse-unit-from-mse': { intro: () => true },
+  // Stretch-pinnte Shard-Fälle: caseDef.difficulty wirft für core/intro,
+  // diese Prädikate lassen den stretch-Draw durch und bleiben für andere
+  // Profile fail-closed (kein Eintrag -> 'Unbekanntes Profil').
+  'confusion-cost-report': { stretch: () => true },
+  'confusion-from-rows': { stretch: () => true },
+  // detect-goal-shift ist challenge-pinnt (caseDef.difficulty) — das
+  // Prädikat lässt jeden Challenge-Draw durch.
+  'detect-goal-shift': { challenge: () => true },
   'baseline-ledger-rates': { intro: (p) => p.shape === 'naive-percent', stretch: (p) => p.shape === 'gap-promille' },
   'pipeline-stage-audit': { intro: (p) => p.shape === 'valid-count', stretch: (p) => p.shape === 'missing-hashes' },
   'eval-batch-rates': {
@@ -109,7 +201,13 @@ function profileAccepts(caseId, difficulty) {
   return predicate;
 }
 
-const solveFormulaRatioCompare = (parameters) => staticExpected('formula-ratio-percent-metric', parameters);
+const toIntegerExpected = (drawn) => ({ kind: 'integer', value: drawn.expected });
+// Seeded pyodide/predict-output cases carry structured expected objects
+// that pass through unchanged; scalar draws keep the integer wrap.
+const toExpectedOrObject = (drawn) => (drawn.expected && typeof drawn.expected === 'object'
+  ? drawn.expected
+  : toIntegerExpected(drawn));
+
 const solveFormulaRatioShrinkage = (parameters) => {
   const share = (100 * parameters.sxx) / (parameters.sxx + parameters.lam);
   return { value: parameters.phrasing === 'shrink' ? 100 - share : share };
@@ -139,13 +237,18 @@ const solveFormulaRatioDefault = (parameters) => (
     : { value: (100 * parameters.c) / parameters.n }
 );
 const FORMULA_RATIO_SOLVERS = {
-  'compare-systems-metric': solveFormulaRatioCompare,
+  // compare-systems-metric: generierte Instanzen tragen kein `variant` —
+  // der Solver liefert den authored Referenzsolver (Grading läuft über die
+  // Pyodide-Tests; der Solver dient nur dem Contract-/Digest-Pfad).
+  'compare-systems-metric': () => ({ referenceCode: ratioRefSolver('compare-systems-metric') }),
   'ridge-shrinkage-percent': solveFormulaRatioShrinkage,
   'subgroup-error-gap-pp': solveFormulaRatioSubgroupGap,
   'r2-explained-share': solveFormulaRatioR2,
   'pca-explained-variance-percent': solveFormulaRatioPca,
   'allowed-action-count': solveFormulaRatioAllowedAction,
   'baseline-ledger-rates': solveFormulaRatioBaseline,
+  'ledger-rates-output-trace': ledgerRatesExpected,
+  'subgroup-recall-output-trace': subgroupRecallExpected,
 };
 
 const solveFormulaCountLinear = (parameters) => {
@@ -246,13 +349,19 @@ const solveFormulaStatFallback = (parameters) => {
   return { value: parameters.newer - parameters.base };
 };
 const solveFormulaStatStatic = (parameters) => staticExpected('formula-stat-from-table', parameters);
+const solveStageTimeouts = (parameters) => ({
+  value: parameters.calls.filter((call) => call.end - call.start <= parameters.budget).length,
+});
+const solveDependencyPins = (parameters) => ({
+  value: parameters.specs.reduce((sum, spec) => sum + spec.count, 0),
+});
 const FORMULA_STAT_SOLVERS = {
   'greedy-step-stat': solveFormulaStatGreedy,
   'card-audit-missing-count': solveFormulaStatCardAudit,
   'pipeline-stage-audit': solveFormulaStatPipeline,
   'eval-batch-rates': solveFormulaStatEvalBatch,
-  'stage-timeout-count': solveFormulaStatStatic,
-  'dependency-pin-count': solveFormulaStatStatic,
+  'stage-timeout-count': solveStageTimeouts,
+  'dependency-pin-count': solveDependencyPins,
 };
 const solveConfusionMarginal = (parameters) => ({
   value: parameters.metric === 'actual-neg'
@@ -275,15 +384,26 @@ const solveConfusionInjection = (parameters) => {
 const solveConfusionSubgroupRate = (parameters) => ({
   value: subgroupRatePerMille(parameters.a, parameters.b, parameters.kind),
 });
+const confusionPyRef = (caseId) => () => ({ referenceCode: confusionRefSolver(caseId) });
+
 const AGGREGATE_CONFUSION_SOLVERS = {
   'confusion-marginal-count': solveConfusionMarginal,
   'answer-filter-precision-recall-f1': solveConfusionPrecisionRecall,
   'injection-filter-counts': solveConfusionInjection,
   'subgroup-rate-gap-permille': solveConfusionSubgroupRate,
+  'threshold-under-asymmetric-cost': (p) => ({ correctText: thresholdCorrectText(p) }),
+  'metric-code-output-trace': metricTraceExpected,
+  'sigmoid-predict-numpy': confusionPyRef('sigmoid-predict-numpy'),
+  'confusion-cost-report': confusionPyRef('confusion-cost-report'),
+  'confusion-from-rows': confusionPyRef('confusion-from-rows'),
+  'contains-injection-rules': confusionPyRef('contains-injection-rules'),
+  'fairness-metric-compare': confusionPyRef('fairness-metric-compare'),
 };
 
 function staticExpected(familyId, parameters) {
-  const expected = staticCaseBody(familyId, parameters.caseId).expected || {};
+  ensureShardDocs();
+  const { body } = variantOf(staticCaseBody(familyId, parameters.caseId), parameters.variant ?? 0);
+  const expected = body.expected || {};
   if (Object.hasOwn(expected, 'value')) return { value: expected.value };
   if (Object.hasOwn(expected, 'output')) return { output: expected.output };
   if (expected.kind === 'rubric') return { kind: 'rubric' };
@@ -333,6 +453,7 @@ const FAMILY_DEFINITIONS = {
         competencyIds: ['c-ml-svm-pca'],
       },
       'compare-systems-metric': {
+        generator: genCompareSystemsTests,
         competencyIds: ['c-dl-papers', 'c-ml-cv'],
       },
       'allowed-action-count': {
@@ -343,8 +464,14 @@ const FAMILY_DEFINITIONS = {
         generator: genBaselineLedger,
         competencyIds: ['c-research-capstone'],
       },
-      'ledger-rates-output-trace': {},
-      'subgroup-recall-output-trace': {},
+      'ledger-rates-output-trace': {
+        generator: genLedgerRatesOutput,
+        competencyIds: ['c-research-capstone', 'c-python-reading'],
+      },
+      'subgroup-recall-output-trace': {
+        generator: genSubgroupRecallOutput,
+        competencyIds: ['c-capstone-pipeline', 'c-python-reading'],
+      },
     },
     solve(parameters) {
       return (FORMULA_RATIO_SOLVERS[parameters.caseId] || solveFormulaRatioDefault)(parameters);
@@ -353,11 +480,19 @@ const FAMILY_DEFINITIONS = {
   'optimize-mse-gradient-closed-form': {
     cases: {
       'mse-gradient-wrt-w': { generator: genMseGradient },
-      'grad-mse-numpy-reference': {},
+      // core-pinnt wie der authored Fallkörper (difficultyProfile: core);
+      // Grading läuft über die Pyodide-Tests, solve liefert nur den
+      // authored Referenzsolver — Kapsel-Check vorher (fail-closed).
+      'grad-mse-numpy-reference': {
+        generator: genGradMseNumpyTests,
+        difficulty: 'core',
+        competencyIds: ['c-grad-regression', 'c-numpy-basics'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'grad-mse-numpy-reference') {
-        return staticExpected('optimize-mse-gradient-closed-form', parameters);
+        if (gradMseParamsOk(parameters)) return { referenceCode: gradMseRefSolver('grad-mse-numpy-reference') };
+        throw new Error(`Unbekannter Fall ${parameters.caseId}`);
       }
       const { n, w, b, points } = parameters;
       return {
@@ -370,12 +505,16 @@ const FAMILY_DEFINITIONS = {
   },
   'formula-quadratic-error-metric': {
     cases: {
-      'rmse-unit-from-mse': {},
+      'rmse-unit-from-mse': {
+        generator: genRmseUnitFromMse,
+        difficulty: 'intro',
+        competencyIds: ['c-ml-linear'],
+      },
       'mse-from-residuals': { generator: genMseFromResiduals },
     },
     solve(parameters) {
       if (parameters.caseId === 'rmse-unit-from-mse') {
-        return staticExpected('formula-quadratic-error-metric', parameters);
+        return { correctText: rmseCorrectOptionText(parameters) };
       }
       return {
         value: parameters.residuals.reduce((sum, residual) => sum + residual ** 2, 0) / parameters.n,
@@ -410,13 +549,36 @@ const FAMILY_DEFINITIONS = {
         generator: genConfusionCount,
         competencyIds: ['c-ml-logistic'],
       },
-      'threshold-under-asymmetric-cost': {},
-      'sigmoid-predict-numpy': {},
-      'confusion-cost-report': {},
-      'metric-code-output-trace': {},
-      'confusion-from-rows': {},
-      'contains-injection-rules': {},
-      'fairness-metric-compare': {},
+      'threshold-under-asymmetric-cost': {
+        generator: genThresholdCostChoice,
+        competencyIds: ['c-ml-logistic'],
+      },
+      'sigmoid-predict-numpy': {
+        generator: genSigmoidPredictTests,
+        competencyIds: ['c-ml-logistic'],
+      },
+      'confusion-cost-report': {
+        generator: genConfusionCostReport,
+        difficulty: 'stretch',
+        competencyIds: ['c-ml-logistic'],
+      },
+      'metric-code-output-trace': {
+        generator: genMetricCodeOutput,
+        competencyIds: ['c-genai-eval'],
+      },
+      'confusion-from-rows': {
+        generator: genConfusionFromRows,
+        difficulty: 'stretch',
+        competencyIds: ['c-genai-eval'],
+      },
+      'contains-injection-rules': {
+        generator: genInjectionRules,
+        competencyIds: ['c-genai-security', 'c-python-functions'],
+      },
+      'fairness-metric-compare': {
+        generator: genFairnessMetricCompare,
+        competencyIds: ['c-research-responsible'],
+      },
       'answer-filter-precision-recall-f1': {
         generator: genF1orPrecision,
         competencyIds: ['c-genai-eval'],
@@ -503,8 +665,16 @@ const FAMILY_DEFINITIONS = {
         generator: genPipelineStages,
         competencyIds: ['c-capstone-pipeline', 'c-ml-repro'],
       },
-      'stage-timeout-count': {},
-      'dependency-pin-count': {},
+      'stage-timeout-count': {
+        generator: genStageTimeouts,
+        difficulty: 'core',
+        competencyIds: ['c-capstone-pipeline', 'c-python-functions'],
+      },
+      'dependency-pin-count': {
+        generator: genDependencyPins,
+        difficulty: 'core',
+        competencyIds: ['c-capstone-pipeline', 'c-ml-repro'],
+      },
       'eval-batch-rates': {
         generator: genEvalRates,
         competencyIds: ['c-capstone-pipeline', 'c-genai-security'],
@@ -521,8 +691,23 @@ const FAMILY_DEFINITIONS = {
         generator: genBackpropChain,
         competencyIds: ['c-dl-autograd'],
       },
+      'two-path-chain-sum': {
+        generator: genBackpropTwoPath,
+        // Lock-model gate: the case exists only at challenge — the
+        // PROFILE_PREDICATES entry (s !== 1) then always applies.
+        difficulty: 'challenge',
+        competencyIds: ['c-dl-autograd', 'c-grad-regression'],
+      },
     },
     solve(parameters) {
+      if (parameters.variant === 'two-path') {
+        // Multipath chain rule: the path through g contributes f'·h·g', the
+        // path through h contributes f'·g·h' — the total sums both paths.
+        return {
+          value: parameters.s * (parameters.b * parameters.w + parameters.c) * (2 * parameters.a * parameters.w)
+            + parameters.s * (parameters.a * parameters.w * parameters.w) * parameters.b,
+        };
+      }
       if (parameters.variant === 'path') {
         return { value: parameters.locals.reduce((product, local) => product * local, 1) };
       }
@@ -553,153 +738,23 @@ const FAMILY_DEFINITIONS = {
         generator: genProtocolShifts,
         competencyIds: ['c-research-question'],
       },
-      'detect-goal-shift': {},
+      // challenge-pinnt wie der authored Fallkörper; solve liefert den
+      // authored Referenzsolver — Kapsel-Check vorher (fail-closed).
+      'detect-goal-shift': {
+        generator: genDetectGoalShiftTests,
+        difficulty: 'challenge',
+        competencyIds: ['c-research-question', 'c-python-functions'],
+      },
     },
     solve(parameters) {
       if (parameters.caseId === 'detect-goal-shift') {
-        return staticExpected('validate-goalshift-flag-rules', parameters);
+        if (goalShiftParamsOk(parameters)) return { referenceCode: goalShiftRefSolver('detect-goal-shift') };
+        throw new Error(`Unbekannter Fall ${parameters.caseId}`);
       }
       return { value: protocolShiftFlags(parameters.versionen.a, parameters.versionen.b).length };
     },
   },
 };
-
-function generateDataMlFamily(familyId, { seed, caseId, difficulty }) {
-  const definition = FAMILY_DEFINITIONS[familyId];
-  const caseDefinition = definition?.cases[caseId];
-  if (!definition || !caseDefinition) throw new Error(`${familyId}: unbekannter Fall ${caseId}`);
-  if (!caseDefinition.generator) {
-    const body = staticCaseBody(familyId, caseId);
-    if (body.difficultyProfile !== difficulty) {
-      throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
-    }
-    const {
-      caseId: _caseId,
-      difficultyProfile: _difficultyProfile,
-      masteryEligible: _masteryEligible,
-      sourceLineage: _sourceLineage,
-      ...generated
-    } = body;
-    return {
-      ...generated,
-      masteryEligible: body.masteryEligible,
-      parameters: { caseId, difficulty, ...(body.parameters || {}) },
-    };
-  }
-  const drawn = difficulty === 'core'
-    ? caseDefinition.generator(seed)
-    : drawFamilyInstance(caseDefinition.generator, {
-      seed,
-      caseId,
-      difficulty,
-      wantShape: () => true,
-      profileAccepts: profileAccepts(caseId, difficulty),
-      profiles: DATA_ML_DIFFICULTY_PROFILES,
-    });
-  return {
-    parameters: { caseId, difficulty, ...drawn.parameters },
-    expected: { kind: 'integer', value: drawn.expected },
-    prompt: drawn.prompt,
-    fullSolution: drawn.fullSolution,
-    ...(caseDefinition.competencyIds ? { competencyIds: [...caseDefinition.competencyIds] } : {}),
-  };
-}
-
-export function solveCountRemainingRows(parameters) {
-  return FAMILY_DEFINITIONS['count-remaining-rows-cleaning-rule'].solve(parameters);
-}
-
-export function generateCountRemainingRowsFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('count-remaining-rows-cleaning-rule', { seed, caseId, difficulty });
-}
-
-export function solveFormulaRatioPercentMetric(parameters) {
-  return FAMILY_DEFINITIONS['formula-ratio-percent-metric'].solve(parameters);
-}
-
-export function generateFormulaRatioPercentMetricFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-ratio-percent-metric', { seed, caseId, difficulty });
-}
-
-export function solveMseGradientClosedForm(parameters) {
-  return FAMILY_DEFINITIONS['optimize-mse-gradient-closed-form'].solve(parameters);
-}
-
-export function generateMseGradientClosedFormFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('optimize-mse-gradient-closed-form', { seed, caseId, difficulty });
-}
-
-export function solveFormulaQuadraticErrorMetric(parameters) {
-  return FAMILY_DEFINITIONS['formula-quadratic-error-metric'].solve(parameters);
-}
-
-export function generateFormulaQuadraticErrorMetricFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-quadratic-error-metric', { seed, caseId, difficulty });
-}
-
-export function solveAggregateMajorityRuleCount(parameters) {
-  return FAMILY_DEFINITIONS['aggregate-majority-rule-count'].solve(parameters);
-}
-
-export function generateAggregateMajorityRuleCountFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('aggregate-majority-rule-count', { seed, caseId, difficulty });
-}
-
-export function solveAggregateConfusionMetric(parameters) {
-  return FAMILY_DEFINITIONS['aggregate-confusion-metric'].solve(parameters);
-}
-
-export function generateAggregateConfusionMetricFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('aggregate-confusion-metric', { seed, caseId, difficulty });
-}
-
-export function solveFormulaMetricSpreadRange(parameters) {
-  return FAMILY_DEFINITIONS['formula-metric-spread-range'].solve(parameters);
-}
-
-export function generateFormulaMetricSpreadRangeFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-metric-spread-range', { seed, caseId, difficulty });
-}
-
-export function solveFormulaCountFromConstruction(parameters) {
-  return FAMILY_DEFINITIONS['formula-count-from-construction'].solve(parameters);
-}
-
-export function generateFormulaCountFromConstructionFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-count-from-construction', { seed, caseId, difficulty });
-}
-
-export function solveOptimizeBackpropPathSum(parameters) {
-  return FAMILY_DEFINITIONS['optimize-backprop-path-sum'].solve(parameters);
-}
-
-export function generateOptimizeBackpropPathSumFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('optimize-backprop-path-sum', { seed, caseId, difficulty });
-}
-
-export function solveFormulaStatFromTable(parameters) {
-  return FAMILY_DEFINITIONS['formula-stat-from-table'].solve(parameters);
-}
-
-export function generateFormulaStatFromTableFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('formula-stat-from-table', { seed, caseId, difficulty });
-}
-
-export function solveAggregateTopkRelevanceArithmetic(parameters) {
-  return FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve(parameters);
-}
-
-export function generateAggregateTopkRelevanceArithmeticFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('aggregate-topk-relevance-arithmetic', { seed, caseId, difficulty });
-}
-
-export function solveValidateGoalshiftFlagRules(parameters) {
-  return FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve(parameters);
-}
-
-export function generateValidateGoalshiftFlagRulesFamily({ seed, caseId, difficulty }) {
-  return generateDataMlFamily('validate-goalshift-flag-rules', { seed, caseId, difficulty });
-}
 
 const COUNT_REMAINING_ROWS_CASE_TYPES = [
   { caseId: 'missing-target-rows', sourceLineage: ['w06-e2'] },
@@ -749,6 +804,9 @@ const AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES = [
 ];
 
 const FORMULA_QUADRATIC_ERROR_CASE_TYPES = [
+  // propertyTest: false is load-bearing, not just test gating: the case is
+  // bound to the intro profile, so '-' caseId resolution (practice space,
+  // review routes) must never draw it for other difficulties.
   { caseId: 'rmse-unit-from-mse', propertyTest: false },
   { caseId: 'mse-from-residuals', sourceLineage: ['w10-e2'] },
 ];
@@ -763,7 +821,7 @@ const AGGREGATE_CONFUSION_METRIC_CASE_TYPES = [
   { caseId: 'subgroup-rate-gap-permille', sourceLineage: ['w33-e2'], competencyIds: ['c-research-responsible'] },
   { caseId: 'metric-code-output-trace', propertyTest: false },
   { caseId: 'confusion-from-rows', propertyTest: false },
-  { caseId: 'contains-injection-rules', propertyTest: false },
+  { caseId: 'contains-injection-rules' },
   { caseId: 'fairness-metric-compare', propertyTest: false },
 ];
 
@@ -789,8 +847,8 @@ const FORMULA_STAT_FROM_TABLE_CASE_TYPES = [
   { caseId: 'paper-gain-from-counts', sourceLineage: ['w26-e2'], competencyIds: ['c-dl-papers'] },
   { caseId: 'card-audit-missing-count', sourceLineage: ['w32-e2'], competencyIds: ['c-research-cards'] },
   { caseId: 'pipeline-stage-audit', sourceLineage: ['w35-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
-  { caseId: 'stage-timeout-count', propertyTest: false, sourceLineage: ['w36-e2'], competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
-  { caseId: 'dependency-pin-count', propertyTest: false, sourceLineage: ['w38-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
+  { caseId: 'stage-timeout-count', sourceLineage: ['w36-e2'], competencyIds: ['c-capstone-pipeline', 'c-python-functions'] },
+  { caseId: 'dependency-pin-count', sourceLineage: ['w38-e2'], competencyIds: ['c-capstone-pipeline', 'c-ml-repro'] },
   { caseId: 'eval-batch-rates', sourceLineage: ['w37-e2'], competencyIds: ['c-capstone-pipeline', 'c-genai-security'] },
 ];
 
@@ -810,242 +868,486 @@ const VALIDATE_GOALSHIFT_CASE_TYPES = [
 
 const OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES = [
   { caseId: 'chain-rule-path-sum', sourceLineage: ['w19-e2'], competencyIds: ['c-dl-autograd'] },
+  { caseId: 'two-path-chain-sum', sourceLineage: ['agent-generated'], competencyIds: ['c-dl-autograd', 'c-grad-regression'] },
 ];
 
-export const COUNT_REMAINING_ROWS_CONTRACT = {
-  familyId: 'count-remaining-rows-cleaning-rule',
-  familyGroup: 'aggregate-count',
-  summary: 'Berechnet nach Missingness- oder Duplikatregeln die Zahl der verbleibenden Datenzeilen.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: COUNT_REMAINING_ROWS_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-pandas-cleaning'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
+// --- numeric families ----------------------------------------------------------
+// Contract data plus the expected projection per numeric family. Rows are in
+// DATA_ML_FAMILY_SPECS order; the map resolves cases and solve from
+// FAMILY_DEFINITIONS by contract.familyId.
+const NUMERIC_FAMILY_ROWS = [
+  {
+    contract: {
+      familyId: 'count-remaining-rows-cleaning-rule',
+      familyGroup: 'aggregate-count',
+      summary: 'Berechnet nach Missingness- oder Duplikatregeln die Zahl der verbleibenden Datenzeilen.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: COUNT_REMAINING_ROWS_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-pandas-cleaning'],
+    },
+  },
+  {
+    contract: {
+      familyId: 'formula-ratio-percent-metric',
+      familyGroup: 'formula-apply',
+      summary: 'Wendet Verhältnis- und Prozentmetriken (bedingte Anteile, R²) als geschlossene Formel auf gezählte Größen an.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: FORMULA_RATIO_PERCENT_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-eda-viz', 'c-dl-papers', 'c-ml-cv'],
+    },
+    toExpected: toExpectedOrObject,
+  },
+  {
+    contract: {
+      familyId: 'optimize-mse-gradient-closed-form',
+      familyGroup: 'optimize-update',
+      summary: 'Leitet den MSE-Gradienten nach w her und prüft ihn gegen eine NumPy-Referenz.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: MSE_GRADIENT_CLOSED_FORM_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-grad-regression'],
+    },
+    toExpected: toExpectedOrObject,
+  },
+  {
+    contract: {
+      familyId: 'aggregate-majority-rule-count',
+      familyGroup: 'aggregate-count',
+      summary: 'Zählt Vorkommen über Vorhersage- oder Labelmengen, wendet die Mehrheitsregel an und gibt die erfragte Anzahl oder den Anteil an.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-ml-baseline'],
+    },
+  },
+  {
+    contract: {
+      familyId: 'formula-quadratic-error-metric',
+      familyGroup: 'formula-apply',
+      summary: 'Berechnet quadratische Fehlermaße und ordnet ihre Einheit korrekt ein.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: FORMULA_QUADRATIC_ERROR_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-ml-linear'],
+    },
+  },
+  {
+    contract: {
+      familyId: 'aggregate-confusion-metric',
+      familyGroup: 'aggregate-count',
+      summary: 'Erschließt Konfusionsmetriken aus {TP, FP, FN, TN} und bewertet Fehlerkosten und Schwellen.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: AGGREGATE_CONFUSION_METRIC_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-ml-logistic', 'c-genai-eval', 'c-genai-security', 'c-research-responsible'],
+    },
+    ensureDocs: ensureShardDocs,
+    toExpected: toExpectedOrObject,
+  },
+  {
+    contract: {
+      familyId: 'formula-metric-spread-range',
+      familyGroup: 'formula-apply',
+      summary: 'Berechnet die Spannweite von Metrikwerten über Folds oder Läufe als Stabilitätskennzahl in Prozentpunkten.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-ml-cv'],
+    },
+  },
+  {
+    contract: {
+      familyId: 'formula-count-from-construction',
+      familyGroup: 'formula-apply',
+      summary: 'Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: [
+        'c-dl-tensors',
+        'c-dl-training',
+        'c-dl-regularization',
+        'c-dl-attention',
+        'c-dl-tokenizer',
+        'c-dl-finetuning',
+      ],
+    },
+  },
+  {
+    contract: {
+      familyId: 'formula-stat-from-table',
+      familyGroup: 'formula-apply',
+      summary: 'Berechnet eine Kennzahl aus einer gegebenen Datentabelle über eine geschlossene Formel.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: FORMULA_STAT_FROM_TABLE_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-dl-inference', 'c-dl-papers', 'c-research-cards'],
+    },
+    ensureDocs: ensureShardDocs,
+  },
+  {
+    contract: {
+      familyId: 'optimize-backprop-path-sum',
+      familyGroup: 'optimize-update',
+      summary: 'Berechnet den Gesamtgradienten eines Knotens als Summe der Pfadprodukte über parallele Kettenregel-Zweige.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES,
+      difficultyProfiles: [...DATA_ML_DIFFICULTY_PROFILES, 'challenge'],
+      competencyIds: ['c-dl-autograd', 'c-grad-regression'],
+    },
+  },
+  {
+    contract: {
+      familyId: 'aggregate-topk-relevance-arithmetic',
+      familyGroup: 'aggregate-count',
+      summary: 'Berechnet Recall@k, fehlende relevante Dokumente oder irrelevante Treffer aus Rankingfenstern.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: AGGREGATE_TOPK_RELEVANCE_CASE_TYPES,
+      difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
+      competencyIds: ['c-genai-rag'],
+    },
+  },
+  {
+    contract: {
+      familyId: 'validate-goalshift-flag-rules',
+      familyGroup: 'validate-contract',
+      summary: 'Zählt protokollierte Änderungen zwischen Versionen und prüft Goal-Shift-Detektoren.',
+      taskArchetype: 'numeric-exact',
+      authorityMode: 'seeded',
+      masteryEligible: true,
+      caseTypes: VALIDATE_GOALSHIFT_CASE_TYPES,
+      difficultyProfiles: [...DATA_ML_DIFFICULTY_PROFILES, 'challenge'],
+      competencyIds: ['c-research-question', 'c-python-functions'],
+    },
+    toExpected: toExpectedOrObject,
+  },
+];
 
-export const FORMULA_RATIO_PERCENT_CONTRACT = {
-  familyId: 'formula-ratio-percent-metric',
-  familyGroup: 'formula-apply',
-  summary: 'Wendet Verhältnis- und Prozentmetriken (bedingte Anteile, R²) als geschlossene Formel auf gezählte Größen an.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: FORMULA_RATIO_PERCENT_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-eda-viz', 'c-dl-papers', 'c-ml-cv'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
+const NUMERIC_SPECS = NUMERIC_FAMILY_ROWS.map(({ contract, ensureDocs, toExpected = toIntegerExpected }) => (
+  makeSolvedFamily({
+    contract,
+    cases: FAMILY_DEFINITIONS[contract.familyId].cases,
+    ensureDocs,
+    profileAccepts,
+    toExpected,
+    solve: FAMILY_DEFINITIONS[contract.familyId].solve,
+  })
+));
 
-export const MSE_GRADIENT_CLOSED_FORM_CONTRACT = {
-  familyId: 'optimize-mse-gradient-closed-form',
-  familyGroup: 'optimize-update',
-  summary: 'Leitet den MSE-Gradienten nach w her und prüft ihn gegen eine NumPy-Referenz.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: MSE_GRADIENT_CLOSED_FORM_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-grad-regression'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
+// --- classify-sigmoid-regime ----------------------------------------------------
+// Geseedet über genSigmoidCapsule: Logit-/Odds-Zahlenbank plus Rotation, ein
+// Template je Fallart, drei Kapseln 1:1 auf den Bestandsfällen (intro/core/
+// stretch → large-z/threshold/log-odds). Der Content-Contract ist null, der
+// Vertrag lebt hier. masteryEligible bleibt false wie im Bestand (alle drei
+// Base-Fälle false).
 
-export const AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT = {
-  familyId: 'aggregate-majority-rule-count',
-  familyGroup: 'aggregate-count',
-  summary: 'Zählt Vorkommen über Vorhersage- oder Labelmengen, wendet die Mehrheitsregel an und gibt die erfragte Anzahl oder den Anteil an.',
-  taskArchetype: 'numeric-exact',
+export const SIGMOID_REGIME_CONTRACT = {
+  familyId: 'classify-sigmoid-regime',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet die Sigmoid-Funktion, ihren Wertebereich und ihre Symmetrie korrekt ein.',
+  taskArchetype: 'choice-diagnose',
   authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: AGGREGATE_MAJORITY_RULE_COUNT_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-ml-baseline'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
-
-export const FORMULA_QUADRATIC_ERROR_CONTRACT = {
-  familyId: 'formula-quadratic-error-metric',
-  familyGroup: 'formula-apply',
-  summary: 'Berechnet quadratische Fehlermaße und ordnet ihre Einheit korrekt ein.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: FORMULA_QUADRATIC_ERROR_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-ml-linear'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
-
-export const AGGREGATE_CONFUSION_METRIC_CONTRACT = {
-  familyId: 'aggregate-confusion-metric',
-  familyGroup: 'aggregate-count',
-  summary: 'Erschließt Konfusionsmetriken aus {TP, FP, FN, TN} und bewertet Fehlerkosten und Schwellen.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: AGGREGATE_CONFUSION_METRIC_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-ml-logistic', 'c-genai-eval', 'c-genai-security', 'c-research-responsible'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
-
-export const FORMULA_METRIC_SPREAD_RANGE_CONTRACT = {
-  familyId: 'formula-metric-spread-range',
-  familyGroup: 'formula-apply',
-  summary: 'Berechnet die Spannweite von Metrikwerten über Folds oder Läufe als Stabilitätskennzahl in Prozentpunkten.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: FORMULA_METRIC_SPREAD_RANGE_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-ml-cv'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
-};
-
-export const FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT = {
-  familyId: 'formula-count-from-construction',
-  familyGroup: 'formula-apply',
-  summary: 'Bestimmt eine Anzahl direkt aus der Konstruktion eines Objekts statt aus Messung.',
-  taskArchetype: 'numeric-exact',
-  authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: FORMULA_COUNT_FROM_CONSTRUCTION_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: [
-    'c-dl-tensors',
-    'c-dl-training',
-    'c-dl-regularization',
-    'c-dl-attention',
-    'c-dl-tokenizer',
-    'c-dl-finetuning',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'sigmoid-large-z' },
+    { caseId: 'sigmoid-threshold' },
+    { caseId: 'sigmoid-log-odds' },
   ],
-  graderId: 'deterministic',
-  activityType: 'numeric',
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-ml-logistic'],
 };
 
-export const FORMULA_STAT_FROM_TABLE_CONTRACT = {
-  familyId: 'formula-stat-from-table',
-  familyGroup: 'formula-apply',
-  summary: 'Berechnet eine Kennzahl aus einer gegebenen Datentabelle über eine geschlossene Formel.',
-  taskArchetype: 'numeric-exact',
+const SIGMOID = makeChoiceFamily({
+  contract: SIGMOID_REGIME_CONTRACT,
+  capsules: SIGMOID_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawSigmoidParameters,
+  buildOptions: sigmoidOptions,
+  validate: sigmoidShapeOk,
+  buildPrompt: sigmoidPrompt,
+  buildSolution: sigmoidSolution,
+});
+
+// --- classify-benchmark-reading -------------------------------------------------
+// Geseedet über genBenchmarkCapsule: zwei Zahlen-Templates plus eine
+// Szenario-Bank mit Rotation, ein Template je Fallart, drei Kapseln 1:1 auf
+// den Bestandsfällen (intro/core/stretch → absolute-gain/absolute-relative/
+// imbalanced-accuracy). Der Content-Contract ist null, der Vertrag lebt hier.
+// masteryEligible bleibt false wie im Bestand (alle drei Base-Fälle false).
+
+export const BENCHMARK_READING_CONTRACT = {
+  familyId: 'classify-benchmark-reading',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet einen Benchmark-Befund der richtigen Lesart zu.',
+  taskArchetype: 'choice-diagnose',
   authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: FORMULA_STAT_FROM_TABLE_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-dl-inference', 'c-dl-papers', 'c-research-cards'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'benchmark-absolute-gain' },
+    { caseId: 'benchmark-absolute-relative' },
+    { caseId: 'benchmark-imbalanced-accuracy' },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-dl-papers'],
 };
 
-export const AGGREGATE_TOPK_RELEVANCE_CONTRACT = {
-  familyId: 'aggregate-topk-relevance-arithmetic',
-  familyGroup: 'aggregate-count',
-  summary: 'Berechnet Recall@k, fehlende relevante Dokumente oder irrelevante Treffer aus Rankingfenstern.',
-  taskArchetype: 'numeric-exact',
+const BENCHMARK = makeChoiceFamily({
+  contract: BENCHMARK_READING_CONTRACT,
+  capsules: BENCHMARK_CAPSULES,
+  shapeError: 'Benchmark-Befund verletzt die Kapselform',
+  drawParameters: drawBenchmarkParameters,
+  buildOptions: benchmarkOptions,
+  validate: benchmarkShapeOk,
+  buildPrompt: benchmarkPrompt,
+  buildSolution: benchmarkSolution,
+});
+
+// --- classify-lora-tradeoff -----------------------------------------------------
+// Geseedet ueber genLoraCapsule: ein Begriffs-Template plus zwei
+// Rechen-Templates mit Rotation, drei Kapseln 1:1 auf den Bestandsfaellen
+// (intro/core/stretch -> tradeoff/param-count/alpha-rank). Der
+// Content-Contract ist null, der Vertrag lebt hier. masteryEligible bleibt
+// false wie im Bestand (alle drei Base-Faelle false).
+
+export const LORA_TRADEOFF_CONTRACT = {
+  familyId: 'classify-lora-tradeoff',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet eine LoRA-Konfiguration ihrem Trade-off zu.',
+  taskArchetype: 'choice-diagnose',
   authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: AGGREGATE_TOPK_RELEVANCE_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-genai-rag'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'lora-tradeoff' },
+    { caseId: 'lora-parameter-count' },
+    { caseId: 'lora-alpha-rank' },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-dl-finetuning'],
 };
 
-export const VALIDATE_GOALSHIFT_CONTRACT = {
-  familyId: 'validate-goalshift-flag-rules',
-  familyGroup: 'validate-contract',
-  summary: 'Zählt protokollierte Änderungen zwischen Versionen und prüft Goal-Shift-Detektoren.',
-  taskArchetype: 'numeric-exact',
+const LORA = makeChoiceFamily({
+  contract: LORA_TRADEOFF_CONTRACT,
+  capsules: LORA_CAPSULES,
+  shapeError: 'LoRA-Befund verletzt die Kapselform',
+  drawParameters: drawLoraParameters,
+  buildOptions: loraOptions,
+  validate: loraShapeOk,
+  buildPrompt: loraPrompt,
+  buildSolution: loraSolution,
+});
+
+// --- classify-missingness -------------------------------------------------------
+// Geseedet ueber genMissingnessCapsule: Slot-Bank (Szenarien mit thema/ziel-
+// bzw. sensor-Slot) plus Rotation, ein Options-Template je Fallart, drei
+// Kapseln 1:1 auf den Bestandsfaellen (intro/core/stretch →
+// target-dependent-missingness/missingness-device-censoring/
+// missingness-income-survey). Der Content-Contract ist null, der Vertrag
+// lebt hier. masteryEligible bleibt false wie im Bestand (alle drei
+// Base-Faelle false).
+
+export const MISSINGNESS_CONTRACT = {
+  familyId: 'classify-missingness',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet zielabhängige Missingness als Verzerrungsrisiko beim Löschen fehlender Zielwerte ein.',
+  taskArchetype: 'choice-diagnose',
   authorityMode: 'seeded',
-  masteryEligible: true,
-  caseTypes: VALIDATE_GOALSHIFT_CASE_TYPES,
-  difficultyProfiles: [...DATA_ML_DIFFICULTY_PROFILES, 'challenge'],
-  competencyIds: ['c-research-question', 'c-python-functions'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'target-dependent-missingness' },
+    { caseId: 'missingness-device-censoring' },
+    { caseId: 'missingness-income-survey' },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-pandas-cleaning'],
 };
 
-export const OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT = {
-  familyId: 'optimize-backprop-path-sum',
-  familyGroup: 'optimize-update',
-  summary: 'Berechnet den Gesamtgradienten eines Knotens als Summe der Pfadprodukte über parallele Kettenregel-Zweige.',
-  taskArchetype: 'numeric-exact',
+const MISSINGNESS = makeChoiceFamily({
+  contract: MISSINGNESS_CONTRACT,
+  capsules: MISSINGNESS_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawMissingnessParameters,
+  buildOptions: missingnessOptions,
+  validate: missingnessShapeOk,
+  buildPrompt: missingnessPrompt,
+  buildSolution: missingnessSolution,
+});
+
+// --- classify-confounding -------------------------------------------------------
+// Geseedet über genConfoundingCapsule: Szenario-Bank (confounder-Slot) plus
+// Rotation, ein Options-Template je Fallart, drei Kapseln 1:1 auf den
+// Bestandsfällen (intro/core/stretch → temperature-confounder/
+// confounder-exercise-sleep/confounder-ad-spend-season). Der Content-Contract
+// ist null, der Vertrag lebt hier. masteryEligible bleibt false wie im
+// Bestand (alle drei Base-Fälle false).
+
+export const CONFOUNDING_CONTRACT = {
+  familyId: 'classify-confounding',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet starke Korrelationen mit möglicher Drittvariable korrekt ein.',
+  taskArchetype: 'choice-diagnose',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'temperature-confounder' },
+    { caseId: 'confounder-exercise-sleep' },
+    { caseId: 'confounder-ad-spend-season' },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-eda-viz'],
+};
+
+const CONFOUNDING = makeChoiceFamily({
+  contract: CONFOUNDING_CONTRACT,
+  capsules: CONFOUNDING_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawConfoundingParameters,
+  buildOptions: confoundingOptions,
+  validate: confoundingShapeOk,
+  buildPrompt: confoundingPrompt,
+  buildSolution: confoundingSolution,
+});
+
+// --- classify-task-type ---------------------------------------------------------
+// Geseedet über genTaskTypeCapsule: Szenario-Bank (scenario/target-Slots) plus
+// Rotation, Schlüsseltext und Distraktoren wörtlich in der Bank, drei Kapseln
+// 1:1 auf den Bestandsfällen (intro/core/stretch → failure-next-cycle-supervised/
+// task-house-price/task-customer-segments). Der Content-Contract ist null, der
+// Vertrag lebt hier. masteryEligible bleibt false wie im Bestand (alle drei
+// Base-Fälle false).
+
+export const TASK_TYPE_CONTRACT = {
+  familyId: 'classify-task-type',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet eine Vorhersageaufgabe als Regression, Klassifikation oder unüberwachtes Lernen ein.',
+  taskArchetype: 'choice-diagnose',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'failure-next-cycle-supervised' },
+    { caseId: 'task-house-price' },
+    { caseId: 'task-customer-segments' },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-ml-baseline'],
+};
+
+const TASK_TYPE = makeChoiceFamily({
+  contract: TASK_TYPE_CONTRACT,
+  capsules: TASK_TYPE_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawTaskTypeParameters,
+  buildOptions: taskTypeOptions,
+  validate: taskTypeShapeOk,
+  buildPrompt: taskTypePrompt,
+  buildSolution: taskTypeSolution,
+});
+
+// --- classify-error-drift -------------------------------------------------------
+// Geseedet über genErrorDriftCapsule: Szenario-Bank plus Rotation, korrekter
+// Wahltext je Fall konstant, szenariobindende Distraktoren wörtlich in der
+// Bank, drei Kapseln 1:1 auf den Bestandsfällen (core/stretch/challenge →
+// accuracy-drop-without-code-change/error-label-definition-shift/
+// error-stable-subgroup). Der Content-Contract ist null, der Vertrag lebt
+// hier. Einzige migrierte Familie mit challenge-Profil und masteryEligible:
+// generate gibt masteryEligible nicht zurück, der Registry-Fallback
+// (family.masteryEligible) greift — wie im Bestand sind alle drei Fälle
+// mastery-eligible, daher trägt der Vertrag masteryEligible: true.
+
+export const ERROR_DRIFT_CONTRACT = {
+  familyId: 'classify-error-drift',
+  familyGroup: 'classify-concept',
+  summary: 'Unterscheidet Drift von Label-Noise und systematischen Subgruppenfehlern.',
+  taskArchetype: 'choice-diagnose',
   authorityMode: 'seeded',
   masteryEligible: true,
-  caseTypes: OPTIMIZE_BACKPROP_PATH_SUM_CASE_TYPES,
-  difficultyProfiles: DATA_ML_DIFFICULTY_PROFILES,
-  competencyIds: ['c-dl-autograd'],
-  graderId: 'deterministic',
-  activityType: 'numeric',
+  caseTypes: [
+    { caseId: 'accuracy-drop-without-code-change' },
+    { caseId: 'error-label-definition-shift' },
+    { caseId: 'error-stable-subgroup' },
+  ],
+  difficultyProfiles: ['core', 'stretch', 'challenge'],
+  competencyIds: ['c-ml-erroranalysis'],
 };
+
+const ERROR_DRIFT = makeChoiceFamily({
+  contract: ERROR_DRIFT_CONTRACT,
+  capsules: ERROR_DRIFT_CAPSULES,
+  shapeError: 'Parameter verletzen die Kapselform',
+  drawParameters: drawErrorDriftParameters,
+  buildOptions: errorDriftOptions,
+  validate: errorDriftShapeOk,
+  buildPrompt: errorDriftPrompt,
+  buildSolution: errorDriftSolution,
+});
+
+// --- classify-svm-margin ------------------------------------------------------
+// Geseedet über genSvmMarginCapsule: Zahlenbanken mit konsistenten Tupeln
+// (Generator rechnet marginWidth = 2/||w|| bzw. marginScore = y·(wᵀx+b) nach),
+// ein Template je Fallart, drei Kapseln 1:1 auf den Bestandsfällen
+// (intro/core/stretch → hard-margin-width/svm-soft-margin-slack/
+// svm-support-boundary). Der Content-Contract ist null, der Vertrag lebt
+// hier. masteryEligible bleibt false wie im Bestand (alle drei Base-Fälle
+// false).
+
+export const SVM_MARGIN_CONTRACT = {
+  familyId: 'classify-svm-margin',
+  familyGroup: 'classify-concept',
+  summary: 'Ordnet Margin-Größen der SVM — Korridorbreite 2/||w||, Slack-Verletzung, Margin-Score y(wᵀx+b) — der richtigen Aussage zu.',
+  taskArchetype: 'choice-diagnose',
+  authorityMode: 'seeded',
+  masteryEligible: false,
+  caseTypes: [
+    { caseId: 'hard-margin-width' },
+    { caseId: 'svm-soft-margin-slack' },
+    { caseId: 'svm-support-boundary' },
+  ],
+  difficultyProfiles: ['intro', 'core', 'stretch'],
+  competencyIds: ['c-ml-svm-pca'],
+};
+
+const SVM_MARGIN = makeChoiceFamily({
+  contract: SVM_MARGIN_CONTRACT,
+  capsules: SVM_MARGIN_CAPSULES,
+  shapeError: 'SVM-Margin-Befund verletzt die Kapselform',
+  drawParameters: drawSvmMarginParameters,
+  buildOptions: svmMarginOptions,
+  validate: svmMarginShapeOk,
+  buildPrompt: svmMarginPrompt,
+  buildSolution: svmMarginSolution,
+});
 
 export const DATA_ML_FAMILY_SPECS = [
-  {
-    ...COUNT_REMAINING_ROWS_CONTRACT,
-    generate: generateCountRemainingRowsFamily,
-    solve: solveCountRemainingRows,
-  },
-  {
-    ...FORMULA_RATIO_PERCENT_CONTRACT,
-    generate: generateFormulaRatioPercentMetricFamily,
-    solve: solveFormulaRatioPercentMetric,
-  },
-  {
-    ...MSE_GRADIENT_CLOSED_FORM_CONTRACT,
-    generate: generateMseGradientClosedFormFamily,
-    solve: solveMseGradientClosedForm,
-  },
-  {
-    ...AGGREGATE_MAJORITY_RULE_COUNT_CONTRACT,
-    generate: generateAggregateMajorityRuleCountFamily,
-    solve: solveAggregateMajorityRuleCount,
-  },
-  {
-    ...FORMULA_QUADRATIC_ERROR_CONTRACT,
-    generate: generateFormulaQuadraticErrorMetricFamily,
-    solve: solveFormulaQuadraticErrorMetric,
-  },
-  {
-    ...AGGREGATE_CONFUSION_METRIC_CONTRACT,
-    generate: generateAggregateConfusionMetricFamily,
-    solve: solveAggregateConfusionMetric,
-  },
-  {
-    ...FORMULA_METRIC_SPREAD_RANGE_CONTRACT,
-    generate: generateFormulaMetricSpreadRangeFamily,
-    solve: solveFormulaMetricSpreadRange,
-  },
-  {
-    ...FORMULA_COUNT_FROM_CONSTRUCTION_CONTRACT,
-    generate: generateFormulaCountFromConstructionFamily,
-    solve: solveFormulaCountFromConstruction,
-  },
-  {
-    ...FORMULA_STAT_FROM_TABLE_CONTRACT,
-    generate: generateFormulaStatFromTableFamily,
-    solve: solveFormulaStatFromTable,
-  },
-  {
-    ...OPTIMIZE_BACKPROP_PATH_SUM_CONTRACT,
-    generate: generateOptimizeBackpropPathSumFamily,
-    solve: solveOptimizeBackpropPathSum,
-  },
-  {
-    ...AGGREGATE_TOPK_RELEVANCE_CONTRACT,
-    generate: ({ seed, caseId, difficulty }) => generateDataMlFamily('aggregate-topk-relevance-arithmetic', { seed, caseId, difficulty }),
-    solve: (parameters) => FAMILY_DEFINITIONS['aggregate-topk-relevance-arithmetic'].solve(parameters),
-  },
-  {
-    ...VALIDATE_GOALSHIFT_CONTRACT,
-    generate: ({ seed, caseId, difficulty }) => generateDataMlFamily('validate-goalshift-flag-rules', { seed, caseId, difficulty }),
-    solve: (parameters) => FAMILY_DEFINITIONS['validate-goalshift-flag-rules'].solve(parameters),
-  },
+  ...NUMERIC_SPECS,
+  SIGMOID,
+  BENCHMARK,
+  LORA,
+  MISSINGNESS,
+  CONFOUNDING,
+  TASK_TYPE,
+  ERROR_DRIFT,
+  SVM_MARGIN,
 ];

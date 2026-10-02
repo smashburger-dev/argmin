@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "familyId": "optimize-backprop-path-sum",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "chain-rule-path-sum",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "w19-e2"
+      ],
+      "parameters": {},
+      "competencyIds": [
+        "c-dl-autograd"
+      ],
+      "prompt": "Der Verlust L hängt über zwei Zweige vom Eingang x ab. Zweig A hat die lokalen Gradienten 1 und 3, Zweig B die lokalen Gradienten 3 und −2; beide Zweige gehen additiv in L ein. Wie groß ist ∂L/∂x?",
+      "fullSolution": "Beitrag je Zweig = Produkt der lokalen Gradienten (Upstream 1). Gesamt: $\\partial L/\\partial x = g_{A1} \\cdot g_{A2} + g_{B1} \\cdot g_{B2}$. Mit „Neue Zahlen“ erscheint eine neue Instanz mit demselben Lösungsweg.",
+      "hints": [
+        "Jeder Zweig ist ein eigener Kettenregel-Pfad: multipliziere die lokalen Gradienten entlang des Zweigs (Upstream ist 1).",
+        "Weil beide Zweige additiv in L eingehen, addieren sich ihre Beiträge: Produkt aus A plus Produkt aus B."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 3",
+          "then": "Das ist nur Zweig A (1 · 3) — Zweig B trägt 3 · (−2) = −6 zusätzlich bei."
+        },
+        {
+          "if": "value === -6",
+          "then": "Das ist nur Zweig B — Zweig A fehlt noch mit +3."
+        },
+        {
+          "if": "value === -18",
+          "then": "Die Zweige werden nicht multipliziert: sie sind parallele Pfade zu L, ihre Beiträge werden addiert."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "nur-einen-zweig-beitragen-lassen",
+          "text": "nur einen Zweig beitragen lassen"
+        },
+        {
+          "id": "die-zweigprodukte-miteinander-multipliziert-statt",
+          "text": "die Zweigprodukte miteinander multipliziert statt addiert"
+        },
+        {
+          "id": "vorzeichen-eines-lokalen-gradienten-verloren",
+          "text": "Vorzeichen eines lokalen Gradienten verloren"
+        }
+      ],
+      "activityType": "numeric",
+      "graderId": "deterministic"
+    },
+    {
+      "caseId": "two-path-chain-sum",
+      "difficultyProfile": "challenge",
+      "masteryEligible": true,
+      "challengeEligible": true,
+      "sourceLineage": [
+        "agent-generated"
+      ],
+      "parameters": {
+        "variant": "two-path",
+        "w": 1,
+        "a": 3,
+        "b": 1,
+        "c": 1,
+        "s": 3
+      },
+      "competencyIds": [
+        "c-dl-autograd",
+        "c-grad-regression"
+      ],
+      "expected": {
+        "kind": "integer",
+        "value": 45
+      },
+      "prompt": "Ein Rechengraph wertet den Verlust $L = f(g(w) \\cdot h(w))$ aus; $w$ wirkt über zwei Pfade auf $L$: über $g(w) = 3\\,w^2$ und über $h(w) = 1\\,w + 1$, danach $f(u) = 3\\,u$. Berechne $\\partial L/\\partial w$ an der Stelle $w = 1$.",
+      "fullSolution": "<p>Vorwärts an $w = 1$: $g = 3\\cdot1^2 = 3$ mit $g' = 2\\cdot3\\cdot1 = 6$ und $h = 1\\cdot1 + 1 = 2$ mit $h' = 1$; damit $u = g\\cdot h = 6$ und $f'(u) = 3$.</p><p>Pfad über $g$: $f'\\cdot h\\cdot g' = 3\\cdot(2)\\cdot(6) = 36$. Pfad über $h$: $f'\\cdot g\\cdot h' = 3\\cdot(3)\\cdot(1) = 9$. Beide Pfadbeiträge summieren sich: $\\partial L/\\partial w = 36 + (9) = 45$.</p>",
+      "hints": [
+        "Wertebestimmung zuerst: $g$, $h$, ihre lokalen Ableitungen $g'=2aw$ und $h'=b$ sowie $f'(u)$ an der Stelle ausrechnen.",
+        "Der Pfad über $g$ trägt $f'\\cdot h\\cdot g'$ bei, der Pfad über $h$ trägt $f'\\cdot g\\cdot h'$ bei — beide Beiträge werden addiert, nicht multipliziert."
+      ],
+      "feedbackRules": [
+        {
+          "if": "value === 36",
+          "then": "Das ist nur der Pfad über g (3 · 2 · 6) — der Pfad über h trägt 3 · 3 · 1 = 9 zusätzlich bei."
+        },
+        {
+          "if": "value === 9",
+          "then": "Das ist nur der Pfad über h — der Pfad über g fehlt noch mit +36."
+        },
+        {
+          "if": "value === 324",
+          "then": "Die Pfade laufen parallel von w nach L: ihre Beiträge werden addiert, nicht multipliziert."
+        }
+      ],
+      "typicalErrors": [
+        {
+          "id": "nur-einen-pfad-differenziert",
+          "text": "nur einen Pfad differenziert"
+        },
+        {
+          "id": "die-pfadbeitraege-multipliziert-statt-addiert",
+          "text": "die Pfadbeiträge multipliziert statt addiert"
+        },
+        {
+          "id": "g-2aw-nicht-ausgewertet-und",
+          "text": "g' = 2aw nicht ausgewertet und stattdessen den Koeffizienten a verwendet"
+        }
+      ],
+      "activityType": "numeric",
+      "graderId": "deterministic",
+      "title": "Backprop über zwei Pfade summieren"
+    }
+  ]
+}

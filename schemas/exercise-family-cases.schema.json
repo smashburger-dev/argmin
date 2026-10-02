@@ -57,8 +57,14 @@
           "items": { "enum": ["intro", "core", "stretch", "challenge"] }
         },
         "competencyIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
-        "graderId": { "type": "string", "minLength": 1 },
-        "activityType": { "type": "string", "minLength": 1 }
+        "graderId": { "enum": ["deterministic", "pyodide", "manual-rubric"] },
+        "activityType": {
+          "enum": [
+            "numeric", "single-choice", "vector", "algebraic-expression",
+            "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
+            "multiple-choice", "diagnostic-rationale", "worked-example-fading"
+          ]
+        }
       }
     },
     "case": {
@@ -70,6 +76,7 @@
         "difficultyProfile": { "enum": ["intro", "core", "stretch", "challenge"] },
         "masteryEligible": { "type": "boolean" },
         "challengeEligible": { "type": "boolean", "default": false },
+        "title": { "type": "string", "minLength": 1 },
         "sourceLineage": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
         "competencyIds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
         "parameters": { "type": "object" },
@@ -90,15 +97,50 @@
               "choices": { "type": "array" },
               "prompt": { "type": "string" },
               "fullSolution": { "type": "string" },
-              "hints": { "type": "array" }
+              "hints": { "type": "array" },
+              "feedbackRules": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/feedbackRule" }
+              }
             }
           }
         },
-        "feedbackRules": { "type": "array" },
-        "typicalErrors": { "type": "array" },
-        "tolerancePolicy": { "type": "object" },
-        "activityType": { "type": "string" },
-        "graderId": { "type": "string" },
+        "feedbackRules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/feedbackRule" }
+        },
+        "statementPool": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["count", "correctRange", "statements"],
+          "properties": {
+            "count": { "type": "integer", "minimum": 2, "maximum": 6 },
+            "correctRange": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": { "type": "integer", "minimum": 1 }
+            },
+            "hints": { "type": "array" },
+            "statements": {
+              "type": "array",
+              "minItems": 2,
+              "items": { "$ref": "#/$defs/poolStatement" }
+            }
+          }
+        },
+        "typicalErrors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/typicalError" }
+        },
+        "activityType": {
+          "enum": [
+            "numeric", "single-choice", "vector", "algebraic-expression",
+            "python-code", "short-rationale", "parsons", "code-trace", "predict-output",
+            "multiple-choice", "diagnostic-rationale", "worked-example-fading"
+          ]
+        },
+        "graderId": { "enum": ["deterministic", "pyodide", "manual-rubric"] },
         "traceTable": {},
         "rubric": {},
         "starterCode": { "type": "string" },
@@ -111,6 +153,40 @@
         "distractors": { "type": "array" },
         "snippet": { "type": "string" },
         "output": { "type": "string" }
+      },
+      "not": {
+        "properties": { "variants": true, "statementPool": true },
+        "required": ["variants", "statementPool"]
+      }
+    },
+    "feedbackRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["if", "then"],
+      "properties": {
+        "if": { "type": "string", "minLength": 1 },
+        "then": { "type": "string", "minLength": 1 },
+        "misconception": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" }
+      }
+    },
+    "typicalError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+        "text": { "type": "string", "minLength": 1 }
+      }
+    },
+    "poolStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "correct", "feedback"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "correct": { "type": "boolean" },
+        "feedback": { "type": "string", "minLength": 1 },
+        "misconception": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" }
       }
     }
   }

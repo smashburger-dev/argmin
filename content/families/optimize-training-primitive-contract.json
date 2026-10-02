@@ -1,35 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "optimize-training-primitive-contract",
-  "contract": {
-    "familyId": "optimize-training-primitive-contract",
-    "familyGroup": "optimize-update",
-    "summary": "Implementiert Verlust- und Regularisierungsprimitive mit Wertebereichs-Verträgen vor der Rechnung (MSE, BCE mit Clipping, Ceil-Schritte, Dropout, Weight Decay).",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "loss-and-batch-primitives",
-        "propertyTest": false
-      },
-      {
-        "caseId": "dropout-weight-decay-primitives",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-dl-training",
-      "c-dl-regularization",
-      "c-grad-regression",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "loss-and-batch-primitives",
@@ -59,28 +31,20 @@
         "mse_loss: Formen prüfen, dann mean der quadrierten Residuen als float. bce_loss: erst Form und Wertbereich [0,1] prüfen (ValueError), dann clippen und die Formel anwenden.",
         "Aufrunden in Ganzzahlen: -(-n // batch_size) oder math.ceil — Rückgabe als int. Die Verträge werfen vor der Rechnung."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "bce-unclipped",
-          "then": "Ohne Clipping liefert log(0) = −inf — die Endlichkeit des perfekten Falls im Test prüft genau das."
+          "id": "bce-ohne-clipping-und-damit",
+          "text": "BCE ohne Clipping und damit log(0)"
         },
         {
-          "if": "valueerror-missing",
-          "then": "Formungleichheit, p außerhalb [0,1] und n/B < 1 sind Vertragsverletzungen mit ValueError vor der Rechnung."
+          "id": "wertebereich-von-p-nicht-geprueft",
+          "text": "Wertebereich von p nicht geprüft"
         },
         {
-          "if": "steps-rounded-down",
-          "then": "5 Beispiele mit Batchgröße 8 sind ein Schritt: aufgerundet — Ab rounding verliert den letzten kleinen Batch."
+          "id": "batches-abgerundet-und-den-kleinen",
+          "text": "Batches abgerundet und den kleinen Restbatch verloren"
         }
       ],
-      "typicalErrors": [
-        "BCE ohne Clipping und damit log(0)",
-        "Wertebereich von p nicht geprüft",
-        "Batches abgerundet und den kleinen Restbatch verloren"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -112,28 +76,20 @@
         "dropout_forward: np.where(maske, x/p, 0.0) macht beides auf einmal — Skalierung der erhaltenen, exakte Null für gedroppte Einträge. Verträge zuerst.",
         "weight_decay_update ist eine Zeile Mathematik: w − lr·(g + λ·w). Für skalare Eingaben float zurückgeben."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "scale-wrong-direction",
-          "then": "Erhaltene Einträge werden mit 1/p GRÖSSER (p < 1), nicht mit p kleiner — das hält den Erwartungswert stabil."
+          "id": "mit-p-statt-1-p",
+          "text": "mit p statt 1/p skaliert"
         },
         {
-          "if": "valueerror-missing",
-          "then": "Formungleichheit der Maske und p außerhalb (0, 1] sind Vertragsverletzungen mit ValueError vor der Rechnung."
+          "id": "decay-term-ausserhalb-des-lernraten",
+          "text": "Decay-Term außerhalb des Lernraten-Faktors"
         },
         {
-          "if": "decay-term-missing",
-          "then": "Im Update steht λ·w IM Argument: w − lr·(g + λ·w) — nicht w − lr·g − λ·w mit falscher Lernrate auf den Decay-Term."
+          "id": "vertraege-erst-nach-der-berechnung",
+          "text": "Verträge erst nach der Berechnung geprüft"
         }
       ],
-      "typicalErrors": [
-        "mit p statt 1/p skaliert",
-        "Decay-Term außerhalb des Lernraten-Faktors",
-        "Verträge erst nach der Berechnung geprüft"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

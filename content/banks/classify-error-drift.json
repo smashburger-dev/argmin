@@ -1,0 +1,419 @@
+{
+  "capsules": {
+    "core": {
+      "kind": "daten-drift",
+      "slot": "domain",
+      "params": [
+        "accuracyBefore",
+        "accuracyAfter",
+        "codeChanged",
+        "domain"
+      ],
+      "caseId": "accuracy-drop-without-code-change",
+      "bank": [
+        {
+          "domain": "Scanner",
+          "accuracyBefore": 0.94,
+          "accuracyAfter": 0.79,
+          "codeChanged": false,
+          "prompt": "Ein Paket-Scanner erreicht in der Pilotphase 94 % Accuracy. Drei Monate später liegt dieselbe Metrik auf neuen Sendungen bei 79 % — der Code ist unverändert, die Kartonagen haben sich umgestellt, die Kamerabilder sehen seither anders aus. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Die Messreihen sind zufällig falsch beschriftet, deshalb schwankt die Metrik.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Teilgruppe war schon immer schlechter, das zeigt sich erst jetzt.",
+          "overfit": "Überfitting auf das Testset: Das alte Testset war zu klein und hat die 94 % rein zufällig ergeben.",
+          "loesung": "Code unverändert, Einbruch nach geänderter Eingabeverteilung: Daten-Drift. Verteilungen vergleichen und auf aktuellen Daten neu bewerten."
+        },
+        {
+          "domain": "Sprache",
+          "accuracyBefore": 0.91,
+          "accuracyAfter": 0.74,
+          "codeChanged": false,
+          "prompt": "Ein Sprachmodell zur Absichtserkennung liegt intern bei 91 % Accuracy. Nach einem Produktlaunch mit jüngerer Kundschaft fällt die Metrik auf 74 % — der Code ist unverändert, die Formulierungen in den Audios haben sich verschoben. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Die Transkripte sind zufällig falsch, deshalb schwankt die Metrik.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Stimmlage war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 91 % waren Zufall wegen kleinem Testset.",
+          "loesung": "Unveränderter Code plus systematisch andere Eingaben: Input-Drift, kein zufälliges Label-Rauschen."
+        },
+        {
+          "domain": "Kredit",
+          "accuracyBefore": 0.97,
+          "accuracyAfter": 0.83,
+          "codeChanged": false,
+          "prompt": "Ein Kreditscoring erreicht 97 % Accuracy auf historischen Anträgen. Nach einer neuen Produktlinie mit anderen Einkommensprofilen fällt die Metrik auf 83 % — der Score-Code ist unverändert. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Anträge sind zufällig falsch beschriftet.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Altersgruppe war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 97 % waren ein Zufallstreffer.",
+          "loesung": "Die Antragsverteilung hat sich verschoben, der Code nicht. Das ist Daten-Drift."
+        },
+        {
+          "domain": "Medizinbild",
+          "accuracyBefore": 0.93,
+          "accuracyAfter": 0.77,
+          "codeChanged": false,
+          "prompt": "Ein Röntgen-Klassifikator liegt in der Studie bei 93 % Accuracy. Nach Umstellung auf ein neues Gerät fällt die Metrik auf 77 % — dieselben Gewichte, andere Bildstatistik. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Befunde sind zufällig vertauscht.",
+          "subgroup": "Systematischer Subgruppenfehler: Ein Gerät war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 93 % kamen nur durch ein kleines Testset.",
+          "loesung": "Gerätewechsel verschiebt die Eingaben. Unveränderter Code plus Metrikeinbruch: Drift."
+        },
+        {
+          "domain": "Betrug",
+          "accuracyBefore": 0.88,
+          "accuracyAfter": 0.71,
+          "codeChanged": false,
+          "prompt": "Ein Betrugsfilter erreicht 88 % Accuracy. Nach einer neuen Betrugsmasche mit anderen Transaktionsmustern fällt die Metrik auf 71 % — der Code ist unverändert. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Transaktionen sind zufällig falsch gelabelt.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Kartenmarke war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 88 % waren Zufall.",
+          "loesung": "Die Eingabemuster haben sich systematisch geändert. Das ist Drift, kein zeitloser Subgruppenfehler."
+        },
+        {
+          "domain": "Qualität",
+          "accuracyBefore": 0.95,
+          "accuracyAfter": 0.8,
+          "codeChanged": false,
+          "prompt": "Ein Defekterkenner liegt bei 95 % Accuracy. Nach einem Lieferantenwechsel sieht die Oberfläche der Teile anders aus, die Metrik fällt auf 80 % — unveränderter Code. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Prüflabels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Schicht war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 95 % waren ein kleines Testset.",
+          "loesung": "Neue Materialoptik verschiebt die Eingaben. Code gleich, Metrik runter: Daten-Drift."
+        },
+        {
+          "domain": "Support",
+          "accuracyBefore": 0.9,
+          "accuracyAfter": 0.72,
+          "codeChanged": false,
+          "prompt": "Ein Ticket-Klassifikator erreicht 90 % Accuracy. Nach einem neuen Produktjargon in den Anfragen fällt die Metrik auf 72 % — der Code ist unverändert. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Ticketlabels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Sprache war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 90 % waren Zufall.",
+          "loesung": "Der Wortschatz der Tickets hat sich verschoben. Das ist Input-Drift."
+        },
+        {
+          "domain": "Verkehr",
+          "accuracyBefore": 0.92,
+          "accuracyAfter": 0.76,
+          "codeChanged": false,
+          "prompt": "Ein Spurhalter erreicht 92 % Accuracy. Nach einem Kameratausch mit anderem Weißabgleich fällt die Metrik auf 76 % — dieselben Gewichte. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Labels der Fahrspuren sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Nachtfahrten waren schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 92 % kamen nur durch Zufall.",
+          "loesung": "Andere Bildstatistik bei gleichem Code: Daten-Drift. Neu bewerten und ggf. nachtrainieren."
+        },
+        {
+          "domain": "Werk",
+          "accuracyBefore": 0.96,
+          "accuracyAfter": 0.82,
+          "codeChanged": false,
+          "prompt": "Ein Sortierer erreicht 96 % Accuracy. Nach Umstellung der Beleuchtung in der Halle fällt die Metrik auf 82 % — unveränderter Code, systematisch andere Bilder. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Die Messreihen sind zufällig falsch beschriftet, deshalb schwankt die Metrik.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Teilgruppe war schon immer schlechter, das zeigt sich erst jetzt.",
+          "overfit": "Überfitting auf das Testset: Das alte Testset war zu klein und hat die 96 % rein zufällig ergeben.",
+          "loesung": "Beleuchtung ändert die Eingabeverteilung. Metrikeinbruch ohne Codeänderung: Drift."
+        },
+        {
+          "domain": "Netzwerk",
+          "accuracyBefore": 0.89,
+          "accuracyAfter": 0.73,
+          "codeChanged": false,
+          "prompt": "Ein Anomalie-Filter für Netzwerkverkehr erreicht 89 % Accuracy. Nach einer Umstellung der Router-Telemetrie fällt die Metrik auf 73 % — der Code ist unverändert, die Logdaten sehen seither anders aus. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Flow-Labels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Ein Subnetz war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 89 % waren Zufall.",
+          "loesung": "Neue Telemetrie verschiebt die Eingaben. Code gleich, Metrik runter: Daten-Drift."
+        },
+        {
+          "domain": "Wetter",
+          "accuracyBefore": 0.92,
+          "accuracyAfter": 0.78,
+          "codeChanged": false,
+          "prompt": "Ein Niederschlagsmodell liegt bei 92 % Accuracy. Nach einem Sensorwechsel mit anderem Messverfahren fällt die Metrik auf 78 % — dieselben Gewichte. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Wetterlabels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Region war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 92 % kamen nur durch ein kleines Testset zustande.",
+          "loesung": "Anderes Messverfahren verschiebt die Eingabeverteilung. Metrikeinbruch ohne Codeänderung: Drift."
+        },
+        {
+          "domain": "Energie",
+          "accuracyBefore": 0.94,
+          "accuracyAfter": 0.8,
+          "codeChanged": false,
+          "prompt": "Ein Lastprognose-Klassifikator erreicht 94 % Accuracy. Nach dem Austausch der Smart-Meter-Generation fällt die Metrik auf 80 % — unveränderter Code, andere Zählerauflösung. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Lastlabels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Ein Tarif war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 94 % waren ein Zufallstreffer.",
+          "loesung": "Neue Zählerauflösung ändert die Eingabestatistik. Das ist Daten-Drift."
+        },
+        {
+          "domain": "Schrift",
+          "accuracyBefore": 0.9,
+          "accuracyAfter": 0.75,
+          "codeChanged": false,
+          "prompt": "Ein Handschrift-Klassifikator erreicht 90 % Accuracy. Nach Umstellung auf ein neues Scanverfahren fällt die Metrik auf 75 % — der Code ist unverändert, die Bildkontraste sehen anders aus. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Zeichenlabels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Handschrift war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 90 % waren Zufall.",
+          "loesung": "Neues Scanverfahren verschiebt die Bildverteilung. Unveränderter Code plus Einbruch: Drift."
+        },
+        {
+          "domain": "Akustik",
+          "accuracyBefore": 0.95,
+          "accuracyAfter": 0.79,
+          "codeChanged": false,
+          "prompt": "Ein Maschinen-Akustikmodell erreicht 95 % Accuracy. Nach dem Umzug in eine neue Halle mit anderem Nachhall fällt die Metrik auf 79 % — dieselben Gewichte. Welcher Fehlertyp liegt vor?",
+          "noise": "Label-Noise: Klanglabels sind zufällig falsch.",
+          "subgroup": "Systematischer Subgruppenfehler: Eine Maschine war schon immer schlechter.",
+          "overfit": "Überfitting auf das Testset: 95 % kamen nur durch Zufall zustande.",
+          "loesung": "Der Nachhall der neuen Halle verschiebt die Audioeingaben. Code gleich, Metrik runter: Daten-Drift."
+        }
+      ]
+    },
+    "stretch": {
+      "kind": "label-drift",
+      "slot": "shift",
+      "params": [
+        "accuracyBefore",
+        "accuracyAfter",
+        "codeChanged",
+        "shift"
+      ],
+      "caseId": "error-label-definition-shift",
+      "bank": [
+        {
+          "shift": "Spam-Regel",
+          "accuracyBefore": 0.9,
+          "accuracyAfter": 0.7,
+          "codeChanged": false,
+          "prompt": "Die Eingabeverteilung der Mails bleibt stabil, aber die Geschäftsregel ändert, was als Spam gilt. Danach fällt die Genauigkeit stark. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise, obwohl die Regel systematisch geändert wurde.",
+          "loesung": "Die Bedeutung des positiven Labels hat sich verschoben: Konzept- bzw. Label-Drift, nicht primär Input-Drift."
+        },
+        {
+          "shift": "Betrugsschwelle",
+          "accuracyBefore": 0.88,
+          "accuracyAfter": 0.66,
+          "codeChanged": false,
+          "prompt": "Transaktionsmerkmale bleiben verteilt wie zuvor, aber die Bank senkt die Schwelle, ab der ein Fall als Betrug gelabelt wird. Die Genauigkeit bricht ein. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz systematischer Regeländerung.",
+          "loesung": "Das Label bedeutet etwas anderes als im Training. Das ist Konzept-Drift."
+        },
+        {
+          "shift": "Defektkatalog",
+          "accuracyBefore": 0.93,
+          "accuracyAfter": 0.75,
+          "codeChanged": false,
+          "prompt": "Sensorwerte bleiben stabil, aber die Qualitätssicherung nimmt neue Fehlerbilder in den Positivkatalog auf. Die Accuracy fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Katalogwechsel.",
+          "loesung": "Dieselben Eingaben bekommen neue Labels: Label- bzw. Konzept-Drift."
+        },
+        {
+          "shift": "Churn-Fenster",
+          "accuracyBefore": 0.91,
+          "accuracyAfter": 0.68,
+          "codeChanged": false,
+          "prompt": "Nutzungsdaten bleiben ähnlich, aber Churn zählt nun schon nach 14 statt 30 Tagen ohne Login als positiv. Die Metrik fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz festem Fensterwechsel.",
+          "loesung": "Die Zieldefinition hat sich geändert. Das ist Konzept-Drift, kein Input-Drift."
+        },
+        {
+          "shift": "ICD-Kodierung",
+          "accuracyBefore": 0.86,
+          "accuracyAfter": 0.64,
+          "codeChanged": false,
+          "prompt": "Die Klinikmerkmale bleiben stabil, aber eine neue Kodierregel ändert, welche Fälle als positiv gelten. Die Genauigkeit bricht ein. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Kodierumstellung.",
+          "loesung": "Geänderte Labelbedeutung bei stabilen Eingaben: Konzept-Drift."
+        },
+        {
+          "shift": "Moderationsrichtlinie",
+          "accuracyBefore": 0.89,
+          "accuracyAfter": 0.71,
+          "codeChanged": false,
+          "prompt": "Die Textverteilung bleibt ähnlich, aber die Moderationsrichtlinie stuft andere Inhalte als Verstoß. Die Accuracy fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz neuer Richtlinie.",
+          "loesung": "Das positive Label hat eine neue Semantik. Label- bzw. Konzept-Drift."
+        },
+        {
+          "shift": "Verspätungsgrenze",
+          "accuracyBefore": 0.94,
+          "accuracyAfter": 0.78,
+          "codeChanged": false,
+          "prompt": "Fahrtdaten bleiben verteilt wie zuvor, aber „unpünktlich“ gilt nun ab 3 statt 5 Minuten. Die Klassifikationsgenauigkeit fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz fester neuer Grenze.",
+          "loesung": "Die Klasse bedeutet etwas anderes. Das ist Konzept-Drift, kein Sensor-Drift."
+        },
+        {
+          "shift": "Kreditausfall-Horizont",
+          "accuracyBefore": 0.87,
+          "accuracyAfter": 0.69,
+          "codeChanged": false,
+          "prompt": "Antragsmerkmale bleiben stabil, aber Ausfall wird nun über 6 statt 12 Monate definiert. Die Accuracy fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Horizontwechsel.",
+          "loesung": "Dasselbe Merkmalsbild, neues Label: Konzept-Drift."
+        },
+        {
+          "shift": "Support-Eskalation",
+          "accuracyBefore": 0.92,
+          "accuracyAfter": 0.73,
+          "codeChanged": false,
+          "prompt": "Tickettexte bleiben ähnlich, aber die interne Regel ändert, welche Tickets als Eskalation gelten. Die Genauigkeit bricht ein. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Prozessänderung.",
+          "loesung": "Die Zieldefinition hat sich verschoben, nicht die Eingabeverteilung. Label- bzw. Konzept-Drift."
+        },
+        {
+          "shift": "Retouren-Regel",
+          "accuracyBefore": 0.9,
+          "accuracyAfter": 0.72,
+          "codeChanged": false,
+          "prompt": "Die Bestelldaten bleiben verteilt wie zuvor, aber eine neue Retouren-Regel zählt nun auch Teilstornos als Rücksendung. Die Accuracy fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Regelwechsel.",
+          "loesung": "Die Zieldefinition wurde geändert, nicht die Eingaben. Label- bzw. Konzept-Drift."
+        },
+        {
+          "shift": "Aktivitätsdefinition",
+          "accuracyBefore": 0.93,
+          "accuracyAfter": 0.76,
+          "codeChanged": false,
+          "prompt": "Die Nutzungsdaten bleiben ähnlich, aber „aktiv“ gilt nun ab drei statt fünf Wochen-Logins. Die Metrik fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Schwellenwechsel.",
+          "loesung": "Das Label hat eine neue Schwelle: Konzept-Drift."
+        },
+        {
+          "shift": "Bonitätsklasse",
+          "accuracyBefore": 0.88,
+          "accuracyAfter": 0.7,
+          "codeChanged": false,
+          "prompt": "Antragsmerkmale bleiben stabil, aber die Ratingstufe „gut“ wird nun anders abgegrenzt. Die Genauigkeit bricht ein. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Klassenwechsel.",
+          "loesung": "Neue Klassendefinition bei stabilen Eingaben: Konzept-Drift."
+        },
+        {
+          "shift": "Prioritätsregel",
+          "accuracyBefore": 0.95,
+          "accuracyAfter": 0.79,
+          "codeChanged": false,
+          "prompt": "Ticketinhalte bleiben ähnlich, aber die Prioritätsregel stuft andere Anliegen als hoch ein. Die Accuracy fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Prioritätswechsel.",
+          "loesung": "Die Bedeutung des hohen Labels hat sich verschoben: Label-Drift."
+        },
+        {
+          "shift": "Grenzwert-Norm",
+          "accuracyBefore": 0.91,
+          "accuracyAfter": 0.74,
+          "codeChanged": false,
+          "prompt": "Messwerte bleiben stabil, aber eine neue Norm legt den Grenzwert für „außerhalb der Toleranz“ enger. Die Genauigkeit fällt. Welcher Fehler ist am plausibelsten?",
+          "noise": "Zufälliger Label-Noise trotz Normwechsel.",
+          "loesung": "Dieselben Werte bekommen neue Labels: Konzept-Drift."
+        }
+      ]
+    },
+    "challenge": {
+      "kind": "subgruppe",
+      "slot": "group",
+      "params": [
+        "group",
+        "overallGood"
+      ],
+      "caseId": "error-stable-subgroup",
+      "bank": [
+        {
+          "group": "Dialekt",
+          "overallGood": true,
+          "prompt": "Die Gesamtgenauigkeit eines Transkriptionssystems war schon immer gut, aber ein Dialekt hat dauerhaft deutlich mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil jede Gruppenabweichung Drift ist.",
+          "loesung": "Dauerhaft schlechtere Gruppe bei guter Gesamtmetrik: stabiler Subgruppenfehler, kein zeitlicher Drift."
+        },
+        {
+          "group": "Nachtschicht-Bilder",
+          "overallGood": true,
+          "prompt": "Die Gesamtgenauigkeit war schon immer hoch, aber Bilder aus der Nachtschicht haben dauerhaft mehr Fehler — ohne dass sich die Nachtstatistik über Monate ändert. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Nachtschicht eine Zeitangabe ist.",
+          "loesung": "Ein stabiles Gruppenmuster ist kein zeitlicher Drift. Die Nachtschicht muss separat gemessen werden."
+        },
+        {
+          "group": "kleine Schrift",
+          "overallGood": true,
+          "prompt": "Ein OCR-Modell ist insgesamt gut, scheitert aber dauerhaft an sehr kleiner Schrift — unverändert seit dem Start. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Schriftgrößen sich im Markt ändern.",
+          "loesung": "Stabile, gruppenspezifische Schwäche: Subgruppenfehler, keine neue Zeitverschiebung."
+        },
+        {
+          "group": "ältere Kundinnen",
+          "overallGood": true,
+          "prompt": "Ein Voicebot ist insgesamt treffsicher, aber Anrufe älterer Kundinnen haben dauerhaft mehr Absichtsfehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Alter eine Zeitvariable ist.",
+          "loesung": "Gute Gesamtmetrik verdeckt eine stabile Gruppenschwäche. Das ist ein Subgruppenfehler."
+        },
+        {
+          "group": "seltene Produktlinie",
+          "overallGood": true,
+          "prompt": "Ein Defektmodell ist insgesamt gut, eine seltene Produktlinie hat aber seit Beginn deutlich mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil jede Abweichung Drift ist.",
+          "loesung": "Das Muster ist zeitlich stabil und gruppenspezifisch: Subgruppenfehler, kein Drift."
+        },
+        {
+          "group": "kurze Texte",
+          "overallGood": true,
+          "prompt": "Ein Moderationsmodell ist insgesamt gut, sehr kurze Posts haben aber dauerhaft mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Textlängen schwanken.",
+          "loesung": "Eine stabile Längenschwäche ist ein Subgruppenproblem, kein zeitlicher Drift."
+        },
+        {
+          "group": "Mobilfunk-Fotos",
+          "overallGood": true,
+          "prompt": "Ein Schadenerkenner ist insgesamt gut, Fotos von älteren Handykameras haben aber dauerhaft mehr Fehler — ohne Trend über die Monate. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Handykameras sich weiterentwickeln.",
+          "loesung": "Stabile Gerätegruppe mit mehr Fehlern: Subgruppenfehler. Gesamtaccuracy reicht nicht."
+        },
+        {
+          "group": "Zweitsprachen-Mails",
+          "overallGood": true,
+          "prompt": "Ein Absichtsklassifikator ist insgesamt gut, Mails in der Zweitsprache haben aber dauerhaft mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Sprache sich ändert.",
+          "loesung": "Gruppenspezifisches, zeitlich stabiles Muster: Subgruppenfehler bzw. Fairness-Risiko."
+        },
+        {
+          "group": "linke Fahrspur bei Regen",
+          "overallGood": true,
+          "prompt": "Ein Spurmodell ist insgesamt gut, eine bestimmte Spur-Wetter-Kombination hat aber seit Beginn deutlich mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil jede Wetterabweichung Drift ist.",
+          "loesung": "Das Muster ist dauerhaft und gruppenspezifisch, nicht erst nach einer Zeitverschiebung. Subgruppenfehler separat messen."
+        },
+        {
+          "group": "Fax-Scans",
+          "overallGood": true,
+          "prompt": "Ein Dokumentenleser ist insgesamt gut, aber eingehende Fax-Scans haben seit Beginn deutlich mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil jede Abweichung Drift ist.",
+          "loesung": "Dauerhaft schwächere Fax-Gruppe bei guter Gesamtmetrik: stabiler Subgruppenfehler, kein Drift."
+        },
+        {
+          "group": "Kinderstimmen",
+          "overallGood": true,
+          "prompt": "Ein Sprachassistent ist insgesamt treffsicher, Kinderstimmen verursachen aber dauerhaft mehr Erkennungsfehler — ohne Trend über die Zeit. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Stimmen sich ändern.",
+          "loesung": "Stabile, gruppenspezifische Schwäche: Subgruppenfehler, separat messen."
+        },
+        {
+          "group": "Randgeräte",
+          "overallGood": true,
+          "prompt": "Ein Qualitätsmodell ist insgesamt gut, Messungen von Randgeräten am Hallenrand haben aber dauerhaft mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Geräte sich abnutzen.",
+          "loesung": "Stabiles Gerätegruppen-Muster: Subgruppenfehler, kein zeitlicher Drift."
+        },
+        {
+          "group": "Dämmerungsfotos",
+          "overallGood": true,
+          "prompt": "Ein Wildtier-Monitor ist insgesamt gut, Fotos in der Dämmerung haben aber seit Beginn deutlich mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Lichtverhältnisse schwanken.",
+          "loesung": "Dauerhafte Lichtgruppen-Schwäche: Subgruppenfehler. Die Gesamtmetrik verdeckt sie."
+        },
+        {
+          "group": "Fachjargon-Chats",
+          "overallGood": true,
+          "prompt": "Ein Antwortmodell ist insgesamt gut, Chats mit internem Fachjargon haben aber dauerhaft mehr Fehler. Welche Diagnose passt?",
+          "drift": "Zeitlicher Daten-Drift, weil Sprache sich wandelt.",
+          "loesung": "Gruppenspezifisches, stabiles Muster: Subgruppenfehler bzw. Fairness-Risiko."
+        }
+      ]
+    }
+  }
+}

@@ -1,34 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "formula-lora-delta-apply",
-  "contract": {
-    "familyId": "formula-lora-delta-apply",
-    "familyGroup": "formula-apply",
-    "summary": "Wendet die LoRA-Delta-Formel (alpha/r)*B@A an und sichert Rang-, Form- und Dimensionsverträge mit ValueError ab.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "lora-delta-apply",
-        "propertyTest": false
-      },
-      {
-        "caseId": "lora-delta-scaled-update",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-finetuning",
-      "c-numpy-basics"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "lora-delta-apply",
@@ -58,28 +31,20 @@
         "Delta = (alpha / r) * (B @ A) — die Matrixmultiplikation zuerst, dann skalieren; die Form ist (d_out, d_in).",
         "Alle Verträge vor der Rechnung prüfen: Rang, Dimensionen, Formgleichheit mit W."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "wrong-order",
-          "then": "B @ A liefert (d_out × d_in); A @ B hätte die Formen vertauscht."
+          "id": "ba-gegen-ab-vertauscht",
+          "text": "BA gegen AB vertauscht"
         },
         {
-          "if": "scale-missing",
-          "then": "Der Faktor alpha/r gehört vor das Produkt — im Test ist er ganzzahlig, damit exakt geprüft werden kann."
+          "id": "skalierung-r-vergessen",
+          "text": "Skalierung α/r vergessen"
         },
         {
-          "if": "contracts-unchecked",
-          "then": "Rang- und Formverletzungen müssen ValueError werfen, bevor gerechnet wird."
+          "id": "rang-formvertraege-ungeprueft",
+          "text": "Rang-/Formverträge ungeprüft"
         }
       ],
-      "typicalErrors": [
-        "BA gegen AB vertauscht",
-        "Skalierung α/r vergessen",
-        "Rang-/Formverträge ungeprüft"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -111,28 +76,20 @@
         "Der Rang steht in A.shape[0] und B.shape[1].",
         "Erzeuge neue Arrays statt W oder velocity-artige Eingaben in-place zu verändern."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "wrong-order",
-          "then": "Das konkrete Produkt ist B @ A mit Form d_out×d_in; A @ B hätte hier inkompatible innere Dimensionen."
+          "id": "ba-und-ab-trotz-inkompatibler",
+          "text": "BA und AB trotz inkompatibler Innenformen vertauscht"
         },
         {
-          "if": "scale-missing",
-          "then": "Bei alpha=4 und r=2 wird das Produkt mit 2 skaliert, bevor es zu W addiert wird."
+          "id": "den-faktor-alpha-r-beim",
+          "text": "den Faktor alpha/r beim Delta ausgelassen"
         },
         {
-          "if": "contracts-unchecked",
-          "then": "Eine A-Form mit drei Rangzeilen verletzt den Rang-2-Vertrag und muss vor der Addition ValueError auslösen."
+          "id": "w-form-erst-nach-einer",
+          "text": "W-Form erst nach einer unzulässigen Addition geprüft"
         }
       ],
-      "typicalErrors": [
-        "BA und AB trotz inkompatibler Innenformen vertauscht",
-        "den Faktor alpha/r beim Delta ausgelassen",
-        "W-Form erst nach einer unzulässigen Addition geprüft"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     }

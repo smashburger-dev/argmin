@@ -10,5 +10,16 @@
     { "kind": "functiongraph", "expr": "0.5*(1+cos(pi*(x-w)/(1-w)))", "domain": ["w", 1], "label": "Cosine", "color": "#294bd6" },
     { "kind": "point", "at": ["w", 1], "color": "#b72f2a" },
     { "kind": "text", "at": [0, -0.05], "text": "Warmup bis w = {w}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze w = 0,5. Welchen Wert hat die Lernrate bei x = 0,4 (noch im Warmup-Bereich)?",
+    "input": "numeric",
+    "expected": 0.8,
+    "tolerance": 1e-6,
+    "hints": ["Für x < w gilt lr = x/w — der Cosine-Teil beginnt erst ab x = w."],
+    "typicalErrors": [
+      { "match": 1, "feedback": "Der Peak (Lernrate 1) liegt bei x = w = 0,5. Bei x = 0,4 läuft der Warmup noch." },
+      { "match": 0.2, "feedback": "Die Warmup-Lernrate ist x/w = 0,4/0,5, nicht x·w." }
+    ]
+  }
 }

@@ -1,40 +1,13 @@
 {
   "schemaVersion": 1,
   "familyId": "aggregate-detector-eval-compare",
-  "contract": {
-    "familyId": "aggregate-detector-eval-compare",
-    "familyGroup": "aggregate-count",
-    "summary": "Wertet mehrere deterministische Regelwerke oder Detektoren auf einem gelabelten Korpus aus, führt eine Metriktabelle und kürt den Sieger über deterministische Rundung und Namens-Tie-Break.",
-    "taskArchetype": "code-tests",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "run-eval-compare-rulesets",
-        "propertyTest": false
-      },
-      {
-        "caseId": "detector-table-best-f1",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "challenge"
-    ],
-    "competencyIds": [
-      "c-genai-eval",
-      "c-ml-erroranalysis",
-      "c-genai-security",
-      "c-testing-debugging"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "run-eval-compare-rulesets",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w28-e6"
       ],
@@ -57,35 +30,29 @@
         "run_eval zählt pro Label und vergleicht mit record['label'] — accuracy ist correct/len(records).",
         "compare_rulesets vergleicht die Accuracies; bei Gleichstand entscheidet 'tie', nicht Reihenfolge."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "counts-keyerror",
-          "then": "counts müssen alle vorkommenden Labels enthalten — fehlende Labels als 0 initialisieren oder mit get() lesen."
+          "id": "accuracy-manuell-statt-ueber-correct",
+          "text": "Accuracy manuell statt über correct/len berechnet"
         },
         {
-          "if": "better-tie-wrong",
-          "then": "Bei exakt gleicher Accuracy ist das Ergebnis 'tie' — nicht das erste Regelwerk."
+          "id": "labels-gezaehlt-aber-correct-nicht",
+          "text": "Labels gezählt, aber correct nicht mit record['label'] abgeglichen"
         },
         {
-          "if": "classify-inlined",
-          "then": "Die Klassifikation muss dem Regelwerk folgen, nicht geratenen Spezialfällen — sonst bricht der Vergleich der beiden Regelwerke."
+          "id": "gleichstand-in-compare-rulesets-falsch",
+          "text": "Gleichstand in compare_rulesets falsch behandelt"
         }
       ],
-      "typicalErrors": [
-        "Accuracy manuell statt über correct/len berechnet",
-        "Labels gezählt, aber correct nicht mit record['label'] abgeglichen",
-        "Gleichstand in compare_rulesets falsch behandelt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Eval-Lauf: zwei Regelwerke vergleichen"
     },
     {
       "caseId": "detector-table-best-f1",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w29-e6"
       ],
@@ -108,30 +75,23 @@
         "Baue die Tabelle zeilenweise wie evaluate_detector — nur eben pro Regelwerk; flagged ist die Summe aller Verwürfe.",
         "best_by_f1 sortiert nach (-f1, name): der Name ist der Schlüssel, nicht die Zeile."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "f1-unrounded",
-          "then": "f1 (wie precision/recall) auf 4 Stellen runden — sonst flackern die Vergleiche über Python-Versionen."
+          "id": "f1-aus-ungerundeten-werten-unterschiedlich",
+          "text": "f1 aus ungerundeten Werten unterschiedlich berechnet"
         },
         {
-          "if": "tie-break-missing",
-          "then": "Bei f1-Gleichstand muss der lexikographisch kleinste Name gewinnen — ohne Regel ist der Sieger zufällig."
+          "id": "gleichstand-ohne-namens-tie-break",
+          "text": "Gleichstand ohne Namens-Tie-Break entschieden"
         },
         {
-          "if": "flagged-wrong",
-          "then": "flagged zählt ALLE Verwürfe (tp + fp), nicht nur die berechtigten."
+          "id": "flagged-nur-als-tp-gezaehlt",
+          "text": "flagged nur als tp gezählt"
         }
       ],
-      "typicalErrors": [
-        "f1 aus ungerundeten Werten unterschiedlich berechnet",
-        "Gleichstand ohne Namens-Tie-Break entschieden",
-        "flagged nur als tp gezählt"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Detektor-Tabelle: beste F1 wählen"
     }
   ]
 }

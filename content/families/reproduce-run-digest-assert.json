@@ -1,29 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "reproduce-run-digest-assert",
-  "contract": {
-    "familyId": "reproduce-run-digest-assert",
-    "familyGroup": "reproduce-hash",
-    "summary": "Sichert einen eingefrorenen Lauf-Digest gegen stille Abweichungen.",
-    "taskArchetype": "code-test",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "run-digest-assert",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-python-functions",
-      "c-research-capstone"
-    ],
-    "graderId": "pyodide",
-    "activityType": "python-code"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "run-digest-assert",
@@ -35,7 +13,7 @@
       "parameters": {
         "packages": [],
         "starterCode": "import hashlib\nimport json\n\n\ndef run_baseline(config):\n    \"\"'{'werte': .., 'digest': ..} mit Doppel-Lauf-Assert ueber den Digest.'\"\"\n    ...\n\n",
-        "tests": "CONFIG = {\n    \"k\": 5,\n    \"faelle\": [\n        {\"id\": \"faq-03\", \"relevante\": [\"faq-3\"], \"top\": [\"faq-3\", \"faq-7\"], \"korrekt\": True},\n        {\"id\": \"faq-11\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\", \"faq-3\"], \"korrekt\": False},\n        {\"id\": \"faq-19\", \"relevante\": [\"faq-7\"], \"top\": [\"faq-7\"], \"korrekt\": True},\n        {\"id\": \"vertrag-02\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\"], \"korrekt\": True},\n        {\"id\": \"vertrag-07\", \"relevante\": [\"vertrag-2\"], \"top\": [\"faq-3\"], \"korrekt\": False},\n    ],\n}\nr = run_baseline(CONFIG)\n__check('werte der baseline', r[\"werte\"] == {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75})\n__check('exakter digest', r[\"digest\"] == \"728a5e258971cd2fb9f7456d88cef6f8559ae1c6fbdd1b0c6ba8ff26fb1ad0a7\")\n__check('doppel-lauf gleich', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"][0][\"korrekt\"] = False\n__check('digest reagiert auf aenderung', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\nK_CONFIG = json.loads(json.dumps(CONFIG))\nK_CONFIG[\"k\"] = 1\nK_CONFIG[\"faelle\"][0][\"top\"] = [\"faq-7\", \"faq-3\"]\n__check('k wirkt auf recall', run_baseline(K_CONFIG)[\"werte\"][\"recall_at_k\"] == 0.6)\nprint(\"ok w34-e5\")"
+        "tests": "CONFIG = {\n    \"k\": 5,\n    \"faelle\": [\n        {\"id\": \"faq-03\", \"relevante\": [\"faq-3\"], \"top\": [\"faq-3\", \"faq-7\"], \"korrekt\": True},\n        {\"id\": \"faq-11\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\", \"faq-3\"], \"korrekt\": False},\n        {\"id\": \"faq-19\", \"relevante\": [\"faq-7\"], \"top\": [\"faq-7\"], \"korrekt\": True},\n        {\"id\": \"vertrag-02\", \"relevante\": [\"vertrag-1\"], \"top\": [\"vertrag-1\"], \"korrekt\": True},\n        {\"id\": \"vertrag-07\", \"relevante\": [\"vertrag-2\"], \"top\": [\"faq-3\"], \"korrekt\": False},\n    ],\n}\nr = run_baseline(CONFIG)\n__check('werte der baseline', r[\"werte\"] == {\"recall_at_k\": 0.8, \"antwort_naiv\": 0.6, \"antwort_getrennt\": 0.75})\n__check('exakter digest', r[\"digest\"] == \"728a5e258971cd2fb9f7456d88cef6f8559ae1c6fbdd1b0c6ba8ff26fb1ad0a7\")\n__check('doppel-lauf gleich', run_baseline(CONFIG) == r)\nTAMPER = json.loads(json.dumps(CONFIG))\nTAMPER[\"faelle\"][0][\"korrekt\"] = False\n__check('digest reagiert auf aenderung', run_baseline(TAMPER)[\"digest\"] != r[\"digest\"])\nK_CONFIG = json.loads(json.dumps(CONFIG))\nK_CONFIG[\"k\"] = 1\nK_CONFIG[\"faelle\"][0][\"top\"] = [\"faq-7\", \"faq-3\"]\n__check('k wirkt auf recall', run_baseline(K_CONFIG)[\"werte\"][\"recall_at_k\"] == 0.6)\nimport hashlib as __hashlib\n__orig_sha = __hashlib.sha256\n__aliases = [k for k, v in list(globals().items()) if v is __orig_sha and k != '__orig_sha']\n__sha_zaehler = {'n': 0}\ndef __schwankend_sha(*a, **k):\n    __sha_zaehler['n'] += 1\n    return __orig_sha(b'x' if __sha_zaehler['n'] % 2 else b'y')\n__hashlib.sha256 = __schwankend_sha\nfor __name in __aliases:\n    globals()[__name] = __schwankend_sha\ntry:\n    run_baseline(CONFIG)\n    __check('assert bei abweichenden digests', False, 'kein AssertionError')\nexcept AssertionError:\n    __check('assert bei abweichenden digests', True)\nexcept Exception as e:\n    __check('assert bei abweichenden digests', False, type(e).__name__)\nfinally:\n    __hashlib.sha256 = __orig_sha\n    for __name in __aliases:\n        globals()[__name] = __orig_sha\nprint(\"ok w34-e5\")"
       },
       "competencyIds": [
         "c-research-capstone",
@@ -51,28 +29,20 @@
         "Treffer prüft set(relevante) & set(top[:k]) — erst k abschneiden, dann die Schnittmenge bilden.",
         "Führe die Auswertung zweimal aus und vergleiche die Digests mit assert, bevor du zurückgibst; der Digest läuft über json.dumps der gerundeten Werte."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "slice-after-intersect",
-          "then": "top[:k] kommt vor der Schnittmenge: Wer erst schneidet und dann k anwendet, zählt Treffer falsch."
+          "id": "k-erst-nach-der-schnittmengenbildung",
+          "text": "k erst nach der Schnittmengenbildung angewandt"
         },
         {
-          "if": "no-assert",
-          "then": "Ohne den Doppel-Lauf-Assert ist die Reproduzierbarkeit nur behauptet — der Vertrag verlangt den Vergleich im Lauf."
+          "id": "assert-ueber-die-digests-vergessen",
+          "text": "Assert über die Digests vergessen"
         },
         {
-          "if": "naiv-uses-treffer",
-          "then": "antwort_naiv teilt durch alle Fälle, antwort_getrennt nur durch Trefferfälle — die Nenner sind die Kernunterscheidung der Lektion."
+          "id": "naive-und-bereinigte-quote-im",
+          "text": "naive und bereinigte Quote im Nenner vertauscht"
         }
       ],
-      "typicalErrors": [
-        "k erst nach der Schnittmengenbildung angewandt",
-        "Assert über die Digests vergessen",
-        "naive und bereinigte Quote im Nenner vertauscht"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "activityType": "python-code",
       "graderId": "pyodide"
     },
@@ -80,6 +50,7 @@
       "caseId": "pipeline-freeze-report",
       "difficultyProfile": "challenge",
       "masteryEligible": true,
+      "challengeEligible": true,
       "sourceLineage": [
         "w35-e6"
       ],
@@ -91,7 +62,7 @@
       "parameters": {
         "packages": [],
         "starterCode": "import hashlib\nimport json\n\n\ndef kanon(obj):\n    \"\"\"Stabile Serialisierung: sortierte Schluessel, keine Leerraeume.\"\"\"\n    ...\n\n\ndef run_pipeline(config):\n    \"\"\"Freeze pruefen, Stages ausfuehren, Bericht und Digest liefern.\"\"\"\n    ...\n\n",
-        "tests": "import hashlib\nimport json\n\nDATEN = [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Birne\"]\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\nPIN = hashlib.sha256(kanon(DATEN).encode(\"utf-8\")).hexdigest()\nCFG = {\"daten\": DATEN, \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht anzahl', erg[\"bericht\"][\"anzahl\"] == 4)\n__check('bericht anfangsbuchstaben', erg[\"bericht\"][\"anfangsbuchstaben\"] == {\"a\": 1, \"b\": 2, \"z\": 1})\n__check('digest stimmt', erg[\"digest\"] == hashlib.sha256(kanon(erg[\"bericht\"]).encode(\"utf-8\")).hexdigest())\n__check('doppellauf identisch', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Kirsche\"], \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))"
+        "tests": "import hashlib\nimport json\n\nDATEN = [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Birne\"]\nPIN = \"2dd2d28237431a08c1e66917e3af41475e0732ac4102bb8cedefbebde4472615\"\nBERICHT_DIGEST = \"fbb1966dc2acf0e6088a2e43477336601cd59f4904d95ae978dec4bd5612f1b5\"\nCFG = {\"daten\": DATEN, \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\nerg = run_pipeline(CFG)\n__check('status ok', erg[\"status\"] == \"ok\")\n__check('bericht anzahl', erg[\"bericht\"][\"anzahl\"] == 4)\n__check('bericht anfangsbuchstaben', erg[\"bericht\"][\"anfangsbuchstaben\"] == {\"a\": 1, \"b\": 2, \"z\": 1})\n__check('digest stimmt', erg[\"digest\"] == BERICHT_DIGEST)\n__check('doppellauf identisch', run_pipeline(CFG) == erg)\nTAMPER = {\"daten\": [\"Affe\", \"Banane\", \"Zitrone\", \"Apfel\", \"Kirsche\"], \"min_laenge\": 5, \"pins\": {\"daten\": PIN}}\ntry:\n    run_pipeline(TAMPER)\n    __check('tamper erkannt', False)\nexcept AssertionError as e:\n    __check('tamper erkannt', \"freeze verletzt\" in str(e))"
       },
       "expected": {
         "kind": "reference-solver",
@@ -101,31 +72,24 @@
         "Kanalisation zuerst: kanon() mit sort_keys=True und separators=(',', ':') — derselbe Vertrag wie im Projekt.",
         "Der Digest des Berichts entsteht über dieselbe kanonische Serialisierung wie der Freeze-Hash der Daten."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "freeze-nach-arbeit",
-          "then": "Erst pinnen, dann rechnen: Wer nach der Ausführung prüft, hat den manipulierten Lauf schon durchgelassen."
+          "id": "hash-pruefung-nach-der-verarbeitung",
+          "text": "Hash-Prüfung nach der Verarbeitung eingebaut"
         },
         {
-          "if": "digest-random-ish",
-          "then": "Der Digest ist deterministisch aus dem Bericht abgeleitet — wenn er zwischen Läufen schwankt, steckt Zufall oder Reihenfolge in die Serialisierung."
+          "id": "nicht-kanonische-serialisierung-leerzeichen-unsortierte",
+          "text": "nicht-kanonische Serialisierung (Leerzeichen, unsortierte Schlüssel)"
         },
         {
-          "if": "silently-continues",
-          "then": "Bei Freeze-Verletzung wird AssertionError geworfen, kein Bericht mit Ersatzwerten — kein stiller Fallback."
+          "id": "bei-abweichung-ersatzwerte-geliefert-statt",
+          "text": "bei Abweichung Ersatzwerte geliefert statt AssertionError"
         }
       ],
-      "typicalErrors": [
-        "Hash-Prüfung nach der Verarbeitung eingebaut",
-        "nicht-kanonische Serialisierung (Leerzeichen, unsortierte Schlüssel)",
-        "bei Abweichung Ersatzwerte geliefert statt AssertionError"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "fullSolution": "<pre><code>import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef run_pipeline(config):\n    daten = config[\"daten\"]\n    pin = config[\"pins\"][\"daten\"]\n    ist = hashlib.sha256(kanon(daten).encode(\"utf-8\")).hexdigest()\n    if ist != pin:\n        raise AssertionError(\"freeze verletzt: daten\")\n    normalisiert = [w.lower() for w in daten]\n    gefiltert = [w for w in normalisiert if len(w) &gt;= config[\"min_laenge\"]]\n    anfangs = {}\n    for w in gefiltert:\n        anfangs[w[0]] = anfangs.get(w[0], 0) + 1\n    bericht = {\"anzahl\": len(gefiltert), \"anfangsbuchstaben\": dict(sorted(anfangs.items()))}\n    digest = hashlib.sha256(kanon(bericht).encode(\"utf-8\")).hexdigest()\n    return {\"status\": \"ok\", \"bericht\": bericht, \"digest\": digest}\n\n# Freeze zuerst, Stages rein deterministic, Digest kanonisch — Doppellauf liefert dasselbe Objekt.</code></pre>",
       "activityType": "python-code",
-      "graderId": "pyodide"
+      "graderId": "pyodide",
+      "title": "Pipeline-Freeze mit Digest"
     },
     {
       "caseId": "reproduction-verdict-rules",
@@ -152,28 +116,20 @@
         "Die kanonische Serialisierung ist der Punkt: Umsortierte Schlüssel dürfen den Digest nicht ändern.",
         "verdict kombiniert beide Verträge — Identische Digests allein reichen bei Overclaims nicht."
       ],
-      "feedbackRules": [
+      "typicalErrors": [
         {
-          "if": "order-sensitivity",
-          "then": "Ohne sort_keys=True ändern JSON-Schlüsselreihenfolgen den Digest — dann misst du Serialisierung, nicht Reproduktion."
+          "id": "serialisierung-ohne-sort-keys-schein",
+          "text": "Serialisierung ohne sort_keys (Schein-Abweichung)"
         },
         {
-          "if": "empty-crash",
-          "then": "Bei leeren laeufen ist identisch True (Vakuum) — ein Crash über all([]) mit digests[0] ist der klassische Randfehler."
+          "id": "leere-laufliste-crashen-lassen",
+          "text": "leere Laufliste crashen lassen"
         },
         {
-          "if": "overclaim-ignored",
-          "then": "Overclaims im README disqualifizieren den Bericht — auch bei perfekter Reproduktion."
+          "id": "overclaims-ignoriert",
+          "text": "Overclaims ignoriert"
         }
       ],
-      "typicalErrors": [
-        "Serialisierung ohne sort_keys (Schein-Abweichung)",
-        "leere Laufliste crashen lassen",
-        "Overclaims ignoriert"
-      ],
-      "tolerancePolicy": {
-        "mode": "tests"
-      },
       "fullSolution": "<pre><code>import hashlib\nimport json\n\n\ndef kanon(obj):\n    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(\",\", \":\"))\n\n\ndef repro_check(readme, laeufe, phrasen):\n    digests = [hashlib.sha256(kanon(lauf).encode(\"utf-8\")).hexdigest() for lauf in laeufe]\n    identisch = all(d == digests[0] for d in digests) if digests else True\n    t = readme.lower()\n    overclaims = sorted(p for p in phrasen if p in t)\n    verdict = \"angenommen\" if identisch and not overclaims else \"abgelehnt\"\n    return {\"digest_identisch\": identisch, \"digests\": digests, \"overclaims\": overclaims, \"verdict\": verdict}\n\n# Doppellauf-Digest + Overclaim-Scan = Reproduktionsvertrag der Dokumentation.</code></pre>",
       "activityType": "python-code",
       "graderId": "pyodide"

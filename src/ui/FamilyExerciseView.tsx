@@ -1,16 +1,20 @@
+import { lazy, Suspense } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint } from '../../assets/js/domain/exercise_registry.mjs';
+import { EXERCISE_FAMILIES, configureExerciseFamilies, familyEventInput, familyHint, familyMaxHints } from '../../assets/js/domain/exercise_registry.mjs';
 import { registerStaticCases } from '../../assets/js/domain/family_registry.mjs';
+import { MASTERY_MAX_HINTS } from '../../assets/js/domain/learning_policy.mjs';
+import { instanceAssistance } from '../adapters/local-progress';
 import { learningLedger } from '../../assets/js/core/learning_ledger.mjs';
 import { progress } from '../../assets/js/core/progress_store.js';
 import { loadFamilyCases, loadFamilyIndex } from '../adapters/content-repository';
-import { AnswerControls } from './AnswerControls';
-import { CodeEditor } from './CodeEditor';
+import { runPython, warmPythonRuntime, type WorkspaceResult } from '../adapters/python-workspace';
+import { AnswerControls, FadingPrompt } from './AnswerControls';
 import { MathMarkup } from './MathMarkup';
 import { Button } from './Button';
 import { TraceTableView } from './TraceTableView';
 import { ExerciseFrame } from './ExerciseFrame';
-import { getExerciseContext, randomVariantSeed } from './exercise-context';
+import { formatGermanDate } from './format';
+import { getExerciseContext, practiceCasePool, randomVariantSeed } from './exercise-context';
 import type { CatalogData } from '../app/types';
 
 // S4D0: öffnet kuratierte Familien-Placements ohne definitionId.
@@ -23,18 +27,50 @@ function parseFamilyRef(ref: string): {
   caseId?: string;
   seed: number;
   difficulty: string;
+  from?: string;
+  module?: string;
 } {
-  const [familyId = '', casePart = '', seedPart = '', difficulty = ''] = String(ref).split('/');
+  // Query suffix rides inside the hash route (#/family/.../challenge?from=challenge)
+  // — split it off before the segment parse so 'from' stays a flag, not a
+  // difficulty segment.
+  const [path = '', query = ''] = String(ref).split('?');
+  const [familyId = '', casePart = '', seedPart = '', difficulty = ''] = path.split('/');
   if (!familyId) throw new Error('Familie fehlt.');
   if (!difficulty) throw new Error('Schwierigkeitsstufe fehlt.');
   const caseId = casePart && casePart !== '-' ? casePart : undefined;
   const seed = seedPart === '-' || seedPart === ''
-    ? Math.floor(Math.random() * 2 ** 31)
+    ? randomVariantSeed()
     : /^\d+$/.test(seedPart)
       ? Number(seedPart) >>> 0
       : (() => { throw new Error(`Startwert ungültig: ${seedPart}`); })();
-  return { familyId, caseId, seed, difficulty };
+  const params = new URLSearchParams(query);
+  const from = params.get('from') ?? undefined;
+  const module = params.get('module') ?? undefined;
+  return { familyId, caseId, seed, difficulty, from, module };
 }
+
+// CodeMirror rides in its own lazy chunk: it only ships when a python-code
+// task actually opens. If that chunk cannot load (e.g. offline before the
+// service worker cached it), the plain textarea keeps the exercise usable.
+const CodeEditor = lazy(async () => {
+  try {
+    const module = await import('./CodeEditor');
+    return { default: module.CodeEditor };
+  } catch {
+    return {
+      default: ({ initialValue, onChange }: { initialValue: string; onChange: (value: string) => void }) => (
+        <textarea
+          class="code-editor-plain"
+          rows={14}
+          value={initialValue}
+          aria-label="Python-Codeeditor"
+          aria-describedby="editor-help"
+          onInput={(event) => onChange((event.target as HTMLTextAreaElement).value)}
+        />
+      ),
+    };
+  }
+});
 
 configureExerciseFamilies(loadFamilyIndex());
 
@@ -42,12 +78,15 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   const [answer, setAnswer] = useState<unknown>(null);
   const [verdict, setVerdict] = useState<string | null>(null);
   const [correct, setCorrect] = useState<boolean | null>(null);
-  const [errorType, setErrorType] = useState<string | null>(null);
+  const [diagnosis, setDiagnosis] = useState<string | null>(null);
   const [solutionVisible, setSolutionVisible] = useState(false);
   const [shownHints, setShownHints] = useState<string[]>([]);
   const [reviewDueAt, setReviewDueAt] = useState<string | null>(null);
   const [masteryNote, setMasteryNote] = useState(false);
+  const [masteryDenied, setMasteryDenied] = useState<'hints' | 'reveal' | null>(null);
   const [busy, setBusy] = useState(false);
+  const [runBusy, setRunBusy] = useState(false);
+  const [workspace, setWorkspace] = useState<WorkspaceResult | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
   const [instance, setInstance] = useState<ReturnType<typeof EXERCISE_FAMILIES.instantiate> | null>(null);
   const [summary, setSummary] = useState('');
@@ -73,11 +112,22 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
       try {
         const body = await loadFamilyCases(parsed.familyId);
         if (body) registerStaticCases(parsed.familyId, body.cases);
-        const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId);
+        // ?module= scopes a caseless practice draw to the module's own
+        // curated cases of this family; unknown module or empty pool keeps
+        // the whole-family draw.
+        const pool = practiceCasePool(
+          parsed.module ? catalog.learningModules.find((item) => item.moduleId === parsed.module) : undefined,
+          parsed.familyId,
+        );
+        const next = EXERCISE_FAMILIES.instantiate(parsed.familyId, parsed.seed, parsed.difficulty, parsed.caseId, pool);
         if (!active) return;
         setSummary(EXERCISE_FAMILIES.get(parsed.familyId)?.summary ?? '');
         setAnswer(typeof next.parameters?.starterCode === 'string' ? next.parameters.starterCode : null);
         setInstance(next);
+        // Warm the pyodide worker at mount so the first submit does not pay
+        // the init latency. Silent on failure: the submit path reports
+        // runtime errors itself.
+        if (next.activityType === 'python-code') warmPythonRuntime();
       } catch (error) {
         if (active) setFailed(error instanceof Error ? error.message : String(error));
       }
@@ -95,28 +145,56 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   // S4D1: Trace-Tabelle als Interaktionsvariante, sobald der Generator
   // Zustände kennt (instance.traceTable). Sonst normale Familienübung.
   if (instance.traceTable) {
-    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} nextSeed={nextSeed} />;
+    return <TraceTableView catalog={catalog} instance={{ ...instance, traceTable: instance.traceTable }} summary={summary} nextSeed={nextSeed} from={parsed?.from} />;
   }
+
+  // Stay-in-challenge flow: ?from=challenge tags ledger events with
+  // context 'challenge' (drives streak/solved counts in the picker) and
+  // retargets the frame's back button to the challenge overview.
+  const fromChallenge = parsed?.from === 'challenge';
+  const eventExtra = fromChallenge ? { context: 'challenge' } : {};
+
+  // One shared hint source for familyHint and familyMaxHints so the button
+  // cap always matches the levels the hint path can actually serve. The
+  // instance spread carries familyId/caseId too — the summary lives on the
+  // family, not the instance, so it is added explicitly.
+  const hintSource = { ...instance, summary };
+  const maxHints = familyMaxHints(hintSource);
 
   const recordAssistance = async (eventType: string, event: string, hintsUsed: number, revealedSolution: boolean) => {
     if (!learningLedger) return;
-    await learningLedger.record({
-      ...familyEventInput(instance),
-      eventType,
-      event,
-      hintsUsed,
-      revealedSolution,
-    });
+    try {
+      await learningLedger.record({
+        ...familyEventInput(instance, eventExtra),
+        eventType,
+        event,
+        hintsUsed,
+        revealedSolution,
+      });
+    } catch (error) {
+      // Assistance tracking is best-effort — the attempt event itself carries
+      // hintsUsed, so a lost auxiliary write must not break the UI flow.
+      console.error('assistance event write failed', error);
+    }
   };
 
   const submit = async () => {
-    if (answer === null || answer === undefined || answer === '' || busy || solutionVisible) return;
+    if (answer === null || answer === undefined || answer === '' || busy || runBusy || solutionVisible || correct === true) return;
     setBusy(true);
     setFailed(null);
+    setMasteryNote(false);
+    setMasteryDenied(null);
     try {
       const result = await EXERCISE_FAMILIES.grade(instance, answer);
-      const input = familyEventInput(instance);
-      const hintsUsed = shownHints.length;
+      const input = familyEventInput(instance, eventExtra);
+      // Assistance is lifetime-scoped per instance key — a reload used to
+      // refund the hint budget on the same variant. The stored record is the
+      // source of truth for hints used in earlier mounts (and for a reveal
+      // that disqualifies this variant retroactively).
+      const assistance = progress
+        ? await instanceAssistance(input.activityId, input.definitionId, input.seed ?? 0)
+        : { revealed: false, hintsUsed: 0 };
+      const hintsUsed = Math.max(shownHints.length, assistance.hintsUsed);
       if (learningLedger) {
         await learningLedger.record({
           ...input,
@@ -129,9 +207,16 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         });
       }
       setCorrect(Boolean(result.correct));
-      setErrorType(result.errorType ?? null);
       setVerdict(result.verdictText || (result.correct ? 'Richtig.' : 'Nicht richtig.'));
-      if (result.correct && input.masteryEligible) setMasteryNote(true);
+      setDiagnosis(result.diagnosis ?? null);
+      setWorkspace(result.result && typeof result.result === 'object' ? result.result as WorkspaceResult : null);
+      // Mastery note must mirror the ledger rule (buildLearningEvent):
+      // correct + masteryEligible + hintsUsed <= MASTERY_MAX_HINTS, no reveal.
+      if (result.correct && input.masteryEligible && progress) {
+        if (assistance.revealed) setMasteryDenied('reveal');
+        else if (hintsUsed <= MASTERY_MAX_HINTS) setMasteryNote(true);
+        else setMasteryDenied('hints');
+      }
       if (result.correct && progress) {
         const entry = (await progress.reviewQueueAll()).find((item: { exerciseId: string }) => item.exerciseId === input.definitionId);
         setReviewDueAt(entry?.nextDueAt ?? null);
@@ -144,18 +229,9 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
   };
 
   const openHint = async () => {
+    if (busy || runBusy || correct === true) return;
     const level = shownHints.length + 1;
-    const hint = familyHint(
-      {
-        summary,
-        activityType: instance.activityType,
-        choices: instance.choices,
-        parameters: instance.parameters,
-        expectedAnswer: instance.expectedAnswer,
-        traceTable: instance.traceTable,
-      },
-      { level, answer, correct },
-    );
+    const hint = familyHint(hintSource, { level, answer, correct });
     if (!hint) return;
     setShownHints((current) => [...current, hint]);
     await recordAssistance('hint-used', `hint-${level}`, level, false);
@@ -168,35 +244,129 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
     await recordAssistance('solution-revealed', 'solution-revealed', shownHints.length, true);
   };
 
+  // Sandbox run: executes the learner code without tests and deliberately
+  // writes no ledger event — the submit path stays the only evidence writer.
+  const runOnly = async () => {
+    if (runBusy || busy || solutionVisible || typeof answer !== 'string') return;
+    setRunBusy(true);
+    setFailed(null);
+    // A sandbox run is a fresh evaluation — stale verdicts from an earlier
+    // submit must not linger above the new output.
+    setVerdict(null);
+    setCorrect(null);
+    setDiagnosis(null);
+    setMasteryNote(false);
+    setMasteryDenied(null);
+    try {
+      setWorkspace(await runPython(instance, answer));
+    } catch (error) {
+      setFailed(error instanceof Error ? error.message : String(error));
+    } finally {
+      setRunBusy(false);
+    }
+  };
+
   const isCode = instance.activityType === 'python-code';
+  // worked-example-fading: der Prompt IST die Antwortfläche — die [[gap]]-
+  // Marker werden inline zu Inputs. Der Prompt-Slot rendert daher das
+  // interaktive Widget, der Answer-Bereich bleibt leer.
+  const isFading = instance.activityType === 'worked-example-fading';
   const starterCode = isCode && instance.parameters && typeof instance.parameters.starterCode === 'string'
     ? instance.parameters.starterCode
     : '';
 
   const ctx = getExerciseContext(catalog, instance, summary, nextSeed);
+  // Stay inside the challenge window: a fresh variant keeps the context flag,
+  // and the "next task" slot points at the remaining daily set instead of the
+  // module flow.
+  if (fromChallenge) {
+    ctx.nextVariantHref = `${ctx.nextVariantHref}?from=challenge`;
+    ctx.nextTaskHref = '#/challenge';
+    ctx.nextTaskTitle = 'Tages-Set';
+  }
+  // Plain <pre> output, no MathMarkup: tracebacks shred on < and backticks.
+  // Streams sit in collapsed <details> — a 64 KiB traceback must not break
+  // scroll length or screenreader flow of the feedback box.
+  const workspaceOutput = (ws: WorkspaceResult) => (
+    <div class="output-content">
+      {ws.ok !== true && (ws.errorType || ws.errorMessage)
+        ? <details>
+            <summary>Technische Meldung</summary>
+            <pre>{[ws.errorType, ws.errorMessage].filter(Boolean).join('\n')}</pre>
+          </details>
+        : null}
+      {Array.isArray(ws.testResults) && ws.testResults.length > 0
+        ? <ul>
+            {ws.testResults.map((entry, index) => (
+              <li key={index}>{entry.passed ? '✓' : '✗'} {entry.name}{entry.detail ? ` — ${entry.detail}` : ''}</li>
+            ))}
+          </ul>
+        : null}
+      {typeof ws.stdout === 'string' && ws.stdout.length > 0
+        ? <details>
+            <summary>Ausgabe (stdout)</summary>
+            <pre>{ws.stdout}</pre>
+            {ws.stdoutTruncated ? <p class="feedback-detail">Ausgabe gekürzt.</p> : null}
+          </details>
+        : null}
+      {typeof ws.stderr === 'string' && ws.stderr.length > 0
+        ? <details>
+            <summary>Fehlerausgabe (stderr)</summary>
+            <pre>{ws.stderr}</pre>
+            {ws.stderrTruncated ? <p class="feedback-detail">Ausgabe gekürzt.</p> : null}
+          </details>
+        : null}
+    </div>
+  );
+  const workspaceNode = isCode && workspace ? workspaceOutput(workspace) : null;
+  // Warn only when the NEXT hint would push the attempt over the mastery
+  // hint budget — the first hint stays free of alarm.
+  const nextHintCostsEvidence = instance.masteryEligible === true
+    && shownHints.length < maxHints
+    && shownHints.length + 1 > MASTERY_MAX_HINTS
+    && !solutionVisible
+    && correct !== true;
   const feedback = failed
     ? <p role="alert" class="content-error">{failed}</p>
     : verdict
       ? <div class={`feedback-box ${correct ? 'correct' : 'incorrect'}`}>
           <p class="feedback-title">{verdict}</p>
-          {masteryNote ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
-          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {new Date(reviewDueAt).toLocaleDateString('de-DE')}</p> : null}
-          {errorType ? <p class="feedback-detail">Fehlertyp: {errorType}</p> : null}
+          {diagnosis ? <p class="feedback-detail"><MathMarkup html={diagnosis} inline /></p> : null}
+          {!correct && Array.isArray(instance.typicalErrors) && instance.typicalErrors.length > 0
+            ? <div class="feedback-detail">
+                <p>Typische Fehler:</p>
+                <ul>{instance.typicalErrors.map((item: string, index: number) => <li key={index}><MathMarkup html={item} inline /></li>)}</ul>
+              </div>
+            : null}
+          {masteryNote && !solutionVisible ? <p class="feedback-detail">Kann als Kompetenzbeleg zählen.</p> : null}
+          {masteryDenied === 'hints' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — zu viele Hinweise genutzt (höchstens {MASTERY_MAX_HINTS} erlaubt).</p> : null}
+          {masteryDenied === 'reveal' ? <p class="feedback-detail">Zählt nicht als Kompetenzbeleg — die Lösung wurde für diese Variante bereits angesehen.</p> : null}
+          {reviewDueAt ? <p class="feedback-detail">Nächstes Review: {formatGermanDate(reviewDueAt)}</p> : null}
+          {workspaceNode}
+          {fromChallenge && correct === true
+            ? <div class="actions"><Button variant="primary" href="#/challenge">Nächste Challenge</Button></div>
+            : null}
         </div>
-      : null;
+      : workspaceNode;
   return (
     <ExerciseFrame
       ctx={ctx}
       eyebrow={`${ctx.difficultyLabel} · Variante ${instance.seed}`}
-      prompt={<MathMarkup html={instance.prompt} />}
-      snippet={!isCode && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
+      prompt={isFading
+        ? <FadingPrompt key={instance.instanceId} exercise={instance} onAnswer={setAnswer} />
+        : <MathMarkup html={instance.prompt} />}
+      // predict-output/code-trace answer controls embed parameters.snippet
+      // themselves — passing it to the frame would show the same code twice.
+      snippet={!isCode && !isFading && instance.activityType !== 'predict-output' && instance.activityType !== 'code-trace' && typeof instance.parameters?.snippet === 'string' ? instance.parameters.snippet : undefined}
       answer={isCode
-        ? <CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} />
-        : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
+        ? <Suspense fallback={<p class="editor-loading">Editor wird geladen …</p>}><CodeEditor initialValue={starterCode} onChange={(value: string) => setAnswer(value)} /></Suspense>
+        : isFading ? null : <AnswerControls exercise={instance} onAnswer={setAnswer} />}
       actions={
         <>
-          <Button variant="primary" disabled={busy || solutionVisible} onClick={submit}>Antwort prüfen</Button>
-          {shownHints.length < 2 && !solutionVisible ? <Button variant="secondary" disabled={busy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/2</Button> : null}
+          <Button variant="primary" disabled={busy || runBusy || solutionVisible || correct === true} onClick={() => void submit()}>Antwort prüfen</Button>
+          {isCode ? <Button variant="secondary" disabled={busy || runBusy || solutionVisible} onClick={() => void runOnly()}>Nur ausführen</Button> : null}
+          {shownHints.length < maxHints && !solutionVisible && correct !== true ? <Button variant="secondary" disabled={busy || runBusy} onClick={() => void openHint()}>Hinweis {shownHints.length + 1}/{maxHints}</Button> : null}
+          {nextHintCostsEvidence ? <p class="privacy-note" style={{ flexBasis: '100%' }}>Dieser Hinweis kostet den Kompetenzbeleg für diese Variante.</p> : null}
           {!solutionVisible && instance.fullSolution ? <Button variant="ghost" onClick={() => void revealSolution()}>Lösung anzeigen</Button> : null}
         </>
       }
@@ -206,6 +376,8 @@ export function FamilyExerciseView({ catalog, familyRef }: { catalog: CatalogDat
         ? <div class="solution-panel"><h2>Lösung</h2><MathMarkup html={instance.fullSolution} /><p>Diese Variante zählt nicht mehr als unabhängiger Kompetenznachweis.</p></div>
         : undefined}
       done={correct === true || solutionVisible}
+      backHref={fromChallenge ? '#/challenge' : undefined}
+      backLabel={fromChallenge ? 'Zur Challenge' : undefined}
     />
   );
 }

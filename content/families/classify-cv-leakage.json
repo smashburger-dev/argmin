@@ -1,32 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-cv-leakage",
-  "contract": {
-    "familyId": "classify-cv-leakage",
-    "familyGroup": "classify-concept",
-    "summary": "Erkennt Daten-Leakage an der Grenze zwischen Training und Test.",
-    "taskArchetype": "single-choice",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "impute-before-split",
-        "propertyTest": false
-      },
-      {
-        "caseId": "target-encoding-leakage",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "core"
-    ],
-    "competencyIds": [
-      "c-ml-cv"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "impute-before-split",
@@ -42,9 +17,7 @@
           "fit on train, evaluate on test"
         ]
       },
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Ein Team beschreibt seine Pipeline mit 200 Zeilen: (1) Fehlende Werte der Spalte „Einkommen“ werden mit dem Spaltenmittelwert gefüllt — berechnet über alle 200 Zeilen. (2) Danach wird deterministisch in Train und Test geteilt. (3) Ein Modell wird auf Train gefittet und auf Test bewertet. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
       "fullSolution": "Der Mittelwert wird über alle 200 Zeilen geschätzt, bevor geteilt wird — die Testzeilen stecken also in der Trainingsstatistik (Statistik-Leakage vor dem Split). Korrekt wäre: erst teilen, den Fill-Wert nur auf Train berechnen und auf Test anwenden.",
       "hints": [
@@ -53,26 +26,24 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'b'",
-          "then": "Von einer Ziel-Spalte in den Features steht nichts in der Beschreibung — der einzige Verstoß liegt bei den verwendeten Zeilen."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "Deterministisch heißt reproduzierbar, nicht unkritisch: Die Frage ist, ob Testzeilen in eine Train-Statistik eingeflossen sind — hier ja."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "Ein deterministischer Split ist gerade das Mittel zur Kontrolle; das Problem ist die Reihenfolge der Schritte, nicht der Seed."
+          "if": "choice !== 'none'",
+          "then": "Prüfe die drei Verdachtstypen gegen das Szenario: Ziel-Leakage liegt nicht vor — keine Spalte stammt aus dem Ziel. „Kein Leakage“ stimmt nicht: Determinismus, Robustheit oder ein großes n ändern nichts daran, dass Testzeilen in der Statistik stecken. Der Split selbst ist nicht undicht — der Fehler ist die Reihenfolge: Die Statistik wird vor dem Split über alle Zeilen berechnet (Statistik-Leakage)."
         }
       ],
       "typicalErrors": [
-        "Leakage nur bei Ziel-in-Features vermuten",
-        "Determinismus mit Unbedenklichkeit verwechseln",
-        "die Reihenfolge Füllen → Split nicht als Problem erkennen"
+        {
+          "id": "leakage-nur-bei-ziel-in",
+          "text": "Leakage nur bei Ziel-in-Features vermuten"
+        },
+        {
+          "id": "determinismus-mit-unbedenklichkeit-verwechseln",
+          "text": "Determinismus mit Unbedenklichkeit verwechseln"
+        },
+        {
+          "id": "die-reihenfolge-fuellen-split-nicht",
+          "text": "die Reihenfolge Füllen → Split nicht als Problem erkennen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -99,350 +70,6 @@
       ],
       "competencyIds": [
         "c-ml-cv"
-      ],
-      "variants": [
-        {
-          "parameters": {
-            "steps": [
-              "median over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 150,
-            "column": "Alter"
-          },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Die Zielvariable steht als Feature im Modell.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Statistik-Leakage vor dem Split: Der Fill-Wert wird über alle Zeilen (inklusive Test) berechnet — Test-Information fließt in die Trainingsdaten.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Kein Leakage — der Median ist robust, also unproblematisch.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: Ein deterministischer Split leakt immer die Testreihenfolge.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 150 Zeilen: (1) Fehlende Werte in „Alter“ werden mit dem Spaltenmedian über alle 150 Zeilen gefüllt. (2) Danach Split in Train und Test. (3) Fit auf Train, Bewertung auf Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Der Median hängt an allen Zeilen inklusive Test. Erst teilen, Statistik nur auf Train berechnen, dann auf Test anwenden."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "z-score over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 400,
-            "column": "Einkommen"
-          },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Einkommen ist die Zielvariable.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Kein Leakage — Standardisieren ist eine erlaubte Vorverarbeitung.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Statistik-Leakage vor dem Split: Mittelwert und Streuung stammen aus allen Zeilen inklusive Test.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: Deterministische Splits sind immer undicht.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 400 Zeilen: (1) „Einkommen“ wird mit Mittelwert und Standardabweichung über alle 400 Zeilen standardisiert. (2) Danach deterministischer Split. (3) Modell auf Train, Metrik auf Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Skalierungsstatistiken vor dem Split nutzen Testzeilen. Das ist Statistik-Leakage, kein Ziel-in-Features."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "min-max over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 80,
-            "column": "Fläche"
-          },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Fläche ist aus dem Preis berechnet.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Kein Leakage — Min-Max bleibt zwischen 0 und 1, also harmlos.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Split-Leakage: Kleine n machen jeden Split undicht.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Statistik-Leakage vor dem Split: Min und Max kommen aus allen Zeilen inklusive Test.",
-              "correct": true
-            }
-          ],
-          "prompt": "Pipeline mit 80 Zeilen: (1) „Fläche“ wird mit Min und Max über alle 80 Zeilen auf $[0,1]$ skaliert. (2) Danach Split. (3) Fit und Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Min/Max über den vollen Satz enthalten Testextrema. Erst splitten, Grenzen nur aus Train ableiten."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "mode over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 300,
-            "column": "Stadtteil"
-          },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Statistik-Leakage vor dem Split: Der häufigste Stadtteil wird über alle Zeilen inklusive Test bestimmt.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Ziel-Leakage: Stadtteil ist die Zielvariable.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Kein Leakage — der Modus ist deterministisch.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: Kategoriale Splits leaken immer die Reihenfolge.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 300 Zeilen: (1) Fehlendes „Stadtteil“ wird mit dem Modus über alle 300 Zeilen gefüllt. (2) Danach Split. (3) Fit auf Train, Bewertung auf Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Der Modus vor dem Split sieht Testkategorien. Fill-Statistik nur aus Train berechnen."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "quantile over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 250,
-            "column": "Kreditrahmen"
-          },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Der Kreditrahmen ist das Label.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Statistik-Leakage vor dem Split: Die Quantile stammen aus allen Zeilen inklusive Test.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Kein Leakage — Quantile sind robust gegen Ausreißer.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: 80/20-Splits leaken immer.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 250 Zeilen: (1) „Kreditrahmen“ wird anhand von Quantilen über alle 250 Zeilen in Bins gelegt. (2) Danach Split. (3) Fit und Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Bin-Grenzen aus dem vollen Satz enthalten Testinformation. Quantile nur auf Train schätzen."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "knn-impute over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 180,
-            "column": "Laborwert"
-          },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Der Laborwert ist das Ziel.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Kein Leakage — k-NN-Imputation ist lokal und daher dicht.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Statistik-Leakage vor dem Split: Nachbarn und Fill-Werte nutzen auch Testzeilen.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: Zufällige Splits leaken die Reihenfolge.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 180 Zeilen: (1) Fehlende Laborwerte werden per k-NN über den ganzen Satz imputiert. (2) Danach Split. (3) Fit auf Train, Metrik auf Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "k-NN vor dem Split darf Testnachbarn sehen. Erst teilen, Imputation nur aus Train fitten, dann auf Test anwenden."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "target-mean? no, column mean all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 500,
-            "column": "Dauer"
-          },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Dauer wurde aus dem Label gebaut.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Kein Leakage — 500 Zeilen machen Mittelwerte stabil.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Split-Leakage: Große n machen deterministische Splits undicht.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Statistik-Leakage vor dem Split: Der Mittelwert der Dauer stammt aus allen Zeilen inklusive Test.",
-              "correct": true
-            }
-          ],
-          "prompt": "Pipeline mit 500 Zeilen: (1) Fehlende „Bearbeitungsdauer“ wird mit dem Mittelwert aller 500 Zeilen gefüllt. (2) Danach Split. (3) Fit und Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Auch große n ändern nichts: Testzeilen stecken in der Fill-Statistik. Reihenfolge muss Split → Train-Statistik → Transform sein."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "robust scale over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 220,
-            "column": "Umsatz"
-          },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Statistik-Leakage vor dem Split: Median und IQR kommen aus allen Zeilen inklusive Test.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Ziel-Leakage: Umsatz ist das Label.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Kein Leakage — robuste Skalen ignorieren Ausreißer, also auch Testpunkte.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: Der Seed des Splits leakt die Ordnung.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 220 Zeilen: (1) „Umsatz“ wird mit Median und IQR über alle 220 Zeilen robust skaliert. (2) Danach Split. (3) Fit auf Train, Bewertung auf Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Robuste Statistiken vor dem Split sehen trotzdem Testzeilen. Transformer nur auf Train fitten."
-        },
-        {
-          "parameters": {
-            "steps": [
-              "fill with column mean over all rows",
-              "split",
-              "fit/evaluate"
-            ],
-            "n": 90,
-            "column": "Temperatur"
-          },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ziel-Leakage: Temperatur steht im Label.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Statistik-Leakage vor dem Split: Der Fill-Wert wird über alle Zeilen inklusive Test berechnet.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Kein Leakage — der Mittelwert ist eine Konstante.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Split-Leakage: 90 Zeilen sind zu wenig für einen ehrlichen Split.",
-              "correct": false
-            }
-          ],
-          "prompt": "Pipeline mit 90 Zeilen: (1) Fehlende Temperaturen werden mit dem Mittelwert aller 90 Zeilen gefüllt. (2) Danach Split. (3) Fit und Test. Genau ein Schritt erzeugt Leakage. Welcher Typ ist es?",
-          "fullSolution": "Die Konstante ist aus Train+Test geschätzt. Das ist Statistik-Leakage vor dem Split."
-        }
       ]
     },
     {
@@ -478,9 +105,7 @@
           "correct": false
         }
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "prompt": "Feature Engineering für ein Ridge-Modell zur Mietpreisvorhersage: Features sind Stadtteil (kategorial, 8 Ausprägungen), Wohnfläche in m² (42–190) und Baujahr (1900–2020). Im Datensatz liegt zusätzlich die Spalte preis_pro_m2, die aus Ziel und Fläche berechnet wurde. Welcher Vorverarbeitungsweg ist korrekt?",
       "fullSolution": "Kategorial → One-Hot (keine falsche Ordnung). Numerisch → standardisieren mit Trainingsstatistiken, damit λ alle Koeffizienten gleich fair bestraft. Ziel-abgeleitete Spalten (preis_pro_m2) sind Leakage und fliegen raus. Standardisieren vor dem Split auf dem vollen Datensatz wäre ebenfalls Leakage.",
       "hints": [
@@ -489,363 +114,26 @@
       ],
       "feedbackRules": [
         {
-          "if": "choice === 'b'",
-          "then": "Das ist Leakage: Testset-Werte fließen über Mittelwert/Standardabweichung in das Training. Statistiken nur aus dem Trainingsteil berechnen, dann auf Test anwenden."
-        },
-        {
-          "if": "choice === 'c'",
-          "then": "Zahlen 1–8 erzeugen eine falsche Reihenfolge zwischen Stadtteilen; außerdem bestraft λ unskalierte Merkmale unfair — One-Hot plus Standardisieren ist der Weg."
-        },
-        {
-          "if": "choice === 'd'",
-          "then": "preis_pro_m2 ist aus dem Ziel berechnet — das Modell lernt die Antwort abzulesen (Leakage), kein echtes Signal."
+          "if": "choice !== 'none'",
+          "then": "Alle drei Abkürzungen scheitern: Skalierungsstatistiken über den vollen Satz leaken Testinformation in die Feature-Skalen; durchnummerierte Kategorien erzeugen eine falsche Ordnung und lassen λ die Merkmale unfair bestrafen; die aus dem Ziel berechnete Spalte ist Label-Leakage — entfernen."
         }
       ],
       "typicalErrors": [
-        "Skalierungsstatistiken aus dem vollen Datensatz nehmen",
-        "kategoriale Ausprägungen durchnummerieren",
-        "ziel-abgeleitete Spalten als Features behalten"
-      ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
-      "activityType": "single-choice",
-      "graderId": "deterministic",
-      "variants": [
         {
-          "parameters": {
-            "features": [
-              "region",
-              "qm",
-              "jahr"
-            ],
-            "leaky": "miete_pro_qm"
-          },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle numerischen Spalten auf dem kompletten Datensatz standardisieren und danach erst splitten.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Region per One-Hot kodieren; Fläche und Baujahr mit Trainingsstatistiken standardisieren; miete_pro_qm entfernen, weil sie aus dem Ziel berechnet wurde.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Region als Zahlen 1 bis 12 kodieren; skalieren ist bei Ridge unnötig.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "miete_pro_qm behalten — mehr Features helfen einem regularisierten Modell immer.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll die Kaltmiete vorhersagen. Features: Region (12 Kategorien), Fläche (30–140 m²), Baujahr (1890–2021). Zusätzlich liegt miete_pro_qm vor, berechnet aus Ziel und Fläche. Welcher Vorverarbeitungsweg ist korrekt?",
-          "fullSolution": "One-Hot für Region, Skalen nur aus Train, ziel-abgeleitete Spalte raus. Skalieren vor dem Split wäre Leakage."
+          "id": "skalierungsstatistiken-aus-dem-vollen-datensatz",
+          "text": "Skalierungsstatistiken aus dem vollen Datensatz nehmen"
         },
         {
-          "parameters": {
-            "features": [
-              "marke",
-              "km",
-              "alter"
-            ],
-            "leaky": "preis_pro_ps"
-          },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle Zahlen auf dem vollen Satz standardisieren, dann splitten.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Marke als 1 bis 20 kodieren und unskaliert in Ridge schieben.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Marke per One-Hot; Kilometer und Alter nur mit Trainingsstatistiken skalieren; preis_pro_ps entfernen, weil sie aus dem Ziel stammt.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "preis_pro_ps behalten, weil PS ein technisches Merkmal ist.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll den Gebrauchtwagenpreis schätzen. Features: Marke (kategorial), Kilometerstand, Alter. Zusätzlich preis_pro_ps aus Verkaufspreis und Leistung. Welcher Weg ist korrekt?",
-          "fullSolution": "Ziel-abgeleitetes preis_pro_ps ist Leakage. Kategorial One-Hot, Zahlen mit Train-Statistiken skalieren."
+          "id": "kategoriale-auspraegungen-durchnummerieren",
+          "text": "kategoriale Ausprägungen durchnummerieren"
         },
         {
-          "parameters": {
-            "features": [
-              "diagnosegruppe",
-              "alter",
-              "labor"
-            ],
-            "leaky": "kosten_pro_tag"
-          },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Standardisieren auf allen Fällen, dann erst Split.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Diagnosegruppe durchnummerieren; Ridge braucht keine Skalen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "kosten_pro_tag behalten — mehr klinische Features sind immer besser.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Diagnosegruppe One-Hot; Alter und Labor mit Trainingsstatistiken skalieren; kosten_pro_tag entfernen, weil sie aus den Kosten gebaut wurde.",
-              "correct": true
-            }
-          ],
-          "prompt": "Ridge soll Behandlungskosten schätzen. Features: Diagnosegruppe, Alter, ein Laborwert. Zusätzlich kosten_pro_tag aus Ziel und Liegedauer. Welcher Weg ist korrekt?",
-          "fullSolution": "kosten_pro_tag enthält das Ziel. Raus damit. One-Hot plus Train-only-Skalierung für den Rest."
-        },
-        {
-          "parameters": {
-            "features": [
-              "plz_region",
-              "wohnflaeche",
-              "zimmer"
-            ],
-            "leaky": "restschuld_quote"
-          },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "PLZ-Region One-Hot; Fläche und Zimmer mit Trainingsstatistiken skalieren; restschuld_quote entfernen, weil sie aus dem Ziel abgeleitet ist.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Quantile über den vollen Satz, dann Split.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "PLZ als ganze Zahl in Ridge; Skalierung unnötig.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "restschuld_quote behalten, weil Quoten robust sind.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll die Restschuld vorhersagen. Features: PLZ-Region, Wohnfläche, Zimmerzahl. Zusätzlich restschuld_quote aus Ziel und Kaufpreis. Welcher Weg ist korrekt?",
-          "fullSolution": "Eine aus dem Ziel gebaute Quote ist Leakage. Kategorien One-Hot, Skalen nur aus Train."
-        },
-        {
-          "parameters": {
-            "features": [
-              "warentyp",
-              "gewicht",
-              "lagerdauer"
-            ],
-            "leaky": "deckung_pro_kg"
-          },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alles auf dem vollen Satz z-transformieren, dann splitten.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Warentyp One-Hot; Gewicht und Lagerdauer mit Trainingsstatistiken skalieren; deckung_pro_kg entfernen, weil sie aus dem Deckungsbeitrag stammt.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Warentyp als 1 bis 6 kodieren; Ridge ist skaleninvariant.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "deckung_pro_kg behalten — Dichtefeatures helfen immer.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll den Deckungsbeitrag schätzen. Features: Warentyp, Gewicht, Lagerdauer. Zusätzlich deckung_pro_kg aus Ziel und Gewicht. Welcher Weg ist korrekt?",
-          "fullSolution": "deckung_pro_kg ist ziel-abgeleitet. Entfernen, Rest mit Train-Statistiken vorbereiten."
-        },
-        {
-          "parameters": {
-            "features": [
-              "linie",
-              "fahrzeit",
-              "halte"
-            ],
-            "leaky": "verspaetung_pro_km"
-          },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Min-Max über alle Fahrten, dann Split.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Linie als Streckennummer; Skalieren bei Ridge überflüssig.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Linie One-Hot; Fahrzeit und Halte mit Trainingsstatistiken skalieren; verspaetung_pro_km entfernen, weil sie aus dem Ziel berechnet wurde.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "verspaetung_pro_km behalten, weil km-Normierung fair ist.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll die Verspätung in Minuten schätzen. Features: Linie (kategorial), planmäßige Fahrzeit, Haltezahl. Zusätzlich verspaetung_pro_km aus Ziel und Distanz. Welcher Weg ist korrekt?",
-          "fullSolution": "Die km-normierte Verspätung enthält das Ziel. One-Hot und Train-only-Skalierung für die echten Features."
-        },
-        {
-          "parameters": {
-            "features": [
-              "tarif",
-              "gb",
-              "laufzeit"
-            ],
-            "leaky": "umsatz_pro_gb"
-          },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Standardisieren auf allen Verträgen, dann Split.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Tarif als 1 bis 4; Ridge braucht keine Dummy-Variablen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "umsatz_pro_gb behalten — Effizienzfeatures sind legitim.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Tarif One-Hot; GB und Laufzeit mit Trainingsstatistiken skalieren; umsatz_pro_gb entfernen, weil sie aus dem Umsatz stammt.",
-              "correct": true
-            }
-          ],
-          "prompt": "Ridge soll den Vertragsumsatz schätzen. Features: Tarif, Inklusiv-GB, Laufzeit. Zusätzlich umsatz_pro_gb aus Ziel und GB. Welcher Weg ist korrekt?",
-          "fullSolution": "umsatz_pro_gb leakt das Ziel. Kategorial One-Hot, numerisch mit Train-Statistiken."
-        },
-        {
-          "parameters": {
-            "features": [
-              "kultur",
-              "niederschlag",
-              "boden"
-            ],
-            "leaky": "ertrag_pro_ha_normiert_am_ziel"
-          },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Kultur One-Hot; Niederschlag und Bodenwerte mit Trainingsstatistiken skalieren; die aus dem Ertrag gebaute ha-Normierung entfernen.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Alle Felder auf dem vollen Satz skalieren, dann splitten.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Kultur als Sortencode 1 bis 9; Skalen egal bei Ridge.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Die ziel-normierte Spalte behalten, weil Hektar fair vergleichen.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll den Feldertrag schätzen. Features: Kultur, Niederschlag, Bodenwert. Zusätzlich eine Spalte, die den Ertrag bereits durch die Fläche teilt. Welcher Weg ist korrekt?",
-          "fullSolution": "Eine aus dem Ziel gebaute Normierung ist Leakage. One-Hot plus Train-only-Skalierung."
-        },
-        {
-          "parameters": {
-            "features": [
-              "stadtteil",
-              "wohnflaeche",
-              "baujahr"
-            ],
-            "leaky": "preis_pro_m2"
-          },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Alle numerischen Spalten auf dem kompletten Datensatz standardisieren und danach erst splitten.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Stadtteil per One-Hot; Wohnfläche und Baujahr mit Trainingsstatistiken standardisieren; preis_pro_m2 entfernen, weil sie aus dem Ziel berechnet wurde.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Stadtteil als Zahlen 1 bis 8 kodieren; skalieren ist bei Ridge unnötig.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "preis_pro_m2 behalten — mehr Features verbessern Ridge immer.",
-              "correct": false
-            }
-          ],
-          "prompt": "Ridge soll den Kaufpreis einer Wohnung schätzen. Features: Stadtteil (8 Kategorien), Wohnfläche (38–160 m²), Baujahr (1910–2019). Zusätzlich preis_pro_m2 aus Preis und Fläche. Welcher Weg ist korrekt?",
-          "fullSolution": "preis_pro_m2 enthält das Ziel. One-Hot, Train-Statistiken fürs Skalieren, Leakage-Spalte entfernen."
+          "id": "ziel-abgeleitete-spalten-als-features",
+          "text": "ziel-abgeleitete Spalten als Features behalten"
         }
-      ]
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic"
     }
   ]
 }

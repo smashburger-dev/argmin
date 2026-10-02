@@ -73,7 +73,7 @@ test('genPowerExpr: 200 seeds, exponent answer in range, laws hold, bases in {2,
       assert.ok(p.m * p.k <= 10, `seed ${seed}: m*k=${p.m * p.k} not hand-computable`);
       assert.equal(p.base ** expected, (p.base ** p.m) ** p.k);
     }
-    assert.ok(prompt.includes(`${p.base}^`) || prompt.includes(`${p.base})^`), `seed ${seed}: prompt misses base`);
+    assert.ok(prompt.includes(`${p.base}^{`) || prompt.includes(`${p.base})^{`), `seed ${seed}: prompt misses base`);
   }
 });
 
@@ -93,12 +93,6 @@ test('genLogExpr: 200 seeds, argument > 0 and exact power, result integer, arg <
     assert.ok(prompt.includes('log'), `seed ${seed}: prompt misses log`);
   }
 });
-
-// --- grader wiring: 20 seeds per generator against the REAL deterministic grader ----
-
-
-
-
 
 // --- edge cases -------------------------------------------------------------------
 

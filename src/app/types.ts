@@ -72,13 +72,13 @@ export interface ExerciseSummary {
   parameters: Record<string, unknown>;
   choices: Array<{ id: string; text: string; correct: boolean }>;
   expectedAnswer: Record<string, unknown>;
-  tolerancePolicy: Record<string, unknown>;
   hints: string[];
   feedbackRules: Array<Record<string, unknown>>;
   fullSolution: string;
   workedExample: Record<string, unknown> | null;
   rubric: Array<Record<string, unknown>> | null;
   typicalErrors: unknown[] | null;
+  typicalErrorIds?: string[];
   testedSeedCount: number;
   starterCode?: string;
   packages?: string[];
@@ -86,6 +86,7 @@ export interface ExerciseSummary {
   caseId?: string;
   seed?: number;
   seeded?: boolean;
+  moduleId?: string;
 }
 
 export interface LessonBlock {
@@ -113,6 +114,22 @@ export type VisualizationObject =
   | { kind: 'text'; at: VisualizationCoord; text: string; color?: string }
   | { kind: 'polygon'; points: VisualizationCoord[]; color?: string }
   | { kind: 'curve'; points: VisualizationCoord[]; color?: string; dash?: boolean };
+export interface VizCheckpointTypicalError {
+  match: number | [number, number] | string;
+  feedback: string;
+}
+
+/** Formative checkpoint contract embedded in .viz.json specs (Option A,
+ *  docs/content-review/plan-interaktive-elemente.md). */
+export interface VizCheckpoint {
+  prompt: string;
+  input: 'numeric' | 'vector';
+  expected: number | [number, number];
+  tolerance?: number;
+  hints?: string[];
+  typicalErrors?: VizCheckpointTypicalError[];
+}
+
 export interface VisualizationSpec {
   schemaVersion: 1;
   engine: 'jsxgraph';
@@ -123,6 +140,7 @@ export interface VisualizationSpec {
   keepAspectRatio?: boolean;
   sliders?: VisualizationSlider[];
   objects: VisualizationObject[];
+  checkpoint?: VizCheckpoint;
 }
 
 export interface Lesson {

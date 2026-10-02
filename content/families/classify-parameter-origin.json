@@ -44,9 +44,7 @@
       "parameters": {
         "topic": "Hyperparameter vs. Parameter"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "prompt": "Was ist der wesentliche Unterschied zwischen Hyperparametern und Parametern eines Modells?",
       "fullSolution": "Parameter (Gewichte, Intercepts) entstehen aus dem Training auf Daten; Hyperparameter (Fold-Anzahl k, Regularisierungsstärke, Lernrate) werden vor dem Training festgelegt und steuern den Lernprozess — ihre Wahl gehört in die Cross-Validation, nicht in den Gradientenabstieg.",
       "hints": [
@@ -68,13 +66,19 @@
         }
       ],
       "typicalErrors": [
-        "Hyperparameter und Parameter vertauschen",
-        "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln",
-        "glauben, einfache Modelle hätten keine Hyperparameter"
+        {
+          "id": "hyperparameter-und-parameter-vertauschen",
+          "text": "Hyperparameter und Parameter vertauschen"
+        },
+        {
+          "id": "hyperparameter-validierung-mit-parameter-schaetzung",
+          "text": "Hyperparameter-Validierung mit Parameter-Schätzung verwechseln"
+        },
+        {
+          "id": "glauben-einfache-modelle-haetten-keine",
+          "text": "glauben, einfache Modelle hätten keine Hyperparameter"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -107,9 +111,7 @@
           "parameters": {
             "topic": "k-NN k vs Abstände"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -139,9 +141,7 @@
           "parameters": {
             "topic": "Lernrate vs Gewichte"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -171,9 +171,7 @@
           "parameters": {
             "topic": "lambda vs Ridge-Koeffizienten"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -203,9 +201,7 @@
           "parameters": {
             "topic": "n_estimators vs Blattwerte"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -235,9 +231,7 @@
           "parameters": {
             "topic": "Dropout vs Gewichte"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -267,9 +261,7 @@
           "parameters": {
             "topic": "Kernelbreite vs SVM-Gewichte"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -299,9 +291,7 @@
           "parameters": {
             "topic": "Fold-Zahl"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -331,9 +321,7 @@
           "parameters": {
             "topic": "Batchgröße vs Gewichte"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -363,9 +351,7 @@
           "parameters": {
             "topic": "Kurzdefinition mit Beispielen"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
+          "expected": {},
           "choices": [
             {
               "id": "a",
@@ -403,9 +389,7 @@
       "parameters": {
         "topic": "Hyperparameter vs. Parameter"
       },
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "prompt": "Bei einem Entscheidungsbaum wird die maximale Tiefe per Cross-Validation aus den Werten 3, 5 und 8 gewählt. Was ist die Tiefe?",
       "fullSolution": "Die maximale Tiefe wird vor dem Training gewählt und per Validierung abgestimmt; sie ist ein Hyperparameter, kein gelernter Modellparameter.",
       "hints": [
@@ -427,13 +411,19 @@
         }
       ],
       "typicalErrors": [
-        "Eine vorab getestete Baumtiefe als lokal gelerntes Knotengewicht bezeichnet.",
-        "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt.",
-        "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
+        {
+          "id": "eine-vorab-getestete-baumtiefe-als",
+          "text": "Eine vorab getestete Baumtiefe als lokal gelerntes Knotengewicht bezeichnet."
+        },
+        {
+          "id": "die-auswahl-eines-hyperparameters-mit",
+          "text": "Die Auswahl eines Hyperparameters mit einem Fehlerwert der Validierungsdaten verwechselt."
+        },
+        {
+          "id": "kapazitaetssteuerung-des-baums-faelschlich-als",
+          "text": "Kapazitätssteuerung des Baums fälschlich als Vorhersageziel eingeordnet."
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -466,31 +456,6 @@
           "parameters": {
             "topic": "max_depth Gitter"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "Die maximale Tiefe wird per CV aus {2, 4, 6} gewählt. Was ist die Tiefe?",
           "fullSolution": "Vorab gewählte Kapazität: Hyperparameter, kein Knotengewicht und kein Label."
         },
@@ -498,31 +463,6 @@
           "parameters": {
             "topic": "min_samples_leaf"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "min_samples_leaf wird per Validierung aus {1, 5, 20} gesetzt. Wie ordnest du das ein?",
           "fullSolution": "Die Blattmindestgröße steuert, wie fein der Baum werden darf: Hyperparameter."
         },
@@ -530,31 +470,6 @@
           "parameters": {
             "topic": "ccp_alpha"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "Die Pruning-Stärke $\\alpha$ eines Baums kommt aus einem Validierungsgitter. Was ist $\\alpha$?",
           "fullSolution": "Steuerung der Komplexität vor bzw. außerhalb des reinen Node-Fits: Hyperparameter."
         },
@@ -562,31 +477,6 @@
           "parameters": {
             "topic": "nicht Split-Schwellwert"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            }
-          ],
           "prompt": "Unterscheidet sich die maximale Tiefe von dem Schwellwert, den ein Split aus den Trainingspunkten berechnet?",
           "fullSolution": "Ja. Split-Schwellen sind gelernte Struktur. Die max. Tiefe begrenzt sie vorab und ist Hyperparameter."
         },
@@ -594,31 +484,6 @@
           "parameters": {
             "topic": "nicht Validierungsfehler"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "CV liefert eine Fehlerrate für Tiefe 5. Ist die Tiefe deshalb ein Messfehler?",
           "fullSolution": "Nein. Die Fehlerrate ist die Bewertung; die Tiefe selbst bleibt die gewählte Kapazitätseinstellung."
         },
@@ -626,31 +491,6 @@
           "parameters": {
             "topic": "nicht y"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "Ist max_depth das, was der Baum vorhersagen soll?",
           "fullSolution": "Nein. y kommt aus den Beispielen. max_depth begrenzt nur, wie tief der Baum wachsen darf."
         },
@@ -658,31 +498,6 @@
           "parameters": {
             "topic": "Random-Forest max_depth"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "Im Forest wird eine gemeinsame max_depth per OOB/CV gewählt. Was ist sie?",
           "fullSolution": "Eine Einstellung der Kapazität aller Bäume: Hyperparameter, keine Blattvorhersage."
         },
@@ -690,31 +505,6 @@
           "parameters": {
             "topic": "max_leaf_nodes"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            }
-          ],
           "prompt": "Die maximale Blattzahl wird aus {8, 16, 32} validiert. Wie ordnest du sie ein?",
           "fullSolution": "Vorab begrenzte Modellgröße: Hyperparameter."
         },
@@ -722,31 +512,6 @@
           "parameters": {
             "topic": "Basisfrage Tiefe"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Ein Hyperparameter, der die Modellkapazität vor dem Training festlegt.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Ein Gewichtsparameter, der an jedem Knoten aus den Daten gelernt wird.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Ein Messfehler der Validierungsdaten.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Ein Zielwert des Modells.",
-              "correct": false
-            }
-          ],
           "prompt": "Die maximale Tiefe eines Entscheidungsbaums kommt aus einem CV-Gitter {3, 5, 8}. Was für eine Größe ist das?",
           "fullSolution": "CV vergleicht Kapazitätskandidaten. Die Tiefe ist Hyperparameter, kein gelerntes Knotengewicht."
         }
@@ -762,9 +527,7 @@
       "parameters": {
         "topic": "Hyperparameter vs. Parameter"
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "prompt": "Bei einer linearen Regression werden die Koeffizienten nach dem Fit aus den Trainingsdaten berechnet. Wie ordnest du sie ein?",
       "fullSolution": "Die Koeffizienten werden aus den Trainingsdaten gelernt und sind Modellparameter. Die Lernroutine schätzt sie, statt dass sie vorab gesetzt werden.",
       "hints": [
@@ -786,13 +549,19 @@
         }
       ],
       "typicalErrors": [
-        "Modellparameter allein wegen ihres Zahlenformats als Hyperparameter bezeichnet.",
-        "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet.",
-        "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
+        {
+          "id": "modellparameter-allein-wegen-ihres-zahlenformats",
+          "text": "Modellparameter allein wegen ihres Zahlenformats als Hyperparameter bezeichnet."
+        },
+        {
+          "id": "jedes-lernen-aus-trainingsdaten-pauschal",
+          "text": "Jedes Lernen aus Trainingsdaten pauschal als Datenleck bewertet."
+        },
+        {
+          "id": "die-koeffizienten-nicht-als-bestandteile",
+          "text": "Die Koeffizienten nicht als Bestandteile der Vorhersagefunktion erkannt."
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic",
       "choices": [
@@ -825,31 +594,6 @@
           "parameters": {
             "topic": "OLS beta"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Nach OLS stehen die $\\hat\\beta$ aus $X^\\top X$ und $X^\\top y$ fest. Wie ordnest du sie ein?",
           "fullSolution": "Der Fit schätzt sie aus Trainingsdaten: Modellparameter. Zahlenformat macht sie nicht zu Hyperparametern."
         },
@@ -857,31 +601,6 @@
           "parameters": {
             "topic": "Intercept"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Der Intercept einer linearen Regression kommt aus dem Fit auf Train. Ist er ein Hyperparameter?",
           "fullSolution": "Nein. Er ist Teil der Vorhersagefunktion, geschätzt aus Daten: Parameter. Lernen aus Train ist kein Leakage."
         },
@@ -889,31 +608,6 @@
           "parameters": {
             "topic": "logistisches w"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Die Gewichte einer logistischen Regression entstehen durch Maximieren der Likelihood auf Train. Wie ordnest du sie ein?",
           "fullSolution": "Gelernte Parameter der Entscheidungsgrenze, keine vorab gesetzte Lernrate."
         },
@@ -921,31 +615,6 @@
           "parameters": {
             "topic": "nicht Leakage"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            }
-          ],
           "prompt": "Sind lineare Koeffizienten Leakage, nur weil sie aus Trainingsdaten stammen?",
           "fullSolution": "Nein. Genau das soll ein Fit. Leakage wäre unzulässige Test- oder Zielinformation in den Features."
         },
@@ -953,31 +622,6 @@
           "parameters": {
             "topic": "nicht Metadata"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Stehen die Koeffizienten nur „daneben“, ohne die Vorhersage zu ändern?",
           "fullSolution": "Nein. $\\hat y = Xw$ hängt direkt an ihnen. Es sind Modellparameter."
         },
@@ -985,31 +629,6 @@
           "parameters": {
             "topic": "Ridge w nach Fit"
           },
-          "expected": {
-            "correctChoice": "b"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "c",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Nach einem Ridge-Fit mit festem $\\lambda$ liegen geschrumpfte $w$ vor. Was sind die $w$?",
           "fullSolution": "Parameter aus Daten. $\\lambda$ war der Hyperparameter, nicht $w$."
         },
@@ -1017,31 +636,6 @@
           "parameters": {
             "topic": "SVM dual"
           },
-          "expected": {
-            "correctChoice": "c"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Die Dualkoeffizienten einer linearen SVM kommen aus dem Trainingsproblem. Wie ordnest du sie ein?",
           "fullSolution": "Gelernte Modellparameter. C bleibt der Hyperparameter."
         },
@@ -1049,31 +643,6 @@
           "parameters": {
             "topic": "Standardisierungs-mu"
           },
-          "expected": {
-            "correctChoice": "d"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "b",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            }
-          ],
           "prompt": "Neben den Regressionsgewichten speicherst du Mittelwert und Skala aus Train, um Testdaten zu transformieren. Die Gewichte selbst sind …",
           "fullSolution": "gelernte Modellparameter. (Die Skalenstatistiken sind ebenfalls aus Train geschätzt, aber die Frage zielt auf die Koeffizienten der linearen Funktion.)"
         },
@@ -1081,31 +650,6 @@
           "parameters": {
             "topic": "Basisfrage Koeffizienten"
           },
-          "expected": {
-            "correctChoice": "a"
-          },
-          "choices": [
-            {
-              "id": "a",
-              "text": "Gelernte Modellparameter.",
-              "correct": true
-            },
-            {
-              "id": "b",
-              "text": "Hyperparameter, weil sie Zahlen sind.",
-              "correct": false
-            },
-            {
-              "id": "c",
-              "text": "Datenleakage, weil sie aus den Daten stammen.",
-              "correct": false
-            },
-            {
-              "id": "d",
-              "text": "Nur Metadaten ohne Einfluss auf Vorhersagen.",
-              "correct": false
-            }
-          ],
           "prompt": "Nach dem Fit einer linearen Regression stehen die Koeffizienten aus den Trainingsdaten fest. Wie ordnest du genau diese Werte ein?",
           "fullSolution": "Der Fit schätzt sie: Modellparameter. Nicht Hyperparameter, nicht Leakage, nicht wirkungslose Metadaten."
         }

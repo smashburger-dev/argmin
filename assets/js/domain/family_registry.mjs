@@ -1,4 +1,6 @@
 import { graders } from '../core/graders.js';
+import { rng, shuffle, variantCaseIndex } from '../core/generator_draw_kit.mjs';
+import { drawStatementCase, solveStatementPool } from './statement_pool.mjs';
 
 // S4D1: zentrale Familien-Runtime (eine Semantik, keine Duplikate).
 // Hierher ausgelagert, damit exercise_registry.mjs und die dünnen
@@ -8,9 +10,9 @@ const FAMILY_ID = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const DIFFICULTY_ORDER = ['intro', 'core', 'stretch', 'challenge'];
 const staticCases = new Map();
 
-const variantOf = (body, seed) => {
+export const variantOf = (body, seed) => {
   const all = [body, ...(body.variants || [])];
-  const index = Math.abs(seed) % all.length;
+  const index = variantCaseIndex(seed, all.length);
   const variant = all[index];
   return {
     index,
@@ -21,6 +23,81 @@ const variantOf = (body, seed) => {
       parameters: { ...(body.parameters || {}), ...(variant.parameters || {}) },
     },
   };
+};
+
+// Authored choice cases have no generator — without a seeded shuffle every
+// seed serves the identical option order, so "Nächste Variante" changed only
+// the seed in the address bar. Grading stays id-based and order-free.
+const withSeededChoiceOrder = (generated, seed) => (
+  Array.isArray(generated.choices) && generated.choices.length > 1
+    ? { ...generated, choices: shuffle(rng(seed ?? 0), generated.choices) }
+    : generated
+);
+
+const CHOICE_ID_RULE = /^choice (===|!==) '([^']+)'$/;
+const SELECTED_ID_RULE = /^(!?)selected\.includes\('([^']+)'\)$/;
+const VALUE_LITERAL_RULE = /^value === /;
+
+const deepEqual = (a, b) => {
+  if (Object.is(a, b)) return true;
+  if (typeof a !== 'object' || a === null || typeof b !== 'object' || b === null) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const keysA = Object.keys(a);
+  if (keysA.length !== Object.keys(b).length) return false;
+  return keysA.every((key) => Object.hasOwn(b, key) && deepEqual(a[key], b[key]));
+};
+
+// Authored `choice === 'x'` rules bind an option id that seeded rotation
+// reassigns — they stay true only while they name the same option *text*.
+// Unresolvable ids (catch-alls like 'none') survive only on the authored
+// option set itself.
+const bindChoiceRule = (rule, authoredChoices, drawnChoices) => {
+  const match = typeof rule?.if === 'string' ? CHOICE_ID_RULE.exec(rule.if) : null;
+  const selectedMatch = !match && typeof rule?.if === 'string' ? SELECTED_ID_RULE.exec(rule.if) : null;
+  const targetId = match?.[2] ?? selectedMatch?.[2];
+  if (!targetId) return rule;
+  const authoredChoice = authoredChoices.find((choice) => choice.id === targetId);
+  if (authoredChoice) {
+    const drawn = drawnChoices.find((choice) => choice.text === authoredChoice.text);
+    if (!drawn) return null;
+    const rebound = match
+      ? `choice ${match[1]} '${drawn.id}'`
+      : `${selectedMatch[1]}selected.includes('${drawn.id}')`;
+    return { ...rule, if: rebound };
+  }
+  const authoredTexts = new Set(authoredChoices.map((choice) => choice.text));
+  const sameOptionTexts = drawnChoices.length === authoredChoices.length
+    && drawnChoices.every((choice) => authoredTexts.has(choice.text));
+  return sameOptionTexts ? rule : null;
+};
+
+/** Rebind `choice ===/!== 'id'` and `[!]selected.includes('id')` rules onto a
+ *  drawn option set through option texts — unresolvable rules drop, all other
+ *  rule forms pass through unchanged. Returns undefined when no rule survives. */
+export const rebindChoiceRules = (rules, authoredChoices, drawnChoices) => {
+  if (!Array.isArray(rules) || !rules.length) return undefined;
+  const bound = [];
+  for (const rule of rules) {
+    const rebound = bindChoiceRule(rule, authoredChoices || [], drawnChoices || []);
+    if (rebound) bound.push(rebound);
+  }
+  return bound.length ? bound : undefined;
+};
+
+// Authored feedbackRules describe the anchor instance: `value ===` literals
+// name that draw's misconceptions and `choice ===` ids its option layout.
+// On a seeded instance both are stale — rebind choice rules through option
+// texts and keep value rules only while the drawn parameters are the
+// authored ones. Everything else (gap-*, value:name, includes-Regeln, …)
+// passes through unchanged.
+const rebindAuthoredFeedback = (authored, generated) => {
+  const rules = authored?.feedbackRules;
+  if (!Array.isArray(rules) || !rules.length) return undefined;
+  const isAnchor = deepEqual(generated.parameters, authored.parameters);
+  const kept = rules.filter((rule) => (
+    typeof rule?.if !== 'string' || !VALUE_LITERAL_RULE.test(rule.if) || isAnchor
+  ));
+  return rebindChoiceRules(kept, authored.choices, generated.choices);
 };
 
 export function registerStaticCases(familyId, cases) {
@@ -63,44 +140,131 @@ export function staticFamilySpec(doc) {
     difficultyProfiles,
     caseTypes: cases.map((item) => ({
       caseId: item.caseId,
-      propertyTest: Array.isArray(item.variants) && item.variants.length > 0,
+      propertyTest: (Array.isArray(item.variants) && item.variants.length > 0) || Boolean(item.statementPool),
     })),
-    generate: ({ seed, caseId, difficulty }) => {
-      const body = staticCaseBody(doc.familyId, caseId);
-      if (body.difficultyProfile !== difficulty) {
-        throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
-      }
-      const { body: chosen, index } = variantOf(body, seed ?? 0);
-      const {
-        caseId: _caseId,
-        difficultyProfile: _difficultyProfile,
-        masteryEligible: _masteryEligible,
-        sourceLineage: _sourceLineage,
-        variants: _variants,
-        ...generated
-      } = chosen;
-      return {
-        ...generated,
-        masteryEligible: isMasteryEligible(body),
-        parameters: {
-          caseId,
-          difficulty,
-          variant: index,
-          ...(chosen.parameters || {}),
-        },
-      };
-    },
+    generate: ({ seed, caseId, difficulty }) => staticVariantInstance(
+      doc.familyId,
+      caseId,
+      seed,
+      difficulty,
+      { checkProfile: true, pinVariant: true },
+    ),
     solve: (parameters) => {
-      const { body } = variantOf(staticCaseBody(doc.familyId, parameters.caseId), parameters.variant ?? 0);
-      const correct = (body.choices || []).find((choice) => choice.correct);
+      const body = staticCaseBody(doc.familyId, parameters.caseId);
+      if (body.statementPool && Array.isArray(parameters.statements)) {
+        return solveStatementPool(body, parameters);
+      }
+      const { body: resolved } = variantOf(body, parameters.variant ?? 0);
+      const correct = (resolved.choices || []).find((choice) => choice.correct);
       return correct ? { correctText: correct.text } : {};
     },
   };
 }
 
+/** Static case straight from the registered body (no variant resolution). */
+export const staticBodyInstance = (familyId, caseId, difficulty) => {
+  const body = staticCaseBody(familyId, caseId);
+  const { caseId: _caseId, difficultyProfile: _difficultyProfile, sourceLineage: _sourceLineage, ...generated } = body;
+  return { ...generated, parameters: { caseId, difficulty, ...(body.parameters || {}) } };
+};
+
+/** Static case with seed-driven variant resolution: the variant index lands
+ *  in parameters when the case body carries variants; masteryEligible is the
+ *  case body's flag, suppressed for manual-rubric graders. `checkProfile`
+ *  rejects a case whose body profile differs from the requested difficulty
+ *  (the staticFamilySpec guard), `pinVariant` always writes the resolved
+ *  index into parameters instead of only when variants exist. */
+export function staticVariantInstance(familyId, caseId, seed, difficulty, { checkProfile = false, pinVariant = false } = {}) {
+  const body = staticCaseBody(familyId, caseId);
+  if (checkProfile && body.difficultyProfile !== difficulty) {
+    throw new Error(`Unbekanntes Profil ${difficulty} für Fall ${caseId}`);
+  }
+  if (body.statementPool && (seed ?? 0) !== 0) {
+    const {
+      caseId: _caseId,
+      difficultyProfile: _difficultyProfile,
+      masteryEligible: _masteryEligible,
+      sourceLineage: _sourceLineage,
+      variants: _variants,
+      statementPool: _statementPool,
+      choices: _choices,
+      expected: _expected,
+      feedbackRules: _feedbackRules,
+      fullSolution: _fullSolution,
+      hints: _hints,
+      prompt: _prompt,
+      parameters: _parameters,
+      ...generated
+    } = body;
+    const drawn = drawStatementCase(body, { seed, caseId, difficulty });
+    // The pool draw already shuffles display order — an extra seeded
+    // shuffle would desync parameters.statements from the option layout.
+    return {
+      ...generated,
+      ...drawn,
+      masteryEligible: body.graderId !== 'manual-rubric' && body.masteryEligible === true,
+      parameters: {
+        caseId,
+        difficulty,
+        ...(pinVariant ? { variant: 0 } : {}),
+        statements: drawn.parameters.statements,
+      },
+    };
+  }
+  const { body: chosen, index } = variantOf(body, seed ?? 0);
+  const {
+    caseId: _caseId,
+    difficultyProfile: _difficultyProfile,
+    masteryEligible: _masteryEligible,
+    sourceLineage: _sourceLineage,
+    variants: _variants,
+    ...generated
+  } = chosen;
+  return withSeededChoiceOrder({
+    ...generated,
+    masteryEligible: chosen.graderId !== 'manual-rubric' && body.masteryEligible === true,
+    // A variant that overrides `choices` but not `feedbackRules` must not
+    // inherit the base rules verbatim — they were authored for the base
+    // option ids. Dropping them here lets instantiate's
+    // rebindAuthoredFeedback rebind through the variant's option texts
+    // (paraphrased options honestly lose the rule).
+    ...(index > 0 && body.variants?.[index - 1]?.choices && !body.variants[index - 1].feedbackRules
+      ? { feedbackRules: undefined }
+      : {}),
+    parameters: {
+      caseId,
+      difficulty,
+      ...(pinVariant || (Array.isArray(body.variants) && body.variants.length) ? { variant: index } : {}),
+      ...(chosen.parameters || {}),
+    },
+  }, seed);
+}
+
 export function familyIdTokens(familyId) {
   return String(familyId).split('-').filter(Boolean).sort().join('\0');
 }
+
+// typicalErrors arrive as authored {id, text} entries (content docs and
+// generator literals share the shape). Instances carry the texts unchanged
+// plus the stable id list in the same order — the id namespace feeds
+// feedbackRule.misconception links and external label keying. Fail closed
+// on bare strings, missing fields or repeated ids.
+const typicalErrorFields = (familyId, caseId, items) => {
+  if (!items?.length) return null;
+  const texts = [];
+  const ids = [];
+  for (const item of items) {
+    if (!item || typeof item !== 'object' || typeof item.id !== 'string' || typeof item.text !== 'string') {
+      throw new Error(`${familyId}/${caseId}: typicalErrors-Eintrag ohne {id, text}`);
+    }
+    if (ids.includes(item.id)) {
+      throw new Error(`${familyId}/${caseId}: doppelte typicalError-id ${item.id}`);
+    }
+    ids.push(item.id);
+    texts.push(item.text);
+  }
+  return { typicalErrors: texts, typicalErrorIds: ids };
+};
 
 function requireFamily(byId, familyId) {
   const family = byId.get(familyId);
@@ -108,67 +272,218 @@ function requireFamily(byId, familyId) {
   return family;
 }
 
-function resolveCaseId(family, seed, caseId) {
+// How generators reject a profile a case does not serve (authored-profile
+// pins, per-profile capsules, draw-kit profile predicates). Any other error
+// is a defect and must not read as "case does not serve this profile".
+const PROFILE_REJECTION = /Unbekanntes Profil |Unbekannter Fall \S+ für Profil /;
+
+// A caseless draw picks among the property-testable cases that serve the
+// requested profile. Without `servesProfile` every case counts (explicit
+// caseIds never reach the filter). An optional `caseIds` pool scopes the
+// draw — module practice spaces pass the cases their own curated
+// placements pin. When the pool and the profile filter intersect to
+// nothing, the pool wins over the profile rather than throwing.
+function resolveCaseId(family, seed, caseId, servesProfile = () => true, caseIds = null) {
   if (caseId != null) {
     if (!family.caseTypes.some((item) => item.caseId === caseId)) {
       throw new Error(`Unbekannter Fall ${caseId}`);
     }
     return caseId;
   }
-  const cases = family.caseTypes.filter((item) => item.propertyTest !== false);
-  if (!cases.length) throw new Error(`${family.familyId}: kein property-testfähiger Fall`);
-  return cases[Math.abs(seed) % cases.length].caseId;
+  const testable = family.caseTypes.filter((item) => item.propertyTest !== false);
+  let cases = testable.filter((item) => servesProfile(item.caseId));
+  if (Array.isArray(caseIds) && caseIds.length) {
+    const pool = new Set(caseIds);
+    const scoped = testable.filter((item) => pool.has(item.caseId));
+    if (scoped.length) {
+      const serving = scoped.filter((item) => servesProfile(item.caseId));
+      cases = serving.length ? serving : scoped;
+    }
+  }
+  if (!cases.length) throw new Error(`${family.familyId}: kein property-testfähiger Fall für dieses Profil`);
+  return cases[variantCaseIndex(seed, cases.length)].caseId;
 }
 
-// S4D2: domänenspezifische Hinweise, strikt aus Instanzdaten abgeleitet
-// (kein erfundener Content). Stufe 1 ist die kuratierte Strategie der
-// Familie. Stufe 2 leitet aus Antwortdaten ab: Distraktor-Ausschluss,
-// Richtung bei ganzen Zahlen, Parsons-Erstzeile, Trace-Zeilenzeiger.
-// Null, wenn nichts ableitbar ist. Offenlegung läuft nicht hierüber,
-// sondern als solution-revealed-Ereignis in der Ansicht.
+// S4D2: domain hints derived strictly from instance data (no invented
+// content). Level 1 is the family's curated summary. From level 2 the
+// case's authored hints serve in order (hints[level-2]); only level 2 has
+// an additional activity-type fallback. Without an authored hint, level 2
+// derives from answer data where possible — distractor elimination,
+// direction for integers, first Parsons line, trace row pointer — else a
+// generic per-type strategy that never leaks the solution. A fallback
+// returns undefined when the case carries no material it can honestly
+// reason about (a bare {activityType} instance gets null, not a canned
+// line). Disclosure is not part of this ladder; it runs as a
+// solution-revealed event in the view.
 const hintForChoice = ({ choices }) => {
-  if (!Array.isArray(choices)) return undefined;
-  const wrong = choices.find((choice) => !choice.correct);
-  return wrong ? `„${wrong.text}“ scheidet aus.` : null;
+  if (!Array.isArray(choices) || !choices.length) return undefined;
+  // Naming a distractor only helps while at least one other wrong option
+  // stays unknown — with a single wrong option the elimination IS the
+  // answer, which would make the hint a disguised reveal.
+  const wrongs = choices.filter((choice) => !choice.correct);
+  if (wrongs.length >= 2) return `„${wrongs[0].text}“ scheidet aus.`;
+  return 'Welche Option verletzt die Regel aus der Aufgabe? Schließe sie aus und begründe die Wahl.';
 };
 const hintForNumeric = ({ expectedAnswer }, { answer, correct }) => {
-  if (!(expectedAnswer && expectedAnswer.kind === 'integer' && correct === false)) return undefined;
-  const want = expectedAnswer.value;
-  const got = Number(answer);
-  if (Number.isFinite(got) && got !== want) return got < want ? 'Gesucht ist eine größere Zahl.' : 'Gesucht ist eine kleinere Zahl.';
-  return null;
+  if (expectedAnswer && expectedAnswer.kind === 'integer' && correct === false) {
+    const want = expectedAnswer.value;
+    const got = Number(answer);
+    if (!Number.isFinite(got)) return 'Die Eingabe wird noch nicht als Zahl gelesen — Dezimalpunkt statt Komma?';
+    if (got !== want) return got < want ? 'Gesucht ist eine größere Zahl.' : 'Gesucht ist eine kleinere Zahl.';
+    return null;
+  }
+  // Before the first attempt there is no answer to compare — serve an
+  // honest estimation strategy instead of a dead hint level.
+  if (correct == null && expectedAnswer && expectedAnswer.kind === 'integer') {
+    return 'Schätze das Ergebnis zuerst grob — ein plausibler Überschlag macht Rechenfehler sofort sichtbar.';
+  }
+  return undefined;
 };
 const hintForParsons = ({ parameters, expectedAnswer }, { correct }) => {
-  if (!(expectedAnswer && Array.isArray(expectedAnswer.solutionOrder) && correct === false)) return undefined;
-  const fragments = parameters && Array.isArray(parameters.fragments) ? parameters.fragments : [];
-  const first = fragments.find((fragment) => fragment && fragment.id === expectedAnswer.solutionOrder[0]);
-  return first ? `Beginne mit: „${first.text}“.` : null;
+  if (expectedAnswer && Array.isArray(expectedAnswer.solutionOrder) && correct === false) {
+    const fragments = parameters && Array.isArray(parameters.fragments) ? parameters.fragments : [];
+    const first = fragments.find((fragment) => fragment && fragment.id === expectedAnswer.solutionOrder[0]);
+    return first ? `Beginne mit: „${first.text}“.` : null;
+  }
+  if (correct == null && expectedAnswer && Array.isArray(expectedAnswer.solutionOrder)) {
+    return 'Sortiere zuerst die Zeilen, deren Position sicher ist — Distraktoren fallen dabei von selbst auf.';
+  }
+  return undefined;
 };
+const hintForPythonCode = ({ parameters, expectedAnswer }) => (
+  parameters || expectedAnswer
+    ? 'Lies die Fehlermeldung von unten nach oben — die letzte Zeile nennt den Fehlertyp, die Zeilen darüber den Ort.'
+    : undefined
+);
+const hintForCodeTrace = ({ parameters, expectedAnswer }) => (
+  parameters || expectedAnswer
+    ? 'Notiere nach jeder Zeile die Werte aller Variablen — eine Zuweisung verändert nur ihre eigene Variable.'
+    : undefined
+);
+const hintForPredictOutput = ({ parameters, expectedAnswer, traceTable }, { firstBadRow }) => {
+  if (traceTable) {
+    if (Number.isInteger(firstBadRow) && firstBadRow >= 0) {
+      return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
+    }
+    return 'Eine Zuweisung verändert nur ihre eigene Variable — alle anderen Werte übernimmst du unverändert in die nächste Zeile.';
+  }
+  if (expectedAnswer || parameters) {
+    return 'Führe den Code Zeile für Zeile gedanklich aus und notiere jede Ausgabe sofort — Reihenfolge und Zeilenumbrüche zählen.';
+  }
+  return undefined;
+};
+const hintForMultipleChoice = ({ choices, expectedAnswer }) => {
+  if (!Array.isArray(choices) || !choices.length) return undefined;
+  // Multiple-choice carries no per-choice `correct` flag — the correct set
+  // lives on expectedAnswer. Eliminate a known-wrong option only, never an
+  // option that could belong to the correct set.
+  const correctIds = new Set(expectedAnswer?.correctIds || []);
+  const wrongs = correctIds.size ? choices.filter((choice) => !correctIds.has(choice.id)) : [];
+  if (wrongs.length >= 2) return `„${wrongs[0].text}“ scheidet aus.`;
+  return 'Prüfe jede Option einzeln auf wahr oder falsch, bevor du auswählst — mehrere können zutreffen.';
+};
+const hintForDiagnosis = ({ expectedAnswer }) => (
+  expectedAnswer && expectedAnswer.kind === 'diagnosis'
+    ? 'Benenne die eigentliche Fehlerursache in eigenen Worten: Welche Annahme stimmt nicht, und was folgt daraus?'
+    : undefined
+);
+const hintForFading = ({ expectedAnswer }) => (
+  expectedAnswer && expectedAnswer.kind === 'gaps'
+    ? 'Betrachte jede Lücke im Kontext des Schritts davor: Welcher Wert muss stehen, damit der nächste Schritt stimmt?'
+    : undefined
+);
+const hintForVector = ({ expectedAnswer }) => (
+  expectedAnswer && Array.isArray(expectedAnswer.solution)
+    ? 'Rechne komponentenweise — ein Vektor ist ein Tupel unabhängiger Zahlen.'
+    : undefined
+);
+const hintForExpression = ({ expectedAnswer }) => (
+  expectedAnswer && typeof expectedAnswer.expression === 'string'
+    ? 'Forme schrittweise um — oder prüfe deinen Term mit einer konkreten Zahl für x.'
+    : undefined
+);
 const ACTIVITY_HINTS = {
   'single-choice': hintForChoice,
   numeric: hintForNumeric,
   parsons: hintForParsons,
+  'python-code': hintForPythonCode,
+  'code-trace': hintForCodeTrace,
+  'predict-output': hintForPredictOutput,
+  'multiple-choice': hintForMultipleChoice,
+  'diagnostic-rationale': hintForDiagnosis,
+  'worked-example-fading': hintForFading,
+  vector: hintForVector,
+  'algebraic-expression': hintForExpression,
 };
 
 /**
- * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown }} instance
+ * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown, hints?: string[] | null }} instance
  * @param {{ level?: number, answer?: unknown, correct?: boolean | null, firstBadRow?: number | null }} context
  */
 export function familyHint(
-  { summary = null, activityType = '', choices = null, parameters = null, expectedAnswer = null, traceTable = null } = {},
+  { summary = null, activityType = '', choices = null, parameters = null, expectedAnswer = null, traceTable = null, hints = null } = {},
   { level = 0, answer = null, correct = null, firstBadRow = null } = {},
 ) {
   if (level === 1) return typeof summary === 'string' && summary ? summary : null;
+  if (!Number.isInteger(level) || level < 2) return null;
+  const authored = Array.isArray(hints) ? hints[level - 2] : null;
+  if (typeof authored === 'string' && authored) return authored;
   if (level !== 2) return null;
-  const activityHint = ACTIVITY_HINTS[activityType]?.(
-    { choices, parameters, expectedAnswer },
-    { answer, correct },
-  );
-  if (activityHint !== undefined) return activityHint;
+  const material = { choices, parameters, expectedAnswer, traceTable };
+  let activityHint = ACTIVITY_HINTS[activityType]?.(material, { answer, correct, firstBadRow });
+  if (!activityHint && (answer !== null || correct !== null || firstBadRow !== null)) {
+    // The context-refined fallback can come back empty for inputs it cannot
+    // reason about — retry under the neutral context familyMaxHints counted,
+    // so a promised level never dead-clicks.
+    activityHint = ACTIVITY_HINTS[activityType]?.(material, { answer: null, correct: null, firstBadRow: null });
+  }
+  if (activityHint) return activityHint;
+  // Defensive tail for non-predict-output instances carrying a traceTable:
+  // predict-output itself serves the row pointer through its fallback.
   if (traceTable && Number.isInteger(firstBadRow) && firstBadRow >= 0) {
     return `Rechne Zeile ${firstBadRow + 1} neu, der Rest steht.`;
   }
   return null;
+}
+
+/** Number of hint levels the sequential ladder actually serves for this
+ *  instance — what the view may promise on the hint button without a dead
+ *  click. Level 1 counts only when the family summary is a non-empty
+ *  string; authored `hints` fill levels 2..n in order, and level 2 (only)
+ *  is additionally covered by the activity-type fallback when the case
+ *  material supports it under a neutral context ({answer:null,
+ *  correct:null, firstBadRow:null} — i.e. before any attempt). Hints that
+ *  need a prior wrong answer to refine — like the numeric up/down pointer
+ *  — are not counted, so the result is a floor, not a ceiling. The ladder
+ *  is contiguous: counting stops at the first level familyHint would not
+ *  serve, and a missing level-1 summary reports 0 even when authored hints
+ *  exist (the first click would be dead).
+ * @param {{ summary?: string | null, activityType?: string, choices?: Array<{ id: string, text: string, correct?: boolean }> | null, parameters?: Record<string, unknown> | null, expectedAnswer?: Record<string, unknown> | null, traceTable?: unknown, hints?: string[] | null }} instance */
+export function familyMaxHints(
+  { summary = null, activityType = '', choices = null, parameters = null, expectedAnswer = null, traceTable = null, hints = null } = {},
+) {
+  if (typeof summary !== 'string' || !summary) return 0;
+  const authored = Array.isArray(hints) ? hints : [];
+  let count = 1;
+  for (let level = 2; ; level += 1) {
+    const authoredHint = authored[level - 2];
+    if (typeof authoredHint === 'string' && authoredHint) {
+      count += 1;
+      continue;
+    }
+    if (level === 2) {
+      const fallback = ACTIVITY_HINTS[activityType]?.(
+        { choices, parameters, expectedAnswer, traceTable },
+        { answer: null, correct: null, firstBadRow: null },
+      );
+      if (typeof fallback === 'string' && fallback) {
+        count += 1;
+        continue;
+      }
+    }
+    break;
+  }
+  return count;
 }
 
 export function createFamilyRegistry(families) {
@@ -195,17 +510,42 @@ export function createFamilyRegistry(families) {
 
   const get = (familyId) => byId.get(familyId) || null;
 
-  function instantiate(familyId, seed, difficulty, caseId) {
+  // A case serves a profile when its generator accepts it at seed 0 — the
+  // rule the golden corpus uses to enumerate (case, profile) pairs, and it
+  // pins every other seed of such a pair. Memoized per registry.
+  const served = new Map();
+  const servesProfile = (family, difficulty) => (caseId) => {
+    const key = `${family.familyId}\0${caseId}\0${difficulty}`;
+    if (!served.has(key)) {
+      let serves = true;
+      try {
+        family.generate({ seed: 0, caseId, difficulty });
+      } catch (error) {
+        if (!PROFILE_REJECTION.test(error?.message ?? '')) throw error;
+        serves = false;
+      }
+      served.set(key, serves);
+    }
+    return served.get(key);
+  };
+
+  function instantiate(familyId, seed, difficulty, caseId, caseIds) {
     if (!Number.isSafeInteger(seed)) throw new Error('Seed muss eine ganze Zahl sein');
     const family = requireFamily(byId, familyId);
     if (!family.difficultyProfiles.includes(difficulty)) throw new Error(`Unbekanntes Profil ${difficulty}`);
-    const resolvedCase = resolveCaseId(family, seed, caseId);
+    const resolvedCase = resolveCaseId(family, seed, caseId, servesProfile(family, difficulty), caseIds);
     const generated = family.generate({ seed, caseId: resolvedCase, difficulty });
+    // Procedural generators emit the per-seed instance but not the authored
+    // case material that lives on the exemplar doc (hints, feedbackRules).
+    // Fall back to the registered case body so authored hints reach learners.
+    let authored = null;
+    try { authored = staticCaseBody(familyId, resolvedCase); } catch { /* no doc body registered */ }
     const solved = family.solve(generated.parameters);
     const correct = (generated.choices || []).find((choice) => choice.correct);
     if (correct && solved.correctText && correct.text !== solved.correctText) {
       throw new Error(`${familyId}: Solver und Generator weichen ab`);
     }
+    const feedbackRules = generated.feedbackRules ?? rebindAuthoredFeedback(authored, generated);
     return {
       familyId,
       caseId: resolvedCase,
@@ -233,6 +573,11 @@ export function createFamilyRegistry(families) {
       ...(generated.rubric ? { rubric: generated.rubric } : null),
       expectedAnswer: generated.expected,
       fullSolution: generated.fullSolution,
+      // Authored feedback material for graders and the hint path; optional.
+      // Authored rules are anchor-bound — rebind/drop them per draw.
+      ...(feedbackRules ? { feedbackRules } : null),
+      ...(generated.hints ?? authored?.hints ? { hints: generated.hints ?? authored?.hints } : null),
+      ...(typicalErrorFields(familyId, resolvedCase, generated.typicalErrors ?? authored?.typicalErrors)),
       // S4D1: optionale Trace-Tabelle (Interaktionsvariante). Nur gesetzt,
       // wenn der Generator Zustände kennt; sonst undefined.
       ...(generated.traceTable ? { traceTable: generated.traceTable } : null),
@@ -253,6 +598,7 @@ export function createFamilyRegistry(families) {
       throw new Error(`Unbekanntes Profil ${placement.difficulty}`);
     }
     if (placement.caseId != null) resolveCaseId(family, placement.seed ?? 0, placement.caseId);
+    else if (placement.difficulty) resolveCaseId(family, 0, null, servesProfile(family, placement.difficulty));
   }
 
   return { get, instantiate, grade, assertFamilyPlacement };

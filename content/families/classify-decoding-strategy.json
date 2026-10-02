@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-decoding-strategy",
-  "contract": {
-    "familyId": "classify-decoding-strategy",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet ein Decodierverhalten der passenden Decodierstrategie zu.",
-    "taskArchetype": "single-choice",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "greedy-decoding",
-        "propertyTest": false
-      },
-      {
-        "caseId": "decoding-temperature-low",
-        "propertyTest": false
-      },
-      {
-        "caseId": "decoding-top-k",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-inference"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "greedy-decoding",
@@ -45,9 +14,7 @@
       "competencyIds": [
         "c-dl-inference"
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -91,13 +58,19 @@
         }
       ],
       "typicalErrors": [
-        "Greedy mit Sampling verwechselt",
-        "Determinismus von Argmax missverstanden",
-        "Greedy mit Beam Search verwechselt"
+        {
+          "id": "greedy-mit-sampling-verwechselt",
+          "text": "Greedy mit Sampling verwechselt"
+        },
+        {
+          "id": "determinismus-von-argmax-missverstanden",
+          "text": "Determinismus von Argmax missverstanden"
+        },
+        {
+          "id": "greedy-mit-beam-search-verwechselt",
+          "text": "Greedy mit Beam Search verwechselt"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -114,9 +87,7 @@
       "competencyIds": [
         "c-dl-inference"
       ],
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -160,13 +131,19 @@
         }
       ],
       "typicalErrors": [
-        "Temperatur als Zufallsseed statt als Logit-Skalierung behandelt",
-        "kleines T mit flacher statt spitzer Softmax verbunden",
-        "Decoding-Verteilung und Tokenreihenfolge verwechselt"
+        {
+          "id": "temperatur-als-zufallsseed-statt-als",
+          "text": "Temperatur als Zufallsseed statt als Logit-Skalierung behandelt"
+        },
+        {
+          "id": "kleines-t-mit-flacher-statt",
+          "text": "kleines T mit flacher statt spitzer Softmax verbunden"
+        },
+        {
+          "id": "decoding-verteilung-und-tokenreihenfolge-verwechselt",
+          "text": "Decoding-Verteilung und Tokenreihenfolge verwechselt"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -183,9 +160,7 @@
       "competencyIds": [
         "c-dl-inference"
       ],
-      "expected": {
-        "correctChoice": "a"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -229,13 +204,19 @@
         }
       ],
       "typicalErrors": [
-        "Top-k mit Top-1 beziehungsweise Greedy verwechselt",
-        "Renormalisierung als Gleichverteilung missverstanden",
-        "Kandidatenfilterung fälschlich als reine Temperaturanpassung gelesen"
+        {
+          "id": "top-k-mit-top-1",
+          "text": "Top-k mit Top-1 beziehungsweise Greedy verwechselt"
+        },
+        {
+          "id": "renormalisierung-als-gleichverteilung-missverstanden",
+          "text": "Renormalisierung als Gleichverteilung missverstanden"
+        },
+        {
+          "id": "kandidatenfilterung-faelschlich-als-reine-temperaturanpassung",
+          "text": "Kandidatenfilterung fälschlich als reine Temperaturanpassung gelesen"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

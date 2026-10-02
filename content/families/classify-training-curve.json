@@ -1,38 +1,7 @@
 {
   "schemaVersion": 1,
   "familyId": "classify-training-curve",
-  "contract": {
-    "familyId": "classify-training-curve",
-    "familyGroup": "classify-concept",
-    "summary": "Ordnet einen Trainingskurvenverlauf seinem Diagnosemuster zu.",
-    "taskArchetype": "choice-diagnose",
-    "authorityMode": "static",
-    "masteryEligible": true,
-    "caseTypes": [
-      {
-        "caseId": "training-curve-diagnosis",
-        "propertyTest": false
-      },
-      {
-        "caseId": "training-curve-overfit",
-        "propertyTest": false
-      },
-      {
-        "caseId": "training-curve-underfit",
-        "propertyTest": false
-      }
-    ],
-    "difficultyProfiles": [
-      "intro",
-      "core",
-      "stretch"
-    ],
-    "competencyIds": [
-      "c-dl-training"
-    ],
-    "graderId": "deterministic",
-    "activityType": "single-choice"
-  },
+  "contract": null,
   "cases": [
     {
       "caseId": "training-curve-diagnosis",
@@ -47,9 +16,7 @@
       "parameters": {
         "thema": "Overfitting-Signal in Lernkurven"
       },
-      "expected": {
-        "correctChoice": "d"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -93,13 +60,19 @@
         }
       ],
       "typicalErrors": [
-        "nur den Trainingsverlust betrachtet und „gesundes Lernen“ diagnostiziert",
-        "steigenden Validierungsverlust als Lernratenproblem gelesen",
-        "Overfitting mit Underfitting verwechselt, weil der finale Validierungsverlust hoch ist"
+        {
+          "id": "nur-den-trainingsverlust-betrachtet-und",
+          "text": "nur den Trainingsverlust betrachtet und „gesundes Lernen“ diagnostiziert"
+        },
+        {
+          "id": "steigenden-validierungsverlust-als-lernratenproblem-gelesen",
+          "text": "steigenden Validierungsverlust als Lernratenproblem gelesen"
+        },
+        {
+          "id": "overfitting-mit-underfitting-verwechselt-weil",
+          "text": "Overfitting mit Underfitting verwechselt, weil der finale Validierungsverlust hoch ist"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -118,9 +91,7 @@
         "trainLoss": 0.12,
         "validationLoss": 0.68
       },
-      "expected": {
-        "correctChoice": "c"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -164,13 +135,19 @@
         }
       ],
       "typicalErrors": [
-        "niedrigen Trainingsverlust als Underfitting fehlinterpretiert",
-        "frühen gemeinsamen Kurvenabfall mit dauerhaft guter Generalisierung verwechselt",
-        "jede Train-Val-Lücke als sicheren Datenleck-Beweis bezeichnet"
+        {
+          "id": "niedrigen-trainingsverlust-als-underfitting-fehlinterpretiert",
+          "text": "niedrigen Trainingsverlust als Underfitting fehlinterpretiert"
+        },
+        {
+          "id": "fruehen-gemeinsamen-kurvenabfall-mit-dauerhaft",
+          "text": "frühen gemeinsamen Kurvenabfall mit dauerhaft guter Generalisierung verwechselt"
+        },
+        {
+          "id": "jede-train-val-luecke-als",
+          "text": "jede Train-Val-Lücke als sicheren Datenleck-Beweis bezeichnet"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     },
@@ -188,9 +165,7 @@
         "trainLoss": 0.62,
         "validationLoss": 0.65
       },
-      "expected": {
-        "correctChoice": "b"
-      },
+      "expected": {},
       "choices": [
         {
           "id": "a",
@@ -234,13 +209,19 @@
         }
       ],
       "typicalErrors": [
-        "kleine Train-Val-Lücke unabhängig von ihrer Höhe als Erfolg gewertet",
-        "jeden höheren Validierungsverlust mit Overfitting gleichgesetzt",
-        "Kurvenähnlichkeit als Beweis für Datenleck interpretiert"
+        {
+          "id": "kleine-train-val-luecke-unabhaengig",
+          "text": "kleine Train-Val-Lücke unabhängig von ihrer Höhe als Erfolg gewertet"
+        },
+        {
+          "id": "jeden-hoeheren-validierungsverlust-mit-overfitting",
+          "text": "jeden höheren Validierungsverlust mit Overfitting gleichgesetzt"
+        },
+        {
+          "id": "kurvenaehnlichkeit-als-beweis-fuer-datenleck",
+          "text": "Kurvenähnlichkeit als Beweis für Datenleck interpretiert"
+        }
       ],
-      "tolerancePolicy": {
-        "mode": "none"
-      },
       "activityType": "single-choice",
       "graderId": "deterministic"
     }

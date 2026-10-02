@@ -41,6 +41,17 @@
       "masteryEligible": true
     },
     {
+      "placementId": "p-foundations-python-state-chain3-overwrite-print",
+      "role": "curated",
+      "familyId": "trace-assignment-state",
+      "caseId": "chain3-overwrite-print",
+      "seed": 17,
+      "difficulty": "stretch",
+      "estimatedMinutes": 8,
+      "lessonId": "l-foundations-python-state",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-foundations-python-state-trace-assignment-state-practice",
       "role": "practice-space",
       "familyId": "trace-assignment-state",

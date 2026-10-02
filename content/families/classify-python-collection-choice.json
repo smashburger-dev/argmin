@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "familyId": "classify-python-collection-choice",
+  "contract": null,
+  "cases": [
+    {
+      "caseId": "membership-set-for-dedup",
+      "difficultyProfile": "core",
+      "masteryEligible": true,
+      "sourceLineage": [
+        "f-collections-choice-01"
+      ],
+      "expected": {},
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ein Set `seen`, das jede erstmals gelesene ID aufnimmt.",
+          "correct": true
+        },
+        {
+          "id": "b",
+          "text": "Eine Zahl, die nur die bisherige Zeilenanzahl speichert.",
+          "correct": false
+        },
+        {
+          "id": "c",
+          "text": "Ein String mit allen IDs ohne Trennzeichen.",
+          "correct": false
+        },
+        {
+          "id": "d",
+          "text": "Nur die zuletzt gelesene ID.",
+          "correct": false
+        }
+      ],
+      "prompt": "Du verarbeitest IDs in Reihenfolge und willst bei jeder ID schnell prüfen, ob sie bereits vorkam. Welche zusätzliche Struktur passt am besten?",
+      "fullSolution": "Ein Set speichert eindeutige IDs. `id in seen` prüft, ob die ID bereits verarbeitet wurde.",
+      "feedbackRules": [
+        {
+                  "if": "choice === 'b'",
+                  "then": "Eine Zahl sagt nur, wie viele Zeilen es gab — nicht, welche ID schon kam. `id in seen` braucht die gespeicherten IDs selbst."
+        },
+        {
+                  "if": "choice === 'c'",
+                  "then": "Im String prüfst du auf Teilstrings: Eine ID, die zufällig in einer anderen steckt, erzeugt falsche Treffer — und der Scan ist langsam."
+        },
+        {
+                  "if": "choice === 'd'",
+                  "then": "Die zuletzt gelesene ID sagt nichts über die davor. Eine ID, die fünf Zeilen früher kam, erkennst du so nicht wieder."
+        }
+      ],
+      "activityType": "single-choice",
+      "graderId": "deterministic",
+      "variants": [
+        {
+          "prompt": "Du liest E-Mail-Adressen aus einer Datei und willst jede doppelte Adresse sofort erkennen. Welche Struktur macht die Prüfung `adresse in ...` am schnellsten?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ein Set mit allen bisher gelesenen Adressen.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Eine Liste mit allen bisher gelesenen Adressen.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein Zähler, der nur die Anzahl gelesener Adressen speichert.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur die zuletzt gelesene Adresse.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "`adresse in gesehen` prüft bei einem Set im Mittel in konstanter Zeit. Eine Liste wird dafür Element für Element durchsucht, und Zähler oder letzte Adresse erkennen frühere Duplikate gar nicht.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Die Liste liefert das richtige Ergebnis, aber `in` durchsucht sie Element für Element. Mit jeder Adresse wird die Prüfung langsamer, ein Set prüft im Mittel in konstanter Zeit."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "Die Anzahl sagt nichts darüber, welche Adressen schon vorkamen. Ein Duplikat bleibt unerkannt."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "So fallen nur direkt aufeinanderfolgende Duplikate auf. Eine Adresse, die zehn Zeilen später wiederkommt, bleibt unerkannt."
+            }
+          ]
+        },
+        {
+          "prompt": "Du verarbeitest Bestellungen und willst jede Kundennummer nur bei ihrem ersten Auftreten in eine Ausgabe schreiben. Die Reihenfolge des ersten Auftretens soll erhalten bleiben. Welche Kombination passt am besten?",
+          "choices": [
+            {
+              "id": "a",
+              "text": "Ein Set `gesehen` für die Prüfung und eine Liste für die Ausgabe.",
+              "correct": true
+            },
+            {
+              "id": "b",
+              "text": "Nur ein Set, weil es die Einfügereihenfolge garantiert behält.",
+              "correct": false
+            },
+            {
+              "id": "c",
+              "text": "Ein String, an den jede Kundennummer angehängt und mit `in` durchsucht wird.",
+              "correct": false
+            },
+            {
+              "id": "d",
+              "text": "Nur eine Zahl, die die bisher gesehenen Bestellungen zählt.",
+              "correct": false
+            }
+          ],
+          "fullSolution": "Das Set beantwortet `nummer in gesehen` schnell, die Liste behält die Reihenfolge. Ein Set allein garantiert keine Reihenfolge, und ein String meldet Teiltreffer: `\"12\" in \"123\"` ist `True`.",
+          "feedbackRules": [
+            {
+              "if": "choice === 'b'",
+              "then": "Ein Set garantiert keine Reihenfolge. Für die Ausgabe in Reihenfolge des ersten Auftretens braucht es zusätzlich eine Liste."
+            },
+            {
+              "if": "choice === 'c'",
+              "then": "`in` sucht in einem String nach Teilstrings. `\"12\" in \"123\"` ist `True`, obwohl die Kundennummer 12 noch nie vorkam."
+            },
+            {
+              "if": "choice === 'd'",
+              "then": "Eine Anzahl sagt nicht, welche Kundennummern schon vorkamen. Duplikate lassen sich damit nicht erkennen."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

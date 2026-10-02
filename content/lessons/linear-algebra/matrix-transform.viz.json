@@ -12,5 +12,16 @@
     { "kind": "polygon", "points": [[0, 0], [1, 0], [1, 1], [0, 1]], "color": "#5b5a53" },
     { "kind": "polygon", "points": [[0, 0], ["a", 0], ["a+0.5", "d"], [0.5, "d"]], "color": "#294bd6" },
     { "kind": "text", "at": [0, -1], "text": "det(A) = {a*d-0.5*0}", "color": "#294bd6" }
-  ]
+  ],
+  "checkpoint": {
+    "prompt": "Setze a = 2 und d = 2. Welchen Wert hat det(A) — und damit den Flächeninhalt des Parallelogramms?",
+    "input": "numeric",
+    "expected": 4,
+    "tolerance": 1e-6,
+    "hints": ["A = [[a, 0,5], [0, d]] ist eine obere Dreiecksmatrix: det(A) = a·d − b·c."],
+    "typicalErrors": [
+      { "match": 3.5, "feedback": "det(A) = a·d − b·c mit b = 0,5 und c = 0 — der Korrekturterm fällt weg, weil c = 0." },
+      { "match": 5, "feedback": "(a + 0,5)·d misst die äußere Breite, nicht den Flächeninhalt — die Scherung ändert die Fläche nicht." }
+    ]
+  }
 }
