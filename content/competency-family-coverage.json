@@ -10,7 +10,7 @@
         "transform-linear-equation-isolate",
         "transform-power-log-exponent"
       ],
-      "placedCaseCount": 4,
+      "placedCaseCount": 5,
       "seededFamilyCount": 0
     },
     {
@@ -20,7 +20,7 @@
         "transform-expression-simplify-canonical",
         "transform-linear-equation-isolate"
       ],
-      "placedCaseCount": 5,
+      "placedCaseCount": 6,
       "seededFamilyCount": 0
     },
     {

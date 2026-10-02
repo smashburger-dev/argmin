@@ -63,6 +63,19 @@ function findPlacement(catalog: CatalogData, instance: ExerciseInstance) {
   ))[0];
 }
 
+export function exerciseForPlacement(catalog: CatalogData, placement: ExercisePlacement) {
+  return placement.definitionId
+    ? catalog.exercises.find((item) => item.definitionId === placement.definitionId)
+    : catalog.exercises.find((item) => item.familyId === placement.familyId && item.caseId === placement.caseId);
+}
+
+export function routeForPlacement(catalog: CatalogData, placement: ExercisePlacement) {
+  const exercise = exerciseForPlacement(catalog, placement);
+  if (exercise) return routeForDefinition(exercise);
+  if (!placement.familyId) return null;
+  return `#/family/${placement.familyId}/${placement.caseId || '-'}/${placement.seed ?? '-'}/${placement.difficulty}`;
+}
+
 function exerciseFor(catalog: CatalogData, familyId: string, caseId?: string): ExerciseSummary | undefined {
   return catalog.exercises.find((exercise) => exercise.familyId === familyId && exercise.caseId === caseId);
 }

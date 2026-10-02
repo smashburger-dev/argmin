@@ -69,6 +69,17 @@
       "estimatedMinutes": 0
     },
     {
+      "placementId": "p-foundations-algebra-combine-like-terms",
+      "role": "curated",
+      "familyId": "transform-expression-simplify-canonical",
+      "caseId": "combine-like-terms",
+      "seed": 3,
+      "difficulty": "intro",
+      "estimatedMinutes": 5,
+      "lessonId": "l-foundations-algebra-transformations",
+      "masteryEligible": true
+    },
+    {
       "placementId": "p-foundations-algebra-distribute-sign-constant-chain",
       "role": "curated",
       "familyId": "transform-expression-simplify-canonical",
@@ -76,7 +87,7 @@
       "seed": 13,
       "difficulty": "core",
       "estimatedMinutes": 8,
-      "lessonId": "l-foundations-algebra",
+      "lessonId": "l-foundations-algebra-transformations",
       "masteryEligible": true
     },
     {
